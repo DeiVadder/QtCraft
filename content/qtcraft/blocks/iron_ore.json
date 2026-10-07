@@ -1,0 +1,9 @@
+{
+    "name": "iron_ore",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "textures": {
+        "all": "iron_ore"
+    }
+}

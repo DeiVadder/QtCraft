@@ -1,0 +1,8 @@
+{
+    "name": "spruce_leaves",
+    "pattern": "leaves",
+    "primary": "#2e5a36",
+    "secondary": "#244a2c",
+    "variation": 0.12,
+    "seed": 22
+}

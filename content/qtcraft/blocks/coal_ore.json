@@ -1,0 +1,14 @@
+{
+    "name": "coal_ore",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "drops": [
+        {
+            "item": "coal"
+        }
+    ],
+    "textures": {
+        "all": "coal_ore"
+    }
+}

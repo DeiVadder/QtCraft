@@ -1,0 +1,8 @@
+{
+    "name": "dirt",
+    "pattern": "speckle",
+    "primary": "#86603f",
+    "secondary": "#6c4c31",
+    "variation": 0.12,
+    "seed": 4
+}

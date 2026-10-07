@@ -1,0 +1,8 @@
+{
+    "name": "birch_log_top",
+    "pattern": "log_top",
+    "primary": "#c9b98a",
+    "secondary": "#d8d4c8",
+    "variation": 0.08,
+    "seed": 18
+}

@@ -1,0 +1,8 @@
+{
+    "name": "grass_side",
+    "pattern": "grass_side",
+    "primary": "#86603f",
+    "secondary": "#5ca040",
+    "variation": 0.12,
+    "seed": 6
+}

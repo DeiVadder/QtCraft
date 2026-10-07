@@ -1,8 +1,16 @@
 qt_add_library(qc_clientcore STATIC
+    QcBlockRenderTable.h QcBlockRenderTable.cpp
     QcBlockVertex.h
     QcCamera.h QcCamera.cpp
     QcChunkMesh.h
-    QcTextureSpec.h
+    QcChunkMesher.h QcChunkMesher.cpp
+    QcClientSession.h QcClientSession.cpp
+    QcClientWorld.h QcClientWorld.cpp
+    QcControlInterface.h QcControlInterface.cpp
+    QcMeshScheduler.h QcMeshScheduler.cpp
+    QcSectionKey.h
+    QcTextureAtlas.h QcTextureAtlas.cpp
+    QcTextureSpec.h QcTextureSpec.cpp
     QcTextureSynthesizer.h QcTextureSynthesizer.cpp
 )
 qc_configure_target(qc_clientcore)

@@ -1,0 +1,8 @@
+{
+    "name": "snow_block",
+    "hardness": 0.2,
+    "tool": "shovel",
+    "textures": {
+        "all": "snow"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "name": "water",
+    "render": "translucent",
+    "solid": false,
+    "liquid": true,
+    "replaceable": true,
+    "hardness": -1,
+    "drops": [],
+    "textures": {
+        "all": "water"
+    }
+}

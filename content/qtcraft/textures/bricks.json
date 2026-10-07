@@ -1,0 +1,8 @@
+{
+    "name": "bricks",
+    "pattern": "bricks",
+    "primary": "#9a4a3a",
+    "secondary": "#c8c0b0",
+    "variation": 0.1,
+    "seed": 25
+}

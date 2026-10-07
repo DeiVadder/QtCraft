@@ -1,0 +1,8 @@
+{
+    "name": "oak_leaves",
+    "pattern": "leaves",
+    "primary": "#3c8232",
+    "secondary": "#2d6928",
+    "variation": 0.15,
+    "seed": 16
+}

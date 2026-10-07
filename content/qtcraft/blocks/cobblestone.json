@@ -1,0 +1,9 @@
+{
+    "name": "cobblestone",
+    "hardness": 2.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "cobblestone"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "diamond_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#5ae0e0",
+    "variation": 0.08,
+    "seed": 32
+}

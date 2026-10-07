@@ -1,0 +1,10 @@
+{
+    "name": "spruce_leaves",
+    "render": "cutout",
+    "lightOpacity": 1,
+    "hardness": 0.2,
+    "drops": [],
+    "textures": {
+        "all": "spruce_leaves"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "sandstone",
+    "pattern": "bricks",
+    "primary": "#d8ca95",
+    "secondary": "#c4b47c",
+    "variation": 0.05,
+    "seed": 8
+}

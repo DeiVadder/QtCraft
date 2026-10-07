@@ -1,0 +1,7 @@
+{
+    "id": "qtcraft",
+    "name": "QtCraft",
+    "version": "0.1.0",
+    "description": "Base game content",
+    "dependencies": []
+}

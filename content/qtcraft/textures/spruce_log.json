@@ -1,0 +1,8 @@
+{
+    "name": "spruce_log",
+    "pattern": "log_side",
+    "primary": "#4f3a22",
+    "secondary": "#3a2a18",
+    "variation": 0.1,
+    "seed": 20
+}

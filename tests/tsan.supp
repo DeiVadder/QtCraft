@@ -1,1 +1,8 @@
-# ThreadSanitizer suppressions for uninstrumented Qt internals.
+# ThreadSanitizer suppressions.
+#
+# QtCore is not instrumented, so TSan cannot see the synchronisation inside Qt's event queue. The
+# slot object of a queued call is written by the posting thread and read by the receiving thread.
+# All data that crosses threads goes through std::mutex (QcMailbox, QcWorkerPool), which TSan does
+# see; queued calls only carry the wake-up itself.
+race_top:QtPrivate::QCallableObject
+race_top:QtPrivate::QSlotObjectBase

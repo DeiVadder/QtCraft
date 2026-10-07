@@ -17,8 +17,10 @@ include(QcProjectOptions)
 
 enable_testing()
 
+add_subdirectory(content)
 add_subdirectory(src/common)
 add_subdirectory(src/server)
 add_subdirectory(src/clientcore)
+add_subdirectory(src/headless)
 add_subdirectory(src/app)
 add_subdirectory(tests)

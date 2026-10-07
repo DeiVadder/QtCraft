@@ -37,3 +37,44 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** `.clang-tidy` mit `bugprone`, `performance`, `modernize`, `misc` und ausgewählten `readability`-Checks. Abgeschaltet: `modernize-use-trailing-return-type`, `modernize-use-auto` (explizite Typen gewünscht), `modernize-avoid-c-style-cast` (meldet auch funktionale Casts wie `float(x)`, die für triviale Typen bewusst genutzt werden), `modernize-return-braced-init-list`, `misc-include-cleaner` (Qt-Umbrella-Header). In `tests/` zusätzlich `misc-const-correctness` (QFETCH) und `misc-use-internal-linkage` (moc). clazy mit Level 0–2 ohne die reinen Stil-Checks. `scripts/static-analysis.sh` bündelt clang-tidy, clazy und `qmllint` (Target `all_qmllint`).
 - **Warum:** Hohe Signalqualität ohne Rauschen; jede Abschaltung ist begründet.
 - **Verworfen:** `WarningsAsErrors` in clang-tidy – das Skript schlägt bei jedem Finding ohnehin fehl.
+
+## E-007 Protokoll: QDataStream-Binärformat über `std::variant`
+
+- **Was:** Jede Nachricht ist eine Struktur in `QcMessages.h`; `QcMessage` ist ein `std::variant` dieser Strukturen. Ein Frame besteht aus `quint16` (Variant-Index als Typkennung) und den mit `QDataStream` (Big Endian, `Qt_6_8`) serialisierten Feldern; Chunkdaten sind zusätzlich mit `qCompress` komprimiert. Die Protokollversion (`QcProtocol::version`) wird im `Hello` geprüft. Der Decoder begrenzt alle Längen und lehnt abgeschnittene Frames und überzählige Bytes ab. Die Nachrichtenstrukturen liegen bewusst gemeinsam in einem Header, weil sie zusammen die Variante bilden (Ausnahme von „eine Klasse pro Header").
+- **Warum:** Binär, versioniert, ohne Fremdbibliothek; der Compiler erzwingt über `std::visit`, dass jede Nachricht kodiert wird. Die In-Process-Strecke serialisiert genauso wie später ein Socket.
+- **Verworfen:** Protobuf/FlatBuffers (Fremdabhängigkeit); CBOR (größer, kein Mehrwert).
+
+## E-008 Bewegung: feste Ticks, Client-Vorhersage, Abgleich per Sequenznummer
+
+- **Was:** Server und Client simulieren mit 20 Ticks/s und derselben Physik (`QcPhysics`, Common). Der Client sendet pro Tick eine Eingabe mit Sequenznummer, sagt sie sofort lokal voraus und spielt nach jedem `PlayerState` des Servers die noch nicht bestätigten Eingaben erneut ab. Der Server begrenzt Eingaben über ein Budget (Schutz gegen Speedhacks). Die Kamera interpoliert zwischen den letzten beiden Ticks.
+- **Warum:** Server bleibt autoritativ, Steuerung fühlt sich trotzdem latenzfrei an; deterministische Physik macht die Vorhersage im Normalfall exakt.
+- **Verworfen:** Client meldet Positionen (nicht autoritativ); reine Server-Bewegung ohne Vorhersage (spürbare Verzögerung über Netz).
+
+## E-009 Basisinhalte als eingebettetes Content-Pack
+
+- **Was:** `content/qtcraft` (Manifest, Blöcke, Texturen, Übersetzungen als JSON) wird als Qt-Ressource `:/content/qtcraft` eingebettet und über denselben `QcContentPackLoader` geladen wie später Mods. Der Server schickt die gesamte Registry per `ContentSync` an den Client.
+- **Warum:** Kein Sonderweg für eingebaute Inhalte; der Client braucht keinen Dateizugriff auf Inhalte, was auch für Mehrspieler passt.
+- **Verworfen:** Inhalte als Dateien neben dem Programm (Installationspfade plattformabhängig); hart kodierte Blöcke.
+
+## E-010 Thread-Übergaben über `std::mutex` statt Qt-Event-Queue
+
+- **Was:** Daten zwischen Threads laufen über `QcMailbox` bzw. `QcWorkerPool` (`std::mutex`/`std::condition_variable`); Qt-Queued-Calls tragen nur noch das Wecksignal. Für deren Slot-Objekt gibt es eine eng gefasste TSan-Unterdrückung (`tests/tsan.supp`).
+- **Warum:** QtCore ist nicht mit TSan instrumentiert; Datenübergaben über die Event-Queue erschienen als (falsche) Data Races. Mit `std::mutex` sieht TSan die Happens-Before-Kanten, echte Races bleiben sichtbar.
+- **Verworfen:** Breite Unterdrückung von `QObject::event` (würde echte Races in allen Slots verstecken); Qt mit TSan selbst bauen (Installation, nicht erlaubt).
+
+## E-011 Meshing nur bei bekannten Nachbarn
+
+- **Was:** Eine Sektion wird erst gemesht, wenn die vier seitlichen Nachbar-Chunks geladen sind; der Server streamt deshalb einen Ring mehr als die Sichtweite. Fehlende Nachbarn gelten als opak.
+- **Warum:** Vermeidet doppeltes Meshing an der Ladefront und sichtbare Löcher an Chunkgrenzen.
+- **Verworfen:** Sofort meshen und bei Nachbar-Ankunft neu meshen (doppelte Arbeit beim Streaming).
+
+## E-012 Steuerschnittstelle als JSON-Zeilen über einen Headless-Client
+
+- **Was:** `QcControlInterface` (clientcore) übersetzt JSON-Zeilen in Aktionen einer `QcClientSession`; `qtcraft-headless` startet Server und Bot-Client in einem Prozess (stdin/stdout oder Skriptdatei). Standardmäßig ist nichts geöffnet.
+- **Warum:** Gleiches Protokoll wie Spieler, headless testbar, trivial von außen (Skripte, spätere MCP-Brücke) anzusprechen.
+- **Verworfen:** Eigener Server-Debug-Zugang (Sonderweg am Protokoll vorbei); TCP-Port (unnötige Angriffsfläche).
+
+## E-013 Übergangs-Generator für Etappe 2
+
+- **Was:** `QcTestTerrainGenerator` erzeugt sanfte Hügel mit See aus wenigen Basisblöcken. Er bleibt als billiger, vorhersagbarer Generator für Tests erhalten, wenn in Etappe 3 der datengetriebene Biom-Generator kommt.
+- **Warum:** Der Durchstich braucht eine Welt; Tests brauchen eine einfache, stabile Welt.

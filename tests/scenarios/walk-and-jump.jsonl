@@ -1,0 +1,8 @@
+# Smoke scenario for qtcraft-headless --script: every request must succeed.
+{"id":"ready","cmd":"waitUntilReady"}
+{"id":"look","cmd":"look","yaw":180,"pitch":-10}
+{"id":"walk","cmd":"move","forward":1,"ticks":30}
+{"id":"jump","cmd":"jump"}
+{"id":"land","cmd":"wait","ticks":30}
+{"id":"ground","cmd":"blocks","radius":2}
+{"id":"status","cmd":"status"}

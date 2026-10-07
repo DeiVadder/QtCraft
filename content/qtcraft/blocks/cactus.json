@@ -1,0 +1,9 @@
+{
+    "name": "cactus",
+    "hardness": 0.4,
+    "textures": {
+        "top": "cactus_top",
+        "bottom": "cactus_top",
+        "side": "cactus_side"
+    }
+}

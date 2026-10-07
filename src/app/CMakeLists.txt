@@ -1,7 +1,7 @@
 qt_add_executable(qtcraft
     main.cpp
     QcScreenshotHook.h QcScreenshotHook.cpp
-    QcSpikeScene.h QcSpikeScene.cpp
+    QcGameController.h QcGameController.cpp
     QcWorldRenderer.h QcWorldRenderer.cpp
     QcWorldView.h QcWorldView.cpp
 )
@@ -21,6 +21,9 @@ qt_add_qml_module(qtcraft
     URI QtCraft
     QML_FILES
         qml/Main.qml
+        qml/Hud.qml
+        qml/MainMenu.qml
+        qml/MessageScreen.qml
 )
 
 qt_add_shaders(qtcraft "qtcraft_shaders"

@@ -1,8 +1,31 @@
 qt_add_library(qc_common STATIC
-    QcWorldConstants.h
-    QcIntMath.h
-    QcChunkPos.h QcChunkPos.cpp
+    QcAabb.h
+    QcBlockAccess.h
+    QcBlockDefinition.h
+    QcBlockFace.h
     QcBlockPos.h QcBlockPos.cpp
+    QcChunk.h QcChunk.cpp
+    QcChunkPos.h QcChunkPos.cpp
+    QcChunkSection.h QcChunkSection.cpp
+    QcConnection.h QcConnection.cpp
+    QcContentNames.h QcContentNames.cpp
+    QcContentParser.h QcContentParser.cpp
+    QcContentRegistry.h QcContentRegistry.cpp
+    QcEntityMotion.h
+    QcInProcessTransport.h QcInProcessTransport.cpp
+    QcIntMath.h
+    QcMailbox.h
+    QcMessages.h
+    QcPhysics.h QcPhysics.cpp
+    QcPlayerInput.h
+    QcProtocol.h QcProtocol.cpp
+    QcResult.h
+    QcStreamLimits.h
+    QcTextureDefinition.h
+    QcTransport.h
+    QcVec3.h
+    QcWorkerPool.h QcWorkerPool.cpp
+    QcWorldConstants.h
 )
 qc_configure_target(qc_common)
 target_include_directories(qc_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,0 +1,8 @@
+{
+    "name": "bedrock",
+    "pattern": "speckle",
+    "primary": "#3a3a3a",
+    "secondary": "#1c1c1c",
+    "variation": 0.25,
+    "seed": 3
+}

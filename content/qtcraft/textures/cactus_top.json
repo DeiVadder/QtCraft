@@ -1,0 +1,8 @@
+{
+    "name": "cactus_top",
+    "pattern": "log_top",
+    "primary": "#6aa03c",
+    "secondary": "#4f8a2e",
+    "variation": 0.08,
+    "seed": 27
+}

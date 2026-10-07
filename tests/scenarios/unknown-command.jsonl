@@ -1,0 +1,3 @@
+# Must make qtcraft-headless exit with failure.
+{"cmd":"waitUntilReady"}
+{"cmd":"teleport","x":0}

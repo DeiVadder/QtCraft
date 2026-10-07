@@ -1,3 +1,5 @@
-# QFETCH declares mutable locals and QTest classes must stay visible to moc.
+# QFETCH declares mutable locals, QTest classes must stay visible to moc, "private slots:" after
+# "private:" is not redundant for moc, results are checked with QVERIFY before use (which the
+# optional-access check cannot see), and moc mis-parses some raw string literals.
 InheritParentConfig: true
-Checks: '-misc-const-correctness,-misc-use-internal-linkage'
+Checks: '-misc-const-correctness,-misc-use-internal-linkage,-readability-redundant-access-specifiers,-bugprone-unchecked-optional-access,-modernize-raw-string-literal'

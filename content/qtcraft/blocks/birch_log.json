@@ -1,0 +1,10 @@
+{
+    "name": "birch_log",
+    "hardness": 2.0,
+    "tool": "axe",
+    "textures": {
+        "top": "birch_log_top",
+        "bottom": "birch_log_top",
+        "side": "birch_log"
+    }
+}

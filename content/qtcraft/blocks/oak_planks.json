@@ -1,0 +1,8 @@
+{
+    "name": "oak_planks",
+    "hardness": 2.0,
+    "tool": "axe",
+    "textures": {
+        "all": "oak_planks"
+    }
+}

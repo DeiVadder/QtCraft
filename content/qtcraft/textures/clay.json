@@ -1,0 +1,8 @@
+{
+    "name": "clay",
+    "pattern": "noise",
+    "primary": "#a0a6b2",
+    "secondary": "#8e94a0",
+    "variation": 0.06,
+    "seed": 11
+}

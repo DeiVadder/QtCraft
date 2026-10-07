@@ -1,0 +1,8 @@
+{
+    "name": "gold_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#f2d040",
+    "variation": 0.08,
+    "seed": 31
+}

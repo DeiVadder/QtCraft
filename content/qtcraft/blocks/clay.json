@@ -1,0 +1,8 @@
+{
+    "name": "clay",
+    "hardness": 0.6,
+    "tool": "shovel",
+    "textures": {
+        "all": "clay"
+    }
+}

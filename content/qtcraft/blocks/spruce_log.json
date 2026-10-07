@@ -1,0 +1,10 @@
+{
+    "name": "spruce_log",
+    "hardness": 2.0,
+    "tool": "axe",
+    "textures": {
+        "top": "spruce_log_top",
+        "bottom": "spruce_log_top",
+        "side": "spruce_log"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "name": "bedrock",
+    "hardness": -1,
+    "textures": {
+        "all": "bedrock"
+    }
+}

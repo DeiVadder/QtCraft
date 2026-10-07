@@ -1,0 +1,15 @@
+{
+    "name": "grass_block",
+    "hardness": 0.6,
+    "tool": "shovel",
+    "drops": [
+        {
+            "item": "dirt"
+        }
+    ],
+    "textures": {
+        "top": "grass_top",
+        "bottom": "dirt",
+        "side": "grass_side"
+    }
+}

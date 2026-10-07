@@ -1,0 +1,8 @@
+{
+    "name": "iron_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#d8af93",
+    "variation": 0.08,
+    "seed": 30
+}

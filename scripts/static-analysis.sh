@@ -17,8 +17,11 @@ JOBS=${JOBS:-16}
 TIME_LIMIT=${TIME_LIMIT:-900}
 CLAZY_CHECKS=${CLAZY_CHECKS:-level0,level1,level2,no-qstring-allocations,no-ctor-missing-parent-argument,no-copyable-polymorphic,no-non-pod-global-static,no-rule-of-three}
 
+# Runs a command in its own process group and kills the whole group when the time limit expires.
 run_limited() {
-    perl -e 'alarm shift; exec @ARGV or die' "$TIME_LIMIT" "$@"
+    perl -e 'my $limit = shift; my $pid = fork(); if ($pid == 0) { setpgrp(0, 0); exec @ARGV or die; }
+             local $SIG{ALRM} = sub { kill "TERM", -$pid; waitpid($pid, 0); exit 142; };
+             alarm $limit; waitpid($pid, 0); exit($? >> 8);' "$TIME_LIMIT" "$@"
 }
 
 if [ ! -f "$BUILD_DIR/compile_commands.json" ]; then
@@ -73,6 +76,7 @@ check_tool_run() {
 
 echo "== clang-tidy ($FILE_COUNT files)"
 printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLANG_TIDY" -p "$BUILD_DIR" --quiet \
+    --header-filter="$PROJECT_DIR/(src|tests)/.*" \
     --extra-arg=-isysroot"$SDK_PATH" > "$LOG_DIR/tidy.log" 2>&1
 check_tool_run clang-tidy $? "$LOG_DIR/tidy.log"
 grep -E 'warning:|error:' "$LOG_DIR/tidy.log" | grep -v 'Error while processing' | sort -u > "$LOG_DIR/tidy.findings"
@@ -84,7 +88,7 @@ fi
 echo "== clazy ($FILE_COUNT files)"
 printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLAZY" -p "$BUILD_DIR" -checks="$CLAZY_CHECKS" \
     --extra-arg=-isysroot"$SDK_PATH" --extra-arg=-Wno-unknown-warning-option \
-    --header-filter='.*/QtCraft/(src|tests)/.*' > "$LOG_DIR/clazy.log" 2>&1
+    --header-filter="$PROJECT_DIR/(src|tests)/.*" > "$LOG_DIR/clazy.log" 2>&1
 check_tool_run clazy $? "$LOG_DIR/clazy.log"
 grep -E 'warning:|error:' "$LOG_DIR/clazy.log" | grep -v '/build/' | sort -u > "$LOG_DIR/clazy.findings"
 if [ -s "$LOG_DIR/clazy.findings" ]; then

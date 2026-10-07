@@ -1,0 +1,8 @@
+{
+    "name": "grass_top",
+    "pattern": "speckle",
+    "primary": "#5ca040",
+    "secondary": "#4a8a34",
+    "variation": 0.12,
+    "seed": 5
+}

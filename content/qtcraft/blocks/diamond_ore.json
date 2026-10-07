@@ -1,0 +1,14 @@
+{
+    "name": "diamond_ore",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "drops": [
+        {
+            "item": "diamond"
+        }
+    ],
+    "textures": {
+        "all": "diamond_ore"
+    }
+}

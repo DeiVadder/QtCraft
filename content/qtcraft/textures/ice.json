@@ -1,0 +1,8 @@
+{
+    "name": "ice",
+    "pattern": "glass",
+    "primary": "#9ec4f2",
+    "secondary": "#b8d6f8",
+    "variation": 0.05,
+    "seed": 13
+}

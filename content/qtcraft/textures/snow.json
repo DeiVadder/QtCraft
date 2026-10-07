@@ -1,0 +1,8 @@
+{
+    "name": "snow",
+    "pattern": "speckle",
+    "primary": "#f2f6f8",
+    "secondary": "#dde6ea",
+    "variation": 0.04,
+    "seed": 12
+}

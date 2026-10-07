@@ -1,0 +1,8 @@
+{
+    "name": "sand",
+    "pattern": "speckle",
+    "primary": "#dccf9c",
+    "secondary": "#cbbd88",
+    "variation": 0.06,
+    "seed": 7
+}

@@ -1,0 +1,11 @@
+{
+    "name": "sandstone",
+    "hardness": 0.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "top": "sandstone_top",
+        "bottom": "sandstone_top",
+        "side": "sandstone"
+    }
+}
