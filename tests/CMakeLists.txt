@@ -1,0 +1,3 @@
+qc_add_test(test_coordinates SOURCES test_coordinates.cpp LIBRARIES qc_common)
+qc_add_test(test_texture_synthesizer SOURCES test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_camera SOURCES test_camera.cpp LIBRARIES qc_clientcore)

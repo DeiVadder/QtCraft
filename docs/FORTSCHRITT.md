@@ -4,9 +4,9 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 1 – Gerüst und Spike
-- **Branch:** `feature/01-scaffold-spike`
-- **Nächster Schritt:** CMake-Gerüst (Common/Server/Client/Tests), Render-Spike mit `QQuickRhiItem`.
+- **Aktuelle Etappe:** 2 – Durchstich Client/Server
+- **Branch:** `feature/02-client-server`
+- **Nächster Schritt:** Protokoll, In-Process-Transport, Server mit Testwelt, Client-Session, Mesher, Steuerschnittstelle.
 - **Offene Befunde:** keine
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
@@ -21,8 +21,8 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | # | Etappe | Status | Datum | Notiz |
 |---|--------|--------|-------|-------|
 | 0 | Repo-Grundgerüst | erledigt | 2026-10-07 | `.gitignore`, Doku-Skelett |
-| 1 | Gerüst und Spike | in Arbeit | | |
-| 2 | Durchstich Client/Server | offen | | |
+| 1 | Gerüst und Spike | erledigt | 2026-10-07 | QRhi-Renderer gewählt, Verifikation PASS |
+| 2 | Durchstich Client/Server | in Arbeit | | |
 | 3 | Weltgenerierung | offen | | |
 | 4 | Interaktion und Persistenz | offen | | |
 | 5 | Gegner und Gesundheit | offen | | |
@@ -32,4 +32,4 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Bekannte Mängel
 
-- noch keine
+- Spike-Szene (`QcSpikeScene`) erzeugt alle Würfelflächen, auch zwischen Wasserblöcken; sichtbar als Sägezahnmuster im Wasser. Wird mit dem echten Mesher (Etappe 2) ersetzt, der Flächen zwischen gleichartigen transluzenten Blöcken auslässt.

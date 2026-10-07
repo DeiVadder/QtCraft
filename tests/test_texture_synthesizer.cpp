@@ -1,0 +1,75 @@
+#include "QcTextureSynthesizer.h"
+
+#include <QTest>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+
+int transparentPixels(const QImage &image)
+{
+    int count = 0;
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            count += image.pixelColor(x, y).alpha() == 0;
+        }
+    }
+    return count;
+}
+
+} // namespace
+
+class TestTextureSynthesizer : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void sameSpecProducesIdenticalImage()
+    {
+        const QcTextureSpec spec{QcTextureSpec::Pattern::Ore, QColor(120, 120, 120), QColor(200, 150, 40), 0.1, 42};
+        QCOMPARE(QcTextureSynthesizer::synthesize(spec), QcTextureSynthesizer::synthesize(spec));
+    }
+
+    void differentSeedChangesNoise()
+    {
+        QcTextureSpec spec{QcTextureSpec::Pattern::Noise, QColor(120, 120, 120), QColor(), 0.2, 1};
+        const QImage first = QcTextureSynthesizer::synthesize(spec);
+        spec.seed = 2;
+        QVERIFY(first != QcTextureSynthesizer::synthesize(spec));
+    }
+
+    void tileHasFixedSize()
+    {
+        const QImage image = QcTextureSynthesizer::synthesize({});
+        QCOMPARE(image.size(), QSize(16, 16));
+    }
+
+    void solidPatternsAreOpaqueAndLeavesHaveHoles()
+    {
+        const QcTextureSpec stone{QcTextureSpec::Pattern::Speckle, QColor(125, 125, 125), QColor(100, 100, 100), 0.1, 3};
+        QCOMPARE(transparentPixels(QcTextureSynthesizer::synthesize(stone)), 0);
+
+        const QcTextureSpec leaves{QcTextureSpec::Pattern::Leaves, QColor(60, 130, 50), QColor(40, 100, 40), 0.1, 3};
+        const int holes = transparentPixels(QcTextureSynthesizer::synthesize(leaves));
+        // Roughly one in six pixels is cut out; accept a wide band around 256 / 6.
+        QVERIFY2(holes > 15 && holes < 90, qPrintable(QString::number(holes)));
+    }
+
+    void glassIsMostlyTranslucent()
+    {
+        const QcTextureSpec glass{QcTextureSpec::Pattern::Glass, QColor(200, 230, 240), QColor(220, 240, 250), 0.05, 1};
+        const QImage image = QcTextureSynthesizer::synthesize(glass);
+        QCOMPARE(image.pixelColor(0, 0).alpha(), 255);
+        QVERIFY(image.pixelColor(12, 4).alpha() < 128);
+    }
+
+    void patternNamesResolve()
+    {
+        QCOMPARE(qcTexturePatternFromName(u"planks"_s), QcTextureSpec::Pattern::Planks);
+        QCOMPARE(qcTexturePatternFromName(u"log_top"_s), QcTextureSpec::Pattern::LogTop);
+        QVERIFY(!qcTexturePatternFromName(u"no_such_pattern"_s).has_value());
+    }
+};
+
+QTEST_GUILESS_MAIN(TestTextureSynthesizer)
+#include "test_texture_synthesizer.moc"

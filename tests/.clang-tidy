@@ -1,0 +1,3 @@
+# QFETCH declares mutable locals and QTest classes must stay visible to moc.
+InheritParentConfig: true
+Checks: '-misc-const-correctness,-misc-use-internal-linkage'
