@@ -1,0 +1,18 @@
+# Build output
+/build*/
+/out/
+CMakeLists.txt.user*
+CMakeUserPresets.json
+compile_commands.json
+
+# IDE / OS
+.qtcreator/
+.idea/
+.vscode/
+.cache/
+.DS_Store
+._*
+*.swp
+
+# Local agent config
+.claude/
