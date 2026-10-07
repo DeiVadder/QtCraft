@@ -21,14 +21,15 @@ The client code never includes server headers except in the two composition root
 |--------|------|
 | GUI | QML, `QcGameController`, `QcClientSession` (20 Hz tick timer), mesh scheduling decisions |
 | Render (Qt Quick) | `QcWorldRenderer` |
-| Server | `QcServer` (20 Hz tick timer), world generation |
+| Server | `QcServer` (20 Hz tick timer) |
+| Generation workers | `QcTerrainGenerator::generate` (`QcWorkerPool` in `QcServerWorld`) |
 | Mesh workers | `QcChunkMesher` on immutable chunk snapshots (`QcWorkerPool`) |
 
 Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk>`, encoded frames) through `std::mutex`-guarded mailboxes; Qt queued calls only wake the receiver (see decision E-010).
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 1).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 3). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -48,7 +49,13 @@ A network transport only has to implement `QcTransport` (whole frames in both di
 
 Content packs are directories with `pack.json` (`id`, `name`, `version`, `dependencies`) and the folders `blocks/`, `textures/`, `lang/`. Names are `namespace:path`; unqualified names get the pack id as namespace. Block JSON fields: `name`, `translation`, `render` (`opaque`, `cutout`, `translucent`, `invisible`), `solid`, `opaque`, `liquid`, `replaceable`, `lightOpacity` (0–15), `hardness` (seconds by hand, negative = unbreakable), `tool`, `toolLevel`, `drops` (`[{item, count}]`), `textures` (`all`, `side`, `top`, `bottom`, or per face `east`/`west`/`south`/`north`). Procedural textures: `name`, `pattern` (`noise`, `speckle`, `planks`, `bricks`, `log_side`, `log_top`, `leaves`, `glass`, `grass_side`, `ore`, `water`, `tool`, `lump`), `primary`, `secondary` (`#RRGGBB[AA]`), `variation`, `seed`; PNG files in `textures/` are used as they are. `lang/<locale>.json` maps translation keys to text.
 
+World generation data (server only, not sent to clients): `biomes/*.json` (`name`, `temperature`, `humidity` in 0..1, `baseHeight`, `heightVariation`, `surface`, `subsurface`, `subsurfaceDepth`, `underwater`, `beach`, `frozenWater`, `snowLine`, `snow`, `features: [{feature, density}]`), `features/*.json` (`type` `tree`/`column`, `trunk`, `leaves`, `minHeight`, `maxHeight`, `shape` `round`/`cone`, `ground`), `ores/*.json` (`block`, `replaces`, `minY`, `maxY`, `veinsPerChunk`, `veinSize`), `worldgen/terrain.json` (`seaLevel`, `stone`, `water`, `bedrock`, `caves`, `caveTunnelWidth`, `caveCavernThreshold`). A later pack replaces entries with the same name.
+
 Runtime block ids are assigned in registration order and never stored; persistent data uses names (*planned:* save format).
+
+## World generation
+
+`QcTerrainGenerator` (decision E-014) is deterministic per seed and thread-safe. The server generates chunks on a `QcWorkerPool` (`QcServerWorld::requestChunk`), nearest first with a bounded queue, and collects finished chunks every tick; chunks no player needs are unloaded. Sky light is computed client-side while meshing (decision E-015).
 
 ## Rendering
 
@@ -65,5 +72,7 @@ Runtime block ids are assigned in registration order and never stored; persisten
 | `--play`, `--world <name>`, `--seed <seed>` | Start a single-player world immediately |
 | `--look <yaw,pitch>` | Initial view direction (for reproducible screenshots) |
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
+| `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
+| `qtcraft-headless --map <png> [--map-radius <blocks>]` | Top-down terrain map of a seed |
 
 All own targets are compiled with `-Wall -Wextra -Wpedantic -Werror -fno-exceptions` (MSVC: `/W4 /WX /EHs-c-`) through the `qc_project_options` interface target. Qt headers are system includes.

@@ -1,0 +1,17 @@
+{
+    "name": "swamp",
+    "temperature": 0.7,
+    "humidity": 0.9,
+    "baseHeight": 63,
+    "heightVariation": 2,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "clay",
+    "beach": "grass_block",
+    "features": [
+        {
+            "feature": "oak_tree",
+            "density": 0.006
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "name": "forest",
+    "temperature": 0.5,
+    "humidity": 0.7,
+    "baseHeight": 69,
+    "heightVariation": 9,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "dirt",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "oak_tree",
+            "density": 0.012
+        },
+        {
+            "feature": "birch_tree",
+            "density": 0.005
+        }
+    ]
+}

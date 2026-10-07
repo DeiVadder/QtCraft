@@ -1,9 +1,39 @@
 #include "QcServerWorld.h"
 
+#include <QThread>
+
+#include <algorithm>
+
 QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator)
     : m_content(std::move(content))
     , m_generator(std::move(generator))
+    // Leave cores for the GUI, render, server and meshing threads.
+    , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
 {
+}
+
+void QcServerWorld::requestChunk(QcChunkPos pos)
+{
+    if (m_chunks.contains(pos) || m_pending.contains(pos)) {
+        return;
+    }
+    m_pending.insert(pos);
+    m_generationPool.submit([this, pos] { m_generated.push(m_generator->generate(pos)); });
+}
+
+QList<QcChunkPos> QcServerWorld::collectGeneratedChunks()
+{
+    QList<QcChunkPos> collected;
+    for (const std::shared_ptr<QcChunk> &chunk : m_generated.takeAll()) {
+        const QcChunkPos pos = chunk->pos();
+        m_pending.remove(pos);
+        // A synchronous load may have won the race; the first chunk stays authoritative.
+        if (!m_chunks.contains(pos)) {
+            m_chunks.insert(pos, chunk);
+            collected.append(pos);
+        }
+    }
+    return collected;
 }
 
 std::optional<QcBlockId> QcServerWorld::blockAt(QcBlockPos pos) const

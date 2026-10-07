@@ -1,0 +1,9 @@
+{
+    "name": "diamond",
+    "replaces": "stone",
+    "block": "diamond_ore",
+    "minY": 2,
+    "maxY": 16,
+    "veinsPerChunk": 1,
+    "veinSize": 5
+}

@@ -5,6 +5,8 @@
 
 #include <QJsonDocument>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -112,6 +114,36 @@ void QcContentRegistry::addTranslations(const QString &language, const QHash<QSt
     for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
         table.insert(it.key(), it.value());
     }
+}
+
+namespace {
+
+template<typename Definition>
+void registerByName(QList<Definition> &list, Definition definition)
+{
+    const auto existing = std::ranges::find(list, definition.name, &Definition::name);
+    if (existing != list.end()) {
+        *existing = std::move(definition);
+    } else {
+        list.append(std::move(definition));
+    }
+}
+
+} // namespace
+
+void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
+{
+    registerByName(m_biomes, std::move(definition));
+}
+
+void QcContentRegistry::registerFeature(QcFeatureDefinition definition)
+{
+    registerByName(m_features, std::move(definition));
+}
+
+void QcContentRegistry::registerOre(QcOreDefinition definition)
+{
+    registerByName(m_ores, std::move(definition));
 }
 
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const

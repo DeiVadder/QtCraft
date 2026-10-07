@@ -1,0 +1,19 @@
+{
+    "name": "mountains",
+    "temperature": 0.35,
+    "humidity": 0.35,
+    "baseHeight": 92,
+    "heightVariation": 38,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "gravel",
+    "beach": "gravel",
+    "snowLine": 110,
+    "snow": "snow_block",
+    "features": [
+        {
+            "feature": "spruce_tree",
+            "density": 0.004
+        }
+    ]
+}

@@ -21,6 +21,8 @@ Q_LOGGING_CATEGORY(lcServer, "qtcraft.server")
 // Inputs a client may queue beyond one per tick before further inputs are dropped (anti speed-hack).
 constexpr int maxInputBudget = 10;
 constexpr int tickIntervalMs = int(QcPhysics::tickDuration * 1000.0);
+// Bounded so that turning around re-prioritises quickly instead of finishing a long old queue.
+constexpr qsizetype maxPendingGeneration = 48;
 
 QcChunkPos chunkOf(const QcVec3 &position)
 {
@@ -121,7 +123,13 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     client.state = Client::State::Playing;
     client.entityId = m_nextEntityId++;
     client.name = hello.playerName.left(32);
-    const QcBlockPos spawn = m_world.generator().spawnPoint();
+    QcBlockPos spawn = m_world.generator().spawnPoint();
+    if (m_config.spawnColumn) {
+        spawn = {(*m_config.spawnColumn)[0], 0, (*m_config.spawnColumn)[1]};
+    }
+    // Stand on whatever the generated column really contains (caves, trees, water surface).
+    const std::shared_ptr<const QcChunk> spawnChunk = m_world.loadChunk(spawn.chunk());
+    spawn.y = spawnChunk->highestNonAir(spawn.localX(), spawn.localZ()) + 1;
     client.motion.position = {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
     client.stateDirty = true;
     qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
@@ -178,10 +186,18 @@ void QcServer::streamChunks(Client &client)
         };
         return distance(a) < distance(b);
     });
-    const qsizetype count = std::min<qsizetype>(missing.size(), m_config.chunksPerTick);
-    for (qsizetype i = 0; i < count; ++i) {
-        client.connection->send(QcMsg::ChunkData{m_world.loadChunk(missing[i])});
-        client.sentChunks.insert(missing[i]);
+    int sent = 0;
+    for (const QcChunkPos &pos : std::as_const(missing)) {
+        if (const std::shared_ptr<const QcChunk> chunk = m_world.chunk(pos)) {
+            if (sent < m_config.chunksPerTick) {
+                client.connection->send(QcMsg::ChunkData{chunk});
+                client.sentChunks.insert(pos);
+                ++sent;
+            }
+        } else if (m_world.pendingGenerationCount() < maxPendingGeneration) {
+            // Nearest first: the list is sorted by distance and the pool works in FIFO order.
+            m_world.requestChunk(pos);
+        }
     }
 }
 
@@ -189,6 +205,7 @@ void QcServer::tick()
 {
     ++m_tickCount;
     removeClosedClients();
+    m_world.collectGeneratedChunks();
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing) {
             continue;
@@ -202,9 +219,16 @@ void QcServer::tick()
     }
 
     // Drop chunks no player needs any more.
+    // Keep everything within streaming range of a player, sent or not yet sent.
     QSet<QcChunkPos> needed;
     for (const auto &client : m_clients) {
         needed.unite(client->sentChunks);
+        const QcChunkPos centre = chunkOf(client->motion.position);
+        for (int dx = -m_config.viewDistance; dx <= m_config.viewDistance; ++dx) {
+            for (int dz = -m_config.viewDistance; dz <= m_config.viewDistance; ++dz) {
+                needed.insert({centre.x + dx, centre.z + dz});
+            }
+        }
     }
     const QList<QcChunkPos> loaded = m_world.loadedChunks();
     for (const QcChunkPos &pos : loaded) {

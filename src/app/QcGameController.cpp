@@ -7,7 +7,7 @@
 #include "QcMeshScheduler.h"
 #include "QcPhysics.h"
 #include "QcScreenshotHook.h"
-#include "QcTestTerrainGenerator.h"
+#include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldView.h"
@@ -170,7 +170,13 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
     config.seed = seedFromText(seedText);
     // One extra ring: sections are meshed only once their neighbours are known.
     config.viewDistance = m_viewDistance + 1;
-    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::make_unique<QcTestTerrainGenerator>(shared));
+    config.spawnColumn = m_spawnColumn;
+    QStringList generatorWarnings;
+    auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
+    for (const QString &warning : std::as_const(generatorWarnings)) {
+        qCWarning(lcGame) << "World generation:" << warning;
+    }
+    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::move(generator));
 
     m_session = new QcClientSession(m_server->connectClient(), u"Player"_s, this);
     m_meshes = new QcMeshScheduler(this);

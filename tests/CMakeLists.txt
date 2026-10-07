@@ -25,3 +25,11 @@ target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TA
 add_dependencies(test_headless_cli qtcraft-headless)
 qc_add_test(test_reconciliation SOURCES test_reconciliation.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_mesh_scheduler SOURCES test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
+add_test(NAME scenario_headless_failure_then_quit
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft-headless>;--script;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/failure-then-quit.jsonl;--time-limit;60"
+        -DEXPECTED_EXIT_CODE=1
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90)
+qc_add_test(test_noise SOURCES test_noise.cpp LIBRARIES qc_server)
+qc_add_test(test_terrain_generator SOURCES test_terrain_generator.cpp LIBRARIES qc_server TIMEOUT 300)

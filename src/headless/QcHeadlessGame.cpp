@@ -4,8 +4,9 @@
 #include "QcClientSession.h"
 #include "QcControlInterface.h"
 #include "QcLocalServerHost.h"
+#include "QcMapRenderer.h"
 #include "QcStdinReader.h"
-#include "QcTestTerrainGenerator.h"
+#include "QcTerrainGenerator.h"
 #include "QcTransport.h"
 
 #include <QCommandLineParser>
@@ -56,7 +57,9 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     const QCommandLineOption scriptOption(u"script"_s, u"Run JSON-lines commands from a file, then exit."_s, u"file"_s);
     const QCommandLineOption timeOption(u"time-limit"_s, u"Exit with failure after this many seconds."_s, u"seconds"_s,
                                         QString::number(defaultTimeLimitSeconds));
-    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption});
+    const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
+    const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
+    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption});
     if (!parser.parse(arguments)) {
         printError(parser.errorText());
         return false;
@@ -90,7 +93,22 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return false;
     }
     const std::shared_ptr<const QcContentRegistry> shared = std::move(*content);
-    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::make_unique<QcTestTerrainGenerator>(shared));
+    QStringList generatorWarnings;
+    auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
+    for (const QString &warning : std::as_const(generatorWarnings)) {
+        printError(u"world generation warning: "_s + warning);
+    }
+    if (parser.isSet(mapOption)) {
+        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 64, 8192);
+        const QImage map = QcMapRenderer::render(*generator, *shared, 0, 0, radius, std::max(1, radius / 512));
+        const bool saved = map.save(parser.value(mapOption));
+        if (!saved) {
+            printError(u"Cannot write map"_s);
+        }
+        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
+        return true;
+    }
+    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::move(generator));
 
     m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s);
     m_output = new QFile(this);
@@ -101,12 +119,17 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     m_control = new QcControlInterface(m_session, nullptr, m_output);
-    connect(m_control, &QcControlInterface::quitRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    m_scriptMode = parser.isSet(scriptOption);
+    // A script's exit code reports whether every request succeeded, also when it ends with quit.
+    if (m_scriptMode) {
+        connect(m_control, &QcControlInterface::quitRequested, this, &QcHeadlessGame::finishScript, Qt::QueuedConnection);
+    } else {
+        connect(m_control, &QcControlInterface::quitRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    }
     connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);
     });
 
-    m_scriptMode = parser.isSet(scriptOption);
     if (m_scriptMode) {
         QFile script(parser.value(scriptOption));
         if (!script.open(QIODevice::ReadOnly | QIODevice::Text)) {

@@ -1,0 +1,9 @@
+{
+    "name": "clay_pocket",
+    "replaces": "stone",
+    "block": "clay",
+    "minY": 40,
+    "maxY": 70,
+    "veinsPerChunk": 2,
+    "veinSize": 12
+}

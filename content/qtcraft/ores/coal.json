@@ -1,0 +1,9 @@
+{
+    "name": "coal",
+    "replaces": "stone",
+    "block": "coal_ore",
+    "minY": 5,
+    "maxY": 128,
+    "veinsPerChunk": 18,
+    "veinSize": 10
+}

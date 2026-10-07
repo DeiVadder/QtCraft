@@ -47,6 +47,26 @@ QStringList filesIn(const QString &directory, const QString &filter)
     return files;
 }
 
+template<typename Parser, typename Register>
+void loadDefinitions(const QString &directory, const QString &packNamespace, QStringList &warnings, Parser parse,
+                     Register registerDefinition)
+{
+    const QStringList files = filesIn(directory, u"*.json"_s);
+    for (const QString &path : files) {
+        const QcResult<QJsonObject> json = readJsonObject(path);
+        if (!json) {
+            warnings.append(json.error());
+            continue;
+        }
+        auto definition = parse(*json, packNamespace);
+        if (!definition) {
+            warnings.append(u"%1: %2"_s.arg(path, definition.error()));
+            continue;
+        }
+        registerDefinition(std::move(*definition));
+    }
+}
+
 } // namespace
 
 QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &directory)
@@ -131,6 +151,24 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
         const QcResult<QcBlockId> id = registry.registerBlock(std::move(*block));
         if (!id) {
             warnings.append(u"%1: %2"_s.arg(path, id.error()));
+        }
+    }
+
+    loadDefinitions(root.filePath(u"biomes"_s), info->id, warnings, QcContentParser::parseBiome,
+                    [&registry](QcBiomeDefinition biome) { registry.registerBiome(std::move(biome)); });
+    loadDefinitions(root.filePath(u"features"_s), info->id, warnings, QcContentParser::parseFeature,
+                    [&registry](QcFeatureDefinition feature) { registry.registerFeature(std::move(feature)); });
+    loadDefinitions(root.filePath(u"ores"_s), info->id, warnings, QcContentParser::parseOre,
+                    [&registry](QcOreDefinition ore) { registry.registerOre(std::move(ore)); });
+    const QString terrainPath = root.filePath(u"worldgen/terrain.json"_s);
+    if (QFile::exists(terrainPath)) {
+        const QcResult<QJsonObject> json = readJsonObject(terrainPath);
+        const QcResult<QcTerrainSettings> terrain =
+            json ? QcContentParser::parseTerrainSettings(*json, info->id) : QcResult<QcTerrainSettings>(qcError(json.error()));
+        if (terrain) {
+            registry.setTerrainSettings(*terrain);
+        } else {
+            warnings.append(u"%1: %2"_s.arg(terrainPath, terrain.error()));
         }
     }
 

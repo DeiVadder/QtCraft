@@ -127,10 +127,12 @@ private slots:
         QVERIFY(!QcProtocol::decode(hello.left(hello.size() - 3), QcProtocol::Peer::Client).has_value());
         QVERIFY(!QcProtocol::decode(hello + QByteArray(1, 'x'), QcProtocol::Peer::Client).has_value());
 
+        // A truncated chunk and a palette size of zero (byte 13 is the low byte of section 0's size).
         const QByteArray chunkFrame = QcProtocol::encode(QcMsg::ChunkData{std::make_shared<QcChunk>()});
-        QByteArray corrupt = chunkFrame;
-        corrupt[corrupt.size() - 1] = char(corrupt.at(corrupt.size() - 1) ^ 0x5A);
-        QVERIFY(!QcProtocol::decode(corrupt, QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(chunkFrame.left(chunkFrame.size() - 1), QcProtocol::Peer::Server).has_value());
+        QByteArray zeroPalette = chunkFrame;
+        zeroPalette[13] = 0;
+        QVERIFY(!QcProtocol::decode(zeroPalette, QcProtocol::Peer::Server).has_value());
     }
 
     void messagesAreOnlyAcceptedFromTheirSender()
@@ -146,34 +148,51 @@ private slots:
         QVERIFY(QcProtocol::decode(bye, QcProtocol::Peer::Server).has_value());
     }
 
-    void rejectsDecompressionBombs()
+    void runLengthDataCannotOverflowASection()
     {
-        // 64 MB of zeros compress to a few kB; the announced size exceeds any real chunk.
-        const QByteArray bomb = qCompress(QByteArray(qsizetype(64) * 1024 * 1024, '\0'), 9);
-        QVERIFY(bomb.size() < qsizetype(1024) * 1024);
-        QByteArray payload;
-        QDataStream stream(&payload, QIODevice::WriteOnly);
-        stream << bomb;
-        const QByteArray frame = frameWithTag(quint16(QcMessage(QcMsg::ChunkData{}).index()), payload);
-        const auto decoded = QcProtocol::decode(frame, QcProtocol::Peer::Server);
-        QVERIFY(!decoded.has_value());
-        QVERIFY(decoded.error().contains(u"implausible"_s));
+        // Two runs of 4000 blocks claim 8000 entries in a section of 4096.
+        QByteArray raw;
+        {
+            QDataStream stream(&raw, QIODevice::WriteOnly);
+            stream.setVersion(QDataStream::Qt_6_8);
+            stream << qint32(0) << qint32(0);
+            stream << quint32(2) << QcBlockId(0) << QcBlockId(1);
+            stream << quint32(2) << quint16(4000) << quint16(0) << quint16(4000) << quint16(1);
+        }
+        QDataStream in(raw);
+        in.setVersion(QDataStream::Qt_6_8);
+        QVERIFY(!QcProtocol::readChunk(in).has_value());
     }
 
-    void rejectsTrailingBytesInsideCompressedChunk()
+    void runLengthDataMustFillTheSection()
     {
         QByteArray raw;
         {
             QDataStream stream(&raw, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            QcProtocol::writeChunk(stream, QcChunk());
-            stream << quint32(0xDEADBEEF);
+            stream << qint32(0) << qint32(0);
+            stream << quint32(2) << QcBlockId(0) << QcBlockId(1);
+            stream << quint32(1) << quint16(100) << quint16(1);
         }
-        QByteArray payload;
-        QDataStream stream(&payload, QIODevice::WriteOnly);
-        stream << qCompress(raw);
-        const QByteArray frame = frameWithTag(quint16(QcMessage(QcMsg::ChunkData{}).index()), payload);
-        QVERIFY(!QcProtocol::decode(frame, QcProtocol::Peer::Server).has_value());
+        QDataStream in(raw);
+        in.setVersion(QDataStream::Qt_6_8);
+        QVERIFY(!QcProtocol::readChunk(in).has_value());
+    }
+
+    void terrainChunksEncodeCompactly()
+    {
+        // 64 layers of alternating stone and dirt: 4 sections with long runs, 12 empty sections.
+        auto chunk = std::make_shared<QcChunk>();
+        for (int y = 0; y < 64; ++y) {
+            for (int x = 0; x < 16; ++x) {
+                for (int z = 0; z < 16; ++z) {
+                    chunk->setBlock(x, y, z, QcBlockId(1 + y % 2));
+                }
+            }
+        }
+        const QByteArray frame = QcProtocol::encode(QcMsg::ChunkData{chunk});
+        // Each section: palette (4 + 3 * 4 bytes) + 16 runs of 256 (4 + 16 * 4 bytes). Raw indices would be 8 kB.
+        QVERIFY2(frame.size() < 1000, qPrintable(QString::number(frame.size())));
     }
 
     void rejectsNonFiniteMovement()

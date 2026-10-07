@@ -29,10 +29,24 @@ void writeSection(QDataStream &stream, const QcChunkSection &section)
     for (const QcBlockId id : section.palette()) {
         stream << id;
     }
-    if (!section.isUniform()) {
-        for (const quint16 index : section.indices()) {
-            stream << index;
+    if (section.isUniform()) {
+        return;
+    }
+    // Run-length encoded palette indices: terrain sections consist mostly of long runs. Decoding
+    // is bounded by the section size, unlike a general-purpose decompressor.
+    const QList<quint16> &indices = section.indices();
+    QList<std::pair<quint16, quint16>> runs;
+    for (qsizetype i = 0; i < indices.size();) {
+        qsizetype end = i + 1;
+        while (end < indices.size() && indices[end] == indices[i] && end - i < 0xFFFF) {
+            ++end;
         }
+        runs.append({quint16(end - i), indices[i]});
+        i = end;
+    }
+    stream << quint32(runs.size());
+    for (const auto &[length, index] : std::as_const(runs)) {
+        stream << length << index;
     }
 }
 
@@ -48,9 +62,20 @@ bool readSection(QDataStream &stream, QcChunkSection &section)
     }
     QList<quint16> indices;
     if (paletteSize > 1) {
-        indices.resize(QcWorld::blocksPerSection);
-        for (quint16 &index : indices) {
-            stream >> index;
+        quint32 runCount = 0;
+        if (!QcStreamLimits::readCount(stream, QcWorld::blocksPerSection, runCount)) {
+            return false;
+        }
+        indices.reserve(QcWorld::blocksPerSection);
+        for (quint32 run = 0; run < runCount; ++run) {
+            quint16 length = 0;
+            quint16 index = 0;
+            stream >> length >> index;
+            if (stream.status() != QDataStream::Ok || length == 0
+                || indices.size() + length > QcWorld::blocksPerSection) {
+                return false;
+            }
+            indices.insert(indices.size(), length, index);
         }
     }
     return stream.status() == QDataStream::Ok && section.assign(std::move(palette), std::move(indices));
@@ -70,11 +95,7 @@ struct Encoder
     void operator()(const QcMsg::ChunkData &m)
     {
         Q_ASSERT(m.chunk);
-        QByteArray raw;
-        QDataStream rawStream(&raw, QIODevice::WriteOnly);
-        rawStream.setVersion(streamVersion);
-        QcProtocol::writeChunk(rawStream, *m.chunk);
-        stream << qCompress(raw, 1);
+        QcProtocol::writeChunk(stream, *m.chunk);
     }
     void operator()(QcMsg::ChunkUnload m) { stream << qint32(m.pos.x) << qint32(m.pos.z); }
     void operator()(QcMsg::BlockUpdate m) { stream << qint32(m.pos.x) << qint32(m.pos.y) << qint32(m.pos.z) << m.block; }
@@ -122,30 +143,9 @@ QcResult<QcMessage> decodePayload<QcMsg::ContentSync>(QDataStream &stream)
 template<>
 QcResult<QcMessage> decodePayload<QcMsg::ChunkData>(QDataStream &stream)
 {
-    QByteArray compressed;
-    stream >> compressed;
-    // qCompress prefixes the uncompressed size (big endian); refuse anything a chunk cannot need
-    // before allocating it, so tiny frames cannot trigger huge decompressions.
-    if (compressed.size() < 4) {
-        return qcError(u"Corrupt chunk data: too short"_s);
-    }
-    const quint32 announced = (quint32(quint8(compressed[0])) << 24) | (quint32(quint8(compressed[1])) << 16)
-                              | (quint32(quint8(compressed[2])) << 8) | quint32(quint8(compressed[3]));
-    if (announced == 0 || qsizetype(announced) > QcProtocol::maxRawChunkBytes) {
-        return qcError(u"Corrupt chunk data: implausible size %1"_s.arg(announced));
-    }
-    const QByteArray raw = qUncompress(compressed);
-    if (raw.isEmpty() || raw.size() != qsizetype(announced)) {
-        return qcError(u"Corrupt chunk data: decompression failed"_s);
-    }
-    QDataStream rawStream(raw);
-    rawStream.setVersion(streamVersion);
-    QcResult<std::shared_ptr<QcChunk>> chunk = QcProtocol::readChunk(rawStream);
+    QcResult<std::shared_ptr<QcChunk>> chunk = QcProtocol::readChunk(stream);
     if (!chunk) {
         return qcError(chunk.error());
-    }
-    if (!rawStream.atEnd()) {
-        return qcError(u"Corrupt chunk data: trailing bytes"_s);
     }
     return QcMsg::ChunkData{std::move(*chunk)};
 }

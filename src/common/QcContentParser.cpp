@@ -1,6 +1,7 @@
 #include "QcContentParser.h"
 
 #include "QcContentNames.h"
+#include "QcWorldConstants.h"
 
 #include <QJsonArray>
 
@@ -224,6 +225,147 @@ QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
         entries.insert(it.key(), it.value().toString());
     }
     return entries;
+}
+
+QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"biome"_s, {}};
+    QcBiomeDefinition biome;
+    biome.name = reader.name(u"name"_s, packNamespace);
+    if (biome.name.isEmpty()) {
+        return qcError(reader.ok() ? u"biome: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"biome '%1'"_s.arg(biome.name);
+    biome.translationKey = reader.string(
+        u"translation"_s, u"biome.%1.%2"_s.arg(biome.name.left(biome.name.indexOf(u':')), localPart(biome.name)));
+    biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
+    biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
+    biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
+    biome.heightVariation = reader.number(u"heightVariation"_s, 6.0, 0.0, 120.0);
+    biome.surfaceBlock = reader.name(u"surface"_s, packNamespace);
+    biome.subsurfaceBlock = reader.name(u"subsurface"_s, packNamespace, biome.surfaceBlock);
+    biome.subsurfaceDepth = reader.integer(u"subsurfaceDepth"_s, 3, 0, 16);
+    biome.underwaterBlock = reader.name(u"underwater"_s, packNamespace, biome.subsurfaceBlock);
+    biome.beachBlock = reader.name(u"beach"_s, packNamespace, biome.surfaceBlock);
+    biome.frozenWaterBlock = reader.name(u"frozenWater"_s, packNamespace);
+    biome.snowLine = reader.integer(u"snowLine"_s, 0, 0, QcWorld::worldHeight);
+    biome.snowBlock = reader.name(u"snow"_s, packNamespace);
+    if (biome.surfaceBlock.isEmpty()) {
+        reader.fail(u"'surface' is required"_s);
+    }
+    if (biome.snowLine > 0 && biome.snowBlock.isEmpty()) {
+        reader.fail(u"'snowLine' needs a 'snow' block"_s);
+    }
+    const QJsonValue features = json.value(u"features"_s);
+    if (!features.isUndefined() && !features.isArray()) {
+        reader.fail(u"'features' must be an array"_s);
+    }
+    const QJsonArray featureList = features.toArray();
+    for (const auto &entry : featureList) {
+        const QJsonObject placementJson = entry.toObject();
+        FieldReader placementReader{placementJson, reader.context, {}};
+        const QcFeaturePlacement placement{placementReader.name(u"feature"_s, packNamespace),
+                                           placementReader.number(u"density"_s, 0.0, 0.0, 1.0)};
+        if (!entry.isObject() || placement.feature.isEmpty() || !placementReader.ok()) {
+            reader.fail(placementReader.ok() ? u"feature entries need 'feature' and 'density'"_s : placementReader.error);
+            break;
+        }
+        biome.features.append(placement);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return biome;
+}
+
+QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"feature"_s, {}};
+    QcFeatureDefinition feature;
+    feature.name = reader.name(u"name"_s, packNamespace);
+    if (feature.name.isEmpty()) {
+        return qcError(reader.ok() ? u"feature: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"feature '%1'"_s.arg(feature.name);
+    const QString type = reader.string(u"type"_s, u"tree"_s);
+    if (type == u"tree"_s) {
+        feature.type = QcFeatureDefinition::Type::Tree;
+    } else if (type == u"column"_s) {
+        feature.type = QcFeatureDefinition::Type::Column;
+    } else {
+        reader.fail(u"'type' must be tree or column"_s);
+    }
+    feature.trunkBlock = reader.name(u"trunk"_s, packNamespace);
+    feature.leavesBlock = reader.name(u"leaves"_s, packNamespace);
+    feature.minHeight = reader.integer(u"minHeight"_s, 4, 1, 32);
+    feature.maxHeight = reader.integer(u"maxHeight"_s, feature.minHeight, feature.minHeight, 32);
+    feature.shape = reader.string(u"shape"_s, u"round"_s);
+    if (feature.shape != u"round"_s && feature.shape != u"cone"_s) {
+        reader.fail(u"'shape' must be round or cone"_s);
+    }
+    if (feature.trunkBlock.isEmpty()) {
+        reader.fail(u"'trunk' is required"_s);
+    }
+    if (feature.type == QcFeatureDefinition::Type::Tree && feature.leavesBlock.isEmpty()) {
+        reader.fail(u"trees need 'leaves'"_s);
+    }
+    const QJsonArray ground = json.value(u"ground"_s).toArray();
+    for (const auto &entry : ground) {
+        const QString name = QcContentNames::qualify(entry.toString(), packNamespace);
+        if (name.isEmpty()) {
+            reader.fail(u"invalid 'ground' entry"_s);
+            break;
+        }
+        feature.groundBlocks.append(name);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return feature;
+}
+
+QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"ore"_s, {}};
+    QcOreDefinition ore;
+    ore.name = reader.name(u"name"_s, packNamespace);
+    if (ore.name.isEmpty()) {
+        return qcError(reader.ok() ? u"ore: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"ore '%1'"_s.arg(ore.name);
+    ore.block = reader.name(u"block"_s, packNamespace);
+    ore.replaces = reader.name(u"replaces"_s, packNamespace, u"qtcraft:stone"_s);
+    ore.minY = reader.integer(u"minY"_s, 1, 0, QcWorld::worldHeight - 1);
+    ore.maxY = reader.integer(u"maxY"_s, 64, ore.minY, QcWorld::worldHeight - 1);
+    ore.veinsPerChunk = reader.integer(u"veinsPerChunk"_s, 8, 0, 256);
+    ore.veinSize = reader.integer(u"veinSize"_s, 6, 1, 64);
+    if (ore.block.isEmpty()) {
+        reader.fail(u"'block' is required"_s);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return ore;
+}
+
+QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"terrain"_s, {}};
+    QcTerrainSettings settings;
+    settings.seaLevel = reader.integer(u"seaLevel"_s, QcWorld::seaLevel, 8, QcWorld::worldHeight - 32);
+    settings.stoneBlock = reader.name(u"stone"_s, packNamespace);
+    settings.waterBlock = reader.name(u"water"_s, packNamespace);
+    settings.bedrockBlock = reader.name(u"bedrock"_s, packNamespace);
+    settings.caves = reader.boolean(u"caves"_s, true);
+    settings.caveTunnelWidth = reader.number(u"caveTunnelWidth"_s, settings.caveTunnelWidth, 0.0, 0.5);
+    settings.caveCavernThreshold = reader.number(u"caveCavernThreshold"_s, settings.caveCavernThreshold, 0.0, 1.0);
+    if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {
+        reader.fail(u"'stone' and 'water' are required"_s);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return settings;
 }
 
 } // namespace QcContentParser

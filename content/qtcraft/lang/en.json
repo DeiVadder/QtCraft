@@ -1,4 +1,12 @@
 {
+    "biome.qtcraft.birch_forest": "Birch Forest",
+    "biome.qtcraft.desert": "Desert",
+    "biome.qtcraft.forest": "Forest",
+    "biome.qtcraft.mountains": "Mountains",
+    "biome.qtcraft.plains": "Plains",
+    "biome.qtcraft.swamp": "Swamp",
+    "biome.qtcraft.taiga": "Taiga",
+    "biome.qtcraft.tundra": "Tundra",
     "block.qtcraft.air": "Air",
     "block.qtcraft.bedrock": "Bedrock",
     "block.qtcraft.birch_leaves": "Birch leaves",

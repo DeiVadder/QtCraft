@@ -1,0 +1,18 @@
+{
+    "name": "taiga",
+    "temperature": 0.15,
+    "humidity": 0.6,
+    "baseHeight": 70,
+    "heightVariation": 10,
+    "surface": "snow_block",
+    "subsurface": "dirt",
+    "underwater": "gravel",
+    "beach": "gravel",
+    "frozenWater": "ice",
+    "features": [
+        {
+            "feature": "spruce_tree",
+            "density": 0.012
+        }
+    ]
+}

@@ -78,3 +78,26 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 
 - **Was:** `QcTestTerrainGenerator` erzeugt sanfte Hügel mit See aus wenigen Basisblöcken. Er bleibt als billiger, vorhersagbarer Generator für Tests erhalten, wenn in Etappe 3 der datengetriebene Biom-Generator kommt.
 - **Warum:** Der Durchstich braucht eine Welt; Tests brauchen eine einfache, stabile Welt.
+
+## E-014 Weltgenerierung: Klimakarte, Kontinentrauschen, Gitter-Höhlen
+
+- **Was:** `QcTerrainGenerator` (Server) bestimmt pro Säule Temperatur und Feuchte aus Rauschfeldern; jedes Biom (Daten) hat einen Klimapunkt, die Höhe wird per inverser Distanzgewichtung im Klimaraum gemischt (weiche Übergänge), das dominante Biom liefert die Oberflächenblöcke. Ein Kontinentrauschen trennt Land und Ozean. Höhlen entstehen aus zwei 3D-Feldern (Schnittmenge zweier Isoflächen = Röhren) und einem Kavernenfeld, ausgewertet auf einem 4er-Gitter und trilinear interpoliert. Bäume und Kakteen werden pro Säule deterministisch gewürfelt; jeder Chunk prüft auch einen Rand von 3 Säulen, damit Kronen über Chunkgrenzen stimmen. Erzadern sind Zufallswege innerhalb des Chunks. Rauschen: eigenes seed-basiertes Perlin (`QcNoise`), plattformunabhängig.
+- **Warum:** Alle Blöcke, Biome, Strukturen und Erze kommen aus Daten (`biomes/`, `features/`, `ores/`, `worldgen/terrain.json`); neue Inhalte brauchen keinen Generator-Code. Determinismus erlaubt „nur Änderungen speichern".
+- **Verworfen:** Biome als Voronoi-Zellen (harte Kanten); 3D-Dichtefeld für das gesamte Gelände (teurer, für Etappenziel unnötig); fremde Rauschbibliothek (Lizenz, Abhängigkeit).
+
+## E-015 Himmelslicht im Mesher berechnet
+
+- **Was:** Pro Mesh-Auftrag wird für die 3×3-Chunk-Umgebung (vertikal ±16 Blöcke) Himmelslicht per Breitensuche berechnet: oberhalb des höchsten lichtdämpfenden Blocks Stufe 15, sonst Ausbreitung mit −max(1, Opazität) pro Schritt. Ecken erhalten den Mittelwert der offenen Nachbarzellen (weiches Licht); der Shader skaliert mit dem Tageslicht.
+- **Warum:** Kein zusätzlicher Netzwerkverkehr, Server bleibt schlank, Ergebnis ist innerhalb der Lichtreichweite exakt, und Blockänderungen brauchen nur das ohnehin nötige Neu-Meshen der Nachbarsektionen.
+- **Verworfen:** Licht auf dem Server berechnen und mitschicken (mehr Daten, komplexe Inkrementalpflege); reine Höhenkarten-Abschattung (Höhleneingänge und Überhänge falsch).
+
+## E-016 Chunkdaten ohne zlib: Lauflängenkodierung
+
+- **Was:** Paletten-Indizes werden pro Sektion als Läufe (Länge, Index) übertragen statt `qCompress`.
+- **Warum:** `qUncompress` kennt keine Ausgabegrenze; ein bösartiger Server könnte mit kleinem Frame riesige Allokationen auslösen (Befund S2). Lauflängen sind durch die Sektionsgröße hart begrenzt und für Gelände ähnlich kompakt.
+- **Verworfen:** Zlib über die privaten Qt-Header mit eigener Grenze (private API, Mehraufwand).
+
+## E-017 Kartenexport als Entwicklungswerkzeug
+
+- **Was:** `qtcraft-headless --map <png> [--map-radius n]` rendert die Oberfläche von oben. Spiel-Option `--spawn x,z` setzt den Startpunkt für reproduzierbare Screenshots.
+- **Warum:** Biomverteilung, Ozeane und Übergänge lassen sich in Sekunden über Kilometer prüfen.

@@ -25,9 +25,10 @@ int main(int argc, char *argv[])
     const QCommandLineOption worldOption(u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s);
     const QCommandLineOption seedOption(u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s);
     const QCommandLineOption lookOption(u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s);
+    const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
-    parser.addOptions({playOption, worldOption, seedOption, lookOption, viewOption, languageOption});
+    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, viewOption, languageOption});
     parser.process(app);
 
     // --language or QTCRAFT_LANGUAGE override the system language.
@@ -59,6 +60,12 @@ int main(int argc, char *argv[])
         const QStringList parts = parser.value(lookOption).split(u',');
         if (parts.size() == 2) {
             game->setInitialLook(parts[0].toFloat(), parts[1].toFloat());
+        }
+    }
+    if (parser.isSet(spawnOption)) {
+        const QStringList parts = parser.value(spawnOption).split(u',');
+        if (parts.size() == 2) {
+            game->setSpawnColumn(parts[0].toInt(), parts[1].toInt());
         }
     }
     if (parser.isSet(viewOption)) {

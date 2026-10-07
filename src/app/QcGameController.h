@@ -10,7 +10,9 @@
 #include <QSet>
 #include <QtQmlIntegration/qqmlintegration.h>
 
+#include <array>
 #include <memory>
+#include <optional>
 
 class QcBlockRenderTable;
 class QcContentRegistry;
@@ -61,6 +63,7 @@ public:
 
     // Test hooks (command line): initial view direction and the screenshot to take once loaded.
     void setInitialLook(float yaw, float pitch);
+    void setSpawnColumn(int x, int z) { m_spawnColumn = std::array<int, 2>{x, z}; }
     void setScreenshotHook(QcScreenshotHook *hook);
     QcClientSession *session() const { return m_session; }
 
@@ -106,6 +109,7 @@ private:
     double m_fps = 0.0;
     float m_initialYaw = 0.0f;
     float m_initialPitch = 0.0f;
+    std::optional<std::array<int, 2>> m_spawnColumn;
     QPointer<QcScreenshotHook> m_screenshotHook;
     bool m_screenshotReleased = false;
 };

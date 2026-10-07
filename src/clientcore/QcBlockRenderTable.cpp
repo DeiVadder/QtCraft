@@ -11,6 +11,7 @@ QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const Q
         entry.layer = block.renderLayer;
         entry.opaque = block.opaque;
         entry.liquid = block.liquid;
+        entry.lightOpacity = block.lightOpacity;
         for (const QcBlockFace face : qcAllBlockFaces) {
             entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(face));
         }

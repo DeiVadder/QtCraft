@@ -1,4 +1,12 @@
 {
+    "biome.qtcraft.birch_forest": "Birkenwald",
+    "biome.qtcraft.desert": "Wüste",
+    "biome.qtcraft.forest": "Wald",
+    "biome.qtcraft.mountains": "Gebirge",
+    "biome.qtcraft.plains": "Ebene",
+    "biome.qtcraft.swamp": "Sumpf",
+    "biome.qtcraft.taiga": "Taiga",
+    "biome.qtcraft.tundra": "Tundra",
     "block.qtcraft.air": "Luft",
     "block.qtcraft.bedrock": "Grundgestein",
     "block.qtcraft.birch_leaves": "Birkenlaub",

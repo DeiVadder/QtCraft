@@ -3,6 +3,7 @@
 #include "QcBlockDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
+#include "QcWorldgenDefinitions.h"
 
 #include <QHash>
 #include <QJsonObject>
@@ -14,5 +15,9 @@ namespace QcContentParser {
 QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
+QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcContentParser

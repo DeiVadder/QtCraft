@@ -1,0 +1,4 @@
+# A failed request must still make the script fail when it ends with quit.
+{"cmd":"waitUntilReady"}
+{"cmd":"nope"}
+{"cmd":"quit"}

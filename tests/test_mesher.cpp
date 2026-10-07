@@ -180,6 +180,68 @@ private slots:
         QCOMPARE(quadCount(mesh.opaqueIndices), 12);
     }
 
+    void openSkyIsFullyLit()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(5, 10, 5, f.stone);
+        const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
+        for (qsizetype quad = 0; quad < mesh.opaqueVertices.size(); quad += 4) {
+            const bool bottomFace = std::all_of(mesh.opaqueVertices.begin() + quad, mesh.opaqueVertices.begin() + quad + 4,
+                                                [](const QcBlockVertex &v) { return v.y == 10.0f; });
+            for (qsizetype i = quad; i < quad + 4; ++i) {
+                // The cell below the block is in its shadow: level 14 from the side instead of 15.
+                const float light = mesh.opaqueVertices[i].skyLight;
+                if (bottomFace) {
+                    QVERIFY(light < 1.0f && light > 0.9f);
+                } else {
+                    QCOMPARE(light, 1.0f);
+                }
+            }
+        }
+    }
+
+    void closedRoomIsDarkAndOverhangIsDimmed()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        // Hollow 5 x 5 x 5 stone box: its inner floor gets no sky light at all.
+        for (int x = 2; x <= 6; ++x) {
+            for (int y = 0; y <= 4; ++y) {
+                for (int z = 2; z <= 6; ++z) {
+                    const bool shell = x == 2 || x == 6 || y == 0 || y == 4 || z == 2 || z == 6;
+                    if (shell) {
+                        chunk->setBlock(x, y, z, f.stone);
+                    }
+                }
+            }
+        }
+        // A roof over open ground at x 10..14: light reaches underneath only sideways.
+        for (int x = 9; x <= 15; ++x) {
+            for (int z = 0; z <= 15; ++z) {
+                chunk->setBlock(x, 0, z, f.stone);
+                chunk->setBlock(x, 3, z, f.stone);
+            }
+        }
+        const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
+        bool sawInside = false;
+        bool sawOverhang = false;
+        for (const QcBlockVertex &v : mesh.opaqueVertices) {
+            if (v.y == 1.0f && v.x >= 3.0f && v.x <= 6.0f && v.z >= 3.0f && v.z <= 6.0f) {
+                QCOMPARE(v.skyLight, 0.0f);
+                sawInside = true;
+            }
+            if (v.y == 1.0f && v.x == 12.0f && v.z == 8.0f) {
+                // Three blocks in from the open side at x = 9: level 15 - 3 steps, minus the light lost
+                // in averaging, but clearly between dark and full sky.
+                QVERIFY2(v.skyLight > 0.5f && v.skyLight < 1.0f, qPrintable(QString::number(v.skyLight)));
+                sawOverhang = true;
+            }
+        }
+        QVERIFY(sawInside);
+        QVERIFY(sawOverhang);
+    }
+
     void ambientOcclusionDarkensCornersNextToAWall()
     {
         const Fixture f;

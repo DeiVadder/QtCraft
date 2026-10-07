@@ -2,6 +2,9 @@
 
 #include <QString>
 
+#include <array>
+#include <optional>
+
 struct QcServerConfig
 {
     QString worldName = QStringLiteral("World");
@@ -10,4 +13,6 @@ struct QcServerConfig
     int viewDistance = 8;
     // Upper bound of chunks sent per client and tick, keeps ticks short while a client catches up.
     int chunksPerTick = 32;
+    // Test hook: spawn above this block column (x, z) instead of the generator's spawn point.
+    std::optional<std::array<int, 2>> spawnColumn;
 };

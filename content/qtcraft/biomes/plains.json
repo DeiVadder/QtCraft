@@ -1,0 +1,17 @@
+{
+    "name": "plains",
+    "temperature": 0.55,
+    "humidity": 0.4,
+    "baseHeight": 67,
+    "heightVariation": 5,
+    "surface": "grass_block",
+    "subsurface": "dirt",
+    "underwater": "sand",
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "oak_tree",
+            "density": 0.0015
+        }
+    ]
+}

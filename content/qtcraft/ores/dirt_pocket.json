@@ -1,0 +1,9 @@
+{
+    "name": "dirt_pocket",
+    "replaces": "stone",
+    "block": "dirt",
+    "minY": 20,
+    "maxY": 100,
+    "veinsPerChunk": 5,
+    "veinSize": 20
+}

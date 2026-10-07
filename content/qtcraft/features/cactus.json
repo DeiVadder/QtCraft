@@ -1,0 +1,10 @@
+{
+    "name": "cactus",
+    "type": "column",
+    "trunk": "cactus",
+    "minHeight": 1,
+    "maxHeight": 3,
+    "ground": [
+        "sand"
+    ]
+}

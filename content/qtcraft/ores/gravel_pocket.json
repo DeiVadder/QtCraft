@@ -1,0 +1,9 @@
+{
+    "name": "gravel_pocket",
+    "replaces": "stone",
+    "block": "gravel",
+    "minY": 5,
+    "maxY": 100,
+    "veinsPerChunk": 5,
+    "veinSize": 20
+}

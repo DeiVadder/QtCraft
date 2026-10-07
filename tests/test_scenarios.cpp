@@ -93,7 +93,15 @@ private slots:
         QCOMPARE(status.value(u"state"_s).toString(), u"Playing"_s);
         QCOMPARE(status.value(u"world"_s).toString(), u"Scenario"_s);
         QVERIFY(status.value(u"onGround"_s).toBool());
-        QCOMPARE(status.value(u"loadedChunks"_s).toInt(), 25);
+        // Chunks are generated in the background; the full 5 x 5 square arrives shortly after.
+        int loaded = 0;
+        QVERIFY(QTest::qWaitFor(
+            [&] {
+                loaded = request({{u"cmd"_s, u"status"_s}}).value(u"loadedChunks"_s).toInt();
+                return loaded == 25;
+            },
+            timeoutMs));
+        QCOMPARE(loaded, 25);
     }
 
     void walkingSouthIncreasesZ()

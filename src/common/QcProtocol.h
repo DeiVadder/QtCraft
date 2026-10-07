@@ -10,12 +10,8 @@
 namespace QcProtocol {
 
 // Bumped whenever a message layout changes.
-inline constexpr quint32 version = 2;
+inline constexpr quint32 version = 3;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
-// Upper bound of an encoded chunk before compression: position plus every section with a full
-// palette and full index array.
-inline constexpr qsizetype maxRawChunkBytes =
-    8 + qsizetype(QcWorld::sectionCount) * (4 + QcWorld::blocksPerSection * (4 + 2));
 
 enum class Peer { Client, Server };
 
@@ -27,7 +23,7 @@ QByteArray encode(const QcMessage &message);
 // before their payload is read.
 QcResult<QcMessage> decode(const QByteArray &frame, Peer sender);
 
-// Chunk payload encoding, shared with persistence.
+// Chunk encoding (palette plus run-length encoded indices per section), shared with persistence.
 void writeChunk(QDataStream &stream, const QcChunk &chunk);
 QcResult<std::shared_ptr<QcChunk>> readChunk(QDataStream &stream);
 

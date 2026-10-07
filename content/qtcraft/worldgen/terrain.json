@@ -1,0 +1,9 @@
+{
+    "seaLevel": 62,
+    "stone": "stone",
+    "water": "water",
+    "bedrock": "bedrock",
+    "caves": true,
+    "caveTunnelWidth": 0.075,
+    "caveCavernThreshold": 0.58
+}

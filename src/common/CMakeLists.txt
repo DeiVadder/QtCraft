@@ -24,6 +24,7 @@ qt_add_library(qc_common STATIC
     QcTextureDefinition.h
     QcTransport.h
     QcVec3.h
+    QcWorldgenDefinitions.h
     QcWorkerPool.h QcWorkerPool.cpp
     QcWorldConstants.h
 )

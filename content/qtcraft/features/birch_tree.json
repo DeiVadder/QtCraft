@@ -1,0 +1,13 @@
+{
+    "name": "birch_tree",
+    "type": "tree",
+    "trunk": "birch_log",
+    "leaves": "birch_leaves",
+    "minHeight": 5,
+    "maxHeight": 7,
+    "shape": "round",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}
