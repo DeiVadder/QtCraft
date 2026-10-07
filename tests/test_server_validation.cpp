@@ -8,6 +8,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
+#include <QHash>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -40,6 +41,11 @@ public:
             stacks = inventory->stacks;
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
+        } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
+            this->health = health->health;
+            dead = health->dead;
+        } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
+            entities.insert(spawn->id, spawn->mobType);
         }
     }
 
@@ -47,6 +53,9 @@ public:
     QcEntityMotion motion;
     QList<QcItemStack> stacks;
     QStringList chatLines;
+    double health = 0.0;
+    bool dead = false;
+    QHash<quint32, qint32> entities;
 };
 
 void pump()
@@ -136,6 +145,13 @@ private slots:
         m_client->connection.send(QcMsg::FinishMining{below});
         pump();
         QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(id("qtcraft:grass_block")));
+        // 14 ticks are not enough even with the two ticks of slack.
+        m_client->connection.send(QcMsg::StartMining{below});
+        pump();
+        ticks(14);
+        m_client->connection.send(QcMsg::FinishMining{below});
+        pump();
+        QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(id("qtcraft:grass_block")));
         m_client->connection.send(QcMsg::StartMining{below});
         pump();
         ticks(18);
@@ -219,6 +235,58 @@ private slots:
         QCOMPARE(m_client->stacks, before);
     }
 
+    // Which other chunks of the stage around the origin count as modified depends on generation
+    // timing, so tests only look for the region of the block they changed.
+    static QString regionFile(const QString &world, QcBlockPos pos)
+    {
+        const QcChunkPos region = QcWorldStorage::regionOf(pos.chunk());
+        return QDir(world).filePath(u"regions/r.%1.%2.qcr"_s.arg(region.x).arg(region.z));
+    }
+
+    void cheatCommandsCanBeDisabled_data()
+    {
+        QTest::addColumn<QString>("command");
+        QTest::newRow("give") << u"/give glass 1"_s;
+        QTest::newRow("time") << u"/time set night"_s;
+        QTest::newRow("summon") << u"/summon zombie"_s;
+        QTest::newRow("kill") << u"/kill"_s;
+        QTest::newRow("heal") << u"/heal"_s;
+    }
+
+    void cheatCommandsCanBeDisabled()
+    {
+        QFETCH(QString, command);
+        QcServerConfig config;
+        config.allowCheats = false;
+        join(config);
+        const double time = m_server->worldTime();
+        chat(command);
+        QVERIFY(m_client->chatLines.constLast().contains(u"disabled"_s));
+        QVERIFY(!m_client->dead);
+        QCOMPARE(m_server->worldTime(), time);
+        QCOMPARE(countOf(item("qtcraft:glass")), 0);
+    }
+
+    void deadPlayersCannotMineOrPlace()
+    {
+        join();
+        chat(u"/give dirt 4"_s);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 4);
+        chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
+        const QcBlockPos below = m_feet.offset(0, -1, 0);
+        const QcBlockId before = *m_server->world().blockAt(below);
+        m_client->connection.send(QcMsg::StartMining{below});
+        ticks(200);
+        m_client->connection.send(QcMsg::FinishMining{below});
+        m_client->connection.send(QcMsg::UseItem{below.offset(2, 0, 0), QcBlockFace::Up});
+        pump();
+        ticks(2);
+        QCOMPARE(*m_server->world().blockAt(below), before);
+        QCOMPARE(*m_server->world().blockAt(m_feet.offset(2, 0, 0)), qcAirBlockId);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 4);
+    }
+
     void giveRejectsBadCountsAndCanBeDisabled()
     {
         join();
@@ -246,11 +314,111 @@ private slots:
         join(config);
         QVERIFY(m_server->world().setBlock(m_feet.offset(1, 0, 0), id("qtcraft:glass")));
         ticks(20);
-        QCOMPARE(QDir(dir.filePath(u"regions"_s)).entryList({u"*.qcr"_s}).size(), 1);
+        QVERIFY(QFile::exists(regionFile(dir.path(), m_feet.offset(1, 0, 0))));
+        // The autosave wrote the player too; remove it so only the save on disconnect can recreate it.
+        QVERIFY(QFile::remove(dir.filePath(u"players/Raw.qcp"_s)));
         m_client->connection.close();
         pump();
         ticks(1);
         QVERIFY(QFile::exists(dir.filePath(u"players/Raw.qcp"_s)));
+    }
+
+    void deathSurvivesReconnecting()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        join(config);
+        chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
+        m_client->connection.close();
+        pump();
+        ticks(1);
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        m_client = std::make_unique<RawClient>(std::move(clientEnd));
+        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s});
+        pump();
+        ticks(2);
+        QVERIFY(m_client->dead);
+        QCOMPARE(m_client->health, 0.0);
+        m_client->connection.send(QcMsg::Respawn{});
+        pump();
+        ticks(1);
+        QVERIFY(!m_client->dead);
+        QCOMPARE(m_client->health, 20.0);
+    }
+
+    void attacksNeedReachAndKillGivesLoot()
+    {
+        join();
+        // A pig in a 1 x 1 pit two blocks deep next to the player cannot run away.
+        const QcBlockPos pit = m_feet.offset(2, -1, 0);
+        m_server->world().setBlock(pit, qcAirBlockId);
+        m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
+        m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s),
+                                                    {pit.x + 0.5, double(pit.y - 1), pit.z + 0.5}, 500);
+        ticks(1);
+        QVERIFY(m_client->entities.contains(pig));
+        // Bare hands deal 1 damage, the pig has 10 health; hits closer than 0.5 s apart do nothing.
+        for (int attempt = 0; attempt < 15 && m_server->mobs().find(pig); ++attempt) {
+            m_client->connection.send(QcMsg::AttackEntity{pig});
+            pump();
+            ticks(12);
+        }
+        QVERIFY(!m_server->mobs().find(pig));
+        QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 2);
+
+        // A mob far away cannot be hit.
+        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), m_client->motion.position + QcVec3{20.0, 0.0, 0.0}, 999);
+        m_client->connection.send(QcMsg::AttackEntity{999});
+        pump();
+        QCOMPARE(m_server->mobs().find(999)->health, 10.0);
+    }
+
+    void fallsHurtAndDeathNeedsARespawn()
+    {
+        join();
+        QCOMPARE(m_client->health, 20.0);
+        // Dig a 10 m shaft under the player: landing deals floor(10 - 3) = 7 damage.
+        for (int dy = -1; dy >= -10; --dy) {
+            m_server->world().setBlock(m_feet.offset(0, dy, 0), qcAirBlockId);
+        }
+        m_server->world().setBlock(m_feet.offset(0, -11, 0), id("qtcraft:stone"));
+        for (quint32 sequence = 1; sequence <= 60; ++sequence) {
+            QcPlayerInput input;
+            input.sequence = sequence;
+            m_client->connection.send(QcMsg::PlayerInput{input});
+            pump();
+            ticks(1);
+        }
+        QCOMPARE(m_client->motion.position.y, double(m_feet.y - 10));
+        QCOMPARE(m_client->health, 13.0);
+
+        chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
+        QCOMPARE(m_client->health, 0.0);
+        // A dead player does not move.
+        const QcVec3 corpse = m_client->motion.position;
+        QcPlayerInput walk;
+        walk.sequence = 100;
+        walk.forward = 1.0f;
+        m_client->connection.send(QcMsg::PlayerInput{walk});
+        pump();
+        ticks(1);
+        QCOMPARE(m_client->motion.position, corpse);
+
+        // Refill the shaft: the spawn column's surface is back at the original height.
+        for (int dy = -10; dy <= -1; ++dy) {
+            m_server->world().setBlock(m_feet.offset(0, dy, 0), id("qtcraft:stone"));
+        }
+        m_client->connection.send(QcMsg::Respawn{});
+        pump();
+        ticks(1);
+        QVERIFY(!m_client->dead);
+        QCOMPARE(m_client->health, 20.0);
+        QCOMPARE(m_client->motion.position.y, double(m_feet.y));
     }
 
     void failedSavesAreRetried()
@@ -267,7 +435,7 @@ private slots:
         QVERIFY(!m_server->save().has_value());
         QVERIFY(QFile::setPermissions(regions, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner));
         QVERIFY(m_server->save().has_value());
-        QCOMPARE(QDir(regions).entryList({u"*.qcr"_s}).size(), 1);
+        QVERIFY(QFile::exists(regionFile(dir.path(), m_feet.offset(1, 0, 0))));
     }
 };
 

@@ -247,6 +247,33 @@ private slots:
         QVERIFY(!QcContentParser::parseTerrainSettings(json(R"({"seaLevel":40})"), u"b"_s).has_value());
     }
 
+    void parsesMobs()
+    {
+        const auto mob = QcContentParser::parseMob(
+            json(R"({"name":"boar","health":12,"hostile":true,"spawn":{"time":"night","blocks":["grass"],"caves":true},
+                     "model":[{"from":[-0.4,0,-0.6],"to":[0.4,0.8,0.6],"texture":"boar"}],"drops":[{"item":"tusk","count":2}]})"),
+            u"b"_s);
+        QVERIFY2(mob.has_value(), qcErrorText(mob).constData());
+        QCOMPARE(mob->translationKey, u"mob.b.boar"_s);
+        QCOMPARE(mob->maxHealth, 12.0);
+        QCOMPARE(mob->spawnTime, QcMobDefinition::SpawnTime::Night);
+        QCOMPARE(mob->spawnBlocks, (QList<QString>{u"b:grass"_s}));
+        QVERIFY(mob->spawnsInCaves);
+        QCOMPARE(mob->parts.size(), 1);
+        QCOMPARE(mob->parts.first().texture, u"b:boar"_s);
+        QCOMPARE(mob->drops.first().item, u"b:tusk"_s);
+        // Default chase speed is twice the walking speed.
+        QCOMPARE(mob->chaseSpeed, 2.0 * mob->walkSpeed);
+        QVERIFY(!QcContentParser::parseMob(json(R"({"name":"x"})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseMob(json(R"({"name":"x","model":[{"from":[0,0,0],"to":[0,1,1],"texture":"t"}]})"), u"b"_s)
+                     .has_value());
+        QVERIFY(!QcContentParser::parseMob(
+                     json(R"({"name":"x","spawn":{"time":"dusk"},"model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})"), u"b"_s)
+                     .has_value());
+        QVERIFY(!QcContentParser::parseMob(json(R"({"name":"x","model":[{"from":[0,0,0],"to":[20,1,1],"texture":"t"}]})"), u"b"_s)
+                     .has_value());
+    }
+
     void parsesItems()
     {
         const auto pick = QcContentParser::parseItem(

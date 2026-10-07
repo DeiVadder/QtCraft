@@ -40,6 +40,8 @@ public:
 
     // Block outlined as the player's target; std::nullopt hides the outline.
     void setSelection(std::optional<QcBlockPos> block);
+    // Entity triangles for this frame (replaces the previous set).
+    void setEntityMesh(std::shared_ptr<const QcChunkMesh> mesh);
     void setSkyColor(const QColor &color);
     void setDaylight(float daylight);
     void setFogRange(float start, float end);
@@ -63,4 +65,5 @@ private:
     float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;
     std::optional<QcBlockPos> m_selection;
+    std::shared_ptr<const QcChunkMesh> m_entityMesh;
 };

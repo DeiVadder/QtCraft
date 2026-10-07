@@ -1,0 +1,8 @@
+{
+    "name": "rotten_flesh",
+    "pattern": "lump",
+    "primary": "#8a5a3a",
+    "secondary": "#5a8a3a",
+    "variation": 0.15,
+    "seed": 208
+}

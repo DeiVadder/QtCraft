@@ -2,6 +2,7 @@
 
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
+#include "QcMobDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
@@ -51,6 +52,11 @@ public:
     const QList<QcTextureDefinition> &textures() const { return m_textures; }
     const QcTextureDefinition *texture(const QString &name) const;
 
+    // Registers or replaces a mob type; mob type ids are indices into mobs().
+    void registerMob(QcMobDefinition definition);
+    const QList<QcMobDefinition> &mobs() const { return m_mobs; }
+    std::optional<int> mobIndex(const QString &name) const;
+
     void registerBiome(QcBiomeDefinition definition);
     void registerFeature(QcFeatureDefinition definition);
     void registerOre(QcOreDefinition definition);
@@ -76,6 +82,7 @@ private:
     QList<QcTextureDefinition> m_textures;
     QHash<QString, qsizetype> m_textureIndex;
     QHash<QString, QHash<QString, QString>> m_translations;
+    QList<QcMobDefinition> m_mobs;
     QList<QcBiomeDefinition> m_biomes;
     QList<QcFeatureDefinition> m_features;
     QList<QcOreDefinition> m_ores;

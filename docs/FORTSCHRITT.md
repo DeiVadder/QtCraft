@@ -4,13 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 5 – Gegner und Gesundheit
+- **Aktuelle Etappe:** 5 – Gegner und Gesundheit (Abschlussprüfung)
 - **Branch:** `feature/05-mobs`
-- **Nächster Schritt:** Mobs, Kampf, Gesundheit, Tag/Nacht fertigstellen und testen; danach Verifikation.
-- **Offene Befunde aus der Verifikation von Etappe 4 (in Etappe 5 beheben):**
-  1. `playersAreSavedOnDisconnectAndChunksByAutosave` prüft das Speichern beim Trennen nicht wirklich (Autosave schreibt die Datei schon vorher).
-  2. Unit-Tests für die neuen Grenzprüfungen in `readPlayer`/`readChunks` (Datenzeilen im Damaged-File-Test).
-  3. Nits: Abbau-Toleranz enger testen (14 Ticks abgelehnt); Weltwechsel auf dieselbe Welt: speichern → beenden → öffnen; Spieler-Schreibfehler in `save()` melden; doppeltes „damaged“ in der Weltliste; `readInfo` bei `[]`.
+- **Nächster Schritt:** Unabhängige Verifikation der Etappe 5, danach Squash-Merge und Etappe 6 (`feature/06-crafting`: Werkzeuge, Rezepte geformt/formlos aus Daten, Crafting-UI, Werkzeugwirkung).
+- **Offene Befunde:** keine (Befunde aus Etappe 4 eingearbeitet).
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
 
@@ -39,5 +36,6 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 - Maus-Fangen per Cursor-Zentrierung (`QCursor::setPos`) ist auf macOS nur per Screenshot, nicht interaktiv geprüft.
 - Biome bilden eher rundliche Flecken; Gebirge sind selten (Klimapunkt-Verteilung).
 - Spielerdateien: Namen werden auf Dateinamen abgebildet; „Bob“/„bob“ teilen sich auf macOS eine Datei. Keine Sperre gegen zwei Prozesse auf derselben Welt.
-- Keine Sichtlinien-Prüfung beim Abbauen/Setzen; keine Ratenbegrenzung für UseItem/Chat.
+- Keine Sichtlinien-Prüfung beim Abbauen/Setzen/Angreifen; keine Ratenbegrenzung für UseItem/Chat.
+- Mobs: einfache Wegfindung (direkt auf den Spieler zu, Sprung über Stufen); sie meiden keine Abgründe oder Wasser. Licht auf Mobs grob angenähert.
 - Spawn kann auf Baumkronen liegen (höchster Nicht-Luft-Block der Säule).

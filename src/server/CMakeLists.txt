@@ -2,7 +2,10 @@ qt_add_library(qc_server STATIC
     QcBaseContent.h QcBaseContent.cpp
     QcContentPackLoader.h QcContentPackLoader.cpp
     QcLocalServerHost.h QcLocalServerHost.cpp
+    QcMobManager.h QcMobManager.cpp
     QcServer.h QcServer.cpp
+    QcServerClient.h
+    QcServerGameplay.cpp
     QcServerConfig.h
     QcServerWorld.h QcServerWorld.cpp
     QcTestTerrainGenerator.h QcTestTerrainGenerator.cpp

@@ -4,8 +4,10 @@ qt_add_library(qc_clientcore STATIC
     QcCamera.h QcCamera.cpp
     QcChunkMesh.h
     QcChunkMesher.h QcChunkMesher.cpp
+    QcClientEntity.h
     QcClientSession.h QcClientSession.cpp
     QcClientWorld.h QcClientWorld.cpp
+    QcEntityMesher.h QcEntityMesher.cpp
     QcControlInterface.h QcControlInterface.cpp
     QcMeshScheduler.h QcMeshScheduler.cpp
     QcSectionKey.h

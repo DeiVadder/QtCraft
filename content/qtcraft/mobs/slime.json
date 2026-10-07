@@ -1,0 +1,45 @@
+{
+    "name": "slime",
+    "health": 8,
+    "width": 0.8,
+    "height": 0.8,
+    "walkSpeed": 1.0,
+    "chaseSpeed": 2.4,
+    "hostile": true,
+    "attackDamage": 2,
+    "attackRange": 1.3,
+    "attackCooldown": 1.2,
+    "sightRange": 12,
+    "spawn": {
+        "time": "any",
+        "blocks": [
+            "stone",
+            "gravel",
+            "dirt"
+        ],
+        "maxGroup": 2,
+        "weight": 1,
+        "caves": true
+    },
+    "model": [
+        {
+            "from": [
+                -0.4,
+                0,
+                -0.4
+            ],
+            "to": [
+                0.4,
+                0.8,
+                0.4
+            ],
+            "texture": "slime"
+        }
+    ],
+    "drops": [
+        {
+            "item": "slimeball",
+            "count": 1
+        }
+    ]
+}

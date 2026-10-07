@@ -33,11 +33,14 @@ private:
     void finishScript();
     // Starts (or restarts) server and bot session for a world; the control interface follows.
     QcStatus startWorld(const QcServerConfig &config);
+    // Opens a world and switches the bot to it, replacing the running one only on success.
+    QcStatus openWorld(const QcServerConfig &config);
     bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
 
     std::unique_ptr<QcLocalServerHost> m_server;
     std::shared_ptr<const QcContentRegistry> m_content;
     QcServerConfig m_baseConfig;
+    QcServerConfig m_currentConfig;
     std::unique_ptr<QcWorldLibrary> m_library;
     QcClientSession *m_session = nullptr;
     QcControlInterface *m_control = nullptr;

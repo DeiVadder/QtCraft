@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcClientEntity.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
 #include "QcInventory.h"
@@ -7,6 +8,7 @@
 #include "QcPlayerInput.h"
 #include "QcRaycast.h"
 
+#include <QHash>
 #include <QList>
 #include <QObject>
 
@@ -75,6 +77,22 @@ public:
     void sendChat(const QString &text);
     const QcInventory &inventory() const { return m_inventory; }
 
+    const QHash<quint32, QcClientEntity> &entities() const { return m_entities; }
+    // Entity under the crosshair when it is closer than any targeted block.
+    std::optional<quint32> targetEntity() const { return m_targetEntity; }
+    // Hits the targeted entity; returns false without one.
+    bool attack();
+    void respawn();
+    double health() const { return m_health; }
+    double maxHealth() const { return m_maxHealth; }
+    bool isDead() const { return m_dead; }
+    // Seconds of world time, advanced locally between server updates.
+    double worldTime() const { return m_worldTime; }
+
+    // Melee reach of the player.
+    static constexpr double attackReach = 4.0;
+    static constexpr int hurtFlashTicks = 6;
+
 signals:
     void stateChanged(QcClientSession::State state);
     void contentReady();
@@ -84,6 +102,7 @@ signals:
     void ticked();
     void disconnected(const QString &reason);
     void inventoryChanged();
+    void healthChanged();
     void chatReceived(const QString &text);
 
 private:
@@ -119,4 +138,12 @@ private:
     bool m_miningRequested = false;
     std::optional<QcBlockPos> m_miningPos;
     double m_miningProgress = 0.0;
+
+    QHash<quint32, QcClientEntity> m_entities;
+    std::optional<quint32> m_targetEntity;
+    double m_health = 20.0;
+    double m_maxHealth = 20.0;
+    bool m_dead = false;
+    double m_worldTime = 0.0;
+    double m_dayLength = 600.0;
 };

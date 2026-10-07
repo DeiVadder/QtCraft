@@ -44,6 +44,7 @@ private:
     void createPipelines();
     void createOutlinePipeline();
     void uploadOutline(QRhiResourceUpdateBatch *updates);
+    void uploadEntities(QRhiResourceUpdateBatch *updates);
     void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
@@ -62,6 +63,10 @@ private:
     std::unique_ptr<QRhiBuffer> m_outlineVertices;
     std::optional<QcBlockPos> m_selection;
     std::optional<QcBlockPos> m_uploadedSelection;
+    std::shared_ptr<const QcChunkMesh> m_entityMesh;
+    std::unique_ptr<QRhiBuffer> m_entityVertices;
+    std::unique_ptr<QRhiBuffer> m_entityIndices;
+    quint32 m_entityIndexCount = 0;
     // Kept to detect render-target changes that make the pipelines incompatible.
     std::unique_ptr<QRhiRenderPassDescriptor> m_pipelineRenderPass;
 

@@ -51,6 +51,8 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_outlineBindings.reset();
         m_outlineVertices.reset();
         m_uploadedSelection.reset();
+        m_entityVertices.reset();
+        m_entityIndices.reset();
         m_bindings.reset();
         m_atlasTexture.reset();
         m_atlasSampler.reset();
@@ -80,6 +82,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     auto *view = static_cast<QcWorldView *>(item);
     m_camera = view->m_camera;
     m_selection = view->m_selection;
+    m_entityMesh = view->m_entityMesh;
     m_skyColor = view->m_skyColor;
     m_daylight = view->m_daylight;
     m_fogStart = view->m_fogStart;
@@ -246,6 +249,28 @@ void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
     m_uploadedSelection = m_selection;
 }
 
+void QcWorldRenderer::uploadEntities(QRhiResourceUpdateBatch *updates)
+{
+    m_entityIndexCount = 0;
+    if (!m_entityMesh || m_entityMesh->opaqueIndices.isEmpty()) {
+        return;
+    }
+    const auto vertexBytes = quint32(m_entityMesh->opaqueVertices.size() * qsizetype(sizeof(QcBlockVertex)));
+    const auto indexBytes = quint32(m_entityMesh->opaqueIndices.size() * qsizetype(sizeof(quint32)));
+    // Dynamic buffers grow on demand and are reused every frame.
+    if (!m_entityVertices || m_entityVertices->size() < vertexBytes) {
+        m_entityVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
+        m_entityVertices->create();
+    }
+    if (!m_entityIndices || m_entityIndices->size() < indexBytes) {
+        m_entityIndices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::IndexBuffer, indexBytes * 2));
+        m_entityIndices->create();
+    }
+    updates->updateDynamicBuffer(m_entityVertices.get(), 0, vertexBytes, m_entityMesh->opaqueVertices.constData());
+    updates->updateDynamicBuffer(m_entityIndices.get(), 0, indexBytes, m_entityMesh->opaqueIndices.constData());
+    m_entityIndexCount = quint32(m_entityMesh->opaqueIndices.size());
+}
+
 QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBatch *updates,
                                                            const QList<QcBlockVertex> &vertices,
                                                            const QList<quint32> &indices)
@@ -326,6 +351,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         createOutlinePipeline();
     }
     uploadOutline(updates);
+    uploadEntities(updates);
     uploadPendingMeshes(updates);
 
     const QSize outputSize = renderTarget()->pixelSize();
@@ -374,6 +400,11 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         commandBuffer->setShaderResources();
         for (const GpuMesh *mesh : std::as_const(visible)) {
             drawBuffers(mesh->opaque);
+        }
+        if (m_entityIndexCount > 0) {
+            const QRhiCommandBuffer::VertexInput input(m_entityVertices.get(), 0);
+            commandBuffer->setVertexInput(0, 1, &input, m_entityIndices.get(), 0, QRhiCommandBuffer::IndexUInt32);
+            commandBuffer->drawIndexed(m_entityIndexCount);
         }
 
         // Back-to-front by section centre so overlapping translucent sections blend correctly.

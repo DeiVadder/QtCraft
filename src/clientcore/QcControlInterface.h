@@ -3,6 +3,7 @@
 #include "QcBlockFace.h"
 #include "QcItemStack.h"
 #include "QcPlayerInput.h"
+#include "QcVec3.h"
 
 #include <QJsonObject>
 #include <QJsonValue>
@@ -68,6 +69,7 @@ private:
     QJsonObject inventoryJson() const;
     // Turns the player towards a block centre, or towards the centre of one of its faces.
     void lookAt(QcBlockPos block, std::optional<QcBlockFace> face);
+    void lookAtPoint(const QcVec3 &point);
     static QcBlockPos blockArgument(const QJsonObject &request);
     static std::optional<QcBlockFace> faceArgument(const QJsonObject &request);
     static QString faceName(QcBlockFace face);
@@ -78,6 +80,8 @@ private:
     ExtensionHandler m_extension;
     QQueue<QJsonObject> m_queue;
     std::optional<ActiveCommand> m_active;
+    // Set by a step that completes unsuccessfully; the active request then fails with it.
+    QString m_activeError;
     int m_failedRequests = 0;
     QByteArray m_lineBuffer;
     int m_lineNumber = 0;

@@ -47,6 +47,10 @@ class QcGameController : public QObject
     Q_PROPERTY(QString overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
     Q_PROPERTY(QVariantList worlds READ worlds NOTIFY worldsChanged FINAL)
     Q_PROPERTY(bool persistent READ persistent NOTIFY phaseChanged FINAL)
+    Q_PROPERTY(double health READ health NOTIFY healthChanged FINAL)
+    Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
+    Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
+    Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = 8;
@@ -93,6 +97,11 @@ public:
     Q_INVOKABLE void selectHotbarSlot(int slot);
     Q_INVOKABLE void moveItem(int from, int to);
     Q_INVOKABLE void sendChat(const QString &text);
+    Q_INVOKABLE void respawn();
+    double health() const { return m_session ? m_session->health() : 0.0; }
+    double maxHealth() const { return m_session ? m_session->maxHealth() : 20.0; }
+    bool dead() const { return m_session && m_session->isDead(); }
+    QString timeOfDay() const { return m_timeOfDay; }
     Q_INVOKABLE void leaveGame();
     Q_INVOKABLE void captureMouse();
     Q_INVOKABLE void releaseMouse();
@@ -120,6 +129,7 @@ signals:
     void chatLinesChanged();
     void overlayChanged();
     void worldsChanged();
+    void healthChanged();
 
 private:
     void setPhase(const QString &phase, const QString &status = {});
@@ -132,6 +142,8 @@ private:
     void startWorld(const QString &directory, const QString &worldName, qint64 seed);
     void handleMouseButton(Qt::MouseButton button, bool pressed);
     void updateIcons(const QcTextureAtlas &atlas);
+    void updateEntities(double alpha);
+    void updateSky(double alpha);
 
     QPointer<QcWorldView> m_view;
     QPointer<QQuickWindow> m_window;
@@ -165,6 +177,8 @@ private:
     QString m_overlay;
     QVariantList m_worlds;
     QString m_worldDirectory;
+    std::shared_ptr<const QcTextureAtlas> m_atlas;
+    QString m_timeOfDay;
     QStringList m_startupChat;
     QString m_startupOverlay;
     QPointer<QcScreenshotHook> m_screenshotHook;

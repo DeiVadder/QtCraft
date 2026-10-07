@@ -1,0 +1,8 @@
+{
+    "name": "zombie_skin",
+    "pattern": "speckle",
+    "primary": "#4f8a3a",
+    "secondary": "#3f7230",
+    "variation": 0.1,
+    "seed": 201
+}

@@ -29,7 +29,7 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 3). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 7). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -42,6 +42,15 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `PlayerInput` | C→S | sequence, movement intent, view direction |
 | `PlayerState` | S→C | last processed input sequence, authoritative motion |
 | `Disconnect` | both | reason |
+| `StartMining`, `CancelMining`, `FinishMining` | C→S | block position |
+| `UseItem` | C→S | clicked block and face |
+| `SelectHotbarSlot`, `MoveInventoryItem` | C→S | slot numbers |
+| `ChatInput` / `ChatMessage` | C→S / S→C | text |
+| `InventoryState` | S→C | all 36 stacks, selected slot |
+| `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m |
+| `PlayerHealth` | S→C | health, maximum, dead |
+| `WorldTime` | S→C | seconds, day length |
+| `AttackEntity`, `Respawn` | C→S | target id / – |
 
 A network transport only has to implement `QcTransport` (whole frames in both directions, e.g. length-prefixed over TCP) and accept connections into `QcServer::addClient`; nothing else changes.
 
@@ -77,6 +86,15 @@ The client sends intentions; the server decides (`QcServer`):
 Every visible, non-liquid block automatically gets an item of the same name that places it (`QcContentRegistry::createBlockItems`); `items/*.json` defines further items (`name`, `translation`, `texture`, `maxStack`, `places`, `tool`, `toolLevel`, `toolSpeed`, `durability`, `attackDamage`).
 
 UI controls: left mouse / F mines, right mouse / R places, 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
+
+## Creatures, health and time
+
+- **Mobs** come from `mobs/*.json`: `name`, `translation`, `health`, `width`, `height`, `walkSpeed`, `chaseSpeed`, `hostile`, `attackDamage`, `attackRange`, `attackCooldown`, `sightRange`, `spawn` (`time` `day`/`night`/`any`, `blocks`, `maxGroup` 1–4, `weight`, `caves`; night creatures spawned in caves stay by day), `model` (boxes `from`/`to` in metres around the feet, facing north, with a `texture`) and `drops`. Base mobs: zombie (hostile, night and caves), slime (hostile, caves), pig (passive, day).
+- **Server** (`QcMobManager`): every second up to four spawn attempts per player in a ring of 20–48 m, on the surface (by time of day) or on cave floors at least 8 blocks below the surface; caps of 8 hostile and 6 passive mobs per player. Behaviour per tick: hostile mobs chase the nearest player in sight and strike in range with a cooldown; passive mobs wander and flee when hurt; jumping over one-block steps; swimming. Mobs despawn beyond 96 m, night mobs by day once nobody is near. Mobs are not saved.
+- **Combat:** `AttackEntity` (reach 4 m plus the target's size, 0.4 s cooldown, damage from the held item's `attackDamage`, 1 by hand), 0.5 s invulnerability after a hit, knock-back both ways. Loot goes into the killer's inventory.
+- **Health:** 20 points; fall damage of one point per metre beyond 3 m; regeneration of one point every 4 s; death shows a screen and waits for `Respawn` (back to the spawn point with full health, inventory kept). Health is saved with the player.
+- **Time:** a day lasts 600 s (`QcDayCycle`); the server keeps `worldTime` (saved in `world.json`) and sends `WorldTime` every second; the client advances it between updates and derives sky colour, fog and the daylight factor of the block shader.
+- **Client:** `QcClientSession` mirrors entities (`EntitySpawn`/`EntityMoves`/`EntityRemove`, interpolated between ticks) and finds the creature under the crosshair; `QcEntityMesher` turns the boxes into triangles every frame; the HUD shows hearts and the time of day.
 
 ## World generation
 

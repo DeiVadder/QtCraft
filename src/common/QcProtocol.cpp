@@ -132,6 +132,22 @@ struct Encoder
         stream << m.selected;
     }
     void operator()(const QcMsg::ChatMessage &m) { stream << m.text; }
+    void operator()(const QcMsg::EntitySpawn &m)
+    {
+        stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
+    }
+    void operator()(const QcMsg::EntityMoves &m)
+    {
+        stream << quint32(m.moves.size());
+        for (const QcMsg::EntityMove &move : m.moves) {
+            stream << move.id << move.position << move.yaw << move.health << move.hurt;
+        }
+    }
+    void operator()(QcMsg::EntityRemove m) { stream << m.id; }
+    void operator()(const QcMsg::PlayerHealth &m) { stream << m.health << m.maxHealth << m.dead; }
+    void operator()(QcMsg::WorldTime m) { stream << m.time << m.dayLength; }
+    void operator()(QcMsg::AttackEntity m) { stream << m.id; }
+    void operator()(QcMsg::Respawn) {}
 
     void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
@@ -323,6 +339,85 @@ QcResult<QcMessage> decodePayload<QcMsg::ChatMessage>(QDataStream &stream)
     return m;
 }
 
+bool isFinite(const QcVec3 &v)
+{
+    return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z);
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::EntitySpawn>(QDataStream &stream)
+{
+    QcMsg::EntitySpawn m;
+    stream >> m.id >> m.mobType >> m.name >> m.position >> m.yaw >> m.health;
+    if (!isFinite(m.position) || !std::isfinite(m.yaw) || !std::isfinite(m.health)) {
+        return qcError(u"Non-finite entity data"_s);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::EntityMoves>(QDataStream &stream)
+{
+    QcMsg::EntityMoves m;
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, count)) {
+        return qcError(u"Corrupt entity moves"_s);
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        QcMsg::EntityMove move;
+        stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt;
+        if (!isFinite(move.position) || !std::isfinite(move.yaw) || !std::isfinite(move.health)) {
+            return qcError(u"Non-finite entity data"_s);
+        }
+        m.moves.append(move);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::EntityRemove>(QDataStream &stream)
+{
+    QcMsg::EntityRemove m;
+    stream >> m.id;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::PlayerHealth>(QDataStream &stream)
+{
+    QcMsg::PlayerHealth m;
+    stream >> m.health >> m.maxHealth >> m.dead;
+    if (!std::isfinite(m.health) || !std::isfinite(m.maxHealth)) {
+        return qcError(u"Non-finite health"_s);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::WorldTime>(QDataStream &stream)
+{
+    QcMsg::WorldTime m;
+    stream >> m.time >> m.dayLength;
+    if (!std::isfinite(m.time) || !std::isfinite(m.dayLength) || m.dayLength <= 0.0) {
+        return qcError(u"Invalid world time"_s);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::AttackEntity>(QDataStream &stream)
+{
+    QcMsg::AttackEntity m;
+    stream >> m.id;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::Respawn>(QDataStream &)
+{
+    return QcMsg::Respawn{};
+}
+
 template<std::size_t... I>
 QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
 {
@@ -364,7 +459,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::StartMining>() || is.template operator()<QcMsg::CancelMining>()
                                || is.template operator()<QcMsg::FinishMining>() || is.template operator()<QcMsg::UseItem>()
                                || is.template operator()<QcMsg::SelectHotbarSlot>()
-                               || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>();
+                               || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>()
+                               || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>();
     return clientMessage == (sender == Peer::Client);
 }
 

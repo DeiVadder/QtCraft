@@ -1,11 +1,13 @@
 #include "QcServer.h"
 
 #include "QcConnection.h"
+#include "QcDayCycle.h"
 #include "QcInventory.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
 #include "QcRaycast.h"
+#include "QcServerClient.h"
 #include "QcTransport.h"
 
 #include <QDir>
@@ -23,8 +25,6 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcServer, "qtcraft.server")
 
-// Inputs a client may queue beyond one per tick before further inputs are dropped (anti speed-hack).
-constexpr int maxInputBudget = 10;
 constexpr int tickIntervalMs = int(QcPhysics::tickDuration * 1000.0);
 // Bounded so that turning around re-prioritises quickly instead of finishing a long old queue.
 constexpr qsizetype maxPendingGeneration = 48;
@@ -36,26 +36,6 @@ QcChunkPos chunkOf(const QcVec3 &position)
 
 } // namespace
 
-struct QcServer::Client
-{
-    enum class State { AwaitingHello, Playing, Closed };
-
-    std::unique_ptr<QcConnection> connection;
-    State state = State::AwaitingHello;
-    quint32 entityId = 0;
-    QString name;
-    QcEntityMotion motion;
-    int inputBudget = maxInputBudget;
-    quint32 lastInputSequence = 0;
-    bool stateDirty = false;
-    QSet<QcChunkPos> sentChunks;
-    QcInventory inventory;
-    float yaw = 0.0f;
-    float pitch = 0.0f;
-    bool joined = false;
-    std::optional<QcBlockPos> miningPos;
-    quint64 miningStartTick = 0;
-};
 
 QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                    std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
@@ -64,6 +44,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_content(content)
     , m_world(std::move(content), std::move(generator))
     , m_tickTimer(new QTimer(this))
+    , m_mobs(m_content, quint64(m_config.seed))
 {
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(tickIntervalMs);
@@ -84,6 +65,7 @@ QcStatus QcServer::openWorld()
     }
     m_storage.emplace(m_config.worldDirectory, m_content);
     if (!QFile::exists(QDir(m_config.worldDirectory).filePath(u"world.json"_s))) {
+        m_info.worldTime = QcDayCycle::startTime;
         m_info.name = m_config.worldName;
         m_info.seed = m_config.seed;
         m_info.created = QDateTime::currentDateTimeUtc();
@@ -112,19 +94,22 @@ QcStatus QcServer::openWorld()
     return {};
 }
 
-void QcServer::savePlayer(const Client &client)
+QcStatus QcServer::savePlayer(const Client &client)
 {
     if (!m_storage || client.name.isEmpty()) {
-        return;
+        return {};
     }
     QcPlayerData player;
     player.motion = client.motion;
     player.yaw = client.yaw;
     player.pitch = client.pitch;
     player.inventory = client.inventory;
-    if (const QcStatus saved = m_storage->writePlayer(client.name, player); !saved) {
+    player.health = client.health;
+    const QcStatus saved = m_storage->writePlayer(client.name, player);
+    if (!saved) {
         qCWarning(lcServer) << saved.error();
     }
+    return saved;
 }
 
 QcStatus QcServer::save()
@@ -144,7 +129,9 @@ QcStatus QcServer::save()
     }
     for (const auto &client : m_clients) {
         if (client->joined) {
-            savePlayer(*client);
+            if (const QcStatus saved = savePlayer(*client); !saved) {
+                return saved;
+            }
         }
     }
     return {};
@@ -189,6 +176,14 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         client.connection->close();
         return;
     }
+    // The dead neither mine nor use items; their mining state is dropped.
+    const bool worldAction = std::holds_alternative<QcMsg::StartMining>(message)
+                             || std::holds_alternative<QcMsg::FinishMining>(message)
+                             || std::holds_alternative<QcMsg::UseItem>(message);
+    if (client.dead && worldAction) {
+        client.miningPos.reset();
+        return;
+    }
     if (const auto *input = std::get_if<QcMsg::PlayerInput>(&message)) {
         handleInput(client, *input);
     } else if (const auto *start = std::get_if<QcMsg::StartMining>(&message)) {
@@ -208,6 +203,10 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         client.inventory.move(move->from, move->to, *m_content);
         client.miningPos.reset();
         sendInventory(client);
+    } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
+        handleAttack(client, attack->id);
+    } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
+        handleRespawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
         handleChat(client, chat->text.left(256));
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
@@ -243,9 +242,13 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
         }
         if (*stored) {
             client.motion = (*stored)->motion;
+            client.fallPeak = client.motion.position.y;
             client.yaw = (*stored)->yaw;
             client.pitch = (*stored)->pitch;
             client.inventory = (*stored)->inventory;
+            client.health = std::clamp((*stored)->health, 0.0, playerMaxHealth);
+            // Who left while dead comes back to the death screen and respawns from there.
+            client.dead = client.health <= 0.0;
             client.state = Client::State::Playing;
             client.joined = true;
             client.stateDirty = true;
@@ -254,6 +257,8 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
                                                    m_config.seed, client.yaw, client.pitch, true});
             client.connection->send(QcMsg::ContentSync{m_content});
             sendInventory(client);
+            sendHealth(client);
+            sendTime(client);
             m_world.loadChunk(chunkOf(client.motion.position));
             streamChunks(client);
             return;
@@ -261,6 +266,21 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     }
     client.state = Client::State::Playing;
     client.joined = true;
+    client.motion.position = spawnPosition();
+    client.fallPeak = client.motion.position.y;
+    client.stateDirty = true;
+    qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
+
+    client.connection->send(QcMsg::Welcome{QcProtocol::version, client.entityId, m_config.worldName, m_config.seed, 0.0f, 0.0f, false});
+    client.connection->send(QcMsg::ContentSync{m_content});
+    sendInventory(client);
+    sendHealth(client);
+    sendTime(client);
+    streamChunks(client);
+}
+
+QcVec3 QcServer::spawnPosition()
+{
     QcBlockPos spawn = m_world.generator().spawnPoint();
     if (m_config.spawnColumn) {
         spawn = {(*m_config.spawnColumn)[0], 0, (*m_config.spawnColumn)[1]};
@@ -268,19 +288,18 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     // Stand on whatever the generated column really contains (caves, trees, water surface).
     const std::shared_ptr<const QcChunk> spawnChunk = m_world.loadChunk(spawn.chunk());
     spawn.y = spawnChunk->highestNonAir(spawn.localX(), spawn.localZ()) + 1;
-    client.motion.position = {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
-    client.stateDirty = true;
-    qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
-
-    client.connection->send(QcMsg::Welcome{QcProtocol::version, client.entityId, m_config.worldName, m_config.seed, 0.0f, 0.0f, false});
-    client.connection->send(QcMsg::ContentSync{m_content});
-    sendInventory(client);
-    streamChunks(client);
+    return {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
 }
 
 void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
 {
     if (client.inputBudget <= 0) {
+        return;
+    }
+    if (client.dead) {
+        // Acknowledge without moving so the client's queue of predicted inputs drains.
+        client.lastInputSequence = message.input.sequence;
+        client.stateDirty = true;
         return;
     }
     --client.inputBudget;
@@ -290,158 +309,15 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.strafe = std::clamp(input.strafe, -1.0f, 1.0f);
     input.pitch = std::clamp(input.pitch, -90.0f, 90.0f);
     input.yaw = std::fmod(input.yaw, 360.0f);
+    const bool wasOnGround = client.motion.onGround;
+    const bool wasInWater = client.motion.inWater;
+    const double previousY = client.motion.position.y;
     QcPhysics::stepPlayer(client.motion, input, m_world, QcPhysics::tickDuration);
+    updateHealth(client, wasOnGround, wasInWater, previousY);
     client.yaw = input.yaw;
     client.pitch = input.pitch;
     client.lastInputSequence = input.sequence;
     client.stateDirty = true;
-}
-
-const QcItemDefinition *QcServer::heldItem(const Client &client) const
-{
-    const QcItemStack &held = client.inventory.selectedStack();
-    return !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-}
-
-bool QcServer::isWithinReach(const Client &client, QcBlockPos pos) const
-{
-    // One metre of slack for movement between the client's decision and the server's check.
-    constexpr double tolerance = 1.0;
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
-    return (centre - eye).length() <= QcRaycast::playerReach + tolerance;
-}
-
-void QcServer::setBlockAndBroadcast(QcBlockPos pos, QcBlockId block)
-{
-    if (!m_world.setBlock(pos, block)) {
-        return;
-    }
-    for (const auto &client : m_clients) {
-        if (client->state == Client::State::Playing && client->sentChunks.contains(pos.chunk())) {
-            client->connection->send(QcMsg::BlockUpdate{pos, block});
-        }
-    }
-}
-
-void QcServer::sendInventory(Client &client)
-{
-    client.connection->send(QcMsg::InventoryState{client.inventory.allSlots(), client.inventory.selectedHotbarSlot()});
-}
-
-void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
-{
-    const bool sameTarget = client.miningPos && *client.miningPos == pos;
-    client.miningPos.reset();
-    const std::optional<QcBlockId> block = m_world.blockAt(pos);
-    if (!sameTarget || !block || *block == qcAirBlockId || !isWithinReach(client, pos)) {
-        // Resend the true block so a client that predicted the break shows it again.
-        if (block) {
-            client.connection->send(QcMsg::BlockUpdate{pos, *block});
-        }
-        return;
-    }
-    const QcBlockDefinition &definition = m_content->block(*block);
-    const QcItemDefinition *held = heldItem(client);
-    const double seconds = QcMining::breakSeconds(definition, held);
-    const auto requiredTicks = quint64(std::ceil(seconds * QcPhysics::tickRate));
-    if (seconds < 0.0 || m_tickCount - client.miningStartTick + miningToleranceTicks < requiredTicks) {
-        client.connection->send(QcMsg::BlockUpdate{pos, *block});
-        return;
-    }
-    setBlockAndBroadcast(pos, qcAirBlockId);
-    // Drops go straight into the inventory; what does not fit is lost.
-    if (QcMining::canHarvest(definition, held)) {
-        for (const QcItemDrop &drop : definition.drops) {
-            if (const std::optional<QcItemId> item = m_content->itemId(drop.item)) {
-                client.inventory.add(*item, drop.count, *m_content);
-            }
-        }
-    }
-    if (held && held->durability > 0) {
-        const int slot = client.inventory.selectedHotbarSlot();
-        QcItemStack tool = client.inventory.slot(slot);
-        if (++tool.damage >= held->durability) {
-            tool = {};
-        }
-        client.inventory.setSlot(slot, tool);
-    }
-    sendInventory(client);
-}
-
-void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
-{
-    const QcBlockPos target = qcNeighbour(message.target, message.face);
-    const QcItemDefinition *held = heldItem(client);
-    const std::optional<QcBlockId> clicked = m_world.blockAt(message.target);
-    const std::optional<QcBlockId> existing = m_world.blockAt(target);
-    const std::optional<QcBlockId> placed = held ? m_content->blockId(held->placesBlock) : std::nullopt;
-    const bool clickedSolid = clicked && m_content->isValidBlock(*clicked) && !m_content->block(*clicked).liquid;
-    const auto reject = [&] {
-        if (existing) {
-            client.connection->send(QcMsg::BlockUpdate{target, *existing});
-        }
-        sendInventory(client);
-    };
-    if (!placed || !clickedSolid || *clicked == qcAirBlockId || !existing || !target.isInsideWorldHeight()
-        || !m_content->block(*existing).replaceable || !isWithinReach(client, target)) {
-        reject();
-        return;
-    }
-    if (m_content->block(*placed).solid) {
-        const QcAabb blockBox{{double(target.x), double(target.y), double(target.z)},
-                              {target.x + 1.0, target.y + 1.0, target.z + 1.0}};
-        for (const auto &other : m_clients) {
-            if (other->state == Client::State::Playing
-                && QcPhysics::boxAt(other->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight).intersects(blockBox)) {
-                reject();
-                return;
-            }
-        }
-    }
-    setBlockAndBroadcast(target, *placed);
-    client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
-    sendInventory(client);
-}
-
-void QcServer::handleChat(Client &client, const QString &text)
-{
-    const QStringList words = text.split(u' ', Qt::SkipEmptyParts);
-    if (words.isEmpty()) {
-        return;
-    }
-    const auto reply = [&client](const QString &line) { client.connection->send(QcMsg::ChatMessage{line}); };
-    if (!words.first().startsWith(u'/')) {
-        for (const auto &other : m_clients) {
-            if (other->state == Client::State::Playing) {
-                other->connection->send(QcMsg::ChatMessage{u"<%1> %2"_s.arg(client.name, text)});
-            }
-        }
-        return;
-    }
-    const QString command = words.first().mid(1).toLower();
-    if (command == u"help"_s) {
-        reply(u"Commands: /help, /give <item> [count], /save"_s);
-    } else if (command == u"save"_s) {
-        const QcStatus saved = save();
-        reply(saved ? u"World saved"_s : u"Saving failed: %1"_s.arg(saved.error()));
-    } else if (command == u"give"_s && !m_config.allowCheats) {
-        reply(u"Cheats are disabled on this server"_s);
-    } else if (command == u"give"_s && words.size() >= 2) {
-        const QString name = words[1].contains(u':') ? words[1] : u"qtcraft:"_s + words[1];
-        const std::optional<QcItemId> item = m_content->itemId(name);
-        bool countOk = true;
-        const int count = words.size() >= 3 ? words[2].toInt(&countOk) : 1;
-        if (!item || !countOk || count < 1 || count > 64 * QcInventory::slotCount) {
-            reply(u"Unknown item or invalid count: %1"_s.arg(text));
-            return;
-        }
-        const int leftover = client.inventory.add(*item, count, *m_content);
-        sendInventory(client);
-        reply(u"Gave %1 x %2"_s.arg(count - leftover).arg(name));
-    } else {
-        reply(u"Unknown command: %1"_s.arg(words.first()));
-    }
 }
 
 void QcServer::streamChunks(Client &client)
@@ -504,12 +380,17 @@ void QcServer::tick()
         }
     }
     m_world.collectGeneratedChunks();
+    tickGameplay();
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing) {
             continue;
         }
         client->inputBudget = std::min(client->inputBudget + 1, maxInputBudget);
         streamChunks(*client);
+        syncEntities(*client);
+        if (m_tickCount % quint64(QcPhysics::tickRate) == 0) {
+            sendTime(*client);
+        }
         if (client->stateDirty) {
             client->connection->send(QcMsg::PlayerState{client->lastInputSequence, client->motion});
             client->stateDirty = false;
@@ -540,7 +421,8 @@ void QcServer::removeClosedClients()
 {
     for (const auto &client : m_clients) {
         if (client->state == Client::State::Closed && client->joined) {
-            savePlayer(*client);
+            // Failures are logged by savePlayer; the client is gone and cannot be told.
+            [[maybe_unused]] const QcStatus saved = savePlayer(*client);
         }
     }
     const auto removed = std::erase_if(m_clients, [](const std::unique_ptr<Client> &client) {

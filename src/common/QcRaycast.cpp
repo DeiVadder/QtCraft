@@ -4,8 +4,39 @@
 
 #include <cmath>
 #include <limits>
+#include <utility>
 
 namespace QcRaycast {
+
+std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance)
+{
+    // Slab method: intersect the ray's entry and exit distances over the three axes.
+    double entry = 0.0;
+    double exit = maxDistance;
+    const double origins[3] = {origin.x, origin.y, origin.z};
+    const double directions[3] = {direction.x, direction.y, direction.z};
+    const double lows[3] = {box.min.x, box.min.y, box.min.z};
+    const double highs[3] = {box.max.x, box.max.y, box.max.z};
+    for (int axis = 0; axis < 3; ++axis) {
+        if (directions[axis] == 0.0) {
+            if (origins[axis] < lows[axis] || origins[axis] > highs[axis]) {
+                return std::nullopt;
+            }
+            continue;
+        }
+        double enter = (lows[axis] - origins[axis]) / directions[axis];
+        double leave = (highs[axis] - origins[axis]) / directions[axis];
+        if (enter > leave) {
+            std::swap(enter, leave);
+        }
+        entry = std::max(entry, enter);
+        exit = std::min(exit, leave);
+        if (entry > exit) {
+            return std::nullopt;
+        }
+    }
+    return entry;
+}
 
 std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance)
 {

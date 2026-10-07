@@ -33,5 +33,11 @@
     "block.qtcraft.spruce_leaves": "Fichtennadeln",
     "block.qtcraft.spruce_log": "Fichtenstamm",
     "block.qtcraft.stone": "Stein",
-    "block.qtcraft.water": "Wasser"
+    "block.qtcraft.water": "Wasser",
+    "item.qtcraft.raw_porkchop": "Rohes Schweinefleisch",
+    "item.qtcraft.rotten_flesh": "Verrottetes Fleisch",
+    "item.qtcraft.slimeball": "Schleimball",
+    "mob.qtcraft.pig": "Schwein",
+    "mob.qtcraft.slime": "Schleim",
+    "mob.qtcraft.zombie": "Zombie"
 }

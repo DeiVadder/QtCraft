@@ -167,6 +167,48 @@ void QcClientSession::handleMessage(QcMessage &&message)
         emit inventoryChanged();
     } else if (auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
         emit chatReceived(chat->text);
+    } else if (auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
+        if (spawn->mobType < -1 || (spawn->mobType >= 0 && (!m_content || spawn->mobType >= m_content->mobs().size()))) {
+            m_disconnectReason = u"Server sent an unknown mob type"_s;
+            m_connection->close();
+            return;
+        }
+        QcClientEntity entity;
+        entity.id = spawn->id;
+        entity.mobType = spawn->mobType;
+        entity.name = spawn->name;
+        entity.position = entity.previousPosition = spawn->position;
+        entity.yaw = entity.previousYaw = spawn->yaw;
+        entity.health = spawn->health;
+        m_entities.insert(entity.id, entity);
+    } else if (auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
+        for (const QcMsg::EntityMove &move : std::as_const(moves->moves)) {
+            const auto it = m_entities.find(move.id);
+            if (it == m_entities.end()) {
+                continue;
+            }
+            it->previousPosition = it->position;
+            it->previousYaw = it->yaw;
+            it->position = move.position;
+            it->yaw = move.yaw;
+            it->health = move.health;
+            if (move.hurt) {
+                it->hurtTicks = hurtFlashTicks;
+            }
+        }
+    } else if (auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
+        m_entities.remove(removed->id);
+    } else if (auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
+        m_health = health->health;
+        m_maxHealth = health->maxHealth;
+        m_dead = health->dead;
+        if (m_dead) {
+            m_miningRequested = false;
+        }
+        emit healthChanged();
+    } else if (auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
+        m_worldTime = time->time;
+        m_dayLength = time->dayLength;
     } else if (auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
         m_disconnectReason = disconnect->reason;
         m_connection->close();
@@ -199,6 +241,15 @@ void QcClientSession::tick()
         return;
     }
     ++m_tickCount;
+    m_worldTime += QcPhysics::tickDuration;
+    for (QcClientEntity &entity : m_entities) {
+        entity.hurtTicks = std::max(0, entity.hurtTicks - 1);
+    }
+    if (m_dead) {
+        // Nothing to simulate until the server respawns the player.
+        emit ticked();
+        return;
+    }
     QcPlayerInput input = m_intent;
     input.sequence = m_nextSequence++;
     m_previousMotion = m_motion;
@@ -223,6 +274,36 @@ void QcClientSession::refreshTarget()
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach);
+
+    m_targetEntity.reset();
+    double nearest = m_target ? m_target->distance : attackReach;
+    for (const QcClientEntity &entity : std::as_const(m_entities)) {
+        const bool mob = entity.mobType >= 0 && entity.mobType < m_content->mobs().size();
+        const double width = mob ? m_content->mobs()[entity.mobType].width : QcPhysics::playerWidth;
+        const double height = mob ? m_content->mobs()[entity.mobType].height : QcPhysics::playerHeight;
+        const std::optional<double> distance =
+            QcRaycast::intersectBox(eye, direction, QcPhysics::boxAt(entity.position, width, height), std::min(nearest, attackReach));
+        if (distance && *distance < nearest) {
+            nearest = *distance;
+            m_targetEntity = entity.id;
+        }
+    }
+}
+
+bool QcClientSession::attack()
+{
+    if (m_state != State::Playing || m_dead || !m_targetEntity) {
+        return false;
+    }
+    m_connection->send(QcMsg::AttackEntity{*m_targetEntity});
+    return true;
+}
+
+void QcClientSession::respawn()
+{
+    if (m_dead) {
+        m_connection->send(QcMsg::Respawn{});
+    }
 }
 
 void QcClientSession::updateTargetAndMining()

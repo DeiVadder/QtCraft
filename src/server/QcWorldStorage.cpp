@@ -124,7 +124,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     QJsonParseError error{};
     const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64(1024) * 1024), &error);
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
-        return qcError(u"%1 is damaged: %2"_s.arg(path, error.errorString()));
+        const QString reason = error.error != QJsonParseError::NoError ? error.errorString() : u"not a JSON object"_s;
+        return qcError(u"%1 is damaged: %2"_s.arg(path, reason));
     }
     const QJsonObject json = document.object();
     if (json.value(u"formatVersion"_s).toInt() != QcWorldInfo::formatVersion) {

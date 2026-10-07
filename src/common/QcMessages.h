@@ -132,10 +132,71 @@ struct ChatMessage
     QString text;
 };
 
+// Server -> client: an entity came into view. mobType is an index into the content's mobs, or -1
+// for another player.
+struct EntitySpawn
+{
+    quint32 id = 0;
+    qint32 mobType = -1;
+    QString name;
+    QcVec3 position;
+    float yaw = 0.0f;
+    double health = 0.0;
+};
+
+struct EntityMove
+{
+    quint32 id = 0;
+    QcVec3 position;
+    float yaw = 0.0f;
+    double health = 0.0;
+    // Set in the tick the entity took damage (for a hurt flash).
+    bool hurt = false;
+};
+
+// Server -> client: positions of all visible entities that changed this tick.
+struct EntityMoves
+{
+    QList<EntityMove> moves;
+};
+
+struct EntityRemove
+{
+    quint32 id = 0;
+};
+
+// Server -> client: the receiving player's health; dead players wait for Respawn.
+struct PlayerHealth
+{
+    double health = 0.0;
+    double maxHealth = 0.0;
+    bool dead = false;
+};
+
+// Server -> client: seconds since the world began and the length of a full day.
+struct WorldTime
+{
+    double time = 0.0;
+    double dayLength = 0.0;
+};
+
+// Client -> server: hit an entity with the held item.
+struct AttackEntity
+{
+    quint32 id = 0;
+};
+
+// Client -> server: leave the death screen.
+struct Respawn
+{
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
                                QcMsg::BlockUpdate, QcMsg::PlayerInput, QcMsg::PlayerState, QcMsg::Disconnect,
                                QcMsg::StartMining, QcMsg::CancelMining, QcMsg::FinishMining, QcMsg::UseItem,
                                QcMsg::SelectHotbarSlot, QcMsg::MoveInventoryItem, QcMsg::ChatInput,
-                               QcMsg::InventoryState, QcMsg::ChatMessage>;
+                               QcMsg::InventoryState, QcMsg::ChatMessage, QcMsg::EntitySpawn, QcMsg::EntityMoves,
+                               QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
+                               QcMsg::Respawn>;

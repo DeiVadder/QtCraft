@@ -24,6 +24,7 @@ qt_add_qml_module(qtcraft
     QML_FILES
         qml/Main.qml
         qml/ChatOverlay.qml
+        qml/DeathScreen.qml
         qml/Hud.qml
         qml/InventoryScreen.qml
         qml/ItemSlot.qml

@@ -38,3 +38,4 @@ qc_add_test(test_persistence SOURCES test_persistence.cpp LIBRARIES qc_server qc
 qc_add_test(test_interaction SOURCES test_interaction.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_world_library SOURCES test_world_library.cpp LIBRARIES qc_server)
 qc_add_test(test_server_validation SOURCES test_server_validation.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_mobs SOURCES test_mobs.cpp LIBRARIES qc_server TIMEOUT 180)

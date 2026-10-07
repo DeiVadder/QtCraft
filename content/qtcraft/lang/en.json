@@ -33,5 +33,11 @@
     "block.qtcraft.spruce_leaves": "Spruce leaves",
     "block.qtcraft.spruce_log": "Spruce log",
     "block.qtcraft.stone": "Stone",
-    "block.qtcraft.water": "Water"
+    "block.qtcraft.water": "Water",
+    "item.qtcraft.raw_porkchop": "Raw porkchop",
+    "item.qtcraft.rotten_flesh": "Rotten flesh",
+    "item.qtcraft.slimeball": "Slimeball",
+    "mob.qtcraft.pig": "Pig",
+    "mob.qtcraft.slime": "Slime",
+    "mob.qtcraft.zombie": "Zombie"
 }

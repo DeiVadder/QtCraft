@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockAccess.h"
+#include "QcAabb.h"
 #include "QcBlockFace.h"
 #include "QcVec3.h"
 
@@ -19,6 +20,9 @@ struct QcRaycastHit
 namespace QcRaycast {
 
 inline constexpr double playerReach = 5.0;
+
+// Distance along a normalised ray to a box, or std::nullopt when it misses within maxDistance.
+std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance);
 
 std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance);
 

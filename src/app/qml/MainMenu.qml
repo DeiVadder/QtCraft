@@ -97,7 +97,7 @@ Rectangle {
 
                                 Label {
                                     text: worldRow.modelData.error.length > 0
-                                          ? qsTr("Damaged: %1").arg(worldRow.modelData.error)
+                                          ? worldRow.modelData.error
                                           : qsTr("Last played %1 · Seed %2").arg(worldRow.modelData.lastPlayed).arg(worldRow.modelData.seed)
                                     color: worldRow.modelData.error.length > 0 ? "#ffb0b0" : "#d0ffffff"
                                     elide: Text.ElideRight

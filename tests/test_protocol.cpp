@@ -208,6 +208,43 @@ private slots:
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server).has_value());
     }
 
+    void entityAndStatusMessagesRoundTrip()
+    {
+        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5});
+        QCOMPARE(spawn.id, 42u);
+        QCOMPARE(spawn.mobType, 3);
+        QCOMPARE(spawn.name, u"Alex"_s);
+        QCOMPARE(spawn.position, (QcVec3{1.5, 70.0, -2.25}));
+        QCOMPARE(spawn.yaw, 90.0f);
+        QCOMPARE(spawn.health, 17.5);
+
+        QcMsg::EntityMoves moves;
+        moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false}};
+        const QcMsg::EntityMoves copy = roundTrip(moves);
+        QCOMPARE(copy.moves.size(), 2);
+        QCOMPARE(copy.moves.at(0).hurt, true);
+        QCOMPARE(copy.moves.at(1).position, (QcVec3{3.0, 65.0, 4.0}));
+
+        QCOMPARE(roundTrip(QcMsg::EntityRemove{77}).id, 77u);
+        const QcMsg::PlayerHealth health = roundTrip(QcMsg::PlayerHealth{3.0, 20.0, true});
+        QCOMPARE(health.health, 3.0);
+        QCOMPARE(health.dead, true);
+        QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).time, 1234.5);
+        QCOMPARE(roundTrip(QcMsg::AttackEntity{9}).id, 9u);
+        roundTrip(QcMsg::Respawn{});
+    }
+
+    void rejectsBadEntityAndTimeData()
+    {
+        QcMsg::EntitySpawn spawn;
+        spawn.position.x = std::numeric_limits<double>::infinity();
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(spawn), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::WorldTime{0.0, 0.0}), QcProtocol::Peer::Server).has_value());
+        // Combat messages only come from clients.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::AttackEntity{1}), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::PlayerHealth{}), QcProtocol::Peer::Client).has_value());
+    }
+
     void rejectsPaletteIndexOutsidePalette()
     {
         QByteArray raw;

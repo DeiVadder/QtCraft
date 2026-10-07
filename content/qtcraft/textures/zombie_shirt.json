@@ -1,0 +1,8 @@
+{
+    "name": "zombie_shirt",
+    "pattern": "noise",
+    "primary": "#2f6aa8",
+    "secondary": "#285a90",
+    "variation": 0.08,
+    "seed": 203
+}

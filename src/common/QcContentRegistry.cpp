@@ -1,5 +1,7 @@
 #include "QcContentRegistry.h"
 
+#include <cmath>
+
 #include "QcContentNames.h"
 #include "QcStreamLimits.h"
 
@@ -182,6 +184,20 @@ void registerByName(QList<Definition> &list, Definition definition)
 
 } // namespace
 
+void QcContentRegistry::registerMob(QcMobDefinition definition)
+{
+    registerByName(m_mobs, std::move(definition));
+}
+
+std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
+{
+    const auto it = std::ranges::find(m_mobs, name, &QcMobDefinition::name);
+    if (it == m_mobs.end()) {
+        return std::nullopt;
+    }
+    return int(it - m_mobs.begin());
+}
+
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, std::move(definition));
@@ -243,6 +259,14 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
                << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage;
     }
+    stream << quint32(m_mobs.size());
+    for (const QcMobDefinition &mob : m_mobs) {
+        stream << mob.name << mob.translationKey << mob.maxHealth << mob.width << mob.height << mob.hostile
+               << quint32(mob.parts.size());
+        for (const QcMobPart &part : mob.parts) {
+            stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
+        }
+    }
     stream << quint32(m_textures.size());
     for (const QcTextureDefinition &texture : m_textures) {
         stream << texture.name << QJsonDocument(texture.procedural).toJson(QJsonDocument::Compact) << texture.png;
@@ -298,6 +322,36 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
     }
     if (registry.itemCount() != qsizetype(itemCount)) {
         return qcError(u"Corrupt content: duplicate item names"_s);
+    }
+
+    quint32 mobCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, mobCount)) {
+        return qcError(u"Corrupt content: mob table"_s);
+    }
+    for (quint32 i = 0; i < mobCount; ++i) {
+        QcMobDefinition mob;
+        quint32 partCount = 0;
+        stream >> mob.name >> mob.translationKey >> mob.maxHealth >> mob.width >> mob.height >> mob.hostile;
+        if (!QcStreamLimits::readCount(stream, 256, partCount)) {
+            return qcError(u"Corrupt content: mob %1"_s.arg(i));
+        }
+        for (quint32 p = 0; p < partCount; ++p) {
+            QcMobPart part;
+            stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture;
+            mob.parts.append(part);
+        }
+        // Sizes feed physics and the mesher: reject anything outside what the parser allows.
+        const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };
+        bool valid = std::isfinite(mob.maxHealth) && mob.maxHealth > 0.0 && mob.maxHealth <= 1000.0 && plausible(mob.width) && plausible(mob.height) && mob.width > 0.0
+                     && mob.height > 0.0;
+        for (const QcMobPart &part : std::as_const(mob.parts)) {
+            valid = valid && plausible(part.from.x) && plausible(part.from.y) && plausible(part.from.z)
+                    && plausible(part.to.x) && plausible(part.to.y) && plausible(part.to.z);
+        }
+        if (stream.status() != QDataStream::Ok || !valid) {
+            return qcError(u"Corrupt content: mob %1"_s.arg(i));
+        }
+        registry.registerMob(std::move(mob));
     }
 
     quint32 textureCount = 0;

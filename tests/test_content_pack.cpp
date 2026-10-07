@@ -56,6 +56,33 @@ private slots:
         QVERIFY(block("qtcraft:grass_block").texture(QcBlockFace::Up) != block("qtcraft:grass_block").texture(QcBlockFace::North));
     }
 
+    void mobsSurviveTheContentSync()
+    {
+        QStringList warnings;
+        const auto content = *QcBaseContent::load(warnings);
+        QVERIFY(content->mobs().size() >= 3);
+        QByteArray data;
+        {
+            QDataStream out(&data, QIODevice::WriteOnly);
+            content->writeTo(out);
+        }
+        QDataStream in(data);
+        const auto copy = QcContentRegistry::readFrom(in);
+        QVERIFY(copy.has_value());
+        QCOMPARE(copy->mobs().size(), content->mobs().size());
+        const int zombie = *content->mobIndex(u"qtcraft:zombie"_s);
+        QCOMPARE(copy->mobs()[zombie].parts.size(), content->mobs()[zombie].parts.size());
+        QCOMPARE(copy->mobs()[zombie].height, content->mobs()[zombie].height);
+        for (const QcMobDefinition &mob : content->mobs()) {
+            for (const QcMobPart &part : mob.parts) {
+                QVERIFY2(content->texture(part.texture), qPrintable(part.texture));
+            }
+            for (const QString &language : {u"en"_s, u"de"_s}) {
+                QVERIFY(content->translate(mob.translationKey, language) != mob.translationKey);
+            }
+        }
+    }
+
     void everyTextureAndTranslationExists()
     {
         QStringList warnings;

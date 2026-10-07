@@ -181,12 +181,38 @@ bool QcHeadlessGame::start(const QStringList &arguments)
 
 QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 {
-    // Save first, so reopening the current world reads the latest state.
+    // Reopening the open world: stop it completely first so only one server uses the directory,
+    // and reopen the previous state if that fails.
+    if (m_server && !config.worldDirectory.isEmpty() && config.worldDirectory == m_currentConfig.worldDirectory) {
+        if (m_session) {
+            m_session->disconnectFromServer();
+            m_session->deleteLater();
+            m_session = nullptr;
+        }
+        if (const QcStatus stopped = m_server->shutdown(); !stopped) {
+            printError(u"saving the world failed: "_s + stopped.error());
+        }
+        m_server.reset();
+        if (const QcStatus reopened = openWorld(config); !reopened) {
+            // No world is open now; requests answer with errors until another world is loaded.
+            if (m_control) {
+                m_control->setSession(nullptr);
+            }
+            return reopened;
+        }
+        return {};
+    }
+    // Save first so the current world is safe whatever happens next.
     if (m_server) {
         if (const QcStatus saved = m_server->save(); !saved) {
             return qcError(u"Cannot save the current world: %1"_s.arg(saved.error()));
         }
     }
+    return openWorld(config);
+}
+
+QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
+{
     QStringList generatorWarnings;
     auto generator = std::make_unique<QcTerrainGenerator>(m_content, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {
@@ -209,6 +235,7 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
         m_server.reset();
     }
     m_server = std::move(server);
+    m_currentConfig = config;
     m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
     connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);

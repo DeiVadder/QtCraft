@@ -93,6 +93,64 @@ Item {
         }
     }
 
+    // Ten hearts, two health points each; a heart is half full for an odd remainder.
+    Row {
+        anchors.left: hotbar.left
+        anchors.bottom: hotbar.top
+        anchors.bottomMargin: 6
+        spacing: 2
+
+        Repeater {
+            model: Math.ceil(hud.game.maxHealth / 2)
+
+            Item {
+                id: heart
+
+                required property int index
+                readonly property real fill: Math.max(0, Math.min(1, (hud.game.health - index * 2) / 2))
+
+                width: 22
+                height: 22
+
+                Text {
+                    anchors.fill: parent
+                    text: "\u2665"
+                    color: "#60000000"
+                    font.pixelSize: 22
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item {
+                    width: parent.width * heart.fill
+                    height: parent.height
+                    clip: true
+
+                    Text {
+                        width: heart.width
+                        height: heart.height
+                        text: "\u2665"
+                        color: "#e02828"
+                        style: Text.Outline
+                        styleColor: "#80000000"
+                        font.pixelSize: 22
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+            }
+        }
+    }
+
+    Label {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 8
+        color: "white"
+        style: Text.Outline
+        styleColor: "#80000000"
+        font.pixelSize: 14
+        text: hud.game.timeOfDay
+    }
+
     Row {
         id: hotbar
 
@@ -133,7 +191,7 @@ Item {
         styleColor: "#a0000000"
         font.pixelSize: 13
         text: hud.game.mouseCaptured
-              ? qsTr("Left: mine (F)  Right: place (R)  1-9/wheel: select  E: inventory  T: chat  Esc: menu")
+              ? qsTr("Left: mine/attack  F: mine  Right/R: place  1-9/wheel: select  E: inventory  T: chat  Esc: menu")
               : qsTr("Click to look around. WASD to move, Space to jump, Shift to sneak.")
     }
 }

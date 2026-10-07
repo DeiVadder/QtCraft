@@ -10,6 +10,7 @@ qt_add_library(qc_common STATIC
     QcConnection.h QcConnection.cpp
     QcContentNames.h QcContentNames.cpp
     QcCrc32.h QcCrc32.cpp
+    QcDayCycle.h QcDayCycle.cpp
     QcContentParser.h QcContentParser.cpp
     QcContentRegistry.h QcContentRegistry.cpp
     QcEntityMotion.h
@@ -21,6 +22,7 @@ qt_add_library(qc_common STATIC
     QcMailbox.h
     QcMessages.h
     QcMining.h QcMining.cpp
+    QcMobDefinition.h
     QcPhysics.h QcPhysics.cpp
     QcPlayerInput.h
     QcProtocol.h QcProtocol.cpp

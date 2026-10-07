@@ -29,7 +29,7 @@ Returned by `status` and by all tick-based commands:
  "yaw":90,"pitch":0,"loadedChunks":81}
 ```
 
-Additional fields: `target` (the block the player looks at within 5 m: `x`, `y`, `z`, `face`, `block`), `selectedSlot`, `held` (`{"item","count"}` or `null`) and `messages` (chat lines received while the request ran).
+Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day lasts 600 s), `night`, `targetEntity` (id of the creature under the crosshair), `target` (the block the player looks at within 5 m: `x`, `y`, `z`, `face`, `block`), `selectedSlot`, `held` (`{"item","count"}` or `null`) and `messages` (chat lines received while the request ran).
 
 `position` is the centre of the player's feet in metres (1 block = 1 m). `yaw` 0 looks north (-Z), 90 east (+X), 180 south (+Z); `pitch` is positive upwards. `state` is one of `Connecting`, `Loading`, `Playing`, `Disconnected` (then `disconnectReason` is set). `tick` counts client simulation ticks (20 per second).
 
@@ -51,11 +51,14 @@ Additional fields: `target` (the block the player looks at within 5 m: `x`, `y`,
 | `select` | `slot` (0–8) | Selects a hotbar slot; answers with the inventory. |
 | `inventory` | – | `{"selectedSlot":0,"slots":[{"slot":0,"item":"qtcraft:dirt","count":3}]}` |
 | `moveItem` | `from`, `to` (0–35) | Moves or merges an inventory stack. |
-| `chat` | `text` | Sends a chat line or a command (`/help`, `/give <item> [count]`); server replies appear in `messages`. |
+| `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`. |
 | `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
 | `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |
 | `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |
 | `worldSave` | – | Saves the current world and reports failures (`ok: false` with the reason). |
+| `entities` | `radius` (1–64, default 32) | `{"entities":[{"id","type","name","hostile","position","distance","health"}]}` – mobs and other players in view. |
+| `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach or hidden behind blocks. |
+| `respawn` | – | Leaves the death screen; answers when the player is alive again. |
 | `quit` | – | Ends the process (the current world is saved). |
 
 All tick-based commands fail with `"Timed out"` if the session stops ticking for much longer than requested (e.g. after a disconnect).

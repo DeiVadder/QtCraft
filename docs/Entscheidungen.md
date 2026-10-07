@@ -124,3 +124,15 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** Befehle, die Regeln umgehen (`/give`, ab Etappe 5 auch `/time`, `/summon`, `/heal`, `/kill`), laufen nur mit `QcServerConfig::allowCheats` (Standard im Einzelspieler: an). Ein späterer dedizierter Server setzt es aus und erlaubt sie nur Operatoren.
 - **Warum:** Im Einzelspieler sind sie Test- und Komfortwerkzeug (auch für die Steuerschnittstelle); im Mehrspieler würden sie die Validierung des Servers aushebeln.
 - **Verworfen:** Befehle ganz entfernen (Szenariotests und Agenten bräuchten Umwege).
+
+## E-022 Mobs werden nicht gespeichert, Inventar bleibt beim Tod
+
+- **Was:** Mobs existieren nur um Spieler herum und verschwinden beim Schließen der Welt; beim Tod behält der Spieler sein Inventar und erscheint am Spawnpunkt.
+- **Warum:** Kein Entity-Speicherformat nötig; Mobs erscheinen ohnehin ständig neu. Ohne Item-Entities (E-019) gäbe es keinen Weg, verlorene Gegenstände wiederzuholen.
+- **Verworfen:** Mobs in Regionsdateien speichern; Inventar beim Tod verlieren.
+
+## E-023 Entities als pro Frame erzeugtes Mesh
+
+- **Was:** Mob-Modelle sind Quader aus den Daten; der Client erzeugt jedes Frame ein gemeinsames Mesh aller sichtbaren Entities (interpoliert, gedreht) und zeichnet es mit der Block-Pipeline. Licht unter Dächern wird grob angenähert (Spalte bedeckt → dunkler).
+- **Warum:** Wenige Dutzend Quader kosten pro Frame kaum etwas, und es braucht weder Skelett-Animation noch eigene Shader.
+- **Verworfen:** Eigene Instanzierungs-Pipeline (Aufwand ohne Messnutzen bei dieser Anzahl); Licht exakt aus dem Lichtvolumen (liegt nur in den Mesh-Jobs vor).

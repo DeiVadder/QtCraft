@@ -1,7 +1,10 @@
 #include "QcControlInterface.h"
 
+#include <utility>
+
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcDayCycle.h"
 #include "QcPhysics.h"
 
 #include <QIODevice>
@@ -166,6 +169,14 @@ QJsonObject QcControlInterface::playerStatus() const
                                                {u"face"_s, faceName(target->face)},
                                                {u"block"_s, block ? m_session->content()->block(*block).name : QString()}});
     }
+    status.insert(u"health"_s, m_session->health());
+    status.insert(u"maxHealth"_s, m_session->maxHealth());
+    status.insert(u"dead"_s, m_session->isDead());
+    status.insert(u"worldTime"_s, m_session->worldTime());
+    status.insert(u"night"_s, QcDayCycle::isNight(m_session->worldTime()));
+    if (const std::optional<quint32> entity = m_session->targetEntity()) {
+        status.insert(u"targetEntity"_s, qint64(*entity));
+    }
     const QcItemStack held = m_session->inventory().selectedStack();
     status.insert(u"selectedSlot"_s, m_session->inventory().selectedHotbarSlot());
     status.insert(u"held"_s, stackJson(held));
@@ -232,6 +243,11 @@ void QcControlInterface::lookAt(QcBlockPos block, std::optional<QcBlockFace> fac
         const QcFaceOffset normal = qcFaceOffset(*face);
         point += QcVec3{normal.dx * 0.49, normal.dy * 0.49, normal.dz * 0.49};
     }
+    lookAtPoint(point);
+}
+
+void QcControlInterface::lookAtPoint(const QcVec3 &point)
+{
     const QcVec3 eye = m_session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 delta = point - eye;
     QcPlayerInput intent = m_session->intent();
@@ -252,7 +268,7 @@ void QcControlInterface::start(const QJsonObject &request)
     }
     m_chatLog.clear();
     for (const char *key :
-         {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls", "slot", "from", "to", "maxTicks"}) {
+         {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls", "slot", "from", "to", "maxTicks", "entity"}) {
         const QJsonValue value = request.value(QLatin1StringView(key));
         if (!value.isUndefined() && !value.isDouble()) {
             fail(request, u"'%1' must be a number"_s.arg(QLatin1StringView(key)));
@@ -351,6 +367,57 @@ void QcControlInterface::start(const QJsonObject &request)
                                      }
                                      return m_session->tickCount() >= startTick + 4;
                                  }};
+    } else if (command == u"entities"_s) {
+        const int radius = std::clamp(intField(request, u"radius"_s, 32), 1, 64);
+        const QcVec3 me = m_session->playerMotion().position;
+        const auto content = m_session->content();
+        QJsonArray list;
+        for (const QcClientEntity &entity : m_session->entities()) {
+            const double distance = (entity.position - me).length();
+            if (distance > radius) {
+                continue;
+            }
+            const bool mob = content && entity.mobType >= 0 && entity.mobType < content->mobs().size();
+            list.append(QJsonObject{{u"id"_s, qint64(entity.id)},
+                                    {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
+                                    {u"name"_s, entity.name},
+                                    {u"hostile"_s, mob && content->mobs()[entity.mobType].hostile},
+                                    {u"position"_s, vectorJson(entity.position)},
+                                    {u"distance"_s, distance},
+                                    {u"health"_s, entity.health}});
+        }
+        finish(request, {{u"entities"_s, list}});
+    } else if (command == u"attack"_s) {
+        // Turn towards the entity's centre, then hit it on the next tick.
+        const qint64 wanted = request.value(u"entity"_s).toInteger(-1);
+        const auto it = m_session->entities().constFind(quint32(wanted));
+        if (wanted < 0 || it == m_session->entities().constEnd()) {
+            fail(request, u"No entity with this id nearby"_s);
+            return;
+        }
+        const auto content = m_session->content();
+        const double height = it->mobType >= 0 && it->mobType < content->mobs().size() ? content->mobs()[it->mobType].height
+                                                                                       : QcPhysics::playerHeight;
+        lookAtPoint(it->position + QcVec3{0.0, height * 0.5, 0.0});
+        bool sent = false;
+        m_active = ActiveCommand{request, timeoutPolls(4), [this, startTick, sent, wanted]() mutable {
+                                     if (!sent) {
+                                         if (m_session->tickCount() <= startTick) {
+                                             return false;
+                                         }
+                                         if (m_session->targetEntity() != std::optional<quint32>(quint32(wanted))
+                                             || !m_session->attack()) {
+                                             m_activeError = u"Entity is not in reach or not in sight"_s;
+                                             return true;
+                                         }
+                                         sent = true;
+                                         return false;
+                                     }
+                                     return m_session->tickCount() >= startTick + 3;
+                                 }};
+    } else if (command == u"respawn"_s) {
+        m_session->respawn();
+        m_active = ActiveCommand{request, timeoutPolls(10), [this] { return !m_session->isDead(); }};
     } else if (command == u"select"_s) {
         m_session->selectHotbarSlot(intField(request, u"slot"_s, 0));
         finish(request, inventoryJson());
@@ -459,8 +526,13 @@ void QcControlInterface::onTick()
     }
     if (m_active->step()) {
         const QJsonObject request = m_active->request;
+        const QString error = std::exchange(m_activeError, {});
         m_active.reset();
-        finish(request, playerStatus());
+        if (error.isEmpty()) {
+            finish(request, playerStatus());
+        } else {
+            fail(request, error);
+        }
         processQueue();
         return;
     }

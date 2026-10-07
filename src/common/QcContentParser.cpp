@@ -5,6 +5,8 @@
 
 #include <QJsonArray>
 
+#include <cmath>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -225,6 +227,118 @@ QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
         entries.insert(it.key(), it.value().toString());
     }
     return entries;
+}
+
+namespace {
+
+std::optional<QcVec3> vectorField(const QJsonValue &value)
+{
+    const QJsonArray array = value.toArray();
+    if (!value.isArray() || array.size() != 3 || !array.at(0).isDouble() || !array.at(1).isDouble() || !array.at(2).isDouble()) {
+        return std::nullopt;
+    }
+    const QcVec3 vector{array.at(0).toDouble(), array.at(1).toDouble(), array.at(2).toDouble()};
+    constexpr double limit = 8.0;
+    if (std::abs(vector.x) > limit || std::abs(vector.y) > limit || std::abs(vector.z) > limit) {
+        return std::nullopt;
+    }
+    return vector;
+}
+
+QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespace, FieldReader &reader)
+{
+    QList<QcItemDrop> result;
+    if (drops.isUndefined()) {
+        return result;
+    }
+    if (!drops.isArray()) {
+        reader.fail(u"'drops' must be an array"_s);
+        return result;
+    }
+    const QJsonArray list = drops.toArray();
+    for (const auto &entry : list) {
+        const QJsonObject dropJson = entry.toObject();
+        FieldReader dropReader{dropJson, reader.context, {}};
+        const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64)};
+        if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
+            reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
+            break;
+        }
+        result.append(drop);
+    }
+    return result;
+}
+
+} // namespace
+
+QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"mob"_s, {}};
+    QcMobDefinition mob;
+    mob.name = reader.name(u"name"_s, packNamespace);
+    if (mob.name.isEmpty()) {
+        return qcError(reader.ok() ? u"mob: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"mob '%1'"_s.arg(mob.name);
+    mob.translationKey = reader.string(
+        u"translation"_s, u"mob.%1.%2"_s.arg(mob.name.left(mob.name.indexOf(u':')), localPart(mob.name).replace(u'/', u'.')));
+    mob.maxHealth = reader.number(u"health"_s, 10.0, 1.0, 1000.0);
+    mob.width = reader.number(u"width"_s, 0.6, 0.2, 4.0);
+    mob.height = reader.number(u"height"_s, 1.8, 0.2, 4.0);
+    mob.walkSpeed = reader.number(u"walkSpeed"_s, 1.5, 0.0, 20.0);
+    mob.chaseSpeed = reader.number(u"chaseSpeed"_s, mob.walkSpeed * 2.0, 0.0, 20.0);
+    mob.hostile = reader.boolean(u"hostile"_s, false);
+    mob.attackDamage = reader.number(u"attackDamage"_s, 2.0, 0.0, 100.0);
+    mob.attackRange = reader.number(u"attackRange"_s, 1.6, 0.5, 8.0);
+    mob.attackCooldown = reader.number(u"attackCooldown"_s, 1.0, 0.1, 60.0);
+    mob.sightRange = reader.number(u"sightRange"_s, 16.0, 1.0, 64.0);
+
+    const QJsonObject spawn = json.value(u"spawn"_s).toObject();
+    FieldReader spawnReader{spawn, reader.context + u" spawn"_s, {}};
+    const QString time = spawnReader.string(u"time"_s, u"any"_s);
+    if (time == u"day"_s) {
+        mob.spawnTime = QcMobDefinition::SpawnTime::Day;
+    } else if (time == u"night"_s) {
+        mob.spawnTime = QcMobDefinition::SpawnTime::Night;
+    } else if (time != u"any"_s) {
+        spawnReader.fail(u"'time' must be day, night or any"_s);
+    }
+    mob.maxGroup = spawnReader.integer(u"maxGroup"_s, 2, 1, 4);
+    mob.spawnWeight = spawnReader.number(u"weight"_s, 1.0, 0.0, 100.0);
+    mob.spawnsInCaves = spawnReader.boolean(u"caves"_s, false);
+    const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
+    for (const auto &entry : blocks) {
+        const QString name = QcContentNames::qualify(entry.toString(), packNamespace);
+        if (name.isEmpty()) {
+            spawnReader.fail(u"invalid 'blocks' entry"_s);
+            break;
+        }
+        mob.spawnBlocks.append(name);
+    }
+    if (!spawnReader.ok()) {
+        reader.fail(spawnReader.error);
+    }
+
+    const QJsonArray model = json.value(u"model"_s).toArray();
+    for (const auto &entry : model) {
+        const QJsonObject partJson = entry.toObject();
+        const std::optional<QcVec3> from = vectorField(partJson.value(u"from"_s));
+        const std::optional<QcVec3> to = vectorField(partJson.value(u"to"_s));
+        const QString texture = QcContentNames::qualify(partJson.value(u"texture"_s).toString(), packNamespace);
+        if (!from || !to || texture.isEmpty() || from->x >= to->x || from->y >= to->y || from->z >= to->z) {
+            reader.fail(u"model parts need 'from' < 'to' (three numbers within 8 m) and a 'texture'"_s);
+            break;
+        }
+        mob.parts.append({*from, *to, texture});
+    }
+    if (mob.parts.isEmpty()) {
+        reader.fail(u"'model' needs at least one part"_s);
+    }
+    mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return mob;
 }
 
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)

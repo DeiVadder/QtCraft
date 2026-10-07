@@ -9,12 +9,12 @@
 
 namespace QcPhysics {
 
-namespace {
-
 QcBlockPos blockContaining(const QcVec3 &point)
 {
     return {int(std::floor(point.x)), int(std::floor(point.y)), int(std::floor(point.z))};
 }
+
+namespace {
 
 QList<QcAabb> solidBoxesIn(const QcAabb &region, const QcBlockAccess &world)
 {
@@ -97,6 +97,42 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
     return result;
 }
 
+MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, bool jump, double width, double height,
+                      const QcBlockAccess &world, double dt)
+{
+    const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
+    const double blend = std::min(1.0, acceleration * dt);
+    motion.velocity.x += (wish.x * speed - motion.velocity.x) * blend;
+    motion.velocity.z += (wish.z * speed - motion.velocity.z) * blend;
+
+    if (motion.inWater) {
+        motion.velocity.y -= waterGravity * dt;
+        if (jump) {
+            motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed);
+        }
+        motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed);
+    } else {
+        if (jump && motion.onGround) {
+            motion.velocity.y = jumpVelocity;
+        }
+        motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
+    }
+
+    const MoveResult move = moveBox(boxAt(motion.position, width, height), motion.velocity * dt, world);
+    motion.position += move.applied;
+    motion.onGround = move.blockedY && motion.velocity.y < 0.0;
+    if (move.blockedY) {
+        motion.velocity.y = 0.0;
+    }
+    if (move.blockedX) {
+        motion.velocity.x = 0.0;
+    }
+    if (move.blockedZ) {
+        motion.velocity.z = 0.0;
+    }
+    return move;
+}
+
 void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt)
 {
     motion.inWater = isLiquidAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0}));
@@ -117,36 +153,7 @@ void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBloc
     } else if (input.sprint && input.forward > 0.0f) {
         speed = sprintSpeed;
     }
-    const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
-    const double blend = std::min(1.0, acceleration * dt);
-    motion.velocity.x += (wish.x * speed - motion.velocity.x) * blend;
-    motion.velocity.z += (wish.z * speed - motion.velocity.z) * blend;
-
-    if (motion.inWater) {
-        motion.velocity.y -= waterGravity * dt;
-        if (input.jump) {
-            motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed);
-        }
-        motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed);
-    } else {
-        if (input.jump && motion.onGround) {
-            motion.velocity.y = jumpVelocity;
-        }
-        motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
-    }
-
-    const MoveResult move = moveBox(boxAt(motion.position, playerWidth, playerHeight), motion.velocity * dt, world);
-    motion.position += move.applied;
-    motion.onGround = move.blockedY && motion.velocity.y < 0.0;
-    if (move.blockedY) {
-        motion.velocity.y = 0.0;
-    }
-    if (move.blockedX) {
-        motion.velocity.x = 0.0;
-    }
-    if (move.blockedZ) {
-        motion.velocity.z = 0.0;
-    }
+    stepEntity(motion, wish, speed, input.jump, playerWidth, playerHeight, world, dt);
 }
 
 } // namespace QcPhysics

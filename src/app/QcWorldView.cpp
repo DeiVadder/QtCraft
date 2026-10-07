@@ -61,6 +61,12 @@ void QcWorldView::setSelection(std::optional<QcBlockPos> block)
     }
 }
 
+void QcWorldView::setEntityMesh(std::shared_ptr<const QcChunkMesh> mesh)
+{
+    m_entityMesh = std::move(mesh);
+    update();
+}
+
 void QcWorldView::setSkyColor(const QColor &color)
 {
     m_skyColor = color;

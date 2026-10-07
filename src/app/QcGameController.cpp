@@ -11,6 +11,8 @@
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldView.h"
+#include "QcDayCycle.h"
+#include "QcEntityMesher.h"
 #include "QcItemIconProvider.h"
 #include "QcWorldLibrary.h"
 
@@ -236,6 +238,13 @@ void QcGameController::moveItem(int from, int to)
     }
 }
 
+void QcGameController::respawn()
+{
+    if (m_session) {
+        m_session->respawn();
+    }
+}
+
 void QcGameController::sendChat(const QString &text)
 {
     if (m_session) {
@@ -314,6 +323,13 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     connect(m_session, &QcClientSession::blockChanged, m_meshes, &QcMeshScheduler::blockChanged);
     connect(m_session, &QcClientSession::ticked, this, [this] { m_sinceTick.restart(); });
     connect(m_session, &QcClientSession::inventoryChanged, this, [this] { m_inventory->setInventory(m_session->inventory()); });
+    connect(m_session, &QcClientSession::healthChanged, this, [this] {
+        if (m_session->isDead()) {
+            setOverlay({});
+            releaseMouse();
+        }
+        emit healthChanged();
+    });
     connect(m_session, &QcClientSession::chatReceived, this, [this](const QString &text) {
         m_chatLines.append(text);
         // Only the last few lines stay on screen.
@@ -366,12 +382,52 @@ void QcGameController::onContentReady()
         qCWarning(lcGame) << "Texture:" << problem;
     }
     m_renderTable = std::make_shared<const QcBlockRenderTable>(*m_session->content(), atlas);
+    m_atlas = std::make_shared<const QcTextureAtlas>(atlas);
     updateIcons(atlas);
     m_inventory->setContent(m_session->content(), m_language);
     m_inventory->setInventory(m_session->inventory());
     m_meshes->setRenderTable(m_renderTable);
     if (m_view) {
         m_view->setAtlas(atlas.image());
+    }
+}
+
+void QcGameController::updateEntities(double alpha)
+{
+    if (!m_atlas) {
+        return;
+    }
+    auto mesh = std::make_shared<QcChunkMesh>();
+    const QcClientWorld &world = *m_session->world();
+    const auto &mobs = m_session->content()->mobs();
+    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
+    for (const QcClientEntity &entity : m_session->entities()) {
+        const QList<QcMobPart> &parts =
+            entity.mobType >= 0 && entity.mobType < mobs.size() ? mobs[entity.mobType].parts : QcEntityMesher::playerModel();
+        // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
+        const QcBlockPos feet{int(std::floor(entity.position.x)), int(std::floor(entity.position.y)), int(std::floor(entity.position.z))};
+        float light = 1.0f;
+        if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
+            light = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
+        }
+        QcEntityMesher::appendEntity(*mesh, entity, parts, alpha, light, uv);
+    }
+    m_view->setEntityMesh(std::move(mesh));
+}
+
+void QcGameController::updateSky(double alpha)
+{
+    const double time = m_session->worldTime() + alpha * QcPhysics::tickDuration;
+    const double daylight = QcDayCycle::daylight(time);
+    // Night sky dark blue, day sky light blue; fog uses the same colour.
+    const double t = (daylight - QcDayCycle::minimumDaylight) / (1.0 - QcDayCycle::minimumDaylight);
+    const QColor sky = QColor::fromRgbF(float(0.03 + 0.50 * t), float(0.04 + 0.70 * t), float(0.12 + 0.80 * t));
+    m_view->setDaylight(float(daylight));
+    m_view->setSkyColor(sky);
+    const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
+    if (label != m_timeOfDay) {
+        m_timeOfDay = label;
+        emit frameStateChanged();
     }
 }
 
@@ -446,8 +502,10 @@ void QcGameController::releaseMouse()
 
 bool QcGameController::eventFilter(QObject *watched, QEvent *event)
 {
-    // Overlays (inventory, pause menu, chat) are QML items that take keyboard and mouse themselves.
-    if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()) {
+    // Overlays (inventory, pause menu, chat) and the death screen are QML items that take keyboard and
+    // mouse themselves.
+    if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()
+        || m_session->isDead()) {
         return QObject::eventFilter(watched, event);
     }
     switch (event->type()) {
@@ -542,6 +600,10 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
 void QcGameController::handleMouseButton(Qt::MouseButton button, bool pressed)
 {
     if (button == Qt::LeftButton) {
+        // A click on a creature hits it; holding on a block mines.
+        if (pressed && m_session->attack()) {
+            return;
+        }
         m_session->setMining(pressed);
     } else if (button == Qt::RightButton && pressed) {
         m_session->useItem();
@@ -586,10 +648,20 @@ void QcGameController::onFrame()
     camera.pitch = m_session->intent().pitch;
     m_view->setCamera(camera);
 
+    updateEntities(alpha);
+    updateSky(alpha);
     const std::optional<QcRaycastHit> &target = m_session->target();
-    m_view->setSelection(target ? std::optional<QcBlockPos>(target->block) : std::nullopt);
+    const std::optional<quint32> targetEntity = m_session->targetEntity();
+    m_view->setSelection(target && !targetEntity ? std::optional<QcBlockPos>(target->block) : std::nullopt);
     QString targetLabel;
-    if (target) {
+    if (targetEntity) {
+        const QcClientEntity entity = m_session->entities().value(*targetEntity);
+        const auto &mobs = m_session->content()->mobs();
+        targetLabel = entity.mobType >= 0 && entity.mobType < mobs.size()
+                          ? m_session->content()->translate(mobs[entity.mobType].translationKey, m_language)
+                          : entity.name;
+        targetLabel += u" (%1)"_s.arg(qRound(entity.health));
+    } else if (target) {
         if (const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = m_session->content()->block(*block);
             targetLabel = m_session->content()->translate(definition.translationKey, m_language);

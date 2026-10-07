@@ -28,7 +28,7 @@ ApplicationWindow {
 
     Hud {
         anchors.fill: parent
-        visible: game.phase === "playing"
+        visible: game.phase === "playing" && !game.dead
         game: game
     }
 
@@ -47,6 +47,12 @@ ApplicationWindow {
     ChatOverlay {
         anchors.fill: parent
         visible: game.phase === "playing" && game.overlay === "chat"
+        game: game
+    }
+
+    DeathScreen {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.dead
         game: game
     }
 

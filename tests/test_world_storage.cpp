@@ -6,6 +6,8 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <limits>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -172,6 +174,62 @@ private slots:
         QCOMPARE(loaded.inventory.slot(0).count, 42);
         QVERIFY(loaded.inventory.slot(20).isEmpty());
         QCOMPARE(warnings.size(), 1);
+    }
+
+    void implausiblePlayerDataIsRejected_data()
+    {
+        QTest::addColumn<double>("x");
+        QTest::addColumn<double>("y");
+        QTest::addColumn<float>("yaw");
+        QTest::addColumn<float>("pitch");
+        QTest::newRow("far away") << 1e300 << 70.0 << 0.0f << 0.0f;
+        QTest::newRow("beyond the world edge") << 40'000'000.0 << 70.0 << 0.0f << 0.0f;
+        QTest::newRow("deep below") << 0.0 << -500.0 << 0.0f << 0.0f;
+        QTest::newRow("nan yaw") << 0.0 << 70.0 << std::numeric_limits<float>::quiet_NaN() << 0.0f;
+        QTest::newRow("pitch over 90") << 0.0 << 70.0 << 0.0f << 120.0f;
+    }
+
+    void implausiblePlayerDataIsRejected()
+    {
+        QFETCH(double, x);
+        QFETCH(double, y);
+        QFETCH(float, yaw);
+        QFETCH(float, pitch);
+        QTemporaryDir dir;
+        const auto content = registryWith({});
+        QcPlayerData player;
+        player.motion.position = {x, y, 0.5};
+        player.yaw = yaw;
+        player.pitch = pitch;
+        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Odd"_s, player).has_value());
+        QStringList warnings;
+        QVERIFY(!QcWorldStorage(dir.path(), content).readPlayer(u"Odd"_s, warnings).has_value());
+    }
+
+    void negativeHealthIsClamped()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({});
+        QcPlayerData player;
+        player.motion.position = {0.5, 70.0, 0.5};
+        player.health = -7.0;
+        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Hurt"_s, player).has_value());
+        QStringList warnings;
+        const auto read = QcWorldStorage(dir.path(), content).readPlayer(u"Hurt"_s, warnings);
+        QVERIFY(read.has_value() && read->has_value());
+        QCOMPARE((*read)->health, 0.0);
+    }
+
+    void chunksBeyondTheWorldEdgeAreRejected()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        auto chunk = std::make_shared<QcChunk>(QcChunkPos{QcWorld::maxHorizontalChunk + 10, 0});
+        chunk->setBlock(0, 0, 0, 1);
+        const QcWorldStorage storage(dir.path(), content);
+        QVERIFY(storage.writeChunks({{chunk->pos(), chunk}}).has_value());
+        QStringList warnings;
+        QVERIFY(!storage.readChunks(warnings).has_value());
     }
 
     void missingPlayerIsNotAnError()

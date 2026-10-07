@@ -161,6 +161,8 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                             warnings.append(u"item %1: %2"_s.arg(name, id.error()));
                         }
                     });
+    loadDefinitions(root.filePath(u"mobs"_s), info->id, warnings, QcContentParser::parseMob,
+                    [&registry](QcMobDefinition mob) { registry.registerMob(std::move(mob)); });
     loadDefinitions(root.filePath(u"biomes"_s), info->id, warnings, QcContentParser::parseBiome,
                     [&registry](QcBiomeDefinition biome) { registry.registerBiome(std::move(biome)); });
     loadDefinitions(root.filePath(u"features"_s), info->id, warnings, QcContentParser::parseFeature,

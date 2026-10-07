@@ -1,0 +1,8 @@
+{
+    "name": "raw_porkchop",
+    "pattern": "lump",
+    "primary": "#e89a9a",
+    "secondary": "#f0c0c0",
+    "variation": 0.1,
+    "seed": 209
+}

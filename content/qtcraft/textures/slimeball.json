@@ -1,0 +1,8 @@
+{
+    "name": "slimeball",
+    "pattern": "lump",
+    "primary": "#6ad06a",
+    "secondary": "#a0f0a0",
+    "variation": 0.1,
+    "seed": 210
+}
