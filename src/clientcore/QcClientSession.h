@@ -2,13 +2,16 @@
 
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
+#include "QcInventory.h"
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
+#include "QcRaycast.h"
 
 #include <QList>
 #include <QObject>
 
 #include <memory>
+#include <optional>
 
 class QcConnection;
 class QcTransport;
@@ -60,6 +63,18 @@ public:
     // Advances the client by one tick; normally driven by the internal timer.
     void tick();
 
+    // Block the player looks at (within reach), updated every tick.
+    const std::optional<QcRaycastHit> &target() const { return m_target; }
+    // While true, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
+    void setMining(bool mining) { m_miningRequested = mining; }
+    double miningProgress() const { return m_miningProgress; }
+    // Uses the held item on the targeted block face (places blocks). Returns false without a target.
+    bool useItem();
+    void selectHotbarSlot(int slot);
+    void moveInventoryItem(int from, int to);
+    void sendChat(const QString &text);
+    const QcInventory &inventory() const { return m_inventory; }
+
 signals:
     void stateChanged(QcClientSession::State state);
     void contentReady();
@@ -68,12 +83,16 @@ signals:
     void blockChanged(QcBlockPos pos);
     void ticked();
     void disconnected(const QString &reason);
+    void inventoryChanged();
+    void chatReceived(const QString &text);
 
 private:
     void handleMessage(QcMessage &&message);
     void setState(State state);
     void reconcile(const QcMsg::PlayerState &state);
     void onClosed();
+    void refreshTarget();
+    void updateTargetAndMining();
 
     std::unique_ptr<QcConnection> m_connection;
     QString m_playerName;
@@ -94,4 +113,10 @@ private:
     QcEntityMotion m_previousMotion;
     bool m_hasServerState = false;
     quint32 m_lastAcknowledged = 0;
+
+    QcInventory m_inventory;
+    std::optional<QcRaycastHit> m_target;
+    bool m_miningRequested = false;
+    std::optional<QcBlockPos> m_miningPos;
+    double m_miningProgress = 0.0;
 };

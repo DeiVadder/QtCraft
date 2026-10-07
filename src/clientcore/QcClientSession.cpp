@@ -1,12 +1,14 @@
 #include "QcClientSession.h"
 
 #include "QcConnection.h"
+#include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
 #include "QcTransport.h"
 
 #include <QLoggingCategory>
 #include <QTimer>
+#include <QtMath>
 
 #include <algorithm>
 #include <cmath>
@@ -66,6 +68,7 @@ void QcClientSession::setIntent(const QcPlayerInput &intent)
     m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
     const float yaw = std::fmod(finiteOr(intent.yaw, 0.0f), 360.0f);
     m_intent.yaw = yaw < 0.0f ? yaw + 360.0f : yaw;
+    refreshTarget();
 }
 
 void QcClientSession::disconnectFromServer()
@@ -109,6 +112,12 @@ void QcClientSession::handleMessage(QcMessage &&message)
             return;
         }
         m_entityId = welcome->playerEntityId;
+        if (welcome->restoredView) {
+            QcPlayerInput intent = m_intent;
+            intent.yaw = welcome->yaw;
+            intent.pitch = welcome->pitch;
+            setIntent(intent);
+        }
         m_worldName = welcome->worldName;
         m_seed = welcome->seed;
         setState(State::Loading);
@@ -145,6 +154,19 @@ void QcClientSession::handleMessage(QcMessage &&message)
         if (m_state == State::Loading && m_world) {
             setState(State::Playing);
         }
+    } else if (auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
+        if (inventory->stacks.size() != QcInventory::slotCount) {
+            m_disconnectReason = u"Server sent an invalid inventory"_s;
+            m_connection->close();
+            return;
+        }
+        for (int i = 0; i < QcInventory::slotCount; ++i) {
+            m_inventory.setSlot(i, inventory->stacks[i]);
+        }
+        m_inventory.setSelectedHotbarSlot(inventory->selected);
+        emit inventoryChanged();
+    } else if (auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
+        emit chatReceived(chat->text);
     } else if (auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
         m_disconnectReason = disconnect->reason;
         m_connection->close();
@@ -186,5 +208,81 @@ void QcClientSession::tick()
     }
     m_pendingInputs.append(input);
     m_connection->send(QcMsg::PlayerInput{input});
+    updateTargetAndMining();
     emit ticked();
+}
+
+void QcClientSession::refreshTarget()
+{
+    if (!m_world) {
+        m_target.reset();
+        return;
+    }
+    const double yaw = qDegreesToRadians(double(m_intent.yaw));
+    const double pitch = qDegreesToRadians(double(m_intent.pitch));
+    const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
+    const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach);
+}
+
+void QcClientSession::updateTargetAndMining()
+{
+    refreshTarget();
+    const std::optional<QcBlockPos> wanted =
+        m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    if (wanted != m_miningPos) {
+        if (m_miningPos) {
+            m_connection->send(QcMsg::CancelMining{});
+        }
+        m_miningPos = wanted;
+        m_miningProgress = 0.0;
+        if (m_miningPos) {
+            m_connection->send(QcMsg::StartMining{*m_miningPos});
+        }
+    }
+    if (!m_miningPos) {
+        return;
+    }
+    const std::optional<QcBlockId> block = m_world->blockAt(*m_miningPos);
+    const QcItemStack &held = m_inventory.selectedStack();
+    const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
+    const double seconds = block ? QcMining::breakSeconds(m_content->block(*block), item) : -1.0;
+    if (seconds <= 0.0) {
+        return;
+    }
+    m_miningProgress += QcPhysics::tickDuration / seconds;
+    if (m_miningProgress >= 1.0) {
+        // The server decides; its BlockUpdate removes the block (or restores it on rejection).
+        m_connection->send(QcMsg::FinishMining{*m_miningPos});
+        m_miningPos.reset();
+        m_miningProgress = 0.0;
+    }
+}
+
+bool QcClientSession::useItem()
+{
+    if (m_state != State::Playing || !m_target) {
+        return false;
+    }
+    m_connection->send(QcMsg::UseItem{m_target->block, m_target->face});
+    return true;
+}
+
+void QcClientSession::selectHotbarSlot(int slot)
+{
+    m_inventory.setSelectedHotbarSlot(slot);
+    m_connection->send(QcMsg::SelectHotbarSlot{m_inventory.selectedHotbarSlot()});
+    emit inventoryChanged();
+}
+
+void QcClientSession::moveInventoryItem(int from, int to)
+{
+    m_connection->send(QcMsg::MoveInventoryItem{from, to});
+}
+
+void QcClientSession::sendChat(const QString &text)
+{
+    if (!text.trimmed().isEmpty()) {
+        m_connection->send(QcMsg::ChatInput{text.trimmed()});
+    }
 }

@@ -13,7 +13,7 @@ Newline-delimited JSON (one request object per line, one response object per lin
 
 The interface is **off by default**: the graphical game does not open it. It only exists in processes started explicitly with the options above and never listens on a network port. (*Planned:* `--control local:<name>` for a local socket in the graphical game.)
 
-`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`.
+`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`, `--data-dir <dir>` (where `worldCreate`/`worldLoad` keep worlds; default: the game's own world directory). Without a world command the bot plays a throw-away world that is not saved.
 
 ## Requests and responses
 
@@ -29,6 +29,8 @@ Returned by `status` and by all tick-based commands:
  "yaw":90,"pitch":0,"loadedChunks":81}
 ```
 
+Additional fields: `target` (the block the player looks at within 5 m: `x`, `y`, `z`, `face`, `block`), `selectedSlot`, `held` (`{"item","count"}` or `null`) and `messages` (chat lines received while the request ran).
+
 `position` is the centre of the player's feet in metres (1 block = 1 m). `yaw` 0 looks north (-Z), 90 east (+X), 180 south (+Z); `pitch` is positive upwards. `state` is one of `Connecting`, `Loading`, `Playing`, `Disconnected` (then `disconnectReason` is set). `tick` counts client simulation ticks (20 per second).
 
 ### Commands
@@ -43,7 +45,18 @@ Returned by `status` and by all tick-based commands:
 | `wait` | `ticks` (default 20) | Lets time pass. |
 | `block` | `x`, `y`, `z` | Name of the block at a position, `null` if not loaded. |
 | `blocks` | `radius` (0..8, default 3) | All non-air blocks in a cube around the player's feet: `[{"x":..,"y":..,"z":..,"block":"qtcraft:stone"}]`. |
-| `quit` | – | Ends the process. |
+| `lookAt` | `x`, `y`, `z` | Turns towards the centre of a block. |
+| `mine` | optional `x`, `y`, `z`; `maxTicks` (default 400) | Looks at the block (or keeps the current target) and mines until it is gone. The server checks the mining time; drops go into the inventory. |
+| `place` / `use` | optional `x`, `y`, `z`, `face` (`east`, `west`, `up`, `down`, `south`, `north`, default `up`) | Looks at that face and uses the held item on it, which places a block next to it. Answers after 4 ticks; check the block with `block`. |
+| `select` | `slot` (0–8) | Selects a hotbar slot; answers with the inventory. |
+| `inventory` | – | `{"selectedSlot":0,"slots":[{"slot":0,"item":"qtcraft:dirt","count":3}]}` |
+| `moveItem` | `from`, `to` (0–35) | Moves or merges an inventory stack. |
+| `chat` | `text` | Sends a chat line or a command (`/help`, `/give <item> [count]`); server replies appear in `messages`. |
+| `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
+| `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |
+| `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |
+| `worldSave` | – | Saves the current world and reports failures (`ok: false` with the reason). |
+| `quit` | – | Ends the process (the current world is saved). |
 
 All tick-based commands fail with `"Timed out"` if the session stops ticking for much longer than requested (e.g. after a disconnect).
 

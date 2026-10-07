@@ -66,18 +66,18 @@ void QcMeshScheduler::chunkUnloaded(QcChunkPos pos)
 
 void QcMeshScheduler::blockChanged(QcBlockPos pos)
 {
-    const QcChunkPos chunk = pos.chunk();
-    const int section = pos.y / QcWorld::sectionHeight;
-    // The block itself plus every section whose faces or occlusion can touch it.
+    // Faces and ambient occlusion only reach one block, but sky light travels up to 15 blocks
+    // sideways and down the whole column: every section of the 3 x 3 chunk neighbourhood from the
+    // bottom up to one section above the change can be affected.
+    const int topSection = std::min(QcWorld::sectionCount - 1, pos.y / QcWorld::sectionHeight + 1);
     for (int dx = -1; dx <= 1; ++dx) {
-        for (int dy = -1; dy <= 1; ++dy) {
-            for (int dz = -1; dz <= 1; ++dz) {
-                const QcBlockPos neighbour = pos.offset(dx, dy, dz);
-                const int neighbourSection = neighbour.y / QcWorld::sectionHeight;
-                if (neighbour.isInsideWorldHeight() && m_loadedChunks.contains(neighbour.chunk())
-                    && (neighbour.chunk() != chunk || neighbourSection != section || (dx == 0 && dy == 0 && dz == 0))) {
-                    markDirty(neighbour.chunk(), neighbourSection);
-                }
+        for (int dz = -1; dz <= 1; ++dz) {
+            const QcChunkPos chunk{pos.chunk().x + dx, pos.chunk().z + dz};
+            if (!m_loadedChunks.contains(chunk)) {
+                continue;
+            }
+            for (int section = 0; section <= topSection; ++section) {
+                markDirty(chunk, section);
             }
         }
     }

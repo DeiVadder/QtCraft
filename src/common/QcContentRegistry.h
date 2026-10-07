@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockDefinition.h"
+#include "QcItemDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
@@ -36,6 +37,17 @@ public:
     std::optional<QcBlockId> blockId(const QString &name) const;
     const QList<QcBlockDefinition> &blocks() const { return m_blocks; }
 
+    // Registers a new item or replaces an existing one (keeping its id). Ids start at 1.
+    QcResult<QcItemId> registerItem(QcItemDefinition definition);
+    // Gives every visible, non-liquid block without an item of the same name an item that places it.
+    void createBlockItems();
+    qsizetype itemCount() const { return m_items.size(); }
+    bool isValidItem(QcItemId id) const { return id != qcNoItem && qsizetype(id) <= m_items.size(); }
+    // Precondition: isValidItem(id).
+    const QcItemDefinition &item(QcItemId id) const;
+    std::optional<QcItemId> itemId(const QString &name) const;
+    const QList<QcItemDefinition> &items() const { return m_items; }
+
     const QList<QcTextureDefinition> &textures() const { return m_textures; }
     const QcTextureDefinition *texture(const QString &name) const;
 
@@ -59,6 +71,8 @@ public:
 private:
     QList<QcBlockDefinition> m_blocks;
     QHash<QString, QcBlockId> m_blockIds;
+    QList<QcItemDefinition> m_items;
+    QHash<QString, QcItemId> m_itemIds;
     QList<QcTextureDefinition> m_textures;
     QHash<QString, qsizetype> m_textureIndex;
     QHash<QString, QHash<QString, QString>> m_translations;

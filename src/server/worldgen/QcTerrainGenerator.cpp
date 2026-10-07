@@ -150,6 +150,11 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
             }
             biome.features.append({int(it - m_content->features().begin()), placement.density});
         }
+        for (const Biome &other : std::as_const(m_biomes)) {
+            if (warnings && other.temperature == biome.temperature && other.humidity == biome.humidity) {
+                warnings->append(u"Biomes %1 and %2 share a climate point; only %1 can appear"_s.arg(other.name, biome.name));
+            }
+        }
         m_biomes.append(biome);
     }
     if (m_biomes.isEmpty()) {
@@ -245,7 +250,8 @@ QcBlockId QcTerrainGenerator::surfaceBlock(Column column) const
     if (top < m_seaLevel - 1) {
         return biome.underwater;
     }
-    if (top <= m_seaLevel + 1) {
+    // Beaches only where land meets the sea, not on low inland plains.
+    if (top <= m_seaLevel + 1 && column.landFactor < 1.0) {
         return biome.beach;
     }
     if (biome.snowLine > 0 && top >= biome.snowLine) {

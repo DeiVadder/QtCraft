@@ -74,7 +74,7 @@ private slots:
         QVERIFY(content.block(*below).solid);
         QVERIFY(!content.block(*session.world()->blockAt(feet)).solid);
         QVERIFY(!content.block(*session.world()->blockAt(feet.offset(0, 1, 0))).solid);
-        host->shutdown();
+        QVERIFY(host->shutdown().has_value());
     }
 
     void clientMirrorMatchesServerGeneration()
@@ -95,7 +95,7 @@ private slots:
                 }
             }
         }
-        host->shutdown();
+        QVERIFY(host->shutdown().has_value());
     }
 
     void predictionConvergesWithServer()
@@ -121,7 +121,7 @@ private slots:
         // Facing south (+Z) the player moved forward without sideways drift.
         QVERIFY2(end.z - start.z > 1.0, qPrintable(QString::number(end.z - start.z)));
         QCOMPARE(end.x, start.x);
-        host->shutdown();
+        QVERIFY(host->shutdown().has_value());
     }
 
     void protocolVersionMismatchIsRejected()
@@ -138,7 +138,7 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(closed.count(), 1, timeoutMs);
         QCOMPARE(reasons.size(), 1);
         QVERIFY(reasons.constFirst().contains(u"version"_s));
-        host->shutdown();
+        QVERIFY(host->shutdown().has_value());
     }
 
     void messagesBeforeHelloAreRejected()
@@ -148,7 +148,7 @@ private slots:
         QSignalSpy closed(&connection, &QcConnection::closed);
         connection.send(QcMsg::PlayerInput{});
         QTRY_COMPARE_WITH_TIMEOUT(closed.count(), 1, timeoutMs);
-        host->shutdown();
+        QVERIFY(host->shutdown().has_value());
     }
 
     void garbageFrameClosesTheConnection()

@@ -2,6 +2,8 @@ qt_add_executable(qtcraft
     main.cpp
     QcScreenshotHook.h QcScreenshotHook.cpp
     QcGameController.h QcGameController.cpp
+    QcInventoryModel.h QcInventoryModel.cpp
+    QcItemIconProvider.h QcItemIconProvider.cpp
     QcWorldRenderer.h QcWorldRenderer.cpp
     QcWorldView.h QcWorldView.cpp
 )
@@ -21,7 +23,11 @@ qt_add_qml_module(qtcraft
     URI QtCraft
     QML_FILES
         qml/Main.qml
+        qml/ChatOverlay.qml
         qml/Hud.qml
+        qml/InventoryScreen.qml
+        qml/ItemSlot.qml
+        qml/PauseMenu.qml
         qml/MainMenu.qml
         qml/MessageScreen.qml
 )
@@ -32,6 +38,8 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.frag
 )
 
 qt_add_translations(qtcraft

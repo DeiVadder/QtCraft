@@ -47,6 +47,10 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_meshes.clear();
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_outlinePipeline.reset();
+        m_outlineBindings.reset();
+        m_outlineVertices.reset();
+        m_uploadedSelection.reset();
         m_bindings.reset();
         m_atlasTexture.reset();
         m_atlasSampler.reset();
@@ -67,6 +71,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     if (!m_pipelineRenderPass || !m_pipelineRenderPass->isCompatible(renderTarget()->renderPassDescriptor())) {
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_outlinePipeline.reset();
     }
 }
 
@@ -74,6 +79,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
 {
     auto *view = static_cast<QcWorldView *>(item);
     m_camera = view->m_camera;
+    m_selection = view->m_selection;
     m_skyColor = view->m_skyColor;
     m_daylight = view->m_daylight;
     m_fogStart = view->m_fogStart;
@@ -173,6 +179,73 @@ void QcWorldRenderer::createPipelines()
     m_pipelineRenderPass.reset(renderTarget()->renderPassDescriptor()->newCompatibleRenderPassDescriptor());
 }
 
+void QcWorldRenderer::createOutlinePipeline()
+{
+    if (!m_outlineBindings) {
+        m_outlineBindings.reset(m_rhi->newShaderResourceBindings());
+        m_outlineBindings->setBindings({QRhiShaderResourceBinding::uniformBuffer(
+            0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, m_frameUniforms.get())});
+        m_outlineBindings->create();
+        // 12 box edges as line segments.
+        m_outlineVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, quint32(std::size_t(24) * 3 * sizeof(float))));
+        m_outlineVertices->create();
+        m_uploadedSelection.reset();
+    }
+    std::unique_ptr<QRhiGraphicsPipeline> pipeline(m_rhi->newGraphicsPipeline());
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/outline.vert.qsb"_s)},
+                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/outline.frag.qsb"_s)}});
+    QRhiVertexInputLayout inputLayout;
+    inputLayout.setBindings({{3 * sizeof(float)}});
+    inputLayout.setAttributes({{0, 0, QRhiVertexInputAttribute::Float3, 0}});
+    pipeline->setVertexInputLayout(inputLayout);
+    pipeline->setTopology(QRhiGraphicsPipeline::Lines);
+    pipeline->setShaderResourceBindings(m_outlineBindings.get());
+    pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+    pipeline->setSampleCount(renderTarget()->sampleCount());
+    pipeline->setDepthTest(true);
+    pipeline->setDepthWrite(false);
+    QRhiGraphicsPipeline::TargetBlend blend;
+    blend.enable = true;
+    blend.srcColor = QRhiGraphicsPipeline::SrcAlpha;
+    blend.dstColor = QRhiGraphicsPipeline::OneMinusSrcAlpha;
+    pipeline->setTargetBlends({blend});
+    if (pipeline->create()) {
+        m_outlinePipeline = std::move(pipeline);
+    } else {
+        qCCritical(lcRenderer) << "Cannot create outline pipeline";
+    }
+}
+
+void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
+{
+    if (!m_selection || m_selection == m_uploadedSelection || !m_outlineVertices) {
+        return;
+    }
+    // Slightly larger than the block so the lines are not hidden by its faces.
+    constexpr float grow = 0.004f;
+    const float x0 = float(m_selection->x) - grow;
+    const float y0 = float(m_selection->y) - grow;
+    const float z0 = float(m_selection->z) - grow;
+    const float x1 = float(m_selection->x) + 1.0f + grow;
+    const float y1 = float(m_selection->y) + 1.0f + grow;
+    const float z1 = float(m_selection->z) + 1.0f + grow;
+    const std::array<std::array<float, 3>, 8> corners = {{{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1},
+                                                          {x0, y1, z0}, {x1, y1, z0}, {x1, y1, z1}, {x0, y1, z1}}};
+    constexpr std::array<std::pair<int, int>, 12> edges = {
+        {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}}};
+    std::array<float, std::size_t(24) * 3> vertices{};
+    std::size_t next = 0;
+    for (const auto &[from, to] : edges) {
+        for (const int corner : {from, to}) {
+            for (const float value : corners[std::size_t(corner)]) {
+                vertices[next++] = value;
+            }
+        }
+    }
+    updates->updateDynamicBuffer(m_outlineVertices.get(), 0, quint32(sizeof(vertices)), vertices.data());
+    m_uploadedSelection = m_selection;
+}
+
 QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBatch *updates,
                                                            const QList<QcBlockVertex> &vertices,
                                                            const QList<quint32> &indices)
@@ -249,6 +322,10 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     if (!m_opaquePipeline || !m_translucentPipeline) {
         createPipelines();
     }
+    if (!m_outlinePipeline) {
+        createOutlinePipeline();
+    }
+    uploadOutline(updates);
     uploadPendingMeshes(updates);
 
     const QSize outputSize = renderTarget()->pixelSize();
@@ -310,6 +387,14 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         commandBuffer->setShaderResources();
         for (const GpuMesh *mesh : std::as_const(visible)) {
             drawBuffers(mesh->translucent);
+        }
+
+        if (m_selection && m_outlinePipeline) {
+            commandBuffer->setGraphicsPipeline(m_outlinePipeline.get());
+            commandBuffer->setShaderResources();
+            const QRhiCommandBuffer::VertexInput input(m_outlineVertices.get(), 0);
+            commandBuffer->setVertexInput(0, 1, &input);
+            commandBuffer->draw(24);
         }
     }
     commandBuffer->endPass();

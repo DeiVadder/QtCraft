@@ -11,10 +11,15 @@
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldView.h"
+#include "QcItemIconProvider.h"
+#include "QcWorldLibrary.h"
 
 #include <QCursor>
 #include <QGuiApplication>
 #include <QKeyEvent>
+#include <QWheelEvent>
+#include <QLocale>
+#include <QVariantMap>
 #include <QLoggingCategory>
 #include <QQuickWindow>
 
@@ -52,6 +57,7 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
+    , m_inventory(new QcInventoryModel(this))
 {
     m_frameClock.start();
     m_fpsClock.start();
@@ -59,7 +65,9 @@ QcGameController::QcGameController(QObject *parent)
 
 QcGameController::~QcGameController()
 {
-    stopSession();
+    if (const QcStatus saved = stopSession(); !saved) {
+        qCWarning(lcGame) << "Saving the world failed:" << saved.error();
+    }
 }
 
 void QcGameController::setView(QcWorldView *view)
@@ -140,6 +148,12 @@ void QcGameController::setInitialLook(float yaw, float pitch)
     m_initialPitch = std::clamp(pitch, -90.0f, 90.0f);
 }
 
+void QcGameController::setStartupScript(QStringList chatLines, QString overlay)
+{
+    m_startupChat = std::move(chatLines);
+    m_startupOverlay = std::move(overlay);
+}
+
 void QcGameController::setScreenshotHook(QcScreenshotHook *hook)
 {
     m_screenshotHook = hook;
@@ -151,7 +165,107 @@ void QcGameController::setScreenshotHook(QcScreenshotHook *hook)
 
 void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText)
 {
-    stopSession();
+    startWorld({}, worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed(), seedFromText(seedText));
+}
+
+void QcGameController::refreshWorlds()
+{
+    m_worlds.clear();
+    const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
+    const QList<QcWorldLibrary::Entry> entries = library.list();
+    for (const QcWorldLibrary::Entry &entry : entries) {
+        m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
+                                    {u"name"_s, entry.info.name},
+                                    {u"seed"_s, QString::number(entry.info.seed)},
+                                    {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
+                                    {u"error"_s, entry.error}});
+    }
+    emit worldsChanged();
+}
+
+void QcGameController::createWorld(const QString &worldName, const QString &seedText)
+{
+    const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
+    const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
+    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText));
+    if (!entry) {
+        setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
+        return;
+    }
+    refreshWorlds();
+    startWorld(entry->directory, entry->info.name, entry->info.seed);
+}
+
+void QcGameController::playWorld(const QString &folder)
+{
+    const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
+    const QList<QcWorldLibrary::Entry> entries = library.list();
+    const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
+    if (it == entries.end() || !it->error.isEmpty()) {
+        setPhase(u"error"_s, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
+        return;
+    }
+    startWorld(it->directory, it->info.name, it->info.seed);
+}
+
+void QcGameController::deleteWorld(const QString &folder)
+{
+    const QcStatus removed = QcWorldLibrary(QcWorldLibrary::defaultRoot()).remove(folder);
+    if (!removed) {
+        qCWarning(lcGame) << removed.error();
+    }
+    refreshWorlds();
+}
+
+void QcGameController::saveWorld()
+{
+    sendChat(u"/save"_s);
+}
+
+void QcGameController::selectHotbarSlot(int slot)
+{
+    if (m_session) {
+        m_session->selectHotbarSlot(slot);
+    }
+}
+
+void QcGameController::moveItem(int from, int to)
+{
+    if (m_session) {
+        m_session->moveInventoryItem(from, to);
+    }
+}
+
+void QcGameController::sendChat(const QString &text)
+{
+    if (m_session) {
+        m_session->sendChat(text);
+    }
+}
+
+void QcGameController::setOverlay(const QString &overlay)
+{
+    if (m_overlay == overlay) {
+        return;
+    }
+    m_overlay = overlay;
+    m_keysDown.clear();
+    if (m_session) {
+        m_session->setMining(false);
+    }
+    if (!overlay.isEmpty()) {
+        releaseMouse();
+    }
+    emit overlayChanged();
+}
+
+void QcGameController::startWorld(const QString &directory, const QString &worldName, qint64 seed)
+{
+    if (const QcStatus saved = stopSession(); !saved) {
+        qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
+    }
+    m_worldDirectory = directory;
+    setOverlay({});
     setPhase(u"loading"_s, tr("Loading content..."));
 
     QStringList warnings;
@@ -166,8 +280,9 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
     const std::shared_ptr<const QcContentRegistry> shared = std::move(*content);
 
     QcServerConfig config;
-    config.worldName = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
-    config.seed = seedFromText(seedText);
+    config.worldName = worldName;
+    config.seed = seed;
+    config.worldDirectory = directory;
     // One extra ring: sections are meshed only once their neighbours are known.
     config.viewDistance = m_viewDistance + 1;
     config.spawnColumn = m_spawnColumn;
@@ -177,6 +292,12 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
         qCWarning(lcGame) << "World generation:" << warning;
     }
     m_server = std::make_unique<QcLocalServerHost>(config, shared, std::move(generator));
+    if (!m_server->startError().isEmpty()) {
+        const QString error = m_server->startError();
+        m_server.reset();
+        setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
+        return;
+    }
 
     m_session = new QcClientSession(m_server->connectClient(), u"Player"_s, this);
     m_meshes = new QcMeshScheduler(this);
@@ -192,9 +313,25 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
     connect(m_session, &QcClientSession::chunkUnloaded, m_meshes, &QcMeshScheduler::chunkUnloaded);
     connect(m_session, &QcClientSession::blockChanged, m_meshes, &QcMeshScheduler::blockChanged);
     connect(m_session, &QcClientSession::ticked, this, [this] { m_sinceTick.restart(); });
+    connect(m_session, &QcClientSession::inventoryChanged, this, [this] { m_inventory->setInventory(m_session->inventory()); });
+    connect(m_session, &QcClientSession::chatReceived, this, [this](const QString &text) {
+        m_chatLines.append(text);
+        // Only the last few lines stay on screen.
+        constexpr qsizetype maxChatLines = 8;
+        while (m_chatLines.size() > maxChatLines) {
+            m_chatLines.removeFirst();
+        }
+        emit chatLinesChanged();
+    });
     connect(m_session, &QcClientSession::stateChanged, this, [this](QcClientSession::State state) {
         if (state == QcClientSession::State::Playing) {
             setPhase(u"playing"_s);
+            for (const QString &line : std::as_const(m_startupChat)) {
+                m_session->sendChat(line);
+            }
+            if (!m_startupOverlay.isEmpty()) {
+                setOverlay(m_startupOverlay);
+            }
         } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
             releaseMouse();
             setPhase(u"error"_s, tr("Disconnected: %1").arg(m_session->disconnectReason()));
@@ -229,14 +366,30 @@ void QcGameController::onContentReady()
         qCWarning(lcGame) << "Texture:" << problem;
     }
     m_renderTable = std::make_shared<const QcBlockRenderTable>(*m_session->content(), atlas);
+    updateIcons(atlas);
+    m_inventory->setContent(m_session->content(), m_language);
+    m_inventory->setInventory(m_session->inventory());
     m_meshes->setRenderTable(m_renderTable);
     if (m_view) {
         m_view->setAtlas(atlas.image());
     }
 }
 
-void QcGameController::stopSession()
+void QcGameController::updateIcons(const QcTextureAtlas &atlas)
 {
+    if (!m_iconProvider) {
+        return;
+    }
+    QHash<QString, QImage> icons;
+    for (const QcItemDefinition &item : m_session->content()->items()) {
+        icons.insert(item.name, atlas.tile(item.texture));
+    }
+    m_iconProvider->setIcons(std::move(icons));
+}
+
+QcStatus QcGameController::stopSession()
+{
+    QcStatus saved;
     releaseMouse();
     if (m_meshes) {
         m_meshes->waitForJobs();
@@ -249,18 +402,22 @@ void QcGameController::stopSession()
         m_session = nullptr;
     }
     if (m_server) {
-        m_server->shutdown();
+        saved = m_server->shutdown();
         m_server.reset();
     }
     if (m_view) {
         m_view->clearMeshes();
     }
     m_keysDown.clear();
+    return saved;
 }
 
 void QcGameController::leaveGame()
 {
-    stopSession();
+    if (const QcStatus saved = stopSession(); !saved) {
+        setPhase(u"error"_s, tr("The world could not be saved: %1").arg(saved.error()));
+        return;
+    }
     setPhase(u"menu"_s);
 }
 
@@ -289,26 +446,52 @@ void QcGameController::releaseMouse()
 
 bool QcGameController::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled) {
+    // Overlays (inventory, pause menu, chat) are QML items that take keyboard and mouse themselves.
+    if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()) {
         return QObject::eventFilter(watched, event);
     }
     switch (event->type()) {
     case QEvent::KeyPress: {
         auto *key = static_cast<QKeyEvent *>(event);
-        if (key->key() == Qt::Key_Escape) {
-            releaseMouse();
+        if (key->isAutoRepeat()) {
             return false;
         }
-        if (!key->isAutoRepeat()) {
-            m_keysDown.insert(key->key());
+        switch (key->key()) {
+        case Qt::Key_Escape:
+            setOverlay(u"pause"_s);
+            return true;
+        case Qt::Key_E:
+            setOverlay(u"inventory"_s);
+            return true;
+        case Qt::Key_T:
+        case Qt::Key_Return:
+            setOverlay(u"chat"_s);
+            return true;
+        case Qt::Key_R:
+            m_session->useItem();
+            return true;
+        case Qt::Key_F:
+            m_session->setMining(true);
+            return true;
+        default:
+            break;
         }
+        if (key->key() >= Qt::Key_1 && key->key() <= Qt::Key_9) {
+            m_session->selectHotbarSlot(key->key() - Qt::Key_1);
+            return true;
+        }
+        m_keysDown.insert(key->key());
         return false;
     }
     case QEvent::KeyRelease: {
         auto *key = static_cast<QKeyEvent *>(event);
-        if (!key->isAutoRepeat()) {
-            m_keysDown.remove(key->key());
+        if (key->isAutoRepeat()) {
+            return false;
         }
+        if (key->key() == Qt::Key_F) {
+            m_session->setMining(false);
+        }
+        m_keysDown.remove(key->key());
         return false;
     }
     case QEvent::MouseButtonPress:
@@ -316,7 +499,25 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
             captureMouse();
             return true;
         }
+        handleMouseButton(static_cast<QMouseEvent *>(event)->button(), true);
+        return true;
+    case QEvent::MouseButtonRelease:
+        if (m_mouseCaptured) {
+            handleMouseButton(static_cast<QMouseEvent *>(event)->button(), false);
+            return true;
+        }
         return false;
+    case QEvent::Wheel: {
+        if (!m_mouseCaptured) {
+            return false;
+        }
+        const int steps = static_cast<QWheelEvent *>(event)->angleDelta().y() / 120;
+        if (steps != 0) {
+            const int slot = (m_session->inventory().selectedHotbarSlot() - steps) % QcInventory::hotbarSize;
+            m_session->selectHotbarSlot(slot < 0 ? slot + QcInventory::hotbarSize : slot);
+        }
+        return true;
+    }
     case QEvent::MouseMove: {
         if (!m_mouseCaptured) {
             return false;
@@ -335,6 +536,15 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
     }
     default:
         return QObject::eventFilter(watched, event);
+    }
+}
+
+void QcGameController::handleMouseButton(Qt::MouseButton button, bool pressed)
+{
+    if (button == Qt::LeftButton) {
+        m_session->setMining(pressed);
+    } else if (button == Qt::RightButton && pressed) {
+        m_session->useItem();
     }
 }
 
@@ -375,6 +585,21 @@ void QcGameController::onFrame()
     camera.yaw = m_session->intent().yaw;
     camera.pitch = m_session->intent().pitch;
     m_view->setCamera(camera);
+
+    const std::optional<QcRaycastHit> &target = m_session->target();
+    m_view->setSelection(target ? std::optional<QcBlockPos>(target->block) : std::nullopt);
+    QString targetLabel;
+    if (target) {
+        if (const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block)) {
+            const QcBlockDefinition &definition = m_session->content()->block(*block);
+            targetLabel = m_session->content()->translate(definition.translationKey, m_language);
+        }
+    }
+    if (targetLabel != m_targetLabel || m_session->miningProgress() != m_miningProgress) {
+        m_targetLabel = targetLabel;
+        m_miningProgress = m_session->miningProgress();
+        emit frameStateChanged();
+    }
 
     m_meshes->setFocus({feet.x, feet.y, feet.z});
     m_meshes->pump(*m_session->world());

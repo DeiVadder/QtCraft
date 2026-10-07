@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcMailbox.h"
+#include "QcResult.h"
 #include "QcServerConfig.h"
 #include "QcTransport.h"
 
@@ -24,16 +25,23 @@ public:
                       std::unique_ptr<QcWorldGenerator> generator, QObject *parent = nullptr);
     ~QcLocalServerHost() override;
 
+    // Empty when the world opened; otherwise the reason, and the host serves no clients.
+    QString startError() const { return m_startError; }
+
     // Connects a new client; the returned transport belongs to the caller's thread.
     std::unique_ptr<QcTransport> connectClient();
-    // Stops the server and joins its thread. Safe to call more than once.
-    void shutdown();
+    // Saves the world now (blocks until done).
+    QcStatus save();
+    // Stops the server (which saves) and joins its thread. Safe to call more than once; later
+    // calls report success.
+    QcStatus shutdown();
 
 private:
     // Runs in the server thread.
     void acceptPendingClients(QcServer *server);
 
     QThread *m_thread = nullptr;
+    QString m_startError;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
     QcServer *m_server = nullptr;
 };

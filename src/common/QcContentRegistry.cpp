@@ -97,6 +97,57 @@ QcResult<QcBlockId> QcContentRegistry::registerBlock(QcBlockDefinition definitio
     return id;
 }
 
+QcResult<QcItemId> QcContentRegistry::registerItem(QcItemDefinition definition)
+{
+    if (!QcContentNames::isValidQualified(definition.name)) {
+        return qcError(u"Invalid item name '%1'"_s.arg(definition.name));
+    }
+    if (definition.maxStack < 1 || definition.maxStack > 999) {
+        return qcError(u"Item '%1': maxStack must be within 1..999"_s.arg(definition.name));
+    }
+    const auto existing = m_itemIds.constFind(definition.name);
+    if (existing != m_itemIds.constEnd()) {
+        m_items[qsizetype(*existing) - 1] = std::move(definition);
+        return *existing;
+    }
+    const auto id = QcItemId(m_items.size() + 1);
+    m_itemIds.insert(definition.name, id);
+    m_items.append(std::move(definition));
+    return id;
+}
+
+void QcContentRegistry::createBlockItems()
+{
+    for (const QcBlockDefinition &block : std::as_const(m_blocks)) {
+        if (block.renderLayer == QcRenderLayer::Invisible || block.liquid || m_itemIds.contains(block.name)) {
+            continue;
+        }
+        QcItemDefinition item;
+        item.name = block.name;
+        item.translationKey = block.translationKey;
+        item.texture = block.texture(QcBlockFace::Up);
+        item.placesBlock = block.name;
+        // Block names are already validated, so registering the item cannot fail.
+        [[maybe_unused]] const QcResult<QcItemId> id = registerItem(std::move(item));
+        Q_ASSERT(id.has_value());
+    }
+}
+
+const QcItemDefinition &QcContentRegistry::item(QcItemId id) const
+{
+    Q_ASSERT(isValidItem(id));
+    return m_items[qsizetype(id) - 1];
+}
+
+std::optional<QcItemId> QcContentRegistry::itemId(const QString &name) const
+{
+    const auto it = m_itemIds.constFind(name);
+    if (it == m_itemIds.constEnd()) {
+        return std::nullopt;
+    }
+    return *it;
+}
+
 void QcContentRegistry::registerTexture(QcTextureDefinition definition)
 {
     const auto existing = m_textureIndex.constFind(definition.name);
@@ -187,6 +238,11 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
     for (const QcBlockDefinition &block : m_blocks) {
         writeBlock(stream, block);
     }
+    stream << quint32(m_items.size());
+    for (const QcItemDefinition &item : m_items) {
+        stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
+               << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage;
+    }
     stream << quint32(m_textures.size());
     for (const QcTextureDefinition &texture : m_textures) {
         stream << texture.name << QJsonDocument(texture.procedural).toJson(QJsonDocument::Compact) << texture.png;
@@ -220,6 +276,28 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
     }
     if (registry.m_blocks.constFirst().name != QLatin1StringView(airName)) {
         return qcError(u"Corrupt content: block 0 must be air"_s);
+    }
+
+    quint32 itemCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, itemCount)) {
+        return qcError(u"Corrupt content: item table"_s);
+    }
+    for (quint32 i = 0; i < itemCount; ++i) {
+        QcItemDefinition item;
+        qint32 maxStack = 0;
+        qint32 toolLevel = 0;
+        qint32 durability = 0;
+        stream >> item.name >> item.translationKey >> item.texture >> maxStack >> item.placesBlock >> item.tool >> toolLevel
+            >> item.toolSpeed >> durability >> item.attackDamage;
+        item.maxStack = maxStack;
+        item.toolLevel = toolLevel;
+        item.durability = durability;
+        if (stream.status() != QDataStream::Ok || !registry.registerItem(std::move(item))) {
+            return qcError(u"Corrupt content: item %1"_s.arg(i));
+        }
+    }
+    if (registry.itemCount() != qsizetype(itemCount)) {
+        return qcError(u"Corrupt content: duplicate item names"_s);
     }
 
     quint32 textureCount = 0;

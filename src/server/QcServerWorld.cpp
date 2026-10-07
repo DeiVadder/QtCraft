@@ -1,5 +1,7 @@
 #include "QcServerWorld.h"
 
+#include "QcWorldStorage.h"
+
 #include <QThread>
 
 #include <algorithm>
@@ -64,6 +66,9 @@ std::shared_ptr<const QcChunk> QcServerWorld::loadChunk(QcChunkPos pos)
 
 void QcServerWorld::unloadChunk(QcChunkPos pos)
 {
+    if (m_modified.contains(pos)) {
+        return;
+    }
     m_chunks.remove(pos);
 }
 
@@ -80,5 +85,34 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
         *it = std::make_shared<QcChunk>(**it);
     }
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
+    m_modified.insert(pos.chunk());
+    m_dirtyRegions.insert(QcWorldStorage::regionOf(pos.chunk()));
     return true;
+}
+
+void QcServerWorld::adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<QcChunk>> &chunks)
+{
+    for (auto it = chunks.constBegin(); it != chunks.constEnd(); ++it) {
+        m_chunks.insert(it.key(), it.value());
+        m_modified.insert(it.key());
+    }
+}
+
+void QcServerWorld::markDirty(const QList<QcChunkPos> &chunks)
+{
+    for (const QcChunkPos &pos : chunks) {
+        m_dirtyRegions.insert(QcWorldStorage::regionOf(pos));
+    }
+}
+
+QHash<QcChunkPos, std::shared_ptr<const QcChunk>> QcServerWorld::takeChunksToSave()
+{
+    QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks;
+    for (const QcChunkPos &pos : std::as_const(m_modified)) {
+        if (m_dirtyRegions.contains(QcWorldStorage::regionOf(pos))) {
+            chunks.insert(pos, m_chunks.value(pos));
+        }
+    }
+    m_dirtyRegions.clear();
+    return chunks;
 }

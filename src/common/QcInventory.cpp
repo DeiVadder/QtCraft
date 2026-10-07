@@ -1,0 +1,103 @@
+#include "QcInventory.h"
+
+#include "QcContentRegistry.h"
+
+#include <algorithm>
+
+QcInventory::QcInventory()
+    : m_slots(slotCount)
+{
+}
+
+void QcInventory::setSelectedHotbarSlot(int slot)
+{
+    m_selected = std::clamp(slot, 0, hotbarSize - 1);
+}
+
+int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content)
+{
+    if (!content.isValidItem(item) || count <= 0) {
+        return count;
+    }
+    const int maxStack = content.item(item).maxStack;
+    for (QcItemStack &stack : m_slots) {
+        if (count == 0) {
+            break;
+        }
+        // Damaged tools never merge with other stacks.
+        if (stack.item == item && stack.count < maxStack && stack.damage == 0) {
+            const int moved = std::min(count, maxStack - stack.count);
+            stack.count += moved;
+            count -= moved;
+        }
+    }
+    for (QcItemStack &stack : m_slots) {
+        if (count == 0) {
+            break;
+        }
+        if (stack.isEmpty()) {
+            const int moved = std::min(count, maxStack);
+            stack = {item, moved, 0};
+            count -= moved;
+        }
+    }
+    return count;
+}
+
+int QcInventory::removeFromSlot(int index, int count)
+{
+    if (!isValidSlot(index) || count <= 0) {
+        return 0;
+    }
+    QcItemStack &stack = m_slots[index];
+    const int removed = std::min(count, stack.count);
+    stack.count -= removed;
+    if (stack.count <= 0) {
+        stack = {};
+    }
+    return removed;
+}
+
+int QcInventory::countOf(QcItemId item) const
+{
+    int total = 0;
+    for (const QcItemStack &stack : m_slots) {
+        if (stack.item == item) {
+            total += stack.count;
+        }
+    }
+    return total;
+}
+
+bool QcInventory::removeItems(QcItemId item, int count)
+{
+    if (countOf(item) < count) {
+        return false;
+    }
+    for (int i = 0; i < slotCount && count > 0; ++i) {
+        if (m_slots[i].item == item) {
+            count -= removeFromSlot(i, count);
+        }
+    }
+    return true;
+}
+
+void QcInventory::move(int from, int to, const QcContentRegistry &content)
+{
+    if (!isValidSlot(from) || !isValidSlot(to) || from == to) {
+        return;
+    }
+    QcItemStack &source = m_slots[from];
+    QcItemStack &target = m_slots[to];
+    if (!source.isEmpty() && source.item == target.item && source.damage == 0 && target.damage == 0
+        && content.isValidItem(source.item)) {
+        const int moved = std::min(source.count, content.item(source.item).maxStack - target.count);
+        target.count += moved;
+        source.count -= moved;
+        if (source.count <= 0) {
+            source = {};
+        }
+        return;
+    }
+    std::swap(source, target);
+}

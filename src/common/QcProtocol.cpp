@@ -86,7 +86,10 @@ struct Encoder
     QDataStream &stream;
 
     void operator()(const QcMsg::Hello &m) { stream << m.protocolVersion << m.playerName; }
-    void operator()(const QcMsg::Welcome &m) { stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed; }
+    void operator()(const QcMsg::Welcome &m)
+    {
+        stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView;
+    }
     void operator()(const QcMsg::ContentSync &m)
     {
         Q_ASSERT(m.content);
@@ -109,6 +112,28 @@ struct Encoder
         stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater;
     }
     void operator()(const QcMsg::Disconnect &m) { stream << m.reason; }
+    void operator()(QcMsg::StartMining m) { writePos(m.pos); }
+    void operator()(QcMsg::CancelMining) {}
+    void operator()(QcMsg::FinishMining m) { writePos(m.pos); }
+    void operator()(QcMsg::UseItem m)
+    {
+        writePos(m.target);
+        stream << quint8(m.face);
+    }
+    void operator()(QcMsg::SelectHotbarSlot m) { stream << m.slot; }
+    void operator()(QcMsg::MoveInventoryItem m) { stream << m.from << m.to; }
+    void operator()(const QcMsg::ChatInput &m) { stream << m.text; }
+    void operator()(const QcMsg::InventoryState &m)
+    {
+        stream << quint32(m.stacks.size());
+        for (const QcItemStack &slot : m.stacks) {
+            stream << slot.item << qint32(slot.count) << qint32(slot.damage);
+        }
+        stream << m.selected;
+    }
+    void operator()(const QcMsg::ChatMessage &m) { stream << m.text; }
+
+    void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
 
 template<typename T>
@@ -126,7 +151,10 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::Welcome>(QDataStream &stream)
 {
     QcMsg::Welcome m;
-    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed;
+    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView;
+    if (!std::isfinite(m.yaw) || !std::isfinite(m.pitch)) {
+        return qcError(u"Non-finite view direction"_s);
+    }
     return m;
 }
 
@@ -201,6 +229,100 @@ QcResult<QcMessage> decodePayload<QcMsg::Disconnect>(QDataStream &stream)
     return m;
 }
 
+QcBlockPos readPos(QDataStream &stream)
+{
+    qint32 x = 0;
+    qint32 y = 0;
+    qint32 z = 0;
+    stream >> x >> y >> z;
+    return {x, y, z};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::StartMining>(QDataStream &stream)
+{
+    return QcMsg::StartMining{readPos(stream)};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::CancelMining>(QDataStream &)
+{
+    return QcMsg::CancelMining{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::FinishMining>(QDataStream &stream)
+{
+    return QcMsg::FinishMining{readPos(stream)};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::UseItem>(QDataStream &stream)
+{
+    QcMsg::UseItem m;
+    m.target = readPos(stream);
+    quint8 face = 0;
+    stream >> face;
+    if (face >= qcBlockFaceCount) {
+        return qcError(u"Invalid block face"_s);
+    }
+    m.face = QcBlockFace(face);
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::SelectHotbarSlot>(QDataStream &stream)
+{
+    QcMsg::SelectHotbarSlot m;
+    stream >> m.slot;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::MoveInventoryItem>(QDataStream &stream)
+{
+    QcMsg::MoveInventoryItem m;
+    stream >> m.from >> m.to;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::ChatInput>(QDataStream &stream)
+{
+    QcMsg::ChatInput m;
+    stream >> m.text;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::InventoryState>(QDataStream &stream)
+{
+    QcMsg::InventoryState m;
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, 1024, count)) {
+        return qcError(u"Corrupt inventory"_s);
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        QcItemStack slot;
+        qint32 amount = 0;
+        qint32 damage = 0;
+        stream >> slot.item >> amount >> damage;
+        slot.count = amount;
+        slot.damage = damage;
+        m.stacks.append(slot);
+    }
+    stream >> m.selected;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::ChatMessage>(QDataStream &stream)
+{
+    QcMsg::ChatMessage m;
+    stream >> m.text;
+    return m;
+}
+
 template<std::size_t... I>
 QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
 {
@@ -238,7 +360,11 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
     if (is.template operator()<QcMsg::Disconnect>()) {
         return true;
     }
-    const bool clientMessage = is.template operator()<QcMsg::Hello>() || is.template operator()<QcMsg::PlayerInput>();
+    const bool clientMessage = is.template operator()<QcMsg::Hello>() || is.template operator()<QcMsg::PlayerInput>()
+                               || is.template operator()<QcMsg::StartMining>() || is.template operator()<QcMsg::CancelMining>()
+                               || is.template operator()<QcMsg::FinishMining>() || is.template operator()<QcMsg::UseItem>()
+                               || is.template operator()<QcMsg::SelectHotbarSlot>()
+                               || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>();
     return clientMessage == (sender == Peer::Client);
 }
 

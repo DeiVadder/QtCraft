@@ -4,16 +4,13 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 4 – Interaktion und Persistenz
-- **Branch:** `feature/04-interaction`
-- **Nächster Schritt:** Persistenz testen, Weltbibliothek und UI (Weltliste, Hotbar, Inventar, Pause-Menü), Zielmarkierung im Renderer.
-- **Offene Befunde aus der Verifikation von Etappe 3 (in Etappe 4 beheben):**
-  1. Himmelslicht nach Blockänderungen: `QcMeshScheduler::blockChanged` muss alle Sektionen der 3×3-Chunk-Umgebung unterhalb und bis eine Sektion oberhalb neu meshen; E-015 korrigieren; Test.
-  2. Testlücken: Parser für Biome/Features/Erze/Terrain, `isCave()` gegen geschnitzten Chunk, parallele Generierung deterministisch, Licht über Chunkgrenze mit exaktem Wert.
-  3. Nit: Biome mit identischem Klimapunkt (Gleichstand) warnen.
-  4. Nit: Strandblock nur in Wassernähe (`landFactor < 1`).
-  5. Nit: Worldgen mit `-ffp-contract=off` übersetzen (plattformgleiche Ergebnisse).
-  6. Nit: Default `replaces = qtcraft:stone` im Parser entfernen.
+- **Aktuelle Etappe:** 5 – Gegner und Gesundheit
+- **Branch:** `feature/05-mobs`
+- **Nächster Schritt:** Mobs, Kampf, Gesundheit, Tag/Nacht fertigstellen und testen; danach Verifikation.
+- **Offene Befunde aus der Verifikation von Etappe 4 (in Etappe 5 beheben):**
+  1. `playersAreSavedOnDisconnectAndChunksByAutosave` prüft das Speichern beim Trennen nicht wirklich (Autosave schreibt die Datei schon vorher).
+  2. Unit-Tests für die neuen Grenzprüfungen in `readPlayer`/`readChunks` (Datenzeilen im Damaged-File-Test).
+  3. Nits: Abbau-Toleranz enger testen (14 Ticks abgelehnt); Weltwechsel auf dieselbe Welt: speichern → beenden → öffnen; Spieler-Schreibfehler in `save()` melden; doppeltes „damaged“ in der Weltliste; `readInfo` bei `[]`.
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
 
@@ -30,8 +27,8 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | 1 | Gerüst und Spike | erledigt | 2026-10-07 | QRhi-Renderer gewählt, Verifikation PASS |
 | 2 | Durchstich Client/Server | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS (zwei offene Befunde S1/S2) |
 | 3 | Weltgenerierung | erledigt | 2026-10-07 | Verifikation PASS, Befunde nach Etappe 4 übernommen |
-| 4 | Interaktion und Persistenz | in Arbeit | | |
-| 5 | Gegner und Gesundheit | offen | | |
+| 4 | Interaktion und Persistenz | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS |
+| 5 | Gegner und Gesundheit | in Arbeit | | |
 | 6 | Crafting und Items | offen | | |
 | 7 | Modding | offen | | |
 | 8 | Politur und Abschluss | offen | | |
@@ -41,4 +38,6 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 - Steuerschnittstelle nur im Headless-Prozess; Anbindung an das grafische Spiel per lokalem Socket folgt.
 - Maus-Fangen per Cursor-Zentrierung (`QCursor::setPos`) ist auf macOS nur per Screenshot, nicht interaktiv geprüft.
 - Biome bilden eher rundliche Flecken; Gebirge sind selten (Klimapunkt-Verteilung).
+- Spielerdateien: Namen werden auf Dateinamen abgebildet; „Bob“/„bob“ teilen sich auf macOS eine Datei. Keine Sperre gegen zwei Prozesse auf derselben Welt.
+- Keine Sichtlinien-Prüfung beim Abbauen/Setzen; keine Ratenbegrenzung für UseItem/Chat.
 - Spawn kann auf Baumkronen liegen (höchster Nicht-Luft-Block der Säule).

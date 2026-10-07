@@ -53,6 +53,14 @@ void QcWorldView::clearMeshes()
     update();
 }
 
+void QcWorldView::setSelection(std::optional<QcBlockPos> block)
+{
+    if (m_selection != block) {
+        m_selection = block;
+        update();
+    }
+}
+
 void QcWorldView::setSkyColor(const QColor &color)
 {
     m_skyColor = color;

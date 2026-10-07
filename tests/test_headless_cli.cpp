@@ -1,6 +1,10 @@
+#include <QDir>
+#include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
+#include <QTemporaryDir>
 #include <QTest>
 
 using namespace Qt::StringLiterals;
@@ -75,6 +79,48 @@ private slots:
         const QList<QByteArray> lines = m_process.readAllStandardOutput().trimmed().split('\n');
         QCOMPARE(lines.size(), 2);
         QVERIFY(QJsonDocument::fromJson(lines.last()).object().value(u"tick"_s).toInt() >= 10);
+    }
+
+    void worldCommandsCreateSaveAndReload()
+    {
+        QTemporaryDir data;
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+
+        const QJsonObject created = ask(R"({"cmd":"worldCreate","name":"Test World","seed":7})");
+        QCOMPARE(created.value(u"folder"_s).toString(), u"Test_World"_s);
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        QVERIFY(ask(R"({"cmd":"chat","text":"/give bricks 9"})").value(u"ok"_s).toBool());
+        QVERIFY(ask(R"({"cmd":"worldSave"})").value(u"ok"_s).toBool());
+        QVERIFY(ask(R"({"cmd":"wait","ticks":3})").value(u"ok"_s).toBool());
+
+        // Loading the same folder restarts server and session; the inventory comes from the save.
+        QCOMPARE(ask(R"({"cmd":"worldLoad","folder":"Test_World"})").value(u"ok"_s).toBool(), true);
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        const QJsonArray stacks = ask(R"({"cmd":"inventory"})").value(u"slots"_s).toArray();
+        QCOMPARE(stacks.size(), 1);
+        QCOMPARE(stacks.at(0).toObject().value(u"item"_s).toString(), u"qtcraft:bricks"_s);
+        QCOMPARE(stacks.at(0).toObject().value(u"count"_s).toInt(), 9);
+        const QJsonArray worlds = ask(R"({"cmd":"worldList"})").value(u"worlds"_s).toArray();
+        QCOMPARE(worlds.size(), 1);
+        QCOMPARE(ask(R"({"cmd":"worldLoad","folder":"../etc"})").value(u"ok"_s).toBool(true), false);
+
+        // A world with a damaged region file fails to load, and the current world keeps working.
+        const QString broken = QDir(data.path()).filePath(u"worlds/Broken"_s);
+        QVERIFY(QDir().mkpath(broken + u"/regions"_s));
+        QVERIFY(QFile::copy(QDir(data.path()).filePath(u"worlds/Test_World/world.json"_s), broken + u"/world.json"_s));
+        QFile junk(broken + u"/regions/r.0.0.qcr"_s);
+        QVERIFY(junk.open(QIODevice::WriteOnly));
+        junk.write("junk junk junk junk");
+        junk.close();
+        QCOMPARE(ask(R"({"cmd":"worldLoad","folder":"Broken"})").value(u"ok"_s).toBool(true), false);
+        QCOMPARE(ask(R"({"cmd":"worldSave"})").value(u"ok"_s).toBool(), true);
+        const QJsonObject status = ask(R"({"cmd":"status"})");
+        QCOMPARE(status.value(u"state"_s).toString(), u"Playing"_s);
+        QCOMPARE(status.value(u"world"_s).toString(), u"Test World"_s);
     }
 
     void quitEndsTheProcess()

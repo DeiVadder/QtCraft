@@ -53,6 +53,31 @@ World generation data (server only, not sent to clients): `biomes/*.json` (`name
 
 Runtime block ids are assigned in registration order and never stored; persistent data uses names (*planned:* save format).
 
+## Persistence
+
+A saved world is a directory below `<app data>/worlds/<folder>` (`QTCRAFT_DATA_DIR` overrides the base; `QcWorldLibrary` lists, creates and deletes worlds). `QcWorldStorage` reads and writes:
+
+| File | Content |
+|------|---------|
+| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime` |
+| `regions/r.<rx>.<rz>.qcr` | Modified chunks of a 32 × 32 chunk region: block-name palette + chunks (palette sections, run-length indices) |
+| `players/<name>.qcp` | Position, velocity, view direction, health, selected slot, inventory (item names, counts, damage) |
+
+Binary files share a container: magic (`QCRG`/`QCPL`), format version, payload size, CRC-32, payload. Loading validates every part; a damaged file stops the world from opening with a message naming the file. Unknown block or item names (e.g. after removing a mod) become air or are dropped, with a warning. Only modified chunks are stored; they stay in memory while the world is open and their regions are rewritten (atomically via `QSaveFile`) on `/save`, every 60 s and when the server stops. Everything else is regenerated from the seed.
+
+## Interaction
+
+The client sends intentions; the server decides (`QcServer`):
+
+- **Mining:** `StartMining`/`CancelMining`/`FinishMining`. The server checks reach (5 m + 1 m slack), the target and the elapsed ticks against `QcMining::breakSeconds` (hardness × 1.5 s, divided by the tool speed with the right tool; × 5 s without a required tool, which also gives no drops). Drops go straight into the inventory; tools lose durability.
+- **Placing:** `UseItem` on a block face places the held item's block into the neighbouring cell if it is replaceable, within reach and not inside a player.
+- **Inventory:** 36 slots (9 hotbar). The server sends the full `InventoryState` after every change; `MoveInventoryItem` merges or swaps stacks.
+- **Chat and commands:** `ChatInput`/`ChatMessage`; commands `/help`, `/give <item> [count]`, `/save`.
+
+Every visible, non-liquid block automatically gets an item of the same name that places it (`QcContentRegistry::createBlockItems`); `items/*.json` defines further items (`name`, `translation`, `texture`, `maxStack`, `places`, `tool`, `toolLevel`, `toolSpeed`, `durability`, `attackDamage`).
+
+UI controls: left mouse / F mines, right mouse / R places, 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
+
 ## World generation
 
 `QcTerrainGenerator` (decision E-014) is deterministic per seed and thread-safe. The server generates chunks on a `QcWorkerPool` (`QcServerWorld::requestChunk`), nearest first with a bounded queue, and collects finished chunks every tick; chunks no player needs are unloaded. Sky light is computed client-side while meshing (decision E-015).
@@ -73,6 +98,8 @@ Runtime block ids are assigned in registration order and never stored; persisten
 | `--look <yaw,pitch>` | Initial view direction (for reproducible screenshots) |
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
 | `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
+| `--chat <text>` (repeatable), `--overlay <inventory\|pause\|chat>` | Sent / opened once the world is loaded (reproducible UI screenshots) |
+| `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds |
 | `qtcraft-headless --map <png> [--map-radius <blocks>]` | Top-down terrain map of a seed |
 
 All own targets are compiled with `-Wall -Wextra -Wpedantic -Werror -fno-exceptions` (MSVC: `/W4 /WX /EHs-c-`) through the `qc_project_options` interface target. Qt headers are system includes.

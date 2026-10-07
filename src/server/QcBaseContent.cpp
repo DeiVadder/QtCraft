@@ -12,6 +12,7 @@ QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings)
     if (!info) {
         return qcError(info.error());
     }
+    registry->createBlockItems();
     return registry;
 }
 

@@ -9,16 +9,22 @@ qt_add_library(qc_common STATIC
     QcChunkSection.h QcChunkSection.cpp
     QcConnection.h QcConnection.cpp
     QcContentNames.h QcContentNames.cpp
+    QcCrc32.h QcCrc32.cpp
     QcContentParser.h QcContentParser.cpp
     QcContentRegistry.h QcContentRegistry.cpp
     QcEntityMotion.h
     QcInProcessTransport.h QcInProcessTransport.cpp
     QcIntMath.h
+    QcInventory.h QcInventory.cpp
+    QcItemDefinition.h
+    QcItemStack.h
     QcMailbox.h
     QcMessages.h
+    QcMining.h QcMining.cpp
     QcPhysics.h QcPhysics.cpp
     QcPlayerInput.h
     QcProtocol.h QcProtocol.cpp
+    QcRaycast.h QcRaycast.cpp
     QcResult.h
     QcStreamLimits.h
     QcTextureDefinition.h

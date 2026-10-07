@@ -88,7 +88,7 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 ## E-015 Himmelslicht im Mesher berechnet
 
 - **Was:** Pro Mesh-Auftrag wird für die 3×3-Chunk-Umgebung (vertikal ±16 Blöcke) Himmelslicht per Breitensuche berechnet: oberhalb des höchsten lichtdämpfenden Blocks Stufe 15, sonst Ausbreitung mit −max(1, Opazität) pro Schritt. Ecken erhalten den Mittelwert der offenen Nachbarzellen (weiches Licht); der Shader skaliert mit dem Tageslicht.
-- **Warum:** Kein zusätzlicher Netzwerkverkehr, Server bleibt schlank, Ergebnis ist innerhalb der Lichtreichweite exakt, und Blockänderungen brauchen nur das ohnehin nötige Neu-Meshen der Nachbarsektionen.
+- **Warum:** Kein zusätzlicher Netzwerkverkehr, Server bleibt schlank, Ergebnis ist innerhalb der Lichtreichweite exakt, Blockänderungen meshen alle Sektionen der 3×3-Chunk-Umgebung vom Boden bis eine Sektion über der Änderung neu (Licht wirkt seitlich bis 15 Blöcke und die ganze Säule hinab).
 - **Verworfen:** Licht auf dem Server berechnen und mitschicken (mehr Daten, komplexe Inkrementalpflege); reine Höhenkarten-Abschattung (Höhleneingänge und Überhänge falsch).
 
 ## E-016 Chunkdaten ohne zlib: Lauflängenkodierung
@@ -101,3 +101,26 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 
 - **Was:** `qtcraft-headless --map <png> [--map-radius n]` rendert die Oberfläche von oben. Spiel-Option `--spawn x,z` setzt den Startpunkt für reproduzierbare Screenshots.
 - **Warum:** Biomverteilung, Ozeane und Übergänge lassen sich in Sekunden über Kilometer prüfen.
+
+## E-018 Speicherformat: Regionen nur mit geänderten Chunks, Namen statt Ids
+
+- **Was:** Siehe `Architektur.md`, Abschnitt Persistence. Geänderte Chunks bleiben im Speicher, solange die Welt offen ist; gespeichert werden die Regionen, die sich seit dem letzten Speichern geändert haben, jeweils vollständig und atomar.
+- **Warum:** Einfach, robust (kein Teil-Überschreiben), die Dateigröße bleibt bei typischem Spiel klein, und alles Ungeänderte entsteht deterministisch aus dem Seed. Namen in der Palette machen Welten unabhängig von der Registrierungsreihenfolge.
+- **Verworfen:** Ein Datei-pro-Chunk-Format (viele kleine Dateien); Regionen mit Sektor-Tabellen und Teilaktualisierung (Aufwand ohne Nutzen bei wenigen geänderten Chunks); Speichern von Laufzeit-Ids.
+
+## E-019 Abbau-Drops direkt ins Inventar
+
+- **Was:** Abgebaute Blöcke legen ihre Drops direkt ins Inventar; was nicht passt, verfällt.
+- **Warum:** Keine herumliegenden Item-Entities nötig, deutlich weniger Code und Netzverkehr; das Spielziel (abbauen, sammeln, craften) bleibt vollständig.
+- **Verworfen:** Item-Entities mit Physik und Aufsammeln (mögliche spätere Erweiterung).
+
+## E-020 Bedienoberfläche
+
+- **Was:** QML-Overlays (Inventar, Pause, Chat) über der Welt; `QcGameController` leitet Eingaben nur weiter, solange kein Overlay offen ist. Item-Icons liefert ein `QQuickImageProvider` aus dem Textur-Atlas. Eine Weltliste im Hauptmenü legt Welten an, lädt und löscht sie (mit Rückfrage).
+- **Warum:** Overlays nutzen die normale Qt-Quick-Fokus- und Mausbehandlung; die Welt rendert unverändert weiter.
+
+## E-021 Cheat-Befehle nur bei erlaubten Cheats
+
+- **Was:** Befehle, die Regeln umgehen (`/give`, ab Etappe 5 auch `/time`, `/summon`, `/heal`, `/kill`), laufen nur mit `QcServerConfig::allowCheats` (Standard im Einzelspieler: an). Ein späterer dedizierter Server setzt es aus und erlaubt sie nur Operatoren.
+- **Warum:** Im Einzelspieler sind sie Test- und Komfortwerkzeug (auch für die Steuerschnittstelle); im Mehrspieler würden sie die Validierung des Servers aushebeln.
+- **Verworfen:** Befehle ganz entfernen (Szenariotests und Agenten bräuchten Umwege).

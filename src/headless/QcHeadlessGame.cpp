@@ -8,10 +8,14 @@
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
 #include "QcTransport.h"
+#include "QcWorldLibrary.h"
 
 #include <QCommandLineParser>
 #include <QCoreApplication>
+#include <QDir>
 #include <QFile>
+#include <QJsonArray>
+#include <QRandomGenerator>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimer>
@@ -42,7 +46,9 @@ QcHeadlessGame::~QcHeadlessGame()
     delete m_control;
     delete m_session;
     if (m_server) {
-        m_server->shutdown();
+        if (const QcStatus stopped = m_server->shutdown(); !stopped) {
+            printError(u"saving the world failed: "_s + stopped.error());
+        }
     }
 }
 
@@ -59,7 +65,8 @@ bool QcHeadlessGame::start(const QStringList &arguments)
                                         QString::number(defaultTimeLimitSeconds));
     const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
     const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
-    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption});
+    const QCommandLineOption dataOption(u"data-dir"_s, u"Directory holding the saved worlds (world commands)."_s, u"dir"_s);
+    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption});
     if (!parser.parse(arguments)) {
         printError(parser.errorText());
         return false;
@@ -108,9 +115,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
         return true;
     }
-    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::move(generator));
-
-    m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s);
+    m_content = shared;
+    m_baseConfig = config;
+    m_library = std::make_unique<QcWorldLibrary>(parser.isSet(dataOption) ? QDir(parser.value(dataOption)).filePath(u"worlds"_s)
+                                                                          : QcWorldLibrary::defaultRoot());
+    if (const QcStatus started = startWorld(config); !started) {
+        printError(started.error());
+        return false;
+    }
     m_output = new QFile(this);
     // Opened by descriptor: a FILE*-based QFile would sit in stdio's buffer when stdout is a pipe.
     if (!m_output->open(fileno(stdout), QIODevice::WriteOnly | QIODevice::Unbuffered)) {
@@ -119,6 +131,9 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     m_control = new QcControlInterface(m_session, nullptr, m_output);
+    m_control->setExtensionHandler([this](const QJsonObject &request, QJsonObject &response) {
+        return handleWorldCommand(request, response);
+    });
     m_scriptMode = parser.isSet(scriptOption);
     // A script's exit code reports whether every request succeeded, also when it ends with quit.
     if (m_scriptMode) {
@@ -126,9 +141,6 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     } else {
         connect(m_control, &QcControlInterface::quitRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
     }
-    connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
-        printError(u"disconnected: "_s + reason);
-    });
 
     if (m_scriptMode) {
         QFile script(parser.value(scriptOption));
@@ -136,7 +148,15 @@ bool QcHeadlessGame::start(const QStringList &arguments)
             printError(u"Cannot open script %1"_s.arg(script.fileName()));
             return false;
         }
-        connect(m_control, &QcControlInterface::idle, this, &QcHeadlessGame::finishScript, Qt::QueuedConnection);
+        // Queued: by the time this runs all script lines are queued, so idle really means done.
+        connect(
+            m_control, &QcControlInterface::idle, this,
+            [this] {
+                if (m_control->isIdle()) {
+                    finishScript();
+                }
+            },
+            Qt::QueuedConnection);
         m_control->feed(script.readAll() + '\n');
     } else {
         auto *reader = new QcStdinReader(this);
@@ -156,8 +176,117 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"time limit reached"_s);
         QCoreApplication::exit(2);
     });
-    m_session->start();
     return true;
+}
+
+QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
+{
+    // Save first, so reopening the current world reads the latest state.
+    if (m_server) {
+        if (const QcStatus saved = m_server->save(); !saved) {
+            return qcError(u"Cannot save the current world: %1"_s.arg(saved.error()));
+        }
+    }
+    QStringList generatorWarnings;
+    auto generator = std::make_unique<QcTerrainGenerator>(m_content, config.seed, &generatorWarnings);
+    for (const QString &warning : std::as_const(generatorWarnings)) {
+        printError(u"world generation warning: "_s + warning);
+    }
+    // The current world keeps running when the new one cannot be opened.
+    auto server = std::make_unique<QcLocalServerHost>(config, m_content, std::move(generator));
+    if (!server->startError().isEmpty()) {
+        return qcError(server->startError());
+    }
+    if (m_session) {
+        m_session->disconnectFromServer();
+        m_session->deleteLater();
+        m_session = nullptr;
+    }
+    if (m_server) {
+        if (const QcStatus stopped = m_server->shutdown(); !stopped) {
+            printError(u"saving the previous world failed: "_s + stopped.error());
+        }
+        m_server.reset();
+    }
+    m_server = std::move(server);
+    m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
+    connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
+        printError(u"disconnected: "_s + reason);
+    });
+    if (m_control) {
+        m_control->setSession(m_session);
+    }
+    m_session->start();
+    return {};
+}
+
+bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject &response)
+{
+    const QString command = request.value(u"cmd"_s).toString();
+    const auto failWith = [&response](const QString &error) {
+        response = {{u"ok"_s, false}, {u"error"_s, error}};
+        return true;
+    };
+    if (command == u"worldList"_s) {
+        QJsonArray worlds;
+        const QList<QcWorldLibrary::Entry> entries = m_library->list();
+        for (const QcWorldLibrary::Entry &entry : entries) {
+            worlds.append(QJsonObject{{u"folder"_s, entry.folder},
+                                      {u"name"_s, entry.info.name},
+                                      {u"seed"_s, QString::number(entry.info.seed)},
+                                      {u"error"_s, entry.error}});
+        }
+        response = {{u"worlds"_s, worlds}};
+        return true;
+    }
+    if (command == u"worldCreate"_s || command == u"worldLoad"_s) {
+        QcServerConfig config = m_baseConfig;
+        if (command == u"worldCreate"_s) {
+            bool seedOk = true;
+            const qint64 seed = request.contains(u"seed"_s)
+                                    ? request.value(u"seed"_s).toVariant().toString().toLongLong(&seedOk)
+                                    : qint64(QRandomGenerator::global()->generate64() >> 1);
+            if (!seedOk) {
+                return failWith(u"'seed' must be an integer"_s);
+            }
+            const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed);
+            if (!entry) {
+                return failWith(entry.error());
+            }
+            config.worldName = entry->info.name;
+            config.seed = entry->info.seed;
+            config.worldDirectory = entry->directory;
+            response = {{u"folder"_s, entry->folder}};
+        } else {
+            const QList<QcWorldLibrary::Entry> entries = m_library->list();
+            const QString folder = request.value(u"folder"_s).toString();
+            const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
+            if (it == entries.end()) {
+                return failWith(u"No world in folder '%1'"_s.arg(folder));
+            }
+            if (!it->error.isEmpty()) {
+                return failWith(it->error);
+            }
+            config.worldName = it->info.name;
+            config.seed = it->info.seed;
+            config.worldDirectory = it->directory;
+            response = {{u"folder"_s, folder}};
+        }
+        if (const QcStatus started = startWorld(config); !started) {
+            return failWith(started.error());
+        }
+        response.insert(u"note"_s, u"Send waitUntilReady before acting in the world."_s);
+        return true;
+    }
+    if (command == u"worldSave"_s) {
+        const QcStatus saved = m_server ? m_server->save() : QcStatus(qcError(u"No world is open"_s));
+        if (!saved) {
+            return failWith(saved.error());
+        }
+        response = {{u"saved"_s, true}};
+        return true;
+    }
+    return false;
 }
 
 void QcHeadlessGame::finishScript()

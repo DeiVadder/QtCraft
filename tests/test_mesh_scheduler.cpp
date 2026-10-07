@@ -138,6 +138,30 @@ private slots:
         QCOMPARE(meshes.value(qcSectionKey({0, 0}, 0))->opaqueIndices.size(), before + qsizetype(4) * 6);
     }
 
+    void blockChangeAlsoRemeshesSectionsReachedByLight()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QSet<quint64> meshed;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshed](quint64 key, const std::shared_ptr<const QcChunkMesh> &) { meshed.insert(key); });
+        connect(&scheduler, &QcMeshScheduler::meshRemoved, this, [&meshed](quint64 key) { meshed.insert(key); });
+        loadSquare(world, scheduler, 64);
+        pumpUntilIdle(scheduler, world);
+        meshed.clear();
+
+        // Opening a hole at the top of section 3 changes the light down to two sections below; those
+        // sections are meshed again (neighbour chunks are marked too but lack side neighbours here).
+        QVERIFY(world.setBlock({15, 63, 15}, qcAirBlockId));
+        scheduler.blockChanged({15, 63, 15});
+        // Only the centre chunk has all side neighbours, so only its sections produce results.
+        pumpUntilIdle(scheduler, world);
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 1)));
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 6)));
+    }
+
     void unloadRemovesMeshesAndDropsRunningResults()
     {
         QcClientWorld world(m_content);

@@ -30,6 +30,7 @@ public:
     // Moves finished background chunks into the world; returns their positions.
     QList<QcChunkPos> collectGeneratedChunks();
     qsizetype pendingGenerationCount() const { return m_pending.size(); }
+    // Modified chunks stay loaded until the world closes so that saves always see them.
     void unloadChunk(QcChunkPos pos);
     qsizetype loadedChunkCount() const { return m_chunks.size(); }
     QList<QcChunkPos> loadedChunks() const { return m_chunks.keys(); }
@@ -39,11 +40,22 @@ public:
 
     const QcWorldGenerator &generator() const { return *m_generator; }
 
+    // Chunks read from a save; they count as modified.
+    void adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<QcChunk>> &chunks);
+    bool isModified(QcChunkPos pos) const { return m_modified.contains(pos); }
+    qsizetype modifiedChunkCount() const { return m_modified.size(); }
+    // All modified chunks of regions changed since the last call, as snapshots for saving.
+    QHash<QcChunkPos, std::shared_ptr<const QcChunk>> takeChunksToSave();
+    // Marks the regions of these chunks for the next save again (after a failed write).
+    void markDirty(const QList<QcChunkPos> &chunks);
+
 private:
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcWorldGenerator> m_generator;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
+    QSet<QcChunkPos> m_modified;
+    QSet<QcChunkPos> m_dirtyRegions;
     QcMailbox<std::shared_ptr<QcChunk>> m_generated;
     // Last member: destroyed first, so no job outlives the generator it uses.
     QcWorkerPool m_generationPool;

@@ -2,13 +2,16 @@
 
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcPhysics.h"
 
 #include <QIODevice>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QMetaEnum>
 #include <QTimer>
+#include <QtMath>
 
+#include <array>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -47,10 +50,22 @@ QcControlInterface::QcControlInterface(QcClientSession *session, QIODevice *inpu
     if (m_input) {
         connect(m_input, &QIODevice::readyRead, this, &QcControlInterface::readInput);
     }
+    setSession(session);
     auto *poll = new QTimer(this);
     poll->setInterval(pollIntervalMs);
     connect(poll, &QTimer::timeout, this, &QcControlInterface::onTick);
     poll->start();
+}
+
+void QcControlInterface::setSession(QcClientSession *session)
+{
+    if (m_session) {
+        disconnect(m_session, nullptr, this, nullptr);
+    }
+    m_session = session;
+    if (m_session) {
+        connect(m_session, &QcClientSession::chatReceived, this, [this](const QString &text) { m_chatLog.append(text); });
+    }
 }
 
 void QcControlInterface::readInput()
@@ -143,7 +158,86 @@ QJsonObject QcControlInterface::playerStatus() const
     if (m_session->state() == QcClientSession::State::Disconnected) {
         status.insert(u"disconnectReason"_s, m_session->disconnectReason());
     }
+    if (const auto &target = m_session->target()) {
+        const std::optional<QcBlockId> block = m_session->world() ? m_session->world()->blockAt(target->block) : std::nullopt;
+        status.insert(u"target"_s, QJsonObject{{u"x"_s, target->block.x},
+                                               {u"y"_s, target->block.y},
+                                               {u"z"_s, target->block.z},
+                                               {u"face"_s, faceName(target->face)},
+                                               {u"block"_s, block ? m_session->content()->block(*block).name : QString()}});
+    }
+    const QcItemStack held = m_session->inventory().selectedStack();
+    status.insert(u"selectedSlot"_s, m_session->inventory().selectedHotbarSlot());
+    status.insert(u"held"_s, stackJson(held));
+    if (!m_chatLog.isEmpty()) {
+        status.insert(u"messages"_s, QJsonArray::fromStringList(m_chatLog));
+    }
     return status;
+}
+
+QJsonValue QcControlInterface::stackJson(QcItemStack stack) const
+{
+    const auto content = m_session->content();
+    if (stack.isEmpty() || !content || !content->isValidItem(stack.item)) {
+        return QJsonValue();
+    }
+    QJsonObject json{{u"item"_s, content->item(stack.item).name}, {u"count"_s, stack.count}};
+    if (stack.damage > 0) {
+        json.insert(u"damage"_s, stack.damage);
+    }
+    return json;
+}
+
+QJsonObject QcControlInterface::inventoryJson() const
+{
+    QJsonArray stacks;
+    for (int i = 0; i < QcInventory::slotCount; ++i) {
+        const QJsonValue stack = stackJson(m_session->inventory().slot(i));
+        if (!stack.isNull()) {
+            QJsonObject entry = stack.toObject();
+            entry.insert(u"slot"_s, i);
+            stacks.append(entry);
+        }
+    }
+    return {{u"selectedSlot"_s, m_session->inventory().selectedHotbarSlot()}, {u"slots"_s, stacks}};
+}
+
+QcBlockPos QcControlInterface::blockArgument(const QJsonObject &request)
+{
+    return {intField(request, u"x"_s, 0), intField(request, u"y"_s, 0), intField(request, u"z"_s, 0)};
+}
+
+std::optional<QcBlockFace> QcControlInterface::faceArgument(const QJsonObject &request)
+{
+    const QString name = request.value(u"face"_s).toString(u"up"_s);
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        if (faceName(face) == name) {
+            return face;
+        }
+    }
+    return std::nullopt;
+}
+
+QString QcControlInterface::faceName(QcBlockFace face)
+{
+    static const std::array<QString, qcBlockFaceCount> names = {u"east"_s, u"west"_s, u"up"_s, u"down"_s, u"south"_s, u"north"_s};
+    return names[std::size_t(face)];
+}
+
+void QcControlInterface::lookAt(QcBlockPos block, std::optional<QcBlockFace> face)
+{
+    // Aim at the block centre, or just inside the centre of the given face.
+    QcVec3 point{block.x + 0.5, block.y + 0.5, block.z + 0.5};
+    if (face) {
+        const QcFaceOffset normal = qcFaceOffset(*face);
+        point += QcVec3{normal.dx * 0.49, normal.dy * 0.49, normal.dz * 0.49};
+    }
+    const QcVec3 eye = m_session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 delta = point - eye;
+    QcPlayerInput intent = m_session->intent();
+    intent.yaw = float(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
+    intent.pitch = float(qRadiansToDegrees(std::atan2(delta.y, std::sqrt(delta.x * delta.x + delta.z * delta.z))));
+    m_session->setIntent(intent);
 }
 
 void QcControlInterface::start(const QJsonObject &request)
@@ -156,7 +250,9 @@ void QcControlInterface::start(const QJsonObject &request)
         fail({}, request.value(QLatin1StringView(parseErrorKey)).toString());
         return;
     }
-    for (const char *key : {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls"}) {
+    m_chatLog.clear();
+    for (const char *key :
+         {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls", "slot", "from", "to", "maxTicks"}) {
         const QJsonValue value = request.value(QLatin1StringView(key));
         if (!value.isUndefined() && !value.isDouble()) {
             fail(request, u"'%1' must be a number"_s.arg(QLatin1StringView(key)));
@@ -206,6 +302,67 @@ void QcControlInterface::start(const QJsonObject &request)
                                      m_session->setIntent(stop);
                                      return true;
                                  }};
+    } else if (command == u"lookAt"_s) {
+        lookAt(blockArgument(request), std::nullopt);
+        finish(request, playerStatus());
+    } else if (command == u"mine"_s) {
+        std::optional<QcBlockPos> pos;
+        if (request.contains(u"x"_s)) {
+            pos = blockArgument(request);
+            lookAt(*pos, std::nullopt);
+        } else if (m_session->target()) {
+            pos = m_session->target()->block;
+        }
+        if (!pos || !m_session->world()) {
+            fail(request, u"No block targeted"_s);
+            return;
+        }
+        m_session->setMining(true);
+        const int maxTicks = std::clamp(intField(request, u"maxTicks"_s, 400), 1, maxCommandTicks);
+        m_active = ActiveCommand{request, timeoutPolls(maxTicks), [this, pos] {
+                                     const std::optional<QcBlockId> block = m_session->world()->blockAt(*pos);
+                                     if (block && *block != qcAirBlockId) {
+                                         return false;
+                                     }
+                                     m_session->setMining(false);
+                                     return true;
+                                 }};
+    } else if (command == u"place"_s || command == u"use"_s) {
+        if (request.contains(u"x"_s)) {
+            const std::optional<QcBlockFace> face = faceArgument(request);
+            if (!face) {
+                fail(request, u"'face' must be east, west, up, down, south or north"_s);
+                return;
+            }
+            lookAt(blockArgument(request), face);
+        }
+        // Wait one tick so the session's target follows the new view direction, then use the item.
+        bool used = false;
+        m_active = ActiveCommand{request, timeoutPolls(4), [this, startTick, used]() mutable {
+                                     if (!used) {
+                                         if (m_session->tickCount() <= startTick) {
+                                             return false;
+                                         }
+                                         if (!m_session->useItem()) {
+                                             return true;
+                                         }
+                                         used = true;
+                                         return false;
+                                     }
+                                     return m_session->tickCount() >= startTick + 4;
+                                 }};
+    } else if (command == u"select"_s) {
+        m_session->selectHotbarSlot(intField(request, u"slot"_s, 0));
+        finish(request, inventoryJson());
+    } else if (command == u"inventory"_s) {
+        finish(request, inventoryJson());
+    } else if (command == u"moveItem"_s) {
+        m_session->moveInventoryItem(intField(request, u"from"_s, 0), intField(request, u"to"_s, 0));
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"chat"_s) {
+        m_chatLog.clear();
+        m_session->sendChat(request.value(u"text"_s).toString());
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
     } else if (command == u"wait"_s) {
         const int ticks = ticksArgument(20);
         m_active = ActiveCommand{request, timeoutPolls(ticks), [this, startTick, ticks] {
@@ -308,6 +465,8 @@ void QcControlInterface::onTick()
         return;
     }
     if (--m_active->remainingTicks <= 0) {
+        // A timed-out mine command must not keep mining in the background.
+        m_session->setMining(false);
         const QJsonObject request = m_active->request;
         m_active.reset();
         fail(request, u"Timed out"_s);

@@ -227,6 +227,34 @@ QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
     return entries;
 }
 
+QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"item"_s, {}};
+    QcItemDefinition item;
+    item.name = reader.name(u"name"_s, packNamespace);
+    if (item.name.isEmpty()) {
+        return qcError(reader.ok() ? u"item: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"item '%1'"_s.arg(item.name);
+    item.translationKey = reader.string(
+        u"translation"_s, u"item.%1.%2"_s.arg(item.name.left(item.name.indexOf(u':')), localPart(item.name).replace(u'/', u'.')));
+    item.texture = reader.name(u"texture"_s, packNamespace, item.name);
+    item.maxStack = reader.integer(u"maxStack"_s, 64, 1, 999);
+    item.placesBlock = reader.name(u"places"_s, packNamespace);
+    item.tool = reader.string(u"tool"_s);
+    item.toolLevel = reader.integer(u"toolLevel"_s, 0, 0, 100);
+    item.toolSpeed = reader.number(u"toolSpeed"_s, 1.0, 0.1, 100.0);
+    item.durability = reader.integer(u"durability"_s, 0, 0, 100000);
+    item.attackDamage = reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);
+    if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
+        item.maxStack = 1;
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return item;
+}
+
 QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace)
 {
     FieldReader reader{json, u"biome"_s, {}};
@@ -334,7 +362,8 @@ QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packN
     }
     reader.context = u"ore '%1'"_s.arg(ore.name);
     ore.block = reader.name(u"block"_s, packNamespace);
-    ore.replaces = reader.name(u"replaces"_s, packNamespace, u"qtcraft:stone"_s);
+    // Empty means the terrain's stone block.
+    ore.replaces = reader.name(u"replaces"_s, packNamespace);
     ore.minY = reader.integer(u"minY"_s, 1, 0, QcWorld::worldHeight - 1);
     ore.maxY = reader.integer(u"maxY"_s, 64, ore.minY, QcWorld::worldHeight - 1);
     ore.veinsPerChunk = reader.integer(u"veinsPerChunk"_s, 8, 0, 256);

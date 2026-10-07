@@ -1,5 +1,7 @@
 #include "QcBaseContent.h"
+#include "QcMailbox.h"
 #include "QcTerrainGenerator.h"
+#include "QcWorkerPool.h"
 
 #include <QSet>
 #include <QTest>
@@ -279,6 +281,66 @@ private slots:
             }
         }
         QVERIFY(checkedTrees > 0);
+    }
+
+    void isCaveAgreesWithTheCarvedChunk()
+    {
+        const QcTerrainGenerator generator(m_base, 2024);
+        int checked = 0;
+        for (const QcChunkPos pos : {QcChunkPos{0, 0}, QcChunkPos{-3, 5}, QcChunkPos{7, -2}}) {
+            const auto chunk = generator.generate(pos);
+            for (int x = 0; x < 16; ++x) {
+                for (int z = 0; z < 16; ++z) {
+                    const int wx = pos.x * 16 + x;
+                    const int wz = pos.z * 16 + z;
+                    const QcTerrainGenerator::Column column = generator.column(wx, wz);
+                    const bool wet = column.height <= generator.seaLevel() + 1;
+                    const int top = wet ? column.height - 6 : column.height - 1;
+                    // Below the protected top, a stone/ore-free cell is air exactly where isCave says so.
+                    for (int y = 3; y < std::min(top, 60); ++y) {
+                        const bool air = chunk->block(x, y, z) == qcAirBlockId;
+                        QCOMPARE(air, generator.isCave(wx, y, wz));
+                        ++checked;
+                    }
+                }
+            }
+        }
+        QVERIFY(checked > 10000);
+    }
+
+    void concurrentGenerationIsDeterministic()
+    {
+        const QcTerrainGenerator generator(m_base, 31337);
+        QList<QcChunkPos> positions;
+        for (int i = 0; i < 16; ++i) {
+            positions.append({i % 4 - 2, i / 4 - 2});
+        }
+        QList<std::shared_ptr<QcChunk>> serial;
+        for (const QcChunkPos pos : std::as_const(positions)) {
+            serial.append(generator.generate(pos));
+        }
+        QcMailbox<std::shared_ptr<QcChunk>> results;
+        {
+            QcWorkerPool pool(4);
+            for (const QcChunkPos pos : std::as_const(positions)) {
+                pool.submit([&generator, &results, pos] { results.push(generator.generate(pos)); });
+            }
+            pool.waitForIdle();
+        }
+        const std::vector<std::shared_ptr<QcChunk>> parallel = results.takeAll();
+        QCOMPARE(qsizetype(parallel.size()), positions.size());
+        for (const std::shared_ptr<QcChunk> &chunk : parallel) {
+            const auto reference = serial[positions.indexOf(chunk->pos())];
+            for (int s = 0; s < QcWorld::sectionCount; ++s) {
+                for (int y = 0; y < 16; ++y) {
+                    for (int z = 0; z < 16; ++z) {
+                        for (int x = 0; x < 16; ++x) {
+                            QCOMPARE(chunk->section(s).block(x, y, z), reference->section(s).block(x, y, z));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     void spawnPointIsDryLand()

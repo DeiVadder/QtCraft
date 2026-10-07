@@ -201,6 +201,69 @@ private slots:
         QVERIFY2(parsed.has_value(), qcErrorText(parsed).constData());
     }
 
+    void parsesBiomesWithDefaults()
+    {
+        const auto biome = QcContentParser::parseBiome(
+            json(R"({"name":"dunes","temperature":0.9,"humidity":0.1,"surface":"sand","features":[{"feature":"cactus","density":0.01}]})"),
+            u"b"_s);
+        QVERIFY2(biome.has_value(), qcErrorText(biome).constData());
+        QCOMPARE(biome->name, u"b:dunes"_s);
+        QCOMPARE(biome->surfaceBlock, u"b:sand"_s);
+        // Omitted layers fall back to the surface block.
+        QCOMPARE(biome->subsurfaceBlock, u"b:sand"_s);
+        QCOMPARE(biome->underwaterBlock, u"b:sand"_s);
+        QCOMPARE(biome->features.size(), 1);
+        QCOMPARE(biome->features.first().feature, u"b:cactus"_s);
+        QCOMPARE(biome->features.first().density, 0.01);
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x"})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","temperature":2})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","snowLine":100})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseBiome(json(R"({"name":"x","surface":"s","features":[{"density":0.1}]})"), u"b"_s).has_value());
+    }
+
+    void parsesFeaturesOresAndTerrain()
+    {
+        const auto tree = QcContentParser::parseFeature(
+            json(R"({"name":"palm","trunk":"log","leaves":"other:leaf","minHeight":5,"maxHeight":8,"ground":["sand"]})"), u"b"_s);
+        QVERIFY2(tree.has_value(), qcErrorText(tree).constData());
+        QCOMPARE(tree->trunkBlock, u"b:log"_s);
+        QCOMPARE(tree->leavesBlock, u"other:leaf"_s);
+        QCOMPARE(tree->groundBlocks, (QList<QString>{u"b:sand"_s}));
+        QVERIFY(!QcContentParser::parseFeature(json(R"({"name":"t","trunk":"log"})"), u"b"_s).has_value());
+        QVERIFY(!QcContentParser::parseFeature(json(R"({"name":"t","trunk":"l","leaves":"x","minHeight":6,"maxHeight":3})"), u"b"_s)
+                     .has_value());
+        QVERIFY(QcContentParser::parseFeature(json(R"({"name":"c","type":"column","trunk":"cactus"})"), u"b"_s).has_value());
+
+        const auto ore = QcContentParser::parseOre(json(R"({"name":"ruby","block":"ruby_ore","minY":4,"maxY":12})"), u"b"_s);
+        QVERIFY2(ore.has_value(), qcErrorText(ore).constData());
+        QCOMPARE(ore->block, u"b:ruby_ore"_s);
+        QVERIFY(ore->replaces.isEmpty());
+        QVERIFY(!QcContentParser::parseOre(json(R"({"name":"r","block":"x","minY":20,"maxY":10})"), u"b"_s).has_value());
+
+        const auto terrain = QcContentParser::parseTerrainSettings(json(R"({"seaLevel":40,"stone":"rock","water":"h2o"})"), u"b"_s);
+        QVERIFY2(terrain.has_value(), qcErrorText(terrain).constData());
+        QCOMPARE(terrain->seaLevel, 40);
+        QCOMPARE(terrain->stoneBlock, u"b:rock"_s);
+        QVERIFY(!QcContentParser::parseTerrainSettings(json(R"({"seaLevel":40})"), u"b"_s).has_value());
+    }
+
+    void parsesItems()
+    {
+        const auto pick = QcContentParser::parseItem(
+            json(R"({"name":"iron_pickaxe","texture":"pick","tool":"pickaxe","toolLevel":2,"toolSpeed":6,"durability":250})"), u"b"_s);
+        QVERIFY2(pick.has_value(), qcErrorText(pick).constData());
+        QCOMPARE(pick->translationKey, u"item.b.iron_pickaxe"_s);
+        QCOMPARE(pick->texture, u"b:pick"_s);
+        // Tools do not stack unless the definition says so.
+        QCOMPARE(pick->maxStack, 1);
+        QCOMPARE(pick->durability, 250);
+        const auto stick = QcContentParser::parseItem(json(R"({"name":"stick"})"), u"b"_s);
+        QVERIFY(stick.has_value());
+        QCOMPARE(stick->maxStack, 64);
+        QCOMPARE(stick->texture, u"b:stick"_s);
+        QVERIFY(!QcContentParser::parseItem(json(R"({"name":"x","maxStack":0})"), u"b"_s).has_value());
+    }
+
     void translationsMustBeStrings()
     {
         QVERIFY(QcContentParser::parseTranslations(json(R"({"a":"b"})")).has_value());

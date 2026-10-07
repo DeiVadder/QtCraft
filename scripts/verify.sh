@@ -29,6 +29,10 @@ for preset in debug asan tsan; do
     step "test-$preset" limited 1200 ctest --preset "$preset"
 done
 
+# Release build: catches warnings that only appear without assertions.
+step "configure-release" limited 300 cmake --preset release
+step "build-release" limited 1200 cmake --build --preset release
+
 step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
 
 rm -f "$SCREENSHOT"

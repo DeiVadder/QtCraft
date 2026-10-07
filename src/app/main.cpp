@@ -1,4 +1,5 @@
 #include "QcGameController.h"
+#include "QcItemIconProvider.h"
 #include "QcScreenshotHook.h"
 
 #include <QCommandLineParser>
@@ -26,9 +27,13 @@ int main(int argc, char *argv[])
     const QCommandLineOption seedOption(u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s);
     const QCommandLineOption lookOption(u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s);
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
+    const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable)."_s,
+                                        u"text"_s);
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, chat."_s,
+                                           u"name"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
-    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, viewOption, languageOption});
+    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, chatOption, overlayOption, viewOption, languageOption});
     parser.process(app);
 
     // --language or QTCRAFT_LANGUAGE override the system language.
@@ -43,6 +48,9 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
+    // The engine owns and deletes the provider.
+    auto *icons = new QcItemIconProvider;
+    engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), icons);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
     engine.loadFromModule("QtCraft", "Main");
@@ -56,6 +64,9 @@ int main(int argc, char *argv[])
         qCritical("Main.qml must contain a GameController with objectName 'game'");
         return 1;
     }
+    game->setIconProvider(icons);
+    game->setLanguage(locale.name().left(2));
+    game->refreshWorlds();
     if (parser.isSet(lookOption)) {
         const QStringList parts = parser.value(lookOption).split(u',');
         if (parts.size() == 2) {
@@ -72,6 +83,7 @@ int main(int argc, char *argv[])
         game->setViewDistance(parser.value(viewOption).toInt());
     }
     QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(window, &app);
+    game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
     if (parser.isSet(playOption)) {
         game->setScreenshotHook(screenshot);
         game->startSingleplayer(parser.value(worldOption), parser.value(seedOption));

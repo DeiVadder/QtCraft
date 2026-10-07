@@ -6,6 +6,7 @@
 #include <QVector3D>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -240,6 +241,58 @@ private slots:
         }
         QVERIFY(sawInside);
         QVERIFY(sawOverhang);
+    }
+
+    void lightCrossesChunkBordersWithExactLevels()
+    {
+        const Fixture f;
+        // Floor at y = 16 and roof at y = 20 over all nine chunks, except that the western column of
+        // chunks has no roof for local x < 8. Under the roof light enters only from that open strip.
+        QcMeshInput in;
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int dx = -1; dx <= 1; ++dx) {
+                auto chunk = std::make_shared<QcChunk>(QcChunkPos{dx, dz});
+                for (int x = 0; x < 16; ++x) {
+                    for (int z = 0; z < 16; ++z) {
+                        chunk->setBlock(x, 16, z, f.stone);
+                        if (dx != -1 || x >= 8) {
+                            chunk->setBlock(x, 20, z, f.stone);
+                        }
+                    }
+                }
+                const int index = (dz + 1) * 3 + (dx + 1);
+                in.chunks[std::size_t(index)] = chunk;
+            }
+        }
+        in.renderTable = f.table;
+        in.sectionIndex = 1;
+        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        // The floor top face at y = 17 under the roof; the open sky column nearest to the centre chunk
+        // is west x = 7 (world x = -9). Light falls straight down there (level 15 at y = 17), then
+        // spreads east: world x = -8 is 14, x = 0 is 6, x = 3 is 3.
+        const auto expectedLevel = [](int worldX) { return std::max(0, 15 - (worldX + 9)); };
+        int checked = 0;
+        for (qsizetype quad = 0; quad < mesh.opaqueVertices.size(); quad += 4) {
+            const QcBlockVertex &first = mesh.opaqueVertices[quad];
+            bool floorTop = true;
+            for (qsizetype i = quad; i < quad + 4; ++i) {
+                floorTop = floorTop && mesh.opaqueVertices[i].y == 17.0f;
+            }
+            if (!floorTop || first.z < 4.0f || first.z > 12.0f) {
+                continue;
+            }
+            // The smooth light of a corner averages the four cells around it; along a row of equal
+            // z the two cells per x column give (level(x - 1) + level(x)) / 2 for the corner at x.
+            for (qsizetype i = quad; i < quad + 4; ++i) {
+                const QcBlockVertex &v = mesh.opaqueVertices[i];
+                const int cornerX = int(v.x);
+                const double expected = (expectedLevel(cornerX - 1) + expectedLevel(cornerX)) / 2.0 / 15.0;
+                QVERIFY2(std::abs(v.skyLight - expected) < 1e-6,
+                         qPrintable(u"x %1: %2 vs %3"_s.arg(v.x).arg(v.skyLight).arg(expected)));
+                ++checked;
+            }
+        }
+        QVERIFY(checked >= 16);
     }
 
     void ambientOcclusionDarkensCornersNextToAWall()

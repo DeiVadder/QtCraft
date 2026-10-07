@@ -8,6 +8,7 @@
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
+#include "QcItemStack.h"
 #include "QcPlayerInput.h"
 
 #include <QString>
@@ -31,6 +32,10 @@ struct Welcome
     quint32 playerEntityId = 0;
     QString worldName;
     qint64 seed = 0;
+    // View direction from the save; only meaningful when `restoredView` is set.
+    float yaw = 0.0f;
+    float pitch = 0.0f;
+    bool restoredView = false;
 };
 
 // Server -> client: all content definitions; runtime block ids are the indices in this registry.
@@ -73,7 +78,64 @@ struct Disconnect
     QString reason;
 };
 
+// Client -> server: the player starts hitting a block.
+struct StartMining
+{
+    QcBlockPos pos;
+};
+
+// Client -> server: the player stopped hitting before the block broke.
+struct CancelMining
+{
+};
+
+// Client -> server: the client's timer says the block is broken; the server checks the time itself.
+struct FinishMining
+{
+    QcBlockPos pos;
+};
+
+// Client -> server: use the held item on a block face (places blocks).
+struct UseItem
+{
+    QcBlockPos target;
+    QcBlockFace face = QcBlockFace::Up;
+};
+
+struct SelectHotbarSlot
+{
+    qint32 slot = 0;
+};
+
+struct MoveInventoryItem
+{
+    qint32 from = 0;
+    qint32 to = 0;
+};
+
+// Client -> server: chat line or command starting with '/'.
+struct ChatInput
+{
+    QString text;
+};
+
+// Server -> client: the receiving player's complete inventory.
+struct InventoryState
+{
+    QList<QcItemStack> stacks;
+    qint32 selected = 0;
+};
+
+// Server -> client: chat line or command feedback.
+struct ChatMessage
+{
+    QString text;
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
-                               QcMsg::BlockUpdate, QcMsg::PlayerInput, QcMsg::PlayerState, QcMsg::Disconnect>;
+                               QcMsg::BlockUpdate, QcMsg::PlayerInput, QcMsg::PlayerState, QcMsg::Disconnect,
+                               QcMsg::StartMining, QcMsg::CancelMining, QcMsg::FinishMining, QcMsg::UseItem,
+                               QcMsg::SelectHotbarSlot, QcMsg::MoveInventoryItem, QcMsg::ChatInput,
+                               QcMsg::InventoryState, QcMsg::ChatMessage>;

@@ -33,3 +33,8 @@ add_test(NAME scenario_headless_failure_then_quit
 set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90)
 qc_add_test(test_noise SOURCES test_noise.cpp LIBRARIES qc_server)
 qc_add_test(test_terrain_generator SOURCES test_terrain_generator.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_world_storage SOURCES test_world_storage.cpp LIBRARIES qc_server)
+qc_add_test(test_persistence SOURCES test_persistence.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+qc_add_test(test_interaction SOURCES test_interaction.cpp QcTestWorld.h LIBRARIES qc_common)
+qc_add_test(test_world_library SOURCES test_world_library.cpp LIBRARIES qc_server)
+qc_add_test(test_server_validation SOURCES test_server_validation.cpp LIBRARIES qc_server TIMEOUT 180)

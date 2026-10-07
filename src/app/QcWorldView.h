@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcCamera.h"
+#include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 
 #include <QColor>
@@ -10,6 +11,7 @@
 #include <QtQmlIntegration/qqmlintegration.h>
 
 #include <memory>
+#include <optional>
 
 // Qt Quick item that renders the voxel world with QRhi.
 // All setters are called on the GUI thread; the renderer copies the state in synchronize().
@@ -36,6 +38,8 @@ public:
     void removeMesh(quint64 key);
     void clearMeshes();
 
+    // Block outlined as the player's target; std::nullopt hides the outline.
+    void setSelection(std::optional<QcBlockPos> block);
     void setSkyColor(const QColor &color);
     void setDaylight(float daylight);
     void setFogRange(float start, float end);
@@ -58,4 +62,5 @@ private:
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;
+    std::optional<QcBlockPos> m_selection;
 };

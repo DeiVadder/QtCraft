@@ -1,13 +1,18 @@
 #pragma once
 
+#include "QcBlockFace.h"
+#include "QcItemStack.h"
 #include "QcPlayerInput.h"
 
 #include <QJsonObject>
+#include <QJsonValue>
 #include <QObject>
 #include <QPointer>
 #include <QQueue>
+#include <QStringList>
 
 #include <functional>
+#include <optional>
 
 class QcClientSession;
 class QIODevice;
@@ -29,6 +34,8 @@ public:
     QcControlInterface(QcClientSession *session, QIODevice *input, QIODevice *output, QObject *parent = nullptr);
 
     void setExtensionHandler(ExtensionHandler handler) { m_extension = std::move(handler); }
+    // Switches to another session, e.g. after the world changed.
+    void setSession(QcClientSession *session);
     // Executes one request; the response is written to the output device (possibly later).
     void submit(const QJsonObject &request);
     // Appends raw bytes of newline-delimited requests, for sources that are not a QIODevice.
@@ -57,6 +64,13 @@ private:
     void fail(const QJsonObject &request, const QString &message);
     void onTick();
     QJsonObject playerStatus() const;
+    QJsonValue stackJson(QcItemStack stack) const;
+    QJsonObject inventoryJson() const;
+    // Turns the player towards a block centre, or towards the centre of one of its faces.
+    void lookAt(QcBlockPos block, std::optional<QcBlockFace> face);
+    static QcBlockPos blockArgument(const QJsonObject &request);
+    static std::optional<QcBlockFace> faceArgument(const QJsonObject &request);
+    static QString faceName(QcBlockFace face);
 
     QPointer<QcClientSession> m_session;
     QPointer<QIODevice> m_input;
@@ -67,4 +81,6 @@ private:
     int m_failedRequests = 0;
     QByteArray m_lineBuffer;
     int m_lineNumber = 0;
+    // Chat lines received while the current request runs; reported in its response.
+    QStringList m_chatLog;
 };

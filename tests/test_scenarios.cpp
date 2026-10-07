@@ -82,7 +82,7 @@ private slots:
     {
         m_control.reset();
         m_session.reset();
-        m_host->shutdown();
+        QVERIFY(m_host->shutdown().has_value());
         m_host.reset();
     }
 

@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import QtCraft
 
 ApplicationWindow {
@@ -30,14 +29,31 @@ ApplicationWindow {
     Hud {
         anchors.fill: parent
         visible: game.phase === "playing"
-        debugText: game.debugText
-        mouseCaptured: game.mouseCaptured
+        game: game
+    }
+
+    InventoryScreen {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "inventory"
+        game: game
+    }
+
+    PauseMenu {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "pause"
+        game: game
+    }
+
+    ChatOverlay {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "chat"
+        game: game
     }
 
     MainMenu {
         anchors.fill: parent
         visible: game.phase === "menu"
-        onPlayRequested: (worldName, seed) => game.startSingleplayer(worldName, seed)
+        game: game
         onQuitRequested: Qt.quit()
     }
 
