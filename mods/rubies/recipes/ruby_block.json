@@ -1,0 +1,15 @@
+{
+    "name": "ruby_block",
+    "type": "shaped",
+    "pattern": [
+        "RRR",
+        "RRR",
+        "RRR"
+    ],
+    "key": {
+        "R": "ruby"
+    },
+    "result": {
+        "item": "ruby_block"
+    }
+}

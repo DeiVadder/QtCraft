@@ -308,6 +308,10 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
             stream << entry.key() << entry.value();
         }
     }
+    stream << quint32(m_packs.size());
+    for (const QcPackReference &pack : m_packs) {
+        stream << pack.id << pack.name << pack.version;
+    }
 }
 
 QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
@@ -465,6 +469,18 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             entries.insert(key, text);
         }
         registry.addTranslations(language, entries);
+    }
+    quint32 packCount = 0;
+    if (!QcStreamLimits::readCount(stream, 1024, packCount)) {
+        return qcError(u"Corrupt content: pack list"_s);
+    }
+    for (quint32 i = 0; i < packCount; ++i) {
+        QcPackReference pack;
+        stream >> pack.id >> pack.name >> pack.version;
+        if (pack.id.isEmpty() || pack.id.size() > 64 || pack.name.size() > 256 || pack.version.size() > 64) {
+            return qcError(u"Corrupt content: pack %1"_s.arg(i));
+        }
+        registry.addPack(std::move(pack));
     }
     if (stream.status() != QDataStream::Ok) {
         return qcError(u"Corrupt content: truncated"_s);

@@ -47,6 +47,8 @@ public:
     QcServerWorld &world() { return m_world; }
     QcMobManager &mobs() { return m_mobs; }
     double worldTime() const { return m_info.worldTime; }
+    // Problems found while opening the world (missing mods, unknown blocks); it still opened.
+    const QStringList &openWarnings() const { return m_openWarnings; }
     void setWorldTime(double seconds);
 
     // Players are visible to each other and mobs are sent to clients within this distance.
@@ -79,6 +81,7 @@ private:
     bool isWithinReach(const Client &client, QcBlockPos pos) const;
     void setBlockAndBroadcast(QcBlockPos pos, QcBlockId block);
     void sendInventory(Client &client);
+    void sendOpenWarnings(Client &client);
     const QcItemDefinition *heldItem(const Client &client) const;
     QcVec3 spawnPosition();
     void handleAttack(Client &client, quint32 entityId);
@@ -112,4 +115,5 @@ private:
     std::optional<QcWorldStorage> m_storage;
     QcWorldInfo m_info;
     QcMobManager m_mobs;
+    QStringList m_openWarnings;
 };

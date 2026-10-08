@@ -3,6 +3,7 @@
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
 #include "QcMobDefinition.h"
+#include "QcPackReference.h"
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
@@ -71,6 +72,10 @@ public:
     const QList<QcOreDefinition> &ores() const { return m_ores; }
     const QcTerrainSettings &terrainSettings() const { return m_terrain; }
 
+    // Packs in load order (base game first).
+    void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
+    const QList<QcPackReference> &packs() const { return m_packs; }
+
     QStringList languages() const { return m_translations.keys(); }
     // Falls back to English and finally to the key itself.
     QString translate(const QString &key, const QString &language) const;
@@ -93,4 +98,5 @@ private:
     QList<QcFeatureDefinition> m_features;
     QList<QcOreDefinition> m_ores;
     QcTerrainSettings m_terrain;
+    QList<QcPackReference> m_packs;
 };

@@ -52,6 +52,25 @@ private slots:
         }
     }
 
+    void loadsModsFromTheModsDirectory()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--mods-dir"_s,
+                                QStringLiteral(QTCRAFT_MODS_SOURCE_DIR)});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        QCOMPARE(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool(), true);
+        const QJsonArray packs = ask(R"({"cmd":"mods"})").value(u"packs"_s).toArray();
+        QCOMPARE(packs.size(), 2);
+        QCOMPARE(packs[1].toObject().value(u"id"_s).toString(), u"rubies"_s);
+        ask(R"({"cmd":"chat","text":"/give rubies:ruby_sword"})");
+        const QJsonArray stacks = ask(R"({"cmd":"inventory"})").value(u"slots"_s).toArray();
+        QVERIFY(std::ranges::any_of(stacks, [](const QJsonValue &slot) {
+            return slot.toObject().value(u"item"_s).toString() == u"rubies:ruby_sword"_s;
+        }));
+    }
+
     void answersEachRequestWhileInputStaysOpen()
     {
         QCOMPARE(ask(R"({"id":1,"cmd":"waitUntilReady"})").value(u"state"_s).toString(), u"Playing"_s);

@@ -1,6 +1,6 @@
 #include "QcHeadlessGame.h"
 
-#include "QcBaseContent.h"
+#include "QcModLoader.h"
 #include "QcClientSession.h"
 #include "QcControlInterface.h"
 #include "QcLocalServerHost.h"
@@ -66,7 +66,10 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
     const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
     const QCommandLineOption dataOption(u"data-dir"_s, u"Directory holding the saved worlds (world commands)."_s, u"dir"_s);
-    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption});
+    const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
+    const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
+    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
+                       modsOption, noModsOption});
     if (!parser.parse(arguments)) {
         printError(parser.errorText());
         return false;
@@ -91,7 +94,10 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     QStringList warnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> content = QcBaseContent::load(warnings);
+    const QString modsDirectory =
+        parser.isSet(noModsOption) ? QString() : parser.value(modsOption).isEmpty() ? QcModLoader::defaultDirectory()
+                                                                                    : parser.value(modsOption);
+    QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
     for (const QString &warning : std::as_const(warnings)) {
         printError(u"content warning: "_s + warning);
     }
@@ -99,7 +105,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"Cannot load content: "_s + content.error());
         return false;
     }
-    const std::shared_ptr<const QcContentRegistry> shared = std::move(*content);
+    const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
     QStringList generatorWarnings;
     auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {

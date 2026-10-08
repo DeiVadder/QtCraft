@@ -1,0 +1,8 @@
+{
+    "name": "ruby_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#d0213b",
+    "variation": 0.08,
+    "seed": 901
+}

@@ -13,6 +13,7 @@ qt_add_library(qc_common STATIC
     QcDayCycle.h QcDayCycle.cpp
     QcContentParser.h QcContentParser.cpp
     QcContentRegistry.h QcContentRegistry.cpp
+    QcPackReference.h
     QcCrafting.h QcCrafting.cpp
     QcEntityMotion.h
     QcInProcessTransport.h QcInProcessTransport.cpp

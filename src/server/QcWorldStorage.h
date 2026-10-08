@@ -1,5 +1,7 @@
 #pragma once
 
+#include "QcPackReference.h"
+
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
@@ -23,6 +25,8 @@ struct QcWorldInfo
     QDateTime lastPlayed;
     // Seconds since the world was created, drives the day/night cycle.
     double worldTime = 0.0;
+    // Content packs (base game and mods) used when the world was last saved.
+    QList<QcPackReference> packs;
 };
 
 struct QcPlayerData

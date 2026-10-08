@@ -322,6 +322,9 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
     }
 
     const QJsonArray model = json.value(u"model"_s).toArray();
+    if (model.size() > 256) {
+        reader.fail(u"'model' has more than 256 parts"_s);
+    }
     for (const auto &entry : model) {
         const QJsonObject partJson = entry.toObject();
         const std::optional<QcVec3> from = vectorField(partJson.value(u"from"_s));

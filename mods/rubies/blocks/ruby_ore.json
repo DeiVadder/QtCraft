@@ -1,0 +1,14 @@
+{
+    "name": "ruby_ore",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "drops": [
+        {
+            "item": "ruby"
+        }
+    ],
+    "textures": {
+        "all": "ruby_ore"
+    }
+}

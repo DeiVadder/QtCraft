@@ -197,9 +197,26 @@ private slots:
         QCOMPARE(chopped, 3);
         QTRY_COMPARE_WITH_TIMEOUT(countOf(log), 3, timeoutMs);
 
-        // 3. Planks, sticks and a crafting table from the recipe book.
+        // 3. Planks: one log through the 2 x 2 grid, the rest from the recipe book; then sticks and a
+        //    crafting table.
+        int logSlot = -1;
+        const QJsonArray stacks = request({{u"cmd"_s, u"inventory"_s}}).value(u"slots"_s).toArray();
+        for (const auto &entry : stacks) {
+            if (entry.toObject().value(u"item"_s).toString() == log) {
+                logSlot = entry.toObject().value(u"slot"_s).toInt();
+            }
+        }
+        QVERIFY(logSlot >= 0);
+        request({{u"cmd"_s, u"moveItem"_s}, {u"from"_s, logSlot}, {u"to"_s, 36}, {u"count"_s, 2}});
+        const QJsonObject grid = request({{u"cmd"_s, u"inventory"_s}});
+        QCOMPARE(grid.value(u"craftingResult"_s).toObject().value(u"item"_s).toString(), u"qtcraft:oak_planks"_s);
+        QVERIFY(request({{u"cmd"_s, u"takeResult"_s}}).value(u"ok"_s).toBool());
+        QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 4);
+        // Closing returns the second log from the grid.
+        QVERIFY(request({{u"cmd"_s, u"closeCrafting"_s}}).value(u"ok"_s).toBool());
+        QCOMPARE(countOf(log), 2);
         const QString planksRecipe = u"qtcraft:oak_planks_from_"_s + log.section(u':', 1);
-        request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planksRecipe}, {u"count"_s, 3}});
+        request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planksRecipe}, {u"count"_s, 2}});
         QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 12);
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:crafting_table"_s}});
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:stick"_s}});

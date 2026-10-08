@@ -1,6 +1,6 @@
 #include "QcGameController.h"
 
-#include "QcBaseContent.h"
+#include "QcModLoader.h"
 #include "QcBlockRenderTable.h"
 #include "QcClientSession.h"
 #include "QcLocalServerHost.h"
@@ -18,6 +18,9 @@
 #include "QcWorldLibrary.h"
 
 #include <QCursor>
+#include <QDesktopServices>
+#include <QDir>
+#include <QUrl>
 #include <QGuiApplication>
 #include <QKeyEvent>
 #include <QWheelEvent>
@@ -186,6 +189,53 @@ void QcGameController::refreshWorlds()
     emit worldsChanged();
 }
 
+void QcGameController::setModsDirectory(const QString &directory)
+{
+    m_modsDirectory = directory;
+    refreshMods();
+}
+
+void QcGameController::refreshMods()
+{
+    m_mods.clear();
+    const QList<QcModStatus> mods = QcModLoader::discover(m_modsDirectory);
+    for (const QcModStatus &mod : mods) {
+        QString state = u"loaded"_s;
+        QString reason = mod.reason;
+        if (mod.state == QcModStatus::State::Disabled) {
+            state = u"disabled"_s;
+        } else if (mod.state == QcModStatus::State::Failed) {
+            state = u"failed"_s;
+        } else if (m_modLoadFailures.contains(mod.info.id)) {
+            // Found fine on disk, but its content was refused when the last world started.
+            state = u"failed"_s;
+            reason = m_modLoadFailures.value(mod.info.id);
+        }
+        m_mods.append(QVariantMap{{u"id"_s, mod.info.id},
+                                  {u"name"_s, mod.info.name.isEmpty() ? QDir(mod.info.directory).dirName() : mod.info.name},
+                                  {u"version"_s, mod.info.version},
+                                  {u"description"_s, mod.info.description},
+                                  {u"state"_s, state},
+                                  {u"reason"_s, reason}});
+    }
+    emit modsChanged();
+}
+
+void QcGameController::setModEnabled(const QString &id, bool enabled)
+{
+    if (const QcStatus written = QcModLoader::setModEnabled(m_modsDirectory, id, enabled); !written) {
+        qCWarning(lcGame) << "Cannot change the mod settings:" << written.error();
+    }
+    refreshMods();
+}
+
+void QcGameController::openModsFolder()
+{
+    if (!m_modsDirectory.isEmpty() && QDir().mkpath(m_modsDirectory)) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(m_modsDirectory));
+    }
+}
+
 void QcGameController::createWorld(const QString &worldName, const QString &seedText)
 {
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
@@ -329,7 +379,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     setPhase(u"loading"_s, tr("Loading content..."));
 
     QStringList warnings;
-    QcResult<std::shared_ptr<QcContentRegistry>> content = QcBaseContent::load(warnings);
+    QcResult<QcModLoader::Result> content = QcModLoader::load(m_modsDirectory, warnings);
     for (const QString &warning : std::as_const(warnings)) {
         qCWarning(lcGame) << "Content:" << warning;
     }
@@ -337,7 +387,14 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         setPhase(u"error"_s, tr("Cannot load game content: %1").arg(content.error()));
         return;
     }
-    const std::shared_ptr<const QcContentRegistry> shared = std::move(*content);
+    m_modLoadFailures.clear();
+    for (const QcModStatus &mod : std::as_const(content->mods)) {
+        if (mod.state == QcModStatus::State::Failed && !mod.info.id.isEmpty()) {
+            m_modLoadFailures.insert(mod.info.id, mod.reason);
+        }
+    }
+    refreshMods();
+    const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
 
     QcServerConfig config;
     config.worldName = worldName;

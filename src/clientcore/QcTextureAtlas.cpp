@@ -2,6 +2,8 @@
 
 #include "QcTextureSynthesizer.h"
 
+#include <QBuffer>
+#include <QImageReader>
 #include <QPainter>
 
 #include <cmath>
@@ -11,6 +13,8 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int tileSize = QcTextureSynthesizer::tileSize;
+// Larger PNGs are refused before decoding; they would be scaled down to one tile anyway.
+constexpr int maxPngSide = 512;
 
 // Accepts #RRGGBB and #RRGGBBAA.
 std::optional<QColor> parseColor(const QJsonValue &value)
@@ -48,8 +52,17 @@ QImage missingTile()
 std::optional<QImage> renderTexture(const QcTextureDefinition &definition, QString &problem)
 {
     if (!definition.png.isEmpty()) {
+        // Read the size from the header first: a tiny file can describe a huge image.
+        QBuffer buffer;
+        buffer.setData(definition.png);
+        QImageReader reader(&buffer, "PNG");
+        const QSize size = reader.size();
+        if (!size.isValid() || size.width() > maxPngSide || size.height() > maxPngSide) {
+            problem = u"%1: PNG must be at most %2 x %2 pixels"_s.arg(definition.name).arg(maxPngSide);
+            return std::nullopt;
+        }
         QImage image;
-        if (!image.loadFromData(definition.png, "PNG")) {
+        if (!reader.read(&image)) {
             problem = u"%1: PNG cannot be decoded"_s.arg(definition.name);
             return std::nullopt;
         }

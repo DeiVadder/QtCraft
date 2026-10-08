@@ -13,7 +13,7 @@ Newline-delimited JSON (one request object per line, one response object per lin
 
 The interface is **off by default**: the graphical game does not open it. It only exists in processes started explicitly with the options above and never listens on a network port. (*Planned:* `--control local:<name>` for a local socket in the graphical game.)
 
-`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`, `--data-dir <dir>` (where `worldCreate`/`worldLoad` keep worlds; default: the game's own world directory). Without a world command the bot plays a throw-away world that is not saved.
+`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`, `--data-dir <dir>` (where `worldCreate`/`worldLoad` keep worlds; default: the game's own world directory), `--mods-dir <dir>` (default: the game's mods directory), `--no-mods`. Without a world command the bot plays a throw-away world that is not saved.
 
 ## Requests and responses
 
@@ -55,6 +55,7 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 | `closeCrafting` | – | Puts the grid's items back into the inventory and leaves a crafting table's 3 × 3 grid. Items in the grid are also kept when the player disconnects or the world is saved. |
 | `recipes` | optional `all` (bool) | Recipes the inventory can make now (or all): `recipe`, `result`, `count`, `needs`, `needsCraftingTable`, `possible`. |
 | `craft` | `recipe`, optional `count` (1–64) | Crafts directly from the inventory (recipe book). 3 × 3 recipes need a crafting table within 5 m. The result appears in `messages` and the inventory. |
+| `mods` | – | Content packs the server loaded, base game first: `{"packs":[{"id","name","version"}]}`. |
 | `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`. |
 | `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
 | `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |

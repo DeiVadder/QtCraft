@@ -2,6 +2,8 @@ qt_add_library(qc_server STATIC
     QcBaseContent.h QcBaseContent.cpp
     QcContentPackLoader.h QcContentPackLoader.cpp
     QcLocalServerHost.h QcLocalServerHost.cpp
+    QcModLoader.h QcModLoader.cpp
+    QcModStatus.h
     QcMobManager.h QcMobManager.cpp
     QcServer.h QcServer.cpp
     QcServerClient.h

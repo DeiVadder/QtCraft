@@ -48,5 +48,5 @@ function(qc_add_test name)
     endif()
     set_tests_properties(${name} PROPERTIES
         TIMEOUT ${ARG_TIMEOUT}
-        ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
 endfunction()

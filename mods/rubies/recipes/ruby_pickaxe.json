@@ -1,0 +1,16 @@
+{
+    "name": "ruby_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "RRR",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "R": "ruby",
+        "|": "qtcraft:stick"
+    },
+    "result": {
+        "item": "ruby_pickaxe"
+    }
+}

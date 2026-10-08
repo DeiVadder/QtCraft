@@ -1,6 +1,7 @@
 #include "QcServer.h"
 
 #include "QcConnection.h"
+#include "QcContentPackLoader.h"
 #include "QcDayCycle.h"
 #include "QcInventory.h"
 #include "QcMining.h"
@@ -70,6 +71,7 @@ QcStatus QcServer::openWorld()
         m_info.seed = m_config.seed;
         m_info.created = QDateTime::currentDateTimeUtc();
         m_info.lastPlayed = m_info.created;
+        m_info.packs = m_content->packs();
         return m_storage->writeInfo(m_info);
     }
     QcResult<QcWorldInfo> info = m_storage->readInfo();
@@ -82,10 +84,21 @@ QcStatus QcServer::openWorld()
     m_info = *info;
     m_config.worldName = m_info.name;
     QStringList warnings;
+    // Content of packs that are gone turns into air or disappears when chunks and players load.
+    for (const QcPackReference &pack : std::as_const(m_info.packs)) {
+        const auto current = std::ranges::find(m_content->packs(), pack.id, &QcPackReference::id);
+        if (current == m_content->packs().end()) {
+            warnings.append(u"The world was saved with '%1' %2, which is not loaded now"_s.arg(pack.name, pack.version));
+        } else if (QcContentPackLoader::parseVersion(current->version) != QcContentPackLoader::parseVersion(pack.version)) {
+            warnings.append(u"The world was saved with '%1' %2, now %3 is loaded"_s.arg(pack.name, pack.version, current->version));
+        }
+    }
+    m_info.packs = m_content->packs();
     QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> chunks = m_storage->readChunks(warnings);
     for (const QString &warning : std::as_const(warnings)) {
         qCWarning(lcServer) << warning;
     }
+    m_openWarnings = warnings;
     if (!chunks) {
         return qcError(chunks.error());
     }
@@ -106,10 +119,14 @@ QcStatus QcServer::savePlayer(const Client &client)
     player.inventory = client.inventory;
     // Items in the crafting grid are stored in the inventory, as if the grid had been closed; the
     // open grid itself is not saved.
+    int lost = 0;
     for (const QcItemStack &cell : client.craftingGrid) {
         if (!cell.isEmpty()) {
-            player.inventory.add(cell.item, cell.count, *m_content);
+            lost += player.inventory.add(cell.item, cell.count, *m_content);
         }
+    }
+    if (lost > 0) {
+        qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
     }
     player.health = client.health;
     const QcStatus saved = m_storage->writePlayer(client.name, player);
@@ -273,6 +290,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
             sendInventory(client);
             sendHealth(client);
             sendTime(client);
+            sendOpenWarnings(client);
             m_world.loadChunk(chunkOf(client.motion.position));
             streamChunks(client);
             return;
@@ -290,7 +308,21 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     sendInventory(client);
     sendHealth(client);
     sendTime(client);
+    sendOpenWarnings(client);
     streamChunks(client);
+}
+
+void QcServer::sendOpenWarnings(Client &client)
+{
+    // The player should know why blocks or items of a removed mod are gone.
+    constexpr qsizetype shown = 5;
+    const QStringList first = m_openWarnings.first(std::min(shown, m_openWarnings.size()));
+    for (const QString &warning : first) {
+        client.connection->send(QcMsg::ChatMessage{warning});
+    }
+    if (m_openWarnings.size() > shown) {
+        client.connection->send(QcMsg::ChatMessage{u"... and %1 more warnings in the log"_s.arg(m_openWarnings.size() - shown)});
+    }
 }
 
 QcVec3 QcServer::spawnPosition()

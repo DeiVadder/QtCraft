@@ -1,0 +1,8 @@
+{
+    "name": "beetle_shell",
+    "pattern": "speckle",
+    "primary": "#3a0d18",
+    "secondary": "#d0213b",
+    "variation": 0.15,
+    "seed": 906
+}

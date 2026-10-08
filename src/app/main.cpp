@@ -1,4 +1,5 @@
 #include "QcGameController.h"
+#include "QcModLoader.h"
 #include "QcItemIconProvider.h"
 #include "QcScreenshotHook.h"
 
@@ -33,7 +34,10 @@ int main(int argc, char *argv[])
                                            u"name"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
-    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, chatOption, overlayOption, viewOption, languageOption});
+    const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
+    const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
+    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, chatOption, overlayOption, viewOption, languageOption,
+                       modsOption, noModsOption});
     parser.process(app);
 
     // --language or QTCRAFT_LANGUAGE override the system language.
@@ -67,6 +71,9 @@ int main(int argc, char *argv[])
     game->setIconProvider(icons);
     game->setLanguage(locale.name().left(2));
     game->refreshWorlds();
+    game->setModsDirectory(parser.isSet(noModsOption)          ? QString()
+                           : parser.value(modsOption).isEmpty() ? QcModLoader::defaultDirectory()
+                                                                : parser.value(modsOption));
     if (parser.isSet(lookOption)) {
         const QStringList parts = parser.value(lookOption).split(u',');
         if (parts.size() == 2) {

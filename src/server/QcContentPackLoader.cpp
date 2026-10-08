@@ -9,24 +9,40 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRegularExpression>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
-namespace {
-
-constexpr qint64 maxContentFileBytes = qint64(4) * 1024 * 1024;
-
-QcResult<QJsonObject> readJsonObject(const QString &path)
+QcResult<QByteArray> QcContentPackLoader::readPackFile(const QString &path)
 {
+    // Only plain files: devices and pipes report size 0 and never end, links could leave the pack.
+    const QFileInfo info(path);
+    if (info.isSymLink() || !info.isFile()) {
+        return qcError(u"%1: not a regular file"_s.arg(path));
+    }
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         return qcError(u"%1: cannot open (%2)"_s.arg(path, file.errorString()));
     }
-    if (file.size() > maxContentFileBytes) {
+    QByteArray data = file.read(maxContentFileBytes + 1);
+    if (data.size() > maxContentFileBytes) {
         return qcError(u"%1: file too large"_s.arg(path));
     }
+    return data;
+}
+
+namespace {
+
+QcResult<QJsonObject> readJsonObject(const QString &path)
+{
+    const QcResult<QByteArray> data = QcContentPackLoader::readPackFile(path);
+    if (!data) {
+        return qcError(data.error());
+    }
     QJsonParseError error{};
-    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
+    const QJsonDocument document = QJsonDocument::fromJson(*data, &error);
     if (error.error != QJsonParseError::NoError) {
         return qcError(u"%1: %2 at offset %3"_s.arg(path, error.errorString()).arg(error.offset));
     }
@@ -39,8 +55,11 @@ QcResult<QJsonObject> readJsonObject(const QString &path)
 QStringList filesIn(const QString &directory, const QString &filter)
 {
     QStringList files;
+    if (QFileInfo(directory).isSymLink()) {
+        return files;
+    }
     const QDir dir(directory);
-    const QStringList entries = dir.entryList({filter}, QDir::Files, QDir::Name);
+    const QStringList entries = dir.entryList({filter}, QDir::Files | QDir::NoSymLinks, QDir::Name);
     for (const QString &entry : entries) {
         files.append(dir.filePath(entry));
     }
@@ -69,6 +88,20 @@ void loadDefinitions(const QString &directory, const QString &packNamespace, QSt
 
 } // namespace
 
+bool QcContentPackLoader::isValidPackId(const QString &id)
+{
+    static const QRegularExpression pattern(u"^[a-z0-9][a-z0-9_.-]{0,63}$"_s);
+    return pattern.match(id).hasMatch() && !id.contains(u".."_s);
+}
+
+QVersionNumber QcContentPackLoader::parseVersion(const QString &text)
+{
+    qsizetype suffix = 0;
+    const QVersionNumber version = QVersionNumber::fromString(text, &suffix);
+    // "1.0" and "1.0.0" are the same version; trailing text such as "1.0beta" is not accepted.
+    return suffix == text.size() && !version.isNull() ? version.normalized() : QVersionNumber();
+}
+
 QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &directory)
 {
     const QcResult<QJsonObject> manifest = readJsonObject(QDir(directory).filePath(u"pack.json"_s));
@@ -81,24 +114,61 @@ QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &dir
     info.name = manifest->value(u"name"_s).toString(info.id);
     info.version = manifest->value(u"version"_s).toString();
     info.description = manifest->value(u"description"_s).toString();
-    if (!QcContentNames::isValidPart(info.id) || info.id.contains(u'/')) {
+    if (info.name.size() > 256 || info.version.size() > 64 || info.description.size() > 4096) {
+        return qcError(u"%1: 'name', 'version' or 'description' is too long"_s.arg(directory));
+    }
+    if (!isValidPackId(info.id)) {
         return qcError(u"%1: invalid or missing pack 'id'"_s.arg(directory));
     }
-    if (info.version.isEmpty()) {
-        return qcError(u"%1: missing 'version'"_s.arg(directory));
+    if (parseVersion(info.version).isNull()) {
+        return qcError(u"%1: missing or invalid 'version' (expected e.g. \"1.0.0\")"_s.arg(directory));
     }
     const QJsonValue dependencies = manifest->value(u"dependencies"_s);
     if (!dependencies.isUndefined() && !dependencies.isArray()) {
         return qcError(u"%1: 'dependencies' must be an array of pack ids"_s.arg(directory));
     }
     const QJsonArray dependencyList = dependencies.toArray();
+    if (dependencyList.size() > 64) {
+        return qcError(u"%1: too many dependencies"_s.arg(directory));
+    }
+    // Either "id" or {"id": "...", "minVersion": "1.2"}.
     for (const auto &dependency : dependencyList) {
-        if (!dependency.isString() || !QcContentNames::isValidPart(dependency.toString())) {
-            return qcError(u"%1: invalid dependency entry"_s.arg(directory));
+        const QJsonObject object = dependency.toObject();
+        const QString id = dependency.isString() ? dependency.toString() : object.value(u"id"_s).toString();
+        if (!isValidPackId(id) || id == info.id || info.dependencies.contains(id)) {
+            return qcError(u"%1: invalid dependency entry '%2'"_s.arg(directory, id));
         }
-        info.dependencies.append(dependency.toString());
+        info.dependencies.append(id);
+        if (object.contains(u"minVersion"_s)) {
+            const QVersionNumber minimum = parseVersion(object.value(u"minVersion"_s).toString());
+            if (minimum.isNull()) {
+                return qcError(u"%1: invalid minVersion for dependency '%2'"_s.arg(directory, id));
+            }
+            info.minimumVersions.insert(id, minimum);
+        }
     }
     return info;
+}
+
+qint64 QcContentPackLoader::measure(const QString &directory)
+{
+    const QDir root(directory);
+    QStringList files;
+    for (const char *folder : {"textures", "blocks", "items", "recipes", "mobs", "biomes", "features", "ores", "lang"}) {
+        files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
+    }
+    files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
+    if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink()) {
+        files.append(root.filePath(u"worldgen/terrain.json"_s));
+    }
+    qint64 total = 0;
+    for (const QString &path : std::as_const(files)) {
+        const QFileInfo info(path);
+        if (info.isFile() && !info.isSymLink()) {
+            total += std::max<qint64>(256, std::min(info.size(), maxContentFileBytes + 1));
+        }
+    }
+    return total;
 }
 
 QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, QcContentRegistry &registry,
@@ -123,9 +193,9 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
     }
     const QStringList pngFiles = filesIn(root.filePath(u"textures"_s), u"*.png"_s);
     for (const QString &path : pngFiles) {
-        QFile file(path);
-        if (!file.open(QIODevice::ReadOnly) || file.size() > maxContentFileBytes) {
-            warnings.append(u"%1: cannot read texture"_s.arg(path));
+        const QcResult<QByteArray> png = readPackFile(path);
+        if (!png) {
+            warnings.append(png.error());
             continue;
         }
         const QString name = QcContentNames::qualify(QFileInfo(path).completeBaseName(), info->id);
@@ -133,7 +203,7 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
             warnings.append(u"%1: invalid texture file name"_s.arg(path));
             continue;
         }
-        registry.registerTexture({name, {}, file.readAll()});
+        registry.registerTexture({name, {}, *png});
     }
 
     const QStringList blockFiles = filesIn(root.filePath(u"blocks"_s), u"*.json"_s);
@@ -172,7 +242,7 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
     loadDefinitions(root.filePath(u"ores"_s), info->id, warnings, QcContentParser::parseOre,
                     [&registry](QcOreDefinition ore) { registry.registerOre(std::move(ore)); });
     const QString terrainPath = root.filePath(u"worldgen/terrain.json"_s);
-    if (QFile::exists(terrainPath)) {
+    if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink() && QFileInfo::exists(terrainPath)) {
         const QcResult<QJsonObject> json = readJsonObject(terrainPath);
         const QcResult<QcTerrainSettings> terrain =
             json ? QcContentParser::parseTerrainSettings(*json, info->id) : QcResult<QcTerrainSettings>(qcError(json.error()));

@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSaveFile>
@@ -138,6 +139,13 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.created = QDateTime::fromString(json.value(u"created"_s).toString(), Qt::ISODate);
     info.lastPlayed = QDateTime::fromString(json.value(u"lastPlayed"_s).toString(), Qt::ISODate);
     info.worldTime = std::max(0.0, json.value(u"worldTime"_s).toDouble());
+    const QJsonArray packs = json.value(u"packs"_s).toArray();
+    for (const auto &entry : packs) {
+        const QJsonObject pack = entry.toObject();
+        if (info.packs.size() < 1024 && !pack.value(u"id"_s).toString().isEmpty()) {
+            info.packs.append({pack.value(u"id"_s).toString(), pack.value(u"name"_s).toString(), pack.value(u"version"_s).toString()});
+        }
+    }
     if (!seedOk || info.name.isEmpty()) {
         return qcError(u"%1 is damaged: missing name or seed"_s.arg(path));
     }
@@ -149,7 +157,12 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
     if (!QDir().mkpath(m_directory)) {
         return qcError(u"Cannot create %1"_s.arg(m_directory));
     }
+    QJsonArray packs;
+    for (const QcPackReference &pack : info.packs) {
+        packs.append(QJsonObject{{u"id"_s, pack.id}, {u"name"_s, pack.name}, {u"version"_s, pack.version}});
+    }
     const QJsonObject json{{u"formatVersion"_s, QcWorldInfo::formatVersion},
+                           {u"packs"_s, packs},
                            {u"name"_s, info.name},
                            // As a string: JSON numbers cannot hold every 64-bit seed exactly.
                            {u"seed"_s, QString::number(info.seed)},

@@ -1,0 +1,8 @@
+{
+    "name": "ruby_block",
+    "pattern": "speckle",
+    "primary": "#b3122c",
+    "secondary": "#f0506a",
+    "variation": 0.1,
+    "seed": 902
+}

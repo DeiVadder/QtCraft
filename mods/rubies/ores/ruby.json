@@ -1,0 +1,9 @@
+{
+    "name": "ruby",
+    "replaces": "qtcraft:stone",
+    "block": "ruby_ore",
+    "minY": 4,
+    "maxY": 28,
+    "veinsPerChunk": 2,
+    "veinSize": 4
+}

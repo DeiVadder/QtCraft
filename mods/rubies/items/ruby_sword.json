@@ -1,0 +1,7 @@
+{
+    "name": "ruby_sword",
+    "texture": "ruby_sword",
+    "maxStack": 1,
+    "durability": 1200,
+    "attackDamage": 8.0
+}

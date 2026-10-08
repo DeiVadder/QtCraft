@@ -137,6 +137,10 @@ private slots:
         QCOMPARE(copy.content->recipes()[1].ingredients, shapeless.ingredients);
         QVERIFY(!copy.content->recipes()[1].shaped);
 
+        content->addPack({u"qtcraft"_s, u"QtCraft"_s, u"0.1.0"_s});
+        content->addPack({u"rubies"_s, u"Rubies"_s, u"1.0.0"_s});
+        QCOMPARE(roundTrip(QcMsg::ContentSync{content}).content->packs(), content->packs());
+
         // A shapeless recipe without ingredients would match an empty grid on the client.
         shapeless.ingredients.clear();
         content->registerRecipe(shapeless);

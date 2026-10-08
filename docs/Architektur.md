@@ -8,7 +8,7 @@ This document describes the current state. Sections marked *planned* are not imp
 |--------|-------|-----------|---------|
 | `qc_common` | Common | QtCore | Coordinates, chunk storage (palette sections), content registry and JSON parser, protocol messages and codec, transports (`QcTransport`, `QcInProcessTransport`, `QcConnection`), shared physics, thread hand-over helpers (`QcMailbox`, `QcWorkerPool`). |
 | `qc_base_content` | Data | – | Base game content pack embedded as `:/content/qtcraft`. |
-| `qc_server` | Server | `qc_common`, `qc_base_content` | `QcServer` (authoritative tick loop, players, chunk streaming), `QcServerWorld`, world generators, content-pack loader, `QcLocalServerHost` (server thread for single player). |
+| `qc_server` | Server | `qc_common`, `qc_base_content` | `QcServer` (authoritative tick loop, players, chunk streaming), `QcServerWorld`, world generators, content-pack loader, mod loader (`QcModLoader`), `QcLocalServerHost` (server thread for single player). |
 | `qc_clientcore` | Client (GUI-free) | `qc_common`, QtGui (`QImage` only) | `QcClientSession` (world mirror, prediction), `QcChunkMesher`, `QcMeshScheduler`, texture atlas, camera, `QcControlInterface`. |
 | `qtcraft` | Client (UI) | `qc_server`, `qc_clientcore`, Qt Quick | QML UI, `QcGameController`, `QcWorldView`/`QcWorldRenderer` (QRhi), screenshot hook. Links the server only to host it in-process. |
 | `qtcraft-headless` | Tool | `qc_server`, `qc_clientcore` | Server plus control-interface client without a window. |
@@ -29,13 +29,13 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 8). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 9). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
 | `Hello` | C→S | protocol version, player name |
 | `Welcome` | S→C | protocol version, entity id, world name, seed |
-| `ContentSync` | S→C | complete content registry; runtime block ids = registry indices |
+| `ContentSync` | S→C | complete content registry (incl. the list of loaded packs); runtime block ids = registry indices |
 | `ChunkData` | S→C | one chunk column (compressed palette sections) |
 | `ChunkUnload` | S→C | chunk position |
 | `BlockUpdate` | S→C | position, block id |
@@ -64,7 +64,9 @@ Content packs are directories with `pack.json` (`id`, `name`, `version`, `depend
 
 World generation data (server only, not sent to clients): `biomes/*.json` (`name`, `temperature`, `humidity` in 0..1, `baseHeight`, `heightVariation`, `surface`, `subsurface`, `subsurfaceDepth`, `underwater`, `beach`, `frozenWater`, `snowLine`, `snow`, `features: [{feature, density}]`), `features/*.json` (`type` `tree`/`column`, `trunk`, `leaves`, `minHeight`, `maxHeight`, `shape` `round`/`cone`, `ground`), `ores/*.json` (`block`, `replaces`, `minY`, `maxY`, `veinsPerChunk`, `veinSize`), `worldgen/terrain.json` (`seaLevel`, `stone`, `water`, `bedrock`, `caves`, `caveTunnelWidth`, `caveCavernThreshold`). A later pack replaces entries with the same name.
 
-Runtime block ids are assigned in registration order and never stored; persistent data uses names (*planned:* save format).
+Runtime block ids are assigned in registration order and never stored; persistent data uses names.
+
+Mods are content packs in the mods directory (`<data root>/mods`, `--mods-dir`); `QcModLoader` loads the base game first and then every mod after its dependencies, skipping broken ones. The base game goes through exactly the same loader. Details, the boundary between core and mods and the file formats are in `docs/Modding.md`; open security questions in `docs/Mod-Sicherheit.md`.
 
 ## Persistence
 
@@ -72,9 +74,11 @@ A saved world is a directory below `<app data>/worlds/<folder>` (`QTCRAFT_DATA_D
 
 | File | Content |
 |------|---------|
-| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime` |
+| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime`, `packs` (`id`, `name`, `version` of the base game and mods in use) |
 | `regions/r.<rx>.<rz>.qcr` | Modified chunks of a 32 × 32 chunk region: block-name palette + chunks (palette sections, run-length indices) |
 | `players/<name>.qcp` | Position, velocity, view direction, health, selected slot, inventory (item names, counts, damage) |
+
+When a world is opened with a different set of packs than it was saved with, the server logs a warning per missing or changed pack (`QcServer::openWarnings()`); blocks of a missing mod load as air and its items are dropped from inventories.
 
 Binary files share a container: magic (`QCRG`/`QCPL`), format version, payload size, CRC-32, payload. Loading validates every part; a damaged file stops the world from opening with a message naming the file. Unknown block or item names (e.g. after removing a mod) become air or are dropped, with a warning. Only modified chunks are stored; they stay in memory while the world is open and their regions are rewritten (atomically via `QSaveFile`) on `/save`, every 60 s and when the server stops. Everything else is regenerated from the seed.
 
@@ -129,7 +133,8 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places or eat
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
 | `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
 | `--chat <text>` (repeatable), `--overlay <inventory\|pause\|chat>` | Sent / opened once the world is loaded (reproducible UI screenshots) |
-| `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds |
+| `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds (`worlds/`) and mods (`mods/`); tests set it to `build/<preset>/test-data` |
+| `--mods-dir <dir>`, `--no-mods` (game and `qtcraft-headless`) | Load mods from another directory / only the base game |
 | `qtcraft-headless --map <png> [--map-radius <blocks>]` | Top-down terrain map of a seed |
 
 All own targets are compiled with `-Wall -Wextra -Wpedantic -Werror -fno-exceptions` (MSVC: `/W4 /WX /EHs-c-`) through the `qc_project_options` interface target. Qt headers are system includes.

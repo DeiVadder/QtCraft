@@ -21,7 +21,10 @@ public:
 
     explicit QcWorldLibrary(QString root);
 
-    // QTCRAFT_DATA_DIR overrides the platform's application data location (tests, screenshots).
+    // Base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's application data
+    // location (tests, screenshots).
+    static QString dataRoot();
+    // <data root>/worlds
     static QString defaultRoot();
 
     const QString &root() const { return m_root; }

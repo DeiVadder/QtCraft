@@ -33,11 +33,15 @@ QcWorldLibrary::QcWorldLibrary(QString root)
 {
 }
 
-QString QcWorldLibrary::defaultRoot()
+QString QcWorldLibrary::dataRoot()
 {
     const QString overridden = qEnvironmentVariable("QTCRAFT_DATA_DIR");
-    const QString base = overridden.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) : overridden;
-    return QDir(base).filePath(u"worlds"_s);
+    return overridden.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) : overridden;
+}
+
+QString QcWorldLibrary::defaultRoot()
+{
+    return QDir(dataRoot()).filePath(u"worlds"_s);
 }
 
 QString QcWorldLibrary::directoryOf(const QString &folder) const

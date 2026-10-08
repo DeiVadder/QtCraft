@@ -1,0 +1,70 @@
+{
+    "name": "crystal_beetle",
+    "health": 12,
+    "width": 0.8,
+    "height": 0.6,
+    "walkSpeed": 0.8,
+    "chaseSpeed": 2.2,
+    "hostile": true,
+    "attackDamage": 3,
+    "attackRange": 1.3,
+    "attackCooldown": 1.0,
+    "sightRange": 10,
+    "spawn": {
+        "time": "any",
+        "blocks": [
+            "qtcraft:stone",
+            "qtcraft:gravel"
+        ],
+        "maxGroup": 1,
+        "weight": 0.5,
+        "caves": true
+    },
+    "model": [
+        {
+            "from": [
+                -0.4,
+                0.1,
+                -0.45
+            ],
+            "to": [
+                0.4,
+                0.55,
+                0.45
+            ],
+            "texture": "beetle_shell"
+        },
+        {
+            "from": [
+                -0.2,
+                0.1,
+                -0.65
+            ],
+            "to": [
+                0.2,
+                0.35,
+                -0.45
+            ],
+            "texture": "beetle_legs"
+        },
+        {
+            "from": [
+                -0.5,
+                0,
+                -0.3
+            ],
+            "to": [
+                0.5,
+                0.12,
+                0.3
+            ],
+            "texture": "beetle_legs"
+        }
+    ],
+    "drops": [
+        {
+            "item": "ruby",
+            "count": 1
+        }
+    ]
+}

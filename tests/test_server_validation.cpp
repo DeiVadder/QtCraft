@@ -517,8 +517,14 @@ private slots:
             QVERIFY(stack.isEmpty() || (stack.count >= 1 && stack.count <= 64));
         }
 
-        // The dead neither craft nor eat.
+        // The dead neither craft nor eat: give them something to craft from and something to eat first.
+        chat(u"/give oak_log 2"_s);
+        chat(u"/give raw_porkchop 1"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:raw_porkchop"))});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 1});
+        QVERIFY(!m_client->craftingResult.isEmpty());
         chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
         const QList<QcItemStack> stacks = m_client->stacks;
         send(QcMsg::CraftRecipe{u"qtcraft:oak_planks_from_oak_log"_s, 1});
         send(QcMsg::TakeCraftingResult{});

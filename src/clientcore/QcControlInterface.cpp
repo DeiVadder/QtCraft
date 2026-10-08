@@ -454,6 +454,15 @@ void QcControlInterface::start(const QJsonObject &request)
         // Returns the grid to the inventory and leaves a crafting table's 3 x 3 grid.
         m_session->closeCrafting();
         m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"mods"_s) {
+        // Content packs the server loaded, base game first.
+        QJsonArray packs;
+        if (const auto content = m_session->content()) {
+            for (const QcPackReference &pack : content->packs()) {
+                packs.append(QJsonObject{{u"id"_s, pack.id}, {u"name"_s, pack.name}, {u"version"_s, pack.version}});
+            }
+        }
+        finish(request, {{u"packs"_s, packs}});
     } else if (command == u"recipes"_s) {
         // Every recipe with what it needs and how often the inventory could make it right now.
         const auto content = m_session->content();

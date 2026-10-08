@@ -148,3 +148,15 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** Das Crafting-Raster liegt auf dem Server (Slots 36–44), der das Ergebnis selbst berechnet; zusätzlich crafted `CraftRecipe` direkt aus dem Inventar. Beim Schließen wandert der Rasterinhalt zurück ins Inventar.
 - **Warum:** Server-Autorität wie beim Inventar; das Rezeptbuch macht Crafting für die Steuerschnittstelle und Einsteiger einfach, ohne Felder einzeln zu belegen. Rückgabe beim Schließen verhindert, dass Gegenstände im Raster „verschwinden“.
 - **Verworfen:** Raster nur clientseitig (Betrug möglich); nur Rezeptbuch (Raster gehört zum Spielgefühl); Rasterinhalt beim Schließen fallen lassen (keine Item-Entities, E-019).
+
+## E-026 Datenbasierte Mods mit vollständiger Ersetzung
+
+- **Was:** Mods sind Inhaltspakete wie das Basisspiel (`pack.json` plus JSON/PNG-Dateien), ohne ausführbaren Code. Eine Definition mit dem Namen eines bestehenden Eintrags ersetzt diesen vollständig (keine Teil-Patches); die Ladereihenfolge folgt den Abhängigkeiten, bei Gleichstand der Pack-Id. Kaputte Mods (Manifest, fehlende/zu alte/abgeschaltete Abhängigkeit, Zyklus, doppelte Id) werden samt allen abhängigen Mods übersprungen, das Spiel startet trotzdem.
+- **Warum:** Pflicht laut Auftrag sind datenbasierte Mods; dieselbe Lade-Mechanik für Basisspiel und Mods vermeidet Sonderwege. Vollständige Ersetzung ist eindeutig und leicht zu prüfen; Teil-Patches bräuchten Regeln je Feld. Eine stabile Reihenfolge macht Overrides vorhersagbar.
+- **Verworfen:** Skript-Hooks per `QJSEngine` (optionales Extra, Sicherheitsfragen offen, siehe `docs/Mod-Sicherheit.md`); Merge einzelner Felder; Abbruch des Spielstarts bei einem fehlerhaften Mod.
+
+## E-027 Welten merken sich ihre Pakete
+
+- **Was:** `world.json` speichert Id, Name und Version aller beim Speichern geladenen Pakete. Beim Öffnen meldet der Server fehlende oder geänderte Pakete als Warnung; die Welt öffnet trotzdem. Blöcke entfernter Mods werden zu Luft, ihre Items verschwinden (Namensauflösung, E-018).
+- **Warum:** Spieler sollen erfahren, warum Inhalte fehlen, ohne dass eine Welt unbenutzbar wird.
+- **Verworfen:** Laden verweigern (zu streng für Einzelspieler); unbekannte Namen als Platzhalter-Blöcke aufbewahren (eigenes Format, späterer Schritt).

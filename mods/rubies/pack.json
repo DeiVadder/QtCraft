@@ -1,0 +1,12 @@
+{
+    "id": "rubies",
+    "name": "Rubies",
+    "version": "1.0.0",
+    "description": "Example mod: ruby ore, ruby tools, a ruby block and the crystal beetle.",
+    "dependencies": [
+        {
+            "id": "qtcraft",
+            "minVersion": "0.1.0"
+        }
+    ]
+}

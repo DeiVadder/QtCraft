@@ -1,0 +1,10 @@
+{
+    "name": "ruby_pickaxe",
+    "texture": "ruby_pickaxe",
+    "maxStack": 1,
+    "durability": 1200,
+    "attackDamage": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 4,
+    "toolSpeed": 10.0
+}

@@ -4,9 +4,9 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 6 – Crafting und Items (Nachbesserung nach erster Verifikation); Etappe 7 begonnen
-- **Branches:** `feature/06-crafting` (auf `dev` 3cf9bcb), `feature/07-modding` (WIP, auf Etappe 6 aufgesetzt)
-- **Nächster Schritt:** Etappe 6 erneut verifizieren lassen, dann Squash-Merge; danach `feature/07-modding` auf `dev` rebasen und Etappe 7 abschließen (Override-Test für Basisblöcke schlägt noch fehl, Doku `docs/Modding.md` und `docs/Mod-Sicherheit.md` fehlen).
+- **Aktuelle Etappe:** 7 – Modding (Abschlussprüfung)
+- **Branch:** `feature/07-modding` (auf `dev` c3d0904)
+- **Nächster Schritt:** Unabhängige Verifikation der Etappe 7, Squash-Merge, dann Etappe 8 (`feature/08-polish`: Performance-Messung Release/8 Chunks, Einstellungen, vollständige deutsche Übersetzung der QML-Texte, Durchspiel-Test, Abschlussbericht).
 - **Offene Befunde:** Etappe 5: keine Mob-Mob-Kollision (bewusst offen); `EntityMoves` sendet alle sichtbaren Mobs jedes Tick.
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
@@ -26,8 +26,8 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | 3 | Weltgenerierung | erledigt | 2026-10-07 | Verifikation PASS, Befunde nach Etappe 4 übernommen |
 | 4 | Interaktion und Persistenz | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS |
 | 5 | Gegner und Gesundheit | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
-| 6 | Crafting und Items | in Verifikation | | erste Verifikation FAIL (Rasterinhalt ging bei Disconnect verloren), nachgebessert |
-| 7 | Modding | offen | | |
+| 6 | Crafting und Items | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
+| 7 | Modding | in Verifikation | | erste Verifikation FAIL (Pipe/Gerätedatei als Mod-Datei blockierte den Start), nachgebessert |
 | 8 | Politur und Abschluss | offen | | |
 
 ## Bekannte Mängel
@@ -41,3 +41,4 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 - Spawn kann auf Baumkronen liegen (höchster Nicht-Luft-Block der Säule).
 - Kein Ofen: Barren per Rezept aus Erz und Kohle (E-024).
 - Kein Mob-Mob-Ausweichen; gerufene Mobs können ineinander stehen.
+- Mods ersetzen Definitionen nur vollständig (keine Teil-Patches); Mods gelten global, nicht pro Welt.

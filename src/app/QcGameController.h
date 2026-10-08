@@ -6,6 +6,7 @@
 #include "QcWorldView.h"
 
 #include <QElapsedTimer>
+#include <QHash>
 #include <QObject>
 #include <QPointer>
 #include <QSet>
@@ -53,6 +54,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
+    Q_PROPERTY(QVariantList mods READ mods NOTIFY modsChanged FINAL)
+    Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = 8;
@@ -82,6 +85,10 @@ public:
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QVariantList worlds() const { return m_worlds; }
+    QVariantList mods() const { return m_mods; }
+    QString modsDirectory() const { return m_modsDirectory; }
+    // Where mods are looked for; empty loads only the base game (test hook --no-mods).
+    void setModsDirectory(const QString &directory);
     bool persistent() const { return !m_worldDirectory.isEmpty(); }
     // Language used for content names (block and item labels).
     void setLanguage(const QString &language) { m_language = language; }
@@ -96,6 +103,11 @@ public:
     // Deletes a saved world permanently; the UI asks for confirmation first.
     Q_INVOKABLE void deleteWorld(const QString &folder);
     Q_INVOKABLE void saveWorld();
+    // Mod list as found on disk: id, name, version, description, state (loaded/disabled/failed), reason.
+    Q_INVOKABLE void refreshMods();
+    // Takes effect when the next world starts.
+    Q_INVOKABLE void setModEnabled(const QString &id, bool enabled);
+    Q_INVOKABLE void openModsFolder();
     Q_INVOKABLE void selectHotbarSlot(int slot);
     // Slots as in QcInventoryModel; count 0 moves the whole stack.
     Q_INVOKABLE void moveItem(int from, int to, int count = 0);
@@ -136,6 +148,7 @@ signals:
     void chatLinesChanged();
     void overlayChanged();
     void worldsChanged();
+    void modsChanged();
     void healthChanged();
     void craftingChanged();
 
@@ -185,6 +198,10 @@ private:
     QStringList m_chatLines;
     QString m_overlay;
     QVariantList m_worlds;
+    QVariantList m_mods;
+    // Mods that passed discovery but failed when the last world loaded its content, with the reason.
+    QHash<QString, QString> m_modLoadFailures;
+    QString m_modsDirectory;
     QString m_worldDirectory;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     QString m_timeOfDay;

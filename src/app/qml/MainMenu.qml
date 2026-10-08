@@ -177,11 +177,23 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
+                    text: qsTr("Mods")
+                    onClicked: modsScreen.open()
+                }
+
+                Button {
+                    Layout.fillWidth: true
                     text: qsTr("Quit")
                     onClicked: menu.quitRequested()
                 }
             }
         }
+    }
+
+    ModsScreen {
+        id: modsScreen
+
+        game: menu.game
     }
 
     Dialog {
