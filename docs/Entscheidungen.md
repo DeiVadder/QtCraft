@@ -136,3 +136,15 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** Mob-Modelle sind Quader aus den Daten; der Client erzeugt jedes Frame ein gemeinsames Mesh aller sichtbaren Entities (interpoliert, gedreht) und zeichnet es mit der Block-Pipeline. Licht unter Dächern wird grob angenähert (Spalte bedeckt → dunkler).
 - **Warum:** Wenige Dutzend Quader kosten pro Frame kaum etwas, und es braucht weder Skelett-Animation noch eigene Shader.
 - **Verworfen:** Eigene Instanzierungs-Pipeline (Aufwand ohne Messnutzen bei dieser Anzahl); Licht exakt aus dem Lichtvolumen (liegt nur in den Mesh-Jobs vor).
+
+## E-024 Barren ohne Ofen
+
+- **Was:** Eisen- und Goldbarren entstehen per formlosem Rezept aus Erz und Kohle im Raster; es gibt (noch) keinen Ofen. Erze droppen sich selbst, Kohle- und Diamanterz ihr Material.
+- **Warum:** Der Auftrag verlangt Werkzeuge mehrerer Stufen; ein Ofen bräuchte Block-Entities mit Zustand und Zeit, die es bisher nicht gibt. So bleibt die Werkzeug-Kette Holz → Stein → Eisen → Diamant spielbar.
+- **Verworfen:** Ofen jetzt einführen (eigenes Speicher- und Synchronisationsformat); Erz direkt als Werkzeugmaterial (unlogisch, keine Kohle-Verwendung).
+
+## E-025 Raster auf dem Server, dazu ein Rezeptbuch
+
+- **Was:** Das Crafting-Raster liegt auf dem Server (Slots 36–44), der das Ergebnis selbst berechnet; zusätzlich crafted `CraftRecipe` direkt aus dem Inventar. Beim Schließen wandert der Rasterinhalt zurück ins Inventar.
+- **Warum:** Server-Autorität wie beim Inventar; das Rezeptbuch macht Crafting für die Steuerschnittstelle und Einsteiger einfach, ohne Felder einzeln zu belegen. Rückgabe beim Schließen verhindert, dass Gegenstände im Raster „verschwinden“.
+- **Verworfen:** Raster nur clientseitig (Betrug möglich); nur Rezeptbuch (Raster gehört zum Spielgefühl); Rasterinhalt beim Schließen fallen lassen (keine Item-Entities, E-019).

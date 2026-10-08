@@ -2,6 +2,7 @@
 
 #include "QcServer.h"
 
+#include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
@@ -46,7 +47,174 @@ void QcServer::setBlockAndBroadcast(QcBlockPos pos, QcBlockId block)
 
 void QcServer::sendInventory(Client &client)
 {
-    client.connection->send(QcMsg::InventoryState{client.inventory.allSlots(), client.inventory.selectedHotbarSlot()});
+    QcMsg::InventoryState state;
+    state.stacks = client.inventory.allSlots();
+    state.selected = client.inventory.selectedHotbarSlot();
+    state.craftingGrid = client.craftingGrid;
+    state.craftingSize = client.craftingSize;
+    if (const std::optional<qsizetype> recipe = craftingMatch(client)) {
+        const QcRecipeDefinition &definition = m_content->recipes()[*recipe];
+        if (const std::optional<QcItemId> item = m_content->itemId(definition.resultItem)) {
+            state.craftingResult = {*item, definition.resultCount, 0};
+        }
+    }
+    client.connection->send(state);
+}
+
+QList<QcItemStack> QcServer::craftingView(const Client &client) const
+{
+    QList<QcItemStack> view;
+    for (int row = 0; row < client.craftingSize; ++row) {
+        for (int column = 0; column < client.craftingSize; ++column) {
+            view.append(client.craftingGrid[row * 3 + column]);
+        }
+    }
+    return view;
+}
+
+std::optional<qsizetype> QcServer::craftingMatch(const Client &client) const
+{
+    return QcCrafting::match(*m_content, craftingView(client), client.craftingSize);
+}
+
+bool QcServer::isNearCraftingTable(const Client &client) const
+{
+    const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
+    const int reach = int(std::ceil(craftingTableReach));
+    for (int dx = -reach; dx <= reach; ++dx) {
+        for (int dy = -reach; dy <= reach; ++dy) {
+            for (int dz = -reach; dz <= reach; ++dz) {
+                const std::optional<QcBlockId> block = m_world.blockAt(feet.offset(dx, dy, dz));
+                if (block && m_content->block(*block).opensCrafting
+                    && QcVec3{double(dx), double(dy), double(dz)}.length() <= craftingTableReach) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
+{
+    // Inventory and the usable part of the grid form one slot space; other grid cells are invalid.
+    const auto usable = [&client](int slot) {
+        if (slot < craftingGridSlot) {
+            return QcInventory::isValidSlot(slot);
+        }
+        const int cell = slot - craftingGridSlot;
+        return cell >= 0 && cell < 9 && cell / 3 < client.craftingSize && cell % 3 < client.craftingSize;
+    };
+    if (client.dead || !usable(move.from) || !usable(move.to)) {
+        sendInventory(client);
+        return;
+    }
+    QList<QcItemStack> combined = client.inventory.allSlots();
+    combined.append(client.craftingGrid);
+    QcInventory::moveBetween(combined, move.from, move.to, std::max(0, move.count), *m_content);
+    for (int i = 0; i < QcInventory::slotCount; ++i) {
+        client.inventory.setSlot(i, combined[i]);
+    }
+    client.craftingGrid = combined.mid(QcInventory::slotCount);
+    sendInventory(client);
+}
+
+void QcServer::handleTakeCraftingResult(Client &client)
+{
+    if (client.craftingSize == 3 && !isNearCraftingTable(client)) {
+        closeCrafting(client);
+        return;
+    }
+    const std::optional<qsizetype> recipe = craftingMatch(client);
+    if (client.dead || !recipe) {
+        sendInventory(client);
+        return;
+    }
+    const QcRecipeDefinition &definition = m_content->recipes()[*recipe];
+    const std::optional<QcItemId> item = m_content->itemId(definition.resultItem);
+    QcInventory result = client.inventory;
+    if (!item || result.add(*item, definition.resultCount, *m_content) > 0) {
+        client.connection->send(QcMsg::ChatMessage{u"Not enough room in the inventory"_s});
+        sendInventory(client);
+        return;
+    }
+    client.inventory = result;
+    for (int row = 0; row < client.craftingSize; ++row) {
+        for (int column = 0; column < client.craftingSize; ++column) {
+            QcItemStack &cell = client.craftingGrid[row * 3 + column];
+            if (!cell.isEmpty() && --cell.count <= 0) {
+                cell = {};
+            }
+        }
+    }
+    sendInventory(client);
+}
+
+void QcServer::handleCraftRecipe(Client &client, const QcMsg::CraftRecipe &request)
+{
+    const std::optional<qsizetype> index = m_content->recipeIndex(request.recipe);
+    if (client.dead) {
+        return;
+    }
+    if (!index) {
+        client.connection->send(QcMsg::ChatMessage{u"Unknown recipe %1"_s.arg(request.recipe)});
+        return;
+    }
+    const QcRecipeDefinition &recipe = m_content->recipes()[*index];
+    if (QcCrafting::gridSizeNeeded(recipe) > 2 && !isNearCraftingTable(client)) {
+        client.connection->send(QcMsg::ChatMessage{u"%1 needs a crafting table nearby"_s.arg(recipe.name)});
+        return;
+    }
+    const std::optional<QcItemId> result = m_content->itemId(recipe.resultItem);
+    const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
+    int crafted = 0;
+    for (int round = 0; round < std::clamp(request.count, 1, 64) && result; ++round) {
+        // All or nothing per round, on a copy so a full inventory leaves everything unchanged.
+        QcInventory attempt = client.inventory;
+        bool ok = true;
+        for (const auto &[name, count] : needed) {
+            const std::optional<QcItemId> ingredient = m_content->itemId(name);
+            ok = ok && ingredient && attempt.removeItems(*ingredient, count);
+        }
+        if (!ok || attempt.add(*result, recipe.resultCount, *m_content) > 0) {
+            break;
+        }
+        client.inventory = attempt;
+        ++crafted;
+    }
+    client.connection->send(QcMsg::ChatMessage{crafted > 0 ? u"Crafted %1 x %2"_s.arg(crafted * recipe.resultCount).arg(recipe.resultItem)
+                                                           : u"Missing ingredients or room for %1"_s.arg(recipe.name)});
+    sendInventory(client);
+}
+
+void QcServer::closeCrafting(Client &client)
+{
+    // Items left in the grid go back into the inventory; what does not fit is lost (E-019).
+    int lost = 0;
+    for (QcItemStack &cell : client.craftingGrid) {
+        if (!cell.isEmpty()) {
+            lost += client.inventory.add(cell.item, cell.count, *m_content);
+            cell = {};
+        }
+    }
+    if (lost > 0) {
+        client.connection->send(QcMsg::ChatMessage{u"Inventory full: %1 items from the crafting grid were lost"_s.arg(lost)});
+    }
+    client.craftingSize = 2;
+    client.craftingTable.reset();
+    sendInventory(client);
+}
+
+void QcServer::handleConsume(Client &client)
+{
+    const QcItemDefinition *held = heldItem(client);
+    if (client.dead || !held || held->foodHealth <= 0.0 || client.health >= playerMaxHealth) {
+        return;
+    }
+    client.health = std::min(playerMaxHealth, client.health + held->foodHealth);
+    client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    sendHealth(client);
+    sendInventory(client);
 }
 
 void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
@@ -91,6 +259,15 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
 
 void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
 {
+    // Using a crafting table opens its 3 x 3 grid unless the player sneaks to place against it.
+    if (const std::optional<QcBlockId> clickedBlock = m_world.blockAt(message.target);
+        clickedBlock && m_content->block(*clickedBlock).opensCrafting && !client.sneaking && isWithinReach(client, message.target)) {
+        client.craftingSize = 3;
+        client.craftingTable = message.target;
+        client.connection->send(QcMsg::OpenCrafting{3});
+        sendInventory(client);
+        return;
+    }
     const QcBlockPos target = qcNeighbour(message.target, message.face);
     const QcItemDefinition *held = heldItem(client);
     const std::optional<QcBlockId> clicked = m_world.blockAt(message.target);
@@ -192,6 +369,8 @@ void QcServer::handleChat(Client &client, const QString &text)
     } else if (command == u"kill"_s) {
         client.hurtTimer = 0.0;
         damagePlayer(client, client.health, {});
+    } else if (command == u"heal"_s && client.dead) {
+        reply(u"Respawn first"_s);
     } else if (command == u"heal"_s) {
         client.health = playerMaxHealth;
         sendHealth(client);

@@ -121,16 +121,29 @@ struct Encoder
         stream << quint8(m.face);
     }
     void operator()(QcMsg::SelectHotbarSlot m) { stream << m.slot; }
-    void operator()(QcMsg::MoveInventoryItem m) { stream << m.from << m.to; }
+    void operator()(QcMsg::MoveInventoryItem m) { stream << m.from << m.to << m.count; }
     void operator()(const QcMsg::ChatInput &m) { stream << m.text; }
+    void writeStacks(const QList<QcItemStack> &stacks)
+    {
+        stream << quint32(stacks.size());
+        for (const QcItemStack &slot : stacks) {
+            writeStack(slot);
+        }
+    }
+    void writeStack(QcItemStack slot) { stream << slot.item << qint32(slot.count) << qint32(slot.damage); }
     void operator()(const QcMsg::InventoryState &m)
     {
-        stream << quint32(m.stacks.size());
-        for (const QcItemStack &slot : m.stacks) {
-            stream << slot.item << qint32(slot.count) << qint32(slot.damage);
-        }
+        writeStacks(m.stacks);
         stream << m.selected;
+        writeStacks(m.craftingGrid);
+        stream << m.craftingSize;
+        writeStack(m.craftingResult);
     }
+    void operator()(QcMsg::TakeCraftingResult) {}
+    void operator()(const QcMsg::CraftRecipe &m) { stream << m.recipe << m.count; }
+    void operator()(QcMsg::CloseCrafting) {}
+    void operator()(QcMsg::ConsumeItem) {}
+    void operator()(QcMsg::OpenCrafting m) { stream << m.size; }
     void operator()(const QcMsg::ChatMessage &m) { stream << m.text; }
     void operator()(const QcMsg::EntitySpawn &m)
     {
@@ -298,7 +311,7 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::MoveInventoryItem>(QDataStream &stream)
 {
     QcMsg::MoveInventoryItem m;
-    stream >> m.from >> m.to;
+    stream >> m.from >> m.to >> m.count;
     return m;
 }
 
@@ -310,24 +323,76 @@ QcResult<QcMessage> decodePayload<QcMsg::ChatInput>(QDataStream &stream)
     return m;
 }
 
+QcItemStack readStack(QDataStream &stream)
+{
+    QcItemStack slot;
+    qint32 amount = 0;
+    qint32 damage = 0;
+    stream >> slot.item >> amount >> damage;
+    slot.count = amount;
+    slot.damage = damage;
+    return slot;
+}
+
+bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks)
+{
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, 1024, count)) {
+        return false;
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        stacks.append(readStack(stream));
+    }
+    return true;
+}
+
 template<>
 QcResult<QcMessage> decodePayload<QcMsg::InventoryState>(QDataStream &stream)
 {
     QcMsg::InventoryState m;
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, 1024, count)) {
+    if (!readStacks(stream, m.stacks)) {
         return qcError(u"Corrupt inventory"_s);
     }
-    for (quint32 i = 0; i < count; ++i) {
-        QcItemStack slot;
-        qint32 amount = 0;
-        qint32 damage = 0;
-        stream >> slot.item >> amount >> damage;
-        slot.count = amount;
-        slot.damage = damage;
-        m.stacks.append(slot);
-    }
     stream >> m.selected;
+    if (!readStacks(stream, m.craftingGrid)) {
+        return qcError(u"Corrupt crafting grid"_s);
+    }
+    stream >> m.craftingSize;
+    m.craftingResult = readStack(stream);
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::TakeCraftingResult>(QDataStream &)
+{
+    return QcMsg::TakeCraftingResult{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::CraftRecipe>(QDataStream &stream)
+{
+    QcMsg::CraftRecipe m;
+    stream >> m.recipe >> m.count;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::CloseCrafting>(QDataStream &)
+{
+    return QcMsg::CloseCrafting{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::ConsumeItem>(QDataStream &)
+{
+    return QcMsg::ConsumeItem{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::OpenCrafting>(QDataStream &stream)
+{
+    QcMsg::OpenCrafting m;
+    stream >> m.size;
     return m;
 }
 
@@ -460,7 +525,9 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::FinishMining>() || is.template operator()<QcMsg::UseItem>()
                                || is.template operator()<QcMsg::SelectHotbarSlot>()
                                || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>()
-                               || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>();
+                               || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>()
+                               || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
+                               || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>();
     return clientMessage == (sender == Peer::Client);
 }
 

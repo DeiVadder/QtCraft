@@ -1,0 +1,8 @@
+{
+    "name": "stone_shovel",
+    "pattern": "shovel",
+    "primary": "#8a8a8a",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 314
+}

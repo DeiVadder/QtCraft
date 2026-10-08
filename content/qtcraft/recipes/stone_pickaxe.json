@@ -1,0 +1,16 @@
+{
+    "name": "stone_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "X": "cobblestone",
+        "|": "stick"
+    },
+    "result": {
+        "item": "stone_pickaxe"
+    }
+}

@@ -35,6 +35,10 @@ public:
     // Moves the stack in `from` onto `to`: merges equal items up to the stack limit, else swaps.
     void move(int from, int to, const QcContentRegistry &content);
 
+    // Moves up to `count` items (0 = the whole stack) between two slots of any slot list: into an
+    // empty or matching slot, or swaps whole stacks otherwise. Returns false for invalid indices.
+    static bool moveBetween(QList<QcItemStack> &stacks, int from, int to, int count, const QcContentRegistry &content);
+
     static bool isValidSlot(int index) { return index >= 0 && index < slotCount; }
 
 private:

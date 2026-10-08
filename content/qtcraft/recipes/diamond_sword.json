@@ -1,0 +1,16 @@
+{
+    "name": "diamond_sword",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "X",
+        "|"
+    ],
+    "key": {
+        "X": "diamond",
+        "|": "stick"
+    },
+    "result": {
+        "item": "diamond_sword"
+    }
+}

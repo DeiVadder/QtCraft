@@ -11,15 +11,17 @@ QcInventoryModel::QcInventoryModel(QObject *parent)
 
 int QcInventoryModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : QcInventory::slotCount;
+    return parent.isValid() ? 0 : rowCountTotal;
 }
 
 QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= QcInventory::slotCount) {
+    if (!index.isValid() || index.row() >= rowCountTotal) {
         return {};
     }
-    const QcItemStack &stack = m_inventory.slot(index.row());
+    const int row = index.row();
+    const QcItemStack stack = row < gridFirstRow ? m_inventory.slot(row)
+                                                 : (row < resultRow ? m_craftingGrid.value(row - gridFirstRow) : m_craftingResult);
     const bool empty = stack.isEmpty() || !m_content || !m_content->isValidItem(stack.item);
     if (role == EmptyRole) {
         return empty;
@@ -58,11 +60,14 @@ void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> conte
     endResetModel();
 }
 
-void QcInventoryModel::setInventory(const QcInventory &inventory)
+void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<QcItemStack> &craftingGrid,
+                                    QcItemStack craftingResult)
 {
     const int previousSelection = m_inventory.selectedHotbarSlot();
     m_inventory = inventory;
-    emit dataChanged(index(0), index(QcInventory::slotCount - 1));
+    m_craftingGrid = craftingGrid.size() == 9 ? craftingGrid : QList<QcItemStack>(9);
+    m_craftingResult = craftingResult;
+    emit dataChanged(index(0), index(rowCountTotal - 1));
     if (previousSelection != m_inventory.selectedHotbarSlot()) {
         emit selectedSlotChanged();
     }

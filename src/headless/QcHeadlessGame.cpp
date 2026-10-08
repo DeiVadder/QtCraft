@@ -181,8 +181,8 @@ bool QcHeadlessGame::start(const QStringList &arguments)
 
 QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 {
-    // Reopening the open world: stop it completely first so only one server uses the directory,
-    // and reopen the previous state if that fails.
+    // Reopening the open world: stop it completely first so only one server uses the directory.
+    // If it cannot be opened again, no world is open until another one is loaded.
     if (m_server && !config.worldDirectory.isEmpty() && config.worldDirectory == m_currentConfig.worldDirectory) {
         if (m_session) {
             m_session->disconnectFromServer();

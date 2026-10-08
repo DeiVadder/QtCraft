@@ -49,6 +49,8 @@ struct QcBlockDefinition
     // Minimum tool tier for drops; 0 means hand works.
     int toolLevel = 0;
     QList<QcItemDrop> drops;
+    // Using the block opens the 3 x 3 crafting grid instead of placing against it.
+    bool opensCrafting = false;
     // Texture names indexed by QcBlockFace.
     std::array<QString, qcBlockFaceCount> faceTextures;
 

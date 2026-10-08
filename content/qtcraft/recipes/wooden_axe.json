@@ -1,0 +1,16 @@
+{
+    "name": "wooden_axe",
+    "type": "shaped",
+    "pattern": [
+        "XX",
+        "X|",
+        " |"
+    ],
+    "key": {
+        "X": "oak_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "wooden_axe"
+    }
+}

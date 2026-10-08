@@ -25,4 +25,6 @@ struct QcItemDefinition
     int durability = 0;
     // Damage dealt when hitting with this item, in health points.
     double attackDamage = 1.0;
+    // Health restored when eaten; 0 for items that are not food.
+    double foodHealth = 0.0;
 };

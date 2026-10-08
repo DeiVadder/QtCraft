@@ -1,0 +1,8 @@
+{
+    "name": "crafting_table_top",
+    "pattern": "bricks",
+    "primary": "#a8844e",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 301
+}

@@ -1,0 +1,14 @@
+{
+    "name": "crafting_table",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "oak_planks"
+    },
+    "result": {
+        "item": "crafting_table"
+    }
+}

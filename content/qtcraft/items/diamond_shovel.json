@@ -1,0 +1,10 @@
+{
+    "name": "diamond_shovel",
+    "texture": "diamond_shovel",
+    "maxStack": 1,
+    "durability": 1561,
+    "attackDamage": 3.5,
+    "tool": "shovel",
+    "toolLevel": 4,
+    "toolSpeed": 8.0
+}

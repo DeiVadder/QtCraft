@@ -1,0 +1,8 @@
+{
+    "name": "stone_axe",
+    "pattern": "axe",
+    "primary": "#8a8a8a",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 313
+}

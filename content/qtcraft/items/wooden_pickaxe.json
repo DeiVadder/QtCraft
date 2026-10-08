@@ -1,0 +1,10 @@
+{
+    "name": "wooden_pickaxe",
+    "texture": "wooden_pickaxe",
+    "maxStack": 1,
+    "durability": 59,
+    "attackDamage": 2.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "toolSpeed": 2.0
+}

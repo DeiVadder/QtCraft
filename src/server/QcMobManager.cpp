@@ -281,10 +281,16 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
             const auto blockAt = [&world](QcBlockPos pos) { return world.blockAt(pos).value_or(qcAirBlockId); };
             const bool standable = content.block(blockAt(feet.offset(0, -1, 0))).solid
                                    && !content.block(blockAt(feet)).solid && !content.block(blockAt(feet.offset(0, 1, 0))).solid;
-            if (i > 0 && !standable) {
+            const QcBlockId floor = blockAt(feet.offset(0, -1, 0));
+            const bool groundOk = definition.spawnBlocks.isEmpty() || definition.spawnBlocks.contains(content.block(floor).name);
+            if (i > 0 && (!standable || !groundOk)) {
                 continue;
             }
-            spawn(chosen, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, nextEntityId(), cave);
+            // Each member decides for itself whether rock covers it, e.g. at the edge of a ravine.
+            const std::shared_ptr<const QcChunk> column = world.chunk(feet.chunk());
+            const bool covered = cave && column
+                                 && column->highestNonAir(feet.localX(), feet.localZ()) > feet.y + caveDepth;
+            spawn(chosen, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, nextEntityId(), covered);
             count += 1;
         }
         return;

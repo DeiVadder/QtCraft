@@ -1,0 +1,8 @@
+{
+    "name": "iron_pickaxe",
+    "pattern": "pickaxe",
+    "primary": "#d8d8d8",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 316
+}

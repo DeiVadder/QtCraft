@@ -164,7 +164,14 @@ void QcClientSession::handleMessage(QcMessage &&message)
             m_inventory.setSlot(i, inventory->stacks[i]);
         }
         m_inventory.setSelectedHotbarSlot(inventory->selected);
+        if (inventory->craftingGrid.size() == 9 && (inventory->craftingSize == 2 || inventory->craftingSize == 3)) {
+            m_craftingGrid = inventory->craftingGrid;
+            m_craftingSize = inventory->craftingSize;
+            m_craftingResult = inventory->craftingResult;
+        }
         emit inventoryChanged();
+    } else if (auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
+        emit craftingOpened(open->size);
     } else if (auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
         emit chatReceived(chat->text);
     } else if (auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
@@ -342,11 +349,36 @@ void QcClientSession::updateTargetAndMining()
 
 bool QcClientSession::useItem()
 {
-    if (m_state != State::Playing || !m_target) {
+    if (m_state != State::Playing || m_dead) {
+        return false;
+    }
+    const QcItemStack &held = m_inventory.selectedStack();
+    const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
+    // Food without a block to place is eaten; everything else acts on the targeted block.
+    if (item && item->foodHealth > 0.0 && item->placesBlock.isEmpty()) {
+        m_connection->send(QcMsg::ConsumeItem{});
+        return true;
+    }
+    if (!m_target) {
         return false;
     }
     m_connection->send(QcMsg::UseItem{m_target->block, m_target->face});
     return true;
+}
+
+void QcClientSession::takeCraftingResult()
+{
+    m_connection->send(QcMsg::TakeCraftingResult{});
+}
+
+void QcClientSession::craftRecipe(const QString &recipe, int count)
+{
+    m_connection->send(QcMsg::CraftRecipe{recipe, count});
+}
+
+void QcClientSession::closeCrafting()
+{
+    m_connection->send(QcMsg::CloseCrafting{});
 }
 
 void QcClientSession::selectHotbarSlot(int slot)
@@ -356,9 +388,9 @@ void QcClientSession::selectHotbarSlot(int slot)
     emit inventoryChanged();
 }
 
-void QcClientSession::moveInventoryItem(int from, int to)
+void QcClientSession::moveInventoryItem(int from, int to, int count)
 {
-    m_connection->send(QcMsg::MoveInventoryItem{from, to});
+    m_connection->send(QcMsg::MoveInventoryItem{from, to, count});
 }
 
 void QcClientSession::sendChat(const QString &text)

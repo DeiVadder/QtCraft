@@ -1,0 +1,10 @@
+{
+    "name": "diamond_axe",
+    "texture": "diamond_axe",
+    "maxStack": 1,
+    "durability": 1561,
+    "attackDamage": 5.0,
+    "tool": "axe",
+    "toolLevel": 4,
+    "toolSpeed": 8.0
+}

@@ -39,3 +39,5 @@ qc_add_test(test_interaction SOURCES test_interaction.cpp QcTestWorld.h LIBRARIE
 qc_add_test(test_world_library SOURCES test_world_library.cpp LIBRARIES qc_server)
 qc_add_test(test_server_validation SOURCES test_server_validation.cpp LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_mobs SOURCES test_mobs.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_survival_scenario SOURCES test_survival_scenario.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_crafting SOURCES test_crafting.cpp LIBRARIES qc_common)

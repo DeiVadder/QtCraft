@@ -1,0 +1,16 @@
+{
+    "name": "iron_sword",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "X",
+        "|"
+    ],
+    "key": {
+        "X": "iron_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "iron_sword"
+    }
+}

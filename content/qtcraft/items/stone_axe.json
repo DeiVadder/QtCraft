@@ -1,0 +1,10 @@
+{
+    "name": "stone_axe",
+    "texture": "stone_axe",
+    "maxStack": 1,
+    "durability": 131,
+    "attackDamage": 4.0,
+    "tool": "axe",
+    "toolLevel": 2,
+    "toolSpeed": 4.0
+}

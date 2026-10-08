@@ -1,0 +1,16 @@
+{
+    "name": "wooden_shovel",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "|",
+        "|"
+    ],
+    "key": {
+        "X": "oak_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "wooden_shovel"
+    }
+}

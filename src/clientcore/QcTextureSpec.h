@@ -22,6 +22,13 @@ struct QcTextureSpec
         Water,
         Tool,
         Lump,
+        Pickaxe,
+        Axe,
+        Shovel,
+        Sword,
+        Stick,
+        Ingot,
+        Gem,
     };
 
     Pattern pattern = Pattern::Noise;

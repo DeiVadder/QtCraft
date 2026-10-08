@@ -56,6 +56,9 @@ public:
     static constexpr double playerAttackCooldown = 0.4;
     static constexpr double fallDamageThreshold = 3.0;
     static constexpr double regenerationInterval = 4.0;
+    // Crafting needs a crafting table within this distance for 3 x 3 recipes.
+    static constexpr double craftingTableReach = 5.0;
+    static constexpr int craftingGridSlot = 36;
     const QcServerConfig &config() const { return m_config; }
 
     // Runs one simulation tick immediately (used by tests and by the tick timer).
@@ -86,6 +89,15 @@ private:
     void sendHealth(Client &client);
     void sendTime(Client &client);
     void tickGameplay();
+    void handleMoveItem(Client &client, QcMsg::MoveInventoryItem move);
+    void handleTakeCraftingResult(Client &client);
+    void handleCraftRecipe(Client &client, const QcMsg::CraftRecipe &request);
+    void closeCrafting(Client &client);
+    void handleConsume(Client &client);
+    // The grid of the current size as a size x size list, and the recipe it makes.
+    QList<QcItemStack> craftingView(const Client &client) const;
+    std::optional<qsizetype> craftingMatch(const Client &client) const;
+    bool isNearCraftingTable(const Client &client) const;
     void streamChunks(Client &client);
     void removeClosedClients();
     QcStatus savePlayer(const Client &client);

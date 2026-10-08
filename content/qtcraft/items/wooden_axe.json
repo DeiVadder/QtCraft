@@ -1,0 +1,10 @@
+{
+    "name": "wooden_axe",
+    "texture": "wooden_axe",
+    "maxStack": 1,
+    "durability": 59,
+    "attackDamage": 3.5,
+    "tool": "axe",
+    "toolLevel": 1,
+    "toolSpeed": 2.0
+}

@@ -1,0 +1,15 @@
+{
+    "name": "bricks",
+    "type": "shaped",
+    "pattern": [
+        "CC",
+        "CC"
+    ],
+    "key": {
+        "C": "clay"
+    },
+    "result": {
+        "item": "bricks",
+        "count": 4
+    }
+}

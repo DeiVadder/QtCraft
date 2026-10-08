@@ -1,0 +1,7 @@
+{
+    "name": "diamond_sword",
+    "texture": "diamond_sword",
+    "maxStack": 1,
+    "durability": 1561,
+    "attackDamage": 7.0
+}

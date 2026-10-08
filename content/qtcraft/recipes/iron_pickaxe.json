@@ -1,0 +1,16 @@
+{
+    "name": "iron_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "X": "iron_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "iron_pickaxe"
+    }
+}

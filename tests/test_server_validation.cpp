@@ -9,6 +9,8 @@
 #include <QDir>
 #include <QFile>
 #include <QHash>
+
+#include <limits>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -39,11 +41,16 @@ public:
             motion = state->motion;
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
+            craftingGrid = inventory->craftingGrid;
+            craftingSize = inventory->craftingSize;
+            craftingResult = inventory->craftingResult;
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
         } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
             this->health = health->health;
             dead = health->dead;
+        } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
+            openedCrafting = open->size;
         } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
             entities.insert(spawn->id, spawn->mobType);
         }
@@ -52,6 +59,10 @@ public:
     QcConnection connection;
     QcEntityMotion motion;
     QList<QcItemStack> stacks;
+    QList<QcItemStack> craftingGrid;
+    qint32 craftingSize = 0;
+    QcItemStack craftingResult;
+    qint32 openedCrafting = 0;
     QStringList chatLines;
     double health = 0.0;
     bool dead = false;
@@ -117,6 +128,39 @@ private:
     {
         m_client->connection.send(QcMsg::ChatInput{text});
         pump();
+    }
+
+    int slotOf(QcItemId wanted) const
+    {
+        for (int slot = 0; slot < m_client->stacks.size(); ++slot) {
+            if (m_client->stacks[slot].item == wanted && !m_client->stacks[slot].isEmpty()) {
+                return slot;
+            }
+        }
+        return -1;
+    }
+
+    void send(const QcMessage &message)
+    {
+        m_client->connection.send(message);
+        pump();
+        ticks(1);
+    }
+
+    // Drops the player down a 10 m shaft, which costs 7 health.
+    void fallDownShaft()
+    {
+        for (int dy = -1; dy >= -10; --dy) {
+            m_server->world().setBlock(m_feet.offset(0, dy, 0), qcAirBlockId);
+        }
+        m_server->world().setBlock(m_feet.offset(0, -11, 0), id("qtcraft:stone"));
+        for (quint32 sequence = 1; sequence <= 60; ++sequence) {
+            QcPlayerInput input;
+            input.sequence = sequence;
+            m_client->connection.send(QcMsg::PlayerInput{input});
+            pump();
+            ticks(1);
+        }
     }
 
     int countOf(QcItemId wanted) const
@@ -381,18 +425,8 @@ private slots:
     {
         join();
         QCOMPARE(m_client->health, 20.0);
-        // Dig a 10 m shaft under the player: landing deals floor(10 - 3) = 7 damage.
-        for (int dy = -1; dy >= -10; --dy) {
-            m_server->world().setBlock(m_feet.offset(0, dy, 0), qcAirBlockId);
-        }
-        m_server->world().setBlock(m_feet.offset(0, -11, 0), id("qtcraft:stone"));
-        for (quint32 sequence = 1; sequence <= 60; ++sequence) {
-            QcPlayerInput input;
-            input.sequence = sequence;
-            m_client->connection.send(QcMsg::PlayerInput{input});
-            pump();
-            ticks(1);
-        }
+        // Landing after 10 m deals floor(10 - 3) = 7 damage.
+        fallDownShaft();
         QCOMPARE(m_client->motion.position.y, double(m_feet.y - 10));
         QCOMPARE(m_client->health, 13.0);
 
@@ -419,6 +453,163 @@ private slots:
         QVERIFY(!m_client->dead);
         QCOMPARE(m_client->health, 20.0);
         QCOMPARE(m_client->motion.position.y, double(m_feet.y));
+    }
+
+    void inventoryGridCraftsAndTakesOnce()
+    {
+        join();
+        chat(u"/give oak_log 2"_s);
+        QCOMPARE(m_client->craftingSize, 2);
+        // One log into the grid's top left cell: four planks are on offer.
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 1});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
+        QCOMPARE(m_client->craftingResult, (QcItemStack{item("qtcraft:oak_planks"), 4, 0}));
+        send(QcMsg::TakeCraftingResult{});
+        QCOMPARE(countOf(item("qtcraft:oak_planks")), 4);
+        QVERIFY(m_client->craftingResult.isEmpty());
+        send(QcMsg::TakeCraftingResult{});
+        QCOMPARE(countOf(item("qtcraft:oak_planks")), 4);
+        // The third column and row of the grid only exist at a crafting table.
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 2, 1});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 6, 1});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
+        // Closing returns what is left in the grid.
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot + 3, 0});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
+        send(QcMsg::CloseCrafting{});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 1);
+    }
+
+    void hostileCraftingRequestsConserveItems()
+    {
+        join();
+        chat(u"/give oak_log 7"_s);
+        const auto total = [this] {
+            int planks = countOf(item("qtcraft:oak_planks"));
+            int logs = countOf(item("qtcraft:oak_log"));
+            for (const QcItemStack &cell : std::as_const(m_client->craftingGrid)) {
+                logs += cell.item == item("qtcraft:oak_log") ? cell.count : 0;
+            }
+            // Four planks per log: the sum in logs never changes.
+            return logs * 4 + planks;
+        };
+        const int before = total();
+        const QList<int> slotNumbers{-1, 0, 8, 35, 36, 38, 42, 44, 45, 1000, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
+        const QList<int> counts{-1, 0, 1, 3, 64, 1000, std::numeric_limits<int>::min()};
+        qsizetype round = 0;
+        for (const int from : slotNumbers) {
+            for (const int to : slotNumbers) {
+                m_client->connection.send(QcMsg::MoveInventoryItem{from, to, counts[round++ % counts.size()]});
+            }
+        }
+        for (const int count : counts) {
+            m_client->connection.send(QcMsg::CraftRecipe{u"qtcraft:oak_planks_from_oak_log"_s, count});
+            m_client->connection.send(QcMsg::TakeCraftingResult{});
+        }
+        pump();
+        ticks(2);
+        QCOMPARE(total(), before);
+        // 3 x 3-only cells stay empty without a table.
+        for (const int cell : {2, 5, 6, 7, 8}) {
+            QVERIFY(m_client->craftingGrid.value(cell).isEmpty());
+        }
+        for (const QcItemStack &stack : std::as_const(m_client->stacks)) {
+            QVERIFY(stack.isEmpty() || (stack.count >= 1 && stack.count <= 64));
+        }
+
+        // The dead neither craft nor eat.
+        chat(u"/kill"_s);
+        const QList<QcItemStack> stacks = m_client->stacks;
+        send(QcMsg::CraftRecipe{u"qtcraft:oak_planks_from_oak_log"_s, 1});
+        send(QcMsg::TakeCraftingResult{});
+        send(QcMsg::ConsumeItem{});
+        QCOMPARE(m_client->stacks, stacks);
+    }
+
+    void gridItemsSurviveDisconnectAndServerStop()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        join(config);
+        chat(u"/give oak_log 5"_s);
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
+        // Disconnect with the grid full, then rejoin: the logs are back in the inventory.
+        m_client->connection.close();
+        pump();
+        ticks(1);
+        const auto rejoin = [this] {
+            auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+            m_server->addClient(std::move(serverEnd));
+            m_client = std::make_unique<RawClient>(std::move(clientEnd));
+            m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s});
+            pump();
+            ticks(2);
+        };
+        rejoin();
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 5);
+        QVERIFY(std::ranges::all_of(m_client->craftingGrid, &QcItemStack::isEmpty));
+
+        // The same through a server stop.
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        QVERIFY(m_server->stop().has_value());
+        m_client.reset();
+        config.viewDistance = 1;
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        QVERIFY(m_server->openWorld().has_value());
+        rejoin();
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 5);
+    }
+
+    void recipeBookIsAllOrNothingAndNeedsATableForBigRecipes()
+    {
+        join();
+        chat(u"/give oak_planks 3"_s);
+        send(QcMsg::CraftRecipe{u"qtcraft:crafting_table"_s, 1});
+        QCOMPARE(countOf(item("qtcraft:oak_planks")), 3);
+        QCOMPARE(countOf(item("qtcraft:crafting_table")), 0);
+        chat(u"/give oak_planks 9"_s);
+        send(QcMsg::CraftRecipe{u"qtcraft:crafting_table"_s, 5});
+        QCOMPARE(countOf(item("qtcraft:crafting_table")), 3);
+        QCOMPARE(countOf(item("qtcraft:oak_planks")), 0);
+
+        chat(u"/give oak_planks 3"_s);
+        chat(u"/give stick 2"_s);
+        send(QcMsg::CraftRecipe{u"qtcraft:wooden_pickaxe"_s, 1});
+        QCOMPARE(countOf(item("qtcraft:wooden_pickaxe")), 0);
+        QVERIFY(m_client->chatLines.constLast().contains(u"crafting table"_s));
+        send(QcMsg::CraftRecipe{u"qtcraft:no_such_recipe"_s, 1});
+        QVERIFY(m_client->chatLines.constLast().contains(u"Unknown recipe"_s));
+
+        // Place a table next to the player and use it: the 3 x 3 grid opens and the pickaxe works.
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:crafting_table"))});
+        const QcBlockPos table = m_feet.offset(2, 0, 0);
+        send(QcMsg::UseItem{table.offset(0, -1, 0), QcBlockFace::Up});
+        QCOMPARE(*m_server->world().blockAt(table), id("qtcraft:crafting_table"));
+        send(QcMsg::UseItem{table, QcBlockFace::Up});
+        QCOMPARE(m_client->openedCrafting, 3);
+        QCOMPARE(m_client->craftingSize, 3);
+        send(QcMsg::CraftRecipe{u"qtcraft:wooden_pickaxe"_s, 1});
+        QCOMPARE(countOf(item("qtcraft:wooden_pickaxe")), 1);
+        // Breaking the table away closes the big grid on the next take.
+        m_server->world().setBlock(table, qcAirBlockId);
+        send(QcMsg::TakeCraftingResult{});
+        QCOMPARE(m_client->craftingSize, 2);
+    }
+
+    void eatingHealsOnlyWhenHurt()
+    {
+        join();
+        chat(u"/give raw_porkchop 2"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:raw_porkchop"))});
+        send(QcMsg::ConsumeItem{});
+        QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 2);
+        fallDownShaft();
+        QCOMPARE(m_client->health, 13.0);
+        send(QcMsg::ConsumeItem{});
+        QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 1);
+        QVERIFY(m_client->health > 13.0);
     }
 
     void failedSavesAreRetried()

@@ -1,0 +1,7 @@
+{
+    "name": "wooden_sword",
+    "texture": "wooden_sword",
+    "maxStack": 1,
+    "durability": 59,
+    "attackDamage": 4.0
+}

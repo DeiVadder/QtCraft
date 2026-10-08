@@ -1,0 +1,8 @@
+{
+    "name": "gold_ingot",
+    "pattern": "ingot",
+    "primary": "#f2d040",
+    "secondary": "#f2d040",
+    "variation": 0.05,
+    "seed": 306
+}

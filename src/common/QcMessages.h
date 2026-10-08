@@ -107,10 +107,13 @@ struct SelectHotbarSlot
     qint32 slot = 0;
 };
 
+// Slots 0..35 are the inventory, 36..44 the crafting grid (row-major, 3 per row; a 2 x 2 grid uses
+// the top-left four). `count` 0 moves the whole stack.
 struct MoveInventoryItem
 {
     qint32 from = 0;
     qint32 to = 0;
+    qint32 count = 0;
 };
 
 // Client -> server: chat line or command starting with '/'.
@@ -119,11 +122,42 @@ struct ChatInput
     QString text;
 };
 
-// Server -> client: the receiving player's complete inventory.
+// Server -> client: the receiving player's complete inventory and crafting grid.
 struct InventoryState
 {
     QList<QcItemStack> stacks;
     qint32 selected = 0;
+    QList<QcItemStack> craftingGrid;
+    qint32 craftingSize = 2;
+    QcItemStack craftingResult;
+};
+
+// Client -> server: take the crafting result once into the inventory.
+struct TakeCraftingResult
+{
+};
+
+// Client -> server: craft a recipe directly from the inventory (recipe book), `count` times.
+struct CraftRecipe
+{
+    QString recipe;
+    qint32 count = 1;
+};
+
+// Client -> server: the crafting screen closed; grid items go back to the inventory.
+struct CloseCrafting
+{
+};
+
+// Client -> server: eat the held item.
+struct ConsumeItem
+{
+};
+
+// Server -> client: open the crafting screen with a grid of this size (crafting table).
+struct OpenCrafting
+{
+    qint32 size = 3;
 };
 
 // Server -> client: chat line or command feedback.
@@ -199,4 +233,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::SelectHotbarSlot, QcMsg::MoveInventoryItem, QcMsg::ChatInput,
                                QcMsg::InventoryState, QcMsg::ChatMessage, QcMsg::EntitySpawn, QcMsg::EntityMoves,
                                QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
-                               QcMsg::Respawn>;
+                               QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
+                               QcMsg::ConsumeItem, QcMsg::OpenCrafting>;

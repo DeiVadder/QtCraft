@@ -1,0 +1,13 @@
+{
+    "name": "glass",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "coal"
+    ],
+    "result": {
+        "item": "glass",
+        "count": 2
+    }
+}

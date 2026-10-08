@@ -3,6 +3,7 @@
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
 #include "QcMobDefinition.h"
+#include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
@@ -57,6 +58,10 @@ public:
     const QList<QcMobDefinition> &mobs() const { return m_mobs; }
     std::optional<int> mobIndex(const QString &name) const;
 
+    void registerRecipe(QcRecipeDefinition definition);
+    const QList<QcRecipeDefinition> &recipes() const { return m_recipes; }
+    std::optional<qsizetype> recipeIndex(const QString &name) const;
+
     void registerBiome(QcBiomeDefinition definition);
     void registerFeature(QcFeatureDefinition definition);
     void registerOre(QcOreDefinition definition);
@@ -83,6 +88,7 @@ private:
     QHash<QString, qsizetype> m_textureIndex;
     QHash<QString, QHash<QString, QString>> m_translations;
     QList<QcMobDefinition> m_mobs;
+    QList<QcRecipeDefinition> m_recipes;
     QList<QcBiomeDefinition> m_biomes;
     QList<QcFeatureDefinition> m_features;
     QList<QcOreDefinition> m_ores;

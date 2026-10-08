@@ -5,12 +5,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Inventory: click a slot to pick its stack up, click another slot to put it there (merging or swapping).
+// Inventory and crafting. Left click picks a stack up and puts it down elsewhere (merging or
+// swapping); right click puts down a single item. The result slot takes one crafted item.
 Rectangle {
     id: screen
 
     required property GameController game
     property int pickedSlot: -1
+
+    readonly property int gridFirst: 36
+    readonly property int resultSlot: 45
 
     color: "#90000000"
     focus: visible
@@ -26,6 +30,24 @@ Rectangle {
         }
     }
 
+    function clicked(slot, empty, button) {
+        if (slot === resultSlot) {
+            if (!empty)
+                game.takeCraftingResult();
+            return;
+        }
+        if (pickedSlot < 0) {
+            if (!empty)
+                pickedSlot = slot;
+            return;
+        }
+        if (pickedSlot !== slot)
+            game.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
+        // Right click keeps the stack picked up so several cells can be filled one by one.
+        if (button !== Qt.RightButton)
+            pickedSlot = -1;
+    }
+
     MouseArea {
         anchors.fill: parent
         onClicked: screen.pickedSlot = -1
@@ -33,82 +55,158 @@ Rectangle {
 
     // Opaque panel so the crosshair and the world do not show through the slots.
     Rectangle {
-        anchors.fill: inventoryContent
+        anchors.fill: content
         anchors.margins: -20
         radius: 6
         color: "#e8282828"
         border.color: "#80ffffff"
     }
 
-    ColumnLayout {
-        id: inventoryContent
+    component Slot: ItemSlot {
+        id: slotItem
 
-        anchors.centerIn: parent
-        spacing: 12
+        required property int index
+        required property string icon
+        required property int count
+        required property real durability
+        required property bool empty
+        required property string label
 
-        Label {
-            text: qsTr("Inventory")
-            color: "white"
-            font.pixelSize: 24
-            font.bold: true
+        slotIcon: icon
+        slotCount: count
+        slotDurability: durability
+        slotEmpty: empty
+        selected: index === screen.pickedSlot
+        highlighted: hover.hovered
+
+        ToolTip.visible: hover.hovered && !empty
+        ToolTip.text: label
+
+        HoverHandler {
+            id: hover
         }
 
-        GridLayout {
-            id: grid
+        TapHandler {
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onTapped: (eventPoint, button) => screen.clicked(slotItem.index, slotItem.empty, button)
+        }
+    }
 
-            columns: 9
-            rowSpacing: 2
-            columnSpacing: 2
+    RowLayout {
+        id: content
 
-            // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
-            Repeater {
-                model: screen.game.inventory
+        anchors.centerIn: parent
+        spacing: 28
 
-                ItemSlot {
-                    id: inventorySlot
+        ColumnLayout {
+            spacing: 12
 
-                    required property int index
-                    required property string icon
-                    required property int count
-                    required property real durability
-                    required property bool empty
-                    required property string label
+            RowLayout {
+                spacing: 16
 
-                    Layout.row: index < 9 ? 4 : Math.floor((index - 9) / 9)
-                    Layout.column: index % 9
-                    Layout.topMargin: index < 9 ? 12 : 0
-                    slotIcon: icon
-                    slotCount: count
-                    slotDurability: durability
-                    slotEmpty: empty
-                    selected: index === screen.pickedSlot
-                    highlighted: hover.hovered
+                Label {
+                    Layout.fillWidth: true
+                    text: screen.game.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")
+                    color: "white"
+                    font.pixelSize: 24
+                    font.bold: true
+                }
 
-                    ToolTip.visible: hover.hovered && !empty
-                    ToolTip.text: label
+                GridLayout {
+                    columns: screen.game.craftingSize
+                    rowSpacing: 2
+                    columnSpacing: 2
 
-                    HoverHandler {
-                        id: hover
-                    }
+                    Repeater {
+                        model: screen.game.inventory
 
-                    TapHandler {
-                        onTapped: {
-                            if (screen.pickedSlot < 0) {
-                                if (!inventorySlot.empty)
-                                    screen.pickedSlot = inventorySlot.index;
-                            } else {
-                                screen.game.moveItem(screen.pickedSlot, inventorySlot.index);
-                                screen.pickedSlot = -1;
-                            }
+                        Slot {
+                            readonly property int cell: index - screen.gridFirst
+                            visible: cell >= 0 && cell < 9 && Math.floor(cell / 3) < screen.game.craftingSize
+                                     && cell % 3 < screen.game.craftingSize
                         }
                     }
                 }
+
+                Label {
+                    text: "→"
+                    color: "white"
+                    font.pixelSize: 28
+                }
+
+                Repeater {
+                    model: screen.game.inventory
+
+                    Slot {
+                        visible: index === screen.resultSlot
+                    }
+                }
+            }
+
+            GridLayout {
+                columns: 9
+                rowSpacing: 2
+                columnSpacing: 2
+
+                // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
+                Repeater {
+                    model: screen.game.inventory
+
+                    Slot {
+                        visible: index < 36
+                        Layout.row: index < 9 ? 4 : Math.floor((index - 9) / 9)
+                        Layout.column: index % 9
+                        Layout.topMargin: index < 9 ? 12 : 0
+                    }
+                }
+            }
+
+            Label {
+                text: qsTr("Left click: pick up and put down. Right click: put down one. E or Esc closes.")
+                color: "#e0ffffff"
             }
         }
 
-        Label {
-            text: qsTr("Click a stack, then click where it should go. E or Esc closes.")
-            color: "#e0ffffff"
+        ColumnLayout {
+            Layout.preferredWidth: 260
+            Layout.fillHeight: true
+            spacing: 6
+
+            Label {
+                text: qsTr("Can craft now")
+                color: "white"
+                font.pixelSize: 18
+            }
+
+            ListView {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 360
+                clip: true
+                spacing: 2
+                model: screen.game.craftableRecipes
+
+                Label {
+                    anchors.centerIn: parent
+                    visible: parent.count === 0
+                    width: parent.width
+                    wrapMode: Text.Wrap
+                    horizontalAlignment: Text.AlignHCenter
+                    text: qsTr("Collect materials to see recipes here.")
+                    color: "#c0ffffff"
+                }
+
+                delegate: ItemDelegate {
+                    id: recipeRow
+
+                    required property var modelData
+
+                    width: ListView.view.width
+                    icon.source: modelData.icon
+                    icon.color: "transparent"
+                    text: modelData.count > 1 ? qsTr("%1 × %2").arg(modelData.count).arg(modelData.label) : modelData.label
+                    onClicked: screen.game.craftRecipe(recipeRow.modelData.recipe)
+                }
+            }
         }
     }
 }

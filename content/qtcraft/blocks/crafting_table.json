@@ -1,0 +1,11 @@
+{
+    "name": "crafting_table",
+    "hardness": 2.5,
+    "tool": "axe",
+    "textures": {
+        "top": "crafting_table_top",
+        "bottom": "oak_planks",
+        "side": "crafting_table_side"
+    },
+    "crafting": true
+}

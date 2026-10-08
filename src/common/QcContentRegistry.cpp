@@ -17,7 +17,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block)
 {
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel);
+           << qint32(block.toolLevel) << block.opensCrafting;
     stream << quint32(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
         stream << drop.item << qint32(drop.count);
@@ -33,7 +33,7 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     qint32 lightOpacity = 0;
     qint32 toolLevel = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
-        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel;
+        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting;
     if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
@@ -198,6 +198,20 @@ std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
     return int(it - m_mobs.begin());
 }
 
+void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
+{
+    registerByName(m_recipes, std::move(definition));
+}
+
+std::optional<qsizetype> QcContentRegistry::recipeIndex(const QString &name) const
+{
+    const auto it = std::ranges::find(m_recipes, name, &QcRecipeDefinition::name);
+    if (it == m_recipes.end()) {
+        return std::nullopt;
+    }
+    return it - m_recipes.begin();
+}
+
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, std::move(definition));
@@ -257,7 +271,7 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
     stream << quint32(m_items.size());
     for (const QcItemDefinition &item : m_items) {
         stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
-               << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage;
+               << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage << item.foodHealth;
     }
     stream << quint32(m_mobs.size());
     for (const QcMobDefinition &mob : m_mobs) {
@@ -266,6 +280,22 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         for (const QcMobPart &part : mob.parts) {
             stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
         }
+    }
+    stream << quint32(m_recipes.size());
+    for (const QcRecipeDefinition &recipe : m_recipes) {
+        stream << recipe.name << recipe.shaped << quint32(recipe.pattern.size());
+        for (const QString &row : recipe.pattern) {
+            stream << row;
+        }
+        stream << quint32(recipe.keys.size());
+        for (const auto &[key, item] : recipe.keys) {
+            stream << key << item;
+        }
+        stream << quint32(recipe.ingredients.size());
+        for (const QString &ingredient : recipe.ingredients) {
+            stream << ingredient;
+        }
+        stream << recipe.resultItem << qint32(recipe.resultCount);
     }
     stream << quint32(m_textures.size());
     for (const QcTextureDefinition &texture : m_textures) {
@@ -312,7 +342,7 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
         qint32 toolLevel = 0;
         qint32 durability = 0;
         stream >> item.name >> item.translationKey >> item.texture >> maxStack >> item.placesBlock >> item.tool >> toolLevel
-            >> item.toolSpeed >> durability >> item.attackDamage;
+            >> item.toolSpeed >> durability >> item.attackDamage >> item.foodHealth;
         item.maxStack = maxStack;
         item.toolLevel = toolLevel;
         item.durability = durability;
@@ -352,6 +382,53 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             return qcError(u"Corrupt content: mob %1"_s.arg(i));
         }
         registry.registerMob(std::move(mob));
+    }
+
+    quint32 recipeCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, recipeCount)) {
+        return qcError(u"Corrupt content: recipe table"_s);
+    }
+    for (quint32 i = 0; i < recipeCount; ++i) {
+        QcRecipeDefinition recipe;
+        quint32 keyCount = 0;
+        qint32 resultCount = 0;
+        stream >> recipe.name >> recipe.shaped;
+        // Bounded reads: QDataStream's own list operator would reserve whatever count arrives.
+        const auto readStrings = [&stream](QList<QString> &list) {
+            quint32 count = 0;
+            if (!QcStreamLimits::readCount(stream, 9, count)) {
+                return false;
+            }
+            for (quint32 n = 0; n < count; ++n) {
+                QString text;
+                stream >> text;
+                list.append(text);
+            }
+            return true;
+        };
+        if (!readStrings(recipe.pattern) || !QcStreamLimits::readCount(stream, 9, keyCount)) {
+            return qcError(u"Corrupt content: recipe %1"_s.arg(i));
+        }
+        for (quint32 k = 0; k < keyCount; ++k) {
+            QChar key;
+            QString item;
+            stream >> key >> item;
+            recipe.keys.append({key, item});
+        }
+        if (!readStrings(recipe.ingredients)) {
+            return qcError(u"Corrupt content: recipe %1"_s.arg(i));
+        }
+        stream >> recipe.resultItem >> resultCount;
+        recipe.resultCount = resultCount;
+        // Patterns must stay within a 3 x 3 grid and be rectangular, whatever the sender claims.
+        const bool rectangular = std::ranges::all_of(recipe.pattern, [&recipe](const QString &row) {
+            return row.size() == recipe.pattern.first().size() && row.size() <= 3;
+        });
+        if (stream.status() != QDataStream::Ok || recipe.pattern.size() > 3 || (recipe.shaped && (recipe.pattern.isEmpty() || !rectangular))
+            || (!recipe.shaped && recipe.ingredients.isEmpty()) || recipe.ingredients.size() > 9 || resultCount < 1) {
+            return qcError(u"Corrupt content: recipe %1"_s.arg(i));
+        }
+        registry.registerRecipe(std::move(recipe));
     }
 
     quint32 textureCount = 0;

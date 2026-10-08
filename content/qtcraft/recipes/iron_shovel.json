@@ -1,0 +1,16 @@
+{
+    "name": "iron_shovel",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "|",
+        "|"
+    ],
+    "key": {
+        "X": "iron_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "iron_shovel"
+    }
+}

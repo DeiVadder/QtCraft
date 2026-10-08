@@ -1,0 +1,11 @@
+{
+    "name": "iron_ingot",
+    "type": "shapeless",
+    "ingredients": [
+        "iron_ore",
+        "coal"
+    ],
+    "result": {
+        "item": "iron_ingot"
+    }
+}

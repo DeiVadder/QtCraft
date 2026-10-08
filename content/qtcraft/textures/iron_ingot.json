@@ -1,0 +1,8 @@
+{
+    "name": "iron_ingot",
+    "pattern": "ingot",
+    "primary": "#d8d8d8",
+    "secondary": "#d8d8d8",
+    "variation": 0.05,
+    "seed": 305
+}

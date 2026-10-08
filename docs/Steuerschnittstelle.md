@@ -47,17 +47,21 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 | `blocks` | `radius` (0..8, default 3) | All non-air blocks in a cube around the player's feet: `[{"x":..,"y":..,"z":..,"block":"qtcraft:stone"}]`. |
 | `lookAt` | `x`, `y`, `z` | Turns towards the centre of a block. |
 | `mine` | optional `x`, `y`, `z`; `maxTicks` (default 400) | Looks at the block (or keeps the current target) and mines until it is gone. The server checks the mining time; drops go into the inventory. |
-| `place` / `use` | optional `x`, `y`, `z`, `face` (`east`, `west`, `up`, `down`, `south`, `north`, default `up`) | Looks at that face and uses the held item on it, which places a block next to it. Answers after 4 ticks; check the block with `block`. |
+| `place` / `use` (also eats held food) | optional `x`, `y`, `z`, `face` (`east`, `west`, `up`, `down`, `south`, `north`, default `up`) | Looks at that face and uses the held item on it, which places a block next to it. Answers after 4 ticks; check the block with `block`. |
 | `select` | `slot` (0–8) | Selects a hotbar slot; answers with the inventory. |
-| `inventory` | – | `{"selectedSlot":0,"slots":[{"slot":0,"item":"qtcraft:dirt","count":3}]}` |
-| `moveItem` | `from`, `to` (0–35) | Moves or merges an inventory stack. |
+| `inventory` | – | `{"selectedSlot":0,"slots":[{"slot":0,"item":"qtcraft:dirt","count":3}],"craftingSize":2,"craftingGrid":[...],"craftingResult":null}` |
+| `moveItem` | `from`, `to` (0–35 inventory, 36–44 crafting grid, 3 per row; 2 × 2 uses 36, 37, 39, 40), optional `count` (0 = whole stack) | Moves, splits or merges stacks. |
+| `takeResult` | – | Takes the crafting grid's result once into the inventory. |
+| `closeCrafting` | – | Puts the grid's items back into the inventory and leaves a crafting table's 3 × 3 grid. Items in the grid are also kept when the player disconnects or the world is saved. |
+| `recipes` | optional `all` (bool) | Recipes the inventory can make now (or all): `recipe`, `result`, `count`, `needs`, `needsCraftingTable`, `possible`. |
+| `craft` | `recipe`, optional `count` (1–64) | Crafts directly from the inventory (recipe book). 3 × 3 recipes need a crafting table within 5 m. The result appears in `messages` and the inventory. |
 | `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`. |
 | `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
 | `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |
 | `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |
 | `worldSave` | – | Saves the current world and reports failures (`ok: false` with the reason). |
 | `entities` | `radius` (1–64, default 32) | `{"entities":[{"id","type","name","hostile","position","distance","health"}]}` – mobs and other players in view. |
-| `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach or hidden behind blocks. |
+| `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach, hidden behind blocks, or the hit did not land (0.4 s attack cooldown, short invulnerability after a hit). |
 | `respawn` | – | Leaves the death screen; answers when the player is alive again. |
 | `quit` | – | Ends the process (the current world is saved). |
 

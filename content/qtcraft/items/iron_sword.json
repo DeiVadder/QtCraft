@@ -1,0 +1,7 @@
+{
+    "name": "iron_sword",
+    "texture": "iron_sword",
+    "maxStack": 1,
+    "durability": 250,
+    "attackDamage": 6.0
+}

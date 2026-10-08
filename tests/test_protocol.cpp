@@ -113,9 +113,64 @@ private slots:
         stone.name = u"a:stone"_s;
         stone.faceTextures.fill(u"a:stone"_s);
         QVERIFY(content->registerBlock(stone).has_value());
+        QcRecipeDefinition shaped;
+        shaped.name = u"a:pick"_s;
+        shaped.pattern = {u"SS"_s, u" S"_s};
+        shaped.keys = {{u'S', u"a:stone"_s}};
+        shaped.resultItem = u"a:stone"_s;
+        shaped.resultCount = 3;
+        content->registerRecipe(shaped);
+        QcRecipeDefinition shapeless;
+        shapeless.name = u"a:mix"_s;
+        shapeless.shaped = false;
+        shapeless.ingredients = {u"a:stone"_s, u"a:stone"_s};
+        shapeless.resultItem = u"a:stone"_s;
+        content->registerRecipe(shapeless);
         const QcMsg::ContentSync copy = roundTrip(QcMsg::ContentSync{content});
         QCOMPARE(copy.content->blockCount(), 2);
         QCOMPARE(copy.content->blockId(u"a:stone"_s), std::optional<QcBlockId>(1));
+        QCOMPARE(copy.content->recipes().size(), 2);
+        const QcRecipeDefinition &pick = copy.content->recipes()[0];
+        QCOMPARE(pick.pattern, shaped.pattern);
+        QCOMPARE(pick.keys, shaped.keys);
+        QCOMPARE(pick.resultCount, 3);
+        QCOMPARE(copy.content->recipes()[1].ingredients, shapeless.ingredients);
+        QVERIFY(!copy.content->recipes()[1].shaped);
+
+        // A shapeless recipe without ingredients would match an empty grid on the client.
+        shapeless.ingredients.clear();
+        content->registerRecipe(shapeless);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Client).has_value());
+    }
+
+    void craftingMessagesRoundTrip()
+    {
+        const QcMsg::MoveInventoryItem move = roundTrip(QcMsg::MoveInventoryItem{3, 40, 7});
+        QCOMPARE(move.from, 3);
+        QCOMPARE(move.to, 40);
+        QCOMPARE(move.count, 7);
+        const QcMsg::CraftRecipe craft = roundTrip(QcMsg::CraftRecipe{u"qtcraft:stick"_s, 5});
+        QCOMPARE(craft.recipe, u"qtcraft:stick"_s);
+        QCOMPARE(craft.count, 5);
+        QCOMPARE(roundTrip(QcMsg::OpenCrafting{3}).size, 3);
+        roundTrip(QcMsg::TakeCraftingResult{});
+        roundTrip(QcMsg::CloseCrafting{});
+        roundTrip(QcMsg::ConsumeItem{});
+
+        QcMsg::InventoryState state;
+        state.stacks = QList<QcItemStack>(36);
+        state.stacks[4] = {2, 10, 0};
+        state.selected = 4;
+        state.craftingGrid = QList<QcItemStack>(9);
+        state.craftingGrid[8] = {5, 1, 3};
+        state.craftingSize = 3;
+        state.craftingResult = {7, 4, 0};
+        const QcMsg::InventoryState copy = roundTrip(state);
+        QCOMPARE(copy.stacks, state.stacks);
+        QCOMPARE(copy.selected, 4);
+        QCOMPARE(copy.craftingGrid, state.craftingGrid);
+        QCOMPARE(copy.craftingSize, 3);
+        QCOMPARE(copy.craftingResult, state.craftingResult);
     }
 
     void rejectsMalformedFrames()

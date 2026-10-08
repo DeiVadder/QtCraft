@@ -5,6 +5,7 @@
 
 #include <QJsonArray>
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -143,6 +144,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     block.hardness = reader.number(u"hardness"_s, 1.0, -1.0, 1000.0);
     block.tool = reader.string(u"tool"_s);
     block.toolLevel = reader.integer(u"toolLevel"_s, 0, 0, 100);
+    block.opensCrafting = reader.boolean(u"crafting"_s, false);
 
     const QJsonValue drops = json.value(u"drops"_s);
     if (drops.isUndefined()) {
@@ -341,6 +343,103 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
     return mob;
 }
 
+QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"recipe"_s, {}};
+    QcRecipeDefinition recipe;
+    recipe.name = reader.name(u"name"_s, packNamespace);
+    if (recipe.name.isEmpty()) {
+        return qcError(reader.ok() ? u"recipe: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"recipe '%1'"_s.arg(recipe.name);
+    const QString type = reader.string(u"type"_s, u"shaped"_s);
+    recipe.shaped = type == u"shaped"_s;
+    if (!recipe.shaped && type != u"shapeless"_s) {
+        reader.fail(u"'type' must be shaped or shapeless"_s);
+    }
+    const QJsonObject result = json.value(u"result"_s).toObject();
+    FieldReader resultReader{result, reader.context + u" result"_s, {}};
+    recipe.resultItem = resultReader.name(u"item"_s, packNamespace);
+    recipe.resultCount = resultReader.integer(u"count"_s, 1, 1, 64);
+    if (!resultReader.ok() || recipe.resultItem.isEmpty()) {
+        reader.fail(resultReader.ok() ? u"'result' needs an 'item'"_s : resultReader.error);
+    }
+
+    if (recipe.shaped) {
+        QList<QString> rows;
+        const QJsonArray pattern = json.value(u"pattern"_s).toArray();
+        for (const auto &row : pattern) {
+            rows.append(row.toString());
+        }
+        // Trim blank rows and columns so the shape can sit anywhere in the grid.
+        while (!rows.isEmpty() && rows.first().trimmed().isEmpty()) {
+            rows.removeFirst();
+        }
+        while (!rows.isEmpty() && rows.last().trimmed().isEmpty()) {
+            rows.removeLast();
+        }
+        qsizetype width = 0;
+        for (const QString &row : std::as_const(rows)) {
+            width = std::max(width, row.size());
+        }
+        for (QString &row : rows) {
+            row = row.leftJustified(width, u' ');
+        }
+        const auto columnBlank = [&rows](qsizetype column) {
+            return std::ranges::all_of(rows, [column](const QString &row) { return row[column] == u' '; });
+        };
+        while (width > 0 && columnBlank(0)) {
+            for (QString &row : rows) {
+                row.remove(0, 1);
+            }
+            --width;
+        }
+        while (width > 0 && columnBlank(width - 1)) {
+            for (QString &row : rows) {
+                row.chop(1);
+            }
+            --width;
+        }
+        if (rows.isEmpty() || rows.size() > 3 || width > 3) {
+            reader.fail(u"'pattern' must have 1 to 3 rows of at most 3 keys"_s);
+        }
+        recipe.pattern = rows;
+        const QJsonObject keys = json.value(u"key"_s).toObject();
+        for (auto it = keys.constBegin(); it != keys.constEnd(); ++it) {
+            const QString item = QcContentNames::qualify(it.value().toString(), packNamespace);
+            if (it.key().size() != 1 || it.key() == u" "_s || item.isEmpty()) {
+                reader.fail(u"'key' maps single characters to item names"_s);
+                break;
+            }
+            recipe.keys.append({it.key().at(0), item});
+        }
+        for (const QString &row : std::as_const(rows)) {
+            for (const QChar c : row) {
+                if (c != u' ' && std::ranges::none_of(recipe.keys, [c](const auto &key) { return key.first == c; })) {
+                    reader.fail(u"pattern uses '%1' without a key"_s.arg(c));
+                }
+            }
+        }
+    } else {
+        const QJsonArray ingredients = json.value(u"ingredients"_s).toArray();
+        for (const auto &entry : ingredients) {
+            const QString item = QcContentNames::qualify(entry.toString(), packNamespace);
+            if (item.isEmpty()) {
+                reader.fail(u"invalid ingredient"_s);
+                break;
+            }
+            recipe.ingredients.append(item);
+        }
+        if (recipe.ingredients.isEmpty() || recipe.ingredients.size() > 9) {
+            reader.fail(u"'ingredients' needs 1 to 9 items"_s);
+        }
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return recipe;
+}
+
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)
 {
     FieldReader reader{json, u"item"_s, {}};
@@ -360,6 +459,7 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.toolSpeed = reader.number(u"toolSpeed"_s, 1.0, 0.1, 100.0);
     item.durability = reader.integer(u"durability"_s, 0, 0, 100000);
     item.attackDamage = reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);
+    item.foodHealth = reader.number(u"food"_s, 0.0, 0.0, 100.0);
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;
     }

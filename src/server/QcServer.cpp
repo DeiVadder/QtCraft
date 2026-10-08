@@ -104,6 +104,13 @@ QcStatus QcServer::savePlayer(const Client &client)
     player.yaw = client.yaw;
     player.pitch = client.pitch;
     player.inventory = client.inventory;
+    // Items in the crafting grid are stored in the inventory, as if the grid had been closed; the
+    // open grid itself is not saved.
+    for (const QcItemStack &cell : client.craftingGrid) {
+        if (!cell.isEmpty()) {
+            player.inventory.add(cell.item, cell.count, *m_content);
+        }
+    }
     player.health = client.health;
     const QcStatus saved = m_storage->writePlayer(client.name, player);
     if (!saved) {
@@ -200,9 +207,16 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         client.miningPos.reset();
         sendInventory(client);
     } else if (const auto *move = std::get_if<QcMsg::MoveInventoryItem>(&message)) {
-        client.inventory.move(move->from, move->to, *m_content);
         client.miningPos.reset();
-        sendInventory(client);
+        handleMoveItem(client, *move);
+    } else if (std::holds_alternative<QcMsg::TakeCraftingResult>(message)) {
+        handleTakeCraftingResult(client);
+    } else if (const auto *craft = std::get_if<QcMsg::CraftRecipe>(&message)) {
+        handleCraftRecipe(client, *craft);
+    } else if (std::holds_alternative<QcMsg::CloseCrafting>(message)) {
+        closeCrafting(client);
+    } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
+        handleConsume(client);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
         handleAttack(client, attack->id);
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
@@ -316,6 +330,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     updateHealth(client, wasOnGround, wasInWater, previousY);
     client.yaw = input.yaw;
     client.pitch = input.pitch;
+    client.sneaking = input.sneak;
     client.lastInputSequence = input.sequence;
     client.stateDirty = true;
 }

@@ -1,0 +1,10 @@
+{
+    "name": "wooden_shovel",
+    "texture": "wooden_shovel",
+    "maxStack": 1,
+    "durability": 59,
+    "attackDamage": 2.0,
+    "tool": "shovel",
+    "toolLevel": 1,
+    "toolSpeed": 2.0
+}

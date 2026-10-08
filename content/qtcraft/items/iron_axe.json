@@ -1,0 +1,10 @@
+{
+    "name": "iron_axe",
+    "texture": "iron_axe",
+    "maxStack": 1,
+    "durability": 250,
+    "attackDamage": 4.5,
+    "tool": "axe",
+    "toolLevel": 3,
+    "toolSpeed": 6.0
+}

@@ -1,0 +1,16 @@
+{
+    "name": "wooden_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "X": "oak_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "wooden_pickaxe"
+    }
+}

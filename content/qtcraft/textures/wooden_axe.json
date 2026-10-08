@@ -1,0 +1,8 @@
+{
+    "name": "wooden_axe",
+    "pattern": "axe",
+    "primary": "#a8844e",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 309
+}

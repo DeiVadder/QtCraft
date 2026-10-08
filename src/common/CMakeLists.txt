@@ -13,6 +13,7 @@ qt_add_library(qc_common STATIC
     QcDayCycle.h QcDayCycle.cpp
     QcContentParser.h QcContentParser.cpp
     QcContentRegistry.h QcContentRegistry.cpp
+    QcCrafting.h QcCrafting.cpp
     QcEntityMotion.h
     QcInProcessTransport.h QcInProcessTransport.cpp
     QcIntMath.h
@@ -27,6 +28,7 @@ qt_add_library(qc_common STATIC
     QcPlayerInput.h
     QcProtocol.h QcProtocol.cpp
     QcRaycast.h QcRaycast.cpp
+    QcRecipeDefinition.h QcRecipeDefinition.cpp
     QcResult.h
     QcStreamLimits.h
     QcTextureDefinition.h

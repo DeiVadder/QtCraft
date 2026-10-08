@@ -1,0 +1,16 @@
+{
+    "name": "diamond_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "X": "diamond",
+        "|": "stick"
+    },
+    "result": {
+        "item": "diamond_pickaxe"
+    }
+}

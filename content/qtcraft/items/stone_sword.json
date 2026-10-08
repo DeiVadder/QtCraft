@@ -1,0 +1,7 @@
+{
+    "name": "stone_sword",
+    "texture": "stone_sword",
+    "maxStack": 1,
+    "durability": 131,
+    "attackDamage": 5.0
+}

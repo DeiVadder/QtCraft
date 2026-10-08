@@ -4,6 +4,7 @@
 
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
 
@@ -210,7 +211,20 @@ QJsonObject QcControlInterface::inventoryJson() const
             stacks.append(entry);
         }
     }
-    return {{u"selectedSlot"_s, m_session->inventory().selectedHotbarSlot()}, {u"slots"_s, stacks}};
+    QJsonArray grid;
+    for (qsizetype i = 0; i < m_session->craftingGrid().size(); ++i) {
+        const QJsonValue stack = stackJson(m_session->craftingGrid()[i]);
+        if (!stack.isNull()) {
+            QJsonObject entry = stack.toObject();
+            entry.insert(u"slot"_s, int(36 + i));
+            grid.append(entry);
+        }
+    }
+    return {{u"selectedSlot"_s, m_session->inventory().selectedHotbarSlot()},
+            {u"slots"_s, stacks},
+            {u"craftingSize"_s, m_session->craftingSize()},
+            {u"craftingGrid"_s, grid},
+            {u"craftingResult"_s, stackJson(m_session->craftingResult())}};
 }
 
 QcBlockPos QcControlInterface::blockArgument(const QJsonObject &request)
@@ -268,7 +282,7 @@ void QcControlInterface::start(const QJsonObject &request)
     }
     m_chatLog.clear();
     for (const char *key :
-         {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls", "slot", "from", "to", "maxTicks", "entity"}) {
+         {"yaw", "pitch", "forward", "strafe", "ticks", "radius", "x", "y", "z", "timeoutPolls", "slot", "from", "to", "maxTicks", "entity", "count"}) {
         const QJsonValue value = request.value(QLatin1StringView(key));
         if (!value.isUndefined() && !value.isDouble()) {
             fail(request, u"'%1' must be a number"_s.arg(QLatin1StringView(key)));
@@ -400,7 +414,8 @@ void QcControlInterface::start(const QJsonObject &request)
                                                                                        : QcPhysics::playerHeight;
         lookAtPoint(it->position + QcVec3{0.0, height * 0.5, 0.0});
         bool sent = false;
-        m_active = ActiveCommand{request, timeoutPolls(4), [this, startTick, sent, wanted]() mutable {
+        const double healthBefore = it->health;
+        m_active = ActiveCommand{request, timeoutPolls(6), [this, startTick, sent, wanted, healthBefore]() mutable {
                                      if (!sent) {
                                          if (m_session->tickCount() <= startTick) {
                                              return false;
@@ -413,7 +428,15 @@ void QcControlInterface::start(const QJsonObject &request)
                                          sent = true;
                                          return false;
                                      }
-                                     return m_session->tickCount() >= startTick + 3;
+                                     if (m_session->tickCount() < startTick + 4) {
+                                         return false;
+                                     }
+                                     // The server drops hits during the attack cooldown or out of its reach.
+                                     const auto target = m_session->entities().constFind(quint32(wanted));
+                                     if (target != m_session->entities().constEnd() && target->health >= healthBefore) {
+                                         m_activeError = u"The hit did not land (attack cooldown or out of reach)"_s;
+                                     }
+                                     return true;
                                  }};
     } else if (command == u"respawn"_s) {
         m_session->respawn();
@@ -424,7 +447,41 @@ void QcControlInterface::start(const QJsonObject &request)
     } else if (command == u"inventory"_s) {
         finish(request, inventoryJson());
     } else if (command == u"moveItem"_s) {
-        m_session->moveInventoryItem(intField(request, u"from"_s, 0), intField(request, u"to"_s, 0));
+        m_session->moveInventoryItem(intField(request, u"from"_s, 0), intField(request, u"to"_s, 0),
+                                     std::max(0, intField(request, u"count"_s, 0)));
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"closeCrafting"_s) {
+        // Returns the grid to the inventory and leaves a crafting table's 3 x 3 grid.
+        m_session->closeCrafting();
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"recipes"_s) {
+        // Every recipe with what it needs and how often the inventory could make it right now.
+        const auto content = m_session->content();
+        QJsonArray list;
+        for (const QcRecipeDefinition &recipe : content ? content->recipes() : QList<QcRecipeDefinition>()) {
+            int possible = 64;
+            QJsonObject needs;
+            const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
+            for (const auto &[name, count] : std::as_const(needed)) {
+                needs.insert(name, count);
+                const std::optional<QcItemId> item = content->itemId(name);
+                possible = std::min(possible, item ? m_session->inventory().countOf(*item) / count : 0);
+            }
+            if (request.value(u"all"_s).toBool(false) || possible > 0) {
+                list.append(QJsonObject{{u"recipe"_s, recipe.name},
+                                        {u"result"_s, recipe.resultItem},
+                                        {u"count"_s, recipe.resultCount},
+                                        {u"needs"_s, needs},
+                                        {u"needsCraftingTable"_s, QcCrafting::gridSizeNeeded(recipe) > 2},
+                                        {u"possible"_s, possible}});
+            }
+        }
+        finish(request, {{u"recipes"_s, list}});
+    } else if (command == u"craft"_s) {
+        m_session->craftRecipe(request.value(u"recipe"_s).toString(), std::clamp(intField(request, u"count"_s, 1), 1, 64));
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"takeResult"_s) {
+        m_session->takeCraftingResult();
         m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
     } else if (command == u"chat"_s) {
         m_chatLog.clear();

@@ -1,0 +1,10 @@
+{
+    "name": "stone_shovel",
+    "texture": "stone_shovel",
+    "maxStack": 1,
+    "durability": 131,
+    "attackDamage": 2.5,
+    "tool": "shovel",
+    "toolLevel": 2,
+    "toolSpeed": 4.0
+}

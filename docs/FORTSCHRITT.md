@@ -4,10 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 5 – Gegner und Gesundheit (Abschlussprüfung)
-- **Branch:** `feature/05-mobs`
-- **Nächster Schritt:** Unabhängige Verifikation der Etappe 5, danach Squash-Merge und Etappe 6 (`feature/06-crafting`: Werkzeuge, Rezepte geformt/formlos aus Daten, Crafting-UI, Werkzeugwirkung).
-- **Offene Befunde:** keine (Befunde aus Etappe 4 eingearbeitet).
+- **Aktuelle Etappe:** 6 – Crafting und Items (Nachbesserung nach erster Verifikation); Etappe 7 begonnen
+- **Branches:** `feature/06-crafting` (auf `dev` 3cf9bcb), `feature/07-modding` (WIP, auf Etappe 6 aufgesetzt)
+- **Nächster Schritt:** Etappe 6 erneut verifizieren lassen, dann Squash-Merge; danach `feature/07-modding` auf `dev` rebasen und Etappe 7 abschließen (Override-Test für Basisblöcke schlägt noch fehl, Doku `docs/Modding.md` und `docs/Mod-Sicherheit.md` fehlen).
+- **Offene Befunde:** Etappe 5: keine Mob-Mob-Kollision (bewusst offen); `EntityMoves` sendet alle sichtbaren Mobs jedes Tick.
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
 
@@ -25,8 +25,8 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | 2 | Durchstich Client/Server | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS (zwei offene Befunde S1/S2) |
 | 3 | Weltgenerierung | erledigt | 2026-10-07 | Verifikation PASS, Befunde nach Etappe 4 übernommen |
 | 4 | Interaktion und Persistenz | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS |
-| 5 | Gegner und Gesundheit | in Arbeit | | |
-| 6 | Crafting und Items | offen | | |
+| 5 | Gegner und Gesundheit | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
+| 6 | Crafting und Items | in Verifikation | | erste Verifikation FAIL (Rasterinhalt ging bei Disconnect verloren), nachgebessert |
 | 7 | Modding | offen | | |
 | 8 | Politur und Abschluss | offen | | |
 
@@ -39,3 +39,5 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 - Keine Sichtlinien-Prüfung beim Abbauen/Setzen/Angreifen; keine Ratenbegrenzung für UseItem/Chat.
 - Mobs: einfache Wegfindung (direkt auf den Spieler zu, Sprung über Stufen); sie meiden keine Abgründe oder Wasser. Licht auf Mobs grob angenähert.
 - Spawn kann auf Baumkronen liegen (höchster Nicht-Luft-Block der Säule).
+- Kein Ofen: Barren per Rezept aus Erz und Kohle (E-024).
+- Kein Mob-Mob-Ausweichen; gerufene Mobs können ineinander stehen.

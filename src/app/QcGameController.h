@@ -51,6 +51,8 @@ class QcGameController : public QObject
     Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
+    Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
+    Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = 8;
@@ -95,7 +97,12 @@ public:
     Q_INVOKABLE void deleteWorld(const QString &folder);
     Q_INVOKABLE void saveWorld();
     Q_INVOKABLE void selectHotbarSlot(int slot);
-    Q_INVOKABLE void moveItem(int from, int to);
+    // Slots as in QcInventoryModel; count 0 moves the whole stack.
+    Q_INVOKABLE void moveItem(int from, int to, int count = 0);
+    Q_INVOKABLE void takeCraftingResult();
+    Q_INVOKABLE void craftRecipe(const QString &recipe);
+    int craftingSize() const { return m_session ? m_session->craftingSize() : 2; }
+    QVariantList craftableRecipes() const { return m_craftableRecipes; }
     Q_INVOKABLE void sendChat(const QString &text);
     Q_INVOKABLE void respawn();
     double health() const { return m_session ? m_session->health() : 0.0; }
@@ -130,6 +137,7 @@ signals:
     void overlayChanged();
     void worldsChanged();
     void healthChanged();
+    void craftingChanged();
 
 private:
     void setPhase(const QString &phase, const QString &status = {});
@@ -144,6 +152,7 @@ private:
     void updateIcons(const QcTextureAtlas &atlas);
     void updateEntities(double alpha);
     void updateSky(double alpha);
+    void updateInventory();
 
     QPointer<QcWorldView> m_view;
     QPointer<QQuickWindow> m_window;
@@ -179,6 +188,7 @@ private:
     QString m_worldDirectory;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     QString m_timeOfDay;
+    QVariantList m_craftableRecipes;
     QStringList m_startupChat;
     QString m_startupOverlay;
     QPointer<QcScreenshotHook> m_screenshotHook;

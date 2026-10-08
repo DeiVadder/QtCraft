@@ -1,0 +1,16 @@
+{
+    "name": "wooden_sword",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "X",
+        "|"
+    ],
+    "key": {
+        "X": "oak_planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "wooden_sword"
+    }
+}

@@ -29,7 +29,7 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 7). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 8). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -44,9 +44,13 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `Disconnect` | both | reason |
 | `StartMining`, `CancelMining`, `FinishMining` | C→S | block position |
 | `UseItem` | C→S | clicked block and face |
-| `SelectHotbarSlot`, `MoveInventoryItem` | C→S | slot numbers |
+| `SelectHotbarSlot`, `MoveInventoryItem` | C→S | slot numbers (36–44: crafting grid), count |
 | `ChatInput` / `ChatMessage` | C→S / S→C | text |
-| `InventoryState` | S→C | all 36 stacks, selected slot |
+| `InventoryState` | S→C | all 36 stacks, selected slot, crafting grid, grid size, result |
+| `OpenCrafting` | S→C | grid size (3 at a crafting table) |
+| `TakeCraftingResult`, `CloseCrafting` | C→S | – |
+| `CraftRecipe` | C→S | recipe name, count (recipe book) |
+| `ConsumeItem` | C→S | – (eat the held item) |
 | `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m |
 | `PlayerHealth` | S→C | health, maximum, dead |
 | `WorldTime` | S→C | seconds, day length |
@@ -81,11 +85,19 @@ The client sends intentions; the server decides (`QcServer`):
 - **Mining:** `StartMining`/`CancelMining`/`FinishMining`. The server checks reach (5 m + 1 m slack), the target and the elapsed ticks against `QcMining::breakSeconds` (hardness × 1.5 s, divided by the tool speed with the right tool; × 5 s without a required tool, which also gives no drops). Drops go straight into the inventory; tools lose durability.
 - **Placing:** `UseItem` on a block face places the held item's block into the neighbouring cell if it is replaceable, within reach and not inside a player.
 - **Inventory:** 36 slots (9 hotbar). The server sends the full `InventoryState` after every change; `MoveInventoryItem` merges or swaps stacks.
-- **Chat and commands:** `ChatInput`/`ChatMessage`; commands `/help`, `/give <item> [count]`, `/save`.
+- **Chat and commands:** `ChatInput`/`ChatMessage`; commands `/help`, `/give <item> [count]`, `/save`, and from stage 5 `/time`, `/summon`, `/kill`, `/heal` (all but `/help` and `/save` need `allowCheats`, E-021).
+- **Eating:** `ConsumeItem` eats one of the held item if it has `food` and the player is hurt.
 
-Every visible, non-liquid block automatically gets an item of the same name that places it (`QcContentRegistry::createBlockItems`); `items/*.json` defines further items (`name`, `translation`, `texture`, `maxStack`, `places`, `tool`, `toolLevel`, `toolSpeed`, `durability`, `attackDamage`).
+Every visible, non-liquid block automatically gets an item of the same name that places it (`QcContentRegistry::createBlockItems`); `items/*.json` defines further items (`name`, `translation`, `texture`, `maxStack`, `places`, `tool`, `toolLevel`, `toolSpeed`, `durability`, `attackDamage`, `food`).
 
-UI controls: left mouse / F mines, right mouse / R places, 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
+UI controls: left mouse mines or attacks, F mines, right mouse / R places or eats, 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
+
+## Crafting
+
+- **Recipes** come from `recipes/*.json`: `name`, `type` (`shaped`, the default, or `shapeless`), for shaped recipes `pattern` (up to 3 strings of up to 3 characters, space = empty) and `key` (one character → item), for shapeless ones `ingredients` (1–9 item names), and `result` (`item`, `count`). Patterns are trimmed to their bounding box when parsed. `QcCrafting` (shared by server and client) matches a square grid against all recipes: shaped recipes at any offset and mirrored horizontally, shapeless ones as a multiset. A recipe needs a 3 × 3 grid if its shape or ingredient count does not fit 2 × 2.
+- **Grid:** the inventory screen has a 2 × 2 grid; using a block with `"crafting": true` (crafting table) opens 3 × 3 as long as the player stays within 5 m. Grid cells are slots 36–44 (three per row) and live on the server; `MoveInventoryItem` moves, splits and merges between inventory and grid. `TakeCraftingResult` consumes one item per used cell and adds the result if it fits. `CloseCrafting` puts the grid back into the inventory (what does not fit is lost, E-019).
+- **Recipe book:** `CraftRecipe` crafts directly from the inventory, round by round, each round all-or-nothing on a copy of the inventory. 3 × 3 recipes need a crafting table within 5 m. The inventory screen lists the recipes that can be made now; the control interface offers `recipes` and `craft`.
+- **Base recipes:** planks from each log, sticks, crafting table, wooden/stone/iron/diamond pickaxe, axe, shovel and sword, glass, bricks, sandstone, and iron/gold ingots from ore plus coal (E-024).
 
 ## Creatures, health and time
 

@@ -1,0 +1,10 @@
+{
+    "name": "stone_pickaxe",
+    "texture": "stone_pickaxe",
+    "maxStack": 1,
+    "durability": 131,
+    "attackDamage": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "toolSpeed": 4.0
+}

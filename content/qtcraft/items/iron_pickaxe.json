@@ -1,0 +1,10 @@
+{
+    "name": "iron_pickaxe",
+    "texture": "iron_pickaxe",
+    "maxStack": 1,
+    "durability": 250,
+    "attackDamage": 3.5,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "toolSpeed": 6.0
+}

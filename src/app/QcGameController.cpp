@@ -11,6 +11,7 @@
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldView.h"
+#include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcEntityMesher.h"
 #include "QcItemIconProvider.h"
@@ -231,11 +232,57 @@ void QcGameController::selectHotbarSlot(int slot)
     }
 }
 
-void QcGameController::moveItem(int from, int to)
+void QcGameController::moveItem(int from, int to, int count)
 {
     if (m_session) {
-        m_session->moveInventoryItem(from, to);
+        m_session->moveInventoryItem(from, to, count);
     }
+}
+
+void QcGameController::takeCraftingResult()
+{
+    if (m_session) {
+        m_session->takeCraftingResult();
+    }
+}
+
+void QcGameController::craftRecipe(const QString &recipe)
+{
+    if (m_session) {
+        m_session->craftRecipe(recipe);
+    }
+}
+
+void QcGameController::updateInventory()
+{
+    m_inventory->setInventory(m_session->inventory(), m_session->craftingGrid(), m_session->craftingResult());
+    // Recipes the inventory can make right now, for the recipe list next to the grid.
+    m_craftableRecipes.clear();
+    const auto content = m_session->content();
+    if (content) {
+        for (const QcRecipeDefinition &recipe : content->recipes()) {
+            if (QcCrafting::gridSizeNeeded(recipe) > m_session->craftingSize()) {
+                continue;
+            }
+            int possible = 64;
+            const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
+            for (const auto &[name, count] : std::as_const(needed)) {
+                const std::optional<QcItemId> item = content->itemId(name);
+                possible = std::min(possible, item ? m_session->inventory().countOf(*item) / count : 0);
+            }
+            const std::optional<QcItemId> result = content->itemId(recipe.resultItem);
+            if (possible <= 0 || !result) {
+                continue;
+            }
+            const QcItemDefinition &definition = content->item(*result);
+            m_craftableRecipes.append(QVariantMap{{u"recipe"_s, recipe.name},
+                                                  {u"label"_s, content->translate(definition.translationKey, m_language)},
+                                                  {u"icon"_s, QString(u"image://items/"_s + definition.name)},
+                                                  {u"count"_s, recipe.resultCount},
+                                                  {u"possible"_s, possible}});
+        }
+    }
+    emit craftingChanged();
 }
 
 void QcGameController::respawn()
@@ -261,6 +308,10 @@ void QcGameController::setOverlay(const QString &overlay)
     m_keysDown.clear();
     if (m_session) {
         m_session->setMining(false);
+        // Leaving the inventory hands back the grid contents (and closes a crafting table).
+        if (m_overlay != u"inventory"_s) {
+            m_session->closeCrafting();
+        }
     }
     if (!overlay.isEmpty()) {
         releaseMouse();
@@ -322,11 +373,15 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     connect(m_session, &QcClientSession::chunkUnloaded, m_meshes, &QcMeshScheduler::chunkUnloaded);
     connect(m_session, &QcClientSession::blockChanged, m_meshes, &QcMeshScheduler::blockChanged);
     connect(m_session, &QcClientSession::ticked, this, [this] { m_sinceTick.restart(); });
-    connect(m_session, &QcClientSession::inventoryChanged, this, [this] { m_inventory->setInventory(m_session->inventory()); });
+    connect(m_session, &QcClientSession::inventoryChanged, this, &QcGameController::updateInventory);
+    connect(m_session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
     connect(m_session, &QcClientSession::healthChanged, this, [this] {
         if (m_session->isDead()) {
             setOverlay({});
             releaseMouse();
+            // Releases on the death screen go to QML; forget held keys so nothing sticks after respawn.
+            m_keysDown.clear();
+            m_session->setMining(false);
         }
         emit healthChanged();
     });
@@ -385,7 +440,7 @@ void QcGameController::onContentReady()
     m_atlas = std::make_shared<const QcTextureAtlas>(atlas);
     updateIcons(atlas);
     m_inventory->setContent(m_session->content(), m_language);
-    m_inventory->setInventory(m_session->inventory());
+    updateInventory();
     m_meshes->setRenderTable(m_renderTable);
     if (m_view) {
         m_view->setAtlas(atlas.image());

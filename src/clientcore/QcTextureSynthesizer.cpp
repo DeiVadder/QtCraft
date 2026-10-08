@@ -133,6 +133,52 @@ void paint(QImage &image, const QcTextureSpec &spec)
                 }
                 break;
             }
+            case QcTextureSpec::Pattern::Pickaxe:
+            case QcTextureSpec::Pattern::Axe:
+            case QcTextureSpec::Pattern::Shovel:
+            case QcTextureSpec::Pattern::Sword:
+            case QcTextureSpec::Pattern::Stick: {
+                // Diagonal handle from the bottom left; the head shape depends on the tool.
+                const bool handle = x + y == size - 1 && x <= 9 && x >= 2;
+                bool head = false;
+                switch (spec.pattern) {
+                case QcTextureSpec::Pattern::Pickaxe:
+                    head = (y >= 1 && y <= 2 && x >= 5 && x <= 14) || (x >= 13 && x <= 14 && y <= 10 && y >= 1)
+                           || (y >= 1 && y <= 3 && x >= 4 && x <= 5);
+                    break;
+                case QcTextureSpec::Pattern::Axe:
+                    head = x >= 8 && x <= 13 && y >= 1 && y <= 7 && !(x <= 9 && y >= 5);
+                    break;
+                case QcTextureSpec::Pattern::Shovel:
+                    head = x >= 10 && x <= 14 && y >= 1 && y <= 5 && x + y >= 12 && x + y <= 18;
+                    break;
+                case QcTextureSpec::Pattern::Sword:
+                    head = (x + y == size - 1 || x + y == size) && x >= 6 && x <= 14;
+                    break;
+                default:
+                    break;
+                }
+                const bool swordHandle = spec.pattern == QcTextureSpec::Pattern::Sword && x + y == size - 1 && x < 6 && x >= 1;
+                if (head) {
+                    color = varied(spec, spec.primary, x, y);
+                } else if (handle || swordHandle || (spec.pattern == QcTextureSpec::Pattern::Stick && x + y == size - 1 && x >= 3 && x <= 12)) {
+                    color = varied(spec, spec.secondary, x, y, 5);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Ingot: {
+                const bool body = y >= 6 && y <= 10 && x >= 2 + (10 - y) / 2 && x <= 13 - (10 - y) / 2;
+                color = body ? (y == 6 ? scaled(spec.primary, 1.25) : varied(spec, spec.primary, x, y)) : QColor(0, 0, 0, 0);
+                break;
+            }
+            case QcTextureSpec::Pattern::Gem: {
+                const int distance = std::abs(x - 7) + std::abs(y - 8);
+                color = distance <= 6 ? (distance <= 2 ? scaled(spec.primary, 1.3) : varied(spec, spec.primary, x, y))
+                                      : QColor(0, 0, 0, 0);
+                break;
+            }
             case QcTextureSpec::Pattern::Lump: {
                 const double dx = x - 7.5;
                 const double dy = y - 7.5;

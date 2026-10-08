@@ -3,6 +3,7 @@
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
 #include "QcMobDefinition.h"
+#include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
@@ -18,6 +19,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
 QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);

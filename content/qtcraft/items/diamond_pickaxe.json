@@ -1,0 +1,10 @@
+{
+    "name": "diamond_pickaxe",
+    "texture": "diamond_pickaxe",
+    "maxStack": 1,
+    "durability": 1561,
+    "attackDamage": 4.0,
+    "tool": "pickaxe",
+    "toolLevel": 4,
+    "toolSpeed": 8.0
+}

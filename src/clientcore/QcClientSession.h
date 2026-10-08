@@ -73,7 +73,14 @@ public:
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();
     void selectHotbarSlot(int slot);
-    void moveInventoryItem(int from, int to);
+    // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
+    void moveInventoryItem(int from, int to, int count = 0);
+    void takeCraftingResult();
+    void craftRecipe(const QString &recipe, int count = 1);
+    void closeCrafting();
+    const QList<QcItemStack> &craftingGrid() const { return m_craftingGrid; }
+    int craftingSize() const { return m_craftingSize; }
+    QcItemStack craftingResult() const { return m_craftingResult; }
     void sendChat(const QString &text);
     const QcInventory &inventory() const { return m_inventory; }
 
@@ -103,6 +110,8 @@ signals:
     void disconnected(const QString &reason);
     void inventoryChanged();
     void healthChanged();
+    // The server opened a crafting table's grid.
+    void craftingOpened(int size);
     void chatReceived(const QString &text);
 
 private:
@@ -134,6 +143,9 @@ private:
     quint32 m_lastAcknowledged = 0;
 
     QcInventory m_inventory;
+    QList<QcItemStack> m_craftingGrid = QList<QcItemStack>(9);
+    int m_craftingSize = 2;
+    QcItemStack m_craftingResult;
     std::optional<QcRaycastHit> m_target;
     bool m_miningRequested = false;
     std::optional<QcBlockPos> m_miningPos;
