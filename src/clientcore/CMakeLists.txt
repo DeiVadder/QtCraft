@@ -19,6 +19,7 @@ qt_add_library(qc_clientcore STATIC
     QcMusicComposer.h QcMusicComposer.cpp
     QcControlInterface.h QcControlInterface.cpp
     QcMeshScheduler.h QcMeshScheduler.cpp
+    QcMouseLook.h QcMouseLook.cpp
     QcSampleBuffer.h
     QcSectionKey.h
     QcSoundBank.h QcSoundBank.cpp

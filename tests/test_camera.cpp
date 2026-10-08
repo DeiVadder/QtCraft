@@ -1,4 +1,5 @@
 #include "QcCamera.h"
+#include "QcMouseLook.h"
 
 #include <QTest>
 
@@ -63,6 +64,25 @@ private slots:
         // OpenGL-style projection: near maps to -1, far to +1 (QRhi corrects per backend).
         QVERIFY(qAbs(nearPoint.z() + 1.0f) < 1e-4f);
         QVERIFY(qAbs(farPoint.z() - 1.0f) < 1e-4f);
+    }
+
+    void mouseMotionTurnsTheView()
+    {
+        QcPlayerInput start;
+        start.yaw = 350.0f;
+        start.pitch = 10.0f;
+        // 40 points right and 20 points down at 0.25 degrees per point: +10 yaw (wrapping), -5 pitch.
+        const QcPlayerInput turned = QcMouseLook::apply(start, {40.0, 20.0}, 0.25, false);
+        QCOMPARE(turned.yaw, 0.0f);
+        QCOMPARE(turned.pitch, 5.0f);
+        QCOMPARE(QcMouseLook::apply(start, {0.0, 20.0}, 0.25, true).pitch, 15.0f);
+        // Left past zero wraps to the top of the range; pitch stops short of straight up or down.
+        QCOMPARE(QcMouseLook::apply(start, {-1440.0, 0.0}, 0.25, false).yaw, 350.0f);
+        QCOMPARE(QcMouseLook::apply(start, {-200.0, 0.0}, 0.25, false).yaw, 300.0f);
+        QCOMPARE(QcMouseLook::apply(start, {0.0, -1000.0}, 0.25, false).pitch, 89.9f);
+        QCOMPARE(QcMouseLook::apply(start, {0.0, 1000.0}, 0.25, false).pitch, -89.9f);
+        // Broken input leaves the view alone.
+        QCOMPARE(QcMouseLook::apply(start, {qQNaN(), 1.0}, 0.25, false).yaw, 350.0f);
     }
 };
 

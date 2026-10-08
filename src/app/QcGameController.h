@@ -7,6 +7,7 @@
 #include "QcEntityMesher.h"
 #include "QcInventoryModel.h"
 #include "QcPlayerInput.h"
+#include "QcRelativeMouse.h"
 #include "QcWorldView.h"
 
 #include <QElapsedTimer>
@@ -275,6 +276,7 @@ private:
     // Plays the click sound when the mouse is released over a button of the UI.
     void clickIfButton(QPointF scenePosition);
 
+    QcRelativeMouse m_relativeMouse;
     QPointer<QcWorldView> m_view;
     QPointer<QQuickWindow> m_window;
     QString m_phase = QStringLiteral("menu");

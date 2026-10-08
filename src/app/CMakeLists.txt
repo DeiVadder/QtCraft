@@ -6,7 +6,14 @@ qt_add_executable(qtcraft
     QcItemIconProvider.h QcItemIconProvider.cpp
     QcWorldRenderer.h QcWorldRenderer.cpp
     QcWorldView.h QcWorldView.cpp
+    QcRelativeMouse.h
 )
+if(APPLE)
+    target_sources(qtcraft PRIVATE QcRelativeMouse_mac.mm)
+    target_link_libraries(qtcraft PRIVATE "-framework AppKit" "-framework ApplicationServices")
+else()
+    target_sources(qtcraft PRIVATE QcRelativeMouse_other.cpp)
+endif()
 qc_configure_target(qtcraft)
 target_compile_definitions(qtcraft PRIVATE QTCRAFT_VERSION="${PROJECT_VERSION}")
 set_target_properties(qtcraft PROPERTIES

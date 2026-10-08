@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(QtCraft VERSION 0.1.0 DESCRIPTION "Voxel sandbox game built with Qt" LANGUAGES CXX)
+if(APPLE)
+    # The platform part of the mouse capture talks to AppKit.
+    enable_language(OBJCXX)
+endif()
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

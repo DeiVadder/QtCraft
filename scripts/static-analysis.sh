@@ -48,12 +48,23 @@ if [ "$FILE_COUNT" -eq 0 ]; then
     exit 2
 fi
 
+# Sources for other platforms (*_other.cpp, the counterpart of a *_mac.mm) are not built here.
+ANALYSED=""
 for file in $FILES; do
     if ! grep -qF "\"file\": \"$file\"" "$BUILD_DIR/compile_commands.json"; then
+        case "$file" in
+        *_other.cpp)
+            echo "skipped, not built on this platform: $file"
+            continue
+            ;;
+        esac
         echo "not in compile_commands.json (not built?): $file" >&2
         exit 2
     fi
+    ANALYSED="$ANALYSED $file"
 done
+FILES=$ANALYSED
+FILE_COUNT=$(printf '%s\n' $FILES | grep -c '\.cpp$')
 
 LOG_DIR=$(mktemp -d)
 status=0

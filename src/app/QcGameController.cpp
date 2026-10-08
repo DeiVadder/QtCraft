@@ -4,6 +4,7 @@
 #include "QcSoundKeys.h"
 
 #include "QcModLoader.h"
+#include "QcMouseLook.h"
 #include "QcBlockRenderTable.h"
 #include "QcClientSession.h"
 #include "QcLocalServerHost.h"
@@ -1161,6 +1162,7 @@ void QcGameController::captureMouse()
     m_mouseCaptured = true;
     m_window->setCursor(Qt::BlankCursor);
     QCursor::setPos(m_window->mapToGlobal(QPoint(m_window->width() / 2, m_window->height() / 2)));
+    m_relativeMouse.setCaptured(true);
     emit mouseCapturedChanged();
 }
 
@@ -1170,6 +1172,7 @@ void QcGameController::releaseMouse()
         return;
     }
     m_mouseCaptured = false;
+    m_relativeMouse.setCaptured(false);
     if (m_window) {
         m_window->unsetCursor();
     }
@@ -1271,16 +1274,15 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
         if (!m_mouseCaptured) {
             return false;
         }
+        // With platform deltas the view turns once per frame in onFrame().
+        if (QcRelativeMouse::hasPlatformDeltas()) {
+            return true;
+        }
         auto *mouse = static_cast<QMouseEvent *>(event);
         const QPointF centre(m_window->width() / 2.0, m_window->height() / 2.0);
         const QPointF delta = mouse->position() - centre;
         if (delta.manhattanLength() > 0.0) {
-            QcPlayerInput intent = m_session->intent();
-            const auto sensitivity = float(m_mouseSensitivity);
-            const float vertical = m_invertMouse ? -sensitivity : sensitivity;
-            intent.yaw = std::fmod(intent.yaw + float(delta.x()) * sensitivity, 360.0f);
-            intent.pitch = std::clamp(intent.pitch - float(delta.y()) * vertical, -89.9f, 89.9f);
-            m_session->setIntent(intent);
+            m_session->setIntent(QcMouseLook::apply(m_session->intent(), delta, m_mouseSensitivity, m_invertMouse));
             QCursor::setPos(m_window->mapToGlobal(centre.toPoint()));
         }
         return true;
@@ -1422,6 +1424,11 @@ void QcGameController::onFrame()
     }
     if (!m_session || !m_view || !m_session->world()) {
         return;
+    }
+    if (m_mouseCaptured && QcRelativeMouse::hasPlatformDeltas()) {
+        if (const QPointF delta = m_relativeMouse.takeDelta(); !delta.isNull()) {
+            m_session->setIntent(QcMouseLook::apply(m_session->intent(), delta, m_mouseSensitivity, m_invertMouse));
+        }
     }
     if (m_inputEnabled && m_phase == u"playing"_s) {
         updateIntentFromKeys(frameSeconds);
