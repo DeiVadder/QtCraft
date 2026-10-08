@@ -1,0 +1,20 @@
+{
+    "name": "spruce_sapling",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "sapling": {
+        "feature": "spruce_tree",
+        "minSeconds": 120,
+        "maxSeconds": 300,
+        "plantOn": [
+            "grass_block",
+            "dirt",
+            "snow_block"
+        ],
+        "plantChance": 0.75
+    },
+    "textures": {
+        "all": "spruce_sapling"
+    }
+}

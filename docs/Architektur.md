@@ -29,7 +29,7 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 9). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 10). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -51,16 +51,17 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `TakeCraftingResult`, `CloseCrafting` | C→S | – |
 | `CraftRecipe` | C→S | recipe name, count (recipe book) |
 | `ConsumeItem` | C→S | – (eat the held item) |
-| `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m |
+| `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m, dropped items within 32 m (`mobType` −2 with the item stack; sent again when the count changes, moves only when the item moved) |
 | `PlayerHealth` | S→C | health, maximum, dead |
 | `WorldTime` | S→C | seconds, day length |
 | `AttackEntity`, `Respawn` | C→S | target id / – |
+| `DropItem` | C→S | whole stack or one item of the selected slot |
 
 A network transport only has to implement `QcTransport` (whole frames in both directions, e.g. length-prefixed over TCP) and accept connections into `QcServer::addClient`; nothing else changes.
 
 ## Content
 
-Content packs are directories with `pack.json` (`id`, `name`, `version`, `dependencies`) and the folders `blocks/`, `textures/`, `lang/`. Names are `namespace:path`; unqualified names get the pack id as namespace. Block JSON fields: `name`, `translation`, `render` (`opaque`, `cutout`, `translucent`, `invisible`), `solid`, `opaque`, `liquid`, `replaceable`, `lightOpacity` (0–15), `hardness` (seconds by hand, negative = unbreakable), `tool`, `toolLevel`, `drops` (`[{item, count}]`), `textures` (`all`, `side`, `top`, `bottom`, or per face `east`/`west`/`south`/`north`). Procedural textures: `name`, `pattern` (`noise`, `speckle`, `planks`, `bricks`, `log_side`, `log_top`, `leaves`, `glass`, `grass_side`, `ore`, `water`, `tool`, `lump`), `primary`, `secondary` (`#RRGGBB[AA]`), `variation`, `seed`; PNG files in `textures/` are used as they are. `lang/<locale>.json` maps translation keys to text.
+Content packs are directories with `pack.json` (`id`, `name`, `version`, `dependencies`) and the folders `blocks/`, `textures/`, `lang/`. Names are `namespace:path`; unqualified names get the pack id as namespace. Block JSON fields: `name`, `translation`, `render` (`opaque`, `cutout`, `translucent`, `invisible`), `solid`, `opaque`, `liquid`, `replaceable`, `lightOpacity` (0–15), `hardness` (seconds by hand, negative = unbreakable), `tool`, `toolLevel`, `drops` (`[{item, count, chance}]`), `shape` (`cube`, `cross`), `sapling` (`feature`, `minSeconds`, `maxSeconds`, `plantOn`, `plantChance`), `textures` (`all`, `side`, `top`, `bottom`, or per face `east`/`west`/`south`/`north`). Procedural textures: `name`, `pattern` (`noise`, `speckle`, `planks`, `bricks`, `log_side`, `log_top`, `leaves`, `glass`, `grass_side`, `ore`, `water`, `tool`, `lump`, `pickaxe`, `axe`, `shovel`, `sword`, `stick`, `ingot`, `gem`, `sapling`), `primary`, `secondary` (`#RRGGBB[AA]`), `variation`, `seed`; PNG files in `textures/` are used as they are. `lang/<locale>.json` maps translation keys to text.
 
 World generation data (server only, not sent to clients): `biomes/*.json` (`name`, `temperature`, `humidity` in 0..1, `baseHeight`, `heightVariation`, `surface`, `subsurface`, `subsurfaceDepth`, `underwater`, `beach`, `frozenWater`, `snowLine`, `snow`, `features: [{feature, density}]`), `features/*.json` (`type` `tree`/`column`, `trunk`, `leaves`, `minHeight`, `maxHeight`, `shape` `round`/`cone`, `ground`), `ores/*.json` (`block`, `replaces`, `minY`, `maxY`, `veinsPerChunk`, `veinSize`), `worldgen/terrain.json` (`seaLevel`, `stone`, `water`, `bedrock`, `caves`, `caveTunnelWidth`, `caveCavernThreshold`). A later pack replaces entries with the same name.
 
@@ -74,32 +75,35 @@ A saved world is a directory below `<app data>/worlds/<folder>` (`QTCRAFT_DATA_D
 
 | File | Content |
 |------|---------|
-| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime`, `packs` (`id`, `name`, `version` of the base game and mods in use) |
+| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime`, `packs` (`id`, `name`, `version` of the base game and mods in use), `gameRules` (`keepInventory`) |
 | `regions/r.<rx>.<rz>.qcr` | Modified chunks of a 32 × 32 chunk region: block-name palette + chunks (palette sections, run-length indices) |
 | `players/<name>.qcp` | Position, velocity, view direction, health, selected slot, inventory (item names, counts, damage) |
+| `entities.qce` | Dropped items (name, count, damage, position, velocity, age, pickup delay; waiting drops included) and growing saplings (position, seconds left) |
 
 When a world is opened with a different set of packs than it was saved with, the server logs a warning per missing or changed pack (`QcServer::openWarnings()`); blocks of a missing mod load as air and its items are dropped from inventories.
 
-Binary files share a container: magic (`QCRG`/`QCPL`), format version, payload size, CRC-32, payload. Loading validates every part; a damaged file stops the world from opening with a message naming the file. Unknown block or item names (e.g. after removing a mod) become air or are dropped, with a warning. Only modified chunks are stored; they stay in memory while the world is open and their regions are rewritten (atomically via `QSaveFile`) on `/save`, every 60 s and when the server stops. Everything else is regenerated from the seed.
+Binary files share a container: magic (`QCRG`/`QCPL`/`QCEN`), format version, payload size, CRC-32, payload. Loading validates every part; a damaged file stops the world from opening with a message naming the file. Unknown block or item names (e.g. after removing a mod) become air or are dropped, with a warning. Only modified chunks are stored; they stay in memory while the world is open and their regions are rewritten (atomically via `QSaveFile`) on `/save`, every 60 s and when the server stops. Everything else is regenerated from the seed.
 
 ## Interaction
 
 The client sends intentions; the server decides (`QcServer`):
 
-- **Mining:** `StartMining`/`CancelMining`/`FinishMining`. The server checks reach (5 m + 1 m slack), the target and the elapsed ticks against `QcMining::breakSeconds` (hardness × 1.5 s, divided by the tool speed with the right tool; × 5 s without a required tool, which also gives no drops). Drops go straight into the inventory; tools lose durability.
-- **Placing:** `UseItem` on a block face places the held item's block into the neighbouring cell if it is replaceable, within reach and not inside a player.
+- **Mining:** `StartMining`/`CancelMining`/`FinishMining`. The server checks reach (5 m + 1 m slack), the target and the elapsed ticks against `QcMining::breakSeconds` (hardness × 1.5 s, divided by the tool speed with the right tool; × 5 s without a required tool, which also gives no drops). Drops (each with its `chance`) fall into the world as item entities (E-028); tools lose durability. Plants (cross-shaped blocks) on top of a broken block break with it.
+- **Placing:** `UseItem` on a block face places the held item's block into the neighbouring cell if it is replaceable, within reach and not inside a player. Saplings need one of their `plantOn` blocks below, other cross-shaped blocks a solid block.
+- **Dropped items** (`QcItemEntityManager`, E-028): physics through `QcPhysics::stepEntity` with weak air drag, floating in water, resting items skipped until their ground changes; merging of equal stacks within 1 m every 10 ticks; pickup when touching a living player after 0.5 s (thrown: 2 s), partial when the inventory is full; ageing only in loaded chunks, despawn after 300 s; at most 512 awake items (when a chunk loads with more, the youngest sleep in place: frozen, not sent, same id, woken oldest first), a bounded queue for further drops that appear only in loaded chunks, 4096 items in the world; stacks above `maxStack` are split; moves are sent once an item is 2 cm from its last sent position. `DropItem` (key Q, Ctrl+Q for the stack) throws items from the eyes along the view direction. On death without `keepInventory` (E-029) inventory and grid scatter as items.
+- **Plants** (`QcPlantManager`, E-030, E-031): leaves of tree features decay a few at a time once no trunk is within four blocks (checked after a trunk is removed); saplings grow into their feature after a random time while loaded, using the generator's tree shapes (`QcTreeShape`); a despawning sapling item plants itself with its `plantChance`.
 - **Inventory:** 36 slots (9 hotbar). The server sends the full `InventoryState` after every change; `MoveInventoryItem` merges or swaps stacks.
-- **Chat and commands:** `ChatInput`/`ChatMessage`; commands `/help`, `/give <item> [count]`, `/save`, and from stage 5 `/time`, `/summon`, `/kill`, `/heal` (all but `/help` and `/save` need `allowCheats`, E-021).
+- **Chat and commands:** `ChatInput`/`ChatMessage`; commands `/help`, `/give <item> [count]`, `/save`, and from stage 5 `/time`, `/summon`, `/kill`, `/heal`, from stage 9 `/gamerule keepInventory`, `/spawnitem`, `/setblock` (all but `/help`, `/save` and reading a game rule need `allowCheats`, E-021).
 - **Eating:** `ConsumeItem` eats one of the held item if it has `food` and the player is hurt.
 
 Every visible, non-liquid block automatically gets an item of the same name that places it (`QcContentRegistry::createBlockItems`); `items/*.json` defines further items (`name`, `translation`, `texture`, `maxStack`, `places`, `tool`, `toolLevel`, `toolSpeed`, `durability`, `attackDamage`, `food`).
 
-UI controls: left mouse mines or attacks, F mines, right mouse / R places or eats, 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
+UI controls: left mouse mines or attacks, F mines, right mouse / R places or eats, Q throws one item (Ctrl+Q the stack), 1–9 and the wheel select the hotbar slot, E opens the inventory, T or Enter the chat, Esc the pause menu (save, quit to menu).
 
 ## Crafting
 
 - **Recipes** come from `recipes/*.json`: `name`, `type` (`shaped`, the default, or `shapeless`), for shaped recipes `pattern` (up to 3 strings of up to 3 characters, space = empty) and `key` (one character → item), for shapeless ones `ingredients` (1–9 item names), and `result` (`item`, `count`). Patterns are trimmed to their bounding box when parsed. `QcCrafting` (shared by server and client) matches a square grid against all recipes: shaped recipes at any offset and mirrored horizontally, shapeless ones as a multiset. A recipe needs a 3 × 3 grid if its shape or ingredient count does not fit 2 × 2.
-- **Grid:** the inventory screen has a 2 × 2 grid; using a block with `"crafting": true` (crafting table) opens 3 × 3 as long as the player stays within 5 m. Grid cells are slots 36–44 (three per row) and live on the server; `MoveInventoryItem` moves, splits and merges between inventory and grid. `TakeCraftingResult` consumes one item per used cell and adds the result if it fits. `CloseCrafting` puts the grid back into the inventory (what does not fit is lost, E-019).
+- **Grid:** the inventory screen has a 2 × 2 grid; using a block with `"crafting": true` (crafting table) opens 3 × 3 as long as the player stays within 5 m. Grid cells are slots 36–44 (three per row) and live on the server; `MoveInventoryItem` moves, splits and merges between inventory and grid. `TakeCraftingResult` consumes one item per used cell and adds the result if it fits. `CloseCrafting` puts the grid back into the inventory; what does not fit is thrown on the ground (also when the player disconnects).
 - **Recipe book:** `CraftRecipe` crafts directly from the inventory, round by round, each round all-or-nothing on a copy of the inventory. 3 × 3 recipes need a crafting table within 5 m. The inventory screen lists the recipes that can be made now; the control interface offers `recipes` and `craft`.
 - **Base recipes:** planks from each log, sticks, crafting table, wooden/stone/iron/diamond pickaxe, axe, shovel and sword, glass, bricks, sandstone, and iron/gold ingots from ore plus coal (E-024).
 
@@ -107,10 +111,10 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places or eat
 
 - **Mobs** come from `mobs/*.json`: `name`, `translation`, `health`, `width`, `height`, `walkSpeed`, `chaseSpeed`, `hostile`, `attackDamage`, `attackRange`, `attackCooldown`, `sightRange`, `spawn` (`time` `day`/`night`/`any`, `blocks`, `maxGroup` 1–4, `weight`, `caves`; night creatures spawned in caves stay by day), `model` (boxes `from`/`to` in metres around the feet, facing north, with a `texture`) and `drops`. Base mobs: zombie (hostile, night and caves), slime (hostile, caves), pig (passive, day).
 - **Server** (`QcMobManager`): every second up to four spawn attempts per player in a ring of 20–48 m, on the surface (by time of day) or on cave floors at least 8 blocks below the surface; caps of 8 hostile and 6 passive mobs per player. Behaviour per tick: hostile mobs chase the nearest player in sight and strike in range with a cooldown; passive mobs wander and flee when hurt; jumping over one-block steps; swimming. Mobs despawn beyond 96 m, night mobs by day once nobody is near. Mobs are not saved.
-- **Combat:** `AttackEntity` (reach 4 m plus the target's size, 0.4 s cooldown, damage from the held item's `attackDamage`, 1 by hand), 0.5 s invulnerability after a hit, knock-back both ways. Loot goes into the killer's inventory.
-- **Health:** 20 points; fall damage of one point per metre beyond 3 m; regeneration of one point every 4 s; death shows a screen and waits for `Respawn` (back to the spawn point with full health, inventory kept). Health is saved with the player.
+- **Combat:** `AttackEntity` (reach 4 m plus the target's size, 0.4 s cooldown, damage from the held item's `attackDamage`, 1 by hand), 0.5 s invulnerability after a hit, knock-back both ways. Loot falls where the mob died.
+- **Health:** 20 points; fall damage of one point per metre beyond 3 m; regeneration of one point every 4 s; death shows a screen and waits for `Respawn` (back to the spawn point with full health; the inventory is kept or dropped depending on `keepInventory`). Health is saved with the player.
 - **Time:** a day lasts 600 s (`QcDayCycle`); the server keeps `worldTime` (saved in `world.json`) and sends `WorldTime` every second; the client advances it between updates and derives sky colour, fog and the daylight factor of the block shader.
-- **Client:** `QcClientSession` mirrors entities (`EntitySpawn`/`EntityMoves`/`EntityRemove`, interpolated between ticks) and finds the creature under the crosshair; `QcEntityMesher` turns the boxes into triangles every frame; the HUD shows hearts and the time of day.
+- **Client:** `QcClientSession` mirrors entities (`EntitySpawn`/`EntityMoves`/`EntityRemove`, interpolated between ticks) and finds the creature under the crosshair; `QcEntityMesher` turns the boxes into triangles every frame and draws dropped items as small spinning, bobbing cubes (cube blocks) or crossed sprites (other items), up to three copies for larger stacks; the HUD shows hearts and the time of day.
 
 ## World generation
 
@@ -118,7 +122,7 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places or eat
 
 ## Rendering
 
-`QcWorldView` is a `QQuickRhiItem`. GUI-thread setters (camera, atlas, mesh submissions) are copied to the render thread in `QcWorldRenderer::synchronize()`. Meshes are immutable `std::shared_ptr<const QcChunkMesh>` snapshots. Vertex format: position (world space, float), atlas UV, shade (face shading × ambient occlusion), sky light. Two pipelines: opaque with alpha test, translucent (blended, no depth write, sorted back to front per section). Shaders: `src/app/shaders/block.{vert,frag}` (GLSL 440, compiled for all RHI backends by `qt_add_shaders`).
+`QcWorldView` is a `QQuickRhiItem`. GUI-thread setters (camera, atlas, mesh submissions) are copied to the render thread in `QcWorldRenderer::synchronize()`. Meshes are immutable `std::shared_ptr<const QcChunkMesh>` snapshots. Vertex format: position (world space, float), atlas UV, shade (face shading × ambient occlusion), sky light. Cross-shaped blocks become two double-sided diagonal quads. Two pipelines: opaque with alpha test, translucent (blended, no depth write, sorted back to front per section). Shaders: `src/app/shaders/block.{vert,frag}` (GLSL 440, compiled for all RHI backends by `qt_add_shaders`).
 
 ## Build options and test hooks
 

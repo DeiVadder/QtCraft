@@ -11,6 +11,7 @@
 #include "QcServerClient.h"
 
 #include <QLoggingCategory>
+#include <QSet>
 #include <QtMath>
 
 #include <algorithm>
@@ -189,17 +190,7 @@ void QcServer::handleCraftRecipe(Client &client, const QcMsg::CraftRecipe &reque
 
 void QcServer::closeCrafting(Client &client)
 {
-    // Items left in the grid go back into the inventory; what does not fit is lost (E-019).
-    int lost = 0;
-    for (QcItemStack &cell : client.craftingGrid) {
-        if (!cell.isEmpty()) {
-            lost += client.inventory.add(cell.item, cell.count, *m_content);
-            cell = {};
-        }
-    }
-    if (lost > 0) {
-        client.connection->send(QcMsg::ChatMessage{u"Inventory full: %1 items from the crafting grid were lost"_s.arg(lost)});
-    }
+    returnCraftingGrid(client);
     client.craftingSize = 2;
     client.craftingTable.reset();
     sendInventory(client);
@@ -237,15 +228,8 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
         client.connection->send(QcMsg::BlockUpdate{pos, *block});
         return;
     }
-    setBlockAndBroadcast(pos, qcAirBlockId);
-    // Drops go straight into the inventory; what does not fit is lost.
-    if (QcMining::canHarvest(definition, held)) {
-        for (const QcItemDrop &drop : definition.drops) {
-            if (const std::optional<QcItemId> item = m_content->itemId(drop.item)) {
-                client.inventory.add(*item, drop.count, *m_content);
-            }
-        }
-    }
+    // Drops fall into the world as items (decision E-028).
+    breakBlock(pos, QcMining::canHarvest(definition, held));
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
         QcItemStack tool = client.inventory.slot(slot);
@@ -285,6 +269,15 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         reject();
         return;
     }
+    // Saplings need suitable ground, other cross-shaped plants a solid block below.
+    const QcBlockDefinition &placedDefinition = m_content->block(*placed);
+    const std::optional<QcBlockId> ground = m_world.blockAt(target.offset(0, -1, 0));
+    if ((placedDefinition.sapling.isSapling() && !m_plants.canPlant(*placed, ground))
+        || (placedDefinition.shape == QcBlockShape::Cross
+            && !(ground && m_content->isValidBlock(*ground) && m_content->block(*ground).solid))) {
+        reject();
+        return;
+    }
     if (m_content->block(*placed).solid) {
         const QcAabb blockBox{{double(target.x), double(target.y), double(target.z)},
                               {target.x + 1.0, target.y + 1.0, target.z + 1.0}};
@@ -297,8 +290,168 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         }
     }
     setBlockAndBroadcast(target, *placed);
+    if (placedDefinition.sapling.isSapling()) {
+        m_plants.saplingPlaced(target, *placed);
+    }
     client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     sendInventory(client);
+}
+
+void QcServer::breakBlock(QcBlockPos pos, bool drops)
+{
+    for (QcBlockPos current = pos;; current = current.offset(0, 1, 0)) {
+        const std::optional<QcBlockId> previous = m_world.blockAt(current);
+        if (!previous || *previous == qcAirBlockId) {
+            return;
+        }
+        const QcBlockDefinition &definition = m_content->block(*previous);
+        // Above the broken block only plants that lost their ground break as well.
+        if (current != pos && definition.shape != QcBlockShape::Cross) {
+            return;
+        }
+        setBlockAndBroadcast(current, qcAirBlockId);
+        if (m_world.blockAt(current) != qcAirBlockId) {
+            return;
+        }
+        if (drops || current != pos) {
+            dropBlockItems(definition, current);
+        }
+        m_plants.blockRemoved(current, *previous, m_world);
+    }
+}
+
+void QcServer::dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos)
+{
+    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+    for (const QcItemDrop &drop : definition.drops) {
+        if (drop.chance < 1.0 && m_random.generateDouble() >= drop.chance) {
+            continue;
+        }
+        if (const std::optional<QcItemId> item = m_content->itemId(drop.item)) {
+            m_items.spawnScattered({*item, drop.count, 0}, centre, m_nextEntityId++);
+        }
+    }
+}
+
+void QcServer::throwFromPlayer(const Client &client, QcItemStack stack)
+{
+    const double yaw = qDegreesToRadians(double(client.yaw));
+    const double pitch = qDegreesToRadians(double(client.pitch));
+    const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
+    QcItemEntityManager::Drop drop;
+    drop.stack = stack;
+    drop.position = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight - 0.3, 0.0};
+    drop.velocity = direction * throwSpeed + QcVec3{0.0, 2.0, 0.0};
+    drop.pickupDelay = QcItemEntityManager::thrownPickupDelay;
+    m_items.spawn(drop, m_nextEntityId++);
+}
+
+void QcServer::handleDropItem(Client &client, QcMsg::DropItem message)
+{
+    const int slot = client.inventory.selectedHotbarSlot();
+    const QcItemStack stack = client.inventory.slot(slot);
+    if (client.dead || stack.isEmpty()) {
+        return;
+    }
+    const int removed = client.inventory.removeFromSlot(slot, message.wholeStack ? stack.count : 1);
+    throwFromPlayer(client, {stack.item, removed, stack.damage});
+    client.miningPos.reset();
+    sendInventory(client);
+}
+
+void QcServer::returnCraftingGrid(Client &client)
+{
+    for (QcItemStack &cell : client.craftingGrid) {
+        if (!cell.isEmpty()) {
+            const int left = client.inventory.add(cell.item, cell.count, *m_content, cell.damage);
+            if (left > 0) {
+                throwFromPlayer(client, {cell.item, left, cell.damage});
+            }
+            cell = {};
+        }
+    }
+}
+
+void QcServer::dropInventory(Client &client)
+{
+    const QcVec3 position = client.motion.position + QcVec3{0.0, 1.0, 0.0};
+    QList<QcItemStack> stacks = client.inventory.allSlots();
+    stacks.append(client.craftingGrid);
+    for (const QcItemStack &stack : std::as_const(stacks)) {
+        if (!stack.isEmpty()) {
+            m_items.spawnScattered(stack, position, m_nextEntityId++);
+        }
+    }
+    const int selected = client.inventory.selectedHotbarSlot();
+    client.inventory = {};
+    client.inventory.setSelectedHotbarSlot(selected);
+    client.craftingGrid = QList<QcItemStack>(9);
+    sendInventory(client);
+}
+
+bool QcServer::isLoadedAt(QcBlockPos pos) const
+{
+    return m_world.chunk(pos.chunk()) != nullptr;
+}
+
+void QcServer::tryPlant(const QcItemEntityManager::Item &item)
+{
+    const QcItemDefinition &definition = m_content->item(item.stack.item);
+    const std::optional<QcBlockId> sapling = m_content->blockId(definition.placesBlock);
+    if (!sapling || !m_content->block(*sapling).sapling.isSapling()
+        || m_random.generateDouble() >= m_content->block(*sapling).sapling.plantChance) {
+        return;
+    }
+    const QcBlockPos pos = QcPhysics::blockContaining(item.motion.position + QcVec3{0.0, 0.05, 0.0});
+    const std::optional<QcBlockId> existing = m_world.blockAt(pos);
+    if (!existing || !pos.isInsideWorldHeight() || !m_content->block(*existing).replaceable || m_content->block(*existing).liquid
+        || !m_plants.canPlant(*sapling, m_world.blockAt(pos.offset(0, -1, 0)))) {
+        return;
+    }
+    setBlockAndBroadcast(pos, *sapling);
+    if (m_world.blockAt(pos) == *sapling) {
+        m_plants.saplingPlaced(pos, *sapling);
+    }
+}
+
+void QcServer::tickItemsAndPlants()
+{
+    const double dt = QcPhysics::tickDuration;
+    QList<QcItemEntityManager::PlayerView> players;
+    for (const auto &client : m_clients) {
+        if (client->state == Client::State::Playing) {
+            players.append({client->entityId, client->motion.position, !client->dead});
+        }
+    }
+    QSet<Client *> changed;
+    const auto give = [this, &changed](quint32 entityId, QcItemStack stack) {
+        for (const auto &client : m_clients) {
+            if (client->entityId == entityId && client->state == Client::State::Playing) {
+                const int left = client->inventory.add(stack.item, stack.count, *m_content, stack.damage);
+                if (left < stack.count) {
+                    changed.insert(client.get());
+                }
+                return left;
+            }
+        }
+        return stack.count;
+    };
+    const QList<QcItemEntityManager::Item> despawned = m_items.tick(
+        m_world, players, dt, [this](const QcVec3 &position) { return isLoadedAt(QcPhysics::blockContaining(position)); }, give,
+        [this] { return m_nextEntityId++; });
+    for (Client *client : std::as_const(changed)) {
+        sendInventory(*client);
+    }
+    for (const QcItemEntityManager::Item &item : despawned) {
+        tryPlant(item);
+    }
+    m_plants.tick(
+        m_world, dt, [this](QcBlockPos pos) { return isLoadedAt(pos); },
+        [this](QcBlockPos pos, QcBlockId block) {
+            setBlockAndBroadcast(pos, block);
+            return m_world.blockAt(pos) == block;
+        },
+        [this](QcBlockPos pos) { breakBlock(pos, true); });
 }
 
 void QcServer::handleChat(Client &client, const QString &text)
@@ -319,10 +472,22 @@ void QcServer::handleChat(Client &client, const QString &text)
     const QString command = words.first().mid(1).toLower();
     if (command == u"help"_s) {
         reply(u"Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
-              u"/summon <mob> [count], /kill, /heal"_s);
+              u"/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
+              u"/setblock <x> <y> <z> <block> (~ for relative coordinates)"_s);
+    } else if (command == u"gamerule"_s && words.size() >= 2 && words[1] == u"keepInventory"_s) {
+        if (words.size() == 2) {
+            reply(u"keepInventory is %1"_s.arg(m_info.keepInventory ? u"true"_s : u"false"_s));
+        } else if (!m_config.allowCheats) {
+            reply(u"Cheats are disabled on this server"_s);
+        } else if (words[2] == u"true"_s || words[2] == u"false"_s) {
+            m_info.keepInventory = words[2] == u"true"_s;
+            reply(u"keepInventory is now %1"_s.arg(words[2]));
+        } else {
+            reply(u"Usage: /gamerule keepInventory [true|false]"_s);
+        }
     } else if (!m_config.allowCheats
                && (command == u"give"_s || command == u"time"_s || command == u"summon"_s || command == u"heal"_s
-                   || command == u"kill"_s)) {
+                   || command == u"kill"_s || command == u"spawnitem"_s || command == u"setblock"_s)) {
         reply(u"Cheats are disabled on this server"_s);
     } else if (command == u"time"_s && words.size() >= 3) {
         bool ok = true;
@@ -366,6 +531,48 @@ void QcServer::handleChat(Client &client, const QString &text)
             m_mobs.spawn(*type, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8}, m_nextEntityId++);
         }
         reply(u"Summoned %1 x %2"_s.arg(count).arg(name));
+    } else if (command == u"spawnitem"_s && words.size() >= 2) {
+        const QString name = words[1].contains(u':') ? words[1] : u"qtcraft:"_s + words[1];
+        const std::optional<QcItemId> item = m_content->itemId(name);
+        bool countOk = true;
+        const int count = words.size() >= 3 ? words[2].toInt(&countOk) : 1;
+        if (!item || !countOk || count < 1 || count > 64) {
+            reply(u"Unknown item or invalid count: %1"_s.arg(text));
+            return;
+        }
+        // Two metres in front of the player, on the ground.
+        const double yaw = qDegreesToRadians(double(client.yaw));
+        const QcVec3 position = client.motion.position + QcVec3{std::sin(yaw) * 2.0, 0.5, -std::cos(yaw) * 2.0};
+        m_items.spawnScattered({*item, count, 0}, position, m_nextEntityId++);
+        reply(u"Dropped %1 x %2"_s.arg(count).arg(name));
+    } else if (command == u"setblock"_s && words.size() >= 5) {
+        const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
+        const auto coordinate = [](const QString &word, int origin, bool &ok) {
+            if (word.startsWith(u'~')) {
+                ok = true;
+                return origin + (word.size() > 1 ? QStringView(word).mid(1).toInt(&ok) : 0);
+            }
+            return word.toInt(&ok);
+        };
+        bool okX = false;
+        bool okY = false;
+        bool okZ = false;
+        const QcBlockPos pos{coordinate(words[1], feet.x, okX), coordinate(words[2], feet.y, okY), coordinate(words[3], feet.z, okZ)};
+        const QString name = words[4].contains(u':') ? words[4] : u"qtcraft:"_s + words[4];
+        const std::optional<QcBlockId> block = m_content->blockId(name);
+        if (!okX || !okY || !okZ || !block || !m_world.blockAt(pos) || !pos.isInsideWorldHeight()) {
+            reply(u"Usage: /setblock <x> <y> <z> <block> in a loaded chunk"_s);
+            return;
+        }
+        if (*block == qcAirBlockId) {
+            breakBlock(pos, false);
+        } else {
+            setBlockAndBroadcast(pos, *block);
+            if (m_content->block(*block).sapling.isSapling()) {
+                m_plants.saplingPlaced(pos, *block);
+            }
+        }
+        reply(u"Set %1 at %2 %3 %4"_s.arg(name).arg(pos.x).arg(pos.y).arg(pos.z));
     } else if (command == u"kill"_s) {
         client.hurtTimer = 0.0;
         damagePlayer(client, client.health, {});
@@ -431,6 +638,9 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
         client.dead = true;
         client.miningPos.reset();
         client.connection->send(QcMsg::ChatMessage{u"%1 died"_s.arg(client.name)});
+        if (!m_info.keepInventory) {
+            dropInventory(client);
+        }
     }
     sendHealth(client);
 }
@@ -472,6 +682,7 @@ void QcServer::handleAttack(Client &client, quint32 entityId)
     client.attackCooldown = playerAttackCooldown;
     const QcItemDefinition *held = heldItem(client);
     const double damage = held ? held->attackDamage : 1.0;
+    const QcVec3 lootPosition = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
     const std::optional<QList<QcItemDrop>> drops = m_mobs.damage(entityId, damage, client.motion.position);
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
@@ -483,13 +694,15 @@ void QcServer::handleAttack(Client &client, quint32 entityId)
         sendInventory(client);
     }
     if (drops) {
-        // Like block drops (decision E-019) the loot goes straight into the killer's inventory.
+        // Like block drops (decision E-028) the loot falls where the mob died.
         for (const QcItemDrop &drop : *drops) {
+            if (drop.chance < 1.0 && m_random.generateDouble() >= drop.chance) {
+                continue;
+            }
             if (const std::optional<QcItemId> item = m_content->itemId(drop.item)) {
-                client.inventory.add(*item, drop.count, *m_content);
+                m_items.spawnScattered({*item, drop.count, 0}, lootPosition, m_nextEntityId++);
             }
         }
-        sendInventory(client);
     }
 }
 
@@ -549,7 +762,7 @@ void QcServer::syncEntities(Client &client)
         }
         visible.insert(id);
         if (!client.knownEntities.contains(id)) {
-            client.connection->send(QcMsg::EntitySpawn{id, type, name, position, yaw, health});
+            client.connection->send(QcMsg::EntitySpawn{id, type, name, position, yaw, health, {}});
             client.knownEntities.insert(id);
         } else {
             moves.moves.append({id, position, yaw, health, hurt});
@@ -560,12 +773,31 @@ void QcServer::syncEntities(Client &client)
     }
     for (const auto &other : m_clients) {
         if (other.get() != &client && other->state == Client::State::Playing && !other->dead) {
-            consider(other->entityId, -1, other->name, other->motion.position, other->yaw, other->health, false);
+            consider(other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw,
+                     other->health, false);
+        }
+    }
+    // Items are sent again when their count changed and moved only when their position did.
+    for (const QcItemEntityManager::Item &item : m_items.items()) {
+        if (item.dormant || (item.motion.position - client.motion.position).length() > itemViewDistance) {
+            continue;
+        }
+        visible.insert(item.id);
+        const auto known = client.knownItems.find(item.id);
+        if (known == client.knownItems.end() || known->count != item.stack.count) {
+            client.connection->send(QcMsg::EntitySpawn{item.id, QcMsg::EntitySpawn::itemType, QString(), item.motion.position,
+                                                       0.0f, 0.0, item.stack});
+            client.knownEntities.insert(item.id);
+            client.knownItems.insert(item.id, {item.stack.count, item.motion.position});
+        } else if ((known->position - item.motion.position).length() > itemMoveThreshold) {
+            moves.moves.append({item.id, item.motion.position, 0.0f, 0.0, false});
+            known->position = item.motion.position;
         }
     }
     for (auto it = client.knownEntities.begin(); it != client.knownEntities.end();) {
         if (!visible.contains(*it)) {
             client.connection->send(QcMsg::EntityRemove{*it});
+            client.knownItems.remove(*it);
             it = client.knownEntities.erase(it);
         } else {
             ++it;

@@ -14,14 +14,14 @@ void QcInventory::setSelectedHotbarSlot(int slot)
     m_selected = std::clamp(slot, 0, hotbarSize - 1);
 }
 
-int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content)
+int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content, int damage)
 {
     if (!content.isValidItem(item) || count <= 0) {
         return count;
     }
     const int maxStack = content.item(item).maxStack;
     for (QcItemStack &stack : m_slots) {
-        if (count == 0) {
+        if (count == 0 || damage > 0) {
             break;
         }
         // Damaged tools never merge with other stacks.
@@ -37,7 +37,7 @@ int QcInventory::add(QcItemId item, int count, const QcContentRegistry &content)
         }
         if (stack.isEmpty()) {
             const int moved = std::min(count, maxStack);
-            stack = {item, moved, 0};
+            stack = {item, moved, damage};
             count -= moved;
         }
     }

@@ -1,0 +1,8 @@
+{
+    "name": "oak_sapling",
+    "pattern": "sapling",
+    "primary": "#3c8232",
+    "secondary": "#6e5432",
+    "variation": 0.15,
+    "seed": 21
+}

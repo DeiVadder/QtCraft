@@ -289,7 +289,7 @@ void QcControlInterface::start(const QJsonObject &request)
             return;
         }
     }
-    for (const char *key : {"jump", "sneak", "sprint"}) {
+    for (const char *key : {"jump", "sneak", "sprint", "all"}) {
         const QJsonValue value = request.value(QLatin1StringView(key));
         if (!value.isUndefined() && !value.isBool()) {
             fail(request, u"'%1' must be true or false"_s.arg(QLatin1StringView(key)));
@@ -391,6 +391,16 @@ void QcControlInterface::start(const QJsonObject &request)
             if (distance > radius) {
                 continue;
             }
+            if (entity.isItem()) {
+                const bool known = content && content->isValidItem(entity.item.item);
+                list.append(QJsonObject{{u"id"_s, qint64(entity.id)},
+                                        {u"type"_s, u"item"_s},
+                                        {u"item"_s, known ? content->item(entity.item.item).name : QString()},
+                                        {u"count"_s, entity.item.count},
+                                        {u"position"_s, vectorJson(entity.position)},
+                                        {u"distance"_s, distance}});
+                continue;
+            }
             const bool mob = content && entity.mobType >= 0 && entity.mobType < content->mobs().size();
             list.append(QJsonObject{{u"id"_s, qint64(entity.id)},
                                     {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
@@ -437,6 +447,42 @@ void QcControlInterface::start(const QJsonObject &request)
                                          m_activeError = u"The hit did not land (attack cooldown or out of reach)"_s;
                                      }
                                      return true;
+                                 }};
+    } else if (command == u"drop"_s) {
+        if (!m_session->dropItem(request.value(u"all"_s).toBool(false))) {
+            fail(request, u"Nothing selected to drop"_s);
+            return;
+        }
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"collect"_s) {
+        // Walks to the nearest dropped item within the radius until none is left or time runs out.
+        const double radius = std::clamp(intField(request, u"radius"_s, 8), 1, 32);
+        const int maxTicks = std::clamp(intField(request, u"maxTicks"_s, 200), 1, maxCommandTicks);
+        m_active = ActiveCommand{request, timeoutPolls(maxTicks), [this, radius, startTick, maxTicks] {
+                                     const QcVec3 me = m_session->playerMotion().position;
+                                     const QcClientEntity *nearest = nullptr;
+                                     for (const QcClientEntity &entity : m_session->entities()) {
+                                         const double distance = (entity.position - me).length();
+                                         if (entity.isItem() && distance <= radius
+                                             && (!nearest || distance < (nearest->position - me).length())) {
+                                             nearest = &entity;
+                                         }
+                                     }
+                                     QcPlayerInput intent = m_session->intent();
+                                     const bool done = !nearest || m_session->tickCount() >= startTick + quint64(maxTicks);
+                                     if (!done) {
+                                         const QcVec3 delta = nearest->position - me;
+                                         intent.yaw = float(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
+                                         const double horizontal = std::hypot(delta.x, delta.z);
+                                         // Walk until the item is within the pickup reach, jump onto steps.
+                                         intent.forward = horizontal > 0.4 ? 1.0f : 0.0f;
+                                         intent.jump = horizontal > 0.4 && m_session->playerMotion().onGround && delta.y > 0.6;
+                                     } else {
+                                         intent.forward = 0.0f;
+                                         intent.jump = false;
+                                     }
+                                     m_session->setIntent(intent);
+                                     return done;
                                  }};
     } else if (command == u"respawn"_s) {
         m_session->respawn();

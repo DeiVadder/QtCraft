@@ -25,7 +25,7 @@ constexpr qint64 forestSeed = 12345;
 } // namespace
 
 // The assignment's reference scenario, played only through the control interface, extended to a
-// short playthrough: hunt, fight and eat; fell a tree -> craft planks -> build a tool -> mine a block
+// short playthrough: hunt, fight and eat; fell a tree -> collect the logs -> craft planks -> build a tool -> mine a block
 // with it; save, restart and find everything again.
 class TestSurvivalScenario : public QObject
 {
@@ -165,6 +165,8 @@ private slots:
             request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
         }
         QVERIFY(gone(pig));
+        // The meat falls where the pig died; walk over it to pick it up.
+        QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 10}}).value(u"ok"_s).toBool());
         QTRY_VERIFY_WITH_TIMEOUT(countOf(u"qtcraft:raw_porkchop"_s) >= 1, timeoutMs);
 
         // Fight: a zombie strikes back before it falls.
@@ -191,6 +193,19 @@ private slots:
         request({{u"cmd"_s, u"use"_s}});
         QCOMPARE(countOf(u"qtcraft:raw_porkchop"_s), meat - 1);
         QVERIFY(request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble() > before);
+
+        // Throw the sword away and fetch it again once it may be picked up.
+        hold(u"qtcraft:stone_sword"_s);
+        QVERIFY(request({{u"cmd"_s, u"drop"_s}}).value(u"ok"_s).toBool());
+        QCOMPARE(countOf(u"qtcraft:stone_sword"_s), 0);
+        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        QVERIFY(std::ranges::any_of(around, [](const QJsonValue &entry) {
+            return entry.toObject().value(u"item"_s).toString() == u"qtcraft:stone_sword"_s
+                   && entry.toObject().value(u"count"_s).toInt() == 1;
+        }));
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 45}});
+        QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 8}}).value(u"ok"_s).toBool());
+        QTRY_COMPARE_WITH_TIMEOUT(countOf(u"qtcraft:stone_sword"_s), 1, timeoutMs);
     }
 
     void cleanupTestCase()
@@ -274,7 +289,11 @@ private slots:
             ++chopped;
         }
         QCOMPARE(chopped, 3);
-        QTRY_COMPARE_WITH_TIMEOUT(countOf(log), 3, timeoutMs);
+        // The logs drop next to the trunk. A log of a neighbouring tree in the line of sight may be
+        // chopped on the way, so there can be more than three.
+        QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 8}}).value(u"ok"_s).toBool());
+        QTRY_VERIFY_WITH_TIMEOUT(countOf(log) >= 3, timeoutMs);
+        const int logs = countOf(log);
 
         // 3. Planks: one log through the 2 x 2 grid, the rest from the recipe book; then sticks and a
         //    crafting table.
@@ -293,7 +312,7 @@ private slots:
         QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 4);
         // Closing returns the second log from the grid.
         QVERIFY(request({{u"cmd"_s, u"closeCrafting"_s}}).value(u"ok"_s).toBool());
-        QCOMPARE(countOf(log), 2);
+        QCOMPARE(countOf(log), logs - 1);
         const QString planksRecipe = u"qtcraft:oak_planks_from_"_s + log.section(u':', 1);
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planksRecipe}, {u"count"_s, 2}});
         QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 12);
@@ -313,9 +332,23 @@ private slots:
         const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
         const int feetY = int(std::floor(here.y));
         bool placed = false;
-        for (const auto &[ox, oz] : {std::pair{2, 0}, std::pair{-2, 0}, std::pair{0, 2}, std::pair{0, -2}}) {
+        // Collecting the logs moved the player somewhere near the trunk; try the free spots around.
+        QList<std::pair<int, int>> spots;
+        for (int ox = -3; ox <= 3; ++ox) {
+            for (int oz = -3; oz <= 3; ++oz) {
+                if (std::abs(ox) + std::abs(oz) >= 2) {
+                    spots.append({ox, oz});
+                }
+            }
+        }
+        std::ranges::sort(spots, {}, [](std::pair<int, int> spot) { return std::abs(spot.first) + std::abs(spot.second); });
+        for (const auto &[ox, oz] : std::as_const(spots)) {
             const int x = int(std::floor(here.x)) + ox;
             const int z = int(std::floor(here.z)) + oz;
+            if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString()
+                != u"qtcraft:air"_s) {
+                continue;
+            }
             request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, feetY - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
             if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString()
                 == u"qtcraft:crafting_table"_s) {

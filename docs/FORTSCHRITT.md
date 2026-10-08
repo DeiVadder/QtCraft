@@ -4,10 +4,17 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** alle Etappen abgeschlossen (1–8 per Squash-Merge in `dev`)
-- **Branch:** `dev`
-- **Nächster Schritt:** keiner offen. Release `dev → main` mit finalem Review und Tag entscheidet der Mensch. Optionale Extras (TCP-Mehrspieler, Skript-Hooks, Wasserausbreitung, Sound) wären die nächsten Schritte.
-- **Offene Befunde:** keine blockierenden; bekannte Mängel siehe unten und `docs/Abschlussbericht.md`.
+- **Aktuelle Etappe:** 10 – Charaktermodell und Ansichten (noch nicht begonnen). Etappe 9 ist in `dev` gemergt.
+- **Branch:** als Nächstes `feature/10-character` von `dev` anlegen
+- **Nächster Schritt:** Etappe 10 planen (Beschreibung in `QtCraft-Agent-Auftrag.md` Abschnitt 4 Punkt 10), Plan hier eintragen, umsetzen.
+- **Umgesetzt (Etappe 9):** `QcItemEntityManager`, `QcPlantManager`, `QcTreeShape` (Server), Protokoll v10 (`EntitySpawn` mit Item-Stapel, `DropItem`), `entities.qce`, Spielregel `keepInventory` (E-028 bis E-031), Setzlinge für Eiche/Birke/Fichte, Kreuzform im Mesher, Items im Entity-Mesher, Taste Q, Steuerbefehle `drop`/`collect`, Cheats `/gamerule`, `/spawnitem`, `/setblock`.
+- **Plan Etappe 9:**
+  - Server: `QcItemEntityManager` (Item-Stapel mit Position/Geschwindigkeit über `QcPhysics::stepEntity`, Aufheben bei Überlappung mit dem Spieler nach kurzer Sperrzeit, Teilaufnahme bei vollem Inventar, Zusammenlegen gleicher Stapel in der Nähe, Altern nur in geladenen Chunks, Despawn nach 300 s, Obergrenze z. B. 512 Items, darüber neue Drops in eine begrenzte Warteschlange bis Platz frei wird, Speichern mit der Welt).
+  - Drops statt direkt ins Inventar: Abbauen (ersetzt E-019), Mob-Beute, Rasterreste beim Schließen, Tod mit Weltoption `keepInventory` (`/gamerule keepInventory`, in `world.json`; ersetzt E-022 teilweise).
+  - Protokoll: Nachrichten für Item-Spawn (id, item, count, Position) und Stapeländerung; Bewegung/Entfernen über `EntityMoves`/`EntityRemove`. Client: `QcClientEntity` um Item erweitern, `QcEntityMesher` zeichnet kleine, drehende Würfel bzw. gekreuzte Quads mit der Item-Textur. Steuerschnittstelle: `entities` listet Items.
+  - Setzlinge: Drop-Chance (`chance` in Drops), Setzling-Blöcke (Kreuzform im Mesher), natürliche Blätter verrotten ohne Stamm in Reichweite 4 (Prüfung nur nach Abbau von Stamm/Blättern, verzögert), Setzling-Item wird beim Despawn mit hoher Chance eingepflanzt, eingepflanzte Setzlinge wachsen nach zufälliger Zeit über die Baum-Features des Generators zu Bäumen (Platzprüfung).
+- **Danach (vom Menschen am 2026-10-08 nachbeauftragt):** Etappe 10 (Charaktermodell, Ich-/Dritte-Person-Ansicht, Anpassung), Etappe 11 (Ofen, Schmelzen, Fortschritt), Etappe 12 (Sound und Musik). Jede Etappe als eigener Feature-Branch (`feature/10-…`, `feature/11-…`, `feature/12-…`) nach dem üblichen Ablauf (Tests, `scripts/verify.sh`, unabhängige Verifikation, Squash-Merge).
+- **Offene Befunde:** keine blockierenden.
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
 
@@ -28,7 +35,11 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | 5 | Gegner und Gesundheit | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
 | 6 | Crafting und Items | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
 | 7 | Modding | erledigt | 2026-10-08 | Verifikation nach drei Nachbesserungsrunden PASS (bösartige Mod-Dateien, Grenzen des Clients) |
+| 9 | Item-Entities und Setzlinge | erledigt | 2026-10-08 | Verifikation nach zwei Nachbesserungsrunden PASS (Raster beim Stopp, Grenzen nach dem Laden, ruhende Items) |
 | 8 | Politur und Abschluss | erledigt | 2026-10-08 | Einstellungen, deutsche Übersetzung, Benchmark (≈ 120 FPS bei 8 Chunks), Durchspiel-Test, README, Abschlussbericht; Mod-Lader nach mehreren Prüfrunden vereinfacht und gehärtet |
+| 10 | Charaktermodell und Ansichten | offen | | nach 9; Beschreibung in `QtCraft-Agent-Auftrag.md` Abschnitt 4 (Punkt 10) |
+| 11 | Ofen, Schmelzen und Fortschritt | offen | | nach 10; Beschreibung in Abschnitt 4 (Punkt 11) |
+| 12 | Sound und Musik | offen | | nach 11; Beschreibung in Abschnitt 4 (Punkt 12) |
 
 ## Bekannte Mängel
 

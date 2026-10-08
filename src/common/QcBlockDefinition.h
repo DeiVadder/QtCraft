@@ -22,10 +22,34 @@ enum class QcRenderLayer : quint8 {
     Translucent,
 };
 
+// Geometry the client mesher builds for a block.
+enum class QcBlockShape : quint8 {
+    Cube,
+    // Two crossed, double-sided quads (saplings, flowers); never hides neighbour faces.
+    Cross,
+};
+
 struct QcItemDrop
 {
     QString item;
     int count = 1;
+    // Probability in [0, 1] that this drop appears at all.
+    double chance = 1.0;
+};
+
+// A block that grows into a tree feature after a random time (saplings).
+struct QcSaplingDefinition
+{
+    // Name of a tree or column feature; empty for blocks that are not saplings.
+    QString feature;
+    double minSeconds = 120.0;
+    double maxSeconds = 300.0;
+    // Blocks it may be planted on; empty allows any solid block.
+    QList<QString> plantOn;
+    // Chance that a despawning item of this block plants itself instead of vanishing.
+    double plantChance = 0.0;
+
+    bool isSapling() const { return !feature.isEmpty(); }
 };
 
 struct QcBlockDefinition
@@ -33,6 +57,7 @@ struct QcBlockDefinition
     QString name;
     QString translationKey;
     QcRenderLayer renderLayer = QcRenderLayer::Opaque;
+    QcBlockShape shape = QcBlockShape::Cube;
     // Solid blocks collide with entities.
     bool solid = true;
     // Opaque blocks are full cubes that hide adjacent faces and block sky light.
@@ -51,6 +76,7 @@ struct QcBlockDefinition
     QList<QcItemDrop> drops;
     // Using the block opens the 3 x 3 crafting grid instead of placing against it.
     bool opensCrafting = false;
+    QcSaplingDefinition sapling;
     // Texture names indexed by QcBlockFace.
     std::array<QString, qcBlockFaceCount> faceTextures;
 

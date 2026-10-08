@@ -21,4 +21,6 @@ struct QcServerConfig
     // Commands that bypass the rules (/give). On for single player; a dedicated server would
     // restrict them to operators.
     bool allowCheats = true;
+    // Game rule for new and unsaved worlds; saved worlds keep the value in world.json.
+    bool keepInventory = true;
 };

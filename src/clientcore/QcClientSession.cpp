@@ -175,12 +175,21 @@ void QcClientSession::handleMessage(QcMessage &&message)
     } else if (auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
         emit chatReceived(chat->text);
     } else if (auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
-        if (spawn->mobType < -1 || (spawn->mobType >= 0 && (!m_content || spawn->mobType >= m_content->mobs().size()))) {
-            m_disconnectReason = u"Server sent an unknown mob type"_s;
+        const bool item = spawn->mobType == QcMsg::EntitySpawn::itemType;
+        if ((spawn->mobType < QcMsg::EntitySpawn::playerType && !item)
+            || (spawn->mobType >= 0 && (!m_content || spawn->mobType >= m_content->mobs().size()))
+            || (item && (!m_content || spawn->item.isEmpty() || !m_content->isValidItem(spawn->item.item)))) {
+            m_disconnectReason = u"Server sent an unknown entity type"_s;
             m_connection->close();
             return;
         }
+        // A known item entity sent again only changed its count; keep its motion history.
+        if (const auto known = m_entities.find(spawn->id); item && known != m_entities.end() && known->isItem()) {
+            known->item = spawn->item;
+            return;
+        }
         QcClientEntity entity;
+        entity.item = item ? spawn->item : QcItemStack();
         entity.id = spawn->id;
         entity.mobType = spawn->mobType;
         entity.name = spawn->name;
@@ -285,6 +294,9 @@ void QcClientSession::refreshTarget()
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : std::as_const(m_entities)) {
+        if (entity.isItem()) {
+            continue;
+        }
         const bool mob = entity.mobType >= 0 && entity.mobType < m_content->mobs().size();
         const double width = mob ? m_content->mobs()[entity.mobType].width : QcPhysics::playerWidth;
         const double height = mob ? m_content->mobs()[entity.mobType].height : QcPhysics::playerHeight;
@@ -303,6 +315,15 @@ bool QcClientSession::attack()
         return false;
     }
     m_connection->send(QcMsg::AttackEntity{*m_targetEntity});
+    return true;
+}
+
+bool QcClientSession::dropItem(bool wholeStack)
+{
+    if (m_state != State::Playing || m_dead || m_inventory.selectedStack().isEmpty()) {
+        return false;
+    }
+    m_connection->send(QcMsg::DropItem{wholeStack});
     return true;
 }
 

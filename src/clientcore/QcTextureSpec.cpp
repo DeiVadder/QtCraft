@@ -18,6 +18,7 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"axe"_s, Pattern::Axe},           {u"shovel"_s, Pattern::Shovel},
         {u"sword"_s, Pattern::Sword},       {u"stick"_s, Pattern::Stick},
         {u"ingot"_s, Pattern::Ingot},       {u"gem"_s, Pattern::Gem},
+        {u"sapling"_s, Pattern::Sapling},
     };
     const auto it = patterns.constFind(name);
     if (it == patterns.constEnd()) {

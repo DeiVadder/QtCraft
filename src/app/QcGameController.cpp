@@ -340,11 +340,11 @@ void QcGameController::openModsFolder()
     }
 }
 
-void QcGameController::createWorld(const QString &worldName, const QString &seedText)
+void QcGameController::createWorld(const QString &worldName, const QString &seedText, bool keepInventory)
 {
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
     const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
-    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText));
+    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), keepInventory);
     if (!entry) {
         setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
         return;
@@ -611,6 +611,22 @@ void QcGameController::onContentReady()
     }
 }
 
+QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &content, QcItemId item)
+{
+    QcEntityMesher::ItemLook look;
+    if (!content.isValidItem(item)) {
+        return look;
+    }
+    const QcItemDefinition &definition = content.item(item);
+    look.sprite = definition.texture;
+    const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
+    if (block && content.block(*block).shape == QcBlockShape::Cube && content.block(*block).renderLayer != QcRenderLayer::Invisible) {
+        look.cube = true;
+        look.faces = content.block(*block).faceTextures;
+    }
+    return look;
+}
+
 void QcGameController::updateEntities(double alpha)
 {
     if (!m_atlas) {
@@ -619,16 +635,22 @@ void QcGameController::updateEntities(double alpha)
     auto mesh = std::make_shared<QcChunkMesh>();
     const QcClientWorld &world = *m_session->world();
     const auto &mobs = m_session->content()->mobs();
+    const QcContentRegistry &content = *m_session->content();
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
+    const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
     for (const QcClientEntity &entity : m_session->entities()) {
-        const QList<QcMobPart> &parts =
-            entity.mobType >= 0 && entity.mobType < mobs.size() ? mobs[entity.mobType].parts : QcEntityMesher::playerModel();
         // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
         const QcBlockPos feet{int(std::floor(entity.position.x)), int(std::floor(entity.position.y)), int(std::floor(entity.position.z))};
         float light = 1.0f;
         if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
             light = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
         }
+        if (entity.isItem()) {
+            QcEntityMesher::appendItem(*mesh, entity, itemLook(content, entity.item.item), alpha, light, seconds, uv);
+            continue;
+        }
+        const QList<QcMobPart> &parts =
+            entity.mobType >= 0 && entity.mobType < mobs.size() ? mobs[entity.mobType].parts : QcEntityMesher::playerModel();
         QcEntityMesher::appendEntity(*mesh, entity, parts, alpha, light, uv);
     }
     m_view->setEntityMesh(std::move(mesh));
@@ -749,6 +771,10 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
             return true;
         case Qt::Key_F:
             m_session->setMining(true);
+            return true;
+        case Qt::Key_Q:
+            // Q throws one item, Ctrl+Q the whole stack.
+            m_session->dropItem(key->modifiers().testFlag(Qt::ControlModifier));
             return true;
         default:
             break;

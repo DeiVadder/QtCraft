@@ -31,7 +31,7 @@ public:
     // Newest first by last played time.
     QList<Entry> list() const;
     // Creates the directory and world.json; returns the new entry.
-    QcResult<Entry> create(const QString &name, qint64 seed) const;
+    QcResult<Entry> create(const QString &name, qint64 seed, bool keepInventory = true) const;
     // Deletes a world directory. Only plain folder names directly below the root are accepted.
     QcStatus remove(const QString &folder) const;
     QString directoryOf(const QString &folder) const;

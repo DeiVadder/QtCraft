@@ -17,10 +17,16 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block)
 {
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel) << block.opensCrafting;
+           << qint32(block.toolLevel) << block.opensCrafting << quint8(block.shape);
     stream << quint32(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
-        stream << drop.item << qint32(drop.count);
+        stream << drop.item << qint32(drop.count) << drop.chance;
+    }
+    const QcSaplingDefinition &sapling = block.sapling;
+    stream << sapling.feature << sapling.minSeconds << sapling.maxSeconds << sapling.plantChance
+           << quint32(sapling.plantOn.size());
+    for (const QString &ground : sapling.plantOn) {
+        stream << ground;
     }
     for (const QString &texture : block.faceTextures) {
         stream << texture;
@@ -32,13 +38,16 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     quint8 renderLayer = 0;
     qint32 lightOpacity = 0;
     qint32 toolLevel = 0;
+    quint8 shape = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
-        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting;
-    if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15) {
+        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> shape;
+    if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
+        || shape > quint8(QcBlockShape::Cross)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
     }
     block.renderLayer = QcRenderLayer(renderLayer);
+    block.shape = QcBlockShape(shape);
     block.lightOpacity = lightOpacity;
     block.toolLevel = toolLevel;
     quint32 dropCount = 0;
@@ -49,9 +58,25 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     for (quint32 i = 0; i < dropCount; ++i) {
         QcItemDrop drop;
         qint32 count = 0;
-        stream >> drop.item >> count;
+        stream >> drop.item >> count >> drop.chance;
         drop.count = count;
         block.drops.append(drop);
+    }
+    QcSaplingDefinition &sapling = block.sapling;
+    quint32 groundCount = 0;
+    stream >> sapling.feature >> sapling.minSeconds >> sapling.maxSeconds >> sapling.plantChance;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, groundCount)) {
+        return false;
+    }
+    sapling.plantOn.clear();
+    for (quint32 i = 0; i < groundCount; ++i) {
+        QString ground;
+        stream >> ground;
+        sapling.plantOn.append(ground);
+    }
+    if (!std::isfinite(sapling.minSeconds) || !std::isfinite(sapling.maxSeconds) || !std::isfinite(sapling.plantChance)) {
+        stream.setStatus(QDataStream::ReadCorruptData);
+        return false;
     }
     for (QString &texture : block.faceTextures) {
         stream >> texture;
@@ -104,8 +129,8 @@ QcResult<QcItemId> QcContentRegistry::registerItem(QcItemDefinition definition)
     if (!QcContentNames::isValidQualified(definition.name)) {
         return qcError(u"Invalid item name '%1'"_s.arg(definition.name));
     }
-    if (definition.maxStack < 1 || definition.maxStack > 999) {
-        return qcError(u"Item '%1': maxStack must be within 1..999"_s.arg(definition.name));
+    if (definition.maxStack < 1 || definition.maxStack > QcItemDefinition::maxStackLimit) {
+        return qcError(u"Item '%1': maxStack must be within 1..%2"_s.arg(definition.name).arg(QcItemDefinition::maxStackLimit));
     }
     const auto existing = m_itemIds.constFind(definition.name);
     if (existing != m_itemIds.constEnd()) {

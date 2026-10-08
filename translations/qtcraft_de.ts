@@ -36,8 +36,8 @@
     <name>Hud</name>
     <message>
         <location filename="../src/app/qml/Hud.qml" line="195"/>
-        <source>Left: mine/attack  F: mine  Right/R: place  1-9/wheel: select  E: inventory  T: chat  Esc: menu</source>
-        <translation>Links: abbauen/angreifen  F: abbauen  Rechts/R: setzen  1–9/Mausrad: wählen  E: Inventar  T: Chat  Esc: Menü</translation>
+        <source>Left: mine/attack  F: mine  Right/R: place  Q: drop  1-9/wheel: select  E: inventory  T: chat  Esc: menu</source>
+        <translation>Links: abbauen/angreifen  F: abbauen  Rechts/R: setzen  Q: wegwerfen  1–9/Mausrad: wählen  E: Inventar  T: Chat  Esc: Menü</translation>
     </message>
     <message>
         <location filename="../src/app/qml/Hud.qml" line="196"/>
@@ -141,6 +141,11 @@
         <location filename="../src/app/qml/MainMenu.qml" line="155"/>
         <source>Seed (number or text, empty for random)</source>
         <translation>Seed (Zahl oder Text, leer für Zufall)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/MainMenu.qml" line="166"/>
+        <source>Keep inventory on death</source>
+        <translation>Inventar beim Tod behalten</translation>
     </message>
     <message>
         <location filename="../src/app/qml/MainMenu.qml" line="168"/>

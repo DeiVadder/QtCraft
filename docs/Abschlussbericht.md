@@ -19,6 +19,7 @@ Jede Etappe lief auf einem eigenen Feature-Branch und wird nach einer unabhängi
 | 6 | Crafting und Items | `feature/06-crafting` | Werkzeuge in 4 Stufen, 26 geformte/formlose Rezepte, 2 × 2- und 3 × 3-Raster auf dem Server, Rezeptbuch, Essen |
 | 7 | Modding | `feature/07-modding` | Mod-Verzeichnis, Manifest mit Versionen und Abhängigkeiten, Ladereihenfolge, Fehlerbehandlung, Beispiel-Mod `mods/rubies`, Mods-Bildschirm |
 | 8 | Politur und Abschluss | `feature/08-polish` | Einstellungen, vollständige deutsche Übersetzung, Tageslicht beim Start, Benchmark-Hook, Durchspiel-Test, README, dieser Bericht |
+| 9 | Item-Entities und Setzlinge | `feature/09-item-entities` | Drops als Items in der Welt (Aufheben, Zusammenlegen, Despawn, Grenzen mit Warteschlange, Speichern), Wegwerfen, Spielregel `keepInventory`, Blattzerfall, Setzlinge mit Wachstum zu Bäumen |
 
 Etappen 5 bis 8 brauchten Nachbesserungsrunden: Die Verifikation fand jeweils Blocker, die behoben und erneut unabhängig geprüft wurden. Etappe 7 und der Mod-Teil von Etappe 8 liefen mehrfach durch die Prüfung. Die Funde betrafen bösartige Mod-Dateien (Pipes, `/dev/zero`, Hardlinks), Inhalte, die der Server annahm, Clients aber ablehnen, sowie Start-Zeit und Speicher bei vielen oder großen Mods. Am Ende wurde der Mod-Lader vereinfacht: Jeder Mod wird direkt so geprüft, wie er beim Client ankäme, höchstens 64 Mods werden pro Start geladen, jedes gelesene Byte zählt gegen 64 MiB. Alle Etappen 1–8 sind in `dev` gemergt.
 
@@ -73,10 +74,10 @@ scripts/verify.sh                                                         # alle
 
 ## Tests
 
-- **Umfang:** 29 CTest-Ziele, darunter drei Headless-Szenarien. Sie laufen in den Builds Debug, ASan/UBSan und TSan.
+- **Umfang:** 30 CTest-Ziele, darunter drei Headless-Szenarien. Sie laufen in den Builds Debug, ASan/UBSan und TSan.
 - **Automatisierter Durchspiel-Test:** `tests/test_survival_scenario.cpp`. Er läuft nur über die Steuerschnittstelle:
-  1. Schwein jagen, Zombie bekämpfen, Fleisch essen.
-  2. Baum fällen, Bretter im 2 × 2-Raster und per Rezeptbuch herstellen, Werkbank bauen; ohne Werkbank wird das 3 × 3-Rezept abgelehnt.
+  1. Schwein jagen, Fleisch aufsammeln, Zombie bekämpfen, Fleisch essen, Schwert wegwerfen und wieder aufheben.
+  2. Baum fällen, Stämme aufsammeln, Bretter im 2 × 2-Raster und per Rezeptbuch herstellen, Werkbank bauen; ohne Werkbank wird das 3 × 3-Rezept abgelehnt.
   3. Werkbank setzen, Spitzhacke herstellen, bis zum Stein graben.
   4. Speichern, Server neu starten und Position, Gesundheit, Werkzeugabnutzung und Werkbank wiederfinden.
 - **Manueller Durchgang per Screenshots:** in `docs/screenshots/` (unten).
@@ -94,6 +95,7 @@ scripts/verify.sh                                                         # alle
 | `06-crafting.png` | Crafting im Inventar |
 | `07-mod-items.png` | Items der Beispiel-Mod im Spiel |
 | `08-main-menu-de.png`, `08-settings-de.png`, `08-day-view-distance-8.png` | Hauptmenü und Einstellungen auf Deutsch, Tagansicht bei Sichtweite 8 |
+| `09-items-and-saplings.png` | Gedroppte Items (Würfel, Sprites, Stapel) und zwei gesetzte Setzlinge |
 
 ## Bekannte Mängel
 
@@ -108,7 +110,7 @@ scripts/verify.sh                                                         # alle
   - Kein Sound.
 - **Mobs:**
   - Einfache Wegfindung, keine Kollision zwischen Mobs.
-  - `EntityMoves` sendet alle sichtbaren Mobs in jedem Tick.
+  - `EntityMoves` sendet alle sichtbaren Mobs in jedem Tick (Items nur bei Bewegung um mehr als 2 cm; schwimmende Items werden trotzdem jeden Tick simuliert).
   - Licht auf Mobs ist nur grob angenähert.
 - **Mods:**
   - Ein Mod ersetzt Definitionen nur vollständig.
@@ -125,6 +127,11 @@ scripts/verify.sh                                                         # alle
 - **Weltgenerierung:**
   - Der Spawnpunkt kann auf einer Baumkrone liegen.
   - Biome bilden eher rundliche Flecken.
+- **Items und Pflanzen:**
+  - Items in einem Block, der nachträglich gesetzt wird, werden nicht herausgeschoben.
+  - Blätter zerfallen nur nach dem Entfernen eines Stamms; Blätter nahe einem anderen Baum bleiben (E-030).
+  - Ausstehende Blattprüfungen werden nicht gespeichert.
+  - Geworfene Items sind als Sprite von der Kante her kaum sichtbar.
 - **Maus:** Das Fangen der Maus per Cursor-Zentrierung ist unter macOS nur über Screenshots, nicht interaktiv geprüft.
 
 ## Offene Fragen

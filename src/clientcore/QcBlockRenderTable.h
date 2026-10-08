@@ -20,6 +20,8 @@ public:
         QcRenderLayer layer = QcRenderLayer::Invisible;
         bool opaque = false;
         bool liquid = false;
+        // Drawn as two crossed quads instead of a cube.
+        bool cross = false;
         // Sky light lost when passing through this block, 0..15.
         int lightOpacity = 0;
         std::array<QRectF, 6> faceUv;

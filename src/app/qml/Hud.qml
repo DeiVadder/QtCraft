@@ -192,7 +192,7 @@ Item {
         styleColor: "#a0000000"
         font.pixelSize: 13
         text: hud.game.mouseCaptured
-              ? qsTr("Left: mine/attack  F: mine  Right/R: place  1-9/wheel: select  E: inventory  T: chat  Esc: menu")
+              ? qsTr("Left: mine/attack  F: mine  Right/R: place  Q: drop  1-9/wheel: select  E: inventory  T: chat  Esc: menu")
               : qsTr("Click to look around. WASD to move, Space to jump, Shift to sneak.")
     }
 }

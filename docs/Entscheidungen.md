@@ -108,7 +108,7 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Warum:** Einfach, robust (kein Teil-Überschreiben), die Dateigröße bleibt bei typischem Spiel klein, und alles Ungeänderte entsteht deterministisch aus dem Seed. Namen in der Palette machen Welten unabhängig von der Registrierungsreihenfolge.
 - **Verworfen:** Ein Datei-pro-Chunk-Format (viele kleine Dateien); Regionen mit Sektor-Tabellen und Teilaktualisierung (Aufwand ohne Nutzen bei wenigen geänderten Chunks); Speichern von Laufzeit-Ids.
 
-## E-019 Abbau-Drops direkt ins Inventar
+## E-019 Abbau-Drops direkt ins Inventar (abgelöst durch E-028)
 
 - **Was:** Abgebaute Blöcke legen ihre Drops direkt ins Inventar; was nicht passt, verfällt.
 - **Warum:** Keine herumliegenden Item-Entities nötig, deutlich weniger Code und Netzverkehr; das Spielziel (abbauen, sammeln, craften) bleibt vollständig.
@@ -125,7 +125,7 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Warum:** Im Einzelspieler sind sie Test- und Komfortwerkzeug (auch für die Steuerschnittstelle); im Mehrspieler würden sie die Validierung des Servers aushebeln.
 - **Verworfen:** Befehle ganz entfernen (Szenariotests und Agenten bräuchten Umwege).
 
-## E-022 Mobs werden nicht gespeichert, Inventar bleibt beim Tod
+## E-022 Mobs werden nicht gespeichert, Inventar bleibt beim Tod (Inventar-Teil abgelöst durch E-029)
 
 - **Was:** Mobs existieren nur um Spieler herum und verschwinden beim Schließen der Welt; beim Tod behält der Spieler sein Inventar und erscheint am Spawnpunkt.
 - **Warum:** Kein Entity-Speicherformat nötig; Mobs erscheinen ohnehin ständig neu. Ohne Item-Entities (E-019) gäbe es keinen Weg, verlorene Gegenstände wiederzuholen.
@@ -160,3 +160,29 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** `world.json` speichert Id, Name und Version aller beim Speichern geladenen Pakete. Beim Öffnen meldet der Server fehlende oder geänderte Pakete als Warnung; die Welt öffnet trotzdem. Blöcke entfernter Mods werden zu Luft, ihre Items verschwinden (Namensauflösung, E-018).
 - **Warum:** Spieler sollen erfahren, warum Inhalte fehlen, ohne dass eine Welt unbenutzbar wird.
 - **Verworfen:** Laden verweigern (zu streng für Einzelspieler); unbekannte Namen als Platzhalter-Blöcke aufbewahren (eigenes Format, späterer Schritt).
+
+## E-028 Drops als Item-Entities
+
+- **Was:** Abgebaute Blöcke, Mob-Beute, Rasterreste, die nicht ins Inventar passen, und weggeworfene Items (Taste Q) liegen als Item-Entities in der Welt. Sie fallen, bleiben liegen, schwimmen in Wasser oben, verschmelzen mit gleichen Stapeln im Umkreis von 1 m und werden aufgehoben, sobald sie den Spieler (Box plus 0,5 m) berühren und die Sperrzeit vorbei ist (0,5 s, geworfen 2 s). Passt nur ein Teil ins Inventar, bleibt der Rest liegen. Items altern und bewegen sich nur in geladenen Chunks und verschwinden nach 300 s. Sie werden mit der Welt gespeichert (`entities.qce`).
+- **Grenzen:** Höchstens 512 aktive Items (in geladenen Chunks); weitere Drops warten in einer Warteschlange (höchstens 1024 Einträge, nahe gleiche Drops werden zusammengefasst, bei Überlauf fällt der älteste weg) und erscheinen, sobald Platz frei wird. Lädt ein Chunk mit mehr Items, als aktiv sein dürfen, ruhen die jüngsten (außer frischen Drops unter 10 s) an Ort und Stelle (eingefroren, für Clients unsichtbar, gleiche Id) und wachen ältestes zuerst auf, sobald Platz frei wird. Wartende Drops erscheinen nur in geladenen Chunks. Höchstens 4096 Items liegen in der Welt (plus die Warteschlange), darüber werden die ältesten in entladenen Chunks verworfen. Stapel über `maxStack` werden geteilt. Liegende Items werden nicht simuliert, bis der Block darunter verschwindet; an Clients gehen nur Items im Umkreis von 32 m, Bewegungen erst ab 2 cm Abstand zur zuletzt gesendeten Position (schwimmende Items wippen sonst ständig). Beim Beenden des Servers wird ein offenes Raster wie beim Trennen geleert, auch für bereits getrennte Spieler.
+- **Warum:** Vom Menschen am 2026-10-08 beauftragt; die Grenzen halten Server-Tick und Netzverkehr auch bei großen Abbauaktionen klein.
+- **Verworfen:** Drops ohne Grenze (Tick-Zeit wächst unbegrenzt); Drops über der Grenze direkt ins Inventar (widerspricht dem Aufsammeln); Items im Chunk-Format speichern (bräuchte ein neues Regionsformat).
+
+## E-029 Spielregel keepInventory
+
+- **Was:** Die Weltoption `keepInventory` (in `world.json` unter `gameRules`, Befehl `/gamerule keepInventory true|false`, Kontrollkästchen beim Anlegen einer Welt) entscheidet, ob der Spieler beim Tod Inventar und Rasterinhalt behält oder als Items fallen lässt. Voreinstellung und Wert für ältere Welten: behalten.
+- **Warum:** Das bisherige Verhalten (E-022) bleibt Standard, das Fallenlassen ist die gewünschte Option.
+- **Verworfen:** Fallenlassen als Standard (ändert bestehende Welten unerwartet).
+
+## E-030 Blattzerfall über Stammnähe
+
+- **Was:** Blätter, die ein Baum-Feature als Krone nutzt, verrotten, wenn innerhalb von 4 Blöcken (in jeder Achse) kein Stamm eines Baum-Features mehr steht. Geprüft wird nur nach dem Entfernen eines Stammblocks, für alle Blätter im Umkreis, mit 0,5 bis 4 s Verzögerung, höchstens 64 Prüfungen und 8 Zerfällen pro Tick. Liegt ein Teil der Umgebung in einem nicht geladenen Chunk, wird die Prüfung nach 5 s wiederholt. Verrottete Blätter lassen ihre Drops fallen (Setzling mit 8 % Chance).
+- **Warum:** Einfach, ohne Blockzustände und ohne Dauerscans; der Baum zerfällt sichtbar nach und nach.
+- **Grenze:** Blätter, die nahe am Stamm eines anderen Baums hängen, bleiben. Per Cheat gesetzte Blätter verhalten sich wie natürliche (Spieler erhalten sonst keine Blätter, ihre Drops sind leer bis auf Setzlinge).
+- **Verworfen:** Minecraft-artige Distanz entlang verbundener Blätter (Blockzustand pro Blatt nötig); Zufallsticks über alle geladenen Blätter (Dauerlast).
+
+## E-031 Setzlinge als datenbasierte Pflanzen
+
+- **Was:** Ein Block mit `sapling`-Objekt (Feature, Wachstumszeit, Boden, Pflanzchance) ist ein Setzling. Er steht nur auf erlaubtem Boden, bricht mit seinem Boden weg und wächst nach zufälliger Zeit (nur in geladenen Chunks) über dieselbe Baumform wie der Generator (`QcTreeShape`) zum Baum, wenn der Stamm Platz hat; sonst versucht er es alle 30 s erneut. Liegt ein Setzling-Item 300 s, pflanzt es sich mit der Pflanzchance (Basisspiel 75 %) an seiner Stelle ein. Setzlinge haben die Kreuzform (`"shape": "cross"`), die der Mesher als zwei gekreuzte, beidseitige Quads zeichnet. Wachsende Setzlinge werden in `entities.qce` gespeichert.
+- **Warum:** Wiederaufforstung ohne Skripte, vollständig aus Daten erweiterbar.
+- **Verworfen:** Zufallsticks pro Chunk (Dauerlast), eigene Baumformen für gewachsene Bäume.

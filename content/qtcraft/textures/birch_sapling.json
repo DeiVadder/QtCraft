@@ -1,0 +1,8 @@
+{
+    "name": "birch_sapling",
+    "pattern": "sapling",
+    "primary": "#6a9a4a",
+    "secondary": "#d8d4c8",
+    "variation": 0.15,
+    "seed": 24
+}

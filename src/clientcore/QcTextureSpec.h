@@ -29,6 +29,8 @@ struct QcTextureSpec
         Stick,
         Ingot,
         Gem,
+        // Small plant: a stem in the secondary colour under a leafy crown in the primary colour.
+        Sapling,
     };
 
     Pattern pattern = Pattern::Noise;

@@ -6,6 +6,8 @@
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
 #include "QcInventory.h"
+#include "QcItemEntityManager.h"
+#include "QcPlantManager.h"
 #include "QcResult.h"
 
 #include <QDateTime>
@@ -27,6 +29,15 @@ struct QcWorldInfo
     double worldTime = 0.0;
     // Content packs (base game and mods) used when the world was last saved.
     QList<QcPackReference> packs;
+    // Game rule: players keep their inventory when they die instead of dropping it.
+    bool keepInventory = true;
+};
+
+// Dropped items and growing saplings of a world (entities.qce).
+struct QcWorldEntities
+{
+    QList<QcItemEntityManager::Drop> items;
+    QList<QcPlantManager::Sapling> saplings;
 };
 
 struct QcPlayerData
@@ -39,7 +50,8 @@ struct QcPlayerData
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
-// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each) and players (players/<name>.qcp). Only modified chunks
+// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each), players (players/<name>.qcp) and dropped items with
+// growing saplings (entities.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
@@ -63,6 +75,10 @@ public:
     // std::nullopt without error when the player has never been saved.
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const;
     QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const;
+
+    // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
+    QcResult<QcWorldEntities> readEntities(QStringList &warnings) const;
+    QcStatus writeEntities(const QcWorldEntities &entities) const;
 
     static QcChunkPos regionOf(QcChunkPos chunk);
 

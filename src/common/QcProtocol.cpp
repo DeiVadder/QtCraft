@@ -148,6 +148,7 @@ struct Encoder
     void operator()(const QcMsg::EntitySpawn &m)
     {
         stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
+        writeStack(m.item);
     }
     void operator()(const QcMsg::EntityMoves &m)
     {
@@ -161,6 +162,7 @@ struct Encoder
     void operator()(QcMsg::WorldTime m) { stream << m.time << m.dayLength; }
     void operator()(QcMsg::AttackEntity m) { stream << m.id; }
     void operator()(QcMsg::Respawn) {}
+    void operator()(QcMsg::DropItem m) { stream << m.wholeStack; }
 
     void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
@@ -414,6 +416,7 @@ QcResult<QcMessage> decodePayload<QcMsg::EntitySpawn>(QDataStream &stream)
 {
     QcMsg::EntitySpawn m;
     stream >> m.id >> m.mobType >> m.name >> m.position >> m.yaw >> m.health;
+    m.item = readStack(stream);
     if (!isFinite(m.position) || !std::isfinite(m.yaw) || !std::isfinite(m.health)) {
         return qcError(u"Non-finite entity data"_s);
     }
@@ -483,6 +486,14 @@ QcResult<QcMessage> decodePayload<QcMsg::Respawn>(QDataStream &)
     return QcMsg::Respawn{};
 }
 
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::DropItem>(QDataStream &stream)
+{
+    QcMsg::DropItem m;
+    stream >> m.wholeStack;
+    return m;
+}
+
 template<std::size_t... I>
 QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
 {
@@ -527,7 +538,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>()
                                || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>()
                                || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
-                               || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>();
+                               || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
+                               || is.template operator()<QcMsg::DropItem>();
     return clientMessage == (sender == Peer::Client);
 }
 

@@ -163,12 +163,22 @@ Rectangle {
                     selectByMouse: true
                 }
 
+                CheckBox {
+                    id: keepInventory
+
+                    Layout.fillWidth: true
+                    checked: true
+                    text: qsTr("Keep inventory on death")
+                    palette.windowText: "white"
+                }
+
                 Button {
                     Layout.fillWidth: true
                     text: qsTr("Create and play")
                     highlighted: true
                     onClicked: menu.game.createWorld(worldName.text,
-                                                     seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)))
+                                                     seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)),
+                                                     keepInventory.checked)
                 }
 
                 Item {

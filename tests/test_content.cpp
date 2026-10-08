@@ -208,6 +208,92 @@ private slots:
         QVERIFY2(parsed.error().contains(expectedFragment), qPrintable(parsed.error()));
     }
 
+    void parsesSaplingsCrossShapesAndDropChances()
+    {
+        const auto sapling = QcContentParser::parseBlock(
+            json(R"({"name":"oak_sapling","shape":"cross","hardness":0,"drops":[{"item":"stick","chance":0.25}],)"
+                 R"("sapling":{"feature":"oak_tree","minSeconds":10,"maxSeconds":20,"plantOn":["grass","other:dirt"],"plantChance":0.5},)"
+                 R"("textures":{"all":"oak_sapling"}})"),
+            u"b"_s);
+        QVERIFY2(sapling.has_value(), qcErrorText(sapling).constData());
+        QCOMPARE(sapling->shape, QcBlockShape::Cross);
+        // Cross shapes default to a non-solid cutout block.
+        QCOMPARE(sapling->renderLayer, QcRenderLayer::Cutout);
+        QVERIFY(!sapling->solid);
+        QVERIFY(!sapling->opaque);
+        QCOMPARE(sapling->drops.first().chance, 0.25);
+        QCOMPARE(sapling->sapling.feature, u"b:oak_tree"_s);
+        QCOMPARE(sapling->sapling.minSeconds, 10.0);
+        QCOMPARE(sapling->sapling.maxSeconds, 20.0);
+        QCOMPARE(sapling->sapling.plantOn, (QList<QString>{u"b:grass"_s, u"other:dirt"_s}));
+        QCOMPARE(sapling->sapling.plantChance, 0.5);
+        QVERIFY(sapling->sapling.isSapling());
+
+        const auto plain = QcContentParser::parseBlock(json(R"({"name":"stone","textures":{"all":"stone"}})"), u"b"_s);
+        QCOMPARE(plain->shape, QcBlockShape::Cube);
+        QCOMPARE(plain->drops.first().chance, 1.0);
+        QVERIFY(!plain->sapling.isSapling());
+    }
+
+    void parserRejectsBadSaplings_data()
+    {
+        QTest::addColumn<QByteArray>("document");
+        QTest::addColumn<QString>("expectedFragment");
+        QTest::newRow("shape") << QByteArray(R"({"name":"x","shape":"sphere","textures":{"all":"x"}})") << u"'shape'"_s;
+        QTest::newRow("opaque cross") << QByteArray(R"({"name":"x","shape":"cross","render":"opaque","textures":{"all":"x"}})")
+                                      << u"cross-shaped"_s;
+        QTest::newRow("chance") << QByteArray(R"({"name":"x","drops":[{"item":"y","chance":1.5}],"textures":{"all":"x"}})")
+                                << u"chance"_s;
+        QTest::newRow("no feature") << QByteArray(R"({"name":"x","shape":"cross","sapling":{},"textures":{"all":"x"}})")
+                                    << u"'feature'"_s;
+        QTest::newRow("solid") << QByteArray(R"({"name":"x","sapling":{"feature":"t"},"textures":{"all":"x"}})")
+                               << u"must not be solid"_s;
+        QTest::newRow("times") << QByteArray(R"({"name":"x","shape":"cross","sapling":{"feature":"t","minSeconds":50,"maxSeconds":10},"textures":{"all":"x"}})")
+                               << u"maxSeconds"_s;
+        QTest::newRow("plantOn") << QByteArray(R"({"name":"x","shape":"cross","sapling":{"feature":"t","plantOn":[3]},"textures":{"all":"x"}})")
+                                 << u"plantOn"_s;
+        QTest::newRow("not object") << QByteArray(R"({"name":"x","shape":"cross","sapling":"t","textures":{"all":"x"}})")
+                                    << u"'sapling'"_s;
+    }
+
+    void parserRejectsBadSaplings()
+    {
+        QFETCH(QByteArray, document);
+        QFETCH(QString, expectedFragment);
+        const auto parsed = QcContentParser::parseBlock(QJsonDocument::fromJson(document).object(), u"b"_s);
+        QVERIFY(!parsed.has_value());
+        QVERIFY2(parsed.error().contains(expectedFragment), qPrintable(parsed.error()));
+    }
+
+    void saplingDataSurvivesSerialization()
+    {
+        QcContentRegistry registry;
+        QcBlockDefinition sapling = block(u"a:sapling"_s);
+        sapling.shape = QcBlockShape::Cross;
+        sapling.renderLayer = QcRenderLayer::Cutout;
+        sapling.solid = false;
+        sapling.opaque = false;
+        sapling.drops = {{u"a:sapling"_s, 1, 0.3}};
+        sapling.sapling = {u"a:tree"_s, 5.0, 9.0, {u"a:dirt"_s}, 0.6};
+        QVERIFY(registry.registerBlock(sapling).has_value());
+        QByteArray data;
+        {
+            QDataStream out(&data, QIODevice::WriteOnly);
+            registry.writeTo(out);
+        }
+        QDataStream in(data);
+        const QcResult<QcContentRegistry> copy = QcContentRegistry::readFrom(in);
+        QVERIFY2(copy.has_value(), qcErrorText(copy).constData());
+        const QcBlockDefinition &read = copy->block(1);
+        QCOMPARE(read.shape, QcBlockShape::Cross);
+        QCOMPARE(read.drops.first().chance, 0.3);
+        QCOMPARE(read.sapling.feature, u"a:tree"_s);
+        QCOMPARE(read.sapling.minSeconds, 5.0);
+        QCOMPARE(read.sapling.maxSeconds, 9.0);
+        QCOMPARE(read.sapling.plantOn, QList<QString>{u"a:dirt"_s});
+        QCOMPARE(read.sapling.plantChance, 0.6);
+    }
+
     void invisibleBlocksNeedNoTextures()
     {
         const auto parsed = QcContentParser::parseBlock(json(R"({"name":"barrier","render":"invisible"})"), u"b"_s);

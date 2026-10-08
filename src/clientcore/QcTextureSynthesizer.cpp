@@ -179,6 +179,22 @@ void paint(QImage &image, const QcTextureSpec &spec)
                                       : QColor(0, 0, 0, 0);
                 break;
             }
+            case QcTextureSpec::Pattern::Sapling: {
+                const bool stem = (x == 7 || x == 8) && y >= 9;
+                const double dx = x - 7.5;
+                const double dy = y - 6.0;
+                const bool crown = dx * dx + dy * dy * 1.4 < 26.0 + 8.0 * noise(spec.seed, x, y)
+                                   && (hashPixel(spec.seed + 37, x, y) % 5) != 0 && y <= 11;
+                if (crown) {
+                    color = (hashPixel(spec.seed + 41, x, y) % 3) == 0 ? varied(spec, spec.primary, x, y, 3)
+                                                                       : varied(spec, spec.primary, x, y);
+                } else if (stem) {
+                    color = varied(spec, spec.secondary, x, y, 5);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
             case QcTextureSpec::Pattern::Lump: {
                 const double dx = x - 7.5;
                 const double dy = y - 7.5;

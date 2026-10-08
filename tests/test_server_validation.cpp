@@ -2,6 +2,7 @@
 #include "QcConnection.h"
 #include "QcInProcessTransport.h"
 #include "QcMining.h"
+#include "QcPhysics.h"
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
 
@@ -53,6 +54,12 @@ public:
             openedCrafting = open->size;
         } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
             entities.insert(spawn->id, spawn->mobType);
+            if (spawn->mobType == QcMsg::EntitySpawn::itemType) {
+                items.insert(spawn->id, spawn->item);
+            }
+        } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
+            entities.remove(removed->id);
+            items.remove(removed->id);
         }
     }
 
@@ -67,6 +74,8 @@ public:
     double health = 0.0;
     bool dead = false;
     QHash<quint32, qint32> entities;
+    // Item entities the client was told about, with their latest stack.
+    QHash<quint32, QcItemStack> items;
 };
 
 void pump()
@@ -88,6 +97,7 @@ private:
     std::unique_ptr<QcServer> m_server;
     std::unique_ptr<RawClient> m_client;
     QcBlockPos m_feet;
+    quint32 m_sequence = 1000;
 
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
@@ -113,6 +123,12 @@ private:
         ticks(2);
         const QcVec3 p = m_client->motion.position;
         m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        // The spawn lies at a chunk corner; generate the neighbours now so the whole stage exists.
+        for (int cx = -1; cx <= 1; ++cx) {
+            for (int cz = -1; cz <= 1; ++cz) {
+                m_server->world().loadChunk({m_feet.chunk().x + cx, m_feet.chunk().z + cz});
+            }
+        }
         // A flat 7 x 7 stage around the player, independent of the generated hills.
         for (int dx = -3; dx <= 3; ++dx) {
             for (int dz = -3; dz <= 3; ++dz) {
@@ -147,6 +163,18 @@ private:
         ticks(1);
     }
 
+    // Lets the player stand still for some ticks; the server moves players only on input.
+    void idle(int count)
+    {
+        for (int i = 0; i < count; ++i) {
+            QcPlayerInput input;
+            input.sequence = ++m_sequence;
+            m_client->connection.send(QcMsg::PlayerInput{input});
+            pump();
+            ticks(1);
+        }
+    }
+
     // Drops the player down a 10 m shaft, which costs 7 health.
     void fallDownShaft()
     {
@@ -168,6 +196,15 @@ private:
         int total = 0;
         for (const QcItemStack &stack : std::as_const(m_client->stacks)) {
             total += stack.item == wanted ? stack.count : 0;
+        }
+        return total;
+    }
+
+    int droppedCount(QcItemId wanted) const
+    {
+        int total = 0;
+        for (const QcItemEntityManager::Item &dropped : m_server->items().items()) {
+            total += dropped.stack.item == wanted ? dropped.stack.count : 0;
         }
         return total;
     }
@@ -202,7 +239,13 @@ private slots:
         m_client->connection.send(QcMsg::FinishMining{below});
         pump();
         QCOMPARE(m_server->world().blockAt(below), std::optional<QcBlockId>(qcAirBlockId));
+        // The drop lies in the world first and reaches the player once the pickup delay is over.
+        QCOMPARE(countOf(item("qtcraft:dirt")), 0);
+        QCOMPARE(m_server->items().items().size(), 1);
+        // The player falls into the hole and lands on the item.
+        idle(int(QcItemEntityManager::pickupDelay * QcPhysics::tickRate) + 10);
         QCOMPARE(countOf(item("qtcraft:dirt")), 1);
+        QVERIFY(m_server->items().items().isEmpty());
     }
 
     void miningOutOfReachIsRefused()
@@ -412,7 +455,13 @@ private slots:
             ticks(12);
         }
         QVERIFY(!m_server->mobs().find(pig));
-        QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 2);
+        // The loot falls into the pit, out of the player's reach.
+        int dropped = 0;
+        for (const QcItemEntityManager::Item &loot : m_server->items().items()) {
+            dropped += loot.stack.item == item("qtcraft:raw_porkchop") ? loot.stack.count : 0;
+        }
+        QCOMPARE(dropped, 2);
+        QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 0);
 
         // A mob far away cannot be hit.
         m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), m_client->motion.position + QcVec3{20.0, 0.0, 0.0}, 999);
@@ -616,6 +665,295 @@ private slots:
         send(QcMsg::ConsumeItem{});
         QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 1);
         QVERIFY(m_client->health > 13.0);
+    }
+
+    void deathDropsTheInventoryOnlyWithoutKeepInventory()
+    {
+        join();
+        QVERIFY(m_server->keepInventory());
+        chat(u"/give dirt 5"_s);
+        chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 5);
+        QVERIFY(m_server->items().items().isEmpty());
+        send(QcMsg::Respawn{});
+
+        chat(u"/gamerule keepInventory false"_s);
+        QVERIFY(!m_server->keepInventory());
+        QVERIFY(m_client->chatLines.last().contains(u"false"_s));
+        chat(u"/give stone_pickaxe"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:stone_pickaxe"))});
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:dirt")), QcServer::craftingGridSlot, 2});
+        chat(u"/kill"_s);
+        QVERIFY(m_client->dead);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 0);
+        QCOMPARE(countOf(item("qtcraft:stone_pickaxe")), 0);
+        QVERIFY(std::ranges::all_of(m_client->craftingGrid, &QcItemStack::isEmpty));
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 5);
+        QCOMPARE(droppedCount(item("qtcraft:stone_pickaxe")), 1);
+        // Dead players pick nothing up.
+        ticks(30);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 5);
+        // Respawned at the same spot, the player gathers the items again; none get lost on the way.
+        send(QcMsg::Respawn{});
+        idle(40);
+        QCOMPARE(countOf(item("qtcraft:dirt")) + droppedCount(item("qtcraft:dirt")), 5);
+        QVERIFY(countOf(item("qtcraft:dirt")) > 0);
+    }
+
+    void gameRuleNeedsCheatsAndAValue()
+    {
+        QcServerConfig config;
+        config.allowCheats = false;
+        config.keepInventory = false;
+        join(config);
+        chat(u"/gamerule keepInventory"_s);
+        QVERIFY(m_client->chatLines.last().contains(u"false"_s));
+        chat(u"/gamerule keepInventory true"_s);
+        QVERIFY(m_client->chatLines.last().contains(u"disabled"_s));
+        QVERIFY(!m_server->keepInventory());
+        cleanup();
+        join();
+        chat(u"/gamerule keepInventory maybe"_s);
+        QVERIFY(m_client->chatLines.last().startsWith(u"Usage"_s));
+        QVERIFY(m_server->keepInventory());
+    }
+
+    void droppedItemsAreThrownAndSentToClients()
+    {
+        join();
+        chat(u"/give dirt 5"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:dirt"))});
+        send(QcMsg::DropItem{false});
+        QCOMPARE(countOf(item("qtcraft:dirt")), 4);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 1);
+        QCOMPARE(m_server->items().items().first().pickupDelay > 0.0, true);
+        send(QcMsg::DropItem{true});
+        QCOMPARE(countOf(item("qtcraft:dirt")), 0);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 5);
+        // Nothing to drop: nothing happens.
+        send(QcMsg::DropItem{true});
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 5);
+        ticks(2);
+        int seen = 0;
+        for (const QcItemStack &stack : std::as_const(m_client->items)) {
+            QCOMPARE(stack.item, item("qtcraft:dirt"));
+            seen += stack.count;
+        }
+        QCOMPARE(seen, 5);
+        // Thrown items land a few metres ahead, out of the player's reach.
+        ticks(int(QcItemEntityManager::thrownPickupDelay * QcPhysics::tickRate) + 5);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 0);
+        for (const QcItemEntityManager::Item &thrown : m_server->items().items()) {
+            QVERIFY((thrown.motion.position - m_client->motion.position).length() > 1.5);
+        }
+    }
+
+    void itemsMergeAndClientsLearnTheNewCount()
+    {
+        join();
+        const QcVec3 spot{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        QcItemEntityManager::Drop drop;
+        drop.stack = {item("qtcraft:dirt"), 3, 0};
+        drop.position = spot;
+        m_server->items().spawn(drop, 9001);
+        drop.position = spot + QcVec3{0.3, 0.0, 0.0};
+        m_server->items().spawn(drop, 9002);
+        ticks(1);
+        QCOMPARE(m_client->items.size(), 2);
+        ticks(QcItemEntityManager::mergeIntervalTicks + 1);
+        QCOMPARE(m_client->items.size(), 1);
+        QCOMPARE(m_client->items.begin()->count, 6);
+    }
+
+    void saplingsArePlantedOnSuitableGroundAndBreakWithIt()
+    {
+        join();
+        chat(u"/give oak_sapling 3"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:oak_sapling"))});
+        const QcBlockPos grass = m_feet.offset(2, -1, 0);
+        send(QcMsg::UseItem{grass, QcBlockFace::Up});
+        QCOMPARE(m_server->world().blockAt(grass.offset(0, 1, 0)), std::optional<QcBlockId>(id("qtcraft:oak_sapling")));
+        QCOMPARE(m_server->plants().saplings().size(), 1);
+        QCOMPARE(countOf(item("qtcraft:oak_sapling")), 2);
+        // Not on stone, and not on another sapling.
+        const QcBlockPos stone = m_feet.offset(-2, -1, 0);
+        m_server->world().setBlock(stone, id("qtcraft:stone"));
+        send(QcMsg::UseItem{stone, QcBlockFace::Up});
+        QCOMPARE(m_server->world().blockAt(stone.offset(0, 1, 0)), std::optional<QcBlockId>(qcAirBlockId));
+        send(QcMsg::UseItem{grass.offset(0, 1, 0), QcBlockFace::Up});
+        QCOMPARE(m_server->world().blockAt(grass.offset(0, 2, 0)), std::optional<QcBlockId>(qcAirBlockId));
+        QCOMPARE(countOf(item("qtcraft:oak_sapling")), 2);
+
+        // Breaking the ground breaks the sapling, which drops itself.
+        const double grassSeconds = QcMining::breakSeconds(m_content->block(id("qtcraft:grass_block")), nullptr);
+        send(QcMsg::StartMining{grass});
+        ticks(int(std::ceil(grassSeconds * QcPhysics::tickRate)));
+        send(QcMsg::FinishMining{grass});
+        QCOMPARE(m_server->world().blockAt(grass), std::optional<QcBlockId>(qcAirBlockId));
+        QCOMPARE(m_server->world().blockAt(grass.offset(0, 1, 0)), std::optional<QcBlockId>(qcAirBlockId));
+        QCOMPARE(droppedCount(item("qtcraft:oak_sapling")), 1);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 1);
+        ticks(1);
+        QVERIFY(m_server->plants().saplings().isEmpty());
+    }
+
+    void despawningSaplingsPlantThemselves()
+    {
+        join();
+        // Twenty old sapling items on grass, one per block; with a chance of 3/4 each, some take root.
+        int spawned = 0;
+        for (int dx = -3; dx <= 3 && spawned < 20; ++dx) {
+            for (int dz = -3; dz <= 3 && spawned < 20; ++dz) {
+                if (std::abs(dx) + std::abs(dz) < 2) {
+                    continue;
+                }
+                QcItemEntityManager::Drop drop;
+                drop.stack = {item("qtcraft:oak_sapling"), 1, 0};
+                drop.position = {m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+                drop.age = QcItemEntityManager::despawnSeconds - 0.01;
+                drop.pickupDelay = 10.0;
+                m_server->items().spawn(drop, quint32(9100 + spawned++));
+            }
+        }
+        ticks(1);
+        QVERIFY(m_server->items().items().isEmpty());
+        int planted = 0;
+        for (int dx = -3; dx <= 3; ++dx) {
+            for (int dz = -3; dz <= 3; ++dz) {
+                planted += m_server->world().blockAt(m_feet.offset(dx, 0, dz)) == id("qtcraft:oak_sapling") ? 1 : 0;
+            }
+        }
+        QVERIFY2(planted >= 8 && planted <= 20, qPrintable(QString::number(planted)));
+        QCOMPARE(m_server->plants().saplings().size(), planted);
+        // Other items just vanish.
+        QcItemEntityManager::Drop dirt;
+        dirt.stack = {item("qtcraft:dirt"), 1, 0};
+        dirt.position = {m_feet.x + 0.5, double(m_feet.y) + 3.0, m_feet.z + 3.5};
+        dirt.age = QcItemEntityManager::despawnSeconds - 0.01;
+        m_server->items().spawn(dirt, 9200);
+        ticks(1);
+        QVERIFY(m_server->items().items().isEmpty());
+    }
+
+    void crowdedCraftingGridSpillsOntoTheGround()
+    {
+        join();
+        chat(u"/give oak_log 4"_s);
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:oak_log")), QcServer::craftingGridSlot, 0});
+        chat(u"/give stone 2304"_s);
+        QCOMPARE(countOf(item("qtcraft:stone")), 36 * 64);
+        send(QcMsg::CloseCrafting{});
+        QCOMPARE(countOf(item("qtcraft:oak_log")), 0);
+        QCOMPARE(droppedCount(item("qtcraft:oak_log")), 4);
+    }
+
+    void spawnItemAndSetBlockCommands()
+    {
+        join();
+        chat(u"/spawnitem dirt 7"_s);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 7);
+        chat(u"/spawnitem dirt 65"_s);
+        chat(u"/spawnitem nothing"_s);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 7);
+        chat(u"/setblock ~2 ~ ~1 oak_sapling"_s);
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 1)), std::optional<QcBlockId>(id("qtcraft:oak_sapling")));
+        QCOMPARE(m_server->plants().saplings().size(), 1);
+        chat(u"/setblock %1 %2 %3 glass"_s.arg(m_feet.x + 1).arg(m_feet.y).arg(m_feet.z + 2));
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(1, 0, 2)), std::optional<QcBlockId>(id("qtcraft:glass")));
+        // Air breaks the block below the sapling without drops; the sapling falls off and drops itself.
+        chat(u"/setblock ~2 ~-1 ~1 air"_s);
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 1)), std::optional<QcBlockId>(qcAirBlockId));
+        QCOMPARE(droppedCount(item("qtcraft:oak_sapling")), 1);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 7);
+        chat(u"/setblock ~ 9999 ~ glass"_s);
+        QVERIFY(m_client->chatLines.last().startsWith(u"Usage"_s));
+        chat(u"/setblock ~x ~ ~ glass"_s);
+        QVERIFY(m_client->chatLines.last().startsWith(u"Usage"_s));
+        cleanup();
+        QcServerConfig noCheats;
+        noCheats.allowCheats = false;
+        join(noCheats);
+        chat(u"/spawnitem dirt"_s);
+        chat(u"/setblock ~1 ~ ~ glass"_s);
+        QVERIFY(m_server->items().items().isEmpty());
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(1, 0, 0)), std::optional<QcBlockId>(qcAirBlockId));
+    }
+
+    void stoppingEmptiesOpenGridsWithoutRepairingTools_data()
+    {
+        QTest::addColumn<bool>("disconnectFirst");
+        QTest::newRow("connected") << false;
+        // The game closes the connection before it stops the server.
+        QTest::newRow("disconnected") << true;
+    }
+
+    void stoppingEmptiesOpenGridsWithoutRepairingTools()
+    {
+        QFETCH(bool, disconnectFirst);
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        config.autosaveSeconds = 0;
+        join(config);
+        chat(u"/give stone_pickaxe"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:stone_pickaxe"))});
+        // Wear the pickaxe once on the grass next to the player.
+        const QcBlockPos grass = m_feet.offset(1, -1, 0);
+        send(QcMsg::StartMining{grass});
+        ticks(40);
+        send(QcMsg::FinishMining{grass});
+        QCOMPARE(m_server->world().blockAt(grass), std::optional<QcBlockId>(qcAirBlockId));
+        send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:stone_pickaxe")), QcServer::craftingGridSlot, 0});
+        QCOMPARE(m_client->craftingGrid.first().damage, 1);
+        // A full inventory: the pickaxe cannot go back and must land on the ground, still worn.
+        chat(u"/give stone 2304"_s);
+        if (disconnectFirst) {
+            m_client->connection.close();
+            pump();
+        }
+        QVERIFY(m_server->stop().has_value());
+        m_client.reset();
+        config.viewDistance = 1;
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        QVERIFY(m_server->openWorld().has_value());
+        int pickaxes = 0;
+        for (const QcItemEntityManager::Item &dropped : m_server->items().items()) {
+            if (dropped.stack.item == item("qtcraft:stone_pickaxe")) {
+                ++pickaxes;
+                QCOMPARE(dropped.stack.damage, 1);
+            }
+        }
+        QCOMPARE(pickaxes, 1);
+    }
+
+    void itemsSaplingsAndGameRulesSurviveARestart()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        config.autosaveSeconds = 0;
+        join(config);
+        chat(u"/gamerule keepInventory false"_s);
+        QcItemEntityManager::Drop drop;
+        drop.stack = {item("qtcraft:stone_pickaxe"), 1, 7};
+        drop.position = {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 2.5};
+        m_server->items().spawn(drop, 9300);
+        const QcBlockPos sapling = m_feet.offset(-2, 0, -2);
+        QVERIFY(m_server->world().setBlock(sapling, id("qtcraft:birch_sapling")));
+        m_server->plants().saplingPlaced(sapling, id("qtcraft:birch_sapling"));
+        ticks(1);
+        QVERIFY(m_server->stop().has_value());
+        QVERIFY(QFile::exists(dir.filePath(u"entities.qce"_s)));
+        m_client.reset();
+        config.viewDistance = 1;
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        QVERIFY(m_server->openWorld().has_value());
+        QVERIFY(!m_server->keepInventory());
+        QCOMPARE(m_server->items().items().size(), 1);
+        QCOMPARE(m_server->items().items().first().stack, (QcItemStack{item("qtcraft:stone_pickaxe"), 1, 7}));
+        QCOMPARE(m_server->plants().saplings().size(), 1);
+        QCOMPARE(m_server->plants().saplings().first().pos, sapling);
     }
 
     void failedSavesAreRetried()

@@ -90,6 +90,8 @@ public:
     // Hits the targeted entity; returns false without one.
     bool attack();
     void respawn();
+    // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
+    bool dropItem(bool wholeStack);
     double health() const { return m_health; }
     double maxHealth() const { return m_maxHealth; }
     bool isDead() const { return m_dead; }

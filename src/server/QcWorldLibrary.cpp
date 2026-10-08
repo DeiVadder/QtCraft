@@ -75,7 +75,7 @@ QList<QcWorldLibrary::Entry> QcWorldLibrary::list() const
     return entries;
 }
 
-QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint64 seed) const
+QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint64 seed, bool keepInventory) const
 {
     const QString base = folderNameFor(name);
     QString folder = base;
@@ -87,6 +87,7 @@ QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint
     entry.directory = directoryOf(folder);
     entry.info.name = name.trimmed().isEmpty() ? folder : name.trimmed();
     entry.info.seed = seed;
+    entry.info.keepInventory = keepInventory;
     entry.info.created = QDateTime::currentDateTimeUtc();
     entry.info.lastPlayed = entry.info.created;
     if (const QcStatus written = QcWorldStorage(entry.directory, nullptr).writeInfo(entry.info); !written) {

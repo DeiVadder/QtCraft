@@ -24,9 +24,9 @@ public:
     void setSelectedHotbarSlot(int slot);
     const QcItemStack &selectedStack() const { return m_slots[m_selected]; }
 
-    // Adds items, filling matching stacks first, then empty slots (hotbar first).
-    // Returns the number of items that did not fit.
-    int add(QcItemId item, int count, const QcContentRegistry &content);
+    // Adds items, filling matching stacks first, then empty slots (hotbar first). Damaged items
+    // (`damage` > 0) only go into empty slots. Returns the number of items that did not fit.
+    int add(QcItemId item, int count, const QcContentRegistry &content, int damage = 0);
     // Removes up to `count` items from a slot; returns how many were removed.
     int removeFromSlot(int index, int count);
     int countOf(QcItemId item) const;

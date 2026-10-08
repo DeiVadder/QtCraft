@@ -1,5 +1,7 @@
 #include "QcTerrainGenerator.h"
 
+#include "QcTreeShape.h"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -52,12 +54,7 @@ enum CaveField { TunnelA, TunnelB, Cavern, CaveFieldCount };
 
 struct QcTerrainGenerator::Feature
 {
-    QcFeatureDefinition::Type type = QcFeatureDefinition::Type::Tree;
-    QcBlockId trunk = qcAirBlockId;
-    QcBlockId leaves = qcAirBlockId;
-    int minHeight = 4;
-    int maxHeight = 6;
-    bool cone = false;
+    QcTreeShape::Params shape;
     QSet<QcBlockId> ground;
 };
 
@@ -113,12 +110,13 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
 
     for (const QcFeatureDefinition &definition : m_content->features()) {
         Feature feature;
-        feature.type = definition.type;
-        feature.trunk = resolve(definition.trunkBlock, qcAirBlockId, warnings);
-        feature.leaves = definition.leavesBlock.isEmpty() ? qcAirBlockId : resolve(definition.leavesBlock, qcAirBlockId, warnings);
-        feature.minHeight = definition.minHeight;
-        feature.maxHeight = definition.maxHeight;
-        feature.cone = definition.shape == u"cone"_s;
+        feature.shape.type = definition.type;
+        feature.shape.trunk = resolve(definition.trunkBlock, qcAirBlockId, warnings);
+        feature.shape.leaves =
+            definition.leavesBlock.isEmpty() ? qcAirBlockId : resolve(definition.leavesBlock, qcAirBlockId, warnings);
+        feature.shape.minHeight = definition.minHeight;
+        feature.shape.maxHeight = definition.maxHeight;
+        feature.shape.cone = definition.shape == u"cone"_s;
         for (const QString &ground : definition.groundBlocks) {
             feature.ground.insert(resolve(ground, qcAirBlockId, warnings));
         }
@@ -412,54 +410,17 @@ void QcTerrainGenerator::placeFeature(QcChunk &chunk, const Feature &feature, in
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
-    const auto put = [&](int wx, int wy, int wz, QcBlockId block, bool onlyIntoAir) {
-        const int lx = wx - baseX;
-        const int lz = wz - baseZ;
-        if (lx < 0 || lx >= QcWorld::chunkSize || lz < 0 || lz >= QcWorld::chunkSize || wy < 0 || wy >= QcWorld::worldHeight) {
+    QcTreeShape::build(feature.shape, {x, baseY, z}, random, m_seed, [&](QcBlockPos pos, QcBlockId block, bool onlyIntoAir) {
+        const int lx = pos.x - baseX;
+        const int lz = pos.z - baseZ;
+        if (lx < 0 || lx >= QcWorld::chunkSize || lz < 0 || lz >= QcWorld::chunkSize || pos.y < 0 || pos.y >= QcWorld::worldHeight) {
             return;
         }
-        if (onlyIntoAir && chunk.block(lx, wy, lz) != qcAirBlockId) {
+        if (onlyIntoAir && chunk.block(lx, pos.y, lz) != qcAirBlockId) {
             return;
         }
-        chunk.setBlock(lx, wy, lz, block);
-    };
-    const int height = feature.minHeight + int(random * (feature.maxHeight - feature.minHeight + 1));
-    for (int dy = 0; dy < height; ++dy) {
-        put(x, baseY + dy, z, feature.trunk, false);
-    }
-    if (feature.type != QcFeatureDefinition::Type::Tree) {
-        return;
-    }
-    if (feature.cone) {
-        // Spruce-like: rings shrinking towards the top, starting two blocks above the ground.
-        const int crownBottom = baseY + 2;
-        const int crownTop = baseY + height;
-        for (int y = crownBottom; y <= crownTop; ++y) {
-            const int radius = std::max(0, std::min(3, (crownTop - y + 2) / 2));
-            for (int dx = -radius; dx <= radius; ++dx) {
-                for (int dz = -radius; dz <= radius; ++dz) {
-                    if (std::abs(dx) + std::abs(dz) <= radius + 1) {
-                        put(x + dx, y, z + dz, feature.leaves, true);
-                    }
-                }
-            }
-        }
-        return;
-    }
-    // Round crown: two wide layers below the top, two narrow layers at the top.
-    const int top = baseY + height;
-    for (int y = top - 3; y <= top; ++y) {
-        const int radius = y >= top - 1 ? 1 : 2;
-        for (int dx = -radius; dx <= radius; ++dx) {
-            for (int dz = -radius; dz <= radius; ++dz) {
-                const bool corner = std::abs(dx) == radius && std::abs(dz) == radius;
-                if (corner && (y == top || qcPositionRandom(m_seed, x + dx, y, z + dz) < 0.5)) {
-                    continue;
-                }
-                put(x + dx, y, z + dz, feature.leaves, true);
-            }
-        }
-    }
+        chunk.setBlock(lx, pos.y, lz, block);
+    });
 }
 
 void QcTerrainGenerator::placeFeatures(QcChunk &chunk) const

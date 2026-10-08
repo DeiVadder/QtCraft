@@ -129,15 +129,25 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 
     block.translationKey = reader.string(u"translation"_s,
                                          u"block.%1.%2"_s.arg(blockNamespace, localPart(block.name).replace(u'/', u'.')));
-    const QString layerName = reader.string(u"render"_s, u"opaque"_s);
+    const QString shapeName = reader.string(u"shape"_s, u"cube"_s);
+    if (shapeName == u"cross"_s) {
+        block.shape = QcBlockShape::Cross;
+    } else if (shapeName != u"cube"_s) {
+        reader.fail(u"'shape' must be cube or cross"_s);
+    }
+    const bool cross = block.shape == QcBlockShape::Cross;
+    const QString layerName = reader.string(u"render"_s, cross ? u"cutout"_s : u"opaque"_s);
     const std::optional<QcRenderLayer> layer = renderLayerFromName(layerName);
     if (!layer) {
         reader.fail(u"'render' must be opaque, cutout, translucent or invisible"_s);
     }
     block.renderLayer = layer.value_or(QcRenderLayer::Opaque);
-    const bool fullCube = block.renderLayer == QcRenderLayer::Opaque;
-    block.solid = reader.boolean(u"solid"_s, true);
+    const bool fullCube = block.renderLayer == QcRenderLayer::Opaque && !cross;
+    block.solid = reader.boolean(u"solid"_s, !cross);
     block.opaque = reader.boolean(u"opaque"_s, fullCube);
+    if (cross && (block.opaque || block.renderLayer == QcRenderLayer::Opaque)) {
+        reader.fail(u"cross-shaped blocks must use render cutout or translucent and cannot be opaque"_s);
+    }
     block.liquid = reader.boolean(u"liquid"_s, false);
     block.replaceable = reader.boolean(u"replaceable"_s, false);
     block.lightOpacity = reader.integer(u"lightOpacity"_s, block.opaque ? 15 : (block.liquid ? 2 : 0), 0, 15);
@@ -160,12 +170,49 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
             }
             const QJsonObject dropJson = entry.toObject();
             FieldReader dropReader{dropJson, reader.context, {}};
-            const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64)};
+            const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
+                                  dropReader.number(u"chance"_s, 1.0, 0.0, 1.0)};
             if (!dropReader.ok() || drop.item.isEmpty()) {
                 reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
                 break;
             }
             block.drops.append(drop);
+        }
+    }
+
+    const QJsonValue sapling = json.value(u"sapling"_s);
+    if (!sapling.isUndefined() && !sapling.isObject()) {
+        reader.fail(u"'sapling' must be an object"_s);
+    } else if (sapling.isObject()) {
+        const QJsonObject saplingJson = sapling.toObject();
+        FieldReader saplingReader{saplingJson, reader.context + u" sapling"_s, {}};
+        QcSaplingDefinition &definition = block.sapling;
+        definition.feature = saplingReader.name(u"feature"_s, packNamespace);
+        definition.minSeconds = saplingReader.number(u"minSeconds"_s, 120.0, 1.0, 86400.0);
+        definition.maxSeconds = saplingReader.number(u"maxSeconds"_s, std::max(300.0, definition.minSeconds),
+                                                     definition.minSeconds, 86400.0);
+        definition.plantChance = saplingReader.number(u"plantChance"_s, 0.0, 0.0, 1.0);
+        const QJsonValue plantOn = saplingJson.value(u"plantOn"_s);
+        if (!plantOn.isUndefined() && (!plantOn.isArray() || plantOn.toArray().size() > 64)) {
+            saplingReader.fail(u"'plantOn' must be an array of at most 64 block names"_s);
+        }
+        const QJsonArray plantOnList = plantOn.toArray();
+        for (const auto &entry : plantOnList) {
+            const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+            if (name.isEmpty()) {
+                saplingReader.fail(u"invalid 'plantOn' entry"_s);
+                break;
+            }
+            definition.plantOn.append(name);
+        }
+        if (saplingReader.ok() && definition.feature.isEmpty()) {
+            saplingReader.fail(u"'feature' is required"_s);
+        }
+        if (saplingReader.ok() && block.solid) {
+            saplingReader.fail(u"saplings must not be solid"_s);
+        }
+        if (!saplingReader.ok()) {
+            reader.fail(saplingReader.error);
         }
     }
 
@@ -474,7 +521,7 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.translationKey = reader.string(
         u"translation"_s, u"item.%1.%2"_s.arg(item.name.left(item.name.indexOf(u':')), localPart(item.name).replace(u'/', u'.')));
     item.texture = reader.name(u"texture"_s, packNamespace, item.name);
-    item.maxStack = reader.integer(u"maxStack"_s, 64, 1, 999);
+    item.maxStack = reader.integer(u"maxStack"_s, 64, 1, QcItemDefinition::maxStackLimit);
     item.placesBlock = reader.name(u"places"_s, packNamespace);
     item.tool = reader.string(u"tool"_s);
     item.toolLevel = reader.integer(u"toolLevel"_s, 0, 0, 100);

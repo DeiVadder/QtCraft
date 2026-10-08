@@ -61,5 +61,8 @@
     "item.qtcraft.wooden_sword": "Holzschwert",
     "mob.qtcraft.pig": "Schwein",
     "mob.qtcraft.slime": "Schleim",
-    "mob.qtcraft.zombie": "Zombie"
+    "mob.qtcraft.zombie": "Zombie",
+    "block.qtcraft.oak_sapling": "Eichensetzling",
+    "block.qtcraft.birch_sapling": "Birkensetzling",
+    "block.qtcraft.spruce_sapling": "Fichtensetzling"
 }

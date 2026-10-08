@@ -21,7 +21,7 @@ Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `t
 build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft
 ```
 
-The main menu lists saved worlds, creates new ones (name and optional seed), and opens the settings and the mod list.
+The main menu lists saved worlds, creates new ones (name, optional seed, whether the inventory is kept on death), and opens the settings and the mod list.
 
 | Input | Action |
 |-------|--------|
@@ -29,6 +29,7 @@ The main menu lists saved worlds, creates new ones (name and optional seed), and
 | W A S D, Space, Shift, Ctrl | Move, jump, sneak, sprint |
 | Left mouse / F | Mine; left click on a creature attacks it |
 | Right mouse / R | Place the held block, eat held food, use a crafting table |
+| Q, Ctrl+Q | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
 | 1–9, mouse wheel | Select a hotbar slot |
 | E | Inventory with 2 × 2 crafting grid and recipe list |
 | T or Enter | Chat and commands (`/help`) |

@@ -1,13 +1,16 @@
 #pragma once
 
 #include "QcContentRegistry.h"
+#include "QcItemEntityManager.h"
 #include "QcMobManager.h"
+#include "QcPlantManager.h"
 #include "QcMessages.h"
 #include "QcServerConfig.h"
 #include "QcServerWorld.h"
 #include "QcWorldStorage.h"
 
 #include <QObject>
+#include <QRandomGenerator>
 
 #include <memory>
 #include <vector>
@@ -46,6 +49,10 @@ public:
     quint64 tickCount() const { return m_tickCount; }
     QcServerWorld &world() { return m_world; }
     QcMobManager &mobs() { return m_mobs; }
+    QcItemEntityManager &items() { return m_items; }
+    QcPlantManager &plants() { return m_plants; }
+    bool keepInventory() const { return m_info.keepInventory; }
+    void setKeepInventory(bool keep) { m_info.keepInventory = keep; }
     double worldTime() const { return m_info.worldTime; }
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_openWarnings; }
@@ -53,6 +60,12 @@ public:
 
     // Players are visible to each other and mobs are sent to clients within this distance.
     static constexpr double entityViewDistance = 64.0;
+    // Dropped items are sent to clients within this distance.
+    static constexpr double itemViewDistance = 32.0;
+    // Item moves smaller than this are not sent (items bobbing on water).
+    static constexpr double itemMoveThreshold = 0.02;
+    // Speed of items thrown by a player.
+    static constexpr double throwSpeed = 6.0;
     // Melee reach of players, from the eyes to the target's centre.
     static constexpr double attackReach = 4.0;
     static constexpr double playerAttackCooldown = 0.4;
@@ -80,6 +93,21 @@ private:
     void handleChat(Client &client, const QString &text);
     bool isWithinReach(const Client &client, QcBlockPos pos) const;
     void setBlockAndBroadcast(QcBlockPos pos, QcBlockId block);
+    // Removes a block as if broken: drops its items (when `drops` is set) and lets dependent blocks
+    // react (leaves decay, unsupported saplings break).
+    void breakBlock(QcBlockPos pos, bool drops);
+    void dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos);
+    // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
+    void throwFromPlayer(const Client &client, QcItemStack stack);
+    void handleDropItem(Client &client, QcMsg::DropItem message);
+    void dropInventory(Client &client);
+    // Moves the crafting grid into the inventory; what does not fit is thrown on the ground.
+    void returnCraftingGrid(Client &client);
+    // Puts a despawning sapling item into the ground when there is room.
+    void tryPlant(const QcItemEntityManager::Item &item);
+    bool isLoadedAt(QcBlockPos pos) const;
+    void tickItemsAndPlants();
+    QcStatus saveEntities();
     void sendInventory(Client &client);
     void sendOpenWarnings(Client &client);
     const QcItemDefinition *heldItem(const Client &client) const;
@@ -115,5 +143,8 @@ private:
     std::optional<QcWorldStorage> m_storage;
     QcWorldInfo m_info;
     QcMobManager m_mobs;
+    QcItemEntityManager m_items;
+    QcPlantManager m_plants;
+    QRandomGenerator m_random;
     QStringList m_openWarnings;
 };

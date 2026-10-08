@@ -151,6 +151,47 @@ private slots:
         QVERIFY(host->shutdown().has_value());
     }
 
+    void itemEntitiesAreMirroredAndBogusOnesRejected_data()
+    {
+        QTest::addColumn<qint32>("type");
+        QTest::addColumn<quint32>("item");
+        QTest::addColumn<int>("count");
+        QTest::addColumn<bool>("accepted");
+        const quint32 dirt = *loadContent()->itemId(u"qtcraft:dirt"_s);
+        QTest::newRow("dirt") << QcMsg::EntitySpawn::itemType << dirt << 3 << true;
+        QTest::newRow("unknown item") << QcMsg::EntitySpawn::itemType << 999999u << 3 << false;
+        QTest::newRow("no item") << QcMsg::EntitySpawn::itemType << quint32(qcNoItem) << 3 << false;
+        QTest::newRow("empty stack") << QcMsg::EntitySpawn::itemType << dirt << 0 << false;
+        QTest::newRow("unknown type") << qint32(-3) << dirt << 3 << false;
+    }
+
+    void itemEntitiesAreMirroredAndBogusOnesRejected()
+    {
+        QFETCH(qint32, type);
+        QFETCH(quint32, item);
+        QFETCH(int, count);
+        QFETCH(bool, accepted);
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        QcConnection server(std::move(serverEnd), QcProtocol::Peer::Client, [](QcMessage &&) {});
+        QcClientSession session(std::move(clientEnd), u"Probe"_s);
+        session.start(QcClientSession::TickMode::Manual);
+        server.send(QcMsg::Welcome{QcProtocol::version, 1, u"Fake"_s, 1, 0.0f, 0.0f, false});
+        server.send(QcMsg::ContentSync{m_content});
+        server.send(QcMsg::EntitySpawn{40, type, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {item, count, 0}});
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Disconnected || session.entities().contains(40), timeoutMs);
+        QCOMPARE(session.entities().contains(40), accepted);
+        if (!accepted) {
+            QVERIFY(session.disconnectReason().contains(u"entity"_s));
+            return;
+        }
+        QVERIFY(session.entities().value(40).isItem());
+        // A new count for a known item keeps the entity and its motion history.
+        server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false}}});
+        server.send(QcMsg::EntitySpawn{40, type, QString(), {9.5, 64.0, 0.5}, 0.0f, 0.0, {item, 7, 0}});
+        QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(40).item.count, 7, timeoutMs);
+        QCOMPARE(session.entities().value(40).position, (QcVec3{0.5, 63.0, 0.5}));
+    }
+
     void garbageFrameClosesTheConnection()
     {
         QcServerConfig config;

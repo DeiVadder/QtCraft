@@ -166,16 +166,22 @@ struct ChatMessage
     QString text;
 };
 
-// Server -> client: an entity came into view. mobType is an index into the content's mobs, or -1
-// for another player.
+// Server -> client: an entity came into view. mobType is an index into the content's mobs, or
+// playerType for another player, or itemType for a dropped item stack. Sent again for a known id
+// when an item stack's count changes.
 struct EntitySpawn
 {
+    static constexpr qint32 playerType = -1;
+    static constexpr qint32 itemType = -2;
+
     quint32 id = 0;
-    qint32 mobType = -1;
+    qint32 mobType = playerType;
     QString name;
     QcVec3 position;
     float yaw = 0.0f;
     double health = 0.0;
+    // The stack of an item entity; empty for mobs and players.
+    QcItemStack item;
 };
 
 struct EntityMove
@@ -225,6 +231,12 @@ struct Respawn
 {
 };
 
+// Client -> server: throw one item (or the whole stack) of the selected hotbar slot.
+struct DropItem
+{
+    bool wholeStack = false;
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
@@ -234,4 +246,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::InventoryState, QcMsg::ChatMessage, QcMsg::EntitySpawn, QcMsg::EntityMoves,
                                QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
-                               QcMsg::ConsumeItem, QcMsg::OpenCrafting>;
+                               QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem>;

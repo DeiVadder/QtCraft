@@ -62,6 +62,26 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 
+Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-solid cutout by default), a drop can carry a `"chance"` (0–1, default 1), and a `"sapling"` object turns a block into a sapling that grows into a tree or column feature:
+
+```json
+{
+    "name": "ruby_sapling",
+    "shape": "cross",
+    "hardness": 0,
+    "sapling": {
+        "feature": "ruby_tree",
+        "minSeconds": 90,
+        "maxSeconds": 240,
+        "plantOn": ["qtcraft:grass_block", "qtcraft:dirt"],
+        "plantChance": 0.75
+    },
+    "textures": { "all": "ruby_sapling" }
+}
+```
+
+`plantOn` lists the blocks it may stand on (empty: any solid block), `plantChance` is the chance that a dropped sapling item plants itself when it despawns. Leaves of tree features decay once no trunk of a tree feature is within four blocks; give them a drop with a chance (e.g. the sapling, 0.08) to let forests regrow. The procedural texture pattern `sapling` draws a small plant.
+
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
 
 ### Replacing existing content
@@ -92,4 +112,4 @@ Mods **can**: add and replace blocks, items, recipes, mobs, biomes, features, or
 
 Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 
-Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.
+Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, at most 64 `plantOn` entries per sapling, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.

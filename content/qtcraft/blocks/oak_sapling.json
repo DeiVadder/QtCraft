@@ -1,0 +1,19 @@
+{
+    "name": "oak_sapling",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "sapling": {
+        "feature": "oak_tree",
+        "minSeconds": 90,
+        "maxSeconds": 240,
+        "plantOn": [
+            "grass_block",
+            "dirt"
+        ],
+        "plantChance": 0.75
+    },
+    "textures": {
+        "all": "oak_sapling"
+    }
+}

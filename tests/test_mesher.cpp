@@ -30,6 +30,7 @@ struct Fixture
     QcBlockId stone = 0;
     QcBlockId water = 0;
     QcBlockId leaves = 0;
+    QcBlockId sapling = 0;
     std::shared_ptr<const QcBlockRenderTable> table;
 
     Fixture()
@@ -37,6 +38,10 @@ struct Fixture
         stone = *content.registerBlock(makeBlock(u"t:stone"_s, QcRenderLayer::Opaque, true));
         water = *content.registerBlock(makeBlock(u"t:water"_s, QcRenderLayer::Translucent, false, true));
         leaves = *content.registerBlock(makeBlock(u"t:leaves"_s, QcRenderLayer::Cutout, false));
+        QcBlockDefinition cross = makeBlock(u"t:sapling"_s, QcRenderLayer::Cutout, false, true);
+        cross.liquid = false;
+        cross.shape = QcBlockShape::Cross;
+        sapling = *content.registerBlock(cross);
         table = std::make_shared<const QcBlockRenderTable>(content, QcTextureAtlas::build(content));
     }
 
@@ -92,6 +97,46 @@ private slots:
             QVERIFY(v.y == 20.0f || v.y == 21.0f);
             QVERIFY(v.z == 5.0f || v.z == 6.0f);
         }
+    }
+
+    void crossShapedBlocksAreTwoDoubleSidedQuads()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(3, 20, 5, f.sapling);
+        chunk->setBlock(3, 19, 5, f.stone);
+        QcMeshInput in = f.input(chunk);
+        in.sectionIndex = 1;
+        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        // Four quads of the plant plus all six faces of the stone below: the plant hides nothing.
+        QCOMPARE(quadCount(mesh.opaqueIndices), 4 + 6);
+        int plantVertices = 0;
+        for (const QcBlockVertex &v : mesh.opaqueVertices) {
+            // Stone corners lie on whole coordinates, the inset plant corners strictly inside.
+            if (v.x > 3.0f && v.x < 4.0f) {
+                ++plantVertices;
+                QVERIFY(v.z > 5.0f && v.z < 6.0f);
+                QVERIFY(v.y == 20.0f || v.y == 21.0f);
+            }
+        }
+        QCOMPARE(plantVertices, 16);
+        // Each diagonal is drawn once from each side: the triangles of a pair face opposite ways.
+        const auto normal = [&mesh](int quad) {
+            const quint32 *index = mesh.opaqueIndices.constData() + qsizetype(quad) * 6;
+            const QVector3D a = position(mesh.opaqueVertices[index[0]]);
+            const QVector3D b = position(mesh.opaqueVertices[index[1]]);
+            const QVector3D c = position(mesh.opaqueVertices[index[2]]);
+            return QVector3D::crossProduct(b - a, c - a).normalized();
+        };
+        int pairs = 0;
+        for (int i = 0; i < 10; ++i) {
+            for (int j = i + 1; j < 10; ++j) {
+                if (std::abs(normal(i).y()) < 0.01f && (normal(i) + normal(j)).length() < 0.01f) {
+                    ++pairs;
+                }
+            }
+        }
+        QVERIFY(pairs >= 2);
     }
 
     void otherSectionsProduceNothing()

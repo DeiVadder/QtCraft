@@ -1,0 +1,8 @@
+{
+    "name": "spruce_sapling",
+    "pattern": "sapling",
+    "primary": "#2e5a36",
+    "secondary": "#4f3a22",
+    "variation": 0.15,
+    "seed": 27
+}

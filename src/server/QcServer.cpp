@@ -46,6 +46,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_world(std::move(content), std::move(generator))
     , m_tickTimer(new QTimer(this))
     , m_mobs(m_content, quint64(m_config.seed))
+    , m_items(m_content, quint64(m_config.seed))
+    , m_plants(m_content, quint64(m_config.seed))
+    , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
 {
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(tickIntervalMs);
@@ -63,6 +66,7 @@ QcStatus QcServer::openWorld()
 {
     // New worlds, saved or not, start in the morning.
     m_info.worldTime = QcDayCycle::startTime;
+    m_info.keepInventory = m_config.keepInventory;
     if (m_config.worldDirectory.isEmpty()) {
         return {};
     }
@@ -104,7 +108,19 @@ QcStatus QcServer::openWorld()
         return qcError(chunks.error());
     }
     m_world.adoptStoredChunks(*chunks);
-    qCInfo(lcServer) << "Opened world" << m_info.name << "with" << chunks->size() << "stored chunks";
+    QStringList entityWarnings;
+    const QcResult<QcWorldEntities> entities = m_storage->readEntities(entityWarnings);
+    for (const QString &warning : std::as_const(entityWarnings)) {
+        qCWarning(lcServer) << warning;
+    }
+    m_openWarnings.append(entityWarnings);
+    if (!entities) {
+        return qcError(entities.error());
+    }
+    m_items.restore(entities->items, [this] { return m_nextEntityId++; });
+    m_plants.restoreSaplings(entities->saplings);
+    qCInfo(lcServer) << "Opened world" << m_info.name << "with" << chunks->size() << "stored chunks and"
+                     << m_items.items().size() << "dropped items";
     return {};
 }
 
@@ -123,7 +139,7 @@ QcStatus QcServer::savePlayer(const Client &client)
     int lost = 0;
     for (const QcItemStack &cell : client.craftingGrid) {
         if (!cell.isEmpty()) {
-            lost += player.inventory.add(cell.item, cell.count, *m_content);
+            lost += player.inventory.add(cell.item, cell.count, *m_content, cell.damage);
         }
     }
     if (lost > 0) {
@@ -152,6 +168,9 @@ QcStatus QcServer::save()
         m_world.markDirty(chunks.keys());
         return written;
     }
+    if (const QcStatus written = saveEntities(); !written) {
+        return written;
+    }
     for (const auto &client : m_clients) {
         if (client->joined) {
             if (const QcStatus saved = savePlayer(*client); !saved) {
@@ -162,9 +181,29 @@ QcStatus QcServer::save()
     return {};
 }
 
+QcStatus QcServer::saveEntities()
+{
+    QcWorldEntities entities;
+    for (const QcItemEntityManager::Item &item : m_items.items()) {
+        entities.items.append({item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age});
+    }
+    // Waiting drops follow the items; on the next start they wait again if there is no room.
+    entities.items.append(m_items.queued());
+    entities.saplings = m_plants.saplings();
+    // Only called from save(), which returns early without storage.
+    return m_storage ? m_storage->writeEntities(entities) : QcStatus();
+}
+
 QcStatus QcServer::stop()
 {
     m_tickTimer->stop();
+    // Open crafting grids are emptied like on a disconnect, so overflow lands in the saved world.
+    for (const auto &client : m_clients) {
+        // Also clients that already disconnected: removeClosedClients() will not run any more.
+        if (client->joined) {
+            returnCraftingGrid(*client);
+        }
+    }
     const QcStatus saved = save();
     if (!saved) {
         qCCritical(lcServer) << "Saving failed:" << saved.error();
@@ -235,6 +274,8 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         closeCrafting(client);
     } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
         handleConsume(client);
+    } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
+        handleDropItem(client, *drop);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
         handleAttack(client, attack->id);
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
@@ -429,6 +470,7 @@ void QcServer::tick()
     }
     m_world.collectGeneratedChunks();
     tickGameplay();
+    tickItemsAndPlants();
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing) {
             continue;
@@ -469,6 +511,7 @@ void QcServer::removeClosedClients()
 {
     for (const auto &client : m_clients) {
         if (client->state == Client::State::Closed && client->joined) {
+            returnCraftingGrid(*client);
             // Failures are logged by savePlayer; the client is gone and cannot be told.
             [[maybe_unused]] const QcStatus saved = savePlayer(*client);
         }

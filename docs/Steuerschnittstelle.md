@@ -56,12 +56,14 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 | `recipes` | optional `all` (bool) | Recipes the inventory can make now (or all): `recipe`, `result`, `count`, `needs`, `needsCraftingTable`, `possible`. |
 | `craft` | `recipe`, optional `count` (1–64) | Crafts directly from the inventory (recipe book). 3 × 3 recipes need a crafting table within 5 m. The result appears in `messages` and the inventory. |
 | `mods` | – | Content packs the server loaded, base game first: `{"packs":[{"id","name","version"}]}`. |
-| `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`. |
+| `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`, `/gamerule keepInventory [true\|false]` (without a value: show it), `/spawnitem <item> [count]` (drops up to 64 items two metres ahead), `/setblock <x> <y> <z> <block>` (`~` or `~n` for coordinates relative to the player's feet; saplings start growing, `air` breaks the block without drops). |
 | `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
 | `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |
 | `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |
 | `worldSave` | – | Saves the current world and reports failures (`ok: false` with the reason). |
-| `entities` | `radius` (1–64, default 32) | `{"entities":[{"id","type","name","hostile","position","distance","health"}]}` – mobs and other players in view. |
+| `entities` | `radius` (1–64, default 32) | `{"entities":[{"id","type","name","hostile","position","distance","health"}]}` – mobs and other players in view. Dropped items (sent within 32 m) appear as `{"id","type":"item","item","count","position","distance"}`. |
+| `drop` | optional `all` (bool) | Throws one item (or the whole stack) of the selected hotbar slot ahead; it can be picked up again after 2 s. Fails when the slot is empty. |
+| `collect` | optional `radius` (1–32, default 8), `maxTicks` (default 200) | Walks to the nearest dropped item within the radius again and again until none is left or the time is up; items are picked up by touching them. |
 | `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach, hidden behind blocks, or the hit did not land (0.4 s attack cooldown, short invulnerability after a hit). |
 | `respawn` | – | Leaves the death screen; answers when the player is alive again. |
 | `quit` | – | Ends the process (the current world is saved). |

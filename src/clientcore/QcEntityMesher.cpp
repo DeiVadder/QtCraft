@@ -81,4 +81,70 @@ void appendEntity(QcChunkMesh &mesh, const QcClientEntity &entity, const QList<Q
     }
 }
 
+void appendItem(QcChunkMesh &mesh, const QcClientEntity &entity, const ItemLook &look, double alpha, float light, double seconds,
+                const UvLookup &uv)
+{
+    const QcVec3 position = entity.previousPosition + (entity.position - entity.previousPosition) * alpha;
+    // Every item spins at the same speed but starts at its own angle.
+    const double yaw = qDegreesToRadians(std::fmod(seconds * 60.0 + (entity.id % 360) * 37.0, 360.0));
+    const double cosYaw = std::cos(yaw);
+    const double sinYaw = std::sin(yaw);
+    const double bob = 0.06 + 0.05 * std::sin(seconds * 2.5 + entity.id);
+    const int copies = entity.item.count >= 16 ? 3 : (entity.item.count >= 2 ? 2 : 1);
+    const auto place = [&](double x, double y, double z, const QcVec3 &origin) {
+        const double rx = x * cosYaw - z * sinYaw;
+        const double rz = x * sinYaw + z * cosYaw;
+        QcBlockVertex vertex;
+        vertex.x = float(origin.x + rx);
+        vertex.y = float(origin.y + y);
+        vertex.z = float(origin.z + rz);
+        vertex.skyLight = light;
+        return vertex;
+    };
+    for (int copy = 0; copy < copies; ++copy) {
+        const QcVec3 origin = position + QcVec3{copy * 0.07, bob + copy * 0.05, copy * -0.06};
+        if (look.cube) {
+            const double half = itemCubeSize * 0.5;
+            for (std::size_t face = 0; face < faceCorners.size(); ++face) {
+                const QRectF rect = uv(look.faces[face]);
+                const auto base = quint32(mesh.opaqueVertices.size());
+                for (std::size_t corner = 0; corner < 4; ++corner) {
+                    const auto &c = faceCorners[face][corner];
+                    QcBlockVertex vertex = place(c[0] != 0 ? half : -half, c[1] != 0 ? itemCubeSize : 0.0, c[2] != 0 ? half : -half,
+                                                origin);
+                    vertex.u = float((corner == 0 || corner == 3) ? rect.left() : rect.right());
+                    vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
+                    vertex.shade = faceShade[face];
+                    mesh.opaqueVertices.append(vertex);
+                }
+                mesh.opaqueIndices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+            }
+            continue;
+        }
+        // Two crossed quads, each with a front and a back side.
+        const QRectF rect = uv(look.sprite);
+        const double half = itemSpriteSize * 0.5;
+        for (const auto &[dx, dz] : {std::pair{half, 0.0}, std::pair{0.0, half}}) {
+            for (const bool back : {false, true}) {
+                const auto base = quint32(mesh.opaqueVertices.size());
+                const double side = back ? -1.0 : 1.0;
+                const std::array<std::array<double, 3>, 4> corners = {{
+                    {-dx * side, 0.0, -dz * side},
+                    {dx * side, 0.0, dz * side},
+                    {dx * side, itemSpriteSize, dz * side},
+                    {-dx * side, itemSpriteSize, -dz * side},
+                }};
+                for (std::size_t corner = 0; corner < 4; ++corner) {
+                    QcBlockVertex vertex = place(corners[corner][0], corners[corner][1], corners[corner][2], origin);
+                    vertex.u = float((corner == 0 || corner == 3) ? rect.left() : rect.right());
+                    vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
+                    vertex.shade = 0.95f;
+                    mesh.opaqueVertices.append(vertex);
+                }
+                mesh.opaqueIndices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+            }
+        }
+    }
+}
+
 } // namespace QcEntityMesher

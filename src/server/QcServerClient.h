@@ -7,6 +7,7 @@
 #include "QcInventory.h"
 #include "QcServer.h"
 
+#include <QHash>
 #include <QList>
 #include <QSet>
 #include <QString>
@@ -43,6 +44,13 @@ struct QcServer::Client
     double attackCooldown = 0.0;
     // Entities this client has been told about.
     QSet<quint32> knownEntities;
+    // Last stack count and position sent for each visible item entity.
+    struct ItemView
+    {
+        int count = 0;
+        QcVec3 position;
+    };
+    QHash<quint32, ItemView> knownItems;
     // Crafting grid, row-major with three cells per row; a 2 x 2 grid uses the top-left four.
     QList<QcItemStack> craftingGrid = QList<QcItemStack>(9);
     int craftingSize = 2;

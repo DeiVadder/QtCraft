@@ -61,5 +61,8 @@
     "item.qtcraft.wooden_sword": "Wooden sword",
     "mob.qtcraft.pig": "Pig",
     "mob.qtcraft.slime": "Slime",
-    "mob.qtcraft.zombie": "Zombie"
+    "mob.qtcraft.zombie": "Zombie",
+    "block.qtcraft.oak_sapling": "Oak sapling",
+    "block.qtcraft.birch_sapling": "Birch sapling",
+    "block.qtcraft.spruce_sapling": "Spruce sapling"
 }

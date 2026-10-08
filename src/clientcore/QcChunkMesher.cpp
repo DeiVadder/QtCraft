@@ -196,6 +196,40 @@ bool faceVisible(QcBlockId self, const Entry &selfEntry, std::optional<QcBlockId
     return !(selfEntry.liquid && other.liquid);
 }
 
+// Two quads along the block diagonals, each with a front and a back side so back-face culling
+// keeps both visible.
+void appendCross(QcChunkMesh &mesh, const Entry &entry, QcBlockPos pos, float light)
+{
+    const bool translucent = entry.layer == QcRenderLayer::Translucent;
+    QList<QcBlockVertex> &vertices = translucent ? mesh.translucentVertices : mesh.opaqueVertices;
+    QList<quint32> &indices = translucent ? mesh.translucentIndices : mesh.opaqueIndices;
+    const QRectF &uv = entry.faceUv[std::size_t(QcBlockFace::North)];
+    // Inset a little so the quads do not touch the neighbour blocks.
+    constexpr float low = 0.15f;
+    constexpr float high = 0.85f;
+    constexpr std::array<std::array<float, 4>, 2> diagonals = {{{low, low, high, high}, {low, high, high, low}}};
+    for (const auto &[x0, z0, x1, z1] : diagonals) {
+        for (const bool back : {false, true}) {
+            const std::array<std::array<float, 2>, 2> ends = back ? std::array<std::array<float, 2>, 2>{{{x1, z1}, {x0, z0}}}
+                                                                   : std::array<std::array<float, 2>, 2>{{{x0, z0}, {x1, z1}}};
+            const auto base = quint32(vertices.size());
+            for (std::size_t corner = 0; corner < 4; ++corner) {
+                const auto &end = ends[(corner == 1 || corner == 2) ? 1 : 0];
+                QcBlockVertex vertex;
+                vertex.x = float(pos.x) + end[0];
+                vertex.y = float(pos.y) + (corner < 2 ? 0.0f : 1.0f);
+                vertex.z = float(pos.z) + end[1];
+                vertex.u = float((corner == 0 || corner == 3) ? uv.left() : uv.right());
+                vertex.v = float(corner < 2 ? uv.bottom() : uv.top());
+                vertex.shade = 0.9f;
+                vertex.skyLight = light;
+                vertices.append(vertex);
+            }
+            indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+        }
+    }
+}
+
 } // namespace
 
 QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
@@ -223,6 +257,10 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                 const QcBlockId id = section.block(x, ly, z);
                 const Entry &entry = table.entry(id);
                 if (entry.layer == QcRenderLayer::Invisible) {
+                    continue;
+                }
+                if (entry.cross) {
+                    appendCross(mesh, entry, {worldX + x, y, worldZ + z}, float(sky.level(x, y, z)) / float(SkyLight::maxLevel));
                     continue;
                 }
                 const std::optional<QcBlockId> above = around.block(x, y + 1, z);

@@ -4,6 +4,7 @@
 #include "QcGameSettings.h"
 
 #include "QcClientSession.h"
+#include "QcEntityMesher.h"
 #include "QcInventoryModel.h"
 #include "QcPlayerInput.h"
 #include "QcWorldView.h"
@@ -128,7 +129,7 @@ public:
     Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText);
     Q_INVOKABLE void refreshWorlds();
     // Creates a saved world in the library and starts it.
-    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText);
+    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, bool keepInventory = true);
     Q_INVOKABLE void playWorld(const QString &folder);
     // Deletes a saved world permanently; the UI asks for confirmation first.
     Q_INVOKABLE void deleteWorld(const QString &folder);
@@ -201,6 +202,7 @@ private:
     void handleMouseButton(Qt::MouseButton button, bool pressed);
     void updateIcons(const QcTextureAtlas &atlas);
     void updateEntities(double alpha);
+    static QcEntityMesher::ItemLook itemLook(const QcContentRegistry &content, QcItemId item);
     void updateSky(double alpha);
     void updateInventory();
 

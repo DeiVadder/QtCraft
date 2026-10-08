@@ -176,6 +176,119 @@ private slots:
         QCOMPARE(warnings.size(), 1);
     }
 
+    void gameRulesRoundTripAndDefaultForOldWorlds()
+    {
+        QTemporaryDir dir;
+        const QcWorldStorage storage(dir.path(), registryWith({}));
+        QcWorldInfo info;
+        info.name = u"Rules"_s;
+        info.keepInventory = false;
+        QVERIFY(storage.writeInfo(info).has_value());
+        QCOMPARE(storage.readInfo()->keepInventory, false);
+        // Worlds saved before game rules existed keep the inventory on death, as they always did.
+        QFile file(dir.filePath(u"world.json"_s));
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QByteArray text = file.readAll();
+        file.close();
+        text.replace("\"gameRules\"", "\"unused\"");
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        file.write(text);
+        file.close();
+        QCOMPARE(storage.readInfo()->keepInventory, true);
+    }
+
+    void entitiesRoundTripAndUnknownItems()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QStringList warnings;
+        QVERIFY(storage.readEntities(warnings)->items.isEmpty());
+        QcWorldEntities entities;
+        entities.items.append({{*content->itemId(u"a:stone"_s), 12, 0}, {1.5, 64.0, -2.5}, {0.5, -1.0, 0.0}, 0.25, 42.0});
+        entities.items.append({{*content->itemId(u"mod:gem"_s), 3, 0}, {4.5, 70.0, 4.5}, {}, 0.0, 1.0});
+        entities.saplings.append({{7, 65, -9}, 33.5});
+        QVERIFY(storage.writeEntities(entities).has_value());
+
+        const auto withoutMod = registryWith({u"a:stone"_s});
+        const auto read = QcWorldStorage(dir.path(), withoutMod).readEntities(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->items.size(), 1);
+        const QcItemEntityManager::Drop &stone = read->items.first();
+        QCOMPARE(stone.stack, (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 12, 0}));
+        QCOMPARE(stone.position, (QcVec3{1.5, 64.0, -2.5}));
+        QCOMPARE(stone.velocity, (QcVec3{0.5, -1.0, 0.0}));
+        QCOMPARE(stone.pickupDelay, 0.25);
+        QCOMPARE(stone.age, 42.0);
+        QCOMPARE(read->saplings.size(), 1);
+        QCOMPARE(read->saplings.first().pos, (QcBlockPos{7, 65, -9}));
+        QCOMPARE(read->saplings.first().remaining, 33.5);
+        QCOMPARE(warnings.size(), 1);
+
+        // A flipped byte fails the checksum.
+        QFile file(dir.filePath(u"entities.qce"_s));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.seek(file.size() - 3);
+        file.write("\x7f");
+        file.close();
+        QVERIFY(!storage.readEntities(warnings).has_value());
+    }
+
+    void overfullStacksAreSplitOnLoad()
+    {
+        QTemporaryDir dir;
+        auto content = std::make_shared<QcContentRegistry>();
+        QcItemDefinition tool;
+        tool.name = u"a:tool"_s;
+        tool.maxStack = 1;
+        QVERIFY(content->registerItem(tool).has_value());
+        const QcWorldStorage storage(dir.path(), content);
+        QcWorldEntities entities;
+        entities.items.append({{*content->itemId(u"a:tool"_s), 5, 0}, {0.5, 64.0, 0.5}, {}, 0.0, 0.0});
+        QVERIFY(storage.writeEntities(entities).has_value());
+        QStringList warnings;
+        const auto read = storage.readEntities(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->items.size(), 5);
+        QCOMPARE(read->items.last().stack.count, 1);
+
+        // Large stacks of items that allow them come back whole.
+        QcItemDefinition sand;
+        sand.name = u"a:sand"_s;
+        sand.maxStack = 500;
+        QVERIFY(content->registerItem(sand).has_value());
+        entities.items = {{{*content->itemId(u"a:sand"_s), 300, 0}, {0.5, 64.0, 0.5}, {}, 0.0, 0.0}};
+        QVERIFY(storage.writeEntities(entities).has_value());
+        const auto large = storage.readEntities(warnings);
+        QCOMPARE(large->items.size(), 1);
+        QCOMPARE(large->items.first().stack.count, 300);
+    }
+
+    void implausibleEntitiesAreRejected()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QcWorldEntities entities;
+        entities.items.append({{*content->itemId(u"a:stone"_s), 1, 0}, {std::numeric_limits<double>::quiet_NaN(), 64.0, 0.0}, {}, 0.0, 0.0});
+        QVERIFY(storage.writeEntities(entities).has_value());
+        QStringList warnings;
+        QVERIFY(!storage.readEntities(warnings).has_value());
+        entities.items.clear();
+        entities.saplings.append({{0, 9999, 0}, 1.0});
+        QVERIFY(storage.writeEntities(entities).has_value());
+        QVERIFY(!storage.readEntities(warnings).has_value());
+        // Out-of-range values are clamped instead.
+        entities.saplings.clear();
+        entities.items.append({{*content->itemId(u"a:stone"_s), 500, 0}, {0.5, 64.0, 0.5}, {}, 99.0, 1e6});
+        QVERIFY(storage.writeEntities(entities).has_value());
+        const auto read = storage.readEntities(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->items.first().stack.count, 64);
+        QCOMPARE(read->items.first().age, QcItemEntityManager::despawnSeconds);
+        QCOMPARE(read->items.first().pickupDelay, QcItemEntityManager::thrownPickupDelay);
+    }
+
     void implausiblePlayerDataIsRejected_data()
     {
         QTest::addColumn<double>("x");

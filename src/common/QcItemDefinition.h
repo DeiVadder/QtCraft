@@ -9,6 +9,9 @@ inline constexpr QcItemId qcNoItem = 0;
 
 struct QcItemDefinition
 {
+    // Largest allowed maxStack.
+    static constexpr int maxStackLimit = 999;
+
     QString name;
     QString translationKey;
     // Icon texture; block items use the block's top texture unless set.

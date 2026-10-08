@@ -269,7 +269,7 @@ private slots:
 
     void entityAndStatusMessagesRoundTrip()
     {
-        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5});
+        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}});
         QCOMPARE(spawn.id, 42u);
         QCOMPARE(spawn.mobType, 3);
         QCOMPARE(spawn.name, u"Alex"_s);
@@ -291,6 +291,15 @@ private slots:
         QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).time, 1234.5);
         QCOMPARE(roundTrip(QcMsg::AttackEntity{9}).id, 9u);
         roundTrip(QcMsg::Respawn{});
+
+        const QcMsg::EntitySpawn item = roundTrip(
+            QcMsg::EntitySpawn{7, QcMsg::EntitySpawn::itemType, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {12, 33, 4}});
+        QCOMPARE(item.mobType, QcMsg::EntitySpawn::itemType);
+        QCOMPARE(item.item, (QcItemStack{12, 33, 4}));
+        QCOMPARE(roundTrip(QcMsg::DropItem{true}).wholeStack, true);
+        QCOMPARE(roundTrip(QcMsg::DropItem{false}).wholeStack, false);
+        // Dropping is a client request; a server must not send it.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DropItem{true}), QcProtocol::Peer::Server).has_value());
     }
 
     void rejectsBadEntityAndTimeData()

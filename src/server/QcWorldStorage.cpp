@@ -11,6 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSaveFile>
+#include <QSet>
 
 #include <algorithm>
 #include <cmath>
@@ -24,6 +25,9 @@ constexpr quint16 containerVersion = 1;
 constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
 constexpr QByteArrayView regionMagic("QCRG");
 constexpr QByteArrayView playerMagic("QCPL");
+constexpr QByteArrayView entitiesMagic("QCEN");
+// Far more than the item manager keeps, so a valid file is never cut short.
+constexpr quint32 maxStoredEntities = 65536;
 
 // [magic][quint16 version][quint32 payload size][quint32 crc32][payload]
 QcStatus writeContainer(const QString &path, QByteArrayView magic, const QByteArray &payload)
@@ -139,6 +143,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.created = QDateTime::fromString(json.value(u"created"_s).toString(), Qt::ISODate);
     info.lastPlayed = QDateTime::fromString(json.value(u"lastPlayed"_s).toString(), Qt::ISODate);
     info.worldTime = std::max(0.0, json.value(u"worldTime"_s).toDouble());
+    info.keepInventory = json.value(u"gameRules"_s).toObject().value(u"keepInventory"_s).toBool(true);
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
         const QJsonObject pack = entry.toObject();
@@ -168,7 +173,8 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
                            {u"seed"_s, QString::number(info.seed)},
                            {u"created"_s, info.created.toString(Qt::ISODate)},
                            {u"lastPlayed"_s, info.lastPlayed.toString(Qt::ISODate)},
-                           {u"worldTime"_s, info.worldTime}};
+                           {u"worldTime"_s, info.worldTime},
+                           {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory}}}};
     QSaveFile file(QDir(m_directory).filePath(u"world.json"_s));
     if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(json).toJson()) < 0 || !file.commit()) {
         return qcError(u"Cannot write world info: %1"_s.arg(file.errorString()));
@@ -363,4 +369,104 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
     player.health = std::clamp(player.health, 0.0, 1000.0);
     player.yaw = std::fmod(player.yaw, 360.0f);
     return std::optional<QcPlayerData>(player);
+}
+
+QcStatus QcWorldStorage::writeEntities(const QcWorldEntities &entities) const
+{
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+    QByteArray payload;
+    QDataStream stream(&payload, QIODevice::WriteOnly);
+    stream.setVersion(streamVersion);
+    stream << quint32(entities.items.size());
+    for (const QcItemEntityManager::Drop &item : entities.items) {
+        writeStack(stream, item.stack, *m_content);
+        stream << item.position.x << item.position.y << item.position.z << item.velocity.x << item.velocity.y
+               << item.velocity.z << item.age << item.pickupDelay;
+    }
+    stream << quint32(entities.saplings.size());
+    for (const QcPlantManager::Sapling &sapling : entities.saplings) {
+        stream << qint32(sapling.pos.x) << qint32(sapling.pos.y) << qint32(sapling.pos.z) << sapling.remaining;
+    }
+    return writeContainer(QDir(m_directory).filePath(u"entities.qce"_s), entitiesMagic, payload);
+}
+
+QcResult<QcWorldEntities> QcWorldStorage::readEntities(QStringList &warnings) const
+{
+    const QString path = QDir(m_directory).filePath(u"entities.qce"_s);
+    if (!QFile::exists(path)) {
+        return QcWorldEntities();
+    }
+    const QcResult<QByteArray> payload = readContainer(path, entitiesMagic);
+    if (!payload) {
+        return qcError(payload.error());
+    }
+    QDataStream stream(*payload);
+    stream.setVersion(streamVersion);
+    const auto finite = [](const QcVec3 &v) { return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z); };
+    constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
+    QcWorldEntities entities;
+    quint32 itemCount = 0;
+    if (!QcStreamLimits::readCount(stream, maxStoredEntities, itemCount)) {
+        return qcError(u"%1 is damaged (item count)"_s.arg(path));
+    }
+    QSet<QString> unknown;
+    for (quint32 i = 0; i < itemCount; ++i) {
+        QString name;
+        qint32 count = 0;
+        qint32 damage = 0;
+        QcItemEntityManager::Drop drop;
+        stream >> name >> count >> damage >> drop.position.x >> drop.position.y >> drop.position.z >> drop.velocity.x
+            >> drop.velocity.y >> drop.velocity.z >> drop.age >> drop.pickupDelay;
+        if (stream.status() != QDataStream::Ok || !finite(drop.position) || !finite(drop.velocity) || !std::isfinite(drop.age)
+            || !std::isfinite(drop.pickupDelay) || std::abs(drop.position.x) > horizontalLimit
+            || std::abs(drop.position.z) > horizontalLimit || std::abs(drop.position.y) > 4.0 * QcWorld::worldHeight) {
+            return qcError(u"%1 is damaged (item %2)"_s.arg(path).arg(i));
+        }
+        const std::optional<QcItemId> item = name.isEmpty() ? std::nullopt : m_content->itemId(name);
+        if (!item) {
+            if (!name.isEmpty() && !unknown.contains(name)) {
+                unknown.insert(name);
+                warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
+            }
+            continue;
+        }
+        const QcItemDefinition &definition = m_content->item(*item);
+        drop.velocity = {std::clamp(drop.velocity.x, -60.0, 60.0), std::clamp(drop.velocity.y, -60.0, 60.0),
+                         std::clamp(drop.velocity.z, -60.0, 60.0)};
+        drop.age = std::clamp(drop.age, 0.0, QcItemEntityManager::despawnSeconds);
+        drop.pickupDelay = std::clamp(drop.pickupDelay, 0.0, QcItemEntityManager::thrownPickupDelay);
+        // A stack saved larger than the item allows now (e.g. after a mod lowered maxStack) is split.
+        int left = std::clamp(count, 1, QcItemDefinition::maxStackLimit);
+        while (left > 0 && entities.items.size() < qsizetype(maxStoredEntities)) {
+            drop.stack = {*item, std::min(left, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+            left -= drop.stack.count;
+            entities.items.append(drop);
+        }
+        if (left > 0) {
+            warnings.append(u"%1: too many dropped items, %2 x '%3' not loaded"_s.arg(path).arg(left).arg(name));
+        }
+    }
+    quint32 saplingCount = 0;
+    if (!QcStreamLimits::readCount(stream, maxStoredEntities, saplingCount)) {
+        return qcError(u"%1 is damaged (sapling count)"_s.arg(path));
+    }
+    for (quint32 i = 0; i < saplingCount; ++i) {
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        double remaining = 0.0;
+        stream >> x >> y >> z >> remaining;
+        const QcBlockPos pos{x, y, z};
+        if (stream.status() != QDataStream::Ok || !std::isfinite(remaining) || !pos.isInsideWorldHeight()
+            || std::abs(x) > QcWorld::maxHorizontalBlock || std::abs(z) > QcWorld::maxHorizontalBlock) {
+            return qcError(u"%1 is damaged (sapling %2)"_s.arg(path).arg(i));
+        }
+        entities.saplings.append({pos, std::clamp(remaining, 0.0, 86400.0)});
+    }
+    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
+        return qcError(u"%1 is damaged"_s.arg(path));
+    }
+    return entities;
 }
