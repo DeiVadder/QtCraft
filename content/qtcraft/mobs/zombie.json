@@ -23,86 +23,9 @@
         "weight": 3,
         "caves": true
     },
-    "model": [
-        {
-            "from": [
-                -0.25,
-                0,
-                -0.125
-            ],
-            "to": [
-                0,
-                0.75,
-                0.125
-            ],
-            "texture": "zombie_pants"
-        },
-        {
-            "from": [
-                0,
-                0,
-                -0.125
-            ],
-            "to": [
-                0.25,
-                0.75,
-                0.125
-            ],
-            "texture": "zombie_pants"
-        },
-        {
-            "from": [
-                -0.25,
-                0.75,
-                -0.125
-            ],
-            "to": [
-                0.25,
-                1.45,
-                0.125
-            ],
-            "texture": "zombie_shirt"
-        },
-        {
-            "from": [
-                -0.5,
-                1.2,
-                -0.75
-            ],
-            "to": [
-                -0.25,
-                1.45,
-                0
-            ],
-            "texture": "zombie_skin"
-        },
-        {
-            "from": [
-                0.25,
-                1.2,
-                -0.75
-            ],
-            "to": [
-                0.5,
-                1.45,
-                0
-            ],
-            "texture": "zombie_skin"
-        },
-        {
-            "from": [
-                -0.25,
-                1.45,
-                -0.25
-            ],
-            "to": [
-                0.25,
-                1.95,
-                0.25
-            ],
-            "texture": "zombie_head"
-        }
-    ],
+    "skeleton": "humanoid",
+    "outfit": "zombie",
+    "armsForward": true,
     "drops": [
         {
             "item": "rotten_flesh",

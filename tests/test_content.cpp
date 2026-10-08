@@ -294,6 +294,127 @@ private slots:
         QCOMPARE(read.sapling.plantChance, 0.6);
     }
 
+    void parsesModelsAndAppearances()
+    {
+        const auto model = QcContentParser::parseModel(
+            json(R"({"name":"biped","bones":[{"name":"head","role":"head","pivot":[0,1.4,0],)"
+                 R"("boxes":[{"from":[-0.2,1.4,-0.2],"to":[0.2,1.8,0.2],"slot":"head"}]},)"
+                 R"({"name":"tail","pivot":[0,1,0.3],"boxes":[{"from":[-0.05,0.9,0.3],"to":[0.05,1,0.8],"slot":"fur"}]}]})"),
+            u"m"_s);
+        QVERIFY2(model.has_value(), qcErrorText(model).constData());
+        QCOMPARE(model->name, u"m:biped"_s);
+        QCOMPARE(model->bones.size(), 2);
+        QCOMPARE(model->bones.first().role, QcBoneRole::Head);
+        QCOMPARE(model->bones.last().role, QcBoneRole::None);
+        QCOMPARE(model->bones.last().boxes.first().slot, u"fur"_s);
+
+        const auto outfit = QcContentParser::parseAppearance(
+            json(R"({"name":"robe","layers":{"head":{"texture":"skin","tint":"skin"},"fur":{"texture":"fur"}}})"), u"m"_s);
+        QVERIFY2(outfit.has_value(), qcErrorText(outfit).constData());
+        QCOMPARE(outfit->kind, QcAppearanceDefinition::Kind::Outfit);
+        QCOMPARE(outfit->translationKey, u"appearance.m.robe"_s);
+        QCOMPARE(outfit->layer(u"head"_s)->tint, QcTint::Skin);
+        QCOMPARE(outfit->layer(u"fur"_s)->texture, u"m:fur"_s);
+        QCOMPARE(outfit->layer(u"fur"_s)->tint, QcTint::None);
+        QVERIFY(!outfit->layer(u"legs"_s));
+        QVERIFY(outfit->playable);
+        const auto creature = QcContentParser::parseAppearance(
+            json(R"({"name":"rags","playable":false,"layers":{"head":{"texture":"skin"}}})"), u"m"_s);
+        QVERIFY2(creature.has_value(), qcErrorText(creature).constData());
+        QVERIFY(!creature->playable);
+
+        const auto hair = QcContentParser::parseAppearance(
+            json(R"({"name":"bun","kind":"hair","layers":{"hair":{"texture":"hair","tint":"hair"}},)"
+                 R"("boxes":[{"from":[-0.1,1.8,0],"to":[0.1,1.95,0.2],"slot":"hair"}]})"),
+            u"m"_s);
+        QVERIFY2(hair.has_value(), qcErrorText(hair).constData());
+        QCOMPARE(hair->kind, QcAppearanceDefinition::Kind::Hair);
+        QCOMPARE(hair->boxes.size(), 1);
+
+        const auto mob = QcContentParser::parseMob(json(R"({"name":"ghoul","skeleton":"biped","outfit":"robe","armsForward":true})"),
+                                                   u"m"_s);
+        QVERIFY2(mob.has_value(), qcErrorText(mob).constData());
+        QCOMPARE(mob->skeleton, u"m:biped"_s);
+        QCOMPARE(mob->outfit, u"m:robe"_s);
+        QVERIFY(mob->armsForward);
+        QVERIFY(mob->parts.isEmpty());
+    }
+
+    void parserRejectsBadModels_data()
+    {
+        QTest::addColumn<QByteArray>("document");
+        QTest::addColumn<int>("kind");
+        QTest::addColumn<QString>("expectedFragment");
+        QTest::newRow("no bones") << QByteArray(R"({"name":"x","bones":[]})") << 0 << u"'bones'"_s;
+        QTest::newRow("role") << QByteArray(R"({"name":"x","bones":[{"name":"b","role":"wing","pivot":[0,0,0],"boxes":[{"from":[0,0,0],"to":[1,1,1],"slot":"s"}]}]})")
+                              << 0 << u"'role'"_s;
+        QTest::newRow("pivot") << QByteArray(R"({"name":"x","bones":[{"name":"b","pivot":[0,99,0],"boxes":[{"from":[0,0,0],"to":[1,1,1],"slot":"s"}]}]})")
+                               << 0 << u"'pivot'"_s;
+        QTest::newRow("empty box") << QByteArray(R"({"name":"x","bones":[{"name":"b","pivot":[0,0,0],"boxes":[{"from":[1,0,0],"to":[1,1,1],"slot":"s"}]}]})")
+                                   << 0 << u"'from' < 'to'"_s;
+        QTest::newRow("no slot") << QByteArray(R"({"name":"x","bones":[{"name":"b","pivot":[0,0,0],"boxes":[{"from":[0,0,0],"to":[1,1,1]}]}]})")
+                                 << 0 << u"'slot'"_s;
+        QTest::newRow("kind") << QByteArray(R"({"name":"x","kind":"hat","layers":{"a":{"texture":"t"}}})") << 1 << u"'kind'"_s;
+        QTest::newRow("tint") << QByteArray(R"({"name":"x","layers":{"a":{"texture":"t","tint":"green"}}})") << 1 << u"'tint'"_s;
+        QTest::newRow("playable") << QByteArray(R"({"name":"x","playable":"no","layers":{"a":{"texture":"t"}}})") << 1
+                                  << u"'playable'"_s;
+        QTest::newRow("no layers") << QByteArray(R"({"name":"x","layers":{}})") << 1 << u"'layers'"_s;
+        QTest::newRow("hair boxes") << QByteArray(R"({"name":"x","kind":"hair","layers":{"a":{"texture":"t"}}})") << 1 << u"'boxes'"_s;
+        QTest::newRow("half skeleton") << QByteArray(R"({"name":"x","skeleton":"biped"})") << 2 << u"go together"_s;
+        QTest::newRow("no model") << QByteArray(R"({"name":"x"})") << 2 << u"'model'"_s;
+    }
+
+    void parserRejectsBadModels()
+    {
+        QFETCH(QByteArray, document);
+        QFETCH(int, kind);
+        QFETCH(QString, expectedFragment);
+        const QJsonObject object = QJsonDocument::fromJson(document).object();
+        const QString error = kind == 0   ? QcContentParser::parseModel(object, u"b"_s).error()
+                              : kind == 1 ? QcContentParser::parseAppearance(object, u"b"_s).error()
+                                          : QcContentParser::parseMob(object, u"b"_s).error();
+        QVERIFY2(error.contains(expectedFragment), qPrintable(error));
+    }
+
+    void modelsAndAppearancesSurviveSerialization()
+    {
+        QcContentRegistry registry;
+        QcModelDefinition model;
+        model.name = u"a:biped"_s;
+        model.bones = {{u"arm"_s, QcBoneRole::RightArm, {0.3, 1.3, 0.0}, {{{0.2, 0.7, -0.1}, {0.4, 1.3, 0.1}, u"arm"_s}}}};
+        registry.registerModel(model);
+        QcAppearanceDefinition hair;
+        hair.name = u"a:bun"_s;
+        hair.kind = QcAppearanceDefinition::Kind::Hair;
+        hair.layers = {{u"hair"_s, u"a:hair"_s, QcTint::Hair}};
+        hair.boxes = {{{-0.1, 1.8, 0.0}, {0.1, 1.9, 0.2}, u"hair"_s}};
+        hair.playable = false;
+        registry.registerAppearance(hair);
+        QcMobDefinition mob;
+        mob.name = u"a:ghoul"_s;
+        mob.skeleton = u"a:biped"_s;
+        mob.outfit = u"a:robe"_s;
+        mob.armsForward = true;
+        registry.registerMob(mob);
+        QByteArray data;
+        {
+            QDataStream out(&data, QIODevice::WriteOnly);
+            registry.writeTo(out);
+        }
+        QDataStream in(data);
+        const QcResult<QcContentRegistry> copy = QcContentRegistry::readFrom(in);
+        QVERIFY2(copy.has_value(), qcErrorText(copy).constData());
+        QCOMPARE(copy->model(u"a:biped"_s)->bones.first().role, QcBoneRole::RightArm);
+        QCOMPARE(copy->model(u"a:biped"_s)->bones.first().boxes.first().to, (QcVec3{0.4, 1.3, 0.1}));
+        QCOMPARE(copy->appearance(u"a:bun"_s)->kind, QcAppearanceDefinition::Kind::Hair);
+        QCOMPARE(copy->appearance(u"a:bun"_s)->layers.first().tint, QcTint::Hair);
+        QCOMPARE(copy->appearance(u"a:bun"_s)->boxes.size(), 1);
+        QVERIFY(!copy->appearance(u"a:bun"_s)->playable);
+        QCOMPARE(copy->mobs().first().skeleton, u"a:biped"_s);
+        QVERIFY(copy->mobs().first().armsForward);
+        QVERIFY(!copy->model(u"a:missing"_s));
+    }
+
     void invisibleBlocksNeedNoTextures()
     {
         const auto parsed = QcContentParser::parseBlock(json(R"({"name":"barrier","render":"invisible"})"), u"b"_s);

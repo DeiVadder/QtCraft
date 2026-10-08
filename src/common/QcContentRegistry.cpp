@@ -84,6 +84,39 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     return stream.status() == QDataStream::Ok;
 }
 
+// Model coordinates feed the mesher: anything beyond what the parser allows is corrupt.
+bool plausibleVector(const QcVec3 &v)
+{
+    constexpr double limit = 8.0;
+    return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z) && std::abs(v.x) <= limit && std::abs(v.y) <= limit
+           && std::abs(v.z) <= limit;
+}
+
+void writeBoxes(QDataStream &stream, const QList<QcModelBox> &boxes)
+{
+    stream << quint32(boxes.size());
+    for (const QcModelBox &box : boxes) {
+        stream << box.from.x << box.from.y << box.from.z << box.to.x << box.to.y << box.to.z << box.slot;
+    }
+}
+
+bool readBoxes(QDataStream &stream, quint32 limit, QList<QcModelBox> &boxes)
+{
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, limit, count)) {
+        return false;
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        QcModelBox box;
+        stream >> box.from.x >> box.from.y >> box.from.z >> box.to.x >> box.to.y >> box.to.z >> box.slot;
+        if (stream.status() != QDataStream::Ok || !plausibleVector(box.from) || !plausibleVector(box.to)) {
+            return false;
+        }
+        boxes.append(std::move(box));
+    }
+    return true;
+}
+
 } // namespace
 
 QcContentRegistry::QcContentRegistry()
@@ -225,6 +258,28 @@ std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
     return int(*it);
 }
 
+void QcContentRegistry::registerModel(QcModelDefinition definition)
+{
+    registerByName(m_models, m_modelIndex, std::move(definition));
+}
+
+const QcModelDefinition *QcContentRegistry::model(const QString &name) const
+{
+    const auto it = m_modelIndex.constFind(name);
+    return it == m_modelIndex.constEnd() ? nullptr : &m_models[*it];
+}
+
+void QcContentRegistry::registerAppearance(QcAppearanceDefinition definition)
+{
+    registerByName(m_appearances, m_appearanceIndex, std::move(definition));
+}
+
+const QcAppearanceDefinition *QcContentRegistry::appearance(const QString &name) const
+{
+    const auto it = m_appearanceIndex.constFind(name);
+    return it == m_appearanceIndex.constEnd() ? nullptr : &m_appearances[*it];
+}
+
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
 {
     registerByName(m_recipes, m_recipeIndex, std::move(definition));
@@ -307,6 +362,7 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         for (const QcMobPart &part : mob.parts) {
             stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
         }
+        stream << mob.skeleton << mob.outfit << mob.armsForward;
     }
     stream << quint32(m_recipes.size());
     for (const QcRecipeDefinition &recipe : m_recipes) {
@@ -338,6 +394,23 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
     stream << quint32(m_packs.size());
     for (const QcPackReference &pack : m_packs) {
         stream << pack.id << pack.name << pack.version;
+    }
+    stream << quint32(m_models.size());
+    for (const QcModelDefinition &model : m_models) {
+        stream << model.name << quint32(model.bones.size());
+        for (const QcModelBone &bone : model.bones) {
+            stream << bone.name << quint8(bone.role) << bone.pivot.x << bone.pivot.y << bone.pivot.z;
+            writeBoxes(stream, bone.boxes);
+        }
+    }
+    stream << quint32(m_appearances.size());
+    for (const QcAppearanceDefinition &appearance : m_appearances) {
+        stream << appearance.name << appearance.translationKey << quint8(appearance.kind) << appearance.playable
+               << quint32(appearance.layers.size());
+        for (const QcAppearanceLayer &layer : appearance.layers) {
+            stream << layer.slot << layer.texture << quint8(layer.tint);
+        }
+        writeBoxes(stream, appearance.boxes);
     }
 }
 
@@ -401,6 +474,7 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture;
             mob.parts.append(part);
         }
+        stream >> mob.skeleton >> mob.outfit >> mob.armsForward;
         // Sizes feed physics and the mesher: reject anything outside what the parser allows.
         const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };
         bool valid = std::isfinite(mob.maxHealth) && mob.maxHealth > 0.0 && mob.maxHealth <= 1000.0 && plausible(mob.width) && plausible(mob.height) && mob.width > 0.0
@@ -508,6 +582,62 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             return qcError(u"Corrupt content: pack %1"_s.arg(i));
         }
         registry.addPack(std::move(pack));
+    }
+    quint32 modelCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, modelCount)) {
+        return qcError(u"Corrupt content: model table"_s);
+    }
+    for (quint32 i = 0; i < modelCount; ++i) {
+        QcModelDefinition model;
+        quint32 boneCount = 0;
+        stream >> model.name;
+        if (!QcStreamLimits::readCount(stream, QcModelDefinition::maxBones, boneCount)) {
+            return qcError(u"Corrupt content: model %1"_s.arg(i));
+        }
+        for (quint32 b = 0; b < boneCount; ++b) {
+            QcModelBone bone;
+            quint8 role = 0;
+            stream >> bone.name >> role >> bone.pivot.x >> bone.pivot.y >> bone.pivot.z;
+            if (role > quint8(QcBoneRole::LeftLeg) || !plausibleVector(bone.pivot)
+                || !readBoxes(stream, QcModelDefinition::maxBoxesPerBone, bone.boxes)) {
+                return qcError(u"Corrupt content: model %1"_s.arg(i));
+            }
+            bone.role = QcBoneRole(role);
+            model.bones.append(std::move(bone));
+        }
+        if (stream.status() != QDataStream::Ok) {
+            return qcError(u"Corrupt content: model %1"_s.arg(i));
+        }
+        registry.registerModel(std::move(model));
+    }
+    quint32 appearanceCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, appearanceCount)) {
+        return qcError(u"Corrupt content: appearance table"_s);
+    }
+    for (quint32 i = 0; i < appearanceCount; ++i) {
+        QcAppearanceDefinition appearance;
+        quint8 kind = 0;
+        quint32 layerCount = 0;
+        stream >> appearance.name >> appearance.translationKey >> kind >> appearance.playable;
+        if (kind > quint8(QcAppearanceDefinition::Kind::Hair)
+            || !QcStreamLimits::readCount(stream, QcAppearanceDefinition::maxLayers, layerCount)) {
+            return qcError(u"Corrupt content: appearance %1"_s.arg(i));
+        }
+        appearance.kind = QcAppearanceDefinition::Kind(kind);
+        for (quint32 l = 0; l < layerCount; ++l) {
+            QcAppearanceLayer layer;
+            quint8 tint = 0;
+            stream >> layer.slot >> layer.texture >> tint;
+            if (tint > quint8(QcTint::Pants)) {
+                return qcError(u"Corrupt content: appearance %1"_s.arg(i));
+            }
+            layer.tint = QcTint(tint);
+            appearance.layers.append(std::move(layer));
+        }
+        if (!readBoxes(stream, QcAppearanceDefinition::maxBoxes, appearance.boxes) || stream.status() != QDataStream::Ok) {
+            return qcError(u"Corrupt content: appearance %1"_s.arg(i));
+        }
+        registry.registerAppearance(std::move(appearance));
     }
     if (stream.status() != QDataStream::Ok) {
         return qcError(u"Corrupt content: truncated"_s);

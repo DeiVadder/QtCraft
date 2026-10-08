@@ -10,6 +10,7 @@
 #include "QcWorldStorage.h"
 
 #include <QObject>
+#include <QSet>
 #include <QRandomGenerator>
 
 #include <memory>
@@ -73,6 +74,8 @@ public:
     static constexpr double regenerationInterval = 4.0;
     // Crafting needs a crafting table within this distance for 3 x 3 recipes.
     static constexpr double craftingTableReach = 5.0;
+    // While mining, the arm swings every this many ticks.
+    static constexpr int miningSwingTicks = 6;
     static constexpr int craftingGridSlot = 36;
     const QcServerConfig &config() const { return m_config; }
 
@@ -100,6 +103,9 @@ private:
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
     void throwFromPlayer(const Client &client, QcItemStack stack);
     void handleDropItem(Client &client, QcMsg::DropItem message);
+    // Replaces unknown outfits and hair styles with defaults; names come from the content.
+    QcAppearance validAppearance(const QcAppearance &requested) const;
+    void handleSetAppearance(Client &client, const QcAppearance &appearance);
     void dropInventory(Client &client);
     // Moves the crafting grid into the inventory; what does not fit is thrown on the ground.
     void returnCraftingGrid(Client &client);
@@ -146,5 +152,7 @@ private:
     QcItemEntityManager m_items;
     QcPlantManager m_plants;
     QRandomGenerator m_random;
+    // Entities that died this tick; their removal tells clients to play the death animation.
+    QSet<quint32> m_died;
     QStringList m_openWarnings;
 };

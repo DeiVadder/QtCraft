@@ -136,6 +136,17 @@ private slots:
         QVERIFY(!around.value(u"blocks"_s).toArray().isEmpty());
     }
 
+    void viewModeCanBeSwitched()
+    {
+        QCOMPARE(request({{u"cmd"_s, u"view"_s}}).value(u"mode"_s).toString(), u"first"_s);
+        QCOMPARE(request({{u"cmd"_s, u"view"_s}, {u"mode"_s, u"front"_s}}).value(u"mode"_s).toString(), u"front"_s);
+        QCOMPARE(m_session->cameraMode(), QcCameraMode::Front);
+        const QJsonObject wrong = request({{u"cmd"_s, u"view"_s}, {u"mode"_s, u"sideways"_s}});
+        QCOMPARE(wrong.value(u"ok"_s).toBool(true), false);
+        QCOMPARE(m_session->cameraMode(), QcCameraMode::Front);
+        request({{u"cmd"_s, u"view"_s}, {u"mode"_s, u"first"_s}});
+    }
+
     void errorsAreReportedNotFatal()
     {
         const QJsonObject unknown = request({{u"cmd"_s, u"fly"_s}, {u"id"_s, u"x"_s}});

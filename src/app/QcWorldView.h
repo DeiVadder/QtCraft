@@ -3,6 +3,7 @@
 #include "QcCamera.h"
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
+#include "QcEntityMesh.h"
 
 #include <QColor>
 #include <QImage>
@@ -41,7 +42,9 @@ public:
     // Block outlined as the player's target; std::nullopt hides the outline.
     void setSelection(std::optional<QcBlockPos> block);
     // Entity triangles for this frame (replaces the previous set).
-    void setEntityMesh(std::shared_ptr<const QcChunkMesh> mesh);
+    void setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh);
+    // First-person arm and held item; drawn in front of everything else. Null hides it.
+    void setHandMesh(std::shared_ptr<const QcEntityMesh> mesh);
     void setSkyColor(const QColor &color);
     void setDaylight(float daylight);
     void setFogRange(float start, float end);
@@ -65,5 +68,6 @@ private:
     float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;
     std::optional<QcBlockPos> m_selection;
-    std::shared_ptr<const QcChunkMesh> m_entityMesh;
+    std::shared_ptr<const QcEntityMesh> m_entityMesh;
+    std::shared_ptr<const QcEntityMesh> m_handMesh;
 };

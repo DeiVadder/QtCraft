@@ -1,0 +1,8 @@
+{
+    "name": "shoes",
+    "pattern": "noise",
+    "primary": "#3a2a1e",
+    "secondary": "#2c2018",
+    "variation": 0.1,
+    "seed": 47
+}

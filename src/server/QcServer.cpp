@@ -276,6 +276,8 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         handleConsume(client);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
         handleDropItem(client, *drop);
+    } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
+        handleSetAppearance(client, look->appearance);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
         handleAttack(client, attack->id);
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
@@ -302,6 +304,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     }
     client.entityId = m_nextEntityId++;
     client.name = hello.playerName.left(32);
+    client.appearance = validAppearance(hello.appearance);
     if (m_storage) {
         QStringList warnings;
         const QcResult<std::optional<QcPlayerData>> stored = m_storage->readPlayer(client.name, warnings);
@@ -405,6 +408,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     client.yaw = input.yaw;
     client.pitch = input.pitch;
     client.sneaking = input.sneak;
+    client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
     client.lastInputSequence = input.sequence;
     client.stateDirty = true;
 }
@@ -486,6 +490,11 @@ void QcServer::tick()
             client->stateDirty = false;
         }
     }
+    for (const auto &client : m_clients) {
+        client->swung = false;
+        client->hurtThisTick = false;
+    }
+    m_died.clear();
 
     // Drop chunks no player needs any more.
     // Keep everything within streaming range of a player, sent or not yet sent.

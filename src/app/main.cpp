@@ -28,17 +28,20 @@ int main(int argc, char *argv[])
     const QCommandLineOption playOption(u"play"_s, u"Start a single-player world immediately."_s);
     const QCommandLineOption worldOption(u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s);
     const QCommandLineOption seedOption(u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s);
+    const QCommandLineOption cameraOption(u"camera"_s, u"View mode: first, behind or front (test hook, not saved)."_s, u"mode"_s);
+    const QCommandLineOption poseOption(u"pose"_s, u"Freeze the player's pose: walk, swing, swim, jump, sneak or death (test hook)."_s,
+                                        u"pose"_s);
     const QCommandLineOption lookOption(u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s);
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable)."_s,
                                         u"text"_s);
-    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, chat."_s,
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat."_s,
                                            u"name"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
-    parser.addOptions({playOption, worldOption, seedOption, lookOption, spawnOption, chatOption, overlayOption, viewOption, languageOption,
+    parser.addOptions({playOption, worldOption, seedOption, lookOption, cameraOption, poseOption, spawnOption, chatOption, overlayOption, viewOption, languageOption,
                        modsOption, noModsOption});
     parser.process(app);
 
@@ -97,6 +100,10 @@ int main(int argc, char *argv[])
             game->setInitialLook(parts[0].toFloat(), parts[1].toFloat());
         }
     }
+    if (parser.isSet(cameraOption)) {
+        game->setCameraMode(parser.value(cameraOption));
+    }
+    game->setForcedPose(parser.value(poseOption));
     if (parser.isSet(spawnOption)) {
         const QStringList parts = parser.value(spawnOption).split(u',');
         if (parts.size() == 2) {

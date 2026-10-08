@@ -2,6 +2,54 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de" sourcelanguage="en">
 <context>
+    <name>CharacterScreen</name>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="78"/>
+        <source>Character</source>
+        <translation>Charakter</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="90"/>
+        <source>Outfit</source>
+        <translation>Kleidung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="104"/>
+        <source>Hair</source>
+        <translation>Frisur</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="119"/>
+        <source>Skin</source>
+        <translation>Haut</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="124"/>
+        <source>Hair colour</source>
+        <translation>Haarfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="129"/>
+        <source>Shirt</source>
+        <translation>Oberteil</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="134"/>
+        <source>Trousers</source>
+        <translation>Hose</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="141"/>
+        <source>Press F5 in the game to look at your character from behind or from the front.</source>
+        <translation>Mit F5 im Spiel siehst du deinen Charakter von hinten oder von vorne.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="148"/>
+        <source>Done</source>
+        <translation>Fertig</translation>
+    </message>
+</context>
+<context>
     <name>ChatOverlay</name>
     <message>
         <location filename="../src/app/qml/ChatOverlay.qml" line="24"/>
@@ -143,37 +191,42 @@
         <translation>Seed (Zahl oder Text, leer für Zufall)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="166"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="171"/>
         <source>Keep inventory on death</source>
         <translation>Inventar beim Tod behalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="168"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="177"/>
         <source>Create and play</source>
         <translation>Erstellen und spielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="180"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="190"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="186"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="196"/>
+        <source>Character</source>
+        <translation>Charakter</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/MainMenu.qml" line="202"/>
         <source>Mods</source>
         <translation>Mods</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="192"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="208"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="219"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="241"/>
         <source>Delete world</source>
         <translation>Welt löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="223"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="245"/>
         <source>Delete “%1” permanently? This cannot be undone.</source>
         <translation>„%1“ endgültig löschen? Das lässt sich nicht rückgängig machen.</translation>
     </message>
@@ -268,11 +321,16 @@
     </message>
     <message>
         <location filename="../src/app/qml/PauseMenu.qml" line="59"/>
+        <source>Character</source>
+        <translation>Charakter</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PauseMenu.qml" line="65"/>
         <source>Save and quit to menu</source>
         <translation>Speichern und zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="59"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="65"/>
         <source>Quit to menu</source>
         <translation>Zum Menü</translation>
     </message>
@@ -280,59 +338,64 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="278"/>
-        <location filename="../src/app/QcGameController.cpp" line="346"/>
+        <location filename="../src/app/QcGameController.cpp" line="283"/>
+        <location filename="../src/app/QcGameController.cpp" line="351"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="349"/>
+        <location filename="../src/app/QcGameController.cpp" line="354"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="362"/>
+        <location filename="../src/app/QcGameController.cpp" line="367"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="362"/>
-        <location filename="../src/app/QcGameController.cpp" line="519"/>
+        <location filename="../src/app/QcGameController.cpp" line="367"/>
+        <location filename="../src/app/QcGameController.cpp" line="524"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="483"/>
+        <location filename="../src/app/QcGameController.cpp" line="488"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="491"/>
+        <location filename="../src/app/QcGameController.cpp" line="496"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="572"/>
+        <location filename="../src/app/QcGameController.cpp" line="579"/>
         <source>Disconnected: %1</source>
         <translation>Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="592"/>
+        <location filename="../src/app/QcGameController.cpp" line="599"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="646"/>
+        <location filename="../src/app/QcGameController.cpp" line="811"/>
+        <source>No hair</source>
+        <translation>Keine Haare</translation>
+    </message>
+    <message>
+        <location filename="../src/app/QcGameController.cpp" line="875"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="646"/>
+        <location filename="../src/app/QcGameController.cpp" line="875"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="693"/>
+        <location filename="../src/app/QcGameController.cpp" line="922"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -340,17 +403,17 @@
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="30"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="33"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="36"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="39"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/SettingsScreen.qml" line="51"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="54"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -358,47 +421,67 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="55"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="58"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="68"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="71"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="72"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="75"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="89"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="92"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="96"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="99"/>
         <source>Show frame rate and position</source>
         <translation>Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="102"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="105"/>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="115"/>
+        <source>First person</source>
+        <translation>Ich-Perspektive</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="116"/>
+        <source>Third person, behind</source>
+        <translation>Dritte Person, hinten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="117"/>
+        <source>Third person, front</source>
+        <translation>Dritte Person, vorne</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="123"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="113"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="134"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="123"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="144"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="131"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="152"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>

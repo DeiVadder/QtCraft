@@ -186,3 +186,33 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Was:** Ein Block mit `sapling`-Objekt (Feature, Wachstumszeit, Boden, Pflanzchance) ist ein Setzling. Er steht nur auf erlaubtem Boden, bricht mit seinem Boden weg und wächst nach zufälliger Zeit (nur in geladenen Chunks) über dieselbe Baumform wie der Generator (`QcTreeShape`) zum Baum, wenn der Stamm Platz hat; sonst versucht er es alle 30 s erneut. Liegt ein Setzling-Item 300 s, pflanzt es sich mit der Pflanzchance (Basisspiel 75 %) an seiner Stelle ein. Setzlinge haben die Kreuzform (`"shape": "cross"`), die der Mesher als zwei gekreuzte, beidseitige Quads zeichnet. Wachsende Setzlinge werden in `entities.qce` gespeichert.
 - **Warum:** Wiederaufforstung ohne Skripte, vollständig aus Daten erweiterbar.
 - **Verworfen:** Zufallsticks pro Chunk (Dauerlast), eigene Baumformen für gewachsene Bäume.
+
+## E-032 Skelettmodelle und Aussehen aus Daten
+
+- **Was:** `models/*.json` beschreibt Skelette aus flachen Knochen (Name, Rolle `head`/`body`/`right_arm`/`left_arm`/`right_leg`/`left_leg`/`none`, Drehpunkt, Quader mit Slot-Namen). `appearance/*.json` beschreibt Outfits (Slot → Textur und Tönung `skin`/`hair`/`shirt`/`pants`/`none`) und Frisuren (eigene Quader am Kopfknochen). Spieler nutzen das Modell `qtcraft:humanoid`; Mobs können statt fester Quader `skeleton` und `outfit` angeben (der Zombie tut das, mit `armsForward`). Getönte Texturen sind hell, die Farbe kommt pro Vertex aus dem Aussehen. Das Gesicht ist ein dünner Quader vor dem Kopf mit transparenter Gesichtstextur.
+- **Warum:** Mods können Skins, Frisuren und Modelle ergänzen, ohne Code; Farben brauchen keine Texturen pro Spieler im Atlas.
+- **Verworfen:** Knochen-Hierarchie (für die gewünschten Animationen nicht nötig); eigene Texturen pro Spieler im Atlas (Atlas müsste zur Laufzeit wachsen); Gesichtstextur pro Würfelseite (Mesher bleibt einfacher).
+
+## E-033 Animation auf dem Client aus Server-Zuständen
+
+- **Was:** `QcAnimator` berechnet Knochendrehungen aus einer Pose (Geschwindigkeit, gelaufene Strecke, Boden, Wasser, Schleichen, Rennen, Schlag-, Treffer- und Todesfortschritt, Blickneigung) und die Bewegung der Hand in der Ich-Perspektive. Der Server sendet nur Zustände: `EntityMove`/`EntitySpawn` tragen Blickneigung, Flags (Schlag begonnen, am Boden, im Wasser, schleicht, rennt) und das gehaltene Item; `EntityRemove.died` startet die Todesanimation. Zeitabläufe (Schlag 0,3 s, Tod 1 s, Itemwechsel, Landen) zählt der Client.
+- **Warum:** Server bleibt autoritativ für Zustände, Animationen kosten kein Netz und laufen flüssig mit Interpolation; dieselbe Mechanik nutzen Spieler und Mobs.
+- **Verworfen:** Keyframe-Animationen aus Daten (mehr Aufwand, für Quader-Figuren kein Gewinn).
+
+## E-034 Hand in eigener Pipeline mit gestauchter Tiefe
+
+- **Was:** Arm und Item der Ich-Perspektive sind ein eigenes Mesh im Kamera-Raum, gezeichnet zuletzt mit einem Vertex-Shader, der die Tiefe in die vordersten 5 % des Bereichs staucht (je nach Backend 0..1 oder −1..1). Entities und Hand nutzen ein eigenes Vertexformat mit Tönungsfarbe.
+- **Warum:** Die Hand verschwindet nie in Wänden, ohne zweiten Render-Pass oder Tiefen-Löschen.
+- **Verworfen:** Tiefentest aus (Selbstverdeckung der Quader falsch); zweiter Pass (mehr Code im Renderer).
+
+## E-035 Ansichten und Kamerakollision
+
+- **Was:** Ich-Perspektive, dritte Person hinten und vorne (F5, Einstellung „Ansicht“, Steuerbefehl `view`, Test-Hook `--camera`). Die Kamera steht 4 m vom Auge entfernt; ein Raycast vom Auge zieht sie bis 0,3 m vor den ersten Block heran. Im Tod gilt die Ich-Perspektive.
+- **Warum:** Einfach und robust; der vorhandene Block-Raycast reicht.
+- **Verworfen:** Kugel-Sweep statt Strahl (Kanten können kurz sichtbar sein, für den Zweck ausreichend).
+
+## E-036 Aussehen im Client gespeichert, vom Server geprüft
+
+- **Was:** Das Aussehen (Outfit, Frisur, vier Farben) liegt in `settings.ini` des Clients und geht mit `Hello` und bei Änderung mit `SetAppearance` an den Server. Der Server ersetzt unbekannte Outfits durch das Standard-Outfit, unbekannte oder falsche Frisuren durch „keine“, kürzt Farben auf RGB; Namen über 64 Zeichen lehnt schon der Decoder ab. Andere Clients bekommen den Spieler danach neu gemeldet.
+- **Warum:** Das Profil gehört zum Spieler, nicht zur Welt; mehrspielerfähig, ohne dem Client zu trauen.
+- **Verworfen:** Aussehen in der Spielerdatei der Welt (müsste pro Welt neu gewählt werden).

@@ -1,0 +1,34 @@
+{
+    "name": "explorer",
+    "kind": "outfit",
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "cloth",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "cloth",
+            "tint": "shirt"
+        },
+        "hand": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "cloth",
+            "tint": "pants"
+        },
+        "shoes": {
+            "texture": "shoes",
+            "tint": "none"
+        }
+    }
+}

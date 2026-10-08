@@ -56,7 +56,9 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `blocks/` | block | Every visible, non-liquid block automatically gets an item that places it. |
 | `items/` | item | Tools, weapons, food. |
 | `recipes/` | recipe | Shaped (`pattern`, `key`) or shapeless (`ingredients`), up to 3 × 3. |
-| `mobs/` | creature | Stats, spawn rules, box model, drops. |
+| `mobs/` | creature | Stats, spawn rules, box model or skeleton with outfit, drops. |
+| `models/` | skeleton | Bones with roles, pivots and slotted boxes. |
+| `appearance/` | outfit or hair style | Textures and tints per slot; hair boxes. |
 | `textures/` | texture | `*.json` procedural textures or `*.png` files (scaled to 16 × 16), named by file name. |
 | `lang/` | language | `en.json`, `de.json`, …: translation key → text. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
@@ -81,6 +83,8 @@ Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-s
 ```
 
 `plantOn` lists the blocks it may stand on (empty: any solid block), `plantChance` is the chance that a dropped sapling item plants itself when it despawns. Leaves of tree features decay once no trunk of a tree feature is within four blocks; give them a drop with a chance (e.g. the sapling, 0.08) to let forests regrow. The procedural texture pattern `sapling` draws a small plant.
+
+Characters come from data as well: `models/*.json` defines skeletons (bones with a role, a pivot and boxes with slot names), `appearance/*.json` outfits (a texture and an optional tint per slot) and hair styles (extra boxes on the head). A creature can use `"skeleton": "qtcraft:humanoid", "outfit": "mymod:robe"` instead of `model` boxes and is then animated like players (walking, attacking, hit, death; `"armsForward": true` for zombie-like arms). New outfits and hair styles appear in the character screen of players who have the mod; `"playable": false` keeps a creature outfit out of that list, and the server refuses it for players. Tinted textures should be light (near white); the player's colour is multiplied in.
 
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
 

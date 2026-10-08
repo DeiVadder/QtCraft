@@ -23,6 +23,7 @@ qt_add_qml_module(qtcraft
     URI QtCraft
     QML_FILES
         qml/Main.qml
+        qml/CharacterScreen.qml
         qml/ChatOverlay.qml
         qml/DeathScreen.qml
         qml/Hud.qml
@@ -43,6 +44,9 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert
 )
 
 qt_add_translations(qtcraft

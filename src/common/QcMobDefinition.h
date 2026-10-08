@@ -40,6 +40,11 @@ struct QcMobDefinition
     double spawnWeight = 1.0;
     // Hostile mobs that need darkness also spawn underground at any time of day.
     bool spawnsInCaves = false;
+    // Either static boxes (`parts`) or an animated skeleton model with an outfit.
     QList<QcMobPart> parts;
+    QString skeleton;
+    QString outfit;
+    // Skeleton mobs that walk with their arms stretched forward (zombies).
+    bool armsForward = false;
     QList<QcItemDrop> drops;
 };

@@ -62,6 +62,7 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 | `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |
 | `worldSave` | – | Saves the current world and reports failures (`ok: false` with the reason). |
 | `entities` | `radius` (1–64, default 32) | `{"entities":[{"id","type","name","hostile","position","distance","health"}]}` – mobs and other players in view. Dropped items (sent within 32 m) appear as `{"id","type":"item","item","count","position","distance"}`. |
+| `view` | optional `mode` (`first`, `behind`, `front`) | Sets the view mode of the graphical client (the headless bot only stores it) and answers with the current `mode`. |
 | `drop` | optional `all` (bool) | Throws one item (or the whole stack) of the selected hotbar slot ahead; it can be picked up again after 2 s. Fails when the slot is empty. |
 | `collect` | optional `radius` (1–32, default 8), `maxTicks` (default 200) | Walks to the nearest dropped item within the radius again and again until none is left or the time is up; items are picked up by touching them. |
 | `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach, hidden behind blocks, or the hit did not land (0.4 s attack cooldown, short invulnerability after a hit). |

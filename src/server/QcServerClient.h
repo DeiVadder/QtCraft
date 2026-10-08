@@ -4,6 +4,7 @@
 
 #include "QcConnection.h"
 #include "QcEntityMotion.h"
+#include "QcAppearance.h"
 #include "QcInventory.h"
 #include "QcServer.h"
 
@@ -44,6 +45,8 @@ struct QcServer::Client
     double attackCooldown = 0.0;
     // Entities this client has been told about.
     QSet<quint32> knownEntities;
+    // Known entities whose spawn data changed and must be sent again.
+    QSet<quint32> staleEntities;
     // Last stack count and position sent for each visible item entity.
     struct ItemView
     {
@@ -56,4 +59,10 @@ struct QcServer::Client
     int craftingSize = 2;
     std::optional<QcBlockPos> craftingTable;
     bool sneaking = false;
+    bool sprinting = false;
+    // Set by actions that swing the arm; reported to other clients in this tick's sync.
+    bool swung = false;
+    // Set when damage was taken; reported to other clients in this tick's sync.
+    bool hurtThisTick = false;
+    QcAppearance appearance;
 };

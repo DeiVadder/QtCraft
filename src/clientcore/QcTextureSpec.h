@@ -31,6 +31,9 @@ struct QcTextureSpec
         Gem,
         // Small plant: a stem in the secondary colour under a leafy crown in the primary colour.
         Sapling,
+        // Eyes (primary with secondary pupils) and a mouth on a transparent background, for a thin
+        // box in front of a head.
+        Face,
     };
 
     Pattern pattern = Pattern::Noise;

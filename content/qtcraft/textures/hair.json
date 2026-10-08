@@ -1,0 +1,8 @@
+{
+    "name": "hair",
+    "pattern": "log_side",
+    "primary": "#eeeeee",
+    "secondary": "#c4c4c4",
+    "variation": 0.08,
+    "seed": 46
+}

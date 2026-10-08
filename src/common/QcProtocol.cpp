@@ -23,6 +23,21 @@ QDataStream &operator>>(QDataStream &stream, QcVec3 &value)
     return stream >> value.x >> value.y >> value.z;
 }
 
+QDataStream &operator<<(QDataStream &stream, const QcAppearance &value)
+{
+    return stream << value.outfit << value.hair << value.skinColor << value.hairColor << value.shirtColor << value.pantsColor;
+}
+
+// Names longer than the limit fail the message; colours keep only their RGB bits.
+bool readAppearance(QDataStream &stream, QcAppearance &value)
+{
+    stream >> value.outfit >> value.hair >> value.skinColor >> value.hairColor >> value.shirtColor >> value.pantsColor;
+    for (quint32 *color : {&value.skinColor, &value.hairColor, &value.shirtColor, &value.pantsColor}) {
+        *color &= 0xFFFFFFu;
+    }
+    return value.outfit.size() <= QcAppearance::maxNameLength && value.hair.size() <= QcAppearance::maxNameLength;
+}
+
 void writeSection(QDataStream &stream, const QcChunkSection &section)
 {
     stream << quint32(section.palette().size());
@@ -85,7 +100,7 @@ struct Encoder
 {
     QDataStream &stream;
 
-    void operator()(const QcMsg::Hello &m) { stream << m.protocolVersion << m.playerName; }
+    void operator()(const QcMsg::Hello &m) { stream << m.protocolVersion << m.playerName << m.appearance; }
     void operator()(const QcMsg::Welcome &m)
     {
         stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView;
@@ -149,20 +164,22 @@ struct Encoder
     {
         stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
         writeStack(m.item);
+        stream << m.appearance << m.pitch << m.flags << m.held;
     }
     void operator()(const QcMsg::EntityMoves &m)
     {
         stream << quint32(m.moves.size());
         for (const QcMsg::EntityMove &move : m.moves) {
-            stream << move.id << move.position << move.yaw << move.health << move.hurt;
+            stream << move.id << move.position << move.yaw << move.health << move.hurt << move.pitch << move.flags << move.held;
         }
     }
-    void operator()(QcMsg::EntityRemove m) { stream << m.id; }
+    void operator()(QcMsg::EntityRemove m) { stream << m.id << m.died; }
     void operator()(const QcMsg::PlayerHealth &m) { stream << m.health << m.maxHealth << m.dead; }
     void operator()(QcMsg::WorldTime m) { stream << m.time << m.dayLength; }
     void operator()(QcMsg::AttackEntity m) { stream << m.id; }
     void operator()(QcMsg::Respawn) {}
     void operator()(QcMsg::DropItem m) { stream << m.wholeStack; }
+    void operator()(const QcMsg::SetAppearance &m) { stream << m.appearance; }
 
     void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
@@ -175,6 +192,15 @@ QcResult<QcMessage> decodePayload<QcMsg::Hello>(QDataStream &stream)
 {
     QcMsg::Hello m;
     stream >> m.protocolVersion >> m.playerName;
+    // Other versions may lay out the rest differently: skip it so the server can report the version
+    // mismatch instead of a decode error.
+    if (m.protocolVersion != QcProtocol::version) {
+        stream.skipRawData(int(stream.device()->bytesAvailable()));
+        return m;
+    }
+    if (!readAppearance(stream, m.appearance)) {
+        return qcError(u"Invalid appearance"_s);
+    }
     return m;
 }
 
@@ -417,6 +443,13 @@ QcResult<QcMessage> decodePayload<QcMsg::EntitySpawn>(QDataStream &stream)
     QcMsg::EntitySpawn m;
     stream >> m.id >> m.mobType >> m.name >> m.position >> m.yaw >> m.health;
     m.item = readStack(stream);
+    if (!readAppearance(stream, m.appearance)) {
+        return qcError(u"Invalid appearance"_s);
+    }
+    stream >> m.pitch >> m.flags >> m.held;
+    if (!std::isfinite(m.pitch)) {
+        return qcError(u"Non-finite entity data"_s);
+    }
     if (!isFinite(m.position) || !std::isfinite(m.yaw) || !std::isfinite(m.health)) {
         return qcError(u"Non-finite entity data"_s);
     }
@@ -433,8 +466,8 @@ QcResult<QcMessage> decodePayload<QcMsg::EntityMoves>(QDataStream &stream)
     }
     for (quint32 i = 0; i < count; ++i) {
         QcMsg::EntityMove move;
-        stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt;
-        if (!isFinite(move.position) || !std::isfinite(move.yaw) || !std::isfinite(move.health)) {
+        stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt >> move.pitch >> move.flags >> move.held;
+        if (!isFinite(move.position) || !std::isfinite(move.yaw) || !std::isfinite(move.health) || !std::isfinite(move.pitch)) {
             return qcError(u"Non-finite entity data"_s);
         }
         m.moves.append(move);
@@ -446,7 +479,7 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::EntityRemove>(QDataStream &stream)
 {
     QcMsg::EntityRemove m;
-    stream >> m.id;
+    stream >> m.id >> m.died;
     return m;
 }
 
@@ -484,6 +517,16 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::Respawn>(QDataStream &)
 {
     return QcMsg::Respawn{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::SetAppearance>(QDataStream &stream)
+{
+    QcMsg::SetAppearance m;
+    if (!readAppearance(stream, m.appearance)) {
+        return qcError(u"Invalid appearance"_s);
+    }
+    return m;
 }
 
 template<>
@@ -539,7 +582,7 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>()
                                || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
                                || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
-                               || is.template operator()<QcMsg::DropItem>();
+                               || is.template operator()<QcMsg::DropItem>() || is.template operator()<QcMsg::SetAppearance>();
     return clientMessage == (sender == Peer::Client);
 }
 

@@ -1,0 +1,34 @@
+{
+    "name": "miner",
+    "kind": "outfit",
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "cloth_striped",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "hand": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "overalls",
+            "tint": "pants"
+        },
+        "shoes": {
+            "texture": "shoes",
+            "tint": "none"
+        }
+    }
+}

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
 #include "QcMobDefinition.h"
+#include "QcModelDefinition.h"
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcTextureDefinition.h"
@@ -19,6 +21,8 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
 QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);

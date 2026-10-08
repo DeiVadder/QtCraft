@@ -53,6 +53,20 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
                 warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));
             }
         }
+        if (!mob.skeleton.isEmpty() && !content.model(mob.skeleton)) {
+            warnings.append(u"mob %1: unknown skeleton '%2'"_s.arg(mob.name, mob.skeleton));
+        }
+        const QcAppearanceDefinition *outfit = mob.outfit.isEmpty() ? nullptr : content.appearance(mob.outfit);
+        if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
+            warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
+        }
+    }
+    for (const QcAppearanceDefinition &appearance : content.appearances()) {
+        for (const QcAppearanceLayer &layer : appearance.layers) {
+            if (!texture(layer.texture)) {
+                warnings.append(u"appearance %1: unknown texture '%2'"_s.arg(appearance.name, layer.texture));
+            }
+        }
     }
     for (const QcBlockDefinition &block : content.blocks()) {
         for (const QcItemDrop &drop : block.drops) {
@@ -120,6 +134,7 @@ QString countProblem(const QcContentRegistry &content)
     const auto tooMany = [](qsizetype count) { return std::cmp_greater(count, QcStreamLimits::maxDefinitions); };
     if (tooMany(content.blockCount()) || tooMany(content.itemCount()) || tooMany(content.mobs().size())
         || tooMany(content.recipes().size()) || tooMany(content.textures().size()) || tooMany(content.languages().size())
+        || tooMany(content.models().size()) || tooMany(content.appearances().size())
         || content.packs().size() > 1024) {
         return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);
     }

@@ -57,9 +57,20 @@ public:
             if (spawn->mobType == QcMsg::EntitySpawn::itemType) {
                 items.insert(spawn->id, spawn->item);
             }
+            spawns.insert(spawn->id, *spawn);
         } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
             entities.remove(removed->id);
             items.remove(removed->id);
+            if (removed->died) {
+                died.insert(removed->id);
+            }
+        } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
+            for (const QcMsg::EntityMove &move : moves->moves) {
+                flags[move.id] |= move.flags;
+                if (move.hurt) {
+                    hurt.insert(move.id);
+                }
+            }
         }
     }
 
@@ -76,6 +87,12 @@ public:
     QHash<quint32, qint32> entities;
     // Item entities the client was told about, with their latest stack.
     QHash<quint32, QcItemStack> items;
+    // Latest spawn message per entity, entities reported dead, and all move flags seen per entity.
+    QHash<quint32, QcMsg::EntitySpawn> spawns;
+    QSet<quint32> died;
+    QHash<quint32, quint8> flags;
+    // Entities reported hurt in any move.
+    QSet<quint32> hurt;
 };
 
 void pump()
@@ -118,7 +135,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s});
+        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
         pump();
         ticks(2);
         const QcVec3 p = m_client->motion.position;
@@ -424,7 +441,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s});
+        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
         pump();
         ticks(2);
         QVERIFY(m_client->dead);
@@ -455,6 +472,8 @@ private slots:
             ticks(12);
         }
         QVERIFY(!m_server->mobs().find(pig));
+        ticks(1);
+        QVERIFY(m_client->died.contains(pig));
         // The loot falls into the pit, out of the player's reach.
         int dropped = 0;
         for (const QcItemEntityManager::Item &loot : m_server->items().items()) {
@@ -598,7 +617,7 @@ private slots:
             auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
             m_server->addClient(std::move(serverEnd));
             m_client = std::make_unique<RawClient>(std::move(clientEnd));
-            m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s});
+            m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
             pump();
             ticks(2);
         };
@@ -925,6 +944,107 @@ private slots:
             }
         }
         QCOMPARE(pickaxes, 1);
+    }
+
+    void appearancesAreCheckedAndShownToOthers()
+    {
+        join();
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        RawClient bob(std::move(clientEnd));
+        QcAppearance look;
+        look.outfit = u"qtcraft:miner"_s;
+        look.hair = u"qtcraft:explorer"_s; // an outfit, not a hair style
+        look.shirtColor = 0x112233;
+        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, look});
+        pump();
+        ticks(2);
+        const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
+                                  return spawn.name == u"Bob"_s;
+                              })->id;
+        const QcMsg::EntitySpawn seen = m_client->spawns.value(bobId);
+        QCOMPARE(seen.mobType, QcMsg::EntitySpawn::playerType);
+        QCOMPARE(seen.appearance.outfit, u"qtcraft:miner"_s);
+        QVERIFY(seen.appearance.hair.isEmpty());
+        QCOMPARE(seen.appearance.shirtColor, 0x112233u);
+        // Creature outfits are not for players.
+        look.outfit = u"qtcraft:zombie"_s;
+        bob.connection.send(QcMsg::SetAppearance{look});
+        pump();
+        ticks(2);
+        QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, QcAppearance().outfit);
+        look.outfit = u"qtcraft:miner"_s;
+        bob.connection.send(QcMsg::SetAppearance{look});
+        pump();
+        ticks(2);
+        QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, u"qtcraft:miner"_s);
+        // A changed look reaches the others; unknown outfits fall back to the default.
+        look.outfit = u"nomod:robe"_s;
+        look.hair = u"qtcraft:long_hair"_s;
+        bob.connection.send(QcMsg::SetAppearance{look});
+        pump();
+        ticks(2);
+        QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, QcAppearance().outfit);
+        QCOMPARE(m_client->spawns.value(bobId).appearance.hair, u"qtcraft:long_hair"_s);
+        // Using an item swings Bob's arm for everyone else.
+        bob.connection.send(QcMsg::UseItem{m_feet.offset(1, -1, 0), QcBlockFace::Up});
+        pump();
+        ticks(2);
+        QVERIFY((m_client->flags.value(bobId) & QcMsg::Swing) != 0);
+        bob.connection.send(QcMsg::Disconnect{});
+        pump();
+        ticks(1);
+    }
+
+    void aChangedLookBeforeLeavingLeavesNoGhost()
+    {
+        join();
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        RawClient bob(std::move(clientEnd));
+        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, {}});
+        pump();
+        ticks(2);
+        const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
+                                  return spawn.name == u"Bob"_s;
+                              })->id;
+        QVERIFY(m_client->entities.contains(bobId));
+        QcAppearance look;
+        look.hair = u"qtcraft:long_hair"_s;
+        bob.connection.send(QcMsg::SetAppearance{look});
+        bob.connection.send(QcMsg::Disconnect{});
+        pump();
+        ticks(2);
+        QVERIFY(!m_client->entities.contains(bobId));
+    }
+
+    void fallDamageFlashesForOthers()
+    {
+        join();
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        RawClient bob(std::move(clientEnd));
+        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, {}});
+        pump();
+        ticks(2);
+        const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
+                                  return spawn.name == u"Bob"_s;
+                              })->id;
+        const QcVec3 p = bob.motion.position;
+        const QcBlockPos feet{int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        for (int dy = -1; dy >= -10; --dy) {
+            m_server->world().setBlock(feet.offset(0, dy, 0), qcAirBlockId);
+        }
+        m_server->world().setBlock(feet.offset(0, -11, 0), id("qtcraft:stone"));
+        for (quint32 sequence = 1; sequence <= 60; ++sequence) {
+            QcPlayerInput input;
+            input.sequence = sequence;
+            bob.connection.send(QcMsg::PlayerInput{input});
+            pump();
+            ticks(1);
+        }
+        QVERIFY(bob.health < QcServer::playerMaxHealth);
+        QVERIFY(m_client->hurt.contains(bobId));
     }
 
     void itemsSaplingsAndGameRulesSurviveARestart()

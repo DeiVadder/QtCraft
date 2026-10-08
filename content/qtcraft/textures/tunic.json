@@ -1,0 +1,8 @@
+{
+    "name": "tunic",
+    "pattern": "speckle",
+    "primary": "#f0f0f0",
+    "secondary": "#d0d0d0",
+    "variation": 0.08,
+    "seed": 45
+}

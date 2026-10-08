@@ -21,7 +21,7 @@ Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `t
 build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft
 ```
 
-The main menu lists saved worlds, creates new ones (name, optional seed, whether the inventory is kept on death), and opens the settings and the mod list.
+The main menu lists saved worlds, creates new ones (name, optional seed, whether the inventory is kept on death), and opens the settings, the character screen (outfit, hair, colours) and the mod list.
 
 | Input | Action |
 |-------|--------|
@@ -30,12 +30,13 @@ The main menu lists saved worlds, creates new ones (name, optional seed, whether
 | Left mouse / F | Mine; left click on a creature attacks it |
 | Right mouse / R | Place the held block, eat held food, use a crafting table |
 | Q, Ctrl+Q | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
+| F5 | Switch the view: first person, third person behind, third person in front |
 | 1–9, mouse wheel | Select a hotbar slot |
 | E | Inventory with 2 × 2 crafting grid and recipe list |
 | T or Enter | Chat and commands (`/help`) |
 | Esc | Pause menu (settings, save, quit to menu) |
 
-Settings (view distance, field of view, mouse sensitivity, invert mouse, debug overlay, language) are stored in `settings.ini` in the data directory. The UI is available in English and German.
+Settings (view distance, field of view, mouse sensitivity, invert mouse, debug overlay, language, view mode and the character's look) are stored in `settings.ini` in the data directory. The UI is available in English and German.
 
 ## Mods
 
@@ -67,7 +68,7 @@ scripts/verify.sh
 
 `scripts/verify.sh` builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, runs clang-tidy, clazy and qmllint, and takes smoke screenshots. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
 
-Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT`, `--overlay inventory|pause|settings|chat`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `QTCRAFT_SCREENSHOT=file.png`, `QTCRAFT_BENCHMARK=seconds`. The full list is in [docs/Architektur.md](docs/Architektur.md).
+Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT`, `--overlay inventory|pause|settings|character|chat`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `QTCRAFT_SCREENSHOT=file.png`, `QTCRAFT_BENCHMARK=seconds`. The full list is in [docs/Architektur.md](docs/Architektur.md).
 
 ## Documentation
 

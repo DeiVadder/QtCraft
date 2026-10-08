@@ -193,6 +193,12 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
+                    text: qsTr("Character")
+                    onClicked: characterScreen.open()
+                }
+
+                Button {
+                    Layout.fillWidth: true
                     text: qsTr("Mods")
                     onClicked: modsScreen.open()
                 }
@@ -214,6 +220,12 @@ Rectangle {
 
     ModsScreen {
         id: modsScreen
+
+        game: menu.game
+    }
+
+    CharacterScreen {
+        id: characterScreen
 
         game: menu.game
     }

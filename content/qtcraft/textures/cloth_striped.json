@@ -1,0 +1,8 @@
+{
+    "name": "cloth_striped",
+    "pattern": "log_side",
+    "primary": "#f4f4f4",
+    "secondary": "#b8b8b8",
+    "variation": 0.05,
+    "seed": 43
+}

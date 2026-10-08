@@ -1,8 +1,10 @@
 #pragma once
 
+#include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
 #include "QcItemDefinition.h"
 #include "QcMobDefinition.h"
+#include "QcModelDefinition.h"
 #include "QcPackReference.h"
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
@@ -59,6 +61,14 @@ public:
     const QList<QcMobDefinition> &mobs() const { return m_mobs; }
     std::optional<int> mobIndex(const QString &name) const;
 
+    // Skeleton models and appearances (outfits, hair styles); replaced by name like mobs.
+    void registerModel(QcModelDefinition definition);
+    const QList<QcModelDefinition> &models() const { return m_models; }
+    const QcModelDefinition *model(const QString &name) const;
+    void registerAppearance(QcAppearanceDefinition definition);
+    const QList<QcAppearanceDefinition> &appearances() const { return m_appearances; }
+    const QcAppearanceDefinition *appearance(const QString &name) const;
+
     void registerRecipe(QcRecipeDefinition definition);
     const QList<QcRecipeDefinition> &recipes() const { return m_recipes; }
     std::optional<qsizetype> recipeIndex(const QString &name) const;
@@ -95,6 +105,10 @@ private:
     QHash<QString, QHash<QString, QString>> m_translations;
     QList<QcMobDefinition> m_mobs;
     QHash<QString, qsizetype> m_mobIndex;
+    QList<QcModelDefinition> m_models;
+    QHash<QString, qsizetype> m_modelIndex;
+    QList<QcAppearanceDefinition> m_appearances;
+    QHash<QString, qsizetype> m_appearanceIndex;
     QList<QcRecipeDefinition> m_recipes;
     QHash<QString, qsizetype> m_recipeIndex;
     QList<QcBiomeDefinition> m_biomes;

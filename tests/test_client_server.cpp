@@ -134,7 +134,7 @@ private slots:
             }
         });
         QSignalSpy closed(&connection, &QcConnection::closed);
-        connection.send(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s});
+        connection.send(QcMsg::Hello{QcProtocol::version + 1, u"Old"_s, {}});
         QTRY_COMPARE_WITH_TIMEOUT(closed.count(), 1, timeoutMs);
         QCOMPARE(reasons.size(), 1);
         QVERIFY(reasons.constFirst().contains(u"version"_s));
@@ -177,7 +177,7 @@ private slots:
         session.start(QcClientSession::TickMode::Manual);
         server.send(QcMsg::Welcome{QcProtocol::version, 1, u"Fake"_s, 1, 0.0f, 0.0f, false});
         server.send(QcMsg::ContentSync{m_content});
-        server.send(QcMsg::EntitySpawn{40, type, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {item, count, 0}});
+        server.send(QcMsg::EntitySpawn{40, type, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {item, count, 0}, {}, 0.0f, 0, qcNoItem});
         QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Disconnected || session.entities().contains(40), timeoutMs);
         QCOMPARE(session.entities().contains(40), accepted);
         if (!accepted) {
@@ -186,8 +186,8 @@ private slots:
         }
         QVERIFY(session.entities().value(40).isItem());
         // A new count for a known item keeps the entity and its motion history.
-        server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false}}});
-        server.send(QcMsg::EntitySpawn{40, type, QString(), {9.5, 64.0, 0.5}, 0.0f, 0.0, {item, 7, 0}});
+        server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false, 0.0f, 0, qcNoItem}}});
+        server.send(QcMsg::EntitySpawn{40, type, QString(), {9.5, 64.0, 0.5}, 0.0f, 0.0, {item, 7, 0}, {}, 0.0f, 0, qcNoItem});
         QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(40).item.count, 7, timeoutMs);
         QCOMPARE(session.entities().value(40).position, (QcVec3{0.5, 63.0, 0.5}));
     }
@@ -219,7 +219,7 @@ private slots:
             }
         });
         server.addClient(std::move(serverEnd));
-        client.send(QcMsg::Hello{QcProtocol::version, u"Fast"_s});
+        client.send(QcMsg::Hello{QcProtocol::version, u"Fast"_s, {}});
         QTest::qWait(50);
         // A cheating client floods 100 inputs within one tick; only the budget is simulated.
         for (quint32 i = 1; i <= 100; ++i) {

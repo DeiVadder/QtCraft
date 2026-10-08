@@ -43,6 +43,8 @@ public:
         QcVec3 wanderDirection;
         double fleeTimer = 0.0;
         bool hurtThisTick = false;
+        // Struck at a player this tick (animation).
+        bool attackedThisTick = false;
         bool blockedLastTick = false;
         // Spawned on a cave floor: night creatures there stay in daylight.
         bool underground = false;

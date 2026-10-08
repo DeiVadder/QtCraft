@@ -16,15 +16,18 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
 
-// std140 layout of the Frame uniform block in block.vert/block.frag.
+// std140 layout of the Frame uniform block in the shaders (the block shaders read only the first
+// four members).
 struct FrameUniforms
 {
     float viewProjection[16];
     float cameraPosition[4];
     float fogColor[4];
     float params[4];
+    // x: 1 when clip-space depth runs from 0 to 1 (else -1 to 1).
+    float extra[4];
 };
-static_assert(sizeof(FrameUniforms) == 112);
+static_assert(sizeof(FrameUniforms) == 128);
 
 constexpr float minimumLight = 0.08f;
 
@@ -47,12 +50,14 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_meshes.clear();
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_entityPipeline.reset();
+        m_handPipeline.reset();
         m_outlinePipeline.reset();
         m_outlineBindings.reset();
         m_outlineVertices.reset();
         m_uploadedSelection.reset();
-        m_entityVertices.reset();
-        m_entityIndices.reset();
+        m_entityBuffers = {};
+        m_handBuffers = {};
         m_bindings.reset();
         m_atlasTexture.reset();
         m_atlasSampler.reset();
@@ -73,6 +78,8 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     if (!m_pipelineRenderPass || !m_pipelineRenderPass->isCompatible(renderTarget()->renderPassDescriptor())) {
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_entityPipeline.reset();
+        m_handPipeline.reset();
         m_outlinePipeline.reset();
     }
 }
@@ -83,6 +90,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     m_camera = view->m_camera;
     m_selection = view->m_selection;
     m_entityMesh = view->m_entityMesh;
+    m_handMesh = view->m_handMesh;
     m_skyColor = view->m_skyColor;
     m_daylight = view->m_daylight;
     m_fogStart = view->m_fogStart;
@@ -119,6 +127,8 @@ void QcWorldRenderer::ensureAtlasTexture(QRhiResourceUpdateBatch *updates)
         m_bindings.reset();
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_entityPipeline.reset();
+        m_handPipeline.reset();
     }
     updates->uploadTexture(m_atlasTexture.get(), image);
     m_uploadedAtlasVersion = m_atlasVersion;
@@ -179,6 +189,36 @@ void QcWorldRenderer::createPipelines()
 
     m_opaquePipeline = makePipeline(false);
     m_translucentPipeline = makePipeline(true);
+
+    QRhiVertexInputLayout entityLayout;
+    entityLayout.setBindings({{sizeof(QcEntityVertex)}});
+    entityLayout.setAttributes({
+        {0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(QcEntityVertex, x))},
+        {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcEntityVertex, u))},
+        {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, shade))},
+        {0, 3, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, skyLight))},
+        {0, 4, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcEntityVertex, tint))},
+    });
+    const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s);
+    const auto makeEntityPipeline = [&](const QString &vertexShaderPath) {
+        std::unique_ptr<QRhiGraphicsPipeline> pipeline(m_rhi->newGraphicsPipeline());
+        pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(vertexShaderPath)}, {QRhiShaderStage::Fragment, entityFragment}});
+        pipeline->setVertexInputLayout(entityLayout);
+        pipeline->setShaderResourceBindings(m_bindings.get());
+        pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+        pipeline->setSampleCount(renderTarget()->sampleCount());
+        pipeline->setDepthTest(true);
+        pipeline->setDepthWrite(true);
+        pipeline->setFrontFace(QRhiGraphicsPipeline::CCW);
+        pipeline->setCullMode(QRhiGraphicsPipeline::Back);
+        if (!pipeline->create()) {
+            qCCritical(lcRenderer) << "Cannot create entity pipeline";
+            return std::unique_ptr<QRhiGraphicsPipeline>();
+        }
+        return pipeline;
+    };
+    m_entityPipeline = makeEntityPipeline(u":/shaders/entity.vert.qsb"_s);
+    m_handPipeline = makeEntityPipeline(u":/shaders/hand.vert.qsb"_s);
     m_pipelineRenderPass.reset(renderTarget()->renderPassDescriptor()->newCompatibleRenderPassDescriptor());
 }
 
@@ -249,26 +289,26 @@ void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
     m_uploadedSelection = m_selection;
 }
 
-void QcWorldRenderer::uploadEntities(QRhiResourceUpdateBatch *updates)
+void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers)
 {
-    m_entityIndexCount = 0;
-    if (!m_entityMesh || m_entityMesh->opaqueIndices.isEmpty()) {
+    buffers.indexCount = 0;
+    if (!mesh || mesh->indices.isEmpty()) {
         return;
     }
-    const auto vertexBytes = quint32(m_entityMesh->opaqueVertices.size() * qsizetype(sizeof(QcBlockVertex)));
-    const auto indexBytes = quint32(m_entityMesh->opaqueIndices.size() * qsizetype(sizeof(quint32)));
+    const auto vertexBytes = quint32(mesh->vertices.size() * qsizetype(sizeof(QcEntityVertex)));
+    const auto indexBytes = quint32(mesh->indices.size() * qsizetype(sizeof(quint32)));
     // Dynamic buffers grow on demand and are reused every frame.
-    if (!m_entityVertices || m_entityVertices->size() < vertexBytes) {
-        m_entityVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
-        m_entityVertices->create();
+    if (!buffers.vertices || buffers.vertices->size() < vertexBytes) {
+        buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
+        buffers.vertices->create();
     }
-    if (!m_entityIndices || m_entityIndices->size() < indexBytes) {
-        m_entityIndices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::IndexBuffer, indexBytes * 2));
-        m_entityIndices->create();
+    if (!buffers.indices || buffers.indices->size() < indexBytes) {
+        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::IndexBuffer, indexBytes * 2));
+        buffers.indices->create();
     }
-    updates->updateDynamicBuffer(m_entityVertices.get(), 0, vertexBytes, m_entityMesh->opaqueVertices.constData());
-    updates->updateDynamicBuffer(m_entityIndices.get(), 0, indexBytes, m_entityMesh->opaqueIndices.constData());
-    m_entityIndexCount = quint32(m_entityMesh->opaqueIndices.size());
+    updates->updateDynamicBuffer(buffers.vertices.get(), 0, vertexBytes, mesh->vertices.constData());
+    updates->updateDynamicBuffer(buffers.indices.get(), 0, indexBytes, mesh->indices.constData());
+    buffers.indexCount = quint32(mesh->indices.size());
 }
 
 QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBatch *updates,
@@ -351,7 +391,8 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         createOutlinePipeline();
     }
     uploadOutline(updates);
-    uploadEntities(updates);
+    uploadEntityMesh(updates, m_entityMesh.get(), m_entityBuffers);
+    uploadEntityMesh(updates, m_handMesh.get(), m_handBuffers);
     uploadPendingMeshes(updates);
 
     const QSize outputSize = renderTarget()->pixelSize();
@@ -373,6 +414,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     uniforms.params[1] = m_fogEnd;
     uniforms.params[2] = m_daylight;
     uniforms.params[3] = minimumLight;
+    uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
     updates->updateDynamicBuffer(m_frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 
     commandBuffer->beginPass(renderTarget(), m_skyColor, {1.0f, 0}, updates);
@@ -401,10 +443,10 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         for (const GpuMesh *mesh : std::as_const(visible)) {
             drawBuffers(mesh->opaque);
         }
-        if (m_entityIndexCount > 0) {
-            const QRhiCommandBuffer::VertexInput input(m_entityVertices.get(), 0);
-            commandBuffer->setVertexInput(0, 1, &input, m_entityIndices.get(), 0, QRhiCommandBuffer::IndexUInt32);
-            commandBuffer->drawIndexed(m_entityIndexCount);
+        if (m_entityBuffers.indexCount > 0 && m_entityPipeline) {
+            commandBuffer->setGraphicsPipeline(m_entityPipeline.get());
+            commandBuffer->setShaderResources();
+            drawBuffers(m_entityBuffers);
         }
 
         // Back-to-front by section centre so overlapping translucent sections blend correctly.
@@ -426,6 +468,12 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
             const QRhiCommandBuffer::VertexInput input(m_outlineVertices.get(), 0);
             commandBuffer->setVertexInput(0, 1, &input);
             commandBuffer->draw(24);
+        }
+        // Last, with its depth squeezed to the front: the arm never disappears into a wall.
+        if (m_handBuffers.indexCount > 0 && m_handPipeline) {
+            commandBuffer->setGraphicsPipeline(m_handPipeline.get());
+            commandBuffer->setShaderResources();
+            drawBuffers(m_handBuffers);
         }
     }
     commandBuffer->endPass();

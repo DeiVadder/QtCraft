@@ -89,6 +89,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     QList<PlayerHit> hits;
     for (Mob &mob : m_mobs) {
         mob.hurtThisTick = false;
+        mob.attackedThisTick = false;
         think(mob, world, players, dt, hits);
     }
 
@@ -150,6 +151,7 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
             if (mob.attackCooldown <= 0.0) {
                 mob.attackCooldown = definition.attackCooldown;
                 hits.append({target->entityId, definition.attackDamage, towards.normalized()});
+                mob.attackedThisTick = true;
             }
         }
         if (towards.length() > 0.0) {

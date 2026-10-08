@@ -3,6 +3,7 @@
 // Protocol messages. Plain data structs, grouped here on purpose: together they form the QcMessage
 // variant whose alternative index is the wire type tag. New messages are appended at the end.
 
+#include "QcAppearance.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
 #include "QcChunk.h"
@@ -18,11 +19,23 @@
 
 namespace QcMsg {
 
+// Movement and action states of an entity, as bits of EntitySpawn/EntityMove::flags. The client
+// animates from them.
+enum EntityFlag : quint8 {
+    // A swing of the right arm started this tick (mining, attacking, using).
+    Swing = 1,
+    OnGround = 2,
+    InWater = 4,
+    Sneaking = 8,
+    Sprinting = 16,
+};
+
 // Client -> server: first message on every connection.
 struct Hello
 {
     quint32 protocolVersion = 0;
     QString playerName;
+    QcAppearance appearance;
 };
 
 // Server -> client: accepted connection.
@@ -182,6 +195,12 @@ struct EntitySpawn
     double health = 0.0;
     // The stack of an item entity; empty for mobs and players.
     QcItemStack item;
+    // Players only: their chosen look.
+    QcAppearance appearance;
+    // View pitch in degrees, EntityFlag bits and the item in the right hand.
+    float pitch = 0.0f;
+    quint8 flags = 0;
+    QcItemId held = qcNoItem;
 };
 
 struct EntityMove
@@ -192,6 +211,9 @@ struct EntityMove
     double health = 0.0;
     // Set in the tick the entity took damage (for a hurt flash).
     bool hurt = false;
+    float pitch = 0.0f;
+    quint8 flags = 0;
+    QcItemId held = qcNoItem;
 };
 
 // Server -> client: positions of all visible entities that changed this tick.
@@ -203,6 +225,8 @@ struct EntityMoves
 struct EntityRemove
 {
     quint32 id = 0;
+    // The entity died (the client plays the death animation) rather than left the view.
+    bool died = false;
 };
 
 // Server -> client: the receiving player's health; dead players wait for Respawn.
@@ -231,6 +255,12 @@ struct Respawn
 {
 };
 
+// Client -> server: the player changed their look.
+struct SetAppearance
+{
+    QcAppearance appearance;
+};
+
 // Client -> server: throw one item (or the whole stack) of the selected hotbar slot.
 struct DropItem
 {
@@ -246,4 +276,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::InventoryState, QcMsg::ChatMessage, QcMsg::EntitySpawn, QcMsg::EntityMoves,
                                QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
-                               QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem>;
+                               QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance>;

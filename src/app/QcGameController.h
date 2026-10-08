@@ -16,6 +16,7 @@
 #include <QSet>
 #include <QStringList>
 #include <QVariantList>
+#include <QVariantMap>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 #include <array>
@@ -66,6 +67,10 @@ class QcGameController : public QObject
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
+    Q_PROPERTY(QString cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(QVariantMap character READ character WRITE setCharacter NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(QVariantList outfits READ outfits NOTIFY appearancesChanged FINAL)
+    Q_PROPERTY(QVariantList hairStyles READ hairStyles NOTIFY appearancesChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = QcGameSettings::defaultViewDistance;
@@ -107,6 +112,18 @@ public:
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
+    // "first", "behind" or "front"; F5 cycles through them.
+    QString cameraMode() const;
+    void setCameraMode(const QString &mode);
+    // The player's look as {outfit, hair, skin, hairColor, shirt, pants} with "#rrggbb" colours.
+    QVariantMap character() const;
+    void setCharacter(const QVariantMap &character);
+    // Outfits and hair styles of the base game as [{name, label}].
+    QVariantList outfits() const;
+    QVariantList hairStyles() const;
+    // Test hook: freezes the local player's pose ("walk", "swing", "swim", "jump", "sneak", "death")
+    // for screenshots.
+    void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
     QcInventoryModel *inventory() const { return m_inventory; }
     double miningProgress() const { return m_miningProgress; }
@@ -185,6 +202,8 @@ signals:
     void worldsChanged();
     void modsChanged();
     void settingsChanged();
+    // The character screen's outfit and hair lists (content or language changed).
+    void appearancesChanged();
     // The application installs the translator for `language` ("" = system) and retranslates.
     void languageChangeRequested(const QString &language);
     void healthChanged();
@@ -201,7 +220,16 @@ private:
     void startWorld(const QString &directory, const QString &worldName, qint64 seed);
     void handleMouseButton(Qt::MouseButton button, bool pressed);
     void updateIcons(const QcTextureAtlas &atlas);
-    void updateEntities(double alpha);
+    void updateEntities(double alpha, QcCameraMode mode);
+    void updateHand(double alpha, const QcVec3 &eye);
+    QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
+    QcEntityPose localPose(double alpha) const;
+    std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
+    // Base game plus enabled mods, loaded on demand for the character screen's lists.
+    const QcContentRegistry &characterContent() const;
+    // Enabling or disabling a mod changes the outfits on offer.
+    void resetCharacterContent();
+    QVariantList appearanceList(QcAppearanceDefinition::Kind kind) const;
     static QcEntityMesher::ItemLook itemLook(const QcContentRegistry &content, QcItemId item);
     void updateSky(double alpha);
     void updateInventory();
@@ -215,6 +243,10 @@ private:
     bool m_inputEnabled = true;
     int m_viewDistance = defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
+    QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
+    QcAppearance m_appearance;
+    QString m_forcedPose;
+    mutable std::shared_ptr<const QcContentRegistry> m_characterContent;
     double m_mouseSensitivity = defaultMouseSensitivity;
     bool m_invertMouse = false;
     bool m_showDebug = true;

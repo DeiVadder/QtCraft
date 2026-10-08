@@ -44,7 +44,7 @@ class TestProtocol : public QObject
 private slots:
     void simpleMessagesRoundTrip()
     {
-        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Jö"_s});
+        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Jö"_s, {}});
         QCOMPARE(hello.protocolVersion, QcProtocol::version);
         QCOMPARE(hello.playerName, u"Jö"_s);
 
@@ -177,12 +177,46 @@ private slots:
         QCOMPARE(copy.craftingResult, state.craftingResult);
     }
 
+    void appearancesRoundTripAndAreBounded()
+    {
+        QcAppearance look;
+        look.outfit = u"mod:robe"_s;
+        look.hair.clear();
+        look.skinColor = 0x123456;
+        look.pantsColor = 0xFFFFFFFF;
+        const QcMsg::Hello hello = roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look});
+        QCOMPARE(hello.appearance.outfit, u"mod:robe"_s);
+        QVERIFY(hello.appearance.hair.isEmpty());
+        QCOMPARE(hello.appearance.skinColor, 0x123456u);
+        // Only the RGB bits survive.
+        QCOMPARE(hello.appearance.pantsColor, 0xFFFFFFu);
+        QCOMPARE(roundTrip(QcMsg::SetAppearance{look}).appearance.outfit, u"mod:robe"_s);
+        QcMsg::EntitySpawn spawn;
+        spawn.appearance = look;
+        QCOMPARE(roundTrip(spawn).appearance.outfit, u"mod:robe"_s);
+        // Overlong names are refused.
+        look.outfit = QString(QcAppearance::maxNameLength + 1, u'x');
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SetAppearance{look}), QcProtocol::Peer::Client).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look}), QcProtocol::Peer::Client)
+                     .has_value());
+        // A Hello of another version is still read far enough to report the mismatch.
+        const QcResult<QcMessage> old = QcProtocol::decode(QcProtocol::encode(QcMsg::Hello{QcProtocol::version - 1, u"Old"_s, look}),
+                                                           QcProtocol::Peer::Client);
+        QVERIFY(old.has_value());
+        QCOMPARE(std::get<QcMsg::Hello>(*old).protocolVersion, QcProtocol::version - 1);
+        // Only clients set their appearance.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SetAppearance{}), QcProtocol::Peer::Server).has_value());
+        QcMsg::EntityMoves moves;
+        moves.moves = {{1, {}, 0.0f, 0.0, false, std::numeric_limits<float>::quiet_NaN(), 0, qcNoItem}};
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(moves), QcProtocol::Peer::Server).has_value());
+    }
+
     void rejectsMalformedFrames()
     {
         QVERIFY(!QcProtocol::decode(QByteArray(), QcProtocol::Peer::Server).has_value());
         QVERIFY(!QcProtocol::decode(frameWithTag(999, {}), QcProtocol::Peer::Server).has_value());
 
-        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{1, u"player"_s});
+        const QByteArray hello = QcProtocol::encode(QcMsg::Hello{QcProtocol::version, u"player"_s, {}});
         QVERIFY(!QcProtocol::decode(hello.left(hello.size() - 3), QcProtocol::Peer::Client).has_value());
         QVERIFY(!QcProtocol::decode(hello + QByteArray(1, 'x'), QcProtocol::Peer::Client).has_value());
 
@@ -269,7 +303,7 @@ private slots:
 
     void entityAndStatusMessagesRoundTrip()
     {
-        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}});
+        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}, {}, 12.5f, QcMsg::Swing | QcMsg::OnGround, 5});
         QCOMPARE(spawn.id, 42u);
         QCOMPARE(spawn.mobType, 3);
         QCOMPARE(spawn.name, u"Alex"_s);
@@ -278,13 +312,13 @@ private slots:
         QCOMPARE(spawn.health, 17.5);
 
         QcMsg::EntityMoves moves;
-        moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false}};
+        moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true, -30.0f, QcMsg::InWater, 3}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false, 0.0f, 0, qcNoItem}};
         const QcMsg::EntityMoves copy = roundTrip(moves);
         QCOMPARE(copy.moves.size(), 2);
         QCOMPARE(copy.moves.at(0).hurt, true);
         QCOMPARE(copy.moves.at(1).position, (QcVec3{3.0, 65.0, 4.0}));
 
-        QCOMPARE(roundTrip(QcMsg::EntityRemove{77}).id, 77u);
+        QCOMPARE(roundTrip(QcMsg::EntityRemove{77, false}).id, 77u);
         const QcMsg::PlayerHealth health = roundTrip(QcMsg::PlayerHealth{3.0, 20.0, true});
         QCOMPARE(health.health, 3.0);
         QCOMPARE(health.dead, true);
@@ -293,11 +327,18 @@ private slots:
         roundTrip(QcMsg::Respawn{});
 
         const QcMsg::EntitySpawn item = roundTrip(
-            QcMsg::EntitySpawn{7, QcMsg::EntitySpawn::itemType, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {12, 33, 4}});
+            QcMsg::EntitySpawn{7, QcMsg::EntitySpawn::itemType, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {12, 33, 4}, {}, 0.0f, 0, qcNoItem});
         QCOMPARE(item.mobType, QcMsg::EntitySpawn::itemType);
         QCOMPARE(item.item, (QcItemStack{12, 33, 4}));
         QCOMPARE(roundTrip(QcMsg::DropItem{true}).wholeStack, true);
         QCOMPARE(roundTrip(QcMsg::DropItem{false}).wholeStack, false);
+        QCOMPARE(spawn.pitch, 12.5f);
+        QCOMPARE(spawn.flags, quint8(QcMsg::Swing | QcMsg::OnGround));
+        QCOMPARE(spawn.held, 5u);
+        QCOMPARE(copy.moves.at(0).pitch, -30.0f);
+        QCOMPARE(copy.moves.at(0).flags, quint8(QcMsg::InWater));
+        QCOMPARE(copy.moves.at(0).held, 3u);
+        QCOMPARE(roundTrip(QcMsg::EntityRemove{8, true}).died, true);
         // Dropping is a client request; a server must not send it.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DropItem{true}), QcProtocol::Peer::Server).has_value());
     }

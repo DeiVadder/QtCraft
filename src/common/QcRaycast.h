@@ -16,14 +16,22 @@ struct QcRaycastHit
 };
 
 // Voxel traversal (Amanatides & Woo) along a ray. Targets every block that is neither air nor
-// liquid nor invisible; unloaded chunks stop the ray without a hit.
+// liquid nor invisible, or only solid blocks; unloaded chunks stop the ray without a hit.
 namespace QcRaycast {
+
+enum class Targets : quint8 {
+    // What the player can point at (also plants and torches).
+    Visible,
+    // What bodies collide with.
+    Solid,
+};
 
 inline constexpr double playerReach = 5.0;
 
 // Distance along a normalised ray to a box, or std::nullopt when it misses within maxDistance.
 std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance);
 
-std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance);
+std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
+                                 Targets targets = Targets::Visible);
 
 } // namespace QcRaycast

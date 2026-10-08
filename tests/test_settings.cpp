@@ -31,9 +31,37 @@ private slots:
         settings.invertMouse = true;
         settings.showDebug = false;
         settings.language = u"de"_s;
+        settings.cameraMode = QcCameraMode::Front;
+        settings.appearance.outfit = u"mod:robe"_s;
+        settings.appearance.hair.clear();
+        settings.appearance.skinColor = 0x010203;
+        settings.appearance.hairColor = 0xfffffe;
+        settings.appearance.shirtColor = 0x00ff00;
+        settings.appearance.pantsColor = 0x000000;
         const QcStatus saved = settings.save(path);
         QVERIFY2(saved.has_value(), qcErrorText(saved));
         QCOMPARE(QcGameSettings::load(path), settings);
+    }
+
+    void badCharacterAndViewValuesFallBack()
+    {
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("[General]\ncameraMode=sideways\n[character]\nskin=red\nhairColor=#12345\nshirt=#00ff0g\n"
+                   "pants=#abcdef\noutfit=");
+        file.write(QByteArray(QcAppearance::maxNameLength + 1, 'x'));
+        file.write("\n");
+        file.close();
+        const QcGameSettings settings = QcGameSettings::load(path);
+        const QcAppearance defaults;
+        QCOMPARE(settings.cameraMode, QcCameraMode::FirstPerson);
+        QCOMPARE(settings.appearance.skinColor, defaults.skinColor);
+        QCOMPARE(settings.appearance.hairColor, defaults.hairColor);
+        QCOMPARE(settings.appearance.shirtColor, defaults.shirtColor);
+        QCOMPARE(settings.appearance.pantsColor, 0xabcdefu);
+        QCOMPARE(settings.appearance.outfit, defaults.outfit);
     }
 
     void valuesFromTheFileAreClamped()

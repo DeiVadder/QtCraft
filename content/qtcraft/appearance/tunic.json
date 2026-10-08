@@ -1,0 +1,34 @@
+{
+    "name": "tunic",
+    "kind": "outfit",
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "tunic",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "tunic",
+            "tint": "shirt"
+        },
+        "hand": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "shoes": {
+            "texture": "shoes",
+            "tint": "none"
+        }
+    }
+}

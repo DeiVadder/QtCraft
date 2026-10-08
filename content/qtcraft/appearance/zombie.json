@@ -1,0 +1,35 @@
+{
+    "name": "zombie",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "zombie_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "zombie_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "zombie_shirt",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "zombie_shirt",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "zombie_skin",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "zombie_pants",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "zombie_pants",
+            "tint": "none"
+        }
+    }
+}

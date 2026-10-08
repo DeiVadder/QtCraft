@@ -1,0 +1,8 @@
+{
+    "name": "skin",
+    "pattern": "noise",
+    "primary": "#f2f2f2",
+    "secondary": "#e6e6e6",
+    "variation": 0.04,
+    "seed": 41
+}

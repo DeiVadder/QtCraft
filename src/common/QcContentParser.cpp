@@ -310,6 +310,50 @@ std::optional<QcVec3> vectorField(const QJsonValue &value)
     return vector;
 }
 
+QList<QcModelBox> parseBoxes(const QJsonValue &value, int limit, FieldReader &reader)
+{
+    QList<QcModelBox> boxes;
+    if (!value.isArray() || value.toArray().size() > limit) {
+        reader.fail(u"'boxes' must be an array of at most %1 boxes"_s.arg(limit));
+        return boxes;
+    }
+    const QJsonArray list = value.toArray();
+    for (const auto &entry : list) {
+        const QJsonObject boxJson = entry.toObject();
+        const std::optional<QcVec3> from = vectorField(boxJson.value(u"from"_s));
+        const std::optional<QcVec3> to = vectorField(boxJson.value(u"to"_s));
+        const QString slot = boxJson.value(u"slot"_s).toString();
+        if (!from || !to || slot.isEmpty() || slot.size() > 64 || from->x >= to->x || from->y >= to->y || from->z >= to->z) {
+            reader.fail(u"boxes need 'from' < 'to' (three numbers within 8 m) and a 'slot'"_s);
+            return {};
+        }
+        boxes.append({*from, *to, slot});
+    }
+    return boxes;
+}
+
+std::optional<QcBoneRole> boneRoleFromName(const QString &name)
+{
+    static const QHash<QString, QcBoneRole> roles = {
+        {u"none"_s, QcBoneRole::None},          {u"head"_s, QcBoneRole::Head},
+        {u"body"_s, QcBoneRole::Body},          {u"right_arm"_s, QcBoneRole::RightArm},
+        {u"left_arm"_s, QcBoneRole::LeftArm},   {u"right_leg"_s, QcBoneRole::RightLeg},
+        {u"left_leg"_s, QcBoneRole::LeftLeg},
+    };
+    const auto it = roles.constFind(name);
+    return it == roles.constEnd() ? std::nullopt : std::optional<QcBoneRole>(*it);
+}
+
+std::optional<QcTint> tintFromName(const QString &name)
+{
+    static const QHash<QString, QcTint> tints = {
+        {u"none"_s, QcTint::None}, {u"skin"_s, QcTint::Skin}, {u"hair"_s, QcTint::Hair},
+        {u"shirt"_s, QcTint::Shirt}, {u"pants"_s, QcTint::Pants},
+    };
+    const auto it = tints.constFind(name);
+    return it == tints.constEnd() ? std::nullopt : std::optional<QcTint>(*it);
+}
+
 QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespace, FieldReader &reader)
 {
     QList<QcItemDrop> result;
@@ -384,6 +428,12 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
         reader.fail(spawnReader.error);
     }
 
+    mob.skeleton = reader.name(u"skeleton"_s, packNamespace);
+    mob.outfit = reader.name(u"outfit"_s, packNamespace);
+    mob.armsForward = reader.boolean(u"armsForward"_s, false);
+    if (mob.skeleton.isEmpty() != mob.outfit.isEmpty()) {
+        reader.fail(u"'skeleton' and 'outfit' go together"_s);
+    }
     const QJsonArray model = json.value(u"model"_s).toArray();
     if (model.size() > 256) {
         reader.fail(u"'model' has more than 256 parts"_s);
@@ -399,14 +449,110 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
         }
         mob.parts.append({*from, *to, texture});
     }
-    if (mob.parts.isEmpty()) {
-        reader.fail(u"'model' needs at least one part"_s);
+    if (mob.parts.isEmpty() && mob.skeleton.isEmpty()) {
+        reader.fail(u"'model' needs at least one part (or use 'skeleton' and 'outfit')"_s);
     }
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
     if (!reader.ok()) {
         return qcError(reader.error);
     }
     return mob;
+}
+
+QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"model"_s, {}};
+    QcModelDefinition model;
+    model.name = reader.name(u"name"_s, packNamespace);
+    if (model.name.isEmpty()) {
+        return qcError(reader.ok() ? u"model: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"model '%1'"_s.arg(model.name);
+    const QJsonValue bones = json.value(u"bones"_s);
+    if (!bones.isArray() || bones.toArray().isEmpty() || bones.toArray().size() > QcModelDefinition::maxBones) {
+        return qcError(u"%1: 'bones' must be an array of 1 to %2 bones"_s.arg(reader.context).arg(QcModelDefinition::maxBones));
+    }
+    const QJsonArray boneList = bones.toArray();
+    for (const auto &entry : boneList) {
+        const QJsonObject boneJson = entry.toObject();
+        FieldReader boneReader{boneJson, reader.context + u" bone"_s, {}};
+        QcModelBone bone;
+        bone.name = boneReader.string(u"name"_s);
+        const QString role = boneReader.string(u"role"_s, u"none"_s);
+        const std::optional<QcBoneRole> parsedRole = boneRoleFromName(role);
+        if (!parsedRole) {
+            boneReader.fail(u"'role' must be none, head, body, right_arm, left_arm, right_leg or left_leg"_s);
+        }
+        bone.role = parsedRole.value_or(QcBoneRole::None);
+        const std::optional<QcVec3> pivot = vectorField(boneJson.value(u"pivot"_s));
+        if (!pivot) {
+            boneReader.fail(u"'pivot' must be three numbers within 8 m"_s);
+        }
+        bone.pivot = pivot.value_or(QcVec3{});
+        bone.boxes = parseBoxes(boneJson.value(u"boxes"_s), QcModelDefinition::maxBoxesPerBone, boneReader);
+        if (bone.name.isEmpty() || bone.name.size() > 64 || bone.boxes.isEmpty()) {
+            boneReader.fail(u"bones need a 'name' (at most 64 characters) and at least one box"_s);
+        }
+        if (!boneReader.ok()) {
+            return qcError(boneReader.error);
+        }
+        model.bones.append(std::move(bone));
+    }
+    return model;
+}
+
+QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"appearance"_s, {}};
+    QcAppearanceDefinition appearance;
+    appearance.name = reader.name(u"name"_s, packNamespace);
+    if (appearance.name.isEmpty()) {
+        return qcError(reader.ok() ? u"appearance: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"appearance '%1'"_s.arg(appearance.name);
+    appearance.translationKey = reader.string(u"translation"_s, u"appearance.%1.%2"_s.arg(
+        appearance.name.left(appearance.name.indexOf(u':')), localPart(appearance.name).replace(u'/', u'.')));
+    const QString kind = reader.string(u"kind"_s, u"outfit"_s);
+    if (kind == u"hair"_s) {
+        appearance.kind = QcAppearanceDefinition::Kind::Hair;
+    } else if (kind != u"outfit"_s) {
+        reader.fail(u"'kind' must be outfit or hair"_s);
+    }
+    appearance.playable = reader.boolean(u"playable"_s, true);
+    const QJsonValue layers = json.value(u"layers"_s);
+    if (!layers.isObject() || layers.toObject().isEmpty() || layers.toObject().size() > QcAppearanceDefinition::maxLayers) {
+        reader.fail(u"'layers' must map 1 to %1 slots to textures"_s.arg(QcAppearanceDefinition::maxLayers));
+    }
+    const QJsonObject layerMap = layers.toObject();
+    for (auto it = layerMap.constBegin(); it != layerMap.constEnd() && reader.ok(); ++it) {
+        const QJsonObject layerJson = it.value().toObject();
+        FieldReader layerReader{layerJson, u"%1 layer '%2'"_s.arg(reader.context, it.key()), {}};
+        QcAppearanceLayer layer;
+        layer.slot = it.key();
+        layer.texture = layerReader.name(u"texture"_s, packNamespace);
+        const std::optional<QcTint> tint = tintFromName(layerReader.string(u"tint"_s, u"none"_s));
+        if (!tint) {
+            layerReader.fail(u"'tint' must be none, skin, hair, shirt or pants"_s);
+        }
+        layer.tint = tint.value_or(QcTint::None);
+        if (!it.value().isObject() || layer.texture.isEmpty() || layer.slot.size() > 64) {
+            layerReader.fail(u"needs a 'texture'"_s);
+        }
+        if (!layerReader.ok()) {
+            reader.fail(layerReader.error);
+        }
+        appearance.layers.append(std::move(layer));
+    }
+    if (appearance.kind == QcAppearanceDefinition::Kind::Hair) {
+        appearance.boxes = parseBoxes(json.value(u"boxes"_s), QcAppearanceDefinition::maxBoxes, reader);
+        if (reader.ok() && appearance.boxes.isEmpty()) {
+            reader.fail(u"hair styles need 'boxes'"_s);
+        }
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return appearance;
 }
 
 QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace)

@@ -53,7 +53,8 @@ QcClientSession::~QcClientSession() = default;
 
 void QcClientSession::start(TickMode mode)
 {
-    m_connection->send(QcMsg::Hello{QcProtocol::version, m_playerName});
+    m_connection->send(QcMsg::Hello{QcProtocol::version, m_playerName, m_appearance});
+    m_helloSent = true;
     if (mode == TickMode::Timer) {
         m_tickTimer->start();
     }
@@ -121,6 +122,10 @@ void QcClientSession::handleMessage(QcMessage &&message)
         m_worldName = welcome->worldName;
         m_seed = welcome->seed;
         setState(State::Loading);
+        if (m_appearancePending) {
+            m_appearancePending = false;
+            m_connection->send(QcMsg::SetAppearance{m_appearance});
+        }
     } else if (auto *sync = std::get_if<QcMsg::ContentSync>(&message)) {
         if (m_content) {
             // Block ids of loaded chunks would no longer match; content changes need a reconnect.
@@ -183,13 +188,18 @@ void QcClientSession::handleMessage(QcMessage &&message)
             m_connection->close();
             return;
         }
-        // A known item entity sent again only changed its count; keep its motion history.
-        if (const auto known = m_entities.find(spawn->id); item && known != m_entities.end() && known->isItem()) {
-            known->item = spawn->item;
+        // A known entity sent again changed its count (items) or look (players); keep its motion history.
+        if (const auto known = m_entities.find(spawn->id); known != m_entities.end() && known->mobType == spawn->mobType) {
+            known->item = item ? spawn->item : QcItemStack();
+            known->appearance = spawn->appearance;
             return;
         }
         QcClientEntity entity;
         entity.item = item ? spawn->item : QcItemStack();
+        entity.appearance = spawn->appearance;
+        entity.pitch = entity.previousPitch = spawn->pitch;
+        entity.flags = spawn->flags;
+        entity.held = spawn->held;
         entity.id = spawn->id;
         entity.mobType = spawn->mobType;
         entity.name = spawn->name;
@@ -205,15 +215,31 @@ void QcClientSession::handleMessage(QcMessage &&message)
             }
             it->previousPosition = it->position;
             it->previousYaw = it->yaw;
+            it->previousPitch = it->pitch;
+            it->lastStep = std::hypot(move.position.x - it->position.x, move.position.z - it->position.z);
+            it->walkDistance += it->lastStep;
+            it->stepThisTick += it->lastStep;
             it->position = move.position;
             it->yaw = move.yaw;
+            it->pitch = move.pitch;
             it->health = move.health;
+            it->flags = move.flags;
+            it->held = move.held;
+            it->moved = true;
+            if ((move.flags & QcMsg::Swing) != 0) {
+                it->swingTicks = 0;
+            }
             if (move.hurt) {
                 it->hurtTicks = hurtFlashTicks;
             }
         }
     } else if (auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
-        m_entities.remove(removed->id);
+        QcClientEntity gone = m_entities.take(removed->id);
+        if (removed->died && gone.id == removed->id && !gone.isItem()) {
+            gone.deathTicks = 0;
+            gone.previousPosition = gone.position;
+            m_dying.insert(gone.id, gone);
+        }
     } else if (auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
         m_health = health->health;
         m_maxHealth = health->maxHealth;
@@ -260,6 +286,50 @@ void QcClientSession::tick()
     m_worldTime += QcPhysics::tickDuration;
     for (QcClientEntity &entity : m_entities) {
         entity.hurtTicks = std::max(0, entity.hurtTicks - 1);
+        entity.speed += (entity.stepThisTick * QcPhysics::tickRate - entity.speed) * speedSmoothing;
+        entity.stepThisTick = 0.0;
+        // Items move only on change, and a tick may pass without a mob or player move: then the
+        // entity stays where it is (no interpolation towards an old position).
+        if (!entity.moved) {
+            entity.lastStep = 0.0;
+            entity.previousPosition = entity.position;
+            entity.previousYaw = entity.yaw;
+            entity.previousPitch = entity.pitch;
+        }
+        entity.moved = false;
+        if (entity.swingTicks >= 0) {
+            ++entity.swingTicks;
+            if (entity.swingTicks >= swingTicks) {
+                entity.swingTicks = -1;
+            }
+        }
+    }
+    for (QcClientEntity &dying : m_dying) {
+        ++dying.deathTicks;
+    }
+    m_dying.removeIf([](const auto &entry) { return entry.value().deathTicks >= deathTicks; });
+    const auto advance = [](int &ticks, int length) {
+        if (ticks < 0) {
+            return;
+        }
+        ++ticks;
+        if (ticks >= length) {
+            ticks = -1;
+        }
+    };
+    advance(m_swingTicks, swingTicks);
+    advance(m_useTicks, useTicks);
+    advance(m_switchTicks, switchTicks);
+    advance(m_landingTicks, landingTicks);
+    const QcItemStack &held = m_inventory.selectedStack();
+    const QcItemId heldItem = held.isEmpty() ? qcNoItem : held.item;
+    if (heldItem != m_lastHeld) {
+        m_lastHeld = heldItem;
+        m_switchTicks = 0;
+    }
+    // Keep swinging while a block is being mined.
+    if (m_miningPos && m_swingTicks < 0) {
+        m_swingTicks = 0;
     }
     if (m_dead) {
         // Nothing to simulate until the server respawns the player.
@@ -270,6 +340,11 @@ void QcClientSession::tick()
     input.sequence = m_nextSequence++;
     m_previousMotion = m_motion;
     QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration);
+    m_lastStep = std::hypot(m_motion.position.x - m_previousMotion.position.x, m_motion.position.z - m_previousMotion.position.z);
+    m_walkDistance += m_lastStep;
+    if (m_motion.onGround && !m_previousMotion.onGround) {
+        m_landingTicks = 0;
+    }
     if (m_pendingInputs.size() >= maxPendingInputs) {
         m_pendingInputs.removeFirst();
     }
@@ -315,7 +390,55 @@ bool QcClientSession::attack()
         return false;
     }
     m_connection->send(QcMsg::AttackEntity{*m_targetEntity});
+    m_swingTicks = 0;
     return true;
+}
+
+void QcClientSession::setAppearance(const QcAppearance &appearance)
+{
+    m_appearance = appearance;
+    if (m_state == State::Playing || m_state == State::Loading) {
+        m_connection->send(QcMsg::SetAppearance{appearance});
+    } else if (m_state == State::Connecting && m_helloSent) {
+        // Hello is on its way with the old look; send the new one once welcomed.
+        m_appearancePending = true;
+    }
+}
+
+QcEntityPose QcClientSession::localPose(double alpha) const
+{
+    QcEntityPose pose;
+    pose.speed = m_lastStep * QcPhysics::tickRate;
+    pose.walkDistance = m_walkDistance - m_lastStep * (1.0 - alpha);
+    pose.onGround = m_motion.onGround;
+    pose.inWater = m_motion.inWater;
+    pose.sneaking = m_intent.sneak;
+    pose.sprinting = m_intent.sprint && m_intent.forward > 0.0f && !m_intent.sneak;
+    pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
+    pose.headPitch = m_intent.pitch;
+    return pose;
+}
+
+QcClientSession::HandTimers QcClientSession::handTimers(double alpha) const
+{
+    const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
+    return {progress(m_switchTicks, switchTicks), progress(m_landingTicks, landingTicks), progress(m_useTicks, useTicks)};
+}
+
+QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
+{
+    QcEntityPose pose;
+    pose.speed = entity.speed;
+    pose.walkDistance = entity.walkDistance - entity.lastStep * (1.0 - alpha);
+    pose.onGround = (entity.flags & QcMsg::OnGround) != 0;
+    pose.inWater = (entity.flags & QcMsg::InWater) != 0;
+    pose.sneaking = (entity.flags & QcMsg::Sneaking) != 0;
+    pose.sprinting = (entity.flags & QcMsg::Sprinting) != 0;
+    pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
+    pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / hurtFlashTicks : -1.0;
+    pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
+    pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * float(alpha);
+    return pose;
 }
 
 bool QcClientSession::dropItem(bool wholeStack)
@@ -378,12 +501,14 @@ bool QcClientSession::useItem()
     // Food without a block to place is eaten; everything else acts on the targeted block.
     if (item && item->foodHealth > 0.0 && item->placesBlock.isEmpty()) {
         m_connection->send(QcMsg::ConsumeItem{});
+        m_useTicks = 0;
         return true;
     }
     if (!m_target) {
         return false;
     }
     m_connection->send(QcMsg::UseItem{m_target->block, m_target->face});
+    m_useTicks = 0;
     return true;
 }
 

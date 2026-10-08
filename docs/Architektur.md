@@ -29,11 +29,11 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 10). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 11). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
-| `Hello` | C→S | protocol version, player name |
+| `Hello` | C→S | protocol version, player name, appearance (outfit, hair, four colours) |
 | `Welcome` | S→C | protocol version, entity id, world name, seed |
 | `ContentSync` | S→C | complete content registry (incl. the list of loaded packs); runtime block ids = registry indices |
 | `ChunkData` | S→C | one chunk column (compressed palette sections) |
@@ -51,11 +51,12 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `TakeCraftingResult`, `CloseCrafting` | C→S | – |
 | `CraftRecipe` | C→S | recipe name, count (recipe book) |
 | `ConsumeItem` | C→S | – (eat the held item) |
-| `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m, dropped items within 32 m (`mobType` −2 with the item stack; sent again when the count changes, moves only when the item moved) |
+| `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures and other players within 64 m, dropped items within 32 m (`mobType` −2 with the item stack; sent again when the count changes, moves only when the item moved); players' appearance, view pitch, state flags (swing started, on ground, in water, sneaking, sprinting) and held item; `EntityRemove.died` for deaths |
 | `PlayerHealth` | S→C | health, maximum, dead |
 | `WorldTime` | S→C | seconds, day length |
 | `AttackEntity`, `Respawn` | C→S | target id / – |
 | `DropItem` | C→S | whole stack or one item of the selected slot |
+| `SetAppearance` | C→S | new appearance (re-sent to other clients) |
 
 A network transport only has to implement `QcTransport` (whole frames in both directions, e.g. length-prefixed over TCP) and accept connections into `QcServer::addClient`; nothing else changes.
 
@@ -64,6 +65,8 @@ A network transport only has to implement `QcTransport` (whole frames in both di
 Content packs are directories with `pack.json` (`id`, `name`, `version`, `dependencies`) and the folders `blocks/`, `textures/`, `lang/`. Names are `namespace:path`; unqualified names get the pack id as namespace. Block JSON fields: `name`, `translation`, `render` (`opaque`, `cutout`, `translucent`, `invisible`), `solid`, `opaque`, `liquid`, `replaceable`, `lightOpacity` (0–15), `hardness` (seconds by hand, negative = unbreakable), `tool`, `toolLevel`, `drops` (`[{item, count, chance}]`), `shape` (`cube`, `cross`), `sapling` (`feature`, `minSeconds`, `maxSeconds`, `plantOn`, `plantChance`), `textures` (`all`, `side`, `top`, `bottom`, or per face `east`/`west`/`south`/`north`). Procedural textures: `name`, `pattern` (`noise`, `speckle`, `planks`, `bricks`, `log_side`, `log_top`, `leaves`, `glass`, `grass_side`, `ore`, `water`, `tool`, `lump`, `pickaxe`, `axe`, `shovel`, `sword`, `stick`, `ingot`, `gem`, `sapling`), `primary`, `secondary` (`#RRGGBB[AA]`), `variation`, `seed`; PNG files in `textures/` are used as they are. `lang/<locale>.json` maps translation keys to text.
 
 World generation data (server only, not sent to clients): `biomes/*.json` (`name`, `temperature`, `humidity` in 0..1, `baseHeight`, `heightVariation`, `surface`, `subsurface`, `subsurfaceDepth`, `underwater`, `beach`, `frozenWater`, `snowLine`, `snow`, `features: [{feature, density}]`), `features/*.json` (`type` `tree`/`column`, `trunk`, `leaves`, `minHeight`, `maxHeight`, `shape` `round`/`cone`, `ground`), `ores/*.json` (`block`, `replaces`, `minY`, `maxY`, `veinsPerChunk`, `veinSize`), `worldgen/terrain.json` (`seaLevel`, `stone`, `water`, `bedrock`, `caves`, `caveTunnelWidth`, `caveCavernThreshold`). A later pack replaces entries with the same name.
+
+Character content (sent to clients): `models/*.json` (`name`, `bones`: `name`, `role` head/body/right_arm/left_arm/right_leg/left_leg/none, `pivot`, `boxes` with `from`, `to`, `slot`), `appearance/*.json` (`name`, `kind` outfit/hair, `layers`: slot → `texture` and `tint` skin/hair/shirt/pants/none, hair `boxes`); mobs may use `skeleton`, `outfit` and `armsForward` instead of `model` boxes (E-032).
 
 Runtime block ids are assigned in registration order and never stored; persistent data uses names.
 
@@ -122,7 +125,7 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places or eat
 
 ## Rendering
 
-`QcWorldView` is a `QQuickRhiItem`. GUI-thread setters (camera, atlas, mesh submissions) are copied to the render thread in `QcWorldRenderer::synchronize()`. Meshes are immutable `std::shared_ptr<const QcChunkMesh>` snapshots. Vertex format: position (world space, float), atlas UV, shade (face shading × ambient occlusion), sky light. Cross-shaped blocks become two double-sided diagonal quads. Two pipelines: opaque with alpha test, translucent (blended, no depth write, sorted back to front per section). Shaders: `src/app/shaders/block.{vert,frag}` (GLSL 440, compiled for all RHI backends by `qt_add_shaders`).
+`QcWorldView` is a `QQuickRhiItem`. GUI-thread setters (camera, atlas, mesh submissions) are copied to the render thread in `QcWorldRenderer::synchronize()`. Meshes are immutable `std::shared_ptr<const QcChunkMesh>` snapshots. Vertex format: position (world space, float), atlas UV, shade (face shading × ambient occlusion), sky light. Cross-shaped blocks become two double-sided diagonal quads. Entities and the first-person hand use their own vertex format with a tint colour and the shaders `entity.{vert,frag}`; the hand is drawn last with `hand.vert`, which squeezes its depth to the front (E-034). Skeleton models are meshed every frame by `QcEntityMesher` from `QcAnimator` poses (E-033); the camera mode and its wall collision come from `QcViewCamera` (E-035). Block pipelines: opaque with alpha test, translucent (blended, no depth write, sorted back to front per section). Shaders: `src/app/shaders/block.{vert,frag}` (GLSL 440, compiled for all RHI backends by `qt_add_shaders`).
 
 ## Build options and test hooks
 

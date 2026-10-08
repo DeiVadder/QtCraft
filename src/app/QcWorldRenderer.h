@@ -3,6 +3,7 @@
 #include "QcCamera.h"
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
+#include "QcEntityMesh.h"
 
 #include <QColor>
 #include <QImage>
@@ -44,7 +45,7 @@ private:
     void createPipelines();
     void createOutlinePipeline();
     void uploadOutline(QRhiResourceUpdateBatch *updates);
-    void uploadEntities(QRhiResourceUpdateBatch *updates);
+    void uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers);
     void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
@@ -63,10 +64,12 @@ private:
     std::unique_ptr<QRhiBuffer> m_outlineVertices;
     std::optional<QcBlockPos> m_selection;
     std::optional<QcBlockPos> m_uploadedSelection;
-    std::shared_ptr<const QcChunkMesh> m_entityMesh;
-    std::unique_ptr<QRhiBuffer> m_entityVertices;
-    std::unique_ptr<QRhiBuffer> m_entityIndices;
-    quint32 m_entityIndexCount = 0;
+    std::unique_ptr<QRhiGraphicsPipeline> m_entityPipeline;
+    std::unique_ptr<QRhiGraphicsPipeline> m_handPipeline;
+    std::shared_ptr<const QcEntityMesh> m_entityMesh;
+    std::shared_ptr<const QcEntityMesh> m_handMesh;
+    GpuBuffers m_entityBuffers;
+    GpuBuffers m_handBuffers;
     // Kept to detect render-target changes that make the pipelines incompatible.
     std::unique_ptr<QRhiRenderPassDescriptor> m_pipelineRenderPass;
 

@@ -1,0 +1,8 @@
+{
+    "name": "cloth",
+    "pattern": "noise",
+    "primary": "#f4f4f4",
+    "secondary": "#dcdcdc",
+    "variation": 0.08,
+    "seed": 42
+}

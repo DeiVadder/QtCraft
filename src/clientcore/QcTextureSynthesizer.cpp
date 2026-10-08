@@ -195,6 +195,20 @@ void paint(QImage &image, const QcTextureSpec &spec)
                 }
                 break;
             }
+            case QcTextureSpec::Pattern::Face: {
+                const bool eyeRow = y == 7 || y == 8;
+                const bool leftEye = x >= 3 && x <= 5;
+                const bool rightEye = x >= 10 && x <= 12;
+                if (eyeRow && (leftEye || rightEye)) {
+                    // The inner column of each eye is the pupil.
+                    color = (x == 5 || x == 10) ? spec.secondary : spec.primary;
+                } else if (y == 12 && x >= 6 && x <= 9) {
+                    color = scaled(spec.secondary, 1.6);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
             case QcTextureSpec::Pattern::Lump: {
                 const double dx = x - 7.5;
                 const double dy = y - 7.5;

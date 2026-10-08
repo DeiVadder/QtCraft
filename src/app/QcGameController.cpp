@@ -171,6 +171,8 @@ void QcGameController::loadSettings()
     setInvertMouse(m_storedSettings.invertMouse);
     setShowDebug(m_storedSettings.showDebug);
     m_languageSetting = m_storedSettings.language;
+    m_cameraMode = m_storedSettings.cameraMode;
+    m_appearance = m_storedSettings.appearance;
     emit settingsChanged();
 }
 
@@ -190,6 +192,8 @@ void QcGameController::saveSettings()
     settings.invertMouse = m_invertMouse;
     settings.showDebug = m_showDebug;
     settings.language = m_languageSetting;
+    settings.cameraMode = m_cameraMode;
+    settings.appearance = m_appearance;
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {
         qCWarning(lcGame) << saved.error();
         return;
@@ -239,6 +243,7 @@ void QcGameController::setLanguage(const QString &language)
         m_inventory->setContent(m_session->content(), m_language);
         updateInventory();
     }
+    emit appearancesChanged();
 }
 
 void QcGameController::requestLanguage(const QString &requested)
@@ -297,6 +302,7 @@ void QcGameController::setModsDirectory(const QString &directory)
 {
     m_modsDirectory = directory;
     refreshMods();
+    resetCharacterContent();
 }
 
 void QcGameController::refreshMods()
@@ -331,6 +337,7 @@ void QcGameController::setModEnabled(const QString &id, bool enabled)
         qCWarning(lcGame) << "Cannot change the mod settings:" << written.error();
     }
     refreshMods();
+    resetCharacterContent();
 }
 
 void QcGameController::openModsFolder()
@@ -499,6 +506,8 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     }
     refreshMods();
     const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
+    m_characterContent = shared;
+    emit appearancesChanged();
 
     QcServerConfig config;
     config.worldName = worldName;
@@ -521,6 +530,8 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     }
 
     m_session = new QcClientSession(m_server->connectClient(), u"Player"_s, this);
+    m_session->setAppearance(m_appearance);
+    m_session->setCameraMode(m_cameraMode);
     m_meshes = new QcMeshScheduler(this);
     QcPlayerInput intent;
     intent.yaw = m_initialYaw;
@@ -627,33 +638,247 @@ QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &con
     return look;
 }
 
-void QcGameController::updateEntities(double alpha)
+std::optional<QcEntityMesher::ItemLook> QcGameController::heldLook(QcItemId item) const
+{
+    const auto content = m_session->content();
+    if (item == qcNoItem || !content || !content->isValidItem(item)) {
+        return std::nullopt;
+    }
+    return itemLook(*content, item);
+}
+
+QcEntityMesher::ModelLook QcGameController::playerLook(const QcAppearance &appearance) const
+{
+    const QcContentRegistry &content = *m_session->content();
+    QcEntityMesher::ModelLook look;
+    look.model = content.model(u"qtcraft:humanoid"_s);
+    look.outfit = content.appearance(appearance.outfit);
+    if (!look.outfit || look.outfit->kind != QcAppearanceDefinition::Kind::Outfit) {
+        look.outfit = content.appearance(QcAppearance().outfit);
+    }
+    look.hair = content.appearance(appearance.hair);
+    if (look.hair && look.hair->kind != QcAppearanceDefinition::Kind::Hair) {
+        look.hair = nullptr;
+    }
+    look.colors = appearance;
+    return look;
+}
+
+QcEntityPose QcGameController::localPose(double alpha) const
+{
+    QcEntityPose pose = m_session->localPose(alpha);
+    if (m_forcedPose.isEmpty()) {
+        return pose;
+    }
+    // Screenshot hook: a fixed moment of an animation, independent of the real movement.
+    pose.onGround = true;
+    if (m_forcedPose == u"walk"_s) {
+        pose.speed = QcPhysics::walkSpeed;
+        pose.walkDistance = 0.3;
+    } else if (m_forcedPose == u"swing"_s) {
+        pose.swingProgress = 0.45;
+    } else if (m_forcedPose == u"swim"_s) {
+        pose.onGround = false;
+        pose.inWater = true;
+        pose.speed = QcPhysics::swimSpeed;
+    } else if (m_forcedPose == u"jump"_s) {
+        pose.onGround = false;
+    } else if (m_forcedPose == u"sneak"_s) {
+        pose.sneaking = true;
+    } else if (m_forcedPose == u"death"_s) {
+        pose.deathProgress = 0.7;
+    }
+    return pose;
+}
+
+void QcGameController::updateEntities(double alpha, QcCameraMode mode)
 {
     if (!m_atlas) {
         return;
     }
-    auto mesh = std::make_shared<QcChunkMesh>();
+    auto mesh = std::make_shared<QcEntityMesh>();
     const QcClientWorld &world = *m_session->world();
-    const auto &mobs = m_session->content()->mobs();
     const QcContentRegistry &content = *m_session->content();
+    const auto &mobs = content.mobs();
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
-    for (const QcClientEntity &entity : m_session->entities()) {
-        // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
-        const QcBlockPos feet{int(std::floor(entity.position.x)), int(std::floor(entity.position.y)), int(std::floor(entity.position.z))};
-        float light = 1.0f;
+    // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
+    const auto lightAt = [&world](const QcVec3 &position) {
+        const QcBlockPos feet{int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
         if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
-            light = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
+            return chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
         }
+        return 1.0f;
+    };
+    const auto lerpYaw = [](float from, float to, double t) {
+        const float delta = std::fmod(to - from + 540.0f, 360.0f) - 180.0f;
+        return double(from + delta * float(t));
+    };
+    const auto appendCreature = [&](const QcClientEntity &entity) {
+        const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
+        const QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, alpha), lightAt(position),
+                                                  entity.hurtTicks > 0};
+        QcEntityPose pose = QcClientSession::poseOf(entity, alpha);
+        const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
+        QcEntityMesher::ModelLook look;
+        if (mob && !mobs[entity.mobType].skeleton.isEmpty()) {
+            const QcMobDefinition &definition = mobs[entity.mobType];
+            look.model = content.model(definition.skeleton);
+            look.outfit = content.appearance(definition.outfit);
+            look.scale = definition.height / QcEntityMesher::modelHeight;
+            pose.armsForward = definition.armsForward;
+        } else if (!mob) {
+            look = playerLook(entity.appearance);
+        }
+        if (!look.isValid()) {
+            // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
+            const bool ownParts = mob && !mobs[entity.mobType].parts.isEmpty();
+            QcEntityMesher::appendParts(*mesh, ownParts ? mobs[entity.mobType].parts : QcEntityMesher::playerParts(), placement, uv);
+            return;
+        }
+        const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
+        QcEntityMesher::appendModel(*mesh, look, QcAnimator::animateBody(pose, seconds), placement, held ? &*held : nullptr, uv);
+    };
+    for (const QcClientEntity &entity : m_session->entities()) {
         if (entity.isItem()) {
-            QcEntityMesher::appendItem(*mesh, entity, itemLook(content, entity.item.item), alpha, light, seconds, uv);
-            continue;
+            QcEntityMesher::appendItem(*mesh, entity, itemLook(content, entity.item.item), alpha, lightAt(entity.position), seconds, uv);
+        } else {
+            appendCreature(entity);
         }
-        const QList<QcMobPart> &parts =
-            entity.mobType >= 0 && entity.mobType < mobs.size() ? mobs[entity.mobType].parts : QcEntityMesher::playerModel();
-        QcEntityMesher::appendEntity(*mesh, entity, parts, alpha, light, uv);
+    }
+    for (const QcClientEntity &entity : m_session->dyingEntities()) {
+        appendCreature(entity);
+    }
+    // In third person the player sees their own character.
+    if (mode != QcCameraMode::FirstPerson && !m_session->isDead()) {
+        const QcVec3 feet = lerp(m_session->previousPlayerMotion().position, m_session->playerMotion().position, alpha);
+        const QcItemStack &selected = m_session->inventory().selectedStack();
+        const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
+        QcEntityMesher::appendModel(*mesh, playerLook(m_appearance), QcAnimator::animateBody(localPose(alpha), seconds),
+                                    {feet, double(m_session->intent().yaw), lightAt(feet), false}, held ? &*held : nullptr, uv);
     }
     m_view->setEntityMesh(std::move(mesh));
+}
+
+void QcGameController::updateHand(double alpha, const QcVec3 &eye)
+{
+    if (!m_atlas || m_session->isDead()) {
+        m_view->setHandMesh(nullptr);
+        return;
+    }
+    auto mesh = std::make_shared<QcEntityMesh>();
+    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
+    const QcItemStack &selected = m_session->inventory().selectedStack();
+    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
+    const QcClientSession::HandTimers timers = m_session->handTimers(alpha);
+    const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
+    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
+    const QcBlockPos feet{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    float light = 1.0f;
+    if (const std::shared_ptr<const QcChunk> chunk = m_session->world()->chunk(feet.chunk())) {
+        light = chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y ? 0.45f : 1.0f;
+    }
+    QcEntityMesher::appendHand(*mesh, playerLook(m_appearance), held ? &*held : nullptr, hand, eye, m_session->intent().yaw,
+                               m_session->intent().pitch, light, uv);
+    m_view->setHandMesh(std::move(mesh));
+}
+
+const QcContentRegistry &QcGameController::characterContent() const
+{
+    if (m_session && m_session->content()) {
+        return *m_session->content();
+    }
+    if (!m_characterContent) {
+        QStringList warnings;
+        QcResult<QcModLoader::Result> loaded = QcModLoader::load(m_modsDirectory, warnings);
+        for (const QString &warning : std::as_const(warnings)) {
+            qCWarning(lcGame) << "Content:" << warning;
+        }
+        m_characterContent = loaded ? std::shared_ptr<const QcContentRegistry>(loaded->content)
+                                    : std::make_shared<const QcContentRegistry>();
+    }
+    return *m_characterContent;
+}
+
+void QcGameController::resetCharacterContent()
+{
+    m_characterContent.reset();
+    emit appearancesChanged();
+}
+
+QVariantList QcGameController::appearanceList(QcAppearanceDefinition::Kind kind) const
+{
+    QVariantList list;
+    const QcContentRegistry &content = characterContent();
+    for (const QcAppearanceDefinition &definition : content.appearances()) {
+        if (definition.kind == kind && definition.playable) {
+            list.append(QVariantMap{{u"name"_s, definition.name}, {u"label"_s, content.translate(definition.translationKey, m_language)}});
+        }
+    }
+    return list;
+}
+
+QVariantList QcGameController::outfits() const
+{
+    return appearanceList(QcAppearanceDefinition::Kind::Outfit);
+}
+
+QVariantList QcGameController::hairStyles() const
+{
+    QVariantList list = appearanceList(QcAppearanceDefinition::Kind::Hair);
+    list.prepend(QVariantMap{{u"name"_s, QString()}, {u"label"_s, tr("No hair")}});
+    return list;
+}
+
+QString QcGameController::cameraMode() const
+{
+    return QString::fromLatin1(QcViewCamera::name(m_cameraMode));
+}
+
+void QcGameController::setCameraMode(const QString &mode)
+{
+    const std::optional<QcCameraMode> parsed = QcViewCamera::fromName(mode);
+    if (!parsed || *parsed == m_cameraMode) {
+        return;
+    }
+    m_cameraMode = *parsed;
+    if (m_session) {
+        m_session->setCameraMode(m_cameraMode);
+    }
+    emit settingsChanged();
+}
+
+QVariantMap QcGameController::character() const
+{
+    const auto hex = [](quint32 rgb) { return u"#%1"_s.arg(uint(rgb & 0xFFFFFFu), 6, 16, QChar(u'0')); };
+    return {{u"outfit"_s, m_appearance.outfit},          {u"hair"_s, m_appearance.hair},
+            {u"skin"_s, hex(m_appearance.skinColor)},    {u"hairColor"_s, hex(m_appearance.hairColor)},
+            {u"shirt"_s, hex(m_appearance.shirtColor)},  {u"pants"_s, hex(m_appearance.pantsColor)}};
+}
+
+void QcGameController::setCharacter(const QVariantMap &character)
+{
+    QcAppearance appearance = m_appearance;
+    const auto color = [&character](const QString &key, quint32 fallback) {
+        const QString text = character.value(key).toString();
+        bool ok = false;
+        const quint32 rgb = text.startsWith(u'#') && text.size() == 7 ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
+        return ok ? rgb : fallback;
+    };
+    appearance.outfit = character.value(u"outfit"_s, appearance.outfit).toString().left(QcAppearance::maxNameLength);
+    appearance.hair = character.value(u"hair"_s, appearance.hair).toString().left(QcAppearance::maxNameLength);
+    appearance.skinColor = color(u"skin"_s, appearance.skinColor);
+    appearance.hairColor = color(u"hairColor"_s, appearance.hairColor);
+    appearance.shirtColor = color(u"shirt"_s, appearance.shirtColor);
+    appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
+    if (appearance == m_appearance) {
+        return;
+    }
+    m_appearance = appearance;
+    if (m_session) {
+        m_session->setAppearance(m_appearance);
+    }
+    emit settingsChanged();
 }
 
 void QcGameController::updateSky(double alpha)
@@ -772,6 +997,14 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
         case Qt::Key_F:
             m_session->setMining(true);
             return true;
+        case Qt::Key_F5: {
+            // Cycles first person, behind, front; the choice is kept in the settings.
+            const QcCameraMode next = QcViewCamera::next(m_session->cameraMode());
+            setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
+            m_session->setCameraMode(next);
+            saveSettings();
+            return true;
+        }
         case Qt::Key_Q:
             // Q throws one item, Ctrl+Q the whole stack.
             m_session->dropItem(key->modifiers().testFlag(Qt::ControlModifier));
@@ -963,14 +1196,24 @@ void QcGameController::onFrame()
 
     const double alpha = std::clamp(double(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
     const QcVec3 feet = lerp(m_session->previousPlayerMotion().position, m_session->playerMotion().position, alpha);
+    const QcVec3 eye = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    // The control interface may switch the view too; the session holds the current mode.
+    const QcCameraMode mode = m_session->isDead() ? QcCameraMode::FirstPerson : m_session->cameraMode();
+    const QcViewCamera::Placement placed =
+        QcViewCamera::place(eye, m_session->intent().yaw, m_session->intent().pitch, mode, *m_session->world());
     QcCamera camera = m_view->camera();
-    camera.position = QVector3D(float(feet.x), float(feet.y + QcPhysics::playerEyeHeight), float(feet.z));
-    camera.yaw = m_session->intent().yaw;
-    camera.pitch = m_session->intent().pitch;
+    camera.position = QVector3D(float(placed.position.x), float(placed.position.y), float(placed.position.z));
+    camera.yaw = placed.yaw;
+    camera.pitch = placed.pitch;
     camera.fieldOfView = float(m_fieldOfView);
     m_view->setCamera(camera);
 
-    updateEntities(alpha);
+    updateEntities(alpha, mode);
+    if (mode == QcCameraMode::FirstPerson) {
+        updateHand(alpha, eye);
+    } else {
+        m_view->setHandMesh(nullptr);
+    }
     updateSky(alpha);
     const std::optional<QcRaycastHit> &target = m_session->target();
     const std::optional<quint32> targetEntity = m_session->targetEntity();

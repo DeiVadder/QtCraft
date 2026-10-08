@@ -1,6 +1,8 @@
 #pragma once
 
+#include "QcAppearance.h"
 #include "QcResult.h"
+#include "QcViewCamera.h"
 
 #include <QString>
 
@@ -25,6 +27,9 @@ struct QcGameSettings
     bool showDebug = true;
     // "" follows the system language, otherwise a two-letter language code such as "de".
     QString language;
+    QcCameraMode cameraMode = QcCameraMode::FirstPerson;
+    // The player's look; names are checked against the content by the server.
+    QcAppearance appearance;
 
     static int clampViewDistance(int chunks);
     static double clampFieldOfView(double degrees);

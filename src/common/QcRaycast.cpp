@@ -38,7 +38,8 @@ std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction
     return entry;
 }
 
-std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance)
+std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
+                                 Targets targets)
 {
     const QcVec3 dir = direction.normalized();
     if (dir.length() == 0.0) {
@@ -68,7 +69,10 @@ std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origi
             }
             if (content.isValidBlock(*block)) {
                 const QcBlockDefinition &definition = content.block(*block);
-                if (*block != qcAirBlockId && !definition.liquid && definition.renderLayer != QcRenderLayer::Invisible) {
+                const bool target = targets == Targets::Solid
+                                        ? definition.solid
+                                        : !definition.liquid && definition.renderLayer != QcRenderLayer::Invisible;
+                if (*block != qcAirBlockId && target) {
                     return QcRaycastHit{cell, face, travelled};
                 }
             }

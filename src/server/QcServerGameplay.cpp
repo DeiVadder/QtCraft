@@ -243,6 +243,7 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
 
 void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
 {
+    client.swung = true;
     // Using a crafting table opens its 3 x 3 grid unless the player sneaks to place against it.
     if (const std::optional<QcBlockId> clickedBlock = m_world.blockAt(message.target);
         clickedBlock && m_content->block(*clickedBlock).opensCrafting && !client.sneaking && isWithinReach(client, message.target)) {
@@ -357,6 +358,42 @@ void QcServer::handleDropItem(Client &client, QcMsg::DropItem message)
     throwFromPlayer(client, {stack.item, removed, stack.damage});
     client.miningPos.reset();
     sendInventory(client);
+}
+
+QcAppearance QcServer::validAppearance(const QcAppearance &requested) const
+{
+    QcAppearance result = requested;
+    const QcAppearanceDefinition *outfit = m_content->appearance(requested.outfit);
+    if (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit || !outfit->playable) {
+        // The default outfit, or else any outfit the content offers.
+        result.outfit = QcAppearance().outfit;
+        const QcAppearanceDefinition *fallback = m_content->appearance(result.outfit);
+        if (!fallback || fallback->kind != QcAppearanceDefinition::Kind::Outfit || !fallback->playable) {
+            const auto any = std::ranges::find_if(m_content->appearances(), [](const QcAppearanceDefinition &definition) {
+                return definition.kind == QcAppearanceDefinition::Kind::Outfit && definition.playable;
+            });
+            result.outfit = any != m_content->appearances().end() ? any->name : QString();
+        }
+    }
+    const QcAppearanceDefinition *hair = m_content->appearance(requested.hair);
+    if (!hair || hair->kind != QcAppearanceDefinition::Kind::Hair || !hair->playable) {
+        result.hair.clear();
+    }
+    for (quint32 *color : {&result.skinColor, &result.hairColor, &result.shirtColor, &result.pantsColor}) {
+        *color &= 0xFFFFFFu;
+    }
+    return result;
+}
+
+void QcServer::handleSetAppearance(Client &client, const QcAppearance &appearance)
+{
+    client.appearance = validAppearance(appearance);
+    // Others that know the player get the spawn again with the new look.
+    for (const auto &other : m_clients) {
+        if (other->knownEntities.contains(client.entityId)) {
+            other->staleEntities.insert(client.entityId);
+        }
+    }
 }
 
 void QcServer::returnCraftingGrid(Client &client)
@@ -629,6 +666,7 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
     }
     client.health = std::max(0.0, client.health - amount);
     client.hurtTimer = QcMobManager::hurtInvulnerability;
+    client.hurtThisTick = true;
     client.regenerationTimer = 0.0;
     if (knockback.length() > 0.0) {
         client.motion.velocity = knockback.normalized() * QcMobManager::knockbackSpeed + QcVec3{0.0, 5.0, 0.0};
@@ -637,6 +675,7 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
     if (client.health <= 0.0) {
         client.dead = true;
         client.miningPos.reset();
+        m_died.insert(client.entityId);
         client.connection->send(QcMsg::ChatMessage{u"%1 died"_s.arg(client.name)});
         if (!m_info.keepInventory) {
             dropInventory(client);
@@ -680,10 +719,14 @@ void QcServer::handleAttack(Client &client, quint32 entityId)
         return;
     }
     client.attackCooldown = playerAttackCooldown;
+    client.swung = true;
     const QcItemDefinition *held = heldItem(client);
     const double damage = held ? held->attackDamage : 1.0;
     const QcVec3 lootPosition = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
     const std::optional<QList<QcItemDrop>> drops = m_mobs.damage(entityId, damage, client.motion.position);
+    if (drops) {
+        m_died.insert(entityId);
+    }
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
         QcItemStack tool = client.inventory.slot(slot);
@@ -739,6 +782,10 @@ void QcServer::tickGameplay()
             }
         }
         players.append({client->entityId, client->motion.position, !client->dead});
+        // Mining swings the arm again and again.
+        if (client->miningPos && (m_tickCount - client->miningStartTick) % miningSwingTicks == 0) {
+            client->swung = true;
+        }
     }
     const QList<QcMobManager::PlayerHit> hits =
         m_mobs.tick(m_world, players, m_info.worldTime, dt, [this] { return m_nextEntityId++; });
@@ -755,26 +802,37 @@ void QcServer::syncEntities(Client &client)
 {
     QSet<quint32> visible;
     QcMsg::EntityMoves moves;
-    const auto consider = [&](quint32 id, qint32 type, const QString &name, const QcVec3 &position, float yaw, double health,
-                              bool hurt) {
-        if ((position - client.motion.position).length() > entityViewDistance) {
+    const auto flagsOf = [](const QcEntityMotion &motion, bool swung, bool sneaking, bool sprinting) {
+        return quint8((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
+                      | (sneaking ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0));
+    };
+    const auto consider = [&](QcMsg::EntitySpawn spawn, bool hurt) {
+        if ((spawn.position - client.motion.position).length() > entityViewDistance) {
             return;
         }
-        visible.insert(id);
-        if (!client.knownEntities.contains(id)) {
-            client.connection->send(QcMsg::EntitySpawn{id, type, name, position, yaw, health, {}});
-            client.knownEntities.insert(id);
-        } else {
-            moves.moves.append({id, position, yaw, health, hurt});
+        visible.insert(spawn.id);
+        const bool known = client.knownEntities.contains(spawn.id);
+        if (!known || client.staleEntities.remove(spawn.id)) {
+            client.knownEntities.insert(spawn.id);
+            client.connection->send(spawn);
+        }
+        // A known entity sent again (new look) still moves, swings and flashes in this tick.
+        if (known) {
+            moves.moves.append({spawn.id, spawn.position, spawn.yaw, spawn.health, hurt, spawn.pitch, spawn.flags, spawn.held});
         }
     };
     for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
-        consider(mob.id, mob.type, QString(), mob.motion.position, mob.yaw, mob.health, mob.hurtThisTick);
+        consider({mob.id, mob.type, QString(), mob.motion.position, mob.yaw, mob.health, {}, {}, 0.0f,
+                  flagsOf(mob.motion, mob.attackedThisTick, false, false), qcNoItem},
+                 mob.hurtThisTick);
     }
     for (const auto &other : m_clients) {
         if (other.get() != &client && other->state == Client::State::Playing && !other->dead) {
-            consider(other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw,
-                     other->health, false);
+            const QcItemStack &held = other->inventory.selectedStack();
+            consider({other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw, other->health,
+                      {}, other->appearance, other->pitch, flagsOf(other->motion, other->swung, other->sneaking, other->sprinting),
+                      held.isEmpty() ? qcNoItem : held.item},
+                     other->hurtThisTick);
         }
     }
     // Items are sent again when their count changed and moved only when their position did.
@@ -786,18 +844,19 @@ void QcServer::syncEntities(Client &client)
         const auto known = client.knownItems.find(item.id);
         if (known == client.knownItems.end() || known->count != item.stack.count) {
             client.connection->send(QcMsg::EntitySpawn{item.id, QcMsg::EntitySpawn::itemType, QString(), item.motion.position,
-                                                       0.0f, 0.0, item.stack});
+                                                       0.0f, 0.0, item.stack, {}, 0.0f, 0, qcNoItem});
             client.knownEntities.insert(item.id);
             client.knownItems.insert(item.id, {item.stack.count, item.motion.position});
         } else if ((known->position - item.motion.position).length() > itemMoveThreshold) {
-            moves.moves.append({item.id, item.motion.position, 0.0f, 0.0, false});
+            moves.moves.append({item.id, item.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem});
             known->position = item.motion.position;
         }
     }
     for (auto it = client.knownEntities.begin(); it != client.knownEntities.end();) {
         if (!visible.contains(*it)) {
-            client.connection->send(QcMsg::EntityRemove{*it});
+            client.connection->send(QcMsg::EntityRemove{*it, m_died.contains(*it)});
             client.knownItems.remove(*it);
+            client.staleEntities.remove(*it);
             it = client.knownEntities.erase(it);
         } else {
             ++it;

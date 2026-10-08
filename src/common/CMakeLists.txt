@@ -24,7 +24,10 @@ qt_add_library(qc_common STATIC
     QcMailbox.h
     QcMessages.h
     QcMining.h QcMining.cpp
+    QcAppearance.h
+    QcAppearanceDefinition.h
     QcMobDefinition.h
+    QcModelDefinition.h
     QcPhysics.h QcPhysics.cpp
     QcPlayerInput.h
     QcProtocol.h QcProtocol.cpp

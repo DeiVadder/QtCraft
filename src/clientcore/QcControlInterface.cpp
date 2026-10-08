@@ -448,6 +448,17 @@ void QcControlInterface::start(const QJsonObject &request)
                                      }
                                      return true;
                                  }};
+    } else if (command == u"view"_s) {
+        // Without a mode it only reports the current one.
+        if (request.contains(u"mode"_s)) {
+            const std::optional<QcCameraMode> mode = QcViewCamera::fromName(request.value(u"mode"_s).toString());
+            if (!mode) {
+                fail(request, u"'mode' must be first, behind or front"_s);
+                return;
+            }
+            m_session->setCameraMode(*mode);
+        }
+        finish(request, {{u"mode"_s, QString::fromLatin1(QcViewCamera::name(m_session->cameraMode()))}});
     } else if (command == u"drop"_s) {
         if (!m_session->dropItem(request.value(u"all"_s).toBool(false))) {
             fail(request, u"Nothing selected to drop"_s);

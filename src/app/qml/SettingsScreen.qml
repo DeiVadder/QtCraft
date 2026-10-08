@@ -16,7 +16,10 @@ Popup {
     modal: true
     padding: 20
 
-    onAboutToShow: languageBox.currentIndex = languageBox.indexOfValue(game.language)
+    onAboutToShow: {
+        languageBox.currentIndex = languageBox.indexOfValue(game.language);
+        cameraBox.currentIndex = cameraBox.indexOfValue(game.cameraMode);
+    }
     onClosed: game.saveSettings()
 
     GridLayout {
@@ -96,6 +99,24 @@ Popup {
             text: qsTr("Show frame rate and position")
             checked: screen.game.showDebug
             onToggled: screen.game.showDebug = checked
+        }
+
+        Label {
+            text: qsTr("View")
+        }
+        ComboBox {
+            id: cameraBox
+
+            Layout.fillWidth: true
+            Layout.columnSpan: 2
+            textRole: "text"
+            valueRole: "value"
+            model: [
+                { text: qsTr("First person"), value: "first" },
+                { text: qsTr("Third person, behind"), value: "behind" },
+                { text: qsTr("Third person, front"), value: "front" }
+            ]
+            onActivated: screen.game.cameraMode = currentValue
         }
 
         Label {

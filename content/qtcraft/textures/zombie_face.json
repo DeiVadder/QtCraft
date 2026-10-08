@@ -1,0 +1,8 @@
+{
+    "name": "zombie_face",
+    "pattern": "face",
+    "primary": "#1e3a1a",
+    "secondary": "#101a10",
+    "variation": 0.0,
+    "seed": 49
+}

@@ -28,12 +28,18 @@ public:
         m_connection.send(QcMsg::PlayerState{acknowledged, motion});
     }
 
+    void send(const QcMessage &message) { m_connection.send(message); }
+
     QList<QcPlayerInput> inputs;
+    // The look sent with Hello and every later SetAppearance.
+    QcAppearance helloAppearance;
+    QList<QcAppearance> appearances;
 
 private:
     void onMessage(QcMessage &&message)
     {
-        if (std::holds_alternative<QcMsg::Hello>(message)) {
+        if (const auto *hello = std::get_if<QcMsg::Hello>(&message)) {
+            helloAppearance = hello->appearance;
             m_connection.send(QcMsg::Welcome{QcProtocol::version, 1, u"Fake"_s, 0});
             m_connection.send(QcMsg::ContentSync{m_content});
             for (int cx = -1; cx <= 1; ++cx) {
@@ -53,6 +59,8 @@ private:
             sendState(0, spawn);
         } else if (const auto *input = std::get_if<QcMsg::PlayerInput>(&message)) {
             inputs.append(input->input);
+        } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
+            appearances.append(look->appearance);
         }
     }
 
@@ -134,6 +142,89 @@ private slots:
         QTest::qWait(100);
         QCOMPARE(session.pendingInputCount(), 2);
         QCOMPARE(session.playerMotion(), before);
+    }
+
+    void remoteEntitiesAnimateFromServerState()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        FakeServer server(std::move(serverEnd));
+        QcClientSession session(std::move(clientEnd), u"Tester"_s);
+        session.start(QcClientSession::TickMode::Manual);
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
+
+        constexpr quint32 bob = 7;
+        QcMsg::EntitySpawn spawn;
+        spawn.id = bob;
+        spawn.position = {0.5, 64.0, 3.5};
+        spawn.health = 20.0;
+        spawn.flags = QcMsg::OnGround;
+        server.send(spawn);
+        QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(bob), timeoutMs);
+        const auto pose = [&] { return QcClientSession::poseOf(session.entities().value(bob), 0.0); };
+        QCOMPARE(pose().swingProgress, -1.0);
+        QCOMPARE(pose().hurtProgress, -1.0);
+
+        // Walking at 4 m/s while the moves arrive unevenly: two in one client tick, none in the next.
+        double x = 0.5;
+        const auto step = [&](quint8 flags, bool hurt) {
+            x += 0.2;
+            return QcMsg::EntityMove{bob, {x, 64.0, 3.5}, 0.0f, 20.0, hurt, 0.0f, flags, qcNoItem};
+        };
+        for (int i = 0; i < 20; ++i) {
+            if (i % 2 == 0) {
+                server.send(QcMsg::EntityMoves{{step(QcMsg::OnGround, false), step(QcMsg::OnGround, false)}});
+                QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(bob).position.x, x, timeoutMs);
+            }
+            session.tick();
+            if (i >= 10) {
+                QVERIFY2(pose().speed > 2.0 && pose().speed < 6.0, qPrintable(QString::number(pose().speed)));
+            }
+        }
+
+        // A swing flag starts the arm swing, which ends after its length; a hurt move flashes.
+        server.send(QcMsg::EntityMoves{{step(QcMsg::OnGround | QcMsg::Swing, true)}});
+        QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(bob).position.x, x, timeoutMs);
+        QCOMPARE(pose().swingProgress, 0.0);
+        QVERIFY(pose().hurtProgress >= 0.0);
+        for (int i = 0; i < QcClientSession::swingTicks; ++i) {
+            session.tick();
+        }
+        QCOMPARE(pose().swingProgress, -1.0);
+        QCOMPARE(pose().hurtProgress, -1.0);
+
+        // Dying: the entity leaves the live list and plays the death animation for its length,
+        // even when the player respawns meanwhile.
+        server.send(QcMsg::EntityRemove{bob, true});
+        QTRY_VERIFY_WITH_TIMEOUT(session.dyingEntities().contains(bob), timeoutMs);
+        QVERIFY(!session.entities().contains(bob));
+        QCOMPARE(QcClientSession::poseOf(session.dyingEntities().value(bob), 0.0).deathProgress, 0.0);
+        session.tick();
+        QVERIFY(QcClientSession::poseOf(session.dyingEntities().value(bob), 0.0).deathProgress > 0.0);
+        spawn.position = {5.5, 64.0, 5.5};
+        server.send(spawn);
+        QTRY_VERIFY_WITH_TIMEOUT(session.entities().contains(bob), timeoutMs);
+        QVERIFY(session.dyingEntities().contains(bob));
+        for (int i = 1; i < QcClientSession::deathTicks; ++i) {
+            session.tick();
+        }
+        QVERIFY(!session.dyingEntities().contains(bob));
+        QCOMPARE(session.entities().value(bob).position.x, 5.5);
+        QCOMPARE(pose().deathProgress, -1.0);
+    }
+
+    void lookChangedWhileConnectingReachesTheServer()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        FakeServer server(std::move(serverEnd));
+        QcClientSession session(std::move(clientEnd), u"Tester"_s);
+        session.start(QcClientSession::TickMode::Manual);
+        QCOMPARE(session.state(), QcClientSession::State::Connecting);
+        QcAppearance look;
+        look.hair = u"t:bun"_s;
+        session.setAppearance(look);
+        QTRY_COMPARE_WITH_TIMEOUT(server.appearances.size(), 1, timeoutMs);
+        QCOMPARE(server.helloAppearance.hair, QcAppearance().hair);
+        QCOMPARE(server.appearances.first().hair, u"t:bun"_s);
     }
 };
 

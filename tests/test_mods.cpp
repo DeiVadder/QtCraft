@@ -588,7 +588,7 @@ private slots:
             }
         });
         server.addClient(std::move(serverEnd));
-        player.send(QcMsg::Hello{QcProtocol::version, u"Visitor"_s});
+        player.send(QcMsg::Hello{QcProtocol::version, u"Visitor"_s, {}});
         QTRY_VERIFY(std::ranges::any_of(chat, [](const QString &line) { return line.contains(u"Rubies"_s); }));
         QCOMPARE(server.world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
         QCOMPARE(server.world().blockAt(pos.offset(1, 0, 0)), without->blockId(u"qtcraft:glass"_s));

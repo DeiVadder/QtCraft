@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcAppearance.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
 
@@ -21,6 +22,25 @@ struct QcClientEntity
     double health = 0.0;
     // Client ticks left for the hurt flash.
     int hurtTicks = 0;
+    // Players: their look; all creatures: head pitch, QcMsg::EntityFlag bits and the held item.
+    QcAppearance appearance;
+    float pitch = 0.0f;
+    float previousPitch = 0.0f;
+    quint8 flags = 0;
+    QcItemId held = qcNoItem;
+    // Distance walked (drives the stride) and the last step's length per tick.
+    double walkDistance = 0.0;
+    double lastStep = 0.0;
+    // Horizontal distance of all moves since the last client tick, and the walking speed in m/s
+    // smoothed over a few ticks (server and client ticks are not in phase).
+    double stepThisTick = 0.0;
+    double speed = 0.0;
+    // Client ticks since the arm swing or the death started; negative when not running.
+    int swingTicks = -1;
+    int deathTicks = -1;
+    // A move arrived since the last client tick.
+    bool moved = false;
 
     bool isItem() const { return !item.isEmpty(); }
+    bool isPlayer() const { return mobType == -1; }
 };

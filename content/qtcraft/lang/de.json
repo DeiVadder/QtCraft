@@ -64,5 +64,12 @@
     "mob.qtcraft.zombie": "Zombie",
     "block.qtcraft.oak_sapling": "Eichensetzling",
     "block.qtcraft.birch_sapling": "Birkensetzling",
-    "block.qtcraft.spruce_sapling": "Fichtensetzling"
+    "block.qtcraft.spruce_sapling": "Fichtensetzling",
+    "appearance.qtcraft.explorer": "Entdecker",
+    "appearance.qtcraft.miner": "Bergarbeiter",
+    "appearance.qtcraft.tunic": "Tunika",
+    "appearance.qtcraft.zombie": "Zombie",
+    "appearance.qtcraft.short_hair": "Kurze Haare",
+    "appearance.qtcraft.long_hair": "Lange Haare",
+    "appearance.qtcraft.cap": "Mütze"
 }

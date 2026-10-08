@@ -3,6 +3,8 @@
 #include "QcClientEntity.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
+#include "QcEntityPose.h"
+#include "QcViewCamera.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
@@ -90,6 +92,33 @@ public:
     // Hits the targeted entity; returns false without one.
     bool attack();
     void respawn();
+    // View mode of the graphical client (also switchable through the control interface).
+    QcCameraMode cameraMode() const { return m_cameraMode; }
+    void setCameraMode(QcCameraMode mode) { m_cameraMode = mode; }
+    // The look sent to the server; set before start() or at any time later.
+    void setAppearance(const QcAppearance &appearance);
+    const QcAppearance &appearance() const { return m_appearance; }
+    // Entities that died and play their death animation for a moment; not targetable.
+    const QHash<quint32, QcClientEntity> &dyingEntities() const { return m_dying; }
+
+    // Animation of the local player. `alpha` interpolates within the current tick.
+    QcEntityPose localPose(double alpha) const;
+    struct HandTimers
+    {
+        double switchProgress = -1.0;
+        double landing = -1.0;
+        double use = -1.0;
+    };
+    HandTimers handTimers(double alpha) const;
+    // Pose of a mirrored entity from its server state and client timers.
+    static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
+
+    // Animation lengths in ticks.
+    static constexpr int swingTicks = 6;
+    static constexpr int useTicks = 5;
+    static constexpr int switchTicks = 6;
+    static constexpr int landingTicks = 6;
+    static constexpr int deathTicks = 20;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
     double health() const { return m_health; }
@@ -101,6 +130,8 @@ public:
     // Melee reach of the player.
     static constexpr double attackReach = 4.0;
     static constexpr int hurtFlashTicks = 6;
+    // Share of the newest tick in the smoothed walking speed of other entities.
+    static constexpr double speedSmoothing = 0.3;
 
 signals:
     void stateChanged(QcClientSession::State state);
@@ -154,6 +185,19 @@ private:
     double m_miningProgress = 0.0;
 
     QHash<quint32, QcClientEntity> m_entities;
+    QHash<quint32, QcClientEntity> m_dying;
+    QcAppearance m_appearance;
+    bool m_helloSent = false;
+    bool m_appearancePending = false;
+    QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
+    // Local animation timers in ticks (negative: not running) and the distance walked.
+    int m_swingTicks = -1;
+    int m_useTicks = -1;
+    int m_switchTicks = -1;
+    int m_landingTicks = -1;
+    double m_walkDistance = 0.0;
+    double m_lastStep = 0.0;
+    QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
     double m_health = 20.0;
     double m_maxHealth = 20.0;

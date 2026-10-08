@@ -19,6 +19,7 @@ Jede Etappe lief auf einem eigenen Feature-Branch und wird nach einer unabhängi
 | 6 | Crafting und Items | `feature/06-crafting` | Werkzeuge in 4 Stufen, 26 geformte/formlose Rezepte, 2 × 2- und 3 × 3-Raster auf dem Server, Rezeptbuch, Essen |
 | 7 | Modding | `feature/07-modding` | Mod-Verzeichnis, Manifest mit Versionen und Abhängigkeiten, Ladereihenfolge, Fehlerbehandlung, Beispiel-Mod `mods/rubies`, Mods-Bildschirm |
 | 8 | Politur und Abschluss | `feature/08-polish` | Einstellungen, vollständige deutsche Übersetzung, Tageslicht beim Start, Benchmark-Hook, Durchspiel-Test, README, dieser Bericht |
+| 10 | Charaktermodell und Ansichten | `feature/10-character` | Skelettmodell aus Daten mit Outfits, Frisuren und Farben, Animationen (Stehen, Gehen, Rennen, Springen, Schwimmen, Schleichen, Schlagen, Treffer, Tod), Hand mit Item in der Ich-Perspektive, dritte Person hinten/vorne mit Kamerakollision, Charakter-Bildschirm, Zombie mit Skelett |
 | 9 | Item-Entities und Setzlinge | `feature/09-item-entities` | Drops als Items in der Welt (Aufheben, Zusammenlegen, Despawn, Grenzen mit Warteschlange, Speichern), Wegwerfen, Spielregel `keepInventory`, Blattzerfall, Setzlinge mit Wachstum zu Bäumen |
 
 Etappen 5 bis 8 brauchten Nachbesserungsrunden: Die Verifikation fand jeweils Blocker, die behoben und erneut unabhängig geprüft wurden. Etappe 7 und der Mod-Teil von Etappe 8 liefen mehrfach durch die Prüfung. Die Funde betrafen bösartige Mod-Dateien (Pipes, `/dev/zero`, Hardlinks), Inhalte, die der Server annahm, Clients aber ablehnen, sowie Start-Zeit und Speicher bei vielen oder großen Mods. Am Ende wurde der Mod-Lader vereinfacht: Jeder Mod wird direkt so geprüft, wie er beim Client ankäme, höchstens 64 Mods werden pro Start geladen, jedes gelesene Byte zählt gegen 64 MiB. Alle Etappen 1–8 sind in `dev` gemergt.
@@ -74,7 +75,7 @@ scripts/verify.sh                                                         # alle
 
 ## Tests
 
-- **Umfang:** 30 CTest-Ziele, darunter drei Headless-Szenarien. Sie laufen in den Builds Debug, ASan/UBSan und TSan.
+- **Umfang:** 31 CTest-Ziele, darunter drei Headless-Szenarien. Sie laufen in den Builds Debug, ASan/UBSan und TSan.
 - **Automatisierter Durchspiel-Test:** `tests/test_survival_scenario.cpp`. Er läuft nur über die Steuerschnittstelle:
   1. Schwein jagen, Fleisch aufsammeln, Zombie bekämpfen, Fleisch essen, Schwert wegwerfen und wieder aufheben.
   2. Baum fällen, Stämme aufsammeln, Bretter im 2 × 2-Raster und per Rezeptbuch herstellen, Werkbank bauen; ohne Werkbank wird das 3 × 3-Rezept abgelehnt.
@@ -95,6 +96,11 @@ scripts/verify.sh                                                         # alle
 | `06-crafting.png` | Crafting im Inventar |
 | `07-mod-items.png` | Items der Beispiel-Mod im Spiel |
 | `08-main-menu-de.png`, `08-settings-de.png`, `08-day-view-distance-8.png` | Hauptmenü und Einstellungen auf Deutsch, Tagansicht bei Sichtweite 8 |
+| `10-first-person-sword.png`, `10-first-person-block.png` | Ich-Perspektive mit Arm und gehaltenem Schwert bzw. Block |
+| `10-third-person-front.png`, `10-third-person-behind.png` | Dritte Person von vorne und hinten |
+| `10-animation-walk.png`, `10-animation-swing.png`, `10-animation-swim.png` | Animationen Gehen, Schlagen (mit Spitzhacke), Schwimmen (Test-Hook `--pose`) |
+| `10-zombies.png` | Zombies mit Skelettmodell und vorgestreckten Armen |
+| `10-character-screen-de.png` | Charakter-Bildschirm |
 | `09-items-and-saplings.png` | Gedroppte Items (Würfel, Sprites, Stapel) und zwei gesetzte Setzlinge |
 
 ## Bekannte Mängel
@@ -127,6 +133,11 @@ scripts/verify.sh                                                         # alle
 - **Weltgenerierung:**
   - Der Spawnpunkt kann auf einer Baumkrone liegen.
   - Biome bilden eher rundliche Flecken.
+- **Charakter:**
+  - Der Charakter-Bildschirm zeigt keine eigene Vorschau; man sieht das Ergebnis im Spiel in der Frontansicht (F5).
+  - Animationen sind im Code festgelegt, nicht aus Daten; Mods können Modelle, Outfits und Frisuren ergänzen, aber keine neuen Bewegungen.
+  - Gehaltene Werkzeuge sind flache Sprites (in dritter Person zwei gekreuzte), keine Voxel-Modelle.
+  - Die Kamera der dritten Person prüft Wände mit einem Strahl, nicht mit einem Volumen.
 - **Items und Pflanzen:**
   - Items in einem Block, der nachträglich gesetzt wird, werden nicht herausgeschoben.
   - Blätter zerfallen nur nach dem Entfernen eines Stamms; Blätter nahe einem anderen Baum bleiben (E-030).

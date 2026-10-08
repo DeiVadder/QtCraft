@@ -61,9 +61,15 @@ void QcWorldView::setSelection(std::optional<QcBlockPos> block)
     }
 }
 
-void QcWorldView::setEntityMesh(std::shared_ptr<const QcChunkMesh> mesh)
+void QcWorldView::setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh)
 {
     m_entityMesh = std::move(mesh);
+    update();
+}
+
+void QcWorldView::setHandMesh(std::shared_ptr<const QcEntityMesh> mesh)
+{
+    m_handMesh = std::move(mesh);
     update();
 }
 

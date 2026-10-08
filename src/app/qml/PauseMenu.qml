@@ -56,6 +56,12 @@ Rectangle {
 
         Button {
             Layout.fillWidth: true
+            text: qsTr("Character")
+            onClicked: menu.game.overlay = "character"
+        }
+
+        Button {
+            Layout.fillWidth: true
             text: menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
             onClicked: menu.game.leaveGame()
         }
@@ -69,12 +75,21 @@ Rectangle {
         onClosed: if (menu.game.overlay === "settings") menu.game.overlay = "pause"
     }
 
+    CharacterScreen {
+        id: characterScreen
+
+        game: menu.game
+        onClosed: if (menu.game.overlay === "character") menu.game.overlay = "pause"
+    }
+
     Connections {
         target: menu.game
 
         function onOverlayChanged() {
             if (menu.game.overlay === "settings") {
                 settingsScreen.open();
+            } else if (menu.game.overlay === "character") {
+                characterScreen.open();
             }
         }
     }

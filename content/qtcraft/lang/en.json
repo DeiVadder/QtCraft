@@ -64,5 +64,12 @@
     "mob.qtcraft.zombie": "Zombie",
     "block.qtcraft.oak_sapling": "Oak sapling",
     "block.qtcraft.birch_sapling": "Birch sapling",
-    "block.qtcraft.spruce_sapling": "Spruce sapling"
+    "block.qtcraft.spruce_sapling": "Spruce sapling",
+    "appearance.qtcraft.explorer": "Explorer",
+    "appearance.qtcraft.miner": "Miner",
+    "appearance.qtcraft.tunic": "Tunic",
+    "appearance.qtcraft.zombie": "Zombie",
+    "appearance.qtcraft.short_hair": "Short hair",
+    "appearance.qtcraft.long_hair": "Long hair",
+    "appearance.qtcraft.cap": "Cap"
 }
