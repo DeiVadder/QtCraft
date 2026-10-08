@@ -29,7 +29,7 @@ Returned by `status` and by all tick-based commands:
  "yaw":90,"pitch":0,"loadedChunks":81}
 ```
 
-Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day lasts 600 s), `night`, `targetEntity` (id of the creature under the crosshair), `target` (the block the player looks at within 5 m: `x`, `y`, `z`, `face`, `block`), `selectedSlot`, `held` (`{"item","count"}` or `null`) and `messages` (chat lines received while the request ran).
+Additional fields: `health`, `maxHealth`, `dead`, `food`, `maxFood`, `worldTime` (seconds; a day lasts 600 s), `night`, `targetEntity` (id of the creature under the crosshair), `target` (the block the player looks at within 5 m: `x`, `y`, `z`, `face`, `block`), `selectedSlot`, `held` (`{"item","count"}` or `null`) and `messages` (chat lines received while the request ran).
 
 `position` is the centre of the player's feet in metres (1 block = 1 m). `yaw` 0 looks north (-Z), 90 east (+X), 180 south (+Z); `pitch` is positive upwards. `state` is one of `Connecting`, `Loading`, `Playing`, `Disconnected` (then `disconnectReason` is set). `tick` counts client simulation ticks (20 per second).
 
@@ -47,16 +47,21 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 | `blocks` | `radius` (0..8, default 3) | All non-air blocks in a cube around the player's feet: `[{"x":..,"y":..,"z":..,"block":"qtcraft:stone"}]`. |
 | `lookAt` | `x`, `y`, `z` | Turns towards the centre of a block. |
 | `mine` | optional `x`, `y`, `z`; `maxTicks` (default 400) | Looks at the block (or keeps the current target) and mines until it is gone. The server checks the mining time; drops go into the inventory. |
-| `place` / `use` (also eats held food) | optional `x`, `y`, `z`, `face` (`east`, `west`, `up`, `down`, `south`, `north`, default `up`) | Looks at that face and uses the held item on it, which places a block next to it. Answers after 4 ticks; check the block with `block`. |
+| `place` / `use` (also eats held food when hungry, opens crafting tables and furnaces) | optional `x`, `y`, `z`, `face` (`east`, `west`, `up`, `down`, `south`, `north`, default `up`) | Looks at that face and uses the held item on it, which places a block next to it. Answers after 4 ticks; check the block with `block`. |
 | `select` | `slot` (0–8) | Selects a hotbar slot; answers with the inventory. |
 | `inventory` | – | `{"selectedSlot":0,"slots":[{"slot":0,"item":"qtcraft:dirt","count":3}],"craftingSize":2,"craftingGrid":[...],"craftingResult":null}` |
-| `moveItem` | `from`, `to` (0–35 inventory, 36–44 crafting grid, 3 per row; 2 × 2 uses 36, 37, 39, 40), optional `count` (0 = whole stack) | Moves, splits or merges stacks. |
+| `moveItem` | `from`, `to` (0–35 inventory, 36–44 crafting grid, 3 per row; 2 × 2 uses 36, 37, 39, 40; 45–47 the open machine's input, fuel and output), optional `count` (0 = whole stack) | Moves, splits or merges stacks. The machine's fuel slot takes only fuel, its output nothing. |
+| `openMachine` | `x`, `y`, `z` | Looks at the block and uses it; answers with the machine state once the server opened it, fails when the block is out of reach, hidden or no machine. |
+| `machine` | – | State of the open machine: `{"open":true,"position":[x,y,z],"category":"smelting","input":{"item","count"},"fuel":…,"output":…,"burn":0.8,"progress":0.25}` (`burn`: share of the current fuel left, `progress`: share of the current item done; empty slots are `null`), or `{"open":false}`. |
+| `fillMachine` | `item`, optional `into` (`input` default, or `fuel`), `count` (0 = whole stack) | Moves the first inventory stack of that item into the open machine; answers with the machine state. |
+| `takeOutput` | optional `count` | Moves the output into a matching stack with room or an empty inventory slot; answers with the machine state. |
+| `closeMachine` | – | Closes the machine screen (the server also closes it when the player walks away, dies or the block is broken). |
 | `takeResult` | – | Takes the crafting grid's result once into the inventory. |
 | `closeCrafting` | – | Puts the grid's items back into the inventory and leaves a crafting table's 3 × 3 grid. Items in the grid are also kept when the player disconnects or the world is saved. |
 | `recipes` | optional `all` (bool) | Recipes the inventory can make now (or all): `recipe`, `result`, `count`, `needs`, `needsCraftingTable`, `possible`. |
 | `craft` | `recipe`, optional `count` (1–64) | Crafts directly from the inventory (recipe book). 3 × 3 recipes need a crafting table within 5 m. The result appears in `messages` and the inventory. |
 | `mods` | – | Content packs the server loaded, base game first: `{"packs":[{"id","name","version"}]}`. |
-| `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`, `/gamerule keepInventory [true\|false]` (without a value: show it), `/spawnitem <item> [count]` (drops up to 64 items two metres ahead), `/setblock <x> <y> <z> <block>` (`~` or `~n` for coordinates relative to the player's feet; saplings start growing, `air` breaks the block without drops). |
+| `chat` | `text` | Sends a chat line or a command; server replies appear in `messages`. Commands: `/help`, `/give <item> [count]`, `/save`, `/time set <day\|night\|seconds>`, `/time add <seconds>` (time skip), `/summon <mob> [count]` (at most 64 creatures in total), `/kill`, `/heal`, `/feed [0..20]` (sets the food points), `/gamerule keepInventory [true\|false]` (without a value: show it), `/spawnitem <item> [count]` (drops up to 64 items two metres ahead), `/setblock <x> <y> <z> <block>` (`~` or `~n` for coordinates relative to the player's feet; saplings start growing, `air` breaks the block without drops). |
 | `worldList` | – | `{"worlds":[{"folder","name","seed","error"}]}` |
 | `worldCreate` | `name`, optional `seed` (integer; random when omitted) | Creates a saved world and switches to it; answers with its `folder`. Follow with `waitUntilReady`. |
 | `worldLoad` | `folder` | Switches to a saved world (the current one is saved first). Follow with `waitUntilReady`. |

@@ -56,6 +56,9 @@ private:
         int remainingTicks = 0;
         // Called every tick; returns true when the command is complete.
         std::function<bool()> step;
+        // Response of a completed command; the player status when unset. The initializer lets
+        // commands leave it out without -Wmissing-field-initializers.
+        std::function<QJsonObject()> result = {}; // NOLINT(readability-redundant-member-init)
     };
 
     void readInput();
@@ -67,6 +70,7 @@ private:
     QJsonObject playerStatus() const;
     QJsonValue stackJson(QcItemStack stack) const;
     QJsonObject inventoryJson() const;
+    QJsonObject machineJson() const;
     // Turns the player towards a block centre, or towards the centre of one of its faces.
     void lookAt(QcBlockPos block, std::optional<QcBlockFace> face);
     void lookAtPoint(const QcVec3 &point);

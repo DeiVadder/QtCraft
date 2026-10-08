@@ -7,5 +7,6 @@
         "bottom": "oak_planks",
         "side": "crafting_table_side"
     },
-    "crafting": true
+    "crafting": true,
+    "fuelSeconds": 15
 }

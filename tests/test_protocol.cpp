@@ -177,6 +177,64 @@ private slots:
         QCOMPARE(copy.craftingResult, state.craftingResult);
     }
 
+    void machineAndFoodMessagesRoundTrip()
+    {
+        const QcMsg::OpenMachine open = roundTrip(QcMsg::OpenMachine{{-7, 64, 12}, u"smelting"_s});
+        QCOMPARE(open.pos, (QcBlockPos{-7, 64, 12}));
+        QCOMPARE(open.category, u"smelting"_s);
+
+        QcMsg::MachineState state;
+        state.pos = {3, 70, -2};
+        state.stacks = {{4, 7, 0}, {9, 2, 0}, {11, 64, 0}};
+        state.burn = 0.25f;
+        state.progress = 0.75f;
+        const QcMsg::MachineState copy = roundTrip(state);
+        QCOMPARE(copy.pos, state.pos);
+        QCOMPARE(copy.stacks, state.stacks);
+        QCOMPARE(copy.burn, 0.25f);
+        QCOMPARE(copy.progress, 0.75f);
+
+        roundTrip(QcMsg::CloseMachine{});
+        const QcMsg::PlayerFood food = roundTrip(QcMsg::PlayerFood{13, 20});
+        QCOMPARE(food.food, 13);
+        QCOMPARE(food.maxFood, 20);
+
+        const QcMsg::MoveInventoryItem move = roundTrip(QcMsg::MoveInventoryItem{QcMsg::MoveInventoryItem::machineOutputSlot, 0, 0});
+        QCOMPARE(move.from, 47);
+    }
+
+    void rejectsBadMachineAndFoodData()
+    {
+        // A machine state needs exactly three stacks.
+        QcMsg::MachineState twoSlots;
+        twoSlots.stacks = {{1, 1, 0}, {1, 1, 0}};
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(twoSlots), QcProtocol::Peer::Server).has_value());
+        QcMsg::MachineState nan;
+        nan.stacks = QList<QcItemStack>(3);
+        nan.burn = std::numeric_limits<float>::quiet_NaN();
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(nan), QcProtocol::Peer::Server).has_value());
+        // Out-of-range shares are clamped.
+        QcMsg::MachineState large;
+        large.stacks = QList<QcItemStack>(3);
+        large.progress = 7.0f;
+        large.burn = -1.0f;
+        const QcMsg::MachineState clamped = roundTrip(large);
+        QCOMPARE(clamped.progress, 1.0f);
+        QCOMPARE(clamped.burn, 0.0f);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::PlayerFood{21, 20}), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::PlayerFood{-1, 20}), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::OpenMachine{{}, QString(65, u'a')}), QcProtocol::Peer::Server)
+                     .has_value());
+
+        // Clients may only close machines; opening, state and food come from the server.
+        for (const QcMessage &message : {QcMessage(QcMsg::OpenMachine{}), QcMessage(nan), QcMessage(QcMsg::PlayerFood{1, 20})}) {
+            QVERIFY(!QcProtocol::decode(QcProtocol::encode(message), QcProtocol::Peer::Client).has_value());
+        }
+        const QByteArray close = QcProtocol::encode(QcMsg::CloseMachine{});
+        QVERIFY(QcProtocol::decode(close, QcProtocol::Peer::Client).has_value());
+        QVERIFY(QcProtocol::decode(close, QcProtocol::Peer::Server).has_value());
+    }
+
     void appearancesRoundTripAndAreBounded()
     {
         QcAppearance look;

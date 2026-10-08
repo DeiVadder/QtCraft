@@ -1,3 +1,4 @@
 {
-    "name": "coal"
+    "name": "coal",
+    "fuelSeconds": 80
 }

@@ -248,6 +248,37 @@ void QcClientSession::handleMessage(QcMessage &&message)
             m_miningRequested = false;
         }
         emit healthChanged();
+    } else if (auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
+        m_food = food->food;
+        m_maxFood = food->maxFood;
+        emit foodChanged();
+    } else if (auto *open = std::get_if<QcMsg::OpenMachine>(&message)) {
+        // An answer to a use that the player already closed again; the server has closed it too.
+        if (m_machineClosedLocally) {
+            return;
+        }
+        m_machine = open->pos;
+        m_machineCategory = open->category;
+        m_machineSlots = QList<QcItemStack>(QcMsg::MachineState::slotCount);
+        m_machineBurn = 0.0;
+        m_machineProgress = 0.0;
+        emit machineOpened();
+    } else if (auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
+        // Only the open machine's state is shown; unknown items would break the screen.
+        const bool known = std::ranges::all_of(machine->stacks, [this](QcItemStack stack) {
+            return stack.isEmpty() || (m_content && m_content->isValidItem(stack.item));
+        });
+        if (m_machine == machine->pos && known) {
+            m_machineSlots = machine->stacks;
+            m_machineBurn = machine->burn;
+            m_machineProgress = machine->progress;
+            emit machineChanged();
+        }
+    } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
+        if (m_machine) {
+            m_machine.reset();
+            emit machineClosed();
+        }
     } else if (auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
         m_worldTime = time->time;
         m_dayLength = time->dayLength;
@@ -498,8 +529,12 @@ bool QcClientSession::useItem()
     }
     const QcItemStack &held = m_inventory.selectedStack();
     const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-    // Food without a block to place is eaten; everything else acts on the targeted block.
-    if (item && item->foodHealth > 0.0 && item->placesBlock.isEmpty()) {
+    // Machines and crafting tables open when used (unless sneaking); otherwise food without a block
+    // to place is eaten and everything else acts on the targeted block.
+    const std::optional<QcBlockId> targetBlock = m_target ? m_world->blockAt(m_target->block) : std::nullopt;
+    const bool opensScreen = targetBlock && !m_intent.sneak
+                             && (m_content->block(*targetBlock).opensCrafting || m_content->block(*targetBlock).machine.isMachine());
+    if (item && item->food > 0 && item->placesBlock.isEmpty() && !opensScreen) {
         m_connection->send(QcMsg::ConsumeItem{});
         m_useTicks = 0;
         return true;
@@ -507,6 +542,7 @@ bool QcClientSession::useItem()
     if (!m_target) {
         return false;
     }
+    m_machineClosedLocally = false;
     m_connection->send(QcMsg::UseItem{m_target->block, m_target->face});
     m_useTicks = 0;
     return true;
@@ -525,6 +561,17 @@ void QcClientSession::craftRecipe(const QString &recipe, int count)
 void QcClientSession::closeCrafting()
 {
     m_connection->send(QcMsg::CloseCrafting{});
+}
+
+void QcClientSession::closeMachine()
+{
+    if (!m_machine) {
+        return;
+    }
+    m_machine.reset();
+    m_machineClosedLocally = true;
+    m_connection->send(QcMsg::CloseMachine{});
+    emit machineClosed();
 }
 
 void QcClientSession::selectHotbarSlot(int slot)

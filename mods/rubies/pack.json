@@ -2,7 +2,7 @@
     "id": "rubies",
     "name": "Rubies",
     "version": "1.0.0",
-    "description": "Example mod: ruby ore, ruby tools, a ruby block and the crystal beetle.",
+    "description": "Example mod: ruby ore, ruby tools, a ruby block, the crystal beetle, rubies smelted from gravel and ember shards as fuel.",
     "dependencies": [
         {
             "id": "qtcraft",

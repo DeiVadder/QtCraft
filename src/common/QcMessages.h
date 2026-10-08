@@ -121,9 +121,15 @@ struct SelectHotbarSlot
 };
 
 // Slots 0..35 are the inventory, 36..44 the crafting grid (row-major, 3 per row; a 2 x 2 grid uses
-// the top-left four). `count` 0 moves the whole stack.
+// the top-left four), 45..47 the open machine (input, fuel, output; the output only gives).
+// `count` 0 moves the whole stack.
 struct MoveInventoryItem
 {
+    static constexpr qint32 craftingGridSlot = 36;
+    static constexpr qint32 machineInputSlot = 45;
+    static constexpr qint32 machineFuelSlot = 46;
+    static constexpr qint32 machineOutputSlot = 47;
+
     qint32 from = 0;
     qint32 to = 0;
     qint32 count = 0;
@@ -267,6 +273,38 @@ struct DropItem
     bool wholeStack = false;
 };
 
+// Server -> client: the player opened the machine at `pos`; MachineState follows.
+struct OpenMachine
+{
+    QcBlockPos pos;
+    QString category;
+};
+
+// Server -> client: contents and progress of the open machine. `stacks` are input, fuel and output;
+// `burn` is the share of the current fuel left and `progress` the share of the current item done.
+struct MachineState
+{
+    static constexpr int slotCount = 3;
+
+    QcBlockPos pos;
+    QList<QcItemStack> stacks;
+    float burn = 0.0f;
+    float progress = 0.0f;
+};
+
+// Client -> server: the machine screen closed. Server -> client: the machine closed (out of reach,
+// broken).
+struct CloseMachine
+{
+};
+
+// Server -> client: the receiving player's food points.
+struct PlayerFood
+{
+    qint32 food = 0;
+    qint32 maxFood = 0;
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
@@ -276,4 +314,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::InventoryState, QcMsg::ChatMessage, QcMsg::EntitySpawn, QcMsg::EntityMoves,
                                QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
-                               QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance>;
+                               QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance,
+                               QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood>;

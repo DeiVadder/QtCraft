@@ -1,0 +1,8 @@
+{
+    "name": "ruby_from_gravel",
+    "input": "qtcraft:gravel",
+    "result": {
+        "item": "ruby"
+    },
+    "seconds": 30
+}

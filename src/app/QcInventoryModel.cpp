@@ -1,6 +1,7 @@
 #include "QcInventoryModel.h"
 
 #include "QcContentRegistry.h"
+#include "QcMessages.h"
 
 using namespace Qt::StringLiterals;
 
@@ -20,8 +21,14 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
         return {};
     }
     const int row = index.row();
-    const QcItemStack stack = row < gridFirstRow ? m_inventory.slot(row)
-                                                 : (row < resultRow ? m_craftingGrid.value(row - gridFirstRow) : m_craftingResult);
+    QcItemStack stack = m_craftingResult;
+    if (row < gridFirstRow) {
+        stack = m_inventory.slot(row);
+    } else if (row < resultRow) {
+        stack = m_craftingGrid.value(row - gridFirstRow);
+    } else if (row >= machineFirstRow) {
+        stack = m_machine.value(row - machineFirstRow);
+    }
     const bool empty = stack.isEmpty() || !m_content || !m_content->isValidItem(stack.item);
     if (role == EmptyRole) {
         return empty;
@@ -60,13 +67,22 @@ void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> conte
     endResetModel();
 }
 
+int QcInventoryModel::slotOfRow(int row)
+{
+    if (row >= machineFirstRow && row < rowCountTotal) {
+        return QcMsg::MoveInventoryItem::machineInputSlot + (row - machineFirstRow);
+    }
+    return row >= 0 && row < resultRow ? row : -1;
+}
+
 void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<QcItemStack> &craftingGrid,
-                                    QcItemStack craftingResult)
+                                    QcItemStack craftingResult, const QList<QcItemStack> &machine)
 {
     const int previousSelection = m_inventory.selectedHotbarSlot();
     m_inventory = inventory;
     m_craftingGrid = craftingGrid.size() == 9 ? craftingGrid : QList<QcItemStack>(9);
     m_craftingResult = craftingResult;
+    m_machine = machine.size() == 3 ? machine : QList<QcItemStack>(3);
     emit dataChanged(index(0), index(rowCountTotal - 1));
     if (previousSelection != m_inventory.selectedHotbarSlot()) {
         emit selectedSlotChanged();

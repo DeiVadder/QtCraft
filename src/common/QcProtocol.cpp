@@ -5,6 +5,7 @@
 #include <QDataStream>
 #include <QIODevice>
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -180,6 +181,19 @@ struct Encoder
     void operator()(QcMsg::Respawn) {}
     void operator()(QcMsg::DropItem m) { stream << m.wholeStack; }
     void operator()(const QcMsg::SetAppearance &m) { stream << m.appearance; }
+    void operator()(const QcMsg::OpenMachine &m)
+    {
+        writePos(m.pos);
+        stream << m.category;
+    }
+    void operator()(const QcMsg::MachineState &m)
+    {
+        writePos(m.pos);
+        writeStacks(m.stacks);
+        stream << m.burn << m.progress;
+    }
+    void operator()(QcMsg::CloseMachine) {}
+    void operator()(QcMsg::PlayerFood m) { stream << m.food << m.maxFood; }
 
     void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
@@ -537,6 +551,56 @@ QcResult<QcMessage> decodePayload<QcMsg::DropItem>(QDataStream &stream)
     return m;
 }
 
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::OpenMachine>(QDataStream &stream)
+{
+    QcMsg::OpenMachine m;
+    m.pos = readPos(stream);
+    stream >> m.category;
+    if (m.category.size() > 64) {
+        return qcError(u"Invalid machine category"_s);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::MachineState>(QDataStream &stream)
+{
+    QcMsg::MachineState m;
+    m.pos = readPos(stream);
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcMsg::MachineState::slotCount, count) || count != QcMsg::MachineState::slotCount) {
+        return qcError(u"Corrupt machine state"_s);
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        m.stacks.append(readStack(stream));
+    }
+    stream >> m.burn >> m.progress;
+    if (!std::isfinite(m.burn) || !std::isfinite(m.progress)) {
+        return qcError(u"Non-finite machine state"_s);
+    }
+    m.burn = std::clamp(m.burn, 0.0f, 1.0f);
+    m.progress = std::clamp(m.progress, 0.0f, 1.0f);
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::CloseMachine>(QDataStream &)
+{
+    return QcMsg::CloseMachine{};
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::PlayerFood>(QDataStream &stream)
+{
+    QcMsg::PlayerFood m;
+    stream >> m.food >> m.maxFood;
+    if (m.maxFood < 0 || m.maxFood > 1000 || m.food < 0 || m.food > m.maxFood) {
+        return qcError(u"Invalid food value"_s);
+    }
+    return m;
+}
+
 template<std::size_t... I>
 QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
 {
@@ -571,7 +635,7 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
     const auto is = [messageIndex]<typename T>() {
         return messageIndex == QcMessage(T{}).index();
     };
-    if (is.template operator()<QcMsg::Disconnect>()) {
+    if (is.template operator()<QcMsg::Disconnect>() || is.template operator()<QcMsg::CloseMachine>()) {
         return true;
     }
     const bool clientMessage = is.template operator()<QcMsg::Hello>() || is.template operator()<QcMsg::PlayerInput>()

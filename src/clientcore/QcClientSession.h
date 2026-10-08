@@ -80,6 +80,15 @@ public:
     void takeCraftingResult();
     void craftRecipe(const QString &recipe, int count = 1);
     void closeCrafting();
+    // The machine screen the server opened (position, category), its slots (input, fuel, output)
+    // and progress; machineOpen() is false when none is open.
+    bool machineOpen() const { return m_machine.has_value(); }
+    std::optional<QcBlockPos> machinePos() const { return m_machine; }
+    QString machineCategory() const { return m_machineCategory; }
+    const QList<QcItemStack> &machineSlots() const { return m_machineSlots; }
+    double machineBurn() const { return m_machineBurn; }
+    double machineProgress() const { return m_machineProgress; }
+    void closeMachine();
     const QList<QcItemStack> &craftingGrid() const { return m_craftingGrid; }
     int craftingSize() const { return m_craftingSize; }
     QcItemStack craftingResult() const { return m_craftingResult; }
@@ -121,6 +130,8 @@ public:
     static constexpr int deathTicks = 20;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
+    int food() const { return m_food; }
+    int maxFood() const { return m_maxFood; }
     double health() const { return m_health; }
     double maxHealth() const { return m_maxHealth; }
     bool isDead() const { return m_dead; }
@@ -143,6 +154,11 @@ signals:
     void disconnected(const QString &reason);
     void inventoryChanged();
     void healthChanged();
+    void foodChanged();
+    void machineOpened();
+    // Contents or progress of the open machine changed.
+    void machineChanged();
+    void machineClosed();
     // The server opened a crafting table's grid.
     void craftingOpened(int size);
     void chatReceived(const QString &text);
@@ -199,6 +215,15 @@ private:
     double m_lastStep = 0.0;
     QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
+    std::optional<QcBlockPos> m_machine;
+    // The player closed a machine screen and has not used a block since.
+    bool m_machineClosedLocally = false;
+    QString m_machineCategory;
+    QList<QcItemStack> m_machineSlots = QList<QcItemStack>(QcMsg::MachineState::slotCount);
+    double m_machineBurn = 0.0;
+    double m_machineProgress = 0.0;
+    int m_food = QcItemDefinition::maxFood;
+    int m_maxFood = QcItemDefinition::maxFood;
     double m_health = 20.0;
     double m_maxHealth = 20.0;
     bool m_dead = false;

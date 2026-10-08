@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable)."_s,
                                         u"text"_s);
-    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat."_s,
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat, or furnace (uses the block in view and fills it from hotbar slots 1 and 2)."_s,
                                            u"name"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
@@ -116,7 +116,9 @@ int main(int argc, char *argv[])
     QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(window, &app);
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
-    game->setBenchmark(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600));
+    // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand: walk ahead (default) or stand still.
+    game->setBenchmark(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600),
+                       qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO") != u"stand"_s);
     if (parser.isSet(playOption)) {
         game->setScreenshotHook(screenshot);
         game->startSingleplayer(parser.value(worldOption), parser.value(seedOption));

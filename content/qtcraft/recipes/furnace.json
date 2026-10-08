@@ -1,0 +1,15 @@
+{
+    "name": "furnace",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "cobblestone"
+    },
+    "result": {
+        "item": "furnace"
+    }
+}

@@ -4,5 +4,6 @@
     "tool": "axe",
     "textures": {
         "all": "oak_planks"
-    }
+    },
+    "fuelSeconds": 15
 }

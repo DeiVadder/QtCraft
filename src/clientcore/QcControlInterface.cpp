@@ -173,6 +173,8 @@ QJsonObject QcControlInterface::playerStatus() const
     status.insert(u"health"_s, m_session->health());
     status.insert(u"maxHealth"_s, m_session->maxHealth());
     status.insert(u"dead"_s, m_session->isDead());
+    status.insert(u"food"_s, m_session->food());
+    status.insert(u"maxFood"_s, m_session->maxFood());
     status.insert(u"worldTime"_s, m_session->worldTime());
     status.insert(u"night"_s, QcDayCycle::isNight(m_session->worldTime()));
     if (const std::optional<quint32> entity = m_session->targetEntity()) {
@@ -225,6 +227,23 @@ QJsonObject QcControlInterface::inventoryJson() const
             {u"craftingSize"_s, m_session->craftingSize()},
             {u"craftingGrid"_s, grid},
             {u"craftingResult"_s, stackJson(m_session->craftingResult())}};
+}
+
+QJsonObject QcControlInterface::machineJson() const
+{
+    const std::optional<QcBlockPos> pos = m_session->machinePos();
+    if (!pos) {
+        return {{u"open"_s, false}};
+    }
+    const QList<QcItemStack> &stacks = m_session->machineSlots();
+    return {{u"open"_s, true},
+            {u"position"_s, QJsonArray{pos->x, pos->y, pos->z}},
+            {u"category"_s, m_session->machineCategory()},
+            {u"input"_s, stackJson(stacks.value(0))},
+            {u"fuel"_s, stackJson(stacks.value(1))},
+            {u"output"_s, stackJson(stacks.value(2))},
+            {u"burn"_s, m_session->machineBurn()},
+            {u"progress"_s, m_session->machineProgress()}};
 }
 
 QcBlockPos QcControlInterface::blockArgument(const QJsonObject &request)
@@ -507,6 +526,102 @@ void QcControlInterface::start(const QJsonObject &request)
         m_session->moveInventoryItem(intField(request, u"from"_s, 0), intField(request, u"to"_s, 0),
                                      std::max(0, intField(request, u"count"_s, 0)));
         m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"machine"_s) {
+        finish(request, machineJson());
+    } else if (command == u"openMachine"_s) {
+        // Looks at the block and uses it like a player; answers once the server opened the screen.
+        if (!request.contains(u"x"_s)) {
+            fail(request, u"'x', 'y' and 'z' are required"_s);
+            return;
+        }
+        const QcBlockPos pos = blockArgument(request);
+        lookAt(pos, std::nullopt);
+        QcPlayerInput intent = m_session->intent();
+        intent.sneak = false;
+        m_session->setIntent(intent);
+        bool used = false;
+        constexpr int openTicks = 10;
+        m_active = ActiveCommand{request, timeoutPolls(openTicks), [this, startTick, used, pos]() mutable {
+                                     if (m_session->machinePos() == pos) {
+                                         return true;
+                                     }
+                                     if (!used) {
+                                         if (m_session->tickCount() <= startTick) {
+                                             return false;
+                                         }
+                                         if (!m_session->target() || m_session->target()->block != pos || !m_session->useItem()) {
+                                             m_activeError = u"The block is not in reach or not in sight"_s;
+                                             return true;
+                                         }
+                                         used = true;
+                                         return false;
+                                     }
+                                     if (m_session->tickCount() >= startTick + openTicks) {
+                                         m_activeError = u"The block did not open a machine"_s;
+                                         return true;
+                                     }
+                                     return false;
+                                 },
+                                 [this] { return machineJson(); }};
+    } else if (command == u"fillMachine"_s || command == u"takeOutput"_s) {
+        // Moves items between the inventory and the open machine through the normal slot moves.
+        if (!m_session->machineOpen() || !m_session->content()) {
+            fail(request, u"No machine is open"_s);
+            return;
+        }
+        const auto content = m_session->content();
+        const QcInventory &inventory = m_session->inventory();
+        int from = -1;
+        int to = -1;
+        if (command == u"fillMachine"_s) {
+            const QString into = request.value(u"into"_s).toString(u"input"_s);
+            if (into != u"input"_s && into != u"fuel"_s) {
+                fail(request, u"'into' must be input or fuel"_s);
+                return;
+            }
+            const std::optional<QcItemId> item = content->itemId(request.value(u"item"_s).toString());
+            for (int slot = 0; slot < QcInventory::slotCount && item; ++slot) {
+                if (inventory.slot(slot).item == *item && !inventory.slot(slot).isEmpty()) {
+                    from = slot;
+                    break;
+                }
+            }
+            if (from < 0) {
+                fail(request, u"No such item in the inventory"_s);
+                return;
+            }
+            to = into == u"input"_s ? QcMsg::MoveInventoryItem::machineInputSlot : QcMsg::MoveInventoryItem::machineFuelSlot;
+        } else {
+            const QcItemStack output = m_session->machineSlots().value(2);
+            if (output.isEmpty()) {
+                fail(request, u"The output is empty"_s);
+                return;
+            }
+            // A stack of the same item with room first, else an empty slot.
+            const int maxStack = content->isValidItem(output.item) ? content->item(output.item).maxStack : 1;
+            for (int slot = 0; slot < QcInventory::slotCount && to < 0; ++slot) {
+                const QcItemStack &stack = inventory.slot(slot);
+                if (stack.item == output.item && stack.damage == 0 && stack.count < maxStack) {
+                    to = slot;
+                }
+            }
+            for (int slot = 0; slot < QcInventory::slotCount && to < 0; ++slot) {
+                if (inventory.slot(slot).isEmpty()) {
+                    to = slot;
+                }
+            }
+            if (to < 0) {
+                fail(request, u"No room in the inventory"_s);
+                return;
+            }
+            from = QcMsg::MoveInventoryItem::machineOutputSlot;
+        }
+        m_session->moveInventoryItem(from, to, std::max(0, intField(request, u"count"_s, 0)));
+        m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; },
+                                 [this] { return machineJson(); }};
+    } else if (command == u"closeMachine"_s) {
+        m_session->closeMachine();
+        finish(request, machineJson());
     } else if (command == u"closeCrafting"_s) {
         // Returns the grid to the inventory and leaves a crafting table's 3 x 3 grid.
         m_session->closeCrafting();
@@ -650,9 +765,10 @@ void QcControlInterface::onTick()
     if (m_active->step()) {
         const QJsonObject request = m_active->request;
         const QString error = std::exchange(m_activeError, {});
+        const QJsonObject response = m_active->result ? m_active->result() : playerStatus();
         m_active.reset();
         if (error.isEmpty()) {
-            finish(request, playerStatus());
+            finish(request, response);
         } else {
             fail(request, error);
         }

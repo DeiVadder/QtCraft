@@ -63,6 +63,17 @@ private slots:
         QVERIFY(image.pixelColor(12, 4).alpha() < 128);
     }
 
+    void furnaceFrontHasADarkOpeningInAStoneFace()
+    {
+        QCOMPARE(qcTexturePatternFromName(u"furnace"_s), QcTextureSpec::Pattern::Furnace);
+        const QcTextureSpec spec{QcTextureSpec::Pattern::Furnace, QColor(130, 130, 130), QColor(30, 26, 24), 0.0, 5};
+        const QImage image = QcTextureSynthesizer::synthesize(spec);
+        QCOMPARE(transparentPixels(image), 0);
+        // Above the opening the stone colour, inside it the dark secondary colour.
+        QCOMPARE(image.pixelColor(7, 3), QColor(130, 130, 130));
+        QCOMPARE(image.pixelColor(7, 9), QColor(30, 26, 24));
+    }
+
     void patternNamesResolve()
     {
         QCOMPARE(qcTexturePatternFromName(u"planks"_s), QcTextureSpec::Pattern::Planks);

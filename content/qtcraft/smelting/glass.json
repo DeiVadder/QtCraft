@@ -1,0 +1,8 @@
+{
+    "name": "glass",
+    "input": "sand",
+    "result": {
+        "item": "glass"
+    },
+    "seconds": 10
+}

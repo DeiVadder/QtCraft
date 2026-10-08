@@ -39,6 +39,10 @@ void QcServer::setBlockAndBroadcast(QcBlockPos pos, QcBlockId block)
     if (!m_world.setBlock(pos, block)) {
         return;
     }
+    // A machine that is replaced by anything but another machine spills its contents.
+    if (m_machines.find(pos) && !m_machines.machineOf(block)) {
+        dropMachineContents(m_machines.remove(pos));
+    }
     for (const auto &client : m_clients) {
         if (client->state == Client::State::Playing && client->sentChunks.contains(pos.chunk())) {
             client->connection->send(QcMsg::BlockUpdate{pos, block});
@@ -98,26 +102,61 @@ bool QcServer::isNearCraftingTable(const Client &client) const
 
 void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
 {
-    // Inventory and the usable part of the grid form one slot space; other grid cells are invalid.
-    const auto usable = [&client](int slot) {
+    QcMachineManager::Machine *machine = openMachineOf(client);
+    // Inventory, the usable part of the grid and the open machine form one slot space; other grid
+    // cells and machine slots without an open machine are invalid.
+    const auto usable = [&client, machine](int slot) {
         if (slot < craftingGridSlot) {
             return QcInventory::isValidSlot(slot);
+        }
+        if (slot >= machineSlot) {
+            return machine && slot < machineSlot + QcMachineManager::slotCount;
         }
         const int cell = slot - craftingGridSlot;
         return cell >= 0 && cell < 9 && cell / 3 < client.craftingSize && cell % 3 < client.craftingSize;
     };
-    if (client.dead || !usable(move.from) || !usable(move.to)) {
+    const auto refuse = [&] {
         sendInventory(client);
+        sendMachine(client, true);
+    };
+    if (client.dead || !usable(move.from) || !usable(move.to) || move.to == QcMsg::MoveInventoryItem::machineOutputSlot) {
+        refuse();
         return;
     }
     QList<QcItemStack> combined = client.inventory.allSlots();
     combined.append(client.craftingGrid);
+    if (machine) {
+        combined.append(QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()));
+    }
     QcInventory::moveBetween(combined, move.from, move.to, std::max(0, move.count), *m_content);
+    if (machine) {
+        // Only fuel goes into the fuel slot, and nothing goes into the output (not even by a swap).
+        const QcItemStack &fuel = combined[machineSlot + QcMachineManager::fuelSlot];
+        const QcItemStack &output = combined[machineSlot + QcMachineManager::outputSlot];
+        const QcItemStack &previousOutput = machine->stacks[QcMachineManager::outputSlot];
+        const bool fuelOk = fuel.isEmpty() || m_machines.fuelSeconds(fuel.item) > 0.0;
+        const bool outputOk = output.isEmpty() || (output.item == previousOutput.item && output.count <= previousOutput.count);
+        if (!fuelOk || !outputOk) {
+            refuse();
+            return;
+        }
+        for (int slot = 0; slot < QcMachineManager::slotCount; ++slot) {
+            machine->stacks[std::size_t(slot)] = combined[machineSlot + slot];
+        }
+    }
     for (int i = 0; i < QcInventory::slotCount; ++i) {
         client.inventory.setSlot(i, combined[i]);
     }
-    client.craftingGrid = combined.mid(QcInventory::slotCount);
+    client.craftingGrid = combined.mid(QcInventory::slotCount, 9);
     sendInventory(client);
+    if (machine) {
+        // Everyone looking into this machine sees the change.
+        for (const auto &other : m_clients) {
+            if (other->machine == machine->pos) {
+                sendMachine(*other, true);
+            }
+        }
+    }
 }
 
 void QcServer::handleTakeCraftingResult(Client &client)
@@ -199,13 +238,108 @@ void QcServer::closeCrafting(Client &client)
 void QcServer::handleConsume(Client &client)
 {
     const QcItemDefinition *held = heldItem(client);
-    if (client.dead || !held || held->foodHealth <= 0.0 || client.health >= playerMaxHealth) {
+    // Full players do not eat (decision E-039).
+    if (client.dead || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
         return;
     }
-    client.health = std::min(playerMaxHealth, client.health + held->foodHealth);
     client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
-    sendHealth(client);
+    sendFood(client);
     sendInventory(client);
+}
+
+void QcServer::sendFood(Client &client)
+{
+    client.sentFood = client.hunger.food();
+    client.connection->send(QcMsg::PlayerFood{client.hunger.food(), QcHunger::maxFood});
+}
+
+QcMachineManager::Machine *QcServer::openMachineOf(const Client &client)
+{
+    if (!client.machine) {
+        return nullptr;
+    }
+    const std::optional<QcBlockId> block = m_world.blockAt(*client.machine);
+    return block && m_machines.machineOf(*block) ? m_machines.find(*client.machine) : nullptr;
+}
+
+void QcServer::openMachine(Client &client, QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = m_world.blockAt(pos);
+    const QcMachineDefinition *definition = block ? m_machines.machineOf(*block) : nullptr;
+    if (!definition) {
+        return;
+    }
+    if (!m_machines.add(pos)) {
+        client.connection->send(QcMsg::ChatMessage{u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines)});
+        return;
+    }
+    client.machine = pos;
+    client.sentMachine.reset();
+    client.connection->send(QcMsg::OpenMachine{pos, definition->category});
+    sendMachine(client, true);
+}
+
+void QcServer::closeMachine(Client &client, bool notify)
+{
+    if (!client.machine) {
+        return;
+    }
+    client.machine.reset();
+    client.sentMachine.reset();
+    if (notify) {
+        client.connection->send(QcMsg::CloseMachine{});
+    }
+}
+
+void QcServer::sendMachine(Client &client, bool force)
+{
+    const QcMachineManager::Machine *machine = openMachineOf(client);
+    if (!machine) {
+        return;
+    }
+    QcMsg::MachineState state;
+    state.pos = machine->pos;
+    state.stacks = QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
+    state.burn = float(m_machines.burnFraction(*machine));
+    state.progress = float(m_machines.progressFraction(*machine, m_world.blockAt(machine->pos).value_or(qcAirBlockId)));
+    // Bars move in steps of one percent; smaller changes are not worth a message.
+    const auto percent = [](float value) { return qRound(value * 100.0f); };
+    const std::optional<QcMsg::MachineState> &sent = client.sentMachine;
+    if (!force && sent && sent->stacks == state.stacks && percent(sent->burn) == percent(state.burn)
+        && percent(sent->progress) == percent(state.progress)) {
+        return;
+    }
+    client.sentMachine = state;
+    client.connection->send(state);
+}
+
+void QcServer::dropMachineContents(const QcMachineManager::Machine &machine)
+{
+    const QcVec3 centre{machine.pos.x + 0.5, machine.pos.y + 0.5, machine.pos.z + 0.5};
+    for (const QcItemStack &stack : machine.stacks) {
+        if (!stack.isEmpty()) {
+            m_items.spawnScattered(stack, centre, m_nextEntityId++);
+        }
+    }
+}
+
+void QcServer::tickMachines()
+{
+    const QList<QcMachineManager::Machine> removed = m_machines.tick(m_world, QcPhysics::tickDuration);
+    for (const QcMachineManager::Machine &machine : removed) {
+        dropMachineContents(machine);
+    }
+    for (const auto &client : m_clients) {
+        if (client->state != Client::State::Playing || !client->machine) {
+            continue;
+        }
+        // The screen closes when the machine is gone, its chunk unloaded or the player walked away.
+        if (client->dead || !openMachineOf(*client) || !isWithinReach(*client, *client->machine)) {
+            closeMachine(*client, true);
+        } else {
+            sendMachine(*client);
+        }
+    }
 }
 
 void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
@@ -230,6 +364,7 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
     }
     // Drops fall into the world as items (decision E-028).
     breakBlock(pos, QcMining::canHarvest(definition, held));
+    client.hunger.exhaust(QcHunger::mineBlock);
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
         QcItemStack tool = client.inventory.slot(slot);
@@ -244,9 +379,14 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
 void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
 {
     client.swung = true;
-    // Using a crafting table opens its 3 x 3 grid unless the player sneaks to place against it.
-    if (const std::optional<QcBlockId> clickedBlock = m_world.blockAt(message.target);
-        clickedBlock && m_content->block(*clickedBlock).opensCrafting && !client.sneaking && isWithinReach(client, message.target)) {
+    // Using a machine opens its screen, a crafting table its 3 x 3 grid, unless the player sneaks
+    // to place against them.
+    const std::optional<QcBlockId> clickedBlock = m_world.blockAt(message.target);
+    if (clickedBlock && m_machines.machineOf(*clickedBlock) && !client.sneaking && isWithinReach(client, message.target)) {
+        openMachine(client, message.target);
+        return;
+    }
+    if (clickedBlock && m_content->block(*clickedBlock).opensCrafting && !client.sneaking && isWithinReach(client, message.target)) {
         client.craftingSize = 3;
         client.craftingTable = message.target;
         client.connection->send(QcMsg::OpenCrafting{3});
@@ -279,6 +419,11 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         reject();
         return;
     }
+    if (placedDefinition.machine.isMachine() && m_machines.isFull()) {
+        client.connection->send(QcMsg::ChatMessage{u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines)});
+        reject();
+        return;
+    }
     if (m_content->block(*placed).solid) {
         const QcAabb blockBox{{double(target.x), double(target.y), double(target.z)},
                               {target.x + 1.0, target.y + 1.0, target.z + 1.0}};
@@ -293,6 +438,9 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
     setBlockAndBroadcast(target, *placed);
     if (placedDefinition.sapling.isSapling()) {
         m_plants.saplingPlaced(target, *placed);
+    }
+    if (placedDefinition.machine.isMachine()) {
+        m_machines.add(target);
     }
     client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     sendInventory(client);
@@ -510,7 +658,7 @@ void QcServer::handleChat(Client &client, const QString &text)
     if (command == u"help"_s) {
         reply(u"Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
               u"/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
-              u"/setblock <x> <y> <z> <block> (~ for relative coordinates)"_s);
+              u"/setblock <x> <y> <z> <block> (~ for relative coordinates), /feed [food]"_s);
     } else if (command == u"gamerule"_s && words.size() >= 2 && words[1] == u"keepInventory"_s) {
         if (words.size() == 2) {
             reply(u"keepInventory is %1"_s.arg(m_info.keepInventory ? u"true"_s : u"false"_s));
@@ -524,7 +672,7 @@ void QcServer::handleChat(Client &client, const QString &text)
         }
     } else if (!m_config.allowCheats
                && (command == u"give"_s || command == u"time"_s || command == u"summon"_s || command == u"heal"_s
-                   || command == u"kill"_s || command == u"spawnitem"_s || command == u"setblock"_s)) {
+                   || command == u"kill"_s || command == u"spawnitem"_s || command == u"setblock"_s || command == u"feed"_s)) {
         reply(u"Cheats are disabled on this server"_s);
     } else if (command == u"time"_s && words.size() >= 3) {
         bool ok = true;
@@ -601,6 +749,11 @@ void QcServer::handleChat(Client &client, const QString &text)
             reply(u"Usage: /setblock <x> <y> <z> <block> in a loaded chunk"_s);
             return;
         }
+        const bool machine = m_machines.machineOf(*block) != nullptr;
+        if (machine && !m_machines.find(pos) && m_machines.isFull()) {
+            reply(u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines));
+            return;
+        }
         if (*block == qcAirBlockId) {
             breakBlock(pos, false);
         } else {
@@ -608,13 +761,26 @@ void QcServer::handleChat(Client &client, const QString &text)
             if (m_content->block(*block).sapling.isSapling()) {
                 m_plants.saplingPlaced(pos, *block);
             }
+            if (machine) {
+                m_machines.add(pos);
+            }
         }
         reply(u"Set %1 at %2 %3 %4"_s.arg(name).arg(pos.x).arg(pos.y).arg(pos.z));
     } else if (command == u"kill"_s) {
         client.hurtTimer = 0.0;
         damagePlayer(client, client.health, {});
-    } else if (command == u"heal"_s && client.dead) {
+    } else if ((command == u"feed"_s || command == u"heal"_s) && client.dead) {
         reply(u"Respawn first"_s);
+    } else if (command == u"feed"_s) {
+        bool ok = true;
+        const int food = words.size() >= 2 ? words[1].toInt(&ok) : QcHunger::maxFood;
+        if (!ok || food < 0 || food > QcHunger::maxFood) {
+            reply(u"Usage: /feed [0..%1]"_s.arg(QcHunger::maxFood));
+            return;
+        }
+        client.hunger.restore(food, 0.0);
+        sendFood(client);
+        reply(u"Food is now %1"_s.arg(food));
     } else if (command == u"heal"_s) {
         client.health = playerMaxHealth;
         sendHealth(client);
@@ -667,7 +833,8 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
     client.health = std::max(0.0, client.health - amount);
     client.hurtTimer = QcMobManager::hurtInvulnerability;
     client.hurtThisTick = true;
-    client.regenerationTimer = 0.0;
+    client.hunger.hurt();
+    client.hunger.exhaust(QcHunger::damageTaken);
     if (knockback.length() > 0.0) {
         client.motion.velocity = knockback.normalized() * QcMobManager::knockbackSpeed + QcVec3{0.0, 5.0, 0.0};
         client.stateDirty = true;
@@ -720,6 +887,7 @@ void QcServer::handleAttack(Client &client, quint32 entityId)
     }
     client.attackCooldown = playerAttackCooldown;
     client.swung = true;
+    client.hunger.exhaust(QcHunger::attack);
     const QcItemDefinition *held = heldItem(client);
     const double damage = held ? held->attackDamage : 1.0;
     const QcVec3 lootPosition = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
@@ -756,6 +924,7 @@ void QcServer::handleRespawn(Client &client)
     }
     client.dead = false;
     client.health = playerMaxHealth;
+    client.hunger.reset();
     client.motion = {};
     client.motion.position = spawnPosition();
     client.fallPeak = client.motion.position.y;
@@ -773,11 +942,12 @@ void QcServer::tickGameplay()
         }
         client->hurtTimer = std::max(0.0, client->hurtTimer - dt);
         client->attackCooldown = std::max(0.0, client->attackCooldown - dt);
-        if (!client->dead && client->health < playerMaxHealth) {
-            client->regenerationTimer += dt;
-            if (client->regenerationTimer >= regenerationInterval) {
-                client->regenerationTimer = 0.0;
-                client->health = std::min(playerMaxHealth, client->health + 1.0);
+        if (!client->dead) {
+            // Regeneration at high food, starvation at none (decision E-039).
+            const double change = client->hunger.tick(dt, client->health, playerMaxHealth);
+            if (change != 0.0) {
+                client->health = std::clamp(client->health + change, 0.0, playerMaxHealth);
+                client->hurtThisTick = client->hurtThisTick || change < 0.0;
                 sendHealth(*client);
             }
         }

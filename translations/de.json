@@ -67,5 +67,7 @@
         "%n Chunk",
         "%n Chunks"
     ],
-    "Opening a world without a mod it was played with removes that mod's blocks and items from it.": "Wer eine Welt ohne einen Mod öffnet, mit dem sie gespielt wurde, verliert darin dessen Blöcke und Items."
+    "Opening a world without a mod it was played with removes that mod's blocks and items from it.": "Wer eine Welt ohne einen Mod öffnet, mit dem sie gespielt wurde, verliert darin dessen Blöcke und Items.",
+    "Furnace": "Ofen",
+    "Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. E or Esc closes.": "Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. E oder Esc schließt."
 }

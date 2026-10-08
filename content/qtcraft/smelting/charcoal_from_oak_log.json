@@ -1,0 +1,8 @@
+{
+    "name": "charcoal_from_oak_log",
+    "input": "oak_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10
+}

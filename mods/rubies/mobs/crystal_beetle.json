@@ -65,6 +65,10 @@
         {
             "item": "ruby",
             "count": 1
+        },
+        {
+            "item": "ember_shard",
+            "count": 1
         }
     ]
 }

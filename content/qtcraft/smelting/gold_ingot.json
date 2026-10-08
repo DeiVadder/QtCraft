@@ -1,0 +1,8 @@
+{
+    "name": "gold_ingot",
+    "input": "gold_ore",
+    "result": {
+        "item": "gold_ingot"
+    },
+    "seconds": 10
+}

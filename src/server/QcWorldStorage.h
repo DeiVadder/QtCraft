@@ -7,6 +7,7 @@
 #include "QcEntityMotion.h"
 #include "QcInventory.h"
 #include "QcItemEntityManager.h"
+#include "QcMachineManager.h"
 #include "QcPlantManager.h"
 #include "QcResult.h"
 
@@ -47,11 +48,14 @@ struct QcPlayerData
     float pitch = 0.0f;
     QcInventory inventory;
     double health = 20.0;
+    // Players saved before hunger existed come back full.
+    int food = QcItemDefinition::maxFood;
+    double exhaustion = 0.0;
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
 // (regions/r.<x>.<z>.qcr, 32 x 32 chunks each), players (players/<name>.qcp) and dropped items with
-// growing saplings (entities.qce). Only modified chunks
+// growing saplings (entities.qce) and machines (machines.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
@@ -79,6 +83,11 @@ public:
     // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
     QcResult<QcWorldEntities> readEntities(QStringList &warnings) const;
     QcStatus writeEntities(const QcWorldEntities &entities) const;
+
+    // Machines with their contents (machines.qce). Empty without error when nothing was saved yet.
+    // Unknown items are dropped with a warning.
+    QcResult<QList<QcMachineManager::Machine>> readMachines(QStringList &warnings) const;
+    QcStatus writeMachines(const QList<QcMachineManager::Machine> &machines) const;
 
     static QcChunkPos regionOf(QcChunkPos chunk);
 

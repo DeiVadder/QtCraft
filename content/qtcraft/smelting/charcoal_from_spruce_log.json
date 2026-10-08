@@ -1,0 +1,8 @@
+{
+    "name": "charcoal_from_spruce_log",
+    "input": "spruce_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10
+}

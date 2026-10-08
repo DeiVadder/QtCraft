@@ -38,6 +38,7 @@ private:
     std::unique_ptr<QcLocalServerHost> m_host;
     // Where the crafting table was placed, checked again after reloading the world.
     QJsonObject m_table;
+    QJsonObject m_furnace;
     std::unique_ptr<QcClientSession> m_session;
     std::unique_ptr<QBuffer> m_output;
     std::unique_ptr<QcControlInterface> m_control;
@@ -185,14 +186,17 @@ private slots:
         QVERIFY(!request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool());
         QVERIFY2(lowest < 20.0, "the zombie never hit the player");
 
-        // Eat: the meat heals the wounds the zombie left (regeneration alone is slower).
+        // Eat: a hungry player gets food points back (3 for raw porkchop), a full one refuses.
         hold(u"qtcraft:raw_porkchop"_s);
-        const double before = request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble();
         const int meat = countOf(u"qtcraft:raw_porkchop"_s);
-        QVERIFY2(before < 20.0, "regeneration healed the player before eating");
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/feed 20"_s}});
+        request({{u"cmd"_s, u"use"_s}});
+        QCOMPARE(countOf(u"qtcraft:raw_porkchop"_s), meat);
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/feed 10"_s}});
+        QCOMPARE(request({{u"cmd"_s, u"status"_s}}).value(u"food"_s).toInt(), 10);
         request({{u"cmd"_s, u"use"_s}});
         QCOMPARE(countOf(u"qtcraft:raw_porkchop"_s), meat - 1);
-        QVERIFY(request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble() > before);
+        QCOMPARE(request({{u"cmd"_s, u"status"_s}}).value(u"food"_s).toInt(), 13);
 
         // Throw the sword away and fetch it again once it may be picked up.
         hold(u"qtcraft:stone_sword"_s);
@@ -387,6 +391,42 @@ private slots:
         QVERIFY(held.value(u"damage"_s).toInt() >= 1);
     }
 
+    void smeltIronInAFurnace()
+    {
+        // A furnace just above the head, with room cleared between it and the eyes.
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const int x = int(std::floor(feet.x));
+        const int y = int(std::floor(feet.y));
+        const int z = int(std::floor(feet.z));
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~2 ~ air"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~3 ~ furnace"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give iron_ore 2"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give coal 1"_s}});
+        m_furnace = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + 3}, {u"z"_s, z}};
+        QCOMPARE(request(m_furnace).value(u"block"_s).toString(), u"qtcraft:furnace"_s);
+
+        QVERIFY(!request({{u"cmd"_s, u"fillMachine"_s}, {u"item"_s, u"qtcraft:coal"_s}}).value(u"ok"_s).toBool());
+        const QJsonObject opened = request({{u"cmd"_s, u"openMachine"_s}, {u"x"_s, x}, {u"y"_s, y + 3}, {u"z"_s, z}});
+        QVERIFY2(opened.value(u"open"_s).toBool(), QJsonDocument(opened).toJson(QJsonDocument::Compact).constData());
+        QCOMPARE(opened.value(u"category"_s).toString(), u"smelting"_s);
+        request({{u"cmd"_s, u"fillMachine"_s}, {u"into"_s, u"input"_s}, {u"item"_s, u"qtcraft:iron_ore"_s}});
+        const QJsonObject filled = request({{u"cmd"_s, u"fillMachine"_s}, {u"into"_s, u"fuel"_s}, {u"item"_s, u"qtcraft:coal"_s}});
+        QCOMPARE(filled.value(u"input"_s).toObject().value(u"count"_s).toInt(), 2);
+        // The only coal is burning already.
+        QVERIFY(filled.value(u"fuel"_s).isNull());
+        QVERIFY(filled.value(u"burn"_s).toDouble() > 0.9);
+        QCOMPARE(countOf(u"qtcraft:coal"_s), 0);
+        // Iron ore needs 10 s per ingot.
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 205}});
+        const QJsonObject state = request({{u"cmd"_s, u"machine"_s}});
+        QCOMPARE(state.value(u"output"_s).toObject().value(u"item"_s).toString(), u"qtcraft:iron_ingot"_s);
+        QCOMPARE(state.value(u"output"_s).toObject().value(u"count"_s).toInt(), 1);
+        QVERIFY(state.value(u"burn"_s).toDouble() > 0.0);
+        request({{u"cmd"_s, u"takeOutput"_s}});
+        QCOMPARE(countOf(u"qtcraft:iron_ingot"_s), 1);
+        QVERIFY(!request({{u"cmd"_s, u"closeMachine"_s}}).value(u"open"_s).toBool());
+    }
+
     void savedWorldComesBackAfterARestart()
     {
         const QJsonObject before = request({{u"cmd"_s, u"status"_s}});
@@ -408,6 +448,7 @@ private slots:
         QCOMPARE(after.value(u"held"_s).toObject().value(u"damage"_s).toInt(), pickaxeDamage);
         QVERIFY(countOf(u"qtcraft:cobblestone"_s) >= 1);
         QCOMPARE(request(m_table).value(u"block"_s).toString(), u"qtcraft:crafting_table"_s);
+        QCOMPARE(request(m_furnace).value(u"block"_s).toString(), u"qtcraft:furnace"_s);
     }
 };
 

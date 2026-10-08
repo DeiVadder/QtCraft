@@ -226,6 +226,23 @@ private slots:
         QCOMPARE(server.helloAppearance.hair, QcAppearance().hair);
         QCOMPARE(server.appearances.first().hair, u"t:bun"_s);
     }
+
+    void aLateMachineAnswerAfterClosingIsIgnored()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        FakeServer server(std::move(serverEnd));
+        QcClientSession session(std::move(clientEnd), u"Tester"_s);
+        session.start(QcClientSession::TickMode::Manual);
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
+        server.send(QcMsg::OpenMachine{{2, 64, 0}, u"smelting"_s});
+        QTRY_VERIFY_WITH_TIMEOUT(session.machineOpen(), timeoutMs);
+        session.closeMachine();
+        QVERIFY(!session.machineOpen());
+        // The answer to a second click, sent before the server saw the close.
+        server.send(QcMsg::OpenMachine{{2, 64, 0}, u"smelting"_s});
+        QTest::qWait(100);
+        QVERIFY(!session.machineOpen());
+    }
 };
 
 QTEST_GUILESS_MAIN(TestReconciliation)

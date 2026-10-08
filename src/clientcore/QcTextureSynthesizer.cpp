@@ -209,6 +209,24 @@ void paint(QImage &image, const QcTextureSpec &spec)
                 }
                 break;
             }
+            case QcTextureSpec::Pattern::Furnace: {
+                const bool opening = x >= 3 && x <= 12 && y >= 8 && y <= 13;
+                const bool lintel = x >= 2 && x <= 13 && y == 7;
+                if (opening) {
+                    // Glowing embers at the bottom of the opening, grate bars above them.
+                    const bool ember = y == 13 && (hashPixel(spec.seed + 43, x, y) % 2) == 0;
+                    if (ember) {
+                        color = QColor(230, 120, 40);
+                    } else if (y == 10 && x % 2 == 1) {
+                        color = scaled(spec.secondary, 2.5);
+                    } else {
+                        color = varied(spec, spec.secondary, x, y, 7);
+                    }
+                } else if (lintel || y == 15 || y == 0) {
+                    color = scaled(spec.primary, 0.75);
+                }
+                break;
+            }
             case QcTextureSpec::Pattern::Lump: {
                 const double dx = x - 7.5;
                 const double dy = y - 7.5;

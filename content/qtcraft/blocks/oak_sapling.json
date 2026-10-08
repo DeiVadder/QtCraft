@@ -15,5 +15,6 @@
     },
     "textures": {
         "all": "oak_sapling"
-    }
+    },
+    "fuelSeconds": 5
 }

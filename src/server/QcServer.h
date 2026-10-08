@@ -2,6 +2,7 @@
 
 #include "QcContentRegistry.h"
 #include "QcItemEntityManager.h"
+#include "QcMachineManager.h"
 #include "QcMobManager.h"
 #include "QcPlantManager.h"
 #include "QcMessages.h"
@@ -13,6 +14,7 @@
 #include <QSet>
 #include <QRandomGenerator>
 
+#include <atomic>
 #include <memory>
 #include <vector>
 
@@ -52,6 +54,7 @@ public:
     QcMobManager &mobs() { return m_mobs; }
     QcItemEntityManager &items() { return m_items; }
     QcPlantManager &plants() { return m_plants; }
+    QcMachineManager &machines() { return m_machines; }
     bool keepInventory() const { return m_info.keepInventory; }
     void setKeepInventory(bool keep) { m_info.keepInventory = keep; }
     double worldTime() const { return m_info.worldTime; }
@@ -71,16 +74,26 @@ public:
     static constexpr double attackReach = 4.0;
     static constexpr double playerAttackCooldown = 0.4;
     static constexpr double fallDamageThreshold = 3.0;
-    static constexpr double regenerationInterval = 4.0;
     // Crafting needs a crafting table within this distance for 3 x 3 recipes.
     static constexpr double craftingTableReach = 5.0;
     // While mining, the arm swings every this many ticks.
     static constexpr int miningSwingTicks = 6;
-    static constexpr int craftingGridSlot = 36;
+    static constexpr int craftingGridSlot = QcMsg::MoveInventoryItem::craftingGridSlot;
+    static constexpr int machineSlot = QcMsg::MoveInventoryItem::machineInputSlot;
     const QcServerConfig &config() const { return m_config; }
 
     // Runs one simulation tick immediately (used by tests and by the tick timer).
     void tick();
+
+    // Wall time spent in tick(); safe to read and reset from other threads (benchmark).
+    struct TickTimes
+    {
+        double averageMs = 0.0;
+        double worstMs = 0.0;
+        quint64 ticks = 0;
+    };
+    TickTimes tickTimes() const;
+    void resetTickTimes();
 
 signals:
     void clientCountChanged(int count);
@@ -131,6 +144,17 @@ private:
     void handleCraftRecipe(Client &client, const QcMsg::CraftRecipe &request);
     void closeCrafting(Client &client);
     void handleConsume(Client &client);
+    void sendFood(Client &client);
+    // Opens the machine screen of the block at `pos` for the player.
+    void openMachine(Client &client, QcBlockPos pos);
+    // Forgets the open machine; `notify` tells the client (the server closed it).
+    void closeMachine(Client &client, bool notify);
+    // The open machine of the player while it still exists, else null.
+    QcMachineManager::Machine *openMachineOf(const Client &client);
+    // Sends the open machine's state if it changed since the last message (or always with `force`).
+    void sendMachine(Client &client, bool force = false);
+    void dropMachineContents(const QcMachineManager::Machine &machine);
+    void tickMachines();
     // The grid of the current size as a size x size list, and the recipe it makes.
     QList<QcItemStack> craftingView(const Client &client) const;
     std::optional<qsizetype> craftingMatch(const Client &client) const;
@@ -145,12 +169,16 @@ private:
     std::vector<std::unique_ptr<Client>> m_clients;
     QTimer *m_tickTimer = nullptr;
     quint64 m_tickCount = 0;
+    std::atomic<qint64> m_tickNsTotal{0};
+    std::atomic<qint64> m_tickNsWorst{0};
+    std::atomic<quint64> m_ticksTimed{0};
     quint32 m_nextEntityId = 1;
     std::optional<QcWorldStorage> m_storage;
     QcWorldInfo m_info;
     QcMobManager m_mobs;
     QcItemEntityManager m_items;
     QcPlantManager m_plants;
+    QcMachineManager m_machines;
     QRandomGenerator m_random;
     // Entities that died this tick; their removal tells clients to play the death animation.
     QSet<quint32> m_died;

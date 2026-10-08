@@ -5,7 +5,9 @@
 #include "QcConnection.h"
 #include "QcEntityMotion.h"
 #include "QcAppearance.h"
+#include "QcHunger.h"
 #include "QcInventory.h"
+#include "QcMessages.h"
 #include "QcServer.h"
 
 #include <QHash>
@@ -40,7 +42,9 @@ struct QcServer::Client
     bool dead = false;
     // Highest point of the current fall, for fall damage.
     double fallPeak = 0.0;
-    double regenerationTimer = 0.0;
+    QcHunger hunger;
+    // Food points last sent to the client; -1 before the first message.
+    int sentFood = -1;
     double hurtTimer = 0.0;
     double attackCooldown = 0.0;
     // Entities this client has been told about.
@@ -65,4 +69,7 @@ struct QcServer::Client
     // Set when damage was taken; reported to other clients in this tick's sync.
     bool hurtThisTick = false;
     QcAppearance appearance;
+    // The machine whose screen the player has open, and what the client was last told about it.
+    std::optional<QcBlockPos> machine;
+    std::optional<QcMsg::MachineState> sentMachine;
 };

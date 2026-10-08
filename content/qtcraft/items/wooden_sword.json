@@ -3,5 +3,6 @@
     "texture": "wooden_sword",
     "maxStack": 1,
     "durability": 59,
-    "attackDamage": 4.0
+    "attackDamage": 4.0,
+    "fuelSeconds": 10
 }

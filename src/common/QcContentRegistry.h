@@ -8,6 +8,7 @@
 #include "QcPackReference.h"
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
+#include "QcSmeltingRecipe.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
 
@@ -73,6 +74,12 @@ public:
     const QList<QcRecipeDefinition> &recipes() const { return m_recipes; }
     std::optional<qsizetype> recipeIndex(const QString &name) const;
 
+    // Smelting recipes, replaced by name like crafting recipes.
+    void registerSmeltingRecipe(QcSmeltingRecipe recipe);
+    const QList<QcSmeltingRecipe> &smeltingRecipes() const { return m_smeltingRecipes; }
+    // The first recipe of `category` that takes `inputItem`, or null.
+    const QcSmeltingRecipe *smeltingRecipe(const QString &category, const QString &inputItem) const;
+
     void registerBiome(QcBiomeDefinition definition);
     void registerFeature(QcFeatureDefinition definition);
     void registerOre(QcOreDefinition definition);
@@ -111,6 +118,8 @@ private:
     QHash<QString, qsizetype> m_appearanceIndex;
     QList<QcRecipeDefinition> m_recipes;
     QHash<QString, qsizetype> m_recipeIndex;
+    QList<QcSmeltingRecipe> m_smeltingRecipes;
+    QHash<QString, qsizetype> m_smeltingIndex;
     QList<QcBiomeDefinition> m_biomes;
     QHash<QString, qsizetype> m_biomeIndex;
     QList<QcFeatureDefinition> m_features;

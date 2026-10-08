@@ -1,3 +1,4 @@
+#include "QcCrc32.h"
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
 
@@ -343,6 +344,158 @@ private slots:
         QVERIFY(storage.writeChunks({{chunk->pos(), chunk}}).has_value());
         QStringList warnings;
         QVERIFY(!storage.readChunks(warnings).has_value());
+    }
+
+    void foodRoundTripsAndOldPlayersComeBackFull()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QcPlayerData player;
+        player.motion.position = {0.5, 70.0, 0.5};
+        player.food = 7;
+        player.exhaustion = 2.5;
+        QVERIFY(storage.writePlayer(u"Hungry"_s, player).has_value());
+        QStringList warnings;
+        const auto read = storage.readPlayer(u"Hungry"_s, warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE((*read)->food, 7);
+        QCOMPARE((*read)->exhaustion, 2.5);
+
+        // A version 1 file, written as before hunger existed: the same payload without the food.
+        QByteArray payload;
+        QDataStream stream(&payload, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_6_8);
+        stream << 0.5 << 70.0 << 0.5 << 0.0 << 0.0 << 0.0 << true << 90.0f << 0.0f << 12.0 << qint32(2)
+               << quint32(QcInventory::slotCount);
+        for (int i = 0; i < QcInventory::slotCount; ++i) {
+            stream << (i == 0 ? u"a:stone"_s : QString()) << qint32(i == 0 ? 5 : 0) << qint32(0);
+        }
+        QByteArray file("QCPL");
+        QDataStream header(&file, QIODevice::Append);
+        header.setVersion(QDataStream::Qt_6_8);
+        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
+        file.append(payload);
+        QFile old(dir.filePath(u"players/Old.qcp"_s));
+        QVERIFY(old.open(QIODevice::WriteOnly));
+        old.write(file);
+        old.close();
+        const auto oldRead = storage.readPlayer(u"Old"_s, warnings);
+        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
+        QCOMPARE((*oldRead)->health, 12.0);
+        QCOMPARE((*oldRead)->inventory.slot(0).count, 5);
+        QCOMPARE((*oldRead)->food, 20);
+        QCOMPARE((*oldRead)->exhaustion, 0.0);
+
+        // Food beyond the range is clamped.
+        player.food = 99;
+        QVERIFY(storage.writePlayer(u"Hungry"_s, player).has_value());
+        QCOMPARE((*storage.readPlayer(u"Hungry"_s, warnings))->food, 20);
+    }
+
+    void machinesRoundTripAndUnknownItems()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QStringList warnings;
+        QVERIFY(storage.readMachines(warnings)->isEmpty());
+        QcMachineManager::Machine furnace;
+        furnace.pos = {-12, 64, 7};
+        furnace.stacks = {QcItemStack{*content->itemId(u"a:stone"_s), 9, 0}, QcItemStack{*content->itemId(u"mod:gem"_s), 2, 0},
+                          QcItemStack{}};
+        furnace.burnRemaining = 12.5;
+        furnace.burnSeconds = 80.0;
+        furnace.progress = 3.25;
+        QcMachineManager::Machine empty;
+        empty.pos = {100, 3, -100};
+        QVERIFY(storage.writeMachines({furnace, empty}).has_value());
+
+        const auto withoutMod = registryWith({u"a:stone"_s});
+        const auto read = QcWorldStorage(dir.path(), withoutMod).readMachines(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->size(), 2);
+        const QcMachineManager::Machine &loaded = read->at(0);
+        QCOMPARE(loaded.pos, furnace.pos);
+        QCOMPARE(loaded.stacks[0], (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 9, 0}));
+        QVERIFY(loaded.stacks[1].isEmpty());
+        QCOMPARE(loaded.burnRemaining, 12.5);
+        QCOMPARE(loaded.burnSeconds, 80.0);
+        QCOMPARE(loaded.progress, 3.25);
+        QCOMPARE(read->at(1).pos, empty.pos);
+        QCOMPARE(warnings.size(), 1);
+    }
+
+    void damagedMachineFilesFailWithAMessage_data()
+    {
+        QTest::addColumn<int>("cut");
+        QTest::addColumn<int>("flipAt");
+        QTest::newRow("truncated") << 6 << -1;
+        QTest::newRow("only the header") << -1 << 14;
+        QTest::newRow("bit flip") << 0 << 20;
+    }
+
+    void damagedMachineFilesFailWithAMessage()
+    {
+        QFETCH(int, cut);
+        QFETCH(int, flipAt);
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QcMachineManager::Machine furnace;
+        furnace.pos = {1, 64, 1};
+        furnace.stacks[0] = {*content->itemId(u"a:stone"_s), 3, 0};
+        QVERIFY(storage.writeMachines({furnace}).has_value());
+        const QString path = dir.filePath(u"machines.qce"_s);
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        QByteArray data = file.readAll();
+        if (cut > 0) {
+            data.chop(cut);
+        } else if (cut < 0) {
+            data = data.left(flipAt);
+        } else {
+            data[flipAt] = char(data[flipAt] ^ 0x40);
+        }
+        file.resize(0);
+        file.seek(0);
+        file.write(data);
+        file.close();
+        QStringList warnings;
+        const auto read = storage.readMachines(warnings);
+        QVERIFY(!read.has_value());
+        QVERIFY2(read.error().contains(path), qPrintable(read.error()));
+    }
+
+    void implausibleMachinesAreRejected()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QcMachineManager::Machine machine;
+        machine.pos = {1, 64, 1};
+        QStringList warnings;
+        // Two machines at one position, positions outside the world and broken times are damage.
+        QVERIFY(storage.writeMachines({machine, machine}).has_value());
+        QVERIFY(!storage.readMachines(warnings).has_value());
+        machine.pos = {1, -3, 1};
+        QVERIFY(storage.writeMachines({machine}).has_value());
+        QVERIFY(!storage.readMachines(warnings).has_value());
+        machine.pos = {1, 64, 1};
+        machine.progress = std::numeric_limits<double>::infinity();
+        QVERIFY(storage.writeMachines({machine}).has_value());
+        QVERIFY(!storage.readMachines(warnings).has_value());
+        // Out-of-range values are clamped instead.
+        machine.progress = -5.0;
+        machine.burnSeconds = 10.0;
+        machine.burnRemaining = 50.0;
+        machine.stacks[0] = {*content->itemId(u"a:stone"_s), 500, 0};
+        QVERIFY(storage.writeMachines({machine}).has_value());
+        const auto read = storage.readMachines(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->first().progress, 0.0);
+        QCOMPARE(read->first().burnRemaining, 10.0);
+        QCOMPARE(read->first().stacks[0].count, 64);
     }
 
     void missingPlayerIsNotAnError()

@@ -1,5 +1,6 @@
 #include "QcBaseContent.h"
 #include "QcContentPackLoader.h"
+#include "QcCrafting.h"
 #include "QcTestUtil.h"
 #include "QcTextureAtlas.h"
 
@@ -54,6 +55,39 @@ private slots:
         QVERIFY(!block("qtcraft:glass").opaque);
         QVERIFY(block("qtcraft:bedrock").hardness < 0.0);
         QVERIFY(block("qtcraft:grass_block").texture(QcBlockFace::Up) != block("qtcraft:grass_block").texture(QcBlockFace::North));
+    }
+
+    void smeltingReplacesTheIngotRecipes()
+    {
+        QStringList warnings;
+        const auto content = *QcBaseContent::load(warnings);
+        // Ingots, glass and bricks come from the furnace now, not from the crafting grid (E-037).
+        for (const char *result : {"qtcraft:iron_ingot", "qtcraft:gold_ingot", "qtcraft:glass", "qtcraft:bricks"}) {
+            QVERIFY2(std::ranges::none_of(content->recipes(),
+                                          [result](const QcRecipeDefinition &recipe) { return recipe.resultItem == QLatin1StringView(result); }),
+                     result);
+        }
+        const QList<std::pair<const char *, const char *>> smelting{
+            {"qtcraft:iron_ore", "qtcraft:iron_ingot"}, {"qtcraft:gold_ore", "qtcraft:gold_ingot"},
+            {"qtcraft:sand", "qtcraft:glass"},         {"qtcraft:clay", "qtcraft:bricks"},
+            {"qtcraft:cobblestone", "qtcraft:stone"},  {"qtcraft:oak_log", "qtcraft:charcoal"},
+            {"qtcraft:raw_porkchop", "qtcraft:cooked_porkchop"}};
+        for (const auto &[input, result] : smelting) {
+            const QcSmeltingRecipe *recipe = content->smeltingRecipe(u"smelting"_s, QString::fromLatin1(input));
+            QVERIFY2(recipe && recipe->resultItem == QLatin1StringView(result), input);
+        }
+        const QcBlockDefinition &furnace = content->block(*content->blockId(u"qtcraft:furnace"_s));
+        QCOMPARE(furnace.machine.category, u"smelting"_s);
+        QVERIFY(furnace.texture(QcBlockFace::North) != furnace.texture(QcBlockFace::East));
+        const QcRecipeDefinition &recipe = content->recipes()[*content->recipeIndex(u"qtcraft:furnace"_s)];
+        QCOMPARE(QcCrafting::requirements(recipe), (QList<std::pair<QString, int>>{{u"qtcraft:cobblestone"_s, 8}}));
+        const auto fuel = [&content](const char *name) { return content->item(*content->itemId(QString::fromLatin1(name))).fuelSeconds; };
+        QCOMPARE(fuel("qtcraft:coal"), 80.0);
+        QCOMPARE(fuel("qtcraft:charcoal"), 80.0);
+        QCOMPARE(fuel("qtcraft:oak_planks"), 15.0);
+        QCOMPARE(fuel("qtcraft:cobblestone"), 0.0);
+        QVERIFY(content->item(*content->itemId(u"qtcraft:cooked_porkchop"_s)).food
+                > content->item(*content->itemId(u"qtcraft:raw_porkchop"_s)).food);
     }
 
     void mobsSurviveTheContentSync()

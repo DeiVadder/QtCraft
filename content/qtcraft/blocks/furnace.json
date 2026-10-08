@@ -1,0 +1,17 @@
+{
+    "name": "furnace",
+    "hardness": 3.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "machine": {
+        "category": "smelting",
+        "speed": 1.0
+    },
+    "textures": {
+        "top": "furnace_top",
+        "bottom": "furnace_top",
+        "side": "furnace_side",
+        "north": "furnace_front",
+        "south": "furnace_front"
+    }
+}

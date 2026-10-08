@@ -1,5 +1,6 @@
 #include "QcBaseContent.h"
 #include "QcConnection.h"
+#include "QcHunger.h"
 #include "QcInProcessTransport.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
@@ -52,6 +53,18 @@ public:
             dead = health->dead;
         } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
             openedCrafting = open->size;
+        } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
+            this->food = food->food;
+        } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
+            openMachine = machine->pos;
+            machineCategory = machine->category;
+            machineClosed = false;
+        } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
+            machineStacks = machine->stacks;
+            machineBurn = machine->burn;
+        } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
+            openMachine.reset();
+            machineClosed = true;
         } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
             entities.insert(spawn->id, spawn->mobType);
             if (spawn->mobType == QcMsg::EntitySpawn::itemType) {
@@ -84,6 +97,13 @@ public:
     QStringList chatLines;
     double health = 0.0;
     bool dead = false;
+    int food = -1;
+    std::optional<QcBlockPos> openMachine;
+    QString machineCategory;
+    QList<QcItemStack> machineStacks;
+    float machineBurn = 0.0f;
+    // The server closed the machine screen.
+    bool machineClosed = false;
     QHash<quint32, qint32> entities;
     // Item entities the client was told about, with their latest stack.
     QHash<quint32, QcItemStack> items;
@@ -225,6 +245,29 @@ private:
         }
         return total;
     }
+
+    // Places a furnace two blocks east of the player, standing on the stage.
+    QcBlockPos placeFurnace()
+    {
+        chat(u"/give furnace"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:furnace"))});
+        const QcBlockPos pos = m_feet.offset(2, 0, 0);
+        send(QcMsg::UseItem{pos.offset(0, -1, 0), QcBlockFace::Up});
+        return pos;
+    }
+
+    QcBlockPos openFurnace()
+    {
+        const QcBlockPos pos = placeFurnace();
+        send(QcMsg::UseItem{pos, QcBlockFace::West});
+        return pos;
+    }
+
+    void move(int from, int to, int count = 0) { send(QcMsg::MoveInventoryItem{from, to, count}); }
+
+    static constexpr int input = QcMsg::MoveInventoryItem::machineInputSlot;
+    static constexpr int fuel = QcMsg::MoveInventoryItem::machineFuelSlot;
+    static constexpr int output = QcMsg::MoveInventoryItem::machineOutputSlot;
 
 private slots:
     void cleanup()
@@ -672,18 +715,243 @@ private slots:
         QCOMPARE(m_client->craftingSize, 2);
     }
 
-    void eatingHealsOnlyWhenHurt()
+    void eatingRestoresFoodOnlyWhenHungry()
     {
         join();
+        QCOMPARE(m_client->food, 20);
         chat(u"/give raw_porkchop 2"_s);
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:raw_porkchop"))});
         send(QcMsg::ConsumeItem{});
         QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 2);
-        fallDownShaft();
-        QCOMPARE(m_client->health, 13.0);
+        chat(u"/feed 10"_s);
+        QCOMPARE(m_client->food, 10);
+        // Raw porkchop is worth 3 food points (content/qtcraft/items/raw_porkchop.json).
         send(QcMsg::ConsumeItem{});
         QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 1);
-        QVERIFY(m_client->health > 13.0);
+        QCOMPARE(m_client->food, 13);
+        // Eating does not heal directly any more.
+        QCOMPARE(m_client->health, 20.0);
+        chat(u"/feed 25"_s);
+        QCOMPARE(m_client->food, 13);
+    }
+
+    void foodGatesRegenerationAndStarvationStopsAtAFloor()
+    {
+        join();
+        fallDownShaft();
+        QCOMPARE(m_client->health, 13.0);
+        chat(u"/feed 17"_s);
+        idle(100);
+        QCOMPARE(m_client->health, 13.0);
+        chat(u"/feed 18"_s);
+        idle(int(QcHunger::regenerationInterval * QcPhysics::tickRate) + 1);
+        QCOMPARE(m_client->health, 14.0);
+        // Starving costs one point every 4 s down to one point: 13 points take 52 s.
+        chat(u"/feed 0"_s);
+        idle(int(13 * QcHunger::starvationInterval * QcPhysics::tickRate) + 10);
+        QCOMPARE(m_client->health, 1.0);
+        QVERIFY(!m_client->dead);
+        idle(200);
+        QCOMPARE(m_client->health, 1.0);
+        // Respawning after a death fills the food again.
+        chat(u"/kill"_s);
+        send(QcMsg::Respawn{});
+        QCOMPARE(m_client->food, 20);
+    }
+
+    void jumpingCostsFoodButStandingDoesNot()
+    {
+        join();
+        idle(600);
+        QCOMPARE(m_client->food, 20);
+        // About 100 jumps at 0.05 exhaustion each: at least one and at most two food points.
+        for (int i = 0; i < 1200; ++i) {
+            QcPlayerInput input;
+            input.sequence = ++m_sequence;
+            input.jump = true;
+            m_client->connection.send(QcMsg::PlayerInput{input});
+            pump();
+            ticks(1);
+        }
+        QVERIFY2(m_client->food >= 18 && m_client->food <= 19, qPrintable(QString::number(m_client->food)));
+    }
+
+    void foodSurvivesReconnecting()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        join(config);
+        chat(u"/feed 9"_s);
+        m_client->connection.close();
+        pump();
+        ticks(1);
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        m_client = std::make_unique<RawClient>(std::move(clientEnd));
+        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
+        pump();
+        ticks(2);
+        QCOMPARE(m_client->food, 9);
+    }
+
+    void furnaceSmeltsAndChecksItsSlots()
+    {
+        join();
+        const QcBlockPos pos = placeFurnace();
+        QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(id("qtcraft:furnace")));
+        QVERIFY(m_server->machines().find(pos));
+        // Machine slots mean nothing before a machine is open.
+        chat(u"/give iron_ore 3"_s);
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        QCOMPARE(countOf(item("qtcraft:iron_ore")), 3);
+
+        send(QcMsg::UseItem{pos, QcBlockFace::West});
+        QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
+        QCOMPARE(m_client->machineCategory, u"smelting"_s);
+        QCOMPARE(m_client->machineStacks, QList<QcItemStack>(3));
+        chat(u"/give coal 1"_s);
+        chat(u"/give dirt 2"_s);
+        // Dirt is no fuel, and nothing goes into the output.
+        move(slotOf(item("qtcraft:dirt")), fuel);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 2);
+        move(slotOf(item("qtcraft:iron_ore")), output);
+        QCOMPARE(countOf(item("qtcraft:iron_ore")), 3);
+        QVERIFY(m_client->machineStacks[2].isEmpty());
+
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:coal")), fuel);
+        QCOMPARE(countOf(item("qtcraft:iron_ore")), 0);
+        // Iron ore takes 10 s (content/qtcraft/smelting/iron_ingot.json); one coal burns 80 s.
+        ticks(10 * int(QcPhysics::tickRate) + 5);
+        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:iron_ore"), 2, 0}));
+        QVERIFY(m_client->machineStacks[1].isEmpty());
+        QCOMPARE(m_client->machineStacks[2], (QcItemStack{item("qtcraft:iron_ingot"), 1, 0}));
+        QVERIFY(m_client->machineBurn > 0.8f && m_client->machineBurn < 0.9f);
+
+        // Swapping the output with a stack would put that stack into the output: refused.
+        move(output, slotOf(item("qtcraft:dirt")));
+        QCOMPARE(countOf(item("qtcraft:dirt")), 2);
+        QCOMPARE(m_client->machineStacks[2].item, item("qtcraft:iron_ingot"));
+        // Taking it into an empty slot works.
+        move(output, 20);
+        QCOMPARE(countOf(item("qtcraft:iron_ingot")), 1);
+        QVERIFY(m_client->machineStacks[2].isEmpty());
+
+        // After closing, the machine slots are invalid again.
+        send(QcMsg::CloseMachine{});
+        QVERIFY(!m_server->machines().find(pos)->stacks[0].isEmpty());
+        move(input, 21);
+        QCOMPARE(countOf(item("qtcraft:iron_ore")), 0);
+        move(slotOf(item("qtcraft:dirt")), fuel);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 2);
+    }
+
+    void machineScreensNeedReachAndCloseFromAfar()
+    {
+        join();
+        // Out of reach: nothing opens.
+        chat(u"/setblock ~9 ~ ~ furnace"_s);
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(9, 0, 0)), std::optional<QcBlockId>(id("qtcraft:furnace")));
+        send(QcMsg::UseItem{m_feet.offset(9, 0, 0), QcBlockFace::West});
+        QVERIFY(!m_client->openMachine);
+        // Sneaking places against the furnace instead of opening it.
+        const QcBlockPos pos = placeFurnace();
+        chat(u"/give dirt 1"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:dirt"))});
+        QcPlayerInput sneak;
+        sneak.sequence = ++m_sequence;
+        sneak.sneak = true;
+        send(QcMsg::PlayerInput{sneak});
+        send(QcMsg::UseItem{pos, QcBlockFace::Up});
+        QVERIFY(!m_client->openMachine);
+        QCOMPARE(m_server->world().blockAt(pos.offset(0, 1, 0)), std::optional<QcBlockId>(id("qtcraft:dirt")));
+
+        // Open it, then walk 12 m west along a cleared path: the screen closes.
+        idle(1);
+        send(QcMsg::UseItem{pos, QcBlockFace::West});
+        QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
+        for (int dx = -1; dx >= -14; --dx) {
+            m_server->world().setBlock(m_feet.offset(dx, -1, 0), id("qtcraft:grass_block"));
+            for (int dy = 0; dy <= 2; ++dy) {
+                m_server->world().setBlock(m_feet.offset(dx, dy, 0), qcAirBlockId);
+            }
+        }
+        for (int i = 0; i < 60 && !m_client->machineClosed; ++i) {
+            QcPlayerInput walk;
+            walk.sequence = ++m_sequence;
+            walk.yaw = 270.0f;
+            walk.forward = 1.0f;
+            send(QcMsg::PlayerInput{walk});
+        }
+        QVERIFY(m_client->machineClosed);
+        QVERIFY(m_client->motion.position.x < pos.x - 5.0);
+    }
+
+    void breakingAFurnaceDropsItsContents()
+    {
+        join();
+        const QcBlockPos pos = openFurnace();
+        chat(u"/give iron_ore 3"_s);
+        chat(u"/give coal 2"_s);
+        chat(u"/give wooden_pickaxe"_s);
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:coal")), fuel);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:wooden_pickaxe"))});
+        // Hardness 3.5 x 1.5 s / wooden pickaxe speed 2 = 2.6 s; one coal lights meanwhile.
+        m_client->connection.send(QcMsg::StartMining{pos});
+        pump();
+        ticks(60);
+        m_client->connection.send(QcMsg::FinishMining{pos});
+        pump();
+        ticks(1);
+        QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
+        QVERIFY(!m_server->machines().find(pos));
+        QVERIFY(m_client->machineClosed);
+        QCOMPARE(droppedCount(item("qtcraft:iron_ore")), 3);
+        QCOMPARE(droppedCount(item("qtcraft:coal")), 1);
+        QCOMPARE(droppedCount(item("qtcraft:furnace")), 1);
+    }
+
+    void machinesSurviveARestart()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        config.autosaveSeconds = 0;
+        join(config);
+        const QcBlockPos pos = openFurnace();
+        chat(u"/give iron_ore 3"_s);
+        chat(u"/give coal 2"_s);
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:coal")), fuel);
+        const QcMachineManager::Machine before = *m_server->machines().find(pos);
+        QCOMPARE(before.stacks[1].count, 1);
+        QVERIFY(before.burnRemaining > 0.0);
+        QVERIFY(m_server->stop().has_value());
+        QVERIFY(QFile::exists(dir.filePath(u"machines.qce"_s)));
+        m_client.reset();
+        config.viewDistance = 1;
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        QVERIFY(m_server->openWorld().has_value());
+        const QcMachineManager::Machine *after = m_server->machines().find(pos);
+        QVERIFY(after);
+        QCOMPARE(after->stacks, before.stacks);
+        QCOMPARE(after->burnRemaining, before.burnRemaining);
+        QCOMPARE(after->burnSeconds, 80.0);
+        QCOMPARE(after->progress, before.progress);
+
+        // A damaged machine file stops the world from opening with a message naming it.
+        QVERIFY(m_server->stop().has_value());
+        m_server.reset();
+        QFile file(dir.filePath(u"machines.qce"_s));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.resize(file.size() - 4);
+        file.close();
+        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        const QcStatus opened = m_server->openWorld();
+        QVERIFY(!opened.has_value());
+        QVERIFY2(opened.error().contains(u"machines.qce"_s), qPrintable(opened.error()));
     }
 
     void deathDropsTheInventoryOnlyWithoutKeepInventory()

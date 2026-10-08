@@ -1,6 +1,6 @@
 # QtCraft
 
-A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, creatures, day and night, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
+A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, smelting in furnaces, hunger, creatures, day and night, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
 
 ![Day view at view distance 8](docs/screenshots/08-day-view-distance-8.png)
 
@@ -28,11 +28,12 @@ The main menu lists saved worlds, creates new ones (name, optional seed, whether
 | Mouse | Look around (click into the window to capture the mouse) |
 | W A S D, Space, Shift, Ctrl | Move, jump, sneak, sprint |
 | Left mouse / F | Mine; left click on a creature attacks it |
-| Right mouse / R | Place the held block, eat held food, use a crafting table |
+| Right mouse / R | Place the held block, eat held food when hungry, open a crafting table or furnace (sneak to place against them) |
 | Q, Ctrl+Q | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
 | F5 | Switch the view: first person, third person behind, third person in front |
 | 1–9, mouse wheel | Select a hotbar slot |
 | E | Inventory with 2 × 2 crafting grid and recipe list |
+| Furnace screen | Something to smelt goes on top, fuel below, the result appears on the right; eat when the food bar right of the hearts runs low |
 | T or Enter | Chat and commands (`/help`) |
 | Esc | Pause menu (settings, save, quit to menu) |
 
@@ -68,7 +69,7 @@ scripts/verify.sh
 
 `scripts/verify.sh` builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, runs clang-tidy, clazy and qmllint, and takes smoke screenshots. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
 
-Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT`, `--overlay inventory|pause|settings|character|chat`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `QTCRAFT_SCREENSHOT=file.png`, `QTCRAFT_BENCHMARK=seconds`. The full list is in [docs/Architektur.md](docs/Architektur.md).
+Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT`, `--overlay inventory|pause|settings|character|chat|furnace`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `QTCRAFT_SCREENSHOT=file.png`, `QTCRAFT_BENCHMARK=seconds`. The full list is in [docs/Architektur.md](docs/Architektur.md).
 
 ## Documentation
 

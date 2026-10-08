@@ -49,3 +49,5 @@ target_compile_definitions(test_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_
 qc_add_test(test_settings SOURCES test_settings.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_items SOURCES test_items.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_character SOURCES test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_machines SOURCES test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
+qc_add_test(test_hunger SOURCES test_hunger.cpp LIBRARIES qc_server)

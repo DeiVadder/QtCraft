@@ -38,6 +38,12 @@ ApplicationWindow {
         game: game
     }
 
+    FurnaceScreen {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "furnace"
+        game: game
+    }
+
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === "playing" && (game.overlay === "pause" || game.overlay === "settings" || game.overlay === "character")

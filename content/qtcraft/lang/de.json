@@ -71,5 +71,8 @@
     "appearance.qtcraft.zombie": "Zombie",
     "appearance.qtcraft.short_hair": "Kurze Haare",
     "appearance.qtcraft.long_hair": "Lange Haare",
-    "appearance.qtcraft.cap": "Mütze"
+    "appearance.qtcraft.cap": "Mütze",
+    "block.qtcraft.furnace": "Ofen",
+    "item.qtcraft.charcoal": "Holzkohle",
+    "item.qtcraft.cooked_porkchop": "Gebratenes Schweinefleisch"
 }

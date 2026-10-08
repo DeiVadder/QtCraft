@@ -34,6 +34,8 @@ struct QcTextureSpec
         // Eyes (primary with secondary pupils) and a mouth on a transparent background, for a thin
         // box in front of a head.
         Face,
+        // Machine front: a stone face (primary) with a dark fire opening (secondary) and a grate.
+        Furnace,
     };
 
     Pattern pattern = Pattern::Noise;

@@ -1,0 +1,8 @@
+{
+    "name": "ember_shard",
+    "pattern": "gem",
+    "primary": "#f08a24",
+    "secondary": "#f08a24",
+    "variation": 0.1,
+    "seed": 904
+}

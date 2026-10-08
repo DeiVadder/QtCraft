@@ -21,6 +21,7 @@ qt_add_library(qc_common STATIC
     QcInventory.h QcInventory.cpp
     QcItemDefinition.h
     QcItemStack.h
+    QcMachineDefinition.h
     QcMailbox.h
     QcMessages.h
     QcMining.h QcMining.cpp
@@ -34,6 +35,7 @@ qt_add_library(qc_common STATIC
     QcRaycast.h QcRaycast.cpp
     QcRecipeDefinition.h QcRecipeDefinition.cpp
     QcResult.h
+    QcSmeltingRecipe.h
     QcStreamLimits.h
     QcTextureDefinition.h
     QcTransport.h

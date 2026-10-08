@@ -30,7 +30,7 @@ public:
     // Removes up to `count` items from a slot; returns how many were removed.
     int removeFromSlot(int index, int count);
     int countOf(QcItemId item) const;
-    // Removes `count` items of a type across all slots; fails without changes if there are fewer.
+    // Removes `count` items of a type across all stacks; fails without changes if there are fewer.
     bool removeItems(QcItemId item, int count);
     // Moves the stack in `from` onto `to`: merges equal items up to the stack limit, else swaps.
     void move(int from, int to, const QcContentRegistry &content);

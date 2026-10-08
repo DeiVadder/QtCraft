@@ -1,0 +1,8 @@
+{
+    "name": "stone",
+    "input": "cobblestone",
+    "result": {
+        "item": "stone"
+    },
+    "seconds": 10
+}

@@ -56,6 +56,12 @@ class QcGameController : public QObject
     Q_PROPERTY(double health READ health NOTIFY healthChanged FINAL)
     Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
+    Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
+    Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
+    // The open machine (furnace screen): its name, the share of fuel left and of the item done.
+    Q_PROPERTY(QString machineLabel READ machineLabel NOTIFY machineChanged FINAL)
+    Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
+    Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
@@ -129,7 +135,8 @@ public:
     double miningProgress() const { return m_miningProgress; }
     QString targetLabel() const { return m_targetLabel; }
     QStringList chatLines() const { return m_chatLines; }
-    // In-game screen on top of the world: "" (none), "inventory", "pause" or "chat".
+    // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
+    // "pause" or "chat".
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QVariantList worlds() const { return m_worlds; }
@@ -157,7 +164,7 @@ public:
     Q_INVOKABLE void setModEnabled(const QString &id, bool enabled);
     Q_INVOKABLE void openModsFolder();
     Q_INVOKABLE void selectHotbarSlot(int slot);
-    // Slots as in QcInventoryModel; count 0 moves the whole stack.
+    // Rows of QcInventoryModel; count 0 moves the whole stack.
     Q_INVOKABLE void moveItem(int from, int to, int count = 0);
     Q_INVOKABLE void takeCraftingResult();
     Q_INVOKABLE void craftRecipe(const QString &recipe);
@@ -168,6 +175,11 @@ public:
     double health() const { return m_session ? m_session->health() : 0.0; }
     double maxHealth() const { return m_session ? m_session->maxHealth() : 20.0; }
     bool dead() const { return m_session && m_session->isDead(); }
+    int food() const { return m_session ? m_session->food() : QcItemDefinition::maxFood; }
+    int maxFood() const { return m_session ? m_session->maxFood() : QcItemDefinition::maxFood; }
+    QString machineLabel() const { return m_machineLabel; }
+    double machineBurn() const { return m_session ? m_session->machineBurn() : 0.0; }
+    double machineProgress() const { return m_session ? m_session->machineProgress() : 0.0; }
     QString timeOfDay() const { return m_timeOfDay; }
     Q_INVOKABLE void leaveGame();
     Q_INVOKABLE void captureMouse();
@@ -179,10 +191,14 @@ public:
     void setScreenshotHook(QcScreenshotHook *hook);
     // Test hook: chat lines sent and overlay opened once the world is playable.
     void setStartupScript(QStringList chatLines, QString overlay);
-    // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing, the player sprints and jumps straight
-    // ahead after a short warm-up while frame times are recorded; the result is logged and the
-    // application quits.
-    void setBenchmark(int seconds) { m_benchmarkSeconds = seconds; }
+    // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing and after a short warm-up, frame and
+    // server tick times are recorded while the player sprints and jumps straight ahead (`walk`)
+    // or stands still; the result is logged and the application quits.
+    void setBenchmark(int seconds, bool walk)
+    {
+        m_benchmarkSeconds = seconds;
+        m_benchmarkWalk = walk;
+    }
     QcClientSession *session() const { return m_session; }
 
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -207,6 +223,8 @@ signals:
     // The application installs the translator for `language` ("" = system) and retranslates.
     void languageChangeRequested(const QString &language);
     void healthChanged();
+    void foodChanged();
+    void machineChanged();
     void craftingChanged();
 
 private:
@@ -255,6 +273,7 @@ private:
     int m_commandLineViewDistance = 0;
     int m_benchmarkSeconds = 0;
     bool m_benchmarkRunning = false;
+    bool m_benchmarkWalk = true;
     QElapsedTimer m_benchmarkFrame;
     QcVec3 m_benchmarkCheckpoint;
     QList<qint64> m_benchmarkFrameNs;
@@ -293,6 +312,9 @@ private:
     QVariantList m_craftableRecipes;
     QStringList m_startupChat;
     QString m_startupOverlay;
+    QString m_machineLabel;
+    // Test hook --overlay furnace: the screenshot waits until the machine has opened and filled.
+    bool m_fillMachineOnOpen = false;
     QPointer<QcScreenshotHook> m_screenshotHook;
     bool m_screenshotReleased = false;
 };

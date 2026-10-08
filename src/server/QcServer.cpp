@@ -12,6 +12,7 @@
 #include "QcTransport.h"
 
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QLoggingCategory>
 #include <QSet>
@@ -48,6 +49,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_mobs(m_content, quint64(m_config.seed))
     , m_items(m_content, quint64(m_config.seed))
     , m_plants(m_content, quint64(m_config.seed))
+    , m_machines(m_content)
     , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
 {
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -119,6 +121,16 @@ QcStatus QcServer::openWorld()
     }
     m_items.restore(entities->items, [this] { return m_nextEntityId++; });
     m_plants.restoreSaplings(entities->saplings);
+    QStringList machineWarnings;
+    const QcResult<QList<QcMachineManager::Machine>> machines = m_storage->readMachines(machineWarnings);
+    for (const QString &warning : std::as_const(machineWarnings)) {
+        qCWarning(lcServer) << warning;
+    }
+    m_openWarnings.append(machineWarnings);
+    if (!machines) {
+        return qcError(machines.error());
+    }
+    m_machines.restore(*machines);
     qCInfo(lcServer) << "Opened world" << m_info.name << "with" << chunks->size() << "stored chunks and"
                      << m_items.items().size() << "dropped items";
     return {};
@@ -146,6 +158,8 @@ QcStatus QcServer::savePlayer(const Client &client)
         qCWarning(lcServer) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
     }
     player.health = client.health;
+    player.food = client.hunger.food();
+    player.exhaustion = client.hunger.exhaustion();
     const QcStatus saved = m_storage->writePlayer(client.name, player);
     if (!saved) {
         qCWarning(lcServer) << saved.error();
@@ -169,6 +183,9 @@ QcStatus QcServer::save()
         return written;
     }
     if (const QcStatus written = saveEntities(); !written) {
+        return written;
+    }
+    if (const QcStatus written = m_storage ? m_storage->writeMachines(m_machines.machines()) : QcStatus(); !written) {
         return written;
     }
     for (const auto &client : m_clients) {
@@ -274,6 +291,8 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         closeCrafting(client);
     } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
         handleConsume(client);
+    } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
+        closeMachine(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
         handleDropItem(client, *drop);
     } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
@@ -323,6 +342,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
             client.pitch = (*stored)->pitch;
             client.inventory = (*stored)->inventory;
             client.health = std::clamp((*stored)->health, 0.0, playerMaxHealth);
+            client.hunger.restore((*stored)->food, (*stored)->exhaustion);
             // Who left while dead comes back to the death screen and respawns from there.
             client.dead = client.health <= 0.0;
             client.state = Client::State::Playing;
@@ -334,6 +354,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
             client.connection->send(QcMsg::ContentSync{m_content});
             sendInventory(client);
             sendHealth(client);
+            sendFood(client);
             sendTime(client);
             sendOpenWarnings(client);
             m_world.loadChunk(chunkOf(client.motion.position));
@@ -352,6 +373,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     client.connection->send(QcMsg::ContentSync{m_content});
     sendInventory(client);
     sendHealth(client);
+    sendFood(client);
     sendTime(client);
     sendOpenWarnings(client);
     streamChunks(client);
@@ -402,13 +424,16 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.yaw = std::fmod(input.yaw, 360.0f);
     const bool wasOnGround = client.motion.onGround;
     const bool wasInWater = client.motion.inWater;
-    const double previousY = client.motion.position.y;
+    const QcVec3 previous = client.motion.position;
     QcPhysics::stepPlayer(client.motion, input, m_world, QcPhysics::tickDuration);
-    updateHealth(client, wasOnGround, wasInWater, previousY);
+    updateHealth(client, wasOnGround, wasInWater, previous.y);
     client.yaw = input.yaw;
     client.pitch = input.pitch;
     client.sneaking = input.sneak;
     client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
+    const bool jumped = input.jump && wasOnGround && !client.motion.onGround && client.motion.velocity.y > 0.0;
+    const double distance = std::hypot(client.motion.position.x - previous.x, client.motion.position.z - previous.z);
+    client.hunger.exhaust(QcHunger::movementExhaustion(distance, client.sprinting, client.motion.inWater, jumped));
     client.lastInputSequence = input.sequence;
     client.stateDirty = true;
 }
@@ -460,6 +485,8 @@ void QcServer::streamChunks(Client &client)
 
 void QcServer::tick()
 {
+    QElapsedTimer timer;
+    timer.start();
     ++m_tickCount;
     m_info.worldTime += QcPhysics::tickDuration;
     removeClosedClients();
@@ -475,6 +502,7 @@ void QcServer::tick()
     m_world.collectGeneratedChunks();
     tickGameplay();
     tickItemsAndPlants();
+    tickMachines();
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing) {
             continue;
@@ -484,6 +512,9 @@ void QcServer::tick()
         syncEntities(*client);
         if (m_tickCount % quint64(QcPhysics::tickRate) == 0) {
             sendTime(*client);
+        }
+        if (client->hunger.food() != client->sentFood) {
+            sendFood(*client);
         }
         if (client->stateDirty) {
             client->connection->send(QcMsg::PlayerState{client->lastInputSequence, client->motion});
@@ -514,6 +545,29 @@ void QcServer::tick()
             m_world.unloadChunk(pos);
         }
     }
+    const qint64 ns = timer.nsecsElapsed();
+    m_tickNsTotal.fetch_add(ns, std::memory_order_relaxed);
+    m_ticksTimed.fetch_add(1, std::memory_order_relaxed);
+    qint64 worst = m_tickNsWorst.load(std::memory_order_relaxed);
+    while (ns > worst && !m_tickNsWorst.compare_exchange_weak(worst, ns, std::memory_order_relaxed)) {
+    }
+}
+
+QcServer::TickTimes QcServer::tickTimes() const
+{
+    const quint64 ticks = m_ticksTimed.load(std::memory_order_relaxed);
+    if (ticks == 0) {
+        return {};
+    }
+    return {double(m_tickNsTotal.load(std::memory_order_relaxed)) / double(ticks) / 1e6,
+            double(m_tickNsWorst.load(std::memory_order_relaxed)) / 1e6, ticks};
+}
+
+void QcServer::resetTickTimes()
+{
+    m_tickNsTotal.store(0, std::memory_order_relaxed);
+    m_tickNsWorst.store(0, std::memory_order_relaxed);
+    m_ticksTimed.store(0, std::memory_order_relaxed);
 }
 
 void QcServer::removeClosedClients()

@@ -16,5 +16,6 @@
     },
     "textures": {
         "all": "spruce_sapling"
-    }
+    },
+    "fuelSeconds": 5
 }

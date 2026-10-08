@@ -57,6 +57,23 @@ void QcLocalServerHost::acceptPendingClients(QcServer *server)
     }
 }
 
+double QcLocalServerHost::tickAverageMs() const
+{
+    return m_server ? m_server->tickTimes().averageMs : 0.0;
+}
+
+double QcLocalServerHost::tickWorstMs() const
+{
+    return m_server ? m_server->tickTimes().worstMs : 0.0;
+}
+
+void QcLocalServerHost::resetTickTimes()
+{
+    if (m_server) {
+        m_server->resetTickTimes();
+    }
+}
+
 QcStatus QcLocalServerHost::save()
 {
     if (!m_server) {

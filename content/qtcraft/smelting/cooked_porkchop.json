@@ -1,0 +1,8 @@
+{
+    "name": "cooked_porkchop",
+    "input": "raw_porkchop",
+    "result": {
+        "item": "cooked_porkchop"
+    },
+    "seconds": 10
+}

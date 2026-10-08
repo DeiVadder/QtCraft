@@ -56,6 +56,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `blocks/` | block | Every visible, non-liquid block automatically gets an item that places it. |
 | `items/` | item | Tools, weapons, food. |
 | `recipes/` | recipe | Shaped (`pattern`, `key`) or shapeless (`ingredients`), up to 3 × 3. |
+| `smelting/` | smelting recipe | One input item becomes a result in a machine of the recipe's `category`. |
 | `mobs/` | creature | Stats, spawn rules, box model or skeleton with outfit, drops. |
 | `models/` | skeleton | Bones with roles, pivots and slotted boxes. |
 | `appearance/` | outfit or hair style | Textures and tints per slot; hair boxes. |
@@ -84,6 +85,29 @@ Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-s
 
 `plantOn` lists the blocks it may stand on (empty: any solid block), `plantChance` is the chance that a dropped sapling item plants itself when it despawns. Leaves of tree features decay once no trunk of a tree feature is within four blocks; give them a drop with a chance (e.g. the sapling, 0.08) to let forests regrow. The procedural texture pattern `sapling` draws a small plant.
 
+Furnaces and other machines come from data too. A block with a `machine` object opens a screen with an input, a fuel and an output slot; `smelting/*.json` says what a machine of that category makes, and `fuelSeconds` on items or blocks says how long they burn (an item created for a block inherits the block's value):
+
+```json
+{ "name": "kiln", "hardness": 3, "tool": "pickaxe", "toolLevel": 1,
+  "machine": { "category": "firing", "speed": 2.0 },
+  "textures": { "all": "kiln_side", "north": "kiln_front" } }
+```
+
+```json
+{ "name": "fired_clay", "category": "firing", "input": "qtcraft:clay",
+  "result": { "item": "fired_clay", "count": 1 }, "seconds": 8 }
+```
+
+| Field | Meaning |
+|-------|---------|
+| `machine.category` | Recipe category the machine works on (default `smelting`, the base furnace). Plain names without namespace (lower-case letters, digits, `_`, `-`, `.`, at most 64 characters), so a mod can add recipes to the base furnace by using `smelting`. |
+| `machine.speed` | 0.01–100 (default 1): seconds of recipe work per second; fuel burns at the same rate. A block cannot be a crafting table and a machine. |
+| `smelting`: `input`, `result` (`item`, `count` 1–64), `seconds` (0.05–3600, default 10), `category` | Per category and input the first recipe in load order counts; a later one is reported as a warning. To change a base recipe, reuse its name. |
+| `fuelSeconds` (items and blocks) | 0–100000, default 0 (no fuel). Base values: coal and charcoal 80, wood 15, wooden tools 10, sticks and saplings 5. |
+| `food` (items) | Food points restored when eaten, whole points up to 20 (larger values fill the bar). |
+
+A machine lights one fuel item only when its input has a recipe and the result fits into the output; machines work only while their chunk is loaded, and their contents fall out when the block is broken. The server limits a world to 4096 machines.
+
 Characters come from data as well: `models/*.json` defines skeletons (bones with a role, a pivot and boxes with slot names), `appearance/*.json` outfits (a texture and an optional tint per slot) and hair styles (extra boxes on the head). A creature can use `"skeleton": "qtcraft:humanoid", "outfit": "mymod:robe"` instead of `model` boxes and is then animated like players (walking, attacking, hit, death; `"armsForward": true` for zombie-like arms). New outfits and hair styles appear in the character screen of players who have the mod; `"playable": false` keeps a creature outfit out of that list, and the server refuses it for players. Tinted textures should be light (near white); the player's colour is multiplied in.
 
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
@@ -103,6 +127,7 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 | Blocks | `ruby_ore` (needs an iron pickaxe, drops a ruby), `ruby_block` |
 | Items | `ruby`, `ruby_sword`, `ruby_pickaxe` |
 | Recipes | ruby block from 9 rubies (crafting table), 9 rubies from a block, sword and pickaxe (with `qtcraft:stick`) |
+| Smelting and fuel | `ruby_from_gravel`: gravel becomes a ruby in the base furnace (30 s); `ember_shard` (dropped by the beetle) burns 120 s |
 | World generation | ruby ore veins between y 4 and 28 |
 | Mob | `crystal_beetle`: hostile, spawns on cave floors, drops a ruby |
 | Textures | procedural (ore, gem, tools, beetle) |
@@ -112,8 +137,8 @@ Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory,
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks, items, recipes, mobs, biomes, features, ores, terrain settings, textures and translations; depend on other mods.
+Mods **can**: add and replace blocks, items, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures and translations; depend on other mods.
 
-Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
+Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 
 Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, at most 64 `plantOn` entries per sapling, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.

@@ -1,0 +1,8 @@
+{
+    "name": "furnace_side",
+    "pattern": "bricks",
+    "primary": "#858585",
+    "secondary": "#5e5e5e",
+    "variation": 0.1,
+    "seed": 401
+}

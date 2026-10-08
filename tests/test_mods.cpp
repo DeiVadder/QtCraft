@@ -2,9 +2,11 @@
 #include "QcConnection.h"
 #include "QcCrafting.h"
 #include "QcInProcessTransport.h"
+#include "QcMachineManager.h"
 #include "QcModLoader.h"
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
+#include "QcTestWorld.h"
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
 
@@ -501,6 +503,87 @@ private slots:
         recipe = QcCrafting::match(content, grid, 3);
         QVERIFY(recipe);
         QCOMPARE(content.recipes()[*recipe].resultItem, u"rubies:ruby_sword"_s);
+
+        // A smelting recipe and a fuel from the mod work in the base game's furnace.
+        const QcSmeltingRecipe *sifting = content.smeltingRecipe(u"smelting"_s, u"qtcraft:gravel"_s);
+        QVERIFY(sifting);
+        QCOMPARE(sifting->resultItem, u"rubies:ruby"_s);
+        QCOMPARE(sifting->seconds, 30.0);
+        const QcItemId ember = *content.itemId(u"rubies:ember_shard"_s);
+        QCOMPARE(content.item(ember).fuelSeconds, 120.0);
+        auto shared = std::make_shared<const QcContentRegistry>(content);
+        QcMachineManager machines(shared);
+        QcTestWorld world(content);
+        const QcBlockPos pos{0, 64, 0};
+        world.set(pos, *content.blockId(u"qtcraft:furnace"_s));
+        QVERIFY(machines.add(pos));
+        machines.find(pos)->stacks = {QcItemStack{*content.itemId(u"qtcraft:gravel"_s), 5, 0}, QcItemStack{ember, 1, 0}, QcItemStack{}};
+        for (int i = 0; i < 30 * 20 + 1; ++i) {
+            machines.tick(world, 0.05);
+        }
+        QCOMPARE(machines.find(pos)->stacks[2], (QcItemStack{ruby, 1, 0}));
+        QVERIFY(machines.find(pos)->stacks[1].isEmpty());
+        QCOMPARE(machines.find(pos)->burnSeconds, 120.0);
+    }
+
+    void modsCanAddTheirOwnMachines()
+    {
+        QTemporaryDir dir;
+        const QString mill = dir.filePath(u"mill"_s);
+        writeJson(mill + u"/pack.json"_s, {{u"id"_s, u"mill"_s}, {u"version"_s, u"1.0"_s}});
+        writeJson(mill + u"/blocks/millstone.json"_s,
+                  {{u"name"_s, u"millstone"_s},
+                   {u"machine"_s, QJsonObject{{u"category"_s, u"milling"_s}, {u"speed"_s, 4.0}}},
+                   {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:stone"_s}}}});
+        writeJson(mill + u"/items/flour.json"_s, {{u"name"_s, u"flour"_s}, {u"texture"_s, u"qtcraft:sand"_s}});
+        writeJson(mill + u"/smelting/flour.json"_s,
+                  {{u"name"_s, u"flour"_s}, {u"category"_s, u"milling"_s}, {u"input"_s, u"qtcraft:gravel"_s},
+                   {u"result"_s, QJsonObject{{u"item"_s, u"flour"_s}, {u"count"_s, 2}}}, {u"seconds"_s, 2.0}});
+        // A block that burns: its item inherits the fuel time.
+        writeJson(mill + u"/blocks/dry_bush.json"_s,
+                  {{u"name"_s, u"dry_bush"_s}, {u"fuelSeconds"_s, 1.0}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:sand"_s}}}});
+        writeJson(mill + u"/smelting/broken.json"_s, {{u"name"_s, u"broken"_s}, {u"input"_s, u"qtcraft:sand"_s}});
+        // Iron ore already smelts in the base game; a second recipe under another name is never used.
+        writeJson(mill + u"/smelting/iron_flour.json"_s,
+                  {{u"name"_s, u"iron_flour"_s}, {u"input"_s, u"qtcraft:iron_ore"_s},
+                   {u"result"_s, QJsonObject{{u"item"_s, u"flour"_s}}}});
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded));
+        QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"broken.json"_s); }));
+        QVERIFY(std::ranges::any_of(warnings, [](const QString &w) {
+            return w.contains(u"mill:iron_flour is never used"_s);
+        }));
+        const std::shared_ptr<const QcContentRegistry> content = loaded->content;
+        QCOMPARE(content->smeltingRecipe(u"smelting"_s, u"qtcraft:iron_ore"_s)->resultItem, u"qtcraft:iron_ingot"_s);
+        const QcBlockId millstone = *content->blockId(u"mill:millstone"_s);
+        QCOMPARE(content->block(millstone).machine.category, u"milling"_s);
+        // The base furnace does not mill, the millstone does not smelt.
+        QVERIFY(!content->smeltingRecipe(u"smelting"_s, u"qtcraft:gravel"_s));
+        QVERIFY(content->smeltingRecipe(u"milling"_s, u"qtcraft:gravel"_s));
+        QVERIFY(!content->smeltingRecipe(u"milling"_s, u"qtcraft:iron_ore"_s));
+
+        QcMachineManager machines(content);
+        QcTestWorld world(*content);
+        const QcBlockPos pos{3, 64, 3};
+        world.set(pos, millstone);
+        QVERIFY(machines.add(pos));
+        const QcItemId bush = *content->itemId(u"mill:dry_bush"_s);
+        QCOMPARE(content->item(bush).fuelSeconds, 1.0);
+        machines.find(pos)->stacks = {QcItemStack{*content->itemId(u"qtcraft:gravel"_s), 3, 0}, QcItemStack{bush, 1, 0}, QcItemStack{}};
+        // Speed 4: a bush (1 s of fuel) burns out after 5 ticks, half way through the 2 s recipe; the
+        // progress then falls back. With coal, one round of 2 s takes 10 ticks.
+        for (int i = 0; i < 20; ++i) {
+            machines.tick(world, 0.05);
+        }
+        QVERIFY(machines.find(pos)->stacks[2].isEmpty());
+        QCOMPARE(machines.find(pos)->stacks[0].count, 3);
+        machines.find(pos)->stacks[1] = {*content->itemId(u"qtcraft:coal"_s), 1, 0};
+        for (int i = 0; i < 11; ++i) {
+            machines.tick(world, 0.05);
+        }
+        QCOMPARE(machines.find(pos)->stacks[2], (QcItemStack{*content->itemId(u"mill:flour"_s), 2, 0}));
+        QCOMPARE(machines.find(pos)->stacks[0].count, 2);
     }
 
     void modsOverrideEarlierPacksAndBrokenEntriesAreSkipped()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockFace.h"
+#include "QcMachineDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -76,6 +77,10 @@ struct QcBlockDefinition
     QList<QcItemDrop> drops;
     // Using the block opens the 3 x 3 crafting grid instead of placing against it.
     bool opensCrafting = false;
+    // Using the block opens its machine screen (furnace).
+    QcMachineDefinition machine;
+    // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.
+    double fuelSeconds = 0.0;
     QcSaplingDefinition sapling;
     // Texture names indexed by QcBlockFace.
     std::array<QString, qcBlockFaceCount> faceTextures;

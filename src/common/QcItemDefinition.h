@@ -11,6 +11,8 @@ struct QcItemDefinition
 {
     // Largest allowed maxStack.
     static constexpr int maxStackLimit = 999;
+    // Food points of a full player.
+    static constexpr int maxFood = 20;
 
     QString name;
     QString translationKey;
@@ -28,6 +30,8 @@ struct QcItemDefinition
     int durability = 0;
     // Damage dealt when hitting with this item, in health points.
     double attackDamage = 1.0;
-    // Health restored when eaten; 0 for items that are not food.
-    double foodHealth = 0.0;
+    // Food points restored when eaten (a full player has 20); 0 for items that are not food.
+    int food = 0;
+    // Seconds the item burns as fuel in a machine; 0 for items that are no fuel.
+    double fuelSeconds = 0.0;
 };

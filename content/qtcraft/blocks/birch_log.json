@@ -6,5 +6,6 @@
         "top": "birch_log_top",
         "bottom": "birch_log_top",
         "side": "birch_log"
-    }
+    },
+    "fuelSeconds": 15
 }

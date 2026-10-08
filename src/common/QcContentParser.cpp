@@ -90,6 +90,22 @@ struct FieldReader
     }
 };
 
+constexpr double maxFuelSeconds = 100000.0;
+constexpr double minMachineSpeed = 0.01;
+constexpr double maxMachineSpeed = 100.0;
+constexpr qsizetype maxCategoryLength = 64;
+
+// Categories are plain names without namespace, so that every pack can add recipes to "smelting".
+bool isValidCategory(const QString &category)
+{
+    return category.size() <= maxCategoryLength && !category.contains(u'/') && QcContentNames::isValidPart(category);
+}
+
+QString invalidCategoryMessage()
+{
+    return u"'category' must be a name of lower-case letters, digits, '_', '-' and '.' (at most 64 characters)"_s;
+}
+
 std::optional<QcRenderLayer> renderLayerFromName(const QString &name)
 {
     if (name == u"opaque"_s) {
@@ -155,6 +171,25 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     block.tool = reader.string(u"tool"_s);
     block.toolLevel = reader.integer(u"toolLevel"_s, 0, 0, 100);
     block.opensCrafting = reader.boolean(u"crafting"_s, false);
+    block.fuelSeconds = reader.number(u"fuelSeconds"_s, 0.0, 0.0, maxFuelSeconds);
+    const QJsonValue machine = json.value(u"machine"_s);
+    if (!machine.isUndefined() && !machine.isObject()) {
+        reader.fail(u"'machine' must be an object"_s);
+    } else if (machine.isObject()) {
+        const QJsonObject machineJson = machine.toObject();
+        FieldReader machineReader{machineJson, reader.context + u" machine"_s, {}};
+        block.machine.category = machineReader.string(u"category"_s, QString::fromLatin1(QcSmeltingRecipe::defaultCategory));
+        block.machine.speed = machineReader.number(u"speed"_s, 1.0, minMachineSpeed, maxMachineSpeed);
+        if (machineReader.ok() && !isValidCategory(block.machine.category)) {
+            machineReader.fail(invalidCategoryMessage());
+        }
+        if (machineReader.ok() && block.opensCrafting) {
+            machineReader.fail(u"a block cannot be a crafting table and a machine"_s);
+        }
+        if (!machineReader.ok()) {
+            reader.fail(machineReader.error);
+        }
+    }
 
     const QJsonValue drops = json.value(u"drops"_s);
     if (drops.isUndefined()) {
@@ -674,7 +709,9 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.toolSpeed = reader.number(u"toolSpeed"_s, 1.0, 0.1, 100.0);
     item.durability = reader.integer(u"durability"_s, 0, 0, 100000);
     item.attackDamage = reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);
-    item.foodHealth = reader.number(u"food"_s, 0.0, 0.0, 100.0);
+    // Whole food points; larger values (older content) fill the bar completely.
+    item.food = int(std::lround(std::min(reader.number(u"food"_s, 0.0, 0.0, 100.0), double(QcItemDefinition::maxFood))));
+    item.fuelSeconds = reader.number(u"fuelSeconds"_s, 0.0, 0.0, maxFuelSeconds);
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;
     }
@@ -682,6 +719,38 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
         return qcError(reader.error);
     }
     return item;
+}
+
+QcResult<QcSmeltingRecipe> parseSmeltingRecipe(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"smelting recipe"_s, {}};
+    QcSmeltingRecipe recipe;
+    recipe.name = reader.name(u"name"_s, packNamespace);
+    if (recipe.name.isEmpty()) {
+        return qcError(reader.ok() ? u"smelting recipe: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"smelting recipe '%1'"_s.arg(recipe.name);
+    recipe.category = reader.string(u"category"_s, recipe.category);
+    if (reader.ok() && !isValidCategory(recipe.category)) {
+        reader.fail(invalidCategoryMessage());
+    }
+    recipe.inputItem = reader.name(u"input"_s, packNamespace);
+    if (reader.ok() && recipe.inputItem.isEmpty()) {
+        reader.fail(u"'input' is required"_s);
+    }
+    recipe.seconds = reader.number(u"seconds"_s, recipe.seconds, QcSmeltingRecipe::minSeconds, QcSmeltingRecipe::maxSeconds);
+    const QJsonValue result = json.value(u"result"_s);
+    const QJsonObject resultJson = result.toObject();
+    FieldReader resultReader{resultJson, reader.context + u" result"_s, {}};
+    recipe.resultItem = resultReader.name(u"item"_s, packNamespace);
+    recipe.resultCount = resultReader.integer(u"count"_s, 1, 1, 64);
+    if (!result.isObject() || !resultReader.ok() || recipe.resultItem.isEmpty()) {
+        reader.fail(resultReader.ok() ? u"'result' needs an 'item'"_s : resultReader.error);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return recipe;
 }
 
 QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace)

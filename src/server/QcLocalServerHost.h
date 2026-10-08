@@ -32,6 +32,10 @@ public:
     std::unique_ptr<QcTransport> connectClient();
     // Saves the world now (blocks until done).
     QcStatus save();
+    // Server tick times so far (benchmark); zero when no world is open.
+    double tickAverageMs() const;
+    double tickWorstMs() const;
+    void resetTickTimes();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
     // calls report success.
     QcStatus shutdown();

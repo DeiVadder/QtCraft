@@ -21,16 +21,21 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr QDataStream::Version streamVersion = QDataStream::Qt_6_8;
-constexpr quint16 containerVersion = 1;
+// Format versions per file type; readers accept every version up to the current one.
+constexpr quint16 baseVersion = 1;
+// Version 2 adds food and exhaustion.
+constexpr quint16 playerVersion = 2;
+constexpr quint16 machinesVersion = 1;
 constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
 constexpr QByteArrayView regionMagic("QCRG");
 constexpr QByteArrayView playerMagic("QCPL");
 constexpr QByteArrayView entitiesMagic("QCEN");
+constexpr QByteArrayView machinesMagic("QCMA");
 // Far more than the item manager keeps, so a valid file is never cut short.
 constexpr quint32 maxStoredEntities = 65536;
 
 // [magic][quint16 version][quint32 payload size][quint32 crc32][payload]
-QcStatus writeContainer(const QString &path, QByteArrayView magic, const QByteArray &payload)
+QcStatus writeContainer(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion)
 {
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
@@ -39,7 +44,7 @@ QcStatus writeContainer(const QString &path, QByteArrayView magic, const QByteAr
     QDataStream stream(&file);
     stream.setVersion(streamVersion);
     stream.writeRawData(magic.data(), int(magic.size()));
-    stream << containerVersion << quint32(payload.size()) << qcCrc32(payload);
+    stream << version << quint32(payload.size()) << qcCrc32(payload);
     stream.writeRawData(payload.constData(), int(payload.size()));
     if (stream.status() != QDataStream::Ok || !file.commit()) {
         return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));
@@ -47,7 +52,9 @@ QcStatus writeContainer(const QString &path, QByteArrayView magic, const QByteAr
     return {};
 }
 
-QcResult<QByteArray> readContainer(const QString &path, QByteArrayView magic)
+// `version` receives the file's format version, at most `newestVersion`.
+QcResult<QByteArray> readContainer(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion,
+                                   quint16 *version = nullptr)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -64,12 +71,15 @@ QcResult<QByteArray> readContainer(const QString &path, QByteArrayView magic)
     QDataStream stream(data);
     stream.setVersion(streamVersion);
     stream.skipRawData(4);
-    quint16 version = 0;
+    quint16 fileVersion = 0;
     quint32 size = 0;
     quint32 crc = 0;
-    stream >> version >> size >> crc;
-    if (version != containerVersion) {
-        return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(version));
+    stream >> fileVersion >> size >> crc;
+    if (fileVersion < baseVersion || fileVersion > newestVersion) {
+        return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(fileVersion));
+    }
+    if (version) {
+        *version = fileVersion;
     }
     if (qsizetype(size) != data.size() - headerSize) {
         return qcError(u"%1 is truncated or damaged"_s.arg(path));
@@ -314,7 +324,8 @@ QcStatus QcWorldStorage::writePlayer(const QString &playerName, const QcPlayerDa
     for (int i = 0; i < QcInventory::slotCount; ++i) {
         writeStack(stream, player.inventory.slot(i), *m_content);
     }
-    return writeContainer(playerPath(playerName), playerMagic, payload);
+    stream << qint32(player.food) << player.exhaustion;
+    return writeContainer(playerPath(playerName), playerMagic, payload, playerVersion);
 }
 
 QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &playerName, QStringList &warnings) const
@@ -323,7 +334,8 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
     if (!QFile::exists(path)) {
         return std::optional<QcPlayerData>();
     }
-    const QcResult<QByteArray> payload = readContainer(path, playerMagic);
+    quint16 version = 0;
+    const QcResult<QByteArray> payload = readContainer(path, playerMagic, playerVersion, &version);
     if (!payload) {
         return qcError(payload.error());
     }
@@ -356,6 +368,11 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
                                           std::clamp(damage, 0, std::max(0, definition.durability - 1))});
     }
     player.inventory.setSelectedHotbarSlot(selected);
+    if (version >= 2) {
+        qint32 food = 0;
+        stream >> food >> player.exhaustion;
+        player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
+    }
     const auto finite = [](const QcVec3 &v) { return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z); };
     constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
     constexpr double verticalMargin = 64.0;
@@ -363,10 +380,11 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
                          && m.position.y >= -verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
     const bool directionOk = std::isfinite(player.yaw) && std::isfinite(player.pitch) && std::abs(player.pitch) <= 90.0f;
     if (stream.status() != QDataStream::Ok || !stream.atEnd() || !inWorld || !finite(m.velocity) || !directionOk
-        || !std::isfinite(player.health)) {
+        || !std::isfinite(player.health) || !std::isfinite(player.exhaustion)) {
         return qcError(u"%1 is damaged"_s.arg(path));
     }
     player.health = std::clamp(player.health, 0.0, 1000.0);
+    player.exhaustion = std::max(0.0, player.exhaustion);
     player.yaw = std::fmod(player.yaw, 360.0f);
     return std::optional<QcPlayerData>(player);
 }
@@ -469,4 +487,88 @@ QcResult<QcWorldEntities> QcWorldStorage::readEntities(QStringList &warnings) co
         return qcError(u"%1 is damaged"_s.arg(path));
     }
     return entities;
+}
+
+QcStatus QcWorldStorage::writeMachines(const QList<QcMachineManager::Machine> &machines) const
+{
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+    QByteArray payload;
+    QDataStream stream(&payload, QIODevice::WriteOnly);
+    stream.setVersion(streamVersion);
+    stream << quint32(machines.size());
+    for (const QcMachineManager::Machine &machine : machines) {
+        stream << qint32(machine.pos.x) << qint32(machine.pos.y) << qint32(machine.pos.z);
+        for (const QcItemStack &stack : machine.stacks) {
+            writeStack(stream, stack, *m_content);
+        }
+        stream << machine.burnRemaining << machine.burnSeconds << machine.progress;
+    }
+    return writeContainer(QDir(m_directory).filePath(u"machines.qce"_s), machinesMagic, payload, machinesVersion);
+}
+
+QcResult<QList<QcMachineManager::Machine>> QcWorldStorage::readMachines(QStringList &warnings) const
+{
+    const QString path = QDir(m_directory).filePath(u"machines.qce"_s);
+    if (!QFile::exists(path)) {
+        return QList<QcMachineManager::Machine>();
+    }
+    const QcResult<QByteArray> payload = readContainer(path, machinesMagic, machinesVersion);
+    if (!payload) {
+        return qcError(payload.error());
+    }
+    QDataStream stream(*payload);
+    stream.setVersion(streamVersion);
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcMachineManager::maxMachines, count)) {
+        return qcError(u"%1 is damaged (machine count)"_s.arg(path));
+    }
+    QList<QcMachineManager::Machine> machines;
+    QSet<QcBlockPos> positions;
+    QSet<QString> unknown;
+    for (quint32 i = 0; i < count; ++i) {
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        stream >> x >> y >> z;
+        QcMachineManager::Machine machine;
+        machine.pos = {x, y, z};
+        for (QcItemStack &stack : machine.stacks) {
+            QString name;
+            qint32 itemCount = 0;
+            qint32 damage = 0;
+            stream >> name >> itemCount >> damage;
+            if (name.isEmpty() || itemCount <= 0) {
+                continue;
+            }
+            const std::optional<QcItemId> item = m_content->itemId(name);
+            if (!item) {
+                if (!unknown.contains(name)) {
+                    unknown.insert(name);
+                    warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
+                }
+                continue;
+            }
+            const QcItemDefinition &definition = m_content->item(*item);
+            stack = {*item, std::clamp(itemCount, 1, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+        }
+        stream >> machine.burnRemaining >> machine.burnSeconds >> machine.progress;
+        const bool timesOk = std::isfinite(machine.burnRemaining) && std::isfinite(machine.burnSeconds)
+                             && std::isfinite(machine.progress);
+        if (stream.status() != QDataStream::Ok || !timesOk || !machine.pos.isInsideWorldHeight()
+            || std::abs(x) > QcWorld::maxHorizontalBlock || std::abs(z) > QcWorld::maxHorizontalBlock || positions.contains(machine.pos)) {
+            return qcError(u"%1 is damaged (machine %2)"_s.arg(path).arg(i));
+        }
+        constexpr double maxSeconds = 100000.0;
+        machine.burnSeconds = std::clamp(machine.burnSeconds, 0.0, maxSeconds);
+        machine.burnRemaining = std::clamp(machine.burnRemaining, 0.0, machine.burnSeconds);
+        machine.progress = std::clamp(machine.progress, 0.0, maxSeconds);
+        positions.insert(machine.pos);
+        machines.append(machine);
+    }
+    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
+        return qcError(u"%1 is damaged"_s.arg(path));
+    }
+    return machines;
 }

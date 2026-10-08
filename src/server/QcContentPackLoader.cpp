@@ -154,7 +154,8 @@ qint64 QcContentPackLoader::measure(const QString &directory)
 {
     const QDir root(directory);
     QStringList files;
-    for (const char *folder : {"textures", "blocks", "items", "recipes", "mobs", "models", "appearance", "biomes", "features", "ores", "lang"}) {
+    for (const char *folder :
+         {"textures", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
@@ -233,6 +234,8 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                     });
     loadDefinitions(root.filePath(u"recipes"_s), info->id, warnings, QcContentParser::parseRecipe,
                     [&registry](QcRecipeDefinition recipe) { registry.registerRecipe(std::move(recipe)); });
+    loadDefinitions(root.filePath(u"smelting"_s), info->id, warnings, QcContentParser::parseSmeltingRecipe,
+                    [&registry](QcSmeltingRecipe recipe) { registry.registerSmeltingRecipe(std::move(recipe)); });
     loadDefinitions(root.filePath(u"mobs"_s), info->id, warnings, QcContentParser::parseMob,
                     [&registry](QcMobDefinition mob) { registry.registerMob(std::move(mob)); });
     loadDefinitions(root.filePath(u"models"_s), info->id, warnings, QcContentParser::parseModel,

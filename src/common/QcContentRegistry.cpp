@@ -13,11 +13,17 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+bool plausibleFuel(double seconds)
+{
+    return std::isfinite(seconds) && seconds >= 0.0 && seconds <= 100000.0;
+}
+
 void writeBlock(QDataStream &stream, const QcBlockDefinition &block)
 {
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel) << block.opensCrafting << quint8(block.shape);
+           << qint32(block.toolLevel) << block.opensCrafting << quint8(block.shape) << block.machine.category
+           << block.machine.speed << block.fuelSeconds;
     stream << quint32(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
         stream << drop.item << qint32(drop.count) << drop.chance;
@@ -40,9 +46,13 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     qint32 toolLevel = 0;
     quint8 shape = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
-        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> shape;
+        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> shape
+        >> block.machine.category >> block.machine.speed >> block.fuelSeconds;
+    // Machine speed and fuel time drive server-side timers; they must stay within the parser's ranges.
+    const bool machineOk = block.machine.category.size() <= 64 && std::isfinite(block.machine.speed)
+                           && block.machine.speed > 0.0 && block.machine.speed <= 100.0;
     if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
-        || shape > quint8(QcBlockShape::Cross)) {
+        || shape > quint8(QcBlockShape::Cross) || !machineOk || !plausibleFuel(block.fuelSeconds)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
     }
@@ -187,6 +197,7 @@ void QcContentRegistry::createBlockItems()
         item.translationKey = block.translationKey;
         item.texture = block.texture(QcBlockFace::Up);
         item.placesBlock = block.name;
+        item.fuelSeconds = block.fuelSeconds;
         // Block names are already validated, so registering the item cannot fail.
         [[maybe_unused]] const QcResult<QcItemId> id = registerItem(std::move(item));
         Q_ASSERT(id.has_value());
@@ -294,6 +305,19 @@ std::optional<qsizetype> QcContentRegistry::recipeIndex(const QString &name) con
     return *it;
 }
 
+void QcContentRegistry::registerSmeltingRecipe(QcSmeltingRecipe recipe)
+{
+    registerByName(m_smeltingRecipes, m_smeltingIndex, std::move(recipe));
+}
+
+const QcSmeltingRecipe *QcContentRegistry::smeltingRecipe(const QString &category, const QString &inputItem) const
+{
+    const auto it = std::ranges::find_if(m_smeltingRecipes, [&](const QcSmeltingRecipe &recipe) {
+        return recipe.inputItem == inputItem && recipe.category == category;
+    });
+    return it == m_smeltingRecipes.end() ? nullptr : &*it;
+}
+
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, m_biomeIndex, std::move(definition));
@@ -353,7 +377,8 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
     stream << quint32(m_items.size());
     for (const QcItemDefinition &item : m_items) {
         stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
-               << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage << item.foodHealth;
+               << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage << qint32(item.food)
+               << item.fuelSeconds;
     }
     stream << quint32(m_mobs.size());
     for (const QcMobDefinition &mob : m_mobs) {
@@ -412,6 +437,11 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         }
         writeBoxes(stream, appearance.boxes);
     }
+    stream << quint32(m_smeltingRecipes.size());
+    for (const QcSmeltingRecipe &recipe : m_smeltingRecipes) {
+        stream << recipe.name << recipe.category << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
+               << recipe.seconds;
+    }
 }
 
 QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
@@ -445,12 +475,15 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
         qint32 maxStack = 0;
         qint32 toolLevel = 0;
         qint32 durability = 0;
+        qint32 food = 0;
         stream >> item.name >> item.translationKey >> item.texture >> maxStack >> item.placesBlock >> item.tool >> toolLevel
-            >> item.toolSpeed >> durability >> item.attackDamage >> item.foodHealth;
+            >> item.toolSpeed >> durability >> item.attackDamage >> food >> item.fuelSeconds;
         item.maxStack = maxStack;
         item.toolLevel = toolLevel;
         item.durability = durability;
-        if (stream.status() != QDataStream::Ok || !registry.registerItem(std::move(item))) {
+        item.food = food;
+        if (stream.status() != QDataStream::Ok || food < 0 || food > QcItemDefinition::maxFood || !plausibleFuel(item.fuelSeconds)
+            || !registry.registerItem(std::move(item))) {
             return qcError(u"Corrupt content: item %1"_s.arg(i));
         }
     }
@@ -638,6 +671,21 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             return qcError(u"Corrupt content: appearance %1"_s.arg(i));
         }
         registry.registerAppearance(std::move(appearance));
+    }
+    quint32 smeltingCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, smeltingCount)) {
+        return qcError(u"Corrupt content: smelting recipes"_s);
+    }
+    for (quint32 i = 0; i < smeltingCount; ++i) {
+        QcSmeltingRecipe recipe;
+        qint32 resultCount = 0;
+        stream >> recipe.name >> recipe.category >> recipe.inputItem >> recipe.resultItem >> resultCount >> recipe.seconds;
+        recipe.resultCount = resultCount;
+        if (stream.status() != QDataStream::Ok || resultCount < 1 || resultCount > 64 || !std::isfinite(recipe.seconds)
+            || recipe.seconds < QcSmeltingRecipe::minSeconds || recipe.seconds > QcSmeltingRecipe::maxSeconds) {
+            return qcError(u"Corrupt content: smelting recipe %1"_s.arg(i));
+        }
+        registry.registerSmeltingRecipe(std::move(recipe));
     }
     if (stream.status() != QDataStream::Ok) {
         return qcError(u"Corrupt content: truncated"_s);

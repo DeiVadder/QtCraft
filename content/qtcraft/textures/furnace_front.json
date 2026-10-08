@@ -1,0 +1,8 @@
+{
+    "name": "furnace_front",
+    "pattern": "furnace",
+    "primary": "#858585",
+    "secondary": "#1e1a18",
+    "variation": 0.1,
+    "seed": 403
+}

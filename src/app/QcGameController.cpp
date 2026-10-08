@@ -36,9 +36,31 @@
 #include <algorithm>
 #include <cmath>
 
+#if defined(Q_OS_UNIX)
+#include <sys/resource.h>
+#endif
+
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// Highest resident memory of the process so far; 0 where the platform does not report it.
+double peakMemoryMegabytes()
+{
+#if defined(Q_OS_UNIX)
+    rusage usage{};
+    if (getrusage(RUSAGE_SELF, &usage) != 0) {
+        return 0.0;
+    }
+#if defined(Q_OS_DARWIN)
+    return double(usage.ru_maxrss) / (1024.0 * 1024.0); // bytes
+#else
+    return double(usage.ru_maxrss) / 1024.0; // kilobytes
+#endif
+#else
+    return 0.0;
+#endif
+}
 
 Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
@@ -395,8 +417,10 @@ void QcGameController::selectHotbarSlot(int slot)
 
 void QcGameController::moveItem(int from, int to, int count)
 {
-    if (m_session) {
-        m_session->moveInventoryItem(from, to, count);
+    const int fromSlot = QcInventoryModel::slotOfRow(from);
+    const int toSlot = QcInventoryModel::slotOfRow(to);
+    if (m_session && fromSlot >= 0 && toSlot >= 0) {
+        m_session->moveInventoryItem(fromSlot, toSlot, count);
     }
 }
 
@@ -416,7 +440,8 @@ void QcGameController::craftRecipe(const QString &recipe)
 
 void QcGameController::updateInventory()
 {
-    m_inventory->setInventory(m_session->inventory(), m_session->craftingGrid(), m_session->craftingResult());
+    m_inventory->setInventory(m_session->inventory(), m_session->craftingGrid(), m_session->craftingResult(),
+                              m_session->machineOpen() ? m_session->machineSlots() : QList<QcItemStack>());
     // Recipes the inventory can make right now, for the recipe list next to the grid.
     m_craftableRecipes.clear();
     const auto content = m_session->content();
@@ -469,9 +494,13 @@ void QcGameController::setOverlay(const QString &overlay)
     m_keysDown.clear();
     if (m_session) {
         m_session->setMining(false);
-        // Leaving the inventory hands back the grid contents (and closes a crafting table).
+        // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
+        // the furnace screen closes the machine.
         if (m_overlay != u"inventory"_s) {
             m_session->closeCrafting();
+        }
+        if (m_overlay != u"furnace"_s) {
+            m_session->closeMachine();
         }
     }
     if (!overlay.isEmpty()) {
@@ -547,6 +576,39 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     connect(m_session, &QcClientSession::ticked, this, [this] { m_sinceTick.restart(); });
     connect(m_session, &QcClientSession::inventoryChanged, this, &QcGameController::updateInventory);
     connect(m_session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
+    connect(m_session, &QcClientSession::foodChanged, this, &QcGameController::foodChanged);
+    connect(m_session, &QcClientSession::machineOpened, this, [this] {
+        const auto content = m_session->content();
+        const std::optional<QcBlockPos> pos = m_session->machinePos();
+        const std::optional<QcBlockId> block = pos && m_session->world() ? m_session->world()->blockAt(*pos) : std::nullopt;
+        m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_language) : QString();
+        setOverlay(u"furnace"_s);
+        updateInventory();
+        emit machineChanged();
+        if (m_fillMachineOnOpen) {
+            // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
+            m_fillMachineOnOpen = false;
+            m_session->moveInventoryItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
+            m_session->moveInventoryItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
+            // A few seconds of burning show the flame and the arrow in the screenshot.
+            QTimer::singleShot(2500, this, [this] {
+                if (m_screenshotHook) {
+                    m_screenshotHook->release();
+                }
+            });
+        }
+    });
+    connect(m_session, &QcClientSession::machineChanged, this, [this] {
+        updateInventory();
+        emit machineChanged();
+    });
+    connect(m_session, &QcClientSession::machineClosed, this, [this] {
+        if (m_overlay == u"furnace"_s) {
+            setOverlay({});
+        }
+        updateInventory();
+        emit machineChanged();
+    });
     connect(m_session, &QcClientSession::healthChanged, this, [this] {
         if (m_session->isDead()) {
             setOverlay({});
@@ -572,7 +634,29 @@ void QcGameController::startWorld(const QString &directory, const QString &world
             for (const QString &line : std::as_const(m_startupChat)) {
                 m_session->sendChat(line);
             }
-            if (!m_startupOverlay.isEmpty()) {
+            if (m_startupOverlay == u"furnace"_s) {
+                // Uses the block in view once the startup commands have placed it.
+                m_fillMachineOnOpen = true;
+                if (m_screenshotHook) {
+                    m_screenshotHook->hold();
+                }
+                QTimer::singleShot(1000, this, [this] {
+                    if (m_session) {
+                        m_session->useItem();
+                    }
+                });
+                // Without a machine in view the screen never opens; take the screenshot anyway.
+                QTimer::singleShot(6000, this, [this] {
+                    if (!m_fillMachineOnOpen) {
+                        return;
+                    }
+                    m_fillMachineOnOpen = false;
+                    qCWarning(lcGame) << "--overlay furnace: no machine in view opened";
+                    if (m_screenshotHook) {
+                        m_screenshotHook->release();
+                    }
+                });
+            } else if (!m_startupOverlay.isEmpty()) {
                 setOverlay(m_startupOverlay);
             }
             if (m_benchmarkSeconds > 0) {
@@ -1110,9 +1194,18 @@ void QcGameController::startBenchmark()
     if (!m_session) {
         return;
     }
+    m_benchmarkFrameNs.clear();
+    if (m_server) {
+        m_server->resetTickTimes();
+    }
+    if (!m_benchmarkWalk) {
+        m_benchmarkFrame.start();
+        m_benchmarkRunning = true;
+        QTimer::singleShot(m_benchmarkSeconds * 1000, this, &QcGameController::finishBenchmark);
+        return;
+    }
     m_inputEnabled = true;
     m_keysDown = {Qt::Key_W, Qt::Key_Control, Qt::Key_Space};
-    m_benchmarkFrameNs.clear();
     m_benchmarkFrameNs.reserve(qsizetype(m_benchmarkSeconds) * 240);
     m_benchmarkFrame.start();
     m_benchmarkRunning = true;
@@ -1156,6 +1249,17 @@ void QcGameController::finishBenchmark()
     const double p99Ms = double(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
     const double worstMs = double(sorted.constLast()) / 1e6;
     const QcVec3 position = m_session ? m_session->playerMotion().position : QcVec3{};
+    const double tickMs = m_server ? m_server->tickAverageMs() : 0.0;
+    const double tickWorstMs = m_server ? m_server->tickWorstMs() : 0.0;
+    const double averageMs = double(total) / double(sorted.size()) / 1e6;
+    const qsizetype entities = m_session ? m_session->entities().size() : 0;
+    qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6"_s
+                                    .arg(averageMs, 0, 'f', 3)
+                                    .arg(p99Ms, 0, 'f', 3)
+                                    .arg(tickMs, 0, 'f', 3)
+                                    .arg(tickWorstMs, 0, 'f', 3)
+                                    .arg(peakMemoryMegabytes(), 0, 'f', 1)
+                                    .arg(entities);
     const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
                            u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())
                                .arg(m_benchmarkSeconds)

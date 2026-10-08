@@ -6,5 +6,6 @@
     "attackDamage": 2.5,
     "tool": "pickaxe",
     "toolLevel": 1,
-    "toolSpeed": 2.0
+    "toolSpeed": 2.0,
+    "fuelSeconds": 10
 }

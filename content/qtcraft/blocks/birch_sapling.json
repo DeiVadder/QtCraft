@@ -15,5 +15,6 @@
     },
     "textures": {
         "all": "birch_sapling"
-    }
+    },
+    "fuelSeconds": 5
 }

@@ -42,6 +42,19 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
             }
         }
     }
+    for (const QcSmeltingRecipe &recipe : content.smeltingRecipes()) {
+        for (const QString &name : {recipe.inputItem, recipe.resultItem}) {
+            if (!item(name)) {
+                warnings.append(u"smelting recipe %1: unknown item '%2'"_s.arg(recipe.name, name));
+            }
+        }
+        // Only the first recipe per category and input counts; a later one is never used.
+        const QcSmeltingRecipe *used = content.smeltingRecipe(recipe.category, recipe.inputItem);
+        if (used && used->name != recipe.name) {
+            warnings.append(u"smelting recipe %1 is never used: %2 already handles '%3' in category %4"_s.arg(
+                recipe.name, used->name, recipe.inputItem, recipe.category));
+        }
+    }
     for (const QcMobDefinition &mob : content.mobs()) {
         for (const QcItemDrop &drop : mob.drops) {
             if (!item(drop.item)) {
@@ -133,7 +146,8 @@ QString countProblem(const QcContentRegistry &content)
 {
     const auto tooMany = [](qsizetype count) { return std::cmp_greater(count, QcStreamLimits::maxDefinitions); };
     if (tooMany(content.blockCount()) || tooMany(content.itemCount()) || tooMany(content.mobs().size())
-        || tooMany(content.recipes().size()) || tooMany(content.textures().size()) || tooMany(content.languages().size())
+        || tooMany(content.recipes().size()) || tooMany(content.smeltingRecipes().size()) || tooMany(content.textures().size())
+        || tooMany(content.languages().size())
         || tooMany(content.models().size()) || tooMany(content.appearances().size())
         || content.packs().size() > 1024) {
         return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);

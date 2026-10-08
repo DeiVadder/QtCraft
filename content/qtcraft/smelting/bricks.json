@@ -1,0 +1,8 @@
+{
+    "name": "bricks",
+    "input": "clay",
+    "result": {
+        "item": "bricks"
+    },
+    "seconds": 10
+}

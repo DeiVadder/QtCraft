@@ -1,0 +1,8 @@
+{
+    "name": "charcoal_from_birch_log",
+    "input": "birch_log",
+    "result": {
+        "item": "charcoal"
+    },
+    "seconds": 10
+}

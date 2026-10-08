@@ -511,6 +511,132 @@ private slots:
         QVERIFY(!QcContentParser::parseItem(json(R"({"name":"x","maxStack":0})"), u"b"_s).has_value());
     }
 
+    void parsesMachinesFuelAndFood()
+    {
+        const auto furnace = QcContentParser::parseBlock(
+            json(R"({"name":"kiln","machine":{"category":"firing","speed":2.5},"fuelSeconds":0,"textures":{"all":"k"}})"), u"b"_s);
+        QVERIFY2(furnace.has_value(), qcErrorText(furnace).constData());
+        QVERIFY(furnace->machine.isMachine());
+        QCOMPARE(furnace->machine.category, u"firing"_s);
+        QCOMPARE(furnace->machine.speed, 2.5);
+        // Without a category a machine smelts; without "machine" a block is none.
+        const auto plain = QcContentParser::parseBlock(json(R"({"name":"f","machine":{},"textures":{"all":"k"}})"), u"b"_s);
+        QCOMPARE(plain->machine.category, u"smelting"_s);
+        QCOMPARE(plain->machine.speed, 1.0);
+        const auto log = QcContentParser::parseBlock(json(R"({"name":"log","fuelSeconds":15,"textures":{"all":"l"}})"), u"b"_s);
+        QVERIFY(!log->machine.isMachine());
+        QCOMPARE(log->fuelSeconds, 15.0);
+
+        const auto coal = QcContentParser::parseItem(json(R"({"name":"coal","fuelSeconds":80})"), u"b"_s);
+        QCOMPARE(coal->fuelSeconds, 80.0);
+        QCOMPARE(coal->food, 0);
+        const auto meat = QcContentParser::parseItem(json(R"({"name":"meat","food":8})"), u"b"_s);
+        QCOMPARE(meat->food, 8);
+        // Food is counted in whole points up to a full bar.
+        QCOMPARE(QcContentParser::parseItem(json(R"({"name":"stew","food":2.6})"), u"b"_s)->food, 3);
+        QCOMPARE(QcContentParser::parseItem(json(R"({"name":"feast","food":60})"), u"b"_s)->food, 20);
+    }
+
+    void parsesSmeltingRecipes()
+    {
+        const auto recipe = QcContentParser::parseSmeltingRecipe(
+            json(R"({"name":"ingot","input":"ore","result":{"item":"other:ingot","count":2},"seconds":4.5})"), u"b"_s);
+        QVERIFY2(recipe.has_value(), qcErrorText(recipe).constData());
+        QCOMPARE(recipe->name, u"b:ingot"_s);
+        QCOMPARE(recipe->category, u"smelting"_s);
+        QCOMPARE(recipe->inputItem, u"b:ore"_s);
+        QCOMPARE(recipe->resultItem, u"other:ingot"_s);
+        QCOMPARE(recipe->resultCount, 2);
+        QCOMPARE(recipe->seconds, 4.5);
+        const auto defaults = QcContentParser::parseSmeltingRecipe(
+            json(R"({"name":"glass","category":"firing","input":"sand","result":{"item":"glass"}})"), u"b"_s);
+        QCOMPARE(defaults->category, u"firing"_s);
+        QCOMPARE(defaults->resultCount, 1);
+        QCOMPARE(defaults->seconds, 10.0);
+    }
+
+    void parserRejectsBadMachineData_data()
+    {
+        QTest::addColumn<QByteArray>("document");
+        QTest::addColumn<bool>("isBlock");
+        QTest::newRow("machine not an object") << QByteArray(R"({"name":"x","machine":true,"textures":{"all":"x"}})") << true;
+        QTest::newRow("machine speed zero") << QByteArray(R"({"name":"x","machine":{"speed":0},"textures":{"all":"x"}})") << true;
+        QTest::newRow("category with namespace") << QByteArray(R"({"name":"x","machine":{"category":"a:b"},"textures":{"all":"x"}})")
+                                                 << true;
+        QTest::newRow("machine and crafting") << QByteArray(R"({"name":"x","crafting":true,"machine":{},"textures":{"all":"x"}})")
+                                              << true;
+        QTest::newRow("negative fuel") << QByteArray(R"({"name":"x","fuelSeconds":-1,"textures":{"all":"x"}})") << true;
+        QTest::newRow("no input") << QByteArray(R"({"name":"x","result":{"item":"y"}})") << false;
+        QTest::newRow("no result") << QByteArray(R"({"name":"x","input":"y"})") << false;
+        QTest::newRow("result not an object") << QByteArray(R"({"name":"x","input":"y","result":"z"})") << false;
+        QTest::newRow("zero seconds") << QByteArray(R"({"name":"x","input":"y","result":{"item":"z"},"seconds":0})") << false;
+        QTest::newRow("count above a stack") << QByteArray(R"({"name":"x","input":"y","result":{"item":"z","count":65}})") << false;
+        QTest::newRow("bad category") << QByteArray(R"({"name":"x","category":"Smelting","input":"y","result":{"item":"z"}})")
+                                      << false;
+    }
+
+    void parserRejectsBadMachineData()
+    {
+        QFETCH(QByteArray, document);
+        QFETCH(bool, isBlock);
+        const QJsonObject object = QJsonDocument::fromJson(document).object();
+        QVERIFY(!object.isEmpty());
+        const bool parsed = isBlock ? QcContentParser::parseBlock(object, u"b"_s).has_value()
+                                    : QcContentParser::parseSmeltingRecipe(object, u"b"_s).has_value();
+        QVERIFY(!parsed);
+    }
+
+    void machinesFuelAndSmeltingSurviveSerialization()
+    {
+        QcContentRegistry registry;
+        QcBlockDefinition furnace = block(u"a:furnace"_s);
+        furnace.machine = {u"smelting"_s, 1.5};
+        QcBlockDefinition log = block(u"a:log"_s);
+        log.fuelSeconds = 15.0;
+        QVERIFY(registry.registerBlock(furnace).has_value());
+        QVERIFY(registry.registerBlock(log).has_value());
+        QcItemDefinition meat;
+        meat.name = u"a:meat"_s;
+        meat.food = 8;
+        meat.fuelSeconds = 2.5;
+        QVERIFY(registry.registerItem(meat).has_value());
+        registry.createBlockItems();
+        // Block items inherit the block's fuel time.
+        QCOMPARE(registry.item(*registry.itemId(u"a:log"_s)).fuelSeconds, 15.0);
+        registry.registerSmeltingRecipe({u"a:cook"_s, u"smelting"_s, u"a:meat"_s, u"a:log"_s, 2, 3.0});
+
+        QByteArray data;
+        QDataStream out(&data, QIODevice::WriteOnly);
+        registry.writeTo(out);
+        QDataStream in(data);
+        const QcResult<QcContentRegistry> copy = QcContentRegistry::readFrom(in);
+        QVERIFY2(copy.has_value(), qcErrorText(copy).constData());
+        const QcBlockDefinition &readFurnace = copy->block(*copy->blockId(u"a:furnace"_s));
+        QCOMPARE(readFurnace.machine.category, u"smelting"_s);
+        QCOMPARE(readFurnace.machine.speed, 1.5);
+        QCOMPARE(copy->block(*copy->blockId(u"a:log"_s)).fuelSeconds, 15.0);
+        const QcItemDefinition &readMeat = copy->item(*copy->itemId(u"a:meat"_s));
+        QCOMPARE(readMeat.food, 8);
+        QCOMPARE(readMeat.fuelSeconds, 2.5);
+        QCOMPARE(copy->item(*copy->itemId(u"a:log"_s)).fuelSeconds, 15.0);
+        QCOMPARE(copy->smeltingRecipes().size(), 1);
+        const QcSmeltingRecipe *cook = copy->smeltingRecipe(u"smelting"_s, u"a:meat"_s);
+        QVERIFY(cook);
+        QCOMPARE(cook->name, u"a:cook"_s);
+        QCOMPARE(cook->resultItem, u"a:log"_s);
+        QCOMPARE(cook->resultCount, 2);
+        QCOMPARE(cook->seconds, 3.0);
+        QVERIFY(!copy->smeltingRecipe(u"firing"_s, u"a:meat"_s));
+
+        // A recipe time outside the parser's range is refused like other corrupt content.
+        registry.registerSmeltingRecipe({u"a:cook"_s, u"smelting"_s, u"a:meat"_s, u"a:log"_s, 2, -1.0});
+        QByteArray bad;
+        QDataStream badOut(&bad, QIODevice::WriteOnly);
+        registry.writeTo(badOut);
+        QDataStream badIn(bad);
+        QVERIFY(!QcContentRegistry::readFrom(badIn).has_value());
+    }
+
     void translationsMustBeStrings()
     {
         QVERIFY(QcContentParser::parseTranslations(json(R"({"a":"b"})")).has_value());

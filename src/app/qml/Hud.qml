@@ -141,6 +141,57 @@ Item {
         }
     }
 
+    // Ten food icons, two food points each, emptying from the left like the hearts fill from it.
+    Row {
+        objectName: "foodBar"
+        anchors.right: hotbar.right
+        anchors.bottom: hotbar.top
+        anchors.bottomMargin: 6
+        spacing: 2
+        layoutDirection: Qt.RightToLeft
+
+        Repeater {
+            model: Math.ceil(hud.game.maxFood / 2)
+
+            Item {
+                id: drumstick
+
+                required property int index
+                readonly property real fill: Math.max(0, Math.min(1, (hud.game.food - index * 2) / 2))
+
+                width: 22
+                height: 22
+
+                Image {
+                    anchors.fill: parent
+                    // Icons exist once the content arrived; the provider is asked again then.
+                    source: hud.game.phase === "playing" ? "image://items/qtcraft:cooked_porkchop" : ""
+                    cache: false
+                    sourceSize: Qt.size(22, 22)
+                    smooth: false
+                    opacity: 0.3
+                }
+
+                Item {
+                    anchors.right: parent.right
+                    width: parent.width * drumstick.fill
+                    height: parent.height
+                    clip: true
+
+                    Image {
+                        anchors.right: parent.right
+                        width: drumstick.width
+                        height: drumstick.height
+                        source: hud.game.phase === "playing" ? "image://items/qtcraft:cooked_porkchop" : ""
+                        cache: false
+                        sourceSize: Qt.size(22, 22)
+                        smooth: false
+                    }
+                }
+            }
+        }
+    }
+
     Label {
         anchors.right: parent.right
         anchors.top: parent.top
