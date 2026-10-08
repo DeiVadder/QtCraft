@@ -1,0 +1,13 @@
+{
+    "name": "fence_gate",
+    "kinds": ["wood"],
+    "block": {
+        "shape": "fence_gate",
+        "lightOpacity": 0,
+        "toggles": true,
+        "connects": { "group": "fence", "to": [] },
+        "states": { "facing": ["north", "east", "south", "west"], "open": [false, true] }
+    },
+    "recipe": { "pattern": ["|#|", "|#|"], "key": { "#": "@", "|": "stick" }, "count": 1 },
+    "translations": { "en": "%1 fence gate", "de": "%1zauntor" }
+}

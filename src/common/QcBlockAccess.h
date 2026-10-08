@@ -16,4 +16,12 @@ public:
     // std::nullopt when the chunk is not loaded. Positions above the world read air.
     virtual std::optional<QcBlockId> blockAt(QcBlockPos pos) const = 0;
     virtual const QcContentRegistry &content() const = 0;
+    // Whether a block light source may lie within `reach` blocks of `pos`; worlds with chunk
+    // palettes answer cheaply, the default always says yes.
+    virtual bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const
+    {
+        Q_UNUSED(pos);
+        Q_UNUSED(reach);
+        return true;
+    }
 };

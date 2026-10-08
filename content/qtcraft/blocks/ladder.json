@@ -1,0 +1,17 @@
+{
+    "name": "ladder",
+    "sound": "wood",
+    "shape": "ladder",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 0.4,
+    "tool": "axe",
+    "climbable": true,
+    "support": "attached",
+    "states": { "attach": ["north", "east", "south", "west"] },
+    "itemTexture": "ladder",
+    "textures": {
+        "all": "ladder"
+    },
+    "fuelSeconds": 5
+}

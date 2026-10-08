@@ -51,7 +51,7 @@ void QcRelativeMouse::setCaptured(bool captured)
     m_platform->dx = 0.0;
     m_platform->dy = 0.0;
     // Detached, the cursor stays where it is while the mouse moves; no warping, no lost motion.
-    CGAssociateMouseAndMouseCursorPosition(captured ? false : true);
+    CGAssociateMouseAndMouseCursorPosition(!captured);
 }
 
 QPointF QcRelativeMouse::takeDelta()

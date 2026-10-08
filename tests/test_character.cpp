@@ -257,6 +257,60 @@ private slots:
         QCOMPARE(holding.indices.size(), 2 * 6 * 6);
     }
 
+    void glowingItemsAreNeverDarkerThanTheirOwnLight()
+    {
+        const QcModelDefinition model = humanoid();
+        const QcAppearanceDefinition look = outfit();
+        const QcEntityMesher::ModelLook modelLook{&model, &look, nullptr, {}, 1.0};
+        QcEntityMesher::ItemLook torch;
+        torch.sprite = u"t:torch"_s;
+        torch.glow = 14.0f / 15.0f;
+        const QcEntityLight dark(0.0f, 0.1f);
+        const QcVec3 eye{0.0, 70.0, 0.0};
+        // In the hand: the arm takes the light around it, the torch its own.
+        QcEntityMesh hand;
+        QcEntityMesher::appendHand(hand, modelLook, nullptr, {}, eye, 0.0, 0.0, dark, anyUv);
+        const qsizetype armVertices = hand.vertices.size();
+        QcEntityMesher::appendHand(hand, modelLook, &torch, {}, eye, 0.0, 0.0, dark, anyUv);
+        QCOMPARE(hand.vertices[0].blockLight, 0.1f);
+        QVERIFY(hand.vertices.size() > 2 * armVertices);
+        for (qsizetype i = 2 * armVertices; i < hand.vertices.size(); ++i) {
+            QCOMPARE(hand.vertices[i].blockLight, torch.glow);
+            QCOMPARE(hand.vertices[i].skyLight, 0.0f);
+        }
+        // Brighter surroundings win over the glow.
+        QcEntityMesh lit;
+        QcEntityMesher::appendHand(lit, modelLook, &torch, {}, eye, 0.0, 0.0, QcEntityLight(0.0f, 1.0f), anyUv);
+        QCOMPARE(lit.vertices.last().blockLight, 1.0f);
+        // Dropped and held by a creature in the third person, as a sprite and as a block.
+        QcClientEntity dropped;
+        dropped.item = {1, 1, 0};
+        QcEntityMesh lying;
+        QcEntityMesher::appendItem(lying, dropped, torch, 1.0, dark, 0.0, anyUv);
+        QVERIFY(!lying.vertices.isEmpty());
+        QVERIFY(std::ranges::all_of(lying.vertices, [&](const QcEntityVertex &vertex) { return vertex.blockLight == torch.glow; }));
+        QcEntityMesher::ItemLook lantern;
+        lantern.cube = true;
+        lantern.glow = 11.0f / 15.0f;
+        QcEntityMesh held;
+        QcEntityMesher::appendModel(held, modelLook, QcAnimator::animateBody({}, 0.0), {{}, 0.0, dark, false}, &lantern, anyUv);
+        QCOMPARE(held.vertices.first().blockLight, 0.1f);
+        QCOMPARE(held.vertices.last().blockLight, lantern.glow);
+        // A sprite in the hand is about as large as a held block: its diagonal is at most that of
+        // the held cube (0.15 m edge, 0.26 m diagonal).
+        QcEntityMesh sprite;
+        QcEntityMesher::appendHand(sprite, modelLook, &torch, {}, eye, 0.0, 0.0, dark, anyUv);
+        double diagonal = 0.0;
+        for (qsizetype i = armVertices; i < sprite.vertices.size(); ++i) {
+            for (qsizetype j = armVertices; j < sprite.vertices.size(); ++j) {
+                const QcEntityVertex &a = sprite.vertices[i];
+                const QcEntityVertex &b = sprite.vertices[j];
+                diagonal = std::max(diagonal, QcVec3{a.x - b.x, a.y - b.y, a.z - b.z}.length());
+            }
+        }
+        QVERIFY2(diagonal > 0.15 && diagonal < 0.27, qPrintable(QString::number(diagonal)));
+    }
+
     void thirdPersonCameraAvoidsWalls()
     {
         QcContentRegistry content = qcMakeTestContent();

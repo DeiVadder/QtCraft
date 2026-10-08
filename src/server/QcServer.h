@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcContainerManager.h"
 #include "QcContentRegistry.h"
 #include "QcItemEntityManager.h"
 #include "QcMachineManager.h"
@@ -15,6 +16,7 @@
 #include <QRandomGenerator>
 
 #include <atomic>
+#include <deque>
 #include <memory>
 #include <vector>
 
@@ -55,6 +57,7 @@ public:
     QcItemEntityManager &items() { return m_items; }
     QcPlantManager &plants() { return m_plants; }
     QcMachineManager &machines() { return m_machines; }
+    QcContainerManager &containers() { return m_containers; }
     bool keepInventory() const { return m_info.keepInventory; }
     void setKeepInventory(bool keep) { m_info.keepInventory = keep; }
     double worldTime() const { return m_info.worldTime; }
@@ -89,6 +92,24 @@ public:
     // Runs one simulation tick immediately (used by tests and by the tick timer).
     void tick();
 
+    // Neighbour updates (connections, lost support) processed per tick at most; the rest waits for
+    // the next tick, so a long chain of falling torches never stalls the server. Updates caused by
+    // players go first; those of commands (/fill) and their cascades use what is left.
+    static constexpr int maxBlockUpdatesPerTick = 1024;
+    // Largest volume one /fill command changes.
+    static constexpr qint64 maxFillBlocks = 32768;
+    // Updates waiting for their chunk to load at most; loading a chunk also re-checks every block on
+    // its borders that connects or hangs across them, so dropping beyond this loses nothing.
+    static constexpr qsizetype maxWaitingBlockUpdates = 65536;
+    // Queued updates of loaded chunks (the next ticks work on them).
+    qsizetype pendingBlockUpdates() const { return qsizetype(m_playerUpdates.size()) + qsizetype(m_commandUpdates.size()); }
+    // Updates of positions in chunks that are not loaded.
+    qsizetype waitingBlockUpdates() const { return m_waitingUpdateCount; }
+    // Updates waiting in the queue of player actions and in the queue of commands.
+    qsizetype pendingPlayerBlockUpdates() const { return qsizetype(m_playerUpdates.size()); }
+    qsizetype pendingCommandBlockUpdates() const { return qsizetype(m_commandUpdates.size()); }
+    quint64 processedBlockUpdates() const { return m_processedBlockUpdates; }
+
     // Wall time spent in tick(); safe to read and reset from other threads (benchmark).
     struct TickTimes
     {
@@ -109,13 +130,33 @@ private:
     void handleHello(Client &client, const QcMsg::Hello &hello);
     void handleInput(Client &client, const QcMsg::PlayerInput &message);
     void handleFinishMining(Client &client, QcBlockPos pos);
-    void handleUseItem(Client &client, QcMsg::UseItem message);
+    void handleUseItem(Client &client, const QcMsg::UseItem &message);
     void handleChat(Client &client, const QString &text);
     bool isWithinReach(const Client &client, QcBlockPos pos) const;
+    // Sets the block, tells clients and queues its neighbours for an update.
     void setBlockAndBroadcast(QcBlockPos pos, QcBlockId block);
+    // Queues the position itself (unless it became air) and its six neighbours.
+    void queueNeighbourUpdates(QcBlockPos pos, bool self);
+    void queueBlockUpdate(QcBlockPos pos);
+    // Re-derives connections and breaks blocks that lost their support, within the tick budget.
+    // Positions in unloaded chunks wait until the chunk loads again.
+    void processBlockUpdates();
+    // Re-queues waiting updates of chunks that loaded since the last tick and the blocks along their
+    // borders that connect or hang across them; reconciles chests with the loaded blocks.
+    void handleLoadedChunks();
+    void queueBorderUpdates(QcChunkPos chunk, QcBlockFace towards);
+    // Opens or closes a door, trapdoor or gate (both halves of a door), unless the changed shape
+    // would close on a player or mob.
+    void toggleBlock(QcBlockPos pos, QcBlockId block);
+    // Whether any of `boxes` (world space) overlaps a playing player or a mob.
+    bool overlapsBody(const QList<QcAabb> &boxes) const;
     // Removes a block as if broken: drops its items (when `drops` is set) and lets dependent blocks
-    // react (leaves decay, unsupported saplings break).
+    // react (leaves decay, unsupported saplings break). The other half of a door breaks with it
+    // under the same drop decision.
     void breakBlock(QcBlockPos pos, bool drops);
+    // Removes chests whose block is no longer a storage block (removed mods) and fits the others to
+    // their block's size; spilled contents drop as items.
+    void reconcileContainer(QcBlockPos pos);
     void dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos);
     // Sends a sound to every playing client within the sound's range (its definition's range, longer
     // for louder events). Unknown sounds are not sent.
@@ -153,8 +194,11 @@ private:
     void closeCrafting(Client &client);
     void handleConsume(Client &client);
     void sendFood(Client &client);
-    // Opens the machine screen of the block at `pos` for the player.
+    // Opens the machine or chest screen of the block at `pos` for the player.
     void openMachine(Client &client, QcBlockPos pos);
+    // The open chest of the player while it still exists, else null.
+    QcContainerManager::Container *openContainerOf(const Client &client);
+    void dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos);
     // Forgets the open machine; `notify` tells the client (the server closed it).
     void closeMachine(Client &client, bool notify);
     // The open machine of the player while it still exists, else null.
@@ -187,10 +231,21 @@ private:
     QcItemEntityManager m_items;
     QcPlantManager m_plants;
     QcMachineManager m_machines;
+    QcContainerManager m_containers;
     QRandomGenerator m_random;
     // Separate from m_random so that sounds never change drops or spawns.
     QRandomGenerator m_soundRandom;
     // Entities that died this tick; their removal tells clients to play the death animation.
     QSet<quint32> m_died;
     QStringList m_openWarnings;
+    std::deque<QcBlockPos> m_playerUpdates;
+    std::deque<QcBlockPos> m_commandUpdates;
+    QSet<QcBlockPos> m_queuedPlayerUpdates;
+    QSet<QcBlockPos> m_queuedCommandUpdates;
+    // Updates of positions whose chunk was not loaded when their turn came.
+    QHash<QcChunkPos, QSet<QcBlockPos>> m_waitingUpdates;
+    qsizetype m_waitingUpdateCount = 0;
+    // While set, new updates go to the command queue (a command runs or a command update cascades).
+    bool m_commandUpdateMode = false;
+    quint64 m_processedBlockUpdates = 0;
 };

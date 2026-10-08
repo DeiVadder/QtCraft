@@ -1,0 +1,12 @@
+{
+    "name": "wall",
+    "kinds": ["stone"],
+    "block": {
+        "shape": "wall",
+        "lightOpacity": 0,
+        "connects": { "group": "wall" },
+        "states": { "north": [false, true], "east": [false, true], "south": [false, true], "west": [false, true], "up": [true, false] }
+    },
+    "recipe": { "pattern": ["###", "###"], "key": { "#": "@" }, "count": 6 },
+    "translations": { "en": "%1 wall", "de": "%1mauer" }
+}

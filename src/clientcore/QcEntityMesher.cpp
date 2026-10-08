@@ -74,7 +74,7 @@ QcVec3 turn(const QcVec3 &p, double yawDegrees)
 
 // Emits the faces of a box whose corners `place` maps to world space; `onlyFace` limits it to one.
 template<typename Place>
-void emitBox(QcEntityMesh &mesh, const QcVec3 &from, const QcVec3 &to, const Place &place, const QRectF &rect, Tint tint, float light,
+void emitBox(QcEntityMesh &mesh, const QcVec3 &from, const QcVec3 &to, const Place &place, const QRectF &rect, Tint tint, QcEntityLight light,
              int onlyFace = -1)
 {
     for (std::size_t face = 0; face < faceCorners.size(); ++face) {
@@ -92,7 +92,8 @@ void emitBox(QcEntityMesh &mesh, const QcVec3 &from, const QcVec3 &to, const Pla
             vertex.u = float((corner == 0 || corner == 3) ? rect.left() : rect.right());
             vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
             vertex.shade = faceShade[face];
-            vertex.skyLight = light;
+            vertex.skyLight = light.sky;
+            vertex.blockLight = light.block;
             vertex.tint = tint;
             mesh.vertices.append(vertex);
         }
@@ -102,7 +103,7 @@ void emitBox(QcEntityMesh &mesh, const QcVec3 &from, const QcVec3 &to, const Pla
 
 // A flat, double-sided square of `size` in the local XY plane, centred on x and standing on y = 0.
 template<typename Place>
-void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRectF &rect, float light)
+void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRectF &rect, QcEntityLight light)
 {
     const double half = size * 0.5;
     for (const bool back : {false, true}) {
@@ -121,7 +122,8 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
             vertex.u = float(left ? rect.left() : rect.right());
             vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
             vertex.shade = 0.95f;
-            vertex.skyLight = light;
+            vertex.skyLight = light.sky;
+            vertex.blockLight = light.block;
             mesh.vertices.append(vertex);
         }
         mesh.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
@@ -130,13 +132,23 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
 
 // An item whose local space `place` maps to world: cubes are centred on the origin, sprites stand
 // on it.
-template<typename Place>
-void emitItem(QcEntityMesh &mesh, const ItemLook &look, const Place &place, float light, const UvLookup &uv)
+QcEntityLight glowing(QcEntityLight light, const ItemLook &look)
 {
+    return {light.sky, std::max(light.block, look.glow)};
+}
+
+template<typename Place>
+void emitItem(QcEntityMesh &mesh, const ItemLook &look, const Place &place, QcEntityLight around, const UvLookup &uv)
+{
+    const QcEntityLight light = glowing(around, look);
     if (look.cube) {
         const double half = itemCubeSize * 0.5;
-        for (int face = 0; face < 6; ++face) {
-            emitBox(mesh, {-half, -half, -half}, {half, half, half}, place, uv(look.faces[std::size_t(face)]), white, light, face);
+        const QList<QcAabb> boxes = look.boxes.isEmpty() ? QList<QcAabb>{{{0.0, 0.0, 0.0}, {1.0, 1.0, 1.0}}} : look.boxes;
+        const auto local = [half](const QcVec3 &p) { return QcVec3{p.x * 2.0 * half - half, p.y * 2.0 * half - half, p.z * 2.0 * half - half}; };
+        for (const QcAabb &box : boxes) {
+            for (int face = 0; face < 6; ++face) {
+                emitBox(mesh, local(box.min), local(box.max), place, uv(look.faces[std::size_t(face)]), white, light, face);
+            }
         }
         return;
     }
@@ -226,13 +238,13 @@ void appendModel(QcEntityMesh &mesh, const ModelLook &look, const QcAnimator::Bo
             // from the front and the side.
             for (const double angle : {0.0, 90.0}) {
                 const auto place = [&](const QcVec3 &p) { return armPlace(grip + rotate(turn(p * 0.9, angle), -45.0, 0.0)); };
-                emitSprite(mesh, itemSpriteSize, place, uv(held->sprite), placement.light);
+                emitSprite(mesh, itemSpriteSize, place, uv(held->sprite), glowing(placement.light, *held));
             }
         }
     }
 }
 
-void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, double alpha, float light, double seconds,
+void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, double alpha, QcEntityLight light, double seconds,
                 const UvLookup &uv)
 {
     const QcVec3 position = entity.previousPosition + (entity.position - entity.previousPosition) * alpha;
@@ -249,13 +261,14 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
         }
         // Two crossed sprites so the item shows from every side.
         for (const double angle : {0.0, 90.0}) {
-            emitSprite(mesh, itemSpriteSize, [&](const QcVec3 &p) { return origin + turn(p, yaw + angle); }, uv(look.sprite), light);
+            emitSprite(mesh, itemSpriteSize, [&](const QcVec3 &p) { return origin + turn(p, yaw + angle); }, uv(look.sprite),
+                       glowing(light, look));
         }
     }
 }
 
 void appendHand(QcEntityMesh &mesh, const ModelLook &look, const ItemLook *held, const QcAnimator::HandPose &hand, const QcVec3 &eye,
-                double yaw, double pitch, float light, const UvLookup &uv)
+                double yaw, double pitch, QcEntityLight light, const UvLookup &uv)
 {
     const double y = qDegreesToRadians(yaw);
     const double p = qDegreesToRadians(pitch);
@@ -291,7 +304,7 @@ void appendHand(QcEntityMesh &mesh, const ModelLook &look, const ItemLook *held,
             emitItem(mesh, *held, place, light, uv);
         } else {
             const auto place = [&](const QcVec3 &local) {
-                return toWorld(fist + QcVec3{0.02, -0.03, -0.02} + turn(rotate(local * 0.7, 0.0, 35.0), -20.0));
+                return toWorld(fist + QcVec3{-0.03, 0.04, -0.12} + turn(rotate(local * handSpriteScale, 0.0, 35.0), -20.0));
             };
             emitItem(mesh, *held, place, light, uv);
         }

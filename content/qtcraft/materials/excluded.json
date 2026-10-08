@@ -1,0 +1,12 @@
+{
+    "name": "excluded",
+    "excluded": true,
+    "blocks": [
+        "bedrock", "water", "crafting_table", "furnace", "chest",
+        "oak_leaves", "birch_leaves", "spruce_leaves",
+        "oak_log", "birch_log", "spruce_log",
+        "coal_ore", "iron_ore", "gold_ore", "diamond_ore",
+        "sand", "gravel", "clay", "dirt", "grass_block", "snow_block", "ice",
+        "cactus", "oak_sapling", "birch_sapling", "spruce_sapling", "glass"
+    ]
+}

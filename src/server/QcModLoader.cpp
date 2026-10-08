@@ -29,7 +29,15 @@ constexpr qint64 maxSettingsBytes = qint64(64) * 1024;
 // matches, a drop is not given) but deserve a warning for the mod author.
 void checkReferences(const QcContentRegistry &content, QStringList &warnings)
 {
-    const auto item = [&content](const QString &name) { return content.itemId(name).has_value(); };
+    // An item name, or "#tag" carried by at least one item.
+    const auto item = [&content](const QString &name) {
+        if (name.startsWith(u'#')) {
+            return std::ranges::any_of(content.items(), [tag = name.mid(1)](const QcItemDefinition &definition) {
+                return definition.tags.contains(tag);
+            });
+        }
+        return content.itemId(name).has_value();
+    };
     const auto texture = [&content](const QString &name) { return name.isEmpty() || content.texture(name) != nullptr; };
     const auto sound = [&content](const QString &name) { return name.isEmpty() || content.sound(name) != nullptr; };
     for (const QcRecipeDefinition &recipe : content.recipes()) {
@@ -378,9 +386,11 @@ QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QS
         return qcError(loaded.error());
     }
     QByteArray buffer;
+    QStringList baseWarnings;
     {
         QcContentRegistry finished = base;
-        finished.createBlockItems();
+        baseWarnings = finished.finish();
+        warnings += baseWarnings;
         if (const QString problem = clientProblem(finished, buffer); !problem.isEmpty()) {
             return qcError(u"base game: "_s + problem);
         }
@@ -432,7 +442,12 @@ QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QS
         }
         candidate.addPack({info->id, info->name, info->version});
         QcContentRegistry finished = candidate;
-        finished.createBlockItems();
+        const QStringList partWarnings = finished.finish();
+        for (const QString &warning : partWarnings) {
+            if (!baseWarnings.contains(warning)) {
+                mod.warnings.append(warning);
+            }
+        }
         QString problem = worldgenProblem(finished);
         if (problem.isEmpty()) {
             problem = countProblem(finished);
@@ -448,7 +463,8 @@ QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QS
     }
 
     result.content = std::make_shared<QcContentRegistry>(std::move(accepted));
-    result.content->createBlockItems();
+    // Warnings of the parts were reported with the mod that caused them.
+    result.content->finish();
     // Safety net: read the final content back exactly like a client. The checks above should make this
     // pass; if not, the game starts with the base content alone rather than with content clients refuse.
     if (const QString problem = clientProblem(*result.content, buffer); !problem.isEmpty()) {
@@ -460,7 +476,7 @@ QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QS
             }
         }
         result.content = std::make_shared<QcContentRegistry>(std::move(base));
-        result.content->createBlockItems();
+        result.content->finish();
     }
     for (const QcModStatus &mod : std::as_const(result.mods)) {
         const QString name = mod.info.id.isEmpty() ? mod.info.directory : mod.info.id;

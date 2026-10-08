@@ -30,6 +30,7 @@ struct FrameUniforms
 static_assert(sizeof(FrameUniforms) == 128);
 
 constexpr float minimumLight = 0.08f;
+constexpr int maxOutlineBoxes = 16;
 
 QShader loadShader(const QString &path)
 {
@@ -158,6 +159,7 @@ void QcWorldRenderer::createPipelines()
         {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcBlockVertex, u))},
         {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, shade))},
         {0, 3, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, skyLight))},
+        {0, 4, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, blockLight))},
     });
 
     const auto makePipeline = [&](bool translucent) {
@@ -197,6 +199,7 @@ void QcWorldRenderer::createPipelines()
         {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcEntityVertex, u))},
         {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, shade))},
         {0, 3, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, skyLight))},
+        {0, 5, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, blockLight))},
         {0, 4, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcEntityVertex, tint))},
     });
     const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s);
@@ -229,8 +232,9 @@ void QcWorldRenderer::createOutlinePipeline()
         m_outlineBindings->setBindings({QRhiShaderResourceBinding::uniformBuffer(
             0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, m_frameUniforms.get())});
         m_outlineBindings->create();
-        // 12 box edges as line segments.
-        m_outlineVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, quint32(std::size_t(24) * 3 * sizeof(float))));
+        // 12 edges as line segments per box.
+        m_outlineVertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer,
+                                                 quint32(std::size_t(maxOutlineBoxes) * 24 * 3 * sizeof(float))));
         m_outlineVertices->create();
         m_uploadedSelection.reset();
     }
@@ -261,31 +265,35 @@ void QcWorldRenderer::createOutlinePipeline()
 
 void QcWorldRenderer::uploadOutline(QRhiResourceUpdateBatch *updates)
 {
-    if (!m_selection || m_selection == m_uploadedSelection || !m_outlineVertices) {
+    if (m_selection.isEmpty() || m_selection == m_uploadedSelection || !m_outlineVertices) {
         return;
     }
-    // Slightly larger than the block so the lines are not hidden by its faces.
+    // Slightly larger than the boxes so the lines are not hidden by their faces.
     constexpr float grow = 0.004f;
-    const float x0 = float(m_selection->x) - grow;
-    const float y0 = float(m_selection->y) - grow;
-    const float z0 = float(m_selection->z) - grow;
-    const float x1 = float(m_selection->x) + 1.0f + grow;
-    const float y1 = float(m_selection->y) + 1.0f + grow;
-    const float z1 = float(m_selection->z) + 1.0f + grow;
-    const std::array<std::array<float, 3>, 8> corners = {{{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1},
-                                                          {x0, y1, z0}, {x1, y1, z0}, {x1, y1, z1}, {x0, y1, z1}}};
     constexpr std::array<std::pair<int, int>, 12> edges = {
         {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}}};
-    std::array<float, std::size_t(24) * 3> vertices{};
+    std::array<float, std::size_t(maxOutlineBoxes) * 24 * 3> vertices{};
     std::size_t next = 0;
-    for (const auto &[from, to] : edges) {
-        for (const int corner : {from, to}) {
-            for (const float value : corners[std::size_t(corner)]) {
-                vertices[next++] = value;
+    for (qsizetype b = 0; b < std::min<qsizetype>(m_selection.size(), maxOutlineBoxes); ++b) {
+        const QcAabb &box = m_selection[b];
+        const float x0 = float(box.min.x) - grow;
+        const float y0 = float(box.min.y) - grow;
+        const float z0 = float(box.min.z) - grow;
+        const float x1 = float(box.max.x) + grow;
+        const float y1 = float(box.max.y) + grow;
+        const float z1 = float(box.max.z) + grow;
+        const std::array<std::array<float, 3>, 8> corners = {{{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1},
+                                                              {x0, y1, z0}, {x1, y1, z0}, {x1, y1, z1}, {x0, y1, z1}}};
+        for (const auto &[from, to] : edges) {
+            for (const int corner : {from, to}) {
+                for (const float value : corners[std::size_t(corner)]) {
+                    vertices[next++] = value;
+                }
             }
         }
     }
-    updates->updateDynamicBuffer(m_outlineVertices.get(), 0, quint32(sizeof(vertices)), vertices.data());
+    updates->updateDynamicBuffer(m_outlineVertices.get(), 0, quint32(next * sizeof(float)), vertices.data());
+    m_outlineVertexCount = quint32(next / 3);
     m_uploadedSelection = m_selection;
 }
 
@@ -462,12 +470,12 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
             drawBuffers(mesh->translucent);
         }
 
-        if (m_selection && m_outlinePipeline) {
+        if (!m_selection.isEmpty() && m_outlinePipeline && m_outlineVertexCount > 0) {
             commandBuffer->setGraphicsPipeline(m_outlinePipeline.get());
             commandBuffer->setShaderResources();
             const QRhiCommandBuffer::VertexInput input(m_outlineVertices.get(), 0);
             commandBuffer->setVertexInput(0, 1, &input);
-            commandBuffer->draw(24);
+            commandBuffer->draw(m_outlineVertexCount);
         }
         // Last, with its depth squeezed to the front: the arm never disappears into a wall.
         if (m_handBuffers.indexCount > 0 && m_handPipeline) {

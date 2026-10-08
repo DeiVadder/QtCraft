@@ -1,5 +1,6 @@
 #include "QcServerWorld.h"
 
+#include "QcLightVolume.h"
 #include "QcWorldStorage.h"
 
 #include <QThread>
@@ -32,6 +33,7 @@ QList<QcChunkPos> QcServerWorld::collectGeneratedChunks()
         // A synchronous load may have won the race; the first chunk stays authoritative.
         if (!m_chunks.contains(pos)) {
             m_chunks.insert(pos, chunk);
+            m_newlyLoaded.append(pos);
             collected.append(pos);
         }
     }
@@ -60,6 +62,7 @@ std::shared_ptr<const QcChunk> QcServerWorld::loadChunk(QcChunkPos pos)
     auto it = m_chunks.find(pos);
     if (it == m_chunks.end()) {
         it = m_chunks.insert(pos, m_generator->generate(pos));
+        m_newlyLoaded.append(pos);
     }
     return *it;
 }
@@ -95,6 +98,7 @@ void QcServerWorld::adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<Qc
     for (auto it = chunks.constBegin(); it != chunks.constEnd(); ++it) {
         m_chunks.insert(it.key(), it.value());
         m_modified.insert(it.key());
+        m_newlyLoaded.append(it.key());
     }
 }
 
@@ -115,4 +119,14 @@ QHash<QcChunkPos, std::shared_ptr<const QcChunk>> QcServerWorld::takeChunksToSav
     }
     m_dirtyRegions.clear();
     return chunks;
+}
+
+bool QcServerWorld::mayHaveLightSourceNear(QcBlockPos pos, int reach) const
+{
+    return QcLightVolume::anySourceNear(*m_content, pos, reach, [this](QcChunkPos chunk) { return m_chunks.value(chunk).get(); });
+}
+
+int QcServerWorld::blockLightAt(QcBlockPos pos) const
+{
+    return QcLightVolume::blockLightAt(*this, pos);
 }

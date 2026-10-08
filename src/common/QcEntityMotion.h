@@ -9,6 +9,8 @@ struct QcEntityMotion
     QcVec3 velocity;
     bool onGround = false;
     bool inWater = false;
+    // Inside a climbable block (ladder) during the last step.
+    bool climbing = false;
 
     bool operator==(const QcEntityMotion &) const = default;
 };

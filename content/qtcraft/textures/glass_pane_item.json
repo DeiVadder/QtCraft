@@ -1,0 +1,8 @@
+{
+    "name": "glass_pane_item",
+    "pattern": "glass",
+    "primary": "#c8e6f0",
+    "secondary": "#dff0f6",
+    "variation": 0.05,
+    "seed": 514
+}

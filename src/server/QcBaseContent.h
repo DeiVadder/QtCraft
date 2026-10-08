@@ -13,7 +13,7 @@ inline constexpr auto resourceDirectory = ":/content/qtcraft";
 
 // Base pack only, with items for all blocks.
 QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings);
-// Loads the base pack into `registry` without finishing it (mods follow, then createBlockItems()).
+// Loads the base pack into `registry` without finishing it (mods follow, then finish()).
 QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &warnings);
 
 } // namespace QcBaseContent

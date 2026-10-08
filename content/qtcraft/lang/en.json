@@ -74,5 +74,20 @@
     "appearance.qtcraft.cap": "Cap",
     "block.qtcraft.furnace": "Furnace",
     "item.qtcraft.charcoal": "Charcoal",
-    "item.qtcraft.cooked_porkchop": "Cooked porkchop"
+    "item.qtcraft.cooked_porkchop": "Cooked porkchop",
+    "block.qtcraft.birch_planks": "Birch planks",
+    "block.qtcraft.spruce_planks": "Spruce planks",
+    "block.qtcraft.torch": "Torch",
+    "block.qtcraft.ladder": "Ladder",
+    "block.qtcraft.oak_door": "Oak door",
+    "block.qtcraft.oak_trapdoor": "Oak trapdoor",
+    "block.qtcraft.glass_pane": "Glass pane",
+    "block.qtcraft.chest": "Chest",
+    "material.qtcraft.oak": "Oak",
+    "material.qtcraft.birch": "Birch",
+    "material.qtcraft.spruce": "Spruce",
+    "material.qtcraft.cobblestone": "Cobblestone",
+    "material.qtcraft.stone": "Stone",
+    "material.qtcraft.brick": "Brick",
+    "material.qtcraft.sandstone": "Sandstone"
 }

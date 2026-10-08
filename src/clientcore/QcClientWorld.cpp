@@ -1,5 +1,8 @@
 #include "QcClientWorld.h"
 
+#include "QcLightVolume.h"
+
+
 QcClientWorld::QcClientWorld(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
 {
@@ -38,6 +41,11 @@ bool QcClientWorld::setBlock(QcBlockPos pos, QcBlockId block)
     }
     auto copy = std::make_shared<QcChunk>(**it);
     copy->setBlock(pos.localX(), pos.y, pos.localZ(), block);
-    *it = std::move(copy);
+    *it = copy;
     return true;
+}
+
+bool QcClientWorld::mayHaveLightSourceNear(QcBlockPos pos, int reach) const
+{
+    return QcLightVolume::anySourceNear(*m_content, pos, reach, [this](QcChunkPos chunk) { return m_chunks.value(chunk).get(); });
 }

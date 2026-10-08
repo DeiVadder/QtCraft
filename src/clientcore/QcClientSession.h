@@ -88,6 +88,8 @@ public:
     bool machineOpen() const { return m_machine.has_value(); }
     std::optional<QcBlockPos> machinePos() const { return m_machine; }
     QString machineCategory() const { return m_machineCategory; }
+    // The open screen belongs to a storage block (chest) rather than a machine.
+    bool containerOpen() const { return m_machine.has_value() && m_machineCategory.isEmpty(); }
     const QList<QcItemStack> &machineSlots() const { return m_machineSlots; }
     double machineBurn() const { return m_machineBurn; }
     double machineProgress() const { return m_machineProgress; }
@@ -166,7 +168,7 @@ signals:
     void contentReady();
     void chunkLoaded(QcChunkPos pos);
     void chunkUnloaded(QcChunkPos pos);
-    void blockChanged(QcBlockPos pos);
+    void blockChanged(QcBlockPos pos, QcBlockId previous);
     void ticked();
     void disconnected(const QString &reason);
     void inventoryChanged();

@@ -28,11 +28,12 @@ The main menu lists saved worlds, creates new ones (name, optional seed, whether
 | Mouse | Look around (click into the window to capture the mouse) |
 | W A S D, Space, Shift, Ctrl | Move, jump, sneak, sprint |
 | Left mouse / F | Mine; left click on a creature attacks it |
-| Right mouse / R | Place the held block, eat held food when hungry, open a crafting table or furnace (sneak to place against them) |
+| Right mouse / R | Place the held block (stairs, slabs, torches, doors … turn and attach by where you look and click), eat held food when hungry, open a crafting table, furnace or chest, open and close doors, trapdoors and gates (sneak to place against them) |
 | Q, Ctrl+Q | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
 | F5 | Switch the view: first person, third person behind, third person in front |
 | 1–9, mouse wheel | Select a hotbar slot |
 | E | Inventory with 2 × 2 crafting grid and recipe list |
+| Ladders | Walk into the wall behind a ladder or jump to climb, sneak to hold on |
 | Furnace screen | Something to smelt goes on top, fuel below, the result appears on the right; eat when the food bar right of the hearts runs low |
 | T or Enter | Chat and commands (`/help`) |
 | Esc | Pause menu (settings, save, quit to menu) |

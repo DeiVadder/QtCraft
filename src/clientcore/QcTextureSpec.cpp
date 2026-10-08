@@ -20,6 +20,11 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"ingot"_s, Pattern::Ingot},       {u"gem"_s, Pattern::Gem},
         {u"sapling"_s, Pattern::Sapling},
         {u"face"_s, Pattern::Face},         {u"furnace"_s, Pattern::Furnace},
+        {u"torch"_s, Pattern::Torch},       {u"torch_item"_s, Pattern::TorchItem},
+        {u"ladder"_s, Pattern::Ladder},     {u"door_lower"_s, Pattern::DoorLower},
+        {u"door_upper"_s, Pattern::DoorUpper}, {u"trapdoor"_s, Pattern::Trapdoor},
+        {u"chest_side"_s, Pattern::ChestSide}, {u"chest_front"_s, Pattern::ChestFront},
+        {u"chest_top"_s, Pattern::ChestTop},
     };
     const auto it = patterns.constFind(name);
     if (it == patterns.constEnd()) {

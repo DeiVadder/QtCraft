@@ -1,7 +1,7 @@
 #version 440
 
 layout(location = 0) in vec2 vTexCoord;
-layout(location = 1) in float vLight;
+layout(location = 1) in vec3 vLight;
 layout(location = 2) in float vDistance;
 layout(location = 3) in vec4 vTint;
 

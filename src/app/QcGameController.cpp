@@ -1,5 +1,8 @@
 #include "QcGameController.h"
 
+#include "QcBlockIcon.h"
+#include "QcLightVolume.h"
+
 #include "QcAudioEngine.h"
 #include "QcSoundKeys.h"
 
@@ -40,6 +43,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 #include <functional>
 
 #if defined(Q_OS_UNIX)
@@ -560,12 +564,7 @@ void QcGameController::updateInventory()
             if (QcCrafting::gridSizeNeeded(recipe) > m_session->craftingSize()) {
                 continue;
             }
-            int possible = 64;
-            const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
-            for (const auto &[name, count] : std::as_const(needed)) {
-                const std::optional<QcItemId> item = content->itemId(name);
-                possible = std::min(possible, item ? m_session->inventory().countOf(*item) / count : 0);
-            }
+            const int possible = QcCrafting::timesCraftable(*content, m_session->inventory(), recipe, 64);
             const std::optional<QcItemId> result = content->itemId(recipe.resultItem);
             if (possible <= 0 || !result) {
                 continue;
@@ -605,11 +604,11 @@ void QcGameController::setOverlay(const QString &overlay)
     if (m_session) {
         m_session->setMining(false);
         // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
-        // the furnace screen closes the machine.
+        // the furnace or chest screen closes the block.
         if (m_overlay != u"inventory"_s) {
             m_session->closeCrafting();
         }
-        if (m_overlay != u"furnace"_s) {
+        if (m_overlay != u"furnace"_s && m_overlay != u"chest"_s) {
             m_session->closeMachine();
         }
     }
@@ -682,7 +681,9 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         m_meshes->chunkLoaded(*m_session->world(), pos);
     });
     connect(m_session, &QcClientSession::chunkUnloaded, m_meshes, &QcMeshScheduler::chunkUnloaded);
-    connect(m_session, &QcClientSession::blockChanged, m_meshes, &QcMeshScheduler::blockChanged);
+    connect(m_session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
+        m_meshes->blockChanged(*m_session->world(), pos, previous);
+    });
     connect(m_session, &QcClientSession::ticked, this, [this] {
         m_sinceTick.restart();
         m_audio->setAmbience(m_session->ambience());
@@ -701,10 +702,20 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         const std::optional<QcBlockPos> pos = m_session->machinePos();
         const std::optional<QcBlockId> block = pos && m_session->world() ? m_session->world()->blockAt(*pos) : std::nullopt;
         m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_language) : QString();
-        setOverlay(u"furnace"_s);
+        setOverlay(m_session->containerOpen() ? u"chest"_s : u"furnace"_s);
         updateInventory();
         emit machineChanged();
-        if (m_fillMachineOnOpen) {
+        if (m_fillMachineOnOpen && m_session->containerOpen()) {
+            m_fillMachineOnOpen = false;
+            for (int slot = 0; slot < 9; ++slot) {
+                m_session->moveInventoryItem(slot, QcMsg::MoveInventoryItem::machineInputSlot + slot);
+            }
+            QTimer::singleShot(1000, this, [this] {
+                if (m_screenshotHook) {
+                    m_screenshotHook->release();
+                }
+            });
+        } else if (m_fillMachineOnOpen) {
             // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
             m_fillMachineOnOpen = false;
             m_session->moveInventoryItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
@@ -722,7 +733,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         emit machineChanged();
     });
     connect(m_session, &QcClientSession::machineClosed, this, [this] {
-        if (m_overlay == u"furnace"_s) {
+        if (m_overlay == u"furnace"_s || m_overlay == u"chest"_s) {
             setOverlay({});
         }
         updateInventory();
@@ -753,7 +764,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
             for (const QString &line : std::as_const(m_startupChat)) {
                 m_session->sendChat(line);
             }
-            if (m_startupOverlay == u"furnace"_s) {
+            if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s) {
                 // Uses the block in view once the startup commands have placed it.
                 m_fillMachineOnOpen = true;
                 if (m_screenshotHook) {
@@ -770,7 +781,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
                         return;
                     }
                     m_fillMachineOnOpen = false;
-                    qCWarning(lcGame) << "--overlay furnace: no machine in view opened";
+                    qCWarning(lcGame) << "--overlay" << m_startupOverlay << ": no block in view opened";
                     if (m_screenshotHook) {
                         m_screenshotHook->release();
                     }
@@ -827,6 +838,20 @@ void QcGameController::onContentReady()
     m_audio->setMusicEnabled(true);
 }
 
+float QcGameController::blockLightAt(QcBlockPos pos) const
+{
+    return float(m_meshes->blockLight(pos)) / float(QcLightVolume::maxLevel);
+}
+
+QcBlockId QcGameController::itemState(const QcContentRegistry &content, QcBlockId block)
+{
+    // Fences, walls and panes show a piece of a run rather than a lone post.
+    if (!content.block(block).connectsTo.isEmpty()) {
+        block = content.withProperty(content.withProperty(block, u"east"_s, u"true"_s), u"west"_s, u"true"_s);
+    }
+    return block;
+}
+
 QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &content, QcItemId item)
 {
     QcEntityMesher::ItemLook look;
@@ -836,9 +861,16 @@ QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &con
     const QcItemDefinition &definition = content.item(item);
     look.sprite = definition.texture;
     const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
-    if (block && content.block(*block).shape == QcBlockShape::Cube && content.block(*block).renderLayer != QcRenderLayer::Invisible) {
+    if (block) {
+        look.glow = float(content.block(*block).lightLevel) / float(QcLightVolume::maxLevel);
+    }
+    if (block && content.block(*block).itemTexture.isEmpty() && !content.state(*block).boxes.isEmpty()
+        && content.block(*block).renderLayer != QcRenderLayer::Invisible) {
         look.cube = true;
         look.faces = content.block(*block).faceTextures;
+        if (!content.state(itemState(content, *block)).fullCube) {
+            look.boxes = content.state(itemState(content, *block)).boxes;
+        }
     }
     return look;
 }
@@ -908,12 +940,13 @@ void QcGameController::updateEntities(double alpha, QcCameraMode mode)
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
     // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
-    const auto lightAt = [&world](const QcVec3 &position) {
+    const auto lightAt = [this, &world](const QcVec3 &position) {
         const QcBlockPos feet{int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
+        float sky = 1.0f;
         if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
-            return chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
+            sky = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
         }
-        return 1.0f;
+        return QcEntityLight(sky, blockLightAt(feet.offset(0, 1, 0)));
     };
     const auto lerpYaw = [](float from, float to, double t) {
         const float delta = std::fmod(to - from + 540.0f, 360.0f) - 180.0f;
@@ -979,9 +1012,9 @@ void QcGameController::updateHand(double alpha, const QcVec3 &eye)
     const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
     const QcBlockPos feet{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
-    float light = 1.0f;
+    QcEntityLight light(1.0f, blockLightAt(feet));
     if (const std::shared_ptr<const QcChunk> chunk = m_session->world()->chunk(feet.chunk())) {
-        light = chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y ? 0.45f : 1.0f;
+        light.sky = chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y ? 0.45f : 1.0f;
     }
     QcEntityMesher::appendHand(*mesh, playerLook(m_appearance), held ? &*held : nullptr, hand, eye, m_session->intent().yaw,
                                m_session->intent().pitch, light, uv);
@@ -1108,8 +1141,16 @@ void QcGameController::updateIcons(const QcTextureAtlas &atlas)
         return;
     }
     QHash<QString, QImage> icons;
-    for (const QcItemDefinition &item : m_session->content()->items()) {
-        icons.insert(item.name, atlas.tile(item.texture));
+    const QcContentRegistry &content = *m_session->content();
+    const std::array<QImage, 6> shaded = QcBlockIcon::shadedAtlases(atlas.image());
+    for (const QcItemDefinition &item : content.items()) {
+        // Blocks show their shape, unless they bring a flat icon (torches, doors) or are plants.
+        const std::optional<QcBlockId> block = content.blockId(item.placesBlock);
+        const bool model = block && m_renderTable && content.block(*block).itemTexture.isEmpty()
+                           && content.block(*block).renderLayer != QcRenderLayer::Invisible
+                           && !content.state(*block).boxes.isEmpty();
+        icons.insert(item.name, model ? QcBlockIcon::render(m_renderTable->entry(itemState(content, *block)), shaded)
+                                      : atlas.tile(item.texture));
     }
     m_iconProvider->setIcons(std::move(icons));
 }
@@ -1161,7 +1202,11 @@ void QcGameController::captureMouse()
     }
     m_mouseCaptured = true;
     m_window->setCursor(Qt::BlankCursor);
-    QCursor::setPos(m_window->mapToGlobal(QPoint(m_window->width() / 2, m_window->height() / 2)));
+    // With platform deltas the cursor is detached and stays put; elsewhere motion is measured
+    // against the window centre.
+    if (!QcRelativeMouse::hasPlatformDeltas()) {
+        QCursor::setPos(m_window->mapToGlobal(QPoint(m_window->width() / 2, m_window->height() / 2)));
+    }
     m_relativeMouse.setCaptured(true);
     emit mouseCapturedChanged();
 }
@@ -1329,10 +1374,31 @@ void QcGameController::startBenchmark()
     if (m_server) {
         m_server->resetTickTimes();
     }
+    m_meshes->resetStats();
     if (!m_benchmarkWalk) {
         m_benchmarkFrame.start();
         m_benchmarkRunning = true;
         QTimer::singleShot(m_benchmarkSeconds * 1000, this, &QcGameController::finishBenchmark);
+        if (m_benchmarkLight) {
+            // Four times a second a torch appears or vanishes on a ring around the player, so light
+            // spreads and goes away again across section and chunk borders all the time.
+            auto *torches = new QTimer(this);
+            auto step = std::make_shared<int>(0);
+            connect(torches, &QTimer::timeout, this, [this, torches, step] {
+                if (!m_benchmarkRunning || !m_session) {
+                    torches->deleteLater();
+                    return;
+                }
+                constexpr int ring = 12;
+                const int index = (*step / 2) % ring;
+                const double angle = index * 2.0 * std::numbers::pi / ring;
+                const int x = int(std::lround(std::cos(angle) * 9.0));
+                const int z = int(std::lround(std::sin(angle) * 9.0));
+                m_session->sendChat(u"/setblock ~%1 ~ ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? u"torch"_s : u"air"_s));
+                ++*step;
+            });
+            torches->start(250);
+        }
         return;
     }
     m_inputEnabled = true;
@@ -1384,13 +1450,27 @@ void QcGameController::finishBenchmark()
     const double tickWorstMs = m_server ? m_server->tickWorstMs() : 0.0;
     const double averageMs = double(total) / double(sorted.size()) / 1e6;
     const qsizetype entities = m_session ? m_session->entities().size() : 0;
-    qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6"_s
+    // Block changes until their sections show (with their light), the most sections and light jobs
+    // waiting at once, and the light thread's work per job.
+    const QcMeshScheduler::Stats mesh = m_meshes->stats();
+    const double latencyMs = mesh.latencySamples > 0 ? mesh.latencyTotalMs / double(mesh.latencySamples) : 0.0;
+    const double lightMs = mesh.lightJobs > 0 ? mesh.lightTotalMs / double(mesh.lightJobs) : 0.0;
+    qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
+                                u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
+                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13"_s
                                     .arg(averageMs, 0, 'f', 3)
                                     .arg(p99Ms, 0, 'f', 3)
                                     .arg(tickMs, 0, 'f', 3)
                                     .arg(tickWorstMs, 0, 'f', 3)
                                     .arg(peakMemoryMegabytes(), 0, 'f', 1)
-                                    .arg(entities);
+                                    .arg(entities)
+                                    .arg(latencyMs, 0, 'f', 3)
+                                    .arg(mesh.latencyWorstMs, 0, 'f', 3)
+                                    .arg(mesh.latencySamples)
+                                    .arg(mesh.worstBacklog)
+                                    .arg(mesh.lightJobs)
+                                    .arg(lightMs, 0, 'f', 3)
+                                    .arg(mesh.lightWorstMs, 0, 'f', 3);
     const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
                            u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())
                                .arg(m_benchmarkSeconds)
@@ -1422,13 +1502,13 @@ void QcGameController::onFrame()
         m_fps = m_framesSinceFps * 1000.0 / double(m_fpsClock.restart());
         m_framesSinceFps = 0;
     }
+    // Taken every frame, so motion from a frame without a world never turns the view later.
+    const QPointF mouseDelta = QcRelativeMouse::hasPlatformDeltas() ? m_relativeMouse.takeDelta() : QPointF();
     if (!m_session || !m_view || !m_session->world()) {
         return;
     }
-    if (m_mouseCaptured && QcRelativeMouse::hasPlatformDeltas()) {
-        if (const QPointF delta = m_relativeMouse.takeDelta(); !delta.isNull()) {
-            m_session->setIntent(QcMouseLook::apply(m_session->intent(), delta, m_mouseSensitivity, m_invertMouse));
-        }
+    if (m_mouseCaptured && !mouseDelta.isNull()) {
+        m_session->setIntent(QcMouseLook::apply(m_session->intent(), mouseDelta, m_mouseSensitivity, m_invertMouse));
     }
     if (m_inputEnabled && m_phase == u"playing"_s) {
         updateIntentFromKeys(frameSeconds);
@@ -1457,7 +1537,18 @@ void QcGameController::onFrame()
     updateSky(alpha);
     const std::optional<QcRaycastHit> &target = m_session->target();
     const std::optional<quint32> targetEntity = m_session->targetEntity();
-    m_view->setSelection(target && !targetEntity ? std::optional<QcBlockPos>(target->block) : std::nullopt);
+    QList<QcAabb> selection;
+    if (target && !targetEntity) {
+        const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block);
+        const QcVec3 corner{double(target->block.x), double(target->block.y), double(target->block.z)};
+        if (block && m_session->content()->isValidBlock(*block)) {
+            const QList<QcAabb> boxes = m_session->content()->state(*block).targetBoxes();
+            for (const QcAabb &box : boxes) {
+                selection.append(box.moved(corner));
+            }
+        }
+    }
+    m_view->setSelection(selection);
     QString targetLabel;
     if (targetEntity) {
         const QcClientEntity entity = m_session->entities().value(*targetEntity);

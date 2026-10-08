@@ -65,7 +65,7 @@ Rectangle {
     component Slot: ItemSlot {
         id: slotItem
 
-        required property int index
+        required property int slot
         required property string icon
         required property int count
         required property real durability
@@ -76,7 +76,7 @@ Rectangle {
         slotCount: count
         slotDurability: durability
         slotEmpty: empty
-        selected: index === screen.pickedSlot
+        selected: slot === screen.pickedSlot
         highlighted: hover.hovered
 
         ToolTip.visible: hover.hovered && !empty
@@ -88,7 +88,7 @@ Rectangle {
 
         TapHandler {
             acceptedButtons: Qt.LeftButton | Qt.RightButton
-            onTapped: (eventPoint, button) => screen.clicked(slotItem.index, slotItem.empty, button)
+            onTapped: (eventPoint, button) => screen.clicked(slotItem.slot, slotItem.empty, button)
         }
     }
 
@@ -118,11 +118,15 @@ Rectangle {
                     columnSpacing: 2
 
                     Repeater {
-                        model: screen.game.inventory
+                        model: SlotRange {
+                            source: screen.game.inventory
+                            first: screen.gridFirst
+                            count: 9
+                        }
 
                         Slot {
-                            readonly property int cell: index - screen.gridFirst
-                            visible: cell >= 0 && cell < 9 && Math.floor(cell / 3) < screen.game.craftingSize
+                            readonly property int cell: slot - screen.gridFirst
+                            visible: Math.floor(cell / 3) < screen.game.craftingSize
                                      && cell % 3 < screen.game.craftingSize
                         }
                     }
@@ -135,11 +139,13 @@ Rectangle {
                 }
 
                 Repeater {
-                    model: screen.game.inventory
-
-                    Slot {
-                        visible: index === screen.resultSlot
+                    model: SlotRange {
+                        source: screen.game.inventory
+                        first: screen.resultSlot
+                        count: 1
                     }
+
+                    Slot {}
                 }
             }
 
@@ -150,13 +156,15 @@ Rectangle {
 
                 // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
                 Repeater {
-                    model: screen.game.inventory
+                    model: SlotRange {
+                        source: screen.game.inventory
+                        count: 36
+                    }
 
                     Slot {
-                        visible: index < 36
-                        Layout.row: index < 9 ? 4 : Math.floor((index - 9) / 9)
-                        Layout.column: index % 9
-                        Layout.topMargin: index < 9 ? 12 : 0
+                        Layout.row: slot < 9 ? 4 : Math.floor((slot - 9) / 9)
+                        Layout.column: slot % 9
+                        Layout.topMargin: slot < 9 ? 12 : 0
                     }
                 }
             }

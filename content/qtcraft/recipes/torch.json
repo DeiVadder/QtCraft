@@ -1,0 +1,16 @@
+{
+    "name": "torch",
+    "type": "shaped",
+    "pattern": [
+        "c",
+        "|"
+    ],
+    "key": {
+        "c": "#coals",
+        "|": "stick"
+    },
+    "result": {
+        "item": "torch",
+        "count": 4
+    }
+}

@@ -2,7 +2,10 @@
 
 #include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
+#include "QcBlockStateTable.h"
 #include "QcItemDefinition.h"
+#include "QcMaterialDefinition.h"
+#include "QcPartFamily.h"
 #include "QcMobDefinition.h"
 #include "QcModelDefinition.h"
 #include "QcPackReference.h"
@@ -22,7 +25,8 @@
 
 // Central catalogue of all content (blocks, textures, translations, world generation). Base game and
 // mods register through the same functions; a later registration with the same name replaces the
-// earlier one. Runtime block ids follow registration order; air is always id 0.
+// earlier one. Runtime block ids are block states (QcBlockStateTable) in registration order; air is
+// always id 0, and a block's name resolves to its default state.
 class QcContentRegistry
 {
 public:
@@ -31,23 +35,56 @@ public:
 
     QcContentRegistry();
 
-    // Registers a new block or replaces the definition of an existing one (keeping its id).
+    // Registers a new block or replaces the definition of an existing one; returns its default state.
+    // Replacing a block with a different number of states renumbers the states of later blocks.
     QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
+    // Registers or replaces a named shape; blocks that refer to it pick it up.
+    // Fails when the shape has too many boxes or its blocks would exceed the state table's budget.
+    QcStatus registerShape(QcShapeDefinition shape);
+    const QList<QcShapeDefinition> &shapes() const { return m_shapes; }
+    const QcShapeDefinition *shape(const QString &name) const;
+    // The shape a block uses: its named shape when registered, else its inline shape.
+    const QcShapeDefinition &shapeOf(const QcBlockDefinition &block) const;
     void registerTexture(QcTextureDefinition definition);
     // Adds or overrides translations for one language.
     void addTranslations(const QString &language, const QHash<QString, QString> &entries);
 
+    // Number of block definitions; runtime ids range over stateCount() states.
     qsizetype blockCount() const { return m_blocks.size(); }
-    bool isValidBlock(QcBlockId id) const { return qsizetype(id) < m_blocks.size(); }
-    // Precondition: isValidBlock(id).
+    qsizetype stateCount() const { return m_states.size(); }
+    bool isValidBlock(QcBlockId id) const { return qsizetype(id) < m_states.size(); }
+    // The definition of a block state. Precondition: isValidBlock(id).
     const QcBlockDefinition &block(QcBlockId id) const;
+    const QcBlockState &state(QcBlockId id) const;
+    // Default state of the named block.
     std::optional<QcBlockId> blockId(const QString &name) const;
     const QList<QcBlockDefinition> &blocks() const { return m_blocks; }
+    const QcBlockStateTable &stateTable() const { return m_states; }
+    // Whether two states belong to the same block definition.
+    bool isSameBlock(QcBlockId a, QcBlockId b) const { return state(a).type == state(b).type; }
+    // Value of a state property, empty when the block has no such property.
+    QString property(QcBlockId id, const QString &property) const;
+    // The state with one property changed; `id` itself for unknown properties or values.
+    QcBlockId withProperty(QcBlockId id, const QString &property, const QString &value) const;
+    // "name" or "name[a=x,b=y]" with every property, as stored in saves.
+    QString stateName(QcBlockId id) const;
+    // Parses a state name. Unknown properties or values keep their defaults and are described in
+    // `problems`, as does a missing closing bracket; std::nullopt for unknown blocks.
+    std::optional<QcBlockId> stateId(const QString &text, QStringList *problems = nullptr) const;
 
     // Registers a new item or replaces an existing one (keeping its id). Ids start at 1.
     QcResult<QcItemId> registerItem(QcItemDefinition definition);
     // Gives every visible, non-liquid block without an item of the same name an item that places it.
     void createBlockItems();
+    // Completes the content after all packs: generates building parts (QcPartGenerator), then block
+    // items. Returns the generator's warnings.
+    QStringList finish();
+
+    // Building part families and materials (server side; their results are ordinary content).
+    void registerPartFamily(QcPartFamily family);
+    void registerMaterial(QcMaterialDefinition material);
+    const QList<QcPartFamily> &partFamilies() const { return m_partFamilies; }
+    const QList<QcMaterialDefinition> &materials() const { return m_materials; }
     qsizetype itemCount() const { return m_items.size(); }
     bool isValidItem(QcItemId id) const { return id != qcNoItem && qsizetype(id) <= m_items.size(); }
     // Precondition: isValidItem(id).
@@ -103,14 +140,21 @@ public:
     qsizetype translationCount(const QString &language) const { return m_translations.value(language).size(); }
     // Falls back to English and finally to the key itself.
     QString translate(const QString &key, const QString &language) const;
+    bool hasTranslation(const QString &key, const QString &language) const;
 
     // Wire format used by the content sync message. World-generation data stays on the server.
     void writeTo(QDataStream &stream) const;
     static QcResult<QcContentRegistry> readFrom(QDataStream &stream);
 
 private:
+    void rebuildStates();
+
     QList<QcBlockDefinition> m_blocks;
-    QHash<QString, QcBlockId> m_blockIds;
+    // Block name -> index into m_blocks.
+    QHash<QString, quint32> m_blockIds;
+    QcBlockStateTable m_states;
+    QList<QcShapeDefinition> m_shapes;
+    QHash<QString, qsizetype> m_shapeIndex;
     QList<QcItemDefinition> m_items;
     QHash<QString, QcItemId> m_itemIds;
     QList<QcTextureDefinition> m_textures;
@@ -136,4 +180,8 @@ private:
     QHash<QString, qsizetype> m_oreIndex;
     QcTerrainSettings m_terrain;
     QList<QcPackReference> m_packs;
+    QList<QcPartFamily> m_partFamilies;
+    QHash<QString, qsizetype> m_partFamilyIndex;
+    QList<QcMaterialDefinition> m_materials;
+    QHash<QString, qsizetype> m_materialIndex;
 };

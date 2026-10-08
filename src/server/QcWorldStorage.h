@@ -6,6 +6,7 @@
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
 #include "QcInventory.h"
+#include "QcContainerManager.h"
 #include "QcItemEntityManager.h"
 #include "QcMachineManager.h"
 #include "QcPlantManager.h"
@@ -55,7 +56,8 @@ struct QcPlayerData
 
 // Reads and writes one world directory: world.json, modified chunks in region files
 // (regions/r.<x>.<z>.qcr, 32 x 32 chunks each), players (players/<name>.qcp) and dropped items with
-// growing saplings (entities.qce) and machines (machines.qce). Only modified chunks
+// growing saplings (entities.qce), machines (machines.qce), chests (containers.qce) and pending
+// neighbour updates (blockupdates.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
@@ -88,6 +90,17 @@ public:
     // Unknown items are dropped with a warning.
     QcResult<QList<QcMachineManager::Machine>> readMachines(QStringList &warnings) const;
     QcStatus writeMachines(const QList<QcMachineManager::Machine> &machines) const;
+
+    // Storage blocks with their contents (containers.qce). Empty without error when nothing was saved
+    // yet. Unknown items are dropped with a warning.
+    QcResult<QList<QcContainerManager::Container>> readContainers(QStringList &warnings) const;
+    QcStatus writeContainers(const QList<QcContainerManager::Container> &containers) const;
+
+    // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
+    // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
+    static constexpr quint32 maxStoredBlockUpdates = 4 * 1024 * 1024;
+    QcResult<QList<QcBlockPos>> readBlockUpdates() const;
+    QcStatus writeBlockUpdates(const QList<QcBlockPos> &positions) const;
 
     static QcChunkPos regionOf(QcChunkPos chunk);
 

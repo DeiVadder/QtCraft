@@ -32,6 +32,13 @@ inline constexpr double waterSinkSpeed = 2.0;
 inline constexpr double swimUpSpeed = 3.0;
 inline constexpr double swimUpAcceleration = 18.0;
 
+// Bodies on the ground walk up steps this high without jumping (slabs, stairs).
+inline constexpr double stepHeight = 0.5;
+
+// On ladders: speed upwards while pushing against the wall or jumping, and the fastest slide down.
+inline constexpr double climbSpeed = 2.4;
+inline constexpr double climbDownSpeed = 2.0;
+
 struct MoveResult
 {
     QcVec3 applied;
@@ -45,6 +52,10 @@ QcAabb boxAt(const QcVec3 &feet, double width, double height);
 // True when the block blocks movement. Unloaded chunks and the space below the world are solid so
 // nothing falls through missing data.
 bool isSolidAt(const QcBlockAccess &world, QcBlockPos pos);
+// World-space collision boxes of the block at `pos` (a unit box where data is missing).
+QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos);
+// Whether a box overlaps a climbable block.
+bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box);
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos);
 QcBlockPos blockContaining(const QcVec3 &point);
 
@@ -52,10 +63,10 @@ QcBlockPos blockContaining(const QcVec3 &point);
 MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &world);
 
 // Advances any entity by one tick: `wish` is the horizontal movement direction (length <= 1),
-// `speed` its target speed, `jump` jumps on ground or swims up in water. The caller updates
-// motion.inWater before the call.
+// `speed` its target speed, `jump` jumps on ground, swims up in water or climbs, `hold` keeps a
+// climber in place. The caller updates motion.inWater before the call.
 MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, bool jump, double width, double height,
-                      const QcBlockAccess &world, double dt);
+                      const QcBlockAccess &world, double dt, bool hold = false);
 
 // Advances a player by one tick of `dt` seconds.
 void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt);

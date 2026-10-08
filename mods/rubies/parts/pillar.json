@@ -1,0 +1,10 @@
+{
+    "name": "pillar",
+    "kinds": ["stone"],
+    "block": {
+        "shape": "pillar",
+        "lightOpacity": 0
+    },
+    "recipe": { "pattern": ["#", "#", "#"], "key": { "#": "@" }, "count": 3 },
+    "translations": { "en": "%1 pillar", "de": "%1säule" }
+}

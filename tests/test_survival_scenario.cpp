@@ -310,21 +310,22 @@ private slots:
         }
         QVERIFY(logSlot >= 0);
         request({{u"cmd"_s, u"moveItem"_s}, {u"from"_s, logSlot}, {u"to"_s, 36}, {u"count"_s, 2}});
+        // Every log makes the planks of its wood; recipes take planks of any wood.
+        const QString planks = log.section(u'_', 0, -2) + u"_planks"_s;
         const QJsonObject grid = request({{u"cmd"_s, u"inventory"_s}});
-        QCOMPARE(grid.value(u"craftingResult"_s).toObject().value(u"item"_s).toString(), u"qtcraft:oak_planks"_s);
+        QCOMPARE(grid.value(u"craftingResult"_s).toObject().value(u"item"_s).toString(), planks);
         QVERIFY(request({{u"cmd"_s, u"takeResult"_s}}).value(u"ok"_s).toBool());
-        QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 4);
+        QCOMPARE(countOf(planks), 4);
         // Closing returns the second log from the grid.
         QVERIFY(request({{u"cmd"_s, u"closeCrafting"_s}}).value(u"ok"_s).toBool());
         QCOMPARE(countOf(log), logs - 1);
-        const QString planksRecipe = u"qtcraft:oak_planks_from_"_s + log.section(u':', 1);
-        request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planksRecipe}, {u"count"_s, 2}});
-        QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 12);
+        request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planks}, {u"count"_s, 2}});
+        QCOMPARE(countOf(planks), 12);
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:crafting_table"_s}});
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:stick"_s}});
         QCOMPARE(countOf(u"qtcraft:crafting_table"_s), 1);
         QCOMPARE(countOf(u"qtcraft:stick"_s), 4);
-        QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 6);
+        QCOMPARE(countOf(planks), 6);
 
         // Without a crafting table nearby a 3 x 3 recipe is refused.
         const QJsonObject refused = request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:wooden_pickaxe"_s}});
@@ -364,7 +365,7 @@ private slots:
         QVERIFY(placed);
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:wooden_pickaxe"_s}});
         QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 1);
-        QCOMPARE(countOf(u"qtcraft:oak_planks"_s), 3);
+        QCOMPARE(countOf(planks), 3);
         QCOMPARE(countOf(u"qtcraft:stick"_s), 2);
 
         // 5. Dig straight down with the pickaxe until stone yields cobblestone.

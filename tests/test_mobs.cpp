@@ -183,6 +183,45 @@ private slots:
         QVERIFY(hostile <= QcMobManager::hostileCapPerPlayer + 3);
     }
 
+    void torchLightKeepsHostileMobsAway()
+    {
+        const auto surfaceHostiles = [this](bool torches) {
+            auto world = makeWorld(5);
+            const QcVec3 player = surface(*world, 0, 0);
+            if (torches) {
+                // A torch every five blocks: no surface spot is more than four blocks from one, so
+                // the block light at every surface spawn is at least 14 - 4 - 1 = 9 (> 7).
+                const QcBlockId torch = *m_content->blockId(u"qtcraft:torch"_s);
+                for (int x = -60; x <= 60; x += 5) {
+                    for (int z = -60; z <= 60; z += 5) {
+                        const QcVec3 top = surface(*world, x, z);
+                        world->setBlock(QcPhysics::blockContaining(top), torch);
+                    }
+                }
+            }
+            const int light = world->blockLightAt(QcPhysics::blockContaining(surface(*world, 2, 2)));
+            if (torches != (light >= 9)) {
+                return -1;
+            }
+            QcMobManager mobs(m_content, 11);
+            int count = 0;
+            QSet<quint32> seen;
+            for (int tick = 0; tick < 20 * 40; ++tick) {
+                mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
+                for (const QcMobManager::Mob &mob : mobs.mobs()) {
+                    if (!seen.contains(mob.id)) {
+                        seen.insert(mob.id);
+                        count += m_content->mobs()[mob.type].hostile && !mob.underground;
+                    }
+                }
+            }
+            return count;
+        };
+        // Dark nights bring zombies to the surface; a lit area gets none (underground spawns go on).
+        QVERIFY(surfaceHostiles(false) > 0);
+        QCOMPARE(surfaceHostiles(true), 0);
+    }
+
     void daylightOnlyDespawnsSurfaceNightCreatures()
     {
         auto world = makeWorld(5);

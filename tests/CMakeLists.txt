@@ -59,3 +59,8 @@ qc_add_test(test_sound_world SOURCES test_sound_world.cpp QcTestWorld.h LIBRARIE
 qc_add_test(test_sound_events SOURCES test_sound_events.cpp LIBRARIES qc_server TIMEOUT 180)
 # Opens the real audio device when there is one (muted, well under a second of sound) and passes without.
 qc_add_test(test_audio_output SOURCES test_audio_output.cpp LIBRARIES qc_audio qc_server TIMEOUT 60)
+qc_add_test(test_shapes SOURCES test_shapes.cpp QcTestWorld.h LIBRARIES qc_common)
+qc_add_test(test_block_light SOURCES test_block_light.cpp QcTestWorld.h LIBRARIES qc_common)
+qc_add_test(test_mesher_shapes SOURCES test_mesher_shapes.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_block_light_engine SOURCES test_block_light_engine.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_building SOURCES test_building.cpp LIBRARIES qc_server TIMEOUT 180)

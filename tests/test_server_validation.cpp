@@ -614,7 +614,7 @@ private slots:
             }
         }
         for (const int count : counts) {
-            m_client->connection.send(QcMsg::CraftRecipe{u"qtcraft:oak_planks_from_oak_log"_s, count});
+            m_client->connection.send(QcMsg::CraftRecipe{u"qtcraft:oak_planks"_s, count});
             m_client->connection.send(QcMsg::TakeCraftingResult{});
         }
         pump();
@@ -637,7 +637,7 @@ private slots:
         chat(u"/kill"_s);
         QVERIFY(m_client->dead);
         const QList<QcItemStack> stacks = m_client->stacks;
-        send(QcMsg::CraftRecipe{u"qtcraft:oak_planks_from_oak_log"_s, 1});
+        send(QcMsg::CraftRecipe{u"qtcraft:oak_planks"_s, 1});
         send(QcMsg::TakeCraftingResult{});
         send(QcMsg::ConsumeItem{});
         QCOMPARE(m_client->stacks, stacks);
@@ -799,7 +799,9 @@ private slots:
     {
         join();
         const QcBlockPos pos = placeFurnace();
-        QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(id("qtcraft:furnace")));
+        // The player looks north, so the furnace's front faces south, back at the player.
+        QCOMPARE(m_server->world().blockAt(pos),
+                 std::optional<QcBlockId>(m_content->withProperty(id("qtcraft:furnace"), u"facing"_s, u"south"_s)));
         QVERIFY(m_server->machines().find(pos));
         // Machine slots mean nothing before a machine is open.
         chat(u"/give iron_ore 3"_s);
@@ -1148,8 +1150,11 @@ private slots:
         QCOMPARE(m_server->plants().saplings().size(), 1);
         chat(u"/setblock %1 %2 %3 glass"_s.arg(m_feet.x + 1).arg(m_feet.y).arg(m_feet.z + 2));
         QCOMPARE(m_server->world().blockAt(m_feet.offset(1, 0, 2)), std::optional<QcBlockId>(id("qtcraft:glass")));
-        // Air breaks the block below the sapling without drops; the sapling falls off and drops itself.
+        // Air breaks the block below the sapling without drops; with the next tick's neighbour updates
+        // the sapling falls off and drops itself.
         chat(u"/setblock ~2 ~-1 ~1 air"_s);
+        QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 1)), std::optional<QcBlockId>(id("qtcraft:oak_sapling")));
+        m_server->tick();
         QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 1)), std::optional<QcBlockId>(qcAirBlockId));
         QCOMPARE(droppedCount(item("qtcraft:oak_sapling")), 1);
         QCOMPARE(droppedCount(item("qtcraft:dirt")), 7);

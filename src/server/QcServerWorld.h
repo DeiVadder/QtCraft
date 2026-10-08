@@ -11,6 +11,7 @@
 #include <QSet>
 
 #include <memory>
+#include <utility>
 
 // Authoritative block world of the server. Chunks handed out as const snapshots stay immutable:
 // modifying a chunk that is still shared copies it first.
@@ -21,6 +22,7 @@ public:
 
     std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
+    bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
 
     std::shared_ptr<const QcChunk> chunk(QcChunkPos pos) const;
     // Returns the chunk, generating it synchronously when needed (spawn, tests).
@@ -33,10 +35,16 @@ public:
     // Modified chunks stay loaded until the world closes so that saves always see them.
     void unloadChunk(QcChunkPos pos);
     qsizetype loadedChunkCount() const { return m_chunks.size(); }
+    // Chunks that became loaded (generated, loaded synchronously or read from a save) since the last call.
+    QList<QcChunkPos> takeNewlyLoaded() { return std::exchange(m_newlyLoaded, {}); }
     QList<QcChunkPos> loadedChunks() const { return m_chunks.keys(); }
 
     // Fails for unloaded chunks, positions outside the world height and unknown block ids.
     bool setBlock(QcBlockPos pos, QcBlockId block);
+
+    // Block light (0..15) at a position, computed from the light sources around it in loaded chunks
+    // (decision E-049: block light is derived, never stored). Cheap when no source is near.
+    int blockLightAt(QcBlockPos pos) const;
 
     const QcWorldGenerator &generator() const { return *m_generator; }
 
@@ -56,6 +64,7 @@ private:
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;
     QSet<QcChunkPos> m_dirtyRegions;
+    QList<QcChunkPos> m_newlyLoaded;
     QcMailbox<std::shared_ptr<QcChunk>> m_generated;
     // Last member: destroyed first, so no job outlives the generator it uses.
     QcWorkerPool m_generationPool;

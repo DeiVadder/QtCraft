@@ -81,6 +81,10 @@ private slots:
         QCOMPARE(QcMouseLook::apply(start, {-200.0, 0.0}, 0.25, false).yaw, 300.0f);
         QCOMPARE(QcMouseLook::apply(start, {0.0, -1000.0}, 0.25, false).pitch, 89.9f);
         QCOMPARE(QcMouseLook::apply(start, {0.0, 1000.0}, 0.25, false).pitch, -89.9f);
+        // A turn of a tiny fraction of a degree left from 0 would round to exactly 360; it stays in [0, 360).
+        QcPlayerInput north;
+        const float nudged = QcMouseLook::apply(north, {-1e-7, 0.0}, 1.0, false).yaw;
+        QVERIFY(nudged >= 0.0f && nudged < 360.0f);
         // Broken input leaves the view alone.
         QCOMPARE(QcMouseLook::apply(start, {qQNaN(), 1.0}, 0.25, false).yaw, 350.0f);
     }

@@ -294,10 +294,27 @@ private slots:
 
     void rejectsBadMachineAndFoodData()
     {
-        // A machine state needs exactly three stacks.
-        QcMsg::MachineState twoSlots;
-        twoSlots.stacks = {{1, 1, 0}, {1, 1, 0}};
-        QVERIFY(!QcProtocol::decode(QcProtocol::encode(twoSlots), QcProtocol::Peer::Server).has_value());
+        // A block screen has 1..54 slots: three for a furnace, 27 for a chest.
+        QcMsg::MachineState noSlots;
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(noSlots), QcProtocol::Peer::Server).has_value());
+        QcMsg::MachineState tooMany;
+        tooMany.stacks = QList<QcItemStack>(QcMsg::MachineState::maxSlots + 1);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(tooMany), QcProtocol::Peer::Server).has_value());
+        QcMsg::MachineState chest;
+        chest.stacks = QList<QcItemStack>(27);
+        chest.stacks[26] = {5, 12, 0};
+        const auto chestCopy = QcProtocol::decode(QcProtocol::encode(chest), QcProtocol::Peer::Server);
+        QVERIFY(chestCopy.has_value());
+        QCOMPARE(std::get<QcMsg::MachineState>(*chestCopy).stacks, chest.stacks);
+        // The aim point of a use lies inside the block.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseItem{{0, 64, 0}, QcBlockFace::Up, {0.5, 1.5, 0.5}}),
+                                    QcProtocol::Peer::Client).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseItem{{0, 64, 0}, QcBlockFace::Up, {qQNaN(), 0.5, 0.5}}),
+                                    QcProtocol::Peer::Client).has_value());
+        const auto use = QcProtocol::decode(QcProtocol::encode(QcMsg::UseItem{{0, 64, 0}, QcBlockFace::North, {0.25, 0.75, 0.0}}),
+                                            QcProtocol::Peer::Client);
+        QVERIFY(use.has_value());
+        QCOMPARE(std::get<QcMsg::UseItem>(*use).hit, (QcVec3{0.25, 0.75, 0.0}));
         QcMsg::MachineState nan;
         nan.stacks = QList<QcItemStack>(3);
         nan.burn = std::numeric_limits<float>::quiet_NaN();

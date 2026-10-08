@@ -1,0 +1,11 @@
+{
+    "name": "birch_planks",
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "tags": ["planks"],
+    "textures": {
+        "all": "birch_planks"
+    },
+    "fuelSeconds": 15
+}

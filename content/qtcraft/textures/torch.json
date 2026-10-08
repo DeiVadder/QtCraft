@@ -1,0 +1,8 @@
+{
+    "name": "torch",
+    "pattern": "torch",
+    "primary": "#7a5a32",
+    "secondary": "#ffc04a",
+    "variation": 0.12,
+    "seed": 503
+}

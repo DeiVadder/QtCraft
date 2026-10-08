@@ -1,0 +1,12 @@
+{
+    "name": "fence",
+    "kinds": ["wood"],
+    "block": {
+        "shape": "fence",
+        "lightOpacity": 0,
+        "connects": { "group": "fence" },
+        "states": { "north": [false, true], "east": [false, true], "south": [false, true], "west": [false, true] }
+    },
+    "recipe": { "pattern": ["#|#", "#|#"], "key": { "#": "@", "|": "stick" }, "count": 3 },
+    "translations": { "en": "%1 fence", "de": "%1zaun" }
+}

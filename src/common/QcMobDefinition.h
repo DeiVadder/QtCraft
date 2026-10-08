@@ -40,6 +40,8 @@ struct QcMobDefinition
     double spawnWeight = 1.0;
     // Hostile mobs that need darkness also spawn underground at any time of day.
     bool spawnsInCaves = false;
+    // Brightest block light (torches) at the feet that still allows spawning, 0..15.
+    int maxSpawnLight = 15;
     // Either static boxes (`parts`) or an animated skeleton model with an outfit.
     QList<QcMobPart> parts;
     QString skeleton;

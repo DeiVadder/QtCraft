@@ -5,5 +5,7 @@
     "item.rubies.ruby_sword": "Rubinschwert",
     "item.rubies.ruby_pickaxe": "Rubinspitzhacke",
     "mob.rubies.crystal_beetle": "Kristallkäfer",
-    "item.rubies.ember_shard": "Glutsplitter"
+    "item.rubies.ember_shard": "Glutsplitter",
+    "block.rubies.ruby_lantern": "Rubinlaterne",
+    "material.rubies.ruby": "Rubin"
 }

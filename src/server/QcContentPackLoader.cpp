@@ -155,7 +155,7 @@ qint64 QcContentPackLoader::measure(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
@@ -207,6 +207,12 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
         registry.registerTexture({name, {}, *png});
     }
 
+    loadDefinitions(root.filePath(u"shapes"_s), info->id, warnings, QcContentParser::parseShape,
+                    [&registry, &warnings](QcShapeDefinition shape) {
+                        if (const QcStatus registered = registry.registerShape(std::move(shape)); !registered) {
+                            warnings.append(registered.error());
+                        }
+                    });
     const QStringList blockFiles = filesIn(root.filePath(u"blocks"_s), u"*.json"_s);
     for (const QString &path : blockFiles) {
         const QcResult<QJsonObject> json = readJsonObject(path);
@@ -236,6 +242,10 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                     [&registry](QcRecipeDefinition recipe) { registry.registerRecipe(std::move(recipe)); });
     loadDefinitions(root.filePath(u"smelting"_s), info->id, warnings, QcContentParser::parseSmeltingRecipe,
                     [&registry](QcSmeltingRecipe recipe) { registry.registerSmeltingRecipe(std::move(recipe)); });
+    loadDefinitions(root.filePath(u"parts"_s), info->id, warnings, QcContentParser::parsePartFamily,
+                    [&registry](QcPartFamily family) { registry.registerPartFamily(std::move(family)); });
+    loadDefinitions(root.filePath(u"materials"_s), info->id, warnings, QcContentParser::parseMaterial,
+                    [&registry](QcMaterialDefinition material) { registry.registerMaterial(std::move(material)); });
     loadDefinitions(root.filePath(u"mobs"_s), info->id, warnings, QcContentParser::parseMob,
                     [&registry](QcMobDefinition mob) { registry.registerMob(std::move(mob)); });
     loadDefinitions(root.filePath(u"models"_s), info->id, warnings, QcContentParser::parseModel,

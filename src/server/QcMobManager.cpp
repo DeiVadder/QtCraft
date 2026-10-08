@@ -1,6 +1,7 @@
 #include "QcMobManager.h"
 
 #include "QcDayCycle.h"
+#include "QcLightVolume.h"
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
 
@@ -242,6 +243,14 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
         }
 
         // Weighted choice among the mobs allowed here.
+        // Computed once and only when a mob that shuns light could spawn here.
+        std::optional<int> light;
+        const auto lightHere = [&] {
+            if (!light) {
+                light = world.blockLightAt({x, floorY + 1, z});
+            }
+            return *light;
+        };
         QList<int> candidates;
         double totalWeight = 0.0;
         for (qsizetype type = 0; type < content.mobs().size(); ++type) {
@@ -252,7 +261,8 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
             const bool capOk = definition.hostile ? hostile < hostileCapPerPlayer : passive < passiveCapPerPlayer;
             const bool groundOk = definition.spawnBlocks.isEmpty()
                                   || definition.spawnBlocks.contains(content.block(ground).name);
-            if (timeOk && capOk && groundOk && definition.spawnWeight > 0.0) {
+            if (timeOk && capOk && groundOk && definition.spawnWeight > 0.0
+                && (definition.maxSpawnLight >= QcLightVolume::maxLevel || lightHere() <= definition.maxSpawnLight)) {
                 candidates.append(int(type));
                 totalWeight += definition.spawnWeight;
             }

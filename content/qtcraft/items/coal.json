@@ -1,4 +1,7 @@
 {
     "name": "coal",
-    "fuelSeconds": 80
+    "fuelSeconds": 80,
+    "tags": [
+        "coals"
+    ]
 }

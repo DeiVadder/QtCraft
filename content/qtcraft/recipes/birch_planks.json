@@ -1,11 +1,11 @@
 {
-    "name": "oak_planks_from_oak_log",
+    "name": "birch_planks",
     "type": "shapeless",
     "ingredients": [
-        "oak_log"
+        "birch_log"
     ],
     "result": {
-        "item": "oak_planks",
+        "item": "birch_planks",
         "count": 4
     }
 }

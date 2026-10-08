@@ -2,6 +2,7 @@
 
 #include "QcServer.h"
 
+#include "QcBlockRules.h"
 #include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcMining.h"
@@ -12,6 +13,7 @@
 #include "QcSoundKeys.h"
 
 #include <QLoggingCategory>
+#include <QScopeGuard>
 #include <QSet>
 #include <QtMath>
 
@@ -44,11 +46,207 @@ void QcServer::setBlockAndBroadcast(QcBlockPos pos, QcBlockId block)
     if (m_machines.find(pos) && !m_machines.machineOf(block)) {
         dropMachineContents(m_machines.remove(pos));
     }
+    // So does a chest replaced by anything but another storage block; a storage block of another
+    // size keeps what fits and spills the rest.
+    reconcileContainer(pos);
     for (const auto &client : m_clients) {
         if (client->state == Client::State::Playing && client->sentChunks.contains(pos.chunk())) {
             client->connection->send(QcMsg::BlockUpdate{pos, block});
         }
     }
+    queueNeighbourUpdates(pos, block != qcAirBlockId);
+}
+
+void QcServer::reconcileContainer(QcBlockPos pos)
+{
+    if (!m_containers.find(pos)) {
+        return;
+    }
+    const std::optional<QcBlockId> block = m_world.blockAt(pos);
+    const int slotCount = block ? m_containers.slotsOf(*block) : 0;
+    if (slotCount == 0) {
+        dropStacks(m_containers.remove(pos).stacks, pos);
+    } else {
+        dropStacks(m_containers.resize(pos, slotCount), pos);
+    }
+}
+
+void QcServer::queueNeighbourUpdates(QcBlockPos pos, bool self)
+{
+    if (self) {
+        queueBlockUpdate(pos);
+    }
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        queueBlockUpdate(qcNeighbour(pos, face));
+    }
+}
+
+void QcServer::queueBlockUpdate(QcBlockPos pos)
+{
+    if (!pos.isInsideWorldHeight()) {
+        return;
+    }
+    if (m_commandUpdateMode) {
+        if (!m_queuedPlayerUpdates.contains(pos) && !m_queuedCommandUpdates.contains(pos)) {
+            m_queuedCommandUpdates.insert(pos);
+            m_commandUpdates.push_back(pos);
+        }
+    } else if (!m_queuedPlayerUpdates.contains(pos)) {
+        // Also when the command queue holds it: the player's change must not wait behind a backlog.
+        m_queuedPlayerUpdates.insert(pos);
+        m_playerUpdates.push_back(pos);
+    }
+}
+
+void QcServer::processBlockUpdates()
+{
+    for (int budget = maxBlockUpdatesPerTick; budget > 0; --budget) {
+        const bool fromCommand = m_playerUpdates.empty();
+        std::deque<QcBlockPos> &queue = fromCommand ? m_commandUpdates : m_playerUpdates;
+        if (queue.empty()) {
+            break;
+        }
+        const QcBlockPos pos = queue.front();
+        queue.pop_front();
+        (fromCommand ? m_queuedCommandUpdates : m_queuedPlayerUpdates).remove(pos);
+        ++m_processedBlockUpdates;
+        const std::optional<QcBlockId> block = m_world.blockAt(pos);
+        if (!block) {
+            if (m_waitingUpdateCount < maxWaitingBlockUpdates) {
+                QSet<QcBlockPos> &waiting = m_waitingUpdates[pos.chunk()];
+                const qsizetype before = waiting.size();
+                waiting.insert(pos);
+                m_waitingUpdateCount += waiting.size() - before;
+            }
+            continue;
+        }
+        if (*block == qcAirBlockId) {
+            continue;
+        }
+        // Cascades stay in the queue they come from.
+        m_commandUpdateMode = fromCommand;
+        if (!QcBlockRules::isSupported(m_world, pos, *block)) {
+            // A door half without its partner was cut off by a command or a removed mod: the item
+            // went with the other half.
+            const bool lone = m_content->block(*block).door && !QcBlockRules::hasDoorPartner(m_world, pos, *block);
+            breakBlock(pos, !lone);
+        } else if (const QcBlockId connected = QcBlockRules::connectedState(m_world, pos, *block); connected != *block) {
+            setBlockAndBroadcast(pos, connected);
+        }
+        m_commandUpdateMode = false;
+    }
+}
+
+void QcServer::handleLoadedChunks()
+{
+    const QList<QcChunkPos> loaded = m_world.takeNewlyLoaded();
+    for (const QcChunkPos &chunk : loaded) {
+        if (!m_world.chunk(chunk)) {
+            continue;
+        }
+        m_commandUpdateMode = true;
+        if (const auto waiting = m_waitingUpdates.constFind(chunk); waiting != m_waitingUpdates.constEnd()) {
+            for (const QcBlockPos &pos : *waiting) {
+                queueBlockUpdate(pos);
+            }
+            m_waitingUpdateCount -= waiting->size();
+            m_waitingUpdates.erase(waiting);
+        }
+        constexpr std::array<QcBlockFace, 4> sides = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
+        for (const QcBlockFace side : sides) {
+            const QcFaceOffset offset = qcFaceOffset(side);
+            const QcChunkPos neighbour{chunk.x + offset.dx, chunk.z + offset.dz};
+            if (m_world.chunk(neighbour)) {
+                queueBorderUpdates(chunk, side);
+                queueBorderUpdates(neighbour, QcBlockRules::opposite(side));
+            }
+        }
+        m_commandUpdateMode = false;
+    }
+}
+
+void QcServer::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards)
+{
+    const std::shared_ptr<const QcChunk> chunk = m_world.chunk(chunkPos);
+    if (!chunk) {
+        return;
+    }
+    // Only blocks whose state depends on the horizontal neighbour: connections and wall mounts.
+    const auto reacts = [this](QcBlockId id) {
+        if (!m_content->isValidBlock(id)) {
+            return false;
+        }
+        const QcBlockDefinition &definition = m_content->block(id);
+        return !definition.connectsTo.isEmpty() || definition.support == QcBlockSupport::Attached;
+    };
+    const QcFaceOffset offset = qcFaceOffset(towards);
+    constexpr int last = QcWorld::chunkSize - 1;
+    for (int index = 0; index < QcWorld::sectionCount; ++index) {
+        const QcChunkSection &section = chunk->section(index);
+        if (std::ranges::none_of(section.palette(), reacts)) {
+            continue;
+        }
+        for (int y = 0; y < QcWorld::sectionHeight; ++y) {
+            for (int along = 0; along < QcWorld::chunkSize; ++along) {
+                const int x = offset.dx != 0 ? (offset.dx > 0 ? last : 0) : along;
+                const int z = offset.dz != 0 ? (offset.dz > 0 ? last : 0) : along;
+                if (reacts(section.block(x, y, z))) {
+                    queueBlockUpdate({chunkPos.x * QcWorld::chunkSize + x, index * QcWorld::sectionHeight + y,
+                                      chunkPos.z * QcWorld::chunkSize + z});
+                }
+            }
+        }
+    }
+}
+
+bool QcServer::overlapsBody(const QList<QcAabb> &boxes) const
+{
+    const auto hits = [&boxes](const QcAabb &body) {
+        return std::ranges::any_of(boxes, [&body](const QcAabb &box) { return body.intersects(box); });
+    };
+    for (const auto &client : m_clients) {
+        if (client->state == Client::State::Playing && !client->dead
+            && hits(QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight))) {
+            return true;
+        }
+    }
+    const QList<QcMobDefinition> &definitions = m_content->mobs();
+    for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
+        if (mob.type >= 0 && mob.type < definitions.size()
+            && hits(QcPhysics::boxAt(mob.motion.position, definitions[mob.type].width, definitions[mob.type].height))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void QcServer::toggleBlock(QcBlockPos pos, QcBlockId block)
+{
+    const QString open = m_content->property(block, u"open"_s) == u"true"_s ? u"false"_s : u"true"_s;
+    const QcBlockDefinition &definition = m_content->block(block);
+    QList<std::pair<QcBlockPos, QcBlockId>> changes{{pos, m_content->withProperty(block, u"open"_s, open)}};
+    if (definition.door) {
+        const QcBlockPos other = QcBlockRules::otherDoorHalf(m_world, pos, block);
+        const std::optional<QcBlockId> partner = m_world.blockAt(other);
+        if (partner && m_content->isSameBlock(*partner, block)) {
+            changes.append({other, m_content->withProperty(*partner, u"open"_s, open)});
+        }
+    }
+    // Swinging shut (or open) must not trap anyone inside the new shape.
+    QList<QcAabb> boxes;
+    for (const auto &[at, state] : std::as_const(changes)) {
+        const QcVec3 corner{double(at.x), double(at.y), double(at.z)};
+        for (const QcAabb &box : m_content->state(state).collision) {
+            boxes.append(box.moved(corner));
+        }
+    }
+    if (overlapsBody(boxes)) {
+        return;
+    }
+    for (const auto &[at, state] : std::as_const(changes)) {
+        setBlockAndBroadcast(at, state);
+    }
+    playBlockSound(definition, QcBlockSoundAction::Place, pos);
 }
 
 void QcServer::playSound(const QString &key, const QcVec3 &position, float volume, float pitch)
@@ -124,14 +322,16 @@ bool QcServer::isNearCraftingTable(const Client &client) const
 void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
 {
     QcMachineManager::Machine *machine = openMachineOf(client);
-    // Inventory, the usable part of the grid and the open machine form one slot space; other grid
-    // cells and machine slots without an open machine are invalid.
-    const auto usable = [&client, machine](int slot) {
+    QcContainerManager::Container *container = openContainerOf(client);
+    // Inventory, the usable part of the grid and the open machine or chest form one slot space;
+    // other grid cells and block slots without an open block are invalid.
+    const auto usable = [&client, machine, container](int slot) {
         if (slot < craftingGridSlot) {
             return QcInventory::isValidSlot(slot);
         }
         if (slot >= machineSlot) {
-            return machine && slot < machineSlot + QcMachineManager::slotCount;
+            return (machine && slot < machineSlot + QcMachineManager::slotCount)
+                   || (container && slot < machineSlot + container->stacks.size());
         }
         const int cell = slot - craftingGridSlot;
         return cell >= 0 && cell < 9 && cell / 3 < client.craftingSize && cell % 3 < client.craftingSize;
@@ -140,7 +340,7 @@ void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
         sendInventory(client);
         sendMachine(client, true);
     };
-    if (client.dead || !usable(move.from) || !usable(move.to) || move.to == QcMsg::MoveInventoryItem::machineOutputSlot) {
+    if (client.dead || !usable(move.from) || !usable(move.to) || (machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
         refuse();
         return;
     }
@@ -148,6 +348,8 @@ void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
     combined.append(client.craftingGrid);
     if (machine) {
         combined.append(QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()));
+    } else if (container) {
+        combined.append(container->stacks);
     }
     QcInventory::moveBetween(combined, move.from, move.to, std::max(0, move.count), *m_content);
     if (machine) {
@@ -169,7 +371,17 @@ void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
         client.inventory.setSlot(i, combined[i]);
     }
     client.craftingGrid = combined.mid(QcInventory::slotCount, 9);
+    if (container) {
+        container->stacks = combined.mid(machineSlot, container->stacks.size());
+    }
     sendInventory(client);
+    if (container) {
+        for (const auto &other : m_clients) {
+            if (other->machine == container->pos) {
+                sendMachine(*other, true);
+            }
+        }
+    }
     if (machine) {
         // Everyone looking into this machine sees the change.
         for (const auto &other : m_clients) {
@@ -227,17 +439,11 @@ void QcServer::handleCraftRecipe(Client &client, const QcMsg::CraftRecipe &reque
         return;
     }
     const std::optional<QcItemId> result = m_content->itemId(recipe.resultItem);
-    const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
     int crafted = 0;
     for (int round = 0; round < std::clamp(request.count, 1, 64) && result; ++round) {
         // All or nothing per round, on a copy so a full inventory leaves everything unchanged.
         QcInventory attempt = client.inventory;
-        bool ok = true;
-        for (const auto &[name, count] : needed) {
-            const std::optional<QcItemId> ingredient = m_content->itemId(name);
-            ok = ok && ingredient && attempt.removeItems(*ingredient, count);
-        }
-        if (!ok || attempt.add(*result, recipe.resultCount, *m_content) > 0) {
+        if (!QcCrafting::consume(*m_content, attempt, recipe, 1) || attempt.add(*result, recipe.resultCount, *m_content) > 0) {
             break;
         }
         client.inventory = attempt;
@@ -284,9 +490,39 @@ QcMachineManager::Machine *QcServer::openMachineOf(const Client &client)
     return block && m_machines.machineOf(*block) ? m_machines.find(*client.machine) : nullptr;
 }
 
+QcContainerManager::Container *QcServer::openContainerOf(const Client &client)
+{
+    if (!client.machine) {
+        return nullptr;
+    }
+    const std::optional<QcBlockId> block = m_world.blockAt(*client.machine);
+    return block && m_containers.slotsOf(*block) > 0 ? m_containers.find(*client.machine) : nullptr;
+}
+
+void QcServer::dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos)
+{
+    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+    for (const QcItemStack &stack : stacks) {
+        if (!stack.isEmpty()) {
+            m_items.spawnScattered(stack, centre, m_nextEntityId++);
+        }
+    }
+}
+
 void QcServer::openMachine(Client &client, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = m_world.blockAt(pos);
+    if (const int slotCount = block ? m_containers.slotsOf(*block) : 0; slotCount > 0) {
+        if (!m_containers.add(pos, slotCount)) {
+            client.connection->send(QcMsg::ChatMessage{u"Too many chests in the world (at most %1)"_s.arg(QcContainerManager::maxContainers)});
+            return;
+        }
+        client.machine = pos;
+        client.sentMachine.reset();
+        client.connection->send(QcMsg::OpenMachine{pos, {}});
+        sendMachine(client, true);
+        return;
+    }
     const QcMachineDefinition *definition = block ? m_machines.machineOf(*block) : nullptr;
     if (!definition) {
         return;
@@ -315,6 +551,16 @@ void QcServer::closeMachine(Client &client, bool notify)
 
 void QcServer::sendMachine(Client &client, bool force)
 {
+    if (const QcContainerManager::Container *container = openContainerOf(client)) {
+        QcMsg::MachineState state;
+        state.pos = container->pos;
+        state.stacks = container->stacks;
+        if (force || !client.sentMachine || client.sentMachine->stacks != state.stacks) {
+            client.sentMachine = state;
+            client.connection->send(state);
+        }
+        return;
+    }
     const QcMachineManager::Machine *machine = openMachineOf(client);
     if (!machine) {
         return;
@@ -366,7 +612,7 @@ void QcServer::tickMachines()
             continue;
         }
         // The screen closes when the machine is gone, its chunk unloaded or the player walked away.
-        if (client->dead || !openMachineOf(*client) || !isWithinReach(*client, *client->machine)) {
+        if (client->dead || (!openMachineOf(*client) && !openContainerOf(*client)) || !isWithinReach(*client, *client->machine)) {
             closeMachine(*client, true);
         } else {
             sendMachine(*client);
@@ -408,13 +654,14 @@ void QcServer::handleFinishMining(Client &client, QcBlockPos pos)
     sendInventory(client);
 }
 
-void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
+void QcServer::handleUseItem(Client &client, const QcMsg::UseItem &message)
 {
     client.swung = true;
     // Using a machine opens its screen, a crafting table its 3 x 3 grid, unless the player sneaks
     // to place against them.
     const std::optional<QcBlockId> clickedBlock = m_world.blockAt(message.target);
-    if (clickedBlock && m_machines.machineOf(*clickedBlock) && !client.sneaking && isWithinReach(client, message.target)) {
+    const bool storage = clickedBlock && m_containers.slotsOf(*clickedBlock) > 0;
+    if (clickedBlock && (m_machines.machineOf(*clickedBlock) || storage) && !client.sneaking && isWithinReach(client, message.target)) {
         openMachine(client, message.target);
         return;
     }
@@ -425,29 +672,41 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         sendInventory(client);
         return;
     }
-    const QcBlockPos target = qcNeighbour(message.target, message.face);
+    if (clickedBlock && m_content->block(*clickedBlock).toggles && !client.sneaking && isWithinReach(client, message.target)) {
+        toggleBlock(message.target, *clickedBlock);
+        return;
+    }
     const QcItemDefinition *held = heldItem(client);
     const std::optional<QcBlockId> clicked = m_world.blockAt(message.target);
-    const std::optional<QcBlockId> existing = m_world.blockAt(target);
     const std::optional<QcBlockId> placed = held ? m_content->blockId(held->placesBlock) : std::nullopt;
     const bool clickedSolid = clicked && m_content->isValidBlock(*clicked) && !m_content->block(*clicked).liquid;
+    const std::optional<QcBlockRules::Placement> placement =
+        placed && clickedSolid && *clicked != qcAirBlockId
+            ? QcBlockRules::placement(m_world, *placed, message.target, message.face, message.hit, client.yaw)
+            : std::nullopt;
+    const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, message.face);
+    const std::optional<QcBlockId> existing = m_world.blockAt(target);
     const auto reject = [&] {
-        if (existing) {
-            client.connection->send(QcMsg::BlockUpdate{target, *existing});
+        for (const QcBlockPos pos : {target, target.offset(0, 1, 0)}) {
+            if (const std::optional<QcBlockId> block = m_world.blockAt(pos)) {
+                client.connection->send(QcMsg::BlockUpdate{pos, *block});
+            }
         }
         sendInventory(client);
     };
-    if (!placed || !clickedSolid || *clicked == qcAirBlockId || !existing || !target.isInsideWorldHeight()
-        || !m_content->block(*existing).replaceable || !isWithinReach(client, target)) {
+    if (!placement || !existing || !isWithinReach(client, target)) {
         reject();
         return;
     }
-    // Saplings need suitable ground, other cross-shaped plants a solid block below.
-    const QcBlockDefinition &placedDefinition = m_content->block(*placed);
+    // Saplings need suitable ground.
+    const QcBlockDefinition &placedDefinition = m_content->block(placement->state);
     const std::optional<QcBlockId> ground = m_world.blockAt(target.offset(0, -1, 0));
-    if ((placedDefinition.sapling.isSapling() && !m_plants.canPlant(*placed, ground))
-        || (placedDefinition.shape == QcBlockShape::Cross
-            && !(ground && m_content->isValidBlock(*ground) && m_content->block(*ground).solid))) {
+    if (placedDefinition.sapling.isSapling() && !m_plants.canPlant(*placed, ground)) {
+        reject();
+        return;
+    }
+    if (placedDefinition.containerSlots > 0 && m_containers.isFull()) {
+        client.connection->send(QcMsg::ChatMessage{u"Too many chests in the world (at most %1)"_s.arg(QcContainerManager::maxContainers)});
         reject();
         return;
     }
@@ -456,24 +715,32 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         reject();
         return;
     }
-    if (m_content->block(*placed).solid) {
-        const QcAabb blockBox{{double(target.x), double(target.y), double(target.z)},
-                              {target.x + 1.0, target.y + 1.0, target.z + 1.0}};
-        for (const auto &other : m_clients) {
-            if (other->state == Client::State::Playing
-                && QcPhysics::boxAt(other->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight).intersects(blockBox)) {
-                reject();
-                return;
-            }
+    // Nobody, player or mob, may end up inside what is placed (both halves of a door).
+    QList<QcAabb> boxes;
+    const QcVec3 corner{double(target.x), double(target.y), double(target.z)};
+    for (const QcAabb &box : m_content->state(placement->state).collision) {
+        boxes.append(box.moved(corner));
+        if (placedDefinition.door) {
+            boxes.append(box.moved(corner + QcVec3{0.0, 1.0, 0.0}));
         }
     }
-    setBlockAndBroadcast(target, *placed);
+    if (overlapsBody(boxes)) {
+        reject();
+        return;
+    }
+    setBlockAndBroadcast(target, placement->state);
+    if (placedDefinition.door) {
+        setBlockAndBroadcast(target.offset(0, 1, 0), m_content->withProperty(placement->state, u"half"_s, u"top"_s));
+    }
     playBlockSound(placedDefinition, QcBlockSoundAction::Place, target);
     if (placedDefinition.sapling.isSapling()) {
-        m_plants.saplingPlaced(target, *placed);
+        m_plants.saplingPlaced(target, placement->state);
     }
     if (placedDefinition.machine.isMachine()) {
         m_machines.add(target);
+    }
+    if (placedDefinition.containerSlots > 0) {
+        m_containers.add(target, placedDefinition.containerSlots);
     }
     client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     sendInventory(client);
@@ -481,26 +748,31 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
 
 void QcServer::breakBlock(QcBlockPos pos, bool drops)
 {
-    for (QcBlockPos current = pos;; current = current.offset(0, 1, 0)) {
-        const std::optional<QcBlockId> previous = m_world.blockAt(current);
-        if (!previous || *previous == qcAirBlockId) {
-            return;
-        }
-        const QcBlockDefinition &definition = m_content->block(*previous);
-        // Above the broken block only plants that lost their ground break as well.
-        if (current != pos && definition.shape != QcBlockShape::Cross) {
-            return;
-        }
-        setBlockAndBroadcast(current, qcAirBlockId);
-        if (m_world.blockAt(current) != qcAirBlockId) {
-            return;
-        }
-        playBlockSound(definition, QcBlockSoundAction::Break, current);
-        if (drops || current != pos) {
-            dropBlockItems(definition, current);
-        }
-        m_plants.blockRemoved(current, *previous, m_world);
+    const std::optional<QcBlockId> previous = m_world.blockAt(pos);
+    if (!previous || *previous == qcAirBlockId) {
+        return;
     }
+    const QcBlockDefinition &definition = m_content->block(*previous);
+    // A slab broken out of a double slab drops both halves.
+    const bool doubleSlab = m_content->property(*previous, u"type"_s) == u"double"_s;
+    const bool pairedDoor = definition.door && QcBlockRules::hasDoorPartner(m_world, pos, *previous);
+    setBlockAndBroadcast(pos, qcAirBlockId);
+    if (m_world.blockAt(pos) != qcAirBlockId) {
+        return;
+    }
+    if (pairedDoor) {
+        breakBlock(QcBlockRules::otherDoorHalf(m_world, pos, *previous), drops);
+    }
+    playBlockSound(definition, QcBlockSoundAction::Break, pos);
+    // The upper half of a door drops nothing: the lower half carries the door item.
+    const bool doorTop = definition.door && m_content->property(*previous, u"half"_s) == u"top"_s;
+    if (drops && !doorTop) {
+        dropBlockItems(definition, pos);
+        if (doubleSlab) {
+            dropBlockItems(definition, pos);
+        }
+    }
+    m_plants.blockRemoved(pos, *previous, m_world);
 }
 
 void QcServer::dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos)
@@ -693,7 +965,8 @@ void QcServer::handleChat(Client &client, const QString &text)
     if (command == u"help"_s) {
         reply(u"Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
               u"/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
-              u"/setblock <x> <y> <z> <block> (~ for relative coordinates), /feed [food]"_s);
+              u"/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative coordinates), "
+              u"/feed [food]"_s);
     } else if (command == u"gamerule"_s && words.size() >= 2 && words[1] == u"keepInventory"_s) {
         if (words.size() == 2) {
             reply(u"keepInventory is %1"_s.arg(m_info.keepInventory ? u"true"_s : u"false"_s));
@@ -707,7 +980,7 @@ void QcServer::handleChat(Client &client, const QString &text)
         }
     } else if (!m_config.allowCheats
                && (command == u"give"_s || command == u"time"_s || command == u"summon"_s || command == u"heal"_s
-                   || command == u"kill"_s || command == u"spawnitem"_s || command == u"setblock"_s || command == u"feed"_s)) {
+                   || command == u"kill"_s || command == u"spawnitem"_s || command == u"setblock"_s || command == u"fill"_s || command == u"feed"_s)) {
         reply(u"Cheats are disabled on this server"_s);
     } else if (command == u"time"_s && words.size() >= 3) {
         bool ok = true;
@@ -765,7 +1038,7 @@ void QcServer::handleChat(Client &client, const QString &text)
         const QcVec3 position = client.motion.position + QcVec3{std::sin(yaw) * 2.0, 0.5, -std::cos(yaw) * 2.0};
         m_items.spawnScattered({*item, count, 0}, position, m_nextEntityId++);
         reply(u"Dropped %1 x %2"_s.arg(count).arg(name));
-    } else if (command == u"setblock"_s && words.size() >= 5) {
+    } else if ((command == u"setblock"_s && words.size() >= 5) || (command == u"fill"_s && words.size() >= 8)) {
         const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
         const auto coordinate = [](const QString &word, int origin, bool &ok) {
             if (word.startsWith(u'~')) {
@@ -774,33 +1047,70 @@ void QcServer::handleChat(Client &client, const QString &text)
             }
             return word.toInt(&ok);
         };
-        bool okX = false;
-        bool okY = false;
-        bool okZ = false;
-        const QcBlockPos pos{coordinate(words[1], feet.x, okX), coordinate(words[2], feet.y, okY), coordinate(words[3], feet.z, okZ)};
-        const QString name = words[4].contains(u':') ? words[4] : u"qtcraft:"_s + words[4];
-        const std::optional<QcBlockId> block = m_content->blockId(name);
-        if (!okX || !okY || !okZ || !block || !m_world.blockAt(pos) || !pos.isInsideWorldHeight()) {
-            reply(u"Usage: /setblock <x> <y> <z> <block> in a loaded chunk"_s);
+        bool ok = true;
+        const auto position = [&](int first) {
+            bool okX = false;
+            bool okY = false;
+            bool okZ = false;
+            const QcBlockPos pos{coordinate(words[first], feet.x, okX), coordinate(words[first + 1], feet.y, okY),
+                                 coordinate(words[first + 2], feet.z, okZ)};
+            ok = ok && okX && okY && okZ;
+            return pos;
+        };
+        const bool fill = command == u"fill"_s;
+        const QcBlockPos from = position(1);
+        const QcBlockPos to = fill ? position(4) : from;
+        const QString &text = words[fill ? 7 : 4];
+        // "name" or "name[property=value,...]"; without states, connections follow the neighbours.
+        const QString name = text.section(u'[', 0, 0).contains(u':') ? text : u"qtcraft:"_s + text;
+        const bool explicitState = name.contains(u'[');
+        QStringList problems;
+        const std::optional<QcBlockId> block = m_content->stateId(name, &problems);
+        if (block && !problems.isEmpty()) {
+            reply(problems.join(u"; "_s));
+            return;
+        }
+        const QcBlockPos low{std::min(from.x, to.x), std::min(from.y, to.y), std::min(from.z, to.z)};
+        const QcBlockPos high{std::max(from.x, to.x), std::max(from.y, to.y), std::max(from.z, to.z)};
+        const qint64 volume = qint64(high.x - low.x + 1) * (high.y - low.y + 1) * (high.z - low.z + 1);
+        if (!ok || !block || !low.isInsideWorldHeight() || !high.isInsideWorldHeight() || volume > maxFillBlocks) {
+            reply(u"Usage: /setblock <x> <y> <z> <block>, /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (at most %1 blocks; "
+                  u"block may carry states: name[property=value,...]) in loaded chunks"_s.arg(maxFillBlocks));
             return;
         }
         const bool machine = m_machines.machineOf(*block) != nullptr;
-        if (machine && !m_machines.find(pos) && m_machines.isFull()) {
-            reply(u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines));
+        // The changes and their cascades queue behind the updates of player actions.
+        m_commandUpdateMode = true;
+        const auto normalMode = qScopeGuard([this] { m_commandUpdateMode = false; });
+        int changed = 0;
+        for (int y = low.y; y <= high.y; ++y) {
+            for (int z = low.z; z <= high.z; ++z) {
+                for (int x = low.x; x <= high.x; ++x) {
+                    const QcBlockPos pos{x, y, z};
+                    if (!m_world.blockAt(pos) || (machine && !m_machines.find(pos) && m_machines.isFull())) {
+                        continue;
+                    }
+                    if (*block == qcAirBlockId) {
+                        breakBlock(pos, false);
+                    } else {
+                        setBlockAndBroadcast(pos, explicitState ? *block : QcBlockRules::connectedState(m_world, pos, *block));
+                        if (m_content->block(*block).sapling.isSapling()) {
+                            m_plants.saplingPlaced(pos, *block);
+                        }
+                        if (machine) {
+                            m_machines.add(pos);
+                        }
+                    }
+                    ++changed;
+                }
+            }
+        }
+        if (changed == 0) {
+            reply(u"Nothing set: the chunks are not loaded%1"_s.arg(machine ? u" or there are too many machines"_s : QString()));
             return;
         }
-        if (*block == qcAirBlockId) {
-            breakBlock(pos, false);
-        } else {
-            setBlockAndBroadcast(pos, *block);
-            if (m_content->block(*block).sapling.isSapling()) {
-                m_plants.saplingPlaced(pos, *block);
-            }
-            if (machine) {
-                m_machines.add(pos);
-            }
-        }
-        reply(u"Set %1 at %2 %3 %4"_s.arg(name).arg(pos.x).arg(pos.y).arg(pos.z));
+        reply(fill ? u"Filled %1 blocks with %2"_s.arg(changed).arg(name)
+                   : u"Set %1 at %2 %3 %4"_s.arg(name).arg(from.x).arg(from.y).arg(from.z));
     } else if (command == u"kill"_s) {
         client.hurtTimer = 0.0;
         damagePlayer(client, client.health, {});
@@ -891,8 +1201,8 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
 void QcServer::updateHealth(Client &client, bool wasOnGround, bool wasInWater, double previousY)
 {
     // Falls are measured from their highest point, including the position before the first
-    // airborne tick; water breaks a fall.
-    if (client.motion.inWater || wasInWater) {
+    // airborne tick; water and ladders break a fall.
+    if (client.motion.inWater || wasInWater || client.motion.climbing) {
         client.fallPeak = client.motion.position.y;
     } else if (!client.motion.onGround) {
         client.fallPeak = wasOnGround ? std::max(previousY, client.motion.position.y)

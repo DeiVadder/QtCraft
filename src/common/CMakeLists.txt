@@ -2,6 +2,13 @@ qt_add_library(qc_common STATIC
     QcAabb.h
     QcBlockAccess.h
     QcBlockDefinition.h
+    QcBlockProperty.h
+    QcBlockState.h
+    QcBlockStateTable.h QcBlockStateTable.cpp
+    QcShapeCondition.h
+    QcShapeDefinition.h
+    QcShapePart.h
+    QcLightVolume.h QcLightVolume.cpp
     QcBlockFace.h
     QcBlockPos.h QcBlockPos.cpp
     QcChunk.h QcChunk.cpp
@@ -14,6 +21,9 @@ qt_add_library(qc_common STATIC
     QcContentParser.h QcContentParser.cpp
     QcContentRegistry.h QcContentRegistry.cpp
     QcPackReference.h
+    QcPartFamily.h
+    QcPartGenerator.h QcPartGenerator.cpp
+    QcMaterialDefinition.h
     QcCrafting.h QcCrafting.cpp
     QcEntityMotion.h
     QcInProcessTransport.h QcInProcessTransport.cpp

@@ -1,0 +1,18 @@
+{
+    "name": "chest",
+    "sound": "wood",
+    "shape": "chest",
+    "facing": "toward",
+    "lightOpacity": 0,
+    "hardness": 2.5,
+    "tool": "axe",
+    "container": { "slots": 27 },
+    "states": { "facing": ["north", "east", "south", "west"] },
+    "textures": {
+        "side": "chest_side",
+        "north": "chest_front",
+        "top": "chest_top",
+        "bottom": "chest_top"
+    },
+    "fuelSeconds": 15
+}

@@ -53,10 +53,10 @@ void QcWorldView::clearMeshes()
     update();
 }
 
-void QcWorldView::setSelection(std::optional<QcBlockPos> block)
+void QcWorldView::setSelection(const QList<QcAabb> &boxes)
 {
-    if (m_selection != block) {
-        m_selection = block;
+    if (m_selection != boxes) {
+        m_selection = boxes;
         update();
     }
 }

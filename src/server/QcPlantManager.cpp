@@ -41,7 +41,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
         if (!sapling.isSapling()) {
             continue;
         }
-        const auto block = QcBlockId(i);
+        const QcBlockId block = m_content->stateTable().firstState(quint32(i));
         QSet<QcBlockId> ground;
         for (const QString &name : sapling.plantOn) {
             if (const std::optional<QcBlockId> id = m_content->blockId(name)) {

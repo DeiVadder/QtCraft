@@ -1,0 +1,5 @@
+{
+    "name": "excluded",
+    "excluded": true,
+    "blocks": ["ruby_ore"]
+}

@@ -1,4 +1,5 @@
 #include "QcCrc32.h"
+#include "QcProtocol.h"
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
 
@@ -32,6 +33,17 @@ std::shared_ptr<QcContentRegistry> registryWith(const QStringList &names)
     }
     content->createBlockItems();
     return content;
+}
+
+// A block with states: `facing` in the given order, optionally a second property.
+QcBlockDefinition stairs(const QStringList &facings, bool withHalf)
+{
+    QcBlockDefinition definition = block(u"a:stairs"_s);
+    definition.properties.append({u"facing"_s, facings});
+    if (withHalf) {
+        definition.properties.append({u"half"_s, {u"bottom"_s, u"top"_s}});
+    }
+    return definition;
 }
 
 } // namespace
@@ -391,6 +403,141 @@ private slots:
         player.food = 99;
         QVERIFY(storage.writePlayer(u"Hungry"_s, player).has_value());
         QCOMPARE((*storage.readPlayer(u"Hungry"_s, warnings))->food, 20);
+    }
+
+    void blockStatesRoundTripByName()
+    {
+        QTemporaryDir dir;
+        auto before = std::make_shared<QcContentRegistry>();
+        QVERIFY(before->registerBlock(block(u"a:stone"_s)));
+        QVERIFY(before->registerBlock(stairs({u"north"_s, u"east"_s, u"south"_s, u"west"_s}, true)));
+        const QcBlockId east = *before->stateId(u"a:stairs[facing=east,half=top]"_s);
+        auto chunk = std::make_shared<QcChunk>(QcChunkPos{2, -3});
+        chunk->setBlock(1, 64, 1, east);
+        chunk->setBlock(2, 64, 1, *before->blockId(u"a:stone"_s));
+        QVERIFY(QcWorldStorage(dir.path(), before).writeChunks({{chunk->pos(), chunk}}).has_value());
+
+        // Later content lists the values in another order and drops the half property: runtime
+        // ids differ, the saved state still means facing east.
+        auto after = std::make_shared<QcContentRegistry>();
+        QVERIFY(after->registerBlock(stairs({u"west"_s, u"south"_s, u"east"_s, u"north"_s}, false)));
+        QVERIFY(after->registerBlock(block(u"a:stone"_s)));
+        QStringList warnings;
+        const auto read = QcWorldStorage(dir.path(), after).readChunks(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        const auto loaded = read->value({2, -3});
+        QCOMPARE(after->stateName(loaded->block(1, 64, 1)), u"a:stairs[facing=east]"_s);
+        QCOMPARE(after->stateName(loaded->block(2, 64, 1)), u"a:stone"_s);
+        // A property the block does not have is reported, not fatal.
+        QCOMPARE(warnings.size(), 1);
+        QVERIFY2(warnings.first().contains(u"half=top"_s), qPrintable(warnings.first()));
+    }
+
+    void oldRegionFilesStillLoad()
+    {
+        // A region file of format 1, written here byte by byte: plain block names, no states.
+        QTemporaryDir dir;
+        QVERIFY(QDir().mkpath(dir.filePath(u"regions"_s)));
+        QcChunk chunk({0, 0});
+        chunk.setBlock(3, 70, 4, 0);
+        chunk.setBlock(5, 70, 4, 1);
+        chunk.setBlock(6, 70, 4, 2);
+        QByteArray payload;
+        {
+            QDataStream stream(&payload, QIODevice::WriteOnly);
+            stream.setVersion(QDataStream::Qt_6_8);
+            stream << quint32(3) << u"a:air_like"_s << u"a:stone"_s << u"a:stairs"_s << quint32(1);
+            QcProtocol::writeChunk(stream, chunk);
+        }
+        QFile file(dir.filePath(u"regions/r.0.0.qcr"_s));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        QDataStream header(&file);
+        header.setVersion(QDataStream::Qt_6_8);
+        header.writeRawData("QCRG", 4);
+        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
+        header.writeRawData(payload.constData(), int(payload.size()));
+        file.close();
+
+        auto content = std::make_shared<QcContentRegistry>();
+        QVERIFY(content->registerBlock(block(u"a:stone"_s)));
+        QVERIFY(content->registerBlock(stairs({u"north"_s, u"east"_s, u"south"_s, u"west"_s}, true)));
+        QStringList warnings;
+        const auto read = QcWorldStorage(dir.path(), content).readChunks(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        const auto loaded = read->value({0, 0});
+        QVERIFY(loaded);
+        QCOMPARE(content->stateName(loaded->block(5, 70, 4)), u"a:stone"_s);
+        // A plain name of a block with states loads as its default state.
+        QCOMPARE(content->stateName(loaded->block(6, 70, 4)), u"a:stairs[facing=north,half=bottom]"_s);
+        QCOMPARE(loaded->block(3, 70, 4), qcAirBlockId);
+        // The unknown name from palette slot 0 becomes air with a warning.
+        QCOMPARE(warnings.size(), 1);
+        QVERIFY(warnings.first().contains(u"a:air_like"_s));
+        // Saving again writes format 2 with states, which reads back the same.
+        QVERIFY(QcWorldStorage(dir.path(), content).writeChunks({{loaded->pos(), loaded}}).has_value());
+        QFile again(dir.filePath(u"regions/r.0.0.qcr"_s));
+        QVERIFY(again.open(QIODevice::ReadOnly));
+        QCOMPARE(again.read(6).mid(4), QByteArray("\x00\x02", 2));
+        again.close();
+        warnings.clear();
+        const auto reread = QcWorldStorage(dir.path(), content).readChunks(warnings);
+        QVERIFY(warnings.isEmpty());
+        QCOMPARE(reread->value({0, 0})->block(6, 70, 4), loaded->block(6, 70, 4));
+    }
+
+    void containersRoundTripAndUnknownItems()
+    {
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QStringList warnings;
+        QVERIFY(storage.readContainers(warnings)->isEmpty());
+        QcContainerManager::Container chest{{4, 70, -9}, QList<QcItemStack>(27)};
+        chest.stacks[0] = {*content->itemId(u"a:stone"_s), 64, 0};
+        chest.stacks[26] = {*content->itemId(u"mod:gem"_s), 3, 0};
+        QcContainerManager::Container small{{-4, 10, 9}, QList<QcItemStack>(5)};
+        QVERIFY(storage.writeContainers({chest, small}).has_value());
+        const auto withoutMod = registryWith({u"a:stone"_s});
+        const auto read = QcWorldStorage(dir.path(), withoutMod).readContainers(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->size(), 2);
+        QCOMPARE(read->at(0).pos, chest.pos);
+        QCOMPARE(read->at(0).stacks.size(), 27);
+        QCOMPARE(read->at(0).stacks[0], (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 64, 0}));
+        QVERIFY(read->at(0).stacks[26].isEmpty());
+        QCOMPARE(read->at(1).stacks.size(), 5);
+        QCOMPARE(warnings.size(), 1);
+        // A damaged file stops loading with a message.
+        QFile file(dir.filePath(u"containers.qce"_s));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.seek(20);
+        file.write("\x7f", 1);
+        file.close();
+        const auto damaged = storage.readContainers(warnings);
+        QVERIFY(!damaged.has_value());
+        QVERIFY(damaged.error().contains(u"containers.qce"_s));
+        // A container without slots cannot come from a storage block: the file is damaged.
+        QVERIFY(storage.writeContainers({chest, {{1, 2, 3}, {}}}).has_value());
+        const auto empty = storage.readContainers(warnings);
+        QVERIFY(!empty.has_value());
+        QVERIFY(empty.error().contains(u"container 1"_s));
+    }
+
+    void blockUpdatesRoundTrip()
+    {
+        QTemporaryDir dir;
+        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        QVERIFY(storage.readBlockUpdates()->isEmpty());
+        const QList<QcBlockPos> positions{{1, 2, 3}, {-40, 255, 7}, {0, 0, -1}};
+        QVERIFY(storage.writeBlockUpdates(positions).has_value());
+        QCOMPARE(*storage.readBlockUpdates(), positions);
+        // An empty queue removes the file.
+        QVERIFY(storage.writeBlockUpdates({}).has_value());
+        QVERIFY(!QFile::exists(dir.filePath(u"blockupdates.qce"_s)));
+        QVERIFY(storage.readBlockUpdates()->isEmpty());
+        // Positions outside the world make the file damaged.
+        QVERIFY(storage.writeBlockUpdates({{0, 256, 0}}).has_value());
+        QVERIFY(!storage.readBlockUpdates().has_value());
     }
 
     void machinesRoundTripAndUnknownItems()

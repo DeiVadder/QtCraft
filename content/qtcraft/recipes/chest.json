@@ -1,0 +1,15 @@
+{
+    "name": "chest",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "#planks"
+    },
+    "result": {
+        "item": "chest"
+    }
+}

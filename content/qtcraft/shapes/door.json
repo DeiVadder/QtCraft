@@ -1,0 +1,12 @@
+{
+    "name": "door",
+    "rotate": "facing",
+    "parts": [
+        { "when": { "open": false, "half": "bottom" }, "boxes": [[0, 0, 0.8125, 1, 1, 1]], "texture": "lower" },
+        { "when": { "open": false, "half": "top" }, "boxes": [[0, 0, 0.8125, 1, 1, 1]], "texture": "upper" },
+        { "when": { "open": true, "hinge": "left", "half": "bottom" }, "boxes": [[0, 0, 0, 0.1875, 1, 1]], "texture": "lower" },
+        { "when": { "open": true, "hinge": "left", "half": "top" }, "boxes": [[0, 0, 0, 0.1875, 1, 1]], "texture": "upper" },
+        { "when": { "open": true, "hinge": "right", "half": "bottom" }, "boxes": [[0.8125, 0, 0, 1, 1, 1]], "texture": "lower" },
+        { "when": { "open": true, "hinge": "right", "half": "top" }, "boxes": [[0.8125, 0, 0, 1, 1, 1]], "texture": "upper" }
+    ]
+}

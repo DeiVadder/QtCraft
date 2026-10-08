@@ -44,6 +44,12 @@ ApplicationWindow {
         game: game
     }
 
+    ChestScreen {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "chest"
+        game: game
+    }
+
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === "playing" && (game.overlay === "pause" || game.overlay === "settings" || game.overlay === "character")

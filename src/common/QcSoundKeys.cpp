@@ -17,7 +17,7 @@ QString defaultMaterialFor(const QcBlockDefinition &block)
     if (block.renderLayer == QcRenderLayer::Invisible || block.liquid) {
         return {};
     }
-    if (block.shape == QcBlockShape::Cross || block.renderLayer == QcRenderLayer::Cutout) {
+    if (block.shapeName == u"qtcraft:cross"_s || block.renderLayer == QcRenderLayer::Cutout) {
         return u"qtcraft:grass"_s;
     }
     if (block.tool == u"axe"_s) {

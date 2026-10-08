@@ -2,6 +2,7 @@
 
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 namespace {
@@ -224,6 +225,100 @@ void paint(QImage &image, const QcTextureSpec &spec)
                     }
                 } else if (lintel || y == 15 || y == 0) {
                     color = scaled(spec.primary, 0.75);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Torch:
+                // Stretched over the whole torch box: the top quarter burns.
+                if (y < 4) {
+                    color = y < 2 ? scaled(spec.secondary, 1.15) : varied(spec, spec.secondary, x, y, 3);
+                } else {
+                    color = varied(spec, spec.primary, x, y, 5);
+                }
+                break;
+            case QcTextureSpec::Pattern::TorchItem: {
+                // A thin stick with a glowing tip and a flame tapering upwards, narrower at the
+                // bottom than at its widest row so it reads as a flame, not as a cross.
+                static constexpr std::array<std::pair<int, int>, 6> flameRows = {
+                    {{8, 8}, {7, 8}, {7, 9}, {6, 9}, {6, 9}, {7, 8}}};
+                const bool inFlame = y >= 1 && y <= 6 && x >= flameRows[std::size_t(y - 1)].first
+                                     && x <= flameRows[std::size_t(y - 1)].second;
+                const bool stick = (x == 7 || x == 8) && y >= 7 && y <= 15;
+                if (inFlame) {
+                    const bool core = (x == 7 || x == 8) && y >= 2 && y <= 5;
+                    const bool edge = x == flameRows[std::size_t(y - 1)].first || x == flameRows[std::size_t(y - 1)].second;
+                    if (y == 6) {
+                        color = QColor(150, 60, 20);
+                    } else if (core && y >= 3) {
+                        color = QColor(255, 244, 190);
+                    } else if (edge && y >= 3) {
+                        color = scaled(spec.secondary, 0.85);
+                    } else {
+                        color = varied(spec, spec.secondary, x, y, 3);
+                    }
+                } else if (stick) {
+                    color = varied(spec, x == 8 ? scaled(spec.primary, 0.75) : spec.primary, x, y, 5);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Ladder: {
+                const bool rail = x == 2 || x == 3 || x == 12 || x == 13;
+                const bool rung = (y % 4 == 1) && x > 3 && x < 12;
+                if (rail) {
+                    color = varied(spec, spec.primary, x, y, 5);
+                } else if (rung) {
+                    color = scaled(spec.primary, 0.9);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::DoorLower:
+            case QcTextureSpec::Pattern::DoorUpper: {
+                const bool lower = spec.pattern == QcTextureSpec::Pattern::DoorLower;
+                const bool frame = x == 0 || x == size - 1 || (lower ? y == size - 1 : y == 0);
+                const bool seam = x % 5 == 0;
+                const bool window = !lower && x >= 3 && x <= 12 && y >= 2 && y <= 9 && x != 7 && x != 8 && y != 5;
+                if (window) {
+                    color = QColor(0, 0, 0, 0);
+                } else if (frame || (!lower && (x == 2 || x == 13) && y >= 1 && y <= 10)) {
+                    color = varied(spec, spec.secondary, x, y, 5);
+                } else if (lower && x == 12 && (y == 1 || y == 2)) {
+                    color = QColor(70, 70, 76);
+                } else if (seam) {
+                    color = scaled(spec.primary, 0.82);
+                } else {
+                    color = scaled(spec.primary, 1.0 + spec.variation * 0.5 * noise(spec.seed, x / 5, y));
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Trapdoor: {
+                const bool frame = x == 0 || y == 0 || x == size - 1 || y == size - 1;
+                const bool hole = y >= 3 && y <= 6 && ((x >= 3 && x <= 6) || (x >= 9 && x <= 12));
+                if (hole) {
+                    color = QColor(0, 0, 0, 0);
+                } else if (frame || y == 8) {
+                    color = varied(spec, spec.secondary, x, y, 5);
+                } else if (x % 4 == 0) {
+                    color = scaled(spec.primary, 0.85);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::ChestSide:
+            case QcTextureSpec::Pattern::ChestFront:
+            case QcTextureSpec::Pattern::ChestTop: {
+                const bool top = spec.pattern == QcTextureSpec::Pattern::ChestTop;
+                const bool frame = x <= 1 || x >= size - 2 || y >= size - 1 || (top ? y <= 1 : y <= 2);
+                const bool lid = !top && (y == 6 || y == 7);
+                const bool latch = spec.pattern == QcTextureSpec::Pattern::ChestFront && x >= 7 && x <= 8 && y >= 5 && y <= 9;
+                if (latch) {
+                    color = varied(spec, spec.secondary, x, y, 9);
+                } else if (frame || lid) {
+                    color = scaled(spec.primary, 0.62);
+                } else if (y % 4 == 3) {
+                    color = scaled(spec.primary, 0.85);
                 }
                 break;
             }

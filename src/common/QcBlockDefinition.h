@@ -1,7 +1,9 @@
 #pragma once
 
 #include "QcBlockFace.h"
+#include "QcBlockProperty.h"
 #include "QcMachineDefinition.h"
+#include "QcShapeDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -23,11 +25,21 @@ enum class QcRenderLayer : quint8 {
     Translucent,
 };
 
-// Geometry the client mesher builds for a block.
-enum class QcBlockShape : quint8 {
-    Cube,
-    // Two crossed, double-sided quads (saplings, flowers); never hides neighbour faces.
-    Cross,
+// What a block needs next to it to stay in place; without it, it breaks and drops.
+enum class QcBlockSupport : quint8 {
+    None,
+    // A full solid top face below (plants, floor torches).
+    Below,
+    // A full solid face on the side its `attach` property names (torches, ladders).
+    Attached,
+};
+
+// How a placed block's `facing` follows the player's horizontal view direction.
+enum class QcFacingRule : quint8 {
+    // Facing where the player looks (stairs climb away, doors open away).
+    Away,
+    // Facing back at the player (furnace and chest fronts).
+    Toward,
 };
 
 // What happens to a block when it makes a sound.
@@ -69,7 +81,11 @@ struct QcBlockDefinition
     QString name;
     QString translationKey;
     QcRenderLayer renderLayer = QcRenderLayer::Opaque;
-    QcBlockShape shape = QcBlockShape::Cube;
+    // Named state properties; every combination of values is a state with its own runtime id.
+    QList<QcBlockProperty> properties;
+    // Shape registered under this name; empty uses `shape` (empty again: the full cube).
+    QString shapeName;
+    QcShapeDefinition shape;
     // Solid blocks collide with entities.
     bool solid = true;
     // Opaque blocks are full cubes that hide adjacent faces and block sky light.
@@ -99,6 +115,52 @@ struct QcBlockDefinition
     std::array<QString, qcBlockSoundActionCount> soundKeys;
     // Texture names indexed by QcBlockFace.
     std::array<QString, qcBlockFaceCount> faceTextures;
+    // Further named textures that shape parts refer to (door halves), as slot -> texture.
+    QList<std::pair<QString, QString>> textureSlots;
+    // Item icon drawn flat instead of the block model (torches, doors); empty for the block model.
+    QString itemTexture;
+    // Block light emitted, 0..15.
+    int lightLevel = 0;
+    // Entities inside climb up and down (ladders).
+    bool climbable = false;
+    // Using the block flips its `open` property (doors, trapdoors, gates).
+    bool toggles = false;
+    // Two blocks tall: placed, opened and broken together; `half` tells bottom from top.
+    bool door = false;
+    QcFacingRule facingRule = QcFacingRule::Away;
+    QcBlockSupport support = QcBlockSupport::None;
+    // Connection group this block belongs to and the groups whose members (and full solid blocks)
+    // set its north, east, south and west properties (fences, walls, panes).
+    QString connectGroup;
+    QStringList connectsTo;
+    // Item slots of a storage block (chest); 0 for blocks without storage.
+    int containerSlots = 0;
+    // Tags of the item that places this block (server side only).
+    QStringList itemTags;
+    // "<material>/<family>" for building parts made by QcPartGenerator, empty otherwise (server side only).
+    QString partOf;
+
+    static constexpr int maxLightLevel = 15;
+    static constexpr int maxContainerSlots = 54;
 
     const QString &texture(QcBlockFace face) const { return faceTextures[std::size_t(face)]; }
+    // Texture of a named slot, or empty.
+    QString slotTexture(const QString &slot) const
+    {
+        for (const auto &[name, texture] : textureSlots) {
+            if (name == slot) {
+                return texture;
+            }
+        }
+        return {};
+    }
+    const QcBlockProperty *property(const QString &propertyName) const
+    {
+        for (const QcBlockProperty &candidate : properties) {
+            if (candidate.name == propertyName) {
+                return &candidate;
+            }
+        }
+        return nullptr;
+    }
 };

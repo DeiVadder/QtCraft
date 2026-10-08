@@ -1,5 +1,7 @@
 #include "QcChunkMesher.h"
 
+#include "QcLightVolume.h"
+
 namespace {
 
 using Entry = QcBlockRenderTable::Entry;
@@ -53,23 +55,28 @@ private:
     const QcMeshInput &m_input;
 };
 
-// Sky light of the 3 x 3 chunk neighbourhood around one section, with a margin of one chunk
-// horizontally and 16 blocks vertically, which is as far as light travels (levels 15 to 0).
-class SkyLight
+// Sky and block light of the 3 x 3 chunk neighbourhood around one section, with a margin of one
+// chunk horizontally and 16 blocks vertically, which is as far as light travels (levels 15 to 0).
+// Block light comes from the input's light snapshots or, without them, from every source in that
+// volume, so it is complete for the section either way.
+class Lighting
 {
 public:
     static constexpr int extent = 3 * QcWorld::chunkSize;
     static constexpr int margin = 16;
     static constexpr int maxLevel = 15;
 
-    SkyLight(Neighbourhood around, const QcMeshInput &input)
+    Lighting(Neighbourhood around, const QcMeshInput &input)
         : m_minY(std::max(0, input.sectionIndex * QcWorld::sectionHeight - margin))
         , m_maxY(std::min(QcWorld::worldHeight - 1, (input.sectionIndex + 1) * QcWorld::sectionHeight - 1 + margin))
         , m_height(m_maxY - m_minY + 1)
         , m_levels(qsizetype(extent) * extent * m_height, 0)
         , m_opacity(qsizetype(extent) * extent * m_height, 0)
+        , m_blockLight(input.renderTable->hasLightSources() && !input.hasBlockLight ? extent : 0, m_height, extent)
+        , m_input(input)
     {
         const QcBlockRenderTable &table = *input.renderTable;
+        const bool blockLight = table.hasLightSources() && !input.hasBlockLight;
         QList<int> skyTop(qsizetype(extent) * extent, 0);
         for (int z = 0; z < extent; ++z) {
             for (int x = 0; x < extent; ++x) {
@@ -99,19 +106,27 @@ public:
                 skyTop[z * extent + x] = top;
                 for (int y = m_minY; y <= m_maxY; ++y) {
                     const std::optional<QcBlockId> id = around.block(lx, y, lz);
-                    const int opacity = id ? table.entry(*id).lightOpacity : maxLevel;
+                    const Entry &entry = table.entry(id.value_or(qcAirBlockId));
+                    const int opacity = id ? entry.lightOpacity : maxLevel;
                     m_opacity[index(x, y, z)] = quint8(opacity);
                     if (y > top) {
                         m_levels[index(x, y, z)] = quint8(maxLevel);
+                    }
+                    if (blockLight) {
+                        m_blockLight.setOpacity(x, y - m_minY, z, opacity);
+                        if (id && entry.lightLevel > 0) {
+                            m_blockLight.addSource(x, y - m_minY, z, entry.lightLevel);
+                        }
                     }
                 }
             }
         }
         propagate(skyTop);
+        m_blockLight.propagate();
     }
 
-    // Light level of a block given in chunk-local coordinates; outside the volume counts as dark.
-    int level(int lx, int y, int lz) const
+    // Light levels of a block given in chunk-local coordinates; outside the volume counts as dark.
+    int sky(int lx, int y, int lz) const
     {
         const int x = lx + QcWorld::chunkSize;
         const int z = lz + QcWorld::chunkSize;
@@ -119,6 +134,16 @@ public:
             return y >= QcWorld::worldHeight ? maxLevel : 0;
         }
         return m_levels[index(x, y, z)];
+    }
+    int block(int lx, int y, int lz) const
+    {
+        if (!m_input.hasBlockLight) {
+            return m_blockLight.level(lx + QcWorld::chunkSize, y - m_minY, lz + QcWorld::chunkSize);
+        }
+        const int cx = lx < 0 ? -1 : (lx >= QcWorld::chunkSize ? 1 : 0);
+        const int cz = lz < 0 ? -1 : (lz >= QcWorld::chunkSize ? 1 : 0);
+        const auto &light = m_input.blockLight[std::size_t(cz + 1) * 3 + std::size_t(cx + 1)];
+        return light ? light->level(lx - cx * QcWorld::chunkSize, y, lz - cz * QcWorld::chunkSize) : 0;
     }
 
 private:
@@ -179,53 +204,103 @@ private:
     int m_height = 0;
     QList<quint8> m_levels;
     QList<quint8> m_opacity;
+    QcLightVolume m_blockLight;
+    const QcMeshInput &m_input;
 };
 
-bool faceVisible(QcBlockId self, const Entry &selfEntry, std::optional<QcBlockId> neighbour, const QcBlockRenderTable &table)
+// Ambient occlusion and smooth light at the four corners of a full face whose open side is the
+// cell (nx, ny, nz).
+struct FaceCorners
 {
-    if (!neighbour) {
-        return false;
+    std::array<int, 4> ao{};
+    std::array<float, 4> sky{};
+    std::array<float, 4> block{};
+};
+
+FaceCorners cornersOf(Neighbourhood around, const Lighting &light, int nx, int ny, int nz, QcBlockFace face)
+{
+    FaceCorners result;
+    const auto faceIndex = std::size_t(face);
+    const auto [axisA, axisB] = QcBlockRenderTable::axes(face);
+    for (std::size_t corner = 0; corner < 4; ++corner) {
+        const auto &c = faceCorners[faceIndex][corner];
+        // Offsets towards this corner along the two axes spanning the face.
+        std::array<int, 3> alongA{};
+        std::array<int, 3> alongB{};
+        alongA[std::size_t(axisA)] = c[std::size_t(axisA)] * 2 - 1;
+        alongB[std::size_t(axisB)] = c[std::size_t(axisB)] * 2 - 1;
+        const bool side1 = around.isOpaque(nx + alongA[0], ny + alongA[1], nz + alongA[2]);
+        const bool side2 = around.isOpaque(nx + alongB[0], ny + alongB[1], nz + alongB[2]);
+        const bool diagonal =
+            around.isOpaque(nx + alongA[0] + alongB[0], ny + alongA[1] + alongB[1], nz + alongA[2] + alongB[2]);
+        result.ao[corner] = (side1 && side2) ? 0 : 3 - int(side1) - int(side2) - int(diagonal);
+        // Smooth lighting: average the open cells around the vertex in front of the face.
+        int skySum = light.sky(nx, ny, nz);
+        int blockSum = light.block(nx, ny, nz);
+        int count = 1;
+        const auto add = [&](int x, int y, int z) {
+            skySum += light.sky(x, y, z);
+            blockSum += light.block(x, y, z);
+            ++count;
+        };
+        if (!side1) {
+            add(nx + alongA[0], ny + alongA[1], nz + alongA[2]);
+        }
+        if (!side2) {
+            add(nx + alongB[0], ny + alongB[1], nz + alongB[2]);
+        }
+        if (!diagonal && !(side1 && side2)) {
+            add(nx + alongA[0] + alongB[0], ny + alongA[1] + alongB[1], nz + alongA[2] + alongB[2]);
+        }
+        result.sky[corner] = float(skySum) / float(count * Lighting::maxLevel);
+        result.block[corner] = float(blockSum) / float(count * Lighting::maxLevel);
     }
-    const Entry &other = table.entry(*neighbour);
-    if (other.opaque) {
-        return false;
-    }
-    if (*neighbour == self && selfEntry.layer == QcRenderLayer::Translucent) {
-        return false;
-    }
-    return !(selfEntry.liquid && other.liquid);
+    return result;
 }
 
-// Two quads along the block diagonals, each with a front and a back side so back-face culling
+void appendQuad(QList<QcBlockVertex> &vertices, QList<quint32> &indices, const std::array<QcBlockVertex, 4> &corners,
+                bool flipDiagonal)
+{
+    const auto base = quint32(vertices.size());
+    for (const QcBlockVertex &vertex : corners) {
+        vertices.append(vertex);
+    }
+    if (flipDiagonal) {
+        indices.append({base + 1, base + 2, base + 3, base + 1, base + 3, base});
+    } else {
+        indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+    }
+}
+
+// Two quads along the diagonals of `cross`, each with a front and a back side so back-face culling
 // keeps both visible.
-void appendCross(QcChunkMesh &mesh, const Entry &entry, QcBlockPos pos, float light)
+void appendCross(QcChunkMesh &mesh, const Entry &entry, const QcBlockRenderTable::Cross &cross, QcBlockPos pos, float sky,
+                 float block)
 {
     const bool translucent = entry.layer == QcRenderLayer::Translucent;
     QList<QcBlockVertex> &vertices = translucent ? mesh.translucentVertices : mesh.opaqueVertices;
     QList<quint32> &indices = translucent ? mesh.translucentIndices : mesh.opaqueIndices;
-    const QRectF &uv = entry.faceUv[std::size_t(QcBlockFace::North)];
-    // Inset a little so the quads do not touch the neighbour blocks.
-    constexpr float low = 0.15f;
-    constexpr float high = 0.85f;
-    constexpr std::array<std::array<float, 4>, 2> diagonals = {{{low, low, high, high}, {low, high, high, low}}};
-    for (const auto &[x0, z0, x1, z1] : diagonals) {
+    const QRectF &uv = cross.uv;
+    const auto &[x0, y0, z0, x1, y1, z1] = cross.box;
+    const std::array<std::array<float, 4>, 2> diagonals = {{{x0, z0, x1, z1}, {x0, z1, x1, z0}}};
+    for (const auto &[ax, az, bx, bz] : diagonals) {
         for (const bool back : {false, true}) {
-            const std::array<std::array<float, 2>, 2> ends = back ? std::array<std::array<float, 2>, 2>{{{x1, z1}, {x0, z0}}}
-                                                                   : std::array<std::array<float, 2>, 2>{{{x0, z0}, {x1, z1}}};
-            const auto base = quint32(vertices.size());
+            const std::array<std::array<float, 2>, 2> ends = back ? std::array<std::array<float, 2>, 2>{{{bx, bz}, {ax, az}}}
+                                                                   : std::array<std::array<float, 2>, 2>{{{ax, az}, {bx, bz}}};
+            std::array<QcBlockVertex, 4> corners{};
             for (std::size_t corner = 0; corner < 4; ++corner) {
                 const auto &end = ends[(corner == 1 || corner == 2) ? 1 : 0];
-                QcBlockVertex vertex;
+                QcBlockVertex &vertex = corners[corner];
                 vertex.x = float(pos.x) + end[0];
-                vertex.y = float(pos.y) + (corner < 2 ? 0.0f : 1.0f);
+                vertex.y = float(pos.y) + (corner < 2 ? y0 : y1);
                 vertex.z = float(pos.z) + end[1];
                 vertex.u = float((corner == 0 || corner == 3) ? uv.left() : uv.right());
                 vertex.v = float(corner < 2 ? uv.bottom() : uv.top());
                 vertex.shade = 0.9f;
-                vertex.skyLight = light;
-                vertices.append(vertex);
+                vertex.skyLight = sky;
+                vertex.blockLight = block;
             }
-            indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+            appendQuad(vertices, indices, corners, false);
         }
     }
 }
@@ -245,10 +320,11 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
     }
     const QcBlockRenderTable &table = *input.renderTable;
     const Neighbourhood around(input);
-    const SkyLight sky(around, input);
+    const Lighting light(around, input);
     const int baseY = input.sectionIndex * QcWorld::sectionHeight;
     const int worldX = centre->pos().x * QcWorld::chunkSize;
     const int worldZ = centre->pos().z * QcWorld::chunkSize;
+    constexpr float maxLevel = float(Lighting::maxLevel);
 
     for (int ly = 0; ly < QcWorld::sectionHeight; ++ly) {
         const int y = baseY + ly;
@@ -259,83 +335,108 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                 if (entry.layer == QcRenderLayer::Invisible) {
                     continue;
                 }
-                if (entry.cross) {
-                    appendCross(mesh, entry, {worldX + x, y, worldZ + z}, float(sky.level(x, y, z)) / float(SkyLight::maxLevel));
-                    continue;
-                }
-                const std::optional<QcBlockId> above = around.block(x, y + 1, z);
-                const bool lowerTop = entry.liquid && !(above && table.entry(*above).liquid);
                 const bool translucent = entry.layer == QcRenderLayer::Translucent;
                 QList<QcBlockVertex> &vertices = translucent ? mesh.translucentVertices : mesh.opaqueVertices;
                 QList<quint32> &indices = translucent ? mesh.translucentIndices : mesh.opaqueIndices;
+                const QcBlockPos world{worldX + x, y, worldZ + z};
 
+                if (!entry.fullCube) {
+                    const float ownSky = float(light.sky(x, y, z));
+                    const float ownBlock = float(light.block(x, y, z));
+                    for (const QcBlockRenderTable::Cross &cross : entry.crosses) {
+                        appendCross(mesh, entry, cross, world, ownSky / maxLevel, ownBlock / maxLevel);
+                    }
+                    for (const QcBlockRenderTable::Quad &quad : entry.quads) {
+                        const QcFaceOffset normal = qcFaceOffset(quad.face);
+                        const int nx = x + normal.dx;
+                        const int ny = y + normal.dy;
+                        const int nz = z + normal.dz;
+                        const float shade = faceShade[std::size_t(quad.face)];
+                        std::array<QcBlockVertex, 4> corners{};
+                        if (quad.boundary) {
+                            const std::optional<QcBlockId> neighbour = around.block(nx, ny, nz);
+                            if (!neighbour || QcBlockRenderTable::hides(entry, quad.rect, quad.face, table.entry(*neighbour))) {
+                                continue;
+                            }
+                            // Values of the full face, interpolated at the corners of the part.
+                            const FaceCorners full = cornersOf(around, light, nx, ny, nz, quad.face);
+                            const auto [axisA, axisB] = QcBlockRenderTable::axes(quad.face);
+                            for (std::size_t corner = 0; corner < 4; ++corner) {
+                                const float ta = quad.corners[corner][std::size_t(axisA)];
+                                const float tb = quad.corners[corner][std::size_t(axisB)];
+                                float occlusion = 0.0f;
+                                float sky = 0.0f;
+                                float block = 0.0f;
+                                for (std::size_t k = 0; k < 4; ++k) {
+                                    const auto &c = faceCorners[std::size_t(quad.face)][k];
+                                    const float weight = (c[std::size_t(axisA)] != 0 ? ta : 1.0f - ta)
+                                                         * (c[std::size_t(axisB)] != 0 ? tb : 1.0f - tb);
+                                    occlusion += weight * ambientOcclusionLevels[std::size_t(full.ao[k])];
+                                    sky += weight * full.sky[k];
+                                    block += weight * full.block[k];
+                                }
+                                corners[corner].shade = shade * occlusion;
+                                corners[corner].skyLight = sky;
+                                corners[corner].blockLight = block;
+                            }
+                        } else {
+                            // Inside the cell: lit like the open space in front of the face.
+                            const float sky = std::max(ownSky, float(light.sky(nx, ny, nz))) / maxLevel;
+                            const float block = std::max(ownBlock, float(light.block(nx, ny, nz))) / maxLevel;
+                            for (QcBlockVertex &vertex : corners) {
+                                vertex.shade = shade;
+                                vertex.skyLight = sky;
+                                vertex.blockLight = block;
+                            }
+                        }
+                        for (std::size_t corner = 0; corner < 4; ++corner) {
+                            QcBlockVertex &vertex = corners[corner];
+                            vertex.x = float(world.x) + quad.corners[corner][0];
+                            vertex.y = float(world.y) + quad.corners[corner][1];
+                            vertex.z = float(world.z) + quad.corners[corner][2];
+                            vertex.u = quad.uvs[corner][0];
+                            vertex.v = quad.uvs[corner][1];
+                        }
+                        appendQuad(vertices, indices, corners, false);
+                    }
+                    continue;
+                }
+
+                const std::optional<QcBlockId> above = around.block(x, y + 1, z);
+                const bool lowerTop = entry.liquid && !(above && table.entry(*above).liquid);
                 for (const QcBlockFace face : qcAllBlockFaces) {
                     const QcFaceOffset normal = qcFaceOffset(face);
                     const int nx = x + normal.dx;
                     const int ny = y + normal.dy;
                     const int nz = z + normal.dz;
-                    if (!faceVisible(id, entry, around.block(nx, ny, nz), table)) {
+                    const std::optional<QcBlockId> neighbour = around.block(nx, ny, nz);
+                    if (!neighbour || QcBlockRenderTable::hides(entry, {}, face, table.entry(*neighbour))) {
                         continue;
                     }
                     const auto faceIndex = std::size_t(face);
-                    const int normalAxis = normal.dx != 0 ? 0 : (normal.dy != 0 ? 1 : 2);
-                    const int axisA = normalAxis == 0 ? 1 : 0;
-                    const int axisB = normalAxis == 2 ? 1 : 2;
                     const QRectF &uv = entry.faceUv[faceIndex];
-                    std::array<int, 4> ao{};
-                    std::array<float, 4> cornerLight{};
-                    const auto base = quint32(vertices.size());
+                    const FaceCorners values = cornersOf(around, light, nx, ny, nz, face);
+                    std::array<QcBlockVertex, 4> corners{};
                     for (std::size_t corner = 0; corner < 4; ++corner) {
                         const auto &c = faceCorners[faceIndex][corner];
-                        // Offsets towards this corner along the two axes spanning the face.
-                        std::array<int, 3> alongA{};
-                        std::array<int, 3> alongB{};
-                        alongA[std::size_t(axisA)] = c[std::size_t(axisA)] * 2 - 1;
-                        alongB[std::size_t(axisB)] = c[std::size_t(axisB)] * 2 - 1;
-                        const bool side1 = around.isOpaque(nx + alongA[0], ny + alongA[1], nz + alongA[2]);
-                        const bool side2 = around.isOpaque(nx + alongB[0], ny + alongB[1], nz + alongB[2]);
-                        const bool diagonal = around.isOpaque(nx + alongA[0] + alongB[0], ny + alongA[1] + alongB[1],
-                                                              nz + alongA[2] + alongB[2]);
-                        ao[corner] = (side1 && side2) ? 0 : 3 - int(side1) - int(side2) - int(diagonal);
-                        // Smooth lighting: average the open cells around the vertex in front of the face.
-                        int lightSum = sky.level(nx, ny, nz);
-                        int lightCount = 1;
-                        if (!side1) {
-                            lightSum += sky.level(nx + alongA[0], ny + alongA[1], nz + alongA[2]);
-                            ++lightCount;
-                        }
-                        if (!side2) {
-                            lightSum += sky.level(nx + alongB[0], ny + alongB[1], nz + alongB[2]);
-                            ++lightCount;
-                        }
-                        if (!diagonal && !(side1 && side2)) {
-                            lightSum += sky.level(nx + alongA[0] + alongB[0], ny + alongA[1] + alongB[1], nz + alongA[2] + alongB[2]);
-                            ++lightCount;
-                        }
-                        cornerLight[corner] = float(lightSum) / float(lightCount * SkyLight::maxLevel);
-
                         float vy = float(y + c[1]);
                         if (lowerTop && c[1] == 1) {
                             vy -= liquidSurfaceDrop;
                         }
                         const bool bottomEdge = corner < 2;
                         const bool leftEdge = corner == 0 || corner == 3;
-                        QcBlockVertex vertex;
-                        vertex.x = float(worldX + x + c[0]);
+                        QcBlockVertex &vertex = corners[corner];
+                        vertex.x = float(world.x + c[0]);
                         vertex.y = vy;
-                        vertex.z = float(worldZ + z + c[2]);
+                        vertex.z = float(world.z + c[2]);
                         vertex.u = float(leftEdge ? uv.left() : uv.right());
                         vertex.v = float(bottomEdge ? uv.bottom() : uv.top());
-                        vertex.shade = faceShade[faceIndex] * ambientOcclusionLevels[std::size_t(ao[corner])];
-                        vertex.skyLight = cornerLight[corner];
-                        vertices.append(vertex);
+                        vertex.shade = faceShade[faceIndex] * ambientOcclusionLevels[std::size_t(values.ao[corner])];
+                        vertex.skyLight = values.sky[corner];
+                        vertex.blockLight = values.block[corner];
                     }
                     // Split along the brighter diagonal so occlusion gradients stay symmetric.
-                    if (ao[0] + ao[2] >= ao[1] + ao[3]) {
-                        indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
-                    } else {
-                        indices.append({base + 1, base + 2, base + 3, base + 1, base + 3, base});
-                    }
+                    appendQuad(vertices, indices, corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3]);
                 }
             }
         }

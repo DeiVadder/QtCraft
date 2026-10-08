@@ -211,23 +211,25 @@ Item {
         anchors.bottomMargin: 8
         spacing: 2
 
-        // The first nine inventory rows are the hotbar; Row skips the invisible rest.
+        // The first nine inventory rows are the hotbar.
         Repeater {
-            model: hud.game.inventory
+            model: SlotRange {
+                source: hud.game.inventory
+                count: 9
+            }
 
             ItemSlot {
-                required property int index
+                required property int slot
                 required property string icon
                 required property int count
                 required property real durability
                 required property bool empty
 
-                visible: index < 9
                 slotIcon: icon
                 slotCount: count
                 slotDurability: durability
                 slotEmpty: empty
-                selected: index === hud.game.inventory.selectedSlot
+                selected: slot === hud.game.inventory.selectedSlot
             }
         }
     }

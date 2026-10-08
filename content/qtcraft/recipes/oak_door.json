@@ -1,0 +1,16 @@
+{
+    "name": "oak_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "#planks"
+    },
+    "result": {
+        "item": "oak_door",
+        "count": 3
+    }
+}

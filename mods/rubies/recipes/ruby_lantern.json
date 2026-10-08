@@ -1,0 +1,7 @@
+{
+    "name": "ruby_lantern",
+    "type": "shaped",
+    "pattern": ["r", "t"],
+    "key": { "r": "ruby", "t": "qtcraft:torch" },
+    "result": { "item": "ruby_lantern" }
+}

@@ -40,7 +40,11 @@ struct Fixture
         leaves = *content.registerBlock(makeBlock(u"t:leaves"_s, QcRenderLayer::Cutout, false));
         QcBlockDefinition cross = makeBlock(u"t:sapling"_s, QcRenderLayer::Cutout, false, true);
         cross.liquid = false;
-        cross.shape = QcBlockShape::Cross;
+        cross.shape.parts = {[] {
+            QcShapePart part;
+            part.crosses = {{{0.15, 0.0, 0.15}, {0.85, 1.0, 0.85}}};
+            return part;
+        }()};
         sapling = *content.registerBlock(cross);
         table = std::make_shared<const QcBlockRenderTable>(content, QcTextureAtlas::build(content));
     }

@@ -8,6 +8,8 @@
 #   stand  - standing still at the spawn
 #   sprint - sprinting and jumping straight ahead, streaming new chunks
 #   crowd  - standing among summoned mobs (humanoid zombies included) and dropped items
+#   light  - standing on a cleared stone floor while torches appear and vanish around the player
+#            four times a second (block light and remeshing in the background)
 
 set -u
 
@@ -39,6 +41,10 @@ run_scenario() {
     if [ "$scenario" != sprint ]; then
         walk=stand
     fi
+    if [ "$scenario" = light ]; then
+        walk=light
+        set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
+    fi
     if [ "$scenario" = crowd ]; then
         set -- "$@" --chat "/time set day" --chat "/summon qtcraft:pig 16" --chat "/summon qtcraft:pig 16" \
             --chat "/summon qtcraft:zombie 16" --chat "/summon qtcraft:slime 8"
@@ -64,8 +70,13 @@ value() {
 }
 
 failed=0
-printf '%-8s %14s %14s %13s %15s %13s %9s\n' scenario frame_avg_ms frame_p99_ms tick_avg_ms tick_worst_ms peak_rss_mb entities
-for scenario in stand sprint crowd; do
+KEYS="frame_avg_ms frame_p99_ms tick_avg_ms tick_worst_ms peak_rss_mb entities change_mesh_avg_ms change_mesh_max_ms mesh_backlog_max light_job_avg_ms"
+printf '%-8s' scenario
+for key in $KEYS; do
+    printf ' %18s' "$key"
+done
+printf '\n'
+for scenario in stand sprint crowd light; do
     results="$WORK/$scenario.results"
     : >"$results"
     i=1
@@ -80,8 +91,8 @@ for scenario in stand sprint crowd; do
         i=$((i + 1))
     done
     printf '%-8s' "$scenario"
-    for key in frame_avg_ms frame_p99_ms tick_avg_ms tick_worst_ms peak_rss_mb entities; do
-        printf ' %14s' "$(value "$key" <"$results" | median)"
+    for key in $KEYS; do
+        printf ' %18s' "$(value "$key" <"$results" | median)"
     done
     printf '\n'
 done

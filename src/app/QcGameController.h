@@ -63,6 +63,7 @@ class QcGameController : public QObject
     // The open machine (furnace screen): its name, the share of fuel left and of the item done.
     Q_PROPERTY(QString machineLabel READ machineLabel NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
+    Q_PROPERTY(int containerSlots READ containerSlots NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
@@ -200,6 +201,8 @@ public:
     int maxFood() const { return m_session ? m_session->maxFood() : QcItemDefinition::maxFood; }
     QString machineLabel() const { return m_machineLabel; }
     double machineBurn() const { return m_session ? m_session->machineBurn() : 0.0; }
+    // Slots of the open chest, 0 when none is open.
+    int containerSlots() const { return m_session && m_session->containerOpen() ? int(m_session->machineSlots().size()) : 0; }
     double machineProgress() const { return m_session ? m_session->machineProgress() : 0.0; }
     QString timeOfDay() const { return m_timeOfDay; }
     Q_INVOKABLE void leaveGame();
@@ -213,12 +216,14 @@ public:
     // Test hook: chat lines sent and overlay opened once the world is playable.
     void setStartupScript(QStringList chatLines, QString overlay);
     // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing and after a short warm-up, frame and
-    // server tick times are recorded while the player sprints and jumps straight ahead (`walk`)
-    // or stands still; the result is logged and the application quits.
-    void setBenchmark(int seconds, bool walk)
+    // server tick times are recorded, then the result is logged and the application quits.
+    // Benchmark scenarios: "sprint" walks ahead, "stand" stands still, "light" stands while torches
+    // are placed and removed around the player (block light updates and remeshing).
+    void setBenchmark(int seconds, const QString &scenario)
     {
         m_benchmarkSeconds = seconds;
-        m_benchmarkWalk = walk;
+        m_benchmarkWalk = scenario != u"stand" && scenario != u"light";
+        m_benchmarkLight = scenario == u"light";
     }
     QcClientSession *session() const { return m_session; }
 
@@ -269,6 +274,10 @@ private:
     // Enabling or disabling a mod changes the outfits on offer.
     void resetCharacterContent();
     QVariantList appearanceList(QcAppearanceDefinition::Kind kind) const;
+    // Block light (0..1) of entities and the hand at a position, as the meshes show it.
+    float blockLightAt(QcBlockPos pos) const;
+    // The state a block item is drawn in (icons, hand, dropped items).
+    static QcBlockId itemState(const QcContentRegistry &content, QcBlockId block);
     static QcEntityMesher::ItemLook itemLook(const QcContentRegistry &content, QcItemId item);
     void updateSky(double alpha);
     void updateInventory();
@@ -305,6 +314,7 @@ private:
     int m_benchmarkSeconds = 0;
     bool m_benchmarkRunning = false;
     bool m_benchmarkWalk = true;
+    bool m_benchmarkLight = false;
     QElapsedTimer m_benchmarkFrame;
     QcVec3 m_benchmarkCheckpoint;
     QList<qint64> m_benchmarkFrameNs;

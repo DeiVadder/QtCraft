@@ -4,6 +4,16 @@
     "hardness": 3.5,
     "tool": "pickaxe",
     "toolLevel": 1,
+    "shape": "facing_cube",
+    "facing": "toward",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
     "machine": {
         "category": "smelting",
         "speed": 1.0
@@ -12,7 +22,6 @@
         "top": "furnace_top",
         "bottom": "furnace_top",
         "side": "furnace_side",
-        "north": "furnace_front",
-        "south": "furnace_front"
+        "north": "furnace_front"
     }
 }

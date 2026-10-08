@@ -1,6 +1,9 @@
 {
     "name": "cactus",
     "sound": "grass",
+    "shape": "cactus",
+    "opaque": false,
+    "lightOpacity": 0,
     "hardness": 0.4,
     "textures": {
         "top": "cactus_top",

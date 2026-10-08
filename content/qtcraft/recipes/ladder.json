@@ -1,0 +1,16 @@
+{
+    "name": "ladder",
+    "type": "shaped",
+    "pattern": [
+        "| |",
+        "|||",
+        "| |"
+    ],
+    "key": {
+        "|": "stick"
+    },
+    "result": {
+        "item": "ladder",
+        "count": 3
+    }
+}

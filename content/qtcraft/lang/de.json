@@ -74,5 +74,20 @@
     "appearance.qtcraft.cap": "Mütze",
     "block.qtcraft.furnace": "Ofen",
     "item.qtcraft.charcoal": "Holzkohle",
-    "item.qtcraft.cooked_porkchop": "Gebratenes Schweinefleisch"
+    "item.qtcraft.cooked_porkchop": "Gebratenes Schweinefleisch",
+    "block.qtcraft.birch_planks": "Birkenbretter",
+    "block.qtcraft.spruce_planks": "Fichtenbretter",
+    "block.qtcraft.torch": "Fackel",
+    "block.qtcraft.ladder": "Leiter",
+    "block.qtcraft.oak_door": "Eichentür",
+    "block.qtcraft.oak_trapdoor": "Eichenfalltür",
+    "block.qtcraft.glass_pane": "Glasscheibe",
+    "block.qtcraft.chest": "Truhe",
+    "material.qtcraft.oak": "Eichen",
+    "material.qtcraft.birch": "Birken",
+    "material.qtcraft.spruce": "Fichten",
+    "material.qtcraft.cobblestone": "Bruchstein",
+    "material.qtcraft.stone": "Stein",
+    "material.qtcraft.brick": "Ziegel",
+    "material.qtcraft.sandstone": "Sandstein"
 }

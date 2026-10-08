@@ -10,6 +10,8 @@ struct QcAabb
     QcVec3 min;
     QcVec3 max;
 
+    constexpr bool operator==(const QcAabb &) const = default;
+
     constexpr QcAabb moved(const QcVec3 &delta) const { return {min + delta, max + delta}; }
     constexpr QcAabb expandedTowards(const QcVec3 &delta) const
     {

@@ -15,6 +15,8 @@ struct QcEntityVertex
     float v = 0.0f;
     float shade = 1.0f;
     float skyLight = 1.0f;
+    // Block light (torches) in [0, 1].
+    float blockLight = 0.0f;
     // RGBA, 255 = unchanged.
     std::array<quint8, 4> tint = {255, 255, 255, 255};
 };

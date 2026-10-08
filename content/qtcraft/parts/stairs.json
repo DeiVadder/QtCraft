@@ -1,0 +1,11 @@
+{
+    "name": "stairs",
+    "kinds": ["wood", "stone"],
+    "fuel": 0.75,
+    "block": {
+        "shape": "stairs",
+        "states": { "facing": ["north", "east", "south", "west"], "half": ["bottom", "top"] }
+    },
+    "recipe": { "pattern": ["#  ", "## ", "###"], "key": { "#": "@" }, "count": 4 },
+    "translations": { "en": "%1 stairs", "de": "%1treppe" }
+}

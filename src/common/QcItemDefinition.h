@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QStringList>
 
 // Runtime item id: index into the registry's item table. 0 is "no item" (empty slot).
 using QcItemId = quint32;
@@ -34,4 +35,6 @@ struct QcItemDefinition
     int food = 0;
     // Seconds the item burns as fuel in a machine; 0 for items that are no fuel.
     double fuelSeconds = 0.0;
+    // Groups the item belongs to ("qtcraft:planks"); recipes accept any member of "#group".
+    QStringList tags;
 };

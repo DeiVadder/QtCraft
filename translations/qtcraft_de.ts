@@ -58,6 +58,19 @@
     </message>
 </context>
 <context>
+    <name>ChestScreen</name>
+    <message>
+        <location filename="../src/app/qml/ChestScreen.qml" line="94"/>
+        <source>Chest</source>
+        <translation>Truhe</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/ChestScreen.qml" line="140"/>
+        <source>Left click: pick up and put down. Right click: put down one. E or Esc closes. Breaking the chest drops its contents.</source>
+        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt.</translation>
+    </message>
+</context>
+<context>
     <name>DeathScreen</name>
     <message>
         <location filename="../src/app/qml/DeathScreen.qml" line="19"/>
@@ -351,64 +364,64 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="414"/>
-        <location filename="../src/app/QcGameController.cpp" line="484"/>
+        <location filename="../src/app/QcGameController.cpp" line="418"/>
+        <location filename="../src/app/QcGameController.cpp" line="488"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="487"/>
+        <location filename="../src/app/QcGameController.cpp" line="491"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="500"/>
+        <location filename="../src/app/QcGameController.cpp" line="504"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="500"/>
-        <location filename="../src/app/QcGameController.cpp" line="666"/>
+        <location filename="../src/app/QcGameController.cpp" line="504"/>
+        <location filename="../src/app/QcGameController.cpp" line="669"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="628"/>
+        <location filename="../src/app/QcGameController.cpp" line="631"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="636"/>
+        <location filename="../src/app/QcGameController.cpp" line="639"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="783"/>
+        <location filename="../src/app/QcGameController.cpp" line="802"/>
         <source>Disconnected: %1</source>
         <translation>Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="803"/>
+        <location filename="../src/app/QcGameController.cpp" line="822"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1031"/>
+        <location filename="../src/app/QcGameController.cpp" line="1079"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1095"/>
+        <location filename="../src/app/QcGameController.cpp" line="1143"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1095"/>
+        <location filename="../src/app/QcGameController.cpp" line="1143"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1144"/>
+        <location filename="../src/app/QcGameController.cpp" line="1204"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>

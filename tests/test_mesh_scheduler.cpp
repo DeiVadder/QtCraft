@@ -22,6 +22,21 @@ std::shared_ptr<QcContentRegistry> makeContent()
     if (!content->registerBlock(stone)) {
         qFatal("cannot register test block");
     }
+    // Id 2: looks different, same light properties as stone.
+    stone.name = u"t:granite"_s;
+    stone.faceTextures.fill(stone.name);
+    // Id 3: a torch.
+    QcBlockDefinition torch;
+    torch.name = u"t:torch"_s;
+    torch.solid = false;
+    torch.opaque = false;
+    torch.renderLayer = QcRenderLayer::Cutout;
+    torch.lightOpacity = 0;
+    torch.lightLevel = 14;
+    torch.faceTextures.fill(torch.name);
+    if (!content->registerBlock(stone) || !content->registerBlock(torch)) {
+        qFatal("cannot register test blocks");
+    }
     return content;
 }
 
@@ -65,7 +80,7 @@ private:
         QVERIFY(QTest::qWaitFor(
             [&] {
                 scheduler.pump(world);
-                return scheduler.dirtyCount() == 0 && scheduler.jobsInFlight() == 0;
+                return scheduler.dirtyCount() == 0 && scheduler.jobsInFlight() == 0 && scheduler.lightJobsPending() == 0;
             },
             timeoutMs));
     }
@@ -133,7 +148,7 @@ private slots:
 
         // Dig a hole at the top of section 0: the pit adds 4 side faces and a floor face.
         QVERIFY(world.setBlock({5, 15, 5}, qcAirBlockId));
-        scheduler.blockChanged({5, 15, 5});
+        scheduler.blockChanged(world, {5, 15, 5}, 1);
         pumpUntilIdle(scheduler, world);
         QCOMPARE(meshes.value(qcSectionKey({0, 0}, 0))->opaqueIndices.size(), before + qsizetype(4) * 6);
     }
@@ -154,12 +169,98 @@ private slots:
         // Opening a hole at the top of section 3 changes the light down to two sections below; those
         // sections are meshed again (neighbour chunks are marked too but lack side neighbours here).
         QVERIFY(world.setBlock({15, 63, 15}, qcAirBlockId));
-        scheduler.blockChanged({15, 63, 15});
+        scheduler.blockChanged(world, {15, 63, 15}, 1);
         // Only the centre chunk has all side neighbours, so only its sections produce results.
         pumpUntilIdle(scheduler, world);
         QVERIFY(meshed.contains(qcSectionKey({0, 0}, 1)));
         QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
         QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 6)));
+    }
+
+    void blockChangesRemeshOnlyWhatTheyReach()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QSet<quint64> meshed;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshed](quint64 key, const std::shared_ptr<const QcChunkMesh> &) { meshed.insert(key); });
+        connect(&scheduler, &QcMeshScheduler::meshRemoved, this, [&meshed](quint64 key) { meshed.insert(key); });
+        loadSquare(world, scheduler, 64);
+        pumpUntilIdle(scheduler, world);
+
+        // Granite for stone in the middle of section 3: same light, so only that section.
+        meshed.clear();
+        QVERIFY(world.setBlock({8, 56, 8}, 2));
+        scheduler.blockChanged(world, {8, 56, 8}, 1);
+        pumpUntilIdle(scheduler, world);
+        QCOMPARE(meshed, (QSet<quint64>{qcSectionKey({0, 0}, 3)}));
+        // On the corner of a section the neighbouring sections read its faces and light too (only the
+        // centre chunk has all side neighbours, so only its sections are meshed here).
+        meshed.clear();
+        QVERIFY(world.setBlock({0, 48, 15}, 2));
+        scheduler.blockChanged(world, {0, 48, 15}, 1);
+        pumpUntilIdle(scheduler, world);
+        QCOMPARE(meshed, (QSet<quint64>{qcSectionKey({0, 0}, 2), qcSectionKey({0, 0}, 3)}));
+
+        // A torch on the surface: no sky light changes and the block light reaches up to y = 77, so
+        // sections 3 (y 48..63) and 4 (y 64..79) change, not those below or above.
+        meshed.clear();
+        QVERIFY(world.setBlock({8, 64, 8}, 3));
+        scheduler.blockChanged(world, {8, 64, 8}, qcAirBlockId);
+        QCOMPARE(scheduler.dirtyCount(), 0);
+        QCOMPARE(scheduler.lightJobsPending(), 1);
+        pumpUntilIdle(scheduler, world);
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 4)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 2)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 5)));
+        QCOMPARE(scheduler.blockLight({8, 64, 8}), 14);
+        QCOMPARE(scheduler.blockLight({8, 66, 8}), 12);
+        QCOMPARE(scheduler.blockLight({8, 63, 8}), 0);
+        QCOMPARE(scheduler.blockLight({-3, 64, 8}), 14 - 11);
+        // Every change was counted with its time to the screen.
+        const QcMeshScheduler::Stats stats = scheduler.stats();
+        QVERIFY(stats.latencySamples >= 5);
+        QVERIFY(stats.latencyWorstMs > 0.0);
+        QVERIFY(stats.lightJobs >= 1);
+    }
+
+    void meshesWithEngineLightEqualTheSelfLitMesher()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        loadSquare(world, scheduler, 20);
+        pumpUntilIdle(scheduler, world);
+        // Torches in the neighbour chunks and next to the borders light the centre.
+        for (const QcBlockPos pos : {QcBlockPos{-1, 20, 4}, QcBlockPos{16, 20, 15}, QcBlockPos{7, 20, 7}, QcBlockPos{3, 19, 3}}) {
+            const QcBlockId previous = *world.blockAt(pos);
+            QVERIFY(world.setBlock(pos, 3));
+            scheduler.blockChanged(world, pos, previous);
+        }
+        pumpUntilIdle(scheduler, world);
+        QcMeshInput input;
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int dx = -1; dx <= 1; ++dx) {
+                input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
+            }
+        }
+        input.sectionIndex = 1;
+        input.renderTable = m_table;
+        const QcChunkMesh direct = QcChunkMesher::mesh(input);
+        const std::shared_ptr<const QcChunkMesh> scheduled = meshes.value(qcSectionKey({0, 0}, 1));
+        QVERIFY(scheduled);
+        QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
+        float brightest = 0.0f;
+        for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
+            QCOMPARE(scheduled->opaqueVertices[i].blockLight, direct.opaqueVertices[i].blockLight);
+            brightest = std::max(brightest, direct.opaqueVertices[i].blockLight);
+        }
+        QVERIFY(brightest > 0.8f);
     }
 
     void unloadRemovesMeshesAndDropsRunningResults()

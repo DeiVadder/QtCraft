@@ -1,0 +1,8 @@
+{
+    "name": "chest_side",
+    "pattern": "chest_side",
+    "primary": "#a8844e",
+    "secondary": "#c8c8cc",
+    "variation": 0.08,
+    "seed": 511
+}

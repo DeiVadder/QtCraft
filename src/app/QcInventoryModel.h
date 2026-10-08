@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcInventory.h"
+#include "QcMessages.h"
 
 #include <QAbstractListModel>
 #include <QtQmlIntegration/qqmlintegration.h>
@@ -10,7 +11,8 @@
 class QcContentRegistry;
 
 // The player's slots for QML: rows 0..35 inventory (hotbar = 0..8), 36..44 crafting grid
-// (three per row), 45 the crafting result, 46..48 the open machine (input, fuel, output).
+// (three per row), 45 the crafting result, 46.. the open block: a machine (input, fuel, output) or
+// the slots of a chest (up to QcMsg::MachineState::maxSlots).
 class QcInventoryModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -30,7 +32,7 @@ public:
     static constexpr int gridFirstRow = QcInventory::slotCount;
     static constexpr int resultRow = gridFirstRow + 9;
     static constexpr int machineFirstRow = resultRow + 1;
-    static constexpr int rowCountTotal = machineFirstRow + 3;
+    static constexpr int rowCountTotal = machineFirstRow + QcMsg::MachineState::maxSlots;
 
     // Protocol slot (QcMsg::MoveInventoryItem) of a row; -1 for the crafting result.
     static int slotOfRow(int row);

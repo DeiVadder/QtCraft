@@ -1,0 +1,9 @@
+{
+    "name": "trapdoor",
+    "rotate": "facing",
+    "parts": [
+        { "when": { "open": false, "half": "bottom" }, "boxes": [[0, 0, 0, 1, 0.1875, 1]] },
+        { "when": { "open": false, "half": "top" }, "boxes": [[0, 0.8125, 0, 1, 1, 1]] },
+        { "when": { "open": true }, "boxes": [[0, 0, 0.8125, 1, 1, 1]] }
+    ]
+}

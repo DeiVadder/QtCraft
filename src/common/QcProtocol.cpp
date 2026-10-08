@@ -131,10 +131,10 @@ struct Encoder
     void operator()(QcMsg::StartMining m) { writePos(m.pos); }
     void operator()(QcMsg::CancelMining) {}
     void operator()(QcMsg::FinishMining m) { writePos(m.pos); }
-    void operator()(QcMsg::UseItem m)
+    void operator()(const QcMsg::UseItem &m)
     {
         writePos(m.target);
-        stream << quint8(m.face);
+        stream << quint8(m.face) << m.hit;
     }
     void operator()(QcMsg::SelectHotbarSlot m) { stream << m.slot; }
     void operator()(QcMsg::MoveInventoryItem m) { stream << m.from << m.to << m.count; }
@@ -334,9 +334,13 @@ QcResult<QcMessage> decodePayload<QcMsg::UseItem>(QDataStream &stream)
     QcMsg::UseItem m;
     m.target = readPos(stream);
     quint8 face = 0;
-    stream >> face;
+    stream >> face >> m.hit;
     if (face >= qcBlockFaceCount) {
         return qcError(u"Invalid block face"_s);
+    }
+    const auto inCell = [](double value) { return std::isfinite(value) && value >= 0.0 && value <= 1.0; };
+    if (!inCell(m.hit.x) || !inCell(m.hit.y) || !inCell(m.hit.z)) {
+        return qcError(u"Invalid hit point"_s);
     }
     m.face = QcBlockFace(face);
     return m;
@@ -570,7 +574,7 @@ QcResult<QcMessage> decodePayload<QcMsg::MachineState>(QDataStream &stream)
     QcMsg::MachineState m;
     m.pos = readPos(stream);
     quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcMsg::MachineState::slotCount, count) || count != QcMsg::MachineState::slotCount) {
+    if (!QcStreamLimits::readCount(stream, QcMsg::MachineState::maxSlots, count) || count == 0) {
         return qcError(u"Corrupt machine state"_s);
     }
     for (quint32 i = 0; i < count; ++i) {

@@ -108,11 +108,14 @@ struct FinishMining
     QcBlockPos pos;
 };
 
-// Client -> server: use the held item on a block face (places blocks).
+// Client -> server: use the held item on a block face (places blocks, opens doors). `hit` is the
+// point the player aimed at inside the target block (0..1 per axis); it picks slab halves and the
+// like.
 struct UseItem
 {
     QcBlockPos target;
     QcBlockFace face = QcBlockFace::Up;
+    QcVec3 hit{0.5, 0.5, 0.5};
 };
 
 struct SelectHotbarSlot
@@ -121,7 +124,8 @@ struct SelectHotbarSlot
 };
 
 // Slots 0..35 are the inventory, 36..44 the crafting grid (row-major, 3 per row; a 2 x 2 grid uses
-// the top-left four), 45..47 the open machine (input, fuel, output; the output only gives).
+// the top-left four), 45..47 the open machine (input, fuel, output; the output only gives), or 45
+// onwards the slots of the open storage block.
 // `count` 0 moves the whole stack.
 struct MoveInventoryItem
 {
@@ -273,7 +277,8 @@ struct DropItem
     bool wholeStack = false;
 };
 
-// Server -> client: the player opened the machine at `pos`; MachineState follows.
+// Server -> client: the player opened the machine at `pos`, or with an empty category the storage
+// block (chest) there; MachineState follows.
 struct OpenMachine
 {
     QcBlockPos pos;
@@ -282,9 +287,11 @@ struct OpenMachine
 
 // Server -> client: contents and progress of the open machine. `stacks` are input, fuel and output;
 // `burn` is the share of the current fuel left and `progress` the share of the current item done.
+// For a storage block, `stacks` are its slots and the bars stay at 0.
 struct MachineState
 {
     static constexpr int slotCount = 3;
+    static constexpr int maxSlots = 54;
 
     QcBlockPos pos;
     QList<QcItemStack> stacks;

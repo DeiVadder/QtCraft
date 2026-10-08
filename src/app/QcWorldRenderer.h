@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcCamera.h"
+#include "QcAabb.h"
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
@@ -62,8 +63,9 @@ private:
     std::unique_ptr<QRhiShaderResourceBindings> m_outlineBindings;
     std::unique_ptr<QRhiGraphicsPipeline> m_outlinePipeline;
     std::unique_ptr<QRhiBuffer> m_outlineVertices;
-    std::optional<QcBlockPos> m_selection;
-    std::optional<QcBlockPos> m_uploadedSelection;
+    QList<QcAabb> m_selection;
+    std::optional<QList<QcAabb>> m_uploadedSelection;
+    quint32 m_outlineVertexCount = 0;
     std::unique_ptr<QRhiGraphicsPipeline> m_entityPipeline;
     std::unique_ptr<QRhiGraphicsPipeline> m_handPipeline;
     std::shared_ptr<const QcEntityMesh> m_entityMesh;

@@ -54,8 +54,11 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | Folder | One file per | Notes |
 |--------|--------------|-------|
 | `blocks/` | block | Every visible, non-liquid block automatically gets an item that places it. |
+| `shapes/` | block shape | Boxes, crossed planes, collision, conditions on states, turning; see below. |
+| `parts/` | building-part family | Stairs, slabs, walls … made from every material of a kind; see below. |
+| `materials/` | material or exclusion | Base block and kind of a material, or blocks that never get parts. |
 | `items/` | item | Tools, weapons, food. |
-| `recipes/` | recipe | Shaped (`pattern`, `key`) or shapeless (`ingredients`), up to 3 × 3. |
+| `recipes/` | recipe | Shaped (`pattern`, `key`) or shapeless (`ingredients`), up to 3 × 3. An ingredient `#tag` accepts every item with that tag (`#qtcraft:planks`, `#qtcraft:coals`). |
 | `smelting/` | smelting recipe | One input item becomes a result in a machine of the recipe's `category`. |
 | `mobs/` | creature | Stats, spawn rules, box model or skeleton with outfit, drops. |
 | `models/` | skeleton | Bones with roles, pivots and slotted boxes. |
@@ -109,6 +112,44 @@ Furnaces and other machines come from data too. A block with a `machine` object 
 
 A machine lights one fuel item only when its input has a recipe and the result fits into the output; machines work only while their chunk is loaded, and their contents fall out when the block is broken. The server limits a world to 4096 machines.
 
+### Shapes, states and building parts
+
+Blocks can be any set of boxes (decision E-045). A shape is named in `shapes/` (or written inline as the block's `shape` object); the base game has `cube`, `cross`, `cactus`, `stairs`, `slab`, `fence`, `fence_gate`, `wall`, `pane`, `door`, `trapdoor`, `torch`, `ladder`, `chest` and `facing_cube`. Unqualified shape names refer to the pack's own shapes, except `cube` and `cross`, which always mean the base ones; write `qtcraft:stairs` to use a base shape.
+
+```json
+{ "name": "pillar", "rotate": "facing", "flip": "half",
+  "parts": [
+    { "boxes": [[0.25, 0, 0.25, 0.75, 1, 0.75]] },
+    { "when": { "open": true }, "boxes": [[0, 0, 0, 1, 0.125, 1]], "collision": [], "texture": "lid", "uv": "box" }
+  ] }
+```
+
+| Field | Meaning |
+|-------|---------|
+| `boxes`, `crosses` | `[x0, y0, z0, x1, y1, z1]` in metres within the cell (0..1). Crosses are two diagonal planes (plants) and never collide. At most 32 parts with 16 boxes each and 64 boxes, crosses and collision boxes per shape together. All shape variants of all blocks together may derive at most 131,072 boxes (states that turn, flip and select the same parts share one variant); a block or shape beyond that budget is refused with a message. |
+| `when` | Property → value or list of values; the part applies when all hold. |
+| `collision` | Boxes for bodies instead of `boxes` (up to 1.5 m high, `[]` for none). |
+| `texture`, `uv` | Texture slot of the block for these boxes (`textures.slots`), `uv: "box"` stretches the whole texture over each face (torches) instead of cutting the part where the face lies. |
+| `rotate`, `flip` | Shapes are drawn for a block facing north; the property in `rotate` (values `north`, `east`, `south`, `west`) turns them, the one in `flip` mirrors them upside down when its value is `top`. Face textures turn with `rotate`. |
+
+Block states (decision E-046) are declared per block: `"states": { "facing": ["north", "east", "south", "west"], "open": [false, true] }` (the first value is the default; at most 8 properties of 16 values and 1024 states per block). The server derives these properties when a block is placed or its neighbours change: `facing` (`"facing": "away"` from the player, or `"toward"` for fronts), `half` and `type` (`bottom`/`top`, slabs add `double`), `attach` (`floor`, `ceiling`, `north`, … towards the clicked block), `hinge`, `north`/`east`/`south`/`west` and `up` for blocks with `connects` (`{"group": "fence", "to": ["fence"]}`: connect to members of these groups and full solid blocks). Further flags: `support` (`below` or `attached`: breaks and drops without it), `toggles` (using flips `open`), `door` (two blocks tall), `climbable`, `light` (0–15), `container` (`{"slots": 27}`, a chest), `tags` (of the block's item) and `itemTexture` (a flat icon instead of the block model). Worlds store states by name (`qtcraft:oak_stairs[facing=east,half=bottom]`), so reordering values or adding properties keeps old worlds; dropped properties fall back to defaults with a warning.
+
+Building parts (decision E-048) come from two kinds of files. A family in `parts/` describes one part for all materials of the kinds it lists; the block, item, recipe and names of every part are generated after all packs are loaded, so families and materials of different packs combine:
+
+```json
+{ "name": "pillar", "kinds": ["stone"], "suffix": "pillar", "hardness": 1.0, "fuel": 1.0,
+  "block": { "shape": "pillar", "lightOpacity": 0 },
+  "recipe": { "pattern": ["#", "#", "#"], "key": { "#": "@" }, "count": 3 },
+  "translations": { "en": "%1 pillar", "de": "%1säule" } }
+```
+
+```json
+{ "name": "ruby", "block": "ruby_block", "kind": "stone", "exclude": ["qtcraft:wall"] }
+{ "name": "excluded", "excluded": true, "blocks": ["ruby_ore"] }
+```
+
+The part `<material namespace>:<material>_<suffix>` copies textures, tool, tool level, sound material and fuel (× `fuel`) and hardness (× `hardness`) from the base block and drops itself; `@` in the recipe stands for the base block; `%1` in a translation is the material's name (translation key `material.<namespace>.<name>`, override with `translation`). Base families: `stairs`, `slab` (wood and stone), `wall` (stone), `fence`, `fence_gate` (wood). Entries of `exclude` are family names; a material can leave out families of other packs by their full name (`qtcraft:wall`). Base materials: `oak`, `birch`, `spruce` (planks), `cobblestone`, `stone` (no wall), `brick`, `sandstone`. Nothing is made for excluded materials: blocks listed by an exclusion entry (base list in `materials/excluded.json`: ores, sand, gravel, clay, dirt, grass, snow, ice, logs, leaves, saplings, cactus, glass, water, bedrock, crafting table, furnace, chest) and every block that is no plain building block (not an opaque solid full cube without states, a machine, crafting table or chest, unbreakable or glowing), the latter with a warning. A block defined explicitly under a part's name is never replaced, nor is a recipe a pack defines under that name. Recipes take named ingredients before tags, so a tag never uses up an item a named ingredient needs.
+
 Characters come from data as well: `models/*.json` defines skeletons (bones with a role, a pivot and boxes with slot names), `appearance/*.json` outfits (a texture and an optional tint per slot) and hair styles (extra boxes on the head). A creature can use `"skeleton": "qtcraft:humanoid", "outfit": "mymod:robe"` instead of `model` boxes and is then animated like players (walking, attacking, hit, death; `"armsForward": true` for zombie-like arms). New outfits and hair styles appear in the character screen of players who have the mod; `"playable": false` keeps a creature outfit out of that list, and the server refuses it for players. Tinted textures should be light (near white); the player's colour is multiplied in.
 
 ### Sounds
@@ -158,9 +199,10 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 
 | Kind | Entries |
 |------|---------|
-| Blocks | `ruby_ore` (needs an iron pickaxe, drops a ruby), `ruby_block` |
+| Blocks | `ruby_ore` (needs an iron pickaxe, drops a ruby), `ruby_block`, `ruby_lantern` (inline shape, light 11, needs a block below) |
+| Building parts | material `ruby` (stairs and slab, walls left out), family `pillar` with its shape (also for the base stones, e.g. `qtcraft:cobblestone_pillar`), `ruby_ore` excluded |
 | Items | `ruby`, `ruby_sword`, `ruby_pickaxe` |
-| Recipes | ruby block from 9 rubies (crafting table), 9 rubies from a block, sword and pickaxe (with `qtcraft:stick`) |
+| Recipes | ruby block from 9 rubies (crafting table), 9 rubies from a block, sword and pickaxe (with `qtcraft:stick`), lantern (ruby over a torch) |
 | Smelting and fuel | `ruby_from_gravel`: gravel becomes a ruby in the base furnace (30 s); `ember_shard` (dropped by the beetle) burns 120 s |
 | World generation | ruby ore veins between y 4 and 28 |
 | Mob | `crystal_beetle`: hostile, spawns on cave floors, drops a ruby |
@@ -172,8 +214,8 @@ Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory,
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks, items, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures, sounds and translations; depend on other mods.
+Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures, sounds and translations; depend on other mods.
 
-Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
+Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen, every storage block the chest screen, state rules are the fixed ones above), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 
 Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, at most 64 `plantOn` entries per sapling, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). Sounds are limited to the ranges above (8 layers of at most 10 s, 8 variants), checked by the parser and again by every client; a client renders at most 16 Mi samples (64 MiB) of sound, sounds beyond that stay silent. A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.

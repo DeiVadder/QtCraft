@@ -1,0 +1,15 @@
+{
+    "name": "glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "glass"
+    },
+    "result": {
+        "item": "glass_pane",
+        "count": 16
+    }
+}

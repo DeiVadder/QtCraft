@@ -490,6 +490,21 @@ private slots:
         QVERIFY(std::ranges::any_of(content.ores(), [](const QcOreDefinition &ore) { return ore.block == u"rubies:ruby_ore"_s; }));
         QCOMPARE(content.translate(u"item.rubies.ruby"_s, u"de"_s), u"Rubin"_s);
         QVERIFY(content.texture(u"rubies:ruby"_s));
+        // Building parts from the mod's material with the base families (walls left out) and the
+        // mod's own pillar family, which also applies to the base stones; the excluded ore gets none.
+        QVERIFY(content.blockId(u"rubies:ruby_stairs"_s));
+        QVERIFY(content.blockId(u"rubies:ruby_slab"_s));
+        QVERIFY(!content.blockId(u"rubies:ruby_wall"_s));
+        QVERIFY(content.blockId(u"rubies:ruby_pillar"_s));
+        QVERIFY(content.blockId(u"qtcraft:cobblestone_pillar"_s));
+        QVERIFY(!content.blockId(u"rubies:ruby_ore_stairs"_s));
+        QCOMPARE(content.block(*content.blockId(u"rubies:ruby_stairs"_s)).toolLevel, 3);
+        QCOMPARE(content.translate(content.block(*content.blockId(u"rubies:ruby_pillar"_s)).translationKey, u"de"_s), u"Rubinsäule"_s);
+        QCOMPARE(content.state(*content.blockId(u"rubies:ruby_pillar"_s)).boxes.size(), 3);
+        // A glowing block with its own inline shape.
+        const QcBlockId lantern = *content.blockId(u"rubies:ruby_lantern"_s);
+        QCOMPARE(content.block(lantern).lightLevel, 11);
+        QVERIFY(!content.state(lantern).fullCube);
         // The mod's recipes work with the shared crafting rules, also mixed with base items.
         const QcItemId ruby = *content.itemId(u"rubies:ruby"_s);
         QList<QcItemStack> grid(9, QcItemStack{ruby, 1, 0});

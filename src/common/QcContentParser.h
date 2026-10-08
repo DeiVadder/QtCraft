@@ -2,7 +2,10 @@
 
 #include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
+#include "QcBlockStateTable.h"
 #include "QcItemDefinition.h"
+#include "QcMaterialDefinition.h"
+#include "QcPartFamily.h"
 #include "QcMobDefinition.h"
 #include "QcModelDefinition.h"
 #include "QcRecipeDefinition.h"
@@ -20,6 +23,11 @@
 namespace QcContentParser {
 
 QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcShapeDefinition> parseShape(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcPartFamily> parsePartFamily(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcMaterialDefinition> parseMaterial(const QJsonObject &json, const QString &packNamespace);
+// The recipe file of a part: the family's recipe with "@" replaced by the base block.
+QJsonObject partRecipeJson(const QcPartFamily &family, const QString &baseBlock, const QString &partName);
 QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
 QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace);

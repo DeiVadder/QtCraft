@@ -82,7 +82,7 @@ void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<Qc
     m_inventory = inventory;
     m_craftingGrid = craftingGrid.size() == 9 ? craftingGrid : QList<QcItemStack>(9);
     m_craftingResult = craftingResult;
-    m_machine = machine.size() == 3 ? machine : QList<QcItemStack>(3);
+    m_machine = machine.mid(0, QcMsg::MachineState::maxSlots);
     emit dataChanged(index(0), index(rowCountTotal - 1));
     if (previousSelection != m_inventory.selectedHotbarSlot()) {
         emit selectedSlotChanged();

@@ -216,7 +216,8 @@ private slots:
                  R"("textures":{"all":"oak_sapling"}})"),
             u"b"_s);
         QVERIFY2(sapling.has_value(), qcErrorText(sapling).constData());
-        QCOMPARE(sapling->shape, QcBlockShape::Cross);
+        QCOMPARE(sapling->shapeName, u"qtcraft:cross"_s);
+        QCOMPARE(sapling->support, QcBlockSupport::Below);
         // Cross shapes default to a non-solid cutout block.
         QCOMPARE(sapling->renderLayer, QcRenderLayer::Cutout);
         QVERIFY(!sapling->solid);
@@ -230,7 +231,9 @@ private slots:
         QVERIFY(sapling->sapling.isSapling());
 
         const auto plain = QcContentParser::parseBlock(json(R"({"name":"stone","textures":{"all":"stone"}})"), u"b"_s);
-        QCOMPARE(plain->shape, QcBlockShape::Cube);
+        QVERIFY(plain->shapeName.isEmpty());
+        QVERIFY(plain->shape.isEmpty());
+        QCOMPARE(plain->support, QcBlockSupport::None);
         QCOMPARE(plain->drops.first().chance, 1.0);
         QVERIFY(!plain->sapling.isSapling());
     }
@@ -239,7 +242,7 @@ private slots:
     {
         QTest::addColumn<QByteArray>("document");
         QTest::addColumn<QString>("expectedFragment");
-        QTest::newRow("shape") << QByteArray(R"({"name":"x","shape":"sphere","textures":{"all":"x"}})") << u"'shape'"_s;
+        QTest::newRow("shape") << QByteArray(R"({"name":"x","shape":7,"textures":{"all":"x"}})") << u"'shape'"_s;
         QTest::newRow("opaque cross") << QByteArray(R"({"name":"x","shape":"cross","render":"opaque","textures":{"all":"x"}})")
                                       << u"cross-shaped"_s;
         QTest::newRow("chance") << QByteArray(R"({"name":"x","drops":[{"item":"y","chance":1.5}],"textures":{"all":"x"}})")
@@ -269,7 +272,11 @@ private slots:
     {
         QcContentRegistry registry;
         QcBlockDefinition sapling = block(u"a:sapling"_s);
-        sapling.shape = QcBlockShape::Cross;
+        sapling.shape.parts = {[] {
+            QcShapePart part;
+            part.crosses = {{{0.1, 0.0, 0.1}, {0.9, 1.0, 0.9}}};
+            return part;
+        }()};
         sapling.renderLayer = QcRenderLayer::Cutout;
         sapling.solid = false;
         sapling.opaque = false;
@@ -285,7 +292,8 @@ private slots:
         const QcResult<QcContentRegistry> copy = QcContentRegistry::readFrom(in);
         QVERIFY2(copy.has_value(), qcErrorText(copy).constData());
         const QcBlockDefinition &read = copy->block(1);
-        QCOMPARE(read.shape, QcBlockShape::Cross);
+        QCOMPARE(read.shape, sapling.shape);
+        QCOMPARE(copy->state(1).crosses, (QList<QcAabb>{{{0.1, 0.0, 0.1}, {0.9, 1.0, 0.9}}}));
         QCOMPARE(read.drops.first().chance, 0.3);
         QCOMPARE(read.sapling.feature, u"a:tree"_s);
         QCOMPARE(read.sapling.minSeconds, 5.0);

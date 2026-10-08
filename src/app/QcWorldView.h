@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcCamera.h"
+#include "QcAabb.h"
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
@@ -40,7 +41,8 @@ public:
     void clearMeshes();
 
     // Block outlined as the player's target; std::nullopt hides the outline.
-    void setSelection(std::optional<QcBlockPos> block);
+    // Outlined boxes of the targeted block in world space; empty for none.
+    void setSelection(const QList<QcAabb> &boxes);
     // Entity triangles for this frame (replaces the previous set).
     void setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // First-person arm and held item; drawn in front of everything else. Null hides it.
@@ -67,7 +69,7 @@ private:
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;
-    std::optional<QcBlockPos> m_selection;
+    QList<QcAabb> m_selection;
     std::shared_ptr<const QcEntityMesh> m_entityMesh;
     std::shared_ptr<const QcEntityMesh> m_handMesh;
 };

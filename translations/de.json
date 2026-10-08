@@ -75,5 +75,7 @@
     "Music": "Musik",
     "Ambience": "Umgebung",
     "Mute all sounds": "Alle Töne stumm",
-    "%1 %": "%1 %"
+    "%1 %": "%1 %",
+    "Chest": "Truhe",
+    "Left click: pick up and put down. Right click: put down one. E or Esc closes. Breaking the chest drops its contents.": "Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt."
 }

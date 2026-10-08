@@ -50,6 +50,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_items(m_content, quint64(m_config.seed))
     , m_plants(m_content, quint64(m_config.seed))
     , m_machines(m_content)
+    , m_containers(m_content)
     , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
     , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
 {
@@ -132,6 +133,31 @@ QcStatus QcServer::openWorld()
         return qcError(machines.error());
     }
     m_machines.restore(*machines);
+    QStringList containerWarnings;
+    const QcResult<QList<QcContainerManager::Container>> containers = m_storage->readContainers(containerWarnings);
+    for (const QString &warning : std::as_const(containerWarnings)) {
+        qCWarning(lcServer) << warning;
+    }
+    m_openWarnings.append(containerWarnings);
+    if (!containers) {
+        return qcError(containers.error());
+    }
+    m_containers.restore(*containers);
+    // Chests whose block went away with a mod (or whose size changed) must not linger.
+    const QList<QcBlockPos> chestPositions = m_containers.positions();
+    for (const QcBlockPos &pos : chestPositions) {
+        m_world.loadChunk(pos.chunk());
+        reconcileContainer(pos);
+    }
+    const QcResult<QList<QcBlockPos>> updates = m_storage ? m_storage->readBlockUpdates() : QcResult<QList<QcBlockPos>>();
+    if (!updates) {
+        return qcError(updates.error());
+    }
+    m_commandUpdateMode = true;
+    for (const QcBlockPos &pos : *updates) {
+        queueBlockUpdate(pos);
+    }
+    m_commandUpdateMode = false;
     qCInfo(lcServer) << "Opened world" << m_info.name << "with" << chunks->size() << "stored chunks and"
                      << m_items.items().size() << "dropped items";
     return {};
@@ -187,6 +213,18 @@ QcStatus QcServer::save()
         return written;
     }
     if (const QcStatus written = m_storage ? m_storage->writeMachines(m_machines.machines()) : QcStatus(); !written) {
+        return written;
+    }
+    if (const QcStatus written = m_storage ? m_storage->writeContainers(m_containers.containers()) : QcStatus(); !written) {
+        return written;
+    }
+    // Pending neighbour updates survive a restart, so a large /fill never leaves floating torches.
+    QList<QcBlockPos> updates(m_playerUpdates.begin(), m_playerUpdates.end());
+    updates.append(QList<QcBlockPos>(m_commandUpdates.begin(), m_commandUpdates.end()));
+    for (const QSet<QcBlockPos> &waiting : std::as_const(m_waitingUpdates)) {
+        updates.append(QList<QcBlockPos>(waiting.begin(), waiting.end()));
+    }
+    if (const QcStatus written = m_storage ? m_storage->writeBlockUpdates(updates) : QcStatus(); !written) {
         return written;
     }
     for (const auto &client : m_clients) {
@@ -501,6 +539,8 @@ void QcServer::tick()
         }
     }
     m_world.collectGeneratedChunks();
+    handleLoadedChunks();
+    processBlockUpdates();
     tickGameplay();
     tickItemsAndPlants();
     tickMachines();

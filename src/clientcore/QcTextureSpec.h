@@ -36,6 +36,23 @@ struct QcTextureSpec
         Face,
         // Machine front: a stone face (primary) with a dark fire opening (secondary) and a grate.
         Furnace,
+        // Torch stretched over a thin box: a flame (secondary) on top of a stick (primary).
+        Torch,
+        // Torch as a flat icon on a transparent background.
+        TorchItem,
+        // Two rails with rungs (primary) on a transparent background.
+        Ladder,
+        // Door halves: vertical boards (primary) in a frame (secondary); the lower one with a
+        // handle, the upper one with a window.
+        DoorLower,
+        DoorUpper,
+        // Hatch of boards with a frame and two openings.
+        Trapdoor,
+        // Chest: boards (primary) with darker edges and a lid seam; the front adds a latch
+        // (secondary), the top only has the frame.
+        ChestSide,
+        ChestFront,
+        ChestTop,
     };
 
     Pattern pattern = Pattern::Noise;

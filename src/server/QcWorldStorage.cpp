@@ -26,11 +26,17 @@ constexpr quint16 baseVersion = 1;
 // Version 2 adds food and exhaustion.
 constexpr quint16 playerVersion = 2;
 constexpr quint16 machinesVersion = 1;
+// Version 2 stores block states in the palette ("name[property=value,...]"); version 1 has plain
+// names, which load as default states.
+constexpr quint16 regionVersion = 2;
 constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
 constexpr QByteArrayView regionMagic("QCRG");
 constexpr QByteArrayView playerMagic("QCPL");
 constexpr QByteArrayView entitiesMagic("QCEN");
 constexpr QByteArrayView machinesMagic("QCMA");
+constexpr QByteArrayView containersMagic("QCCO");
+constexpr quint16 containersVersion = 1;
+constexpr QByteArrayView blockUpdatesMagic("QCBU");
 // Far more than the item manager keeps, so a valid file is never cut short.
 constexpr quint32 maxStoredEntities = 65536;
 
@@ -214,7 +220,7 @@ QcStatus QcWorldStorage::writeChunks(const QHash<QcChunkPos, std::shared_ptr<con
                 for (const QcBlockId id : section.palette()) {
                     if (!localIds.contains(id)) {
                         localIds.insert(id, QcBlockId(names.size()));
-                        names.append(m_content->block(id).name);
+                        names.append(m_content->stateName(id));
                     }
                     palette.append(localIds.value(id));
                 }
@@ -235,7 +241,7 @@ QcStatus QcWorldStorage::writeChunks(const QHash<QcChunkPos, std::shared_ptr<con
         for (const QcChunk &chunk : std::as_const(remapped)) {
             QcProtocol::writeChunk(stream, chunk);
         }
-        if (const QcStatus written = writeContainer(regionPath(region.key()), regionMagic, payload); !written) {
+        if (const QcStatus written = writeContainer(regionPath(region.key()), regionMagic, payload, regionVersion); !written) {
             return written;
         }
     }
@@ -249,7 +255,7 @@ QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> QcWorldStorage::readChunks
     const QStringList files = regions.entryList({u"r.*.qcr"_s}, QDir::Files, QDir::Name);
     for (const QString &fileName : files) {
         const QString path = regions.filePath(fileName);
-        const QcResult<QByteArray> payload = readContainer(path, regionMagic);
+        const QcResult<QByteArray> payload = readContainer(path, regionMagic, regionVersion);
         if (!payload) {
             return qcError(payload.error());
         }
@@ -263,9 +269,13 @@ QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> QcWorldStorage::readChunks
         for (quint32 i = 0; i < nameCount; ++i) {
             QString name;
             stream >> name;
-            const std::optional<QcBlockId> id = m_content->blockId(name);
+            QStringList problems;
+            const std::optional<QcBlockId> id = m_content->stateId(name, &problems);
             if (!id) {
                 warnings.append(u"%1: unknown block '%2' replaced by air"_s.arg(fileName, name));
+            }
+            for (const QString &problem : std::as_const(problems)) {
+                warnings.append(u"%1: %2, default used"_s.arg(fileName, problem));
             }
             runtimeIds.append(id.value_or(qcAirBlockId));
         }
@@ -571,4 +581,145 @@ QcResult<QList<QcMachineManager::Machine>> QcWorldStorage::readMachines(QStringL
         return qcError(u"%1 is damaged"_s.arg(path));
     }
     return machines;
+}
+
+QcStatus QcWorldStorage::writeContainers(const QList<QcContainerManager::Container> &containers) const
+{
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+    QByteArray payload;
+    QDataStream stream(&payload, QIODevice::WriteOnly);
+    stream.setVersion(streamVersion);
+    stream << quint32(containers.size());
+    for (const QcContainerManager::Container &container : containers) {
+        stream << qint32(container.pos.x) << qint32(container.pos.y) << qint32(container.pos.z) << quint32(container.stacks.size());
+        for (const QcItemStack &stack : container.stacks) {
+            writeStack(stream, stack, *m_content);
+        }
+    }
+    return writeContainer(QDir(m_directory).filePath(u"containers.qce"_s), containersMagic, payload, containersVersion);
+}
+
+QcResult<QList<QcContainerManager::Container>> QcWorldStorage::readContainers(QStringList &warnings) const
+{
+    const QString path = QDir(m_directory).filePath(u"containers.qce"_s);
+    if (!QFile::exists(path)) {
+        return QList<QcContainerManager::Container>();
+    }
+    const QcResult<QByteArray> payload = readContainer(path, containersMagic, containersVersion);
+    if (!payload) {
+        return qcError(payload.error());
+    }
+    QDataStream stream(*payload);
+    stream.setVersion(streamVersion);
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcContainerManager::maxContainers, count)) {
+        return qcError(u"%1 is damaged (container count)"_s.arg(path));
+    }
+    QList<QcContainerManager::Container> containers;
+    QSet<QcBlockPos> positions;
+    QSet<QString> unknown;
+    for (quint32 i = 0; i < count; ++i) {
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        quint32 slotCount = 0;
+        stream >> x >> y >> z;
+        if (!QcStreamLimits::readCount(stream, QcBlockDefinition::maxContainerSlots, slotCount) || slotCount == 0) {
+            return qcError(u"%1 is damaged (container %2)"_s.arg(path).arg(i));
+        }
+        QcContainerManager::Container container{{x, y, z}, QList<QcItemStack>(slotCount)};
+        for (QcItemStack &stack : container.stacks) {
+            QString name;
+            qint32 itemCount = 0;
+            qint32 damage = 0;
+            stream >> name >> itemCount >> damage;
+            if (name.isEmpty() || itemCount <= 0) {
+                continue;
+            }
+            const std::optional<QcItemId> item = m_content->itemId(name);
+            if (!item) {
+                if (!unknown.contains(name)) {
+                    unknown.insert(name);
+                    warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
+                }
+                continue;
+            }
+            const QcItemDefinition &definition = m_content->item(*item);
+            stack = {*item, std::clamp(itemCount, 1, definition.maxStack), std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+        }
+        if (stream.status() != QDataStream::Ok || !container.pos.isInsideWorldHeight() || std::abs(x) > QcWorld::maxHorizontalBlock
+            || std::abs(z) > QcWorld::maxHorizontalBlock || positions.contains(container.pos)) {
+            return qcError(u"%1 is damaged (container %2)"_s.arg(path).arg(i));
+        }
+        positions.insert(container.pos);
+        containers.append(std::move(container));
+    }
+    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
+        return qcError(u"%1 is damaged"_s.arg(path));
+    }
+    return containers;
+}
+
+QcStatus QcWorldStorage::writeBlockUpdates(const QList<QcBlockPos> &positions) const
+{
+    if (positions.size() > qsizetype(maxStoredBlockUpdates)) {
+        return qcError(u"Too many pending block updates to save (%1, at most %2)"_s.arg(positions.size()).arg(maxStoredBlockUpdates));
+    }
+    const QString path = QDir(m_directory).filePath(u"blockupdates.qce"_s);
+    if (positions.isEmpty()) {
+        // No file means no pending updates.
+        if (QFile::exists(path) && !QFile::remove(path)) {
+            return qcError(u"Cannot remove %1"_s.arg(path));
+        }
+        return {};
+    }
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+    QByteArray payload;
+    QDataStream stream(&payload, QIODevice::WriteOnly);
+    stream.setVersion(streamVersion);
+    stream << quint32(positions.size());
+    for (const QcBlockPos &pos : positions) {
+        stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z);
+    }
+    return writeContainer(path, blockUpdatesMagic, payload);
+}
+
+QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
+{
+    const QString path = QDir(m_directory).filePath(u"blockupdates.qce"_s);
+    if (!QFile::exists(path)) {
+        return QList<QcBlockPos>();
+    }
+    const QcResult<QByteArray> payload = readContainer(path, blockUpdatesMagic);
+    if (!payload) {
+        return qcError(payload.error());
+    }
+    QDataStream stream(*payload);
+    stream.setVersion(streamVersion);
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, maxStoredBlockUpdates, count)) {
+        return qcError(u"%1 is damaged (count)"_s.arg(path));
+    }
+    QList<QcBlockPos> positions;
+    positions.reserve(count);
+    for (quint32 i = 0; i < count; ++i) {
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        stream >> x >> y >> z;
+        const QcBlockPos pos{x, y, z};
+        if (stream.status() != QDataStream::Ok || !pos.isInsideWorldHeight() || std::abs(x) > QcWorld::maxHorizontalBlock
+            || std::abs(z) > QcWorld::maxHorizontalBlock) {
+            return qcError(u"%1 is damaged (position %2)"_s.arg(path).arg(i));
+        }
+        positions.append(pos);
+    }
+    if (!stream.atEnd()) {
+        return qcError(u"%1 is damaged"_s.arg(path));
+    }
+    return positions;
 }

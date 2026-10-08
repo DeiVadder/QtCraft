@@ -1,5 +1,7 @@
 #include "QcControlInterface.h"
 
+#include "QcLightVolume.h"
+
 #include <utility>
 
 #include "QcClientSession.h"
@@ -237,6 +239,13 @@ QJsonObject QcControlInterface::machineJson() const
         return {{u"open"_s, false}};
     }
     const QList<QcItemStack> &stacks = m_session->machineSlots();
+    if (m_session->containerOpen()) {
+        QJsonArray slotList;
+        for (const QcItemStack &stack : stacks) {
+            slotList.append(stackJson(stack));
+        }
+        return {{u"open"_s, true}, {u"position"_s, QJsonArray{pos->x, pos->y, pos->z}}, {u"chest"_s, true}, {u"slots"_s, slotList}};
+    }
     return {{u"open"_s, true},
             {u"position"_s, QJsonArray{pos->x, pos->y, pos->z}},
             {u"category"_s, m_session->machineCategory()},
@@ -675,14 +684,12 @@ void QcControlInterface::start(const QJsonObject &request)
         const auto content = m_session->content();
         QJsonArray list;
         for (const QcRecipeDefinition &recipe : content ? content->recipes() : QList<QcRecipeDefinition>()) {
-            int possible = 64;
             QJsonObject needs;
             const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
-            for (const auto &[name, count] : std::as_const(needed)) {
-                needs.insert(name, count);
-                const std::optional<QcItemId> item = content->itemId(name);
-                possible = std::min(possible, item ? m_session->inventory().countOf(*item) / count : 0);
+            for (const auto &[ingredient, count] : std::as_const(needed)) {
+                needs.insert(ingredient, count);
             }
+            const int possible = QcCrafting::timesCraftable(*content, m_session->inventory(), recipe, 64);
             if (request.value(u"all"_s).toBool(false) || possible > 0) {
                 list.append(QJsonObject{{u"recipe"_s, recipe.name},
                                         {u"result"_s, recipe.resultItem},
@@ -739,9 +746,22 @@ void QcControlInterface::start(const QJsonObject &request)
             const std::optional<QcBlockId> id = world->blockAt(pos);
             return id ? QJsonValue(content.block(*id).name) : QJsonValue();
         };
+        const auto stateOf = [&](QcBlockId id) {
+            QJsonObject state;
+            for (const QcBlockProperty &property : content.block(id).properties) {
+                state.insert(property.name, content.property(id, property.name));
+            }
+            return state;
+        };
         if (command == u"block"_s) {
             const QcBlockPos pos{intField(request, u"x"_s, 0), intField(request, u"y"_s, 0), intField(request, u"z"_s, 0)};
-            finish(request, {{u"block"_s, describe(pos)}});
+            const std::optional<QcBlockId> id = world->blockAt(pos);
+            QJsonObject answer{{u"block"_s, describe(pos)}};
+            if (id) {
+                answer.insert(u"state"_s, stateOf(*id));
+                answer.insert(u"blockLight"_s, QcLightVolume::blockLightAt(*world, pos));
+            }
+            finish(request, answer);
             return;
         }
         const int radius = std::clamp(intField(request, u"radius"_s, 3), 0, maxBlockQueryRadius);
@@ -754,8 +774,11 @@ void QcControlInterface::start(const QJsonObject &request)
                     const QcBlockPos pos = centre.offset(dx, dy, dz);
                     const std::optional<QcBlockId> id = world->blockAt(pos);
                     if (id && *id != qcAirBlockId) {
-                        blocks.append(QJsonObject{{u"x"_s, pos.x}, {u"y"_s, pos.y}, {u"z"_s, pos.z},
-                                                  {u"block"_s, content.block(*id).name}});
+                        QJsonObject entry{{u"x"_s, pos.x}, {u"y"_s, pos.y}, {u"z"_s, pos.z}, {u"block"_s, content.block(*id).name}};
+                        if (!content.block(*id).properties.isEmpty()) {
+                            entry.insert(u"state"_s, stateOf(*id));
+                        }
+                        blocks.append(entry);
                     }
                 }
             }

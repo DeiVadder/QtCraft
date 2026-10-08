@@ -3,6 +3,9 @@
     "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",
+    "tags": [
+        "planks"
+    ],
     "textures": {
         "all": "oak_planks"
     },

@@ -2,6 +2,7 @@
 
 #include "QcBlockRenderTable.h"
 #include "QcChunk.h"
+#include "QcChunkLight.h"
 #include "QcChunkMesh.h"
 
 #include <array>
@@ -15,10 +16,14 @@ struct QcMeshInput
     std::array<std::shared_ptr<const QcChunk>, 9> chunks;
     int sectionIndex = 0;
     std::shared_ptr<const QcBlockRenderTable> renderTable;
+    // Block light of the same nine chunks from QcBlockLightEngine (null entries are dark). Without
+    // it (`hasBlockLight` false) the mesher floods the sources around the section itself.
+    std::array<std::shared_ptr<const QcChunkLight>, 9> blockLight;
+    bool hasBlockLight = false;
 };
 
-// Builds the triangle mesh of one chunk section: hidden faces are culled, every vertex gets face
-// shading and ambient occlusion. Pure function of its input, safe to run on worker threads.
+// Builds the triangle mesh of one chunk section from the boxes of every block state: hidden faces
+// are culled, every vertex gets face shading, ambient occlusion, sky light and block light. Pure function of its input, safe to run on worker threads.
 class QcChunkMesher
 {
 public:

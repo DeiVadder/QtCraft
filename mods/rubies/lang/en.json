@@ -5,5 +5,7 @@
     "item.rubies.ruby_sword": "Ruby sword",
     "item.rubies.ruby_pickaxe": "Ruby pickaxe",
     "mob.rubies.crystal_beetle": "Crystal beetle",
-    "item.rubies.ember_shard": "Ember shard"
+    "item.rubies.ember_shard": "Ember shard",
+    "block.rubies.ruby_lantern": "Ruby lantern",
+    "material.rubies.ruby": "Ruby"
 }

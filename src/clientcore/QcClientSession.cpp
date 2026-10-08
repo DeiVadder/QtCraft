@@ -152,8 +152,9 @@ void QcClientSession::handleMessage(QcMessage &&message)
             emit chunkUnloaded(unload->pos);
         }
     } else if (auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
+        const QcBlockId previous = m_world ? m_world->blockAt(update->pos).value_or(qcAirBlockId) : qcAirBlockId;
         if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
-            emit blockChanged(update->pos);
+            emit blockChanged(update->pos, previous);
         }
     } else if (auto *playerState = std::get_if<QcMsg::PlayerState>(&message)) {
         reconcile(*playerState);
@@ -260,7 +261,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
         }
         m_machine = open->pos;
         m_machineCategory = open->category;
-        m_machineSlots = QList<QcItemStack>(QcMsg::MachineState::slotCount);
+        m_machineSlots = QList<QcItemStack>(open->category.isEmpty() ? 0 : QcMsg::MachineState::slotCount);
         m_machineBurn = 0.0;
         m_machineProgress = 0.0;
         emit machineOpened();
@@ -581,11 +582,13 @@ bool QcClientSession::useItem()
     }
     const QcItemStack &held = m_inventory.selectedStack();
     const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-    // Machines and crafting tables open when used (unless sneaking); otherwise food without a block
+    // Machines, chests, doors and crafting tables react when used (unless sneaking); otherwise food without a block
     // to place is eaten and everything else acts on the targeted block.
     const std::optional<QcBlockId> targetBlock = m_target ? m_world->blockAt(m_target->block) : std::nullopt;
-    const bool opensScreen = targetBlock && !m_intent.sneak
-                             && (m_content->block(*targetBlock).opensCrafting || m_content->block(*targetBlock).machine.isMachine());
+    const QcBlockDefinition *targetDefinition = targetBlock ? &m_content->block(*targetBlock) : nullptr;
+    const bool opensScreen = targetDefinition && !m_intent.sneak
+                             && (targetDefinition->opensCrafting || targetDefinition->machine.isMachine()
+                                 || targetDefinition->containerSlots > 0 || targetDefinition->toggles);
     if (item && item->food > 0 && item->placesBlock.isEmpty() && !opensScreen) {
         m_connection->send(QcMsg::ConsumeItem{});
         m_useTicks = 0;
@@ -595,7 +598,9 @@ bool QcClientSession::useItem()
         return false;
     }
     m_machineClosedLocally = false;
-    m_connection->send(QcMsg::UseItem{m_target->block, m_target->face});
+    const QcVec3 hit = m_target->point - QcVec3{double(m_target->block.x), double(m_target->block.y), double(m_target->block.z)};
+    const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
+    m_connection->send(QcMsg::UseItem{m_target->block, m_target->face, {clamp01(hit.x), clamp01(hit.y), clamp01(hit.z)}});
     m_useTicks = 0;
     return true;
 }

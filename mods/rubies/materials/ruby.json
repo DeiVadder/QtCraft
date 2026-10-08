@@ -1,0 +1,6 @@
+{
+    "name": "ruby",
+    "block": "ruby_block",
+    "kind": "stone",
+    "exclude": ["qtcraft:wall"]
+}

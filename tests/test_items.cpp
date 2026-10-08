@@ -563,7 +563,12 @@ private slots:
         ground.faceTextures.fill(u"test:ground"_s);
         QcBlockDefinition sapling;
         sapling.name = u"test:sapling"_s;
-        sapling.shape = QcBlockShape::Cross;
+        sapling.shape.parts = {[] {
+            QcShapePart part;
+            part.crosses = {{{0.15, 0.0, 0.15}, {0.85, 1.0, 0.85}}};
+            return part;
+        }()};
+        sapling.support = QcBlockSupport::Below;
         sapling.renderLayer = QcRenderLayer::Cutout;
         sapling.solid = false;
         sapling.opaque = false;

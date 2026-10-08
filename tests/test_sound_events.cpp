@@ -288,7 +288,9 @@ private slots:
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:furnace"))});
         const QcBlockPos furnace = m_feet.offset(2, 0, 0);
         send(QcMsg::UseItem{furnace.offset(0, -1, 0), QcBlockFace::Up});
-        QCOMPARE(m_server->world().blockAt(furnace), std::optional<QcBlockId>(id("qtcraft:furnace")));
+        // The player looks north, so the furnace's front faces south, back at the player.
+        QCOMPARE(m_server->world().blockAt(furnace),
+                 std::optional<QcBlockId>(m_content->withProperty(id("qtcraft:furnace"), u"facing"_s, u"south"_s)));
         // A cold furnace is silent.
         m_client->sounds.clear();
         ticks(200);

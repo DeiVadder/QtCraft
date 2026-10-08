@@ -1,8 +1,8 @@
 {
-    "name": "oak_planks_from_birch_log",
+    "name": "oak_planks",
     "type": "shapeless",
     "ingredients": [
-        "birch_log"
+        "oak_log"
     ],
     "result": {
         "item": "oak_planks",

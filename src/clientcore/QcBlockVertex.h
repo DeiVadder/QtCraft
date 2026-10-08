@@ -12,4 +12,6 @@ struct QcBlockVertex
     float shade = 1.0f;
     // Sky light in [0, 1]; scaled by the time of day in the shader.
     float skyLight = 1.0f;
+    // Block light (torches) in [0, 1]; independent of the time of day.
+    float blockLight = 0.0f;
 };

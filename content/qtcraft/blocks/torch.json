@@ -1,0 +1,19 @@
+{
+    "name": "torch",
+    "sound": "wood",
+    "shape": "torch",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 14,
+    "hardness": 0.0,
+    "support": "attached",
+    "replaceable": false,
+    "states": { "attach": ["floor", "north", "east", "south", "west"] },
+    "itemTexture": "torch_item",
+    "textures": {
+        "all": "torch",
+        "top": "torch_top",
+        "bottom": "torch"
+    }
+}
