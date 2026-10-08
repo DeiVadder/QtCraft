@@ -152,11 +152,11 @@ private slots:
         QByteArray huge;
         QBuffer buffer(&huge);
         buffer.open(QIODevice::WriteOnly);
-        QImage(1024, 8, QImage::Format_RGBA8888).save(&buffer, "PNG");
+        QImage(256, 8, QImage::Format_RGBA8888).save(&buffer, "PNG");
         registry.registerTexture({u"a:huge"_s, {}, huge});
         const QcTextureAtlas atlas = QcTextureAtlas::build(registry);
         QCOMPARE(atlas.problems().size(), 3);
-        QVERIFY(atlas.problems().join(u'\n').contains(u"at most 512"_s));
+        QVERIFY(atlas.problems().join(u'\n').contains(u"at most 128"_s));
         QCOMPARE(atlas.uv(u"a:bad"_s), atlas.uv(QString::fromLatin1(QcTextureAtlas::missingTextureName)));
         const QImage placeholder = atlas.tile(u"a:unknown"_s);
         QCOMPARE(placeholder.pixelColor(0, 0), QColor(255, 0, 255));

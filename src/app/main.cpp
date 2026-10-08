@@ -10,6 +10,8 @@
 #include <QQuickWindow>
 #include <QTranslator>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[])
@@ -30,7 +32,7 @@ int main(int argc, char *argv[])
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable)."_s,
                                         u"text"_s);
-    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, chat."_s,
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, chat."_s,
                                            u"name"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
@@ -40,16 +42,25 @@ int main(int argc, char *argv[])
                        modsOption, noModsOption});
     parser.process(app);
 
-    // --language or QTCRAFT_LANGUAGE override the system language.
+    // --language or QTCRAFT_LANGUAGE override the language chosen in the settings, which overrides
+    // the system language.
     QString language = parser.value(languageOption);
     if (language.isEmpty()) {
         language = qEnvironmentVariable("QTCRAFT_LANGUAGE");
     }
-    const QLocale locale = language.isEmpty() ? QLocale::system() : QLocale(language);
-    QTranslator translator;
-    if (translator.load(locale, u"qtcraft"_s, u"_"_s, u":/i18n"_s)) {
-        QCoreApplication::installTranslator(&translator);
+    if (language.isEmpty()) {
+        language = QcGameController::storedLanguage();
     }
+    QTranslator translator;
+    const auto installLanguage = [&translator](const QString &name) {
+        const QLocale locale = name.isEmpty() ? QLocale::system() : QLocale(name);
+        QCoreApplication::removeTranslator(&translator);
+        if (translator.load(locale, u"qtcraft"_s, u"_"_s, u":/i18n"_s)) {
+            QCoreApplication::installTranslator(&translator);
+        }
+        return locale.name().left(2);
+    };
+    const QString contentLanguage = installLanguage(language);
 
     QQmlApplicationEngine engine;
     // The engine owns and deletes the provider.
@@ -69,7 +80,13 @@ int main(int argc, char *argv[])
         return 1;
     }
     game->setIconProvider(icons);
-    game->setLanguage(locale.name().left(2));
+    game->loadSettings();
+    game->setLanguage(contentLanguage);
+    QObject::connect(game, &QcGameController::languageChangeRequested, &engine,
+                     [&engine, game, installLanguage](const QString &name) {
+                         game->setLanguage(installLanguage(name));
+                         engine.retranslate();
+                     });
     game->refreshWorlds();
     game->setModsDirectory(parser.isSet(noModsOption)          ? QString()
                            : parser.value(modsOption).isEmpty() ? QcModLoader::defaultDirectory()
@@ -87,10 +104,12 @@ int main(int argc, char *argv[])
         }
     }
     if (parser.isSet(viewOption)) {
-        game->setViewDistance(parser.value(viewOption).toInt());
+        game->overrideViewDistance(parser.value(viewOption).toInt());
     }
     QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(window, &app);
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
+    // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
+    game->setBenchmark(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600));
     if (parser.isSet(playOption)) {
         game->setScreenshotHook(screenshot);
         game->startSingleplayer(parser.value(worldOption), parser.value(seedOption));

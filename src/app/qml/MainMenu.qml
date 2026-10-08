@@ -177,6 +177,12 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
+                    text: qsTr("Settings")
+                    onClicked: settingsScreen.open()
+                }
+
+                Button {
+                    Layout.fillWidth: true
                     text: qsTr("Mods")
                     onClicked: modsScreen.open()
                 }
@@ -188,6 +194,12 @@ Rectangle {
                 }
             }
         }
+    }
+
+    SettingsScreen {
+        id: settingsScreen
+
+        game: menu.game
     }
 
     ModsScreen {

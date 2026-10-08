@@ -32,6 +32,7 @@ qt_add_qml_module(qtcraft
         qml/MainMenu.qml
         qml/MessageScreen.qml
         qml/ModsScreen.qml
+        qml/SettingsScreen.qml
 )
 
 qt_add_shaders(qtcraft "qtcraft_shaders"

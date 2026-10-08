@@ -61,12 +61,13 @@ void QcServer::start()
 
 QcStatus QcServer::openWorld()
 {
+    // New worlds, saved or not, start in the morning.
+    m_info.worldTime = QcDayCycle::startTime;
     if (m_config.worldDirectory.isEmpty()) {
         return {};
     }
     m_storage.emplace(m_config.worldDirectory, m_content);
     if (!QFile::exists(QDir(m_config.worldDirectory).filePath(u"world.json"_s))) {
-        m_info.worldTime = QcDayCycle::startTime;
         m_info.name = m_config.worldName;
         m_info.seed = m_config.seed;
         m_info.created = QDateTime::currentDateTimeUtc();

@@ -11,9 +11,9 @@ Newline-delimited JSON (one request object per line, one response object per lin
 | Standard input/output | `qtcraft-headless` | Requests on stdin, responses on stdout, logs on stderr. EOF or `quit` ends the process. |
 | Script | `qtcraft-headless --script file.jsonl` | Runs all requests in order and exits with code 0 if every request succeeded, 1 otherwise, 2 on time limit. Lines starting with `#` are comments. |
 
-The interface is **off by default**: the graphical game does not open it. It only exists in processes started explicitly with the options above and never listens on a network port. (*Planned:* `--control local:<name>` for a local socket in the graphical game.)
+The interface is **off by default**: the graphical game does not open it. It only exists in processes started explicitly with the options above and never listens on a network port. A local socket in the graphical game (e.g. `--control local:<name>`) is not implemented; it would only forward the same lines.
 
-`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`, `--data-dir <dir>` (where `worldCreate`/`worldLoad` keep worlds; default: the game's own world directory), `--mods-dir <dir>` (default: the game's mods directory), `--no-mods`. Without a world command the bot plays a throw-away world that is not saved.
+`qtcraft-headless` options: `--seed <n>`, `--world <name>`, `--view-distance <chunks>` (default 4), `--time-limit <seconds>` (default 120), `--script <file>`, `--data-dir <dir>` (data directory like `QTCRAFT_DATA_DIR`: `worldCreate`/`worldLoad` keep worlds in `<dir>/worlds`, mods come from `<dir>/mods`; default: the game's own data directory), `--mods-dir <dir>` (overrides the mods directory), `--no-mods`. Without a world command the bot plays a throw-away world that is not saved.
 
 ## Requests and responses
 
@@ -68,7 +68,7 @@ Additional fields: `health`, `maxHealth`, `dead`, `worldTime` (seconds; a day la
 
 All tick-based commands fail with `"Timed out"` if the session stops ticking for much longer than requested (e.g. after a disconnect).
 
-*Planned with the corresponding stages:* break/place blocks, inventory, crafting, chat and commands, world create/load/save, time skip, entity observation, screenshots.
+Not available: screenshots through the interface (the graphical game's `QTCRAFT_SCREENSHOT` hook covers visual checks) and a local socket in the graphical game (see above).
 
 ## Example
 

@@ -171,13 +171,15 @@ void QcContentRegistry::addTranslations(const QString &language, const QHash<QSt
 
 namespace {
 
+// Replaces the entry with the same name or appends; `index` maps names to positions in `list`.
 template<typename Definition>
-void registerByName(QList<Definition> &list, Definition definition)
+void registerByName(QList<Definition> &list, QHash<QString, qsizetype> &index, Definition definition)
 {
-    const auto existing = std::ranges::find(list, definition.name, &Definition::name);
-    if (existing != list.end()) {
-        *existing = std::move(definition);
+    const auto existing = index.constFind(definition.name);
+    if (existing != index.constEnd()) {
+        list[*existing] = std::move(definition);
     } else {
+        index.insert(definition.name, list.size());
         list.append(std::move(definition));
     }
 }
@@ -186,45 +188,45 @@ void registerByName(QList<Definition> &list, Definition definition)
 
 void QcContentRegistry::registerMob(QcMobDefinition definition)
 {
-    registerByName(m_mobs, std::move(definition));
+    registerByName(m_mobs, m_mobIndex, std::move(definition));
 }
 
 std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
 {
-    const auto it = std::ranges::find(m_mobs, name, &QcMobDefinition::name);
-    if (it == m_mobs.end()) {
+    const auto it = m_mobIndex.constFind(name);
+    if (it == m_mobIndex.constEnd()) {
         return std::nullopt;
     }
-    return int(it - m_mobs.begin());
+    return int(*it);
 }
 
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
 {
-    registerByName(m_recipes, std::move(definition));
+    registerByName(m_recipes, m_recipeIndex, std::move(definition));
 }
 
 std::optional<qsizetype> QcContentRegistry::recipeIndex(const QString &name) const
 {
-    const auto it = std::ranges::find(m_recipes, name, &QcRecipeDefinition::name);
-    if (it == m_recipes.end()) {
+    const auto it = m_recipeIndex.constFind(name);
+    if (it == m_recipeIndex.constEnd()) {
         return std::nullopt;
     }
-    return it - m_recipes.begin();
+    return *it;
 }
 
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
-    registerByName(m_biomes, std::move(definition));
+    registerByName(m_biomes, m_biomeIndex, std::move(definition));
 }
 
 void QcContentRegistry::registerFeature(QcFeatureDefinition definition)
 {
-    registerByName(m_features, std::move(definition));
+    registerByName(m_features, m_featureIndex, std::move(definition));
 }
 
 void QcContentRegistry::registerOre(QcOreDefinition definition)
 {
-    registerByName(m_ores, std::move(definition));
+    registerByName(m_ores, m_oreIndex, std::move(definition));
 }
 
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const

@@ -14,6 +14,7 @@
 #include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcEntityMesher.h"
+#include "QcGameSettings.h"
 #include "QcItemIconProvider.h"
 #include "QcWorldLibrary.h"
 
@@ -28,6 +29,9 @@
 #include <QVariantMap>
 #include <QLoggingCategory>
 #include <QQuickWindow>
+#include <QCoreApplication>
+#include <QTimer>
+#include <QSettings>
 
 #include <algorithm>
 #include <cmath>
@@ -140,12 +144,112 @@ void QcGameController::setInputEnabled(bool enabled)
 
 void QcGameController::setViewDistance(int chunks)
 {
-    chunks = std::clamp(chunks, 2, 16);
+    chunks = QcGameSettings::clampViewDistance(chunks);
     if (m_viewDistance == chunks) {
         return;
     }
     m_viewDistance = chunks;
     emit viewDistanceChanged();
+}
+
+QString QcGameController::settingsPath()
+{
+    return QDir(QcWorldLibrary::dataRoot()).filePath(u"settings.ini"_s);
+}
+
+QString QcGameController::storedLanguage()
+{
+    return QcGameSettings::load(settingsPath()).language;
+}
+
+void QcGameController::loadSettings()
+{
+    m_storedSettings = QcGameSettings::load(settingsPath());
+    setViewDistance(m_storedSettings.viewDistance);
+    setFieldOfView(m_storedSettings.fieldOfView);
+    setMouseSensitivity(m_storedSettings.mouseSensitivity);
+    setInvertMouse(m_storedSettings.invertMouse);
+    setShowDebug(m_storedSettings.showDebug);
+    m_languageSetting = m_storedSettings.language;
+    emit settingsChanged();
+}
+
+void QcGameController::overrideViewDistance(int chunks)
+{
+    setViewDistance(chunks);
+    m_commandLineViewDistance = m_viewDistance;
+}
+
+void QcGameController::saveSettings()
+{
+    QcGameSettings settings;
+    // A view distance given on the command line is not stored unless the player changed it since.
+    settings.viewDistance = m_commandLineViewDistance == m_viewDistance ? m_storedSettings.viewDistance : m_viewDistance;
+    settings.fieldOfView = m_fieldOfView;
+    settings.mouseSensitivity = m_mouseSensitivity;
+    settings.invertMouse = m_invertMouse;
+    settings.showDebug = m_showDebug;
+    settings.language = m_languageSetting;
+    if (const QcStatus saved = settings.save(settingsPath()); !saved) {
+        qCWarning(lcGame) << saved.error();
+        return;
+    }
+    m_storedSettings = settings;
+}
+
+void QcGameController::setFieldOfView(double degrees)
+{
+    degrees = QcGameSettings::clampFieldOfView(degrees);
+    if (m_fieldOfView != degrees) {
+        m_fieldOfView = degrees;
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setMouseSensitivity(double sensitivity)
+{
+    sensitivity = QcGameSettings::clampMouseSensitivity(sensitivity);
+    if (m_mouseSensitivity != sensitivity) {
+        m_mouseSensitivity = sensitivity;
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setInvertMouse(bool invert)
+{
+    if (m_invertMouse != invert) {
+        m_invertMouse = invert;
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setShowDebug(bool show)
+{
+    if (m_showDebug != show) {
+        m_showDebug = show;
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setLanguage(const QString &language)
+{
+    m_language = language;
+    // Item and recipe names come from the content's translations.
+    if (m_session && m_session->content()) {
+        m_inventory->setContent(m_session->content(), m_language);
+        updateInventory();
+    }
+}
+
+void QcGameController::requestLanguage(const QString &requested)
+{
+    const QString language = QcGameSettings::cleanLanguage(requested);
+    if (m_languageSetting == language) {
+        return;
+    }
+    m_languageSetting = language;
+    emit settingsChanged();
+    emit languageChangeRequested(language);
 }
 
 void QcGameController::setInitialLook(float yaw, float pitch)
@@ -460,6 +564,9 @@ void QcGameController::startWorld(const QString &directory, const QString &world
             if (!m_startupOverlay.isEmpty()) {
                 setOverlay(m_startupOverlay);
             }
+            if (m_benchmarkSeconds > 0) {
+                QTimer::singleShot(3000, this, &QcGameController::startBenchmark);
+            }
         } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
             releaseMouse();
             setPhase(u"error"_s, tr("Disconnected: %1").arg(m_session->disconnectReason()));
@@ -697,8 +804,10 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
         const QPointF delta = mouse->position() - centre;
         if (delta.manhattanLength() > 0.0) {
             QcPlayerInput intent = m_session->intent();
-            intent.yaw = std::fmod(intent.yaw + float(delta.x()) * mouseSensitivity, 360.0f);
-            intent.pitch = std::clamp(intent.pitch - float(delta.y()) * mouseSensitivity, -89.9f, 89.9f);
+            const auto sensitivity = float(m_mouseSensitivity);
+            const float vertical = m_invertMouse ? -sensitivity : sensitivity;
+            intent.yaw = std::fmod(intent.yaw + float(delta.x()) * sensitivity, 360.0f);
+            intent.pitch = std::clamp(intent.pitch - float(delta.y()) * vertical, -89.9f, 89.9f);
             m_session->setIntent(intent);
             QCursor::setPos(m_window->mapToGlobal(centre.toPoint()));
         }
@@ -737,8 +846,82 @@ void QcGameController::updateIntentFromKeys(float frameSeconds)
     m_session->setIntent(intent);
 }
 
+void QcGameController::startBenchmark()
+{
+    if (!m_session) {
+        return;
+    }
+    m_inputEnabled = true;
+    m_keysDown = {Qt::Key_W, Qt::Key_Control, Qt::Key_Space};
+    m_benchmarkFrameNs.clear();
+    m_benchmarkFrameNs.reserve(qsizetype(m_benchmarkSeconds) * 240);
+    m_benchmarkFrame.start();
+    m_benchmarkRunning = true;
+    m_benchmarkCheckpoint = m_session->playerMotion().position;
+    QTimer::singleShot(m_benchmarkSeconds * 1000, this, &QcGameController::finishBenchmark);
+    // Turn away when stuck at a tree or cliff, so the walk keeps loading new chunks.
+    auto *steer = new QTimer(this);
+    connect(steer, &QTimer::timeout, this, [this, steer] {
+        if (!m_benchmarkRunning || !m_session) {
+            steer->deleteLater();
+            return;
+        }
+        const QcVec3 position = m_session->playerMotion().position;
+        const QcVec3 moved = position - m_benchmarkCheckpoint;
+        if (std::hypot(moved.x, moved.z) < 4.0) {
+            QcPlayerInput intent = m_session->intent();
+            intent.yaw = std::fmod(intent.yaw + 67.0f, 360.0f);
+            m_session->setIntent(intent);
+        }
+        m_benchmarkCheckpoint = position;
+    });
+    steer->start(1500);
+}
+
+void QcGameController::finishBenchmark()
+{
+    m_benchmarkRunning = false;
+    m_keysDown.clear();
+    QList<qint64> sorted = m_benchmarkFrameNs;
+    std::ranges::sort(sorted);
+    if (sorted.isEmpty()) {
+        qCWarning(lcGame) << "Benchmark: no frames rendered";
+        QCoreApplication::exit(1);
+        return;
+    }
+    qint64 total = 0;
+    for (const qint64 ns : std::as_const(sorted)) {
+        total += ns;
+    }
+    const double averageFps = double(sorted.size()) * 1e9 / double(total);
+    const double p99Ms = double(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
+    const double worstMs = double(sorted.constLast()) / 1e6;
+    const QcVec3 position = m_session ? m_session->playerMotion().position : QcVec3{};
+    const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
+                           u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())
+                               .arg(m_benchmarkSeconds)
+                               .arg(averageFps, 0, 'f', 1)
+                               .arg(p99Ms, 0, 'f', 2)
+                               .arg(1000.0 / p99Ms, 0, 'f', 1)
+                               .arg(worstMs, 0, 'f', 2)
+                               .arg(m_viewDistance)
+                               .arg(position.x, 0, 'f', 0)
+                               .arg(position.z, 0, 'f', 0)
+                               .arg(m_session && m_session->world() ? m_session->world()->chunkCount() : 0);
+    qCInfo(lcGame).noquote() << report;
+    QCoreApplication::quit();
+}
+
 void QcGameController::onFrame()
 {
+    if (m_benchmarkRunning) {
+        const qint64 ns = m_benchmarkFrame.nsecsElapsed();
+        m_benchmarkFrameNs.append(ns);
+        if (ns > 100'000'000) {
+            qCInfo(lcGame) << "Benchmark: frame" << m_benchmarkFrameNs.size() << "took" << ns / 1'000'000 << "ms";
+        }
+        m_benchmarkFrame.restart();
+    }
     const float frameSeconds = float(std::min<qint64>(m_frameClock.restart(), 100)) / 1000.0f;
     ++m_framesSinceFps;
     if (m_fpsClock.elapsed() >= 500) {
@@ -758,6 +941,7 @@ void QcGameController::onFrame()
     camera.position = QVector3D(float(feet.x), float(feet.y + QcPhysics::playerEyeHeight), float(feet.z));
     camera.yaw = m_session->intent().yaw;
     camera.pitch = m_session->intent().pitch;
+    camera.fieldOfView = float(m_fieldOfView);
     m_view->setCamera(camera);
 
     updateEntities(alpha);

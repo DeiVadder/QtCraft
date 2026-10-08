@@ -77,6 +77,7 @@ public:
     const QList<QcPackReference> &packs() const { return m_packs; }
 
     QStringList languages() const { return m_translations.keys(); }
+    qsizetype translationCount(const QString &language) const { return m_translations.value(language).size(); }
     // Falls back to English and finally to the key itself.
     QString translate(const QString &key, const QString &language) const;
 
@@ -93,10 +94,15 @@ private:
     QHash<QString, qsizetype> m_textureIndex;
     QHash<QString, QHash<QString, QString>> m_translations;
     QList<QcMobDefinition> m_mobs;
+    QHash<QString, qsizetype> m_mobIndex;
     QList<QcRecipeDefinition> m_recipes;
+    QHash<QString, qsizetype> m_recipeIndex;
     QList<QcBiomeDefinition> m_biomes;
+    QHash<QString, qsizetype> m_biomeIndex;
     QList<QcFeatureDefinition> m_features;
+    QHash<QString, qsizetype> m_featureIndex;
     QList<QcOreDefinition> m_ores;
+    QHash<QString, qsizetype> m_oreIndex;
     QcTerrainSettings m_terrain;
     QList<QcPackReference> m_packs;
 };

@@ -19,6 +19,8 @@ class QcModLoader
 public:
     // Upper bound for the number of mod directories looked at.
     static constexpr int maxMods = 256;
+    // Upper bound for the number of mods loaded (each costs a full check, whether accepted or not).
+    static constexpr int maxLoadedMods = 64;
     // Optional file in the mods directory: {"disabled": ["mod_id", ...]}.
     static constexpr auto settingsFile = "mods.json";
 

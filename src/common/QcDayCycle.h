@@ -5,8 +5,8 @@
 namespace QcDayCycle {
 
 inline constexpr double dayLength = 600.0;
-// New worlds start shortly after sunrise.
-inline constexpr double startTime = dayLength * 0.03;
+// New worlds start in the morning, once the sky is fully bright.
+inline constexpr double startTime = dayLength * 0.1;
 inline constexpr double minimumDaylight = 0.15;
 
 double phase(double worldTime);

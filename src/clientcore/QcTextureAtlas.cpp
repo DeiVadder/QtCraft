@@ -14,7 +14,7 @@ namespace {
 
 constexpr int tileSize = QcTextureSynthesizer::tileSize;
 // Larger PNGs are refused before decoding; they would be scaled down to one tile anyway.
-constexpr int maxPngSide = 512;
+constexpr int maxPngSide = 128;
 
 // Accepts #RRGGBB and #RRGGBBAA.
 std::optional<QColor> parseColor(const QJsonValue &value)
@@ -57,7 +57,11 @@ std::optional<QImage> renderTexture(const QcTextureDefinition &definition, QStri
         buffer.setData(definition.png);
         QImageReader reader(&buffer, "PNG");
         const QSize size = reader.size();
-        if (!size.isValid() || size.width() > maxPngSide || size.height() > maxPngSide) {
+        if (!size.isValid()) {
+            problem = u"%1: PNG cannot be decoded"_s.arg(definition.name);
+            return std::nullopt;
+        }
+        if (size.width() > maxPngSide || size.height() > maxPngSide) {
             problem = u"%1: PNG must be at most %2 x %2 pixels"_s.arg(definition.name).arg(maxPngSide);
             return std::nullopt;
         }

@@ -50,8 +50,32 @@ Rectangle {
 
         Button {
             Layout.fillWidth: true
+            text: qsTr("Settings")
+            onClicked: menu.game.overlay = "settings"
+        }
+
+        Button {
+            Layout.fillWidth: true
             text: menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
             onClicked: menu.game.leaveGame()
+        }
+    }
+
+    // The settings are an overlay of their own ("settings") so the --overlay test hook can open them.
+    SettingsScreen {
+        id: settingsScreen
+
+        game: menu.game
+        onClosed: if (menu.game.overlay === "settings") menu.game.overlay = "pause"
+    }
+
+    Connections {
+        target: menu.game
+
+        function onOverlayChanged() {
+            if (menu.game.overlay === "settings") {
+                settingsScreen.open();
+            }
         }
     }
 }

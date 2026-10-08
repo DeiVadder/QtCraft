@@ -8,6 +8,7 @@
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
 
+#include <QDataStream>
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
@@ -315,6 +316,157 @@ private slots:
         QVERIFY(loaded.has_value());
         QVERIFY(find(loaded->mods, u"ores"_s)->reason.contains(u"too many ores"_s));
         QVERIFY(std::ranges::none_of(loaded->content->ores(), [](const QcOreDefinition &ore) { return ore.name.startsWith(u"ores:"_s); }));
+    }
+
+    void onlyTheModThatClientsRejectIsDropped()
+    {
+        QTemporaryDir dir;
+        // Each language file alone is fine; together they exceed what a client takes per language.
+        const auto words = [](int first, int count) {
+            QJsonObject entries;
+            for (int i = first; i < first + count; ++i) {
+                entries.insert(u"k%1"_s.arg(i), u"v"_s);
+            }
+            return entries;
+        };
+        writeJson(dir.filePath(u"a0/pack.json"_s), {{u"id"_s, u"a0"_s}, {u"version"_s, u"1"_s}});
+        writeJson(dir.filePath(u"a0/lang/en.json"_s), words(0, 40000));
+        writeJson(dir.filePath(u"a1/pack.json"_s), {{u"id"_s, u"a1"_s}, {u"version"_s, u"1"_s}});
+        writeJson(dir.filePath(u"a1/lang/en.json"_s), words(40000, 30000));
+        for (const QString &id : {u"a2"_s, u"a3"_s}) {
+            writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
+            writeJson(dir.filePath(id + u"/blocks/b.json"_s), {{u"name"_s, u"b"_s}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:stone"_s}}}});
+        }
+        writeJson(dir.filePath(u"a4/pack.json"_s),
+                  {{u"id"_s, u"a4"_s}, {u"version"_s, u"1"_s}, {u"dependencies"_s, QJsonArray{u"a1"_s}}});
+        // A biome with too many feature placements is skipped like any broken definition.
+        QJsonArray placements;
+        for (int i = 0; i < 65; ++i) {
+            placements.append(QJsonObject{{u"feature"_s, u"qtcraft:oak_tree"_s}, {u"density"_s, 0.0}});
+        }
+        writeJson(dir.filePath(u"a2/biomes/crowded.json"_s), {{u"name"_s, u"crowded"_s},
+                   {u"surface"_s, u"qtcraft:grass_block"_s},
+                   {u"subsurface"_s, u"qtcraft:dirt"_s},
+                   {u"underwater"_s, u"qtcraft:sand"_s},
+                   {u"beach"_s, u"qtcraft:sand"_s},
+                   {u"features"_s, placements}});
+
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(loaded.has_value());
+        QCOMPARE(loadedIds(loaded->mods), (QStringList{u"a0"_s, u"a2"_s, u"a3"_s}));
+        QVERIFY(find(loaded->mods, u"a1"_s)->reason.contains(u"clients would reject"_s));
+        QVERIFY(find(loaded->mods, u"a4"_s)->reason.contains(u"'a1'"_s));
+        QVERIFY(loaded->content->blockId(u"a3:b"_s));
+        QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"more than 64"_s); }));
+        // The result is what a client accepts.
+        QByteArray encoded;
+        QDataStream out(&encoded, QIODevice::WriteOnly);
+        loaded->content->writeTo(out);
+        QDataStream in(encoded);
+        QVERIFY(QcContentRegistry::readFrom(in).has_value());
+    }
+
+    void refusedModsUseUpTheReadBudgetToo()
+    {
+#ifdef Q_OS_UNIX
+        QTemporaryDir dir;
+        // About 4 MB of whitespace around a tiny object: cheap to parse, expensive to read.
+        writeText(dir.filePath(u"padding.json"_s), "{\"k\":\"v\"}" + QByteArray(qsizetype(3900) * 1024, ' '));
+        for (int m = 0; m < 5; ++m) {
+            const QString mod = dir.filePath(u"f%1"_s.arg(m));
+            writeJson(mod + u"/pack.json"_s, {{u"id"_s, u"f%1"_s.arg(m)}, {u"version"_s, u"1"_s}});
+            // Too many ore blocks per chunk: refused after reading.
+            writeJson(mod + u"/ores/heavy.json"_s, {{u"name"_s, u"heavy"_s}, {u"block"_s, u"qtcraft:stone"_s},
+                                                    {u"replaces"_s, u"qtcraft:dirt"_s}, {u"veinsPerChunk"_s, 256},
+                                                    {u"veinSize"_s, 64}});
+            QDir().mkpath(mod + u"/lang"_s);
+            for (const char *language : {"en", "de", "fr", "es", "it"}) {
+                QCOMPARE(::link(QFile::encodeName(dir.filePath(u"padding.json"_s)).constData(),
+                                QFile::encodeName(mod + u"/lang/"_s + QString::fromLatin1(language) + u".json"_s).constData()),
+                         0);
+            }
+        }
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(loaded.has_value());
+        QVERIFY(loadedIds(loaded->mods).isEmpty());
+        // Three mods of about 19.5 MB were read and refused; the fourth no longer fits the 64 MiB.
+        QVERIFY(find(loaded->mods, u"f2"_s)->reason.contains(u"too many ores"_s));
+        QVERIFY(find(loaded->mods, u"f3"_s)->reason.contains(u"left for mods"_s));
+#else
+        QSKIP("POSIX links only");
+#endif
+    }
+
+    void severalModsThatClientsRejectAreAllFound()
+    {
+        QTemporaryDir dir;
+        const auto words = [](int first, int count) {
+            QJsonObject entries;
+            for (int i = first; i < first + count; ++i) {
+                entries.insert(u"k%1"_s.arg(i), u"v"_s);
+            }
+            return entries;
+        };
+        // b0 fills the English table almost up; b1 and b3 each tip it over, b2 and b4 are harmless,
+        // b5 depends on b3.
+        writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
+        writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, 65000));
+        for (const QString &id : {u"b1"_s, u"b3"_s}) {
+            writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
+            writeJson(dir.filePath(id + u"/lang/en.json"_s), words(id == u"b1"_s ? 70000 : 80000, 1000));
+        }
+        for (const QString &id : {u"b2"_s, u"b4"_s}) {
+            writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
+            writeJson(dir.filePath(id + u"/lang/de.json"_s), words(0, 10));
+        }
+        writeJson(dir.filePath(u"b5/pack.json"_s),
+                  {{u"id"_s, u"b5"_s}, {u"version"_s, u"1"_s}, {u"dependencies"_s, QJsonArray{u"b3"_s}}});
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(loaded.has_value());
+        QCOMPARE(loadedIds(loaded->mods), (QStringList{u"b0"_s, u"b2"_s, u"b4"_s}));
+        QVERIFY(find(loaded->mods, u"b1"_s)->reason.contains(u"clients would reject"_s));
+        QVERIFY(find(loaded->mods, u"b3"_s)->reason.contains(u"clients would reject"_s));
+        QVERIFY(find(loaded->mods, u"b5"_s)->reason.contains(u"'b3'"_s));
+        QCOMPARE(loaded->content->packs().size(), 4);
+    }
+
+    void itemsCreatedForBlocksCountAsWell()
+    {
+        QTemporaryDir dir;
+        // Long block names: each block gets an item with its name again, which a check of the blocks
+        // alone would miss.
+        writeJson(dir.filePath(u"long/pack.json"_s), {{u"id"_s, u"long"_s}, {u"version"_s, u"1"_s}});
+        for (int i = 0; i < 700; ++i) {
+            const QString name = u"b%1_"_s.arg(i) + QString(10000, u'x');
+            writeJson(dir.filePath(u"long/blocks/b%1.json"_s.arg(i)),
+                      {{u"name"_s, name}, {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:stone"_s}}}});
+        }
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(loaded.has_value());
+        QVERIFY2(find(loaded->mods, u"long"_s)->reason.contains(u"exceeds"_s), qPrintable(find(loaded->mods, u"long"_s)->reason));
+        QByteArray encoded;
+        QDataStream out(&encoded, QIODevice::WriteOnly);
+        loaded->content->writeTo(out);
+        QDataStream in(encoded);
+        QVERIFY(QcContentRegistry::readFrom(in).has_value());
+    }
+
+    void atMost64ModsAreActive()
+    {
+        QTemporaryDir dir;
+        for (int m = 0; m < 66; ++m) {
+            const QString id = u"m%1"_s.arg(m, 2, 10, QChar(u'0'));
+            writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
+        }
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(loaded.has_value());
+        QCOMPARE(loadedIds(loaded->mods).size(), QcModLoader::maxLoadedMods);
+        QVERIFY(find(loaded->mods, u"m65"_s)->reason.contains(u"at most 64 mods are loaded"_s));
     }
 
     void exampleModAddsBlockItemRecipeAndMob()

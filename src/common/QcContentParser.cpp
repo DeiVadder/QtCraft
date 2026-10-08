@@ -149,8 +149,8 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     const QJsonValue drops = json.value(u"drops"_s);
     if (drops.isUndefined()) {
         block.drops = {{block.name, 1}};
-    } else if (!drops.isArray()) {
-        reader.fail(u"'drops' must be an array"_s);
+    } else if (!drops.isArray() || drops.toArray().size() > 64) {
+        reader.fail(u"'drops' must be an array of at most 64 entries"_s);
     } else {
         const QJsonArray dropList = drops.toArray();
         for (const auto &entry : dropList) {
@@ -214,8 +214,24 @@ QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, co
     if (!json.value(u"pattern"_s).isString()) {
         return qcError(u"texture '%1': 'pattern' string is required"_s.arg(texture.name));
     }
-    texture.procedural = json;
-    texture.procedural.remove(u"name"_s);
+    // Only the fields the synthesizer reads are kept (short strings and numbers), so a texture
+    // definition stays small whatever else the file contains.
+    for (const QString &key : {u"pattern"_s, u"primary"_s, u"secondary"_s}) {
+        const QJsonValue value = json.value(key);
+        if (value.isString() && value.toString().size() <= 32) {
+            texture.procedural.insert(key, value);
+        } else if (!value.isUndefined()) {
+            return qcError(u"texture '%1': '%2' must be a short string"_s.arg(texture.name, key));
+        }
+    }
+    for (const QString &key : {u"variation"_s, u"seed"_s}) {
+        const QJsonValue value = json.value(key);
+        if (value.isDouble()) {
+            texture.procedural.insert(key, value);
+        } else if (!value.isUndefined()) {
+            return qcError(u"texture '%1': '%2' must be a number"_s.arg(texture.name, key));
+        }
+    }
     return texture;
 }
 
@@ -408,6 +424,9 @@ QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString 
         }
         recipe.pattern = rows;
         const QJsonObject keys = json.value(u"key"_s).toObject();
+        if (keys.size() > 9) {
+            reader.fail(u"'key' has more than 9 entries"_s);
+        }
         for (auto it = keys.constBegin(); it != keys.constEnd(); ++it) {
             const QString item = QcContentNames::qualify(it.value().toString(), packNamespace);
             if (it.key().size() != 1 || it.key() == u" "_s || item.isEmpty()) {
@@ -506,6 +525,9 @@ QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &p
         reader.fail(u"'features' must be an array"_s);
     }
     const QJsonArray featureList = features.toArray();
+    if (featureList.size() > 64) {
+        reader.fail(u"'features' has more than 64 entries"_s);
+    }
     for (const auto &entry : featureList) {
         const QJsonObject placementJson = entry.toObject();
         FieldReader placementReader{placementJson, reader.context, {}};

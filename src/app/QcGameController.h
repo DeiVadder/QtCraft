@@ -1,5 +1,8 @@
 #pragma once
 
+#include "QcCamera.h"
+#include "QcGameSettings.h"
+
 #include "QcClientSession.h"
 #include "QcInventoryModel.h"
 #include "QcPlayerInput.h"
@@ -55,11 +58,17 @@ class QcGameController : public QObject
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList mods READ mods NOTIFY modsChanged FINAL)
+    Q_PROPERTY(double fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(double mouseSensitivity READ mouseSensitivity WRITE setMouseSensitivity NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(bool invertMouse READ invertMouse WRITE setInvertMouse NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(bool showDebug READ showDebug WRITE setShowDebug NOTIFY settingsChanged FINAL)
+    // "" follows the system language; otherwise a locale name such as "de".
+    Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
 
 public:
-    static constexpr int defaultViewDistance = 8;
-    static constexpr float mouseSensitivity = 0.15f;
+    static constexpr int defaultViewDistance = QcGameSettings::defaultViewDistance;
+    static constexpr double defaultMouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     static constexpr float keyboardLookSpeed = 120.0f;
 
     explicit QcGameController(QObject *parent = nullptr);
@@ -77,6 +86,27 @@ public:
     int viewDistance() const { return m_viewDistance; }
     void setViewDistance(int chunks);
 
+    // Settings file below the data root (QTCRAFT_DATA_DIR in tests): view distance, field of view,
+    // mouse, debug overlay and language.
+    static QString settingsPath();
+    // Language stored in the settings ("" = system).
+    static QString storedLanguage();
+    void loadSettings();
+    Q_INVOKABLE void saveSettings();
+    // View distance from the command line: used now, but not written to the settings.
+    void overrideViewDistance(int chunks);
+    double fieldOfView() const { return m_fieldOfView; }
+    void setFieldOfView(double degrees);
+    double mouseSensitivity() const { return m_mouseSensitivity; }
+    void setMouseSensitivity(double sensitivity);
+    bool invertMouse() const { return m_invertMouse; }
+    void setInvertMouse(bool invert);
+    bool showDebug() const { return m_showDebug; }
+    void setShowDebug(bool show);
+    QString language() const { return m_languageSetting; }
+    // Stores the choice and asks the application to switch the UI language now.
+    void requestLanguage(const QString &requested);
+
     QcInventoryModel *inventory() const { return m_inventory; }
     double miningProgress() const { return m_miningProgress; }
     QString targetLabel() const { return m_targetLabel; }
@@ -91,7 +121,7 @@ public:
     void setModsDirectory(const QString &directory);
     bool persistent() const { return !m_worldDirectory.isEmpty(); }
     // Language used for content names (block and item labels).
-    void setLanguage(const QString &language) { m_language = language; }
+    void setLanguage(const QString &language);
     void setIconProvider(QcItemIconProvider *provider) { m_iconProvider = provider; }
 
     // A world that is not saved (test hook --play).
@@ -131,6 +161,10 @@ public:
     void setScreenshotHook(QcScreenshotHook *hook);
     // Test hook: chat lines sent and overlay opened once the world is playable.
     void setStartupScript(QStringList chatLines, QString overlay);
+    // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing, the player sprints and jumps straight
+    // ahead after a short warm-up while frame times are recorded; the result is logged and the
+    // application quits.
+    void setBenchmark(int seconds) { m_benchmarkSeconds = seconds; }
     QcClientSession *session() const { return m_session; }
 
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -149,6 +183,9 @@ signals:
     void overlayChanged();
     void worldsChanged();
     void modsChanged();
+    void settingsChanged();
+    // The application installs the translator for `language` ("" = system) and retranslates.
+    void languageChangeRequested(const QString &language);
     void healthChanged();
     void craftingChanged();
 
@@ -175,6 +212,20 @@ private:
     bool m_mouseCaptured = false;
     bool m_inputEnabled = true;
     int m_viewDistance = defaultViewDistance;
+    double m_fieldOfView = QcCamera::defaultFieldOfView;
+    double m_mouseSensitivity = defaultMouseSensitivity;
+    bool m_invertMouse = false;
+    bool m_showDebug = true;
+    QString m_languageSetting;
+    QcGameSettings m_storedSettings;
+    int m_commandLineViewDistance = 0;
+    int m_benchmarkSeconds = 0;
+    bool m_benchmarkRunning = false;
+    QElapsedTimer m_benchmarkFrame;
+    QcVec3 m_benchmarkCheckpoint;
+    QList<qint64> m_benchmarkFrameNs;
+    void startBenchmark();
+    void finishBenchmark();
 
     std::unique_ptr<QcLocalServerHost> m_server;
     QcClientSession *m_session = nullptr;

@@ -18,6 +18,7 @@ Item {
         style: Text.Outline
         styleColor: "#80000000"
         font.pixelSize: 14
+        visible: hud.game.showDebug
         text: hud.game.debugText
     }
 

@@ -87,6 +87,7 @@ private slots:
         QTest::newRow("unknown key") << QByteArray(R"({"name":"x","pattern":["AB"],"key":{"A":"stone"},"result":{"item":"x"}})");
         QTest::newRow("too wide") << QByteArray(R"({"name":"x","pattern":["AAAA"],"key":{"A":"stone"},"result":{"item":"x"}})");
         QTest::newRow("too tall") << QByteArray(R"({"name":"x","pattern":["A","A","A","A"],"key":{"A":"stone"},"result":{"item":"x"}})");
+        QTest::newRow("too many keys") << QByteArray(R"({"name":"x","pattern":["A"],"key":{"A":"stone","B":"stone","C":"stone","D":"stone","E":"stone","F":"stone","G":"stone","H":"stone","I":"stone","J":"stone"},"result":{"item":"x"}})");
         QTest::newRow("long key") << QByteArray(R"({"name":"x","pattern":["A"],"key":{"AB":"stone"},"result":{"item":"x"}})");
         QTest::newRow("no result") << QByteArray(R"({"name":"x","pattern":["A"],"key":{"A":"stone"}})");
         QTest::newRow("empty shapeless") << QByteArray(R"({"name":"x","type":"shapeless","ingredients":[],"result":{"item":"x"}})");

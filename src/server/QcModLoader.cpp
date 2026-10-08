@@ -2,6 +2,7 @@
 
 #include "QcBaseContent.h"
 #include "QcProtocol.h"
+#include "QcStreamLimits.h"
 #include "QcWorldLibrary.h"
 
 #include <QDataStream>
@@ -15,6 +16,7 @@
 #include <QSet>
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -78,6 +80,7 @@ constexpr qsizetype maxOres = 256;
 constexpr qint64 maxOreBlocksPerChunk = 4096;
 constexpr qsizetype maxBiomes = 256;
 constexpr qsizetype maxFeatures = 1024;
+constexpr qsizetype maxPlacements = 4096;
 
 // Server-side costs that clients never see.
 QString worldgenProblem(const QcContentRegistry &content)
@@ -89,8 +92,14 @@ QString worldgenProblem(const QcContentRegistry &content)
     if (content.ores().size() > maxOres || oreBlocks > maxOreBlocksPerChunk) {
         return u"too many ores (at most %1 definitions and %2 ore blocks per chunk)"_s.arg(maxOres).arg(maxOreBlocksPerChunk);
     }
-    if (content.biomes().size() > maxBiomes || content.features().size() > maxFeatures) {
-        return u"too many biomes or features (at most %1 and %2)"_s.arg(maxBiomes).arg(maxFeatures);
+    qsizetype placements = 0;
+    for (const QcBiomeDefinition &biome : content.biomes()) {
+        placements += biome.features.size();
+    }
+    if (content.biomes().size() > maxBiomes || content.features().size() > maxFeatures || placements > maxPlacements) {
+        return u"too many biomes or features (at most %1 biomes, %2 features, %3 feature placements)"_s.arg(maxBiomes)
+            .arg(maxFeatures)
+            .arg(maxPlacements);
     }
     return {};
 }
@@ -102,6 +111,26 @@ qint64 encodedSize(const QcContentRegistry &content, QByteArray &buffer)
     QDataStream stream(&buffer, QIODevice::WriteOnly);
     content.writeTo(stream);
     return buffer.size();
+}
+
+// The counts clients accept (QcContentRegistry::readFrom); everything else a client checks is already
+// enforced by the parser (recipe shapes, model parts, ranges).
+QString countProblem(const QcContentRegistry &content)
+{
+    const auto tooMany = [](qsizetype count) { return std::cmp_greater(count, QcStreamLimits::maxDefinitions); };
+    if (tooMany(content.blockCount()) || tooMany(content.itemCount()) || tooMany(content.mobs().size())
+        || tooMany(content.recipes().size()) || tooMany(content.textures().size()) || tooMany(content.languages().size())
+        || content.packs().size() > 1024) {
+        return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);
+    }
+    const QStringList languages = content.languages();
+    for (const QString &language : languages) {
+        if (tooMany(content.translationCount(language))) {
+            return u"clients would reject the content (more than %1 translations for '%2')"_s.arg(QcStreamLimits::maxDefinitions)
+                .arg(language);
+        }
+    }
+    return {};
 }
 
 // Clients refuse content beyond their limits (sizes, counts, ranges); the encoded registry is read
@@ -298,100 +327,105 @@ QList<QcModStatus> QcModLoader::discover(const QString &modsDirectory)
 QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QStringList &warnings)
 {
     Result result;
-    result.content = std::make_shared<QcContentRegistry>();
-    const QcResult<QcContentPackInfo> base = QcBaseContent::loadInto(*result.content, warnings);
-    if (!base) {
-        return qcError(base.error());
+    QcContentRegistry base;
+    if (const QcResult<QcContentPackInfo> loaded = QcBaseContent::loadInto(base, warnings); !loaded) {
+        return qcError(loaded.error());
     }
     QByteArray buffer;
-    if (const QString problem = clientProblem(*result.content, buffer); !problem.isEmpty()) {
-        return qcError(u"base game: "_s + problem);
+    {
+        QcContentRegistry finished = base;
+        finished.createBlockItems();
+        if (const QString problem = clientProblem(finished, buffer); !problem.isEmpty()) {
+            return qcError(u"base game: "_s + problem);
+        }
     }
     result.mods = discover(modsDirectory);
-    QSet<QString> failedDuringLoad;
-    const auto fail = [&](QcModStatus &mod, const QString &reason) {
+
+    // Each mod is checked exactly, as it would reach clients (with the items created for its blocks),
+    // before the next one loads; a refused mod leaves no trace. Reads, mods and checks are bounded, so
+    // the time and memory of a start are too.
+    QcContentRegistry accepted = base;
+    QSet<QString> refused;
+    qint64 readBytes = 0;
+    int attempts = 0;
+    const auto refuse = [&](QcModStatus &mod, const QString &reason) {
         mod.state = QcModStatus::State::Failed;
         mod.reason = reason;
-        failedDuringLoad.insert(mod.info.id);
-        warnings.append(u"mod %1 not loaded: %2"_s.arg(mod.info.id, reason));
+        refused.insert(mod.info.id);
     };
-    qint64 readBytes = 0;
-    // Registry after each loaded mod; copies share their data, so keeping them is cheap.
-    QList<std::pair<qsizetype, QcContentRegistry>> history;
-    for (qsizetype index = 0; index < result.mods.size(); ++index) {
-        QcModStatus &mod = result.mods[index];
+    for (QcModStatus &mod : result.mods) {
         if (mod.state != QcModStatus::State::Loaded) {
-            warnings.append(u"mod %1 not loaded: %2"_s.arg(mod.info.id.isEmpty() ? mod.info.directory : mod.info.id,
-                                                         mod.state == QcModStatus::State::Disabled ? u"disabled"_s : mod.reason));
             continue;
         }
-        const auto failedDependency = std::ranges::find_if(mod.info.dependencies, [&failedDuringLoad](const QString &id) {
-            return failedDuringLoad.contains(id);
+        const auto failedDependency = std::ranges::find_if(mod.info.dependencies, [&refused](const QString &id) {
+            return refused.contains(id);
         });
         if (failedDependency != mod.info.dependencies.end()) {
-            fail(mod, u"depends on '%1', which failed"_s.arg(*failedDependency));
+            refuse(mod, u"depends on '%1', which failed"_s.arg(*failedDependency));
             continue;
         }
-        // Bytes on disk (hard links to one big file count each time) are checked before anything is
-        // read, against what is left for all mods together; then the mod is loaded into a copy, so
-        // a mod that turns out too big leaves no trace.
+        // Every mod that gets this far costs a load and a full check, accepted or not.
+        if (attempts >= maxLoadedMods) {
+            refuse(mod, u"at most %1 mods are loaded"_s.arg(maxLoadedMods));
+            continue;
+        }
+        ++attempts;
+        // Bytes on disk (hard links count each time) are checked before anything is read; every
+        // attempt counts, also for mods that are refused afterwards.
         const qint64 size = QcContentPackLoader::measure(mod.info.directory);
         if (readBytes + size > totalReadBudget || size > contentSyncBudget) {
-            fail(mod, u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - readBytes) / (qint64(1024) * 1024)));
+            refuse(mod, u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - readBytes) / (qint64(1024) * 1024)));
             continue;
         }
         readBytes += size;
-        QcContentRegistry candidate = *result.content;
+        QcContentRegistry candidate = accepted;
         const QcResult<QcContentPackInfo> info = QcContentPackLoader::load(mod.info.directory, candidate, mod.warnings);
-        QString problem = info ? worldgenProblem(candidate) : info.error();
-        if (problem.isEmpty() && encodedSize(candidate, buffer) > contentSyncBudget) {
-            problem = u"the content of all packs together exceeds %1 MiB"_s.arg(QcProtocol::maxFrameBytes / (1024 * 1024));
-        }
-        if (!problem.isEmpty()) {
-            fail(mod, problem);
+        if (!info) {
+            refuse(mod, info.error());
             continue;
         }
         candidate.addPack({info->id, info->name, info->version});
-        *result.content = std::move(candidate);
-        history.append({index, *result.content});
-        for (const QString &warning : std::as_const(mod.warnings)) {
-            warnings.append(u"mod %1: %2"_s.arg(mod.info.id, warning));
+        QcContentRegistry finished = candidate;
+        finished.createBlockItems();
+        QString problem = worldgenProblem(finished);
+        if (problem.isEmpty()) {
+            problem = countProblem(finished);
         }
+        if (problem.isEmpty() && encodedSize(finished, buffer) > contentSyncBudget) {
+            problem = u"the content of all packs together exceeds %1 MiB"_s.arg(QcProtocol::maxFrameBytes / (1024 * 1024));
+        }
+        if (!problem.isEmpty()) {
+            refuse(mod, problem);
+            continue;
+        }
+        accepted = std::move(candidate);
     }
 
-    // One full client check at the end. If it fails, go back to the last state clients accept; the
-    // mod after it is the culprit, the later ones are dropped with it.
+    result.content = std::make_shared<QcContentRegistry>(std::move(accepted));
+    result.content->createBlockItems();
+    // Safety net: read the final content back exactly like a client. The checks above should make this
+    // pass; if not, the game starts with the base content alone rather than with content clients refuse.
     if (const QString problem = clientProblem(*result.content, buffer); !problem.isEmpty()) {
-        qsizetype good = history.size() - 1;
-        // `reason` always describes the state history[good].
-        QString reason = problem;
-        while (good >= 0) {
-            const QString earlier = good > 0 ? clientProblem(history[good - 1].second, buffer) : QString();
-            if (earlier.isEmpty()) {
-                break;
+        qWarning("Mods: clients would reject the combined content (%s); starting without mods", qPrintable(problem));
+        for (QcModStatus &mod : result.mods) {
+            if (mod.state == QcModStatus::State::Loaded) {
+                mod.state = QcModStatus::State::Failed;
+                mod.reason = u"clients would reject the combined content of all mods (%1)"_s.arg(problem);
             }
-            reason = earlier;
-            --good;
         }
-        // history[good] is the first state clients reject; everything from that mod on is dropped.
-        for (qsizetype i = good; i < history.size(); ++i) {
-            QcModStatus &mod = result.mods[history[i].first];
-            mod.state = QcModStatus::State::Failed;
-            mod.reason = i == good ? reason : u"loaded after a mod whose content clients reject"_s;
-            warnings.append(u"mod %1 not loaded: %2"_s.arg(mod.info.id, mod.reason));
+        result.content = std::make_shared<QcContentRegistry>(std::move(base));
+        result.content->createBlockItems();
+    }
+    for (const QcModStatus &mod : std::as_const(result.mods)) {
+        const QString name = mod.info.id.isEmpty() ? mod.info.directory : mod.info.id;
+        if (mod.state != QcModStatus::State::Loaded) {
+            warnings.append(u"mod %1 not loaded: %2"_s.arg(name, mod.state == QcModStatus::State::Disabled ? u"disabled"_s : mod.reason));
+            continue;
         }
-        if (good > 0) {
-            *result.content = history[good - 1].second;
-        } else {
-            // Even the first mod was too much: start again from the base game alone.
-            result.content = std::make_shared<QcContentRegistry>();
-            QStringList ignored;
-            if (const QcResult<QcContentPackInfo> again = QcBaseContent::loadInto(*result.content, ignored); !again) {
-                return qcError(again.error());
-            }
+        for (const QString &warning : mod.warnings) {
+            warnings.append(u"mod %1: %2"_s.arg(name, warning));
         }
     }
-    result.content->createBlockItems();
     checkReferences(*result.content, warnings);
     return result;
 }

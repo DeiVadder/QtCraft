@@ -8,6 +8,7 @@ qt_add_library(qc_clientcore STATIC
     QcClientSession.h QcClientSession.cpp
     QcClientWorld.h QcClientWorld.cpp
     QcEntityMesher.h QcEntityMesher.cpp
+    QcGameSettings.h QcGameSettings.cpp
     QcControlInterface.h QcControlInterface.cpp
     QcMeshScheduler.h QcMeshScheduler.cpp
     QcSectionKey.h

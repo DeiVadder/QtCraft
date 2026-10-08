@@ -65,7 +65,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
                                         QString::number(defaultTimeLimitSeconds));
     const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
     const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
-    const QCommandLineOption dataOption(u"data-dir"_s, u"Directory holding the saved worlds (world commands)."_s, u"dir"_s);
+    const QCommandLineOption dataOption(u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
     parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
@@ -94,9 +94,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     QStringList warnings;
-    const QString modsDirectory =
-        parser.isSet(noModsOption) ? QString() : parser.value(modsOption).isEmpty() ? QcModLoader::defaultDirectory()
-                                                                                    : parser.value(modsOption);
+    // Mods come from --mods-dir, else from the data directory's mods folder.
+    QString modsDirectory = parser.value(modsOption);
+    if (modsDirectory.isEmpty()) {
+        modsDirectory = parser.isSet(dataOption) ? QDir(parser.value(dataOption)).filePath(u"mods"_s) : QcModLoader::defaultDirectory();
+    }
+    if (parser.isSet(noModsOption)) {
+        modsDirectory.clear();
+    }
     QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
     for (const QString &warning : std::as_const(warnings)) {
         printError(u"content warning: "_s + warning);

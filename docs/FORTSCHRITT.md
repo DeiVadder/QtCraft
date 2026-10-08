@@ -4,10 +4,10 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 ## Aktueller Stand
 
-- **Aktuelle Etappe:** 7 – Modding (Abschlussprüfung)
-- **Branch:** `feature/07-modding` (auf `dev` c3d0904)
-- **Nächster Schritt:** Unabhängige Verifikation der Etappe 7, Squash-Merge, dann Etappe 8 (`feature/08-polish`: Performance-Messung Release/8 Chunks, Einstellungen, vollständige deutsche Übersetzung der QML-Texte, Durchspiel-Test, Abschlussbericht).
-- **Offene Befunde:** Etappe 5: keine Mob-Mob-Kollision (bewusst offen); `EntityMoves` sendet alle sichtbaren Mobs jedes Tick.
+- **Aktuelle Etappe:** alle Etappen abgeschlossen (1–8 per Squash-Merge in `dev`)
+- **Branch:** `dev`
+- **Nächster Schritt:** keiner offen. Release `dev → main` mit finalem Review und Tag entscheidet der Mensch. Optionale Extras (TCP-Mehrspieler, Skript-Hooks, Wasserausbreitung, Sound) wären die nächsten Schritte.
+- **Offene Befunde:** keine blockierenden; bekannte Mängel siehe unten und `docs/Abschlussbericht.md`.
 
 ## Vom Menschen getroffene Festlegungen (2026-10-07)
 
@@ -27,12 +27,13 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 | 4 | Interaktion und Persistenz | erledigt | 2026-10-07 | Verifikation nach Nachbesserung PASS |
 | 5 | Gegner und Gesundheit | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
 | 6 | Crafting und Items | erledigt | 2026-10-08 | Verifikation nach Nachbesserung PASS |
-| 7 | Modding | in Verifikation | | erste Verifikation FAIL (Pipe/Gerätedatei als Mod-Datei blockierte den Start), nachgebessert |
-| 8 | Politur und Abschluss | offen | | |
+| 7 | Modding | erledigt | 2026-10-08 | Verifikation nach drei Nachbesserungsrunden PASS (bösartige Mod-Dateien, Grenzen des Clients) |
+| 8 | Politur und Abschluss | erledigt | 2026-10-08 | Einstellungen, deutsche Übersetzung, Benchmark (≈ 120 FPS bei 8 Chunks), Durchspiel-Test, README, Abschlussbericht; Mod-Lader nach mehreren Prüfrunden vereinfacht und gehärtet |
 
 ## Bekannte Mängel
 
-- Steuerschnittstelle nur im Headless-Prozess; Anbindung an das grafische Spiel per lokalem Socket folgt.
+- Steuerschnittstelle nur im Headless-Prozess; keine Anbindung an das grafische Spiel per lokalem Socket, keine Screenshots über die Schnittstelle.
+- Chat-Antworten des Servers nur Englisch (keine übersetzbaren Meldungsschlüssel im Protokoll).
 - Maus-Fangen per Cursor-Zentrierung (`QCursor::setPos`) ist auf macOS nur per Screenshot, nicht interaktiv geprüft.
 - Biome bilden eher rundliche Flecken; Gebirge sind selten (Klimapunkt-Verteilung).
 - Spielerdateien: Namen werden auf Dateinamen abgebildet; „Bob“/„bob“ teilen sich auf macOS eine Datei. Keine Sperre gegen zwei Prozesse auf derselben Welt.
@@ -41,4 +42,5 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 - Spawn kann auf Baumkronen liegen (höchster Nicht-Luft-Block der Säule).
 - Kein Ofen: Barren per Rezept aus Erz und Kohle (E-024).
 - Kein Mob-Mob-Ausweichen; gerufene Mobs können ineinander stehen.
-- Mods ersetzen Definitionen nur vollständig (keine Teil-Patches); Mods gelten global, nicht pro Welt.
+- Mods ersetzen Definitionen nur vollständig (keine Teil-Patches); Mods gelten global, nicht pro Welt; höchstens 64 Mods pro Start.
+- Viele kurze Übersetzungseinträge (rund 3 Mio. innerhalb der 32 MiB) kosten beim Laden bis etwa 700–870 MB Speicher.

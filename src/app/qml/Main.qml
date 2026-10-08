@@ -40,7 +40,7 @@ ApplicationWindow {
 
     PauseMenu {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "pause"
+        visible: game.phase === "playing" && (game.overlay === "pause" || game.overlay === "settings")
         game: game
     }
 

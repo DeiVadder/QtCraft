@@ -127,12 +127,13 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places or eat
 | CMake presets `debug`, `release`, `asan` (Address + UndefinedBehavior), `tsan` (Thread) | Separate build directories under `build/<preset>` |
 | `QC_SANITIZERS` | Sanitizer list applied to all own targets |
 | `QTCRAFT_SCREENSHOT=<file.png>` | Saves a screenshot after `QTCRAFT_SCREENSHOT_FRAMES` (default 90) frames and quits; with `--play` it waits until the world is fully loaded and meshed |
+| `QTCRAFT_BENCHMARK=<seconds>` (with `--play`) | After a 3 s warm-up the player sprints and jumps straight ahead; frame times are recorded and logged (average, 99th percentile, worst), then the game quits |
 | `QTCRAFT_LANGUAGE=<locale>`, `--language <locale>` | Overrides the UI language (e.g. `de`) |
 | `--play`, `--world <name>`, `--seed <seed>` | Start a single-player world immediately |
 | `--look <yaw,pitch>` | Initial view direction (for reproducible screenshots) |
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
 | `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
-| `--chat <text>` (repeatable), `--overlay <inventory\|pause\|chat>` | Sent / opened once the world is loaded (reproducible UI screenshots) |
+| `--chat <text>` (repeatable), `--overlay <inventory\|pause\|settings\|chat>` | Sent / opened once the world is loaded (reproducible UI screenshots) |
 | `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds (`worlds/`) and mods (`mods/`); tests set it to `build/<preset>/test-data` |
 | `--mods-dir <dir>`, `--no-mods` (game and `qtcraft-headless`) | Load mods from another directory / only the base game |
 | `qtcraft-headless --map <png> [--map-radius <blocks>]` | Top-down terrain map of a seed |

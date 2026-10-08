@@ -36,13 +36,15 @@ step "build-release" limited 1200 cmake --build --preset release
 step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
 
 rm -f "$SCREENSHOT"
-step "smoke-run" env QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
+# Smoke runs keep their settings and worlds in the build tree, never in the player's data.
+SMOKE_DATA="$PROJECT_DIR/build/smoke-data"
+step "smoke-run" env QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
     perl -e 'alarm shift; exec @ARGV or die' 120 build/debug/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20
 step "smoke-screenshot" test -s "$SCREENSHOT"
 
 # The renderer and UI code only runs in the app, so it also gets a sanitizer smoke run.
 rm -f "$SCREENSHOT.asan.png"
-step "smoke-run-asan" env QTCRAFT_SCREENSHOT="$SCREENSHOT.asan.png" QTCRAFT_SCREENSHOT_FRAMES=60 \
+step "smoke-run-asan" env QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT.asan.png" QTCRAFT_SCREENSHOT_FRAMES=60 \
     perl -e 'alarm shift; exec @ARGV or die' 180 build/asan/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20
 step "smoke-screenshot-asan" test -s "$SCREENSHOT.asan.png"
 

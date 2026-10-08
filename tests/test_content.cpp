@@ -2,6 +2,7 @@
 #include "QcContentRegistry.h"
 #include "QcTestUtil.h"
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QTest>
 
@@ -29,6 +30,18 @@ class TestContent : public QObject
     Q_OBJECT
 
 private slots:
+    void proceduralTexturesKeepOnlyKnownFields()
+    {
+        QJsonObject texture = json("{\"name\":\"t\",\"pattern\":\"noise\",\"primary\":\"#112233\",\"seed\":7,\"variation\":0.2}");
+        texture.insert(u"padding"_s, QJsonArray::fromVariantList(QVariantList(10000, 0)));
+        const QcResult<QcTextureDefinition> parsed = QcContentParser::parseProceduralTexture(texture, u"a"_s);
+        QVERIFY2(parsed.has_value(), qcErrorText(parsed));
+        QCOMPARE(parsed->procedural.keys(), (QStringList{u"pattern"_s, u"primary"_s, u"seed"_s, u"variation"_s}));
+        QVERIFY(!QcContentParser::parseProceduralTexture(json("{\"name\":\"t\",\"pattern\":\"noise\",\"seed\":\"7\"}"), u"a"_s));
+        QVERIFY(!QcContentParser::parseProceduralTexture(
+            json("{\"name\":\"t\",\"pattern\":\"noise\",\"primary\":\"#1122334455667788990011223344556677\"}"), u"a"_s));
+    }
+
     void airIsAlwaysIdZero()
     {
         const QcContentRegistry registry;

@@ -46,3 +46,4 @@ qc_add_test(test_survival_scenario SOURCES test_survival_scenario.cpp LIBRARIES 
 qc_add_test(test_crafting SOURCES test_crafting.cpp LIBRARIES qc_common)
 qc_add_test(test_mods SOURCES test_mods.cpp LIBRARIES qc_server)
 target_compile_definitions(test_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+qc_add_test(test_settings SOURCES test_settings.cpp LIBRARIES qc_clientcore)

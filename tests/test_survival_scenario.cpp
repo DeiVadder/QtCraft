@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <cmath>
@@ -23,14 +24,20 @@ constexpr qint64 forestSeed = 12345;
 
 } // namespace
 
-// The assignment's reference scenario, played only through the control interface:
-// fell a tree -> craft planks -> build a tool -> mine a block with it.
+// The assignment's reference scenario, played only through the control interface, extended to a
+// short playthrough: hunt, fight and eat; fell a tree -> craft planks -> build a tool -> mine a block
+// with it; save, restart and find everything again.
 class TestSurvivalScenario : public QObject
 {
     Q_OBJECT
 
 private:
+    QTemporaryDir m_worldDirectory;
+    QcServerConfig m_config;
+    std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcLocalServerHost> m_host;
+    // Where the crafting table was placed, checked again after reloading the world.
+    QJsonObject m_table;
     std::unique_ptr<QcClientSession> m_session;
     std::unique_ptr<QBuffer> m_output;
     std::unique_ptr<QcControlInterface> m_control;
@@ -97,21 +104,93 @@ private:
         request({{u"cmd"_s, u"select"_s}, {u"slot"_s, 0}});
     }
 
+    // Starts the server on the saved world and joins it through a fresh control interface.
+    void joinWorld()
+    {
+        m_host = std::make_unique<QcLocalServerHost>(m_config, m_content,
+                                                     std::make_unique<QcTerrainGenerator>(m_content, forestSeed));
+        QVERIFY2(m_host->startError().isEmpty(), qPrintable(m_host->startError()));
+        m_session = std::make_unique<QcClientSession>(m_host->connectClient(), u"Lumberjack"_s);
+        m_output = std::make_unique<QBuffer>();
+        m_output->open(QIODevice::ReadWrite);
+        m_readOffset = 0;
+        m_control = std::make_unique<QcControlInterface>(m_session.get(), nullptr, m_output.get());
+        m_session->start();
+        QVERIFY(request({{u"cmd"_s, u"waitUntilReady"_s}}).value(u"ok"_s).toBool());
+    }
+
 private slots:
     void initTestCase()
     {
         QStringList warnings;
-        std::shared_ptr<const QcContentRegistry> content = *QcBaseContent::load(warnings);
-        QcServerConfig config;
-        config.viewDistance = 3;
-        config.seed = forestSeed;
-        m_host = std::make_unique<QcLocalServerHost>(config, content, std::make_unique<QcTerrainGenerator>(content, forestSeed));
-        m_session = std::make_unique<QcClientSession>(m_host->connectClient(), u"Lumberjack"_s);
-        m_output = std::make_unique<QBuffer>();
-        m_output->open(QIODevice::ReadWrite);
-        m_control = std::make_unique<QcControlInterface>(m_session.get(), nullptr, m_output.get());
-        m_session->start();
-        QVERIFY(request({{u"cmd"_s, u"waitUntilReady"_s}}).value(u"ok"_s).toBool());
+        m_content = *QcBaseContent::load(warnings);
+        m_config.viewDistance = 3;
+        m_config.seed = forestSeed;
+        m_config.worldName = u"Forest"_s;
+        m_config.worldDirectory = m_worldDirectory.path();
+        joinWorld();
+    }
+
+    void huntFightAndEat()
+    {
+        const auto nearest = [this](const QString &type) {
+            const QJsonArray entities =
+                request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+            for (const auto &entry : entities) {
+                if (entry.toObject().value(u"type"_s).toString() == type) {
+                    return entry.toObject().value(u"id"_s).toInt();
+                }
+            }
+            return -1;
+        };
+        const auto gone = [this](int id) {
+            const QJsonArray entities =
+                request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 64}}).value(u"entities"_s).toArray();
+            return std::ranges::none_of(entities, [id](const QJsonValue &e) { return e.toObject().value(u"id"_s).toInt() == id; });
+        };
+        // The fight below needs a weapon; a stone sword is the one shortcut through a command.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give stone_sword"_s}});
+        hold(u"qtcraft:stone_sword"_s);
+
+        // Hunt: a pig in reach is hit until it drops its meat.
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 0}, {u"pitch"_s, 0}});
+        int pig = nearest(u"qtcraft:pig"_s);
+        if (pig < 0) {
+            request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon pig"_s}});
+            pig = nearest(u"qtcraft:pig"_s);
+        }
+        QVERIFY(pig >= 0);
+        for (int round = 0; round < 40 && !gone(pig); ++round) {
+            request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}});
+            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
+        }
+        QVERIFY(gone(pig));
+        QTRY_VERIFY_WITH_TIMEOUT(countOf(u"qtcraft:raw_porkchop"_s) >= 1, timeoutMs);
+
+        // Fight: a zombie strikes back before it falls.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon zombie"_s}});
+        const int zombie = nearest(u"qtcraft:zombie"_s);
+        QVERIFY(zombie >= 0);
+        double lowest = 20.0;
+        for (int round = 0; round < 60 && !gone(zombie); ++round) {
+            const QJsonObject status = request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, zombie}});
+            lowest = std::min(lowest, request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble());
+            if (!status.value(u"ok"_s).toBool()) {
+                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 8}});
+            }
+        }
+        QVERIFY(gone(zombie));
+        QVERIFY(!request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool());
+        QVERIFY2(lowest < 20.0, "the zombie never hit the player");
+
+        // Eat: the meat heals the wounds the zombie left (regeneration alone is slower).
+        hold(u"qtcraft:raw_porkchop"_s);
+        const double before = request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble();
+        const int meat = countOf(u"qtcraft:raw_porkchop"_s);
+        QVERIFY2(before < 20.0, "regeneration healed the player before eating");
+        request({{u"cmd"_s, u"use"_s}});
+        QCOMPARE(countOf(u"qtcraft:raw_porkchop"_s), meat - 1);
+        QVERIFY(request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble() > before);
     }
 
     void cleanupTestCase()
@@ -241,6 +320,7 @@ private slots:
             if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString()
                 == u"qtcraft:crafting_table"_s) {
                 placed = true;
+                m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}};
                 break;
             }
         }
@@ -272,6 +352,29 @@ private slots:
         const QJsonObject held = request({{u"cmd"_s, u"status"_s}}).value(u"held"_s).toObject();
         QCOMPARE(held.value(u"item"_s).toString(), u"qtcraft:wooden_pickaxe"_s);
         QVERIFY(held.value(u"damage"_s).toInt() >= 1);
+    }
+
+    void savedWorldComesBackAfterARestart()
+    {
+        const QJsonObject before = request({{u"cmd"_s, u"status"_s}});
+        const int pickaxeDamage = before.value(u"held"_s).toObject().value(u"damage"_s).toInt();
+        QVERIFY(request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/save"_s}}).value(u"ok"_s).toBool());
+        m_control.reset();
+        m_session.reset();
+        QVERIFY(m_host->shutdown().has_value());
+        m_host.reset();
+
+        joinWorld();
+        const QJsonObject after = request({{u"cmd"_s, u"status"_s}});
+        const QcVec3 was = position(before);
+        const QcVec3 is = position(after);
+        QVERIFY2(std::abs(was.x - is.x) < 0.01 && std::abs(was.y - is.y) < 0.01 && std::abs(was.z - is.z) < 0.01,
+                 QJsonDocument(after).toJson(QJsonDocument::Compact).constData());
+        QCOMPARE(after.value(u"health"_s).toDouble(), before.value(u"health"_s).toDouble());
+        QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 1);
+        QCOMPARE(after.value(u"held"_s).toObject().value(u"damage"_s).toInt(), pickaxeDamage);
+        QVERIFY(countOf(u"qtcraft:cobblestone"_s) >= 1);
+        QCOMPARE(request(m_table).value(u"block"_s).toString(), u"qtcraft:crafting_table"_s);
     }
 };
 
