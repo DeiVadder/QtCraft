@@ -19,6 +19,11 @@ struct QcGameSettings
     static constexpr double defaultMouseSensitivity = 0.15;
     static constexpr double minMouseSensitivity = 0.02;
     static constexpr double maxMouseSensitivity = 1.0;
+    // Volumes are shares in 0..1.
+    static constexpr double defaultMasterVolume = 0.8;
+    static constexpr double defaultEffectsVolume = 1.0;
+    static constexpr double defaultMusicVolume = 0.5;
+    static constexpr double defaultAmbientVolume = 0.7;
 
     int viewDistance = defaultViewDistance;
     double fieldOfView = defaultFieldOfView;
@@ -30,11 +35,18 @@ struct QcGameSettings
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;
     // The player's look; names are checked against the content by the server.
     QcAppearance appearance;
+    double masterVolume = defaultMasterVolume;
+    double effectsVolume = defaultEffectsVolume;
+    double musicVolume = defaultMusicVolume;
+    double ambientVolume = defaultAmbientVolume;
+    bool muted = false;
 
     static int clampViewDistance(int chunks);
     static double clampFieldOfView(double degrees);
     static double clampMouseSensitivity(double sensitivity);
     static QString cleanLanguage(const QString &language);
+    // Clamps to 0..1; non-finite values give `fallback`.
+    static double clampVolume(double volume, double fallback);
 
     // A missing or unreadable file gives the defaults.
     static QcGameSettings load(const QString &path);

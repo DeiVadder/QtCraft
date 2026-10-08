@@ -70,6 +70,10 @@ public:
     static constexpr double itemMoveThreshold = 0.02;
     // Speed of items thrown by a player.
     static constexpr double throwSpeed = 6.0;
+    // A creature with an ambient sound makes it on average this often (seconds); a burning machine
+    // crackles on average this often.
+    static constexpr double mobAmbientSeconds = 10.0;
+    static constexpr double machineSoundSeconds = 2.5;
     // Melee reach of players, from the eyes to the target's centre.
     static constexpr double attackReach = 4.0;
     static constexpr double playerAttackCooldown = 0.4;
@@ -113,6 +117,10 @@ private:
     // react (leaves decay, unsupported saplings break).
     void breakBlock(QcBlockPos pos, bool drops);
     void dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos);
+    // Sends a sound to every playing client within the sound's range (its definition's range, longer
+    // for louder events). Unknown sounds are not sent.
+    void playSound(const QString &key, const QcVec3 &position, float volume = 1.0f, float pitch = 1.0f);
+    void playBlockSound(const QcBlockDefinition &definition, QcBlockSoundAction action, QcBlockPos pos);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
     void throwFromPlayer(const Client &client, QcItemStack stack);
     void handleDropItem(Client &client, QcMsg::DropItem message);
@@ -180,6 +188,8 @@ private:
     QcPlantManager m_plants;
     QcMachineManager m_machines;
     QRandomGenerator m_random;
+    // Separate from m_random so that sounds never change drops or spawns.
+    QRandomGenerator m_soundRandom;
     // Entities that died this tick; their removal tells clients to play the death animation.
     QSet<quint32> m_died;
     QStringList m_openWarnings;

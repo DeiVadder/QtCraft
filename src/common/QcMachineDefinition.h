@@ -10,6 +10,8 @@ struct QcMachineDefinition
     QString category;
     // Work done per second of burning, relative to a recipe's `seconds`; fuel burns at the same rate.
     double speed = 1.0;
+    // Sound heard now and then while fuel burns; empty for a silent machine.
+    QString sound;
 
     bool isMachine() const { return !category.isEmpty(); }
 };

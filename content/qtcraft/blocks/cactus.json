@@ -1,5 +1,6 @@
 {
     "name": "cactus",
+    "sound": "grass",
     "hardness": 0.4,
     "textures": {
         "top": "cactus_top",

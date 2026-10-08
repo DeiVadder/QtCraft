@@ -1,5 +1,6 @@
 {
     "name": "furnace",
+    "sound": "stone",
     "hardness": 3.5,
     "tool": "pickaxe",
     "toolLevel": 1,

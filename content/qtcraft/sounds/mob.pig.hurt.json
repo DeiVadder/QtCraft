@@ -1,0 +1,19 @@
+{
+    "name": "mob.pig.hurt",
+    "volume": 0.7,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.25,
+            "frequency": 520,
+            "endFrequency": 380,
+            "attack": 0.005,
+            "curve": 1.5,
+            "lowpass": 1500,
+            "tremoloRate": 30,
+            "tremoloDepth": 0.5
+        }
+    ]
+}

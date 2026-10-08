@@ -1,0 +1,19 @@
+{
+    "name": "mob.crystal_beetle.ambient",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.15,
+    "range": 12,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.3,
+            "density": 200,
+            "highpass": 2000,
+            "attack": 0.01,
+            "curve": 1.5,
+            "tremoloRate": 20,
+            "tremoloDepth": 0.6
+        }
+    ]
+}

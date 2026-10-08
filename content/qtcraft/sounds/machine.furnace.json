@@ -1,0 +1,26 @@
+{
+    "name": "machine.furnace",
+    "volume": 0.55,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "range": 12,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.6,
+            "density": 60,
+            "lowpass": 4000,
+            "highpass": 600,
+            "attack": 0.01,
+            "curve": 1
+        },
+        {
+            "wave": "noise",
+            "duration": 0.6,
+            "attack": 0.1,
+            "curve": 1,
+            "lowpass": 300,
+            "gain": 0.4
+        }
+    ]
+}

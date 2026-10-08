@@ -1,6 +1,6 @@
 # Modding
 
-QtCraft mods are **data-only content packs**: JSON definitions and PNG textures, no executable code. The base game itself is such a pack (`content/qtcraft`, embedded in the binary) and is loaded by the same code, so everything the base game defines a mod can add or replace.
+QtCraft mods are **data-only content packs**: JSON definitions (including synthesized sounds) and PNG textures, no executable code. The base game itself is such a pack (`content/qtcraft`, embedded in the binary) and is loaded by the same code, so everything the base game defines a mod can add or replace.
 
 ## Where mods live
 
@@ -60,6 +60,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `mobs/` | creature | Stats, spawn rules, box model or skeleton with outfit, drops. |
 | `models/` | skeleton | Bones with roles, pivots and slotted boxes. |
 | `appearance/` | outfit or hair style | Textures and tints per slot; hair boxes. |
+| `sounds/` | sound | Synthesis parameters; see below. |
 | `textures/` | texture | `*.json` procedural textures or `*.png` files (scaled to 16 × 16), named by file name. |
 | `lang/` | language | `en.json`, `de.json`, …: translation key → text. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
@@ -110,6 +111,39 @@ A machine lights one fuel item only when its input has a recipe and the result f
 
 Characters come from data as well: `models/*.json` defines skeletons (bones with a role, a pivot and boxes with slot names), `appearance/*.json` outfits (a texture and an optional tint per slot) and hair styles (extra boxes on the head). A creature can use `"skeleton": "qtcraft:humanoid", "outfit": "mymod:robe"` instead of `model` boxes and is then animated like players (walking, attacking, hit, death; `"armsForward": true` for zombie-like arms). New outfits and hair styles appear in the character screen of players who have the mod; `"playable": false` keeps a creature outfit out of that list, and the server refuses it for players. Tinted textures should be light (near white); the player's colour is multiplied in.
 
+### Sounds
+
+Sounds are not audio files but synthesis parameters; the game renders them when a world starts (decision E-040). A sound has up to 8 layers; each is a tone, noise or crackle with an envelope and simple filters:
+
+```json
+{
+    "name": "block.crystal.break",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        { "wave": "sine", "frequency": 3500, "endFrequency": 3200, "duration": 0.4, "attack": 0.001, "curve": 2.5, "gain": 0.5 },
+        { "wave": "crackle", "density": 1500, "highpass": 2500, "duration": 0.3, "curve": 2, "gain": 0.6 }
+    ]
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `bus` | `effects` (default), `ambient` or `music`: which volume slider applies. |
+| `volume` | 0–1 (default 1). Every sound is normalised to the same peak; `volume` sets its loudness, layer `gain`s (0–1) only weigh layers against each other. |
+| `variants` | 1–8 differently seeded renderings, one picked per play; `pitchVariation` (0–0.5) changes the pitch randomly by up to that share. |
+| `loop` | Rendered seamless and played until stopped (the ambience loops `qtcraft:ambient.wind`, `.cave`, `.water`). |
+| `range` | 1–128 m (default 16): beyond it a positioned sound of volume 1 is not heard. |
+| layer `wave` | `sine`, `square`, `triangle`, `saw`, `noise` (default) or `crackle` (sparse clicks, `density` 1–5000 per second). |
+| layer `frequency`, `endFrequency` | 20–20000 Hz (default 440); `endFrequency` sweeps exponentially to that value (0: none). |
+| layer `start`, `duration` | Seconds (0–10, 0.001–10, default 0 and 0.2). |
+| layer `attack`, `curve` | Linear rise in seconds (at most `duration`), then decay `(1 - t)^curve` (0–8, default 2; 0 holds the level). |
+| layer `lowpass`, `highpass` | Filter frequencies in Hz (20–20000; 0 or missing: off). |
+| layer `tremoloRate`, `tremoloDepth` | Volume wobble: 0–50 Hz and 0–1. |
+
+Blocks name a sound **material**: `"sound": "stone"` makes the block use `<namespace>:block.<material>.<action>` for the actions `break`, `place`, `step` (walking, jumping, landing) and `hit` (mining strikes). Base materials are `qtcraft:stone`, `wood`, `dirt`, `gravel`, `sand`, `grass`, `snow` and `glass`; a mod block writes `"sound": "qtcraft:wood"`, a mod's own material `"sound": "crystal"` needs the four sounds `block.crystal.break` etc. in the mod. Without `sound` a block gets wood (tool `axe`), dirt (`shovel`), grass (cross shape or `cutout`), glass (`translucent`) or stone; liquids and invisible blocks are silent. `"sounds": {"hit": "chime"}` replaces single actions. Creatures have `"sounds": {"ambient": …, "hurt": …, "death": …}` (default: no ambient sound, `qtcraft:mob.generic.hurt` and `.death`), machines `"machine": {"sound": …}` (default `qtcraft:machine.furnace`, heard while fuel burns). A definition with the name of a base sound replaces it, e.g. `"name": "qtcraft:block.stone.break"`. Names that no pack defines are reported as warnings and stay silent. `qtcraft-headless --export-sounds <dir> --mods-dir <mods>` writes all sounds as WAV files to listen to them.
+
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
 
 ### Replacing existing content
@@ -130,6 +164,7 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 | Smelting and fuel | `ruby_from_gravel`: gravel becomes a ruby in the base furnace (30 s); `ember_shard` (dropped by the beetle) burns 120 s |
 | World generation | ruby ore veins between y 4 and 28 |
 | Mob | `crystal_beetle`: hostile, spawns on cave floors, drops a ruby |
+| Sounds | the material `crystal` of the ruby block (break, place, step, hit) and the beetle's ambient, hurt and death sounds |
 | Textures | procedural (ore, gem, tools, beetle) |
 | Translations | English and German |
 
@@ -137,8 +172,8 @@ Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory,
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks, items, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures and translations; depend on other mods.
+Mods **can**: add and replace blocks, items, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures, sounds and translations; depend on other mods.
 
 Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 
-Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, at most 64 `plantOn` entries per sapling, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.
+Only regular files and real directories are read. A linked mod folder is reported as not loaded; linked sub-folders and files and special files such as pipes or devices are not read (silently inside the content folders, with a warning for `pack.json` and `worldgen/terrain.json`). Size limits: 4 MiB per file, 256 mod directories (64 loaded), at most 64 drops per block, at most 64 `plantOn` entries per sapling, manifest `name` 256 and `version` 64 characters; the parser checks every field's type and range. All mods together may make the loader read at most 64 MiB: the files of a mod are measured before anything is read (each file counts at least 256 bytes, a hard link as often as it appears), and every attempt counts, also for mods that are refused afterwards or loaded a second time. Each mod is checked right after loading, exactly as its content would reach clients (including the items created for its blocks): the counts clients accept and the 32 MiB content sync. A mod that fails is refused and leaves no trace; at most 64 mods are loaded and checked per start (refused ones count too). Shaped recipes have at most 9 keys; procedural textures keep only `pattern`, `primary`, `secondary` (at most 32 characters each), `variation` and `seed`. A final read-back like a client's is the safety net: should it ever fail, the game starts without mods. World generation is limited to 256 ore definitions with at most 4,096 ore blocks per chunk in total, 256 biomes, 1,024 features and 4,096 feature placements (at most 64 per biome). PNG textures may be at most 128 × 128 pixels (checked before decoding). Sounds are limited to the ranges above (8 layers of at most 10 s, 8 variants), checked by the parser and again by every client; a client renders at most 16 Mi samples (64 MiB) of sound, sounds beyond that stay silent. A mod that fails a check is skipped together with its dependents; the Mods screen shows the reason after the next world start. Security questions that go beyond that (sandboxing, signatures, permissions for future script hooks) are collected in `docs/Mod-Sicherheit.md`.

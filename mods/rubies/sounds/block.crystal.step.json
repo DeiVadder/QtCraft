@@ -1,0 +1,23 @@
+{
+    "name": "block.crystal.step",
+    "volume": 0.5,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.06,
+            "frequency": 3200,
+            "attack": 0.001,
+            "curve": 3,
+            "gain": 0.3
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 3,
+            "highpass": 2500
+        }
+    ]
+}

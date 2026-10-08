@@ -1,5 +1,10 @@
 {
     "name": "pig",
+    "sounds": {
+        "ambient": "mob.pig.ambient",
+        "hurt": "mob.pig.hurt",
+        "death": "mob.pig.death"
+    },
     "health": 10,
     "width": 0.9,
     "height": 0.9,

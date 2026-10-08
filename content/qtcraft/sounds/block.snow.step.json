@@ -1,0 +1,23 @@
+{
+    "name": "block.snow.step",
+    "volume": 0.5,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 1800,
+            "highpass": 300
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.11,
+            "density": 700,
+            "lowpass": 2500,
+            "gain": 0.35
+        }
+    ]
+}

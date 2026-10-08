@@ -194,6 +194,7 @@ struct Encoder
     }
     void operator()(QcMsg::CloseMachine) {}
     void operator()(QcMsg::PlayerFood m) { stream << m.food << m.maxFood; }
+    void operator()(const QcMsg::SoundEvent &m) { stream << m.key << m.position << m.volume << m.pitch; }
 
     void writePos(QcBlockPos pos) { stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z); }
 };
@@ -597,6 +598,22 @@ QcResult<QcMessage> decodePayload<QcMsg::PlayerFood>(QDataStream &stream)
     stream >> m.food >> m.maxFood;
     if (m.maxFood < 0 || m.maxFood > 1000 || m.food < 0 || m.food > m.maxFood) {
         return qcError(u"Invalid food value"_s);
+    }
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::SoundEvent>(QDataStream &stream)
+{
+    QcMsg::SoundEvent m;
+    stream >> m.key >> m.position >> m.volume >> m.pitch;
+    if (m.key.isEmpty() || m.key.size() > QcMsg::SoundEvent::maxKeyLength) {
+        return qcError(u"Invalid sound name"_s);
+    }
+    // Written as negated range checks so that NaN fails them too.
+    if (!isFinite(m.position) || !(m.volume >= 0.0f && m.volume <= QcMsg::SoundEvent::maxVolume)
+        || !(m.pitch >= QcMsg::SoundEvent::minPitch && m.pitch <= QcMsg::SoundEvent::maxPitch)) {
+        return qcError(u"Invalid sound event"_s);
     }
     return m;
 }

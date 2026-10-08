@@ -1,5 +1,6 @@
 {
     "name": "snow_block",
+    "sound": "snow",
     "hardness": 0.2,
     "tool": "shovel",
     "textures": {

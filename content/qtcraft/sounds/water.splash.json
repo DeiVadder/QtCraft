@@ -1,0 +1,35 @@
+{
+    "name": "water.splash",
+    "volume": 0.7,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.5,
+            "attack": 0.005,
+            "curve": 2.5,
+            "lowpass": 3500,
+            "highpass": 200
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.45,
+            "density": 1500,
+            "lowpass": 5000,
+            "highpass": 800,
+            "attack": 0.005,
+            "curve": 2,
+            "gain": 0.7
+        },
+        {
+            "wave": "sine",
+            "duration": 0.15,
+            "frequency": 140,
+            "endFrequency": 60,
+            "attack": 0.003,
+            "curve": 2,
+            "gain": 0.5
+        }
+    ]
+}

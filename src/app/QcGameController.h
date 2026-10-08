@@ -23,6 +23,7 @@
 #include <memory>
 #include <optional>
 
+class QcAudioEngine;
 class QcBlockRenderTable;
 class QcItemIconProvider;
 class QcTextureAtlas;
@@ -77,6 +78,12 @@ class QcGameController : public QObject
     Q_PROPERTY(QVariantMap character READ character WRITE setCharacter NOTIFY settingsChanged FINAL)
     Q_PROPERTY(QVariantList outfits READ outfits NOTIFY appearancesChanged FINAL)
     Q_PROPERTY(QVariantList hairStyles READ hairStyles NOTIFY appearancesChanged FINAL)
+    // Volumes in 0..1 and the mute switch (settings).
+    Q_PROPERTY(double masterVolume READ masterVolume WRITE setMasterVolume NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(double effectsVolume READ effectsVolume WRITE setEffectsVolume NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(double musicVolume READ musicVolume WRITE setMusicVolume NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(double ambientVolume READ ambientVolume WRITE setAmbientVolume NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY settingsChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = QcGameSettings::defaultViewDistance;
@@ -127,6 +134,19 @@ public:
     // Outfits and hair styles of the base game as [{name, label}].
     QVariantList outfits() const;
     QVariantList hairStyles() const;
+    double masterVolume() const { return m_masterVolume; }
+    void setMasterVolume(double volume);
+    double effectsVolume() const { return m_effectsVolume; }
+    void setEffectsVolume(double volume);
+    double musicVolume() const { return m_musicVolume; }
+    void setMusicVolume(double volume);
+    double ambientVolume() const { return m_ambientVolume; }
+    void setAmbientVolume(double volume);
+    bool muted() const { return m_muted; }
+    void setMuted(bool muted);
+    // Opens the audio output (or stays silent when `enabled` is false, e.g. for screenshots) and
+    // prepares the menu sounds from the base content.
+    void startAudio(bool enabled);
     // Test hook: freezes the local player's pose ("walk", "swing", "swim", "jump", "sneak", "death")
     // for screenshots.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
@@ -251,6 +271,9 @@ private:
     static QcEntityMesher::ItemLook itemLook(const QcContentRegistry &content, QcItemId item);
     void updateSky(double alpha);
     void updateInventory();
+    void applyVolumes();
+    // Plays the click sound when the mouse is released over a button of the UI.
+    void clickIfButton(QPointF scenePosition);
 
     QPointer<QcWorldView> m_view;
     QPointer<QQuickWindow> m_window;
@@ -266,6 +289,12 @@ private:
     QString m_forcedPose;
     mutable std::shared_ptr<const QcContentRegistry> m_characterContent;
     double m_mouseSensitivity = defaultMouseSensitivity;
+    double m_masterVolume = QcGameSettings::defaultMasterVolume;
+    double m_effectsVolume = QcGameSettings::defaultEffectsVolume;
+    double m_musicVolume = QcGameSettings::defaultMusicVolume;
+    double m_ambientVolume = QcGameSettings::defaultAmbientVolume;
+    bool m_muted = false;
+    QcAudioEngine *m_audio = nullptr;
     bool m_invertMouse = false;
     bool m_showDebug = true;
     QString m_languageSetting;

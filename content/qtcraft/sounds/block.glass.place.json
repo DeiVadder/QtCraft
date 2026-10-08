@@ -1,0 +1,24 @@
+{
+    "name": "block.glass.place",
+    "volume": 0.65,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.08,
+            "frequency": 2600,
+            "attack": 0.001,
+            "curve": 3,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 4,
+            "highpass": 3000,
+            "gain": 0.5
+        }
+    ]
+}

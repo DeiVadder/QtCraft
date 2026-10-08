@@ -1,5 +1,8 @@
 #include "QcGameController.h"
 
+#include "QcAudioEngine.h"
+#include "QcSoundKeys.h"
+
 #include "QcModLoader.h"
 #include "QcBlockRenderTable.h"
 #include "QcClientSession.h"
@@ -19,6 +22,7 @@
 #include "QcWorldLibrary.h"
 
 #include <QCursor>
+#include <QQuickItem>
 #include <QDesktopServices>
 #include <QDir>
 #include <QUrl>
@@ -35,6 +39,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 
 #if defined(Q_OS_UNIX)
 #include <sys/resource.h>
@@ -89,6 +94,7 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
+    , m_audio(new QcAudioEngine(this))
     , m_inventory(new QcInventoryModel(this))
 {
     m_frameClock.start();
@@ -195,7 +201,105 @@ void QcGameController::loadSettings()
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
     m_appearance = m_storedSettings.appearance;
+    m_masterVolume = m_storedSettings.masterVolume;
+    m_effectsVolume = m_storedSettings.effectsVolume;
+    m_musicVolume = m_storedSettings.musicVolume;
+    m_ambientVolume = m_storedSettings.ambientVolume;
+    m_muted = m_storedSettings.muted;
+    applyVolumes();
     emit settingsChanged();
+}
+
+void QcGameController::applyVolumes()
+{
+    m_audio->setVolumes(m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted);
+}
+
+void QcGameController::setMasterVolume(double volume)
+{
+    volume = QcGameSettings::clampVolume(volume, m_masterVolume);
+    if (m_masterVolume != volume) {
+        m_masterVolume = volume;
+        applyVolumes();
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setEffectsVolume(double volume)
+{
+    volume = QcGameSettings::clampVolume(volume, m_effectsVolume);
+    if (m_effectsVolume != volume) {
+        m_effectsVolume = volume;
+        applyVolumes();
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setMusicVolume(double volume)
+{
+    volume = QcGameSettings::clampVolume(volume, m_musicVolume);
+    if (m_musicVolume != volume) {
+        m_musicVolume = volume;
+        applyVolumes();
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setAmbientVolume(double volume)
+{
+    volume = QcGameSettings::clampVolume(volume, m_ambientVolume);
+    if (m_ambientVolume != volume) {
+        m_ambientVolume = volume;
+        applyVolumes();
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::setMuted(bool muted)
+{
+    if (m_muted != muted) {
+        m_muted = muted;
+        applyVolumes();
+        emit settingsChanged();
+    }
+}
+
+void QcGameController::startAudio(bool enabled)
+{
+    m_audio->start(enabled);
+    applyVolumes();
+    if (m_audio->isActive() && !m_session) {
+        // Menu clicks come from the content as well; the base game and mods are loaded once here.
+        characterContent();
+        m_audio->setContent(m_characterContent);
+    }
+}
+
+void QcGameController::clickIfButton(QPointF scenePosition)
+{
+    if (!m_window || !m_audio->isActive()) {
+        return;
+    }
+    // The topmost visible item under the mouse, children in front of their parents and higher z first.
+    const std::function<QQuickItem *(QQuickItem *)> topmost = [&](QQuickItem *item) -> QQuickItem * {
+        if (!item->isVisible() || !item->isEnabled()) {
+            return nullptr;
+        }
+        QList<QQuickItem *> children = item->childItems();
+        std::ranges::stable_sort(children, [](const QQuickItem *a, const QQuickItem *b) { return a->z() > b->z(); });
+        for (QQuickItem *child : std::as_const(children)) {
+            if (QQuickItem *hit = topmost(child)) {
+                return hit;
+            }
+        }
+        return item->contains(item->mapFromScene(scenePosition)) ? item : nullptr;
+    };
+    for (const QQuickItem *item = topmost(m_window->contentItem()); item; item = item->parentItem()) {
+        if (item->inherits("QQuickAbstractButton")) {
+            m_audio->playUi(QString::fromLatin1(QcSoundKeys::uiClick));
+            return;
+        }
+    }
 }
 
 void QcGameController::overrideViewDistance(int chunks)
@@ -216,6 +320,11 @@ void QcGameController::saveSettings()
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.appearance = m_appearance;
+    settings.masterVolume = m_masterVolume;
+    settings.effectsVolume = m_effectsVolume;
+    settings.musicVolume = m_musicVolume;
+    settings.ambientVolume = m_ambientVolume;
+    settings.muted = m_muted;
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {
         qCWarning(lcGame) << saved.error();
         return;
@@ -573,7 +682,16 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     });
     connect(m_session, &QcClientSession::chunkUnloaded, m_meshes, &QcMeshScheduler::chunkUnloaded);
     connect(m_session, &QcClientSession::blockChanged, m_meshes, &QcMeshScheduler::blockChanged);
-    connect(m_session, &QcClientSession::ticked, this, [this] { m_sinceTick.restart(); });
+    connect(m_session, &QcClientSession::ticked, this, [this] {
+        m_sinceTick.restart();
+        m_audio->setAmbience(m_session->ambience());
+    });
+    connect(m_session, &QcClientSession::soundCue, this, [this](const QcSoundCue &cue) {
+        const QcVec3 ears = m_session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+        // Left and right as seen on screen: the front view looks back at the player.
+        const bool front = m_session->cameraMode() == QcCameraMode::Front;
+        m_audio->play(cue, ears, m_session->intent().yaw + (front ? 180.0f : 0.0f));
+    });
     connect(m_session, &QcClientSession::inventoryChanged, this, &QcGameController::updateInventory);
     connect(m_session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
     connect(m_session, &QcClientSession::foodChanged, this, &QcGameController::foodChanged);
@@ -704,6 +822,8 @@ void QcGameController::onContentReady()
     if (m_view) {
         m_view->setAtlas(atlas.image());
     }
+    m_audio->setContent(m_session->content());
+    m_audio->setMusicEnabled(true);
 }
 
 QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &content, QcItemId item)
@@ -997,6 +1117,8 @@ QcStatus QcGameController::stopSession()
 {
     QcStatus saved;
     releaseMouse();
+    m_audio->setMusicEnabled(false);
+    m_audio->stopWorldSounds();
     if (m_meshes) {
         m_meshes->waitForJobs();
         delete m_meshes;
@@ -1013,6 +1135,10 @@ QcStatus QcGameController::stopSession()
     }
     if (m_view) {
         m_view->clearMeshes();
+    }
+    // Back in the menu: the menu's own content instead of the last world's sounds.
+    if (m_audio->isActive() && m_characterContent) {
+        m_audio->setContent(m_characterContent);
     }
     m_keysDown.clear();
     return saved;
@@ -1052,6 +1178,9 @@ void QcGameController::releaseMouse()
 
 bool QcGameController::eventFilter(QObject *watched, QEvent *event)
 {
+    if (watched == m_window && event->type() == QEvent::MouseButtonRelease && !m_mouseCaptured) {
+        clickIfButton(static_cast<QMouseEvent *>(event)->scenePosition());
+    }
     // Overlays (inventory, pause menu, chat) and the death screen are QML items that take keyboard and
     // mouse themselves.
     if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()

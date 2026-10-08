@@ -2,6 +2,7 @@ qt_add_executable(qtcraft-headless
     main.cpp
     QcHeadlessGame.h QcHeadlessGame.cpp
     QcMapRenderer.h QcMapRenderer.cpp
+    QcSoundExporter.h QcSoundExporter.cpp
     QcStdinReader.h QcStdinReader.cpp
 )
 qc_configure_target(qtcraft-headless)

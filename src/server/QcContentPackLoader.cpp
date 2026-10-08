@@ -155,7 +155,7 @@ qint64 QcContentPackLoader::measure(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang"}) {
+         {"textures", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
@@ -242,6 +242,8 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                     [&registry](QcModelDefinition model) { registry.registerModel(std::move(model)); });
     loadDefinitions(root.filePath(u"appearance"_s), info->id, warnings, QcContentParser::parseAppearance,
                     [&registry](QcAppearanceDefinition appearance) { registry.registerAppearance(std::move(appearance)); });
+    loadDefinitions(root.filePath(u"sounds"_s), info->id, warnings, QcContentParser::parseSound,
+                    [&registry](QcSoundDefinition sound) { registry.registerSound(std::move(sound)); });
     loadDefinitions(root.filePath(u"biomes"_s), info->id, warnings, QcContentParser::parseBiome,
                     [&registry](QcBiomeDefinition biome) { registry.registerBiome(std::move(biome)); });
     loadDefinitions(root.filePath(u"features"_s), info->id, warnings, QcContentParser::parseFeature,

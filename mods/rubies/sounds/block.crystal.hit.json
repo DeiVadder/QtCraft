@@ -1,0 +1,24 @@
+{
+    "name": "block.crystal.hit",
+    "volume": 0.45,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.08,
+            "frequency": 3600,
+            "attack": 0.001,
+            "curve": 3,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 4,
+            "highpass": 3000,
+            "gain": 0.4
+        }
+    ]
+}

@@ -46,6 +46,9 @@ run_scenario() {
             set -- "$@" --chat "/spawnitem qtcraft:$item 1"
         done
     fi
+    # Sound is mixed as in a normal game but muted, so runs stay quiet.
+    mkdir -p "$data"
+    printf '[audio]\nmuted=true\n' >"$data/settings.ini"
     env QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$SECONDS_PER_RUN" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
         perl -e 'alarm shift; exec @ARGV or die' $((SECONDS_PER_RUN + 90)) "$APP" "$@" >"$log" 2>&1
     grep -o 'BENCH .*' "$log" | tail -1

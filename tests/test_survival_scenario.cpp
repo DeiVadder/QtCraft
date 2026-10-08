@@ -416,9 +416,14 @@ private slots:
         QVERIFY(filled.value(u"fuel"_s).isNull());
         QVERIFY(filled.value(u"burn"_s).toDouble() > 0.9);
         QCOMPARE(countOf(u"qtcraft:coal"_s), 0);
-        // Iron ore needs 10 s per ingot.
-        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 205}});
-        const QJsonObject state = request({{u"cmd"_s, u"machine"_s}});
+        // Iron ore needs 10 s (200 server ticks) per ingot. The server runs in its own thread and can
+        // fall behind the client's ticks in slow (sanitizer) builds, so wait until it is done.
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 195}});
+        QJsonObject state = request({{u"cmd"_s, u"machine"_s}});
+        for (int round = 0; round < 40 && state.value(u"output"_s).toObject().value(u"item"_s).toString().isEmpty(); ++round) {
+            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
+            state = request({{u"cmd"_s, u"machine"_s}});
+        }
         QCOMPARE(state.value(u"output"_s).toObject().value(u"item"_s).toString(), u"qtcraft:iron_ingot"_s);
         QCOMPARE(state.value(u"output"_s).toObject().value(u"count"_s).toInt(), 1);
         QVERIFY(state.value(u"burn"_s).toDouble() > 0.0);

@@ -2,6 +2,7 @@
 
 #include "QcBaseContent.h"
 #include "QcProtocol.h"
+#include "QcSoundKeys.h"
 #include "QcStreamLimits.h"
 #include "QcWorldLibrary.h"
 
@@ -30,6 +31,7 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
 {
     const auto item = [&content](const QString &name) { return content.itemId(name).has_value(); };
     const auto texture = [&content](const QString &name) { return name.isEmpty() || content.texture(name) != nullptr; };
+    const auto sound = [&content](const QString &name) { return name.isEmpty() || content.sound(name) != nullptr; };
     for (const QcRecipeDefinition &recipe : content.recipes()) {
         QStringList names = recipe.ingredients;
         for (const auto &[key, name] : recipe.keys) {
@@ -73,6 +75,11 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
         if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
             warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
         }
+        for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
+            if (!sound(name)) {
+                warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
+            }
+        }
     }
     for (const QcAppearanceDefinition &appearance : content.appearances()) {
         for (const QcAppearanceLayer &layer : appearance.layers) {
@@ -86,6 +93,16 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
             if (!item(drop.item)) {
                 warnings.append(u"block %1: unknown drop '%2'"_s.arg(block.name, drop.item));
             }
+        }
+        // Silent at run time; the author should know.
+        for (int action = 0; action < qcBlockSoundActionCount; ++action) {
+            const QString name = QcSoundKeys::blockSound(block, QcBlockSoundAction(action));
+            if (!sound(name)) {
+                warnings.append(u"block %1: unknown sound '%2'"_s.arg(block.name, name));
+            }
+        }
+        if (!sound(block.machine.sound)) {
+            warnings.append(u"block %1: unknown machine sound '%2'"_s.arg(block.name, block.machine.sound));
         }
     }
     for (const QcItemDefinition &definition : content.items()) {

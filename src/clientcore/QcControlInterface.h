@@ -71,6 +71,8 @@ private:
     QJsonValue stackJson(QcItemStack stack) const;
     QJsonObject inventoryJson() const;
     QJsonObject machineJson() const;
+    // Recent sound cues with their loudness and side as heard now, and the ambience levels.
+    QJsonObject soundsJson() const;
     // Turns the player towards a block centre, or towards the centre of one of its faces.
     void lookAt(QcBlockPos block, std::optional<QcBlockFace> face);
     void lookAtPoint(const QcVec3 &point);

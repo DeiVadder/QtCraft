@@ -1,0 +1,26 @@
+{
+    "name": "item.pickup",
+    "volume": 0.45,
+    "pitchVariation": 0.15,
+    "range": 8,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.07,
+            "frequency": 900,
+            "endFrequency": 1500,
+            "attack": 0.002,
+            "curve": 2
+        },
+        {
+            "wave": "sine",
+            "duration": 0.08,
+            "frequency": 1350,
+            "endFrequency": 2200,
+            "start": 0.05,
+            "attack": 0.002,
+            "curve": 2,
+            "gain": 0.6
+        }
+    ]
+}

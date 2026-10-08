@@ -1,5 +1,6 @@
 {
     "name": "crafting_table",
+    "sound": "wood",
     "hardness": 2.5,
     "tool": "axe",
     "textures": {

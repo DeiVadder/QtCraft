@@ -1,0 +1,27 @@
+{
+    "name": "mob.zombie.ambient",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.9,
+            "frequency": 110,
+            "endFrequency": 85,
+            "attack": 0.15,
+            "curve": 1.5,
+            "lowpass": 500,
+            "tremoloRate": 6,
+            "tremoloDepth": 0.4
+        },
+        {
+            "wave": "noise",
+            "duration": 0.9,
+            "attack": 0.15,
+            "curve": 1.5,
+            "lowpass": 400,
+            "gain": 0.3
+        }
+    ]
+}

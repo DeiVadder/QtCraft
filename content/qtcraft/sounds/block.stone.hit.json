@@ -1,0 +1,25 @@
+{
+    "name": "block.stone.hit",
+    "volume": 0.45,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "lowpass": 3000,
+            "highpass": 500
+        },
+        {
+            "wave": "sine",
+            "duration": 0.03,
+            "frequency": 400,
+            "endFrequency": 250,
+            "attack": 0.001,
+            "curve": 3,
+            "gain": 0.3
+        }
+    ]
+}

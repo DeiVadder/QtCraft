@@ -41,8 +41,9 @@ int main(int argc, char *argv[])
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
+    const QCommandLineOption noAudioOption(u"no-audio"_s, u"Do not open an audio device; the game is silent."_s);
     parser.addOptions({playOption, worldOption, seedOption, lookOption, cameraOption, poseOption, spawnOption, chatOption, overlayOption, viewOption, languageOption,
-                       modsOption, noModsOption});
+                       modsOption, noModsOption, noAudioOption});
     parser.process(app);
 
     // --language or QTCRAFT_LANGUAGE override the language chosen in the settings, which overrides
@@ -114,6 +115,11 @@ int main(int argc, char *argv[])
         game->overrideViewDistance(parser.value(viewOption).toInt());
     }
     QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(window, &app);
+    // Screenshot runs (tests, verification) stay silent unless QTCRAFT_AUDIO=1 asks for sound;
+    // QTCRAFT_AUDIO=0 or --no-audio silence any run.
+    const QString audioSetting = qEnvironmentVariable("QTCRAFT_AUDIO");
+    const bool audio = !parser.isSet(noAudioOption) && audioSetting != u"0"_s && (screenshot == nullptr || audioSetting == u"1"_s);
+    game->startAudio(audio);
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
     // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand: walk ahead (default) or stand still.

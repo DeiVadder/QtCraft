@@ -590,7 +590,7 @@ private slots:
     {
         QcContentRegistry registry;
         QcBlockDefinition furnace = block(u"a:furnace"_s);
-        furnace.machine = {u"smelting"_s, 1.5};
+        furnace.machine = {u"smelting"_s, 1.5, u"a:crackle"_s};
         QcBlockDefinition log = block(u"a:log"_s);
         log.fuelSeconds = 15.0;
         QVERIFY(registry.registerBlock(furnace).has_value());

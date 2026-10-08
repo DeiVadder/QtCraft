@@ -44,7 +44,7 @@ public:
     // pack can be rejected before anything is read (hard links make small packs read large).
     static qint64 measure(const QString &directory);
 
-    // Loads the content folders of the pack (blocks/, items/, recipes/, smelting/, textures/, lang/, ...). Invalid entries are skipped and reported in
+    // Loads the content folders of the pack (blocks/, items/, recipes/, smelting/, sounds/, textures/, lang/, ...). Invalid entries are skipped and reported in
     // `warnings`; the pack itself only fails when the manifest is unusable.
     static QcResult<QcContentPackInfo> load(const QString &directory, QcContentRegistry &registry, QStringList &warnings);
 };

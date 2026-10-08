@@ -35,6 +35,8 @@ struct QcClientEntity
     // smoothed over a few ticks (server and client ticks are not in phase).
     double stepThisTick = 0.0;
     double speed = 0.0;
+    // Distance walked since the entity's last step sound.
+    double sinceStep = 0.0;
     // Client ticks since the arm swing or the death started; negative when not running.
     int swingTicks = -1;
     int deathTicks = -1;

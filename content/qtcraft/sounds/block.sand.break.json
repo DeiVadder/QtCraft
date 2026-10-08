@@ -1,0 +1,23 @@
+{
+    "name": "block.sand.break",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.2,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 4000,
+            "highpass": 800
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.2,
+            "density": 2000,
+            "lowpass": 5000,
+            "gain": 0.3
+        }
+    ]
+}

@@ -102,6 +102,77 @@ Popup {
         }
 
         Label {
+            text: qsTr("Master volume")
+        }
+        Slider {
+            id: masterVolume
+
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: screen.game.masterVolume
+            onMoved: screen.game.masterVolume = value
+        }
+        Label {
+            text: qsTr("%1 %").arg(Math.round(masterVolume.value * 100))
+        }
+
+        Label {
+            text: qsTr("Effects")
+        }
+        Slider {
+            id: effectsVolume
+
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: screen.game.effectsVolume
+            onMoved: screen.game.effectsVolume = value
+        }
+        Label {
+            text: qsTr("%1 %").arg(Math.round(effectsVolume.value * 100))
+        }
+
+        Label {
+            text: qsTr("Music")
+        }
+        Slider {
+            id: musicVolume
+
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: screen.game.musicVolume
+            onMoved: screen.game.musicVolume = value
+        }
+        Label {
+            text: qsTr("%1 %").arg(Math.round(musicVolume.value * 100))
+        }
+
+        Label {
+            text: qsTr("Ambience")
+        }
+        Slider {
+            id: ambientVolume
+
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: screen.game.ambientVolume
+            onMoved: screen.game.ambientVolume = value
+        }
+        Label {
+            text: qsTr("%1 %").arg(Math.round(ambientVolume.value * 100))
+        }
+
+        CheckBox {
+            Layout.columnSpan: 3
+            text: qsTr("Mute all sounds")
+            checked: screen.game.muted
+            onToggled: screen.game.muted = checked
+        }
+
+        Label {
             text: qsTr("View")
         }
         ComboBox {

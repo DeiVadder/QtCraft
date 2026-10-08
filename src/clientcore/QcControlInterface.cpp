@@ -7,6 +7,7 @@
 #include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
+#include "QcSoundSpatial.h"
 
 #include <QIODevice>
 #include <QJsonArray>
@@ -246,6 +247,35 @@ QJsonObject QcControlInterface::machineJson() const
             {u"progress"_s, m_session->machineProgress()}};
 }
 
+QJsonObject QcControlInterface::soundsJson() const
+{
+    // Loudness and side as the audio output would play them from where the player is now.
+    const auto content = m_session->content();
+    const QcVec3 ears = m_session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    QJsonArray sounds;
+    for (const QcSoundCue &cue : m_session->recentSounds()) {
+        const QcSoundDefinition *definition = content ? content->sound(cue.key) : nullptr;
+        QJsonObject entry{{u"key"_s, cue.key},
+                          {u"origin"_s, cue.origin == QcSoundCue::Origin::Server ? u"server"_s : u"local"_s},
+                          {u"position"_s, vectorJson(cue.position)},
+                          {u"volume"_s, cue.volume},
+                          {u"pitch"_s, cue.pitch},
+                          {u"tick"_s, qint64(cue.tick)},
+                          {u"known"_s, definition != nullptr}};
+        if (definition) {
+            const QcSoundSpatial::Placement placement = QcSoundSpatial::place(
+                ears, m_session->intent().yaw, cue.position, definition->range * std::max(1.0, double(cue.volume)));
+            entry.insert(u"distance"_s, placement.distance);
+            entry.insert(u"gain"_s, placement.gain * cue.volume * definition->volume);
+            entry.insert(u"pan"_s, placement.pan);
+        }
+        sounds.append(entry);
+    }
+    const QcAmbience::Levels &ambience = m_session->ambience();
+    return {{u"sounds"_s, sounds},
+            {u"ambience"_s, QJsonObject{{u"wind"_s, ambience.wind}, {u"cave"_s, ambience.cave}, {u"water"_s, ambience.water}}}};
+}
+
 QcBlockPos QcControlInterface::blockArgument(const QJsonObject &request)
 {
     return {intField(request, u"x"_s, 0), intField(request, u"y"_s, 0), intField(request, u"z"_s, 0)};
@@ -308,7 +338,7 @@ void QcControlInterface::start(const QJsonObject &request)
             return;
         }
     }
-    for (const char *key : {"jump", "sneak", "sprint", "all"}) {
+    for (const char *key : {"jump", "sneak", "sprint", "all", "clear"}) {
         const QJsonValue value = request.value(QLatin1StringView(key));
         if (!value.isUndefined() && !value.isBool()) {
             fail(request, u"'%1' must be true or false"_s.arg(QLatin1StringView(key)));
@@ -626,6 +656,11 @@ void QcControlInterface::start(const QJsonObject &request)
         // Returns the grid to the inventory and leaves a crafting table's 3 x 3 grid.
         m_session->closeCrafting();
         m_active = ActiveCommand{request, timeoutPolls(3), [this, startTick] { return m_session->tickCount() >= startTick + 3; }};
+    } else if (command == u"sounds"_s) {
+        finish(request, soundsJson());
+        if (request.value(u"clear"_s).toBool(false)) {
+            m_session->clearRecentSounds();
+        }
     } else if (command == u"mods"_s) {
         // Content packs the server loaded, base game first.
         QJsonArray packs;

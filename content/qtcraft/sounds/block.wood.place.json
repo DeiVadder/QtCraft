@@ -1,0 +1,25 @@
+{
+    "name": "block.wood.place",
+    "volume": 0.65,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.08,
+            "frequency": 220,
+            "endFrequency": 160,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 1500
+        },
+        {
+            "wave": "noise",
+            "duration": 0.08,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 900,
+            "gain": 0.6
+        }
+    ]
+}

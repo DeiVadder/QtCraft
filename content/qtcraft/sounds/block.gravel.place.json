@@ -1,0 +1,17 @@
+{
+    "name": "block.gravel.place",
+    "volume": 0.65,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.14,
+            "density": 1000,
+            "lowpass": 3000,
+            "highpass": 300,
+            "attack": 0.004,
+            "curve": 2.5
+        }
+    ]
+}

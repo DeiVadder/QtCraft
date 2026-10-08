@@ -1,0 +1,18 @@
+{
+    "name": "block.grass.place",
+    "volume": 0.65,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.01,
+            "curve": 2,
+            "lowpass": 5000,
+            "highpass": 1200,
+            "tremoloRate": 35,
+            "tremoloDepth": 0.4
+        }
+    ]
+}

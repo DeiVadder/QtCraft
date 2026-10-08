@@ -51,6 +51,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_content, quint64(m_config.seed))
     , m_machines(m_content)
     , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
+    , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
 {
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(tickIntervalMs);

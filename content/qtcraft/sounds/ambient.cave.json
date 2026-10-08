@@ -1,0 +1,47 @@
+{
+    "name": "ambient.cave",
+    "bus": "ambient",
+    "volume": 0.6,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 8.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 120,
+            "tremoloRate": 0.125,
+            "tremoloDepth": 0.4
+        },
+        {
+            "wave": "sine",
+            "duration": 8.0,
+            "frequency": 55,
+            "attack": 0.0,
+            "curve": 0,
+            "tremoloRate": 0.0625,
+            "tremoloDepth": 0.5,
+            "gain": 0.25
+        },
+        {
+            "wave": "sine",
+            "duration": 0.06,
+            "frequency": 1800,
+            "endFrequency": 900,
+            "start": 2.3,
+            "attack": 0.002,
+            "curve": 3,
+            "gain": 0.2
+        },
+        {
+            "wave": "sine",
+            "duration": 0.06,
+            "frequency": 1500,
+            "endFrequency": 800,
+            "start": 5.7,
+            "attack": 0.002,
+            "curve": 3,
+            "gain": 0.15
+        }
+    ]
+}

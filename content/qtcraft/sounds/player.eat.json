@@ -1,0 +1,52 @@
+{
+    "name": "player.eat",
+    "volume": 0.6,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "range": 12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "start": 0.0,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1800,
+            "highpass": 200
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.1,
+            "start": 0.0,
+            "density": 600,
+            "lowpass": 2500,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "start": 0.18,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1800,
+            "highpass": 200
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.1,
+            "start": 0.18,
+            "density": 600,
+            "lowpass": 2500,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "start": 0.36,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 1800,
+            "highpass": 200
+        }
+    ]
+}

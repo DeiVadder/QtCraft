@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Qt6 6.8 REQUIRED COMPONENTS
-    Core Concurrent Network Gui Quick QuickControls2 ShaderTools LinguistTools Test)
+    Core Concurrent Network Gui Multimedia Quick QuickControls2 ShaderTools LinguistTools Test)
 
 qt_standard_project_setup(REQUIRES 6.8 I18N_SOURCE_LANGUAGE en I18N_TRANSLATED_LANGUAGES de)
 
@@ -22,5 +22,6 @@ add_subdirectory(src/common)
 add_subdirectory(src/server)
 add_subdirectory(src/clientcore)
 add_subdirectory(src/headless)
+add_subdirectory(src/audio)
 add_subdirectory(src/app)
 add_subdirectory(tests)

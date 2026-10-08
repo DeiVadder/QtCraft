@@ -1,0 +1,22 @@
+{
+    "name": "ui.click",
+    "volume": 0.4,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.025,
+            "frequency": 1800,
+            "endFrequency": 1200,
+            "attack": 0.001,
+            "curve": 3
+        },
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.001,
+            "curve": 3,
+            "highpass": 3000,
+            "gain": 0.3
+        }
+    ]
+}

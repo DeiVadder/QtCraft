@@ -1,5 +1,6 @@
 {
     "name": "oak_sapling",
+    "sound": "grass",
     "shape": "cross",
     "render": "cutout",
     "hardness": 0.0,

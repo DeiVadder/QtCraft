@@ -1,5 +1,6 @@
 {
     "name": "ruby_block",
+    "sound": "crystal",
     "hardness": 5.0,
     "tool": "pickaxe",
     "toolLevel": 3,

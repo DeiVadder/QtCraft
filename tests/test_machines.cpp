@@ -30,10 +30,10 @@ std::shared_ptr<const QcContentRegistry> machineContent()
             qFatal("cannot register block");
         }
     };
-    block(u"t:furnace"_s, {u"smelting"_s, 1.0});
-    block(u"t:fast_furnace"_s, {u"smelting"_s, 2.0});
-    block(u"t:crusher"_s, {u"crushing"_s, 1.0});
-    block(u"t:blast_furnace"_s, {u"smelting"_s, 100.0});
+    block(u"t:furnace"_s, {u"smelting"_s, 1.0, {}});
+    block(u"t:fast_furnace"_s, {u"smelting"_s, 2.0, {}});
+    block(u"t:crusher"_s, {u"crushing"_s, 1.0, {}});
+    block(u"t:blast_furnace"_s, {u"smelting"_s, 100.0, {}});
     block(u"t:stone"_s, {});
     const auto item = [&content](const QString &name, double fuel, int maxStack) {
         QcItemDefinition definition;

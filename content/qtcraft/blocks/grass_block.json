@@ -1,5 +1,6 @@
 {
     "name": "grass_block",
+    "sound": "grass",
     "hardness": 0.6,
     "tool": "shovel",
     "drops": [

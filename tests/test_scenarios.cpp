@@ -136,6 +136,60 @@ private slots:
         QVERIFY(!around.value(u"blocks"_s).toArray().isEmpty());
     }
 
+    void soundsCanBeObserved()
+    {
+        // Walking makes the player's own steps; they are reported with their ground and origin.
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 180}});
+        request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"ticks"_s, 30}});
+        const auto keysOf = [](const QJsonObject &response, const QString &origin) {
+            QStringList keys;
+            const QJsonArray sounds = response.value(u"sounds"_s).toArray();
+            for (const auto &sound : sounds) {
+                if (sound.toObject().value(u"origin"_s).toString() == origin) {
+                    keys.append(sound.toObject().value(u"key"_s).toString());
+                }
+            }
+            return keys;
+        };
+        const QJsonObject walked = request({{u"cmd"_s, u"sounds"_s}, {u"clear"_s, true}});
+        QVERIFY(walked.value(u"ok"_s).toBool());
+        const QStringList steps = keysOf(walked, u"local"_s);
+        QVERIFY2(steps.contains(u"qtcraft:block.grass.step"_s) || steps.contains(u"qtcraft:block.sand.step"_s), qPrintable(steps.join(u", "_s)));
+        // Cleared: nothing new has happened since.
+        QVERIFY(request({{u"cmd"_s, u"sounds"_s}}).value(u"sounds"_s).toArray().isEmpty());
+
+        // Mining a block: local strikes while mining, the break from the server.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~2 ~ ~ dirt"_s}});
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const QJsonObject mined = request({{u"cmd"_s, u"mine"_s},
+                                           {u"x"_s, int(std::floor(feet.x)) + 2},
+                                           {u"y"_s, int(std::floor(feet.y))},
+                                           {u"z"_s, int(std::floor(feet.z))}});
+        QVERIFY2(mined.value(u"ok"_s).toBool(), QJsonDocument(mined).toJson().constData());
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        const QJsonObject heard = request({{u"cmd"_s, u"sounds"_s}});
+        QVERIFY(keysOf(heard, u"local"_s).contains(u"qtcraft:block.dirt.hit"_s));
+        QVERIFY(keysOf(heard, u"server"_s).contains(u"qtcraft:block.dirt.break"_s));
+        const QJsonArray heardSounds = heard.value(u"sounds"_s).toArray();
+        for (const auto &value : heardSounds) {
+            const QJsonObject sound = value.toObject();
+            if (sound.value(u"key"_s).toString() == u"qtcraft:block.dirt.break"_s) {
+                QVERIFY(sound.value(u"known"_s).toBool());
+                QVERIFY(sound.value(u"distance"_s).toDouble() < 4.0);
+                // Close by and in view: loud, near the centre.
+                QVERIFY(sound.value(u"gain"_s).toDouble() > 0.3);
+                QVERIFY(std::abs(sound.value(u"pan"_s).toDouble()) < 0.3);
+            }
+        }
+
+        // Under the open sky the wind fades in, and there is no cave.
+        const QJsonObject outside = request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 60}});
+        QVERIFY(outside.value(u"ok"_s).toBool());
+        const QJsonObject ambience = request({{u"cmd"_s, u"sounds"_s}}).value(u"ambience"_s).toObject();
+        QVERIFY2(ambience.value(u"wind"_s).toDouble() >= 0.25, QJsonDocument(ambience).toJson().constData());
+        QCOMPARE(ambience.value(u"cave"_s).toDouble(), 0.0);
+    }
+
     void viewModeCanBeSwitched()
     {
         QCOMPARE(request({{u"cmd"_s, u"view"_s}}).value(u"mode"_s).toString(), u"first"_s);

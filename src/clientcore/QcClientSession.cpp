@@ -4,6 +4,7 @@
 #include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
+#include "QcSoundKeys.h"
 #include "QcTransport.h"
 
 #include <QLoggingCategory>
@@ -279,6 +280,8 @@ void QcClientSession::handleMessage(QcMessage &&message)
             m_machine.reset();
             emit machineClosed();
         }
+    } else if (auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
+        cue({sound->key, sound->position, sound->volume, sound->pitch, QcSoundCue::Origin::Server, m_tickCount});
     } else if (auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
         m_worldTime = time->time;
         m_dayLength = time->dayLength;
@@ -362,6 +365,7 @@ void QcClientSession::tick()
     if (m_miningPos && m_swingTicks < 0) {
         m_swingTicks = 0;
     }
+    updateSounds();
     if (m_dead) {
         // Nothing to simulate until the server respawns the player.
         emit ticked();
@@ -376,6 +380,10 @@ void QcClientSession::tick()
     if (m_motion.onGround && !m_previousMotion.onGround) {
         m_landingTicks = 0;
     }
+    const QList<QcSoundCue> steps = m_localSounds.update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
+    for (const QcSoundCue &step : steps) {
+        cue(step);
+    }
     if (m_pendingInputs.size() >= maxPendingInputs) {
         m_pendingInputs.removeFirst();
     }
@@ -383,6 +391,40 @@ void QcClientSession::tick()
     m_connection->send(QcMsg::PlayerInput{input});
     updateTargetAndMining();
     emit ticked();
+}
+
+void QcClientSession::cue(QcSoundCue cue)
+{
+    if (cue.key.isEmpty()) {
+        return;
+    }
+    cue.tick = m_tickCount;
+    if (m_recentSounds.size() >= recentSoundLimit) {
+        m_recentSounds.removeFirst();
+    }
+    m_recentSounds.append(cue);
+    emit soundCue(cue);
+}
+
+void QcClientSession::updateSounds()
+{
+    // Other creatures' steps, from how far they moved; items do not step.
+    for (QcClientEntity &entity : m_entities) {
+        if (entity.isItem() || (entity.flags & QcMsg::OnGround) == 0) {
+            entity.sinceStep = 0.0;
+            continue;
+        }
+        entity.sinceStep += entity.lastStep;
+        if (entity.sinceStep >= entityStrideMetres) {
+            entity.sinceStep = std::fmod(entity.sinceStep, entityStrideMetres);
+            cue({QcLocalSounds::stepSound(entity.position, *m_world), entity.position, entityStepVolume, 1.0f,
+                 QcSoundCue::Origin::Local, 0});
+        }
+    }
+    if (m_tickCount % ambienceTicks == 1) {
+        m_ambienceTarget = QcAmbience::targets(*m_world, m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
+    }
+    m_ambience = QcAmbience::approach(m_ambience, m_ambienceTarget, QcPhysics::tickDuration);
 }
 
 void QcClientSession::refreshTarget()
@@ -499,6 +541,7 @@ void QcClientSession::updateTargetAndMining()
         }
         m_miningPos = wanted;
         m_miningProgress = 0.0;
+        m_miningTicks = 0;
         if (m_miningPos) {
             m_connection->send(QcMsg::StartMining{*m_miningPos});
         }
@@ -506,17 +549,26 @@ void QcClientSession::updateTargetAndMining()
     if (!m_miningPos) {
         return;
     }
-    const std::optional<QcBlockId> block = m_world->blockAt(*m_miningPos);
+    const QcBlockPos mining = *m_miningPos;
+    const std::optional<QcBlockId> block = m_world->blockAt(mining);
     const QcItemStack &held = m_inventory.selectedStack();
     const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
-    const double seconds = block ? QcMining::breakSeconds(m_content->block(*block), item) : -1.0;
+    if (!block) {
+        return;
+    }
+    const QcBlockDefinition &definition = m_content->block(*block);
+    const double seconds = QcMining::breakSeconds(definition, item);
     if (seconds <= 0.0) {
         return;
+    }
+    if (m_miningTicks++ % miningHitTicks == 0) {
+        cue({QcSoundKeys::blockSound(definition, QcBlockSoundAction::Hit),
+             {mining.x + 0.5, mining.y + 0.5, mining.z + 0.5}, 0.35f, 1.0f, QcSoundCue::Origin::Local, 0});
     }
     m_miningProgress += QcPhysics::tickDuration / seconds;
     if (m_miningProgress >= 1.0) {
         // The server decides; its BlockUpdate removes the block (or restores it on rejection).
-        m_connection->send(QcMsg::FinishMining{*m_miningPos});
+        m_connection->send(QcMsg::FinishMining{mining});
         m_miningPos.reset();
         m_miningProgress = 0.0;
     }

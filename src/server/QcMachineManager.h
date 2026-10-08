@@ -55,6 +55,7 @@ public:
     bool isFull() const { return m_machines.size() >= maxMachines; }
     qsizetype count() const { return m_machines.size(); }
     QList<Machine> machines() const { return m_machines.values(); }
+    const QHash<QcBlockPos, Machine> &all() const { return m_machines; }
     // Replaces all machines, e.g. from a save; entries beyond the limit are left out.
     void restore(const QList<Machine> &machines);
 

@@ -9,6 +9,7 @@
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcSmeltingRecipe.h"
+#include "QcSoundDefinition.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
 
@@ -80,6 +81,11 @@ public:
     // The first recipe of `category` that takes `inputItem`, or null.
     const QcSmeltingRecipe *smeltingRecipe(const QString &category, const QString &inputItem) const;
 
+    // Sound definitions, replaced by name.
+    void registerSound(QcSoundDefinition definition);
+    const QList<QcSoundDefinition> &sounds() const { return m_sounds; }
+    const QcSoundDefinition *sound(const QString &name) const;
+
     void registerBiome(QcBiomeDefinition definition);
     void registerFeature(QcFeatureDefinition definition);
     void registerOre(QcOreDefinition definition);
@@ -120,6 +126,8 @@ private:
     QHash<QString, qsizetype> m_recipeIndex;
     QList<QcSmeltingRecipe> m_smeltingRecipes;
     QHash<QString, qsizetype> m_smeltingIndex;
+    QList<QcSoundDefinition> m_sounds;
+    QHash<QString, qsizetype> m_soundIndex;
     QList<QcBiomeDefinition> m_biomes;
     QHash<QString, qsizetype> m_biomeIndex;
     QList<QcFeatureDefinition> m_features;

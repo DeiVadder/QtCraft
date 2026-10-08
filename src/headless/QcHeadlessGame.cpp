@@ -5,6 +5,7 @@
 #include "QcControlInterface.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
+#include "QcSoundExporter.h"
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
 #include "QcTransport.h"
@@ -68,6 +69,10 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     const QCommandLineOption dataOption(u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
+    const QCommandLineOption soundsOption(u"export-sounds"_s,
+                                          u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
+                                          u"dir"_s);
+    parser.addOption(soundsOption);
     parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
                        modsOption, noModsOption});
     if (!parser.parse(arguments)) {
@@ -111,6 +116,18 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return false;
     }
     const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
+    if (parser.isSet(soundsOption)) {
+        const QcResult<QStringList> exported = QcSoundExporter::exportAll(*shared, parser.value(soundsOption), quint64(config.seed));
+        if (exported) {
+            for (const QString &line : *exported) {
+                std::println("{}", line.toStdString());
+            }
+        } else {
+            printError(exported.error());
+        }
+        QTimer::singleShot(0, qApp, [ok = exported.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
+        return true;
+    }
     QStringList generatorWarnings;
     auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {

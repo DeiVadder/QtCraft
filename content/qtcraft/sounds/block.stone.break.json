@@ -1,0 +1,32 @@
+{
+    "name": "block.stone.break",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.2,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 2500,
+            "highpass": 200
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.18,
+            "density": 400,
+            "lowpass": 4000,
+            "gain": 0.5
+        },
+        {
+            "wave": "sine",
+            "duration": 0.08,
+            "frequency": 120,
+            "endFrequency": 60,
+            "attack": 0.002,
+            "curve": 2,
+            "gain": 0.6
+        }
+    ]
+}

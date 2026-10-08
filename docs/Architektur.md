@@ -9,8 +9,9 @@ This document describes the current state. Sections marked *planned* are not imp
 | `qc_common` | Common | QtCore | Coordinates, chunk storage (palette sections), content registry and JSON parser, protocol messages and codec, transports (`QcTransport`, `QcInProcessTransport`, `QcConnection`), shared physics, thread hand-over helpers (`QcMailbox`, `QcWorkerPool`). |
 | `qc_base_content` | Data | – | Base game content pack embedded as `:/content/qtcraft`. |
 | `qc_server` | Server | `qc_common`, `qc_base_content` | `QcServer` (authoritative tick loop, players, chunk streaming), `QcMachineManager`, `QcHunger`, `QcServerWorld`, world generators, content-pack loader, mod loader (`QcModLoader`), `QcLocalServerHost` (server thread for single player). |
-| `qc_clientcore` | Client (GUI-free) | `qc_common`, QtGui (`QImage` only) | `QcClientSession` (world mirror, prediction), `QcChunkMesher`, `QcMeshScheduler`, texture atlas, camera, `QcControlInterface`. |
-| `qtcraft` | Client (UI) | `qc_server`, `qc_clientcore`, Qt Quick | QML UI, `QcGameController`, `QcWorldView`/`QcWorldRenderer` (QRhi), screenshot hook. Links the server only to host it in-process. |
+| `qc_clientcore` | Client (GUI-free) | `qc_common`, QtGui (`QImage` only) | `QcClientSession` (world mirror, prediction), `QcChunkMesher`, `QcMeshScheduler`, texture atlas, camera, `QcControlInterface`, sound synthesis and mixing without audio devices (`QcSoundSynthesizer`, `QcSoundBank`, `QcAudioMixer`, `QcSoundSpatial`, `QcLocalSounds`, `QcAmbience`, `QcMusicComposer`). |
+| `qc_audio` | Client (audio) | `qc_clientcore`, Qt Multimedia, Qt Concurrent | `QcAudioOutput` (default device through `QAudioSink` in pull mode, `QcMixerDevice`), `QcAudioEngine` (cues, UI clicks, ambience loops, music scheduling). |
+| `qtcraft` | Client (UI) | `qc_server`, `qc_clientcore`, `qc_audio`, Qt Quick | QML UI, `QcGameController`, `QcWorldView`/`QcWorldRenderer` (QRhi), screenshot hook. Links the server only to host it in-process. |
 | `qtcraft-headless` | Tool | `qc_server`, `qc_clientcore` | Server plus control-interface client without a window. |
 
 The client code never includes server headers except in the two composition roots (`QcGameController` and `QcHeadlessGame`), which only create the `QcLocalServerHost` and take a transport from it. All game interaction goes through protocol messages.
@@ -24,12 +25,14 @@ The client code never includes server headers except in the two composition root
 | Server | `QcServer` (20 Hz tick timer) |
 | Generation workers | `QcTerrainGenerator::generate` (`QcWorkerPool` in `QcServerWorld`) |
 | Mesh workers | `QcChunkMesher` on immutable chunk snapshots (`QcWorkerPool`) |
+| Qt thread pool | Rendering the sound bank and music pieces (`QtConcurrent::run`, results to the GUI thread through `QFutureWatcher`) |
+| Audio (Qt Multimedia) | Pulls mixed samples from `QcMixerDevice`; every access to the mixer is guarded by one mutex in `QcAudioOutput` |
 
 Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk>`, encoded frames) through `std::mutex`-guarded mailboxes; Qt queued calls only wake the receiver (see decision E-010).
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 12). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 13). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -61,6 +64,7 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `MachineState` | S→C | input, fuel and output stack, share of fuel left and of the current item done |
 | `CloseMachine` | both | the screen closed (client) / the machine closed (server: out of reach, broken, death) |
 | `PlayerFood` | S→C | food points, maximum |
+| `SoundEvent` | S→C | sound name (at most 256 characters), position, volume (0–4), pitch (0.25–4); sent only to players within the sound's range (decision E-043) |
 
 A network transport only has to implement `QcTransport` (whole frames in both directions, e.g. length-prefixed over TCP) and accept connections into `QcServer::addClient`; nothing else changes.
 
@@ -71,6 +75,8 @@ Content packs are directories with `pack.json` (`id`, `name`, `version`, `depend
 World generation data (server only, not sent to clients): `biomes/*.json` (`name`, `temperature`, `humidity` in 0..1, `baseHeight`, `heightVariation`, `surface`, `subsurface`, `subsurfaceDepth`, `underwater`, `beach`, `frozenWater`, `snowLine`, `snow`, `features: [{feature, density}]`), `features/*.json` (`type` `tree`/`column`, `trunk`, `leaves`, `minHeight`, `maxHeight`, `shape` `round`/`cone`, `ground`), `ores/*.json` (`block`, `replaces`, `minY`, `maxY`, `veinsPerChunk`, `veinSize`), `worldgen/terrain.json` (`seaLevel`, `stone`, `water`, `bedrock`, `caves`, `caveTunnelWidth`, `caveCavernThreshold`). A later pack replaces entries with the same name.
 
 Character content (sent to clients): `models/*.json` (`name`, `bones`: `name`, `role` head/body/right_arm/left_arm/right_leg/left_leg/none, `pivot`, `boxes` with `from`, `to`, `slot`), `appearance/*.json` (`name`, `kind` outfit/hair, `layers`: slot → `texture` and `tint` skin/hair/shirt/pants/none, hair `boxes`); mobs may use `skeleton`, `outfit` and `armsForward` instead of `model` boxes (E-032).
+
+Sounds (sent to clients, decisions E-040, E-042): `sounds/*.json` (`name`, `bus` `effects`/`ambient`/`music`, `volume` 0–1, `pitchVariation` 0–0.5, `variants` 1–8, `loop`, `range` 1–128 m, `layers`: 1–8 of `wave` `sine`/`square`/`triangle`/`saw`/`noise`/`crackle`, `frequency`, `endFrequency`, `start`, `duration`, `attack`, `curve`, `gain`, `lowpass`, `highpass`, `tremoloRate`, `tremoloDepth`, `density`). Blocks have a sound material (`sound`, default from tool, shape and render layer) and optional `sounds` per action (`break`, `place`, `step`, `hit`); the sound of an action is `<namespace>:block.<material>.<action>` (`QcSoundKeys`). Mobs have `sounds` (`ambient`, `hurt`, `death`), machines a `sound`. Names nothing defines are reported when loading and are silent at run time.
 
 Runtime block ids are assigned in registration order and never stored; persistent data uses names.
 
@@ -126,6 +132,13 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places, eats 
 - **Time:** a day lasts 600 s (`QcDayCycle`); the server keeps `worldTime` (saved in `world.json`) and sends `WorldTime` every second; the client advances it between updates and derives sky colour, fog and the daylight factor of the block shader.
 - **Client:** `QcClientSession` mirrors entities (`EntitySpawn`/`EntityMoves`/`EntityRemove`, interpolated between ticks) and finds the creature under the crosshair; `QcEntityMesher` turns the boxes into triangles every frame and draws dropped items as small spinning, bobbing cubes (cube blocks) or crossed sprites (other items), up to three copies for larger stacks; the HUD shows hearts, the food bar and the time of day.
 
+## Sound and music
+
+- **Synthesis** (E-040): `QcSoundSynthesizer` renders a definition and a variant into mono float PCM (44.1 kHz by default, the output device's rate in the game): per layer a tone (with exponential sweep), white noise or sparse crackle, two one-pole low-pass stages, a one-pole high-pass, linear attack, decay `(1 - t)^curve`, tremolo and a 3 ms fade at the end. The result is normalised to a peak of 0.9; loops blend their tail into their head (equal power, a quarter of the length, at most 0.3 s). Noise comes from a seed derived from the sound's name and the variant, so renderings are deterministic. `QcSoundBank` renders all sounds of the content on a worker thread within a budget of 16 Mi samples (64 MiB); sounds beyond it stay silent with a warning.
+- **Mixing** (E-041): `QcAudioMixer` plays voices (buffer, gain, constant-power pan, pitch with linear interpolation, loop, bus) on the buses effects, ambient and music under a master volume and mute; at most 32 voices, a new sound replaces the quietest voice that does not loop; gain changes ramp over one mix block; a soft limiter (above 0.75, tanh) keeps the sum below full scale. `QcAudioOutput` opens the default device (float stereo, else 16 bit) with an 80 ms buffer; without a device or when it fails, the game stays silent and logs the reason once.
+- **Events** (E-043): the server sends `SoundEvent` for broken and placed blocks, creature ambience (on average every 10 s per creature), hurt and death of creatures and players, eating, picking up items and burning machines (on average every 2.5 s). The client computes the gain `(1 - d / range)^2` with `range` = the sound's range × max(1, volume), damps sounds behind the listener by up to 25 % and pans them by the side (`QcSoundSpatial`, at most 85 % to one side). Client-side cues (`QcLocalSounds`, `QcClientSession`): own steps every 1.7 m on the block below, jumps, landings (louder above 6 m/s), splashes (entering water faster than 3 m/s), swimming strokes every 2.2 m, mining strikes every 4 ticks, steps of other creatures from their movement; UI clicks on buttons come from the controller. `QcClientSession::recentSounds()` keeps the last 64 cues for the control interface.
+- **Ambience and music** (E-044): `QcAmbience` derives levels for wind (open sky, rising from 0.3 at y 64 to 1 at y 120, muffled under a thin roof), cave (at least 4 opaque blocks within 24 above the head) and water (water blocks in a sampled box of radius 6) every 10 ticks and fades them by 0.5 per second; the three loops play on the ambient bus. `QcMusicComposer` composes a piece per seed on a major or minor pentatonic scale (66–90 bpm, motifs A A' B A, bass per bar, held chords, closing bar on the root, about 30 s); the engine renders it on a worker thread and plays pieces with pauses of 60–180 s while a world is open.
+
 ## World generation
 
 `QcTerrainGenerator` (decision E-014) is deterministic per seed and thread-safe. The server generates chunks on a `QcWorkerPool` (`QcServerWorld::requestChunk`), nearest first with a bounded queue, and collects finished chunks every tick; chunks no player needs are unloaded. Sky light is computed client-side while meshing (decision E-015).
@@ -148,6 +161,8 @@ UI controls: left mouse mines or attacks, F mines, right mouse / R places, eats 
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
 | `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
 | `--chat <text>` (repeatable), `--overlay <inventory\|pause\|settings\|character\|chat\|furnace>` | Sent / opened once the world is loaded (reproducible UI screenshots); `furnace` uses the block in view after 1 s, moves hotbar slots 1 and 2 into its input and fuel and lets the screenshot wait 2.5 s more; without a machine in view the screenshot is taken after 6 s with a warning. Example: `--look 0,-89 --chat "/give iron_ore 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace` |
+| `--no-audio`, `QTCRAFT_AUDIO=0` | No audio device is opened; the game is silent. Runs with `QTCRAFT_SCREENSHOT` are silent unless `QTCRAFT_AUDIO=1` |
+| `qtcraft-headless --export-sounds <dir> [--seed n]` | Writes every sound of the content (first variant) and the music piece of the seed as 16-bit WAV files and prints length and peak per file |
 | `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds (`worlds/`) and mods (`mods/`); tests set it to `build/<preset>/test-data` |
 | `--mods-dir <dir>`, `--no-mods` (game and `qtcraft-headless`) | Load mods from another directory / only the base game |
 | `qtcraft-headless --map <png> [--map-radius <blocks>]` | Top-down terrain map of a seed |

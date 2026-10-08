@@ -351,64 +351,64 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="305"/>
-        <location filename="../src/app/QcGameController.cpp" line="375"/>
+        <location filename="../src/app/QcGameController.cpp" line="414"/>
+        <location filename="../src/app/QcGameController.cpp" line="484"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="378"/>
+        <location filename="../src/app/QcGameController.cpp" line="487"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="391"/>
+        <location filename="../src/app/QcGameController.cpp" line="500"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="391"/>
-        <location filename="../src/app/QcGameController.cpp" line="557"/>
+        <location filename="../src/app/QcGameController.cpp" line="500"/>
+        <location filename="../src/app/QcGameController.cpp" line="666"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="519"/>
+        <location filename="../src/app/QcGameController.cpp" line="628"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="527"/>
+        <location filename="../src/app/QcGameController.cpp" line="636"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="656"/>
+        <location filename="../src/app/QcGameController.cpp" line="783"/>
         <source>Disconnected: %1</source>
         <translation>Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="676"/>
+        <location filename="../src/app/QcGameController.cpp" line="803"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="902"/>
+        <location filename="../src/app/QcGameController.cpp" line="1031"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="966"/>
+        <location filename="../src/app/QcGameController.cpp" line="1095"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="966"/>
+        <location filename="../src/app/QcGameController.cpp" line="1095"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1013"/>
+        <location filename="../src/app/QcGameController.cpp" line="1144"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -460,41 +460,74 @@
     </message>
     <message>
         <location filename="../src/app/qml/SettingsScreen.qml" line="105"/>
+        <source>Master volume</source>
+        <translation>Gesamtlautstärke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="117"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="133"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="149"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="165"/>
+        <source>%1 %</source>
+        <translation>%1 %</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="121"/>
+        <source>Effects</source>
+        <translation>Effekte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="137"/>
+        <source>Music</source>
+        <translation>Musik</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="153"/>
+        <source>Ambience</source>
+        <translation>Umgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="170"/>
+        <source>Mute all sounds</source>
+        <translation>Alle Töne stumm</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="176"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="115"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="186"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="187"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="117"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="188"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="123"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="194"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="134"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="205"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="215"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="152"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="223"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>

@@ -1,0 +1,23 @@
+{
+    "name": "mob.crystal_beetle.death",
+    "volume": 0.7,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.5,
+            "frequency": 2500,
+            "endFrequency": 800,
+            "attack": 0.002,
+            "curve": 1.5,
+            "gain": 0.6
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.45,
+            "density": 1200,
+            "highpass": 1500,
+            "attack": 0.002,
+            "curve": 1.5
+        }
+    ]
+}

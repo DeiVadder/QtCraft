@@ -1,0 +1,31 @@
+{
+    "name": "mob.pig.ambient",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.18,
+            "frequency": 260,
+            "endFrequency": 200,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 900,
+            "tremoloRate": 25,
+            "tremoloDepth": 0.6
+        },
+        {
+            "wave": "square",
+            "duration": 0.15,
+            "frequency": 240,
+            "endFrequency": 190,
+            "start": 0.22,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 900,
+            "tremoloRate": 25,
+            "tremoloDepth": 0.6
+        }
+    ]
+}

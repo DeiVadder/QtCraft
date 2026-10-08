@@ -1,5 +1,6 @@
 {
     "name": "coal_ore",
+    "sound": "stone",
     "hardness": 3.0,
     "tool": "pickaxe",
     "toolLevel": 1,

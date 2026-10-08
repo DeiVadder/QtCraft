@@ -38,9 +38,37 @@ private slots:
         settings.appearance.hairColor = 0xfffffe;
         settings.appearance.shirtColor = 0x00ff00;
         settings.appearance.pantsColor = 0x000000;
+        settings.masterVolume = 0.25;
+        settings.effectsVolume = 0.0;
+        settings.musicVolume = 1.0;
+        settings.ambientVolume = 0.4;
+        settings.muted = true;
         const QcStatus saved = settings.save(path);
         QVERIFY2(saved.has_value(), qcErrorText(saved));
         QCOMPARE(QcGameSettings::load(path), settings);
+    }
+
+    void audioDefaultsAndBadVolumes()
+    {
+        const QcGameSettings defaults;
+        QCOMPARE(defaults.masterVolume, 0.8);
+        QCOMPARE(defaults.effectsVolume, 1.0);
+        QCOMPARE(defaults.musicVolume, 0.5);
+        QCOMPARE(defaults.ambientVolume, 0.7);
+        QVERIFY(!defaults.muted);
+
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("[audio]\nmaster=1.5\neffects=-2\nmusic=loud\nambient=nan\nmuted=true\n");
+        file.close();
+        const QcGameSettings settings = QcGameSettings::load(path);
+        QCOMPARE(settings.masterVolume, 1.0);
+        QCOMPARE(settings.effectsVolume, 0.0);
+        QCOMPARE(settings.musicVolume, defaults.musicVolume);
+        QCOMPARE(settings.ambientVolume, defaults.ambientVolume);
+        QVERIFY(settings.muted);
     }
 
     void badCharacterAndViewValuesFallBack()

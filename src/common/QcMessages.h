@@ -305,6 +305,22 @@ struct PlayerFood
     qint32 maxFood = 0;
 };
 
+// Server -> client: a sound at a world position (block broken, creature hurt, furnace crackling).
+// The client picks the loudness and the side from its own distance and view direction.
+struct SoundEvent
+{
+    static constexpr qsizetype maxKeyLength = 256;
+    static constexpr float maxVolume = 4.0f;
+    static constexpr float minPitch = 0.25f;
+    static constexpr float maxPitch = 4.0f;
+
+    QString key;
+    QcVec3 position;
+    // Loudness relative to the sound's own (louder sounds also carry further) and playback speed.
+    float volume = 1.0f;
+    float pitch = 1.0f;
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
@@ -315,4 +331,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::EntityRemove, QcMsg::PlayerHealth, QcMsg::WorldTime, QcMsg::AttackEntity,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
                                QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance,
-                               QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood>;
+                               QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood,
+                               QcMsg::SoundEvent>;

@@ -30,6 +30,17 @@ enum class QcBlockShape : quint8 {
     Cross,
 };
 
+// What happens to a block when it makes a sound.
+enum class QcBlockSoundAction : quint8 {
+    Break,
+    Place,
+    Step,
+    // Each strike while mining.
+    Hit,
+};
+
+inline constexpr int qcBlockSoundActionCount = 4;
+
 struct QcItemDrop
 {
     QString item;
@@ -82,6 +93,10 @@ struct QcBlockDefinition
     // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.
     double fuelSeconds = 0.0;
     QcSaplingDefinition sapling;
+    // Sound material ("qtcraft:stone"), empty for silent blocks, and explicit sound names per
+    // QcBlockSoundAction that replace the material's sound (see QcSoundKeys).
+    QString soundMaterial;
+    std::array<QString, qcBlockSoundActionCount> soundKeys;
     // Texture names indexed by QcBlockFace.
     std::array<QString, qcBlockFaceCount> faceTextures;
 

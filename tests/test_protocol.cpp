@@ -147,6 +147,95 @@ private slots:
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Client).has_value());
     }
 
+    void soundEventsRoundTripAndAreValidated()
+    {
+        const QcMsg::SoundEvent event = roundTrip(QcMsg::SoundEvent{u"qtcraft:block.stone.break"_s, {10.5, 64.5, -3.5}, 0.75f, 1.25f});
+        QCOMPARE(event.key, u"qtcraft:block.stone.break"_s);
+        QCOMPARE(event.position, (QcVec3{10.5, 64.5, -3.5}));
+        QCOMPARE(event.volume, 0.75f);
+        QCOMPARE(event.pitch, 1.25f);
+        // The limits themselves are accepted.
+        QCOMPARE(roundTrip(QcMsg::SoundEvent{u"a:b"_s, {}, QcMsg::SoundEvent::maxVolume, QcMsg::SoundEvent::minPitch}).volume, 4.0f);
+
+        const float nan = std::numeric_limits<float>::quiet_NaN();
+        const QList<QcMsg::SoundEvent> bad = {
+            {QString(), {}, 1.0f, 1.0f},
+            {QString(QcMsg::SoundEvent::maxKeyLength + 1, u'a'), {}, 1.0f, 1.0f},
+            {u"a:b"_s, {std::numeric_limits<double>::infinity(), 0.0, 0.0}, 1.0f, 1.0f},
+            {u"a:b"_s, {}, nan, 1.0f},
+            {u"a:b"_s, {}, -0.1f, 1.0f},
+            {u"a:b"_s, {}, 4.5f, 1.0f},
+            {u"a:b"_s, {}, 1.0f, nan},
+            {u"a:b"_s, {}, 1.0f, 0.2f},
+            {u"a:b"_s, {}, 1.0f, 5.0f},
+        };
+        for (const QcMsg::SoundEvent &event : bad) {
+            QVERIFY2(!QcProtocol::decode(QcProtocol::encode(event), QcProtocol::Peer::Server).has_value(), qPrintable(event.key.left(20)));
+        }
+        // Only the server sends sounds.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SoundEvent{u"a:b"_s, {}, 1.0f, 1.0f}), QcProtocol::Peer::Client).has_value());
+    }
+
+    void contentSyncCarriesSounds()
+    {
+        auto content = std::make_shared<QcContentRegistry>();
+        QcBlockDefinition furnace;
+        furnace.name = u"a:furnace"_s;
+        furnace.faceTextures.fill(u"a:furnace"_s);
+        furnace.soundMaterial = u"a:metal"_s;
+        furnace.soundKeys[std::size_t(QcBlockSoundAction::Hit)] = u"a:clank"_s;
+        furnace.machine = {u"smelting"_s, 1.0, u"a:roar"_s};
+        QVERIFY(content->registerBlock(furnace).has_value());
+        QcMobDefinition mob;
+        mob.name = u"a:bee"_s;
+        mob.ambientSound = u"a:buzz"_s;
+        mob.hurtSound = u"a:ouch"_s;
+        mob.deathSound = u"a:gone"_s;
+        content->registerMob(mob);
+        QcSoundDefinition buzz;
+        buzz.name = u"a:buzz"_s;
+        buzz.bus = QcSoundBus::Ambient;
+        buzz.volume = 0.4;
+        buzz.pitchVariation = 0.2;
+        buzz.variants = 3;
+        buzz.loop = true;
+        buzz.range = 24.0;
+        buzz.layers = {{QcSoundWave::Saw, 220.0, 330.0, 0.1, 1.5, 0.2, 1.0, 0.5, 2000.0, 100.0, 4.0, 0.3, 50.0},
+                       {QcSoundWave::Crackle, 440.0, 0.0, 0.0, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 900.0}};
+        QVERIFY(buzz.problem().isEmpty());
+        content->registerSound(buzz);
+
+        const QcMsg::ContentSync copy = roundTrip(QcMsg::ContentSync{content});
+        const QcBlockDefinition &block = copy.content->block(*copy.content->blockId(u"a:furnace"_s));
+        QCOMPARE(block.soundMaterial, u"a:metal"_s);
+        QCOMPARE(block.soundKeys, furnace.soundKeys);
+        QCOMPARE(block.machine.sound, u"a:roar"_s);
+        const QcMobDefinition &bee = copy.content->mobs().constFirst();
+        QCOMPARE(bee.ambientSound, u"a:buzz"_s);
+        QCOMPARE(bee.hurtSound, u"a:ouch"_s);
+        QCOMPARE(bee.deathSound, u"a:gone"_s);
+        QCOMPARE(copy.content->sounds().size(), 1);
+        QVERIFY(*copy.content->sound(u"a:buzz"_s) == buzz);
+
+        // A client must not trust the server's synthesis parameters: they decide its work and memory.
+        QcSoundDefinition huge = buzz;
+        huge.name = u"a:huge"_s;
+        huge.variants = QcSoundDefinition::maxVariants + 1;
+        content->registerSound(huge);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+        huge.variants = 1;
+        huge.layers[0].duration = QcSoundDefinition::maxLayerSeconds + 1.0;
+        content->registerSound(huge);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+        huge.layers[0].duration = 1.0;
+        huge.layers[0].frequency = std::numeric_limits<double>::quiet_NaN();
+        content->registerSound(huge);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+        huge.layers[0].frequency = 220.0;
+        content->registerSound(huge);
+        QVERIFY(QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+    }
+
     void craftingMessagesRoundTrip()
     {
         const QcMsg::MoveInventoryItem move = roundTrip(QcMsg::MoveInventoryItem{3, 40, 7});

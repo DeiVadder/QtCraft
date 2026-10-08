@@ -1,5 +1,6 @@
 {
     "name": "gold_ore",
+    "sound": "stone",
     "hardness": 3.0,
     "tool": "pickaxe",
     "toolLevel": 3,

@@ -1,5 +1,6 @@
 {
     "name": "stone",
+    "sound": "stone",
     "hardness": 1.5,
     "tool": "pickaxe",
     "toolLevel": 1,

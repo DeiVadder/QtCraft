@@ -1,0 +1,29 @@
+{
+    "name": "ambient.wind",
+    "bus": "ambient",
+    "volume": 0.55,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 8.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 500,
+            "highpass": 60,
+            "tremoloRate": 0.15,
+            "tremoloDepth": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 8.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 1500,
+            "highpass": 400,
+            "tremoloRate": 0.3125,
+            "tremoloDepth": 0.7,
+            "gain": 0.4
+        }
+    ]
+}

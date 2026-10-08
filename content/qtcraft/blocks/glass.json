@@ -1,5 +1,6 @@
 {
     "name": "glass",
+    "sound": "glass",
     "render": "translucent",
     "opaque": false,
     "lightOpacity": 0,

@@ -1,0 +1,25 @@
+{
+    "name": "block.grass.break",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.25,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 6000,
+            "highpass": 1500,
+            "tremoloRate": 30,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.22,
+            "density": 600,
+            "highpass": 2000,
+            "gain": 0.4
+        }
+    ]
+}

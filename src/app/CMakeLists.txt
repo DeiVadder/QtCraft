@@ -16,7 +16,7 @@ set_target_properties(qtcraft PROPERTIES
     WIN32_EXECUTABLE ON)
 
 target_link_libraries(qtcraft PRIVATE
-    qc_common qc_server qc_clientcore
+    qc_common qc_server qc_clientcore qc_audio
     Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
 
 qt_add_qml_module(qtcraft

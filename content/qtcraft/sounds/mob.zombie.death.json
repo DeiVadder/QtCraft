@@ -1,0 +1,25 @@
+{
+    "name": "mob.zombie.death",
+    "volume": 0.8,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 1.0,
+            "frequency": 120,
+            "endFrequency": 55,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 500,
+            "tremoloRate": 5,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 1.0,
+            "attack": 0.02,
+            "curve": 1.5,
+            "lowpass": 300,
+            "gain": 0.4
+        }
+    ]
+}

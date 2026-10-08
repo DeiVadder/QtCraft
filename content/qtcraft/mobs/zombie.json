@@ -1,5 +1,10 @@
 {
     "name": "zombie",
+    "sounds": {
+        "ambient": "mob.zombie.ambient",
+        "hurt": "mob.zombie.hurt",
+        "death": "mob.zombie.death"
+    },
     "health": 20,
     "width": 0.6,
     "height": 1.95,

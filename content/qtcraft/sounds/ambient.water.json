@@ -1,0 +1,38 @@
+{
+    "name": "ambient.water",
+    "bus": "ambient",
+    "volume": 0.5,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 6.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 1200,
+            "highpass": 150,
+            "tremoloRate": 0.5,
+            "tremoloDepth": 0.3
+        },
+        {
+            "wave": "crackle",
+            "duration": 6.0,
+            "density": 300,
+            "lowpass": 4000,
+            "highpass": 1000,
+            "attack": 0.0,
+            "curve": 0,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "duration": 6.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 400,
+            "tremoloRate": 0.25,
+            "tremoloDepth": 0.5,
+            "gain": 0.5
+        }
+    ]
+}

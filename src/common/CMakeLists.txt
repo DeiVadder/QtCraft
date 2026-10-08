@@ -36,6 +36,8 @@ qt_add_library(qc_common STATIC
     QcRecipeDefinition.h QcRecipeDefinition.cpp
     QcResult.h
     QcSmeltingRecipe.h
+    QcSoundDefinition.h QcSoundDefinition.cpp
+    QcSoundKeys.h QcSoundKeys.cpp
     QcStreamLimits.h
     QcTextureDefinition.h
     QcTransport.h

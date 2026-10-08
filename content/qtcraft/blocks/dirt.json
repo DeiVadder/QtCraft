@@ -1,5 +1,6 @@
 {
     "name": "dirt",
+    "sound": "dirt",
     "hardness": 0.5,
     "tool": "shovel",
     "textures": {

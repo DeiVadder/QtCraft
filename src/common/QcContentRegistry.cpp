@@ -23,7 +23,10 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block)
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
            << qint32(block.toolLevel) << block.opensCrafting << quint8(block.shape) << block.machine.category
-           << block.machine.speed << block.fuelSeconds;
+           << block.machine.speed << block.fuelSeconds << block.machine.sound << block.soundMaterial;
+    for (const QString &key : block.soundKeys) {
+        stream << key;
+    }
     stream << quint32(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
         stream << drop.item << qint32(drop.count) << drop.chance;
@@ -47,7 +50,10 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
     quint8 shape = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
         >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> shape
-        >> block.machine.category >> block.machine.speed >> block.fuelSeconds;
+        >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.soundMaterial;
+    for (QString &key : block.soundKeys) {
+        stream >> key;
+    }
     // Machine speed and fuel time drive server-side timers; they must stay within the parser's ranges.
     const bool machineOk = block.machine.category.size() <= 64 && std::isfinite(block.machine.speed)
                            && block.machine.speed > 0.0 && block.machine.speed <= 100.0;
@@ -318,6 +324,17 @@ const QcSmeltingRecipe *QcContentRegistry::smeltingRecipe(const QString &categor
     return it == m_smeltingRecipes.end() ? nullptr : &*it;
 }
 
+void QcContentRegistry::registerSound(QcSoundDefinition definition)
+{
+    registerByName(m_sounds, m_soundIndex, std::move(definition));
+}
+
+const QcSoundDefinition *QcContentRegistry::sound(const QString &name) const
+{
+    const auto it = m_soundIndex.constFind(name);
+    return it == m_soundIndex.constEnd() ? nullptr : &m_sounds[*it];
+}
+
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, m_biomeIndex, std::move(definition));
@@ -387,7 +404,7 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         for (const QcMobPart &part : mob.parts) {
             stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
         }
-        stream << mob.skeleton << mob.outfit << mob.armsForward;
+        stream << mob.skeleton << mob.outfit << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound;
     }
     stream << quint32(m_recipes.size());
     for (const QcRecipeDefinition &recipe : m_recipes) {
@@ -441,6 +458,16 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
     for (const QcSmeltingRecipe &recipe : m_smeltingRecipes) {
         stream << recipe.name << recipe.category << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
                << recipe.seconds;
+    }
+    stream << quint32(m_sounds.size());
+    for (const QcSoundDefinition &sound : m_sounds) {
+        stream << sound.name << quint8(sound.bus) << sound.volume << sound.pitchVariation << qint32(sound.variants) << sound.loop
+               << sound.range << quint32(sound.layers.size());
+        for (const QcSoundLayer &layer : sound.layers) {
+            stream << quint8(layer.wave) << layer.frequency << layer.endFrequency << layer.start << layer.duration << layer.attack
+                   << layer.curve << layer.gain << layer.lowpass << layer.highpass << layer.tremoloRate << layer.tremoloDepth
+                   << layer.density;
+        }
     }
 }
 
@@ -507,7 +534,7 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture;
             mob.parts.append(part);
         }
-        stream >> mob.skeleton >> mob.outfit >> mob.armsForward;
+        stream >> mob.skeleton >> mob.outfit >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound;
         // Sizes feed physics and the mesher: reject anything outside what the parser allows.
         const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };
         bool valid = std::isfinite(mob.maxHealth) && mob.maxHealth > 0.0 && mob.maxHealth <= 1000.0 && plausible(mob.width) && plausible(mob.height) && mob.width > 0.0
@@ -686,6 +713,35 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             return qcError(u"Corrupt content: smelting recipe %1"_s.arg(i));
         }
         registry.registerSmeltingRecipe(std::move(recipe));
+    }
+    quint32 soundCount = 0;
+    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, soundCount)) {
+        return qcError(u"Corrupt content: sound table"_s);
+    }
+    for (quint32 i = 0; i < soundCount; ++i) {
+        QcSoundDefinition sound;
+        quint8 bus = 0;
+        qint32 variants = 0;
+        quint32 layerCount = 0;
+        stream >> sound.name >> bus >> sound.volume >> sound.pitchVariation >> variants >> sound.loop >> sound.range;
+        if (!QcStreamLimits::readCount(stream, QcSoundDefinition::maxLayers, layerCount)) {
+            return qcError(u"Corrupt content: sound %1"_s.arg(i));
+        }
+        sound.bus = QcSoundBus(bus);
+        sound.variants = variants;
+        for (quint32 l = 0; l < layerCount; ++l) {
+            QcSoundLayer layer;
+            quint8 wave = 0;
+            stream >> wave >> layer.frequency >> layer.endFrequency >> layer.start >> layer.duration >> layer.attack >> layer.curve
+                >> layer.gain >> layer.lowpass >> layer.highpass >> layer.tremoloRate >> layer.tremoloDepth >> layer.density;
+            layer.wave = QcSoundWave(wave);
+            sound.layers.append(layer);
+        }
+        // The synthesizer's work and memory follow from these values: the same limits as for content files.
+        if (stream.status() != QDataStream::Ok || !sound.problem().isEmpty()) {
+            return qcError(u"Corrupt content: sound %1"_s.arg(i));
+        }
+        registry.registerSound(std::move(sound));
     }
     if (stream.status() != QDataStream::Ok) {
         return qcError(u"Corrupt content: truncated"_s);

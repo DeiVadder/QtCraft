@@ -1,0 +1,23 @@
+{
+    "name": "block.stone.step",
+    "volume": 0.5,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.002,
+            "curve": 4,
+            "lowpass": 1500,
+            "highpass": 300
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.05,
+            "density": 300,
+            "lowpass": 3000,
+            "gain": 0.4
+        }
+    ]
+}

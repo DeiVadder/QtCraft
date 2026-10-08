@@ -47,4 +47,8 @@ struct QcMobDefinition
     // Skeleton mobs that walk with their arms stretched forward (zombies).
     bool armsForward = false;
     QList<QcItemDrop> drops;
+    // Sounds: now and then while alive, when hit and when killed; empty names are silent.
+    QString ambientSound;
+    QString hurtSound;
+    QString deathSound;
 };

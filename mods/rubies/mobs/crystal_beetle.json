@@ -1,5 +1,10 @@
 {
     "name": "crystal_beetle",
+    "sounds": {
+        "ambient": "mob.crystal_beetle.ambient",
+        "hurt": "mob.crystal_beetle.hurt",
+        "death": "mob.crystal_beetle.death"
+    },
     "health": 12,
     "width": 0.8,
     "height": 0.6,

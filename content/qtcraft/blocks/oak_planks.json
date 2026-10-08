@@ -1,5 +1,6 @@
 {
     "name": "oak_planks",
+    "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",
     "textures": {

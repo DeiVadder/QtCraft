@@ -8,6 +8,7 @@
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
 #include "QcSmeltingRecipe.h"
+#include "QcSoundDefinition.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
 
@@ -27,6 +28,7 @@ QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const 
 QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcSmeltingRecipe> parseSmeltingRecipe(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);

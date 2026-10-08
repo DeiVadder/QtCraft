@@ -1,5 +1,6 @@
 {
     "name": "cobblestone",
+    "sound": "stone",
     "hardness": 2.0,
     "tool": "pickaxe",
     "toolLevel": 1,

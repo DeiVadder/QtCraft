@@ -1,0 +1,23 @@
+{
+    "name": "mob.generic.death",
+    "volume": 0.7,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.5,
+            "frequency": 250,
+            "endFrequency": 80,
+            "attack": 0.005,
+            "curve": 1.5,
+            "lowpass": 1200
+        },
+        {
+            "wave": "noise",
+            "duration": 0.4,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 600,
+            "gain": 0.5
+        }
+    ]
+}

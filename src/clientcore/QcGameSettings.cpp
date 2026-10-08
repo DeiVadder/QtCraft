@@ -26,6 +26,11 @@ double QcGameSettings::clampMouseSensitivity(double sensitivity)
                                       : defaultMouseSensitivity;
 }
 
+double QcGameSettings::clampVolume(double volume, double fallback)
+{
+    return std::isfinite(volume) ? std::clamp(volume, 0.0, 1.0) : fallback;
+}
+
 QString QcGameSettings::cleanLanguage(const QString &language)
 {
     static const QRegularExpression code(u"^[a-z]{2}$"_s);
@@ -67,6 +72,16 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.appearance.hairColor = color(u"character/hairColor"_s, defaults.hairColor);
     settings.appearance.shirtColor = color(u"character/shirt"_s, defaults.shirtColor);
     settings.appearance.pantsColor = color(u"character/pants"_s, defaults.pantsColor);
+    const auto volume = [&file](const QString &key, double fallback) {
+        bool ok = false;
+        const double value = file.value(key).toDouble(&ok);
+        return ok ? clampVolume(value, fallback) : fallback;
+    };
+    settings.masterVolume = volume(u"audio/master"_s, defaultMasterVolume);
+    settings.effectsVolume = volume(u"audio/effects"_s, defaultEffectsVolume);
+    settings.musicVolume = volume(u"audio/music"_s, defaultMusicVolume);
+    settings.ambientVolume = volume(u"audio/ambient"_s, defaultAmbientVolume);
+    settings.muted = file.value(u"audio/muted"_s, false).toBool();
     return settings;
 }
 
@@ -90,6 +105,11 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"character/hairColor"_s, hex(appearance.hairColor));
     file.setValue(u"character/shirt"_s, hex(appearance.shirtColor));
     file.setValue(u"character/pants"_s, hex(appearance.pantsColor));
+    file.setValue(u"audio/master"_s, masterVolume);
+    file.setValue(u"audio/effects"_s, effectsVolume);
+    file.setValue(u"audio/music"_s, musicVolume);
+    file.setValue(u"audio/ambient"_s, ambientVolume);
+    file.setValue(u"audio/muted"_s, muted);
     file.sync();
     if (file.status() != QSettings::NoError) {
         return qcError(u"Cannot write the settings to %1"_s.arg(path));

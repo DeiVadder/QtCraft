@@ -1,5 +1,6 @@
 {
     "name": "clay",
+    "sound": "dirt",
     "hardness": 0.6,
     "tool": "shovel",
     "textures": {

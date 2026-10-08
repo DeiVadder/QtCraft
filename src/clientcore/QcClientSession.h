@@ -1,14 +1,17 @@
 #pragma once
 
 #include "QcClientEntity.h"
+#include "QcAmbience.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
 #include "QcEntityPose.h"
 #include "QcViewCamera.h"
 #include "QcInventory.h"
+#include "QcLocalSounds.h"
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
 #include "QcRaycast.h"
+#include "QcSoundCue.h"
 
 #include <QHash>
 #include <QList>
@@ -138,6 +141,20 @@ public:
     // Seconds of world time, advanced locally between server updates.
     double worldTime() const { return m_worldTime; }
 
+    // Sounds of the last moments (server events and the client's own), oldest first; at most
+    // recentSoundLimit. clearRecentSounds() empties the list (control interface).
+    static constexpr qsizetype recentSoundLimit = 64;
+    const QList<QcSoundCue> &recentSounds() const { return m_recentSounds; }
+    void clearRecentSounds() { m_recentSounds.clear(); }
+    // Ambience loop levels around the player, faded towards the surroundings every tick.
+    const QcAmbience::Levels &ambience() const { return m_ambience; }
+    // Mining strikes make a sound every this many ticks; other creatures step every this many metres.
+    static constexpr int miningHitTicks = 4;
+    static constexpr double entityStrideMetres = 1.7;
+    static constexpr float entityStepVolume = 0.3f;
+    // The ambience targets are sampled every this many ticks.
+    static constexpr int ambienceTicks = 10;
+
     // Melee reach of the player.
     static constexpr double attackReach = 4.0;
     static constexpr int hurtFlashTicks = 6;
@@ -162,6 +179,8 @@ signals:
     // The server opened a crafting table's grid.
     void craftingOpened(int size);
     void chatReceived(const QString &text);
+    // A sound to play now (see QcSoundCue).
+    void soundCue(const QcSoundCue &cue);
 
 private:
     void handleMessage(QcMessage &&message);
@@ -170,6 +189,8 @@ private:
     void onClosed();
     void refreshTarget();
     void updateTargetAndMining();
+    void cue(QcSoundCue cue);
+    void updateSounds();
 
     std::unique_ptr<QcConnection> m_connection;
     QString m_playerName;
@@ -229,4 +250,9 @@ private:
     bool m_dead = false;
     double m_worldTime = 0.0;
     double m_dayLength = 600.0;
+    QList<QcSoundCue> m_recentSounds;
+    QcLocalSounds m_localSounds;
+    QcAmbience::Levels m_ambience;
+    QcAmbience::Levels m_ambienceTarget;
+    int m_miningTicks = 0;
 };

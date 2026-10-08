@@ -9,6 +9,7 @@
 #include "QcProtocol.h"
 #include "QcRaycast.h"
 #include "QcServerClient.h"
+#include "QcSoundKeys.h"
 
 #include <QLoggingCategory>
 #include <QSet>
@@ -48,6 +49,26 @@ void QcServer::setBlockAndBroadcast(QcBlockPos pos, QcBlockId block)
             client->connection->send(QcMsg::BlockUpdate{pos, block});
         }
     }
+}
+
+void QcServer::playSound(const QString &key, const QcVec3 &position, float volume, float pitch)
+{
+    const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_content->sound(key);
+    if (!sound) {
+        return;
+    }
+    const double range = sound->range * std::max(1.0, double(volume));
+    const QcMsg::SoundEvent event{key, position, volume, pitch};
+    for (const auto &client : m_clients) {
+        if (client->state == Client::State::Playing && (client->motion.position - position).length() <= range) {
+            client->connection->send(event);
+        }
+    }
+}
+
+void QcServer::playBlockSound(const QcBlockDefinition &definition, QcBlockSoundAction action, QcBlockPos pos)
+{
+    playSound(QcSoundKeys::blockSound(definition, action), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
 }
 
 void QcServer::sendInventory(Client &client)
@@ -243,6 +264,7 @@ void QcServer::handleConsume(Client &client)
         return;
     }
     client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    playSound(QString::fromLatin1(QcSoundKeys::playerEat), client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     sendFood(client);
     sendInventory(client);
 }
@@ -328,6 +350,16 @@ void QcServer::tickMachines()
     const QList<QcMachineManager::Machine> removed = m_machines.tick(m_world, QcPhysics::tickDuration);
     for (const QcMachineManager::Machine &machine : removed) {
         dropMachineContents(machine);
+    }
+    for (const QcMachineManager::Machine &machine : m_machines.all()) {
+        if (machine.burnRemaining <= 0.0 || !isLoadedAt(machine.pos)
+            || m_soundRandom.generateDouble() >= QcPhysics::tickDuration / machineSoundSeconds) {
+            continue;
+        }
+        const std::optional<QcBlockId> block = m_world.blockAt(machine.pos);
+        if (const QcMachineDefinition *definition = block ? m_machines.machineOf(*block) : nullptr) {
+            playSound(definition->sound, {machine.pos.x + 0.5, machine.pos.y + 0.5, machine.pos.z + 0.5});
+        }
     }
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing || !client->machine) {
@@ -436,6 +468,7 @@ void QcServer::handleUseItem(Client &client, QcMsg::UseItem message)
         }
     }
     setBlockAndBroadcast(target, *placed);
+    playBlockSound(placedDefinition, QcBlockSoundAction::Place, target);
     if (placedDefinition.sapling.isSapling()) {
         m_plants.saplingPlaced(target, *placed);
     }
@@ -462,6 +495,7 @@ void QcServer::breakBlock(QcBlockPos pos, bool drops)
         if (m_world.blockAt(current) != qcAirBlockId) {
             return;
         }
+        playBlockSound(definition, QcBlockSoundAction::Break, current);
         if (drops || current != pos) {
             dropBlockItems(definition, current);
         }
@@ -615,6 +649,7 @@ void QcServer::tickItemsAndPlants()
                 const int left = client->inventory.add(stack.item, stack.count, *m_content, stack.damage);
                 if (left < stack.count) {
                     changed.insert(client.get());
+                    playSound(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);
                 }
                 return left;
             }
@@ -835,6 +870,8 @@ void QcServer::damagePlayer(Client &client, double amount, const QcVec3 &knockba
     client.hurtThisTick = true;
     client.hunger.hurt();
     client.hunger.exhaust(QcHunger::damageTaken);
+    playSound(QString::fromLatin1(client.health <= 0.0 ? QcSoundKeys::playerDeath : QcSoundKeys::playerHurt),
+              client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     if (knockback.length() > 0.0) {
         client.motion.velocity = knockback.normalized() * QcMobManager::knockbackSpeed + QcVec3{0.0, 5.0, 0.0};
         client.stateDirty = true;
@@ -891,9 +928,14 @@ void QcServer::handleAttack(Client &client, quint32 entityId)
     const QcItemDefinition *held = heldItem(client);
     const double damage = held ? held->attackDamage : 1.0;
     const QcVec3 lootPosition = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+    // Hits during the short invulnerability after a hit do nothing, and make no sound.
+    const bool vulnerable = mob->hurtTimer <= 0.0;
     const std::optional<QList<QcItemDrop>> drops = m_mobs.damage(entityId, damage, client.motion.position);
     if (drops) {
         m_died.insert(entityId);
+        playSound(definition.deathSound, lootPosition);
+    } else if (vulnerable) {
+        playSound(definition.hurtSound, lootPosition);
     }
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
@@ -948,6 +990,10 @@ void QcServer::tickGameplay()
             if (change != 0.0) {
                 client->health = std::clamp(client->health + change, 0.0, playerMaxHealth);
                 client->hurtThisTick = client->hurtThisTick || change < 0.0;
+                if (change < 0.0) {
+                    playSound(QString::fromLatin1(QcSoundKeys::playerHurt),
+                              client->motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
+                }
                 sendHealth(*client);
             }
         }
@@ -959,6 +1005,12 @@ void QcServer::tickGameplay()
     }
     const QList<QcMobManager::PlayerHit> hits =
         m_mobs.tick(m_world, players, m_info.worldTime, dt, [this] { return m_nextEntityId++; });
+    for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
+        const QcMobDefinition &definition = m_content->mobs()[mob.type];
+        if (!definition.ambientSound.isEmpty() && m_soundRandom.generateDouble() < dt / mobAmbientSeconds) {
+            playSound(definition.ambientSound, mob.motion.position + QcVec3{0.0, definition.height * 0.8, 0.0});
+        }
+    }
     for (const QcMobManager::PlayerHit &hit : hits) {
         for (const auto &client : m_clients) {
             if (client->entityId == hit.playerEntityId) {

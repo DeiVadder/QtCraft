@@ -1,5 +1,10 @@
 {
     "name": "slime",
+    "sounds": {
+        "ambient": "mob.slime.ambient",
+        "hurt": "mob.slime.hurt",
+        "death": "mob.slime.death"
+    },
     "health": 8,
     "width": 0.8,
     "height": 0.8,

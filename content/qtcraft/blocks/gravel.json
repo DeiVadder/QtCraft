@@ -1,5 +1,6 @@
 {
     "name": "gravel",
+    "sound": "gravel",
     "hardness": 0.6,
     "tool": "shovel",
     "textures": {

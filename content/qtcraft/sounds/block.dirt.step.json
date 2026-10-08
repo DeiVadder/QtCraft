@@ -1,0 +1,23 @@
+{
+    "name": "block.dirt.step",
+    "volume": 0.5,
+    "variants": 4,
+    "pitchVariation": 0.12,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.08,
+            "attack": 0.004,
+            "curve": 3,
+            "lowpass": 700,
+            "highpass": 80
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.07,
+            "density": 150,
+            "lowpass": 1200,
+            "gain": 0.3
+        }
+    ]
+}

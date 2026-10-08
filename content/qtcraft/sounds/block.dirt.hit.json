@@ -1,0 +1,16 @@
+{
+    "name": "block.dirt.hit",
+    "volume": 0.45,
+    "variants": 3,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 1000,
+            "highpass": 100
+        }
+    ]
+}
