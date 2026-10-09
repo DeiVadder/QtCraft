@@ -72,9 +72,17 @@ public:
     static bool canReplace(const QcContentRegistry &content, std::optional<QcBlockId> block, QcBlockId state);
 
 private:
-    void step(QcBlockPos pos, quint64 now, const QcBlockAccess &world, const SetFunction &set, TickResult &result);
-    void change(QcBlockPos pos, QcBlockId block, quint64 now, const QcBlockAccess &world, const SetFunction &set,
-                TickResult &result);
+    // What the steps of one tick work on.
+    struct StepContext
+    {
+        quint64 now = 0;
+        const QcBlockAccess &world;
+        const SetFunction &set;
+        TickResult &result;
+    };
+
+    void step(QcBlockPos pos, const StepContext &context);
+    void change(QcBlockPos pos, QcBlockId block, const StepContext &context);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     // Due tick -> positions in the order they were planned.

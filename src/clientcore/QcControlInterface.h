@@ -1,19 +1,14 @@
 #pragma once
 
-#include "QcBlockFace.h"
-#include "QcItemStack.h"
-#include "QcPlayerInput.h"
-#include "QcVec3.h"
+#include "QcControlCommandTable.h"
+#include "QcControlContext.h"
 
 #include <QJsonObject>
-#include <QJsonValue>
 #include <QObject>
 #include <QPointer>
 #include <QQueue>
-#include <QStringList>
 
 #include <functional>
-#include <optional>
 
 class QcClientSession;
 class QIODevice;
@@ -41,56 +36,30 @@ public:
     void submit(const QJsonObject &request);
     // Appends raw bytes of newline-delimited requests, for sources that are not a QIODevice.
     void feed(const QByteArray &data);
-    bool isIdle() const { return !m_active && m_queue.isEmpty(); }
-    int failedRequests() const { return m_failedRequests; }
+    bool isIdle() const { return !m_context.isActive() && m_queue.isEmpty(); }
+    int failedRequests() const { return m_context.failedRequests(); }
 
 signals:
     void quitRequested();
     void idle();
 
 private:
-    struct ActiveCommand
-    {
-        QJsonObject request;
-        // Poll intervals left before the command fails with a timeout.
-        int remainingTicks = 0;
-        // Called every tick; returns true when the command is complete.
-        std::function<bool()> step;
-        // Response of a completed command; the player status when unset. The initializer lets
-        // commands leave it out without -Wmissing-field-initializers.
-        std::function<QJsonObject()> result = {}; // NOLINT(readability-redundant-member-init)
-    };
-
     void readInput();
     void processQueue();
     void start(const QJsonObject &request);
-    void finish(const QJsonObject &request, QJsonObject response);
-    void fail(const QJsonObject &request, const QString &message);
+    // Commands outside the table: the extension handler, else an unknown command.
+    void startExtension(const QJsonObject &request, const QString &command);
     void onTick();
-    QJsonObject playerStatus() const;
-    QJsonValue stackJson(QcItemStack stack) const;
-    QJsonObject inventoryJson() const;
-    QJsonObject machineJson() const;
-    // Recent sound cues with their loudness and side as heard now, and the ambience levels.
-    QJsonObject soundsJson() const;
-    // Turns the player towards a block centre, or towards the centre of one of its faces.
-    void lookAt(QcBlockPos block, std::optional<QcBlockFace> face);
-    void lookAtPoint(const QcVec3 &point);
-    static QcBlockPos blockArgument(const QJsonObject &request);
-    static std::optional<QcBlockFace> faceArgument(const QJsonObject &request);
-    static QString faceName(QcBlockFace face);
+    // Answers the completed active command with its result or the error its step set.
+    void completeActive(const QcControlActiveCommand &command);
+    // Fails the active command with `message`.
+    void abortActive(const QString &message);
 
-    QPointer<QcClientSession> m_session;
+    QcControlContext m_context;
+    QcControlCommandTable m_commands;
     QPointer<QIODevice> m_input;
-    QPointer<QIODevice> m_output;
     ExtensionHandler m_extension;
     QQueue<QJsonObject> m_queue;
-    std::optional<ActiveCommand> m_active;
-    // Set by a step that completes unsuccessfully; the active request then fails with it.
-    QString m_activeError;
-    int m_failedRequests = 0;
     QByteArray m_lineBuffer;
     int m_lineNumber = 0;
-    // Chat lines received while the current request runs; reported in its response.
-    QStringList m_chatLog;
 };

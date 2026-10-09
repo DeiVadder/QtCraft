@@ -139,6 +139,101 @@ public:
     }
 };
 
+// Sets one random block, mostly on chunk borders and in the bottom and top sections of the world,
+// in the fixture and the engine, and returns the engine's changes.
+QcBlockLightEngine::Changes editRandomBlock(Fixture &fixture, QcBlockLightEngine &engine)
+{
+    QRandomGenerator &random = fixture.random;
+    const auto coordinate = [&random] {
+        const int chunk = first + int(random.bounded(quint32(span)));
+        const quint32 roll = random.bounded(4u);
+        const int local = roll == 0 ? 0 : (roll == 1 ? 15 : int(random.bounded(16u)));
+        return chunk * 16 + local;
+    };
+    const quint32 band = random.bounded(4u);
+    const int y = band == 0 ? int(random.bounded(18u)) : (band == 1 ? 238 + int(random.bounded(18u)) : 60 + int(random.bounded(10u)));
+    const QcBlockPos pos{coordinate(), y, coordinate()};
+
+    auto changed = std::make_shared<QcChunk>(*fixture.chunks.value(pos.chunk()));
+    changed->setBlock(pos.localX(), pos.y, pos.localZ(), fixture.randomBlock());
+    fixture.chunks.insert(pos.chunk(), changed);
+    engine.changeBlock(pos, changed);
+    return engine.takeChanges();
+}
+
+QSet<quint64> remeshedSections(const QcBlockLightEngine::Changes &changes)
+{
+    QSet<quint64> remesh;
+    for (const QcBlockLightEngine::SectionRef &ref : changes.remesh) {
+        remesh.insert(qcSectionKey(ref.chunk, ref.section));
+    }
+    return remesh;
+}
+
+// The first block around `cell` (itself included) inside the world whose section is not remeshed.
+QString unmeshedReader(QcBlockPos cell, const QSet<quint64> &remesh)
+{
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                const QcBlockPos reader = cell.offset(dx, dy, dz);
+                if (reader.isInsideWorldHeight() && !remesh.contains(qcSectionKey(reader.chunk(), reader.y / 16))) {
+                    return u"cell %1 %2 %3 changed, section of %4 %5 %6 not remeshed"_s.arg(cell.x).arg(cell.y).arg(cell.z).arg(reader.x).arg(reader.y).arg(reader.z);
+                }
+            }
+        }
+    }
+    return {};
+}
+
+// Counts the cells of `chunk` whose light differs between `was` and `now` into `lightChanges` and
+// returns the first one read by a section that is not remeshed.
+QString unmeshedLightChange(QcChunkPos chunk, const QcChunkLight &now, const QcChunkLight &was, const QSet<quint64> &remesh, int &lightChanges)
+{
+    for (int section = 0; section < QcWorld::sectionCount; ++section) {
+        if (now.sections[std::size_t(section)] == was.sections[std::size_t(section)]) {
+            continue;
+        }
+        for (int ly = 0; ly < 16; ++ly) {
+            for (int lz = 0; lz < 16; ++lz) {
+                for (int lx = 0; lx < 16; ++lx) {
+                    const int cellY = section * 16 + ly;
+                    if (now.level(lx, cellY, lz) == was.level(lx, cellY, lz)) {
+                        continue;
+                    }
+
+                    ++lightChanges;
+                    const QString problem = unmeshedReader({chunk.x * 16 + lx, cellY, chunk.z * 16 + lz}, remesh);
+                    if (!problem.isEmpty()) {
+                        return problem;
+                    }
+                }
+            }
+        }
+    }
+    return {};
+}
+
+// Unloads a random chunk and loads it again; returns the first difference to the flood fill while it
+// is away.
+QString reloadRandomChunk(Fixture &fixture, QcBlockLightEngine &engine)
+{
+    QRandomGenerator &random = fixture.random;
+    const QcChunkPos away{first + int(random.bounded(quint32(span))), first + int(random.bounded(quint32(span)))};
+    engine.removeChunk(away);
+    fixture.loaded.remove(away);
+    engine.takeChanges();
+    QString problem = fixture.difference(engine);
+    if (!problem.isEmpty()) {
+        return problem;
+    }
+
+    engine.addChunk(fixture.chunks.value(away));
+    fixture.loaded.insert(away);
+    engine.takeChanges();
+    return {};
+}
+
 } // namespace
 
 class TestBlockLightEngine : public QObject
@@ -177,6 +272,7 @@ private slots:
             fixture.loaded.insert(it.key());
         }
         engine.takeChanges();
+
         QHash<QcChunkPos, QcChunkLight> before;
         const auto remember = [&] {
             for (const QcChunkPos &pos : std::as_const(fixture.loaded)) {
@@ -184,73 +280,24 @@ private slots:
             }
         };
         remember();
+
         int lightChanges = 0;
         for (int edit = 1; edit <= 400; ++edit) {
-            QRandomGenerator &random = fixture.random;
-            // Mostly on chunk borders and in the bottom and top sections of the world.
-            const auto coordinate = [&random] {
-                const int chunk = first + int(random.bounded(quint32(span)));
-                const quint32 roll = random.bounded(4u);
-                const int local = roll == 0 ? 0 : (roll == 1 ? 15 : int(random.bounded(16u)));
-                return chunk * 16 + local;
-            };
-            const quint32 band = random.bounded(4u);
-            const int y = band == 0 ? int(random.bounded(18u)) : (band == 1 ? 238 + int(random.bounded(18u)) : 60 + int(random.bounded(10u)));
-            const QcBlockPos pos{coordinate(), y, coordinate()};
-            auto changed = std::make_shared<QcChunk>(*fixture.chunks.value(pos.chunk()));
-            changed->setBlock(pos.localX(), pos.y, pos.localZ(), fixture.randomBlock());
-            fixture.chunks.insert(pos.chunk(), changed);
-            engine.changeBlock(pos, changed);
-            const QcBlockLightEngine::Changes changes = engine.takeChanges();
+            const QcBlockLightEngine::Changes changes = editRandomBlock(fixture, engine);
             // Every changed cell is read by the sections the scheduler meshes again: its own and,
             // for border cells, the neighbouring ones.
-            QSet<quint64> remesh;
-            for (const QcBlockLightEngine::SectionRef &ref : changes.remesh) {
-                remesh.insert(qcSectionKey(ref.chunk, ref.section));
-            }
+            const QSet<quint64> remesh = remeshedSections(changes);
             for (const QcChunkPos &chunk : std::as_const(fixture.loaded)) {
                 const QcChunkLight now = engine.snapshot(chunk);
                 const QcChunkLight &was = before[chunk];
-                for (int section = 0; section < QcWorld::sectionCount; ++section) {
-                    if (now.sections[std::size_t(section)] == was.sections[std::size_t(section)]) {
-                        continue;
-                    }
-                    for (int ly = 0; ly < 16; ++ly) {
-                        for (int lz = 0; lz < 16; ++lz) {
-                            for (int lx = 0; lx < 16; ++lx) {
-                                const int cellY = section * 16 + ly;
-                                if (now.level(lx, cellY, lz) == was.level(lx, cellY, lz)) {
-                                    continue;
-                                }
-                                ++lightChanges;
-                                for (int dx = -1; dx <= 1; ++dx) {
-                                    for (int dz = -1; dz <= 1; ++dz) {
-                                        for (int dy = -1; dy <= 1; ++dy) {
-                                            const QcBlockPos reader = QcBlockPos{chunk.x * 16 + lx + dx, cellY + dy, chunk.z * 16 + lz + dz};
-                                            if (reader.isInsideWorldHeight()) {
-                                                QVERIFY2(remesh.contains(qcSectionKey(reader.chunk(), reader.y / 16)),
-                                                         qPrintable(u"cell %1 %2 %3 changed, section of %4 %5 %6 not remeshed"_s.arg(chunk.x * 16 + lx)
-                                                                        .arg(cellY).arg(chunk.z * 16 + lz).arg(reader.x).arg(reader.y).arg(reader.z)));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                const QString unmeshed = unmeshedLightChange(chunk, now, was, remesh, lightChanges);
+                QVERIFY2(unmeshed.isEmpty(), qPrintable(unmeshed));
             }
+
             if (edit % 50 == 25) {
                 // Now and then a chunk goes away and comes back.
-                const QcChunkPos away{first + int(random.bounded(quint32(span))), first + int(random.bounded(quint32(span)))};
-                engine.removeChunk(away);
-                fixture.loaded.remove(away);
-                engine.takeChanges();
-                const QString problem = fixture.difference(engine);
+                const QString problem = reloadRandomChunk(fixture, engine);
                 QVERIFY2(problem.isEmpty(), qPrintable(u"after unloading: "_s + problem));
-                engine.addChunk(fixture.chunks.value(away));
-                fixture.loaded.insert(away);
-                engine.takeChanges();
             }
             remember();
             if (edit % 40 == 0) {
@@ -258,6 +305,7 @@ private slots:
                 QVERIFY2(problem.isEmpty(), qPrintable(u"after %1 edits: "_s.arg(edit) + problem));
             }
         }
+
         // The edits really moved light around.
         QVERIFY2(lightChanges > 1000, qPrintable(QString::number(lightChanges)));
     }

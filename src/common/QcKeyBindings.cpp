@@ -121,10 +121,12 @@ QcKeyBindings QcKeyBindings::defaults(Platform platform)
 {
     QcKeyBindings bindings;
     bindings.m_platform = platform;
+
     for (const ActionRow &row : actionRows) {
         bindings.set(row.action, 0, row.primary);
         bindings.set(row.action, 1, row.secondary);
     }
+
     if (platform == Platform::Mac) {
         bindings.set(A::Sprint, 0, macSprint);
     }
@@ -182,14 +184,17 @@ QString QcKeyBindings::keyName(int key)
     if (key <= 0) {
         return {};
     }
+
     for (const NamedKey &named : namedKeys) {
         if (named.key == key) {
             return named.name.toString();
         }
     }
+
     if (isFunctionKey(key)) {
         return u"F%1"_s.arg(key - Qt::Key_F1 + 1);
     }
+
     if (key < firstSpecialKey) {
         const char32_t code = char32_t(key);
         const QString text = QString::fromUcs4(&code, 1);
@@ -207,11 +212,13 @@ std::optional<int> QcKeyBindings::keyFromName(const QString &name)
     if (name.isEmpty()) {
         return 0;
     }
+
     for (const NamedKey &named : namedKeys) {
         if (named.name == name) {
             return named.key;
         }
     }
+
     if (name.size() >= 2 && name.size() <= 3 && name.startsWith(u'F')) {
         bool ok = false;
         const int number = QStringView(name).mid(1).toInt(&ok);
@@ -220,11 +227,13 @@ std::optional<int> QcKeyBindings::keyFromName(const QString &name)
         }
         return std::nullopt;
     }
+
     const QString upper = name.toUpper();
     const QList<uint> codes = (upper.size() == name.size() ? upper : name).toUcs4();
     if (codes.size() != 1) {
         return std::nullopt;
     }
+
     const int key = int(codes.first());
     if (key >= firstSpecialKey || keyName(key).isEmpty()) {
         return std::nullopt;
@@ -279,24 +288,26 @@ std::optional<QcKeyBindings::Displaced> QcKeyBindings::bind(Action action, int s
     if (isFixed(action) || slot < 0 || slot >= slotCount || (key != 0 && !isBindable(key, m_platform))) {
         return std::nullopt;
     }
+
     const int previous = this->key(action, slot);
     if (previous == key) {
         return std::nullopt;
     }
+
     std::optional<Displaced> displaced;
-    if (key != 0) {
-        for (const ActionRow &row : actionRows) {
-            for (int other = 0; other < slotCount; ++other) {
-                if ((row.action == action && other == slot) || this->key(row.action, other) != key) {
-                    continue;
-                }
-                // The other slot takes this slot's old key; another action that has it already gets none.
-                const int replacement = row.action != action && matches(row.action, previous) ? 0 : previous;
-                set(row.action, other, replacement);
-                displaced = Displaced{row.action, other, replacement};
+    // Unbinding (key 0) displaces nothing.
+    for (const ActionRow &row : actionRows) {
+        for (int other = 0; other < slotCount; ++other) {
+            if (key == 0 || (row.action == action && other == slot) || this->key(row.action, other) != key) {
+                continue;
             }
+            // The other slot takes this slot's old key; another action that has it already gets none.
+            const int replacement = row.action != action && matches(row.action, previous) ? 0 : previous;
+            set(row.action, other, replacement);
+            displaced = Displaced{row.action, other, replacement};
         }
     }
+
     set(action, slot, key);
     return displaced;
 }
@@ -318,6 +329,7 @@ QList<std::pair<QcKeyBindings::Action, int>> QcKeyBindings::conflicts() const
             if (key == 0) {
                 continue;
             }
+
             if (seen.contains(key)) {
                 list.append({row.action, slot});
             }
@@ -344,9 +356,11 @@ QMap<QString, QStringList> QcKeyBindings::placeholderKeys() const
         for (const int key : bound) {
             names.append(m_platform == Platform::Mac ? macName(key) : keyName(key));
         }
+
         values.insert(u"key."_s + row.id, names);
         values.insert(u"key1."_s + row.id, names.mid(0, 1));
     }
+
     // The modifier of the drop key for the whole stack.
     values.insert(u"key.stackModifier"_s, QStringList{m_platform == Platform::Mac ? macName(Qt::Key_Meta) : keyName(Qt::Key_Control)});
     return values;

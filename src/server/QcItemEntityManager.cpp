@@ -37,6 +37,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     if (drop.stack.isEmpty() || !m_content->isValidItem(drop.stack.item)) {
         return 0;
     }
+
     // More than a stack (e.g. a generous block drop) becomes several items; the rest waits a tick.
     const int maxStack = m_content->item(drop.stack.item).maxStack;
     if (drop.stack.count > maxStack) {
@@ -44,6 +45,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
         rest.stack.count = drop.stack.count - maxStack;
         Drop first = drop;
         first.stack.count = maxStack;
+
         while (rest.stack.count > 0) {
             Drop part = rest;
             part.stack.count = std::min(rest.stack.count, maxStack);
@@ -52,10 +54,12 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
         }
         return spawn(first, id);
     }
+
     if (m_activeCount >= activeLimit) {
         enqueue(drop);
         return 0;
     }
+
     Item item;
     item.id = id;
     item.stack = drop.stack;
@@ -72,6 +76,7 @@ quint32 QcItemEntityManager::spawnScattered(QcItemStack stack, const QcVec3 &pos
 {
     const double angle = m_random.bounded(2.0 * M_PI);
     const double speed = 0.5 + m_random.bounded(1.0);
+
     Drop drop;
     drop.stack = stack;
     drop.position = position - QcVec3{0.0, itemSize * 0.5, 0.0};
@@ -91,11 +96,13 @@ void QcItemEntityManager::enqueue(const Drop &drop)
             return;
         }
     }
+
     if (m_queue.size() >= queueLimit) {
         m_discarded += m_queue.first().stack.count;
         qCWarning(lcItems) << "Too many dropped items; discarding the oldest waiting drop";
         m_queue.removeFirst();
     }
+
     m_queue.append(drop);
 }
 
@@ -105,8 +112,10 @@ void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt
     if (item.resting && QcPhysics::isSolidAt(world, below)) {
         return;
     }
+
     item.resting = false;
     item.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(item.motion.position + QcVec3{0.0, 0.1, 0.0}));
+
     // Items float up in water and stop on the ground. In the air they keep most of their speed:
     // steering towards a slightly slower velocity in the flight direction makes stepEntity's air
     // control act as weak drag (about two percent per tick) instead of the strong player control.
@@ -118,7 +127,10 @@ void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt
         wish = {item.motion.velocity.x / horizontal, 0.0, item.motion.velocity.z / horizontal};
         speed = horizontal * std::max(0.0, 1.0 - airDrag / blend);
     }
-    QcPhysics::stepEntity(item.motion, wish, speed, item.motion.inWater, itemSize, itemSize, world, dt);
+
+    QcPhysics::stepEntity(item.motion, QcPhysics::Steering{wish, speed, item.motion.inWater, false}, QcPhysics::BodySize{itemSize, itemSize},
+                          world, dt);
+
     item.resting = item.motion.onGround && !item.motion.inWater && item.motion.velocity.length() < restSpeed;
 }
 
@@ -131,11 +143,13 @@ void QcItemEntityManager::merge(const QList<bool> &active)
             awake.append(i);
         }
     }
+
     for (qsizetype a = 0; a < awake.size(); ++a) {
         Item &target = m_items[awake[a]];
         if (target.stack.isEmpty() || target.stack.damage != 0) {
             continue;
         }
+
         const int maxStack = m_content->item(target.stack.item).maxStack;
         for (qsizetype b = a + 1; b < awake.size() && target.stack.count < maxStack; ++b) {
             Item &other = m_items[awake[b]];
@@ -143,9 +157,11 @@ void QcItemEntityManager::merge(const QList<bool> &active)
                 || (other.motion.position - target.motion.position).length() > mergeRadius) {
                 continue;
             }
+
             const int moved = std::min(other.stack.count, maxStack - target.stack.count);
             target.stack.count += moved;
             other.stack.count -= moved;
+
             // The merged stack keeps the younger age so it does not vanish right after a fresh drop.
             target.age = std::min(target.age, other.age);
             target.pickupDelay = std::max(target.pickupDelay, other.pickupDelay);
@@ -153,76 +169,105 @@ void QcItemEntityManager::merge(const QList<bool> &active)
     }
 }
 
-QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt,
-                                                           const LoadedFunction &isLoaded, const GiveFunction &give,
-                                                           const std::function<quint32()> &nextEntityId)
+void QcItemEntityManager::pickUp(Item &item, const QList<PlayerView> &players, const GiveFunction &give)
 {
-    ++m_ticks;
+    const QcAabb box = itemBox(item.motion.position);
+    for (const PlayerView &player : players) {
+        if (!player.alive || item.stack.isEmpty()) {
+            continue;
+        }
+
+        QcAabb reach = QcPhysics::boxAt(player.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
+        reach.min = reach.min - QcVec3{pickupReach, pickupReach, pickupReach};
+        reach.max += QcVec3{pickupReach, pickupReach, pickupReach};
+
+        if (reach.intersects(box)) {
+            item.stack.count = std::clamp(give(player.entityId, item.stack), 0, item.stack.count);
+        }
+    }
+}
+
+QList<QcItemEntityManager::Item> QcItemEntityManager::removeFinished(const QList<bool> &awake)
+{
     QList<Item> despawned;
-    QList<bool> loaded(m_items.size());
-    for (qsizetype i = 0; i < m_items.size(); ++i) {
-        loaded[i] = isLoaded(m_items[i].motion.position);
-    }
-    balanceDormancy(loaded);
-    QList<bool> awake(m_items.size());
-    for (qsizetype i = 0; i < m_items.size(); ++i) {
-        awake[i] = loaded[i] && !m_items[i].dormant;
-    }
-    for (qsizetype i = 0; i < m_items.size(); ++i) {
-        if (!awake[i]) {
-            continue;
-        }
-        Item &item = m_items[i];
-        step(item, world, dt);
-        item.age += dt;
-        item.pickupDelay = std::max(0.0, item.pickupDelay - dt);
-        if (item.pickupDelay > 0.0) {
-            continue;
-        }
-        const QcAabb box = itemBox(item.motion.position);
-        for (const PlayerView &player : players) {
-            if (!player.alive || item.stack.isEmpty()) {
-                continue;
-            }
-            QcAabb reach = QcPhysics::boxAt(player.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
-            reach.min = reach.min - QcVec3{pickupReach, pickupReach, pickupReach};
-            reach.max += QcVec3{pickupReach, pickupReach, pickupReach};
-            if (reach.intersects(box)) {
-                item.stack.count = std::clamp(give(player.entityId, item.stack), 0, item.stack.count);
-            }
-        }
-    }
-    if (m_ticks % mergeIntervalTicks == 0) {
-        merge(awake);
-    }
-    // Remove picked-up, merged and expired items.
     int awakeCount = 0;
     QList<Item> kept;
     kept.reserve(m_items.size());
+
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         const Item &item = m_items[i];
         if (item.stack.isEmpty()) {
             continue;
         }
+
         if (awake[i] && item.age >= despawnSeconds) {
             despawned.append(item);
             continue;
         }
+
         awakeCount += awake[i] ? 1 : 0;
         kept.append(item);
     }
+
     m_items = std::move(kept);
     m_activeCount = awakeCount;
+    return despawned;
+}
+
+void QcItemEntityManager::spawnQueued(const TickCallbacks &callbacks)
+{
     // Waiting drops appear as soon as there is room again, but only where a player is near.
     for (qsizetype i = 0; i < m_queue.size() && m_activeCount < activeLimit;) {
-        if (!isLoaded(m_queue[i].position)) {
+        if (!callbacks.isLoaded(m_queue[i].position)) {
             ++i;
             continue;
         }
+
         const Drop drop = m_queue.takeAt(i);
-        spawn(drop, nextEntityId());
+        spawn(drop, callbacks.nextEntityId());
     }
-    enforceTotalLimit(isLoaded);
+}
+
+QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt,
+                                                           const TickCallbacks &callbacks)
+{
+    ++m_ticks;
+
+    QList<bool> loaded(m_items.size());
+    for (qsizetype i = 0; i < m_items.size(); ++i) {
+        loaded[i] = callbacks.isLoaded(m_items[i].motion.position);
+    }
+
+    balanceDormancy(loaded);
+
+    QList<bool> awake(m_items.size());
+    for (qsizetype i = 0; i < m_items.size(); ++i) {
+        awake[i] = loaded[i] && !m_items[i].dormant;
+    }
+
+    for (qsizetype i = 0; i < m_items.size(); ++i) {
+        if (!awake[i]) {
+            continue;
+        }
+
+        Item &item = m_items[i];
+        step(item, world, dt);
+        item.age += dt;
+        item.pickupDelay = std::max(0.0, item.pickupDelay - dt);
+
+        if (item.pickupDelay <= 0.0) {
+            pickUp(item, players, callbacks.give);
+        }
+    }
+
+    if (m_ticks % mergeIntervalTicks == 0) {
+        merge(awake);
+    }
+
+    // Remove picked-up, merged and expired items.
+    QList<Item> despawned = removeFinished(awake);
+    spawnQueued(callbacks);
+    enforceTotalLimit(callbacks.isLoaded);
     return despawned;
 }
 
@@ -238,12 +283,14 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
             (m_items[i].dormant ? sleeping : awake).append(i);
         }
     }
+
     // Fresh drops (just mined or thrown) are the last to fall asleep, then the youngest go first.
     const auto sleepOrder = [this](qsizetype index) {
         const double age = m_items[index].age;
         return age < freshSeconds ? std::numeric_limits<double>::max() - age : age;
     };
     const auto byAge = [&sleepOrder](qsizetype a, qsizetype b) { return sleepOrder(a) < sleepOrder(b); };
+
     if (awake.size() > activeLimit) {
         std::ranges::sort(awake, byAge);
         for (qsizetype i = 0; i < awake.size() - activeLimit; ++i) {
@@ -262,6 +309,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
     if (m_items.size() <= totalLimit) {
         return;
     }
+
     // Forget the oldest items in unloaded chunks first; nobody is near them.
     qsizetype excess = m_items.size() - totalLimit;
     QList<qsizetype> candidates;
@@ -270,6 +318,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
             candidates.append(i);
         }
     }
+
     std::ranges::sort(candidates, [this](qsizetype a, qsizetype b) { return m_items[a].age > m_items[b].age; });
     QList<bool> remove(m_items.size(), false);
     for (qsizetype i = 0; i < candidates.size() && excess > 0; ++i, --excess) {
@@ -281,6 +330,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
             --excess;
         }
     }
+
     QList<Item> kept;
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         if (remove[i]) {
@@ -289,6 +339,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
             kept.append(m_items[i]);
         }
     }
+
     qCWarning(lcItems) << "Too many dropped items in the world; discarded" << (m_items.size() - kept.size()) << "of them";
     m_items = std::move(kept);
 }
@@ -303,15 +354,18 @@ void QcItemEntityManager::clear()
 void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId)
 {
     clear();
+
     for (const Drop &drop : drops) {
         if (drop.stack.isEmpty() || !m_content->isValidItem(drop.stack.item)) {
             continue;
         }
+
         // Beyond the total limit drops wait in the (bounded) queue, as before saving.
         if (m_items.size() >= totalLimit) {
             enqueue(drop);
             continue;
         }
+
         Item item;
         item.id = nextEntityId();
         item.stack = drop.stack;
@@ -321,6 +375,7 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
         item.age = drop.age;
         m_items.append(item);
     }
+
     // Recounted on the first tick, when it is known which chunks are loaded.
     m_activeCount = 0;
 }

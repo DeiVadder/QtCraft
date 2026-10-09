@@ -25,39 +25,50 @@ namespace {
 
 constexpr qint64 maxSettingsBytes = qint64(64) * 1024;
 
-// Names a definition refers to that no pack provides; such entries stay inert (a recipe never
-// matches, a drop is not given) but deserve a warning for the mod author.
-void checkReferences(const QcContentRegistry &content, QStringList &warnings)
+// An item name, or "#tag" carried by at least one item.
+bool knowsItem(const QcContentRegistry &content, const QString &name)
 {
-    // An item name, or "#tag" carried by at least one item.
-    const auto item = [&content](const QString &name) {
-        if (name.startsWith(u'#')) {
-            return std::ranges::any_of(content.items(), [tag = name.mid(1)](const QcItemDefinition &definition) {
-                return definition.tags.contains(tag);
-            });
-        }
-        return content.itemId(name).has_value();
-    };
-    const auto texture = [&content](const QString &name) { return name.isEmpty() || content.texture(name) != nullptr; };
-    const auto sound = [&content](const QString &name) { return name.isEmpty() || content.sound(name) != nullptr; };
+    if (name.startsWith(u'#')) {
+        return std::ranges::any_of(content.items(), [tag = name.mid(1)](const QcItemDefinition &definition) {
+            return definition.tags.contains(tag);
+        });
+    }
+    return content.itemId(name).has_value();
+}
+
+bool knowsTexture(const QcContentRegistry &content, const QString &name)
+{
+    return name.isEmpty() || content.texture(name) != nullptr;
+}
+
+bool knowsSound(const QcContentRegistry &content, const QString &name)
+{
+    return name.isEmpty() || content.sound(name) != nullptr;
+}
+
+void checkRecipeReferences(const QcContentRegistry &content, QStringList &warnings)
+{
     for (const QcRecipeDefinition &recipe : content.recipes()) {
         QStringList names = recipe.ingredients;
         for (const auto &[key, name] : recipe.keys) {
             names.append(name);
         }
         names.append(recipe.resultItem);
+
         for (const QString &name : std::as_const(names)) {
-            if (!item(name)) {
+            if (!knowsItem(content, name)) {
                 warnings.append(u"recipe %1: unknown item '%2'"_s.arg(recipe.name, name));
             }
         }
     }
+
     for (const QcSmeltingRecipe &recipe : content.smeltingRecipes()) {
         for (const QString &name : {recipe.inputItem, recipe.resultItem}) {
-            if (!item(name)) {
+            if (!knowsItem(content, name)) {
                 warnings.append(u"smelting recipe %1: unknown item '%2'"_s.arg(recipe.name, name));
             }
         }
+
         // Only the first recipe per category and input counts; a later one is never used.
         const QcSmeltingRecipe *used = content.smeltingRecipe(recipe.category, recipe.inputItem);
         if (used && used->name != recipe.name) {
@@ -65,56 +76,83 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
                 recipe.name, used->name, recipe.inputItem, recipe.category));
         }
     }
-    for (const QcMobDefinition &mob : content.mobs()) {
-        for (const QcItemDrop &drop : mob.drops) {
-            if (!item(drop.item)) {
-                warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.item));
-            }
-        }
-        for (const QcMobPart &part : mob.parts) {
-            if (!texture(part.texture)) {
-                warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));
-            }
-        }
-        if (!mob.skeleton.isEmpty() && !content.model(mob.skeleton)) {
-            warnings.append(u"mob %1: unknown skeleton '%2'"_s.arg(mob.name, mob.skeleton));
-        }
-        const QcAppearanceDefinition *outfit = mob.outfit.isEmpty() ? nullptr : content.appearance(mob.outfit);
-        if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
-            warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
-        }
-        for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
-            if (!sound(name)) {
-                warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
-            }
+}
+
+void checkMobReferences(const QcContentRegistry &content, const QcMobDefinition &mob, QStringList &warnings)
+{
+    for (const QcItemDrop &drop : mob.drops) {
+        if (!knowsItem(content, drop.item)) {
+            warnings.append(u"mob %1: unknown drop '%2'"_s.arg(mob.name, drop.item));
         }
     }
+
+    for (const QcMobPart &part : mob.parts) {
+        if (!knowsTexture(content, part.texture)) {
+            warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));
+        }
+    }
+
+    if (!mob.skeleton.isEmpty() && !content.model(mob.skeleton)) {
+        warnings.append(u"mob %1: unknown skeleton '%2'"_s.arg(mob.name, mob.skeleton));
+    }
+
+    const QcAppearanceDefinition *outfit = mob.outfit.isEmpty() ? nullptr : content.appearance(mob.outfit);
+    if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
+        warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
+    }
+
+    for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
+        if (!knowsSound(content, name)) {
+            warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
+        }
+    }
+}
+
+void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinition &block, QStringList &warnings)
+{
+    for (const QcItemDrop &drop : block.drops) {
+        if (!knowsItem(content, drop.item)) {
+            warnings.append(u"block %1: unknown drop '%2'"_s.arg(block.name, drop.item));
+        }
+    }
+
+    // Silent at run time; the author should know.
+    for (int action = 0; action < qcBlockSoundActionCount; ++action) {
+        const QString name = QcSoundKeys::blockSound(block, QcBlockSoundAction(action));
+        if (!knowsSound(content, name)) {
+            warnings.append(u"block %1: unknown sound '%2'"_s.arg(block.name, name));
+        }
+    }
+
+    if (!knowsSound(content, block.machine.sound)) {
+        warnings.append(u"block %1: unknown machine sound '%2'"_s.arg(block.name, block.machine.sound));
+    }
+}
+
+// Names a definition refers to that no pack provides; such entries stay inert (a recipe never
+// matches, a drop is not given) but deserve a warning for the mod author.
+void checkReferences(const QcContentRegistry &content, QStringList &warnings)
+{
+    checkRecipeReferences(content, warnings);
+
+    for (const QcMobDefinition &mob : content.mobs()) {
+        checkMobReferences(content, mob, warnings);
+    }
+
     for (const QcAppearanceDefinition &appearance : content.appearances()) {
         for (const QcAppearanceLayer &layer : appearance.layers) {
-            if (!texture(layer.texture)) {
+            if (!knowsTexture(content, layer.texture)) {
                 warnings.append(u"appearance %1: unknown texture '%2'"_s.arg(appearance.name, layer.texture));
             }
         }
     }
+
     for (const QcBlockDefinition &block : content.blocks()) {
-        for (const QcItemDrop &drop : block.drops) {
-            if (!item(drop.item)) {
-                warnings.append(u"block %1: unknown drop '%2'"_s.arg(block.name, drop.item));
-            }
-        }
-        // Silent at run time; the author should know.
-        for (int action = 0; action < qcBlockSoundActionCount; ++action) {
-            const QString name = QcSoundKeys::blockSound(block, QcBlockSoundAction(action));
-            if (!sound(name)) {
-                warnings.append(u"block %1: unknown sound '%2'"_s.arg(block.name, name));
-            }
-        }
-        if (!sound(block.machine.sound)) {
-            warnings.append(u"block %1: unknown machine sound '%2'"_s.arg(block.name, block.machine.sound));
-        }
+        checkBlockReferences(content, block, warnings);
     }
+
     for (const QcItemDefinition &definition : content.items()) {
-        if (!texture(definition.texture)) {
+        if (!knowsTexture(content, definition.texture)) {
             warnings.append(u"item %1: unknown texture '%2'"_s.arg(definition.name, definition.texture));
         }
         if (!definition.placesBlock.isEmpty() && !content.blockId(definition.placesBlock)) {
@@ -145,6 +183,7 @@ QString worldgenProblem(const QcContentRegistry &content)
     if (content.ores().size() > maxOres || oreBlocks > maxOreBlocksPerChunk) {
         return u"too many ores (at most %1 definitions and %2 ore blocks per chunk)"_s.arg(maxOres).arg(maxOreBlocksPerChunk);
     }
+
     qsizetype placements = 0;
     for (const QcBiomeDefinition &biome : content.biomes()) {
         placements += biome.features.size();
@@ -154,6 +193,7 @@ QString worldgenProblem(const QcContentRegistry &content)
             .arg(maxFeatures)
             .arg(maxPlacements);
     }
+
     qint64 poolAttempts = 0;
     for (const QcFeatureDefinition &feature : content.features()) {
         poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? feature.attempts : 0;
@@ -161,6 +201,7 @@ QString worldgenProblem(const QcContentRegistry &content)
     if (poolAttempts > maxPoolAttemptsPerChunk) {
         return u"too many pools (at most %1 pool attempts per chunk)"_s.arg(maxPoolAttemptsPerChunk);
     }
+
     return {};
 }
 
@@ -185,6 +226,7 @@ QString countProblem(const QcContentRegistry &content)
         || content.packs().size() > 1024) {
         return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);
     }
+
     const QStringList languages = content.languages();
     for (const QString &language : languages) {
         if (tooMany(content.translationCount(language))) {
@@ -202,11 +244,220 @@ QString clientProblem(const QcContentRegistry &content, QByteArray &buffer)
     if (encodedSize(content, buffer) > contentSyncBudget) {
         return u"the content of all packs together exceeds %1 MiB"_s.arg(QcProtocol::maxFrameBytes / (1024 * 1024));
     }
+
     QDataStream stream(buffer);
     if (const QcResult<QcContentRegistry> decoded = QcContentRegistry::readFrom(stream); !decoded) {
         return u"clients would reject the content (%1)"_s.arg(decoded.error());
     }
     return {};
+}
+
+// Bookkeeping of QcModLoader::resolve().
+struct ResolveState
+{
+    QHash<QString, QVersionNumber> loaded;
+    QList<QcModStatus> ordered;
+    QList<QcModStatus> others;
+    QHash<QString, QString> notLoadedBecause;
+    QHash<QString, QcModStatus> pending;
+};
+
+// Duplicates, the base game's id and disabled mods go to `others`, the rest waits in `pending`.
+void sortCandidates(const QList<QcContentPackInfo> &candidates, const QStringList &disabled, ResolveState &state)
+{
+    for (const QcContentPackInfo &candidate : candidates) {
+        QcModStatus status;
+        status.info = candidate;
+        if (state.loaded.contains(candidate.id)) {
+            status.reason = u"the id '%1' belongs to the base game"_s.arg(candidate.id);
+        } else if (state.pending.contains(candidate.id) || state.notLoadedBecause.contains(candidate.id)) {
+            status.reason = u"another mod already uses the id '%1'"_s.arg(candidate.id);
+        } else if (disabled.contains(candidate.id)) {
+            status.state = QcModStatus::State::Disabled;
+            state.notLoadedBecause.insert(candidate.id, u"is disabled"_s);
+            state.others.append(status);
+            continue;
+        } else {
+            state.pending.insert(candidate.id, status);
+            continue;
+        }
+        // A duplicate fails on its own; the first mod with that id keeps its chance.
+        state.others.append(status);
+    }
+}
+
+void failPending(ResolveState &state, const QString &id, const QString &reason)
+{
+    QcModStatus status = state.pending.take(id);
+    status.reason = reason;
+    state.notLoadedBecause.insert(id, u"failed"_s);
+    state.others.append(status);
+}
+
+// Why `dependency` keeps `info` from loading; empty when it is loaded in a sufficient version or
+// still pending (then `waiting` is set).
+QString dependencyProblem(const QcContentPackInfo &info, const QString &dependency, const ResolveState &state,
+                          bool &waiting)
+{
+    if (state.loaded.contains(dependency)) {
+        const QVersionNumber minimum = info.minimumVersions.value(dependency);
+        const QVersionNumber found = state.loaded.value(dependency);
+        if (!minimum.isNull() && found < minimum) {
+            return u"needs '%1' %2 or newer, found %3"_s.arg(dependency, minimum.toString(), found.toString());
+        }
+    } else if (state.notLoadedBecause.contains(dependency)) {
+        return u"depends on '%1', which %2"_s.arg(dependency, state.notLoadedBecause.value(dependency));
+    } else if (!state.pending.contains(dependency)) {
+        return u"missing dependency '%1'"_s.arg(dependency);
+    } else {
+        waiting = true;
+    }
+    return {};
+}
+
+// Loads or fails the first pending mod (by id) that can be decided; false when all of them wait.
+bool decideNextPending(ResolveState &state)
+{
+    QStringList ids = state.pending.keys();
+    ids.sort();
+
+    for (const QString &id : std::as_const(ids)) {
+        const QcContentPackInfo &info = state.pending[id].info;
+        QString problem;
+        bool waiting = false;
+        for (const QString &dependency : info.dependencies) {
+            problem = dependencyProblem(info, dependency, state, waiting);
+            if (!problem.isEmpty()) {
+                break;
+            }
+        }
+
+        if (!problem.isEmpty()) {
+            failPending(state, id, problem);
+            return true;
+        }
+
+        if (!waiting) {
+            QcModStatus status = state.pending.take(id);
+            status.state = QcModStatus::State::Loaded;
+            state.loaded.insert(id, QcContentPackLoader::parseVersion(status.info.version));
+            state.ordered.append(status);
+            return true;
+        }
+    }
+    return false;
+}
+
+// What a mod being loaded may still use and what earlier attempts left behind.
+struct ModLoadState
+{
+    // Warnings of the base game alone; a mod reports only the ones it adds.
+    QStringList baseWarnings;
+    QSet<QString> refused;
+    qint64 readBytes = 0;
+    int attempts = 0;
+    QByteArray buffer;
+};
+
+// Server and client limits for the finished registry of a candidate; empty when it fits.
+QString finishedContentProblem(const QcContentRegistry &finished, QByteArray &buffer)
+{
+    QString problem = worldgenProblem(finished);
+    if (problem.isEmpty()) {
+        problem = countProblem(finished);
+    }
+    if (problem.isEmpty() && encodedSize(finished, buffer) > contentSyncBudget) {
+        problem = u"the content of all packs together exceeds %1 MiB"_s.arg(QcProtocol::maxFrameBytes / (1024 * 1024));
+    }
+    return problem;
+}
+
+// Loads `mod` on top of `accepted` and checks it exactly as it would reach clients (with the items
+// created for its blocks). Returns why the mod is refused; `accepted` is only changed on success.
+QString admitMod(QcModStatus &mod, QcContentRegistry &accepted, ModLoadState &state)
+{
+    const auto failedDependency = std::ranges::find_if(mod.info.dependencies, [&state](const QString &id) {
+        return state.refused.contains(id);
+    });
+    if (failedDependency != mod.info.dependencies.end()) {
+        return u"depends on '%1', which failed"_s.arg(*failedDependency);
+    }
+
+    // Every mod that gets this far costs a load and a full check, accepted or not.
+    if (state.attempts >= QcModLoader::maxLoadedMods) {
+        return u"at most %1 mods are loaded"_s.arg(QcModLoader::maxLoadedMods);
+    }
+
+    ++state.attempts;
+
+    // Bytes on disk (hard links count each time) are checked before anything is read; every
+    // attempt counts, also for mods that are refused afterwards.
+    const qint64 size = QcContentPackLoader::measure(mod.info.directory);
+    if (state.readBytes + size > totalReadBudget || size > contentSyncBudget) {
+        return u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - state.readBytes) / (qint64(1024) * 1024));
+    }
+
+    state.readBytes += size;
+
+    QcContentRegistry candidate = accepted;
+    const QcResult<QcContentPackInfo> info = QcContentPackLoader::load(mod.info.directory, candidate, mod.warnings);
+    if (!info) {
+        return info.error();
+    }
+
+    candidate.addPack({info->id, info->name, info->version});
+
+    QcContentRegistry finished = candidate;
+    const QStringList partWarnings = finished.finish();
+    for (const QString &warning : partWarnings) {
+        if (!state.baseWarnings.contains(warning)) {
+            mod.warnings.append(warning);
+        }
+    }
+
+    if (QString problem = finishedContentProblem(finished, state.buffer); !problem.isEmpty()) {
+        return problem;
+    }
+
+    accepted = std::move(candidate);
+    return {};
+}
+
+// Safety net: read the final content back exactly like a client. The checks of admitMod() should
+// make this pass; if not, the game starts with the base content alone rather than with content
+// clients refuse.
+void fallBackToBaseIfRefused(QcModLoader::Result &result, QcContentRegistry &base, QByteArray &buffer)
+{
+    const QString problem = clientProblem(*result.content, buffer);
+    if (problem.isEmpty()) {
+        return;
+    }
+
+    qWarning("Mods: clients would reject the combined content (%s); starting without mods", qPrintable(problem));
+    for (QcModStatus &mod : result.mods) {
+        if (mod.state == QcModStatus::State::Loaded) {
+            mod.state = QcModStatus::State::Failed;
+            mod.reason = u"clients would reject the combined content of all mods (%1)"_s.arg(problem);
+        }
+    }
+
+    result.content = std::make_shared<QcContentRegistry>(std::move(base));
+    result.content->finish();
+}
+
+void reportModWarnings(const QList<QcModStatus> &mods, QStringList &warnings)
+{
+    for (const QcModStatus &mod : mods) {
+        const QString name = mod.info.id.isEmpty() ? mod.info.directory : mod.info.id;
+        if (mod.state != QcModStatus::State::Loaded) {
+            warnings.append(u"mod %1 not loaded: %2"_s.arg(name, mod.state == QcModStatus::State::Disabled ? u"disabled"_s : mod.reason));
+            continue;
+        }
+
+        for (const QString &warning : mod.warnings) {
+            warnings.append(u"mod %1: %2"_s.arg(name, warning));
+        }
+    }
 }
 
 } // namespace
@@ -221,10 +472,12 @@ QStringList QcModLoader::disabledMods(const QString &modsDirectory)
     if (modsDirectory.isEmpty()) {
         return {};
     }
+
     const QcResult<QByteArray> data = QcContentPackLoader::readPackFile(QDir(modsDirectory).filePath(QString::fromLatin1(settingsFile)));
     if (!data || data->size() > maxSettingsBytes) {
         return {};
     }
+
     QStringList disabled;
     const QJsonArray list = QJsonDocument::fromJson(*data).object().value(u"disabled"_s).toArray();
     for (const auto &entry : list) {
@@ -240,112 +493,50 @@ QcStatus QcModLoader::setModEnabled(const QString &modsDirectory, const QString 
     if (modsDirectory.isEmpty() || !QDir().mkpath(modsDirectory)) {
         return qcError(u"Cannot create the mods directory"_s);
     }
+
     QStringList disabled = disabledMods(modsDirectory);
     disabled.removeAll(id);
     if (!enabled) {
         disabled.append(id);
     }
     disabled.sort();
+
     QSaveFile file(QDir(modsDirectory).filePath(QString::fromLatin1(settingsFile)));
     if (!file.open(QIODevice::WriteOnly)) {
         return qcError(file.errorString());
     }
+
     file.write(QJsonDocument(QJsonObject{{u"disabled"_s, QJsonArray::fromStringList(disabled)}}).toJson());
     if (!file.commit()) {
         return qcError(file.errorString());
     }
+
     return {};
 }
 
 QList<QcModStatus> QcModLoader::resolve(const QList<QcContentPackInfo> &candidates, const QStringList &disabled,
                                         const QList<QcPackReference> &available)
 {
-    QHash<QString, QVersionNumber> loaded;
+    ResolveState state;
     for (const QcPackReference &pack : available) {
-        loaded.insert(pack.id, QcContentPackLoader::parseVersion(pack.version));
+        state.loaded.insert(pack.id, QcContentPackLoader::parseVersion(pack.version));
     }
 
-    QList<QcModStatus> ordered;
-    QList<QcModStatus> others;
-    QHash<QString, QString> notLoadedBecause;
-    QHash<QString, QcModStatus> pending;
-    for (const QcContentPackInfo &candidate : candidates) {
-        QcModStatus status;
-        status.info = candidate;
-        if (loaded.contains(candidate.id)) {
-            status.reason = u"the id '%1' belongs to the base game"_s.arg(candidate.id);
-        } else if (pending.contains(candidate.id) || notLoadedBecause.contains(candidate.id)) {
-            status.reason = u"another mod already uses the id '%1'"_s.arg(candidate.id);
-        } else if (disabled.contains(candidate.id)) {
-            status.state = QcModStatus::State::Disabled;
-            notLoadedBecause.insert(candidate.id, u"is disabled"_s);
-            others.append(status);
-            continue;
-        } else {
-            pending.insert(candidate.id, status);
-            continue;
-        }
-        // A duplicate fails on its own; the first mod with that id keeps its chance.
-        others.append(status);
-    }
+    sortCandidates(candidates, disabled, state);
 
-    const auto fail = [&](const QString &id, const QString &reason) {
-        QcModStatus status = pending.take(id);
-        status.reason = reason;
-        notLoadedBecause.insert(id, u"failed"_s);
-        others.append(status);
-    };
-    while (!pending.isEmpty()) {
-        QStringList ids = pending.keys();
-        ids.sort();
-        bool progress = false;
-        for (const QString &id : std::as_const(ids)) {
-            const QcContentPackInfo &info = pending[id].info;
-            QString problem;
-            bool waiting = false;
-            for (const QString &dependency : info.dependencies) {
-                if (loaded.contains(dependency)) {
-                    const QVersionNumber minimum = info.minimumVersions.value(dependency);
-                    if (!minimum.isNull() && loaded[dependency] < minimum) {
-                        problem = u"needs '%1' %2 or newer, found %3"_s.arg(dependency, minimum.toString(),
-                                                                           loaded[dependency].toString());
-                    }
-                } else if (notLoadedBecause.contains(dependency)) {
-                    problem = u"depends on '%1', which %2"_s.arg(dependency, notLoadedBecause[dependency]);
-                } else if (!pending.contains(dependency)) {
-                    problem = u"missing dependency '%1'"_s.arg(dependency);
-                } else {
-                    waiting = true;
-                }
-                if (!problem.isEmpty()) {
-                    break;
-                }
-            }
-            if (!problem.isEmpty()) {
-                fail(id, problem);
-                progress = true;
-                break;
-            }
-            if (!waiting) {
-                QcModStatus status = pending.take(id);
-                status.state = QcModStatus::State::Loaded;
-                loaded.insert(id, QcContentPackLoader::parseVersion(status.info.version));
-                ordered.append(status);
-                progress = true;
-                break;
-            }
-        }
-        if (!progress) {
+    while (!state.pending.isEmpty()) {
+        if (!decideNextPending(state)) {
             // Everything left waits on each other.
-            ids = pending.keys();
+            QStringList ids = state.pending.keys();
             ids.sort();
             for (const QString &id : std::as_const(ids)) {
-                fail(id, u"dependency cycle among: %1"_s.arg(ids.join(u", "_s)));
+                failPending(state, id, u"dependency cycle among: %1"_s.arg(ids.join(u", "_s)));
             }
         }
     }
-    std::ranges::sort(others, {}, [](const QcModStatus &status) { return status.info.directory; });
-    return ordered + others;
+
+    std::ranges::sort(state.others, {}, [](const QcModStatus &status) { return status.info.directory; });
+    return state.ordered + state.others;
 }
 
 QList<QcModStatus> QcModLoader::discover(const QString &modsDirectory)
@@ -353,6 +544,7 @@ QList<QcModStatus> QcModLoader::discover(const QString &modsDirectory)
     if (modsDirectory.isEmpty()) {
         return {};
     }
+
     const QDir root(modsDirectory);
     const QStringList folders = root.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     QList<QcContentPackInfo> candidates;
@@ -368,21 +560,25 @@ QList<QcModStatus> QcModLoader::discover(const QString &modsDirectory)
             broken.append(status);
             continue;
         }
+
         QcResult<QcContentPackInfo> info = QcContentPackLoader::readManifest(directory);
         if (info) {
             candidates.append(std::move(*info));
             continue;
         }
+
         QcModStatus status;
         status.info.directory = directory;
         status.reason = info.error();
         broken.append(status);
     }
+
     QList<QcPackReference> base;
     if (const QcResult<QcContentPackInfo> info =
             QcContentPackLoader::readManifest(QString::fromLatin1(QcBaseContent::resourceDirectory))) {
         base.append({info->id, info->name, info->version});
     }
+
     return resolve(candidates, disabledMods(modsDirectory), base) + broken;
 }
 
@@ -393,109 +589,39 @@ QcResult<QcModLoader::Result> QcModLoader::load(const QString &modsDirectory, QS
     if (const QcResult<QcContentPackInfo> loaded = QcBaseContent::loadInto(base, warnings); !loaded) {
         return qcError(loaded.error());
     }
-    QByteArray buffer;
-    QStringList baseWarnings;
+
+    ModLoadState state;
     {
         QcContentRegistry finished = base;
-        baseWarnings = finished.finish();
-        warnings += baseWarnings;
-        if (const QString problem = clientProblem(finished, buffer); !problem.isEmpty()) {
+        state.baseWarnings = finished.finish();
+        warnings += state.baseWarnings;
+        if (const QString problem = clientProblem(finished, state.buffer); !problem.isEmpty()) {
             return qcError(u"base game: "_s + problem);
         }
     }
+
     result.mods = discover(modsDirectory);
 
-    // Each mod is checked exactly, as it would reach clients (with the items created for its blocks),
-    // before the next one loads; a refused mod leaves no trace. Reads, mods and checks are bounded, so
-    // the time and memory of a start are too.
+    // Each mod is checked before the next one loads; a refused mod leaves no trace. Reads, mods and
+    // checks are bounded, so the time and memory of a start are too.
     QcContentRegistry accepted = base;
-    QSet<QString> refused;
-    qint64 readBytes = 0;
-    int attempts = 0;
-    const auto refuse = [&](QcModStatus &mod, const QString &reason) {
-        mod.state = QcModStatus::State::Failed;
-        mod.reason = reason;
-        refused.insert(mod.info.id);
-    };
     for (QcModStatus &mod : result.mods) {
         if (mod.state != QcModStatus::State::Loaded) {
             continue;
         }
-        const auto failedDependency = std::ranges::find_if(mod.info.dependencies, [&refused](const QString &id) {
-            return refused.contains(id);
-        });
-        if (failedDependency != mod.info.dependencies.end()) {
-            refuse(mod, u"depends on '%1', which failed"_s.arg(*failedDependency));
-            continue;
+
+        if (const QString reason = admitMod(mod, accepted, state); !reason.isEmpty()) {
+            mod.state = QcModStatus::State::Failed;
+            mod.reason = reason;
+            state.refused.insert(mod.info.id);
         }
-        // Every mod that gets this far costs a load and a full check, accepted or not.
-        if (attempts >= maxLoadedMods) {
-            refuse(mod, u"at most %1 mods are loaded"_s.arg(maxLoadedMods));
-            continue;
-        }
-        ++attempts;
-        // Bytes on disk (hard links count each time) are checked before anything is read; every
-        // attempt counts, also for mods that are refused afterwards.
-        const qint64 size = QcContentPackLoader::measure(mod.info.directory);
-        if (readBytes + size > totalReadBudget || size > contentSyncBudget) {
-            refuse(mod, u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - readBytes) / (qint64(1024) * 1024)));
-            continue;
-        }
-        readBytes += size;
-        QcContentRegistry candidate = accepted;
-        const QcResult<QcContentPackInfo> info = QcContentPackLoader::load(mod.info.directory, candidate, mod.warnings);
-        if (!info) {
-            refuse(mod, info.error());
-            continue;
-        }
-        candidate.addPack({info->id, info->name, info->version});
-        QcContentRegistry finished = candidate;
-        const QStringList partWarnings = finished.finish();
-        for (const QString &warning : partWarnings) {
-            if (!baseWarnings.contains(warning)) {
-                mod.warnings.append(warning);
-            }
-        }
-        QString problem = worldgenProblem(finished);
-        if (problem.isEmpty()) {
-            problem = countProblem(finished);
-        }
-        if (problem.isEmpty() && encodedSize(finished, buffer) > contentSyncBudget) {
-            problem = u"the content of all packs together exceeds %1 MiB"_s.arg(QcProtocol::maxFrameBytes / (1024 * 1024));
-        }
-        if (!problem.isEmpty()) {
-            refuse(mod, problem);
-            continue;
-        }
-        accepted = std::move(candidate);
     }
 
     result.content = std::make_shared<QcContentRegistry>(std::move(accepted));
     // Warnings of the parts were reported with the mod that caused them.
     result.content->finish();
-    // Safety net: read the final content back exactly like a client. The checks above should make this
-    // pass; if not, the game starts with the base content alone rather than with content clients refuse.
-    if (const QString problem = clientProblem(*result.content, buffer); !problem.isEmpty()) {
-        qWarning("Mods: clients would reject the combined content (%s); starting without mods", qPrintable(problem));
-        for (QcModStatus &mod : result.mods) {
-            if (mod.state == QcModStatus::State::Loaded) {
-                mod.state = QcModStatus::State::Failed;
-                mod.reason = u"clients would reject the combined content of all mods (%1)"_s.arg(problem);
-            }
-        }
-        result.content = std::make_shared<QcContentRegistry>(std::move(base));
-        result.content->finish();
-    }
-    for (const QcModStatus &mod : std::as_const(result.mods)) {
-        const QString name = mod.info.id.isEmpty() ? mod.info.directory : mod.info.id;
-        if (mod.state != QcModStatus::State::Loaded) {
-            warnings.append(u"mod %1 not loaded: %2"_s.arg(name, mod.state == QcModStatus::State::Disabled ? u"disabled"_s : mod.reason));
-            continue;
-        }
-        for (const QString &warning : mod.warnings) {
-            warnings.append(u"mod %1: %2"_s.arg(name, warning));
-        }
-    }
+    fallBackToBaseIfRefused(result, base, state.buffer);
+    reportModWarnings(result.mods, warnings);
     checkReferences(*result.content, warnings);
     return result;
 }

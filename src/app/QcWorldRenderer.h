@@ -49,11 +49,26 @@ private:
     };
 
     void createPipelines();
+    void ensureBindings();
+    std::unique_ptr<QRhiGraphicsPipeline> createBlockPipeline(const QShader &vertexShader, const QShader &fragmentShader,
+                                                              const QRhiVertexInputLayout &inputLayout, bool translucent);
+    std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(const QShader &vertexShader, const QShader &fragmentShader,
+                                                               const QRhiVertexInputLayout &inputLayout);
     void createOutlinePipeline();
     void uploadOutline(QRhiResourceUpdateBatch *updates);
     void uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers);
     void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
+    // Benchmark: CPU time of the render thread since the last frame and the GPU time.
+    void startSample(QRhiCommandBuffer *commandBuffer);
+    // Atlas, pipelines and the uploads of this frame.
+    void prepareResources(QRhiResourceUpdateBatch *updates);
+    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection);
+    // Visible sections, entities, translucent faces, outline and hand, in this order.
+    void drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4x4 &viewProjection, QSize outputSize);
+    void drawTranslucent(QRhiCommandBuffer *commandBuffer, const QList<const GpuMesh *> &visible);
+    void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
+    void drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
                              const QList<quint32> &indices);
 

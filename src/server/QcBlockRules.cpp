@@ -20,6 +20,7 @@ std::optional<QcBlockFace> faceFromName(const QString &name)
             return face;
         }
     }
+
     if (name == u"floor"_s) {
         return QcBlockFace::Down;
     }
@@ -48,9 +49,11 @@ bool assign(const QcContentRegistry &content, QcBlockId &id, const QString &prop
     if (!definition) {
         return true;
     }
+
     if (!definition->values.contains(value)) {
         return false;
     }
+
     id = content.withProperty(id, property, value);
     return true;
 }
@@ -78,10 +81,12 @@ bool connectsTo(const QcBlockAccess &world, const QcBlockDefinition &self, QcBlo
     if (!neighbour || !content.isValidBlock(*neighbour) || *neighbour == qcAirBlockId) {
         return false;
     }
+
     const QcBlockDefinition &other = content.block(*neighbour);
     if (!other.connectGroup.isEmpty() && self.connectsTo.contains(other.connectGroup)) {
         return true;
     }
+
     return other.solid && content.state(*neighbour).fullCube && other.renderLayer != QcRenderLayer::Invisible;
 }
 
@@ -131,63 +136,58 @@ QcBlockFace opposite(QcBlockFace face)
     return face;
 }
 
-std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, QcBlockPos clicked, QcBlockFace clickedFace,
-                                   const QcVec3 &hit, float yaw)
+namespace {
+
+// The facing value a block placed while looking along `yaw` takes.
+QString facingFor(const QcBlockDefinition &definition, float yaw)
+{
+    const QString look = lookDirection(yaw);
+    const QcBlockFace lookFace = faceFromName(look).value_or(QcBlockFace::North);
+    return definition.facingRule == QcFacingRule::Toward ? faceName(opposite(lookFace)) : look;
+}
+
+// A slab clicked on its open side, or placed into a slab of the other half, doubles up.
+std::optional<Placement> doubledSlab(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
+                                     bool upper)
 {
     const QcContentRegistry &content = world.content();
-    if (!content.isValidBlock(block)) {
-        return std::nullopt;
-    }
-    // A clicked replaceable block (tall grass) gives way: the new block takes its cell, as if placed
-    // on the ground below it.
-    const std::optional<QcBlockId> clickedBlock = world.blockAt(clicked);
-    const bool intoClicked = clickedBlock && *clickedBlock != qcAirBlockId && content.isValidBlock(*clickedBlock)
-                             && content.block(*clickedBlock).replaceable && !content.block(*clickedBlock).liquid
-                             && !content.isSameBlock(*clickedBlock, block);
-    if (intoClicked) {
-        clicked = clicked.offset(0, -1, 0);
-    }
-    const QcBlockFace face = intoClicked ? QcBlockFace::Up : clickedFace;
-    QcBlockId state = content.stateTable().firstState(content.state(block).type);
-    const QcBlockDefinition &definition = content.block(state);
-    // Upper or lower half from the clicked face, or from the height of the hit on a side face.
-    const bool upper = face == QcBlockFace::Down || (face != QcBlockFace::Up && hit.y > 0.5);
-    const QString half = upper ? u"top"_s : u"bottom"_s;
-
-    // A slab clicked on its open side, or placed into a slab of the other half, doubles up.
-    const QcBlockProperty *slabType = definition.property(u"type"_s);
-    if (slabType && slabType->values.contains(u"double"_s)) {
-        const std::optional<QcBlockId> slabBelow = world.blockAt(clicked);
-        if (slabBelow && content.isSameBlock(*slabBelow, state)) {
-            const QString type = content.property(*slabBelow, u"type"_s);
-            if ((type == u"bottom"_s && face == QcBlockFace::Up) || (type == u"top"_s && face == QcBlockFace::Down)) {
-                return Placement{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
-            }
-        }
-        const QcBlockPos target = qcNeighbour(clicked, face);
-        const std::optional<QcBlockId> existing = world.blockAt(target);
-        if (existing && content.isSameBlock(*existing, state)) {
-            const QString type = content.property(*existing, u"type"_s);
-            if ((type == u"bottom"_s && upper) || (type == u"top"_s && !upper)) {
-                return Placement{target, content.withProperty(state, u"type"_s, u"double"_s)};
-            }
-            return std::nullopt;
+    const std::optional<QcBlockId> slabBelow = world.blockAt(clicked);
+    if (slabBelow && content.isSameBlock(*slabBelow, state)) {
+        const QString type = content.property(*slabBelow, u"type"_s);
+        if ((type == u"bottom"_s && face == QcBlockFace::Up) || (type == u"top"_s && face == QcBlockFace::Down)) {
+            return Placement{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
         }
     }
 
     const QcBlockPos target = qcNeighbour(clicked, face);
-    if (!replaceableAt(world, target)) {
-        return std::nullopt;
+    const std::optional<QcBlockId> existing = world.blockAt(target);
+    if (existing && content.isSameBlock(*existing, state)) {
+        const QString type = content.property(*existing, u"type"_s);
+        if ((type == u"bottom"_s && upper) || (type == u"top"_s && !upper)) {
+            return Placement{target, content.withProperty(state, u"type"_s, u"double"_s)};
+        }
     }
-    const QString look = lookDirection(yaw);
-    const QcBlockFace lookFace = faceFromName(look).value_or(QcBlockFace::North);
-    const QString facing = definition.facingRule == QcFacingRule::Toward ? faceName(opposite(lookFace)) : look;
+
+    return std::nullopt;
+}
+
+// `state` with facing, slab type, half and attach set from the view and the clicked face;
+// std::nullopt when one of the values is not allowed.
+std::optional<QcBlockId> orientedState(const QcContentRegistry &content, QcBlockId state, const QString &facing,
+                                       QcBlockFace face, bool upper)
+{
+    const QcBlockDefinition &definition = content.block(state);
+    const QString half = upper ? u"top"_s : u"bottom"_s;
+    const QcBlockProperty *slabType = definition.property(u"type"_s);
+
     if (!assign(content, state, u"facing"_s, facing) || (slabType && !assign(content, state, u"type"_s, half))) {
         return std::nullopt;
     }
+
     if (!definition.door && !assign(content, state, u"half"_s, half)) {
         return std::nullopt;
     }
+
     if (hasProperty(content, state, u"attach"_s)) {
         // Towards the block the new one hangs on: the clicked block.
         const QcBlockFace towards = opposite(face);
@@ -196,22 +196,88 @@ std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, 
             return std::nullopt;
         }
     }
-    if (definition.door) {
-        if (!replaceableAt(world, target.offset(0, 1, 0)) || !assign(content, state, u"half"_s, u"bottom"_s)) {
+
+    return state;
+}
+
+// The lower half of a door at `target` with its hinge; std::nullopt without room for the upper half.
+std::optional<QcBlockId> doorState(const QcBlockAccess &world, QcBlockId state, QcBlockPos target, const QcVec3 &hit,
+                                   const QString &facing)
+{
+    const QcContentRegistry &content = world.content();
+    if (!replaceableAt(world, target.offset(0, 1, 0)) || !assign(content, state, u"half"_s, u"bottom"_s)) {
+        return std::nullopt;
+    }
+
+    // The hinge sits on the side of the door the player aimed at.
+    const QcFaceOffset right = qcFaceOffset(rightOf(faceFromName(facing).value_or(QcBlockFace::North)));
+    const double along = (hit.x - 0.5) * right.dx + (hit.z - 0.5) * right.dz;
+    assign(content, state, u"hinge"_s, along < 0.0 ? u"left"_s : u"right"_s);
+
+    return state;
+}
+
+} // namespace
+
+std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
+{
+    const QcContentRegistry &content = world.content();
+    if (!content.isValidBlock(block)) {
+        return std::nullopt;
+    }
+
+    // A clicked replaceable block (tall grass) gives way: the new block takes its cell, as if placed
+    // on the ground below it.
+    QcBlockPos clicked = aim.clicked;
+    const std::optional<QcBlockId> clickedBlock = world.blockAt(clicked);
+    const bool intoClicked = clickedBlock && *clickedBlock != qcAirBlockId && content.isValidBlock(*clickedBlock)
+                             && content.block(*clickedBlock).replaceable && !content.block(*clickedBlock).liquid
+                             && !content.isSameBlock(*clickedBlock, block);
+    if (intoClicked) {
+        clicked = clicked.offset(0, -1, 0);
+    }
+
+    const QcBlockFace face = intoClicked ? QcBlockFace::Up : aim.face;
+    QcBlockId state = content.stateTable().firstState(content.state(block).type);
+    const QcBlockDefinition &definition = content.block(state);
+    // Upper or lower half from the clicked face, or from the height of the hit on a side face.
+    const bool upper = face == QcBlockFace::Down || (face != QcBlockFace::Up && aim.hit.y > 0.5);
+
+    const QcBlockProperty *slabType = definition.property(u"type"_s);
+    if (slabType && slabType->values.contains(u"double"_s)) {
+        if (std::optional<Placement> doubled = doubledSlab(world, state, clicked, face, upper)) {
+            return doubled;
+        }
+        // A slab of the same half is already there.
+        const std::optional<QcBlockId> existing = world.blockAt(qcNeighbour(clicked, face));
+        if (existing && content.isSameBlock(*existing, state)) {
             return std::nullopt;
         }
-        // The hinge sits on the side of the door the player aimed at.
-        const QcFaceOffset right = qcFaceOffset(rightOf(faceFromName(facing).value_or(QcBlockFace::North)));
-        const double along = (hit.x - 0.5) * right.dx + (hit.z - 0.5) * right.dz;
-        assign(content, state, u"hinge"_s, along < 0.0 ? u"left"_s : u"right"_s);
     }
-    state = connectedState(world, target, state);
+
+    const QcBlockPos target = qcNeighbour(clicked, face);
+    if (!replaceableAt(world, target)) {
+        return std::nullopt;
+    }
+
+    const QString facing = facingFor(definition, aim.yaw);
+    std::optional<QcBlockId> oriented = orientedState(content, state, facing, face, upper);
+    if (oriented && definition.door) {
+        oriented = doorState(world, *oriented, target, aim.hit, facing);
+    }
+
+    if (!oriented) {
+        return std::nullopt;
+    }
+
+    state = connectedState(world, target, *oriented);
     // A door's upper half does not exist yet: the lower one only needs the floor.
     const bool supported = definition.door ? hasSolidFace(world, target.offset(0, -1, 0), QcBlockFace::Up)
                                            : isSupported(world, target, state);
     if (!supported) {
         return std::nullopt;
     }
+
     return Placement{target, state};
 }
 
@@ -225,6 +291,7 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
     if (definition.connectsTo.isEmpty()) {
         return id;
     }
+
     QcBlockId state = id;
     std::array<bool, 4> connected{};
     for (std::size_t i = 0; i < horizontal.size(); ++i) {
@@ -234,6 +301,7 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
         connected[i] = world.blockAt(neighbour) ? connectsTo(world, definition, neighbour) : content.property(id, side) == u"true"_s;
         assign(content, state, side, connected[i] ? u"true"_s : u"false"_s);
     }
+
     // A wall shows its post except in the middle of a straight run.
     const bool straight = (connected[0] && connected[2] && !connected[1] && !connected[3])
                           || (connected[1] && connected[3] && !connected[0] && !connected[2]);
@@ -247,6 +315,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     if (!content.isValidBlock(id)) {
         return true;
     }
+
     const QcBlockDefinition &definition = content.block(id);
     if (definition.door) {
         if (!hasDoorPartner(world, pos, id)) {
@@ -255,6 +324,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         const bool top = content.property(id, u"half"_s) == u"top"_s;
         return top || !world.blockAt(pos.offset(0, -1, 0)) || hasSolidFace(world, pos.offset(0, -1, 0), QcBlockFace::Up);
     }
+
     switch (definition.support) {
     case QcBlockSupport::None:
         return true;
@@ -265,17 +335,21 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         if (!ground) {
             return true;
         }
+
         if (definition.groundBlocks.isEmpty() && definition.groundLiquid.isEmpty()) {
             return hasSolidFace(world, below, QcBlockFace::Up);
         }
+
         if (!content.isValidBlock(*ground)) {
             return false;
         }
+
         const bool groundOk = definition.groundBlocks.isEmpty() ? hasSolidFace(world, below, QcBlockFace::Up)
                                                                 : definition.groundBlocks.contains(content.block(*ground).name);
         if (!groundOk || definition.groundLiquid.isEmpty() || content.isSameBlock(*ground, id)) {
             return groundOk;
         }
+
         // The liquid has to touch the ground block from a side (water next to the sand of a cane).
         return std::ranges::any_of(horizontal, [&](QcBlockFace face) {
             const std::optional<QcBlockId> side = world.blockAt(qcNeighbour(below, face));
@@ -287,6 +361,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         if (!towards) {
             return true;
         }
+
         const QcBlockPos holder = qcNeighbour(pos, *towards);
         return !world.blockAt(holder) || hasSolidFace(world, holder, opposite(*towards));
     }
@@ -301,6 +376,7 @@ bool hasDoorPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     if (!partner) {
         return true;
     }
+
     return content.isValidBlock(*partner) && content.isSameBlock(*partner, id)
            && content.property(*partner, u"half"_s) != content.property(id, u"half"_s);
 }

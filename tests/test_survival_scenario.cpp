@@ -41,6 +41,8 @@ private:
     // Where the crafting table was placed, checked again after reloading the world.
     QJsonObject m_table;
     QJsonObject m_furnace;
+    // The kind of log chopped from the tree.
+    QString m_log;
     std::unique_ptr<QcClientSession> m_session;
     std::unique_ptr<QBuffer> m_output;
     std::unique_ptr<QcControlInterface> m_control;
@@ -122,6 +124,130 @@ private:
         QVERIFY(request({{u"cmd"_s, u"waitUntilReady"_s}}).value(u"ok"_s).toBool());
     }
 
+    // The id of the first entity of `type` within 8 blocks, -1 when there is none.
+    int nearestEntity(const QString &type)
+    {
+        const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        for (const auto &entry : entities) {
+            if (entry.toObject().value(u"type"_s).toString() == type) {
+                return entry.toObject().value(u"id"_s).toInt();
+            }
+        }
+        return -1;
+    }
+
+    bool isGone(int id)
+    {
+        const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 64}}).value(u"entities"_s).toArray();
+        return std::ranges::none_of(entities, [id](const QJsonValue &e) { return e.toObject().value(u"id"_s).toInt() == id; });
+    }
+
+    // Turns towards the entity `id` and takes a few jumping steps.
+    void walkTowards(int id)
+    {
+        const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 32}}).value(u"entities"_s).toArray();
+        const QcVec3 me = position(request({{u"cmd"_s, u"status"_s}}));
+        for (const auto &entry : entities) {
+            if (entry.toObject().value(u"id"_s).toInt() == id) {
+                const QJsonArray at = entry.toObject().value(u"position"_s).toArray();
+                const double yaw = qRadiansToDegrees(std::atan2(at.at(0).toDouble() - me.x, -(at.at(2).toDouble() - me.z)));
+                request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, yaw}, {u"pitch"_s, 0}});
+                request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"jump"_s, true}, {u"ticks"_s, 8}});
+            }
+        }
+    }
+
+    // The log within 8 blocks whose column is nearest to the player, empty when there is none.
+    QJsonObject nearestLog()
+    {
+        const QJsonArray blocks = request({{u"cmd"_s, u"blocks"_s}, {u"radius"_s, 8}}).value(u"blocks"_s).toArray();
+        const QcVec3 start = position(request({{u"cmd"_s, u"status"_s}}));
+        QJsonObject trunk;
+        double nearest = 1e9;
+        for (const auto &entry : blocks) {
+            const QJsonObject block = entry.toObject();
+            if (!block.value(u"block"_s).toString().endsWith(u"_log"_s)) {
+                continue;
+            }
+            const double distance = std::hypot(block.value(u"x"_s).toInt() + 0.5 - start.x, block.value(u"z"_s).toInt() + 0.5 - start.z);
+            if (distance < nearest) {
+                nearest = distance;
+                trunk = block;
+            }
+        }
+        return trunk;
+    }
+
+    // Walks up to the column (x, z) in at most six attempts.
+    void walkNextTo(int x, int z)
+    {
+        for (int step = 0; step < 6; ++step) {
+            const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
+            const double dx = x + 0.5 - here.x;
+            const double dz = z + 0.5 - here.z;
+            if (std::hypot(dx, dz) < 2.2) {
+                break;
+            }
+            request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, qRadiansToDegrees(std::atan2(dx, -dz))}, {u"pitch"_s, 0}});
+            request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"jump"_s, true}, {u"ticks"_s, 6}});
+            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
+        }
+    }
+
+    // Every log makes the planks of its wood; recipes take planks of any wood.
+    static QString planksOf(const QString &log) { return log.section(u'_', 0, -2) + u"_planks"_s; }
+
+    // Places the held crafting table on free ground near the player and remembers it in m_table.
+    bool placeCraftingTableNearby()
+    {
+        const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
+        const int feetY = int(std::floor(here.y));
+        // Collecting the logs moved the player somewhere near the trunk; try the free spots around.
+        QList<std::pair<int, int>> spots;
+        for (int ox = -3; ox <= 3; ++ox) {
+            for (int oz = -3; oz <= 3; ++oz) {
+                if (std::abs(ox) + std::abs(oz) >= 2) {
+                    spots.append({ox, oz});
+                }
+            }
+        }
+        std::ranges::sort(spots, {}, [](std::pair<int, int> spot) { return std::abs(spot.first) + std::abs(spot.second); });
+
+        // The ground may be a block higher or lower than the player's feet.
+        for (const auto &[ox, oz] : std::as_const(spots)) {
+            const int x = int(std::floor(here.x)) + ox;
+            const int z = int(std::floor(here.z)) + oz;
+            for (const int y : {feetY, feetY + 1, feetY - 1}) {
+                if (placeCraftingTableAt(x, y, z)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Places the held crafting table into the free cell (x, y, z) on solid ground.
+    bool placeCraftingTableAt(int x, int y, int z)
+    {
+        const auto blockAt = [&](int at) {
+            return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, at}, {u"z"_s, z}}).value(u"block"_s).toString();
+        };
+        // Tall grass gives way to a placed block.
+        const QString free = blockAt(y);
+        const QString ground = blockAt(y - 1);
+        if ((free != u"qtcraft:air"_s && free != u"qtcraft:tall_grass"_s) || ground == u"qtcraft:air"_s
+            || ground == u"qtcraft:tall_grass"_s) {
+            return false;
+        }
+
+        request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+        if (blockAt(y) != u"qtcraft:crafting_table"_s) {
+            return false;
+        }
+        m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
+        return true;
+    }
+
 private slots:
     void initTestCase()
     {
@@ -136,68 +262,44 @@ private slots:
 
     void huntFightAndEat()
     {
-        const auto nearest = [this](const QString &type) {
-            const QJsonArray entities =
-                request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
-            for (const auto &entry : entities) {
-                if (entry.toObject().value(u"type"_s).toString() == type) {
-                    return entry.toObject().value(u"id"_s).toInt();
-                }
-            }
-            return -1;
-        };
-        const auto gone = [this](int id) {
-            const QJsonArray entities =
-                request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 64}}).value(u"entities"_s).toArray();
-            return std::ranges::none_of(entities, [id](const QJsonValue &e) { return e.toObject().value(u"id"_s).toInt() == id; });
-        };
         // The fight below needs a weapon; a stone sword is the one shortcut through a command.
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give stone_sword"_s}});
         hold(u"qtcraft:stone_sword"_s);
 
         // Hunt: a pig in reach is hit until it drops its meat.
         request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 0}, {u"pitch"_s, 0}});
-        int pig = nearest(u"qtcraft:pig"_s);
+        int pig = nearestEntity(u"qtcraft:pig"_s);
         if (pig < 0) {
             request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon pig"_s}});
-            pig = nearest(u"qtcraft:pig"_s);
+            pig = nearestEntity(u"qtcraft:pig"_s);
         }
         QVERIFY(pig >= 0);
-        for (int round = 0; round < 40 && !gone(pig); ++round) {
+        for (int round = 0; round < 40 && !isGone(pig); ++round) {
             if (request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}}).value(u"ok"_s).toBool()) {
                 request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
                 continue;
             }
             // Out of reach (it fled) or hidden behind another creature: walk towards it.
-            const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 32}}).value(u"entities"_s).toArray();
-            const QcVec3 me = position(request({{u"cmd"_s, u"status"_s}}));
-            for (const auto &entry : entities) {
-                if (entry.toObject().value(u"id"_s).toInt() == pig) {
-                    const QJsonArray at = entry.toObject().value(u"position"_s).toArray();
-                    const double yaw = qRadiansToDegrees(std::atan2(at.at(0).toDouble() - me.x, -(at.at(2).toDouble() - me.z)));
-                    request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, yaw}, {u"pitch"_s, 0}});
-                    request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"jump"_s, true}, {u"ticks"_s, 8}});
-                }
-            }
+            walkTowards(pig);
         }
-        QVERIFY(gone(pig));
+        QVERIFY(isGone(pig));
         // The meat falls where the pig died; walk over it to pick it up.
         QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 10}}).value(u"ok"_s).toBool());
         QTRY_VERIFY_WITH_TIMEOUT(countOf(u"qtcraft:raw_porkchop"_s) >= 1, timeoutMs);
 
         // Fight: a zombie strikes back before it falls.
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon zombie"_s}});
-        const int zombie = nearest(u"qtcraft:zombie"_s);
+        const int zombie = nearestEntity(u"qtcraft:zombie"_s);
         QVERIFY(zombie >= 0);
         double lowest = 20.0;
-        for (int round = 0; round < 60 && !gone(zombie); ++round) {
+        for (int round = 0; round < 60 && !isGone(zombie); ++round) {
             const QJsonObject status = request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, zombie}});
             lowest = std::min(lowest, request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble());
             if (!status.value(u"ok"_s).toBool()) {
                 request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 8}});
             }
         }
-        QVERIFY(gone(zombie));
+        QVERIFY(isGone(zombie));
         QVERIFY(!request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool());
         QVERIFY2(lowest < 20.0, "the zombie never hit the player");
 
@@ -262,45 +364,21 @@ private slots:
         QVERIFY(!request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, 999999}}).value(u"ok"_s).toBool());
     }
 
-    void fellATreeCraftAToolAndMineWithIt()
+    void fellATreeAndCollectTheLogs()
     {
         // 1. Find the nearest tree trunk and walk next to it.
-        const QJsonArray blocks = request({{u"cmd"_s, u"blocks"_s}, {u"radius"_s, 8}}).value(u"blocks"_s).toArray();
-        const QcVec3 start = position(request({{u"cmd"_s, u"status"_s}}));
-        QJsonObject trunk;
-        double nearest = 1e9;
-        for (const auto &entry : blocks) {
-            const QJsonObject block = entry.toObject();
-            if (!block.value(u"block"_s).toString().endsWith(u"_log"_s)) {
-                continue;
-            }
-            const double distance = std::hypot(block.value(u"x"_s).toInt() + 0.5 - start.x, block.value(u"z"_s).toInt() + 0.5 - start.z);
-            if (distance < nearest) {
-                nearest = distance;
-                trunk = block;
-            }
-        }
+        const QJsonObject trunk = nearestLog();
         QVERIFY2(!trunk.isEmpty(), "no tree near the spawn");
-        const QString log = trunk.value(u"block"_s).toString();
+        m_log = trunk.value(u"block"_s).toString();
         const int trunkX = trunk.value(u"x"_s).toInt();
         const int trunkZ = trunk.value(u"z"_s).toInt();
-        for (int step = 0; step < 6; ++step) {
-            const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
-            const double dx = trunkX + 0.5 - here.x;
-            const double dz = trunkZ + 0.5 - here.z;
-            if (std::hypot(dx, dz) < 2.2) {
-                break;
-            }
-            request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, qRadiansToDegrees(std::atan2(dx, -dz))}, {u"pitch"_s, 0}});
-            request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"jump"_s, true}, {u"ticks"_s, 6}});
-            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
-        }
+        walkNextTo(trunkX, trunkZ);
 
         // 2. Chop three logs of the trunk, lowest first.
         int chopped = 0;
         for (int y = 40; y < 140 && chopped < 3; ++y) {
             const QJsonObject block = request({{u"cmd"_s, u"block"_s}, {u"x"_s, trunkX}, {u"y"_s, y}, {u"z"_s, trunkZ}});
-            if (block.value(u"block"_s).toString() != log) {
+            if (block.value(u"block"_s).toString() != m_log) {
                 continue;
             }
             const QJsonObject mined = request({{u"cmd"_s, u"mine"_s}, {u"x"_s, trunkX}, {u"y"_s, y}, {u"z"_s, trunkZ}});
@@ -308,10 +386,16 @@ private slots:
             ++chopped;
         }
         QCOMPARE(chopped, 3);
+
         // The logs drop next to the trunk. A log of a neighbouring tree in the line of sight may be
         // chopped on the way, so there can be more than three.
         QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 8}}).value(u"ok"_s).toBool());
-        QTRY_VERIFY_WITH_TIMEOUT(countOf(log) >= 3, timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(countOf(m_log) >= 3, timeoutMs);
+    }
+
+    void craftPlanksSticksAndACraftingTable()
+    {
+        const QString log = m_log;
         const int logs = countOf(log);
 
         // 3. Planks: one log through the 2 x 2 grid, the rest from the recipe book; then sticks and a
@@ -325,8 +409,7 @@ private slots:
         }
         QVERIFY(logSlot >= 0);
         request({{u"cmd"_s, u"moveItem"_s}, {u"from"_s, logSlot}, {u"to"_s, 36}, {u"count"_s, 2}});
-        // Every log makes the planks of its wood; recipes take planks of any wood.
-        const QString planks = log.section(u'_', 0, -2) + u"_planks"_s;
+        const QString planks = planksOf(log);
         const QJsonObject grid = request({{u"cmd"_s, u"inventory"_s}});
         QCOMPARE(grid.value(u"craftingResult"_s).toObject().value(u"item"_s).toString(), planks);
         QVERIFY(request({{u"cmd"_s, u"takeResult"_s}}).value(u"ok"_s).toBool());
@@ -334,6 +417,7 @@ private slots:
         // Closing returns the second log from the grid.
         QVERIFY(request({{u"cmd"_s, u"closeCrafting"_s}}).value(u"ok"_s).toBool());
         QCOMPARE(countOf(log), logs - 1);
+
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, planks}, {u"count"_s, 2}});
         QCOMPARE(countOf(planks), 12);
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:crafting_table"_s}});
@@ -346,49 +430,15 @@ private slots:
         const QJsonObject refused = request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:wooden_pickaxe"_s}});
         QVERIFY(refused.value(u"messages"_s).toArray().first().toString().contains(u"crafting table"_s));
         QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 0);
+    }
+
+    void craftAPickaxeAndMineWithIt()
+    {
+        const QString planks = planksOf(m_log);
 
         // 4. Place the table on the ground next to the player and craft a pickaxe there.
         hold(u"qtcraft:crafting_table"_s);
-        const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
-        const int feetY = int(std::floor(here.y));
-        bool placed = false;
-        // Collecting the logs moved the player somewhere near the trunk; try the free spots around.
-        QList<std::pair<int, int>> spots;
-        for (int ox = -3; ox <= 3; ++ox) {
-            for (int oz = -3; oz <= 3; ++oz) {
-                if (std::abs(ox) + std::abs(oz) >= 2) {
-                    spots.append({ox, oz});
-                }
-            }
-        }
-        std::ranges::sort(spots, {}, [](std::pair<int, int> spot) { return std::abs(spot.first) + std::abs(spot.second); });
-        // The ground may be a block higher or lower than the player's feet.
-        for (const auto &[ox, oz] : std::as_const(spots)) {
-            const int x = int(std::floor(here.x)) + ox;
-            const int z = int(std::floor(here.z)) + oz;
-            for (const int y : {feetY, feetY + 1, feetY - 1}) {
-                const auto blockAt = [&](int at) {
-                    return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, at}, {u"z"_s, z}}).value(u"block"_s).toString();
-                };
-                // Tall grass gives way to a placed block.
-                const QString free = blockAt(y);
-                const QString ground = blockAt(y - 1);
-                if ((free != u"qtcraft:air"_s && free != u"qtcraft:tall_grass"_s) || ground == u"qtcraft:air"_s
-                    || ground == u"qtcraft:tall_grass"_s) {
-                    continue;
-                }
-                request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
-                if (blockAt(y) == u"qtcraft:crafting_table"_s) {
-                    placed = true;
-                    m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
-                    break;
-                }
-            }
-            if (placed) {
-                break;
-            }
-        }
-        QVERIFY(placed);
+        QVERIFY(placeCraftingTableNearby());
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:wooden_pickaxe"_s}});
         QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 1);
         QCOMPARE(countOf(planks), 3);
@@ -412,6 +462,7 @@ private slots:
             }
             request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 12}});
         }
+
         QVERIFY(countOf(u"qtcraft:cobblestone"_s) >= 1);
         const QJsonObject held = request({{u"cmd"_s, u"status"_s}}).value(u"held"_s).toObject();
         QCOMPARE(held.value(u"item"_s).toString(), u"qtcraft:wooden_pickaxe"_s);

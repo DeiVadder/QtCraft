@@ -140,12 +140,10 @@ void QcMeshScheduler::chunkUnloaded(QcChunkPos pos)
     }
 }
 
-void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous)
+QList<QcMeshScheduler::SectionAddress> QcMeshScheduler::faceSections(QcBlockPos pos)
 {
-    const qint64 now = m_clock.nsecsElapsed();
-    const QcBlockId current = world.blockAt(pos).value_or(qcAirBlockId);
-    QList<SectionAddress> dirty;
     // Faces and ambient occlusion reach the sections holding a cell next to the block.
+    QList<SectionAddress> sections;
     const int lx = pos.localX();
     const int lz = pos.localZ();
     const int ly = pos.y % QcWorld::sectionHeight;
@@ -153,48 +151,64 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
     for (int dx = lx == 0 ? -1 : 0; dx <= (lx == QcWorld::chunkSize - 1 ? 1 : 0); ++dx) {
         for (int dz = lz == 0 ? -1 : 0; dz <= (lz == QcWorld::chunkSize - 1 ? 1 : 0); ++dz) {
             for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
-                dirty.append({{pos.chunk().x + dx, pos.chunk().z + dz}, section + dy});
+                sections.append({{pos.chunk().x + dx, pos.chunk().z + dz}, section + dy});
             }
         }
     }
+    return sections;
+}
+
+std::pair<int, int> QcMeshScheduler::skyLightRange(const QcClientWorld &world, QcBlockPos pos, const QcBlockRenderTable::Entry &before,
+                                                   const QcBlockRenderTable::Entry &after) const
+{
+    int low = pos.y;
+    int high = pos.y;
+    const std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
+    if (!chunk) {
+        return {0, high};
+    }
+    const int others = highestDimming(*chunk, *m_renderTable, pos.localX(), pos.localZ(), pos.y);
+    const int topBefore = std::max(others, before.lightOpacity > 0 ? pos.y : -1);
+    const int topAfter = std::max(others, after.lightOpacity > 0 ? pos.y : -1);
+    if (topBefore != topAfter) {
+        low = std::min(low, std::min(topBefore, topAfter) + 1);
+        high = std::max({high, topBefore, topAfter});
+    }
+    return {low, high};
+}
+
+void QcMeshScheduler::appendSkyLightSections(QList<SectionAddress> &dirty, QcChunkPos chunk, int low, int high)
+{
+    // Sections whose light volume meets low..high.
+    constexpr int margin = QcChunkMesher::lightMargin;
+    const int firstSection = std::max(0, qcFloorDiv(low - margin, QcWorld::sectionHeight));
+    const int lastSection = std::min(QcWorld::sectionCount - 1, qcFloorDiv(high + margin, QcWorld::sectionHeight));
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int index = firstSection; index <= lastSection; ++index) {
+                dirty.append({{chunk.x + dx, chunk.z + dz}, index});
+            }
+        }
+    }
+}
+
+void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous)
+{
+    const qint64 now = m_clock.nsecsElapsed();
+    const QcBlockId current = world.blockAt(pos).value_or(qcAirBlockId);
+    QList<SectionAddress> dirty = faceSections(pos);
+
     bool lightChanges = true;
     if (m_renderTable) {
         const QcBlockRenderTable::Entry &before = m_renderTable->entry(previous);
         const QcBlockRenderTable::Entry &after = m_renderTable->entry(current);
         if (before.lightOpacity != after.lightOpacity) {
-            // Sky light travels up to 15 blocks sideways, so it reaches the 3 x 3 chunk neighbourhood.
-            // A section's sky light (QcChunkMesher) depends on the cells from 16 blocks below to 16
-            // blocks above it and on where each column's highest light-dimming block lies: it
-            // changes when that range holds the changed cell or a cell that turns lit or shadowed
-            // because the column's highest dimming block moved.
-            int low = pos.y;
-            int high = pos.y;
-            const std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
-            if (!chunk) {
-                low = 0;
-            } else {
-                const int others = highestDimming(*chunk, *m_renderTable, lx, lz, pos.y);
-                const int topBefore = std::max(others, before.lightOpacity > 0 ? pos.y : -1);
-                const int topAfter = std::max(others, after.lightOpacity > 0 ? pos.y : -1);
-                if (topBefore != topAfter) {
-                    low = std::min(low, std::min(topBefore, topAfter) + 1);
-                    high = std::max({high, topBefore, topAfter});
-                }
-            }
-            // Sections whose light volume meets low..high.
-            constexpr int margin = QcChunkMesher::lightMargin;
-            const int firstSection = std::max(0, qcFloorDiv(low - margin, QcWorld::sectionHeight));
-            const int lastSection = std::min(QcWorld::sectionCount - 1, qcFloorDiv(high + margin, QcWorld::sectionHeight));
-            for (int dx = -1; dx <= 1; ++dx) {
-                for (int dz = -1; dz <= 1; ++dz) {
-                    for (int index = firstSection; index <= lastSection; ++index) {
-                        dirty.append({{pos.chunk().x + dx, pos.chunk().z + dz}, index});
-                    }
-                }
-            }
+            const auto [low, high] = skyLightRange(world, pos, before, after);
+            appendSkyLightSections(dirty, pos.chunk(), low, high);
         }
         lightChanges = before.lightOpacity != after.lightOpacity || before.lightLevel != after.lightLevel;
     }
+
     if (m_lightEngine && lightChanges) {
         // Meshed together with the new block light, so the change shows in one step.
         std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
@@ -277,12 +291,8 @@ void QcMeshScheduler::noteBacklog()
     m_stats.worstBacklog = std::max(m_stats.worstBacklog, m_dirty.size() + m_inFlight.size() + m_lightJobsPending);
 }
 
-void QcMeshScheduler::pump(const QcClientWorld &world)
+QList<quint64> QcMeshScheduler::nearestDirtyFirst() const
 {
-    noteBacklog();
-    if (!m_renderTable || m_dirty.isEmpty() || m_inFlight.size() >= m_maxJobsInFlight) {
-        return;
-    }
     QList<quint64> candidates;
     candidates.reserve(m_dirty.size());
     for (auto it = m_dirty.constBegin(); it != m_dirty.constEnd(); ++it) {
@@ -297,8 +307,70 @@ void QcMeshScheduler::pump(const QcClientWorld &world)
         return dx * dx + dy * dy * 0.25 + dz * dz;
     };
     std::ranges::sort(candidates, [&](quint64 a, quint64 b) { return distance(m_dirty[a]) < distance(m_dirty[b]); });
+    return candidates;
+}
 
-    for (const quint64 key : std::as_const(candidates)) {
+std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world, SectionAddress address) const
+{
+    QcMeshInput input;
+    bool sidesLoaded = true;
+    for (int dz = -1; dz <= 1; ++dz) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            const QcChunkPos pos{address.chunk.x + dx, address.chunk.z + dz};
+            auto chunk = world.chunk(pos);
+            if (!chunk && (dx == 0 || dz == 0)) {
+                sidesLoaded = false;
+            }
+            const int index = (dz + 1) * 3 + (dx + 1);
+            input.chunks[std::size_t(index)] = std::move(chunk);
+            input.blockLight[std::size_t(index)] = m_light.value(pos);
+        }
+    }
+    if (!sidesLoaded) {
+        return std::nullopt;
+    }
+
+    input.sectionIndex = address.section;
+    input.renderTable = m_renderTable;
+    input.hasBlockLight = m_lightEngine != nullptr;
+    return input;
+}
+
+void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input)
+{
+    m_dirty.remove(key);
+    m_inFlight.insert(key);
+    const quint64 version = m_versions.value(key);
+    m_pool.submit([this, key, version, input = std::move(input)] {
+        QElapsedTimer work;
+        work.start();
+        auto mesh = std::make_shared<const QcChunkMesh>(QcChunkMesher::mesh(input));
+        if (m_results.push({key, version, std::move(mesh), double(work.nsecsElapsed()) / 1e6})) {
+            QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverResults, Qt::QueuedConnection);
+        }
+    });
+}
+
+void QcMeshScheduler::noteLatency(quint64 key)
+{
+    if (const auto changed = m_changedAt.constFind(key); changed != m_changedAt.constEnd()) {
+        const double ms = double(m_clock.nsecsElapsed() - *changed) / 1e6;
+        ++m_stats.latencySamples;
+        m_stats.latencyTotalMs += ms;
+        m_stats.latencyWorstMs = std::max(m_stats.latencyWorstMs, ms);
+        m_changedAt.remove(key);
+    }
+}
+
+void QcMeshScheduler::pump(const QcClientWorld &world)
+{
+    noteBacklog();
+    if (!m_renderTable || m_dirty.isEmpty() || m_inFlight.size() >= m_maxJobsInFlight) {
+        return;
+    }
+
+    const QList<quint64> candidates = nearestDirtyFirst();
+    for (const quint64 key : candidates) {
         if (m_inFlight.size() >= m_maxJobsInFlight) {
             break;
         }
@@ -312,50 +384,18 @@ void QcMeshScheduler::pump(const QcClientWorld &world)
         }
         if (centre->section(address.section).isEmpty()) {
             m_dirty.remove(key);
-            if (const auto changed = m_changedAt.constFind(key); changed != m_changedAt.constEnd()) {
-                const double ms = double(m_clock.nsecsElapsed() - *changed) / 1e6;
-                ++m_stats.latencySamples;
-                m_stats.latencyTotalMs += ms;
-                m_stats.latencyWorstMs = std::max(m_stats.latencyWorstMs, ms);
-                m_changedAt.remove(key);
-            }
+            noteLatency(key);
             emit meshRemoved(key);
             continue;
         }
-        QcMeshInput input;
-        bool sidesLoaded = true;
-        for (int dz = -1; dz <= 1; ++dz) {
-            for (int dx = -1; dx <= 1; ++dx) {
-                const QcChunkPos pos{address.chunk.x + dx, address.chunk.z + dz};
-                auto chunk = world.chunk(pos);
-                if (!chunk && (dx == 0 || dz == 0)) {
-                    sidesLoaded = false;
-                }
-                const int index = (dz + 1) * 3 + (dx + 1);
-                input.chunks[std::size_t(index)] = std::move(chunk);
-                input.blockLight[std::size_t(index)] = m_light.value(pos);
-            }
-        }
-        if (!sidesLoaded) {
+        std::optional<QcMeshInput> input = meshInput(world, address);
+        if (!input) {
             // Dropped for now: loading the missing neighbour marks this section dirty again.
             m_dirty.remove(key);
             m_changedAt.remove(key);
             continue;
         }
-        input.sectionIndex = address.section;
-        input.renderTable = m_renderTable;
-        input.hasBlockLight = m_lightEngine != nullptr;
-        m_dirty.remove(key);
-        m_inFlight.insert(key);
-        const quint64 version = m_versions.value(key);
-        m_pool.submit([this, key, version, input = std::move(input)] {
-            QElapsedTimer work;
-            work.start();
-            auto mesh = std::make_shared<const QcChunkMesh>(QcChunkMesher::mesh(input));
-            if (m_results.push({key, version, std::move(mesh), double(work.nsecsElapsed()) / 1e6})) {
-                QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverResults, Qt::QueuedConnection);
-            }
-        });
+        submitMesh(key, std::move(*input));
     }
 }
 
@@ -369,13 +409,7 @@ void QcMeshScheduler::deliverResults()
         if (m_versions.value(result.key) != result.version) {
             continue;
         }
-        if (const auto changed = m_changedAt.constFind(result.key); changed != m_changedAt.constEnd()) {
-            const double ms = double(m_clock.nsecsElapsed() - *changed) / 1e6;
-            ++m_stats.latencySamples;
-            m_stats.latencyTotalMs += ms;
-            m_stats.latencyWorstMs = std::max(m_stats.latencyWorstMs, ms);
-            m_changedAt.remove(result.key);
-        }
+        noteLatency(result.key);
         if (result.mesh->isEmpty()) {
             emit meshRemoved(result.key);
         } else {

@@ -2,16 +2,13 @@
 
 #include "QcPackReference.h"
 
+#include "QcBlockEntityStorage.h"
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
+#include "QcEntityStorage.h"
 #include "QcInventory.h"
-#include "QcContainerManager.h"
-#include "QcFallingBlockManager.h"
-#include "QcItemEntityManager.h"
-#include "QcMachineManager.h"
-#include "QcMobManager.h"
-#include "QcPlantManager.h"
+#include "QcRegionStorage.h"
 #include "QcResult.h"
 
 #include <QDateTime>
@@ -38,22 +35,6 @@ struct QcWorldInfo
     bool keepInventory = true;
 };
 
-// Dropped items, growing saplings and falling blocks of a world (entities.qce).
-struct QcWorldEntities
-{
-    QList<QcItemEntityManager::Drop> items;
-    QList<QcPlantManager::Sapling> saplings;
-    // Since format 2 of entities.qce.
-    QList<QcFallingBlockManager::Falling> fallingBlocks;
-};
-
-// Persistent creatures (peaceful animals) and the chunks that already got their animals (mobs.qce).
-struct QcWorldMobs
-{
-    QList<QcMobManager::Stored> mobs;
-    QSet<QcChunkPos> populatedChunks;
-};
-
 struct QcPlayerData
 {
     QcEntityMotion motion;
@@ -67,16 +48,16 @@ struct QcPlayerData
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
-// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each), players (players/<name>.qcp) and dropped items with
-// growing saplings (entities.qce), animals (mobs.qce), machines (machines.qce), chests (containers.qce) and pending
-// neighbour updates (blockupdates.qce). Only modified chunks
+// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), players (players/<name>.qcp) and dropped items with
+// growing saplings (entities.qce), animals (mobs.qce, both QcEntityStorage), machines (machines.qce), chests
+// (containers.qce, both QcBlockEntityStorage) and pending neighbour updates (blockupdates.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
 class QcWorldStorage
 {
 public:
-    static constexpr int regionSize = 32;
+    static constexpr int regionSize = QcRegionStorage::regionSize;
 
     QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content);
 
@@ -86,33 +67,39 @@ public:
     QcStatus writeInfo(const QcWorldInfo &info) const;
 
     // Loads every stored chunk. Unknown block names become air and are listed in `warnings`.
-    QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> readChunks(QStringList &warnings) const;
+    QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> readChunks(QStringList &warnings) const { return m_regions.read(warnings); }
     // Rewrites the region files that contain any of the given chunks with all chunks of those regions.
-    QcStatus writeChunks(const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> &chunks) const;
+    QcStatus writeChunks(const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> &chunks) const { return m_regions.write(chunks); }
 
     // std::nullopt without error when the player has never been saved.
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const;
     QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const;
 
     // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
-    QcResult<QcWorldEntities> readEntities(QStringList &warnings) const;
-    QcStatus writeEntities(const QcWorldEntities &entities) const;
+    QcResult<QcWorldEntities> readEntities(QStringList &warnings) const { return m_entities.readEntities(warnings); }
+    QcStatus writeEntities(const QcWorldEntities &entities) const { return m_entities.writeEntities(entities); }
 
     // Persistent creatures (mobs.qce). Empty without error when nothing was saved yet. Unknown kinds
     // are dropped with a warning.
-    static constexpr quint32 maxStoredPopulatedChunks = 16 * 1024 * 1024;
-    QcResult<QcWorldMobs> readMobs(QStringList &warnings) const;
-    QcStatus writeMobs(const QcWorldMobs &mobs) const;
+    static constexpr quint32 maxStoredPopulatedChunks = QcEntityStorage::maxStoredPopulatedChunks;
+    QcResult<QcWorldMobs> readMobs(QStringList &warnings) const { return m_entities.readMobs(warnings); }
+    QcStatus writeMobs(const QcWorldMobs &mobs) const { return m_entities.writeMobs(mobs); }
 
     // Machines with their contents (machines.qce). Empty without error when nothing was saved yet.
     // Unknown items are dropped with a warning.
-    QcResult<QList<QcMachineManager::Machine>> readMachines(QStringList &warnings) const;
-    QcStatus writeMachines(const QList<QcMachineManager::Machine> &machines) const;
+    QcResult<QList<QcMachineManager::Machine>> readMachines(QStringList &warnings) const { return m_blockEntities.readMachines(warnings); }
+    QcStatus writeMachines(const QList<QcMachineManager::Machine> &machines) const { return m_blockEntities.writeMachines(machines); }
 
     // Storage blocks with their contents (containers.qce). Empty without error when nothing was saved
     // yet. Unknown items are dropped with a warning.
-    QcResult<QList<QcContainerManager::Container>> readContainers(QStringList &warnings) const;
-    QcStatus writeContainers(const QList<QcContainerManager::Container> &containers) const;
+    QcResult<QList<QcContainerManager::Container>> readContainers(QStringList &warnings) const
+    {
+        return m_blockEntities.readContainers(warnings);
+    }
+    QcStatus writeContainers(const QList<QcContainerManager::Container> &containers) const
+    {
+        return m_blockEntities.writeContainers(containers);
+    }
 
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
     // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
@@ -120,12 +107,14 @@ public:
     QcResult<QList<QcBlockPos>> readBlockUpdates() const;
     QcStatus writeBlockUpdates(const QList<QcBlockPos> &positions) const;
 
-    static QcChunkPos regionOf(QcChunkPos chunk);
+    static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionStorage::regionOf(chunk); }
 
 private:
-    QString regionPath(QcChunkPos region) const;
     QString playerPath(const QString &playerName) const;
 
     QString m_directory;
     std::shared_ptr<const QcContentRegistry> m_content;
+    QcRegionStorage m_regions;
+    QcEntityStorage m_entities;
+    QcBlockEntityStorage m_blockEntities;
 };

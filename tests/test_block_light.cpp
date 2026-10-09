@@ -1,3 +1,4 @@
+#include "QcBlockPos.h"
 #include "QcLightVolume.h"
 #include "QcTestWorld.h"
 
@@ -9,9 +10,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-int manhattan(int x, int y, int z, int ox, int oy, int oz)
+int manhattan(QcBlockPos a, QcBlockPos b)
 {
-    return std::abs(x - ox) + std::abs(y - oy) + std::abs(z - oz);
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y) + std::abs(a.z - b.z);
 }
 
 // Test registry: stone and water from qcMakeTestContent plus a torch (light 14) and a glowing block.
@@ -59,16 +60,18 @@ private slots:
         QcLightVolume volume(size, size, size);
         volume.addSource(15, 15, 15, 14);
         volume.propagate();
+
         for (int x = 0; x < size; ++x) {
             for (int y = 0; y < size; ++y) {
                 for (int z = 0; z < size; ++z) {
-                    const int expected = std::max(0, 14 - manhattan(x, y, z, 15, 15, 15));
+                    const int expected = std::max(0, 14 - manhattan({x, y, z}, {15, 15, 15}));
                     if (volume.level(x, y, z) != expected) {
                         QFAIL(qPrintable(u"level at %1 %2 %3 is %4, expected %5"_s.arg(x).arg(y).arg(z).arg(volume.level(x, y, z)).arg(expected)));
                     }
                 }
             }
         }
+
         QCOMPARE(volume.level(-1, 0, 0), 0);
     }
 

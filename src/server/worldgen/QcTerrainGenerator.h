@@ -1,15 +1,20 @@
 #pragma once
 
+#include "QcCaveCarver.h"
 #include "QcContentRegistry.h"
 #include "QcNoise.h"
+#include "QcPoolPlacer.h"
+#include "QcTerrainColumn.h"
+#include "QcTerrainDefinitions.h"
 #include "QcWorldGenerator.h"
 
 #include <QList>
-#include <QSet>
 
 #include <array>
-
 #include <memory>
+#include <optional>
+
+class QcTerrainColumnGrid;
 
 // Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity
 // and ruggedness, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
@@ -20,19 +25,7 @@
 class QcTerrainGenerator : public QcWorldGenerator
 {
 public:
-    struct Column
-    {
-        // Height of the terrain surface: the top solid block is at height - 1.
-        int height = 0;
-        int biome = 0;
-        // 0 = ocean, 1 = land; values in between are coasts.
-        double landFactor = 1.0;
-        // Largest height difference to the four neighbouring columns; set where it is needed
-        // (generate(), surfaceBlockAt()), else 0.
-        int slope = 0;
-        // Overhang amplitude in blocks, blended across biome borders (0: plain column).
-        double overhang = 0.0;
-    };
+    using Column = QcTerrainColumn;
 
     // Unresolvable references are reported in `warnings` and replaced by sensible fallbacks; omitted
     // optional blocks (empty names) fall back silently.
@@ -51,84 +44,56 @@ public:
     int groundTop(int x, int z, const Column &column) const;
     // True where a cave carves the terrain (independent of the surface).
     bool isCave(int x, int y, int z) const;
-    int seaLevel() const { return m_seaLevel; }
+    int seaLevel() const { return m_definitions.seaLevel; }
 
 private:
-    struct Feature;
-    struct Biome;
-    struct Ore;
-    struct Pool;
-    // Columns of a chunk and a margin around it, computed once per chunk.
-    class ColumnGrid;
+    using Biome = QcTerrainDefinitions::Biome;
+    using Feature = QcTerrainDefinitions::Feature;
+    using Ore = QcTerrainDefinitions::Ore;
 
-    QcBlockId resolve(const QString &name, QcBlockId fallback, QStringList *warnings) const;
     QcBlockId surfaceBlock(const Column &column, int x, int z) const;
     // The ground's own block below the surface down to the subsurface depth.
     QcBlockId subsurfaceBlock(const Column &column, QcBlockId surface) const;
     // Biome height of land before blending: base height plus hills, ridges and terraces.
     double biomeHeight(const Biome &biome, double rolling, double ridge, double terraces) const;
-    double caveDensity(int field, int x, int y, int z) const;
-    // Whether the cave fields (interpolated at a block) remove that block.
-    bool carves(const std::array<double, 4> &values, int y) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). Fills `solid` from the band's lowest y, which it
     // returns, and gives the band's size in `size`.
     static constexpr int maxOverhangBand = 40;
     int overhangBand(int x, int z, const Column &column, std::array<bool, maxOverhangBand> &solid, int &size) const;
-    // Highest block caves may remove in a column: below a rock roof except at entrances, and below
-    // a thicker lid under water.
-    int caveTop(const Column &column, int x, int z) const;
     void fillColumn(QcChunk &chunk, int localX, int localZ, const Column &column) const;
-    void carveCaves(QcChunk &chunk, const ColumnGrid &columns) const;
+    // Per column of the chunk (z * chunkSize + x), whether caves removed its top block.
+    QList<bool> carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
     void placeOres(QcChunk &chunk) const;
-    void placePools(QcChunk &chunk) const;
-    // Pools with `surface`, after the features so trees never depend on them.
-    void placeSurfacePools(QcChunk &chunk, const ColumnGrid &columns) const;
-    void sinkPool(QcChunk &chunk, const Pool &pool, int centreX, int floorY, int centreZ, int attempt) const;
-    // Whether a block holds a liquid in place (solid, neither liquid nor replaceable).
-    bool holdsLiquid(QcBlockId block) const;
+    // Grows one compact vein of `ore` into `cells` (chunk-local, starting from cells[0]).
+    void growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const;
+    void placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
-    void placeFeatures(QcChunk &chunk, const ColumnGrid &columns, const QList<bool> &carved) const;
-    void placeFeature(QcChunk &chunk, const Feature &feature, int x, int baseY, int z, double random) const;
+    void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved) const;
+    void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
+    // The first feature of the column's biome that grows there by density, patches and shore.
+    std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
+    void placeFeature(QcChunk &chunk, const Feature &feature, QcBlockPos base, double random) const;
+    // Spawn candidate on the square ring of `radius` around the origin, if any.
+    std::optional<QcBlockPos> spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const;
+    // Open, dry and not too high ground at a column; `chunk` caches the last generated chunk.
+    bool fitsSpawn(int x, int z, const Column &column, std::shared_ptr<QcChunk> &chunk) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
-    int m_seaLevel = 62;
-    QcBlockId m_stone = qcAirBlockId;
-    QcBlockId m_water = qcAirBlockId;
-    QcBlockId m_bedrock = qcAirBlockId;
-    bool m_caves = true;
-    double m_tunnelWidth = 0.075;
-    double m_cavernThreshold = 0.58;
-    QcBlockId m_caveLiquid = qcAirBlockId;
-    int m_caveLiquidLevel = 10;
-    int m_caveRoof = 4;
-    // Entrance noise above this value lets caves open to the surface.
-    double m_entranceThreshold = 1.0;
-    int m_bedrockLayers = 3;
-    QList<Biome> m_biomes;
-    QList<Feature> m_features;
-    QList<Ore> m_ores;
-    QList<Pool> m_pools;
-    // Whether any biome uses ridges or terraces (their noise is skipped otherwise).
-    bool m_anyRidges = false;
-    bool m_anyTerraces = false;
-    bool m_anyOverhangs = false;
+    QcTerrainDefinitions m_definitions;
+    QcCaveCarver m_caves;
+    QcPoolPlacer m_pools;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;
     QcNoise m_temperatureNoise;
     QcNoise m_humidityNoise;
-    QcNoise m_tunnelNoiseA;
-    QcNoise m_tunnelNoiseB;
-    QcNoise m_cavernNoise;
     QcNoise m_ruggednessNoise;
     QcNoise m_warpNoiseX;
     QcNoise m_warpNoiseZ;
     QcNoise m_hillNoise;
     QcNoise m_ridgeNoise;
     QcNoise m_terraceNoise;
-    QcNoise m_tunnelWidthNoise;
-    QcNoise m_entranceNoise;
     QcNoise m_overhangNoise;
 };

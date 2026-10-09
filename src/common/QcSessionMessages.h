@@ -1,0 +1,66 @@
+#pragma once
+
+// Protocol messages of the connection and session: handshake, content, chat and world time.
+// Part of the QcMessage variant (QcMessages.h).
+
+#include "QcAppearance.h"
+#include "QcContentRegistry.h"
+
+#include <QString>
+
+#include <memory>
+
+namespace QcMsg {
+
+// Client -> server: first message on every connection.
+struct Hello
+{
+    quint32 protocolVersion = 0;
+    QString playerName;
+    QcAppearance appearance;
+};
+
+// Server -> client: accepted connection.
+struct Welcome
+{
+    quint32 protocolVersion = 0;
+    quint32 playerEntityId = 0;
+    QString worldName;
+    qint64 seed = 0;
+    // View direction from the save; only meaningful when `restoredView` is set.
+    float yaw = 0.0f;
+    float pitch = 0.0f;
+    bool restoredView = false;
+};
+
+// Server -> client: all content definitions; runtime block ids are the indices in this registry.
+struct ContentSync
+{
+    std::shared_ptr<const QcContentRegistry> content;
+};
+
+struct Disconnect
+{
+    QString reason;
+};
+
+// Client -> server: chat line or command starting with '/'.
+struct ChatInput
+{
+    QString text;
+};
+
+// Server -> client: chat line or command feedback.
+struct ChatMessage
+{
+    QString text;
+};
+
+// Server -> client: seconds since the world began and the length of a full day.
+struct WorldTime
+{
+    double time = 0.0;
+    double dayLength = 0.0;
+};
+
+} // namespace QcMsg

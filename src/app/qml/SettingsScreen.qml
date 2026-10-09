@@ -22,14 +22,14 @@ Popup {
     padding: 20
 
     onAboutToShow: {
-        languageBox.currentIndex = languageBox.indexOfValue(game.language);
-        cameraBox.currentIndex = cameraBox.indexOfValue(game.cameraMode);
+        languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
+        cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
         pages.currentIndex = startOnControls ? 1 : 0;
         controlsPage.clear();
     }
     onClosed: {
         controlsPage.cancelCapture();
-        game.saveSettings();
+        game.settings.saveSettings();
     }
 
     ColumnLayout {
@@ -86,8 +86,8 @@ Popup {
                     to: 16
                     stepSize: 1
                     snapMode: Slider.SnapAlways
-                    value: screen.game.viewDistance
-                    onMoved: screen.game.viewDistance = value
+                    value: screen.game.settings.viewDistance
+                    onMoved: screen.game.settings.viewDistance = value
                 }
                 Label {
                     Layout.preferredWidth: 90
@@ -104,8 +104,8 @@ Popup {
                     from: 50
                     to: 110
                     stepSize: 1
-                    value: screen.game.fieldOfView
-                    onMoved: screen.game.fieldOfView = value
+                    value: screen.game.settings.fieldOfView
+                    onMoved: screen.game.settings.fieldOfView = value
                 }
                 Label {
                     text: qsTr("%1°").arg(Math.round(fieldOfView.value))
@@ -120,8 +120,8 @@ Popup {
                     Layout.fillWidth: true
                     from: 0.02
                     to: 1.0
-                    value: screen.game.mouseSensitivity
-                    onMoved: screen.game.mouseSensitivity = value
+                    value: screen.game.settings.mouseSensitivity
+                    onMoved: screen.game.settings.mouseSensitivity = value
                 }
                 Label {
                     text: sensitivity.value.toLocaleString(Qt.locale(), "f", 2)
@@ -130,15 +130,15 @@ Popup {
                 CheckBox {
                     Layout.columnSpan: 3
                     text: qsTr("Invert mouse")
-                    checked: screen.game.invertMouse
-                    onToggled: screen.game.invertMouse = checked
+                    checked: screen.game.settings.invertMouse
+                    onToggled: screen.game.settings.invertMouse = checked
                 }
 
                 CheckBox {
                     Layout.columnSpan: 3
                     text: qsTr("Show frame rate and position")
-                    checked: screen.game.showDebug
-                    onToggled: screen.game.showDebug = checked
+                    checked: screen.game.settings.showDebug
+                    onToggled: screen.game.settings.showDebug = checked
                 }
 
                 Label {
@@ -150,8 +150,8 @@ Popup {
                     Layout.fillWidth: true
                     from: 0
                     to: 1
-                    value: screen.game.masterVolume
-                    onMoved: screen.game.masterVolume = value
+                    value: screen.game.settings.audio.masterVolume
+                    onMoved: screen.game.settings.audio.masterVolume = value
                 }
                 Label {
                     text: qsTr("%1 %").arg(Math.round(masterVolume.value * 100))
@@ -166,8 +166,8 @@ Popup {
                     Layout.fillWidth: true
                     from: 0
                     to: 1
-                    value: screen.game.effectsVolume
-                    onMoved: screen.game.effectsVolume = value
+                    value: screen.game.settings.audio.effectsVolume
+                    onMoved: screen.game.settings.audio.effectsVolume = value
                 }
                 Label {
                     text: qsTr("%1 %").arg(Math.round(effectsVolume.value * 100))
@@ -182,8 +182,8 @@ Popup {
                     Layout.fillWidth: true
                     from: 0
                     to: 1
-                    value: screen.game.musicVolume
-                    onMoved: screen.game.musicVolume = value
+                    value: screen.game.settings.audio.musicVolume
+                    onMoved: screen.game.settings.audio.musicVolume = value
                 }
                 Label {
                     text: qsTr("%1 %").arg(Math.round(musicVolume.value * 100))
@@ -198,8 +198,8 @@ Popup {
                     Layout.fillWidth: true
                     from: 0
                     to: 1
-                    value: screen.game.ambientVolume
-                    onMoved: screen.game.ambientVolume = value
+                    value: screen.game.settings.audio.ambientVolume
+                    onMoved: screen.game.settings.audio.ambientVolume = value
                 }
                 Label {
                     text: qsTr("%1 %").arg(Math.round(ambientVolume.value * 100))
@@ -208,8 +208,8 @@ Popup {
                 CheckBox {
                     Layout.columnSpan: 3
                     text: qsTr("Mute all sounds")
-                    checked: screen.game.muted
-                    onToggled: screen.game.muted = checked
+                    checked: screen.game.settings.audio.muted
+                    onToggled: screen.game.settings.audio.muted = checked
                 }
 
                 Label {
@@ -227,7 +227,7 @@ Popup {
                         { text: qsTr("Third person, behind"), value: "behind" },
                         { text: qsTr("Third person, front"), value: "front" }
                     ]
-                    onActivated: screen.game.cameraMode = currentValue
+                    onActivated: screen.game.settings.cameraMode = currentValue
                 }
 
                 Label {
@@ -246,7 +246,7 @@ Popup {
                         { text: "English", value: "en" },
                         { text: "Deutsch", value: "de" }
                     ]
-                    onActivated: screen.game.language = currentValue
+                    onActivated: screen.game.settings.language = currentValue
                 }
 
                 Label {
@@ -261,7 +261,7 @@ Popup {
             ControlsPage {
                 id: controlsPage
 
-                keys: screen.game.keys
+                keys: screen.game.settings.keys
             }
         }
 

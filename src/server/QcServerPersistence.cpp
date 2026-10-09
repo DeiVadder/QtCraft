@@ -1,0 +1,320 @@
+#include "QcServerPersistence.h"
+
+#include "QcBlockUpdateQueue.h"
+#include "QcContentPackLoader.h"
+#include "QcDayCycle.h"
+#include "QcServerBlocks.h"
+#include "QcServerState.h"
+
+#include <QDir>
+#include <QFile>
+#include <QLoggingCategory>
+
+#include <algorithm>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+
+Q_LOGGING_CATEGORY(lcPersistence, "qtcraft.server")
+
+} // namespace
+
+QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates)
+    : m_state(state)
+    , m_blocks(blocks)
+    , m_updates(updates)
+{
+}
+
+QcStatus QcServerPersistence::open()
+{
+    // New worlds, saved or not, start in the morning.
+    m_state.info.worldTime = QcDayCycle::startTime;
+    m_state.info.keepInventory = m_state.config.keepInventory;
+
+    if (m_state.config.worldDirectory.isEmpty()) {
+        return {};
+    }
+
+    const QcWorldStorage &storage = m_storage.emplace(m_state.config.worldDirectory, m_state.content);
+    if (!QFile::exists(QDir(m_state.config.worldDirectory).filePath(u"world.json"_s))) {
+        return createInfo(storage);
+    }
+
+    QStringList warnings;
+    if (const QcStatus read = readInfo(storage, warnings); !read) {
+        return read;
+    }
+
+    const QcResult<qsizetype> chunkCount = readChunks(storage, warnings);
+    if (!chunkCount) {
+        return qcError(chunkCount.error());
+    }
+
+    if (const QcStatus read = readEntities(storage); !read) {
+        return read;
+    }
+    if (const QcStatus read = readMobs(storage); !read) {
+        return read;
+    }
+    if (const QcStatus read = readMachines(storage); !read) {
+        return read;
+    }
+    if (const QcStatus read = readContainers(storage); !read) {
+        return read;
+    }
+    if (const QcStatus read = readBlockUpdates(storage); !read) {
+        return read;
+    }
+
+    qCInfo(lcPersistence) << "Opened world" << m_state.info.name << "with" << *chunkCount << "stored chunks and"
+                          << m_state.items.items().size() << "dropped items";
+    return {};
+}
+
+QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
+{
+    m_state.info.name = m_state.config.worldName;
+    m_state.info.seed = m_state.config.seed;
+    m_state.info.created = QDateTime::currentDateTimeUtc();
+    m_state.info.lastPlayed = m_state.info.created;
+    m_state.info.packs = m_state.content->packs();
+    return storage.writeInfo(m_state.info);
+}
+
+QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringList &warnings)
+{
+    QcResult<QcWorldInfo> info = storage.readInfo();
+    if (!info) {
+        return qcError(info.error());
+    }
+
+    if (info->seed != m_state.config.seed) {
+        return qcError(u"World seed %1 does not match the generator seed %2"_s.arg(info->seed).arg(m_state.config.seed));
+    }
+
+    m_state.info = *info;
+    m_state.config.worldName = m_state.info.name;
+
+    // Content of packs that are gone turns into air or disappears when chunks and players load.
+    for (const QcPackReference &pack : std::as_const(m_state.info.packs)) {
+        const auto current = std::ranges::find(m_state.content->packs(), pack.id, &QcPackReference::id);
+        if (current == m_state.content->packs().end()) {
+            warnings.append(u"The world was saved with '%1' %2, which is not loaded now"_s.arg(pack.name, pack.version));
+        } else if (QcContentPackLoader::parseVersion(current->version) != QcContentPackLoader::parseVersion(pack.version)) {
+            warnings.append(u"The world was saved with '%1' %2, now %3 is loaded"_s.arg(pack.name, pack.version, current->version));
+        }
+    }
+
+    m_state.info.packs = m_state.content->packs();
+    return {};
+}
+
+QcResult<qsizetype> QcServerPersistence::readChunks(const QcWorldStorage &storage, QStringList &warnings)
+{
+    QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> chunks = storage.readChunks(warnings);
+    m_openWarnings.clear();
+    noteWarnings(warnings);
+    if (!chunks) {
+        return qcError(chunks.error());
+    }
+
+    m_state.world.adoptStoredChunks(*chunks);
+    return chunks->size();
+}
+
+QcStatus QcServerPersistence::readEntities(const QcWorldStorage &storage)
+{
+    QStringList warnings;
+    const QcResult<QcWorldEntities> entities = storage.readEntities(warnings);
+    noteWarnings(warnings);
+    if (!entities) {
+        return qcError(entities.error());
+    }
+
+    m_state.items.restore(entities->items, [this] { return m_state.newEntityId(); });
+    m_state.plants.restoreSaplings(entities->saplings);
+    m_state.falling.restore(entities->fallingBlocks, [this] { return m_state.newEntityId(); });
+    return {};
+}
+
+QcStatus QcServerPersistence::readMobs(const QcWorldStorage &storage)
+{
+    QStringList warnings;
+    const QcResult<QcWorldMobs> mobs = storage.readMobs(warnings);
+    noteWarnings(warnings);
+    if (!mobs) {
+        return qcError(mobs.error());
+    }
+    m_state.mobs.restore(mobs->mobs, mobs->populatedChunks, [this] { return m_state.newEntityId(); });
+    return {};
+}
+
+QcStatus QcServerPersistence::readMachines(const QcWorldStorage &storage)
+{
+    QStringList warnings;
+    const QcResult<QList<QcMachineManager::Machine>> machines = storage.readMachines(warnings);
+    noteWarnings(warnings);
+    if (!machines) {
+        return qcError(machines.error());
+    }
+    m_state.machines.restore(*machines);
+    return {};
+}
+
+QcStatus QcServerPersistence::readContainers(const QcWorldStorage &storage)
+{
+    QStringList warnings;
+    const QcResult<QList<QcContainerManager::Container>> containers = storage.readContainers(warnings);
+    noteWarnings(warnings);
+    if (!containers) {
+        return qcError(containers.error());
+    }
+
+    m_state.containers.restore(*containers);
+
+    // Chests whose block went away with a mod (or whose size changed) must not linger.
+    const QList<QcBlockPos> chestPositions = m_state.containers.positions();
+    for (const QcBlockPos &pos : chestPositions) {
+        m_state.world.loadChunk(pos.chunk());
+        m_blocks.reconcileContainer(pos);
+    }
+    return {};
+}
+
+QcStatus QcServerPersistence::readBlockUpdates(const QcWorldStorage &storage)
+{
+    const QcResult<QList<QcBlockPos>> updates = storage.readBlockUpdates();
+    if (!updates) {
+        return qcError(updates.error());
+    }
+
+    m_updates.setCommandMode(true);
+    for (const QcBlockPos &pos : *updates) {
+        m_updates.queue(pos);
+    }
+    m_updates.setCommandMode(false);
+    return {};
+}
+
+void QcServerPersistence::noteWarnings(const QStringList &warnings)
+{
+    for (const QString &warning : warnings) {
+        qCWarning(lcPersistence) << warning;
+    }
+    m_openWarnings.append(warnings);
+}
+
+QcResult<std::optional<QcPlayerData>> QcServerPersistence::readPlayer(const QString &name, QStringList &warnings) const
+{
+    return m_storage ? m_storage->readPlayer(name, warnings) : QcResult<std::optional<QcPlayerData>>(std::nullopt);
+}
+
+QcStatus QcServerPersistence::savePlayer(const QcServerClient &client)
+{
+    if (!m_storage || client.name.isEmpty()) {
+        return {};
+    }
+
+    QcPlayerData player;
+    player.motion = client.motion;
+    player.yaw = client.yaw;
+    player.pitch = client.pitch;
+    player.inventory = client.inventory;
+
+    // Items in the crafting grid are stored in the inventory, as if the grid had been closed; the
+    // open grid itself is not saved.
+    int lost = 0;
+    for (const QcItemStack &cell : client.craftingGrid) {
+        if (!cell.isEmpty()) {
+            lost += player.inventory.add(cell.item, cell.count, *m_state.content, cell.damage);
+        }
+    }
+
+    if (lost > 0) {
+        qCWarning(lcPersistence) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
+    }
+
+    player.health = client.health;
+    player.food = client.hunger.food();
+    player.exhaustion = client.hunger.exhaustion();
+
+    const QcStatus saved = m_storage->writePlayer(client.name, player);
+    if (!saved) {
+        qCWarning(lcPersistence) << saved.error();
+    }
+    return saved;
+}
+
+QcStatus QcServerPersistence::save()
+{
+    if (!m_storage) {
+        return {};
+    }
+
+    const QcWorldStorage &storage = *m_storage;
+    QcStatus result;
+    const auto keep = [&result](const QcStatus &written) {
+        if (!written && result) {
+            result = written;
+        }
+    };
+
+    // Players first: their inventories matter most and must not depend on the world files.
+    for (const auto &client : m_state.clients) {
+        if (client->joined) {
+            keep(savePlayer(*client));
+        }
+    }
+
+    m_state.info.lastPlayed = QDateTime::currentDateTimeUtc();
+    keep(storage.writeInfo(m_state.info));
+
+    const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks = m_state.world.takeChunksToSave();
+    if (const QcStatus written = storage.writeChunks(chunks); !written) {
+        // Keep the regions dirty so the next save tries again.
+        m_state.world.markDirty(chunks.keys());
+        keep(written);
+    }
+
+    keep(saveEntities(storage));
+    keep(storage.writeMobs({m_state.mobs.persistentMobs(), m_state.mobs.populatedChunks()}));
+    keep(storage.writeMachines(m_state.machines.machines()));
+    keep(storage.writeContainers(m_state.containers.containers()));
+    keep(saveBlockUpdates(storage));
+    return result;
+}
+
+QcStatus QcServerPersistence::saveEntities(const QcWorldStorage &storage) const
+{
+    QcWorldEntities entities;
+    for (const QcItemEntityManager::Item &item : m_state.items.items()) {
+        entities.items.append({item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age});
+    }
+
+    // Waiting drops follow the items; on the next start they wait again if there is no room.
+    entities.items.append(m_state.items.queued());
+    entities.saplings = m_state.plants.saplings();
+    entities.fallingBlocks = m_state.falling.all();
+    return storage.writeEntities(entities);
+}
+
+QcStatus QcServerPersistence::saveBlockUpdates(const QcWorldStorage &storage) const
+{
+    // Pending neighbour updates survive a restart, so a large /fill never leaves floating torches.
+    // Those of player actions come first when there are more than a save holds.
+    QList<QcBlockPos> updates = m_updates.playerUpdates();
+    // Planned flow steps come back as updates, which plan them again.
+    updates.append(m_state.liquids.plannedPositions());
+    updates.append(m_updates.commandUpdates());
+    updates.append(m_updates.waitingUpdates());
+
+    const qsizetype storable = std::min(m_state.config.maxSavedBlockUpdates, qsizetype(QcWorldStorage::maxStoredBlockUpdates));
+    if (updates.size() > storable) {
+        qCWarning(lcPersistence) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
+        updates.resize(storable);
+    }
+
+    return storage.writeBlockUpdates(updates);
+}

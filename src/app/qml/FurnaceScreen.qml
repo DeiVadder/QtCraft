@@ -27,10 +27,10 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.keys.matches("inventory", event.key)) {
+        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("inventory", event.key)) {
             screen.game.overlay = "";
-        } else if (screen.game.keys.matches("handbook", event.key)) {
-            screen.game.openHandbook(screen.hoveredItem);
+        } else if (screen.game.settings.keys.matches("handbook", event.key)) {
+            screen.game.handbook.open(screen.hoveredItem);
         }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
@@ -43,7 +43,7 @@ Rectangle {
             return;
         }
         if (pickedSlot !== slot && slot !== outputRow)
-            game.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
+            game.player.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
         if (button !== Qt.RightButton || slot === outputRow)
             pickedSlot = -1;
     }
@@ -74,7 +74,7 @@ Rectangle {
 
         infoItem: itemName
         infoEnabled: screen.pickedSlot < 0
-        onInfoRequested: item => screen.game.openHandbook(item)
+        onInfoRequested: item => screen.game.handbook.open(item)
         slotIcon: icon
         slotCount: count
         slotDurability: durability
@@ -104,7 +104,7 @@ Rectangle {
         spacing: 12
 
         Label {
-            text: screen.game.machineLabel.length > 0 ? screen.game.machineLabel : qsTr("Furnace")
+            text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
             color: "white"
             font.pixelSize: 24
             font.bold: true
@@ -119,7 +119,7 @@ Rectangle {
 
                 Repeater {
                     model: SlotRange {
-                        source: screen.game.inventory
+                        source: screen.game.player.inventory
                         first: screen.inputRow
                         count: 1
                     }
@@ -142,7 +142,7 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         width: parent.width - 6
-                        height: (parent.height - 4) * screen.game.machineBurn
+                        height: (parent.height - 4) * screen.game.player.machineBurn
                         radius: 3
                         gradient: Gradient {
                             GradientStop {
@@ -159,7 +159,7 @@ Rectangle {
 
                 Repeater {
                     model: SlotRange {
-                        source: screen.game.inventory
+                        source: screen.game.player.inventory
                         first: screen.fuelRow
                         count: 1
                     }
@@ -185,7 +185,7 @@ Rectangle {
                     color: "#60000000"
 
                     Rectangle {
-                        width: parent.width * screen.game.machineProgress
+                        width: parent.width * screen.game.player.machineProgress
                         height: parent.height
                         color: "white"
                     }
@@ -195,14 +195,14 @@ Rectangle {
                     anchors.left: shaft.right
                     anchors.verticalCenter: parent.verticalCenter
                     text: "▶"
-                    color: screen.game.machineProgress > 0 ? "white" : "#80ffffff"
+                    color: screen.game.player.machineProgress > 0 ? "white" : "#80ffffff"
                     font.pixelSize: 20
                 }
             }
 
             Repeater {
                 model: SlotRange {
-                    source: screen.game.inventory
+                    source: screen.game.player.inventory
                     first: screen.outputRow
                     count: 1
                 }
@@ -220,7 +220,7 @@ Rectangle {
             // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
             Repeater {
                 model: SlotRange {
-                    source: screen.game.inventory
+                    source: screen.game.player.inventory
                     count: 36
                 }
 
@@ -235,7 +235,7 @@ Rectangle {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. %1 or Esc closes.").arg(screen.game.keys.labels.inventory)
+            text: qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
             color: "#e0ffffff"
         }
     }

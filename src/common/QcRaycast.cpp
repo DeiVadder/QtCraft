@@ -18,6 +18,7 @@ std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction
     const double directions[3] = {direction.x, direction.y, direction.z};
     const double lows[3] = {box.min.x, box.min.y, box.min.z};
     const double highs[3] = {box.max.x, box.max.y, box.max.z};
+
     for (int axis = 0; axis < 3; ++axis) {
         if (directions[axis] == 0.0) {
             if (origins[axis] < lows[axis] || origins[axis] > highs[axis]) {
@@ -25,6 +26,7 @@ std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction
             }
             continue;
         }
+
         double enter = (lows[axis] - origins[axis]) / directions[axis];
         double leave = (highs[axis] - origins[axis]) / directions[axis];
         if (enter > leave) {
@@ -52,6 +54,7 @@ std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &ori
     // Entering through the low side of an axis means hitting the face that points to negative.
     constexpr std::array<std::pair<QcBlockFace, QcBlockFace>, 3> faces = {
         {{QcBlockFace::West, QcBlockFace::East}, {QcBlockFace::Down, QcBlockFace::Up}, {QcBlockFace::North, QcBlockFace::South}}};
+
     for (int axis = 0; axis < 3; ++axis) {
         if (directions[axis] == 0.0) {
             if (origins[axis] < lows[axis] || origins[axis] > highs[axis]) {
@@ -59,6 +62,7 @@ std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &ori
             }
             continue;
         }
+
         const bool positive = directions[axis] > 0.0;
         const double enter = ((positive ? lows[axis] : highs[axis]) - origins[axis]) / directions[axis];
         const double leave = ((positive ? highs[axis] : lows[axis]) - origins[axis]) / directions[axis];
@@ -74,6 +78,152 @@ std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &ori
     return std::pair{entry, face};
 }
 
+namespace {
+
+// A ray being cast: normalised direction, length limit and what it may hit.
+struct Ray
+{
+    QcVec3 origin;
+    QcVec3 dir;
+    double maxDistance = 0.0;
+    Targets targets = Targets::Visible;
+};
+
+using FaceHit = std::optional<std::pair<double, QcBlockFace>>;
+
+// Voxel traversal state: the current cell and, per axis, the step direction, the distance between
+// two grid planes and the distance to the next plane crossing.
+struct Traversal
+{
+    QcBlockPos cell;
+    int stepX = 0;
+    int stepY = 0;
+    int stepZ = 0;
+    double deltaX = 0.0;
+    double deltaY = 0.0;
+    double deltaZ = 0.0;
+    double nextX = 0.0;
+    double nextY = 0.0;
+    double nextZ = 0.0;
+    double travelled = 0.0;
+    // Face through which the ray entered the current cell.
+    QcBlockFace face = QcBlockFace::Up;
+};
+
+Traversal startTraversal(const QcVec3 &origin, const QcVec3 &dir)
+{
+    Traversal t;
+    t.cell = {int(std::floor(origin.x)), int(std::floor(origin.y)), int(std::floor(origin.z))};
+    t.stepX = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
+    t.stepY = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
+    t.stepZ = dir.z > 0 ? 1 : (dir.z < 0 ? -1 : 0);
+
+    constexpr double infinity = std::numeric_limits<double>::infinity();
+    t.deltaX = t.stepX != 0 ? std::abs(1.0 / dir.x) : infinity;
+    t.deltaY = t.stepY != 0 ? std::abs(1.0 / dir.y) : infinity;
+    t.deltaZ = t.stepZ != 0 ? std::abs(1.0 / dir.z) : infinity;
+
+    t.nextX = t.stepX > 0 ? (t.cell.x + 1 - origin.x) * t.deltaX : (t.stepX < 0 ? (origin.x - t.cell.x) * t.deltaX : infinity);
+    t.nextY = t.stepY > 0 ? (t.cell.y + 1 - origin.y) * t.deltaY : (t.stepY < 0 ? (origin.y - t.cell.y) * t.deltaY : infinity);
+    t.nextZ = t.stepZ > 0 ? (t.cell.z + 1 - origin.z) * t.deltaZ : (t.stepZ < 0 ? (origin.z - t.cell.z) * t.deltaZ : infinity);
+    return t;
+}
+
+// Moves to the next cell along the ray.
+void advance(Traversal &t)
+{
+    if (t.nextX < t.nextY && t.nextX < t.nextZ) {
+        t.cell.x += t.stepX;
+        t.travelled = t.nextX;
+        t.nextX += t.deltaX;
+        t.face = t.stepX > 0 ? QcBlockFace::West : QcBlockFace::East;
+    } else if (t.nextY < t.nextZ) {
+        t.cell.y += t.stepY;
+        t.travelled = t.nextY;
+        t.nextY += t.deltaY;
+        t.face = t.stepY > 0 ? QcBlockFace::Down : QcBlockFace::Up;
+    } else {
+        t.cell.z += t.stepZ;
+        t.travelled = t.nextZ;
+        t.nextZ += t.deltaZ;
+        t.face = t.stepZ > 0 ? QcBlockFace::North : QcBlockFace::South;
+    }
+}
+
+bool isTarget(const QcBlockDefinition &definition, Targets targets)
+{
+    const bool visible = definition.renderLayer != QcRenderLayer::Invisible;
+    return targets == Targets::Solid             ? definition.solid
+           : targets == Targets::VisibleAndLiquids ? visible || definition.liquid
+                                                 : !definition.liquid && visible;
+}
+
+// The nearest of the block-local `boxes` of the block at `cell` that the ray hits.
+FaceHit nearestHit(const Ray &ray, const QList<QcAabb> &boxes, QcBlockPos cell, QcBlockFace face)
+{
+    const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
+    FaceHit nearest;
+    for (const QcAabb &box : boxes) {
+        const auto hit = intersectBoxFace(ray.origin, ray.dir, box.moved(corner), ray.maxDistance, face);
+        if (hit && (!nearest || hit->first < nearest->first)) {
+            nearest = hit;
+        }
+    }
+    return nearest;
+}
+
+// The hit on `block` in `cell`: the nearest box of its state; a ray that passes between its boxes goes on.
+std::optional<QcRaycastHit> hitBlock(const QcContentRegistry &content, const Ray &ray, QcBlockPos cell, QcBlockId block,
+                                     QcBlockFace face)
+{
+    if (!content.isValidBlock(block) || block == qcAirBlockId || !isTarget(content.block(block), ray.targets)) {
+        return std::nullopt;
+    }
+
+    const QcBlockState &state = content.state(block);
+    const FaceHit nearest = nearestHit(ray, ray.targets == Targets::Solid ? state.collision : state.targetBoxes(), cell, face);
+    if (!nearest) {
+        return std::nullopt;
+    }
+    return QcRaycastHit{cell, nearest->second, nearest->first, ray.origin + ray.dir * nearest->first};
+}
+
+// Collision boxes reach up to 1.5 m (fences): the part above the block below `cell` lies in this cell.
+std::optional<QcRaycastHit> hitUpperPartBelow(const QcBlockAccess &world, const QcContentRegistry &content, const Ray &ray,
+                                              QcBlockPos cell, QcBlockFace face)
+{
+    if (ray.targets != Targets::Solid || cell.y <= 0) {
+        return std::nullopt;
+    }
+
+    const QcBlockPos belowPos = cell.offset(0, -1, 0);
+    const std::optional<QcBlockId> below = world.blockAt(belowPos);
+    if (!below || !content.isValidBlock(*below) || !content.block(*below).solid) {
+        return std::nullopt;
+    }
+
+    const QcVec3 corner{double(belowPos.x), double(belowPos.y), double(belowPos.z)};
+    FaceHit nearest;
+    for (const QcAabb &box : content.state(*below).collision) {
+        if (box.max.y <= 1.0) {
+            continue;
+        }
+
+        const QcAabb upper{{box.min.x, std::max(box.min.y, 1.0), box.min.z}, box.max};
+        const auto hit = intersectBoxFace(ray.origin, ray.dir, upper.moved(corner), ray.maxDistance, face);
+        if (hit && (!nearest || hit->first < nearest->first)) {
+            nearest = hit;
+        }
+    }
+
+    if (!nearest) {
+        return std::nullopt;
+    }
+    return QcRaycastHit{belowPos, nearest->second, nearest->first, ray.origin + ray.dir * nearest->first};
+}
+
+} // namespace
+
 std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
                                  Targets targets)
 {
@@ -81,89 +231,26 @@ std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origi
     if (dir.length() == 0.0) {
         return std::nullopt;
     }
-    QcBlockPos cell{int(std::floor(origin.x)), int(std::floor(origin.y)), int(std::floor(origin.z))};
-    const int stepX = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
-    const int stepY = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
-    const int stepZ = dir.z > 0 ? 1 : (dir.z < 0 ? -1 : 0);
-    constexpr double infinity = std::numeric_limits<double>::infinity();
-    // Distance along the ray between two grid planes per axis, and to the first plane crossing.
-    const double deltaX = stepX != 0 ? std::abs(1.0 / dir.x) : infinity;
-    const double deltaY = stepY != 0 ? std::abs(1.0 / dir.y) : infinity;
-    const double deltaZ = stepZ != 0 ? std::abs(1.0 / dir.z) : infinity;
-    double nextX = stepX > 0 ? (cell.x + 1 - origin.x) * deltaX : (stepX < 0 ? (origin.x - cell.x) * deltaX : infinity);
-    double nextY = stepY > 0 ? (cell.y + 1 - origin.y) * deltaY : (stepY < 0 ? (origin.y - cell.y) * deltaY : infinity);
-    double nextZ = stepZ > 0 ? (cell.z + 1 - origin.z) * deltaZ : (stepZ < 0 ? (origin.z - cell.z) * deltaZ : infinity);
 
+    const Ray ray{origin, dir, maxDistance, targets};
+    Traversal t = startTraversal(origin, dir);
     const QcContentRegistry &content = world.content();
-    double travelled = 0.0;
-    QcBlockFace face = QcBlockFace::Up;
-    while (travelled <= maxDistance) {
-        if (cell.y >= 0 && cell.y < QcWorld::worldHeight) {
-            const std::optional<QcBlockId> block = world.blockAt(cell);
+
+    while (t.travelled <= maxDistance) {
+        if (t.cell.y >= 0 && t.cell.y < QcWorld::worldHeight) {
+            const std::optional<QcBlockId> block = world.blockAt(t.cell);
             if (!block) {
                 return std::nullopt;
             }
-            if (content.isValidBlock(*block) && *block != qcAirBlockId) {
-                const QcBlockDefinition &definition = content.block(*block);
-                const QcBlockState &state = content.state(*block);
-                const bool visible = definition.renderLayer != QcRenderLayer::Invisible;
-                const bool target = targets == Targets::Solid             ? definition.solid
-                                    : targets == Targets::VisibleAndLiquids ? visible || definition.liquid
-                                                                          : !definition.liquid && visible;
-                if (target) {
-                    // The nearest box of the state; a ray that passes between its boxes goes on.
-                    const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
-                    std::optional<std::pair<double, QcBlockFace>> nearest;
-                    for (const QcAabb &box : targets == Targets::Solid ? state.collision : state.targetBoxes()) {
-                        const auto hit = intersectBoxFace(origin, dir, box.moved(corner), maxDistance, face);
-                        if (hit && (!nearest || hit->first < nearest->first)) {
-                            nearest = hit;
-                        }
-                    }
-                    if (nearest) {
-                        return QcRaycastHit{cell, nearest->second, nearest->first, origin + dir * nearest->first};
-                    }
-                }
+
+            if (std::optional<QcRaycastHit> hit = hitBlock(content, ray, t.cell, *block, t.face)) {
+                return hit;
             }
-            // Collision boxes reach up to 1.5 m (fences): the part above the block below lies in this cell.
-            if (targets == Targets::Solid && cell.y > 0) {
-                const QcBlockPos belowPos = cell.offset(0, -1, 0);
-                const std::optional<QcBlockId> below = world.blockAt(belowPos);
-                if (below && content.isValidBlock(*below) && content.block(*below).solid) {
-                    const QcVec3 corner{double(belowPos.x), double(belowPos.y), double(belowPos.z)};
-                    std::optional<std::pair<double, QcBlockFace>> nearest;
-                    for (const QcAabb &box : content.state(*below).collision) {
-                        if (box.max.y <= 1.0) {
-                            continue;
-                        }
-                        const QcAabb upper{{box.min.x, std::max(box.min.y, 1.0), box.min.z}, box.max};
-                        const auto hit = intersectBoxFace(origin, dir, upper.moved(corner), maxDistance, face);
-                        if (hit && (!nearest || hit->first < nearest->first)) {
-                            nearest = hit;
-                        }
-                    }
-                    if (nearest) {
-                        return QcRaycastHit{belowPos, nearest->second, nearest->first, origin + dir * nearest->first};
-                    }
-                }
+            if (std::optional<QcRaycastHit> hit = hitUpperPartBelow(world, content, ray, t.cell, t.face)) {
+                return hit;
             }
         }
-        if (nextX < nextY && nextX < nextZ) {
-            cell.x += stepX;
-            travelled = nextX;
-            nextX += deltaX;
-            face = stepX > 0 ? QcBlockFace::West : QcBlockFace::East;
-        } else if (nextY < nextZ) {
-            cell.y += stepY;
-            travelled = nextY;
-            nextY += deltaY;
-            face = stepY > 0 ? QcBlockFace::Down : QcBlockFace::Up;
-        } else {
-            cell.z += stepZ;
-            travelled = nextZ;
-            nextZ += deltaZ;
-            face = stepZ > 0 ? QcBlockFace::North : QcBlockFace::South;
-        }
+        advance(t);
     }
     return std::nullopt;
 }

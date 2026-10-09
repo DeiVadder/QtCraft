@@ -18,19 +18,27 @@ struct Placement
     QcBlockId state = qcAirBlockId;
 };
 
+// What the player aims at when placing a block: `face` of the block at `clicked`, `hit` (0..1
+// inside that block), while looking along `yaw` (degrees).
+struct Aim
+{
+    QcBlockPos clicked;
+    QcBlockFace face = QcBlockFace::Up;
+    QcVec3 hit;
+    float yaw = 0.0F;
+};
+
 // Horizontal direction ("north", "east", "south", "west") a player with this yaw (degrees) looks.
 QString lookDirection(float yaw);
 // Direction name of a face ("up" and "down" for the vertical ones).
 QString faceName(QcBlockFace face);
 QcBlockFace opposite(QcBlockFace face);
 
-// Where and in which state `block` (any state of it) is placed when the player clicks `face` of the
-// block at `clicked`, aiming at `hit` (0..1 inside that block) while looking along `yaw`. A slab
+// Where and in which state `block` (any state of it) is placed when the player clicks with `aim`. A slab
 // clicked on its open half becomes a double slab in place; a clicked replaceable block (tall grass)
 // is replaced as if the new block were placed on the ground below it. std::nullopt when the block cannot go
 // there (a torch on a ceiling, a door without room).
-std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, QcBlockPos clicked, QcBlockFace face,
-                                   const QcVec3 &hit, float yaw);
+std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
 
 // `id` with its connection properties recomputed from the neighbours (unchanged for blocks that do
 // not connect). Sides towards unloaded chunks keep their current value.

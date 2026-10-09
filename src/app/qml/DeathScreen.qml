@@ -36,7 +36,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Respawn")
             highlighted: true
-            onClicked: screen.game.respawn()
+            onClicked: screen.game.player.respawn()
         }
 
         Button {

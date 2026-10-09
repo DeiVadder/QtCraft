@@ -84,10 +84,11 @@ All commands are described in [docs/Steuerschnittstelle.md](docs/Steuerschnittst
 
 ```sh
 ctest --preset debug
-scripts/verify.sh
+scripts/verify.sh --quick [--tests <regex>] [--sanitizers asan|tsan]   # while working, a few minutes
+scripts/verify.sh [--full] [--sanitizers asan|tsan]                    # once before a merge
 ```
 
-`scripts/verify.sh` builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, runs clang-tidy, clazy and qmllint, and takes smoke screenshots. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
+`scripts/verify.sh --full` (the default) builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, checks the size limits (functions and file lengths, E-088) and runs clang-tidy, clazy and qmllint over the whole project, and takes smoke screenshots. `--quick` builds and tests only debug (`--tests` limits the tests to a CTest regular expression) and analyses only the C++, Objective-C++ and QML files changed against `dev` (committed on the branch or not; a changed header is analysed through its `.cpp` of the same name, a header without one only gets the length check). `--sanitizers asan|tsan` limits `--full` to one sanitizer configuration, or adds it to `--quick` when threading code changed. Every step prints its duration, and a table of all durations ends the run. `scripts/static-analysis.sh [build-dir] [file ...]` runs the analysis alone. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
 
 ## Performance and profiling
 

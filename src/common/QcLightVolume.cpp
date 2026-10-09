@@ -6,6 +6,22 @@
 #include <algorithm>
 #include <utility>
 
+namespace {
+
+// Whether a section from `first` to `last` of `chunk` holds a block that emits light.
+bool sectionsEmitLight(const QcContentRegistry &content, const QcChunk &chunk, int first, int last)
+{
+    const auto emits = [&content](QcBlockId id) { return content.isValidBlock(id) && content.block(id).lightLevel > 0; };
+    for (int section = first; section <= last; ++section) {
+        if (std::ranges::any_of(chunk.section(section).palette(), emits)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+} // namespace
+
 QcLightVolume::QcLightVolume(int sizeX, int sizeY, int sizeZ)
     : m_sizeX(std::max(0, sizeX))
     , m_sizeY(std::max(0, sizeY))
@@ -27,6 +43,7 @@ void QcLightVolume::addSource(int x, int y, int z, int level)
     if (!contains(x, y, z) || level <= 0) {
         return;
     }
+
     quint8 &current = m_levels[index(x, y, z)];
     if (std::cmp_greater(level, current)) {
         current = quint8(std::min(level, maxLevel));
@@ -42,6 +59,7 @@ void QcLightVolume::propagate()
         if (light <= 1) {
             continue;
         }
+
         for (const QcBlockFace face : qcAllBlockFaces) {
             const QcFaceOffset offset = qcFaceOffset(face);
             const int nx = x + offset.dx;
@@ -50,6 +68,7 @@ void QcLightVolume::propagate()
             if (!contains(nx, ny, nz)) {
                 continue;
             }
+
             const qsizetype neighbour = index(nx, ny, nz);
             const int opacity = m_opacity[neighbour];
             const int candidate = light - std::max(1, opacity);
@@ -70,23 +89,24 @@ int QcLightVolume::blockLightAt(const QcBlockAccess &world, QcBlockPos pos)
     if (!world.mayHaveLightSourceNear(pos, reach)) {
         return 0;
     }
+
     const QcContentRegistry &content = world.content();
     const QcBlockPos low = pos.offset(-reach, -reach, -reach);
     QcLightVolume volume(size, size, size);
+
     for (int y = 0; y < size; ++y) {
         for (int z = 0; z < size; ++z) {
             for (int x = 0; x < size; ++x) {
                 const QcBlockPos cell = low.offset(x, y, z);
                 const std::optional<QcBlockId> block = cell.y < 0 ? std::nullopt : world.blockAt(cell);
-                if (!block || !content.isValidBlock(*block)) {
-                    volume.setOpacity(x, y, z, maxLevel);
-                    continue;
-                }
-                volume.setOpacity(x, y, z, content.state(*block).lightOpacity);
-                volume.addSource(x, y, z, content.block(*block).lightLevel);
+                // Unknown cells are dark walls; addSource ignores level 0.
+                const bool known = block && content.isValidBlock(*block);
+                volume.setOpacity(x, y, z, known ? content.state(*block).lightOpacity : maxLevel);
+                volume.addSource(x, y, z, known ? content.block(*block).lightLevel : 0);
             }
         }
     }
+
     volume.propagate();
     return volume.level(reach, reach, reach);
 }
@@ -96,19 +116,14 @@ bool QcLightVolume::anySourceNear(const QcContentRegistry &content, QcBlockPos p
 {
     const QcBlockPos low = pos.offset(-reach, -reach, -reach);
     const QcBlockPos high = pos.offset(reach, reach, reach);
-    const auto emits = [&content](QcBlockId id) { return content.isValidBlock(id) && content.block(id).lightLevel > 0; };
+    const int first = std::max(0, low.y / QcWorld::sectionHeight);
+    const int last = std::min(QcWorld::sectionCount - 1, high.y / QcWorld::sectionHeight);
+
     for (int cx = low.chunk().x; cx <= high.chunk().x; ++cx) {
         for (int cz = low.chunk().z; cz <= high.chunk().z; ++cz) {
             const QcChunk *chunk = chunkAt({cx, cz});
-            if (!chunk) {
-                continue;
-            }
-            const int first = std::max(0, low.y / QcWorld::sectionHeight);
-            const int last = std::min(QcWorld::sectionCount - 1, high.y / QcWorld::sectionHeight);
-            for (int section = first; section <= last; ++section) {
-                if (std::ranges::any_of(chunk->section(section).palette(), emits)) {
-                    return true;
-                }
+            if (chunk && sectionsEmitLight(content, *chunk, first, last)) {
+                return true;
             }
         }
     }

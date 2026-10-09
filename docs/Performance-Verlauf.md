@@ -128,3 +128,13 @@ Seit Etappe 12 werden Werte nur verschränkt verglichen: Ein Skript startet für
 | liquids | 8,60 → 8,59 | 15,2 → 14,6 | 0,179 → 0,169 | 1,17 → 1,10 | 334 → 308 (−8 %) | Änderung bis Bild 10,7 → 10,3 ms, Rückstau 40 → 39 |
 
 **Bewertung Etappe 16:** Keine Verschlechterung der Frame-Werte; p99 ist bei beiden Ständen gleich hoch, weil während der Messreihe am Rechner gearbeitet wurde (Fenster im Hintergrund; ruhig: 9,9–10,3 ms, siehe Perf-Check in `docs/Performance.md`), und beim Endstand im Mittel um 0,1–1,1 ms niedriger. Spitzenspeicher −8 bis −10 % (kompakte Block-Eckpunkte, E-069). Server-Tick: stand −12 %, light −17 %, liquids −6 %, sprint +23 % und crowd +21 %; der Server- und Common-Code ist bis auf den Handbuch-Builder unverändert (`git diff 9d0e81c -- src/server src/common`), im Gedränge liegen die Runden 2 und 3 nur 4–8 % über der Basis (die Basis-Runde 1 mit 0,168 ms ist der Ausreißer), und in der Vorher-Nachher-Messreihe gegen 562ecc8 schwankt derselbe Wert zwischen −24 % und +34 % je Szenario und Sichtweite bei identischem Server-Code. Das ist die bekannte Streuung der Tick-Zeit (abhängig davon, welchem Kern und Takt das System den Server-Thread gibt), keine Regression; ein tiefes Profiling unveränderten Codes ist nicht angezeigt. Die vollständige Aufteilung der Frame-Kosten vorher/nachher (alle Szenarien, 8/12/16 Chunks) steht in `docs/Performance.md`.
+
+**Etappe 19 (Aufteilen zu großer Dateien), verschränkt gegen `dev` a5c1657, Stand d44e3b0 im Release-Build, je 3 Runden à 20 s (stand 7 Runden), 8 Chunks, Mittel [Spanne]:** Die Aufteilung berührt heiße Pfade (Mesher, Blocklicht, Physik, Raycast, Weltgenerierung, Frame-Schritt), daher verschränkt gemessen.
+
+| Szenario | Frame Ø ms (Basis → 19) | Frame p99 ms | Tick Ø ms | Speicher MB | Bemerkung |
+|----------|-------------------------|--------------|-----------|-------------|-----------|
+| stand | 8,33 → 8,35 | 10,29 → 10,29 | 0,639 [0,41–0,78] → 0,704 [0,44–0,80] | 368 → 369 | Tick zweigipflig (≈ 0,4 oder ≈ 0,7 ms je nach Lauf, bei beiden Ständen); Runden 4–7 allein: 0,741 → 0,750 |
+| sprint | 8,36 → 8,34 | 12,04 [10,3–15,5] → 10,31 | 0,610 [0,38–0,83] → 0,621 [0,48–0,78] | 446 → 444 | ein Hänger im ersten Basislauf |
+| crowd | 8,46 → 8,34 | 15,81 [10,0–27,1] → 10,26 | 0,955 [0,78–1,14] → 0,802 [0,52–0,95] | 374 → 373 | ein Hänger im zweiten Basislauf |
+
+**Bewertung Etappe 19:** Keine Verschlechterung über der Schwelle; Frame-Zeiten und Speicher gleich, Tick-Unterschiede liegen innerhalb der Streuung beider Stände. Einzelmessungen der Agenten (Release, alt gegen neu): Meshing 10,93 → 10,86 s, Blocklicht 134,8 → 135,5 ms, Mischer 272,5 → 273,1 ms, Weltgenerierung 0,87 → 0,58 ms pro Chunk (Ausgabe bit-gleich), Raycast 72 → 70 ms, `stepEntity` 443 → 442 ms.

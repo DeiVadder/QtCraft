@@ -11,7 +11,7 @@
 
 // The handbook for QML: category and entry lists, search and pages. Pages are converted on request
 // (QcHandbookJson), so only what is shown costs anything; the handbook itself is built once per
-// content and language by QcGameController.
+// content and language by QcHandbookController.
 class QcHandbookModel : public QObject
 {
     Q_OBJECT

@@ -1,6 +1,7 @@
 #!/bin/sh
-# Runs clang-tidy, clazy and qmllint over the project (or over the given source files).
+# Runs the size limits check, clang-tidy, clazy and qmllint over the project (or over the given files).
 # Usage: scripts/static-analysis.sh [build-dir] [file ...]
+# Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # Every tool run is time-limited; the script exits non-zero when any tool reports findings.
 
 set -u
@@ -12,10 +13,17 @@ BUILD_DIR=${1:-"$PROJECT_DIR/build/debug"}
 CREATOR_CLANG="$HOME/Qt/Qt Creator.app/Contents/Resources/libexec/clang/bin"
 CLANG_TIDY=${CLANG_TIDY:-"$CREATOR_CLANG/clang-tidy"}
 CLAZY=${CLAZY:-"$CREATOR_CLANG/clazy-standalone"}
+QMLLINT=${QMLLINT:-"$HOME/Qt/6.8.3/macos/bin/qmllint"}
 SDK_PATH=$(xcrun --show-sdk-path)
 JOBS=${JOBS:-16}
 TIME_LIMIT=${TIME_LIMIT:-900}
 CLAZY_CHECKS=${CLAZY_CHECKS:-level0,level1,level2,no-qstring-allocations,no-ctor-missing-parent-argument,no-copyable-polymorphic,no-non-pod-global-static,no-rule-of-three}
+
+# File length limits (lines): sources and QML, headers, tests. A file may opt out only with a line
+# "NOLINT(qc-file-length): <reason>".
+SOURCE_LINE_LIMIT=800
+HEADER_LINE_LIMIT=300
+TEST_LINE_LIMIT=1000
 
 # Runs a command in its own process group and kills the whole group when the time limit expires.
 run_limited() {
@@ -29,11 +37,41 @@ if [ ! -f "$BUILD_DIR/compile_commands.json" ]; then
     exit 2
 fi
 
+SELECTED=0
 if [ $# -gt 0 ]; then
-    FILES=$(printf '%s\n' "$@" | grep -E '\.cpp$')
+    SELECTED=1
+    LENGTH_FILES=$(printf '%s\n' "$@" | grep -E '\.(cpp|h|qml|mm)$')
+    QML_FILES=$(printf '%s\n' "$@" | grep -E '\.qml$')
+    # A header is analysed through the .cpp of the same name, when there is one.
+    FILES=$(for file in "$@"; do
+        if [ "${file%.cpp}" != "$file" ]; then
+            echo "$file"
+        elif [ "${file%.h}" != "$file" ] && [ -f "${file%.h}.cpp" ]; then
+            echo "${file%.h}.cpp"
+        fi
+    done | sort -u)
 else
+    LENGTH_FILES=$(cd "$PROJECT_DIR" && { git ls-files 'src/*' 'tests/*'; git ls-files --others --exclude-standard 'src/*' 'tests/*'; } | grep -E '\.(cpp|h|qml|mm)$' | sort -u | sed "s|^|$PROJECT_DIR/|")
+    QML_FILES=""
     FILES=$(cd "$PROJECT_DIR" && { git ls-files 'src/*.cpp' 'tests/*.cpp'; git ls-files --others --exclude-standard 'src/*.cpp' 'tests/*.cpp'; } | sort -u | sed "s|^|$PROJECT_DIR/|")
 fi
+
+status=0
+
+echo "== file length"
+for file in $LENGTH_FILES; do
+    [ -f "$file" ] || continue
+    case "$file" in
+    "$PROJECT_DIR"/tests/*) limit=$TEST_LINE_LIMIT ;;
+    *.h) limit=$HEADER_LINE_LIMIT ;;
+    *) limit=$SOURCE_LINE_LIMIT ;;
+    esac
+    lines=$(wc -l < "$file" | tr -d ' ')
+    if [ "$lines" -gt "$limit" ] && ! grep -q 'NOLINT(qc-file-length): ' "$file"; then
+        echo "$file: $lines lines (limit $limit)"
+        status=1
+    fi
+done
 
 for tool in "$CLANG_TIDY" "$CLAZY"; do
     if [ ! -x "$tool" ]; then
@@ -43,7 +81,7 @@ for tool in "$CLANG_TIDY" "$CLAZY"; do
 done
 
 FILE_COUNT=$(printf '%s\n' $FILES | grep -c '\.cpp$')
-if [ "$FILE_COUNT" -eq 0 ]; then
+if [ "$FILE_COUNT" -eq 0 ] && [ "$SELECTED" -eq 0 ]; then
     echo "no source files to analyse" >&2
     exit 2
 fi
@@ -67,7 +105,6 @@ FILES=$ANALYSED
 FILE_COUNT=$(printf '%s\n' $FILES | grep -c '\.cpp$')
 
 LOG_DIR=$(mktemp -d)
-status=0
 
 # Fails when a tool run aborted (timeout, crash, missing compile command) instead of producing findings.
 check_tool_run() {
@@ -85,32 +122,54 @@ check_tool_run() {
     fi
 }
 
-echo "== clang-tidy ($FILE_COUNT files)"
-printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLANG_TIDY" -p "$BUILD_DIR" --quiet \
-    --header-filter="$PROJECT_DIR/(src|tests)/.*" \
-    --extra-arg=-isysroot"$SDK_PATH" > "$LOG_DIR/tidy.log" 2>&1
-check_tool_run clang-tidy $? "$LOG_DIR/tidy.log"
-grep -E 'warning:|error:' "$LOG_DIR/tidy.log" | grep -v 'Error while processing' | sort -u > "$LOG_DIR/tidy.findings"
-if [ -s "$LOG_DIR/tidy.findings" ]; then
-    cat "$LOG_DIR/tidy.findings"
-    status=1
+if [ "$FILE_COUNT" -gt 0 ]; then
+    echo "== clang-tidy ($FILE_COUNT files)"
+    printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLANG_TIDY" -p "$BUILD_DIR" --quiet \
+        --header-filter="$PROJECT_DIR/(src|tests)/.*" \
+        --extra-arg=-isysroot"$SDK_PATH" > "$LOG_DIR/tidy.log" 2>&1
+    check_tool_run clang-tidy $? "$LOG_DIR/tidy.log"
+    grep -E 'warning:|error:' "$LOG_DIR/tidy.log" | grep -v 'Error while processing' | sort -u > "$LOG_DIR/tidy.findings"
+    if [ -s "$LOG_DIR/tidy.findings" ]; then
+        cat "$LOG_DIR/tidy.findings"
+        status=1
+    fi
+
+    echo "== clazy ($FILE_COUNT files)"
+    printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLAZY" -p "$BUILD_DIR" -checks="$CLAZY_CHECKS" \
+        --extra-arg=-isysroot"$SDK_PATH" --extra-arg=-Wno-unknown-warning-option \
+        --header-filter="$PROJECT_DIR/(src|tests)/.*" > "$LOG_DIR/clazy.log" 2>&1
+    check_tool_run clazy $? "$LOG_DIR/clazy.log"
+    grep -E 'warning:|error:' "$LOG_DIR/clazy.log" | grep -v '/build/' | sort -u > "$LOG_DIR/clazy.findings"
+    if [ -s "$LOG_DIR/clazy.findings" ]; then
+        cat "$LOG_DIR/clazy.findings"
+        status=1
+    fi
 fi
 
-echo "== clazy ($FILE_COUNT files)"
-printf '%s\n' $FILES | run_limited xargs -P "$JOBS" -n 1 "$CLAZY" -p "$BUILD_DIR" -checks="$CLAZY_CHECKS" \
-    --extra-arg=-isysroot"$SDK_PATH" --extra-arg=-Wno-unknown-warning-option \
-    --header-filter="$PROJECT_DIR/(src|tests)/.*" > "$LOG_DIR/clazy.log" 2>&1
-check_tool_run clazy $? "$LOG_DIR/clazy.log"
-grep -E 'warning:|error:' "$LOG_DIR/clazy.log" | grep -v '/build/' | sort -u > "$LOG_DIR/clazy.findings"
-if [ -s "$LOG_DIR/clazy.findings" ]; then
-    cat "$LOG_DIR/clazy.findings"
-    status=1
-fi
-
-echo "== qmllint"
-if ! run_limited cmake --build "$BUILD_DIR" --target all_qmllint > "$LOG_DIR/qmllint.log" 2>&1; then
-    grep -vE '^\[|^ninja' "$LOG_DIR/qmllint.log"
-    status=1
+if [ "$SELECTED" -eq 0 ]; then
+    echo "== qmllint"
+    # qmllint exits with 0 on warnings, so its log counts as well.
+    if ! run_limited cmake --build "$BUILD_DIR" --target all_qmllint > "$LOG_DIR/qmllint.log" 2>&1 \
+        || grep -qE '^(Warning|Error|Critical):' "$LOG_DIR/qmllint.log"; then
+        grep -vE '^\[|^ninja' "$LOG_DIR/qmllint.log"
+        status=1
+    fi
+elif [ -n "$QML_FILES" ]; then
+    # The options of the build's qmllint target (import paths, resources) without its file list.
+    RSP="$BUILD_DIR/src/app/.rcc/qmllint/qtcraft.rsp"
+    if [ ! -f "$RSP" ]; then
+        echo "qmllint options missing: $RSP" >&2
+        status=1
+    else
+        echo "== qmllint ($(printf '%s\n' $QML_FILES | grep -c .) files)"
+        grep -v '\.qml$' "$RSP" > "$LOG_DIR/qmllint.rsp"
+        # shellcheck disable=SC2086
+        if ! (cd "$PROJECT_DIR/src/app" && run_limited "$QMLLINT" "@$LOG_DIR/qmllint.rsp" $QML_FILES) > "$LOG_DIR/qmllint.log" 2>&1 \
+            || grep -qE '^(Warning|Error|Critical):' "$LOG_DIR/qmllint.log"; then
+            cat "$LOG_DIR/qmllint.log"
+            status=1
+        fi
+    fi
 fi
 
 rm -rf "$LOG_DIR"

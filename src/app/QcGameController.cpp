@@ -1,81 +1,25 @@
 #include "QcGameController.h"
 
-#include "QcBlockIcon.h"
-#include "QcLightVolume.h"
-
 #include "QcAudioEngine.h"
-#include "QcSoundKeys.h"
-
-#include "QcModLoader.h"
-#include "QcMouseLook.h"
+#include "QcBenchmarkRun.h"
 #include "QcBlockRenderTable.h"
-#include "QcClientSession.h"
 #include "QcLocalServerHost.h"
 #include "QcMeshScheduler.h"
+#include "QcModLoader.h"
 #include "QcPhysics.h"
-#include "QcScreenshotHook.h"
-#include "QcThreadCpuClock.h"
 #include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
-#include "QcTransport.h"
-#include "QcWorldView.h"
-#include "QcCrafting.h"
-#include "QcDayCycle.h"
-#include "QcEntityMesher.h"
-#include "QcGameSettings.h"
-#include "QcHandbookBuilder.h"
-#include "QcHandbookRules.h"
-#include "QcItemIconProvider.h"
-#include "QcKeyLabels.h"
 #include "QcWorldLibrary.h"
 
-#include <QCursor>
-#include <QElapsedTimer>
-#include <QQuickItem>
-#include <QDesktopServices>
-#include <QDir>
-#include <QUrl>
-#include <QGuiApplication>
-#include <QKeyEvent>
-#include <QWheelEvent>
-#include <QLocale>
-#include <QVariantMap>
+#include <QCoreApplication>
 #include <QLoggingCategory>
 #include <QQuickWindow>
-#include <QCoreApplication>
-#include <QTimer>
-#include <QSettings>
 
 #include <algorithm>
-#include <cmath>
-#include <numbers>
-#include <functional>
-
-#if defined(Q_OS_UNIX)
-#include <sys/resource.h>
-#endif
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-// Highest resident memory of the process so far; 0 where the platform does not report it.
-double peakMemoryMegabytes()
-{
-#if defined(Q_OS_UNIX)
-    rusage usage{};
-    if (getrusage(RUSAGE_SELF, &usage) != 0) {
-        return 0.0;
-    }
-#if defined(Q_OS_DARWIN)
-    return double(usage.ru_maxrss) / (1024.0 * 1024.0); // bytes
-#else
-    return double(usage.ru_maxrss) / 1024.0; // kilobytes
-#endif
-#else
-    return 0.0;
-#endif
-}
 
 Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
@@ -105,17 +49,27 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
     , m_audio(new QcAudioEngine(this))
-    , m_keyControls(new QcKeyControls(this))
-    , m_inventory(new QcInventoryModel(this))
-    , m_handbookModel(new QcHandbookModel(this))
+    , m_library(new QcWorldLibraryController(this))
+    , m_settings(new QcSettingsController(m_parts, *m_library, m_audio, this))
+    , m_player(new QcPlayerController(m_parts, *m_settings, this))
+    , m_hud(new QcHudState(m_parts, *m_settings, this))
+    , m_handbook(new QcHandbookController(m_parts, *m_settings, *m_library, m_icons, this))
+    , m_input(new QcGameInput(*this, m_parts, *m_settings, m_audio, this))
+    , m_benchmark(new QcBenchmarkRun(*this, m_parts, *m_input, *m_settings, this))
+    , m_startup(new QcStartupHooks(*this, m_parts, m_benchmark, this))
+    , m_render(m_parts, *m_settings)
 {
     m_frameClock.start();
     m_fpsClock.start();
-    connect(m_keyControls, &QcKeyControls::edited, this, &QcGameController::saveSettings);
-    // On the application: shortcut overrides go to the focused item, not to the window.
-    if (QCoreApplication *application = QCoreApplication::instance()) {
-        application->installEventFilter(this);
-    }
+    connect(m_handbook, &QcHandbookController::opening, this, [this] {
+        m_input->clearKeys();
+        if (m_parts.session) {
+            m_parts.session->setMining(false);
+        }
+        m_input->releaseMouse();
+    });
+    connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
+    connect(m_settings, &QcSettingsController::debugOverlaySwitched, m_hud, &QcHudState::resetDebugClock);
 }
 
 QcGameController::~QcGameController()
@@ -123,38 +77,51 @@ QcGameController::~QcGameController()
     if (const QcStatus saved = stopSession(); !saved) {
         qCWarning(lcGame) << "Saving the world failed:" << saved.error();
     }
+
+    // The input filter and the parts below hold references to m_parts and m_icons, which die before
+    // QObject deletes the children: remove the application-wide filter and delete them first.
+    if (QCoreApplication *application = QCoreApplication::instance()) {
+        application->removeEventFilter(m_input);
+    }
+    delete m_startup;
+    delete m_benchmark;
+    delete m_input;
+    delete m_handbook;
+    delete m_hud;
 }
 
 void QcGameController::setView(QcWorldView *view)
 {
-    if (m_view == view) {
+    if (m_parts.view == view) {
         return;
     }
-    m_view = view;
-    if (m_view) {
-        if (m_view->window()) {
-            attachWindow(m_view->window());
+
+    m_parts.view = view;
+    if (m_parts.view) {
+        if (m_parts.view->window()) {
+            attachWindow(m_parts.view->window());
         }
-        connect(m_view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
+        connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
     }
     emit viewChanged();
 }
 
 void QcGameController::attachWindow(QQuickWindow *window)
 {
-    if (m_window == window) {
+    if (m_parts.window == window) {
         return;
     }
-    if (m_window) {
-        disconnect(m_window, nullptr, this, nullptr);
+
+    if (m_parts.window) {
+        disconnect(m_parts.window, nullptr, this, nullptr);
     }
-    m_window = window;
-    if (m_window) {
-        connect(m_window, &QQuickWindow::afterAnimating, this, &QcGameController::onFrame);
-        connect(m_window, &QWindow::activeChanged, this, [this] {
-            if (!m_window->isActive()) {
-                m_keysDown.clear();
-                releaseMouse();
+    m_parts.window = window;
+    if (m_parts.window) {
+        connect(m_parts.window, &QQuickWindow::afterAnimating, this, &QcGameController::onFrame);
+        connect(m_parts.window, &QWindow::activeChanged, this, [this] {
+            if (!m_parts.window->isActive()) {
+                m_input->clearKeys();
+                m_input->releaseMouse();
             }
         });
     }
@@ -177,336 +144,42 @@ void QcGameController::setInputEnabled(bool enabled)
     if (m_inputEnabled == enabled) {
         return;
     }
+
     m_inputEnabled = enabled;
     if (!enabled) {
-        m_keysDown.clear();
-        releaseMouse();
+        m_input->clearKeys();
+        m_input->releaseMouse();
     }
     emit inputEnabledChanged();
-}
-
-void QcGameController::setViewDistance(int chunks)
-{
-    chunks = QcGameSettings::clampViewDistance(chunks);
-    if (m_viewDistance == chunks) {
-        return;
-    }
-    m_viewDistance = chunks;
-    emit viewDistanceChanged();
-}
-
-QString QcGameController::settingsPath()
-{
-    return QDir(QcWorldLibrary::dataRoot()).filePath(u"settings.ini"_s);
-}
-
-QString QcGameController::storedLanguage()
-{
-    return QcGameSettings::load(settingsPath()).language;
-}
-
-void QcGameController::loadSettings()
-{
-    m_storedSettings = QcGameSettings::load(settingsPath());
-    setViewDistance(m_storedSettings.viewDistance);
-    setFieldOfView(m_storedSettings.fieldOfView);
-    setMouseSensitivity(m_storedSettings.mouseSensitivity);
-    setInvertMouse(m_storedSettings.invertMouse);
-    setShowDebug(m_storedSettings.showDebug);
-    m_languageSetting = m_storedSettings.language;
-    m_cameraMode = m_storedSettings.cameraMode;
-    m_appearance = m_storedSettings.appearance;
-    m_masterVolume = m_storedSettings.masterVolume;
-    m_effectsVolume = m_storedSettings.effectsVolume;
-    m_musicVolume = m_storedSettings.musicVolume;
-    m_ambientVolume = m_storedSettings.ambientVolume;
-    m_muted = m_storedSettings.muted;
-    m_keyControls->setBindings(m_storedSettings.keys);
-    applyVolumes();
-    emit settingsChanged();
-}
-
-void QcGameController::applyVolumes()
-{
-    m_audio->setVolumes(m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted);
-}
-
-void QcGameController::setMasterVolume(double volume)
-{
-    volume = QcGameSettings::clampVolume(volume, m_masterVolume);
-    if (m_masterVolume != volume) {
-        m_masterVolume = volume;
-        applyVolumes();
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setEffectsVolume(double volume)
-{
-    volume = QcGameSettings::clampVolume(volume, m_effectsVolume);
-    if (m_effectsVolume != volume) {
-        m_effectsVolume = volume;
-        applyVolumes();
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setMusicVolume(double volume)
-{
-    volume = QcGameSettings::clampVolume(volume, m_musicVolume);
-    if (m_musicVolume != volume) {
-        m_musicVolume = volume;
-        applyVolumes();
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setAmbientVolume(double volume)
-{
-    volume = QcGameSettings::clampVolume(volume, m_ambientVolume);
-    if (m_ambientVolume != volume) {
-        m_ambientVolume = volume;
-        applyVolumes();
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setMuted(bool muted)
-{
-    if (m_muted != muted) {
-        m_muted = muted;
-        applyVolumes();
-        emit settingsChanged();
-    }
 }
 
 void QcGameController::startAudio(bool enabled)
 {
     m_audio->start(enabled);
-    applyVolumes();
-    if (m_audio->isActive() && !m_session) {
+    m_settings->audio()->apply();
+    if (m_audio->isActive() && !m_parts.session) {
         // Menu clicks come from the content as well; the base game and mods are loaded once here.
-        characterContent();
-        m_audio->setContent(m_characterContent);
-    }
-}
-
-void QcGameController::clickIfButton(QPointF scenePosition)
-{
-    if (!m_window || !m_audio->isActive()) {
-        return;
-    }
-    // The topmost visible item under the mouse, children in front of their parents and higher z first.
-    const std::function<QQuickItem *(QQuickItem *)> topmost = [&](QQuickItem *item) -> QQuickItem * {
-        if (!item->isVisible() || !item->isEnabled()) {
-            return nullptr;
-        }
-        QList<QQuickItem *> children = item->childItems();
-        std::ranges::stable_sort(children, [](const QQuickItem *a, const QQuickItem *b) { return a->z() > b->z(); });
-        for (QQuickItem *child : std::as_const(children)) {
-            if (QQuickItem *hit = topmost(child)) {
-                return hit;
-            }
-        }
-        return item->contains(item->mapFromScene(scenePosition)) ? item : nullptr;
-    };
-    for (const QQuickItem *item = topmost(m_window->contentItem()); item; item = item->parentItem()) {
-        if (item->inherits("QQuickAbstractButton")) {
-            m_audio->playUi(QString::fromLatin1(QcSoundKeys::uiClick));
-            return;
-        }
-    }
-}
-
-void QcGameController::overrideViewDistance(int chunks)
-{
-    setViewDistance(chunks);
-    m_commandLineViewDistance = m_viewDistance;
-}
-
-void QcGameController::saveSettings()
-{
-    QcGameSettings settings;
-    // A view distance given on the command line is not stored unless the player changed it since.
-    settings.viewDistance = m_commandLineViewDistance == m_viewDistance ? m_storedSettings.viewDistance : m_viewDistance;
-    settings.fieldOfView = m_fieldOfView;
-    settings.mouseSensitivity = m_mouseSensitivity;
-    settings.invertMouse = m_invertMouse;
-    settings.showDebug = m_showDebug;
-    settings.language = m_languageSetting;
-    settings.cameraMode = m_cameraMode;
-    settings.appearance = m_appearance;
-    settings.masterVolume = m_masterVolume;
-    settings.effectsVolume = m_effectsVolume;
-    settings.musicVolume = m_musicVolume;
-    settings.ambientVolume = m_ambientVolume;
-    settings.muted = m_muted;
-    settings.keys = m_keyControls->bindings();
-    if (const QcStatus saved = settings.save(settingsPath()); !saved) {
-        qCWarning(lcGame) << saved.error();
-        return;
-    }
-    m_storedSettings = settings;
-}
-
-void QcGameController::setFieldOfView(double degrees)
-{
-    degrees = QcGameSettings::clampFieldOfView(degrees);
-    if (m_fieldOfView != degrees) {
-        m_fieldOfView = degrees;
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setMouseSensitivity(double sensitivity)
-{
-    sensitivity = QcGameSettings::clampMouseSensitivity(sensitivity);
-    if (m_mouseSensitivity != sensitivity) {
-        m_mouseSensitivity = sensitivity;
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setInvertMouse(bool invert)
-{
-    if (m_invertMouse != invert) {
-        m_invertMouse = invert;
-        emit settingsChanged();
-    }
-}
-
-void QcGameController::setShowDebug(bool show)
-{
-    if (m_showDebug != show) {
-        m_showDebug = show;
-        m_debugClock.invalidate();
-        emit settingsChanged();
+        m_library->content();
+        m_audio->setContent(m_library->loadedContent());
     }
 }
 
 void QcGameController::setLanguage(const QString &language)
 {
-    m_language = language;
+    m_settings->setContentLanguage(language);
     // Item and recipe names come from the content's translations.
-    if (m_session && m_session->content()) {
-        m_inventory->setContent(m_session->content(), m_language);
-        updateInventory();
+    if (m_parts.session && m_parts.session->content()) {
+        m_player->useContent();
     }
-    emit appearancesChanged();
+    m_settings->character()->refreshLists();
     // Key and action names are translated.
-    m_keyControls->retranslate();
-    if (m_handbookOpen) {
-        ensureHandbook();
-    }
-}
-
-void QcGameController::requestLanguage(const QString &requested)
-{
-    const QString language = QcGameSettings::cleanLanguage(requested);
-    if (m_languageSetting == language) {
-        return;
-    }
-    m_languageSetting = language;
-    emit settingsChanged();
-    emit languageChangeRequested(language);
-}
-
-void QcGameController::setInitialLook(float yaw, float pitch)
-{
-    m_initialYaw = yaw;
-    m_initialPitch = std::clamp(pitch, -90.0f, 90.0f);
-}
-
-void QcGameController::setStartupScript(QStringList chatLines, const QStringList &overlays)
-{
-    m_startupChat = std::move(chatLines);
-    m_startupOverlay.clear();
-    m_startupOverlaySteps.clear();
-    for (const QString &overlay : overlays) {
-        if (overlay.startsWith(u'@')) {
-            m_startupOverlaySteps.append(overlay);
-        } else if (m_startupOverlay.isEmpty()) {
-            m_startupOverlay = overlay;
-        }
-    }
-}
-
-void QcGameController::setScreenshotHook(QcScreenshotHook *hook)
-{
-    m_screenshotHook = hook;
-    m_screenshotReleased = false;
-    if (hook) {
-        hook->hold();
-    }
+    m_settings->keys()->retranslate();
+    m_handbook->refreshIfOpen();
 }
 
 void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText)
 {
     startWorld({}, worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed(), seedFromText(seedText));
-}
-
-void QcGameController::refreshWorlds()
-{
-    m_worlds.clear();
-    const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
-    const QList<QcWorldLibrary::Entry> entries = library.list();
-    for (const QcWorldLibrary::Entry &entry : entries) {
-        m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
-                                    {u"name"_s, entry.info.name},
-                                    {u"seed"_s, QString::number(entry.info.seed)},
-                                    {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
-                                    {u"error"_s, entry.error}});
-    }
-    emit worldsChanged();
-}
-
-void QcGameController::setModsDirectory(const QString &directory)
-{
-    m_modsDirectory = directory;
-    refreshMods();
-    resetCharacterContent();
-}
-
-void QcGameController::refreshMods()
-{
-    m_mods.clear();
-    const QList<QcModStatus> mods = QcModLoader::discover(m_modsDirectory);
-    for (const QcModStatus &mod : mods) {
-        QString state = u"loaded"_s;
-        QString reason = mod.reason;
-        if (mod.state == QcModStatus::State::Disabled) {
-            state = u"disabled"_s;
-        } else if (mod.state == QcModStatus::State::Failed) {
-            state = u"failed"_s;
-        } else if (m_modLoadFailures.contains(mod.info.id)) {
-            // Found fine on disk, but its content was refused when the last world started.
-            state = u"failed"_s;
-            reason = m_modLoadFailures.value(mod.info.id);
-        }
-        m_mods.append(QVariantMap{{u"id"_s, mod.info.id},
-                                  {u"name"_s, mod.info.name.isEmpty() ? QDir(mod.info.directory).dirName() : mod.info.name},
-                                  {u"version"_s, mod.info.version},
-                                  {u"description"_s, mod.info.description},
-                                  {u"state"_s, state},
-                                  {u"reason"_s, reason}});
-    }
-    emit modsChanged();
-}
-
-void QcGameController::setModEnabled(const QString &id, bool enabled)
-{
-    if (const QcStatus written = QcModLoader::setModEnabled(m_modsDirectory, id, enabled); !written) {
-        qCWarning(lcGame) << "Cannot change the mod settings:" << written.error();
-    }
-    refreshMods();
-    resetCharacterContent();
-}
-
-void QcGameController::openModsFolder()
-{
-    if (!m_modsDirectory.isEmpty() && QDir().mkpath(m_modsDirectory)) {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(m_modsDirectory));
-    }
 }
 
 void QcGameController::createWorld(const QString &worldName, const QString &seedText, bool keepInventory)
@@ -518,7 +191,8 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
         setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
         return;
     }
-    refreshWorlds();
+
+    m_library->refreshWorlds();
     startWorld(entry->directory, entry->info.name, entry->info.seed);
 }
 
@@ -531,92 +205,19 @@ void QcGameController::playWorld(const QString &folder)
         setPhase(u"error"_s, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
         return;
     }
+
     startWorld(it->directory, it->info.name, it->info.seed);
 }
 
-void QcGameController::deleteWorld(const QString &folder)
-{
-    const QcStatus removed = QcWorldLibrary(QcWorldLibrary::defaultRoot()).remove(folder);
-    if (!removed) {
-        qCWarning(lcGame) << removed.error();
-    }
-    refreshWorlds();
-}
-
-void QcGameController::saveWorld()
+void QcGameController::saveWorld() const
 {
     sendChat(u"/save"_s);
 }
 
-void QcGameController::selectHotbarSlot(int slot)
+void QcGameController::sendChat(const QString &text) const
 {
-    if (m_session) {
-        m_session->selectHotbarSlot(slot);
-    }
-}
-
-void QcGameController::moveItem(int from, int to, int count)
-{
-    const int fromSlot = QcInventoryModel::slotOfRow(from);
-    const int toSlot = QcInventoryModel::slotOfRow(to);
-    if (m_session && fromSlot >= 0 && toSlot >= 0) {
-        m_session->moveInventoryItem(fromSlot, toSlot, count);
-    }
-}
-
-void QcGameController::takeCraftingResult()
-{
-    if (m_session) {
-        m_session->takeCraftingResult();
-    }
-}
-
-void QcGameController::craftRecipe(const QString &recipe)
-{
-    if (m_session) {
-        m_session->craftRecipe(recipe);
-    }
-}
-
-void QcGameController::updateInventory()
-{
-    m_inventory->setInventory(m_session->inventory(), m_session->craftingGrid(), m_session->craftingResult(),
-                              m_session->machineOpen() ? m_session->machineSlots() : QList<QcItemStack>());
-    // Recipes the inventory can make right now, for the recipe list next to the grid.
-    m_craftableRecipes.clear();
-    const auto content = m_session->content();
-    if (content) {
-        for (const QcRecipeDefinition &recipe : content->recipes()) {
-            if (QcCrafting::gridSizeNeeded(recipe) > m_session->craftingSize()) {
-                continue;
-            }
-            const int possible = QcCrafting::timesCraftable(*content, m_session->inventory(), recipe, 64);
-            const std::optional<QcItemId> result = content->itemId(recipe.resultItem);
-            if (possible <= 0 || !result) {
-                continue;
-            }
-            const QcItemDefinition &definition = content->item(*result);
-            m_craftableRecipes.append(QVariantMap{{u"recipe"_s, recipe.name},
-                                                  {u"label"_s, content->translate(definition.translationKey, m_language)},
-                                                  {u"icon"_s, QString(u"image://items/"_s + definition.name)},
-                                                  {u"count"_s, recipe.resultCount},
-                                                  {u"possible"_s, possible}});
-        }
-    }
-    emit craftingChanged();
-}
-
-void QcGameController::respawn()
-{
-    if (m_session) {
-        m_session->respawn();
-    }
-}
-
-void QcGameController::sendChat(const QString &text)
-{
-    if (m_session) {
-        m_session->sendChat(text);
+    if (m_parts.session) {
+        m_parts.session->sendChat(text);
     }
 }
 
@@ -625,26 +226,33 @@ void QcGameController::setOverlay(const QString &overlay)
     if (m_overlay == overlay) {
         return;
     }
+
     m_overlay = overlay;
-    m_keysDown.clear();
+    m_input->clearKeys();
     if (m_overlay != u"chat"_s) {
         m_chatStart.clear();
     }
-    if (m_session) {
-        m_session->setMining(false);
+    if (m_parts.session) {
+        m_parts.session->setMining(false);
         // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
         // the furnace or chest screen closes the block.
         if (m_overlay != u"inventory"_s) {
-            m_session->closeCrafting();
+            m_parts.session->closeCrafting();
         }
         if (m_overlay != u"furnace"_s && m_overlay != u"chest"_s) {
-            m_session->closeMachine();
+            m_parts.session->closeMachine();
         }
     }
     if (!overlay.isEmpty()) {
-        releaseMouse();
+        m_input->releaseMouse();
     }
     emit overlayChanged();
+}
+
+void QcGameController::openChat(const QString &start)
+{
+    m_chatStart = start;
+    setOverlay(u"chat"_s);
 }
 
 void QcGameController::startWorld(const QString &directory, const QString &worldName, qint64 seed)
@@ -656,701 +264,226 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     setOverlay({});
     setPhase(u"loading"_s, tr("Loading content..."));
 
+    const std::shared_ptr<const QcContentRegistry> content = loadContent();
+    if (!content || !startServer(content, worldName, seed)) {
+        return;
+    }
+
+    createSession();
+    connectSessionWorld();
+    connectSessionPlayer();
+    if (m_parts.view) {
+        m_parts.view->clearMeshes();
+        const int viewDistance = m_settings->viewDistance();
+        m_parts.view->setFogRange(float(viewDistance * QcWorld::chunkSize) * 0.6f, float(viewDistance * QcWorld::chunkSize));
+    }
+
+    m_sinceTick.start();
+    m_parts.session->start();
+    setPhase(u"loading"_s, tr("Generating world..."));
+    emit sessionStarted(m_parts.session);
+}
+
+std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
+{
     QStringList warnings;
-    QcResult<QcModLoader::Result> content = QcModLoader::load(m_modsDirectory, warnings);
+    QcResult<QcModLoader::Result> content = QcModLoader::load(m_library->modsDirectory(), warnings);
     for (const QString &warning : std::as_const(warnings)) {
         qCWarning(lcGame) << "Content:" << warning;
     }
     if (!content) {
         setPhase(u"error"_s, tr("Cannot load game content: %1").arg(content.error()));
-        return;
+        return nullptr;
     }
-    m_modLoadFailures.clear();
-    QStringList loadedMods;
-    for (const QcModStatus &mod : std::as_const(content->mods)) {
-        if (mod.state == QcModStatus::State::Failed && !mod.info.id.isEmpty()) {
-            m_modLoadFailures.insert(mod.info.id, mod.reason);
-        } else if (mod.state == QcModStatus::State::Loaded) {
-            loadedMods.append(mod.info.id + u' ' + mod.info.version);
-        }
-    }
-    qCInfo(lcGame).noquote() << u"Mods loaded: %1"_s.arg(loadedMods.isEmpty() ? u"none"_s : loadedMods.join(u", "_s));
-    refreshMods();
-    const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
-    m_characterContent = shared;
-    ++m_contentGeneration;
-    emit appearancesChanged();
 
+    m_library->recordLoadedMods(content->mods);
+    const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
+    m_library->useContent(shared);
+    m_settings->character()->refreshLists();
+    return shared;
+}
+
+bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QString &worldName, qint64 seed)
+{
     QcServerConfig config;
     config.worldName = worldName;
     config.seed = seed;
-    config.worldDirectory = directory;
+    config.worldDirectory = m_worldDirectory;
     // One extra ring: sections are meshed only once their neighbours are known.
-    config.viewDistance = m_viewDistance + 1;
-    config.spawnColumn = m_spawnColumn;
+    config.viewDistance = m_settings->viewDistance() + 1;
+    config.spawnColumn = m_startup->spawnColumn();
     QStringList generatorWarnings;
-    auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
+    auto generator = std::make_unique<QcTerrainGenerator>(content, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {
         qCWarning(lcGame) << "World generation:" << warning;
     }
-    m_server = std::make_unique<QcLocalServerHost>(config, shared, std::move(generator));
-    if (!m_server->startError().isEmpty()) {
-        const QString error = m_server->startError();
-        m_server.reset();
+
+    m_parts.server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
+    if (!m_parts.server->startError().isEmpty()) {
+        const QString error = m_parts.server->startError();
+        m_parts.server.reset();
         setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
+        return false;
+    }
+    return true;
+}
+
+void QcGameController::createSession()
+{
+    m_parts.session = new QcClientSession(m_parts.server->connectClient(), u"Player"_s, this);
+    m_parts.session->setAppearance(m_settings->character()->appearance());
+    m_parts.session->setCameraMode(m_settings->cameraModeValue());
+    m_parts.meshes = new QcMeshScheduler(this);
+    m_parts.session->setIntent(m_startup->initialIntent());
+    m_render.setForcedPose(m_startup->forcedPose());
+}
+
+void QcGameController::connectSessionWorld()
+{
+    const QcClientSession *session = m_parts.session;
+    connect(session, &QcClientSession::contentReady, this, &QcGameController::onContentReady);
+    connect(session, &QcClientSession::chunkLoaded, this, [this](QcChunkPos pos) { m_parts.meshes->chunkLoaded(*m_parts.session->world(), pos); });
+    connect(session, &QcClientSession::chunkUnloaded, m_parts.meshes, &QcMeshScheduler::chunkUnloaded);
+    connect(session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
+        m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous);
+    });
+    connect(session, &QcClientSession::ticked, this, [this] {
+        m_sinceTick.restart();
+        m_audio->setAmbience(m_parts.session->ambience());
+    });
+    connect(session, &QcClientSession::soundCue, this, [this](const QcSoundCue &cue) {
+        const QcVec3 ears = m_parts.session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+        // Left and right as seen on screen: the front view looks back at the player.
+        const bool front = m_parts.session->cameraMode() == QcCameraMode::Front;
+        m_audio->play(cue, ears, m_parts.session->intent().yaw + (front ? 180.0f : 0.0f));
+    });
+    connect(session, &QcClientSession::chatReceived, m_hud, &QcHudState::addChatLine);
+    connect(session, &QcClientSession::stateChanged, this, &QcGameController::onSessionState);
+
+    connect(m_parts.meshes, &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
+        if (m_parts.view) {
+            m_parts.view->submitMesh(key, std::move(mesh));
+        }
+    });
+    connect(m_parts.meshes, &QcMeshScheduler::meshRemoved, this, [this](quint64 key) {
+        if (m_parts.view) {
+            m_parts.view->removeMesh(key);
+        }
+    });
+}
+
+void QcGameController::connectSessionPlayer()
+{
+    const QcClientSession *session = m_parts.session;
+    connect(session, &QcClientSession::inventoryChanged, m_player, &QcPlayerController::updateInventory);
+    connect(session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
+    connect(session, &QcClientSession::foodChanged, m_player, &QcPlayerController::foodChanged);
+    connect(session, &QcClientSession::machineOpened, this, &QcGameController::onMachineOpened);
+    connect(session, &QcClientSession::machineChanged, m_player, &QcPlayerController::updateMachine);
+    connect(session, &QcClientSession::machineClosed, this, &QcGameController::onMachineClosed);
+    // On death the screens close before the health properties notify QML.
+    connect(session, &QcClientSession::healthChanged, this, &QcGameController::onHealthChanged);
+    connect(session, &QcClientSession::healthChanged, m_player, &QcPlayerController::healthChanged);
+}
+
+void QcGameController::onSessionState(QcClientSession::State state)
+{
+    if (state == QcClientSession::State::Playing) {
+        setPhase(u"playing"_s);
+        m_startup->worldPlaying();
+    } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
+        m_input->releaseMouse();
+        setPhase(u"error"_s, tr("Disconnected: %1").arg(m_parts.session->disconnectReason()));
+    }
+}
+
+void QcGameController::onMachineOpened()
+{
+    m_player->nameOpenMachine();
+    setOverlay(m_parts.session->containerOpen() ? u"chest"_s : u"furnace"_s);
+    m_player->updateMachine();
+    m_startup->machineOpened();
+}
+
+void QcGameController::onMachineClosed()
+{
+    if (m_overlay == u"furnace"_s || m_overlay == u"chest"_s) {
+        setOverlay({});
+    }
+    m_player->updateMachine();
+}
+
+void QcGameController::onHealthChanged()
+{
+    if (!m_parts.session->isDead()) {
         return;
     }
 
-    m_session = new QcClientSession(m_server->connectClient(), u"Player"_s, this);
-    m_session->setAppearance(m_appearance);
-    m_session->setCameraMode(m_cameraMode);
-    m_meshes = new QcMeshScheduler(this);
-    QcPlayerInput intent;
-    intent.yaw = m_initialYaw;
-    intent.pitch = m_initialPitch;
-    m_session->setIntent(intent);
-
-    connect(m_session, &QcClientSession::contentReady, this, &QcGameController::onContentReady);
-    connect(m_session, &QcClientSession::chunkLoaded, this, [this](QcChunkPos pos) {
-        m_meshes->chunkLoaded(*m_session->world(), pos);
-    });
-    connect(m_session, &QcClientSession::chunkUnloaded, m_meshes, &QcMeshScheduler::chunkUnloaded);
-    connect(m_session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
-        m_meshes->blockChanged(*m_session->world(), pos, previous);
-    });
-    connect(m_session, &QcClientSession::ticked, this, [this] {
-        m_sinceTick.restart();
-        m_audio->setAmbience(m_session->ambience());
-    });
-    connect(m_session, &QcClientSession::soundCue, this, [this](const QcSoundCue &cue) {
-        const QcVec3 ears = m_session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-        // Left and right as seen on screen: the front view looks back at the player.
-        const bool front = m_session->cameraMode() == QcCameraMode::Front;
-        m_audio->play(cue, ears, m_session->intent().yaw + (front ? 180.0f : 0.0f));
-    });
-    connect(m_session, &QcClientSession::inventoryChanged, this, &QcGameController::updateInventory);
-    connect(m_session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
-    connect(m_session, &QcClientSession::foodChanged, this, &QcGameController::foodChanged);
-    connect(m_session, &QcClientSession::machineOpened, this, [this] {
-        const auto content = m_session->content();
-        const std::optional<QcBlockPos> pos = m_session->machinePos();
-        const std::optional<QcBlockId> block = pos && m_session->world() ? m_session->world()->blockAt(*pos) : std::nullopt;
-        m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_language) : QString();
-        setOverlay(m_session->containerOpen() ? u"chest"_s : u"furnace"_s);
-        updateInventory();
-        emit machineChanged();
-        if (m_fillMachineOnOpen && m_session->containerOpen()) {
-            m_fillMachineOnOpen = false;
-            for (int slot = 0; slot < 9; ++slot) {
-                m_session->moveInventoryItem(slot, QcMsg::MoveInventoryItem::machineInputSlot + slot);
-            }
-            QTimer::singleShot(1000, this, [this] {
-                if (m_screenshotHook) {
-                    m_screenshotHook->release();
-                }
-            });
-        } else if (m_fillMachineOnOpen) {
-            // Hotbar slot 1 goes into the input, slot 2 onto the fuel.
-            m_fillMachineOnOpen = false;
-            m_session->moveInventoryItem(0, QcMsg::MoveInventoryItem::machineInputSlot);
-            m_session->moveInventoryItem(1, QcMsg::MoveInventoryItem::machineFuelSlot);
-            // A few seconds of burning show the flame and the arrow in the screenshot.
-            QTimer::singleShot(2500, this, [this] {
-                if (m_screenshotHook) {
-                    m_screenshotHook->release();
-                }
-            });
-        }
-    });
-    connect(m_session, &QcClientSession::machineChanged, this, [this] {
-        updateInventory();
-        emit machineChanged();
-    });
-    connect(m_session, &QcClientSession::machineClosed, this, [this] {
-        if (m_overlay == u"furnace"_s || m_overlay == u"chest"_s) {
-            setOverlay({});
-        }
-        updateInventory();
-        emit machineChanged();
-    });
-    connect(m_session, &QcClientSession::healthChanged, this, [this] {
-        if (m_session->isDead()) {
-            setOverlay({});
-            releaseMouse();
-            // Releases on the death screen go to QML; forget held keys so nothing sticks after respawn.
-            m_keysDown.clear();
-            m_session->setMining(false);
-        }
-        emit healthChanged();
-    });
-    connect(m_session, &QcClientSession::chatReceived, this, [this](const QString &text) {
-        m_chatLines.append(text);
-        // Only the last few lines stay on screen.
-        constexpr qsizetype maxChatLines = 8;
-        while (m_chatLines.size() > maxChatLines) {
-            m_chatLines.removeFirst();
-        }
-        emit chatLinesChanged();
-    });
-    connect(m_session, &QcClientSession::stateChanged, this, [this](QcClientSession::State state) {
-        if (state == QcClientSession::State::Playing) {
-            setPhase(u"playing"_s);
-            for (const QString &line : std::as_const(m_startupChat)) {
-                // "@<ms> <text>" waits that long after loading (scenes in motion for screenshots);
-                // the screenshot is taken only after the last delayed line.
-                const qsizetype space = line.indexOf(u' ');
-                bool delayed = false;
-                const int delayMs = line.startsWith(u'@') && space > 1 ? QStringView(line).mid(1, space - 1).toInt(&delayed) : 0;
-                if (!delayed || delayMs < 0) {
-                    m_session->sendChat(line);
-                    continue;
-                }
-                if (m_screenshotHook) {
-                    m_screenshotHook->hold();
-                }
-                QTimer::singleShot(delayMs, this, [this, text = line.mid(space + 1)] {
-                    if (m_session) {
-                        m_session->sendChat(text);
-                    }
-                    if (m_screenshotHook) {
-                        m_screenshotHook->release();
-                    }
-                });
-            }
-            if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s) {
-                // Uses the block in view once the startup commands have placed it.
-                m_fillMachineOnOpen = true;
-                if (m_screenshotHook) {
-                    m_screenshotHook->hold();
-                }
-                QTimer::singleShot(1000, this, [this] {
-                    if (m_session) {
-                        m_session->useItem();
-                    }
-                });
-                // Without a machine in view the screen never opens; take the screenshot anyway.
-                QTimer::singleShot(6000, this, [this] {
-                    if (!m_fillMachineOnOpen) {
-                        return;
-                    }
-                    m_fillMachineOnOpen = false;
-                    qCWarning(lcGame) << "--overlay" << m_startupOverlay << ": no block in view opened";
-                    if (m_screenshotHook) {
-                        m_screenshotHook->release();
-                    }
-                });
-            } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
-                openHandbook(m_startupHandbook);
-            } else if (!m_startupOverlay.isEmpty()) {
-                setOverlay(m_startupOverlay);
-            }
-            for (const QString &step : std::as_const(m_startupOverlaySteps)) {
-                const qsizetype space = step.indexOf(u' ');
-                bool valid = false;
-                const int delayMs = space > 1 ? QStringView(step).mid(1, space - 1).toInt(&valid) : 0;
-                if (!valid || delayMs < 0) {
-                    qCWarning(lcGame) << "--overlay" << step << ": expected '@<ms> <overlay>'";
-                    continue;
-                }
-                if (m_screenshotHook) {
-                    m_screenshotHook->hold();
-                }
-                QTimer::singleShot(delayMs, this, [this, overlay = step.mid(space + 1)] {
-                    if (m_session) {
-                        setOverlay(overlay);
-                    }
-                    if (m_screenshotHook) {
-                        m_screenshotHook->release();
-                    }
-                });
-            }
-            if (m_benchmarkSeconds > 0) {
-                QTimer::singleShot(3000, this, &QcGameController::startBenchmark);
-            }
-        } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
-            releaseMouse();
-            setPhase(u"error"_s, tr("Disconnected: %1").arg(m_session->disconnectReason()));
-        }
-    });
-    connect(m_meshes, &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
-        if (m_view) {
-            m_view->submitMesh(key, std::move(mesh));
-        }
-    });
-    connect(m_meshes, &QcMeshScheduler::meshRemoved, this, [this](quint64 key) {
-        if (m_view) {
-            m_view->removeMesh(key);
-        }
-    });
-
-    if (m_view) {
-        m_view->clearMeshes();
-        m_view->setFogRange(float(m_viewDistance * QcWorld::chunkSize) * 0.6f, float(m_viewDistance * QcWorld::chunkSize));
-    }
-    m_sinceTick.start();
-    m_session->start();
-    setPhase(u"loading"_s, tr("Generating world..."));
-    emit sessionStarted(m_session);
+    setOverlay({});
+    m_input->releaseMouse();
+    // Releases on the death screen go to QML; forget held keys so nothing sticks after respawn.
+    m_input->clearKeys();
+    m_parts.session->setMining(false);
 }
 
 void QcGameController::onContentReady()
 {
-    const QcTextureAtlas atlas = QcTextureAtlas::build(*m_session->content());
+    const QcContentRegistry &content = *m_parts.session->content();
+    const QcTextureAtlas atlas = QcTextureAtlas::build(content);
     const QStringList problems = atlas.problems();
     for (const QString &problem : problems) {
         qCWarning(lcGame) << "Texture:" << problem;
     }
-    m_renderTable = std::make_shared<const QcBlockRenderTable>(*m_session->content(), atlas);
-    m_atlas = std::make_shared<const QcTextureAtlas>(atlas);
-    updateIcons(*m_session->content(), atlas, m_renderTable.get());
-    m_inventory->setContent(m_session->content(), m_language);
-    updateInventory();
-    m_meshes->setRenderTable(m_renderTable);
-    if (m_view) {
-        m_view->setAtlas(atlas.image());
+
+    m_renderTable = std::make_shared<const QcBlockRenderTable>(content, atlas);
+    m_render.setAtlas(std::make_shared<const QcTextureAtlas>(atlas));
+    m_icons.draw(content, atlas, m_renderTable.get());
+    m_player->useContent();
+    m_parts.meshes->setRenderTable(m_renderTable);
+    if (m_parts.view) {
+        m_parts.view->setAtlas(atlas.image());
     }
-    m_audio->setContent(m_session->content());
+    m_audio->setContent(m_parts.session->content());
     m_audio->setMusicEnabled(true);
 }
 
-float QcGameController::blockLightAt(QcBlockPos pos) const
+void QcGameController::onContentReset()
 {
-    return float(m_meshes->blockLight(pos)) / float(QcLightVolume::maxLevel);
-}
-
-QcBlockId QcGameController::itemState(const QcContentRegistry &content, QcBlockId block)
-{
-    // Fences, walls and panes show a piece of a run rather than a lone post.
-    if (!content.block(block).connectsTo.isEmpty()) {
-        block = content.withProperty(content.withProperty(block, u"east"_s, u"true"_s), u"west"_s, u"true"_s);
+    if (!m_parts.session) {
+        m_icons.invalidate();
     }
-    return block;
-}
-
-QcEntityMesher::ItemLook QcGameController::itemLook(const QcContentRegistry &content, QcItemId item)
-{
-    QcEntityMesher::ItemLook look;
-    if (!content.isValidItem(item)) {
-        return look;
-    }
-    const QcItemDefinition &definition = content.item(item);
-    look.sprite = definition.texture;
-    const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
-    if (block) {
-        look.glow = float(content.block(*block).lightLevel) / float(QcLightVolume::maxLevel);
-    }
-    if (block && content.block(*block).itemTexture.isEmpty() && !content.state(*block).boxes.isEmpty()
-        && content.block(*block).renderLayer != QcRenderLayer::Invisible) {
-        look.cube = true;
-        look.faces = content.block(*block).faceTextures;
-        if (!content.state(itemState(content, *block)).fullCube) {
-            look.boxes = content.state(itemState(content, *block)).boxes;
-        }
-    }
-    return look;
-}
-
-std::optional<QcEntityMesher::ItemLook> QcGameController::heldLook(QcItemId item) const
-{
-    const auto content = m_session->content();
-    if (item == qcNoItem || !content || !content->isValidItem(item)) {
-        return std::nullopt;
-    }
-    return itemLook(*content, item);
-}
-
-QcEntityMesher::ModelLook QcGameController::playerLook(const QcAppearance &appearance) const
-{
-    const QcContentRegistry &content = *m_session->content();
-    QcEntityMesher::ModelLook look;
-    look.model = content.model(u"qtcraft:humanoid"_s);
-    look.outfit = content.appearance(appearance.outfit);
-    if (!look.outfit || look.outfit->kind != QcAppearanceDefinition::Kind::Outfit) {
-        look.outfit = content.appearance(QcAppearance().outfit);
-    }
-    look.hair = content.appearance(appearance.hair);
-    if (look.hair && look.hair->kind != QcAppearanceDefinition::Kind::Hair) {
-        look.hair = nullptr;
-    }
-    look.colors = appearance;
-    return look;
-}
-
-QcEntityPose QcGameController::localPose(double alpha) const
-{
-    QcEntityPose pose = m_session->localPose(alpha);
-    if (m_forcedPose.isEmpty()) {
-        return pose;
-    }
-    // Screenshot hook: a fixed moment of an animation, independent of the real movement.
-    pose.onGround = true;
-    if (m_forcedPose == u"walk"_s) {
-        pose.speed = QcPhysics::walkSpeed;
-        pose.walkDistance = 0.3;
-    } else if (m_forcedPose == u"swing"_s) {
-        pose.swingProgress = 0.45;
-    } else if (m_forcedPose == u"swim"_s) {
-        pose.onGround = false;
-        pose.inWater = true;
-        pose.speed = QcPhysics::swimSpeed;
-    } else if (m_forcedPose == u"jump"_s) {
-        pose.onGround = false;
-    } else if (m_forcedPose == u"sneak"_s) {
-        pose.sneaking = true;
-    } else if (m_forcedPose == u"death"_s) {
-        pose.deathProgress = 0.7;
-    }
-    return pose;
-}
-
-void QcGameController::updateEntities(double alpha, QcCameraMode mode)
-{
-    if (!m_atlas) {
-        return;
-    }
-    auto mesh = std::make_shared<QcEntityMesh>();
-    // Sized like the previous frame's mesh, so the lists do not grow vertex by vertex.
-    mesh->vertices.reserve(m_entityMeshSize.first);
-    mesh->indices.reserve(m_entityMeshSize.second);
-    const QcClientWorld &world = *m_session->world();
-    const QcContentRegistry &content = *m_session->content();
-    const auto &mobs = content.mobs();
-    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
-    const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
-    // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
-    const auto lightAt = [this, &world](const QcVec3 &position) {
-        const QcBlockPos feet{int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
-        float sky = 1.0f;
-        if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
-            sky = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
-        }
-        return QcEntityLight(sky, blockLightAt(feet.offset(0, 1, 0)));
-    };
-    const auto lerpYaw = [](float from, float to, double t) {
-        const float delta = std::fmod(to - from + 540.0f, 360.0f) - 180.0f;
-        return double(from + delta * float(t));
-    };
-    const auto appendCreature = [&](const QcClientEntity &entity) {
-        const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-        QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, alpha), lightAt(position),
-                                            entity.hurtTicks > 0};
-        if (entity.mobType >= 0 && entity.mobType < mobs.size() && mobs[entity.mobType].glow > 0) {
-            // Glowing creatures pulse slowly, each in its own rhythm; at full glow they are drawn brighter
-            // than any lit surface (the shader multiplies, so values above 1 shine).
-            constexpr double emission = 1.8;
-            const double pulse = 0.75 + 0.25 * std::sin(seconds * 2.2 + double(entity.id % 97));
-            const float glow = float(emission * pulse * mobs[entity.mobType].glow / double(QcMobDefinition::maxGlow));
-            placement.light = QcEntityLight(placement.light.sky, std::max(placement.light.block, glow));
-        }
-        QcEntityPose pose = QcClientSession::poseOf(entity, alpha);
-        const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
-        QcEntityMesher::ModelLook look;
-        if (mob && !mobs[entity.mobType].skeleton.isEmpty()) {
-            const QcMobDefinition &definition = mobs[entity.mobType];
-            look.model = content.model(definition.skeleton);
-            look.outfit = content.appearance(definition.outfit);
-            look.scale = definition.height / QcEntityMesher::modelHeight;
-            pose.armsForward = definition.armsForward;
-        } else if (!mob) {
-            look = playerLook(entity.appearance);
-        }
-        if (!look.isValid()) {
-            // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
-            const bool ownParts = mob && !mobs[entity.mobType].parts.isEmpty();
-            QcEntityMesher::appendParts(*mesh, ownParts ? mobs[entity.mobType].parts : QcEntityMesher::playerParts(), placement, uv);
-            return;
-        }
-        const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
-        QcEntityMesher::appendModel(*mesh, look, QcAnimator::animateBody(pose, seconds), placement, held ? &*held : nullptr, uv);
-    };
-    for (const QcClientEntity &entity : m_session->entities()) {
-        if (entity.isItem()) {
-            QcEntityMesher::appendItem(*mesh, entity, itemLook(content, entity.item.item), alpha, lightAt(entity.position), seconds, uv);
-        } else if (entity.isFallingBlock()) {
-            QcEntityMesher::ItemLook look;
-            look.cube = true;
-            look.faces = content.block(entity.block).faceTextures;
-            const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-            QcEntityMesher::appendBlock(*mesh, look, position, lightAt(position), uv);
-        } else {
-            appendCreature(entity);
-        }
-    }
-    for (const QcClientEntity &entity : m_session->dyingEntities()) {
-        appendCreature(entity);
-    }
-    // In third person the player sees their own character.
-    if (mode != QcCameraMode::FirstPerson && !m_session->isDead()) {
-        const QcVec3 feet = lerp(m_session->previousPlayerMotion().position, m_session->playerMotion().position, alpha);
-        const QcItemStack &selected = m_session->inventory().selectedStack();
-        const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-        QcEntityMesher::appendModel(*mesh, playerLook(m_appearance), QcAnimator::animateBody(localPose(alpha), seconds),
-                                    {feet, double(m_session->intent().yaw), lightAt(feet), false}, held ? &*held : nullptr, uv);
-    }
-    m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
-    m_view->setEntityMesh(std::move(mesh));
-}
-
-void QcGameController::updateHand(double alpha, const QcVec3 &eye)
-{
-    if (!m_atlas || m_session->isDead()) {
-        m_view->setHandMesh(nullptr);
-        return;
-    }
-    auto mesh = std::make_shared<QcEntityMesh>();
-    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
-    const QcItemStack &selected = m_session->inventory().selectedStack();
-    const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcClientSession::HandTimers timers = m_session->handTimers(alpha);
-    const double seconds = m_session->worldTime() + alpha * QcPhysics::tickDuration;
-    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
-    const QcBlockPos feet{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
-    QcEntityLight light(1.0f, blockLightAt(feet));
-    if (const std::shared_ptr<const QcChunk> chunk = m_session->world()->chunk(feet.chunk())) {
-        light.sky = chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y ? 0.45f : 1.0f;
-    }
-    QcEntityMesher::appendHand(*mesh, playerLook(m_appearance), held ? &*held : nullptr, hand, eye, m_session->intent().yaw,
-                               m_session->intent().pitch, light, uv);
-    m_view->setHandMesh(std::move(mesh));
-}
-
-const QcContentRegistry &QcGameController::characterContent() const
-{
-    if (m_session && m_session->content()) {
-        return *m_session->content();
-    }
-    return fullContent();
-}
-
-const QcContentRegistry &QcGameController::fullContent() const
-{
-    if (!m_characterContent) {
-        QStringList warnings;
-        QcResult<QcModLoader::Result> loaded = QcModLoader::load(m_modsDirectory, warnings);
-        for (const QString &warning : std::as_const(warnings)) {
-            qCWarning(lcGame) << "Content:" << warning;
-        }
-        m_characterContent = loaded ? std::shared_ptr<const QcContentRegistry>(loaded->content)
-                                    : std::make_shared<const QcContentRegistry>();
-    }
-    return *m_characterContent;
-}
-
-void QcGameController::resetCharacterContent()
-{
-    m_characterContent.reset();
-    ++m_contentGeneration;
-    if (!m_session) {
-        m_iconsReady = false;
-    }
-    emit appearancesChanged();
-}
-
-void QcGameController::ensureHandbook()
-{
-    if (m_handbookModel->handbook() && m_handbookGeneration == m_contentGeneration && m_handbookLanguage == m_language
-        && m_handbookKeys == m_keyControls->bindings()) {
-        return;
-    }
-    QElapsedTimer timer;
-    timer.start();
-    const QcContentRegistry &content = fullContent();
-    const qint64 loadedMs = timer.elapsed();
-    auto book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(content, m_language, QcHandbookRules::values(), m_keyControls->bindings().placeholderKeys()));
-    const qint64 builtMs = timer.elapsed() - loadedMs;
-    for (const QString &problem : book->problems()) {
-        qCWarning(lcGame) << "Handbook:" << problem;
-    }
-    // In the menu nothing has drawn icons yet; draw them from the same content.
-    if (!m_iconsReady) {
-        const QcTextureAtlas atlas = QcTextureAtlas::build(content);
-        const QcBlockRenderTable table(content, atlas);
-        updateIcons(content, atlas, &table);
-    }
-    qCInfo(lcGame).nospace() << "Handbook: " << book->entries().size() << " entries; content " << loadedMs << " ms, built in " << builtMs
-                             << " ms, icons " << (timer.elapsed() - loadedMs - builtMs) << " ms";
-    m_handbookGeneration = m_contentGeneration;
-    m_handbookLanguage = m_language;
-    m_handbookKeys = m_keyControls->bindings();
-    m_handbookModel->setHandbook(std::move(book));
-}
-
-void QcGameController::openHandbook(const QString &target)
-{
-    ensureHandbook();
-    m_handbookTarget = m_handbookModel->resolve(target);
-    m_handbookQuery = m_handbookTarget.isEmpty() ? target : QString();
-    m_handbookOpen = true;
-    m_keysDown.clear();
-    if (m_session) {
-        m_session->setMining(false);
-    }
-    releaseMouse();
-    // Logs how long the first frame with the handbook took (building the page included).
-    if (m_window) {
-        auto timer = std::make_shared<QElapsedTimer>();
-        timer->start();
-        auto connection = std::make_shared<QMetaObject::Connection>();
-        // frameSwapped comes from the render thread; a second queued call may already wait.
-        *connection = connect(m_window, &QQuickWindow::frameSwapped, this, [timer, connection] {
-            if (*connection) {
-                qCInfo(lcGame) << "Handbook: first frame after opening" << timer->elapsed() << "ms";
-                QObject::disconnect(*connection);
-                *connection = {};
-            }
-        });
-    }
-    emit handbookOpenChanged();
-}
-
-void QcGameController::closeHandbook()
-{
-    if (!m_handbookOpen) {
-        return;
-    }
-    m_handbookOpen = false;
-    emit handbookOpenChanged();
-}
-
-QVariantList QcGameController::appearanceList(QcAppearanceDefinition::Kind kind) const
-{
-    QVariantList list;
-    const QcContentRegistry &content = characterContent();
-    for (const QcAppearanceDefinition &definition : content.appearances()) {
-        if (definition.kind == kind && definition.playable) {
-            list.append(QVariantMap{{u"name"_s, definition.name}, {u"label"_s, content.translate(definition.translationKey, m_language)}});
-        }
-    }
-    return list;
-}
-
-QVariantList QcGameController::outfits() const
-{
-    return appearanceList(QcAppearanceDefinition::Kind::Outfit);
-}
-
-QVariantList QcGameController::hairStyles() const
-{
-    QVariantList list = appearanceList(QcAppearanceDefinition::Kind::Hair);
-    list.prepend(QVariantMap{{u"name"_s, QString()}, {u"label"_s, tr("No hair")}});
-    return list;
-}
-
-QString QcGameController::cameraMode() const
-{
-    return QString::fromLatin1(QcViewCamera::name(m_cameraMode));
-}
-
-void QcGameController::setCameraMode(const QString &mode)
-{
-    const std::optional<QcCameraMode> parsed = QcViewCamera::fromName(mode);
-    if (!parsed || *parsed == m_cameraMode) {
-        return;
-    }
-    m_cameraMode = *parsed;
-    if (m_session) {
-        m_session->setCameraMode(m_cameraMode);
-    }
-    emit settingsChanged();
-}
-
-QVariantMap QcGameController::character() const
-{
-    const auto hex = [](quint32 rgb) { return u"#%1"_s.arg(uint(rgb & 0xFFFFFFu), 6, 16, QChar(u'0')); };
-    return {{u"outfit"_s, m_appearance.outfit},          {u"hair"_s, m_appearance.hair},
-            {u"skin"_s, hex(m_appearance.skinColor)},    {u"hairColor"_s, hex(m_appearance.hairColor)},
-            {u"shirt"_s, hex(m_appearance.shirtColor)},  {u"pants"_s, hex(m_appearance.pantsColor)}};
-}
-
-void QcGameController::setCharacter(const QVariantMap &character)
-{
-    QcAppearance appearance = m_appearance;
-    const auto color = [&character](const QString &key, quint32 fallback) {
-        const QString text = character.value(key).toString();
-        bool ok = false;
-        const quint32 rgb = text.startsWith(u'#') && text.size() == 7 ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
-        return ok ? rgb : fallback;
-    };
-    appearance.outfit = character.value(u"outfit"_s, appearance.outfit).toString().left(QcAppearance::maxNameLength);
-    appearance.hair = character.value(u"hair"_s, appearance.hair).toString().left(QcAppearance::maxNameLength);
-    appearance.skinColor = color(u"skin"_s, appearance.skinColor);
-    appearance.hairColor = color(u"hairColor"_s, appearance.hairColor);
-    appearance.shirtColor = color(u"shirt"_s, appearance.shirtColor);
-    appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
-    if (appearance == m_appearance) {
-        return;
-    }
-    m_appearance = appearance;
-    if (m_session) {
-        m_session->setAppearance(m_appearance);
-    }
-    emit settingsChanged();
-}
-
-void QcGameController::updateSky(double alpha)
-{
-    const double time = m_session->worldTime() + alpha * QcPhysics::tickDuration;
-    const double daylight = QcDayCycle::daylight(time);
-    // Night sky dark blue, day sky light blue; fog uses the same colour.
-    const double t = (daylight - QcDayCycle::minimumDaylight) / (1.0 - QcDayCycle::minimumDaylight);
-    const QColor sky = QColor::fromRgbF(float(0.03 + 0.50 * t), float(0.04 + 0.70 * t), float(0.12 + 0.80 * t));
-    m_view->setDaylight(float(daylight));
-    m_view->setSkyColor(sky);
-    const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
-    if (label != m_timeOfDay) {
-        m_timeOfDay = label;
-        emit frameStateChanged();
-    }
-}
-
-void QcGameController::updateIcons(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable)
-{
-    m_iconsReady = true;
-    if (!m_iconProvider) {
-        return;
-    }
-    QHash<QString, QImage> icons;
-    const std::array<QImage, 6> shaded = QcBlockIcon::shadedAtlases(atlas.image());
-    for (const QcItemDefinition &item : content.items()) {
-        // Blocks show their shape, unless they bring a flat icon (torches, doors) or are plants.
-        const std::optional<QcBlockId> block = content.blockId(item.placesBlock);
-        const bool model = block && renderTable && content.block(*block).itemTexture.isEmpty()
-                           && content.block(*block).renderLayer != QcRenderLayer::Invisible
-                           && !content.state(*block).boxes.isEmpty();
-        icons.insert(item.name, model ? QcBlockIcon::render(renderTable->entry(itemState(content, *block)), shaded)
-                                      : atlas.tile(item.texture));
-    }
-    m_iconProvider->setIcons(std::move(icons));
+    m_settings->character()->refreshLists();
 }
 
 QcStatus QcGameController::stopSession()
 {
     QcStatus saved;
-    releaseMouse();
+    m_input->releaseMouse();
     m_audio->setMusicEnabled(false);
     m_audio->stopWorldSounds();
-    if (m_meshes) {
-        m_meshes->waitForJobs();
-        delete m_meshes;
-        m_meshes = nullptr;
+    if (m_parts.meshes) {
+        m_parts.meshes->waitForJobs();
+        delete m_parts.meshes;
+        m_parts.meshes = nullptr;
     }
-    if (m_session) {
-        m_session->disconnectFromServer();
-        delete m_session;
-        m_session = nullptr;
+    if (m_parts.session) {
+        m_parts.session->disconnectFromServer();
+        delete m_parts.session;
+        m_parts.session = nullptr;
     }
-    if (m_server) {
-        saved = m_server->shutdown();
-        m_server.reset();
+    if (m_parts.server) {
+        saved = m_parts.server->shutdown();
+        m_parts.server.reset();
     }
-    if (m_view) {
-        m_view->clearMeshes();
+    if (m_parts.view) {
+        m_parts.view->clearMeshes();
     }
+
     // Back in the menu: the menu's own content instead of the last world's sounds.
-    if (m_audio->isActive() && m_characterContent) {
-        m_audio->setContent(m_characterContent);
+    if (m_audio->isActive() && m_library->loadedContent()) {
+        m_audio->setContent(m_library->loadedContent());
     }
-    m_keysDown.clear();
+    m_input->clearKeys();
     return saved;
 }
 
@@ -1363,503 +496,53 @@ void QcGameController::leaveGame()
     setPhase(u"menu"_s);
 }
 
-void QcGameController::captureMouse()
+float QcGameController::advanceFrameClocks()
 {
-    if (m_mouseCaptured || !m_window || m_phase != u"playing"_s || !m_inputEnabled || m_backgroundRun) {
-        return;
-    }
-    m_mouseCaptured = true;
-    m_window->setCursor(Qt::BlankCursor);
-    // With platform deltas the cursor is detached and stays put; elsewhere motion is measured
-    // against the window centre.
-    if (!QcRelativeMouse::hasPlatformDeltas()) {
-        QCursor::setPos(m_window->mapToGlobal(QPoint(m_window->width() / 2, m_window->height() / 2)));
-    }
-    m_relativeMouse.setCaptured(true);
-    emit mouseCapturedChanged();
-}
-
-void QcGameController::releaseMouse()
-{
-    if (!m_mouseCaptured) {
-        return;
-    }
-    m_mouseCaptured = false;
-    m_relativeMouse.setCaptured(false);
-    if (m_window) {
-        m_window->unsetCursor();
-    }
-    emit mouseCapturedChanged();
-}
-
-bool QcGameController::eventFilter(QObject *watched, QEvent *event)
-{
-    if (watched == m_window && event->type() == QEvent::MouseButtonRelease && !m_mouseCaptured) {
-        clickIfButton(static_cast<QMouseEvent *>(event)->scenePosition());
-    }
-    // Keys of the game come before shortcuts (of the platform or of items below the world).
-    if (event->type() == QEvent::ShortcutOverride && worldInput()) {
-        const auto *key = static_cast<QKeyEvent *>(event);
-        if (m_keyControls->bindings().actionForPress(key->key(), key->modifiers())) {
-            event->accept();
-            return true;
-        }
-    }
-    if (watched != m_window || !worldInput()) {
-        return QObject::eventFilter(watched, event);
-    }
-    switch (event->type()) {
-    case QEvent::KeyPress:
-        handleWorldKey(*static_cast<QKeyEvent *>(event));
-        return true;
-    case QEvent::KeyRelease: {
-        auto *key = static_cast<QKeyEvent *>(event);
-        if (!key->isAutoRepeat()) {
-            if (m_keyControls->bindings().matches(QcKeyBindings::Action::Mine, key->key())) {
-                m_session->setMining(false);
-            }
-            m_keysDown.remove(key->key());
-        }
-        return true;
-    }
-    case QEvent::MouseButtonPress:
-        if (!m_mouseCaptured) {
-            captureMouse();
-            return true;
-        }
-        handleMouseButton(static_cast<QMouseEvent *>(event)->button(), true);
-        return true;
-    case QEvent::MouseButtonRelease:
-        if (m_mouseCaptured) {
-            handleMouseButton(static_cast<QMouseEvent *>(event)->button(), false);
-            return true;
-        }
-        return false;
-    case QEvent::Wheel: {
-        if (!m_mouseCaptured) {
-            return false;
-        }
-        const int steps = static_cast<QWheelEvent *>(event)->angleDelta().y() / 120;
-        if (steps != 0) {
-            const int slot = (m_session->inventory().selectedHotbarSlot() - steps) % QcInventory::hotbarSize;
-            m_session->selectHotbarSlot(slot < 0 ? slot + QcInventory::hotbarSize : slot);
-        }
-        return true;
-    }
-    case QEvent::MouseMove: {
-        if (!m_mouseCaptured) {
-            return false;
-        }
-        // With platform deltas the view turns once per frame in onFrame().
-        if (QcRelativeMouse::hasPlatformDeltas()) {
-            return true;
-        }
-        auto *mouse = static_cast<QMouseEvent *>(event);
-        const QPointF centre(m_window->width() / 2.0, m_window->height() / 2.0);
-        const QPointF delta = mouse->position() - centre;
-        if (delta.manhattanLength() > 0.0) {
-            m_session->setIntent(QcMouseLook::apply(m_session->intent(), delta, m_mouseSensitivity, m_invertMouse));
-            QCursor::setPos(m_window->mapToGlobal(centre.toPoint()));
-        }
-        return true;
-    }
-    default:
-        return QObject::eventFilter(watched, event);
-    }
-}
-
-void QcGameController::handleMouseButton(Qt::MouseButton button, bool pressed)
-{
-    if (button == Qt::LeftButton) {
-        // A click on a creature hits it; holding on a block mines.
-        if (pressed && m_session->attack()) {
-            return;
-        }
-        m_session->setMining(pressed);
-    } else if (button == Qt::RightButton && pressed) {
-        m_session->useItem();
-    }
-}
-
-bool QcGameController::worldInput() const
-{
-    // Overlays (inventory, pause menu, chat), the handbook and the death screen are QML items that
-    // take keyboard and mouse themselves.
-    return m_session && m_phase == u"playing"_s && m_inputEnabled && m_overlay.isEmpty() && !m_handbookOpen && !m_session->isDead();
-}
-
-bool QcGameController::keyDown(QcKeyBindings::Action action) const
-{
-    return std::ranges::any_of(m_keyControls->bindings().keys(action), [this](int key) { return m_keysDown.contains(key); });
-}
-
-void QcGameController::handleWorldKey(const QKeyEvent &key)
-{
-    if (key.isAutoRepeat()) {
-        return;
-    }
-    using A = QcKeyBindings::Action;
-    const std::optional<A> action = m_keyControls->bindings().actionForPress(key.key(), key.modifiers());
-    if (!action) {
-        return;
-    }
-    if (*action >= A::Hotbar1 && *action <= A::Hotbar9) {
-        m_session->selectHotbarSlot(int(*action) - int(A::Hotbar1));
-        return;
-    }
-    switch (*action) {
-    case A::Pause:
-        setOverlay(u"pause"_s);
-        return;
-    case A::Inventory:
-        setOverlay(u"inventory"_s);
-        return;
-    case A::Chat:
-        setOverlay(u"chat"_s);
-        return;
-    case A::Command:
-        m_chatStart = u"/"_s;
-        setOverlay(u"chat"_s);
-        return;
-    case A::Use:
-        m_session->useItem();
-        return;
-    case A::Mine:
-        m_session->setMining(true);
-        return;
-    case A::Handbook:
-        // The page of what the crosshair points at, else the page shown last.
-        openHandbook(m_targetName);
-        return;
-    case A::CameraView: {
-        // Cycles first person, behind, front; the choice is kept in the settings.
-        const QcCameraMode next = QcViewCamera::next(m_session->cameraMode());
-        setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
-        m_session->setCameraMode(next);
-        saveSettings();
-        return;
-    }
-    case A::DebugOverlay:
-        setShowDebug(!m_showDebug);
-        saveSettings();
-        return;
-    case A::Drop:
-        // With Ctrl (on a Mac Control) the whole stack.
-        m_session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_keyControls->bindings().platform())));
-        return;
-    default:
-        // Movement and look keys count while held (updateIntentFromKeys()).
-        m_keysDown.insert(key.key());
-        return;
-    }
-}
-
-void QcGameController::updateIntentFromKeys(float frameSeconds)
-{
-    using A = QcKeyBindings::Action;
-    QcPlayerInput intent = m_session->intent();
-    intent.forward = float(int(keyDown(A::Forward)) - int(keyDown(A::Back)));
-    intent.strafe = float(int(keyDown(A::Right)) - int(keyDown(A::Left)));
-    intent.jump = keyDown(A::Jump);
-    intent.sneak = keyDown(A::Sneak);
-    intent.sprint = keyDown(A::Sprint);
-    const float look = keyboardLookSpeed * frameSeconds;
-    intent.yaw += look * float(int(keyDown(A::LookRight)) - int(keyDown(A::LookLeft)));
-    intent.pitch = std::clamp(intent.pitch + look * float(int(keyDown(A::LookUp)) - int(keyDown(A::LookDown))), -89.9f, 89.9f);
-    m_session->setIntent(intent);
-}
-
-void QcGameController::startBenchmark()
-{
-    if (!m_session) {
-        return;
-    }
-    m_benchmarkFrameNs.clear();
-    m_frameProfile.clear();
-    m_benchmarkGuiCpuNs = QcThreadCpuClock::nowNs();
-    if (m_view) {
-        m_view->setCollectRenderSamples(true);
-        m_view->takeRenderSamples();
-    }
-    if (m_server) {
-        m_server->resetTickTimes();
-    }
-    m_meshes->resetStats();
-    if (!m_benchmarkWalk) {
-        m_benchmarkFrame.start();
-        m_benchmarkRunning = true;
-        QTimer::singleShot(m_benchmarkSeconds * 1000, this, &QcGameController::finishBenchmark);
-        if (m_benchmarkLight) {
-            // Four times a second a torch appears or vanishes on a ring around the player, so light
-            // spreads and goes away again across section and chunk borders all the time.
-            auto *torches = new QTimer(this);
-            auto step = std::make_shared<int>(0);
-            connect(torches, &QTimer::timeout, this, [this, torches, step] {
-                if (!m_benchmarkRunning || !m_session) {
-                    torches->deleteLater();
-                    return;
-                }
-                constexpr int ring = 12;
-                const int index = (*step / 2) % ring;
-                const double angle = index * 2.0 * std::numbers::pi / ring;
-                const int x = int(std::lround(std::cos(angle) * 9.0));
-                const int z = int(std::lround(std::sin(angle) * 9.0));
-                m_session->sendChat(u"/setblock ~%1 ~ ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? u"torch"_s : u"air"_s));
-                ++*step;
-            });
-            torches->start(250);
-        }
-        if (m_benchmarkLiquids) {
-            // Every half second a source appears four metres up on a ring around the player (every
-            // third one lava) or an earlier one is taken away, so the floor floods and drains all
-            // the time.
-            auto *sources = new QTimer(this);
-            auto step = std::make_shared<int>(0);
-            connect(sources, &QTimer::timeout, this, [this, sources, step] {
-                if (!m_benchmarkRunning || !m_session) {
-                    sources->deleteLater();
-                    return;
-                }
-                constexpr int ring = 6;
-                const int index = (*step / 2) % ring;
-                const double angle = index * 2.0 * std::numbers::pi / ring;
-                const int x = int(std::lround(std::cos(angle) * 8.0));
-                const int z = int(std::lround(std::sin(angle) * 8.0));
-                const QString source = index % 3 == 2 ? u"lava"_s : u"water"_s;
-                m_session->sendChat(u"/setblock ~%1 ~4 ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? source : u"air"_s));
-                ++*step;
-            });
-            sources->start(500);
-        }
-        return;
-    }
-    m_inputEnabled = true;
-    using A = QcKeyBindings::Action;
-    m_keysDown = {m_keyControls->bindings().key(A::Forward, 0)};
-    if (m_benchmarkSprint) {
-        m_keysDown.insert(m_keyControls->bindings().key(A::Sprint, 0));
-        m_keysDown.insert(m_keyControls->bindings().key(A::Jump, 0));
-    }
-    m_benchmarkFrameNs.reserve(qsizetype(m_benchmarkSeconds) * 240);
-    m_benchmarkFrame.start();
-    m_benchmarkRunning = true;
-    m_benchmarkCheckpoint = m_session->playerMotion().position;
-    QTimer::singleShot(m_benchmarkSeconds * 1000, this, &QcGameController::finishBenchmark);
-    // Turn away when stuck at a tree or cliff, so the walk keeps loading new chunks.
-    auto *steer = new QTimer(this);
-    connect(steer, &QTimer::timeout, this, [this, steer] {
-        if (!m_benchmarkRunning || !m_session) {
-            steer->deleteLater();
-            return;
-        }
-        const QcVec3 position = m_session->playerMotion().position;
-        const QcVec3 moved = position - m_benchmarkCheckpoint;
-        if (std::hypot(moved.x, moved.z) < 4.0) {
-            QcPlayerInput intent = m_session->intent();
-            intent.yaw = std::fmod(intent.yaw + 67.0f, 360.0f);
-            m_session->setIntent(intent);
-        }
-        m_benchmarkCheckpoint = position;
-    });
-    steer->start(1500);
-}
-
-void QcGameController::finishBenchmark()
-{
-    m_benchmarkRunning = false;
-    m_keysDown.clear();
-    if (m_view) {
-        m_frameProfile.addRenderSamples(m_view->takeRenderSamples());
-        m_view->setCollectRenderSamples(false);
-    }
-    QList<qint64> sorted = m_benchmarkFrameNs;
-    std::ranges::sort(sorted);
-    if (sorted.isEmpty()) {
-        qCWarning(lcGame) << "Benchmark: no frames rendered";
-        QCoreApplication::exit(1);
-        return;
-    }
-    qint64 total = 0;
-    for (const qint64 ns : std::as_const(sorted)) {
-        total += ns;
-    }
-    const double averageFps = double(sorted.size()) * 1e9 / double(total);
-    const double p99Ms = double(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
-    const double worstMs = double(sorted.constLast()) / 1e6;
-    const QcVec3 position = m_session ? m_session->playerMotion().position : QcVec3{};
-    const double tickMs = m_server ? m_server->tickAverageMs() : 0.0;
-    const double tickWorstMs = m_server ? m_server->tickWorstMs() : 0.0;
-    const double averageMs = double(total) / double(sorted.size()) / 1e6;
-    const qsizetype entities = m_session ? m_session->entities().size() : 0;
-    // Block changes until their sections show (with their light), the most sections and light jobs
-    // waiting at once, and the light thread's work per job.
-    const QcMeshScheduler::Stats mesh = m_meshes->stats();
-    const double latencyMs = mesh.latencySamples > 0 ? mesh.latencyTotalMs / double(mesh.latencySamples) : 0.0;
-    const double lightMs = mesh.lightJobs > 0 ? mesh.lightTotalMs / double(mesh.lightJobs) : 0.0;
-    qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
-                                u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
-                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13 mesh_jobs=%14 mesh_job_avg_ms=%15 mesh_job_max_ms=%16 %17"_s
-                                    .arg(averageMs, 0, 'f', 3)
-                                    .arg(p99Ms, 0, 'f', 3)
-                                    .arg(tickMs, 0, 'f', 3)
-                                    .arg(tickWorstMs, 0, 'f', 3)
-                                    .arg(peakMemoryMegabytes(), 0, 'f', 1)
-                                    .arg(entities)
-                                    .arg(latencyMs, 0, 'f', 3)
-                                    .arg(mesh.latencyWorstMs, 0, 'f', 3)
-                                    .arg(mesh.latencySamples)
-                                    .arg(mesh.worstBacklog)
-                                    .arg(mesh.lightJobs)
-                                    .arg(lightMs, 0, 'f', 3)
-                                    .arg(mesh.lightWorstMs, 0, 'f', 3)
-                                    .arg(mesh.meshJobs)
-                                    .arg(mesh.meshJobs > 0 ? mesh.meshTotalMs / double(mesh.meshJobs) : 0.0, 0, 'f', 3)
-                                    .arg(mesh.meshWorstMs, 0, 'f', 3)
-                                    .arg(m_frameProfile.summary());
-    const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
-                           u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())
-                               .arg(m_benchmarkSeconds)
-                               .arg(averageFps, 0, 'f', 1)
-                               .arg(p99Ms, 0, 'f', 2)
-                               .arg(1000.0 / p99Ms, 0, 'f', 1)
-                               .arg(worstMs, 0, 'f', 2)
-                               .arg(m_viewDistance)
-                               .arg(position.x, 0, 'f', 0)
-                               .arg(position.z, 0, 'f', 0)
-                               .arg(m_session && m_session->world() ? m_session->world()->chunkCount() : 0);
-    qCInfo(lcGame).noquote() << report;
-    QCoreApplication::quit();
-}
-
-void QcGameController::onFrame()
-{
-    if (m_benchmarkRunning) {
-        const qint64 ns = m_benchmarkFrame.nsecsElapsed();
-        m_benchmarkFrameNs.append(ns);
-        if (ns > 100'000'000) {
-            // A hidden or covered window may stall frames for reasons outside the game.
-            qCInfo(lcGame) << "Benchmark: frame" << m_benchmarkFrameNs.size() << "took" << ns / 1'000'000 << "ms, window"
-                           << (m_window && m_window->isExposed() ? "exposed" : "not exposed") << "visibility"
-                           << (m_window ? m_window->visibility() : QWindow::Hidden) << "active" << (m_window && m_window->isActive());
-        }
-        m_benchmarkFrame.restart();
-    }
     const float frameSeconds = float(std::min<qint64>(m_frameClock.restart(), 100)) / 1000.0f;
     ++m_framesSinceFps;
     if (m_fpsClock.elapsed() >= 500) {
         m_fps = m_framesSinceFps * 1000.0 / double(m_fpsClock.restart());
         m_framesSinceFps = 0;
     }
-    // Taken every frame, so motion from a frame without a world never turns the view later.
-    const QPointF mouseDelta = QcRelativeMouse::hasPlatformDeltas() ? m_relativeMouse.takeDelta() : QPointF();
-    if (!m_session || !m_view || !m_session->world()) {
+    return frameSeconds;
+}
+
+void QcGameController::onFrame()
+{
+    m_benchmark->recordFrame();
+    const float frameSeconds = advanceFrameClocks();
+    const QPointF mouseDelta = m_input->takeMouseDelta();
+    if (!m_parts.session || !m_parts.view || !m_parts.session->world()) {
         return;
     }
+
     // The world moves every frame (interpolated motion, animations, day cycle): the next frame is
     // requested explicitly, not left to item changes made during this one.
-    if (m_window) {
-        m_window->update();
+    if (m_parts.window) {
+        m_parts.window->update();
     }
-    if (m_mouseCaptured && !mouseDelta.isNull()) {
-        m_session->setIntent(QcMouseLook::apply(m_session->intent(), mouseDelta, m_mouseSensitivity, m_invertMouse));
-    }
-    if (m_inputEnabled && m_phase == u"playing"_s) {
-        updateIntentFromKeys(frameSeconds);
-    }
+    m_input->applyFrame(mouseDelta, frameSeconds);
 
     const double alpha = std::clamp(double(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
-    const QcVec3 feet = lerp(m_session->previousPlayerMotion().position, m_session->playerMotion().position, alpha);
+    const QcVec3 feet = lerp(m_parts.session->previousPlayerMotion().position, m_parts.session->playerMotion().position, alpha);
     const QcVec3 eye = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     // The control interface may switch the view too; the session holds the current mode.
-    const QcCameraMode mode = m_session->isDead() ? QcCameraMode::FirstPerson : m_session->cameraMode();
-    const QcViewCamera::Placement placed =
-        QcViewCamera::place(eye, m_session->intent().yaw, m_session->intent().pitch, mode, *m_session->world());
-    QcCamera camera = m_view->camera();
-    camera.position = QVector3D(float(placed.position.x), float(placed.position.y), float(placed.position.z));
-    camera.yaw = placed.yaw;
-    camera.pitch = placed.pitch;
-    camera.fieldOfView = float(m_fieldOfView);
-    m_view->setCamera(camera);
+    const QcCameraMode mode = m_parts.session->isDead() ? QcCameraMode::FirstPerson : m_parts.session->cameraMode();
+    m_render.placeCamera(eye, mode);
 
     QElapsedTimer entityTime;
     entityTime.start();
-    updateEntities(alpha, mode);
-    if (mode == QcCameraMode::FirstPerson) {
-        updateHand(alpha, eye);
-    } else {
-        m_view->setHandMesh(nullptr);
-    }
-    if (m_benchmarkRunning) {
-        const qint64 guiCpuNs = QcThreadCpuClock::nowNs();
-        const double guiCpuMs = guiCpuNs >= 0 && m_benchmarkGuiCpuNs >= 0 ? double(guiCpuNs - m_benchmarkGuiCpuNs) / 1e6 : -1.0;
-        m_benchmarkGuiCpuNs = guiCpuNs;
-        m_frameProfile.addGuiFrame(guiCpuMs, double(entityTime.nsecsElapsed()) / 1e6);
-        m_frameProfile.addRenderSamples(m_view->takeRenderSamples());
-    }
-    updateSky(alpha);
-    const std::optional<QcRaycastHit> &target = m_session->target();
-    const std::optional<quint32> targetEntity = m_session->targetEntity();
-    QList<QcAabb> selection;
-    if (target && !targetEntity) {
-        const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block);
-        const QcVec3 corner{double(target->block.x), double(target->block.y), double(target->block.z)};
-        if (block && m_session->content()->isValidBlock(*block)) {
-            const QList<QcAabb> boxes = m_session->content()->state(*block).targetBoxes();
-            for (const QcAabb &box : boxes) {
-                selection.append(box.moved(corner));
-            }
-        }
-    }
-    m_view->setSelection(selection);
-    QString targetLabel;
-    m_targetName.clear();
-    if (targetEntity) {
-        const QcClientEntity entity = m_session->entities().value(*targetEntity);
-        const auto &mobs = m_session->content()->mobs();
-        targetLabel = entity.mobType >= 0 && entity.mobType < mobs.size()
-                          ? m_session->content()->translate(mobs[entity.mobType].translationKey, m_language)
-                          : entity.name;
-        if (entity.mobType >= 0 && entity.mobType < mobs.size()) {
-            m_targetName = u"mob:"_s + mobs[entity.mobType].name;
-        }
-        targetLabel += u" (%1)"_s.arg(qRound(entity.health));
-    } else if (target) {
-        if (const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block)) {
-            const QcBlockDefinition &definition = m_session->content()->block(*block);
-            targetLabel = m_session->content()->translate(definition.translationKey, m_language);
-            m_targetName = definition.name;
-        }
-    }
-    if (targetLabel != m_targetLabel || m_session->miningProgress() != m_miningProgress) {
-        m_targetLabel = targetLabel;
-        m_miningProgress = m_session->miningProgress();
-        emit frameStateChanged();
-    }
+    m_render.updateEntities(alpha, mode);
+    m_render.updateHand(alpha, eye, mode);
+    m_benchmark->recordGuiFrame(entityTime.nsecsElapsed());
+    m_render.updateSky(alpha);
+    m_hud->updateTimeOfDay(alpha);
+    m_render.updateSelection();
+    m_hud->updateTarget();
 
-    m_meshes->setFocus({feet.x, feet.y, feet.z});
-    m_meshes->pump(*m_session->world());
+    m_parts.meshes->setFocus({feet.x, feet.y, feet.z});
+    m_parts.meshes->pump(*m_parts.session->world());
 
-    // The overlay is laid out anew for every change of its text; a few updates a second suffice.
-    if (m_showDebug && (!m_debugClock.isValid() || m_debugClock.elapsed() >= debugTextIntervalMs)) {
-        m_debugClock.start();
-        const QString debugText = u"%1 FPS | XYZ %2 / %3 / %4 | chunks %5 | meshes %6 (pending %7)"_s.arg(qRound(m_fps))
-                                      .arg(feet.x, 0, 'f', 1)
-                                      .arg(feet.y, 0, 'f', 1)
-                                      .arg(feet.z, 0, 'f', 1)
-                                      .arg(m_session->world()->chunkCount())
-                                      .arg(m_view->meshCount())
-                                      .arg(m_meshes->dirtyCount() + m_meshes->jobsInFlight());
-        if (debugText != m_debugText) {
-            m_debugText = debugText;
-            emit debugTextChanged();
-        }
-    }
-
-    const int ring = 2 * (m_viewDistance + 1) + 1;
-    const bool allChunksArrived = m_session->world()->chunkCount() >= qsizetype(ring) * ring;
-    if (m_screenshotHook && !m_screenshotReleased && m_phase == u"playing"_s && allChunksArrived
-        && m_meshes->dirtyCount() == 0 && m_meshes->jobsInFlight() == 0) {
-        m_screenshotReleased = true;
-        m_screenshotHook->release();
-    }
+    m_hud->updateDebugText(feet, m_fps);
+    m_startup->releaseScreenshotWhenLoaded(m_settings->viewDistance(), m_phase == u"playing"_s);
 }

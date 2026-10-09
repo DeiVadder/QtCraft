@@ -49,6 +49,13 @@ struct ModelLook
     bool isValid() const { return model && outfit; }
 };
 
+// A skeleton model as drawn: its look and the item in its right hand (optional, not owned).
+struct Figure
+{
+    ModelLook look;
+    const ItemLook *held = nullptr;
+};
+
 // Edge length of a dropped cube and of a sprite.
 inline constexpr double itemCubeSize = 0.25;
 inline constexpr double itemSpriteSize = 0.45;
@@ -66,25 +73,39 @@ struct Placement
     bool hurt = false;
 };
 
+// What a dropped item looks like this frame: `alpha` interpolates between the last two ticks,
+// `seconds` is the client clock driving the animation, `light` the light at the item.
+struct ItemFrame
+{
+    double alpha = 1.0;
+    double seconds = 0.0;
+    QcEntityLight light = 1.0f;
+};
+
+// The first-person view the hand is drawn for: the camera at `eye` looking along yaw/pitch
+// (degrees), and the light there.
+struct HandView
+{
+    QcVec3 eye;
+    double yaw = 0.0;
+    double pitch = 0.0;
+    QcEntityLight light = 1.0f;
+};
+
 // Static boxes from a mob definition, facing north and turned by the yaw.
 void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv);
 
-// An animated skeleton model; `held` (optional) is drawn in the right hand.
-void appendModel(QcEntityMesh &mesh, const ModelLook &look, const QcAnimator::BodyPose &pose, const Placement &placement,
-                 const ItemLook *held, const UvLookup &uv);
+// An animated skeleton model with its held item in the right hand.
+void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::BodyPose &pose, const Placement &placement, const UvLookup &uv);
 
-// A dropped item spinning slowly and bobbing; larger stacks show up to three copies. `seconds` is
-// the client clock driving the animation.
-void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, double alpha, QcEntityLight light, double seconds,
-                const UvLookup &uv);
+// A dropped item spinning slowly and bobbing; larger stacks show up to three copies.
+void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, const ItemFrame &frame, const UvLookup &uv);
 
 // A falling block: the block's look (ItemLook with `cube`) at full size standing on `position`.
 void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const QcVec3 &position, QcEntityLight light, const UvLookup &uv);
 
-// The first-person right arm with the held item (optional), placed in front of the camera at
-// `eye` looking along yaw/pitch (degrees).
-void appendHand(QcEntityMesh &mesh, const ModelLook &look, const ItemLook *held, const QcAnimator::HandPose &hand, const QcVec3 &eye,
-                double yaw, double pitch, QcEntityLight light, const UvLookup &uv);
+// The first-person right arm of `figure` with its held item, placed in front of the camera.
+void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv);
 
 // Fallback model for players when the content has no humanoid skeleton.
 const QList<QcMobPart> &playerParts();

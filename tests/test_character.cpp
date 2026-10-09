@@ -161,7 +161,7 @@ private slots:
         modelLook.colors.shirtColor = 0x102030;
         QcEntityMesh mesh;
         const QcEntityMesher::Placement placement{{10.0, 64.0, 5.0}, 0.0, 1.0f, false};
-        QcEntityMesher::appendModel(mesh, modelLook, QcAnimator::animateBody({}, 0.0), placement, nullptr, anyUv);
+        QcEntityMesher::appendModel(mesh, {modelLook, nullptr}, QcAnimator::animateBody({}, 0.0), placement, anyUv);
         // Six boxes of six faces.
         QCOMPARE(mesh.indices.size(), 6 * 6 * 6);
         bool shirt = false;
@@ -173,14 +173,13 @@ private slots:
         // Slots without a layer are left out; a hurt entity is tinted red.
         look.layers.removeLast();
         QcEntityMesh hurt;
-        QcEntityMesher::appendModel(hurt, modelLook, QcAnimator::animateBody({}, 0.0), {{0.0, 0.0, 0.0}, 0.0, 1.0f, true}, nullptr,
-                                    anyUv);
+        QcEntityMesher::appendModel(hurt, {modelLook, nullptr}, QcAnimator::animateBody({}, 0.0), {{0.0, 0.0, 0.0}, 0.0, 1.0f, true}, anyUv);
         QCOMPARE(hurt.indices.size(), 4 * 6 * 6);
         QVERIFY(std::ranges::all_of(hurt.vertices, [](const QcEntityVertex &v) { return v.tint[1] < 255; }));
         // Twice the scale, twice the height.
         modelLook.scale = 2.0;
         QcEntityMesh big;
-        QcEntityMesher::appendModel(big, modelLook, QcAnimator::animateBody({}, 0.0), placement, nullptr, anyUv);
+        QcEntityMesher::appendModel(big, {modelLook, nullptr}, QcAnimator::animateBody({}, 0.0), placement, anyUv);
         double top = 0.0;
         for (const QcEntityVertex &vertex : std::as_const(big.vertices)) {
             top = std::max(top, double(vertex.y));
@@ -199,13 +198,13 @@ private slots:
         hair.boxes = {{{-0.235, 1.66, -0.235}, {0.235, 1.82, 0.235}, u"hair"_s}};
         QcEntityMesher::ModelLook modelLook{&model, &look, &hair, {}, 1.0};
         QcEntityMesh plain;
-        QcEntityMesher::appendModel(plain, modelLook, QcAnimator::animateBody({}, 0.0), {}, nullptr, anyUv);
+        QcEntityMesher::appendModel(plain, {modelLook, nullptr}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
         QCOMPARE(plain.indices.size(), 7 * 6 * 6);
         // Looking down tilts the hair forward with the head.
         QcEntityPose down;
         down.headPitch = -60.0f;
         QcEntityMesh tilted;
-        QcEntityMesher::appendModel(tilted, modelLook, QcAnimator::animateBody(down, 0.0), {}, nullptr, anyUv);
+        QcEntityMesher::appendModel(tilted, {modelLook, nullptr}, QcAnimator::animateBody(down, 0.0), {}, anyUv);
         const auto minZ = [](const QcEntityMesh &mesh, qsizetype firstVertex) {
             double z = 1e9;
             for (qsizetype i = firstVertex; i < mesh.vertices.size(); ++i) {
@@ -218,7 +217,7 @@ private slots:
         QcEntityMesher::ItemLook sword;
         sword.sprite = u"t:sword"_s;
         QcEntityMesh armed;
-        QcEntityMesher::appendModel(armed, modelLook, QcAnimator::animateBody({}, 0.0), {}, &sword, anyUv);
+        QcEntityMesher::appendModel(armed, {modelLook, &sword}, QcAnimator::animateBody({}, 0.0), {}, anyUv);
         // Two crossed, double-sided sprites.
         QCOMPARE(armed.indices.size() - plain.indices.size(), 4 * 6);
     }
@@ -230,7 +229,7 @@ private slots:
         const QcEntityMesher::ModelLook modelLook{&model, &look, nullptr, {}, 1.0};
         QcEntityMesh mesh;
         const QcVec3 eye{0.0, 70.0, 0.0};
-        QcEntityMesher::appendHand(mesh, modelLook, nullptr, {}, eye, 0.0, 0.0, 1.0f, anyUv);
+        QcEntityMesher::appendHand(mesh, {modelLook, nullptr}, {}, {eye, 0.0, 0.0, 1.0f}, anyUv);
         QCOMPARE(mesh.indices.size(), 6 * 6);
         // Looking north (-Z): the arm lies ahead, to the right and below the eyes, within reach.
         QcVec3 centre;
@@ -243,7 +242,7 @@ private slots:
         QVERIFY((centre - eye).length() < 1.0);
         // Turned to face east (+X), the arm turns with the view.
         QcEntityMesh east;
-        QcEntityMesher::appendHand(east, modelLook, nullptr, {}, eye, 90.0, 0.0, 1.0f, anyUv);
+        QcEntityMesher::appendHand(east, {modelLook, nullptr}, {}, {eye, 90.0, 0.0, 1.0f}, anyUv);
         QcVec3 eastCentre;
         for (const QcEntityVertex &vertex : std::as_const(east.vertices)) {
             eastCentre += QcVec3{vertex.x, vertex.y, vertex.z} * (1.0 / double(east.vertices.size()));
@@ -253,7 +252,7 @@ private slots:
         QcEntityMesher::ItemLook block;
         block.cube = true;
         QcEntityMesh holding;
-        QcEntityMesher::appendHand(holding, modelLook, &block, {}, eye, 0.0, 0.0, 1.0f, anyUv);
+        QcEntityMesher::appendHand(holding, {modelLook, &block}, {}, {eye, 0.0, 0.0, 1.0f}, anyUv);
         QCOMPARE(holding.indices.size(), 2 * 6 * 6);
     }
 
@@ -269,9 +268,9 @@ private slots:
         const QcVec3 eye{0.0, 70.0, 0.0};
         // In the hand: the arm takes the light around it, the torch its own.
         QcEntityMesh hand;
-        QcEntityMesher::appendHand(hand, modelLook, nullptr, {}, eye, 0.0, 0.0, dark, anyUv);
+        QcEntityMesher::appendHand(hand, {modelLook, nullptr}, {}, {eye, 0.0, 0.0, dark}, anyUv);
         const qsizetype armVertices = hand.vertices.size();
-        QcEntityMesher::appendHand(hand, modelLook, &torch, {}, eye, 0.0, 0.0, dark, anyUv);
+        QcEntityMesher::appendHand(hand, {modelLook, &torch}, {}, {eye, 0.0, 0.0, dark}, anyUv);
         QCOMPARE(hand.vertices[0].blockLight, 0.1f);
         QVERIFY(hand.vertices.size() > 2 * armVertices);
         for (qsizetype i = 2 * armVertices; i < hand.vertices.size(); ++i) {
@@ -280,26 +279,26 @@ private slots:
         }
         // Brighter surroundings win over the glow.
         QcEntityMesh lit;
-        QcEntityMesher::appendHand(lit, modelLook, &torch, {}, eye, 0.0, 0.0, QcEntityLight(0.0f, 1.0f), anyUv);
+        QcEntityMesher::appendHand(lit, {modelLook, &torch}, {}, {eye, 0.0, 0.0, QcEntityLight(0.0f, 1.0f)}, anyUv);
         QCOMPARE(lit.vertices.last().blockLight, 1.0f);
         // Dropped and held by a creature in the third person, as a sprite and as a block.
         QcClientEntity dropped;
         dropped.item = {1, 1, 0};
         QcEntityMesh lying;
-        QcEntityMesher::appendItem(lying, dropped, torch, 1.0, dark, 0.0, anyUv);
+        QcEntityMesher::appendItem(lying, dropped, torch, {1.0, 0.0, dark}, anyUv);
         QVERIFY(!lying.vertices.isEmpty());
         QVERIFY(std::ranges::all_of(lying.vertices, [&](const QcEntityVertex &vertex) { return vertex.blockLight == torch.glow; }));
         QcEntityMesher::ItemLook lantern;
         lantern.cube = true;
         lantern.glow = 11.0f / 15.0f;
         QcEntityMesh held;
-        QcEntityMesher::appendModel(held, modelLook, QcAnimator::animateBody({}, 0.0), {{}, 0.0, dark, false}, &lantern, anyUv);
+        QcEntityMesher::appendModel(held, {modelLook, &lantern}, QcAnimator::animateBody({}, 0.0), {{}, 0.0, dark, false}, anyUv);
         QCOMPARE(held.vertices.first().blockLight, 0.1f);
         QCOMPARE(held.vertices.last().blockLight, lantern.glow);
         // A sprite in the hand is about as large as a held block: its diagonal is at most that of
         // the held cube (0.15 m edge, 0.26 m diagonal).
         QcEntityMesh sprite;
-        QcEntityMesher::appendHand(sprite, modelLook, &torch, {}, eye, 0.0, 0.0, dark, anyUv);
+        QcEntityMesher::appendHand(sprite, {modelLook, &torch}, {}, {eye, 0.0, 0.0, dark}, anyUv);
         double diagonal = 0.0;
         for (qsizetype i = armVertices; i < sprite.vertices.size(); ++i) {
             for (qsizetype j = armVertices; j < sprite.vertices.size(); ++j) {

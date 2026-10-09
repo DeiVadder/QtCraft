@@ -85,7 +85,15 @@ private:
     // Clears the light that depended on the removal queue's cells; boundary cells and cleared
     // sources go to the add queue.
     void propagateRemove();
+    // Clears `next` (in `target`) when it was lit through a cleared cell of level `old`, else
+    // queues it to refill; cleared light sources go to `sources`.
+    void removeFrom(Column &target, Cell next, int old, std::vector<Cell> &sources);
+    // Calls visit(cell, level) for every lit cell of `column` (at `pos`) on its side `towards`.
+    template<typename Visit>
+    static void visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, Visit &&visit);
     void queueBorder(QcChunkPos from, QcBlockFace towards);
+    // Sets and queues the light sources of one section of a newly added column.
+    void seedSources(Column &column, QcChunkPos pos, int sectionIndex);
 
     std::shared_ptr<const QcBlockRenderTable> m_table;
     std::unordered_map<QcChunkPos, Column, PosHash> m_columns;

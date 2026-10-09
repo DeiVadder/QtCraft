@@ -20,6 +20,18 @@ int QcTestTerrainGenerator::surfaceHeight(int x, int z)
     return QcWorld::seaLevel + 3 + int(std::floor(hills));
 }
 
+QcBlockId QcTestTerrainGenerator::groundBlock(int y, int height) const
+{
+    if (y >= height - 1) {
+        return height <= QcWorld::seaLevel + 1 ? m_sand : m_grass;
+    }
+
+    if (y >= height - 4) {
+        return height <= QcWorld::seaLevel + 1 ? m_sand : m_dirt;
+    }
+    return m_stone;
+}
+
 std::shared_ptr<QcChunk> QcTestTerrainGenerator::generate(QcChunkPos pos) const
 {
     auto chunk = std::make_shared<QcChunk>(pos);
@@ -28,15 +40,11 @@ std::shared_ptr<QcChunk> QcTestTerrainGenerator::generate(QcChunkPos pos) const
             const int x = pos.x * QcWorld::chunkSize + lx;
             const int z = pos.z * QcWorld::chunkSize + lz;
             const int height = surfaceHeight(x, z);
+
             for (int y = 0; y < height; ++y) {
-                QcBlockId block = m_stone;
-                if (y >= height - 1) {
-                    block = height <= QcWorld::seaLevel + 1 ? m_sand : m_grass;
-                } else if (y >= height - 4) {
-                    block = height <= QcWorld::seaLevel + 1 ? m_sand : m_dirt;
-                }
-                chunk->setBlock(lx, y, lz, block);
+                chunk->setBlock(lx, y, lz, groundBlock(y, height));
             }
+
             for (int y = height; y < QcWorld::seaLevel; ++y) {
                 chunk->setBlock(lx, y, lz, m_water);
             }

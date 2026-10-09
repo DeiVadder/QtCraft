@@ -3,7 +3,9 @@
 #include "QcChunkPos.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
+#include "QcPhysics.h"
 
+#include <QHash>
 #include <QList>
 #include <QRandomGenerator>
 #include <QSet>
@@ -12,6 +14,7 @@
 #include <memory>
 #include <optional>
 
+class QcChunk;
 class QcServerWorld;
 
 // Creatures on the server: spawning by time of day, place and data definitions, a small behaviour
@@ -129,9 +132,72 @@ public:
     const Mob *find(quint32 id) const;
 
 private:
+    using SpawnRule = QcMobDefinition::SpawnRule;
+
+    // Awake mobs near a spawn centre per category and kind, and whether an animal is awake within
+    // animalSearchDistance.
+    struct NearbyCounts
+    {
+        int hostile = 0;
+        int passive = 0;
+        int ambient = 0;
+        QHash<int, int> perType;
+        bool animalsNear = false;
+
+        int &of(const QcMobDefinition &definition) { return definition.ambient ? ambient : (definition.hostile ? hostile : passive); }
+        int of(const QcMobDefinition &definition) const
+        {
+            return definition.ambient ? ambient : (definition.hostile ? hostile : passive);
+        }
+    };
+
+    // A block a mob may spawn on (`floorY`), on the surface or on a cave floor. Biome and light are
+    // looked up only when a rule asks, and then once.
+    struct SpawnPlace
+    {
+        int x = 0;
+        int z = 0;
+        int floorY = 0;
+        bool cave = false;
+        QcBlockId ground = qcAirBlockId;
+        std::optional<QString> biome;
+        std::optional<int> light;
+    };
+
+    // A kind that may spawn at a place, with the first of its rules that allows it.
+    struct SpawnCandidate
+    {
+        int type = 0;
+        const SpawnRule *rule = nullptr;
+    };
+
     void trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bool night, const QList<PlayerView> &players,
                         const std::function<quint32()> &nextEntityId);
+    NearbyCounts countNear(const QcVec3 &centre) const;
+    // A random place around `centre`; consumes the random numbers of one spawn attempt.
+    std::optional<SpawnPlace> randomPlace(const QcServerWorld &world, const QcVec3 &centre);
+    // A cave floor with room for a mob, searched downwards from a random height below `surface`;
+    // -1 when there is none.
+    int randomCaveFloor(const QcChunk &chunk, QcBlockPos column, int surface);
+    QList<SpawnCandidate> candidatesAt(const QcServerWorld &world, SpawnPlace &place, bool night, const NearbyCounts &counts) const;
+    bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, SpawnCandidate candidate, bool night) const;
+    // Weighted random choice by the rules' weights.
+    SpawnCandidate pick(const QList<SpawnCandidate> &candidates);
+    void spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, NearbyCounts &counts,
+                    const std::function<quint32()> &nextEntityId);
+    // One member of a group; false when there is no room for it.
+    bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
+                    const std::function<quint32()> &nextEntityId);
+    bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
+                     const std::function<quint32()> &nextEntityId);
+    // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
+    QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
+    // Weighted choice by spawn weight for a `random` value in [0, 1).
+    int pickAnimal(const QList<int> &candidates, double random) const;
+
     void think(Mob &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits);
+    // Walking about, standing still or fleeing when hurt.
+    QcPhysics::Steering wander(Mob &mob, const QcMobDefinition &definition, double dt);
     // Drifting flight without gravity at a few metres above the ground.
     void fly(Mob &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
 

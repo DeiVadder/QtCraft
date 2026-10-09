@@ -22,8 +22,8 @@ Rectangle {
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
             menu.game.overlay = "";
-        } else if (menu.game.keys.matches("handbook", event.key)) {
-            menu.game.openHandbook("");
+        } else if (menu.game.settings.keys.matches("handbook", event.key)) {
+            menu.game.handbook.open("");
         }
         // Other keys end here as well; Tab moves between the buttons.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
@@ -73,8 +73,8 @@ Rectangle {
 
         Button {
             Layout.fillWidth: true
-            text: qsTr("Handbook (%1)").arg(menu.game.keys.labels.handbook)
-            onClicked: menu.game.openHandbook("")
+            text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
+            onClicked: menu.game.handbook.open("")
         }
 
         Button {

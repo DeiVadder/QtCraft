@@ -19,7 +19,7 @@ Popup {
     focus: true
     padding: 16
 
-    onOpened: game.refreshMods()
+    onOpened: game.library.refreshMods()
 
     ColumnLayout {
         anchors.fill: parent
@@ -37,8 +37,8 @@ Popup {
 
         Label {
             Layout.fillWidth: true
-            text: screen.game.modsDirectory.length > 0
-                  ? qsTr("Mods are loaded from %1. Changes take effect when a world is started.").arg(screen.game.modsDirectory)
+            text: screen.game.library.modsDirectory.length > 0
+                  ? qsTr("Mods are loaded from %1. Changes take effect when a world is started.").arg(screen.game.library.modsDirectory)
                   : qsTr("Mods are switched off for this session.")
             wrapMode: Text.Wrap
             opacity: 0.8
@@ -58,7 +58,7 @@ Popup {
             Layout.fillHeight: true
             clip: true
             spacing: 6
-            model: screen.game.mods
+            model: screen.game.library.mods
 
             Label {
                 anchors.centerIn: parent
@@ -109,7 +109,7 @@ Popup {
                     Switch {
                         visible: modRow.modelData.id.length > 0
                         checked: modRow.modelData.state !== "disabled"
-                        onToggled: screen.game.setModEnabled(modRow.modelData.id, checked)
+                        onToggled: screen.game.library.setModEnabled(modRow.modelData.id, checked)
                     }
                 }
             }
@@ -120,8 +120,8 @@ Popup {
 
             Button {
                 text: qsTr("Open mods folder")
-                enabled: screen.game.modsDirectory.length > 0
-                onClicked: screen.game.openModsFolder()
+                enabled: screen.game.library.modsDirectory.length > 0
+                onClicked: screen.game.library.openModsFolder()
             }
             Item {
                 Layout.fillWidth: true

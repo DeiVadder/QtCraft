@@ -21,6 +21,7 @@ bool QcLiquidFlow::flows(const QcContentRegistry &content, QcBlockId id)
     if (!content.isValidBlock(id)) {
         return false;
     }
+
     const QcBlockDefinition &definition = content.block(id);
     return definition.liquid && definition.flow.flows();
 }
@@ -53,17 +54,20 @@ std::optional<QcBlockId> QcLiquidFlow::reaction(const QcBlockAccess &world, QcBl
     if (!flows(content, id) || content.block(id).flow.reactions.isEmpty()) {
         return std::nullopt;
     }
+
     const QcBlockDefinition &definition = content.block(id);
     for (const QcBlockFace face : qcAllBlockFaces) {
         const std::optional<QcBlockId> neighbour = world.blockAt(qcNeighbour(pos, face));
         if (!neighbour || !content.isValidBlock(*neighbour) || !content.block(*neighbour).liquid || content.isSameBlock(*neighbour, id)) {
             continue;
         }
+
         const QString &other = content.block(*neighbour).name;
         const auto it = std::ranges::find(definition.flow.reactions, other, &QcLiquidReaction::with);
         if (it == definition.flow.reactions.end()) {
             continue;
         }
+
         if (const std::optional<QcBlockId> result = content.blockId(isSource(content, id) ? it->source : it->flowing)) {
             return result;
         }
@@ -76,6 +80,7 @@ std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBl
     const QcContentRegistry &content = world.content();
     const QcLiquidDefinition &flow = content.block(id).flow;
     const QcBlockPos above = pos.offset(0, 1, 0);
+
     if (above.isInsideWorldHeight()) {
         const std::optional<QcBlockId> top = world.blockAt(above);
         if (!top) {
@@ -85,21 +90,26 @@ std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBl
             return stateWith(content, id, 1, true);
         }
     }
+
     int best = flow.distance + 1;
     int sources = 0;
+
     for (const QcBlockFace face : sideways) {
         const std::optional<QcBlockId> neighbour = world.blockAt(qcNeighbour(pos, face));
         if (!neighbour) {
             return std::nullopt;
         }
+
         if (!content.isValidBlock(*neighbour) || !content.isSameBlock(*neighbour, id)) {
             continue;
         }
+
         // A falling part spreads from where it lands like a source.
         const int effective = isFalling(content, *neighbour) ? 0 : level(content, *neighbour);
         best = std::min(best, effective + 1);
         sources += isSource(content, *neighbour) ? 1 : 0;
     }
+
     if (flow.infinite && sources >= 2) {
         const std::optional<QcBlockId> below = world.blockAt(pos.offset(0, -1, 0));
         const bool ground = pos.y == 0
@@ -109,6 +119,7 @@ std::optional<QcBlockId> QcLiquidFlow::fedState(const QcBlockAccess &world, QcBl
             return stateWith(content, id, 0, false);
         }
     }
+
     if (best > flow.distance) {
         return qcAirBlockId;
     }
@@ -128,16 +139,20 @@ bool QcLiquidFlow::canReplace(const QcContentRegistry &content, std::optional<Qc
     if (*block == qcAirBlockId) {
         return true;
     }
+
     const QcBlockDefinition &definition = content.block(*block);
     if (definition.liquid) {
         if (!content.isSameBlock(*block, state) || isSource(content, *block)) {
             return false;
         }
+
         if (isFalling(content, state)) {
             return !isFalling(content, *block);
         }
+
         return !isFalling(content, *block) && level(content, *block) > level(content, state);
     }
+
     return definition.replaceable || definition.washable;
 }
 
@@ -147,10 +162,12 @@ bool QcLiquidFlow::schedule(const QcBlockAccess &world, QcBlockPos pos, quint64 
     if (!block || !flows(*m_content, *block) || m_planned.contains(pos)) {
         return false;
     }
+
     if (m_planned.size() >= maxPlanned) {
         ++m_dropped;
         return false;
     }
+
     const quint64 due = now + quint64(m_content->block(*block).flow.ticks);
     m_planned.insert(pos, due);
     m_due[due].append(pos);
@@ -160,17 +177,21 @@ bool QcLiquidFlow::schedule(const QcBlockAccess &world, QcBlockPos pos, quint64 
 QcLiquidFlow::TickResult QcLiquidFlow::tick(quint64 now, const QcBlockAccess &world, const SetFunction &set, int budget)
 {
     TickResult result;
+    const StepContext context{now, world, set, result};
+
     while (!m_due.empty() && m_due.begin()->first <= now && result.steps < budget) {
         QList<QcBlockPos> &positions = m_due.begin()->second;
         if (positions.isEmpty()) {
             m_due.erase(m_due.begin());
             continue;
         }
+
         const QcBlockPos pos = positions.takeFirst();
         m_planned.remove(pos);
         ++result.steps;
-        step(pos, now, world, set, result);
+        step(pos, context);
     }
+
     return result;
 }
 
@@ -180,32 +201,36 @@ void QcLiquidFlow::clear()
     m_planned.clear();
 }
 
-void QcLiquidFlow::change(QcBlockPos pos, QcBlockId block, quint64 now, const QcBlockAccess &world, const SetFunction &set,
-                          TickResult &result)
+void QcLiquidFlow::change(QcBlockPos pos, QcBlockId block, const StepContext &context)
 {
-    set(pos, block);
-    ++result.changes;
-    schedule(world, pos, now);
+    context.set(pos, block);
+    ++context.result.changes;
+    schedule(context.world, pos, context.now);
+
     for (const QcBlockFace face : qcAllBlockFaces) {
-        schedule(world, qcNeighbour(pos, face), now);
+        schedule(context.world, qcNeighbour(pos, face), context.now);
     }
 }
 
-void QcLiquidFlow::step(QcBlockPos pos, quint64 now, const QcBlockAccess &world, const SetFunction &set, TickResult &result)
+void QcLiquidFlow::step(QcBlockPos pos, const StepContext &context)
 {
     const QcContentRegistry &content = *m_content;
+    const QcBlockAccess &world = context.world;
     const std::optional<QcBlockId> block = world.blockAt(pos);
     if (!block) {
-        result.unloaded.append(pos);
+        context.result.unloaded.append(pos);
         return;
     }
+
     if (!flows(content, *block)) {
         return;
     }
+
     if (const std::optional<QcBlockId> turned = reaction(world, pos, *block)) {
-        change(pos, *turned, now, world, set, result);
+        change(pos, *turned, context);
         return;
     }
+
     QcBlockId current = *block;
     if (!isSource(content, current)) {
         // Waits for the border update that comes when the missing chunk loads.
@@ -213,34 +238,39 @@ void QcLiquidFlow::step(QcBlockPos pos, quint64 now, const QcBlockAccess &world,
         if (!fed) {
             return;
         }
+
         if (*fed != current) {
-            change(pos, *fed, now, world, set, result);
+            change(pos, *fed, context);
             if (!flows(content, *fed)) {
                 return;
             }
             current = *fed;
         }
     }
+
     const QcBlockPos belowPos = pos.offset(0, -1, 0);
     const QcBlockId falling = stateWith(content, current, 1, true);
     const bool down = canFlowInto(world, belowPos, falling);
     if (down) {
-        change(belowPos, falling, now, world, set, result);
+        change(belowPos, falling, context);
     }
+
     const std::optional<QcBlockId> below = world.blockAt(belowPos);
     const bool onLiquid = below && content.isValidBlock(*below) && content.isSameBlock(*below, current);
     if (!isSource(content, current) && (down || onLiquid)) {
         return;
     }
+
     const int next = (isFalling(content, current) ? 0 : level(content, current)) + 1;
     if (next > content.block(current).flow.distance) {
         return;
     }
+
     const QcBlockId spread = stateWith(content, current, next, false);
     for (const QcBlockFace face : sideways) {
         const QcBlockPos side = qcNeighbour(pos, face);
         if (canFlowInto(world, side, spread)) {
-            change(side, spread, now, world, set, result);
+            change(side, spread, context);
         }
     }
 }

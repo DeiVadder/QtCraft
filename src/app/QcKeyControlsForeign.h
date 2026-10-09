@@ -10,5 +10,5 @@ struct QcKeyControlsForeign
     Q_GADGET
     QML_FOREIGN(QcKeyControls)
     QML_NAMED_ELEMENT(KeyControls)
-    QML_UNCREATABLE("Provided by GameController.keys")
+    QML_UNCREATABLE("Provided by GameController.settings.keys")
 };

@@ -78,6 +78,11 @@ private:
 
     // Unknown when part of the surroundings is not loaded and no trunk was found.
     Support supportOf(QcBlockPos pos, const QcBlockAccess &world) const;
+    // Whether the row of leafReach blocks either side of `centre` along z holds a trunk; sets
+    // `unknown` for cells that are not loaded.
+    bool rowHasTrunk(QcBlockPos centre, const QcBlockAccess &world, bool &unknown) const;
+    // Plans a decay check for leaves at `pos` (nothing for other blocks or when already planned).
+    void planDecayCheck(QcBlockPos pos, const QcBlockAccess &world);
     // Returns false when the tree has no room yet.
     bool grow(const Sapling &sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock);
 

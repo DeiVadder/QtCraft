@@ -26,10 +26,10 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.keys.matches("inventory", event.key)) {
+        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("inventory", event.key)) {
             screen.game.overlay = "";
-        } else if (screen.game.keys.matches("handbook", event.key)) {
-            screen.game.openHandbook(screen.hoveredItem);
+        } else if (screen.game.settings.keys.matches("handbook", event.key)) {
+            screen.game.handbook.open(screen.hoveredItem);
         }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
@@ -38,7 +38,7 @@ Rectangle {
     function clicked(slot, empty, button) {
         if (slot === resultSlot) {
             if (!empty)
-                game.takeCraftingResult();
+                game.player.takeCraftingResult();
             return;
         }
         if (pickedSlot < 0) {
@@ -47,7 +47,7 @@ Rectangle {
             return;
         }
         if (pickedSlot !== slot)
-            game.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
+            game.player.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
         // Right click keeps the stack picked up so several cells can be filled one by one.
         if (button !== Qt.RightButton)
             pickedSlot = -1;
@@ -80,7 +80,7 @@ Rectangle {
 
         infoItem: itemName
         infoEnabled: screen.pickedSlot < 0
-        onInfoRequested: item => screen.game.openHandbook(item)
+        onInfoRequested: item => screen.game.handbook.open(item)
         slotIcon: icon
         slotCount: count
         slotDurability: durability
@@ -117,28 +117,28 @@ Rectangle {
 
                 Label {
                     Layout.fillWidth: true
-                    text: screen.game.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")
+                    text: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")
                     color: "white"
                     font.pixelSize: 24
                     font.bold: true
                 }
 
                 GridLayout {
-                    columns: screen.game.craftingSize
+                    columns: screen.game.player.craftingSize
                     rowSpacing: 2
                     columnSpacing: 2
 
                     Repeater {
                         model: SlotRange {
-                            source: screen.game.inventory
+                            source: screen.game.player.inventory
                             first: screen.gridFirst
                             count: 9
                         }
 
                         Slot {
                             readonly property int cell: slot - screen.gridFirst
-                            visible: Math.floor(cell / 3) < screen.game.craftingSize
-                                     && cell % 3 < screen.game.craftingSize
+                            visible: Math.floor(cell / 3) < screen.game.player.craftingSize
+                                     && cell % 3 < screen.game.player.craftingSize
                         }
                     }
                 }
@@ -151,7 +151,7 @@ Rectangle {
 
                 Repeater {
                     model: SlotRange {
-                        source: screen.game.inventory
+                        source: screen.game.player.inventory
                         first: screen.resultSlot
                         count: 1
                     }
@@ -168,7 +168,7 @@ Rectangle {
                 // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
                 Repeater {
                     model: SlotRange {
-                        source: screen.game.inventory
+                        source: screen.game.player.inventory
                         count: 36
                     }
 
@@ -181,7 +181,7 @@ Rectangle {
             }
 
             Label {
-                text: qsTr("Left click: pick up and put down. Right click: put down one. %1 or Esc closes.").arg(screen.game.keys.labels.inventory)
+                text: qsTr("Left click: pick up and put down. Right click: put down one. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
                 color: "#e0ffffff"
             }
         }
@@ -202,7 +202,7 @@ Rectangle {
                 Layout.preferredHeight: 360
                 clip: true
                 spacing: 2
-                model: screen.game.craftableRecipes
+                model: screen.game.player.craftableRecipes
 
                 Label {
                     anchors.centerIn: parent
@@ -223,7 +223,7 @@ Rectangle {
                     icon.source: modelData.icon
                     icon.color: "transparent"
                     text: modelData.count > 1 ? qsTr("%1 × %2").arg(modelData.count).arg(modelData.label) : modelData.label
-                    onClicked: screen.game.craftRecipe(recipeRow.modelData.recipe)
+                    onClicked: screen.game.player.craftRecipe(recipeRow.modelData.recipe)
                 }
             }
         }

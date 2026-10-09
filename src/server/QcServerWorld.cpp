@@ -25,6 +25,7 @@ void QcServerWorld::requestChunk(QcChunkPos pos)
     if (m_chunks.contains(pos) || m_pending.contains(pos)) {
         return;
     }
+
     m_pending.insert(pos);
     m_generationPool.submit([this, pos] { m_generated.push(m_generator->generate(pos)); });
 }
@@ -35,6 +36,7 @@ QList<QcChunkPos> QcServerWorld::collectGeneratedChunks()
     for (const std::shared_ptr<QcChunk> &chunk : m_generated.takeAll()) {
         const QcChunkPos pos = chunk->pos();
         m_pending.remove(pos);
+
         // A synchronous load may have won the race; the first chunk stays authoritative.
         if (!m_chunks.contains(pos)) {
             m_chunks.insert(pos, chunk);
@@ -51,6 +53,7 @@ std::optional<QcBlockId> QcServerWorld::blockAt(QcBlockPos pos) const
     if (pos.y >= QcWorld::worldHeight) {
         return qcAirBlockId;
     }
+
     const auto it = m_chunks.constFind(pos.chunk());
     if (it == m_chunks.constEnd()) {
         return std::nullopt;
@@ -58,50 +61,92 @@ std::optional<QcBlockId> QcServerWorld::blockAt(QcBlockPos pos) const
     return (*it)->block(pos.localX(), pos.y, pos.localZ());
 }
 
+namespace {
+
+// Inclusive block bounds.
+struct BlockBounds
+{
+    int minX = 0;
+    int maxX = 0;
+    int minY = 0;
+    int maxY = 0;
+    int minZ = 0;
+    int maxZ = 0;
+};
+
+double contactDamageOf(const std::vector<double> &table, QcBlockId id)
+{
+    return std::size_t(id) < table.size() ? table[std::size_t(id)] : 0.0;
+}
+
+// Highest contact damage in `section` within `local` (coordinates local to the section).
+double contactDamageInSection(const QcChunkSection &section, const BlockBounds &local, const std::vector<double> &table)
+{
+    double damage = 0.0;
+    for (int x = local.minX; x <= local.maxX; ++x) {
+        for (int y = local.minY; y <= local.maxY; ++y) {
+            for (int z = local.minZ; z <= local.maxZ; ++z) {
+                damage = std::max(damage, contactDamageOf(table, section.block(x, y, z)));
+            }
+        }
+    }
+    return damage;
+}
+
+// Highest contact damage in the sections of `chunk` marked in `mask`, within `local` (x and z
+// local to the chunk, y in the world).
+double contactDamageInChunk(const QcChunk &chunk, quint32 mask, const BlockBounds &local, const std::vector<double> &table)
+{
+    constexpr int height = QcWorld::sectionHeight;
+    double damage = 0.0;
+    for (int index = local.minY / height; index <= local.maxY / height; ++index) {
+        if ((mask & (1u << index)) == 0) {
+            continue;
+        }
+
+        BlockBounds inSection = local;
+        inSection.minY = std::max(local.minY, index * height) - index * height;
+        inSection.maxY = std::min(local.maxY, index * height + height - 1) - index * height;
+        damage = std::max(damage, contactDamageInSection(chunk.section(index), inSection, table));
+    }
+    return damage;
+}
+
+} // namespace
+
 double QcServerWorld::contactDamageIn(const QcAabb &box) const
 {
     constexpr double inset = 1e-3;
     constexpr int size = QcWorld::chunkSize;
-    constexpr int height = QcWorld::sectionHeight;
-    const int minX = int(std::floor(box.min.x + inset));
-    const int maxX = int(std::floor(box.max.x - inset));
-    const int minZ = int(std::floor(box.min.z + inset));
-    const int maxZ = int(std::floor(box.max.z - inset));
+
+    BlockBounds bounds;
+    bounds.minX = int(std::floor(box.min.x + inset));
+    bounds.maxX = int(std::floor(box.max.x - inset));
+    bounds.minZ = int(std::floor(box.min.z + inset));
+    bounds.maxZ = int(std::floor(box.max.z - inset));
+
     // Outside the world height there is only air, which does no damage.
-    const int minY = std::max(int(std::floor(box.min.y + inset)), 0);
-    const int maxY = std::min(int(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
-    if (m_damagingSections.isEmpty() || minX > maxX || minY > maxY || minZ > maxZ) {
+    bounds.minY = std::max(int(std::floor(box.min.y + inset)), 0);
+    bounds.maxY = std::min(int(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
+    if (m_damagingSections.isEmpty() || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY || bounds.minZ > bounds.maxZ) {
         return 0.0;
     }
-    const auto damageOf = [this](QcBlockId id) { return std::size_t(id) < m_contactDamage.size() ? m_contactDamage[std::size_t(id)] : 0.0; };
+
     double damage = 0.0;
-    for (int chunkX = qcFloorDiv(minX, size); chunkX <= qcFloorDiv(maxX, size); ++chunkX) {
-        for (int chunkZ = qcFloorDiv(minZ, size); chunkZ <= qcFloorDiv(maxZ, size); ++chunkZ) {
+    for (int chunkX = qcFloorDiv(bounds.minX, size); chunkX <= qcFloorDiv(bounds.maxX, size); ++chunkX) {
+        for (int chunkZ = qcFloorDiv(bounds.minZ, size); chunkZ <= qcFloorDiv(bounds.maxZ, size); ++chunkZ) {
             const QcChunkPos pos{chunkX, chunkZ};
             const auto mask = m_damagingSections.constFind(pos);
             if (mask == m_damagingSections.constEnd()) {
                 continue;
             }
-            const QcChunk &chunk = **m_chunks.constFind(pos);
-            const int fromX = std::max(minX, chunkX * size) - chunkX * size;
-            const int toX = std::min(maxX, chunkX * size + size - 1) - chunkX * size;
-            const int fromZ = std::max(minZ, chunkZ * size) - chunkZ * size;
-            const int toZ = std::min(maxZ, chunkZ * size + size - 1) - chunkZ * size;
-            for (int index = minY / height; index <= maxY / height; ++index) {
-                if ((*mask & (1u << index)) == 0) {
-                    continue;
-                }
-                const QcChunkSection &section = chunk.section(index);
-                const int fromY = std::max(minY, index * height) - index * height;
-                const int toY = std::min(maxY, index * height + height - 1) - index * height;
-                for (int x = fromX; x <= toX; ++x) {
-                    for (int y = fromY; y <= toY; ++y) {
-                        for (int z = fromZ; z <= toZ; ++z) {
-                            damage = std::max(damage, damageOf(section.block(x, y, z)));
-                        }
-                    }
-                }
-            }
+
+            BlockBounds local = bounds;
+            local.minX = std::max(bounds.minX, chunkX * size) - chunkX * size;
+            local.maxX = std::min(bounds.maxX, chunkX * size + size - 1) - chunkX * size;
+            local.minZ = std::max(bounds.minZ, chunkZ * size) - chunkZ * size;
+            local.maxZ = std::min(bounds.maxZ, chunkZ * size + size - 1) - chunkZ * size;
+            damage = std::max(damage, contactDamageInChunk(**m_chunks.constFind(pos), *mask, local, m_contactDamage));
         }
     }
     return damage;
@@ -116,6 +161,7 @@ void QcServerWorld::noteDamagingSections(QcChunkPos pos, const QcChunk &chunk)
             mask |= 1u << index;
         }
     }
+
     if (mask != 0) {
         m_damagingSections.insert(pos, mask);
     } else {
@@ -153,17 +199,21 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     if (!pos.isInsideWorldHeight() || !m_content->isValidBlock(block)) {
         return false;
     }
+
     auto it = m_chunks.find(pos.chunk());
     if (it == m_chunks.end()) {
         return false;
     }
+
     if (it->use_count() > 1) {
         *it = std::make_shared<QcChunk>(**it);
     }
+
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
     if (m_contactDamage[std::size_t(block)] > 0.0) {
         m_damagingSections[pos.chunk()] |= 1u << (pos.y / QcWorld::sectionHeight);
     }
+
     m_modified.insert(pos.chunk());
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos.chunk()));
     return true;

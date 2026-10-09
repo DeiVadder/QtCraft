@@ -1,14 +1,11 @@
 #pragma once
 
-// Server-internal state of one connected client; shared by the QcServer translation units.
-
 #include "QcConnection.h"
 #include "QcEntityMotion.h"
 #include "QcAppearance.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
-#include "QcServer.h"
 
 #include <QHash>
 #include <QList>
@@ -18,16 +15,21 @@
 #include <memory>
 #include <optional>
 
-struct QcServer::Client
+// Server-internal state of one connected client, shared by the parts of QcServer.
+struct QcServerClient
 {
     enum class State { AwaitingHello, Playing, Closed };
+
+    // Inputs a client may queue beyond one per tick before further inputs are dropped (anti speed-hack).
+    static constexpr int maxInputBudget = 10;
+    static constexpr double maxHealth = 20.0;
 
     std::unique_ptr<QcConnection> connection;
     State state = State::AwaitingHello;
     quint32 entityId = 0;
     QString name;
     QcEntityMotion motion;
-    int inputBudget = QcServer::maxInputBudget;
+    int inputBudget = maxInputBudget;
     quint32 lastInputSequence = 0;
     bool stateDirty = false;
     QSet<QcChunkPos> sentChunks;
@@ -38,7 +40,7 @@ struct QcServer::Client
     std::optional<QcBlockPos> miningPos;
     quint64 miningStartTick = 0;
 
-    double health = QcServer::playerMaxHealth;
+    double health = maxHealth;
     bool dead = false;
     // Highest point of the current fall, for fall damage.
     double fallPeak = 0.0;

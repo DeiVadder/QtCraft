@@ -19,15 +19,15 @@ Popup {
         "#8a5a2b"]
 
     function setPart(key, value) {
-        const look = game.character;
+        const look = game.settings.character.look;
         look[key] = value;
-        game.character = look;
+        game.settings.character.look = look;
     }
 
     // Selects the stored outfit and hair; the lists may have changed (language, mods) since.
     function showStoredLook() {
-        outfitBox.currentIndex = outfitBox.indexOfValue(game.character.outfit);
-        hairBox.currentIndex = hairBox.indexOfValue(game.character.hair);
+        outfitBox.currentIndex = outfitBox.indexOfValue(game.settings.character.look.outfit);
+        hairBox.currentIndex = hairBox.indexOfValue(game.settings.character.look.hair);
     }
 
     // On the left, so the character stays visible in the front view.
@@ -39,10 +39,10 @@ Popup {
     padding: 20
 
     onAboutToShow: showStoredLook()
-    onClosed: game.saveSettings()
+    onClosed: game.settings.saveSettings()
 
     Connections {
-        target: screen.game
+        target: screen.game.settings.character
 
         function onAppearancesChanged() {
             screen.showStoredLook();
@@ -75,8 +75,8 @@ Popup {
                 height: 28
                 radius: 4
                 color: modelData
-                border.width: screen.game.character[row.key] === modelData ? 3 : 1
-                border.color: screen.game.character[row.key] === modelData ? "white" : "#80000000"
+                border.width: screen.game.settings.character.look[row.key] === modelData ? 3 : 1
+                border.color: screen.game.settings.character.look[row.key] === modelData ? "white" : "#80000000"
 
                 MouseArea {
                     anchors.fill: parent
@@ -115,7 +115,7 @@ Popup {
                 Layout.fillWidth: true
                 textRole: "label"
                 valueRole: "name"
-                model: screen.game.outfits
+                model: screen.game.settings.character.outfits
                 onActivated: screen.setPart("outfit", currentValue)
             }
 
@@ -128,7 +128,7 @@ Popup {
                 Layout.fillWidth: true
                 textRole: "label"
                 valueRole: "name"
-                model: screen.game.hairStyles
+                model: screen.game.settings.character.hairStyles
                 onActivated: screen.setPart("hair", currentValue)
             }
         }
@@ -156,7 +156,7 @@ Popup {
 
         Label {
             Layout.fillWidth: true
-            text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.keys.labels.cameraView)
+            text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.settings.keys.labels.cameraView)
             wrapMode: Text.Wrap
             opacity: 0.7
         }

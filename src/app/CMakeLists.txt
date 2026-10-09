@@ -2,6 +2,19 @@ qt_add_executable(qtcraft
     main.cpp
     QcScreenshotHook.h QcScreenshotHook.cpp
     QcGameController.h QcGameController.cpp
+    QcSessionParts.h
+    QcSettingsController.h QcSettingsController.cpp
+    QcAudioSettings.h QcAudioSettings.cpp
+    QcCharacterSettings.h QcCharacterSettings.cpp
+    QcWorldLibraryController.h QcWorldLibraryController.cpp
+    QcPlayerController.h QcPlayerController.cpp
+    QcHudState.h QcHudState.cpp
+    QcHandbookController.h QcHandbookController.cpp
+    QcItemIcons.h QcItemIcons.cpp
+    QcGameInput.h QcGameInput.cpp
+    QcRenderBridge.h QcRenderBridge.cpp
+    QcStartupHooks.h QcStartupHooks.cpp
+    QcBenchmarkRun.h QcBenchmarkRun.cpp
     QcInventoryModel.h QcInventoryModel.cpp
     QcKeyControlsForeign.h
     QcHandbookModel.h QcHandbookModel.cpp

@@ -44,6 +44,257 @@ void printError(const QString &message)
     std::println(stderr, "{}", message.toStdString());
 }
 
+void printLines(const QStringList &lines)
+{
+    for (const QString &line : lines) {
+        std::println("{}", line.toStdString());
+    }
+}
+
+// Ends the application with `code` once the event loop runs.
+void exitSoon(int code)
+{
+    QTimer::singleShot(0, qApp, [code] { QCoreApplication::exit(code); });
+}
+
+bool fail(QJsonObject &response, const QString &error)
+{
+    response = {{u"ok"_s, false}, {u"error"_s, error}};
+    return true;
+}
+
+// The command line options of qtcraft-headless.
+struct Options
+{
+    QCommandLineOption seed{u"seed"_s, u"World seed."_s, u"number"_s, u"0"_s};
+    QCommandLineOption world{u"world"_s, u"World name."_s, u"name"_s, u"Headless"_s};
+    QCommandLineOption view{u"view-distance"_s, u"Chunk radius streamed to the client."_s, u"chunks"_s, u"4"_s};
+    QCommandLineOption script{u"script"_s, u"Run JSON-lines commands from a file, then exit."_s, u"file"_s};
+    QCommandLineOption time{u"time-limit"_s, u"Exit with failure after this many seconds."_s, u"seconds"_s,
+                            QString::number(defaultTimeLimitSeconds)};
+    QCommandLineOption map{u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s};
+    QCommandLineOption mapRadius{u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s};
+    QCommandLineOption biomeMap{u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s, u"file"_s};
+    QCommandLineOption spawn{u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s};
+    QCommandLineOption slice{u"slice-map"_s,
+                             u"Write a vertical cut through the world along x at z = 0 (--map-radius blocks to each side) and exit."_s,
+                             u"file"_s};
+    QCommandLineOption stats{u"world-stats"_s, u"Print numbers about the generated world (ores, surface, biomes, slopes) and exit."_s};
+    QCommandLineOption statsRadius{u"stats-radius"_s, u"Chunk radius generated for --world-stats."_s, u"chunks"_s, u"16"_s};
+    QCommandLineOption data{u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s};
+    QCommandLineOption mods{u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s};
+    QCommandLineOption noMods{u"no-mods"_s, u"Load only the base game."_s};
+    QCommandLineOption sounds{u"export-sounds"_s,
+                              u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
+                              u"dir"_s};
+    QCommandLineOption handbook{u"export-handbook"_s,
+                                u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
+                                u"dir"_s};
+    QCommandLineOption language{u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s, u"locale"_s, u"en"_s};
+    QCommandLineOption icon{u"export-icon"_s,
+                            u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
+                            u"dir"_s};
+
+    // In the order of the help text.
+    void addTo(QCommandLineParser &parser) const
+    {
+        parser.addOptions({sounds, icon});
+        parser.addOptions({handbook, language});
+        parser.addOptions({stats, statsRadius, biomeMap, slice, spawn});
+        parser.addOptions({seed, world, view, script, time, map, mapRadius, data, mods, noMods});
+    }
+};
+
+// Base game only: the icon must not depend on the mods of whoever builds the game.
+bool exportIcon(const QString &directory)
+{
+    QStringList baseWarnings;
+    const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+    if (!base) {
+        printError(u"Cannot load the base game: "_s + base.error());
+        return false;
+    }
+
+    const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(**base), directory);
+    if (!written) {
+        printError(written.error());
+    }
+    exitSoon(written ? 0 : 1);
+    return true;
+}
+
+// Seed, world name, view distance, spawn column and the time limit; false on a bad number.
+bool readConfig(const QCommandLineParser &parser, const Options &options, QcServerConfig &config, int &timeLimit)
+{
+    bool seedOk = false;
+    config.seed = parser.value(options.seed).toLongLong(&seedOk);
+    config.worldName = parser.value(options.world);
+    bool viewOk = false;
+    config.viewDistance = std::clamp(parser.value(options.view).toInt(&viewOk), 1, 32);
+    bool timeOk = false;
+    timeLimit = parser.value(options.time).toInt(&timeOk);
+
+    bool spawnOk = true;
+    if (parser.isSet(options.spawn)) {
+        const QStringList parts = parser.value(options.spawn).split(u',');
+        bool xOk = false;
+        bool zOk = false;
+        if (parts.size() == 2) {
+            config.spawnColumn = std::array<int, 2>{parts[0].toInt(&xOk), parts[1].toInt(&zOk)};
+        }
+        spawnOk = xOk && zOk;
+    }
+    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk;
+}
+
+// The base game with the mods of --mods-dir, else of the data directory's mods folder; nullptr
+// (after printing the reason) when it cannot be loaded.
+std::shared_ptr<const QcContentRegistry> loadContent(const QCommandLineParser &parser, const Options &options)
+{
+    QStringList warnings;
+    QString modsDirectory = parser.value(options.mods);
+    if (modsDirectory.isEmpty()) {
+        modsDirectory = parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"mods"_s) : QcModLoader::defaultDirectory();
+    }
+    if (parser.isSet(options.noMods)) {
+        modsDirectory.clear();
+    }
+
+    QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
+    for (const QString &warning : std::as_const(warnings)) {
+        printError(u"content warning: "_s + warning);
+    }
+    if (!content) {
+        printError(u"Cannot load content: "_s + content.error());
+        return nullptr;
+    }
+    return std::move(content->content);
+}
+
+void exportSounds(const QcContentRegistry &content, const QString &directory, quint64 seed)
+{
+    const QcResult<QStringList> exported = QcSoundExporter::exportAll(content, directory, seed);
+    if (exported) {
+        printLines(*exported);
+    } else {
+        printError(exported.error());
+    }
+    exitSoon(exported ? 0 : 1);
+}
+
+// The export documents the base game unless mods are asked for with --mods-dir.
+bool exportHandbook(const QCommandLineParser &parser, const Options &options, const std::shared_ptr<const QcContentRegistry> &content)
+{
+    std::shared_ptr<const QcContentRegistry> exported = content;
+    if (!parser.isSet(options.mods)) {
+        QStringList baseWarnings;
+        QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+        if (!base) {
+            printError(u"Cannot load the base game: "_s + base.error());
+            return false;
+        }
+        exported = *base;
+    }
+
+    const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(options.language), QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
+    for (const QString &problem : book.problems()) {
+        printError(u"handbook problem: "_s + problem);
+    }
+    const QcStatus written = QcHandbookMarkdown::write(book, parser.value(options.handbook));
+    if (written) {
+        std::println("{} entries in {} files", book.entries().size(), QcHandbookMarkdown::files(book).size());
+    } else {
+        printError(written.error());
+    }
+    exitSoon(written ? 0 : 1);
+    return true;
+}
+
+void saveMap(const QImage &map, const QString &file)
+{
+    const bool saved = map.save(file);
+    if (!saved) {
+        printError(u"Cannot write map"_s);
+    }
+    exitSoon(saved ? 0 : 1);
+}
+
+// Whether a dry column and the columns 32 blocks around it lie in `biome`.
+bool wellInside(const QcTerrainGenerator &generator, int biome, int x, int z)
+{
+    const auto inside = [&](int cx, int cz) {
+        const QcTerrainGenerator::Column column = generator.column(cx, cz);
+        return column.biome == biome && column.height > generator.seaLevel() + 1;
+    };
+    return inside(x, z) && inside(x + 32, z) && inside(x - 32, z) && inside(x, z + 32) && inside(x, z - 32);
+}
+
+// The first column well inside `biome` on the square ring of `ring` blocks around the origin.
+std::optional<QString> legendPlaceOnRing(const QcTerrainGenerator &generator, int biome, int ring)
+{
+    for (int dz = -ring; dz <= ring; dz += 16) {
+        for (int dx = -ring; dx <= ring; dx += 16) {
+            if (std::max(std::abs(dx), std::abs(dz)) == ring && wellInside(generator, biome, dx, dz)) {
+                return u"at %1,%2"_s.arg(dx).arg(dz);
+            }
+        }
+    }
+    return std::nullopt;
+}
+
+// The nearest dry column of a biome that lies well inside it, for the biome map's legend.
+QString biomeLegendPlace(const QcTerrainGenerator &generator, int biome, int radius)
+{
+    for (int ring = 0; ring <= radius; ring += 16) {
+        if (const std::optional<QString> place = legendPlaceOnRing(generator, biome, ring)) {
+            return *place;
+        }
+    }
+    return u"not found"_s;
+}
+
+void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry &content, int radius, const QString &file)
+{
+    const bool saved = QcMapRenderer::renderBiomes(generator, {0, 0, radius, std::max(1, radius / 512)}).save(file);
+    if (!saved) {
+        printError(u"Cannot write map"_s);
+    }
+    for (qsizetype i = 0; i < content.biomes().size(); ++i) {
+        std::println("{} {} {}", i, generator.biomeName(int(i)).toStdString(), biomeLegendPlace(generator, int(i), radius).toStdString());
+    }
+    exitSoon(saved ? 0 : 1);
+}
+
+// The world generation tools (--world-stats, --slice-map, --biome-map, --map); false when none
+// was asked for.
+bool runWorldTool(const QCommandLineParser &parser, const Options &options, const QcTerrainGenerator &generator,
+                  const QcContentRegistry &content)
+{
+    if (parser.isSet(options.stats)) {
+        const int chunks = std::clamp(parser.value(options.statsRadius).toInt(), 1, 64);
+        const int biomeRadius = std::clamp(parser.value(options.mapRadius).toInt(), 256, 16384);
+        printLines(QcWorldStats::report(generator, content, chunks, biomeRadius));
+        exitSoon(0);
+        return true;
+    }
+    if (parser.isSet(options.slice)) {
+        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 16, 1024);
+        saveMap(QcMapRenderer::renderSlice(generator, content, {0, 0, radius, 4}), parser.value(options.slice));
+        return true;
+    }
+    if (parser.isSet(options.biomeMap)) {
+        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
+        writeBiomeMap(generator, content, radius, parser.value(options.biomeMap));
+        return true;
+    }
+    if (parser.isSet(options.map)) {
+        const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
+        saveMap(QcMapRenderer::render(generator, content, {0, 0, radius, std::max(1, radius / 512)}), parser.value(options.map));
+        return true;
+    }
+    return false;
+}
+
 } // namespace
 
 QcHeadlessGame::QcHeadlessGame(QObject *parent)
@@ -67,218 +318,61 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     QCommandLineParser parser;
     parser.setApplicationDescription(u"QtCraft headless server with a control-interface client."_s);
     parser.addHelpOption();
-    const QCommandLineOption seedOption(u"seed"_s, u"World seed."_s, u"number"_s, u"0"_s);
-    const QCommandLineOption worldOption(u"world"_s, u"World name."_s, u"name"_s, u"Headless"_s);
-    const QCommandLineOption viewOption(u"view-distance"_s, u"Chunk radius streamed to the client."_s, u"chunks"_s, u"4"_s);
-    const QCommandLineOption scriptOption(u"script"_s, u"Run JSON-lines commands from a file, then exit."_s, u"file"_s);
-    const QCommandLineOption timeOption(u"time-limit"_s, u"Exit with failure after this many seconds."_s, u"seconds"_s,
-                                        QString::number(defaultTimeLimitSeconds));
-    const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
-    const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
-    const QCommandLineOption biomeMapOption(u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s,
-                                            u"file"_s);
-    const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
-    const QCommandLineOption sliceOption(u"slice-map"_s,
-                                         u"Write a vertical cut through the world along x at z = 0 (--map-radius blocks to each side) and exit."_s,
-                                         u"file"_s);
-    const QCommandLineOption statsOption(u"world-stats"_s,
-                                         u"Print numbers about the generated world (ores, surface, biomes, slopes) and exit."_s);
-    const QCommandLineOption statsRadiusOption(u"stats-radius"_s, u"Chunk radius generated for --world-stats."_s, u"chunks"_s,
-                                               u"16"_s);
-    const QCommandLineOption dataOption(u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s);
-    const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
-    const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
-    const QCommandLineOption soundsOption(u"export-sounds"_s,
-                                          u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
-                                          u"dir"_s);
-    const QCommandLineOption handbookOption(u"export-handbook"_s,
-                                            u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
-                                            u"dir"_s);
-    const QCommandLineOption languageOption(u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s,
-                                            u"locale"_s, u"en"_s);
-    const QCommandLineOption iconOption(u"export-icon"_s,
-                                        u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
-                                        u"dir"_s);
-    parser.addOptions({soundsOption, iconOption});
-    parser.addOptions({handbookOption, languageOption});
-    parser.addOptions({statsOption, statsRadiusOption, biomeMapOption, sliceOption, spawnOption});
-    parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
-                       modsOption, noModsOption});
+    const Options options;
+    options.addTo(parser);
     if (!parser.parse(arguments)) {
         printError(parser.errorText());
         return false;
     }
     if (parser.isSet(u"help"_s)) {
         std::print("{}", parser.helpText().toStdString());
-        QTimer::singleShot(0, qApp, [] { QCoreApplication::exit(0); });
+        exitSoon(0);
         return true;
     }
-    if (parser.isSet(iconOption)) {
-        // Base game only: the icon must not depend on the mods of whoever builds the game.
-        QStringList baseWarnings;
-        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
-        if (!base) {
-            printError(u"Cannot load the base game: "_s + base.error());
-            return false;
-        }
-        const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(**base), parser.value(iconOption));
-        if (!written) {
-            printError(written.error());
-        }
-        QTimer::singleShot(0, qApp, [ok = written.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
-        return true;
+    if (parser.isSet(options.icon)) {
+        return exportIcon(parser.value(options.icon));
     }
 
-    bool seedOk = false;
     QcServerConfig config;
-    config.seed = parser.value(seedOption).toLongLong(&seedOk);
-    config.worldName = parser.value(worldOption);
-    bool viewOk = false;
-    config.viewDistance = std::clamp(parser.value(viewOption).toInt(&viewOk), 1, 32);
-    bool timeOk = false;
-    const int timeLimit = parser.value(timeOption).toInt(&timeOk);
-    bool spawnOk = true;
-    if (parser.isSet(spawnOption)) {
-        const QStringList parts = parser.value(spawnOption).split(u',');
-        bool xOk = false;
-        bool zOk = false;
-        if (parts.size() == 2) {
-            config.spawnColumn = std::array<int, 2>{parts[0].toInt(&xOk), parts[1].toInt(&zOk)};
-        }
-        spawnOk = xOk && zOk;
-    }
-    if (!seedOk || !viewOk || !timeOk || timeLimit <= 0 || !spawnOk) {
+    int timeLimit = 0;
+    if (!readConfig(parser, options, config, timeLimit)) {
         printError(u"Invalid numeric option"_s);
         return false;
     }
-
-    QStringList warnings;
-    // Mods come from --mods-dir, else from the data directory's mods folder.
-    QString modsDirectory = parser.value(modsOption);
-    if (modsDirectory.isEmpty()) {
-        modsDirectory = parser.isSet(dataOption) ? QDir(parser.value(dataOption)).filePath(u"mods"_s) : QcModLoader::defaultDirectory();
-    }
-    if (parser.isSet(noModsOption)) {
-        modsDirectory.clear();
-    }
-    QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
-    for (const QString &warning : std::as_const(warnings)) {
-        printError(u"content warning: "_s + warning);
-    }
-    if (!content) {
-        printError(u"Cannot load content: "_s + content.error());
+    const std::shared_ptr<const QcContentRegistry> shared = loadContent(parser, options);
+    if (!shared) {
         return false;
     }
-    const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
-    if (parser.isSet(soundsOption)) {
-        const QcResult<QStringList> exported = QcSoundExporter::exportAll(*shared, parser.value(soundsOption), quint64(config.seed));
-        if (exported) {
-            for (const QString &line : *exported) {
-                std::println("{}", line.toStdString());
-            }
-        } else {
-            printError(exported.error());
-        }
-        QTimer::singleShot(0, qApp, [ok = exported.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
+    if (parser.isSet(options.sounds)) {
+        exportSounds(*shared, parser.value(options.sounds), quint64(config.seed));
         return true;
     }
-    if (parser.isSet(handbookOption)) {
-        // The export documents the base game unless mods are asked for with --mods-dir.
-        std::shared_ptr<const QcContentRegistry> exported = shared;
-        if (!parser.isSet(modsOption)) {
-            QStringList baseWarnings;
-            QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
-            if (!base) {
-                printError(u"Cannot load the base game: "_s + base.error());
-                return false;
-            }
-            exported = *base;
-        }
-        const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(languageOption), QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
-        for (const QString &problem : book.problems()) {
-            printError(u"handbook problem: "_s + problem);
-        }
-        const QcStatus written = QcHandbookMarkdown::write(book, parser.value(handbookOption));
-        if (written) {
-            std::println("{} entries in {} files", book.entries().size(), QcHandbookMarkdown::files(book).size());
-        } else {
-            printError(written.error());
-        }
-        QTimer::singleShot(0, qApp, [ok = written.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
-        return true;
+    if (parser.isSet(options.handbook)) {
+        return exportHandbook(parser, options, shared);
     }
+
     QStringList generatorWarnings;
-    auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
+    const QcTerrainGenerator generator(shared, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {
         printError(u"world generation warning: "_s + warning);
     }
-    if (parser.isSet(statsOption)) {
-        const int chunks = std::clamp(parser.value(statsRadiusOption).toInt(), 1, 64);
-        const int biomeRadius = std::clamp(parser.value(mapRadiusOption).toInt(), 256, 16384);
-        const QStringList lines = QcWorldStats::report(*generator, *shared, chunks, biomeRadius);
-        for (const QString &line : lines) {
-            std::println("{}", line.toStdString());
-        }
-        QTimer::singleShot(0, qApp, [] { QCoreApplication::exit(0); });
+    if (runWorldTool(parser, options, generator, *shared)) {
         return true;
     }
-    if (parser.isSet(sliceOption)) {
-        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 16, 1024);
-        const bool saved = QcMapRenderer::renderSlice(*generator, *shared, 0, 0, radius, 4).save(parser.value(sliceOption));
-        if (!saved) {
-            printError(u"Cannot write map"_s);
-        }
-        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
-        return true;
-    }
-    if (parser.isSet(biomeMapOption)) {
-        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 64, 8192);
-        const bool saved =
-            QcMapRenderer::renderBiomes(*generator, 0, 0, radius, std::max(1, radius / 512)).save(parser.value(biomeMapOption));
-        if (!saved) {
-            printError(u"Cannot write map"_s);
-        }
-        // Legend with the nearest dry column of each biome that lies well inside it.
-        for (qsizetype i = 0; i < shared->biomes().size(); ++i) {
-            const auto inside = [&](int x, int z) {
-                const QcTerrainGenerator::Column column = generator->column(x, z);
-                return column.biome == int(i) && column.height > generator->seaLevel() + 1;
-            };
-            QString where = u"not found"_s;
-            for (int ring = 0; ring <= radius && where.startsWith(u'n'); ring += 16) {
-                for (int dz = -ring; dz <= ring && where.startsWith(u'n'); dz += 16) {
-                    for (int dx = -ring; dx <= ring; dx += 16) {
-                        if (std::max(std::abs(dx), std::abs(dz)) == ring && inside(dx, dz) && inside(dx + 32, dz)
-                            && inside(dx - 32, dz) && inside(dx, dz + 32) && inside(dx, dz - 32)) {
-                            where = u"at %1,%2"_s.arg(dx).arg(dz);
-                            break;
-                        }
-                    }
-                }
-            }
-            std::println("{} {} {}", i, generator->biomeName(int(i)).toStdString(), where.toStdString());
-        }
-        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
-        return true;
-    }
-    if (parser.isSet(mapOption)) {
-        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 64, 8192);
-        const QImage map = QcMapRenderer::render(*generator, *shared, 0, 0, radius, std::max(1, radius / 512));
-        const bool saved = map.save(parser.value(mapOption));
-        if (!saved) {
-            printError(u"Cannot write map"_s);
-        }
-        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
-        return true;
-    }
+
     m_content = shared;
     m_baseConfig = config;
-    m_library = std::make_unique<QcWorldLibrary>(parser.isSet(dataOption) ? QDir(parser.value(dataOption)).filePath(u"worlds"_s)
-                                                                          : QcWorldLibrary::defaultRoot());
+    m_library = std::make_unique<QcWorldLibrary>(parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"worlds"_s)
+                                                                            : QcWorldLibrary::defaultRoot());
     if (const QcStatus started = startWorld(config); !started) {
         printError(started.error());
         return false;
     }
+    return startControl(parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt, timeLimit);
+}
+
+bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int timeLimit)
+{
     m_output = new QFile(this);
     // Opened by descriptor: a FILE*-based QFile would sit in stdio's buffer when stdout is a pipe.
     if (!m_output->open(fileno(stdout), QIODevice::WriteOnly | QIODevice::Unbuffered)) {
@@ -290,7 +384,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     m_control->setExtensionHandler([this](const QJsonObject &request, QJsonObject &response) {
         return handleWorldCommand(request, response);
     });
-    m_scriptMode = parser.isSet(scriptOption);
+    m_scriptMode = scriptFile.has_value();
     // A script's exit code reports whether every request succeeded, also when it ends with quit.
     if (m_scriptMode) {
         connect(m_control, &QcControlInterface::quitRequested, this, &QcHeadlessGame::finishScript, Qt::QueuedConnection);
@@ -299,7 +393,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
 
     if (m_scriptMode) {
-        QFile script(parser.value(scriptOption));
+        QFile script(*scriptFile);
         if (!script.open(QIODevice::ReadOnly | QIODevice::Text)) {
             printError(u"Cannot open script %1"_s.arg(script.fileName()));
             return false;
@@ -315,17 +409,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
             Qt::QueuedConnection);
         m_control->feed(script.readAll() + '\n');
     } else {
-        auto *reader = new QcStdinReader(this);
-        connect(reader, &QcStdinReader::lineReceived, m_control, &QcControlInterface::feed);
-        connect(reader, &QcStdinReader::endOfInput, this, [this] {
-            // End of input: finish the queued requests, then exit.
-            if (m_control->isIdle()) {
-                QCoreApplication::quit();
-            } else {
-                connect(m_control, &QcControlInterface::idle, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
-            }
-        });
-        reader->start();
+        readStandardInput();
     }
 
     QTimer::singleShot(timeLimit * 1000, this, [] {
@@ -333,6 +417,21 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         QCoreApplication::exit(2);
     });
     return true;
+}
+
+void QcHeadlessGame::readStandardInput()
+{
+    auto *reader = new QcStdinReader(this);
+    connect(reader, &QcStdinReader::lineReceived, m_control, &QcControlInterface::feed);
+    connect(reader, &QcStdinReader::endOfInput, this, [this] {
+        // End of input: finish the queued requests, then exit.
+        if (m_control->isIdle()) {
+            QCoreApplication::quit();
+        } else {
+            connect(m_control, &QcControlInterface::idle, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+        }
+    });
+    reader->start();
 }
 
 QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
@@ -406,57 +505,17 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject &response)
 {
     const QString command = request.value(u"cmd"_s).toString();
-    const auto failWith = [&response](const QString &error) {
-        response = {{u"ok"_s, false}, {u"error"_s, error}};
-        return true;
-    };
     if (command == u"worldList"_s) {
-        QJsonArray worlds;
-        const QList<QcWorldLibrary::Entry> entries = m_library->list();
-        for (const QcWorldLibrary::Entry &entry : entries) {
-            worlds.append(QJsonObject{{u"folder"_s, entry.folder},
-                                      {u"name"_s, entry.info.name},
-                                      {u"seed"_s, QString::number(entry.info.seed)},
-                                      {u"error"_s, entry.error}});
-        }
-        response = {{u"worlds"_s, worlds}};
+        response = {{u"worlds"_s, worldList()}};
         return true;
     }
     if (command == u"worldCreate"_s || command == u"worldLoad"_s) {
-        QcServerConfig config = m_baseConfig;
-        if (command == u"worldCreate"_s) {
-            bool seedOk = true;
-            const qint64 seed = request.contains(u"seed"_s)
-                                    ? request.value(u"seed"_s).toVariant().toString().toLongLong(&seedOk)
-                                    : qint64(QRandomGenerator::global()->generate64() >> 1);
-            if (!seedOk) {
-                return failWith(u"'seed' must be an integer"_s);
-            }
-            const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed);
-            if (!entry) {
-                return failWith(entry.error());
-            }
-            config.worldName = entry->info.name;
-            config.seed = entry->info.seed;
-            config.worldDirectory = entry->directory;
-            response = {{u"folder"_s, entry->folder}};
-        } else {
-            const QList<QcWorldLibrary::Entry> entries = m_library->list();
-            const QString folder = request.value(u"folder"_s).toString();
-            const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
-            if (it == entries.end()) {
-                return failWith(u"No world in folder '%1'"_s.arg(folder));
-            }
-            if (!it->error.isEmpty()) {
-                return failWith(it->error);
-            }
-            config.worldName = it->info.name;
-            config.seed = it->info.seed;
-            config.worldDirectory = it->directory;
-            response = {{u"folder"_s, folder}};
+        const QcResult<QcServerConfig> config = command == u"worldCreate"_s ? createdWorld(request, response) : listedWorld(request, response);
+        if (!config) {
+            return fail(response, config.error());
         }
-        if (const QcStatus started = startWorld(config); !started) {
-            return failWith(started.error());
+        if (const QcStatus started = startWorld(*config); !started) {
+            return fail(response, started.error());
         }
         response.insert(u"note"_s, u"Send waitUntilReady before acting in the world."_s);
         return true;
@@ -468,12 +527,66 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
     if (command == u"worldSave"_s) {
         const QcStatus saved = m_server ? m_server->save() : QcStatus(qcError(u"No world is open"_s));
         if (!saved) {
-            return failWith(saved.error());
+            return fail(response, saved.error());
         }
         response = {{u"saved"_s, true}};
         return true;
     }
     return false;
+}
+
+QJsonArray QcHeadlessGame::worldList() const
+{
+    QJsonArray worlds;
+    const QList<QcWorldLibrary::Entry> entries = m_library->list();
+    for (const QcWorldLibrary::Entry &entry : entries) {
+        worlds.append(QJsonObject{{u"folder"_s, entry.folder},
+                                  {u"name"_s, entry.info.name},
+                                  {u"seed"_s, QString::number(entry.info.seed)},
+                                  {u"error"_s, entry.error}});
+    }
+    return worlds;
+}
+
+QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request, QJsonObject &response) const
+{
+    bool seedOk = true;
+    const qint64 seed = request.contains(u"seed"_s) ? request.value(u"seed"_s).toVariant().toString().toLongLong(&seedOk)
+                                                    : qint64(QRandomGenerator::global()->generate64() >> 1);
+    if (!seedOk) {
+        return qcError(u"'seed' must be an integer"_s);
+    }
+    const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed);
+    if (!entry) {
+        return qcError(entry.error());
+    }
+
+    QcServerConfig config = m_baseConfig;
+    config.worldName = entry->info.name;
+    config.seed = entry->info.seed;
+    config.worldDirectory = entry->directory;
+    response = {{u"folder"_s, entry->folder}};
+    return config;
+}
+
+QcResult<QcServerConfig> QcHeadlessGame::listedWorld(const QJsonObject &request, QJsonObject &response) const
+{
+    const QList<QcWorldLibrary::Entry> entries = m_library->list();
+    const QString folder = request.value(u"folder"_s).toString();
+    const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
+    if (it == entries.end()) {
+        return qcError(u"No world in folder '%1'"_s.arg(folder));
+    }
+    if (!it->error.isEmpty()) {
+        return qcError(it->error);
+    }
+
+    QcServerConfig config = m_baseConfig;
+    config.worldName = it->info.name;
+    config.seed = it->info.seed;
+    config.worldDirectory = it->directory;
+    response = {{u"folder"_s, folder}};
+    return config;
 }
 
 const QcHandbook &QcHeadlessGame::handbook(const QString &language)

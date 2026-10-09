@@ -19,6 +19,9 @@ public:
     static int surfaceHeight(int x, int z);
 
 private:
+    // Block at height `y` of a column whose surface is at `height`.
+    QcBlockId groundBlock(int y, int height) const;
+
     std::shared_ptr<const QcContentRegistry> m_content;
     QcBlockId m_stone = qcAirBlockId;
     QcBlockId m_dirt = qcAirBlockId;

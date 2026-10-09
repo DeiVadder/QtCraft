@@ -25,10 +25,10 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.keys.matches("inventory", event.key)) {
+        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("inventory", event.key)) {
             screen.game.overlay = "";
-        } else if (screen.game.keys.matches("handbook", event.key)) {
-            screen.game.openHandbook(screen.hoveredItem);
+        } else if (screen.game.settings.keys.matches("handbook", event.key)) {
+            screen.game.handbook.open(screen.hoveredItem);
         }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
@@ -41,7 +41,7 @@ Rectangle {
             return;
         }
         if (pickedSlot !== slot)
-            game.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
+            game.player.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
         if (button !== Qt.RightButton)
             pickedSlot = -1;
     }
@@ -72,7 +72,7 @@ Rectangle {
 
         infoItem: itemName
         infoEnabled: screen.pickedSlot < 0
-        onInfoRequested: item => screen.game.openHandbook(item)
+        onInfoRequested: item => screen.game.handbook.open(item)
         slotIcon: icon
         slotCount: count
         slotDurability: durability
@@ -102,7 +102,7 @@ Rectangle {
         spacing: 12
 
         Label {
-            text: screen.game.machineLabel.length > 0 ? screen.game.machineLabel : qsTr("Chest")
+            text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Chest")
             color: "white"
             font.pixelSize: 24
             font.bold: true
@@ -116,9 +116,9 @@ Rectangle {
 
             Repeater {
                 model: SlotRange {
-                    source: screen.game.inventory
+                    source: screen.game.player.inventory
                     first: screen.firstStorageRow
-                    count: screen.game.containerSlots
+                    count: screen.game.player.containerSlots
                 }
 
                 Slot {
@@ -138,7 +138,7 @@ Rectangle {
             // Rows 9..35 (main storage) first, the hotbar 0..8 below with a gap.
             Repeater {
                 model: SlotRange {
-                    source: screen.game.inventory
+                    source: screen.game.player.inventory
                     count: 36
                 }
 
@@ -153,7 +153,7 @@ Rectangle {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: qsTr("Left click: pick up and put down. Right click: put down one. %1 or Esc closes. Breaking the chest drops its contents.").arg(screen.game.keys.labels.inventory)
+            text: qsTr("Left click: pick up and put down. Right click: put down one. %1 or Esc closes. Breaking the chest drops its contents.").arg(screen.game.settings.keys.labels.inventory)
             color: "#e0ffffff"
         }
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcClientEntity.h"
+#include "QcClientEntities.h"
 #include "QcAmbience.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
@@ -100,7 +100,7 @@ public:
     void sendChat(const QString &text);
     const QcInventory &inventory() const { return m_inventory; }
 
-    const QHash<quint32, QcClientEntity> &entities() const { return m_entities; }
+    const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
     // Entity under the crosshair when it is closer than any targeted block.
     std::optional<quint32> targetEntity() const { return m_targetEntity; }
     // Hits the targeted entity; returns false without one.
@@ -113,7 +113,7 @@ public:
     void setAppearance(const QcAppearance &appearance);
     const QcAppearance &appearance() const { return m_appearance; }
     // Entities that died and play their death animation for a moment; not targetable.
-    const QHash<quint32, QcClientEntity> &dyingEntities() const { return m_dying; }
+    const QHash<quint32, QcClientEntity> &dyingEntities() const { return m_entities.dying(); }
 
     // Animation of the local player. `alpha` interpolates within the current tick.
     QcEntityPose localPose(double alpha) const;
@@ -128,11 +128,11 @@ public:
     static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
 
     // Animation lengths in ticks.
-    static constexpr int swingTicks = 6;
+    static constexpr int swingTicks = QcClientEntities::swingTicks;
     static constexpr int useTicks = 5;
     static constexpr int switchTicks = 6;
     static constexpr int landingTicks = 6;
-    static constexpr int deathTicks = 20;
+    static constexpr int deathTicks = QcClientEntities::deathTicks;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
     int food() const { return m_food; }
@@ -152,16 +152,16 @@ public:
     const QcAmbience::Levels &ambience() const { return m_ambience; }
     // Mining strikes make a sound every this many ticks; other creatures step every this many metres.
     static constexpr int miningHitTicks = 4;
-    static constexpr double entityStrideMetres = 1.7;
-    static constexpr float entityStepVolume = 0.3f;
+    static constexpr double entityStrideMetres = QcClientEntities::strideMetres;
+    static constexpr float entityStepVolume = QcClientEntities::stepVolume;
     // The ambience targets are sampled every this many ticks.
     static constexpr int ambienceTicks = 10;
 
     // Melee reach of the player.
     static constexpr double attackReach = 4.0;
-    static constexpr int hurtFlashTicks = 6;
+    static constexpr int hurtFlashTicks = QcClientEntities::hurtFlashTicks;
     // Share of the newest tick in the smoothed walking speed of other entities.
-    static constexpr double speedSmoothing = 0.3;
+    static constexpr double speedSmoothing = QcClientEntities::speedSmoothing;
 
 signals:
     void stateChanged(QcClientSession::State state);
@@ -186,6 +186,20 @@ signals:
 
 private:
     void handleMessage(QcMessage &&message);
+    // Message groups; each returns false for messages outside its group.
+    bool handleConnectionMessage(const QcMessage &message);
+    bool handleWorldMessage(const QcMessage &message);
+    bool handlePlayerMessage(const QcMessage &message);
+    bool handleEntityMessage(const QcMessage &message);
+    bool handleMachineMessage(const QcMessage &message);
+    void onWelcome(const QcMsg::Welcome &welcome);
+    void onContentSync(const QcMsg::ContentSync &sync);
+    void onChunkData(const QcMsg::ChunkData &chunkData);
+    void onInventoryState(const QcMsg::InventoryState &inventory);
+    void onOpenMachine(const QcMsg::OpenMachine &open);
+    void onMachineState(const QcMsg::MachineState &machine);
+    // Closes the connection; `reason` is reported as the disconnect reason.
+    void closeWithError(const QString &reason);
     void setState(State state);
     void reconcile(const QcMsg::PlayerState &state);
     void onClosed();
@@ -223,8 +237,7 @@ private:
     std::optional<QcBlockPos> m_miningPos;
     double m_miningProgress = 0.0;
 
-    QHash<quint32, QcClientEntity> m_entities;
-    QHash<quint32, QcClientEntity> m_dying;
+    QcClientEntities m_entities;
     QcAppearance m_appearance;
     bool m_helloSent = false;
     bool m_appearancePending = false;

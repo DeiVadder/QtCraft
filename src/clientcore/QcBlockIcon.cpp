@@ -38,6 +38,19 @@ QPointF project(std::array<float, 3> p)
     return {iconSize * 0.5 + sx * scale, iconSize * 0.5 + sy * scale};
 }
 
+// Multiplies the colour channels of an RGBA8888 image by `shade`.
+void darken(QImage &image, float shade)
+{
+    for (int y = 0; y < image.height(); ++y) {
+        uchar *line = image.scanLine(y);
+        for (int x = 0; x < image.width(); ++x) {
+            for (int channel = 0; channel < 3; ++channel) {
+                line[x * 4 + channel] = uchar(float(line[x * 4 + channel]) * shade);
+            }
+        }
+    }
+}
+
 } // namespace
 
 std::array<QImage, 6> shadedAtlases(const QImage &atlas)
@@ -46,15 +59,7 @@ std::array<QImage, 6> shadedAtlases(const QImage &atlas)
     for (const QcBlockFace face : qcAllBlockFaces) {
         QImage image = atlas.convertToFormat(QImage::Format_RGBA8888);
         if (visible(face)) {
-            const float shade = QcChunkMesher::faceShade[std::size_t(face)];
-            for (int y = 0; y < image.height(); ++y) {
-                uchar *line = image.scanLine(y);
-                for (int x = 0; x < image.width(); ++x) {
-                    for (int channel = 0; channel < 3; ++channel) {
-                        line[x * 4 + channel] = uchar(float(line[x * 4 + channel]) * shade);
-                    }
-                }
-            }
+            darken(image, QcChunkMesher::faceShade[std::size_t(face)]);
         }
         shaded[std::size_t(face)] = std::move(image);
     }

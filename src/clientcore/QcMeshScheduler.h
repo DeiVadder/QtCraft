@@ -5,6 +5,7 @@
 #include "QcBlockRenderTable.h"
 #include "QcChunkLight.h"
 #include "QcChunkMesh.h"
+#include "QcChunkMesher.h"
 #include "QcMailbox.h"
 #include "QcVec3.h"
 #include "QcWorkerPool.h"
@@ -16,6 +17,8 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
+#include <utility>
 
 class QcClientWorld;
 
@@ -109,6 +112,24 @@ private:
     };
 
     void markDirty(QcChunkPos chunk, int section, qint64 changedAtNs = -1);
+    // Sections whose faces or ambient occlusion a change of the block at `pos` affects.
+    static QList<SectionAddress> faceSections(QcBlockPos pos);
+    // Sky light travels up to 15 blocks sideways, so it reaches the 3 x 3 chunk neighbourhood. A
+    // section's sky light (QcChunkMesher) depends on the cells from 16 blocks below to 16 blocks
+    // above it and on where each column's highest light-dimming block lies: it changes when that
+    // range holds the changed cell or a cell that turns lit or shadowed because the column's highest
+    // dimming block moved. Returns the lowest and highest such cell for a change at `pos`.
+    std::pair<int, int> skyLightRange(const QcClientWorld &world, QcBlockPos pos, const QcBlockRenderTable::Entry &before,
+                                      const QcBlockRenderTable::Entry &after) const;
+    // The sections of the 3 x 3 chunks around `chunk` whose sky light the cells low..high reach.
+    static void appendSkyLightSections(QList<SectionAddress> &dirty, QcChunkPos chunk, int low, int high);
+    // Dirty sections not being meshed, nearest to the focus first.
+    QList<quint64> nearestDirtyFirst() const;
+    // Nullopt while a side neighbour of the chunk is missing.
+    std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
+    void submitMesh(quint64 key, QcMeshInput input);
+    // Records the time since the section's earliest unshown change, if any.
+    void noteLatency(quint64 key);
     // The chunk and its loaded neighbours, all sections.
     void markChunkAndNeighbours(QcChunkPos pos);
     void submitLight(std::function<void(QcBlockLightEngine &)> work, std::optional<QcChunkPos> added, QList<SectionAddress> dirty,

@@ -35,27 +35,43 @@ bool cellMatches(const QcContentRegistry &content, QcItemId item, const QString 
     return wanted.isEmpty() ? item == qcNoItem : item != qcNoItem && matches(content, item, wanted);
 }
 
-bool matchesShaped(const QcContentRegistry &content, const QcRecipeDefinition &recipe, const QList<QcItemStack> &grid,
-                   int size)
+// Where a shaped recipe is tried in the grid: the grid cell of its top-left key and whether it is
+// mirrored horizontally.
+struct ShapedPlacement
+{
+    int offsetX = 0;
+    int offsetY = 0;
+    bool mirrored = false;
+};
+
+bool matchesAt(const QcContentRegistry &content, const QcRecipeDefinition &recipe, const QList<QcItemStack> &grid, int size,
+               ShapedPlacement placement)
 {
     const int width = recipe.width();
     const int height = recipe.height();
-    for (int offsetY = 0; offsetY + height <= size; ++offsetY) {
-        for (int offsetX = 0; offsetX + width <= size; ++offsetX) {
-            for (const bool mirrored : {false, true}) {
-                bool ok = true;
-                for (int row = 0; row < size && ok; ++row) {
-                    for (int column = 0; column < size && ok; ++column) {
-                        const int px = column - offsetX;
-                        const int py = row - offsetY;
-                        const bool inside = px >= 0 && px < width && py >= 0 && py < height;
-                        const QString wanted = inside ? recipe.itemAt(mirrored ? width - 1 - px : px, py) : QString();
-                        ok = cellMatches(content, itemAt(content, grid, size, column, row), wanted);
-                    }
-                }
-                if (ok) {
-                    return true;
-                }
+
+    for (int row = 0; row < size; ++row) {
+        for (int column = 0; column < size; ++column) {
+            const int px = column - placement.offsetX;
+            const int py = row - placement.offsetY;
+            const bool inside = px >= 0 && px < width && py >= 0 && py < height;
+            const QString wanted = inside ? recipe.itemAt(placement.mirrored ? width - 1 - px : px, py) : QString();
+            if (!cellMatches(content, itemAt(content, grid, size, column, row), wanted)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool matchesShaped(const QcContentRegistry &content, const QcRecipeDefinition &recipe, const QList<QcItemStack> &grid,
+                   int size)
+{
+    for (int offsetY = 0; offsetY + recipe.height() <= size; ++offsetY) {
+        for (int offsetX = 0; offsetX + recipe.width() <= size; ++offsetX) {
+            if (matchesAt(content, recipe, grid, size, {offsetX, offsetY, false})
+                || matchesAt(content, recipe, grid, size, {offsetX, offsetY, true})) {
+                return true;
             }
         }
     }
@@ -72,9 +88,11 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
             present.append(item);
         }
     }
+
     if (present.size() != recipe.ingredients.size()) {
         return false;
     }
+
     // Exact names first, so a tag never takes the item a named ingredient needs, then narrow tags.
     QList<QString> wanted = recipe.ingredients;
     orderNarrowFirst(content, wanted, [](const QString &ingredient) { return ingredient; });
@@ -88,6 +106,29 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
     return true;
 }
 
+void addRequirement(QList<std::pair<QString, int>> &needed, const QString &item)
+{
+    const auto it = std::ranges::find(needed, item, &std::pair<QString, int>::first);
+    if (it != needed.end()) {
+        ++it->second;
+    } else {
+        needed.append({item, 1});
+    }
+}
+
+// Every non-empty cell of the pattern, row by row.
+void addShapedRequirements(QList<std::pair<QString, int>> &needed, const QcRecipeDefinition &recipe)
+{
+    for (int row = 0; row < recipe.height(); ++row) {
+        for (int column = 0; column < recipe.width(); ++column) {
+            const QString item = recipe.itemAt(column, row);
+            if (!item.isEmpty()) {
+                addRequirement(needed, item);
+            }
+        }
+    }
+}
+
 } // namespace
 
 std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size)
@@ -95,6 +136,7 @@ std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcI
     if (grid.size() < qsizetype(size) * size) {
         return std::nullopt;
     }
+
     const QList<QcRecipeDefinition> &recipes = content.recipes();
     for (qsizetype i = 0; i < recipes.size(); ++i) {
         const QcRecipeDefinition &recipe = recipes[i];
@@ -109,28 +151,14 @@ std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcI
 QList<std::pair<QString, int>> requirements(const QcRecipeDefinition &recipe)
 {
     QList<std::pair<QString, int>> needed;
-    const auto add = [&needed](const QString &item) {
-        const auto it = std::ranges::find(needed, item, &std::pair<QString, int>::first);
-        if (it != needed.end()) {
-            ++it->second;
-        } else {
-            needed.append({item, 1});
-        }
-    };
     if (recipe.shaped) {
-        for (int row = 0; row < recipe.height(); ++row) {
-            for (int column = 0; column < recipe.width(); ++column) {
-                const QString item = recipe.itemAt(column, row);
-                if (!item.isEmpty()) {
-                    add(item);
-                }
-            }
-        }
+        addShapedRequirements(needed, recipe);
     } else {
         for (const QString &item : recipe.ingredients) {
-            add(item);
+            addRequirement(needed, item);
         }
     }
+
     std::ranges::stable_partition(needed, [](const std::pair<QString, int> &entry) { return !entry.first.startsWith(u'#'); });
     return needed;
 }
@@ -157,9 +185,11 @@ int timesCraftable(const QcContentRegistry &content, const QcInventory &inventor
     for (const auto &[ingredient, count] : needed) {
         most = std::min(most, available(content, inventory, ingredient) / count);
     }
+
     if (most <= 0 || std::ranges::none_of(needed, [](const auto &entry) { return entry.first.startsWith(u'#'); })) {
         return std::max(0, most);
     }
+
     // A tag may share items with other ingredients: find the largest count consume() manages.
     int low = 0;
     int high = most;
@@ -203,6 +233,7 @@ bool removeIngredient(const QcContentRegistry &content, QcInventory &inventory, 
             fitting.append(stack.item);
         }
     }
+
     int missing = count;
     for (const QcItemId item : std::as_const(fitting)) {
         const int take = std::min(missing, inventory.countOf(item));

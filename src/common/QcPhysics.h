@@ -64,11 +64,26 @@ QcBlockPos blockContaining(const QcVec3 &point);
 // Moves `box` by `delta`, clipped against solid blocks (Y first, then X, then Z).
 MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &world);
 
-// Advances any entity by one tick: `wish` is the horizontal movement direction (length <= 1),
+// What an entity wants for one tick: `wish` is the horizontal movement direction (length <= 1),
 // `speed` its target speed, `jump` jumps on ground, swims up in water or climbs, `hold` keeps a
-// climber in place. The caller updates motion.inWater before the call.
-MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, bool jump, double width, double height,
-                      const QcBlockAccess &world, double dt, bool hold = false);
+// climber in place.
+struct Steering
+{
+    QcVec3 wish;
+    double speed = 0.0;
+    bool jump = false;
+    bool hold = false;
+};
+
+// Width and height of an entity's collision box.
+struct BodySize
+{
+    double width = playerWidth;
+    double height = playerHeight;
+};
+
+// Advances any entity by one tick. The caller updates motion.inWater before the call.
+MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt);
 
 // Advances a player by one tick of `dt` seconds.
 void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt);

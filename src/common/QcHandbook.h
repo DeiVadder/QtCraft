@@ -8,6 +8,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <optional>
+
 // The handbook of one content registry in one language (built by QcHandbookBuilder): categories
 // with their entries, grouped by pack, and a search over titles in this language and in English.
 class QcHandbook
@@ -28,11 +30,21 @@ public:
         QList<qsizetype> entries;
     };
 
+    // Everything a handbook consists of; see the accessors of the same names.
+    struct Contents
+    {
+        QString language;
+        QList<Pack> packs;
+        QList<Category> categories;
+        QList<QcHandbookEntry> entries;
+        QStringList problems;
+        QMap<QString, QString> labels;
+    };
+
     static constexpr int defaultSearchLimit = 50;
 
     QcHandbook() = default;
-    QcHandbook(QString language, QList<Pack> packs, QList<Category> categories, QList<QcHandbookEntry> entries,
-               QStringList problems, QMap<QString, QString> labels = {});
+    explicit QcHandbook(Contents contents);
 
     const QString &language() const { return m_language; }
     // Packs in load order; entries of names without a loaded pack come last under their namespace.
@@ -57,6 +69,10 @@ public:
     static QString searchKey(const QString &text);
 
 private:
+    // How well entry `index` matches the search words (lower is better, see search()); none when a
+    // word is missing.
+    std::optional<int> matchRank(qsizetype index, const QString &query, const QStringList &words) const;
+
     QString m_language;
     QList<Pack> m_packs;
     QList<Category> m_categories;

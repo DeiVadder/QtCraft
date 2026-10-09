@@ -20,7 +20,7 @@ Rectangle {
     focus: visible
     onVisibleChanged: {
         if (visible) {
-            game.refreshWorlds();
+            game.library.refreshWorlds();
             forceActiveFocus();
         } else {
             // Its sub-screens belong to the menu and close with it.
@@ -32,8 +32,8 @@ Rectangle {
     }
     // Keys the text fields and buttons leave; Tab moves the focus.
     Keys.onPressed: event => {
-        if (menu.game.keys.matches("handbook", event.key) && !menu.game.handbookOpen)
-            menu.game.openHandbook("");
+        if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen)
+            menu.game.handbook.open("");
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
@@ -81,7 +81,7 @@ Rectangle {
                     Layout.fillHeight: true
                     clip: true
                     spacing: 4
-                    model: menu.game.worlds
+                    model: menu.game.library.worlds
 
                     Label {
                         anchors.centerIn: parent
@@ -228,8 +228,8 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
-                    text: qsTr("Handbook (%1)").arg(menu.game.keys.labels.handbook)
-                    onClicked: menu.game.openHandbook("")
+                    text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
+                    onClicked: menu.game.handbook.open("")
                 }
 
                 Button {
@@ -277,7 +277,7 @@ Rectangle {
             text: qsTr("Delete “%1” permanently? This cannot be undone.").arg(deleteDialog.worldName)
         }
 
-        onAccepted: menu.game.deleteWorld(folder)
+        onAccepted: menu.game.library.deleteWorld(folder)
         onClosed: menu.subScreenClosed()
     }
 }

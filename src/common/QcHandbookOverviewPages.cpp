@@ -1,0 +1,200 @@
+#include "QcHandbookOverviewPages.h"
+
+#include "QcHandbook.h"
+#include "QcHandbookContext.h"
+#include "QcHandbookLinks.h"
+#include "QcHandbookRecipes.h"
+#include "QcHandbookText.h"
+
+#include <algorithm>
+#include <utility>
+
+using namespace Qt::StringLiterals;
+using Link = QcHandbookEntry::Link;
+using Recipe = QcHandbookEntry::Recipe;
+using Section = QcHandbookEntry::Section;
+
+namespace {
+
+// Links ordered by their key (ascending unless `descending`), then by text as the search compares it.
+template<typename Key>
+QList<Link> orderedLinks(QList<std::pair<Key, Link>> keyed, bool descending = false)
+{
+    std::ranges::stable_sort(keyed, [descending](const auto &a, const auto &b) {
+        if (a.first != b.first) {
+            return descending ? a.first > b.first : a.first < b.first;
+        }
+        return QcHandbook::searchKey(a.second.text) < QcHandbook::searchKey(b.second.text);
+    });
+
+    QList<Link> links;
+    for (auto &[key, link] : keyed) {
+        links.append(std::move(link));
+    }
+    return links;
+}
+
+QcHandbookEntry tagPage(const QcHandbookContext &context, const QString &tag, const QStringList &members)
+{
+    const QcHandbookText &text = context.text;
+    const QcHandbookLinks &links = context.links;
+    QcHandbookEntry entry;
+    entry.id = u"tag:"_s + tag;
+    entry.name = tag;
+    entry.category = u"tags"_s;
+    entry.pack = QcHandbookLinks::packOf(tag);
+    entry.title = links.tagTitle(tag, text.language());
+    entry.icon = links.itemIcon(members.first());
+    entry.text = text.label(u"tag.text"_s);
+    entry.facts.append({text.label(u"fact.id"_s), u"#"_s + tag, {}});
+
+    Section memberSection{text.label(u"section.members"_s), {}, {}, {}};
+    for (const QString &member : members) {
+        memberSection.links.append(links.itemLink(member));
+    }
+    QcHandbookLinks::sortLinks(memberSection.links);
+    entry.sections.append(std::move(memberSection));
+
+    Section usedIn{text.label(u"section.usedIn"_s), {}, {}, {}};
+    const QString ingredient = u"#"_s + tag;
+    for (const QcRecipeDefinition &recipe : context.content.recipes()) {
+        if (recipe.ingredients.contains(ingredient)
+            || std::ranges::any_of(recipe.keys, [&ingredient](const auto &key) { return key.second == ingredient; })) {
+            QcHandbookLinks::appendUnique(usedIn.links, links.itemLink(recipe.resultItem));
+        }
+    }
+    QcHandbookLinks::sortLinks(usedIn.links);
+    if (!usedIn.links.isEmpty()) {
+        entry.sections.append(std::move(usedIn));
+    }
+
+    entry.englishTitle = links.tagTitle(tag, QcHandbookText::english());
+    return entry;
+}
+
+QcHandbookEntry tablePage(const QcHandbookContext &context, const QString &name, const QString &iconItem)
+{
+    QcHandbookEntry entry;
+    entry.id = u"table:"_s + name;
+    entry.category = u"tables"_s;
+    entry.pack = context.links.basePack();
+    entry.title = context.text.label(u"table."_s + name);
+    entry.text = context.text.label(u"table."_s + name + u"Text"_s);
+    entry.icon = context.links.itemIcon(iconItem);
+    entry.englishTitle = context.content.translate(u"handbook.table."_s + name, QcHandbookText::english());
+    return entry;
+}
+
+// Fuels by burning time (longest first) and the machines burning them.
+QcHandbookEntry fuelTable(const QcHandbookContext &context)
+{
+    const QcHandbookText &text = context.text;
+    const QcHandbookLinks &links = context.links;
+    QcHandbookEntry fuels = tablePage(context, u"fuels"_s, u"qtcraft:coal"_s);
+
+    QList<std::pair<double, Link>> burning;
+    for (const QcItemDefinition &item : context.content.items()) {
+        if (item.fuelSeconds > 0.0) {
+            burning.append({item.fuelSeconds, links.itemLink(item.name, text.seconds(item.fuelSeconds))});
+        }
+    }
+    fuels.sections.append({text.label(u"section.fuels"_s), {}, orderedLinks(std::move(burning), true), {}});
+
+    Section machines{text.label(u"section.machines"_s), {}, {}, {}};
+    for (const QcBlockDefinition &block : context.content.blocks()) {
+        if (block.machine.isMachine()) {
+            machines.links.append(links.blockLink(block.name));
+        }
+    }
+    QcHandbookLinks::sortLinks(machines.links);
+    fuels.sections.append(std::move(machines));
+    return fuels;
+}
+
+// One tool kind: its tiers (weakest first) and, per level, the blocks that need it.
+Section toolSection(const QcHandbookContext &context, const QString &category)
+{
+    const QcHandbookText &text = context.text;
+    QList<std::pair<int, Link>> tiers;
+    for (const QcItemDefinition &item : context.content.items()) {
+        if (item.tool == category) {
+            tiers.append({item.toolLevel, context.links.itemLink(item.name, text.label(u"value.tier"_s)
+                                                                               .arg(item.toolLevel)
+                                                                               .arg(text.number(item.toolSpeed))
+                                                                               .arg(item.durability))});
+        }
+    }
+
+    Section section{text.toolName(category), {}, orderedLinks(std::move(tiers)), {}};
+    QMap<int, QStringList> needs;
+    for (const QcBlockDefinition &block : context.content.blocks()) {
+        if (block.tool == category && block.toolLevel > 0 && block.partOf.isEmpty()) {
+            needs[block.toolLevel].append(context.content.translate(block.translationKey, text.language()));
+        }
+    }
+
+    QStringList lines;
+    for (auto it = needs.begin(); it != needs.end(); ++it) {
+        std::ranges::sort(*it, [](const QString &a, const QString &b) { return QcHandbook::searchKey(a) < QcHandbook::searchKey(b); });
+        lines.append(u"- "_s + text.label(u"value.levelNeeds"_s).arg(it.key()).arg(it->join(u", "_s)));
+    }
+    section.text = lines.join(u'\n');
+    return section;
+}
+
+QcHandbookEntry toolTable(const QcHandbookContext &context)
+{
+    QcHandbookEntry tools = tablePage(context, u"tools"_s, u"qtcraft:iron_pickaxe"_s);
+
+    QStringList categories;
+    for (const QcItemDefinition &item : context.content.items()) {
+        if (!item.tool.isEmpty() && !categories.contains(item.tool)) {
+            categories.append(item.tool);
+        }
+    }
+
+    for (const QString &category : std::as_const(categories)) {
+        tools.sections.append(toolSection(context, category));
+    }
+    return tools;
+}
+
+// All machine recipes by result.
+QcHandbookEntry smeltingTable(const QcHandbookContext &context)
+{
+    QcHandbookEntry smelting = tablePage(context, u"smelting"_s, u"qtcraft:furnace"_s);
+    Section all{context.text.label(u"section.machineRecipes"_s), {}, {}, {}};
+    for (const QcSmeltingRecipe &recipe : context.content.smeltingRecipes()) {
+        all.recipes.append(context.recipes.machineRecipe(recipe));
+    }
+
+    std::ranges::stable_sort(all.recipes, [](const Recipe &a, const Recipe &b) {
+        const QString keyA = QcHandbook::searchKey(a.result.text);
+        const QString keyB = QcHandbook::searchKey(b.result.text);
+        return keyA != keyB ? keyA < keyB : a.name < b.name;
+    });
+
+    all.links.append(context.links.tableLink(u"fuels"_s));
+    smelting.sections.append(std::move(all));
+    return smelting;
+}
+
+} // namespace
+
+namespace QcHandbookOverviewPages {
+
+QList<QcHandbookEntry> build(const QcHandbookContext &context)
+{
+    QList<QcHandbookEntry> entries;
+    const QMap<QString, QStringList> &tags = context.links.tagMembers();
+    for (auto it = tags.constBegin(); it != tags.constEnd(); ++it) {
+        entries.append(tagPage(context, it.key(), *it));
+    }
+
+    entries.append(fuelTable(context));
+    entries.append(toolTable(context));
+    entries.append(smeltingTable(context));
+    return entries;
+}
+
+} // namespace QcHandbookOverviewPages

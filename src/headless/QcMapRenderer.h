@@ -9,13 +9,30 @@ class QcTerrainGenerator;
 // water tinted by depth). Used to check biome distribution without playing.
 namespace QcMapRenderer {
 
-QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &content, int centreX, int centreZ,
-              int radius, int blocksPerPixel);
-// Vertical cut through the generated chunks along the x axis at `z`, from `centreX - radius` to
-// `centreX + radius` and heights 0 to 143; `scale` pixels per block. Shows ores, caves and
-// layers.
-QImage renderSlice(const QcTerrainGenerator &generator, const QcContentRegistry &content, int centreX, int z, int radius, int scale);
+// The square of columns a top-down map shows: `radius` blocks around the centre, several blocks
+// per pixel.
+struct Area
+{
+    int centreX = 0;
+    int centreZ = 0;
+    int radius = 0;
+    int blocksPerPixel = 1;
+};
+
+// A vertical cut along the x axis at `z`, from `centreX - radius` to `centreX + radius`; `scale`
+// pixels per block.
+struct Cut
+{
+    int centreX = 0;
+    int z = 0;
+    int radius = 0;
+    int scale = 1;
+};
+
+QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &content, Area area);
+// Vertical cut through the generated chunks at heights 0 to 143. Shows ores, caves and layers.
+QImage renderSlice(const QcTerrainGenerator &generator, const QcContentRegistry &content, Cut cut);
 // Same view with one colour per biome instead of the surface block (ocean stays blue).
-QImage renderBiomes(const QcTerrainGenerator &generator, int centreX, int centreZ, int radius, int blocksPerPixel);
+QImage renderBiomes(const QcTerrainGenerator &generator, Area area);
 
 } // namespace QcMapRenderer

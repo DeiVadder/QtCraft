@@ -21,21 +21,21 @@ Rectangle {
 
     readonly property bool searching: searchField.text.trim().length > 0
     // Reads `categories` so the lists follow a rebuilt handbook (other language or mods).
-    readonly property var listed: !visible || game.handbook.categories.length === 0 ? []
-                                  : (searching ? game.handbook.search(searchField.text) : game.handbook.entries(category))
+    readonly property var listed: !visible || game.handbook.model.categories.length === 0 ? []
+                                  : (searching ? game.handbook.model.search(searchField.text) : game.handbook.model.entries(category))
 
-    visible: game.handbookOpen
+    visible: game.handbook.isOpen
     color: "#b0000000"
     focus: visible
 
     function navigate(target, remember) {
-        const id = game.handbook.resolve(target);
+        const id = game.handbook.model.resolve(target);
         if (id.length === 0 || id === current)
             return;
         if (remember && current.length > 0)
             history = history.concat([current]);
         current = id;
-        page = game.handbook.page(id);
+        page = game.handbook.model.page(id);
         if (!searching)
             category = page.category;
         pageView.contentY = 0;
@@ -52,21 +52,21 @@ Rectangle {
     }
 
     function close() {
-        game.closeHandbook();
+        game.handbook.close();
     }
 
     onVisibleChanged: {
         if (visible) {
             focusBefore = Window.activeFocusItem;
             history = [];
-            searchField.text = game.handbookQuery;
-            const found = game.handbookQuery.length > 0 ? game.handbook.search(game.handbookQuery)[0] : undefined;
-            if (game.handbookTarget.length > 0) {
-                navigate(game.handbookTarget, false);
+            searchField.text = game.handbook.query;
+            const found = game.handbook.query.length > 0 ? game.handbook.model.search(game.handbook.query)[0] : undefined;
+            if (game.handbook.target.length > 0) {
+                navigate(game.handbook.target, false);
             } else if (found) {
                 navigate(found.id, false);
             } else if (current.length === 0) {
-                const first = game.handbook.entries("playing").find(row => row.id !== undefined);
+                const first = game.handbook.model.entries("playing").find(row => row.id !== undefined);
                 if (first)
                     navigate(first.id, false);
             } else {
@@ -75,7 +75,7 @@ Rectangle {
                 current = "";
                 navigate(shown, false);
             }
-            if (game.handbookQuery.length > 0)
+            if (game.handbook.query.length > 0)
                 searchField.forceActiveFocus();
             else
                 forceActiveFocus();
@@ -86,7 +86,7 @@ Rectangle {
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.keys.matches("handbook", event.key)) {
+        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("handbook", event.key)) {
             screen.close();
         } else if (event.key === Qt.Key_Backspace || (event.key === Qt.Key_Left && (event.modifiers & Qt.AltModifier))) {
             screen.back();
@@ -144,7 +144,7 @@ Rectangle {
                     Keys.onPressed: event => {
                         // A handbook key that types a character (H) goes into the search.
                         if (event.key === Qt.Key_Escape
-                            || (screen.game.keys.matches("handbook", event.key) && (event.text.length === 0 || event.text < " "))) {
+                            || (screen.game.settings.keys.matches("handbook", event.key) && (event.text.length === 0 || event.text < " "))) {
                             screen.close();
                             event.accepted = true;
                         } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && screen.listed.length > 0) {
@@ -177,7 +177,7 @@ Rectangle {
                     Layout.fillHeight: true
                     clip: true
                     spacing: 1
-                    model: screen.game.handbook.categories
+                    model: screen.game.handbook.model.categories
 
                     delegate: ItemDelegate {
                         id: categoryRow
@@ -494,7 +494,7 @@ Rectangle {
             }
 
             Label {
-                text: qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.keys.labels.handbook)
+                text: qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.settings.keys.labels.handbook)
                 color: "#a0ffffff"
             }
         }

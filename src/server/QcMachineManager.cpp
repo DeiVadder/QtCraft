@@ -20,6 +20,7 @@ QcMachineManager::QcMachineManager(std::shared_ptr<const QcContentRegistry> cont
         if (!input) {
             continue;
         }
+
         QHash<QcItemId, const QcSmeltingRecipe *> &category = m_recipes[recipe.category];
         if (!category.contains(*input)) {
             category.insert(*input, &recipe);
@@ -70,6 +71,7 @@ bool QcMachineManager::add(QcBlockPos pos)
     if (isFull()) {
         return false;
     }
+
     Machine machine;
     machine.pos = pos;
     m_machines.insert(pos, machine);
@@ -116,17 +118,60 @@ const QcSmeltingRecipe *QcMachineManager::workableRecipe(const Machine &machine,
     if (!recipe) {
         return nullptr;
     }
+
     const std::optional<QcItemId> result = m_content->itemId(recipe->resultItem);
     if (!result) {
         return nullptr;
     }
+
     const QcItemStack &output = machine.stacks[outputSlot];
     if (output.isEmpty()) {
         return recipe->resultCount <= m_content->item(*result).maxStack ? recipe : nullptr;
     }
+
     const bool fits = output.item == *result && output.damage == 0
                       && output.count + recipe->resultCount <= m_content->item(*result).maxStack;
     return fits ? recipe : nullptr;
+}
+
+bool QcMachineManager::refuel(Machine &machine) const
+{
+    QcItemStack &fuel = machine.stacks[fuelSlot];
+    const double seconds = fuel.isEmpty() ? 0.0 : fuelSeconds(fuel.item);
+    // Fuel in a container (lava bucket) leaves the empty container in the fuel slot, so such
+    // fuel only burns one at a time.
+    const QString &emptiesTo = seconds > 0.0 ? m_content->item(fuel.item).emptiesTo : QString();
+    const std::optional<QcItemId> container = emptiesTo.isEmpty() ? std::nullopt : m_content->itemId(emptiesTo);
+    if (seconds <= 0.0 || (container && fuel.count != 1)) {
+        return false;
+    }
+
+    machine.burnRemaining = machine.burnSeconds = seconds;
+    if (--fuel.count <= 0) {
+        fuel = container ? QcItemStack{*container, 1, 0} : QcItemStack{};
+    }
+    return true;
+}
+
+const QcSmeltingRecipe *QcMachineManager::finishItems(Machine &machine, const QcMachineDefinition &definition,
+                                                      const QcSmeltingRecipe *recipe) const
+{
+    // A fast machine finishes several items in one tick; the rest of the work carries over.
+    for (int finished = 0; recipe && finished < maxItemsPerTick && machine.progress >= recipe->seconds - timeSlack; ++finished) {
+        machine.progress = std::max(0.0, machine.progress - recipe->seconds);
+        // workableRecipe() only returns recipes whose result exists.
+        const QcItemId result = m_content->itemId(recipe->resultItem).value_or(qcNoItem);
+        QcItemStack &output = machine.stacks[outputSlot];
+        output = {result, (output.isEmpty() ? 0 : output.count) + recipe->resultCount, 0};
+
+        QcItemStack &input = machine.stacks[inputSlot];
+        if (--input.count <= 0) {
+            input = {};
+        }
+
+        recipe = workableRecipe(machine, definition);
+    }
+    return recipe;
 }
 
 bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definition, double dt)
@@ -134,26 +179,17 @@ bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definit
     const double work = dt * definition.speed;
     const QcSmeltingRecipe *recipe = workableRecipe(machine, definition);
     bool changed = false;
+
     if (recipe && machine.progressItem != machine.stacks[inputSlot].item) {
         machine.progressItem = machine.stacks[inputSlot].item;
         machine.progress = 0.0;
         changed = true;
     }
-    if (machine.burnRemaining <= 0.0 && recipe) {
-        QcItemStack &fuel = machine.stacks[fuelSlot];
-        const double seconds = fuel.isEmpty() ? 0.0 : fuelSeconds(fuel.item);
-        // Fuel in a container (lava bucket) leaves the empty container in the fuel slot, so such
-        // fuel only burns one at a time.
-        const QString &emptiesTo = seconds > 0.0 ? m_content->item(fuel.item).emptiesTo : QString();
-        const std::optional<QcItemId> container = emptiesTo.isEmpty() ? std::nullopt : m_content->itemId(emptiesTo);
-        if (seconds > 0.0 && (!container || fuel.count == 1)) {
-            machine.burnRemaining = machine.burnSeconds = seconds;
-            if (--fuel.count <= 0) {
-                fuel = container ? QcItemStack{*container, 1, 0} : QcItemStack{};
-            }
-            changed = true;
-        }
+
+    if (machine.burnRemaining <= 0.0 && recipe && refuel(machine)) {
+        changed = true;
     }
+
     if (machine.burnRemaining > 0.0) {
         machine.burnRemaining -= work;
         changed = true;
@@ -161,32 +197,22 @@ bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definit
             machine.burnRemaining = 0.0;
             machine.burnSeconds = 0.0;
         }
+
         if (recipe) {
             machine.progress += work;
-            // A fast machine finishes several items in one tick; the rest of the work carries over.
-            for (int finished = 0; recipe && finished < maxItemsPerTick && machine.progress >= recipe->seconds - timeSlack;
-                 ++finished) {
-                machine.progress = std::max(0.0, machine.progress - recipe->seconds);
-                // workableRecipe() only returns recipes whose result exists.
-                const QcItemId result = m_content->itemId(recipe->resultItem).value_or(qcNoItem);
-                QcItemStack &output = machine.stacks[outputSlot];
-                output = {result, (output.isEmpty() ? 0 : output.count) + recipe->resultCount, 0};
-                QcItemStack &input = machine.stacks[inputSlot];
-                if (--input.count <= 0) {
-                    input = {};
-                }
-                recipe = workableRecipe(machine, definition);
-            }
+            recipe = finishItems(machine, definition, recipe);
             // No next item (input used up, output full): the next one starts from zero.
             machine.progress = recipe ? std::min(machine.progress, recipe->seconds) : 0.0;
             return true;
         }
     }
+
     if (!recipe && machine.progress > 0.0) {
         // Another input or a full output starts the item over.
         machine.progress = 0.0;
         return true;
     }
+
     if (machine.burnRemaining <= 0.0 && machine.progress > 0.0) {
         machine.progress = std::max(0.0, machine.progress - 2.0 * work);
         return true;
@@ -203,15 +229,18 @@ QList<QcMachineManager::Machine> QcMachineManager::tick(const QcBlockAccess &wor
             ++it;
             continue;
         }
+
         const QcMachineDefinition *definition = machineOf(*block);
         if (!definition) {
             removed.append(*it);
             it = m_machines.erase(it);
             continue;
         }
+
         if (step(*it, *definition, dt) && changed) {
             changed->append(it.key());
         }
+
         ++it;
     }
     return removed;

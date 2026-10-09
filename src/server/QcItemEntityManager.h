@@ -78,10 +78,17 @@ public:
     // Drops a stack at `position` with a small random upward velocity (mined blocks, loot).
     quint32 spawnScattered(QcItemStack stack, const QcVec3 &position, quint32 id);
 
+    // What a tick asks the server.
+    struct TickCallbacks
+    {
+        LoadedFunction isLoaded;
+        GiveFunction give;
+        std::function<quint32()> nextEntityId;
+    };
+
     // One tick: physics, pickup, merging, ageing and despawning. Returns the items that despawned
     // of old age (the caller may plant saplings from them).
-    QList<Item> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const LoadedFunction &isLoaded,
-                     const GiveFunction &give, const std::function<quint32()> &nextEntityId);
+    QList<Item> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const TickCallbacks &callbacks);
 
     const QList<Item> &items() const { return m_items; }
     const QList<Drop> &queued() const { return m_queue; }
@@ -97,6 +104,10 @@ public:
 
 private:
     void step(Item &item, const QcBlockAccess &world, double dt);
+    void pickUp(Item &item, const QList<PlayerView> &players, const GiveFunction &give);
+    // Drops emptied items, collects the ones that despawned of old age and recounts the awake ones.
+    QList<Item> removeFinished(const QList<bool> &awake);
+    void spawnQueued(const TickCallbacks &callbacks);
     void merge(const QList<bool> &active);
     void enqueue(const Drop &drop);
     void enforceTotalLimit(const LoadedFunction &isLoaded);

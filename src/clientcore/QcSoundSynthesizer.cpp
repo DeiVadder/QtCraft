@@ -57,6 +57,106 @@ double filterCoefficient(double cutoff, int sampleRate)
     return 1.0 - std::exp(-2.0 * std::numbers::pi * cutoff / sampleRate);
 }
 
+// One layer while its samples are generated: oscillator or noise source, filters and envelope.
+class LayerVoice
+{
+public:
+    LayerVoice(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleRate, std::size_t count)
+        : m_layer(layer)
+        , m_random{mix(seed)}
+        , m_sampleRate(sampleRate)
+        , m_count(count)
+        , m_sweep(layer.endFrequency > 0.0 && layer.endFrequency != layer.frequency)
+        , m_ratio(m_sweep ? layer.endFrequency / layer.frequency : 1.0)
+        , m_lowpass(layer.lowpass > 0.0 ? filterCoefficient(layer.lowpass, sampleRate) : 0.0)
+        , m_highpass(layer.highpass > 0.0 ? filterCoefficient(layer.highpass, sampleRate) : 0.0)
+        , m_crackleChance(layer.density / sampleRate)
+        // Each crackle impulse rings for about 1.5 ms.
+        , m_crackleDecay(std::exp(-1.0 / (0.0015 * sampleRate)))
+        , m_attackSamples(layer.attack * sampleRate)
+        , m_fadeSamples(loop ? 0.0 : QcSoundSynthesizer::endFadeSeconds * sampleRate)
+    {
+    }
+
+    // Filtered source signal of sample `i`.
+    double signal(std::size_t i)
+    {
+        double x = source(i);
+        if (m_layer.lowpass > 0.0) {
+            // Two one-pole stages: a gentle 12 dB per octave slope.
+            m_low1 += m_lowpass * (x - m_low1);
+            m_low2 += m_lowpass * (m_low1 - m_low2);
+            x = m_low2;
+        }
+        if (m_layer.highpass > 0.0) {
+            m_highState += m_highpass * (x - m_highState);
+            x -= m_highState;
+        }
+        return x;
+    }
+
+    // Attack, decay curve, end fade and tremolo at sample `i`.
+    double envelope(std::size_t i) const
+    {
+        double envelope = 1.0;
+        if (double(i) < m_attackSamples) {
+            envelope = double(i) / m_attackSamples;
+        } else if (m_layer.curve > 0.0) {
+            const double decay = (double(i) - m_attackSamples) / std::max(1.0, double(m_count) - m_attackSamples);
+            envelope = std::pow(std::max(0.0, 1.0 - decay), m_layer.curve);
+        }
+        const double remaining = double(m_count - i);
+        if (remaining < m_fadeSamples) {
+            envelope *= remaining / m_fadeSamples;
+        }
+        if (m_layer.tremoloDepth > 0.0) {
+            const double t = double(i) / m_sampleRate;
+            envelope *= 1.0 - m_layer.tremoloDepth * (0.5 - 0.5 * std::cos(2.0 * std::numbers::pi * m_layer.tremoloRate * t));
+        }
+        return envelope;
+    }
+
+private:
+    double source(std::size_t i)
+    {
+        if (m_layer.wave == QcSoundWave::Noise) {
+            return m_random.signedUnit();
+        }
+        if (m_layer.wave == QcSoundWave::Crackle) {
+            if (m_random.unit() < m_crackleChance) {
+                m_crackle = (0.5 + 0.5 * m_random.unit()) * (m_random.unit() < 0.5 ? -1.0 : 1.0);
+            }
+            const double x = m_crackle;
+            m_crackle *= m_crackleDecay;
+            return x;
+        }
+        const double progress = double(i) / double(m_count);
+        const double x = tone(m_layer.wave, m_phase);
+        const double frequency = m_sweep ? m_layer.frequency * std::pow(m_ratio, progress) : m_layer.frequency;
+        m_phase += frequency / m_sampleRate;
+        m_phase -= std::floor(m_phase);
+        return x;
+    }
+
+    const QcSoundLayer &m_layer;
+    Random m_random;
+    int m_sampleRate = 0;
+    std::size_t m_count = 0;
+    bool m_sweep = false;
+    double m_ratio = 1.0;
+    double m_lowpass = 0.0;
+    double m_highpass = 0.0;
+    double m_crackleChance = 0.0;
+    double m_crackleDecay = 0.0;
+    double m_attackSamples = 0.0;
+    double m_fadeSamples = 0.0;
+    double m_phase = 0.0;
+    double m_low1 = 0.0;
+    double m_low2 = 0.0;
+    double m_highState = 0.0;
+    double m_crackle = 0.0;
+};
+
 void renderLayer(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleRate, std::vector<float> &out)
 {
     const auto first = std::size_t(std::max(0LL, std::llround(layer.start * sampleRate)));
@@ -64,65 +164,12 @@ void renderLayer(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleR
     if (count == 0 || first >= out.size()) {
         return;
     }
-    Random random{mix(seed)};
-    const bool sweep = layer.endFrequency > 0.0 && layer.endFrequency != layer.frequency;
-    const double ratio = sweep ? layer.endFrequency / layer.frequency : 1.0;
-    const double lowpass = layer.lowpass > 0.0 ? filterCoefficient(layer.lowpass, sampleRate) : 0.0;
-    const double highpass = layer.highpass > 0.0 ? filterCoefficient(layer.highpass, sampleRate) : 0.0;
-    const double crackleChance = layer.density / sampleRate;
-    // Each crackle impulse rings for about 1.5 ms.
-    const double crackleDecay = std::exp(-1.0 / (0.0015 * sampleRate));
-    const double attackSamples = layer.attack * sampleRate;
-    const double fadeSamples = loop ? 0.0 : QcSoundSynthesizer::endFadeSeconds * sampleRate;
-    double phase = 0.0;
-    double low1 = 0.0;
-    double low2 = 0.0;
-    double highState = 0.0;
-    double crackle = 0.0;
+
+    LayerVoice voice(layer, seed, loop, sampleRate, count);
     const std::size_t end = std::min(count, out.size() - first);
     for (std::size_t i = 0; i < end; ++i) {
-        const double progress = double(i) / double(count);
-        double x = 0.0;
-        if (layer.wave == QcSoundWave::Noise) {
-            x = random.signedUnit();
-        } else if (layer.wave == QcSoundWave::Crackle) {
-            if (random.unit() < crackleChance) {
-                crackle = (0.5 + 0.5 * random.unit()) * (random.unit() < 0.5 ? -1.0 : 1.0);
-            }
-            x = crackle;
-            crackle *= crackleDecay;
-        } else {
-            x = tone(layer.wave, phase);
-            const double frequency = sweep ? layer.frequency * std::pow(ratio, progress) : layer.frequency;
-            phase += frequency / sampleRate;
-            phase -= std::floor(phase);
-        }
-        if (layer.lowpass > 0.0) {
-            // Two one-pole stages: a gentle 12 dB per octave slope.
-            low1 += lowpass * (x - low1);
-            low2 += lowpass * (low1 - low2);
-            x = low2;
-        }
-        if (layer.highpass > 0.0) {
-            highState += highpass * (x - highState);
-            x -= highState;
-        }
-        double envelope = 1.0;
-        if (double(i) < attackSamples) {
-            envelope = double(i) / attackSamples;
-        } else if (layer.curve > 0.0) {
-            const double decay = (double(i) - attackSamples) / std::max(1.0, double(count) - attackSamples);
-            envelope = std::pow(std::max(0.0, 1.0 - decay), layer.curve);
-        }
-        const double remaining = double(count - i);
-        if (remaining < fadeSamples) {
-            envelope *= remaining / fadeSamples;
-        }
-        if (layer.tremoloDepth > 0.0) {
-            const double t = double(i) / sampleRate;
-            envelope *= 1.0 - layer.tremoloDepth * (0.5 - 0.5 * std::cos(2.0 * std::numbers::pi * layer.tremoloRate * t));
-        }
-        out[first + i] += float(layer.gain * envelope * x);
+        const double x = voice.signal(i);
+        out[first + i] += float(layer.gain * voice.envelope(i) * x);
     }
 }
 

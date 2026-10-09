@@ -433,6 +433,14 @@
     </message>
 </context>
 <context>
+    <name>QcCharacterSettings</name>
+    <message>
+        <location filename="../src/app/QcCharacterSettings.cpp" line="83"/>
+        <source>No hair</source>
+        <translation>Keine Haare</translation>
+    </message>
+</context>
+<context>
     <name>QcGameController</name>
     <message>
         <location filename="../src/app/QcGameController.cpp" line="445"/>
@@ -477,24 +485,22 @@
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1235"/>
-        <source>No hair</source>
-        <translation>Keine Haare</translation>
+        <location filename="../src/app/QcGameController.cpp" line="1360"/>
+        <source>The world could not be saved: %1</source>
+        <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
+</context>
+<context>
+    <name>QcHudState</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1299"/>
+        <location filename="../src/app/QcHudState.cpp" line="54"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1299"/>
+        <location filename="../src/app/QcHudState.cpp" line="54"/>
         <source>Day</source>
         <translation>Tag</translation>
-    </message>
-    <message>
-        <location filename="../src/app/QcGameController.cpp" line="1360"/>
-        <source>The world could not be saved: %1</source>
-        <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
 </context>
 <context>

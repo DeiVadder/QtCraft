@@ -146,11 +146,14 @@ public:
     QString translate(const QString &key, const QString &language) const;
     bool hasTranslation(const QString &key, const QString &language) const;
 
-    // Wire format used by the content sync message. World-generation data stays on the server.
+    // Wire format used by the content sync message (QcContentSerializer).
     void writeTo(QDataStream &stream) const;
     static QcResult<QcContentRegistry> readFrom(QDataStream &stream);
 
 private:
+    // Fills the block table of a received registry directly.
+    friend class QcContentSerializer;
+
     void rebuildStates();
 
     QList<QcBlockDefinition> m_blocks;

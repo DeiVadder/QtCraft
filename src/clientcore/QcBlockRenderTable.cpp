@@ -113,6 +113,80 @@ QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRe
     return quad;
 }
 
+// Whether the face `face` of `box` lies against another box of the same state, inside the shape.
+bool insideShape(const QList<QcAabb> &boxes, const QcAabb &box, QcBlockFace face)
+{
+    const SideRect rect = rectOf(box, face);
+    const double plane = planeOf(box, face);
+    return std::ranges::any_of(boxes, [&](const QcAabb &other) {
+        return &other != &box && planeOf(other, opposite(face)) == plane && rectOf(other, opposite(face)).contains(rect);
+    });
+}
+
+// Quads, side covers and crosses of a state that is not the full cube.
+void addShape(Entry &entry, const QcBlockState &state, const QcBlockDefinition &block, const QcTextureAtlas &atlas)
+{
+    for (qsizetype b = 0; b < state.boxes.size(); ++b) {
+        const QcAabb &box = state.boxes[b];
+        const QString slot = state.boxTextures.value(b);
+        const bool stretch = state.boxStretch.value(b);
+        for (const QcBlockFace face : qcAllBlockFaces) {
+            if (insideShape(state.boxes, box, face)) {
+                continue;
+            }
+            const QRectF uv = slot.isEmpty() ? entry.faceUv[std::size_t(face)] : atlas.uv(block.slotTexture(slot));
+            const QcBlockRenderTable::Quad quad = makeQuad(box, face, uv, stretch);
+            if (quad.boundary) {
+                entry.cover[std::size_t(face)].append(quad.rect);
+            }
+            entry.quads.append(quad);
+        }
+    }
+
+    for (const QcAabb &box : state.crosses) {
+        entry.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)},
+                              entry.faceUv[std::size_t(QcBlockFace::North)]});
+    }
+}
+
+// Height of a liquid's surface: falls with the flow level; sources and falling liquid are nearly full.
+float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlockDefinition &block)
+{
+    const bool falling = content.property(id, u"falling"_s) == u"true"_s;
+    const int level = content.property(id, u"level"_s).toInt();
+    const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - float(level) / float(block.flow.distance + 1);
+    return (1.0f - QcBlockRenderTable::liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
+}
+
+Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcBlockId id)
+{
+    const QcBlockState &state = content.state(id);
+    const QcBlockDefinition &block = content.block(id);
+    Entry entry;
+    entry.layer = block.renderLayer;
+    entry.type = state.type;
+    entry.opaque = state.opaque;
+    entry.liquid = block.liquid;
+    if (block.liquid) {
+        entry.liquidHeight = liquidHeightOf(content, id, block);
+    }
+    entry.fullCube = state.fullCube;
+    entry.lightOpacity = state.lightOpacity;
+    entry.lightLevel = block.lightLevel;
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));
+    }
+
+    if (!state.fullCube) {
+        addShape(entry, state, block, atlas);
+    } else {
+        for (const QcBlockFace face : qcAllBlockFaces) {
+            entry.cover[std::size_t(face)] = {SideRect{}};
+        }
+    }
+    return entry;
+}
+
 } // namespace
 
 std::pair<int, int> QcBlockRenderTable::axes(QcBlockFace face)
@@ -141,61 +215,8 @@ QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const Q
 {
     m_entries.reserve(content.stateCount());
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
-        const QcBlockState &state = content.state(QcBlockId(id));
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
-        Entry entry;
-        entry.layer = block.renderLayer;
-        entry.type = state.type;
-        entry.opaque = state.opaque;
-        entry.liquid = block.liquid;
-        if (block.liquid) {
-            const bool falling = content.property(QcBlockId(id), u"falling"_s) == u"true"_s;
-            const int level = content.property(QcBlockId(id), u"level"_s).toInt();
-            const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - float(level) / float(block.flow.distance + 1);
-            entry.liquidHeight = (1.0f - liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
-        }
-        entry.fullCube = state.fullCube;
-        entry.lightOpacity = state.lightOpacity;
-        entry.lightLevel = block.lightLevel;
-        m_hasLightSources = m_hasLightSources || block.lightLevel > 0;
-        for (const QcBlockFace face : qcAllBlockFaces) {
-            entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));
-        }
-        if (!state.fullCube) {
-            for (qsizetype b = 0; b < state.boxes.size(); ++b) {
-                const QcAabb &box = state.boxes[b];
-                const QString slot = state.boxTextures.value(b);
-                const bool stretch = state.boxStretch.value(b);
-                for (const QcBlockFace face : qcAllBlockFaces) {
-                    // Faces lying against another box of the same state are inside the shape.
-                    const SideRect rect = rectOf(box, face);
-                    const double plane = planeOf(box, face);
-                    const bool inside = std::ranges::any_of(state.boxes, [&](const QcAabb &other) {
-                        return &other != &box && planeOf(other, opposite(face)) == plane
-                               && rectOf(other, opposite(face)).contains(rect);
-                    });
-                    if (inside) {
-                        continue;
-                    }
-                    const QRectF uv = slot.isEmpty() ? entry.faceUv[std::size_t(face)] : atlas.uv(block.slotTexture(slot));
-                    const Quad quad = makeQuad(box, face, uv, stretch);
-                    if (quad.boundary) {
-                        entry.cover[std::size_t(face)].append(quad.rect);
-                    }
-                    entry.quads.append(quad);
-                }
-            }
-            for (const QcAabb &box : state.crosses) {
-                entry.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y),
-                                       float(box.max.z)},
-                                      entry.faceUv[std::size_t(QcBlockFace::North)]});
-            }
-        } else {
-            for (const QcBlockFace face : qcAllBlockFaces) {
-                entry.cover[std::size_t(face)] = {SideRect{}};
-            }
-        }
-        m_entries.append(std::move(entry));
+        m_hasLightSources = m_hasLightSources || content.block(QcBlockId(id)).lightLevel > 0;
+        m_entries.append(entryOf(content, atlas, QcBlockId(id)));
     }
 }
 

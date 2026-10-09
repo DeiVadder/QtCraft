@@ -20,6 +20,70 @@ int localOf(int block)
     return block - floorChunk(block) * QcWorld::chunkSize;
 }
 
+QcBlockFace oppositeOf(QcBlockFace face)
+{
+    return face == QcBlockFace::North   ? QcBlockFace::South
+           : face == QcBlockFace::South ? QcBlockFace::North
+           : face == QcBlockFace::East  ? QcBlockFace::West
+                                        : QcBlockFace::East;
+}
+
+// What a section's current levels changed against its published ones.
+struct SectionDiff
+{
+    // Neighbouring sections (dx, dy, dz in -1..1) whose meshes read a changed cell.
+    std::array<bool, 27> reach{};
+    bool changed = false;
+    bool lit = false;
+};
+
+// Marks the sections next to the cell `index` of a section (and the section itself) as reached.
+void markReach(std::array<bool, 27> &reach, int index)
+{
+    const int lx = index % QcWorld::chunkSize;
+    const int lz = (index / QcWorld::chunkSize) % QcWorld::chunkSize;
+    const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
+    for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
+        for (int dz = lz == 0 ? -1 : 0; dz <= (lz == last ? 1 : 0); ++dz) {
+            for (int dx = lx == 0 ? -1 : 0; dx <= (lx == last ? 1 : 0); ++dx) {
+                reach[std::size_t(dy + 1) * 9 + std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = true;
+            }
+        }
+    }
+}
+
+// Null sections are dark.
+SectionDiff diffSection(const QcChunkLight::Section *current, const QcChunkLight::Section *published)
+{
+    // Locals rather than fields of the result keep the per-cell loop in registers.
+    std::array<bool, 27> reach{};
+    bool changed = false;
+    bool lit = false;
+    for (int index = 0; index < QcWorld::blocksPerSection; ++index) {
+        const int now = current ? (*current)[std::size_t(index)] : 0;
+        const int was = published ? (*published)[std::size_t(index)] : 0;
+        lit = lit || now > 0;
+        if (now == was) {
+            continue;
+        }
+        changed = true;
+        markReach(reach, index);
+    }
+    return {reach, changed, lit};
+}
+
+void queueRemesh(QcBlockLightEngine::Changes &changes, QSet<quint64> &remeshed, QcChunkPos chunk, int section)
+{
+    if (section < 0 || section >= QcWorld::sectionCount) {
+        return;
+    }
+    const quint64 key = qcSectionKey(chunk, section);
+    if (!remeshed.contains(key)) {
+        remeshed.insert(key);
+        changes.remesh.append({chunk, section});
+    }
+}
+
 } // namespace
 
 QcBlockLightEngine::QcBlockLightEngine(std::shared_ptr<const QcBlockRenderTable> table)
@@ -113,6 +177,7 @@ void QcBlockLightEngine::propagateAdd()
 void QcBlockLightEngine::propagateRemove()
 {
     std::vector<Cell> sources;
+    // NOLINTNEXTLINE(modernize-loop-convert): removeFrom() appends to m_remove while it is walked.
     for (std::size_t head = 0; head < m_remove.size(); ++head) {
         const auto [cell, old] = m_remove[head];
         ++m_visited;
@@ -123,28 +188,13 @@ void QcBlockLightEngine::propagateRemove()
                 continue;
             }
             Column *target = column(next.x, next.z);
-            if (!target) {
-                continue;
-            }
-            const int light = levelIn(*target, next.x, next.y, next.z);
-            if (light == 0) {
-                continue;
-            }
-            if (light < old) {
-                // Possibly lit through the cleared cell: clear it too; what else reaches it comes
-                // back with the refill.
-                setLevel(*target, next.x, next.y, next.z, 0);
-                m_remove.emplace_back(next, light);
-                if (entryAt(*target, next.x, next.y, next.z).lightLevel > 0) {
-                    sources.push_back(next);
-                }
-            } else {
-                // Lit independently: it refills the cleared cells.
-                m_add.push_back(next);
+            if (target) {
+                removeFrom(*target, next, old, sources);
             }
         }
     }
     m_remove.clear();
+
     for (const Cell &cell : sources) {
         Column *own = column(cell.x, cell.z);
         const int emitted = entryAt(*own, cell.x, cell.y, cell.z).lightLevel;
@@ -155,27 +205,74 @@ void QcBlockLightEngine::propagateRemove()
     }
 }
 
+// Forced inline: runs for every neighbour of every cleared cell.
+Q_ALWAYS_INLINE void QcBlockLightEngine::removeFrom(Column &target, Cell next, int old, std::vector<Cell> &sources)
+{
+    const int light = levelIn(target, next.x, next.y, next.z);
+    if (light == 0) {
+        return;
+    }
+    if (light >= old) {
+        // Lit independently: it refills the cleared cells.
+        m_add.push_back(next);
+        return;
+    }
+
+    // Possibly lit through the cleared cell: clear it too; what else reaches it comes back with
+    // the refill.
+    setLevel(target, next.x, next.y, next.z, 0);
+    m_remove.emplace_back(next, light);
+    if (entryAt(target, next.x, next.y, next.z).lightLevel > 0) {
+        sources.push_back(next);
+    }
+}
+
+template<typename Visit>
+void QcBlockLightEngine::visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, Visit &&visit)
+{
+    const QcFaceOffset offset = qcFaceOffset(towards);
+    const int lx = offset.dx > 0 ? last : 0;
+    const int lz = offset.dz > 0 ? last : 0;
+    for (int index = 0; index < QcWorld::sectionCount; ++index) {
+        if (!column.levels[std::size_t(index)]) {
+            continue;
+        }
+        // Rows of the section bottom to top, each along the border.
+        for (int row = 0; row < QcWorld::sectionHeight * QcWorld::chunkSize; ++row) {
+            const int y = index * QcWorld::sectionHeight + row / QcWorld::chunkSize;
+            const int along = row % QcWorld::chunkSize;
+            const Cell cell{pos.x * QcWorld::chunkSize + (offset.dx != 0 ? lx : along), y,
+                            pos.z * QcWorld::chunkSize + (offset.dz != 0 ? lz : along)};
+            if (const int light = levelIn(column, cell.x, y, cell.z); light > 0) {
+                visit(cell, light);
+            }
+        }
+    }
+}
+
 void QcBlockLightEngine::queueBorder(QcChunkPos from, QcBlockFace towards)
 {
     const auto it = m_columns.find(from);
     if (it == m_columns.end()) {
         return;
     }
-    const Column &source = it->second;
-    const QcFaceOffset offset = qcFaceOffset(towards);
-    for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        if (!source.levels[std::size_t(index)]) {
-            continue;
-        }
-        for (int y = index * QcWorld::sectionHeight; y < (index + 1) * QcWorld::sectionHeight; ++y) {
-            for (int along = 0; along < QcWorld::chunkSize; ++along) {
-                const int lx = offset.dx != 0 ? (offset.dx > 0 ? last : 0) : along;
-                const int lz = offset.dz != 0 ? (offset.dz > 0 ? last : 0) : along;
-                const Cell cell{from.x * QcWorld::chunkSize + lx, y, from.z * QcWorld::chunkSize + lz};
-                if (levelIn(source, cell.x, y, cell.z) > 0) {
-                    m_add.push_back(cell);
-                }
-            }
+    visitLitBorder(it->second, from, towards, [this](Cell cell, int) { m_add.push_back(cell); });
+}
+
+void QcBlockLightEngine::seedSources(Column &column, QcChunkPos pos, int sectionIndex)
+{
+    const QcChunkSection &section = column.blocks->section(sectionIndex);
+    // Cells in the order y, z, x (x fastest).
+    for (int index = 0; index < QcWorld::blocksPerSection; ++index) {
+        const int lx = index % QcWorld::chunkSize;
+        const int lz = (index / QcWorld::chunkSize) % QcWorld::chunkSize;
+        const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
+        const int emitted = m_table->entry(section.block(lx, ly, lz)).lightLevel;
+        if (emitted > 0) {
+            const Cell cell{pos.x * QcWorld::chunkSize + lx, sectionIndex * QcWorld::sectionHeight + ly,
+                            pos.z * QcWorld::chunkSize + lz};
+            setLevel(column, cell.x, cell.y, cell.z, emitted);
+            m_add.push_back(cell);
         }
     }
 }
@@ -190,33 +287,18 @@ void QcBlockLightEngine::addChunk(std::shared_ptr<const QcChunk> chunk)
     Column &added = m_columns[pos];
     added.blocks = std::move(chunk);
     m_cached = nullptr;
+
     const auto emits = [this](QcBlockId id) { return m_table->entry(id).lightLevel > 0; };
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        const QcChunkSection &section = added.blocks->section(index);
-        if (std::ranges::none_of(section.palette(), emits)) {
-            continue;
-        }
-        for (int ly = 0; ly < QcWorld::sectionHeight; ++ly) {
-            for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-                for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-                    const int emitted = m_table->entry(section.block(lx, ly, lz)).lightLevel;
-                    if (emitted > 0) {
-                        const Cell cell{pos.x * QcWorld::chunkSize + lx, index * QcWorld::sectionHeight + ly,
-                                        pos.z * QcWorld::chunkSize + lz};
-                        setLevel(added, cell.x, cell.y, cell.z, emitted);
-                        m_add.push_back(cell);
-                    }
-                }
-            }
+        if (std::ranges::any_of(added.blocks->section(index).palette(), emits)) {
+            seedSources(added, pos, index);
         }
     }
+
     // Light of the neighbours flows in over the borders.
     for (const QcBlockFace face : {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West}) {
         const QcFaceOffset offset = qcFaceOffset(face);
-        queueBorder({pos.x + offset.dx, pos.z + offset.dz}, face == QcBlockFace::North   ? QcBlockFace::South
-                                                             : face == QcBlockFace::South ? QcBlockFace::North
-                                                             : face == QcBlockFace::East  ? QcBlockFace::West
-                                                                                          : QcBlockFace::East);
+        queueBorder({pos.x + offset.dx, pos.z + offset.dz}, oppositeOf(face));
     }
     propagateAdd();
 }
@@ -227,30 +309,16 @@ void QcBlockLightEngine::removeChunk(QcChunkPos pos)
     if (it == m_columns.end()) {
         return;
     }
+
     // The light of the border cells is what flowed (or could have flowed) into the neighbours.
     std::vector<std::pair<Cell, int>> seeds;
     for (const QcBlockFace face : {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West}) {
         const QcFaceOffset offset = qcFaceOffset(face);
-        if (!m_columns.contains({pos.x + offset.dx, pos.z + offset.dz})) {
-            continue;
-        }
-        const Column &removed = it->second;
-        for (int index = 0; index < QcWorld::sectionCount; ++index) {
-            if (!removed.levels[std::size_t(index)]) {
-                continue;
-            }
-            for (int y = index * QcWorld::sectionHeight; y < (index + 1) * QcWorld::sectionHeight; ++y) {
-                for (int along = 0; along < QcWorld::chunkSize; ++along) {
-                    const int lx = offset.dx != 0 ? (offset.dx > 0 ? last : 0) : along;
-                    const int lz = offset.dz != 0 ? (offset.dz > 0 ? last : 0) : along;
-                    const Cell cell{pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz};
-                    if (const int light = levelIn(removed, cell.x, y, cell.z); light > 0) {
-                        seeds.emplace_back(cell, light);
-                    }
-                }
-            }
+        if (m_columns.contains({pos.x + offset.dx, pos.z + offset.dz})) {
+            visitLitBorder(it->second, pos, face, [&seeds](Cell cell, int light) { seeds.emplace_back(cell, light); });
         }
     }
+
     m_columns.erase(it);
     m_cached = nullptr;
     m_remove = std::move(seeds);
@@ -270,6 +338,7 @@ void QcBlockLightEngine::changeBlock(QcBlockPos pos, std::shared_ptr<const QcChu
     if (before.lightOpacity == after.lightOpacity && before.lightLevel == after.lightLevel) {
         return;
     }
+
     const Cell cell{pos.x, pos.y, pos.z};
     if (const int old = levelIn(*own, cell.x, cell.y, cell.z); old > 0) {
         setLevel(*own, cell.x, cell.y, cell.z, 0);
@@ -280,6 +349,7 @@ void QcBlockLightEngine::changeBlock(QcBlockPos pos, std::shared_ptr<const QcChu
         setLevel(*own, cell.x, cell.y, cell.z, after.lightLevel);
     }
     m_add.push_back(cell);
+
     // Light of the neighbours may now pass into the cell.
     for (const QcBlockFace face : qcAllBlockFaces) {
         const QcFaceOffset offset = qcFaceOffset(face);
@@ -297,16 +367,6 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
 {
     Changes changes;
     QSet<quint64> remeshed;
-    const auto remesh = [&](QcChunkPos chunk, int section) {
-        if (section < 0 || section >= QcWorld::sectionCount) {
-            return;
-        }
-        const quint64 key = qcSectionKey(chunk, section);
-        if (!remeshed.contains(key)) {
-            remeshed.insert(key);
-            changes.remesh.append({chunk, section});
-        }
-    };
     for (const SectionRef &ref : std::as_const(m_touchedRefs)) {
         const auto it = m_columns.find(ref.chunk);
         if (it == m_columns.end()) {
@@ -315,33 +375,12 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
         Column &touched = it->second;
         std::unique_ptr<QcChunkLight::Section> &current = touched.levels[std::size_t(ref.section)];
         std::shared_ptr<const QcChunkLight::Section> &published = touched.published[std::size_t(ref.section)];
-        // Neighbouring sections (dx, dy, dz in -1..1) whose meshes read a changed cell.
-        std::array<bool, 27> reach{};
-        bool changed = false;
-        bool lit = false;
-        for (int index = 0; index < QcWorld::blocksPerSection; ++index) {
-            const int now = current ? (*current)[std::size_t(index)] : 0;
-            const int was = published ? (*published)[std::size_t(index)] : 0;
-            lit = lit || now > 0;
-            if (now == was) {
-                continue;
-            }
-            changed = true;
-            const int lx = index % QcWorld::chunkSize;
-            const int lz = (index / QcWorld::chunkSize) % QcWorld::chunkSize;
-            const int ly = index / (QcWorld::chunkSize * QcWorld::chunkSize);
-            for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
-                for (int dz = lz == 0 ? -1 : 0; dz <= (lz == last ? 1 : 0); ++dz) {
-                    for (int dx = lx == 0 ? -1 : 0; dx <= (lx == last ? 1 : 0); ++dx) {
-                        reach[std::size_t(dy + 1) * 9 + std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = true;
-                    }
-                }
-            }
-        }
-        if (!changed) {
+        const SectionDiff diff = diffSection(current.get(), published.get());
+        if (!diff.changed) {
             continue;
         }
-        if (!lit) {
+
+        if (!diff.lit) {
             current.reset();
             published.reset();
         } else {
@@ -349,11 +388,12 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
         }
         changes.sections.append({ref.chunk, ref.section, published});
         for (int i = 0; i < 27; ++i) {
-            if (reach[std::size_t(i)]) {
-                remesh({ref.chunk.x + i % 3 - 1, ref.chunk.z + (i / 3) % 3 - 1}, ref.section + i / 9 - 1);
+            if (diff.reach[std::size_t(i)]) {
+                queueRemesh(changes, remeshed, {ref.chunk.x + i % 3 - 1, ref.chunk.z + (i / 3) % 3 - 1}, ref.section + i / 9 - 1);
             }
         }
     }
+
     m_touched.clear();
     m_touchedRefs.clear();
     return changes;

@@ -16,6 +16,23 @@ This document describes the current state. Sections marked *planned* are not imp
 
 The client code never includes server headers except in the two composition roots (`QcGameController` and `QcHeadlessGame`), which only create the `QcLocalServerHost` and take a transport from it. All game interaction goes through protocol messages.
 
+## Source layout
+
+Every class has its own header and source, except the thematic message headers and small header-only types; no function is longer than 80 lines and no source file longer than 800 lines (E-088). The larger subsystems are split into collaborating classes:
+
+| Subsystem | Classes |
+|-----------|---------|
+| Content parser (`qc_common`) | `QcContentParser` (entry points, textures, translations, chapters) delegates per definition kind to `QcBlockParser`, `QcShapeParser`, `QcItemParser`, `QcMaterialParser` (materials, part families), `QcMobParser` (mobs, models, appearances, spawn rules), `QcRecipeParser` (crafting, smelting), `QcSoundParser`, `QcWorldgenParser` (biomes, features, ores, terrain); shared field rules in `QcContentFields`, field reading in `QcJsonFieldReader` |
+| Content registry | `QcContentRegistry` (registration and lookup); the content-sync byte format in `QcContentSerializer` and `QcBlockSerializer` |
+| Protocol messages | Structs in `QcSessionMessages.h`, `QcWorldMessages.h`, `QcPlayerMessages.h`, `QcEntityMessages.h`, `QcMachineMessages.h`; the variant (wire ids) in `QcMessages.h` |
+| Handbook builder | `QcHandbookBuilder` (order of pages, packs, categories) with `QcHandbookBlockPages`, `QcHandbookItemPages`, `QcHandbookCreaturePages`, `QcHandbookWorldPages`, `QcHandbookOverviewPages`, `QcHandbookChapterPages`; shared `QcHandbookContext`, `QcHandbookIndex` (reverse lookups), `QcHandbookLinks`, `QcHandbookRecipes`, `QcHandbookText` |
+| Server (`qc_server`) | `QcServer` (messages, tick order) owns `QcServerState` (shared state) and the parts `QcServerPersistence`, `QcChunkStreaming`, `QcBlockUpdateQueue`, `QcBlockSimulation` (block updates, liquids, falling blocks), `QcServerBlocks`, `QcServerInteraction` (mining, use, placing), `QcServerInventory` (inventory, crafting), `QcServerMachines`, `QcServerItemsAndPlants`, `QcServerCombat` (hunger, health, mobs, attacks), `QcEntitySync`, `QcChatCommands` (command table), `QcServerSounds`; per-client state `QcServerClient` |
+| World storage | `QcWorldStorage` (world info, players, block updates) with `QcRegionStorage`, `QcEntityStorage` (items, falling blocks, mobs), `QcBlockEntityStorage` (machines, chests), `QcSaveFile` (file container) |
+| World generation | `QcTerrainGenerator` (columns, surface, ores, features, spawn) with `QcTerrainDefinitions`, `QcCaveCarver`, `QcPoolPlacer`, `QcTerrainColumnGrid` |
+| Control interface (`qc_clientcore`) | `QcControlInterface` (line parsing, queue) and `QcControlCommandTable` with the groups `QcControlSessionCommands`, `QcControlMovementCommands`, `QcControlWorldCommands`, `QcControlEntityCommands`, `QcControlInventoryCommands`, `QcControlMachineCommands`; helpers `QcControlContext`, `QcControlReports`, `QcControlArguments`, `QcControlAim` |
+| Client session | `QcClientSession` (connection, prediction, world and inventory mirror) with `QcClientEntities` (entity mirror) |
+| Game UI (`qtcraft`) | `QcGameController` (`game` in QML: phase, overlays, session lifecycle) with the QML sub-objects `game.settings` (`QcSettingsController`, `.audio` `QcAudioSettings`, `.character` `QcCharacterSettings`), `game.library` (`QcWorldLibraryController`), `game.player` (`QcPlayerController`), `game.hud` (`QcHudState`), `game.handbook` (`QcHandbookController`), `game.input` (`QcGameInput`); per-frame `QcRenderBridge`, `QcItemIcons`, test hooks `QcStartupHooks` and `QcBenchmarkRun`, shared `QcSessionParts` |
+
 ## Threads
 
 | Thread | Runs |
@@ -183,6 +200,7 @@ Block light (E-049): `QcBlockLightEngine` keeps the light of all loaded chunks (
 |--------|--------|
 | CMake presets `debug`, `release`, `asan` (Address + UndefinedBehavior), `tsan` (Thread) | Separate build directories under `build/<preset>` |
 | `QC_SANITIZERS` | Sanitizer list applied to all own targets |
+| `scripts/verify.sh --quick\|--full [--tests <regex>] [--sanitizers asan\|tsan]` | `--quick`: debug build and tests (or those matching the regex), static analysis of the C++/QML files changed against `dev`; `--full` (default): all presets, sanitizer tests, release build, whole-project analysis, smoke screenshots. Durations per step |
 | `QTCRAFT_SCREENSHOT=<file.png>` | Saves a screenshot after `QTCRAFT_SCREENSHOT_FRAMES` (default 90) frames and quits; with `--play` it waits until the world is fully loaded and meshed |
 | `--screen builtin\|<index>\|<name>`, `QTCRAFT_SCREEN` | Opens the window on that screen, fully inside it, before it is shown: `builtin` takes the computer's own display (macOS: `CGDisplayIsBuiltin`, matched by geometry), else a screen whose name says built-in, else the primary screen; an index or a name (exact, else contained); the choice is logged. Default: wherever the system puts it |
 | `--background`, `QTCRAFT_BACKGROUND=1` | Scripted run: the application is an accessory (macOS: no Dock icon, never activates itself), the window does not accept focus, the mouse is never captured; input comes only from the script (benchmark keys, `--chat`). All scripts (`bench.sh`, `profile.sh`, `perf-check.sh`, `verify.sh` smoke runs) use `QTCRAFT_SCREEN=builtin` and `QTCRAFT_BACKGROUND=1` |

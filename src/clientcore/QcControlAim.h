@@ -1,0 +1,18 @@
+#pragma once
+
+#include "QcBlockFace.h"
+#include "QcBlockPos.h"
+#include "QcVec3.h"
+
+#include <optional>
+
+class QcClientSession;
+
+// Turns the player's view like a player moving the mouse.
+class QcControlAim
+{
+public:
+    // Turns the player towards a block centre, or towards the centre of one of its faces.
+    static void lookAt(QcClientSession &session, QcBlockPos block, std::optional<QcBlockFace> face);
+    static void lookAtPoint(QcClientSession &session, const QcVec3 &point);
+};

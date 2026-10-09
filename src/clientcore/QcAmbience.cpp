@@ -5,6 +5,28 @@
 #include <algorithm>
 #include <cmath>
 
+namespace {
+
+// The nearest glowing liquid among the cells considered so far.
+struct NearestGlowingLiquid
+{
+    const QcContentRegistry &content;
+    std::optional<QcBlockPos> pos;
+    int distance = 0;
+
+    void consider(QcBlockPos candidate, std::optional<QcBlockId> block, int candidateDistance)
+    {
+        const bool glowingLiquid =
+            block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).lightLevel > 0;
+        if (glowingLiquid && (!pos || candidateDistance < distance)) {
+            pos = candidate;
+            distance = candidateDistance;
+        }
+    }
+};
+
+} // namespace
+
 QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 &eye)
 {
     const QcContentRegistry &content = world.content();
@@ -51,25 +73,17 @@ QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 
 
 std::optional<QcBlockPos> QcAmbience::nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye)
 {
-    const QcContentRegistry &content = world.content();
     const QcBlockPos head{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
-    std::optional<QcBlockPos> nearest;
-    int best = 0;
+    NearestGlowingLiquid nearest{world.content(), std::nullopt, 0};
     for (int dx = -waterRadius; dx <= waterRadius; dx += 2) {
         for (int dy = -4; dy <= 4; dy += 2) {
             for (int dz = -waterRadius; dz <= waterRadius; dz += 2) {
                 const QcBlockPos pos = head.offset(dx, dy, dz);
-                const std::optional<QcBlockId> block = world.blockAt(pos);
-                const int distance = dx * dx + dy * dy + dz * dz;
-                if (block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).lightLevel > 0
-                    && (!nearest || distance < best)) {
-                    nearest = pos;
-                    best = distance;
-                }
+                nearest.consider(pos, world.blockAt(pos), dx * dx + dy * dy + dz * dz);
             }
         }
     }
-    return nearest;
+    return nearest.pos;
 }
 
 QcAmbience::Levels QcAmbience::approach(Levels current, Levels target, double seconds)

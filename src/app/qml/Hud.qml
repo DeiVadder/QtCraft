@@ -18,8 +18,8 @@ Item {
         style: Text.Outline
         styleColor: "#80000000"
         font.pixelSize: 14
-        visible: hud.game.showDebug
-        text: hud.game.debugText
+        visible: hud.game.settings.showDebug
+        text: hud.game.hud.debugText
     }
 
     Item {
@@ -49,13 +49,13 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: crosshair.bottom
         anchors.topMargin: 12
-        visible: hud.game.miningProgress > 0
+        visible: hud.game.hud.miningProgress > 0
         width: 80
         height: 6
         color: "#80000000"
 
         Rectangle {
-            width: parent.width * Math.min(1, hud.game.miningProgress)
+            width: parent.width * Math.min(1, hud.game.hud.miningProgress)
             height: parent.height
             color: "white"
         }
@@ -66,7 +66,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 12
         visible: text.length > 0
-        text: hud.game.targetLabel
+        text: hud.game.hud.targetLabel
         color: "white"
         style: Text.Outline
         styleColor: "#a0000000"
@@ -80,7 +80,7 @@ Item {
         spacing: 2
 
         Repeater {
-            model: hud.game.chatLines
+            model: hud.game.hud.chatLines
 
             Label {
                 required property string modelData
@@ -102,13 +102,13 @@ Item {
         spacing: 2
 
         Repeater {
-            model: Math.ceil(hud.game.maxHealth / 2)
+            model: Math.ceil(hud.game.player.maxHealth / 2)
 
             Item {
                 id: heart
 
                 required property int index
-                readonly property real fill: Math.max(0, Math.min(1, (hud.game.health - index * 2) / 2))
+                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.health - index * 2) / 2))
 
                 width: 22
                 height: 22
@@ -151,13 +151,13 @@ Item {
         layoutDirection: Qt.RightToLeft
 
         Repeater {
-            model: Math.ceil(hud.game.maxFood / 2)
+            model: Math.ceil(hud.game.player.maxFood / 2)
 
             Item {
                 id: drumstick
 
                 required property int index
-                readonly property real fill: Math.max(0, Math.min(1, (hud.game.food - index * 2) / 2))
+                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.food - index * 2) / 2))
 
                 width: 22
                 height: 22
@@ -200,7 +200,7 @@ Item {
         style: Text.Outline
         styleColor: "#80000000"
         font.pixelSize: 14
-        text: hud.game.timeOfDay
+        text: hud.game.hud.timeOfDay
     }
 
     Row {
@@ -214,7 +214,7 @@ Item {
         // The first nine inventory rows are the hotbar.
         Repeater {
             model: SlotRange {
-                source: hud.game.inventory
+                source: hud.game.player.inventory
                 count: 9
             }
 
@@ -229,7 +229,7 @@ Item {
                 slotCount: count
                 slotDurability: durability
                 slotEmpty: empty
-                selected: slot === hud.game.inventory.selectedSlot
+                selected: slot === hud.game.player.inventory.selectedSlot
             }
         }
     }
@@ -237,7 +237,7 @@ Item {
     Label {
         id: hint
 
-        readonly property var keys: hud.game.keys.labels
+        readonly property var keys: hud.game.settings.keys.labels
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -246,7 +246,7 @@ Item {
         style: Text.Outline
         styleColor: "#a0000000"
         font.pixelSize: 13
-        text: hud.game.mouseCaptured
+        text: hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
                     .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
               : qsTr("Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.")

@@ -53,57 +53,82 @@ QcBlockFace turnedFace(QcBlockFace face, int turns)
     return face;
 }
 
-// Whether the faces of `boxes` lying on the cell side `face` cover that side completely together:
-// for every strip between neighbouring box edges along one axis, the boxes spanning the strip must
-// cover [0, 1] along the other axis.
-bool coversSide(const QList<QcAabb> &boxes, QcBlockFace face)
+double low(const QcAabb &box, int axis)
+{
+    return axis == 0 ? box.min.x : (axis == 1 ? box.min.y : box.min.z);
+}
+
+double high(const QcAabb &box, int axis)
+{
+    return axis == 0 ? box.max.x : (axis == 1 ? box.max.y : box.max.z);
+}
+
+// A box face on a cell side, in the side's two axes A and B.
+struct SideRect
+{
+    double a0, a1, b0, b1;
+};
+
+using SideRects = QVarLengthArray<SideRect, 16>;
+using SideCuts = QVarLengthArray<double, 34>;
+
+// The faces of `boxes` lying on the cell side `face`, and their edges along axis A (with 0 and 1).
+void collectSide(const QList<QcAabb> &boxes, QcBlockFace face, SideRects &onSide, SideCuts &cuts)
 {
     const QcFaceOffset offset = qcFaceOffset(face);
     const int normal = offset.dx != 0 ? 0 : (offset.dy != 0 ? 1 : 2);
     const int axisA = normal == 0 ? 1 : 0;
     const int axisB = normal == 2 ? 1 : 2;
     const bool positive = offset.dx + offset.dy + offset.dz > 0;
-    const auto low = [](const QcAabb &box, int axis) { return axis == 0 ? box.min.x : (axis == 1 ? box.min.y : box.min.z); };
-    const auto high = [](const QcAabb &box, int axis) { return axis == 0 ? box.max.x : (axis == 1 ? box.max.y : box.max.z); };
-    struct Rect
-    {
-        double a0, a1, b0, b1;
-    };
-    QVarLengthArray<Rect, 16> onSide;
-    QVarLengthArray<double, 34> cuts{0.0, 1.0};
+
     for (const QcAabb &box : boxes) {
         if (positive ? high(box, normal) >= 1.0 : low(box, normal) <= 0.0) {
-            const Rect rect{std::clamp(low(box, axisA), 0.0, 1.0), std::clamp(high(box, axisA), 0.0, 1.0),
-                            std::clamp(low(box, axisB), 0.0, 1.0), std::clamp(high(box, axisB), 0.0, 1.0)};
+            const SideRect rect{std::clamp(low(box, axisA), 0.0, 1.0), std::clamp(high(box, axisA), 0.0, 1.0),
+                                std::clamp(low(box, axisB), 0.0, 1.0), std::clamp(high(box, axisB), 0.0, 1.0)};
             onSide.append(rect);
             cuts.append(rect.a0);
             cuts.append(rect.a1);
         }
     }
+}
+
+// Whether the rectangles spanning the strip [from, to] along axis A cover [0, 1] along axis B.
+bool stripCovered(const SideRects &onSide, double from, double to)
+{
+    QVarLengthArray<std::pair<double, double>, 16> spans;
+    for (const SideRect &rect : onSide) {
+        if (rect.a0 <= from && rect.a1 >= to) {
+            spans.append({rect.b0, rect.b1});
+        }
+    }
+
+    std::ranges::sort(spans);
+    double reached = 0.0;
+    for (const auto &[spanFrom, spanTo] : spans) {
+        if (spanFrom > reached) {
+            break;
+        }
+        reached = std::max(reached, spanTo);
+    }
+
+    return reached >= 1.0;
+}
+
+// Whether the faces of `boxes` lying on the cell side `face` cover that side completely together:
+// for every strip between neighbouring box edges along one axis, the boxes spanning the strip must
+// cover [0, 1] along the other axis.
+bool coversSide(const QList<QcAabb> &boxes, QcBlockFace face)
+{
+    SideRects onSide;
+    SideCuts cuts{0.0, 1.0};
+    collectSide(boxes, face, onSide, cuts);
     if (onSide.isEmpty()) {
         return false;
     }
+
     std::ranges::sort(cuts);
-    QVarLengthArray<std::pair<double, double>, 16> spans;
     for (qsizetype i = 0; i + 1 < cuts.size(); ++i) {
-        if (cuts[i] == cuts[i + 1]) {
-            continue;
-        }
-        spans.clear();
-        for (const Rect &rect : onSide) {
-            if (rect.a0 <= cuts[i] && rect.a1 >= cuts[i + 1]) {
-                spans.append({rect.b0, rect.b1});
-            }
-        }
-        std::ranges::sort(spans);
-        double reached = 0.0;
-        for (const auto &[from, to] : spans) {
-            if (from > reached) {
-                break;
-            }
-            reached = std::max(reached, to);
-        }
-        if (reached < 1.0) {
+        if (cuts[i] != cuts[i + 1] && !stripCovered(onSide, cuts[i], cuts[i + 1])) {
             return false;
         }
     }
@@ -125,7 +150,41 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
             mask |= quint32(1) << part;
         }
     }
+
     return quint64(mask) | (quint64(turns) << 32) | (quint64(flip ? 1 : 0) << 34);
+}
+
+// Places the boxes of the parts that apply to state `index`, turned and flipped as its properties say.
+void addShapeBoxes(QcBlockState &state, const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
+{
+    const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(QcBlockStateTable::value(block, index, shape.rotate));
+    const bool flip = !shape.flip.isEmpty() && QcBlockStateTable::value(block, index, shape.flip) == u"top"_s;
+    const auto place = [turns, flip](const QcAabb &box) { return turned(flip ? flipped(box) : box, turns); };
+
+    for (const QcShapePart &part : shape.parts) {
+        const bool applies = std::ranges::all_of(part.when, [&](const QcShapeCondition &condition) {
+            return condition.values.contains(QcBlockStateTable::value(block, index, condition.property));
+        });
+        if (!applies) {
+            continue;
+        }
+
+        for (const QcAabb &box : part.boxes) {
+            state.boxes.append(place(box));
+            state.boxTextures.append(part.texture);
+            state.boxStretch.append(part.stretch);
+        }
+        for (const QcAabb &box : part.crosses) {
+            state.crosses.append(place(box));
+        }
+        for (const QcAabb &box : part.customCollision ? part.collision : part.boxes) {
+            state.collision.append(place(box));
+        }
+    }
+
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        state.faceSource[std::size_t(turnedFace(face, turns))] = face;
+    }
 }
 
 // Characters that structure saved state names ("name[a=x,b=y]").
@@ -153,12 +212,14 @@ QString QcBlockStateTable::problem(const QcBlockDefinition &block)
     if (block.properties.size() > QcBlockProperty::maxProperties) {
         return u"at most %1 state properties"_s.arg(QcBlockProperty::maxProperties);
     }
+
     QSet<QString> names;
     for (const QcBlockProperty &property : block.properties) {
         if (property.name.isEmpty() || property.name.size() > 32 || names.contains(property.name) || hasSeparator(property.name)) {
             return u"state property names must be unique, 1..32 characters and free of '=', ',', '[' and ']'"_s;
         }
         names.insert(property.name);
+
         if (property.values.isEmpty() || property.values.size() > QcBlockProperty::maxValues
             || QSet<QString>(property.values.begin(), property.values.end()).size() != property.values.size()) {
             return u"state property '%1' needs 1..%2 distinct values"_s.arg(property.name).arg(QcBlockProperty::maxValues);
@@ -169,6 +230,7 @@ QString QcBlockStateTable::problem(const QcBlockDefinition &block)
             }
         }
     }
+
     const qsizetype count = stateCountOf(block);
     if (count < 1 || count > maxStatesPerBlock) {
         return u"at most %1 states per block"_s.arg(maxStatesPerBlock);
@@ -181,15 +243,18 @@ qsizetype QcBlockStateTable::derivedBoxes(const QcBlockDefinition &block, const 
     if (shape.isEmpty()) {
         return 1;
     }
+
     const auto count = quint32(std::max<qsizetype>(1, std::min<qsizetype>(stateCountOf(block), maxStatesPerBlock)));
     QSet<quint64> seen;
     qsizetype boxes = 0;
+
     for (quint32 index = 0; index < count; ++index) {
         const quint64 key = variantKey(block, shape, index);
         if (seen.contains(key)) {
             continue;
         }
         seen.insert(key);
+
         const quint32 mask = quint32(key);
         for (qsizetype part = 0; part < shape.parts.size(); ++part) {
             if (mask & (quint32(1) << part)) {
@@ -221,6 +286,7 @@ QList<QcBlockState> QcBlockStateTable::computeAll(const QcBlockDefinition &block
     QList<QcBlockState> states;
     states.reserve(count);
     QHash<quint64, qsizetype> variants;
+
     for (int index = 0; index < count; ++index) {
         const quint64 key = variantKey(block, shape, quint32(index));
         const auto variant = variants.constFind(key);
@@ -231,11 +297,13 @@ QList<QcBlockState> QcBlockStateTable::computeAll(const QcBlockDefinition &block
             states.append(std::move(state));
             continue;
         }
+
         variants.insert(key, states.size());
         QcBlockState state = compute(block, shape, quint32(index));
         state.type = type;
         states.append(std::move(state));
     }
+
     return states;
 }
 
@@ -245,9 +313,11 @@ void QcBlockStateTable::append(const QcBlockDefinition &block, const QcShapeDefi
     const auto count = int(std::max<qsizetype>(1, stateCountOf(block)));
     m_firstState.append(quint32(m_states.size()));
     m_stateCounts.append(count);
+
     const qsizetype boxes = derivedBoxes(block, shape);
     m_boxes.append(boxes);
     m_totalBoxes += boxes;
+
     m_states.append(computeAll(block, shape, count, type));
 }
 
@@ -255,9 +325,11 @@ void QcBlockStateTable::update(quint32 type, const QcBlockDefinition &block, con
 {
     const quint32 first = m_firstState[qsizetype(type)];
     const int count = m_stateCounts[qsizetype(type)];
+
     const qsizetype boxes = derivedBoxes(block, shape);
     m_totalBoxes += boxes - m_boxes[qsizetype(type)];
     m_boxes[qsizetype(type)] = boxes;
+
     QList<QcBlockState> states = computeAll(block, shape, count, type);
     for (int index = 0; index < count; ++index) {
         m_states[qsizetype(first) + index] = std::move(states[index]);
@@ -301,6 +373,7 @@ QString QcBlockStateTable::describe(const QcBlockDefinition &block, quint32 inde
     if (block.properties.isEmpty()) {
         return {};
     }
+
     QStringList parts;
     quint32 rest = index;
     for (const QcBlockProperty &property : block.properties) {
@@ -320,41 +393,20 @@ QcBlockState QcBlockStateTable::compute(const QcBlockDefinition &block, const Qc
         state.boxTextures = {QString()};
         state.boxStretch = {false};
     } else {
-        const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(value(block, index, shape.rotate));
-        const bool flip = !shape.flip.isEmpty() && value(block, index, shape.flip) == u"top"_s;
-        const auto place = [turns, flip](const QcAabb &box) { return turned(flip ? flipped(box) : box, turns); };
-        for (const QcShapePart &part : shape.parts) {
-            const bool applies = std::ranges::all_of(part.when, [&](const QcShapeCondition &condition) {
-                return condition.values.contains(value(block, index, condition.property));
-            });
-            if (!applies) {
-                continue;
-            }
-            for (const QcAabb &box : part.boxes) {
-                state.boxes.append(place(box));
-                state.boxTextures.append(part.texture);
-                state.boxStretch.append(part.stretch);
-            }
-            for (const QcAabb &box : part.crosses) {
-                state.crosses.append(place(box));
-            }
-            for (const QcAabb &box : part.customCollision ? part.collision : part.boxes) {
-                state.collision.append(place(box));
-            }
-        }
-        for (const QcBlockFace face : qcAllBlockFaces) {
-            state.faceSource[std::size_t(turnedFace(face, turns))] = face;
-        }
+        addShapeBoxes(state, block, shape, index);
     }
+
     if (shape.isEmpty()) {
         state.collision = {unitBox};
     }
     if (!block.solid) {
         state.collision.clear();
     }
+
     state.fullCube = state.boxes.size() == 1 && state.boxes.constFirst() == unitBox && state.crosses.isEmpty();
     state.opaque = block.opaque && state.fullCube && block.renderLayer == QcRenderLayer::Opaque;
     state.lightOpacity = block.lightOpacity;
+
     for (const QcBlockFace face : qcAllBlockFaces) {
         state.fullFace[std::size_t(face)] = coversSide(state.boxes, face);
     }

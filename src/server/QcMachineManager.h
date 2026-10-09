@@ -72,6 +72,11 @@ private:
     // Whether the machine's input has a recipe whose result fits into the output.
     const QcSmeltingRecipe *workableRecipe(const Machine &machine, const QcMachineDefinition &definition) const;
     bool step(Machine &machine, const QcMachineDefinition &definition, double dt);
+    // Takes one fuel item when the machine has burnt out; true when it lit.
+    bool refuel(Machine &machine) const;
+    // Turns the progress into finished items, at most maxItemsPerTick; returns the next workable recipe.
+    const QcSmeltingRecipe *finishItems(Machine &machine, const QcMachineDefinition &definition,
+                                        const QcSmeltingRecipe *recipe) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     // Recipe per category and input item, the first one in registry order.

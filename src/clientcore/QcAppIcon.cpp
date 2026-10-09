@@ -28,10 +28,18 @@ constexpr double blockCentreY = 0.52;
 constexpr int leftShadeAlpha = 50;
 constexpr int rightShadeAlpha = 100;
 
-// Draws `texture` (square, pixel art) onto the parallelogram with corner `origin` and edges `u`
-// (texture x) and `v` (texture y).
-void drawFace(QPainter &painter, const QImage &texture, QPointF origin, QPointF u, QPointF v, int shadeAlpha)
+// Parallelogram with corner `origin` and edges `u` (texture x) and `v` (texture y).
+struct Parallelogram
 {
+    QPointF origin;
+    QPointF u;
+    QPointF v;
+};
+
+// Draws `texture` (square, pixel art) onto `face`, darkened by `shadeAlpha`.
+void drawFace(QPainter &painter, const QImage &texture, const Parallelogram &face, int shadeAlpha)
+{
+    const auto &[origin, u, v] = face;
     const double pixels = texture.width();
     const QTransform transform(u.x() / pixels, u.y() / pixels, v.x() / pixels, v.y() / pixels, origin.x(), origin.y());
     painter.save();
@@ -95,9 +103,9 @@ QImage render(const QImage &top, const QImage &side, const QImage &tool, int siz
     painter.drawEllipse(QPointF(0.0, 0.0), edge * 1.1, edge * 1.1);
     painter.restore();
 
-    drawFace(painter, top, left, QPointF(across, -edge / 2.0), centre - left, 0);
-    drawFace(painter, side, left, centre - left, down, leftShadeAlpha);
-    drawFace(painter, side, centre, right - centre, down, rightShadeAlpha);
+    drawFace(painter, top, {left, QPointF(across, -edge / 2.0), centre - left}, 0);
+    drawFace(painter, side, {left, centre - left, down}, leftShadeAlpha);
+    drawFace(painter, side, {centre, right - centre, down}, rightShadeAlpha);
 
     // The pickaxe leans against the block's right side; its texture runs from the handle at the
     // bottom left to the head at the top right.

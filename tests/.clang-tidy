@@ -3,3 +3,8 @@
 # optional-access check cannot see), and moc mis-parses some raw string literals.
 InheritParentConfig: true
 Checks: '-misc-const-correctness,-misc-use-internal-linkage,-readability-redundant-access-specifiers,-bugprone-unchecked-optional-access,-modernize-raw-string-literal'
+# The QtTest macros (QVERIFY, QCOMPARE, QTRY_*) expand to do/while, if and loop statements that add up
+# to five nesting levels the written test does not have; nesting in tests is limited through the
+# cognitive complexity, which ignores macros.
+CheckOptions:
+  readability-function-size.NestingThreshold: none

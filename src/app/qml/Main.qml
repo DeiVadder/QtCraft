@@ -29,7 +29,7 @@ ApplicationWindow {
 
     Hud {
         anchors.fill: parent
-        visible: game.phase === "playing" && !game.dead
+        visible: game.phase === "playing" && !game.player.dead
         game: game
     }
 
@@ -66,7 +66,7 @@ ApplicationWindow {
 
     DeathScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.dead
+        visible: game.phase === "playing" && game.player.dead
         game: game
     }
 

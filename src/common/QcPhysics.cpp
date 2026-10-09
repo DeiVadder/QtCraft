@@ -38,6 +38,7 @@ void appendCollisionBoxes(const QcBlockAccess &world, QcBlockPos pos, Boxes &box
     if (!content.isValidBlock(*block)) {
         return;
     }
+
     const QcVec3 origin{double(pos.x), double(pos.y), double(pos.z)};
     for (const QcAabb &box : content.state(*block).collision) {
         boxes.append(box.moved(origin));
@@ -58,6 +59,7 @@ ObstacleList solidBoxesIn(const QcAabb &region, const QcBlockAccess &world)
     const int x1 = int(std::floor(region.max.x - epsilon));
     const int y1 = int(std::floor(region.max.y - epsilon));
     const int z1 = int(std::floor(region.max.z - epsilon));
+
     // One block of margin: collision boxes reach up to 1.5 m into the cell above (fences).
     for (int x = x0 - 1; x <= x1 + 1; ++x) {
         for (int y = y0 - 1; y <= y1 + 1; ++y) {
@@ -97,17 +99,33 @@ QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos)
     return boxes;
 }
 
+namespace {
+
+// Whether a cell from `start` to z = `lastZ` holds a climbable block.
+bool climbableInRow(const QcBlockAccess &world, const QcContentRegistry &content, QcBlockPos start, int lastZ)
+{
+    for (int z = start.z; z <= lastZ; ++z) {
+        const std::optional<QcBlockId> block = world.blockAt({start.x, start.y, z});
+        if (block && content.isValidBlock(*block) && content.block(*block).climbable) {
+            return true;
+        }
+    }
+    return false;
+}
+
+} // namespace
+
 bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box)
 {
     constexpr double inset = 1e-3;
     const QcContentRegistry &content = world.content();
+    const int firstZ = int(std::floor(box.min.z + inset));
+    const int lastZ = int(std::floor(box.max.z - inset));
+
     for (int x = int(std::floor(box.min.x + inset)); x <= int(std::floor(box.max.x - inset)); ++x) {
         for (int y = int(std::floor(box.min.y + inset)); y <= int(std::floor(box.max.y - inset)); ++y) {
-            for (int z = int(std::floor(box.min.z + inset)); z <= int(std::floor(box.max.z - inset)); ++z) {
-                const std::optional<QcBlockId> block = world.blockAt({x, y, z});
-                if (block && content.isValidBlock(*block) && content.block(*block).climbable) {
-                    return true;
-                }
+            if (climbableInRow(world, content, {x, y, firstZ}, lastZ)) {
+                return true;
             }
         }
     }
@@ -158,66 +176,68 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
     return result;
 }
 
-MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, bool jump, double width, double height,
-                      const QcBlockAccess &world, double dt, bool hold)
+namespace {
+
+void applyWaterVertical(QcEntityMotion &motion, bool jump, double factor, double dt)
 {
-    motion.climbing = !motion.inWater && touchesClimbable(world, boxAt(motion.position, width, height));
-    const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
-    const double blend = std::min(1.0, acceleration * dt);
-    // Thick liquids (lava) slow every movement inside them.
-    const double factor = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
-    motion.velocity.x += (wish.x * speed * factor - motion.velocity.x) * blend;
-    motion.velocity.z += (wish.z * speed * factor - motion.velocity.z) * blend;
+    motion.velocity.y -= waterGravity * dt;
+    if (jump) {
+        motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed * factor);
+    }
+    motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed * factor);
+}
 
-    if (motion.inWater) {
-        motion.velocity.y -= waterGravity * dt;
-        if (jump) {
-            motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed * factor);
-        }
-        motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed * factor);
-    } else {
-        if (jump && motion.onGround) {
-            motion.velocity.y = jumpVelocity;
-        }
-        motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
-        if (motion.climbing) {
-            motion.velocity.y = std::max(motion.velocity.y, hold ? 0.0 : -climbDownSpeed);
-            // Jumping or walking into the wall behind the ladder climbs it.
-            const bool pushing = wish.length() > 0.0
-                                 && [&] {
-                                        const MoveResult probe = moveBox(boxAt(motion.position, width, height),
-                                                                         {wish.x * 0.05, 0.0, wish.z * 0.05}, world);
-                                        return probe.blockedX || probe.blockedZ;
-                                    }();
-            if (jump || pushing) {
-                motion.velocity.y = climbSpeed;
-            }
+// Whether walking in the wished direction runs into a wall right away.
+bool pushesIntoWall(const QcEntityMotion &motion, const QcVec3 &wish, BodySize size, const QcBlockAccess &world)
+{
+    const MoveResult probe = moveBox(boxAt(motion.position, size.width, size.height), {wish.x * 0.05, 0.0, wish.z * 0.05}, world);
+    return probe.blockedX || probe.blockedZ;
+}
+
+void applyAirVertical(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
+{
+    if (steering.jump && motion.onGround) {
+        motion.velocity.y = jumpVelocity;
+    }
+    motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
+
+    if (motion.climbing) {
+        motion.velocity.y = std::max(motion.velocity.y, steering.hold ? 0.0 : -climbDownSpeed);
+        // Jumping or walking into the wall behind the ladder climbs it.
+        const bool pushing = steering.wish.length() > 0.0 && pushesIntoWall(motion, steering.wish, size, world);
+        if (steering.jump || pushing) {
+            motion.velocity.y = climbSpeed;
         }
     }
+}
 
-    MoveResult move = moveBox(boxAt(motion.position, width, height), motion.velocity * dt, world);
-    // A body that just jumped keeps its jump instead of stepping up.
-    if (motion.onGround && !motion.inWater && motion.velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
-        // Walking into something low (a slab, a stair step): try the same move lifted by up to
-        // stepHeight and keep it when it gets further.
-        const QcAabb start = boxAt(motion.position, width, height);
-        const MoveResult up = moveBox(start, {0.0, stepHeight, 0.0}, world);
-        const QcAabb raised = start.moved(up.applied);
-        const MoveResult across = moveBox(raised, {motion.velocity.x * dt, 0.0, motion.velocity.z * dt}, world);
-        const QcAabb moved = raised.moved(across.applied);
-        const MoveResult down = moveBox(moved, {0.0, -up.applied.y, 0.0}, world);
-        const double plain = std::hypot(move.applied.x, move.applied.z);
-        const double stepped = std::hypot(across.applied.x, across.applied.z);
-        if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
-            move.applied = up.applied + across.applied + down.applied;
-            move.blockedX = across.blockedX;
-            move.blockedZ = across.blockedZ;
-            move.blockedY = true;
-            motion.velocity.y = std::min(motion.velocity.y, 0.0);
-        }
+// Walking into something low (a slab, a stair step): tries the same move lifted by up to stepHeight
+// and keeps it in `move` when it gets further.
+void tryStepUp(MoveResult &move, QcEntityMotion &motion, BodySize size, const QcBlockAccess &world, double dt)
+{
+    const QcAabb start = boxAt(motion.position, size.width, size.height);
+    const MoveResult up = moveBox(start, {0.0, stepHeight, 0.0}, world);
+    const QcAabb raised = start.moved(up.applied);
+    const MoveResult across = moveBox(raised, {motion.velocity.x * dt, 0.0, motion.velocity.z * dt}, world);
+    const QcAabb moved = raised.moved(across.applied);
+    const MoveResult down = moveBox(moved, {0.0, -up.applied.y, 0.0}, world);
+
+    const double plain = std::hypot(move.applied.x, move.applied.z);
+    const double stepped = std::hypot(across.applied.x, across.applied.z);
+    if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
+        move.applied = up.applied + across.applied + down.applied;
+        move.blockedX = across.blockedX;
+        move.blockedZ = across.blockedZ;
+        move.blockedY = true;
+        motion.velocity.y = std::min(motion.velocity.y, 0.0);
     }
+}
+
+void applyMove(QcEntityMotion &motion, const MoveResult &move)
+{
     motion.position += move.applied;
     motion.onGround = move.blockedY && motion.velocity.y < 0.0;
+
     if (move.blockedY) {
         motion.velocity.y = 0.0;
     }
@@ -227,6 +247,32 @@ MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, 
     if (move.blockedZ) {
         motion.velocity.z = 0.0;
     }
+}
+
+} // namespace
+
+MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
+{
+    motion.climbing = !motion.inWater && touchesClimbable(world, boxAt(motion.position, size.width, size.height));
+    const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
+    const double blend = std::min(1.0, acceleration * dt);
+    // Thick liquids (lava) slow every movement inside them.
+    const double factor = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    motion.velocity.x += (steering.wish.x * steering.speed * factor - motion.velocity.x) * blend;
+    motion.velocity.z += (steering.wish.z * steering.speed * factor - motion.velocity.z) * blend;
+
+    if (motion.inWater) {
+        applyWaterVertical(motion, steering.jump, factor, dt);
+    } else {
+        applyAirVertical(motion, steering, size, world, dt);
+    }
+
+    MoveResult move = moveBox(boxAt(motion.position, size.width, size.height), motion.velocity * dt, world);
+    // A body that just jumped keeps its jump instead of stepping up.
+    if (motion.onGround && !motion.inWater && motion.velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
+        tryStepUp(move, motion, size, world, dt);
+    }
+    applyMove(motion, move);
     return move;
 }
 
@@ -250,7 +296,8 @@ void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBloc
     } else if (input.sprint && input.forward > 0.0f) {
         speed = sprintSpeed;
     }
-    stepEntity(motion, wish, speed, input.jump, playerWidth, playerHeight, world, dt, input.sneak);
+
+    stepEntity(motion, {wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
 }
 
 } // namespace QcPhysics

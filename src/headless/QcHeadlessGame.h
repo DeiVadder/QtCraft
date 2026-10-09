@@ -4,11 +4,13 @@
 #include "QcServerConfig.h"
 
 #include <QHash>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QObject>
 #include <QStringList>
 
 #include <memory>
+#include <optional>
 
 class QcClientSession;
 class QcHandbook;
@@ -32,12 +34,21 @@ public:
     bool start(const QStringList &arguments);
 
 private:
+    // Connects the control interface to the bot and feeds it from `scriptFile` or, without one,
+    // from standard input; exits with failure after `timeLimit` seconds.
+    bool startControl(const std::optional<QString> &scriptFile, int timeLimit);
+    void readStandardInput();
     void finishScript();
     // Starts (or restarts) server and bot session for a world; the control interface follows.
     QcStatus startWorld(const QcServerConfig &config);
     // Opens a world and switches the bot to it, replacing the running one only on success.
     QcStatus openWorld(const QcServerConfig &config);
     bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
+    QJsonArray worldList() const;
+    // The configuration of a new world (`worldCreate`) or a listed one (`worldLoad`); sets the
+    // response's folder.
+    QcResult<QcServerConfig> createdWorld(const QJsonObject &request, QJsonObject &response) const;
+    QcResult<QcServerConfig> listedWorld(const QJsonObject &request, QJsonObject &response) const;
     // The `handbook` command: categories, a category's entries, a search or one entry.
     void handleHandbookCommand(const QJsonObject &request, QJsonObject &response);
     const QcHandbook &handbook(const QString &language);
