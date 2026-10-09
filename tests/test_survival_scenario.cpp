@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QtMath>
 
 #include <cmath>
 
@@ -162,8 +163,21 @@ private slots:
         }
         QVERIFY(pig >= 0);
         for (int round = 0; round < 40 && !gone(pig); ++round) {
-            request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}});
-            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
+            if (request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}}).value(u"ok"_s).toBool()) {
+                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
+                continue;
+            }
+            // Out of reach (it fled) or hidden behind another creature: walk towards it.
+            const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 32}}).value(u"entities"_s).toArray();
+            const QcVec3 me = position(request({{u"cmd"_s, u"status"_s}}));
+            for (const auto &entry : entities) {
+                if (entry.toObject().value(u"id"_s).toInt() == pig) {
+                    const QJsonArray at = entry.toObject().value(u"position"_s).toArray();
+                    const double yaw = qRadiansToDegrees(std::atan2(at.at(0).toDouble() - me.x, -(at.at(2).toDouble() - me.z)));
+                    request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, yaw}, {u"pitch"_s, 0}});
+                    request({{u"cmd"_s, u"move"_s}, {u"forward"_s, 1}, {u"jump"_s, true}, {u"ticks"_s, 8}});
+                }
+            }
         }
         QVERIFY(gone(pig));
         // The meat falls where the pig died; walk over it to pick it up.
@@ -350,8 +364,9 @@ private slots:
         for (const auto &[ox, oz] : std::as_const(spots)) {
             const int x = int(std::floor(here.x)) + ox;
             const int z = int(std::floor(here.z)) + oz;
-            if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString()
-                != u"qtcraft:air"_s) {
+            // Tall grass gives way to a placed block.
+            const QString free = request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString();
+            if (free != u"qtcraft:air"_s && free != u"qtcraft:tall_grass"_s) {
                 continue;
             }
             request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, feetY - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});

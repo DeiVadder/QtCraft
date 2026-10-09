@@ -1,0 +1,26 @@
+{
+    "name": "liquid.lava.pop",
+    "volume": 0.45,
+    "variants": 3,
+    "pitchVariation": 0.2,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.12,
+            "frequency": 220,
+            "endFrequency": 90,
+            "attack": 0.002,
+            "curve": 2,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.5,
+            "attack": 0.05,
+            "curve": 1.5,
+            "lowpass": 500,
+            "gain": 0.5
+        }
+    ]
+}

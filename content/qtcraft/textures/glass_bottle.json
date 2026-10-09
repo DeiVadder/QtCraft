@@ -1,0 +1,8 @@
+{
+    "name": "glass_bottle",
+    "pattern": "bottle",
+    "primary": "#b4d8e6",
+    "secondary": "#00000000",
+    "variation": 0.06,
+    "seed": 323
+}

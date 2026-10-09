@@ -1,0 +1,42 @@
+{
+    "name": "qtcraft:plains",
+    "temperature": 0.55,
+    "humidity": 0.4,
+    "baseHeight": 67,
+    "heightVariation": 5,
+    "surface": "qtcraft:grass_block",
+    "subsurface": "qtcraft:dirt",
+    "underwater": "qtcraft:sand",
+    "beach": "qtcraft:sand",
+    "features": [
+        {
+            "feature": "qtcraft:oak_tree",
+            "density": 0.0015
+        },
+        {
+            "feature": "qtcraft:tall_grass",
+            "density": 0.12
+        },
+        {
+            "feature": "qtcraft:dandelion",
+            "density": 0.012
+        },
+        {
+            "feature": "qtcraft:poppy",
+            "density": 0.012
+        },
+        {
+            "feature": "qtcraft:cornflower",
+            "density": 0.006
+        },
+        {
+            "feature": "qtcraft:sugar_cane",
+            "density": 0.15
+        },
+        {
+            "feature": "ruby_rose",
+            "density": 0.004
+        }
+    ],
+    "translation": "biome.qtcraft.plains"
+}

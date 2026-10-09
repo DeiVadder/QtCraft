@@ -35,11 +35,12 @@ std::shared_ptr<const QcContentRegistry> machineContent()
     block(u"t:crusher"_s, {u"crushing"_s, 1.0, {}});
     block(u"t:blast_furnace"_s, {u"smelting"_s, 100.0, {}});
     block(u"t:stone"_s, {});
-    const auto item = [&content](const QString &name, double fuel, int maxStack) {
+    const auto item = [&content](const QString &name, double fuel, int maxStack, const QString &emptiesTo = {}) {
         QcItemDefinition definition;
         definition.name = name;
         definition.fuelSeconds = fuel;
         definition.maxStack = maxStack;
+        definition.emptiesTo = emptiesTo;
         if (!content->registerItem(definition)) {
             qFatal("cannot register item");
         }
@@ -49,6 +50,9 @@ std::shared_ptr<const QcContentRegistry> machineContent()
     item(u"t:gravel"_s, 0.0, 64);
     item(u"t:coal"_s, 3.5, 64);
     item(u"t:twig"_s, 0.5, 64);
+    item(u"t:bucket"_s, 0.0, 16);
+    item(u"t:lava_bucket"_s, 2.0, 1, u"t:bucket"_s);
+    item(u"t:oil_can"_s, 2.0, 4, u"t:bucket"_s);
     content->registerSmeltingRecipe({u"t:ingot"_s, u"smelting"_s, u"t:ore"_s, u"t:ingot"_s, 1, 1.0});
     content->registerSmeltingRecipe({u"t:gravel"_s, u"crushing"_s, u"t:ore"_s, u"t:gravel"_s, 2, 1.0});
     return content;
@@ -138,6 +142,28 @@ private slots:
         QCOMPARE(machines.progressFraction(machine, block("t:furnace")), 0.0);
         QCOMPARE(machine.stacks[QcMachineManager::outputSlot].count, 1);
         QCOMPARE(machine.stacks[QcMachineManager::inputSlot].count, 1);
+    }
+
+    void fuelInAContainerLeavesTheContainer()
+    {
+        const QcTestWorld world = worldWith("t:furnace");
+        QcMachineManager machines(m_content);
+        QcMachineManager::Machine &machine = setUp(machines, {item("t:ore"), 5, 0}, {item("t:lava_bucket"), 1, 0});
+        run(machines, world, 1);
+        QCOMPARE(machine.burnSeconds, 2.0);
+        QCOMPARE(machine.stacks[QcMachineManager::fuelSlot], (QcItemStack{item("t:bucket"), 1, 0}));
+        // The empty bucket is no fuel: after the lava two ingots are done and the fire goes out.
+        run(machines, world, ticksFor(2.0) + 2);
+        QCOMPARE(machine.stacks[QcMachineManager::outputSlot].count, 2);
+        QCOMPARE(machine.burnRemaining, 0.0);
+        QCOMPARE(machine.stacks[QcMachineManager::fuelSlot], (QcItemStack{item("t:bucket"), 1, 0}));
+        // Stacked containers have no room for the empty one, so they do not burn.
+        QcMachineManager other(m_content);
+        QcMachineManager::Machine &stacked = setUp(other, {item("t:ore"), 5, 0}, {item("t:oil_can"), 2, 0});
+        run(other, world, 3);
+        QCOMPARE(stacked.burnRemaining, 0.0);
+        QCOMPARE(stacked.stacks[QcMachineManager::fuelSlot], (QcItemStack{item("t:oil_can"), 2, 0}));
+        QVERIFY(stacked.stacks[QcMachineManager::outputSlot].isEmpty());
     }
 
     void aFullOutputStopsWithoutBurningFuel()

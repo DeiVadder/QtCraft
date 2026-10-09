@@ -37,4 +37,8 @@ struct QcItemDefinition
     double fuelSeconds = 0.0;
     // Groups the item belongs to ("qtcraft:planks"); recipes accept any member of "#group".
     QStringList tags;
+    // Used on a liquid source, takes it and becomes the liquid's bucket item (empty bucket).
+    bool scoops = false;
+    // What the item turns into once it placed its block (a filled bucket becomes empty).
+    QString emptiesTo;
 };

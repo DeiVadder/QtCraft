@@ -1,0 +1,8 @@
+{
+    "name": "yellow_dye",
+    "pattern": "lump",
+    "primary": "#f0d020",
+    "secondary": "#f0d020",
+    "variation": 0.12,
+    "seed": 450
+}

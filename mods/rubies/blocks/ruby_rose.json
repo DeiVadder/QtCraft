@@ -1,0 +1,15 @@
+{
+    "name": "ruby_rose",
+    "sound": "qtcraft:grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "light": 4,
+    "ground": [
+        "qtcraft:grass_block",
+        "qtcraft:dirt"
+    ],
+    "textures": {
+        "all": "ruby_rose"
+    }
+}

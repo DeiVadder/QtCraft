@@ -1,0 +1,11 @@
+{
+    "name": "lava_pool",
+    "type": "pool",
+    "block": "lava",
+    "minY": 5,
+    "maxY": 40,
+    "attempts": 2,
+    "chance": 0.3,
+    "radius": 3,
+    "depth": 2
+}

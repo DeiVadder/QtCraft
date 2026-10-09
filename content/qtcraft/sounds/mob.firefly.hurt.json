@@ -1,0 +1,17 @@
+{
+    "name": "mob.firefly.hurt",
+    "volume": 0.2,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "range": 10,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.12,
+            "frequency": 2400,
+            "endFrequency": 1600,
+            "attack": 0.002,
+            "curve": 2
+        }
+    ]
+}

@@ -2,7 +2,9 @@
 
 #include "QcContainerManager.h"
 #include "QcContentRegistry.h"
+#include "QcFallingBlockManager.h"
 #include "QcItemEntityManager.h"
+#include "QcLiquidFlow.h"
 #include "QcMachineManager.h"
 #include "QcMobManager.h"
 #include "QcPlantManager.h"
@@ -38,7 +40,9 @@ public:
     // Opens or creates the world directory given in the config (no-op without one). Must succeed
     // before start(); fails with a readable message for damaged or mismatching saves.
     QcStatus openWorld();
-    // Writes world info, changed chunks and all players. No-op without a world directory.
+    // Writes all players, world info, changed chunks, entities, machines, chests and pending
+    // updates. A failing part does not keep the others from being written; the first error is
+    // returned. No-op without a world directory.
     QcStatus save();
     void start();
     // Saves, then disconnects every client; returns the result of saving.
@@ -58,6 +62,8 @@ public:
     QcPlantManager &plants() { return m_plants; }
     QcMachineManager &machines() { return m_machines; }
     QcContainerManager &containers() { return m_containers; }
+    QcLiquidFlow &liquids() { return m_liquids; }
+    QcFallingBlockManager &fallingBlocks() { return m_falling; }
     bool keepInventory() const { return m_info.keepInventory; }
     void setKeepInventory(bool keep) { m_info.keepInventory = keep; }
     double worldTime() const { return m_info.worldTime; }
@@ -109,6 +115,8 @@ public:
     qsizetype pendingPlayerBlockUpdates() const { return qsizetype(m_playerUpdates.size()); }
     qsizetype pendingCommandBlockUpdates() const { return qsizetype(m_commandUpdates.size()); }
     quint64 processedBlockUpdates() const { return m_processedBlockUpdates; }
+    // Command updates dropped because the command queue was full (config.maxCommandBlockUpdates).
+    quint64 droppedBlockUpdates() const { return m_droppedBlockUpdates; }
 
     // Wall time spent in tick(); safe to read and reset from other threads (benchmark).
     struct TickTimes
@@ -145,6 +153,23 @@ private:
     // borders that connect or hang across them; reconciles chests with the loaded blocks.
     void handleLoadedChunks();
     void queueBorderUpdates(QcChunkPos chunk, QcBlockFace towards);
+    // Remembers an update of `pos` until `chunk` loads.
+    void waitForChunk(QcChunkPos chunk, QcBlockPos pos);
+    // Runs the due flow steps of liquids within their budget (decision E-054).
+    void processLiquids();
+    // Players and mobs touching a damaging block (lava) get hurt; items in it burn.
+    void applyContactDamage();
+    // Empties a liquid source into the held scooping item; false when nothing was taken.
+    bool scoopLiquid(Client &client, QcBlockPos pos);
+    void handleUseEntity(Client &client, quint32 entityId);
+    // Lets the block at `pos` fall: as an entity, or straight to its resting cell when too many fall.
+    void startFalling(QcBlockPos pos, QcBlockId block);
+    // Puts a block that came to rest into its cell, or drops it as items.
+    void landBlock(QcBlockId block, QcBlockPos cell, bool placed);
+    void tickFallingBlocks();
+    // Turns one item of the selected stack into `item` (filled bucket, firefly in a bottle); what
+    // does not fit into the inventory is thrown.
+    void exchangeHeld(Client &client, const QString &item);
     // Opens or closes a door, trapdoor or gate (both halves of a door), unless the changed shape
     // would close on a player or mob.
     void toggleBlock(QcBlockPos pos, QcBlockId block);
@@ -232,6 +257,10 @@ private:
     QcPlantManager m_plants;
     QcMachineManager m_machines;
     QcContainerManager m_containers;
+    QcLiquidFlow m_liquids;
+    QcFallingBlockManager m_falling;
+    // Spreading liquids make at most one sound per tick.
+    bool m_liquidSoundPlayed = false;
     QRandomGenerator m_random;
     // Separate from m_random so that sounds never change drops or spawns.
     QRandomGenerator m_soundRandom;
@@ -248,4 +277,5 @@ private:
     // While set, new updates go to the command queue (a command runs or a command update cascades).
     bool m_commandUpdateMode = false;
     quint64 m_processedBlockUpdates = 0;
+    quint64 m_droppedBlockUpdates = 0;
 };

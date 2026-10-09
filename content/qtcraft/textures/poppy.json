@@ -1,0 +1,8 @@
+{
+    "name": "poppy",
+    "pattern": "flower",
+    "primary": "#d8281e",
+    "secondary": "#3c8232",
+    "variation": 0.1,
+    "seed": 313
+}

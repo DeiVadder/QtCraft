@@ -1,0 +1,8 @@
+{
+    "name": "dandelion",
+    "pattern": "flower",
+    "primary": "#f2d22a",
+    "secondary": "#3c8232",
+    "variation": 0.1,
+    "seed": 312
+}

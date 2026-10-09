@@ -183,7 +183,9 @@ void QcClientSession::handleMessage(QcMessage &&message)
         emit chatReceived(chat->text);
     } else if (auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
         const bool item = spawn->mobType == QcMsg::EntitySpawn::itemType;
-        if ((spawn->mobType < QcMsg::EntitySpawn::playerType && !item)
+        const bool fallingBlock = spawn->mobType == QcMsg::EntitySpawn::fallingBlockType;
+        if ((spawn->mobType < QcMsg::EntitySpawn::playerType && !item && !fallingBlock)
+            || (fallingBlock && (!m_content || !m_content->isValidBlock(spawn->block) || spawn->block == qcAirBlockId))
             || (spawn->mobType >= 0 && (!m_content || spawn->mobType >= m_content->mobs().size()))
             || (item && (!m_content || spawn->item.isEmpty() || !m_content->isValidItem(spawn->item.item)))) {
             m_disconnectReason = u"Server sent an unknown entity type"_s;
@@ -204,6 +206,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
         entity.held = spawn->held;
         entity.id = spawn->id;
         entity.mobType = spawn->mobType;
+        entity.block = fallingBlock ? spawn->block : qcAirBlockId;
         entity.name = spawn->name;
         entity.position = entity.previousPosition = spawn->position;
         entity.yaw = entity.previousYaw = spawn->yaw;
@@ -411,7 +414,7 @@ void QcClientSession::updateSounds()
 {
     // Other creatures' steps, from how far they moved; items do not step.
     for (QcClientEntity &entity : m_entities) {
-        if (entity.isItem() || (entity.flags & QcMsg::OnGround) == 0) {
+        if (entity.isItem() || entity.isFallingBlock() || (entity.flags & QcMsg::OnGround) == 0) {
             entity.sinceStep = 0.0;
             continue;
         }
@@ -423,7 +426,17 @@ void QcClientSession::updateSounds()
         }
     }
     if (m_tickCount % ambienceTicks == 1) {
-        m_ambienceTarget = QcAmbience::targets(*m_world, m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
+        const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+        m_ambienceTarget = QcAmbience::targets(*m_world, eye);
+        // A fixed pseudo-random sequence over the samples keeps sessions reproducible.
+        const quint64 sample = m_tickCount / ambienceTicks;
+        const double roll = double((sample * 2654435761ULL) % 1000ULL) / 1000.0;
+        if (roll < QcAmbience::lavaPopChance) {
+            if (const std::optional<QcBlockPos> lava = QcAmbience::nearestGlowingLiquid(*m_world, eye)) {
+                cue({QString::fromLatin1(QcSoundKeys::lavaPop), {lava->x + 0.5, lava->y + 1.0, lava->z + 0.5}, 1.0f, 1.0f,
+                     QcSoundCue::Origin::Local, 0});
+            }
+        }
     }
     m_ambience = QcAmbience::approach(m_ambience, m_ambienceTarget, QcPhysics::tickDuration);
 }
@@ -438,12 +451,15 @@ void QcClientSession::refreshTarget()
     const double pitch = qDegreesToRadians(double(m_intent.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach);
+    const QcItemStack &held = m_inventory.selectedStack();
+    const bool scoops = !held.isEmpty() && m_content->isValidItem(held.item) && m_content->item(held.item).scoops;
+    m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach,
+                               scoops ? QcRaycast::Targets::VisibleAndLiquids : QcRaycast::Targets::Visible);
 
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : std::as_const(m_entities)) {
-        if (entity.isItem()) {
+        if (entity.isItem() || entity.isFallingBlock()) {
             continue;
         }
         const bool mob = entity.mobType >= 0 && entity.mobType < m_content->mobs().size();
@@ -593,6 +609,16 @@ bool QcClientSession::useItem()
         m_connection->send(QcMsg::ConsumeItem{});
         m_useTicks = 0;
         return true;
+    }
+    // A creature caught with the held item (a firefly with an empty bottle).
+    if (item && m_targetEntity) {
+        const auto entity = m_entities.constFind(*m_targetEntity);
+        if (entity != m_entities.constEnd() && entity->mobType >= 0 && entity->mobType < m_content->mobs().size()
+            && m_content->mobs()[entity->mobType].catchWith == item->name) {
+            m_connection->send(QcMsg::UseEntity{*m_targetEntity});
+            m_useTicks = 0;
+            return true;
+        }
     }
     if (!m_target) {
         return false;

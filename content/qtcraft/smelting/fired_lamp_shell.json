@@ -1,0 +1,8 @@
+{
+    "name": "fired_lamp_shell",
+    "input": "unfired_lamp_shell",
+    "result": {
+        "item": "fired_lamp_shell"
+    },
+    "seconds": 10
+}

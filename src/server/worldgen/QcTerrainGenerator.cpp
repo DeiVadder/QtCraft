@@ -56,6 +56,7 @@ struct QcTerrainGenerator::Feature
 {
     QcTreeShape::Params shape;
     QSet<QcBlockId> ground;
+    bool nearWater = false;
 };
 
 struct QcTerrainGenerator::Biome
@@ -75,6 +76,18 @@ struct QcTerrainGenerator::Biome
     QcBlockId snow = qcAirBlockId;
     // Index into m_features and density per column.
     QList<std::pair<int, double>> features;
+};
+
+struct QcTerrainGenerator::Pool
+{
+    QcBlockId liquid = qcAirBlockId;
+    int minY = 8;
+    int maxY = 40;
+    int attempts = 1;
+    double chance = 0.0;
+    int radius = 3;
+    int depth = 2;
+    quint64 seed = 0;
 };
 
 struct QcTerrainGenerator::Ore
@@ -108,7 +121,23 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_tunnelWidth = terrain.caveTunnelWidth;
     m_cavernThreshold = terrain.caveCavernThreshold;
 
+    quint64 featureIndex = 0;
     for (const QcFeatureDefinition &definition : m_content->features()) {
+        const quint64 poolSeed = qcMixSeed(m_seed, 3000 + featureIndex++);
+        if (definition.type == QcFeatureDefinition::Type::Pool) {
+            Pool pool;
+            pool.liquid = resolve(definition.trunkBlock, qcAirBlockId, warnings);
+            pool.minY = std::max(definition.minY, definition.depth + 1);
+            pool.maxY = definition.maxY;
+            pool.attempts = definition.attempts;
+            pool.chance = definition.chance;
+            pool.radius = definition.radius;
+            pool.depth = definition.depth;
+            pool.seed = poolSeed;
+            if (pool.liquid != qcAirBlockId && pool.minY <= pool.maxY) {
+                m_pools.append(pool);
+            }
+        }
         Feature feature;
         feature.shape.type = definition.type;
         feature.shape.trunk = resolve(definition.trunkBlock, qcAirBlockId, warnings);
@@ -117,6 +146,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
         feature.shape.minHeight = definition.minHeight;
         feature.shape.maxHeight = definition.maxHeight;
         feature.shape.cone = definition.shape == u"cone"_s;
+        feature.nearWater = definition.nearWater;
         for (const QString &ground : definition.groundBlocks) {
             feature.ground.insert(resolve(ground, qcAirBlockId, warnings));
         }
@@ -143,6 +173,12 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
             if (it == m_content->features().end()) {
                 if (warnings) {
                     warnings->append(u"Biome %1 references unknown feature %2"_s.arg(definition.name, placement.feature));
+                }
+                continue;
+            }
+            if (it->type == QcFeatureDefinition::Type::Pool) {
+                if (warnings) {
+                    warnings->append(u"Biome %1 lists the pool %2; pools are placed in every chunk"_s.arg(definition.name, placement.feature));
                 }
                 continue;
             }
@@ -406,6 +442,117 @@ void QcTerrainGenerator::placeOres(QcChunk &chunk) const
     }
 }
 
+bool QcTerrainGenerator::holdsLiquid(QcBlockId block) const
+{
+    if (block == qcAirBlockId || !m_content->isValidBlock(block)) {
+        return false;
+    }
+    const QcBlockDefinition &definition = m_content->block(block);
+    return definition.solid && !definition.liquid && !definition.replaceable;
+}
+
+void QcTerrainGenerator::placePools(QcChunk &chunk) const
+{
+    const QcChunkPos pos = chunk.pos();
+    for (const Pool &pool : m_pools) {
+        for (int attempt = 0; attempt < pool.attempts; ++attempt) {
+            const auto random = [&](int salt) { return qcPositionRandom(pool.seed, pos.x, attempt * 8 + salt, pos.z); };
+            if (random(0) >= pool.chance) {
+                continue;
+            }
+            // Cells on the chunk's edge never become liquid (their neighbours lie in other chunks).
+            const int x = 1 + int(random(1) * (QcWorld::chunkSize - 2));
+            const int z = 1 + int(random(2) * (QcWorld::chunkSize - 2));
+            const int startY = pool.minY + int(random(3) * (pool.maxY - pool.minY + 1));
+            // The nearest cave floor at or below the start: air standing on a block that holds liquid.
+            for (int y = startY; y >= pool.minY; --y) {
+                if (chunk.block(x, y, z) == qcAirBlockId && holdsLiquid(chunk.block(x, y - 1, z))) {
+                    sinkPool(chunk, pool, x, y, z, attempt);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void QcTerrainGenerator::sinkPool(QcChunk &chunk, const Pool &pool, int centreX, int floorY, int centreZ, int attempt) const
+{
+    constexpr int last = QcWorld::chunkSize - 1;
+    const int baseX = chunk.pos().x * QcWorld::chunkSize;
+    const int baseZ = chunk.pos().z * QcWorld::chunkSize;
+    const double radius = pool.radius - 0.6 * qcPositionRandom(pool.seed, baseX + centreX, floorY + attempt, baseZ + centreZ);
+    const auto key = [](int x, int y, int z) { return (y * QcWorld::chunkSize + z) * QcWorld::chunkSize + x; };
+
+    // A bowl below the floor that narrows with depth and has a ragged rim.
+    QSet<int> cells;
+    for (int layer = 0; layer < pool.depth; ++layer) {
+        const int y = floorY - 1 - layer;
+        const double layerRadius = radius - layer * 0.9;
+        for (int z = std::max(1, centreZ - pool.radius); z <= std::min(last - 1, centreZ + pool.radius); ++z) {
+            for (int x = std::max(1, centreX - pool.radius); x <= std::min(last - 1, centreX + pool.radius); ++x) {
+                const double distance = std::hypot(x - centreX, z - centreZ)
+                                        + 0.8 * qcPositionRandom(pool.seed, baseX + x, y, baseZ + z);
+                const QcBlockId block = chunk.block(x, y, z);
+                if (distance <= layerRadius + 0.4 && block != m_bedrock && (block == qcAirBlockId || holdsLiquid(block))) {
+                    cells.insert(key(x, y, z));
+                }
+            }
+        }
+    }
+    // Liquid must not flow anywhere: drop cells until every remaining one is bounded below and on
+    // its sides by other cells or by blocks that hold liquid.
+    const auto contained = [&](int x, int y, int z) {
+        return cells.contains(key(x, y, z)) || holdsLiquid(chunk.block(x, y, z));
+    };
+    const auto isLiquid = [&](QcBlockId block) { return m_content->isValidBlock(block) && m_content->block(block).liquid; };
+    for (bool changed = true; changed;) {
+        changed = false;
+        for (auto it = cells.begin(); it != cells.end();) {
+            const int x = *it % QcWorld::chunkSize;
+            const int z = *it / QcWorld::chunkSize % QcWorld::chunkSize;
+            const int y = *it / (QcWorld::chunkSize * QcWorld::chunkSize);
+            // Another liquid above (an earlier pool) would meet this one.
+            const bool liquidAbove = !cells.contains(key(x, y + 1, z)) && isLiquid(chunk.block(x, y + 1, z));
+            if (contained(x - 1, y, z) && contained(x + 1, y, z) && contained(x, y, z - 1) && contained(x, y, z + 1)
+                && contained(x, y - 1, z) && !liquidAbove) {
+                ++it;
+                continue;
+            }
+            it = cells.erase(it);
+            changed = true;
+        }
+    }
+    // Only pools open to the cave above are worth the liquid.
+    const bool visible = std::ranges::any_of(cells, [&](int cell) {
+        const int x = cell % QcWorld::chunkSize;
+        const int z = cell / QcWorld::chunkSize % QcWorld::chunkSize;
+        const int y = cell / (QcWorld::chunkSize * QcWorld::chunkSize);
+        return chunk.block(x, y + 1, z) == qcAirBlockId && !cells.contains(key(x, y + 1, z));
+    });
+    if (!visible) {
+        return;
+    }
+    for (const int cell : std::as_const(cells)) {
+        const int x = cell % QcWorld::chunkSize;
+        const int z = cell / QcWorld::chunkSize % QcWorld::chunkSize;
+        const int y = cell / (QcWorld::chunkSize * QcWorld::chunkSize);
+        chunk.setBlock(x, y, z, pool.liquid);
+        // Where the cave floor beside the start is higher, the rock over the pool is hollowed out up
+        // to two blocks above the start's floor, so the pool lies open instead of under a ledge. Rock
+        // that holds back another liquid (beside or above it) or carries a falling block stays.
+        for (int above = floorY; y == floorY - 1 && above <= floorY + 1; ++above) {
+            const QcBlockId block = chunk.block(x, above, z);
+            const QcBlockId top = chunk.block(x, above + 1, z);
+            const bool holdsSomething = isLiquid(top) || (m_content->isValidBlock(top) && m_content->block(top).falls)
+                                        || isLiquid(chunk.block(x - 1, above, z)) || isLiquid(chunk.block(x + 1, above, z))
+                                        || isLiquid(chunk.block(x, above, z - 1)) || isLiquid(chunk.block(x, above, z + 1));
+            if (block != m_bedrock && holdsLiquid(block) && !holdsSomething) {
+                chunk.setBlock(x, above, z, qcAirBlockId);
+            }
+        }
+    }
+}
+
 void QcTerrainGenerator::placeFeature(QcChunk &chunk, const Feature &feature, int x, int baseY, int z, double random) const
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
@@ -431,15 +578,28 @@ void QcTerrainGenerator::placeFeatures(QcChunk &chunk) const
         for (int x = baseX - featureMargin; x < baseX + QcWorld::chunkSize + featureMargin; ++x) {
             const Column info = column(x, z);
             const Biome &biome = m_biomes[info.biome];
-            if (biome.features.isEmpty() || info.height - 1 <= m_seaLevel) {
+            if (biome.features.isEmpty() || info.height - 1 < m_seaLevel) {
                 continue;
             }
+            // Ground at sea level only takes features that want water next to them, and only where
+            // a neighbouring column is under water.
+            const bool shore = info.height - 1 == m_seaLevel;
+            const auto waterBeside = [&] {
+                return column(x + 1, z).height - 1 < m_seaLevel || column(x - 1, z).height - 1 < m_seaLevel
+                       || column(x, z + 1).height - 1 < m_seaLevel || column(x, z - 1).height - 1 < m_seaLevel;
+            };
             for (const auto &[featureIndex, density] : biome.features) {
+                const Feature &feature = m_features[featureIndex];
+                if (feature.nearWater != shore) {
+                    continue;
+                }
                 const quint64 featureSeed = qcMixSeed(m_seed, 1000 + quint64(featureIndex));
                 if (qcPositionRandom(featureSeed, x, 0, z) >= density) {
                     continue;
                 }
-                const Feature &feature = m_features[featureIndex];
+                if (shore && !waterBeside()) {
+                    break;
+                }
                 const QcBlockId ground = surfaceBlock(info);
                 // Skip columns whose ground was carved away by a cave opening.
                 if ((!feature.ground.isEmpty() && !feature.ground.contains(ground)) || isCave(x, info.height - 1, z)) {
@@ -469,6 +629,7 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     }
     carveCaves(*chunk, columns);
     placeOres(*chunk);
+    placePools(*chunk);
     placeFeatures(*chunk);
     for (int i = 0; i < QcWorld::sectionCount; ++i) {
         chunk->section(i).compact();

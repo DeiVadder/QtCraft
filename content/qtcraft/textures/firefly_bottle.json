@@ -1,0 +1,8 @@
+{
+    "name": "firefly_bottle",
+    "pattern": "bottle",
+    "primary": "#b4d8e6",
+    "secondary": "#d8f060",
+    "variation": 0.1,
+    "seed": 324
+}

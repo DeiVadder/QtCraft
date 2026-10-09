@@ -1,0 +1,8 @@
+{
+    "name": "red_mushroom",
+    "pattern": "mushroom",
+    "primary": "#c8281e",
+    "secondary": "#e0d6ba",
+    "variation": 0.08,
+    "seed": 316
+}

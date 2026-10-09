@@ -1,0 +1,12 @@
+{
+    "name": "yellow_wool",
+    "sound": "wool",
+    "hardness": 0.8,
+    "fuelSeconds": 5,
+    "tags": [
+        "wool"
+    ],
+    "textures": {
+        "all": "yellow_wool"
+    }
+}

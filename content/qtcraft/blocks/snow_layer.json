@@ -1,0 +1,20 @@
+{
+    "name": "snow_layer",
+    "sound": "snow",
+    "shape": "snow_layer",
+    "render": "opaque",
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.1,
+    "tool": "shovel",
+    "support": "below",
+    "replaceable": false,
+    "drops": [
+        {
+            "item": "snow_layer"
+        }
+    ],
+    "textures": {
+        "all": "snow"
+    }
+}

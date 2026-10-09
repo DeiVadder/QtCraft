@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcBlockDefinition.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
 
@@ -10,8 +11,11 @@
 struct QcClientEntity
 {
     quint32 id = 0;
-    // Index into the content's mobs, -1 for a player, -2 for a dropped item (see QcMsg::EntitySpawn).
+    // Index into the content's mobs, -1 for a player, -2 for a dropped item, -3 for a falling block
+    // (see QcMsg::EntitySpawn).
     int mobType = -1;
+    // The block of a falling block; air otherwise.
+    QcBlockId block = qcAirBlockId;
     // The stack of a dropped item; empty otherwise.
     QcItemStack item;
     QString name;
@@ -45,4 +49,5 @@ struct QcClientEntity
 
     bool isItem() const { return !item.isEmpty(); }
     bool isPlayer() const { return mobType == -1; }
+    bool isFallingBlock() const { return mobType == -3; }
 };

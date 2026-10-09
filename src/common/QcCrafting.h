@@ -18,8 +18,12 @@ std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcI
 // Items a recipe consumes once, as ingredient (item name or "#tag") -> count; named items come
 // before tags, so a tag never takes an item a named ingredient needs.
 QList<std::pair<QString, int>> requirements(const QcRecipeDefinition &recipe);
-// Removes the ingredients of `times` crafts in the order of requirements(); false (and possibly some
-// removed) when they are not all there, so callers work on a copy. Server and client use this.
+// The same, with the tags ordered from the narrowest (fewest items of the content carry it) to the
+// widest: an item with two tags goes to the narrower one, which has fewer alternatives.
+QList<std::pair<QString, int>> requirements(const QcContentRegistry &content, const QcRecipeDefinition &recipe);
+// Removes the ingredients of `times` crafts in the order of requirements(content, recipe); false (and
+// possibly some removed) when they are not all there, so callers work on a copy. Server and client
+// use this.
 bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcRecipeDefinition &recipe, int times);
 // How often (at most `limit`) the inventory holds the ingredients of the recipe, as consume() takes them.
 int timesCraftable(const QcContentRegistry &content, const QcInventory &inventory, const QcRecipeDefinition &recipe, int limit);

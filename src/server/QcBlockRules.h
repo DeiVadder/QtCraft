@@ -26,7 +26,8 @@ QcBlockFace opposite(QcBlockFace face);
 
 // Where and in which state `block` (any state of it) is placed when the player clicks `face` of the
 // block at `clicked`, aiming at `hit` (0..1 inside that block) while looking along `yaw`. A slab
-// clicked on its open half becomes a double slab in place. std::nullopt when the block cannot go
+// clicked on its open half becomes a double slab in place; a clicked replaceable block (tall grass)
+// is replaced as if the new block were placed on the ground below it. std::nullopt when the block cannot go
 // there (a torch on a ceiling, a door without room).
 std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, QcBlockPos clicked, QcBlockFace face,
                                    const QcVec3 &hit, float yaw);

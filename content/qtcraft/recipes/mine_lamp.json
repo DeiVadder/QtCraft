@@ -1,0 +1,11 @@
+{
+    "name": "mine_lamp",
+    "type": "shapeless",
+    "ingredients": [
+        "fired_lamp_shell",
+        "firefly_bottle"
+    ],
+    "result": {
+        "item": "mine_lamp"
+    }
+}

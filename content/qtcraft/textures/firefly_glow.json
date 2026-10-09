@@ -1,0 +1,8 @@
+{
+    "name": "firefly_glow",
+    "pattern": "noise",
+    "primary": "#e6ff6a",
+    "secondary": "#c8f040",
+    "variation": 0.1,
+    "seed": 322
+}

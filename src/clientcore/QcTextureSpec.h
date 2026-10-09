@@ -53,6 +53,22 @@ struct QcTextureSpec
         ChestSide,
         ChestFront,
         ChestTop,
+        // Molten rock: glowing streaks (secondary) in a darker flow (primary).
+        Lava,
+        // Blossom (primary) with a light centre on a stem with two leaves (secondary).
+        Flower,
+        // Blades of grass of different heights (primary, tips secondary).
+        TallGrass,
+        // Cap (primary, lighter spots) on a pale stem.
+        Mushroom,
+        // Three jointed stalks (primary) with a few leaves (secondary).
+        SugarCane,
+        // Glass bottle with a cork; the contents in the secondary colour (transparent: empty).
+        Bottle,
+        // Metal bucket (primary); the contents seen from above in the secondary colour.
+        Bucket,
+        // Lamp housing (primary) around a glowing window (secondary) with bars, for a stretched box.
+        Lantern,
     };
 
     Pattern pattern = Pattern::Noise;

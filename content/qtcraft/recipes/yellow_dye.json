@@ -1,0 +1,11 @@
+{
+    "name": "yellow_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "dandelion"
+    ],
+    "result": {
+        "item": "yellow_dye",
+        "count": 2
+    }
+}

@@ -32,7 +32,7 @@ QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 
         levels.cave = float(0.5 + 0.5 * std::clamp(double(ceiling - caveCeiling) / 8.0, 0.0, 1.0));
     }
     const QcBlockDefinition *atHead = definitionAt(head);
-    if (atHead && atHead->liquid) {
+    if (atHead && atHead->liquid && atHead->lightLevel == 0) {
         levels.water = 1.0f;
         return levels;
     }
@@ -41,12 +41,35 @@ QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 
         for (int dy = -4; dy <= 4; dy += 2) {
             for (int dz = -waterRadius; dz <= waterRadius; dz += 2) {
                 const QcBlockDefinition *block = definitionAt(head.offset(dx, dy, dz));
-                water += block && block->liquid ? 1 : 0;
+                water += block && block->liquid && block->lightLevel == 0 ? 1 : 0;
             }
         }
     }
     levels.water = float(std::min(1.0, double(water) / fullWaterBlocks));
     return levels;
+}
+
+std::optional<QcBlockPos> QcAmbience::nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye)
+{
+    const QcContentRegistry &content = world.content();
+    const QcBlockPos head{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    std::optional<QcBlockPos> nearest;
+    int best = 0;
+    for (int dx = -waterRadius; dx <= waterRadius; dx += 2) {
+        for (int dy = -4; dy <= 4; dy += 2) {
+            for (int dz = -waterRadius; dz <= waterRadius; dz += 2) {
+                const QcBlockPos pos = head.offset(dx, dy, dz);
+                const std::optional<QcBlockId> block = world.blockAt(pos);
+                const int distance = dx * dx + dy * dy + dz * dz;
+                if (block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).lightLevel > 0
+                    && (!nearest || distance < best)) {
+                    nearest = pos;
+                    best = distance;
+                }
+            }
+        }
+    }
+    return nearest;
 }
 
 QcAmbience::Levels QcAmbience::approach(Levels current, Levels target, double seconds)

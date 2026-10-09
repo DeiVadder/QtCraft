@@ -1,0 +1,15 @@
+{
+    "name": "glass_bottle",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        " # "
+    ],
+    "key": {
+        "#": "glass"
+    },
+    "result": {
+        "item": "glass_bottle",
+        "count": 3
+    }
+}

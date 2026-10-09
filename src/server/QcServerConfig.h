@@ -23,4 +23,8 @@ struct QcServerConfig
     bool allowCheats = true;
     // Game rule for new and unsaved worlds; saved worlds keep the value in world.json.
     bool keepInventory = true;
+    // Neighbour updates of commands (/fill) queued at most; further ones are dropped with a warning.
+    qsizetype maxCommandBlockUpdates = qsizetype(1024) * 1024;
+    // Pending updates written to blockupdates.qce at most (those of player actions first).
+    qsizetype maxSavedBlockUpdates = qsizetype(4) * 1024 * 1024;
 };

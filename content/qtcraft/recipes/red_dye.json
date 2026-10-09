@@ -1,0 +1,11 @@
+{
+    "name": "red_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "poppy"
+    ],
+    "result": {
+        "item": "red_dye",
+        "count": 2
+    }
+}

@@ -14,4 +14,11 @@ public:
     virtual std::shared_ptr<QcChunk> generate(QcChunkPos pos) const = 0;
     // Feet position for a new player near the world origin.
     virtual QcBlockPos spawnPoint() const = 0;
+    // Name of the biome of a column; empty for generators without biomes.
+    virtual QString biomeAt(int x, int z) const
+    {
+        Q_UNUSED(x);
+        Q_UNUSED(z);
+        return {};
+    }
 };

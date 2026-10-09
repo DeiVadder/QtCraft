@@ -1,0 +1,11 @@
+{
+    "name": "purple_wool",
+    "type": "shapeless",
+    "ingredients": [
+        "#wool",
+        "purple_dye"
+    ],
+    "result": {
+        "item": "purple_wool"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "name": "bucket",
+    "type": "shaped",
+    "pattern": [
+        "I I",
+        " I "
+    ],
+    "key": {
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "bucket"
+    }
+}

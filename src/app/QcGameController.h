@@ -218,12 +218,15 @@ public:
     // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing and after a short warm-up, frame and
     // server tick times are recorded, then the result is logged and the application quits.
     // Benchmark scenarios: "sprint" walks ahead, "stand" stands still, "light" stands while torches
-    // are placed and removed around the player (block light updates and remeshing).
+    // are placed and removed around the player (block light updates and remeshing), "liquids"
+    // stands while water and lava sources appear above the floor around the player, flood it and
+    // drain again (flow steps, liquid meshing).
     void setBenchmark(int seconds, const QString &scenario)
     {
         m_benchmarkSeconds = seconds;
-        m_benchmarkWalk = scenario != u"stand" && scenario != u"light";
+        m_benchmarkWalk = scenario != u"stand" && scenario != u"light" && scenario != u"liquids";
         m_benchmarkLight = scenario == u"light";
+        m_benchmarkLiquids = scenario == u"liquids";
     }
     QcClientSession *session() const { return m_session; }
 
@@ -315,6 +318,7 @@ private:
     bool m_benchmarkRunning = false;
     bool m_benchmarkWalk = true;
     bool m_benchmarkLight = false;
+    bool m_benchmarkLiquids = false;
     QElapsedTimer m_benchmarkFrame;
     QcVec3 m_benchmarkCheckpoint;
     QList<qint64> m_benchmarkFrameNs;

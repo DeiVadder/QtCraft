@@ -1,0 +1,16 @@
+{
+    "name": "tall_grass",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "replaceable": true,
+    "drops": [],
+    "textures": {
+        "all": "tall_grass"
+    }
+}

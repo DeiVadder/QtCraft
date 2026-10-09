@@ -1,0 +1,113 @@
+{
+    "name": "sheep",
+    "sounds": {
+        "ambient": "mob.sheep.ambient",
+        "hurt": "mob.sheep.hurt",
+        "death": "mob.sheep.death"
+    },
+    "health": 8,
+    "width": 0.9,
+    "height": 1.2,
+    "walkSpeed": 1.0,
+    "chaseSpeed": 2.5,
+    "hostile": false,
+    "spawn": {
+        "time": "day",
+        "blocks": [
+            "grass_block"
+        ],
+        "maxGroup": 4,
+        "weight": 2
+    },
+    "model": [
+        {
+            "from": [
+                -0.35,
+                0.5,
+                -0.55
+            ],
+            "to": [
+                0.35,
+                1.1,
+                0.55
+            ],
+            "texture": "sheep_wool"
+        },
+        {
+            "from": [
+                -0.2,
+                0.7,
+                -0.85
+            ],
+            "to": [
+                0.2,
+                1.1,
+                -0.55
+            ],
+            "texture": "sheep_head"
+        },
+        {
+            "from": [
+                -0.3,
+                0,
+                -0.45
+            ],
+            "to": [
+                -0.12,
+                0.5,
+                -0.27
+            ],
+            "texture": "sheep_head"
+        },
+        {
+            "from": [
+                0.12,
+                0,
+                -0.45
+            ],
+            "to": [
+                0.3,
+                0.5,
+                -0.27
+            ],
+            "texture": "sheep_head"
+        },
+        {
+            "from": [
+                -0.3,
+                0,
+                0.27
+            ],
+            "to": [
+                -0.12,
+                0.5,
+                0.45
+            ],
+            "texture": "sheep_head"
+        },
+        {
+            "from": [
+                0.12,
+                0,
+                0.27
+            ],
+            "to": [
+                0.3,
+                0.5,
+                0.45
+            ],
+            "texture": "sheep_head"
+        }
+    ],
+    "drops": [
+        {
+            "item": "white_wool",
+            "count": 1
+        },
+        {
+            "item": "white_wool",
+            "count": 1,
+            "chance": 0.5
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "name": "molten_ruby_pool",
+    "type": "pool",
+    "block": "molten_ruby",
+    "minY": 5,
+    "maxY": 28,
+    "attempts": 1,
+    "chance": 0.1,
+    "radius": 2,
+    "depth": 1
+}

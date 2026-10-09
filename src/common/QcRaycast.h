@@ -28,6 +28,8 @@ enum class Targets : quint8 {
     Visible,
     // What bodies collide with.
     Solid,
+    // Visible blocks and liquids (an empty bucket takes a liquid).
+    VisibleAndLiquids,
 };
 
 inline constexpr double playerReach = 5.0;

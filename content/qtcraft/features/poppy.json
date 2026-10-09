@@ -1,0 +1,9 @@
+{
+    "name": "poppy",
+    "type": "plant",
+    "block": "poppy",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

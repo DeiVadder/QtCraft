@@ -1,0 +1,8 @@
+{
+    "name": "blue_dye",
+    "pattern": "lump",
+    "primary": "#3a58d0",
+    "secondary": "#3a58d0",
+    "variation": 0.12,
+    "seed": 448
+}

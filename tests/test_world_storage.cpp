@@ -247,6 +247,54 @@ private slots:
         QVERIFY(!storage.readEntities(warnings).has_value());
     }
 
+    void fallingBlocksRoundTripAndOldEntityFilesLoad()
+    {
+        QTemporaryDir dir;
+        auto content = registryWith({u"a:sand"_s, u"a:gravel"_s});
+        const QcWorldStorage storage(dir.path(), content);
+        QcWorldEntities entities;
+        QcFallingBlockManager::Falling sand;
+        sand.block = *content->blockId(u"a:sand"_s);
+        sand.motion.position = {3.5, 71.25, -2.5};
+        sand.motion.velocity = {0.0, -4.5, 0.0};
+        sand.age = 0.6;
+        entities.fallingBlocks = {sand};
+        QVERIFY(storage.writeEntities(entities).has_value());
+        QStringList warnings;
+        const auto read = storage.readEntities(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->fallingBlocks.size(), qsizetype(1));
+        QCOMPARE(read->fallingBlocks[0].block, sand.block);
+        QCOMPARE(read->fallingBlocks[0].motion.position, sand.motion.position);
+        QCOMPARE(read->fallingBlocks[0].motion.velocity, sand.motion.velocity);
+        QCOMPARE(read->fallingBlocks[0].age, 0.6);
+        // Without the block (a removed mod) the falling block is dropped with a warning.
+        const auto without = QcWorldStorage(dir.path(), registryWith({u"a:gravel"_s})).readEntities(warnings);
+        QVERIFY(without.has_value());
+        QVERIFY(without->fallingBlocks.isEmpty());
+        QVERIFY(warnings.join(u'\n').contains(u"a:sand"_s));
+
+        // A version 1 file (items and saplings only) still loads.
+        QByteArray payload;
+        QDataStream stream(&payload, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_6_8);
+        stream << quint32(0) << quint32(1) << qint32(1) << qint32(70) << qint32(2) << 33.0;
+        QByteArray file("QCEN");
+        QDataStream header(&file, QIODevice::Append);
+        header.setVersion(QDataStream::Qt_6_8);
+        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
+        file.append(payload);
+        QFile old(dir.filePath(u"entities.qce"_s));
+        QVERIFY(old.open(QIODevice::WriteOnly));
+        old.write(file);
+        old.close();
+        const auto oldRead = storage.readEntities(warnings);
+        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
+        QCOMPARE(oldRead->saplings.size(), qsizetype(1));
+        QCOMPARE(oldRead->saplings[0].remaining, 33.0);
+        QVERIFY(oldRead->fallingBlocks.isEmpty());
+    }
+
     void overfullStacksAreSplitOnLoad()
     {
         QTemporaryDir dir;

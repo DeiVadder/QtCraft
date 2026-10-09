@@ -8,6 +8,27 @@
 
 #include <algorithm>
 
+namespace {
+
+// Highest cell of the column (x, z) of `chunk`, other than `skip`, whose block dims sky light; -1
+// for none. The same rule as the sky light of QcChunkMesher.
+int highestDimming(const QcChunk &chunk, const QcBlockRenderTable &table, int x, int z, int skip)
+{
+    for (int section = QcWorld::sectionCount - 1; section >= 0; --section) {
+        if (chunk.section(section).isEmpty()) {
+            continue;
+        }
+        for (int y = (section + 1) * QcWorld::sectionHeight - 1; y >= section * QcWorld::sectionHeight; --y) {
+            if (y != skip && table.entry(chunk.block(x, y, z)).lightOpacity > 0) {
+                return y;
+            }
+        }
+    }
+    return -1;
+}
+
+} // namespace
+
 QcMeshScheduler::QcMeshScheduler(QObject *parent)
     : QObject(parent)
     // Leave cores for the GUI, render, server and light threads.
@@ -19,6 +40,10 @@ QcMeshScheduler::QcMeshScheduler(QObject *parent)
 
 QcMeshScheduler::~QcMeshScheduler()
 {
+    // Queued work is of no use any more; only running jobs (they use this object) are waited for.
+    ++m_lightGeneration;
+    m_lightPool.discardQueued();
+    m_pool.discardQueued();
     m_pool.waitForIdle();
     m_lightPool.waitForIdle();
 }
@@ -137,13 +162,33 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         const QcBlockRenderTable::Entry &before = m_renderTable->entry(previous);
         const QcBlockRenderTable::Entry &after = m_renderTable->entry(current);
         if (before.lightOpacity != after.lightOpacity) {
-            // Sky light travels up to 15 blocks sideways and down the whole column: every section of
-            // the 3 x 3 chunk neighbourhood from the bottom up to one section above the change.
-            const int topSection = std::min(QcWorld::sectionCount - 1, section + 1);
+            // Sky light travels up to 15 blocks sideways, so it reaches the 3 x 3 chunk neighbourhood.
+            // A section's sky light (QcChunkMesher) depends on the cells from 16 blocks below to 16
+            // blocks above it and on where each column's highest light-dimming block lies: it
+            // changes when that range holds the changed cell or a cell that turns lit or shadowed
+            // because the column's highest dimming block moved.
+            int low = pos.y;
+            int high = pos.y;
+            const std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
+            if (!chunk) {
+                low = 0;
+            } else {
+                const int others = highestDimming(*chunk, *m_renderTable, lx, lz, pos.y);
+                const int topBefore = std::max(others, before.lightOpacity > 0 ? pos.y : -1);
+                const int topAfter = std::max(others, after.lightOpacity > 0 ? pos.y : -1);
+                if (topBefore != topAfter) {
+                    low = std::min(low, std::min(topBefore, topAfter) + 1);
+                    high = std::max({high, topBefore, topAfter});
+                }
+            }
+            // Sections whose light volume meets low..high.
+            constexpr int margin = QcChunkMesher::lightMargin;
+            const int firstSection = std::max(0, qcFloorDiv(low - margin, QcWorld::sectionHeight));
+            const int lastSection = std::min(QcWorld::sectionCount - 1, qcFloorDiv(high + margin, QcWorld::sectionHeight));
             for (int dx = -1; dx <= 1; ++dx) {
                 for (int dz = -1; dz <= 1; ++dz) {
-                    for (int below = 0; below <= topSection; ++below) {
-                        dirty.append({{pos.chunk().x + dx, pos.chunk().z + dz}, below});
+                    for (int index = firstSection; index <= lastSection; ++index) {
+                        dirty.append({{pos.chunk().x + dx, pos.chunk().z + dz}, index});
                     }
                 }
             }
@@ -169,6 +214,10 @@ void QcMeshScheduler::clear()
     m_loadedChunks.clear();
     m_changedAt.clear();
     m_light.clear();
+    // Waiting jobs belong to the old world: drop them instead of working through them. Results of
+    // running ones are discarded by version and generation when they arrive.
+    m_stats.discardedJobs += m_pool.discardQueued() + m_lightPool.discardQueued();
+    m_inFlight.clear();
     ++m_lightGeneration;
     m_lightJobsPending = 0;
     if (m_renderTable) {

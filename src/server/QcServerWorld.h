@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcAabb.h"
 #include "QcBlockAccess.h"
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
@@ -11,6 +12,7 @@
 #include <QSet>
 
 #include <memory>
+#include <vector>
 #include <utility>
 
 // Authoritative block world of the server. Chunks handed out as const snapshots stay immutable:
@@ -23,6 +25,11 @@ public:
     std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
+
+    // The strongest contact damage (lava) of the loaded blocks a box overlaps, 0 for none.
+    double contactDamageIn(const QcAabb &box) const;
+    // False when no loaded chunk holds a block with contact damage, so nothing can burn.
+    bool mayHaveContactDamage() const { return !m_damagingSections.isEmpty(); }
 
     std::shared_ptr<const QcChunk> chunk(QcChunkPos pos) const;
     // Returns the chunk, generating it synchronously when needed (spawn, tests).
@@ -58,8 +65,16 @@ public:
     void markDirty(const QList<QcChunkPos> &chunks);
 
 private:
+    // Records which sections of a chunk that entered the world hold blocks with contact damage.
+    void noteDamagingSections(QcChunkPos pos, const QcChunk &chunk);
+
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcWorldGenerator> m_generator;
+    // Contact damage of every block state, indexed by id.
+    std::vector<double> m_contactDamage;
+    // Per chunk, a bit for each section that may hold a block with contact damage (set when the
+    // chunk arrives or such a block is placed; chunks without any are missing).
+    QHash<QcChunkPos, quint32> m_damagingSections;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;

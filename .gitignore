@@ -16,3 +16,4 @@ compile_commands.json
 
 # Local agent config
 .claude/
+deploy/

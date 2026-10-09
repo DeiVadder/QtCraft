@@ -1,0 +1,8 @@
+{
+    "name": "sheep_head",
+    "pattern": "noise",
+    "primary": "#d8c8b0",
+    "secondary": "#c0b098",
+    "variation": 0.08,
+    "seed": 461
+}

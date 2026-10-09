@@ -1,0 +1,9 @@
+{
+    "name": "tall_grass",
+    "type": "plant",
+    "block": "tall_grass",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

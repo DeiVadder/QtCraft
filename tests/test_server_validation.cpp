@@ -849,6 +849,44 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
     }
 
+    void anEmptiedBucketInTheFuelSlotKeepsTheScreenUsable()
+    {
+        join();
+        const QcBlockPos pos = openFurnace();
+        QCOMPARE(m_client->openMachine, std::optional<QcBlockPos>(pos));
+        chat(u"/give iron_ore 2"_s);
+        chat(u"/give lava_bucket 1"_s);
+        chat(u"/give dirt 3"_s);
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        move(slotOf(item("qtcraft:lava_bucket")), fuel);
+        QCOMPARE(countOf(item("qtcraft:lava_bucket")), 0);
+        ticks(10 * int(QcPhysics::tickRate) + 5);
+        // The lava burns, the empty bucket stays in the fuel slot.
+        QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
+        QCOMPARE(m_client->machineStacks[2], (QcItemStack{item("qtcraft:iron_ingot"), 1, 0}));
+        // Taking the output and moving inventory items still works.
+        move(output, 20);
+        QCOMPARE(countOf(item("qtcraft:iron_ingot")), 1);
+        QVERIFY(m_client->machineStacks[2].isEmpty());
+        const int dirt = slotOf(item("qtcraft:dirt"));
+        move(dirt, 25);
+        QCOMPARE(m_client->stacks[25], (QcItemStack{item("qtcraft:dirt"), 3, 0}));
+        chat(u"/give iron_ore 1"_s);
+        move(slotOf(item("qtcraft:iron_ore")), input);
+        QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:iron_ore"), 2, 0}));
+        // Non-fuel cannot be put next to the bucket or swapped in for it.
+        move(25, fuel);
+        QCOMPARE(m_client->stacks[25], (QcItemStack{item("qtcraft:dirt"), 3, 0}));
+        QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
+        // The bucket can be taken out, but not put back.
+        move(fuel, 26);
+        QCOMPARE(m_client->stacks[26], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
+        QVERIFY(m_client->machineStacks[1].isEmpty());
+        move(26, fuel);
+        QCOMPARE(m_client->stacks[26], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
+        QVERIFY(m_client->machineStacks[1].isEmpty());
+    }
+
     void machineScreensNeedReachAndCloseFromAfar()
     {
         join();

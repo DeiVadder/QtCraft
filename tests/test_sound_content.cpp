@@ -241,6 +241,11 @@ private slots:
                 QVERIFY2(content.sound(name), qPrintable(block.name + u": "_s + name));
             }
         }
+        // Spreading water and lava make their own sounds.
+        for (const char *liquid : {"qtcraft:water", "qtcraft:lava"}) {
+            const QString &name = content.block(*content.blockId(QString::fromLatin1(liquid))).flow.sound;
+            QVERIFY2(!name.isEmpty() && content.sound(name), liquid);
+        }
         for (const QcMobDefinition &mob : content.mobs()) {
             for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
                 QVERIFY2(content.sound(name), qPrintable(mob.name + u": "_s + name));
@@ -248,7 +253,8 @@ private slots:
         }
         for (const char *name : {QcSoundKeys::playerHurt, QcSoundKeys::playerDeath, QcSoundKeys::playerEat, QcSoundKeys::itemPickup,
                                  QcSoundKeys::waterSplash, QcSoundKeys::waterSwim, QcSoundKeys::uiClick, QcSoundKeys::mobHurt,
-                                 QcSoundKeys::mobDeath, QcSoundKeys::machineActive}) {
+                                 QcSoundKeys::mobDeath, QcSoundKeys::machineActive, QcSoundKeys::liquidHiss, QcSoundKeys::bucketFill,
+                                 QcSoundKeys::bucketEmpty, QcSoundKeys::bottleCatch}) {
             const QcSoundDefinition *sound = content.sound(QString::fromLatin1(name));
             QVERIFY2(sound, name);
             QCOMPARE(sound->bus, QcSoundBus::Effects);

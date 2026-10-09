@@ -22,6 +22,13 @@ inline constexpr auto ambientWater = "qtcraft:ambient.water";
 inline constexpr auto mobHurt = "qtcraft:mob.generic.hurt";
 inline constexpr auto mobDeath = "qtcraft:mob.generic.death";
 inline constexpr auto machineActive = "qtcraft:machine.furnace";
+// Two liquids turning into stone, a bucket taking or pouring a liquid, a bottle catching a creature.
+inline constexpr auto liquidHiss = "qtcraft:liquid.hiss";
+inline constexpr auto bucketFill = "qtcraft:item.bucket.fill";
+inline constexpr auto bucketEmpty = "qtcraft:item.bucket.empty";
+inline constexpr auto bottleCatch = "qtcraft:item.bottle.catch";
+// Lava near the listener now and then.
+inline constexpr auto lavaPop = "qtcraft:liquid.lava.pop";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

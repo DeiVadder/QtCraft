@@ -1,0 +1,14 @@
+{
+    "name": "snow_layer",
+    "type": "shaped",
+    "pattern": [
+        "###"
+    ],
+    "key": {
+        "#": "snow_block"
+    },
+    "result": {
+        "item": "snow_layer",
+        "count": 6
+    }
+}

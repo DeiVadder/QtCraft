@@ -1,0 +1,6 @@
+{
+    "name": "molten_ruby_bucket",
+    "maxStack": 1,
+    "places": "molten_ruby",
+    "emptiesTo": "qtcraft:bucket"
+}

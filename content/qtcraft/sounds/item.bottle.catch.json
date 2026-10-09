@@ -1,0 +1,25 @@
+{
+    "name": "item.bottle.catch",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.5,
+            "frequency": 1760,
+            "attack": 0.002,
+            "curve": 3,
+            "gain": 0.6
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.35,
+            "frequency": 2637,
+            "start": 0.06,
+            "attack": 0.002,
+            "curve": 3,
+            "gain": 0.4
+        }
+    ]
+}

@@ -2,6 +2,7 @@
 
 #include <QDataStream>
 #include <QIODevice>
+#include <QRandomGenerator>
 #include <QTest>
 
 #include <limits>
@@ -452,6 +453,71 @@ private slots:
         QVERIFY2(frame.size() < 1000, qPrintable(QString::number(frame.size())));
     }
 
+    void chunkBytesFollowTheRunLengthLayout()
+    {
+        // Scattered blocks give sections with many short runs; the expected bytes are written value
+        // by value, in both byte orders.
+        auto chunk = std::make_shared<QcChunk>(QcChunkPos{3, -4});
+        QRandomGenerator random(14);
+        for (int i = 0; i < 3000; ++i) {
+            chunk->setBlock(random.bounded(16), random.bounded(70), random.bounded(16), QcBlockId(1 + random.bounded(5)));
+        }
+        for (const QDataStream::ByteOrder order : {QDataStream::BigEndian, QDataStream::LittleEndian}) {
+            QByteArray expected;
+            {
+                QDataStream stream(&expected, QIODevice::WriteOnly);
+                stream.setVersion(QDataStream::Qt_6_8);
+                stream.setByteOrder(order);
+                stream << qint32(3) << qint32(-4);
+                for (int index = 0; index < QcWorld::sectionCount; ++index) {
+                    const QcChunkSection &section = chunk->section(index);
+                    stream << quint32(section.palette().size());
+                    for (const QcBlockId id : section.palette()) {
+                        stream << id;
+                    }
+                    if (section.isUniform()) {
+                        continue;
+                    }
+                    QList<std::pair<quint16, quint16>> runs;
+                    for (const quint16 value : section.indices()) {
+                        if (!runs.isEmpty() && runs.last().second == value) {
+                            ++runs.last().first;
+                        } else {
+                            runs.append({quint16(1), value});
+                        }
+                    }
+                    stream << quint32(runs.size());
+                    for (const auto &[length, value] : std::as_const(runs)) {
+                        stream << length << value;
+                    }
+                }
+            }
+            QByteArray written;
+            {
+                QDataStream stream(&written, QIODevice::WriteOnly);
+                stream.setVersion(QDataStream::Qt_6_8);
+                stream.setByteOrder(order);
+                QcProtocol::writeChunk(stream, *chunk);
+            }
+            QCOMPARE(written, expected);
+            QDataStream in(written);
+            in.setVersion(QDataStream::Qt_6_8);
+            in.setByteOrder(order);
+            const QcResult<std::shared_ptr<QcChunk>> copy = QcProtocol::readChunk(in);
+            QVERIFY(copy.has_value());
+            QVERIFY(in.atEnd());
+            for (int index = 0; index < QcWorld::sectionCount; ++index) {
+                QCOMPARE((*copy)->section(index).palette(), chunk->section(index).palette());
+                QCOMPARE((*copy)->section(index).indices(), chunk->section(index).indices());
+            }
+            // Cut off in the middle (inside the runs of a section): rejected.
+            QDataStream cut(written.left(written.size() / 2));
+            cut.setVersion(QDataStream::Qt_6_8);
+            cut.setByteOrder(order);
+            QVERIFY(!QcProtocol::readChunk(cut).has_value());
+        }
+    }
+
     void rejectsNonFiniteMovement()
     {
         QcPlayerInput input;
@@ -505,6 +571,58 @@ private slots:
         QCOMPARE(roundTrip(QcMsg::EntityRemove{8, true}).died, true);
         // Dropping is a client request; a server must not send it.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DropItem{true}), QcProtocol::Peer::Server).has_value());
+        // Falling blocks carry their block state; using an item on a creature is a client request.
+        QcMsg::EntitySpawn falling{11, QcMsg::EntitySpawn::fallingBlockType, QString(), {0.5, 80.0, 0.5}, 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
+        falling.block = 37;
+        const QcMsg::EntitySpawn fallingCopy = roundTrip(falling);
+        QCOMPARE(fallingCopy.mobType, QcMsg::EntitySpawn::fallingBlockType);
+        QCOMPARE(fallingCopy.block, 37u);
+        QCOMPARE(roundTrip(QcMsg::UseEntity{21}).id, 21u);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseEntity{21}), QcProtocol::Peer::Server).has_value());
+    }
+
+    void contentSyncCarriesLiquidsBucketsAndCreatures()
+    {
+        auto content = std::make_shared<QcContentRegistry>();
+        QcBlockDefinition lava;
+        lava.name = u"a:lava"_s;
+        lava.liquid = true;
+        lava.solid = false;
+        lava.flow.distance = 3;
+        lava.flow.movementFactor = 0.45;
+        // Server-side rules stay on the server.
+        lava.contactDamage = 3.0;
+        lava.flow.ticks = 30;
+        lava.faceTextures.fill(u"a:lava"_s);
+        QVERIFY(content->registerBlock(lava).has_value());
+        QcItemDefinition bucket;
+        bucket.name = u"a:bucket"_s;
+        bucket.scoops = true;
+        QcItemDefinition full;
+        full.name = u"a:lava_bucket"_s;
+        full.emptiesTo = u"a:bucket"_s;
+        QVERIFY(content->registerItem(bucket).has_value());
+        QVERIFY(content->registerItem(full).has_value());
+        QcMobDefinition firefly;
+        firefly.name = u"a:firefly"_s;
+        firefly.flying = true;
+        firefly.glow = 13;
+        firefly.catchWith = u"a:bottle"_s;
+        firefly.catchItem = u"a:firefly_bottle"_s;
+        firefly.parts = {{{-0.1, 0.0, -0.1}, {0.1, 0.2, 0.1}, u"a:glow"_s}};
+        content->registerMob(firefly);
+        const QcMsg::ContentSync copy = roundTrip(QcMsg::ContentSync{content});
+        const QcBlockDefinition &block = copy.content->block(*copy.content->blockId(u"a:lava"_s));
+        QCOMPARE(block.flow.distance, 3);
+        QCOMPARE(block.flow.movementFactor, 0.45);
+        QCOMPARE(block.contactDamage, 0.0);
+        QVERIFY(copy.content->item(*copy.content->itemId(u"a:bucket"_s)).scoops);
+        QCOMPARE(copy.content->item(*copy.content->itemId(u"a:lava_bucket"_s)).emptiesTo, u"a:bucket"_s);
+        const QcMobDefinition &mob = copy.content->mobs().constFirst();
+        QVERIFY(mob.flying);
+        QCOMPARE(mob.glow, 13);
+        QCOMPARE(mob.catchWith, u"a:bottle"_s);
+        QCOMPARE(mob.catchItem, u"a:firefly_bottle"_s);
     }
 
     void rejectsBadEntityAndTimeData()

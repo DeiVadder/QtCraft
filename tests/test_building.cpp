@@ -210,7 +210,7 @@ private slots:
     void baseMaterialsGetTheirParts()
     {
         // Woods get stairs, slabs, fences and gates; stone kinds stairs, slabs and walls, except
-        // that plain stone leaves walls out.
+        // that plain and polished stone leave walls out.
         QStringList expected;
         for (const QString &wood : {u"oak"_s, u"birch"_s, u"spruce"_s}) {
             for (const QString &part : {u"stairs"_s, u"slab"_s, u"fence"_s, u"fence_gate"_s}) {
@@ -223,6 +223,12 @@ private slots:
             }
         }
         expected.append({u"qtcraft:stone_stairs"_s, u"qtcraft:stone_slab"_s});
+        expected.append({u"qtcraft:stone_bricks_stairs"_s, u"qtcraft:stone_bricks_slab"_s, u"qtcraft:stone_bricks_wall"_s,
+                         u"qtcraft:polished_stone_stairs"_s, u"qtcraft:polished_stone_slab"_s});
+        // Wool of every colour gets carpets only.
+        for (const QString &colour : {u"white"_s, u"red"_s, u"yellow"_s, u"blue"_s, u"green"_s, u"black"_s, u"orange"_s, u"purple"_s}) {
+            expected.append(u"qtcraft:%1_wool_carpet"_s.arg(colour));
+        }
         QStringList generated;
         for (const QcBlockDefinition &block : m_content->blocks()) {
             if (!block.partOf.isEmpty()) {
@@ -714,7 +720,7 @@ private slots:
         QVERIFY(m_server->save().has_value());
         const auto stored = QcWorldStorage(directory.path(), m_content).readBlockUpdates();
         QVERIFY(stored.has_value());
-        QCOMPARE(stored->size(), m_server->pendingBlockUpdates() + m_server->waitingBlockUpdates());
+        QCOMPARE(stored->size(), m_server->pendingBlockUpdates() + m_server->waitingBlockUpdates() + m_server->liquids().plannedCount());
         // Over the cleared stage nothing holds the torches (elsewhere hills may reach up to them).
         const auto floating = [&] {
             int count = 0;
@@ -738,7 +744,34 @@ private slots:
         QCOMPARE(floating(), 0);
         // Only updates for chunks that are not loaded remain in the saved queue.
         QVERIFY(m_server->save().has_value());
-        QCOMPARE(QcWorldStorage(directory.path(), m_content).readBlockUpdates()->size(), m_server->waitingBlockUpdates());
+        QCOMPARE(QcWorldStorage(directory.path(), m_content).readBlockUpdates()->size(), m_server->waitingBlockUpdates() + m_server->liquids().plannedCount());
+    }
+
+    void commandUpdatesAreCappedAndSavesTruncate()
+    {
+        QTemporaryDir directory;
+        QcServerConfig config;
+        config.worldDirectory = directory.path();
+        config.maxCommandBlockUpdates = 1000;
+        config.maxSavedBlockUpdates = 300;
+        join(config);
+        hold("stone", 5);
+        // A /fill of 6912 torches would queue about seven updates per block. Sent without a tick, so
+        // the queue is seen before any of it is worked off.
+        const QcBlockPos low = m_feet.offset(-23, 2, -23);
+        m_client->connection.send(
+            QcMsg::ChatInput{u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(low.x + 47).arg(low.y + 2).arg(low.z + 47)});
+        pump();
+        QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1000));
+        QVERIFY(m_server->droppedBlockUpdates() > 5000);
+        // Saving keeps the first 300 updates, writes everything else and the player first.
+        QVERIFY(m_server->save().has_value());
+        const QcWorldStorage storage(directory.path(), m_content);
+        QCOMPARE(storage.readBlockUpdates()->size(), qsizetype(300));
+        QStringList warnings;
+        const auto player = storage.readPlayer(u"Builder"_s, warnings);
+        QVERIFY(player.has_value() && player->has_value());
+        QCOMPARE(player->value().inventory.countOf(item("stone")), 5);
     }
 
     void doorsAndBlocksNeverCloseOnBodies()

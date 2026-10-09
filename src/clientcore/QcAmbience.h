@@ -3,9 +3,12 @@
 #include "QcBlockAccess.h"
 #include "QcVec3.h"
 
+#include <optional>
+
 // Levels (0..1) of the three ambience loops, chosen from the surroundings with simple rules:
 // wind under the open sky (stronger up high), a cave rumble under a thick rock ceiling, water
-// when water blocks are near. The loops cross-fade by moving the levels gradually.
+// when water blocks are near. The loops cross-fade by moving the levels gradually. Glowing liquids
+// (lava) are no water: they pop now and then instead.
 class QcAmbience
 {
 public:
@@ -32,6 +35,10 @@ public:
 
     // Target levels for a listener whose eyes are at `eye`. Unloaded blocks count as air.
     static Levels targets(const QcBlockAccess &world, const QcVec3 &eye);
+    // The nearest glowing liquid (lava) among the blocks sampled for water, if any.
+    static std::optional<QcBlockPos> nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye);
+    // Chance per ambience sample that lava nearby pops.
+    static constexpr double lavaPopChance = 0.35;
     // Moves `current` towards `target` by at most fadePerSecond * seconds per loop.
     static Levels approach(Levels current, Levels target, double seconds);
 };

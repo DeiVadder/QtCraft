@@ -1,0 +1,7 @@
+{
+    "name": "lava_bucket",
+    "maxStack": 1,
+    "places": "lava",
+    "emptiesTo": "bucket",
+    "fuelSeconds": 1000
+}

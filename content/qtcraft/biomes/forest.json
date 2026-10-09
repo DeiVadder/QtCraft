@@ -16,6 +16,30 @@
         {
             "feature": "birch_tree",
             "density": 0.005
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.06
+        },
+        {
+            "feature": "poppy",
+            "density": 0.006
+        },
+        {
+            "feature": "dandelion",
+            "density": 0.004
+        },
+        {
+            "feature": "brown_mushroom",
+            "density": 0.004
+        },
+        {
+            "feature": "red_mushroom",
+            "density": 0.002
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.15
         }
     ]
 }

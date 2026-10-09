@@ -90,6 +90,8 @@ public:
     // Items removed because a limit was exceeded since the start.
     qint64 discardedCount() const { return m_discarded; }
     void clear();
+    // Removes the awake items that match (burning in lava); returns how many.
+    qsizetype removeWhere(const std::function<bool(const Item &)> &match);
     // Replaces all items, e.g. from a save; ids are assigned by `nextEntityId`.
     void restore(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId);
 

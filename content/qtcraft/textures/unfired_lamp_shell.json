@@ -1,0 +1,8 @@
+{
+    "name": "unfired_lamp_shell",
+    "pattern": "lantern",
+    "primary": "#a0a6b2",
+    "secondary": "#6c707a",
+    "variation": 0.06,
+    "seed": 325
+}

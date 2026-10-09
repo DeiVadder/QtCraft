@@ -13,6 +13,18 @@
         {
             "feature": "spruce_tree",
             "density": 0.012
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.02
+        },
+        {
+            "feature": "brown_mushroom",
+            "density": 0.003
+        },
+        {
+            "feature": "snow_layer",
+            "density": 0.03
         }
     ]
 }

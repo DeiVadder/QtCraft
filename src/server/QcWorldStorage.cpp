@@ -33,6 +33,8 @@ constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
 constexpr QByteArrayView regionMagic("QCRG");
 constexpr QByteArrayView playerMagic("QCPL");
 constexpr QByteArrayView entitiesMagic("QCEN");
+// Version 2 adds falling blocks after the saplings.
+constexpr quint16 entitiesVersion = 2;
 constexpr QByteArrayView machinesMagic("QCMA");
 constexpr QByteArrayView containersMagic("QCCO");
 constexpr quint16 containersVersion = 1;
@@ -417,7 +419,13 @@ QcStatus QcWorldStorage::writeEntities(const QcWorldEntities &entities) const
     for (const QcPlantManager::Sapling &sapling : entities.saplings) {
         stream << qint32(sapling.pos.x) << qint32(sapling.pos.y) << qint32(sapling.pos.z) << sapling.remaining;
     }
-    return writeContainer(QDir(m_directory).filePath(u"entities.qce"_s), entitiesMagic, payload);
+    stream << quint32(entities.fallingBlocks.size());
+    for (const QcFallingBlockManager::Falling &falling : entities.fallingBlocks) {
+        const QcEntityMotion &motion = falling.motion;
+        stream << m_content->stateName(falling.block) << motion.position.x << motion.position.y << motion.position.z
+               << motion.velocity.x << motion.velocity.y << motion.velocity.z << falling.age;
+    }
+    return writeContainer(QDir(m_directory).filePath(u"entities.qce"_s), entitiesMagic, payload, entitiesVersion);
 }
 
 QcResult<QcWorldEntities> QcWorldStorage::readEntities(QStringList &warnings) const
@@ -426,7 +434,8 @@ QcResult<QcWorldEntities> QcWorldStorage::readEntities(QStringList &warnings) co
     if (!QFile::exists(path)) {
         return QcWorldEntities();
     }
-    const QcResult<QByteArray> payload = readContainer(path, entitiesMagic);
+    quint16 version = 0;
+    const QcResult<QByteArray> payload = readContainer(path, entitiesMagic, entitiesVersion, &version);
     if (!payload) {
         return qcError(payload.error());
     }
@@ -492,6 +501,34 @@ QcResult<QcWorldEntities> QcWorldStorage::readEntities(QStringList &warnings) co
             return qcError(u"%1 is damaged (sapling %2)"_s.arg(path).arg(i));
         }
         entities.saplings.append({pos, std::clamp(remaining, 0.0, 86400.0)});
+    }
+    quint32 fallingCount = 0;
+    if (version >= 2 && !QcStreamLimits::readCount(stream, maxStoredEntities, fallingCount)) {
+        return qcError(u"%1 is damaged (falling block count)"_s.arg(path));
+    }
+    for (quint32 i = 0; i < fallingCount; ++i) {
+        QString name;
+        QcFallingBlockManager::Falling falling;
+        QcEntityMotion &motion = falling.motion;
+        stream >> name >> motion.position.x >> motion.position.y >> motion.position.z >> motion.velocity.x >> motion.velocity.y
+            >> motion.velocity.z >> falling.age;
+        if (stream.status() != QDataStream::Ok || !finite(motion.position) || !finite(motion.velocity) || !std::isfinite(falling.age)
+            || std::abs(motion.position.x) > horizontalLimit || std::abs(motion.position.z) > horizontalLimit
+            || std::abs(motion.position.y) > 4.0 * QcWorld::worldHeight) {
+            return qcError(u"%1 is damaged (falling block %2)"_s.arg(path).arg(i));
+        }
+        QStringList problems;
+        const std::optional<QcBlockId> block = m_content->stateId(name, &problems);
+        if (!block || *block == qcAirBlockId) {
+            warnings.append(u"%1: unknown falling block '%2' dropped"_s.arg(path, name));
+            continue;
+        }
+        warnings.append(problems);
+        motion.velocity = {std::clamp(motion.velocity.x, -60.0, 60.0), std::clamp(motion.velocity.y, -60.0, 60.0),
+                           std::clamp(motion.velocity.z, -60.0, 60.0)};
+        falling.age = std::clamp(falling.age, 0.0, QcFallingBlockManager::maxSeconds);
+        falling.block = *block;
+        entities.fallingBlocks.append(falling);
     }
     if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
         return qcError(u"%1 is damaged"_s.arg(path));

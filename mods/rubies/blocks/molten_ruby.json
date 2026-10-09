@@ -1,0 +1,41 @@
+{
+    "name": "molten_ruby",
+    "render": "cutout",
+    "solid": false,
+    "liquid": true,
+    "replaceable": true,
+    "hardness": -1,
+    "drops": [],
+    "light": 10,
+    "contactDamage": 1,
+    "states": {
+        "level": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "falling": [
+            false,
+            true
+        ]
+    },
+    "flow": {
+        "distance": 4,
+        "ticks": 15,
+        "movement": 0.6,
+        "bucket": "molten_ruby_bucket",
+        "sound": "qtcraft:liquid.lava.pop",
+        "reactions": [
+            {
+                "with": "qtcraft:water",
+                "source": "qtcraft:obsidian",
+                "flowing": "ruby_sand"
+            }
+        ]
+    },
+    "textures": {
+        "all": "molten_ruby"
+    }
+}

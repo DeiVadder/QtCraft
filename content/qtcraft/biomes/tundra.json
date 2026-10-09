@@ -13,6 +13,10 @@
         {
             "feature": "spruce_tree",
             "density": 0.001
+        },
+        {
+            "feature": "snow_layer",
+            "density": 0.05
         }
     ]
 }

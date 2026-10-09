@@ -1,0 +1,9 @@
+{
+    "name": "cornflower",
+    "type": "plant",
+    "block": "cornflower",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

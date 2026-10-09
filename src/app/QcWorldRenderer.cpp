@@ -457,16 +457,19 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
             drawBuffers(m_entityBuffers);
         }
 
-        // Back-to-front by section centre so overlapping translucent sections blend correctly.
+        // Back-to-front by section centre so overlapping translucent sections blend correctly; only
+        // the sections with translucent faces take part.
         const QVector3D eye = m_camera.position;
-        std::ranges::sort(visible, [&eye](const GpuMesh *a, const GpuMesh *b) {
-            const QVector3D centreA = (a->boundsMin + a->boundsMax) * 0.5f;
-            const QVector3D centreB = (b->boundsMin + b->boundsMax) * 0.5f;
-            return (centreA - eye).lengthSquared() > (centreB - eye).lengthSquared();
-        });
+        QList<std::pair<float, const GpuMesh *>> translucent;
+        for (const GpuMesh *mesh : std::as_const(visible)) {
+            if (mesh->translucent.indexCount > 0) {
+                translucent.append({((mesh->boundsMin + mesh->boundsMax) * 0.5f - eye).lengthSquared(), mesh});
+            }
+        }
+        std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<float, const GpuMesh *>::first);
         commandBuffer->setGraphicsPipeline(m_translucentPipeline.get());
         commandBuffer->setShaderResources();
-        for (const GpuMesh *mesh : std::as_const(visible)) {
+        for (const auto &[distance, mesh] : std::as_const(translucent)) {
             drawBuffers(mesh->translucent);
         }
 

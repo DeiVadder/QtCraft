@@ -1,0 +1,15 @@
+{
+    "name": "ruby_sand",
+    "type": "shapeless",
+    "ingredients": [
+        "qtcraft:sand",
+        "qtcraft:sand",
+        "qtcraft:sand",
+        "qtcraft:sand",
+        "ruby"
+    ],
+    "result": {
+        "item": "ruby_sand",
+        "count": 4
+    }
+}

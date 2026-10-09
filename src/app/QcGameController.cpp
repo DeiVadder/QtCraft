@@ -762,7 +762,26 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         if (state == QcClientSession::State::Playing) {
             setPhase(u"playing"_s);
             for (const QString &line : std::as_const(m_startupChat)) {
-                m_session->sendChat(line);
+                // "@<ms> <text>" waits that long after loading (scenes in motion for screenshots);
+                // the screenshot is taken only after the last delayed line.
+                const qsizetype space = line.indexOf(u' ');
+                bool delayed = false;
+                const int delayMs = line.startsWith(u'@') && space > 1 ? QStringView(line).mid(1, space - 1).toInt(&delayed) : 0;
+                if (!delayed || delayMs < 0) {
+                    m_session->sendChat(line);
+                    continue;
+                }
+                if (m_screenshotHook) {
+                    m_screenshotHook->hold();
+                }
+                QTimer::singleShot(delayMs, this, [this, text = line.mid(space + 1)] {
+                    if (m_session) {
+                        m_session->sendChat(text);
+                    }
+                    if (m_screenshotHook) {
+                        m_screenshotHook->release();
+                    }
+                });
             }
             if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s) {
                 // Uses the block in view once the startup commands have placed it.
@@ -954,8 +973,16 @@ void QcGameController::updateEntities(double alpha, QcCameraMode mode)
     };
     const auto appendCreature = [&](const QcClientEntity &entity) {
         const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-        const QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, alpha), lightAt(position),
-                                                  entity.hurtTicks > 0};
+        QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, alpha), lightAt(position),
+                                            entity.hurtTicks > 0};
+        if (entity.mobType >= 0 && entity.mobType < mobs.size() && mobs[entity.mobType].glow > 0) {
+            // Glowing creatures pulse slowly, each in its own rhythm; at full glow they are drawn brighter
+            // than any lit surface (the shader multiplies, so values above 1 shine).
+            constexpr double emission = 1.8;
+            const double pulse = 0.75 + 0.25 * std::sin(seconds * 2.2 + double(entity.id % 97));
+            const float glow = float(emission * pulse * mobs[entity.mobType].glow / double(QcMobDefinition::maxGlow));
+            placement.light = QcEntityLight(placement.light.sky, std::max(placement.light.block, glow));
+        }
         QcEntityPose pose = QcClientSession::poseOf(entity, alpha);
         const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
         QcEntityMesher::ModelLook look;
@@ -980,6 +1007,12 @@ void QcGameController::updateEntities(double alpha, QcCameraMode mode)
     for (const QcClientEntity &entity : m_session->entities()) {
         if (entity.isItem()) {
             QcEntityMesher::appendItem(*mesh, entity, itemLook(content, entity.item.item), alpha, lightAt(entity.position), seconds, uv);
+        } else if (entity.isFallingBlock()) {
+            QcEntityMesher::ItemLook look;
+            look.cube = true;
+            look.faces = content.block(entity.block).faceTextures;
+            const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
+            QcEntityMesher::appendBlock(*mesh, look, position, lightAt(position), uv);
         } else {
             appendCreature(entity);
         }
@@ -1399,6 +1432,28 @@ void QcGameController::startBenchmark()
             });
             torches->start(250);
         }
+        if (m_benchmarkLiquids) {
+            // Every half second a source appears four metres up on a ring around the player (every
+            // third one lava) or an earlier one is taken away, so the floor floods and drains all
+            // the time.
+            auto *sources = new QTimer(this);
+            auto step = std::make_shared<int>(0);
+            connect(sources, &QTimer::timeout, this, [this, sources, step] {
+                if (!m_benchmarkRunning || !m_session) {
+                    sources->deleteLater();
+                    return;
+                }
+                constexpr int ring = 6;
+                const int index = (*step / 2) % ring;
+                const double angle = index * 2.0 * std::numbers::pi / ring;
+                const int x = int(std::lround(std::cos(angle) * 8.0));
+                const int z = int(std::lround(std::sin(angle) * 8.0));
+                const QString source = index % 3 == 2 ? u"lava"_s : u"water"_s;
+                m_session->sendChat(u"/setblock ~%1 ~4 ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? source : u"air"_s));
+                ++*step;
+            });
+            sources->start(500);
+        }
         return;
     }
     m_inputEnabled = true;
@@ -1492,7 +1547,10 @@ void QcGameController::onFrame()
         const qint64 ns = m_benchmarkFrame.nsecsElapsed();
         m_benchmarkFrameNs.append(ns);
         if (ns > 100'000'000) {
-            qCInfo(lcGame) << "Benchmark: frame" << m_benchmarkFrameNs.size() << "took" << ns / 1'000'000 << "ms";
+            // A hidden or covered window may stall frames for reasons outside the game.
+            qCInfo(lcGame) << "Benchmark: frame" << m_benchmarkFrameNs.size() << "took" << ns / 1'000'000 << "ms, window"
+                           << (m_window && m_window->isExposed() ? "exposed" : "not exposed") << "visibility"
+                           << (m_window ? m_window->visibility() : QWindow::Hidden) << "active" << (m_window && m_window->isActive());
         }
         m_benchmarkFrame.restart();
     }

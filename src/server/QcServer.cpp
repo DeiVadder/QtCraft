@@ -51,6 +51,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_content, quint64(m_config.seed))
     , m_machines(m_content)
     , m_containers(m_content)
+    , m_liquids(m_content)
+    , m_falling(m_content)
     , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
     , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
 {
@@ -123,6 +125,7 @@ QcStatus QcServer::openWorld()
     }
     m_items.restore(entities->items, [this] { return m_nextEntityId++; });
     m_plants.restoreSaplings(entities->saplings);
+    m_falling.restore(entities->fallingBlocks, [this] { return m_nextEntityId++; });
     QStringList machineWarnings;
     const QcResult<QList<QcMachineManager::Machine>> machines = m_storage->readMachines(machineWarnings);
     for (const QString &warning : std::as_const(machineWarnings)) {
@@ -199,42 +202,46 @@ QcStatus QcServer::save()
     if (!m_storage) {
         return {};
     }
-    m_info.lastPlayed = QDateTime::currentDateTimeUtc();
-    if (const QcStatus written = m_storage->writeInfo(m_info); !written) {
-        return written;
+    const QcWorldStorage &storage = *m_storage;
+    QcStatus result;
+    const auto keep = [&result](const QcStatus &written) {
+        if (!written && result) {
+            result = written;
+        }
+    };
+    // Players first: their inventories matter most and must not depend on the world files.
+    for (const auto &client : m_clients) {
+        if (client->joined) {
+            keep(savePlayer(*client));
+        }
     }
+    m_info.lastPlayed = QDateTime::currentDateTimeUtc();
+    keep(storage.writeInfo(m_info));
     const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks = m_world.takeChunksToSave();
-    if (const QcStatus written = m_storage->writeChunks(chunks); !written) {
+    if (const QcStatus written = storage.writeChunks(chunks); !written) {
         // Keep the regions dirty so the next save tries again.
         m_world.markDirty(chunks.keys());
-        return written;
+        keep(written);
     }
-    if (const QcStatus written = saveEntities(); !written) {
-        return written;
-    }
-    if (const QcStatus written = m_storage ? m_storage->writeMachines(m_machines.machines()) : QcStatus(); !written) {
-        return written;
-    }
-    if (const QcStatus written = m_storage ? m_storage->writeContainers(m_containers.containers()) : QcStatus(); !written) {
-        return written;
-    }
+    keep(saveEntities());
+    keep(storage.writeMachines(m_machines.machines()));
+    keep(storage.writeContainers(m_containers.containers()));
     // Pending neighbour updates survive a restart, so a large /fill never leaves floating torches.
+    // Those of player actions come first when there are more than a save holds.
     QList<QcBlockPos> updates(m_playerUpdates.begin(), m_playerUpdates.end());
+    // Planned flow steps come back as updates, which plan them again.
+    updates.append(m_liquids.plannedPositions());
     updates.append(QList<QcBlockPos>(m_commandUpdates.begin(), m_commandUpdates.end()));
     for (const QSet<QcBlockPos> &waiting : std::as_const(m_waitingUpdates)) {
         updates.append(QList<QcBlockPos>(waiting.begin(), waiting.end()));
     }
-    if (const QcStatus written = m_storage ? m_storage->writeBlockUpdates(updates) : QcStatus(); !written) {
-        return written;
+    const qsizetype storable = std::min(m_config.maxSavedBlockUpdates, qsizetype(QcWorldStorage::maxStoredBlockUpdates));
+    if (updates.size() > storable) {
+        qCWarning(lcServer) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
+        updates.resize(storable);
     }
-    for (const auto &client : m_clients) {
-        if (client->joined) {
-            if (const QcStatus saved = savePlayer(*client); !saved) {
-                return saved;
-            }
-        }
-    }
-    return {};
+    keep(storage.writeBlockUpdates(updates));
+    return result;
 }
 
 QcStatus QcServer::saveEntities()
@@ -246,6 +253,7 @@ QcStatus QcServer::saveEntities()
     // Waiting drops follow the items; on the next start they wait again if there is no room.
     entities.items.append(m_items.queued());
     entities.saplings = m_plants.saplings();
+    entities.fallingBlocks = m_falling.all();
     // Only called from save(), which returns early without storage.
     return m_storage ? m_storage->writeEntities(entities) : QcStatus();
 }
@@ -299,7 +307,7 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
     // The dead neither mine nor use items; their mining state is dropped.
     const bool worldAction = std::holds_alternative<QcMsg::StartMining>(message)
                              || std::holds_alternative<QcMsg::FinishMining>(message)
-                             || std::holds_alternative<QcMsg::UseItem>(message);
+                             || std::holds_alternative<QcMsg::UseItem>(message) || std::holds_alternative<QcMsg::UseEntity>(message);
     if (client.dead && worldAction) {
         client.miningPos.reset();
         return;
@@ -338,6 +346,8 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         handleSetAppearance(client, look->appearance);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
         handleAttack(client, attack->id);
+    } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
+        handleUseEntity(client, useEntity->id);
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
         handleRespawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
@@ -541,8 +551,11 @@ void QcServer::tick()
     m_world.collectGeneratedChunks();
     handleLoadedChunks();
     processBlockUpdates();
+    processLiquids();
     tickGameplay();
+    applyContactDamage();
     tickItemsAndPlants();
+    tickFallingBlocks();
     tickMachines();
     for (const auto &client : m_clients) {
         if (client->state != Client::State::Playing) {

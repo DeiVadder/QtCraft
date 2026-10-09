@@ -2,7 +2,7 @@
 # Per-stage performance check: runs fixed scenarios several times in the release build at view
 # distance 8 and prints the median of each value. Not part of ctest; never run it in parallel with
 # builds or tests, the machine load would distort the numbers.
-# Usage: scripts/bench.sh [runs] [seconds]
+# Usage: scripts/bench.sh [runs] [seconds]   (SCENARIOS="liquids" runs a subset)
 #
 # Scenarios:
 #   stand  - standing still at the spawn
@@ -10,6 +10,8 @@
 #   crowd  - standing among summoned mobs (humanoid zombies included) and dropped items
 #   light  - standing on a cleared stone floor while torches appear and vanish around the player
 #            four times a second (block light and remeshing in the background)
+#   liquids - standing on a cleared stone floor while water and lava sources appear above it and
+#            vanish again twice a second (flow steps on the server, liquid meshing)
 
 set -u
 
@@ -45,6 +47,10 @@ run_scenario() {
         walk=light
         set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
     fi
+    if [ "$scenario" = liquids ]; then
+        walk=liquids
+        set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air"
+    fi
     if [ "$scenario" = crowd ]; then
         set -- "$@" --chat "/time set day" --chat "/summon qtcraft:pig 16" --chat "/summon qtcraft:pig 16" \
             --chat "/summon qtcraft:zombie 16" --chat "/summon qtcraft:slime 8"
@@ -76,7 +82,7 @@ for key in $KEYS; do
     printf ' %18s' "$key"
 done
 printf '\n'
-for scenario in stand sprint crowd light; do
+for scenario in ${SCENARIOS:-stand sprint crowd light liquids}; do
     results="$WORK/$scenario.results"
     : >"$results"
     i=1

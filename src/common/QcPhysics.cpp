@@ -121,6 +121,13 @@ bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos)
     return block && content.isValidBlock(*block) && content.block(*block).liquid;
 }
 
+double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    const QcContentRegistry &content = world.content();
+    return block && content.isValidBlock(*block) && content.block(*block).liquid ? content.block(*block).flow.movementFactor : 1.0;
+}
+
 MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &world)
 {
     const ObstacleList obstacles = solidBoxesIn(box.expandedTowards(delta), world);
@@ -157,15 +164,17 @@ MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, 
     motion.climbing = !motion.inWater && touchesClimbable(world, boxAt(motion.position, width, height));
     const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
     const double blend = std::min(1.0, acceleration * dt);
-    motion.velocity.x += (wish.x * speed - motion.velocity.x) * blend;
-    motion.velocity.z += (wish.z * speed - motion.velocity.z) * blend;
+    // Thick liquids (lava) slow every movement inside them.
+    const double factor = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    motion.velocity.x += (wish.x * speed * factor - motion.velocity.x) * blend;
+    motion.velocity.z += (wish.z * speed * factor - motion.velocity.z) * blend;
 
     if (motion.inWater) {
         motion.velocity.y -= waterGravity * dt;
         if (jump) {
-            motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed);
+            motion.velocity.y = std::min(motion.velocity.y + swimUpAcceleration * dt, swimUpSpeed * factor);
         }
-        motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed);
+        motion.velocity.y = std::max(motion.velocity.y, -waterSinkSpeed * factor);
     } else {
         if (jump && motion.onGround) {
             motion.velocity.y = jumpVelocity;
@@ -187,7 +196,8 @@ MoveResult stepEntity(QcEntityMotion &motion, const QcVec3 &wish, double speed, 
     }
 
     MoveResult move = moveBox(boxAt(motion.position, width, height), motion.velocity * dt, world);
-    if (motion.onGround && !motion.inWater && (move.blockedX || move.blockedZ)) {
+    // A body that just jumped keeps its jump instead of stepping up.
+    if (motion.onGround && !motion.inWater && motion.velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
         // Walking into something low (a slab, a stair step): try the same move lifted by up to
         // stepHeight and keep it when it gets further.
         const QcAabb start = boxAt(motion.position, width, height);

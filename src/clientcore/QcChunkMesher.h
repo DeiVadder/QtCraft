@@ -32,7 +32,10 @@ public:
     // Brightness by number of occluders around a vertex (0 = fully occluded corner).
     static constexpr std::array<float, 4> ambientOcclusionLevels = {0.45f, 0.65f, 0.82f, 1.0f};
     // Depth by which the surface of a liquid lies below the block top.
-    static constexpr float liquidSurfaceDrop = 0.125f;
+    static constexpr float liquidSurfaceDrop = QcBlockRenderTable::liquidSurfaceDrop;
+    // Sky light of a section is computed over the cells from this many blocks below to this many
+    // blocks above it (and one chunk around it).
+    static constexpr int lightMargin = 16;
 
     static QcChunkMesh mesh(const QcMeshInput &input);
 };

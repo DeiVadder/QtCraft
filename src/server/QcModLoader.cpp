@@ -133,6 +133,7 @@ constexpr qint64 maxOreBlocksPerChunk = 4096;
 constexpr qsizetype maxBiomes = 256;
 constexpr qsizetype maxFeatures = 1024;
 constexpr qsizetype maxPlacements = 4096;
+constexpr qint64 maxPoolAttemptsPerChunk = 64;
 
 // Server-side costs that clients never see.
 QString worldgenProblem(const QcContentRegistry &content)
@@ -152,6 +153,13 @@ QString worldgenProblem(const QcContentRegistry &content)
         return u"too many biomes or features (at most %1 biomes, %2 features, %3 feature placements)"_s.arg(maxBiomes)
             .arg(maxFeatures)
             .arg(maxPlacements);
+    }
+    qint64 poolAttempts = 0;
+    for (const QcFeatureDefinition &feature : content.features()) {
+        poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? feature.attempts : 0;
+    }
+    if (poolAttempts > maxPoolAttemptsPerChunk) {
+        return u"too many pools (at most %1 pool attempts per chunk)"_s.arg(maxPoolAttemptsPerChunk);
     }
     return {};
 }

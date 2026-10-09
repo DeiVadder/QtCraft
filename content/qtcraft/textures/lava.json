@@ -1,0 +1,8 @@
+{
+    "name": "lava",
+    "pattern": "lava",
+    "primary": "#c8400c",
+    "secondary": "#ffb22a",
+    "variation": 0.12,
+    "seed": 301
+}

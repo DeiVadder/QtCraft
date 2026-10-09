@@ -1,0 +1,8 @@
+{
+    "name": "ruby_rose",
+    "pattern": "flower",
+    "primary": "#e0204a",
+    "secondary": "#2e7a3a",
+    "variation": 0.1,
+    "seed": 903
+}

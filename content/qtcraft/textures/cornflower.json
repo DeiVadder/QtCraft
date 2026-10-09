@@ -1,0 +1,8 @@
+{
+    "name": "cornflower",
+    "pattern": "flower",
+    "primary": "#4664e0",
+    "secondary": "#3c8232",
+    "variation": 0.1,
+    "seed": 314
+}

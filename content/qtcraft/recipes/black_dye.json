@@ -1,0 +1,10 @@
+{
+    "name": "black_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "#coals"
+    ],
+    "result": {
+        "item": "black_dye"
+    }
+}

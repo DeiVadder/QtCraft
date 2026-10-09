@@ -301,6 +301,30 @@ private slots:
         QCOMPARE(player.position.y, 65.0);
     }
 
+    void jumpingAgainstAStepKeepsTheJump()
+    {
+        const QcContentRegistry &content = m_fixture.content;
+        QcTestWorld world(content);
+        world.fillBox({-4, 63, -8}, {4, 63, 8}, m_fixture.stone);
+        world.set({0, 64, -1}, m_fixture.state(u"t:slab[type=bottom]"_s));
+        // Standing against the slab (its south face at z = 0, the body reaches 0.3 m north).
+        QcEntityMotion motion;
+        motion.position = {0.5, 64.0, 0.3};
+        motion.onGround = true;
+        QcPhysics::stepEntity(motion, {0.0, 0.0, -1.0}, QcPhysics::walkSpeed, true, 0.6, 1.8, world, dt);
+        // The jump: velocity after one tick of gravity, rise by that velocity over the tick.
+        const double velocity = QcPhysics::jumpVelocity - QcPhysics::gravity * dt;
+        QCOMPARE(motion.velocity.y, velocity);
+        QCOMPARE(motion.position.y, 64.0 + velocity * dt);
+        QVERIFY(!motion.onGround);
+        // Without the jump the same move steps onto the slab.
+        QcEntityMotion step;
+        step.position = {0.5, 64.0, 0.3};
+        step.onGround = true;
+        QcPhysics::stepEntity(step, {0.0, 0.0, -1.0}, QcPhysics::walkSpeed, false, 0.6, 1.8, world, dt);
+        QCOMPARE(step.position.y, 64.5);
+    }
+
     void solidRaysHitTheTopOfFences() const
     {
         const QcContentRegistry &content = m_fixture.content;

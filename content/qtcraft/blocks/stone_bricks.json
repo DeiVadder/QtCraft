@@ -1,0 +1,10 @@
+{
+    "name": "stone_bricks",
+    "sound": "stone",
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "stone_bricks"
+    }
+}

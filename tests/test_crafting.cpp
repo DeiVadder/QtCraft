@@ -139,6 +139,51 @@ private slots:
         QCOMPARE(matched(grid(2, {{0, m_stone}, {1, m_coal}, {2, m_coal}, {3, m_coal}}), 2), QString());
     }
 
+    void narrowTagsGoBeforeWideTags()
+    {
+        // "both" carries the tags t:narrow and t:wide, "wide" only t:wide.
+        QcContentRegistry content;
+        QcItemDefinition both;
+        both.name = u"t:both"_s;
+        both.tags = {u"t:narrow"_s, u"t:wide"_s};
+        QcItemDefinition wide;
+        wide.name = u"t:wide_only"_s;
+        wide.tags = {u"t:wide"_s};
+        QcItemDefinition result;
+        result.name = u"t:result"_s;
+        for (const QcItemDefinition &item : {both, wide, result}) {
+            QVERIFY(content.registerItem(item).has_value());
+        }
+        // The wide tag is listed first; taken greedily it would grab "both" and leave nothing for
+        // the narrow tag.
+        QcRecipeDefinition shapeless;
+        shapeless.name = u"t:mix"_s;
+        shapeless.shaped = false;
+        shapeless.ingredients = {u"#t:wide"_s, u"#t:narrow"_s};
+        shapeless.resultItem = u"t:result"_s;
+        content.registerRecipe(shapeless);
+        const QcItemId bothId = *content.itemId(u"t:both"_s);
+        const QcItemId wideId = *content.itemId(u"t:wide_only"_s);
+        QCOMPARE(QcCrafting::requirements(content, shapeless),
+                 (QList<std::pair<QString, int>>{{u"#t:narrow"_s, 1}, {u"#t:wide"_s, 1}}));
+        QcInventory inventory;
+        inventory.add(bothId, 1, content);
+        inventory.add(wideId, 1, content);
+        QCOMPARE(inventory.slot(0).item, bothId);
+        QCOMPARE(QcCrafting::timesCraftable(content, inventory, shapeless, 64), 1);
+        QcInventory attempt = inventory;
+        QVERIFY(QcCrafting::consume(content, attempt, shapeless, 1));
+        QCOMPARE(attempt.countOf(bothId) + attempt.countOf(wideId), 0);
+        // The grid matches in the same order.
+        QList<QcItemStack> cells(4);
+        cells[0] = {bothId, 1, 0};
+        cells[1] = {wideId, 1, 0};
+        QCOMPARE(QcCrafting::match(content, cells, 2), std::optional<qsizetype>(0));
+        // Two "wide" items do not make it: the narrow tag has nothing.
+        cells[0] = {wideId, 1, 0};
+        QVERIFY(!QcCrafting::match(content, cells, 2));
+    }
+
     void requirementsCountEveryCell()
     {
         const QList<std::pair<QString, int>> needed =

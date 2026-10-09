@@ -31,6 +31,8 @@ qt_add_library(qc_common STATIC
     QcInventory.h QcInventory.cpp
     QcItemDefinition.h
     QcItemStack.h
+    QcLiquidDefinition.h
+    QcLiquidReaction.h
     QcMachineDefinition.h
     QcMailbox.h
     QcMessages.h

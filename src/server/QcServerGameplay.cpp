@@ -19,8 +19,15 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+Q_LOGGING_CATEGORY(lcServerGameplay, "qtcraft.server")
+
+} // namespace
 
 const QcItemDefinition *QcServer::heldItem(const Client &client) const
 {
@@ -88,6 +95,14 @@ void QcServer::queueBlockUpdate(QcBlockPos pos)
     }
     if (m_commandUpdateMode) {
         if (!m_queuedPlayerUpdates.contains(pos) && !m_queuedCommandUpdates.contains(pos)) {
+            if (std::cmp_greater_equal(m_commandUpdates.size(), m_config.maxCommandBlockUpdates)) {
+                // Bounded memory and save size; a block whose update was dropped is checked again
+                // by the next change next to it.
+                if (m_droppedBlockUpdates++ == 0) {
+                    qCWarning(lcServerGameplay) << "Too many pending command updates; dropping further ones";
+                }
+                return;
+            }
             m_queuedCommandUpdates.insert(pos);
             m_commandUpdates.push_back(pos);
         }
@@ -112,12 +127,7 @@ void QcServer::processBlockUpdates()
         ++m_processedBlockUpdates;
         const std::optional<QcBlockId> block = m_world.blockAt(pos);
         if (!block) {
-            if (m_waitingUpdateCount < maxWaitingBlockUpdates) {
-                QSet<QcBlockPos> &waiting = m_waitingUpdates[pos.chunk()];
-                const qsizetype before = waiting.size();
-                waiting.insert(pos);
-                m_waitingUpdateCount += waiting.size() - before;
-            }
+            waitForChunk(pos.chunk(), pos);
             continue;
         }
         if (*block == qcAirBlockId) {
@@ -125,7 +135,17 @@ void QcServer::processBlockUpdates()
         }
         // Cascades stay in the queue they come from.
         m_commandUpdateMode = fromCommand;
-        if (!QcBlockRules::isSupported(m_world, pos, *block)) {
+        if (QcFallingBlockManager::shouldFall(m_world, pos)) {
+            startFalling(pos, *block);
+        } else if (QcLiquidFlow::flows(*m_content, *block)) {
+            // Lava meeting water hardens at once; flowing waits for the liquid's next step.
+            if (const std::optional<QcBlockId> turned = QcLiquidFlow::reaction(m_world, pos, *block)) {
+                setBlockAndBroadcast(pos, *turned);
+                playSound(QString::fromLatin1(QcSoundKeys::liquidHiss), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
+            } else {
+                m_liquids.schedule(m_world, pos, m_tickCount);
+            }
+        } else if (!QcBlockRules::isSupported(m_world, pos, *block)) {
             // A door half without its partner was cut off by a command or a removed mod: the item
             // went with the other half.
             const bool lone = m_content->block(*block).door && !QcBlockRules::hasDoorPartner(m_world, pos, *block);
@@ -135,6 +155,136 @@ void QcServer::processBlockUpdates()
         }
         m_commandUpdateMode = false;
     }
+}
+
+void QcServer::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
+{
+    if (m_waitingUpdateCount < maxWaitingBlockUpdates) {
+        QSet<QcBlockPos> &waiting = m_waitingUpdates[chunk];
+        const qsizetype before = waiting.size();
+        waiting.insert(pos);
+        m_waitingUpdateCount += waiting.size() - before;
+    }
+}
+
+void QcServer::processLiquids()
+{
+    if (!m_liquids.hasDueSteps(m_tickCount)) {
+        return;
+    }
+    m_liquidSoundPlayed = false;
+    // Flood cascades queue behind the updates of player actions, like commands.
+    m_commandUpdateMode = true;
+    const QcLiquidFlow::TickResult result = m_liquids.tick(m_tickCount, m_world, [this](QcBlockPos pos, QcBlockId block) {
+        const std::optional<QcBlockId> existing = m_world.blockAt(pos);
+        if (!existing || !m_content->isValidBlock(*existing)) {
+            return;
+        }
+        const QcBlockDefinition &before = m_content->block(*existing);
+        const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+        if (*existing != qcAirBlockId && !before.liquid && before.washable) {
+            breakBlock(pos, true);
+        }
+        setBlockAndBroadcast(pos, block);
+        const QcBlockDefinition &after = m_content->block(block);
+        if (before.liquid && !after.liquid && block != qcAirBlockId) {
+            playSound(QString::fromLatin1(QcSoundKeys::liquidHiss), centre);
+        } else if (after.liquid && !after.flow.sound.isEmpty() && !m_liquidSoundPlayed && !m_content->isSameBlock(*existing, block)
+                   && m_soundRandom.generateDouble() < 0.25) {
+            m_liquidSoundPlayed = true;
+            playSound(after.flow.sound, centre);
+        }
+    });
+    m_commandUpdateMode = false;
+    for (const QcBlockPos &pos : result.unloaded) {
+        waitForChunk(pos.chunk(), pos);
+    }
+}
+
+void QcServer::startFalling(QcBlockPos pos, QcBlockId block)
+{
+    if (!m_falling.isFull()) {
+        setBlockAndBroadcast(pos, qcAirBlockId);
+        m_falling.start(pos, block, m_nextEntityId++);
+        return;
+    }
+    const std::optional<QcBlockPos> rest = QcFallingBlockManager::restingCell(m_world, pos);
+    setBlockAndBroadcast(pos, qcAirBlockId);
+    if (rest) {
+        landBlock(block, *rest, true);
+    }
+}
+
+void QcServer::landBlock(QcBlockId block, QcBlockPos cell, bool placed)
+{
+    const QcBlockDefinition &definition = m_content->block(block);
+    // A block landing inside a player or mob would trap it, so it drops as items instead.
+    QList<QcAabb> boxes;
+    const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
+    for (const QcAabb &box : m_content->state(block).collision) {
+        boxes.append(box.moved(corner));
+    }
+    if (placed && QcFallingBlockManager::isPassable(m_world, cell) && !overlapsBody(boxes)) {
+        setBlockAndBroadcast(cell, block);
+        if (m_world.blockAt(cell) == block) {
+            playBlockSound(definition, QcBlockSoundAction::Place, cell);
+            return;
+        }
+    }
+    dropBlockItems(definition, cell);
+}
+
+void QcServer::tickFallingBlocks()
+{
+    if (m_falling.all().isEmpty()) {
+        return;
+    }
+    const QList<QcFallingBlockManager::Landing> landed = m_falling.tick(
+        m_world, QcPhysics::tickDuration, [this](const QcVec3 &position) { return isLoadedAt(QcPhysics::blockContaining(position)); });
+    for (const QcFallingBlockManager::Landing &landing : landed) {
+        landBlock(landing.block, landing.pos, landing.placed);
+    }
+}
+
+void QcServer::applyContactDamage()
+{
+    if (!m_world.mayHaveContactDamage()) {
+        return;
+    }
+    for (const auto &client : m_clients) {
+        if (client->state != Client::State::Playing || client->dead) {
+            continue;
+        }
+        const double damage = m_world.contactDamageIn(QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight));
+        if (damage > 0.0) {
+            damagePlayer(*client, damage, {});
+        }
+    }
+    // Hurting may remove a mob, so the damage is collected before any is dealt.
+    QList<std::pair<quint32, double>> touched;
+    for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
+        const QcMobDefinition &definition = m_content->mobs()[mob.type];
+        if (const double damage = m_world.contactDamageIn(QcPhysics::boxAt(mob.motion.position, definition.width, definition.height));
+            damage > 0.0) {
+            touched.append({mob.id, damage});
+        }
+    }
+    for (const auto &[id, damage] : std::as_const(touched)) {
+        const QcMobManager::Mob *mob = m_mobs.find(id);
+        if (!mob) {
+            continue;
+        }
+        const QString sound = m_content->mobs()[mob->type].deathSound;
+        const QcVec3 position = mob->motion.position;
+        if (m_mobs.hurt(id, damage)) {
+            playSound(sound, position);
+            // Burnt creatures leave no loot.
+            m_died.insert(id);
+        }
+    }
+    m_items.removeWhere([this](const QcItemEntityManager::Item &item) {
+        return m_world.contactDamageIn(QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)) > 0.0;
+    });
 }
 
 void QcServer::handleLoadedChunks()
@@ -171,14 +321,25 @@ void QcServer::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards)
     if (!chunk) {
         return;
     }
-    // Only blocks whose state depends on the horizontal neighbour: connections and wall mounts.
+    // Only blocks whose state depends on the horizontal neighbour: connections, wall mounts and
+    // flowing liquids.
     const auto reacts = [this](QcBlockId id) {
         if (!m_content->isValidBlock(id)) {
             return false;
         }
         const QcBlockDefinition &definition = m_content->block(id);
-        return !definition.connectsTo.isEmpty() || definition.support == QcBlockSupport::Attached;
+        return !definition.connectsTo.isEmpty() || definition.support == QcBlockSupport::Attached
+               || (definition.liquid && definition.flow.flows());
     };
+    // Borders of oceans and lakes repeat the same pair of states over and over; the check whether
+    // a still source can flow across is made once per pair.
+    struct SourceCheck
+    {
+        QcBlockId block = qcAirBlockId;
+        std::optional<QcBlockId> neighbour;
+        bool stays = false;
+    };
+    std::optional<SourceCheck> lastCheck;
     const QcFaceOffset offset = qcFaceOffset(towards);
     constexpr int last = QcWorld::chunkSize - 1;
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
@@ -190,10 +351,31 @@ void QcServer::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards)
             for (int along = 0; along < QcWorld::chunkSize; ++along) {
                 const int x = offset.dx != 0 ? (offset.dx > 0 ? last : 0) : along;
                 const int z = offset.dz != 0 ? (offset.dz > 0 ? last : 0) : along;
-                if (reacts(section.block(x, y, z))) {
-                    queueBlockUpdate({chunkPos.x * QcWorld::chunkSize + x, index * QcWorld::sectionHeight + y,
-                                      chunkPos.z * QcWorld::chunkSize + z});
+                const QcBlockId block = section.block(x, y, z);
+                if (!reacts(block)) {
+                    continue;
                 }
+                const QcBlockPos pos{chunkPos.x * QcWorld::chunkSize + x, index * QcWorld::sectionHeight + y,
+                                     chunkPos.z * QcWorld::chunkSize + z};
+                // A still source only matters where it can flow across the border or reacts with a
+                // liquid there (oceans would otherwise queue every border cell on each load).
+                if (QcLiquidFlow::flows(*m_content, block)) {
+                    const std::optional<QcBlockId> neighbour = m_world.blockAt(qcNeighbour(pos, towards));
+                    if (!lastCheck || lastCheck->block != block || lastCheck->neighbour != neighbour) {
+                        const QcBlockDefinition *across =
+                            neighbour && m_content->isValidBlock(*neighbour) ? &m_content->block(*neighbour) : nullptr;
+                        const bool reacts = across && across->liquid && !m_content->isSameBlock(*neighbour, block)
+                                            && std::ranges::contains(m_content->block(block).flow.reactions, across->name,
+                                                                     &QcLiquidReaction::with);
+                        const bool stays = QcLiquidFlow::isSource(*m_content, block) && !reacts
+                                           && !QcLiquidFlow::canReplace(*m_content, neighbour, QcLiquidFlow::stateWith(*m_content, block, 1, false));
+                        lastCheck = SourceCheck{block, neighbour, stays};
+                    }
+                    if (lastCheck->stays) {
+                        continue;
+                    }
+                }
+                queueBlockUpdate(pos);
             }
         }
     }
@@ -354,10 +536,13 @@ void QcServer::handleMoveItem(Client &client, QcMsg::MoveInventoryItem move)
     QcInventory::moveBetween(combined, move.from, move.to, std::max(0, move.count), *m_content);
     if (machine) {
         // Only fuel goes into the fuel slot, and nothing goes into the output (not even by a swap).
+        // An emptied container left behind by burnt fuel may stay or be taken out.
         const QcItemStack &fuel = combined[machineSlot + QcMachineManager::fuelSlot];
+        const QcItemStack &previousFuel = machine->stacks[QcMachineManager::fuelSlot];
         const QcItemStack &output = combined[machineSlot + QcMachineManager::outputSlot];
         const QcItemStack &previousOutput = machine->stacks[QcMachineManager::outputSlot];
-        const bool fuelOk = fuel.isEmpty() || m_machines.fuelSeconds(fuel.item) > 0.0;
+        const bool fuelOk = fuel.isEmpty() || m_machines.fuelSeconds(fuel.item) > 0.0
+                            || (fuel.item == previousFuel.item && fuel.damage == previousFuel.damage && fuel.count <= previousFuel.count);
         const bool outputOk = output.isEmpty() || (output.item == previousOutput.item && output.count <= previousOutput.count);
         if (!fuelOk || !outputOk) {
             refuse();
@@ -677,6 +862,15 @@ void QcServer::handleUseItem(Client &client, const QcMsg::UseItem &message)
         return;
     }
     const QcItemDefinition *held = heldItem(client);
+    if (held && held->scoops) {
+        if (!scoopLiquid(client, message.target)) {
+            if (const std::optional<QcBlockId> block = m_world.blockAt(message.target)) {
+                client.connection->send(QcMsg::BlockUpdate{message.target, *block});
+            }
+            sendInventory(client);
+        }
+        return;
+    }
     const std::optional<QcBlockId> clicked = m_world.blockAt(message.target);
     const std::optional<QcBlockId> placed = held ? m_content->blockId(held->placesBlock) : std::nullopt;
     const bool clickedSolid = clicked && m_content->isValidBlock(*clicked) && !m_content->block(*clicked).liquid;
@@ -742,7 +936,69 @@ void QcServer::handleUseItem(Client &client, const QcMsg::UseItem &message)
     if (placedDefinition.containerSlots > 0) {
         m_containers.add(target, placedDefinition.containerSlots);
     }
-    client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    if (!held->emptiesTo.isEmpty() && m_content->itemId(held->emptiesTo)) {
+        // A poured bucket stays in the hand, empty.
+        playSound(QString::fromLatin1(QcSoundKeys::bucketEmpty), {target.x + 0.5, target.y + 0.5, target.z + 0.5});
+        exchangeHeld(client, held->emptiesTo);
+    } else {
+        client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    }
+    sendInventory(client);
+}
+
+void QcServer::exchangeHeld(Client &client, const QString &item)
+{
+    const std::optional<QcItemId> result = m_content->itemId(item);
+    const int slot = client.inventory.selectedHotbarSlot();
+    if (!result || client.inventory.slot(slot).isEmpty()) {
+        return;
+    }
+    if (client.inventory.slot(slot).count == 1) {
+        client.inventory.setSlot(slot, {*result, 1, 0});
+        return;
+    }
+    client.inventory.removeFromSlot(slot, 1);
+    if (const int left = client.inventory.add(*result, 1, *m_content); left > 0) {
+        throwFromPlayer(client, {*result, left, 0});
+    }
+}
+
+bool QcServer::scoopLiquid(Client &client, QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = m_world.blockAt(pos);
+    if (!block || !m_content->isValidBlock(*block) || !isWithinReach(client, pos)) {
+        return false;
+    }
+    const QcBlockDefinition &definition = m_content->block(*block);
+    if (!definition.liquid || definition.flow.bucket.isEmpty() || !QcLiquidFlow::isSource(*m_content, *block)
+        || !m_content->itemId(definition.flow.bucket)) {
+        return false;
+    }
+    setBlockAndBroadcast(pos, qcAirBlockId);
+    playSound(QString::fromLatin1(QcSoundKeys::bucketFill), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
+    exchangeHeld(client, definition.flow.bucket);
+    sendInventory(client);
+    return true;
+}
+
+void QcServer::handleUseEntity(Client &client, quint32 entityId)
+{
+    client.swung = true;
+    const QcMobManager::Mob *mob = m_mobs.find(entityId);
+    const QcItemDefinition *held = heldItem(client);
+    if (!mob || !held) {
+        return;
+    }
+    const QcMobDefinition &definition = m_content->mobs()[mob->type];
+    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+    if (definition.catchWith != held->name || !m_content->itemId(definition.catchItem)
+        || (centre - eye).length() > attackReach + definition.width + 1.0) {
+        return;
+    }
+    m_mobs.remove(entityId);
+    playSound(QString::fromLatin1(QcSoundKeys::bottleCatch), centre);
+    exchangeHeld(client, definition.catchItem);
     sendInventory(client);
 }
 
@@ -966,7 +1222,7 @@ void QcServer::handleChat(Client &client, const QString &text)
         reply(u"Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
               u"/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
               u"/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative coordinates), "
-              u"/feed [food]"_s);
+              u"/feed [food], /locatebiome <biome>"_s);
     } else if (command == u"gamerule"_s && words.size() >= 2 && words[1] == u"keepInventory"_s) {
         if (words.size() == 2) {
             reply(u"keepInventory is %1"_s.arg(m_info.keepInventory ? u"true"_s : u"false"_s));
@@ -1111,6 +1367,22 @@ void QcServer::handleChat(Client &client, const QString &text)
         }
         reply(fill ? u"Filled %1 blocks with %2"_s.arg(changed).arg(name)
                    : u"Set %1 at %2 %3 %4"_s.arg(name).arg(from.x).arg(from.y).arg(from.z));
+    } else if (command == u"locatebiome"_s && words.size() >= 2) {
+        // Nearest column of the biome on growing squares around the player, in steps of 8 blocks.
+        const QString name = words[1].contains(u':') ? words[1] : u"qtcraft:"_s + words[1];
+        const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
+        constexpr int maxRadius = 4096;
+        for (int radius = 0; radius <= maxRadius; radius += 8) {
+            for (int dx = -radius; dx <= radius; dx += 8) {
+                for (int dz = -radius; dz <= radius; dz += 8) {
+                    if (std::max(std::abs(dx), std::abs(dz)) == radius && m_world.generator().biomeAt(feet.x + dx, feet.z + dz) == name) {
+                        reply(u"%1 at %2 %3"_s.arg(name).arg(feet.x + dx).arg(feet.z + dz));
+                        return;
+                    }
+                }
+            }
+        }
+        reply(u"No %1 within %2 blocks"_s.arg(name).arg(maxRadius));
     } else if (command == u"kill"_s) {
         client.hurtTimer = 0.0;
         damagePlayer(client, client.health, {});
@@ -1366,6 +1638,12 @@ void QcServer::syncEntities(Client &client)
                       held.isEmpty() ? qcNoItem : held.item},
                      other->hurtThisTick);
         }
+    }
+    for (const QcFallingBlockManager::Falling &falling : m_falling.all()) {
+        QcMsg::EntitySpawn spawn{falling.id, QcMsg::EntitySpawn::fallingBlockType, QString(), falling.motion.position, 0.0f, 0.0,
+                                 {}, {}, 0.0f, 0, qcNoItem};
+        spawn.block = falling.block;
+        consider(spawn, false);
     }
     // Items are sent again when their count changed and moved only when their position did.
     for (const QcItemEntityManager::Item &item : m_items.items()) {

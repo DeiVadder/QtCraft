@@ -1,0 +1,13 @@
+{
+    "name": "sugar_cane",
+    "type": "column",
+    "trunk": "sugar_cane",
+    "minHeight": 1,
+    "maxHeight": 3,
+    "nearWater": true,
+    "ground": [
+        "grass_block",
+        "dirt",
+        "sand"
+    ]
+}

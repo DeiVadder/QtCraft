@@ -1,0 +1,8 @@
+{
+    "name": "sheep_wool",
+    "pattern": "speckle",
+    "primary": "#f0f0ec",
+    "secondary": "#dcdcd4",
+    "variation": 0.08,
+    "seed": 460
+}

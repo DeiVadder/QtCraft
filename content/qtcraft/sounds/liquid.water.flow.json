@@ -1,0 +1,30 @@
+{
+    "name": "liquid.water.flow",
+    "bus": "ambient",
+    "volume": 0.35,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "range": 16,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.9,
+            "attack": 0.2,
+            "curve": 1.2,
+            "lowpass": 900,
+            "highpass": 150,
+            "tremoloRate": 7,
+            "tremoloDepth": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.8,
+            "density": 40,
+            "lowpass": 2500,
+            "highpass": 500,
+            "attack": 0.1,
+            "curve": 1,
+            "gain": 0.5
+        }
+    ]
+}

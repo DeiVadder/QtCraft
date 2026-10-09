@@ -1,0 +1,8 @@
+{
+    "name": "polished_stone",
+    "input": "stone",
+    "result": {
+        "item": "polished_stone"
+    },
+    "seconds": 10
+}

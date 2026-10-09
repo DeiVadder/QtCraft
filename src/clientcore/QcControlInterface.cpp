@@ -459,6 +459,14 @@ void QcControlInterface::start(const QJsonObject &request)
                                         {u"distance"_s, distance}});
                 continue;
             }
+            if (entity.isFallingBlock()) {
+                list.append(QJsonObject{{u"id"_s, qint64(entity.id)},
+                                        {u"type"_s, u"fallingBlock"_s},
+                                        {u"block"_s, content ? content->stateName(entity.block) : QString()},
+                                        {u"position"_s, vectorJson(entity.position)},
+                                        {u"distance"_s, distance}});
+                continue;
+            }
             const bool mob = content && entity.mobType >= 0 && entity.mobType < content->mobs().size();
             list.append(QJsonObject{{u"id"_s, qint64(entity.id)},
                                     {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
@@ -503,6 +511,39 @@ void QcControlInterface::start(const QJsonObject &request)
                                      const auto target = m_session->entities().constFind(quint32(wanted));
                                      if (target != m_session->entities().constEnd() && target->health >= healthBefore) {
                                          m_activeError = u"The hit did not land (attack cooldown or out of reach)"_s;
+                                     }
+                                     return true;
+                                 }};
+    } else if (command == u"useEntity"_s) {
+        // Turn towards the creature, then use the held item on it (catch a firefly in a bottle).
+        const qint64 wanted = request.value(u"entity"_s).toInteger(-1);
+        const auto it = m_session->entities().constFind(quint32(wanted));
+        if (wanted < 0 || it == m_session->entities().constEnd()) {
+            fail(request, u"No entity with this id nearby"_s);
+            return;
+        }
+        const auto content = m_session->content();
+        const double height = it->mobType >= 0 && it->mobType < content->mobs().size() ? content->mobs()[it->mobType].height
+                                                                                       : QcPhysics::playerHeight;
+        lookAtPoint(it->position + QcVec3{0.0, height * 0.5, 0.0});
+        bool sent = false;
+        m_active = ActiveCommand{request, timeoutPolls(6), [this, startTick, sent, wanted]() mutable {
+                                     if (!sent) {
+                                         if (m_session->tickCount() <= startTick) {
+                                             return false;
+                                         }
+                                         if (m_session->targetEntity() != std::optional<quint32>(quint32(wanted)) || !m_session->useItem()) {
+                                             m_activeError = u"Entity is not in reach or not in sight"_s;
+                                             return true;
+                                         }
+                                         sent = true;
+                                         return false;
+                                     }
+                                     if (m_session->tickCount() < startTick + 4) {
+                                         return false;
+                                     }
+                                     if (m_session->entities().contains(quint32(wanted))) {
+                                         m_activeError = u"Nothing happened (the held item does not catch this creature)"_s;
                                      }
                                      return true;
                                  }};
@@ -685,7 +726,7 @@ void QcControlInterface::start(const QJsonObject &request)
         QJsonArray list;
         for (const QcRecipeDefinition &recipe : content ? content->recipes() : QList<QcRecipeDefinition>()) {
             QJsonObject needs;
-            const QList<std::pair<QString, int>> needed = QcCrafting::requirements(recipe);
+            const QList<std::pair<QString, int>> needed = QcCrafting::requirements(*content, recipe);
             for (const auto &[ingredient, count] : std::as_const(needed)) {
                 needs.insert(ingredient, count);
             }

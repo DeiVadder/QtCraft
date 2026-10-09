@@ -5,6 +5,7 @@
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
 
+#include <QHash>
 #include <QtMath>
 
 #include <algorithm>
@@ -84,6 +85,27 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
     return drops;
 }
 
+bool QcMobManager::hurt(quint32 mobId, double amount)
+{
+    const auto it = std::ranges::find(m_mobs, mobId, &Mob::id);
+    if (it == m_mobs.end() || it->hurtTimer > 0.0) {
+        return false;
+    }
+    it->health -= amount;
+    it->hurtTimer = hurtInvulnerability;
+    it->hurtThisTick = true;
+    if (it->health > 0.0) {
+        return false;
+    }
+    m_mobs.erase(it);
+    return true;
+}
+
+bool QcMobManager::remove(quint32 mobId)
+{
+    return m_mobs.removeIf([mobId](const Mob &mob) { return mob.id == mobId; }) > 0;
+}
+
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
@@ -102,8 +124,9 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
             nearest = std::min(nearest, (player.position - mob.motion.position).length());
         }
         const QcMobDefinition &definition = m_content->mobs()[mob.type];
+        // Ambient night creatures go out with the daylight even next to a player.
         const bool outOfTime = !night && !mob.underground && definition.spawnTime == QcMobDefinition::SpawnTime::Night
-                               && nearest > 24.0;
+                               && (nearest > 24.0 || definition.ambient);
         return nearest > despawnDistance || outOfTime;
     });
 
@@ -125,6 +148,10 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
     mob.hurtTimer = std::max(0.0, mob.hurtTimer - dt);
     mob.attackCooldown = std::max(0.0, mob.attackCooldown - dt);
     mob.fleeTimer = std::max(0.0, mob.fleeTimer - dt);
+    if (definition.flying) {
+        fly(mob, definition, world, dt);
+        return;
+    }
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
 
     const PlayerView *target = nullptr;
@@ -191,16 +218,67 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
     mob.blockedLastTick = move.blockedX || move.blockedZ;
 }
 
+void QcMobManager::fly(Mob &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)
+{
+    mob.wanderTimer -= dt;
+    if (mob.wanderTimer <= 0.0 || mob.blockedLastTick) {
+        mob.wanderTimer = 1.0 + m_random.bounded(3.0);
+        const double angle = m_random.bounded(2.0 * std::numbers::pi);
+        mob.wanderDirection = {std::sin(angle), m_random.bounded(1.0) - 0.5, -std::cos(angle)};
+    }
+    // A flyer stuck in a block (summoned into a hill) rises out of it.
+    const QcBlockPos centre = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, definition.height * 0.5, 0.0});
+    if (QcPhysics::isSolidAt(world, centre) && world.blockAt(centre)) {
+        mob.motion.position.y = centre.y + 1.0;
+        mob.motion.velocity = {};
+        return;
+    }
+    // Height above the first solid or liquid block below (at most a few metres down).
+    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
+    double height = flyMaxHeight + 1.0;
+    for (int down = 0; down <= int(flyMaxHeight) + 1; ++down) {
+        const QcBlockPos below = feet.offset(0, -down, 0);
+        if (QcPhysics::isSolidAt(world, below) || QcPhysics::isLiquidAt(world, below)) {
+            height = mob.motion.position.y - (below.y + 1.0);
+            break;
+        }
+    }
+    QcVec3 wish = mob.wanderDirection;
+    if (height < flyMinHeight) {
+        wish.y = 0.6;
+    } else if (height > flyMaxHeight) {
+        wish.y = -0.6;
+    }
+    const double blend = std::min(1.0, 4.0 * dt);
+    mob.motion.velocity += (wish * definition.walkSpeed - mob.motion.velocity) * blend;
+    const QcPhysics::MoveResult move =
+        QcPhysics::moveBox(QcPhysics::boxAt(mob.motion.position, definition.width, definition.height), mob.motion.velocity * dt, world);
+    mob.motion.position += move.applied;
+    mob.motion.onGround = false;
+    mob.motion.inWater = false;
+    mob.blockedLastTick = move.blockedX || move.blockedY || move.blockedZ;
+    if (QcVec3{mob.motion.velocity.x, 0.0, mob.motion.velocity.z}.length() > 0.05) {
+        mob.yaw = yawTowards({mob.motion.velocity.x, 0.0, mob.motion.velocity.z});
+    }
+}
+
 void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bool night, const QList<PlayerView> &players,
                                   const std::function<quint32()> &nextEntityId)
 {
     int hostile = 0;
     int passive = 0;
+    int ambient = 0;
+    QHash<int, int> perType;
     for (const Mob &mob : std::as_const(m_mobs)) {
         if ((mob.motion.position - centre).length() < spawnRadiusMax + 16.0) {
-            (m_content->mobs()[mob.type].hostile ? hostile : passive) += 1;
+            const QcMobDefinition &definition = m_content->mobs()[mob.type];
+            (definition.ambient ? ambient : (definition.hostile ? hostile : passive)) += 1;
+            perType[mob.type] += 1;
         }
     }
+    const auto capOf = [](const QcMobDefinition &definition) {
+        return definition.ambient ? ambientCapPerPlayer : (definition.hostile ? hostileCapPerPlayer : passiveCapPerPlayer);
+    };
     const QcContentRegistry &content = *m_content;
     for (int attempt = 0; attempt < spawnAttemptsPerPlayer; ++attempt) {
         const double angle = m_random.bounded(2.0 * std::numbers::pi);
@@ -231,9 +309,12 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
             }
         }
         const QcBlockId ground = chunk->block(QcBlockPos{x, 0, z}.localX(), floorY, QcBlockPos{x, 0, z}.localZ());
-        if (!content.block(ground).solid) {
+        // Flying creatures also hover over water.
+        if (!content.block(ground).solid && !content.block(ground).liquid) {
             continue;
         }
+        QString biome;
+        bool biomeKnown = false;
         bool tooClose = false;
         for (const PlayerView &player : players) {
             tooClose = tooClose || (player.position - QcVec3{x + 0.5, double(floorY + 1), z + 0.5}).length() < spawnRadiusMin;
@@ -258,9 +339,19 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
             const bool timeOk = cave ? definition.spawnsInCaves
                                      : (definition.spawnTime == QcMobDefinition::SpawnTime::Any
                                         || (definition.spawnTime == QcMobDefinition::SpawnTime::Night) == night);
-            const bool capOk = definition.hostile ? hostile < hostileCapPerPlayer : passive < passiveCapPerPlayer;
-            const bool groundOk = definition.spawnBlocks.isEmpty()
-                                  || definition.spawnBlocks.contains(content.block(ground).name);
+            const int inCategory = definition.ambient ? ambient : (definition.hostile ? hostile : passive);
+            const bool capOk = inCategory < capOf(definition) && (definition.maxCount == 0 || perType.value(int(type)) < definition.maxCount);
+            const bool groundOk = (definition.spawnBlocks.isEmpty() || definition.spawnBlocks.contains(content.block(ground).name))
+                                  && (content.block(ground).solid || definition.flying);
+            if (!definition.spawnBiomes.isEmpty() && timeOk && capOk && groundOk) {
+                if (!biomeKnown) {
+                    biome = world.generator().biomeAt(x, z);
+                    biomeKnown = true;
+                }
+                if (!definition.spawnBiomes.contains(biome)) {
+                    continue;
+                }
+            }
             if (timeOk && capOk && groundOk && definition.spawnWeight > 0.0
                 && (definition.maxSpawnLight >= QcLightVolume::maxLevel || lightHere() <= definition.maxSpawnLight)) {
                 candidates.append(int(type));
@@ -281,13 +372,24 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
         }
         const QcMobDefinition &definition = content.mobs()[chosen];
         const int group = 1 + m_random.bounded(definition.maxGroup);
-        const int cap = definition.hostile ? hostileCapPerPlayer : passiveCapPerPlayer;
+        const int cap = capOf(definition);
         // The group stands on neighbouring blocks of the same height, never inside walls.
         constexpr std::array<std::pair<int, int>, 4> offsets{{{0, 0}, {1, 0}, {0, 1}, {1, 1}}};
         for (int i = 0; i < group && i < std::ssize(offsets); ++i) {
-            int &count = definition.hostile ? hostile : passive;
-            if (count >= cap) {
+            int &count = definition.ambient ? ambient : (definition.hostile ? hostile : passive);
+            if (count >= cap || (definition.maxCount > 0 && perType.value(chosen) >= definition.maxCount)) {
                 break;
+            }
+            if (definition.flying) {
+                // Somewhere in the air one to three metres above the ground.
+                const QcBlockPos air{x + offsets[size_t(i)].first, floorY + 1 + 1 + m_random.bounded(2), z + offsets[size_t(i)].second};
+                const auto isAir = [&world](QcBlockPos pos) { return world.blockAt(pos).value_or(1) == qcAirBlockId; };
+                if (isAir(air) && isAir(air.offset(0, 1, 0))) {
+                    spawn(chosen, {air.x + 0.5, air.y + 0.25, air.z + 0.5}, nextEntityId());
+                    count += 1;
+                    perType[chosen] += 1;
+                }
+                continue;
             }
             const QcBlockPos feet{x + offsets[size_t(i)].first, floorY + 1, z + offsets[size_t(i)].second};
             const auto blockAt = [&world](QcBlockPos pos) { return world.blockAt(pos).value_or(qcAirBlockId); };
@@ -304,6 +406,7 @@ void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bo
                                  && column->highestNonAir(feet.localX(), feet.localZ()) > feet.y + caveDepth;
             spawn(chosen, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, nextEntityId(), covered);
             count += 1;
+            perType[chosen] += 1;
         }
         return;
     }

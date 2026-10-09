@@ -106,9 +106,10 @@ std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origi
             if (content.isValidBlock(*block) && *block != qcAirBlockId) {
                 const QcBlockDefinition &definition = content.block(*block);
                 const QcBlockState &state = content.state(*block);
-                const bool target = targets == Targets::Solid
-                                        ? definition.solid
-                                        : !definition.liquid && definition.renderLayer != QcRenderLayer::Invisible;
+                const bool visible = definition.renderLayer != QcRenderLayer::Invisible;
+                const bool target = targets == Targets::Solid             ? definition.solid
+                                    : targets == Targets::VisibleAndLiquids ? visible || definition.liquid
+                                                                          : !definition.liquid && visible;
                 if (target) {
                     // The nearest box of the state; a ray that passes between its boxes goes on.
                     const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};

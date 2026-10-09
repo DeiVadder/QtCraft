@@ -97,6 +97,7 @@ constexpr double maxFuelSeconds = 100000.0;
 constexpr double minMachineSpeed = 0.01;
 constexpr double maxMachineSpeed = 100.0;
 constexpr qsizetype maxCategoryLength = 64;
+constexpr int maxPoolAttempts = 8;
 
 // Categories are plain names without namespace, so that every pack can add recipes to "smelting".
 bool isValidCategory(const QString &category)
@@ -502,6 +503,78 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
         }
     }
 
+    const QJsonValue flow = json.value(u"flow"_s);
+    if (!flow.isUndefined() && (!flow.isObject() || !block.liquid)) {
+        reader.fail(u"'flow' must be an object and needs 'liquid': true"_s);
+    } else if (flow.isObject()) {
+        const QJsonObject flowJson = flow.toObject();
+        FieldReader flowReader{flowJson, reader.context + u" flow"_s, {}};
+        QcLiquidDefinition &liquid = block.flow;
+        liquid.distance = flowReader.integer(u"distance"_s, 7, 1, QcLiquidDefinition::maxDistance);
+        liquid.ticks = flowReader.integer(u"ticks"_s, 5, 1, QcLiquidDefinition::maxTicks);
+        liquid.infinite = flowReader.boolean(u"infinite"_s, false);
+        liquid.movementFactor = flowReader.number(u"movement"_s, 1.0, 0.05, 2.0);
+        liquid.bucket = flowReader.name(u"bucket"_s, packNamespace);
+        liquid.sound = flowReader.name(u"sound"_s, packNamespace);
+        const QJsonValue reactions = flowJson.value(u"reactions"_s);
+        if (!reactions.isUndefined() && (!reactions.isArray() || reactions.toArray().size() > 16)) {
+            flowReader.fail(u"'reactions' must be an array of at most 16 entries"_s);
+        }
+        const QJsonArray reactionList = reactions.toArray();
+        for (const auto &entry : reactionList) {
+            const QJsonObject reactionJson = entry.toObject();
+            FieldReader reactionReader{reactionJson, flowReader.context, {}};
+            const QcLiquidReaction reaction{reactionReader.name(u"with"_s, packNamespace), reactionReader.name(u"source"_s, packNamespace),
+                                            reactionReader.name(u"flowing"_s, packNamespace)};
+            if (!entry.isObject() || !reactionReader.ok() || reaction.with.isEmpty() || reaction.source.isEmpty()
+                || reaction.flowing.isEmpty()) {
+                flowReader.fail(reactionReader.ok() ? u"reactions need 'with', 'source' and 'flowing'"_s : reactionReader.error);
+                break;
+            }
+            liquid.reactions.append(reaction);
+        }
+        // The flow keeps its state in `level` ("0" source, then one value per block of distance) and
+        // optionally `falling`.
+        const QcBlockProperty *level = block.property(u"level"_s);
+        bool levelsOk = level && level->values.size() >= liquid.distance + 1;
+        for (int i = 0; levelsOk && i < level->values.size(); ++i) {
+            levelsOk = level->values[i] == QString::number(i);
+        }
+        if (flowReader.ok() && !levelsOk) {
+            flowReader.fail(u"a flowing liquid needs the state 'level' with the values \"0\" to \"%1\" in order"_s.arg(liquid.distance));
+        }
+        const QcBlockProperty *falling = block.property(u"falling"_s);
+        if (flowReader.ok() && falling && falling->values != QStringList{u"false"_s, u"true"_s}) {
+            flowReader.fail(u"'falling' must have the values false and true"_s);
+        }
+        if (!flowReader.ok()) {
+            reader.fail(flowReader.error);
+        }
+    }
+    block.contactDamage = reader.number(u"contactDamage"_s, 0.0, 0.0, 100.0);
+    block.washable = reader.boolean(u"washable"_s, cross);
+    block.falls = reader.boolean(u"falls"_s, false);
+    if (block.falls && (block.liquid || !block.solid)) {
+        reader.fail(u"only solid blocks can fall"_s);
+    }
+    const QJsonValue ground = json.value(u"ground"_s);
+    if (!ground.isUndefined() && (!ground.isArray() || ground.toArray().size() > 64)) {
+        reader.fail(u"'ground' must be an array of at most 64 block names"_s);
+    }
+    const QJsonArray groundList = ground.toArray();
+    for (const auto &entry : groundList) {
+        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        if (name.isEmpty()) {
+            reader.fail(u"invalid 'ground' entry"_s);
+            break;
+        }
+        block.groundBlocks.append(name);
+    }
+    block.groundLiquid = reader.name(u"groundLiquid"_s, packNamespace);
+    if ((!block.groundBlocks.isEmpty() || !block.groundLiquid.isEmpty()) && block.support != QcBlockSupport::Below) {
+        reader.fail(u"'ground' and 'groundLiquid' need 'support': \"below\""_s);
+    }
+
     block.soundMaterial = reader.name(u"sound"_s, packNamespace, QcSoundKeys::defaultMaterialFor(block));
     const QJsonValue sounds = json.value(u"sounds"_s);
     if (!sounds.isUndefined() && !sounds.isObject()) {
@@ -887,6 +960,45 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
         reader.fail(spawnReader.error);
     }
 
+    mob.ambient = spawnReader.boolean(u"ambient"_s, false);
+    mob.maxCount = spawnReader.integer(u"maxCount"_s, 0, 0, 64);
+    const QJsonValue biomes = spawn.value(u"biomes"_s);
+    if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
+        spawnReader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
+    }
+    const QJsonArray biomeList = biomes.toArray();
+    for (const auto &entry : biomeList) {
+        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        if (name.isEmpty()) {
+            spawnReader.fail(u"invalid 'biomes' entry"_s);
+            break;
+        }
+        mob.spawnBiomes.append(name);
+    }
+    if (!spawnReader.ok()) {
+        reader.fail(spawnReader.error);
+    }
+    if (mob.ambient && mob.hostile) {
+        reader.fail(u"ambient creatures cannot be hostile"_s);
+    }
+    mob.flying = reader.boolean(u"flying"_s, false);
+    mob.glow = reader.integer(u"glow"_s, 0, 0, QcMobDefinition::maxGlow);
+    const QJsonValue catchValue = json.value(u"catch"_s);
+    if (!catchValue.isUndefined() && !catchValue.isObject()) {
+        reader.fail(u"'catch' must be an object"_s);
+    } else if (catchValue.isObject()) {
+        const QJsonObject catchJson = catchValue.toObject();
+        FieldReader catchReader{catchJson, reader.context + u" catch"_s, {}};
+        mob.catchWith = catchReader.name(u"with"_s, packNamespace);
+        mob.catchItem = catchReader.name(u"item"_s, packNamespace);
+        if (catchReader.ok() && (mob.catchWith.isEmpty() || mob.catchItem.isEmpty())) {
+            catchReader.fail(u"needs 'with' and 'item'"_s);
+        }
+        if (!catchReader.ok()) {
+            reader.fail(catchReader.error);
+        }
+    }
+
     mob.skeleton = reader.name(u"skeleton"_s, packNamespace);
     mob.outfit = reader.name(u"outfit"_s, packNamespace);
     mob.armsForward = reader.boolean(u"armsForward"_s, false);
@@ -1149,8 +1261,14 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.food = int(std::lround(std::min(reader.number(u"food"_s, 0.0, 0.0, 100.0), double(QcItemDefinition::maxFood))));
     item.fuelSeconds = reader.number(u"fuelSeconds"_s, 0.0, 0.0, maxFuelSeconds);
     item.tags = parseTags(json.value(u"tags"_s), packNamespace, reader);
+    item.scoops = reader.boolean(u"scoops"_s, false);
+    item.emptiesTo = reader.name(u"emptiesTo"_s, packNamespace);
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;
+    }
+    // Burnt fuel leaves its container in the fuel slot, which has room for it only after the last item.
+    if (item.fuelSeconds > 0.0 && !item.emptiesTo.isEmpty() && item.maxStack != 1) {
+        reader.fail(u"fuel with 'emptiesTo' (a container) needs 'maxStack' 1"_s);
     }
     if (!reader.ok()) {
         return qcError(reader.error);
@@ -1346,10 +1464,24 @@ QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QStrin
         feature.type = QcFeatureDefinition::Type::Tree;
     } else if (type == u"column"_s) {
         feature.type = QcFeatureDefinition::Type::Column;
+    } else if (type == u"plant"_s) {
+        feature.type = QcFeatureDefinition::Type::Plant;
+    } else if (type == u"pool"_s) {
+        feature.type = QcFeatureDefinition::Type::Pool;
     } else {
-        reader.fail(u"'type' must be tree or column"_s);
+        reader.fail(u"'type' must be tree, column, plant or pool"_s);
     }
-    feature.trunkBlock = reader.name(u"trunk"_s, packNamespace);
+    const bool singleBlock = feature.type == QcFeatureDefinition::Type::Plant || feature.type == QcFeatureDefinition::Type::Pool;
+    feature.trunkBlock = reader.name(singleBlock ? u"block"_s : u"trunk"_s, packNamespace);
+    if (feature.type == QcFeatureDefinition::Type::Pool) {
+        feature.minY = reader.integer(u"minY"_s, feature.minY, 1, QcWorld::worldHeight - 2);
+        feature.maxY = reader.integer(u"maxY"_s, std::max(feature.minY, feature.maxY), feature.minY, QcWorld::worldHeight - 2);
+        feature.attempts = reader.integer(u"attempts"_s, feature.attempts, 1, maxPoolAttempts);
+        feature.chance = reader.number(u"chance"_s, feature.chance, 0.0, 1.0);
+        feature.radius = reader.integer(u"radius"_s, feature.radius, 1, 6);
+        feature.depth = reader.integer(u"depth"_s, feature.depth, 1, 4);
+    }
+    feature.nearWater = reader.boolean(u"nearWater"_s, false);
     feature.leavesBlock = reader.name(u"leaves"_s, packNamespace);
     feature.minHeight = reader.integer(u"minHeight"_s, 4, 1, 32);
     feature.maxHeight = reader.integer(u"maxHeight"_s, feature.minHeight, feature.minHeight, 32);
@@ -1358,7 +1490,7 @@ QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QStrin
         reader.fail(u"'shape' must be round or cone"_s);
     }
     if (feature.trunkBlock.isEmpty()) {
-        reader.fail(u"'trunk' is required"_s);
+        reader.fail(singleBlock ? u"'block' is required"_s : u"'trunk' is required"_s);
     }
     if (feature.type == QcFeatureDefinition::Type::Tree && feature.leavesBlock.isEmpty()) {
         reader.fail(u"trees need 'leaves'"_s);

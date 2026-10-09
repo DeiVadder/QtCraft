@@ -2,6 +2,7 @@
 
 #include "QcBlockFace.h"
 #include "QcBlockProperty.h"
+#include "QcLiquidDefinition.h"
 #include "QcMachineDefinition.h"
 #include "QcShapeDefinition.h"
 
@@ -139,6 +140,19 @@ struct QcBlockDefinition
     QStringList itemTags;
     // "<material>/<family>" for building parts made by QcPartGenerator, empty otherwise (server side only).
     QString partOf;
+    // Flow of a liquid block; distance and movement factor also reach the client.
+    QcLiquidDefinition flow;
+    // Damage per hit to bodies touching the block (lava); items inside burn. Server side only.
+    double contactDamage = 0.0;
+    // A liquid flowing into the block breaks it with its drops (plants, torches). Server side only.
+    bool washable = false;
+    // Without a block below it falls as an entity and lands again (sand, gravel). Server side only.
+    bool falls = false;
+    // Blocks it may stand on (plants); empty: any full solid top face. Server side only.
+    QStringList groundBlocks;
+    // A liquid that must touch the ground block from a side (sugar cane: water), unless the ground is
+    // this block itself. Server side only.
+    QString groundLiquid;
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;

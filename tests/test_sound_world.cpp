@@ -29,6 +29,16 @@ QcContentRegistry makeContent()
     add(u"t:stone"_s, u"qtcraft:stone"_s, false);
     add(u"t:sand"_s, u"qtcraft:sand"_s, false);
     add(u"t:water"_s, QString(), true);
+    QcBlockDefinition lava;
+    lava.name = u"t:lava"_s;
+    lava.faceTextures.fill(lava.name);
+    lava.solid = false;
+    lava.opaque = false;
+    lava.liquid = true;
+    lava.lightLevel = 15;
+    if (!content.registerBlock(lava)) {
+        qFatal("cannot register t:lava");
+    }
     return content;
 }
 
@@ -215,6 +225,21 @@ private slots:
         // Under water it is all water.
         world.set({0, 64, 0}, m_water);
         QCOMPARE(QcAmbience::targets(world, {0.5, 64.5, 0.5}).water, 1.0f);
+    }
+
+    void lavaPopsInsteadOfSoundingLikeWater()
+    {
+        QcTestWorld world(m_content);
+        const QcBlockId lava = *m_content.blockId(u"t:lava"_s);
+        QCOMPARE(QcAmbience::nearestGlowingLiquid(world, {0.5, 64.5, 0.5}), std::nullopt);
+        // Lava on two sampled positions: no water loop, and the nearer one pops.
+        world.set({4, 62, 0}, lava);
+        world.set({2, 62, 0}, lava);
+        QCOMPARE(QcAmbience::targets(world, {0.5, 64.5, 0.5}).water, 0.0f);
+        QCOMPARE(QcAmbience::nearestGlowingLiquid(world, {0.5, 64.5, 0.5}), std::optional<QcBlockPos>(QcBlockPos{2, 62, 0}));
+        // Water is not lava.
+        world.set({0, 62, 0}, m_water);
+        QCOMPARE(QcAmbience::nearestGlowingLiquid(world, {0.5, 64.5, 0.5}), std::optional<QcBlockPos>(QcBlockPos{2, 62, 0}));
     }
 
     void levelsFadeGradually()

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
                                         u"pose"_s);
     const QCommandLineOption lookOption(u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s);
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
-    const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable)."_s,
+    const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
                                         u"text"_s);
     const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it)."_s,
                                            u"name"_s);
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
     game->startAudio(audio);
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
-    // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand|light: walk ahead (default), stand still, or stand
+    // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand|light|liquids: walk ahead (default), stand still, or stand
     // while torches come and go around the player.
     game->setBenchmark(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600),
                        qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"));

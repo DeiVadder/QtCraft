@@ -1,6 +1,7 @@
 {
     "name": "sand",
     "sound": "sand",
+    "falls": true,
     "hardness": 0.5,
     "tool": "shovel",
     "textures": {

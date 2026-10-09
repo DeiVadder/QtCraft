@@ -64,3 +64,5 @@ qc_add_test(test_block_light SOURCES test_block_light.cpp QcTestWorld.h LIBRARIE
 qc_add_test(test_mesher_shapes SOURCES test_mesher_shapes.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES test_block_light_engine.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_building SOURCES test_building.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_liquids SOURCES test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
+qc_add_test(test_world_details SOURCES test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)

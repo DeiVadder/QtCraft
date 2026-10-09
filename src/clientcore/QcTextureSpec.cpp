@@ -25,6 +25,10 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"door_upper"_s, Pattern::DoorUpper}, {u"trapdoor"_s, Pattern::Trapdoor},
         {u"chest_side"_s, Pattern::ChestSide}, {u"chest_front"_s, Pattern::ChestFront},
         {u"chest_top"_s, Pattern::ChestTop},
+        {u"lava"_s, Pattern::Lava},         {u"flower"_s, Pattern::Flower},
+        {u"tall_grass"_s, Pattern::TallGrass}, {u"mushroom"_s, Pattern::Mushroom},
+        {u"sugar_cane"_s, Pattern::SugarCane}, {u"bottle"_s, Pattern::Bottle},
+        {u"bucket"_s, Pattern::Bucket},     {u"lantern"_s, Pattern::Lantern},
     };
     const auto it = patterns.constFind(name);
     if (it == patterns.constEnd()) {

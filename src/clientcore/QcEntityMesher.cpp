@@ -267,6 +267,15 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     }
 }
 
+void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const QcVec3 &position, QcEntityLight light, const UvLookup &uv)
+{
+    // The item cube scaled up to a block of 0.98 m, centred above the feet position.
+    constexpr double size = 0.98;
+    const double scale = size / itemCubeSize;
+    const QcVec3 centre = position + QcVec3{0.0, size * 0.5, 0.0};
+    emitItem(mesh, look, [&](const QcVec3 &p) { return centre + p * scale; }, light, uv);
+}
+
 void appendHand(QcEntityMesh &mesh, const ModelLook &look, const ItemLook *held, const QcAnimator::HandPose &hand, const QcVec3 &eye,
                 double yaw, double pitch, QcEntityLight light, const UvLookup &uv)
 {

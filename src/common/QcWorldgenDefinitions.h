@@ -39,7 +39,10 @@ struct QcBiomeDefinition
 
 struct QcFeatureDefinition
 {
-    enum class Type { Tree, Column };
+    // Plant: a single block (`trunkBlock`, given as "block") on the ground. Pool: a liquid
+    // (`trunkBlock`, given as "block") filling the bottom of a cave; pools are tried in every chunk
+    // and are not listed by biomes.
+    enum class Type { Tree, Column, Plant, Pool };
 
     QString name;
     Type type = Type::Tree;
@@ -51,6 +54,16 @@ struct QcFeatureDefinition
     QString shape = QStringLiteral("round");
     // Blocks the feature may stand on; empty allows any solid block.
     QList<QString> groundBlocks;
+    // Only on ground at sea level with water right next to it (sugar cane on a shore).
+    bool nearWater = false;
+    // Pools: `attempts` tries per chunk, each taken with `chance`, at a cave floor between minY and
+    // maxY; a basin of up to `radius` blocks is sunk `depth` blocks into the floor.
+    int minY = 8;
+    int maxY = 40;
+    int attempts = 1;
+    double chance = 0.0;
+    int radius = 3;
+    int depth = 2;
 };
 
 struct QcOreDefinition

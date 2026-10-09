@@ -1,0 +1,11 @@
+{
+    "name": "brown_mushroom",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "lightOpacity": 0,
+    "textures": {
+        "all": "brown_mushroom"
+    }
+}

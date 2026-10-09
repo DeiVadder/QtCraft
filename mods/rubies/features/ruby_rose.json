@@ -1,0 +1,8 @@
+{
+    "name": "ruby_rose",
+    "type": "plant",
+    "block": "ruby_rose",
+    "ground": [
+        "qtcraft:grass_block"
+    ]
+}

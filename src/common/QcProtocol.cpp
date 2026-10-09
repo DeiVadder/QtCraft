@@ -4,6 +4,8 @@
 
 #include <QDataStream>
 #include <QIODevice>
+#include <QVarLengthArray>
+#include <QtEndian>
 
 #include <algorithm>
 #include <cmath>
@@ -13,6 +15,8 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr QDataStream::Version streamVersion = QDataStream::Qt_6_8;
+// Runs of a section kept on the stack while encoding or decoding; more go to the heap.
+constexpr qsizetype runBufferRuns = 512;
 
 QDataStream &operator<<(QDataStream &stream, QcVec3 value)
 {
@@ -49,21 +53,23 @@ void writeSection(QDataStream &stream, const QcChunkSection &section)
         return;
     }
     // Run-length encoded palette indices: terrain sections consist mostly of long runs. Decoding
-    // is bounded by the section size, unlike a general-purpose decompressor.
+    // is bounded by the section size, unlike a general-purpose decompressor. The runs (length and
+    // index, two 16-bit values each in the stream's byte order) go out as one block of raw data.
     const QList<quint16> &indices = section.indices();
-    QList<std::pair<quint16, quint16>> runs;
+    const bool bigEndian = stream.byteOrder() == QDataStream::BigEndian;
+    QVarLengthArray<quint16, 2 * runBufferRuns> runs;
     for (qsizetype i = 0; i < indices.size();) {
         qsizetype end = i + 1;
         while (end < indices.size() && indices[end] == indices[i] && end - i < 0xFFFF) {
             ++end;
         }
-        runs.append({quint16(end - i), indices[i]});
+        for (const quint16 value : {quint16(end - i), indices[i]}) {
+            runs.append(bigEndian ? qToBigEndian(value) : qToLittleEndian(value));
+        }
         i = end;
     }
-    stream << quint32(runs.size());
-    for (const auto &[length, index] : std::as_const(runs)) {
-        stream << length << index;
-    }
+    stream << quint32(runs.size() / 2);
+    stream.writeRawData(reinterpret_cast<const char *>(runs.constData()), int(runs.size() * qsizetype(sizeof(quint16))));
 }
 
 bool readSection(QDataStream &stream, QcChunkSection &section)
@@ -82,13 +88,17 @@ bool readSection(QDataStream &stream, QcChunkSection &section)
         if (!QcStreamLimits::readCount(stream, QcWorld::blocksPerSection, runCount)) {
             return false;
         }
+        QVarLengthArray<quint16, 2 * runBufferRuns> runs(qsizetype(runCount) * 2);
+        const int bytes = int(runs.size() * qsizetype(sizeof(quint16)));
+        if (stream.readRawData(reinterpret_cast<char *>(runs.data()), bytes) != bytes) {
+            return false;
+        }
+        const bool bigEndian = stream.byteOrder() == QDataStream::BigEndian;
         indices.reserve(QcWorld::blocksPerSection);
-        for (quint32 run = 0; run < runCount; ++run) {
-            quint16 length = 0;
-            quint16 index = 0;
-            stream >> length >> index;
-            if (stream.status() != QDataStream::Ok || length == 0
-                || indices.size() + length > QcWorld::blocksPerSection) {
+        for (qsizetype run = 0; run < runs.size(); run += 2) {
+            const quint16 length = bigEndian ? qFromBigEndian(runs[run]) : qFromLittleEndian(runs[run]);
+            const quint16 index = bigEndian ? qFromBigEndian(runs[run + 1]) : qFromLittleEndian(runs[run + 1]);
+            if (length == 0 || indices.size() + length > QcWorld::blocksPerSection) {
                 return false;
             }
             indices.insert(indices.size(), length, index);
@@ -165,7 +175,7 @@ struct Encoder
     {
         stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
         writeStack(m.item);
-        stream << m.appearance << m.pitch << m.flags << m.held;
+        stream << m.appearance << m.pitch << m.flags << m.held << m.block;
     }
     void operator()(const QcMsg::EntityMoves &m)
     {
@@ -178,6 +188,7 @@ struct Encoder
     void operator()(const QcMsg::PlayerHealth &m) { stream << m.health << m.maxHealth << m.dead; }
     void operator()(QcMsg::WorldTime m) { stream << m.time << m.dayLength; }
     void operator()(QcMsg::AttackEntity m) { stream << m.id; }
+    void operator()(QcMsg::UseEntity m) { stream << m.id; }
     void operator()(QcMsg::Respawn) {}
     void operator()(QcMsg::DropItem m) { stream << m.wholeStack; }
     void operator()(const QcMsg::SetAppearance &m) { stream << m.appearance; }
@@ -465,7 +476,7 @@ QcResult<QcMessage> decodePayload<QcMsg::EntitySpawn>(QDataStream &stream)
     if (!readAppearance(stream, m.appearance)) {
         return qcError(u"Invalid appearance"_s);
     }
-    stream >> m.pitch >> m.flags >> m.held;
+    stream >> m.pitch >> m.flags >> m.held >> m.block;
     if (!std::isfinite(m.pitch)) {
         return qcError(u"Non-finite entity data"_s);
     }
@@ -528,6 +539,14 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::AttackEntity>(QDataStream &stream)
 {
     QcMsg::AttackEntity m;
+    stream >> m.id;
+    return m;
+}
+
+template<>
+QcResult<QcMessage> decodePayload<QcMsg::UseEntity>(QDataStream &stream)
+{
+    QcMsg::UseEntity m;
     stream >> m.id;
     return m;
 }
@@ -665,6 +684,7 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::SelectHotbarSlot>()
                                || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>()
                                || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>()
+                               || is.template operator()<QcMsg::UseEntity>()
                                || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
                                || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
                                || is.template operator()<QcMsg::DropItem>() || is.template operator()<QcMsg::SetAppearance>();

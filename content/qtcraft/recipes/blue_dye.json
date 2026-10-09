@@ -1,0 +1,11 @@
+{
+    "name": "blue_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "cornflower"
+    ],
+    "result": {
+        "item": "blue_dye",
+        "count": 2
+    }
+}

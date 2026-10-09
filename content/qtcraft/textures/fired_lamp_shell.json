@@ -1,0 +1,8 @@
+{
+    "name": "fired_lamp_shell",
+    "pattern": "lantern",
+    "primary": "#a8582e",
+    "secondary": "#3a2418",
+    "variation": 0.08,
+    "seed": 326
+}

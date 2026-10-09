@@ -7,5 +7,9 @@
     "mob.rubies.crystal_beetle": "Kristallkäfer",
     "item.rubies.ember_shard": "Glutsplitter",
     "block.rubies.ruby_lantern": "Rubinlaterne",
-    "material.rubies.ruby": "Rubin"
+    "material.rubies.ruby": "Rubin",
+    "block.rubies.molten_ruby": "Geschmolzener Rubin",
+    "item.rubies.molten_ruby_bucket": "Eimer mit geschmolzenem Rubin",
+    "block.rubies.ruby_rose": "Rubinrose",
+    "block.rubies.ruby_sand": "Rubinsand"
 }

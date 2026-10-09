@@ -23,6 +23,11 @@ public:
     static constexpr double despawnDistance = 96.0;
     static constexpr int hostileCapPerPlayer = 8;
     static constexpr int passiveCapPerPlayer = 6;
+    // Ambient creatures (fireflies) around one player at most.
+    static constexpr int ambientCapPerPlayer = 10;
+    // Flying creatures keep between these heights above the ground below them.
+    static constexpr double flyMinHeight = 1.2;
+    static constexpr double flyMaxHeight = 3.0;
     // /summon refuses to raise the total number of mobs above this.
     static constexpr int summonLimit = 64;
     // Blocks of rock above a cave floor for it to count as dark enough for cave spawns.
@@ -72,6 +77,11 @@ public:
                           const std::function<quint32()> &nextEntityId);
     // Applies damage from a player at `from`; returns the mob's drops when it died.
     std::optional<QList<QcItemDrop>> damage(quint32 mobId, double amount, const QcVec3 &from);
+    // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
+    // was removed.
+    bool hurt(quint32 mobId, double amount);
+    // Removes a mob without a death (caught); false when there is none.
+    bool remove(quint32 mobId);
     // Spawns a mob directly (commands, tests); returns its id.
     quint32 spawn(int type, const QcVec3 &position, quint32 id, bool underground = false);
     void removeAll() { m_mobs.clear(); }
@@ -83,6 +93,8 @@ private:
     void trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bool night, const QList<PlayerView> &players,
                         const std::function<quint32()> &nextEntityId);
     void think(Mob &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits);
+    // Drifting flight without gravity at a few metres above the ground.
+    void fly(Mob &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QRandomGenerator m_random;

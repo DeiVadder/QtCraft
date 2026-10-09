@@ -59,6 +59,30 @@ private:
         return {p.at(0).toDouble(), p.at(1).toDouble(), p.at(2).toDouble()};
     }
 
+    // Selects the hotbar slot holding `item` (given before).
+    bool select(const QString &item)
+    {
+        const QJsonArray list = request({{u"cmd"_s, u"inventory"_s}}).value(u"slots"_s).toArray();
+        for (const auto &value : list) {
+            const QJsonObject slot = value.toObject();
+            if (slot.value(u"item"_s).toString() == item && slot.value(u"slot"_s).toInt() < 9) {
+                return request({{u"cmd"_s, u"select"_s}, {u"slot"_s, slot.value(u"slot"_s).toInt()}}).value(u"ok"_s).toBool();
+            }
+        }
+        return false;
+    }
+
+    int countOf(const QString &item)
+    {
+        int total = 0;
+        const QJsonArray list = request({{u"cmd"_s, u"inventory"_s}}).value(u"slots"_s).toArray();
+        for (const auto &value : list) {
+            const QJsonObject slot = value.toObject();
+            total += slot.value(u"item"_s).toString() == item ? slot.value(u"count"_s).toInt() : 0;
+        }
+        return total;
+    }
+
 private slots:
     void init()
     {
@@ -188,6 +212,43 @@ private slots:
         const QJsonObject ambience = request({{u"cmd"_s, u"sounds"_s}}).value(u"ambience"_s).toObject();
         QVERIFY2(ambience.value(u"wind"_s).toDouble() >= 0.25, QJsonDocument(ambience).toJson().constData());
         QCOMPARE(ambience.value(u"cave"_s).toDouble(), 0.0);
+    }
+
+    void bucketsAndBottlesThroughTheInterface()
+    {
+        // An empty bucket aims at liquids: using it on water fills it.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/fill ~1 ~ ~-1 ~3 ~3 ~1 air"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~2 ~-1 ~ water"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give bucket 1"_s}});
+        QVERIFY(select(u"qtcraft:bucket"_s));
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const QJsonObject used = request({{u"cmd"_s, u"use"_s},
+                                          {u"x"_s, int(std::floor(feet.x)) + 2},
+                                          {u"y"_s, int(std::floor(feet.y)) - 1},
+                                          {u"z"_s, int(std::floor(feet.z))},
+                                          {u"face"_s, u"up"_s}});
+        QVERIFY2(used.value(u"ok"_s).toBool(), QJsonDocument(used).toJson().constData());
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QCOMPARE(countOf(u"qtcraft:water_bucket"_s), 1);
+        // A firefly at night: caught with a glass bottle.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/time set night"_s}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give glass_bottle 1"_s}});
+        QVERIFY(select(u"qtcraft:glass_bottle"_s));
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 0}, {u"pitch"_s, 0}});
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon firefly"_s}});
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        qint64 firefly = -1;
+        const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        for (const auto &value : entities) {
+            if (value.toObject().value(u"type"_s).toString() == u"qtcraft:firefly"_s) {
+                firefly = value.toObject().value(u"id"_s).toInteger();
+            }
+        }
+        QVERIFY(firefly >= 0);
+        const QJsonObject caught = request({{u"cmd"_s, u"useEntity"_s}, {u"entity"_s, firefly}});
+        QVERIFY2(caught.value(u"ok"_s).toBool(), QJsonDocument(caught).toJson().constData());
+        QCOMPARE(countOf(u"qtcraft:firefly_bottle"_s), 1);
+        QCOMPARE(countOf(u"qtcraft:glass_bottle"_s), 0);
     }
 
     void viewModeCanBeSwitched()

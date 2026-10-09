@@ -3,6 +3,10 @@
 #include "QcContentRegistry.h"
 #include "QcTextureAtlas.h"
 
+#include <algorithm>
+
+using namespace Qt::StringLiterals;
+
 namespace {
 
 using Entry = QcBlockRenderTable::Entry;
@@ -144,6 +148,12 @@ QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const Q
         entry.type = state.type;
         entry.opaque = state.opaque;
         entry.liquid = block.liquid;
+        if (block.liquid) {
+            const bool falling = content.property(QcBlockId(id), u"falling"_s) == u"true"_s;
+            const int level = content.property(QcBlockId(id), u"level"_s).toInt();
+            const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - float(level) / float(block.flow.distance + 1);
+            entry.liquidHeight = (1.0f - liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
+        }
         entry.fullCube = state.fullCube;
         entry.lightOpacity = state.lightOpacity;
         entry.lightLevel = block.lightLevel;

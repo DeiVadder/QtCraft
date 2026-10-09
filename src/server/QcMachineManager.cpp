@@ -142,10 +142,14 @@ bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definit
     if (machine.burnRemaining <= 0.0 && recipe) {
         QcItemStack &fuel = machine.stacks[fuelSlot];
         const double seconds = fuel.isEmpty() ? 0.0 : fuelSeconds(fuel.item);
-        if (seconds > 0.0) {
+        // Fuel in a container (lava bucket) leaves the empty container in the fuel slot, so such
+        // fuel only burns one at a time.
+        const QString &emptiesTo = seconds > 0.0 ? m_content->item(fuel.item).emptiesTo : QString();
+        const std::optional<QcItemId> container = emptiesTo.isEmpty() ? std::nullopt : m_content->itemId(emptiesTo);
+        if (seconds > 0.0 && (!container || fuel.count == 1)) {
             machine.burnRemaining = machine.burnSeconds = seconds;
             if (--fuel.count <= 0) {
-                fuel = {};
+                fuel = container ? QcItemStack{*container, 1, 0} : QcItemStack{};
             }
             changed = true;
         }

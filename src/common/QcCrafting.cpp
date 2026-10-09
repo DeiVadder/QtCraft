@@ -12,6 +12,23 @@ QcItemId itemAt(const QcContentRegistry &content, const QList<QcItemStack> &grid
     return !stack.isEmpty() && content.isValidItem(stack.item) ? stack.item : qcNoItem;
 }
 
+// Number of items in the content that fit an ingredient (1 for named items).
+qsizetype width(const QcContentRegistry &content, const QString &ingredient)
+{
+    if (!ingredient.startsWith(u'#')) {
+        return 1;
+    }
+    const QString tag = ingredient.mid(1);
+    return std::ranges::count_if(content.items(), [&tag](const QcItemDefinition &item) { return item.tags.contains(tag); });
+}
+
+// Named ingredients first, then tags from the narrowest to the widest; the order is otherwise kept.
+template<typename List, typename Key>
+void orderNarrowFirst(const QcContentRegistry &content, List &list, Key key)
+{
+    std::ranges::stable_sort(list, [&](const auto &a, const auto &b) { return width(content, key(a)) < width(content, key(b)); });
+}
+
 // An empty cell fits an empty ingredient only.
 bool cellMatches(const QcContentRegistry &content, QcItemId item, const QString &wanted)
 {
@@ -58,9 +75,9 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
     if (present.size() != recipe.ingredients.size()) {
         return false;
     }
-    // Exact names first, so a tag never takes the item a named ingredient needs.
+    // Exact names first, so a tag never takes the item a named ingredient needs, then narrow tags.
     QList<QString> wanted = recipe.ingredients;
-    std::ranges::stable_partition(wanted, [](const QString &ingredient) { return !ingredient.startsWith(u'#'); });
+    orderNarrowFirst(content, wanted, [](const QString &ingredient) { return ingredient; });
     for (const QString &ingredient : std::as_const(wanted)) {
         const auto found = std::ranges::find_if(present, [&](QcItemId item) { return matches(content, item, ingredient); });
         if (found == present.end()) {
@@ -118,9 +135,16 @@ QList<std::pair<QString, int>> requirements(const QcRecipeDefinition &recipe)
     return needed;
 }
 
+QList<std::pair<QString, int>> requirements(const QcContentRegistry &content, const QcRecipeDefinition &recipe)
+{
+    QList<std::pair<QString, int>> needed = requirements(recipe);
+    orderNarrowFirst(content, needed, [](const std::pair<QString, int> &entry) { return entry.first; });
+    return needed;
+}
+
 bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcRecipeDefinition &recipe, int times)
 {
-    const QList<std::pair<QString, int>> needed = requirements(recipe);
+    const QList<std::pair<QString, int>> needed = requirements(content, recipe);
     return std::ranges::all_of(needed, [&](const std::pair<QString, int> &entry) {
         return removeIngredient(content, inventory, entry.first, entry.second * times);
     });
@@ -128,7 +152,7 @@ bool consume(const QcContentRegistry &content, QcInventory &inventory, const QcR
 
 int timesCraftable(const QcContentRegistry &content, const QcInventory &inventory, const QcRecipeDefinition &recipe, int limit)
 {
-    const QList<std::pair<QString, int>> needed = requirements(recipe);
+    const QList<std::pair<QString, int>> needed = requirements(content, recipe);
     int most = limit;
     for (const auto &[ingredient, count] : needed) {
         most = std::min(most, available(content, inventory, ingredient) / count);

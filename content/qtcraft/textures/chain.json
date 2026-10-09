@@ -1,0 +1,8 @@
+{
+    "name": "chain",
+    "pattern": "noise",
+    "primary": "#4a4a50",
+    "secondary": "#303034",
+    "variation": 0.2,
+    "seed": 329
+}

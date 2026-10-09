@@ -535,6 +535,12 @@ private slots:
         QVERIFY(!log->machine.isMachine());
         QCOMPARE(log->fuelSeconds, 15.0);
 
+        // Fuel in a container leaves the empty one in the fuel slot, so it must not stack.
+        const auto stackedCans = QcContentParser::parseItem(json(R"({"name":"can","fuelSeconds":80,"emptiesTo":"bucket"})"), u"b"_s);
+        QVERIFY(!stackedCans);
+        QVERIFY(stackedCans.error().contains(u"maxStack"_s));
+        QVERIFY(QcContentParser::parseItem(json(R"({"name":"can","fuelSeconds":80,"emptiesTo":"bucket","maxStack":1})"), u"b"_s));
+        QVERIFY(QcContentParser::parseItem(json(R"({"name":"water_can","emptiesTo":"bucket","maxStack":16})"), u"b"_s));
         const auto coal = QcContentParser::parseItem(json(R"({"name":"coal","fuelSeconds":80})"), u"b"_s);
         QCOMPARE(coal->fuelSeconds, 80.0);
         QCOMPARE(coal->food, 0);

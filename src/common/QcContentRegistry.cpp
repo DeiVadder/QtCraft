@@ -147,7 +147,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     for (const QString &group : block.connectsTo) {
         stream << group;
     }
-    stream << qint32(block.containerSlots);
+    stream << qint32(block.containerSlots) << qint32(block.flow.distance) << block.flow.movementFactor;
 }
 
 bool readBlock(QDataStream &stream, QcBlockDefinition &block)
@@ -249,7 +249,14 @@ bool readBlock(QDataStream &stream, QcBlockDefinition &block)
         block.connectsTo.append(group);
     }
     qint32 containerSlots = 0;
-    stream >> containerSlots;
+    qint32 flowDistance = 0;
+    stream >> containerSlots >> flowDistance >> block.flow.movementFactor;
+    if (flowDistance < 0 || flowDistance > QcLiquidDefinition::maxDistance || !std::isfinite(block.flow.movementFactor)
+        || block.flow.movementFactor < 0.05 || block.flow.movementFactor > 2.0) {
+        stream.setStatus(QDataStream::ReadCorruptData);
+        return false;
+    }
+    block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
         || facingRule > quint8(QcFacingRule::Toward) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
         || containerSlots > QcBlockDefinition::maxContainerSlots || !QcBlockStateTable::problem(block).isEmpty()) {
@@ -729,6 +736,7 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         for (const QString &tag : item.tags) {
             stream << tag;
         }
+        stream << item.scoops << item.emptiesTo;
     }
     stream << quint32(m_mobs.size());
     for (const QcMobDefinition &mob : m_mobs) {
@@ -737,7 +745,8 @@ void QcContentRegistry::writeTo(QDataStream &stream) const
         for (const QcMobPart &part : mob.parts) {
             stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
         }
-        stream << mob.skeleton << mob.outfit << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound;
+        stream << mob.skeleton << mob.outfit << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound
+               << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem;
     }
     stream << quint32(m_recipes.size());
     for (const QcRecipeDefinition &recipe : m_recipes) {
@@ -853,6 +862,7 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             stream >> tag;
             item.tags.append(tag);
         }
+        stream >> item.scoops >> item.emptiesTo;
         item.maxStack = maxStack;
         item.toolLevel = toolLevel;
         item.durability = durability;
@@ -882,7 +892,10 @@ QcResult<QcContentRegistry> QcContentRegistry::readFrom(QDataStream &stream)
             stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture;
             mob.parts.append(part);
         }
-        stream >> mob.skeleton >> mob.outfit >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound;
+        qint32 glow = 0;
+        stream >> mob.skeleton >> mob.outfit >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
+            >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
+        mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
         // Sizes feed physics and the mesher: reject anything outside what the parser allows.
         const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };
         bool valid = std::isfinite(mob.maxHealth) && mob.maxHealth > 0.0 && mob.maxHealth <= 1000.0 && plausible(mob.width) && plausible(mob.height) && mob.width > 0.0

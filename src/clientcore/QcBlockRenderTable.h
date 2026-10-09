@@ -55,6 +55,9 @@ public:
         quint32 type = 0;
         bool opaque = false;
         bool liquid = false;
+        // Height of a liquid's surface in its cell when no liquid lies on top (falls with the
+        // flow level; sources and falling liquid are nearly full).
+        float liquidHeight = 1.0f;
         // The state is the full cube: drawn from faceUv; otherwise from quads and crosses.
         bool fullCube = true;
         // Light lost when passing through this block (0..15) and block light emitted (0..15).
@@ -67,6 +70,9 @@ public:
         // matching faces of neighbours.
         std::array<QList<SideRect>, 6> cover;
     };
+
+    // How far the surface of a full liquid lies below the top of its cell.
+    static constexpr float liquidSurfaceDrop = 0.125f;
 
     QcBlockRenderTable() = default;
     QcBlockRenderTable(const QcContentRegistry &content, const QcTextureAtlas &atlas);

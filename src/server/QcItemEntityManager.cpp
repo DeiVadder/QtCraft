@@ -324,3 +324,8 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
     // Recounted on the first tick, when it is known which chunks are loaded.
     m_activeCount = 0;
 }
+
+qsizetype QcItemEntityManager::removeWhere(const std::function<bool(const Item &)> &match)
+{
+    return m_items.removeIf([&match](const Item &item) { return !item.dormant && match(item); });
+}

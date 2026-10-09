@@ -6,6 +6,29 @@
     "replaceable": true,
     "hardness": -1,
     "drops": [],
+    "states": {
+        "level": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+        ],
+        "falling": [
+            false,
+            true
+        ]
+    },
+    "flow": {
+        "distance": 7,
+        "ticks": 5,
+        "infinite": true,
+        "bucket": "water_bucket",
+        "sound": "liquid.water.flow"
+    },
     "textures": {
         "all": "water"
     }

@@ -1,0 +1,19 @@
+{
+    "name": "mob.sheep.hurt",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.2,
+            "frequency": 420,
+            "endFrequency": 300,
+            "attack": 0.03,
+            "curve": 1.5,
+            "lowpass": 1800,
+            "tremoloRate": 18,
+            "tremoloDepth": 0.5
+        }
+    ]
+}

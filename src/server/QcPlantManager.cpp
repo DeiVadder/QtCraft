@@ -26,7 +26,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
         params.minHeight = feature.minHeight;
         params.maxHeight = feature.maxHeight;
         params.cone = feature.shape == u"cone"_s;
-        if (params.trunk == qcAirBlockId) {
+        if (params.trunk == qcAirBlockId || feature.type == QcFeatureDefinition::Type::Pool) {
             continue;
         }
         features.insert(feature.name, params);

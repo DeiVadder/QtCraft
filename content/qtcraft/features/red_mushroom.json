@@ -1,0 +1,9 @@
+{
+    "name": "red_mushroom",
+    "type": "plant",
+    "block": "red_mushroom",
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

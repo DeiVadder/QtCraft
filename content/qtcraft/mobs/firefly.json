@@ -1,0 +1,59 @@
+{
+    "name": "firefly",
+    "health": 1,
+    "width": 0.25,
+    "height": 0.25,
+    "walkSpeed": 0.8,
+    "chaseSpeed": 0.8,
+    "hostile": false,
+    "flying": true,
+    "glow": 15,
+    "spawn": {
+        "time": "night",
+        "ambient": true,
+        "biomes": [
+            "swamp"
+        ],
+        "maxCount": 8,
+        "maxGroup": 3,
+        "weight": 10
+    },
+    "catch": {
+        "with": "glass_bottle",
+        "item": "firefly_bottle"
+    },
+    "sounds": {
+        "ambient": "mob.firefly.ambient",
+        "hurt": "mob.firefly.hurt",
+        "death": "mob.firefly.hurt"
+    },
+    "model": [
+        {
+            "from": [
+                -0.05,
+                0.14,
+                -0.1
+            ],
+            "to": [
+                0.05,
+                0.22,
+                0.06
+            ],
+            "texture": "firefly_body"
+        },
+        {
+            "from": [
+                -0.08,
+                0.02,
+                -0.02
+            ],
+            "to": [
+                0.08,
+                0.15,
+                0.14
+            ],
+            "texture": "firefly_glow"
+        }
+    ],
+    "drops": []
+}

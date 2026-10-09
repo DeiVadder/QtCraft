@@ -1,0 +1,8 @@
+{
+    "name": "firefly_body",
+    "pattern": "noise",
+    "primary": "#5a4a2a",
+    "secondary": "#3a3020",
+    "variation": 0.2,
+    "seed": 321
+}

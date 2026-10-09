@@ -41,6 +41,8 @@ public:
         quint64 lightJobs = 0;
         double lightTotalMs = 0.0;
         double lightWorstMs = 0.0;
+        // Mesh and light jobs dropped unstarted by clear().
+        qsizetype discardedJobs = 0;
     };
 
     explicit QcMeshScheduler(QObject *parent = nullptr);

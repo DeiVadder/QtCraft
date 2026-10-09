@@ -1,0 +1,8 @@
+{
+    "name": "stone_bricks",
+    "pattern": "bricks",
+    "primary": "#8a8a8a",
+    "secondary": "#5e5e5e",
+    "variation": 0.08,
+    "seed": 401
+}

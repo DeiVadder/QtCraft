@@ -1,0 +1,29 @@
+{
+    "name": "mine_lamp",
+    "sound": "stone",
+    "shape": "mine_lamp",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 12,
+    "hardness": 0.5,
+    "support": "attached",
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "all": "mine_lamp",
+        "top": "mine_lamp_top",
+        "bottom": "mine_lamp_top",
+        "slots": {
+            "chain": "chain"
+        }
+    }
+}

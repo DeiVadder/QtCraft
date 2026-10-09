@@ -1,0 +1,8 @@
+{
+    "name": "mine_lamp_top",
+    "pattern": "noise",
+    "primary": "#8e4826",
+    "secondary": "#7a3c20",
+    "variation": 0.1,
+    "seed": 328
+}

@@ -63,7 +63,7 @@ class Lighting
 {
 public:
     static constexpr int extent = 3 * QcWorld::chunkSize;
-    static constexpr int margin = 16;
+    static constexpr int margin = QcChunkMesher::lightMargin;
     static constexpr int maxLevel = 15;
 
     Lighting(Neighbourhood around, const QcMeshInput &input)
@@ -402,15 +402,34 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                     continue;
                 }
 
-                const std::optional<QcBlockId> above = around.block(x, y + 1, z);
-                const bool lowerTop = entry.liquid && !(above && table.entry(*above).liquid);
+                // A liquid's surface sinks with its level unless liquid lies on top of it.
+                const auto surfaceOf = [&](const Entry &liquid, int lx, int ly2, int lz) {
+                    const std::optional<QcBlockId> top = around.block(lx, ly2 + 1, lz);
+                    return top && table.entry(*top).liquid ? 1.0f : liquid.liquidHeight;
+                };
+                const float surface = entry.liquid ? surfaceOf(entry, x, y, z) : 1.0f;
                 for (const QcBlockFace face : qcAllBlockFaces) {
                     const QcFaceOffset normal = qcFaceOffset(face);
                     const int nx = x + normal.dx;
                     const int ny = y + normal.dy;
                     const int nz = z + normal.dz;
                     const std::optional<QcBlockId> neighbour = around.block(nx, ny, nz);
-                    if (!neighbour || QcBlockRenderTable::hides(entry, {}, face, table.entry(*neighbour))) {
+                    if (!neighbour) {
+                        continue;
+                    }
+                    const Entry &next = table.entry(*neighbour);
+                    const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
+                    // Bottom of a side face: above a lower liquid of the same kind only the step shows.
+                    float base = 0.0f;
+                    if (entry.liquid && next.liquid && side) {
+                        const float nextSurface = surfaceOf(next, nx, ny, nz);
+                        if (next.type != entry.type || nextSurface >= surface) {
+                            continue;
+                        }
+                        base = nextSurface;
+                    } else if (entry.liquid && face == QcBlockFace::Up && surface < 1.0f && !next.liquid) {
+                        // A sunken surface stays visible under a ceiling.
+                    } else if (QcBlockRenderTable::hides(entry, {}, face, next)) {
                         continue;
                     }
                     const auto faceIndex = std::size_t(face);
@@ -419,10 +438,7 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                     std::array<QcBlockVertex, 4> corners{};
                     for (std::size_t corner = 0; corner < 4; ++corner) {
                         const auto &c = faceCorners[faceIndex][corner];
-                        float vy = float(y + c[1]);
-                        if (lowerTop && c[1] == 1) {
-                            vy -= liquidSurfaceDrop;
-                        }
+                        const float vy = float(y) + (c[1] == 1 ? surface : base);
                         const bool bottomEdge = corner < 2;
                         const bool leftEdge = corner == 0 || corner == 3;
                         QcBlockVertex &vertex = corners[corner];

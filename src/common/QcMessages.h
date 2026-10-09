@@ -196,6 +196,8 @@ struct EntitySpawn
 {
     static constexpr qint32 playerType = -1;
     static constexpr qint32 itemType = -2;
+    // A falling block (sand, gravel) in the state `block`.
+    static constexpr qint32 fallingBlockType = -3;
 
     quint32 id = 0;
     qint32 mobType = playerType;
@@ -211,6 +213,8 @@ struct EntitySpawn
     float pitch = 0.0f;
     quint8 flags = 0;
     QcItemId held = qcNoItem;
+    // The block of a falling block entity; air otherwise.
+    QcBlockId block = qcAirBlockId;
 };
 
 struct EntityMove
@@ -328,6 +332,12 @@ struct SoundEvent
     float pitch = 1.0f;
 };
 
+// Client -> server: use the held item on a creature (catch a firefly with an empty bottle).
+struct UseEntity
+{
+    quint32 id = 0;
+};
+
 } // namespace QcMsg
 
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
@@ -339,4 +349,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
                                QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance,
                                QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood,
-                               QcMsg::SoundEvent>;
+                               QcMsg::SoundEvent, QcMsg::UseEntity>;

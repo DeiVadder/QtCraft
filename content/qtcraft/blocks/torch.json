@@ -9,6 +9,7 @@
     "hardness": 0.0,
     "support": "attached",
     "replaceable": false,
+    "washable": true,
     "states": { "attach": ["floor", "north", "east", "south", "west"] },
     "itemTexture": "torch_item",
     "textures": {

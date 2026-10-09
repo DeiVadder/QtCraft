@@ -1,0 +1,25 @@
+{
+    "name": "carpet",
+    "kinds": [
+        "wool"
+    ],
+    "fuel": 0.5,
+    "block": {
+        "shape": "carpet",
+        "support": "below",
+        "lightOpacity": 0
+    },
+    "recipe": {
+        "pattern": [
+            "##"
+        ],
+        "key": {
+            "#": "@"
+        },
+        "count": 3
+    },
+    "translations": {
+        "en": "%1 carpet",
+        "de": "%1 Teppich"
+    }
+}

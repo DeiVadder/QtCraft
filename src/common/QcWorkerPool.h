@@ -23,6 +23,8 @@ public:
     void submit(std::function<void()> job);
     // Blocks until the queue is empty and no job is running.
     void waitForIdle();
+    // Drops the jobs that have not started yet and returns how many; running jobs go on.
+    qsizetype discardQueued();
     int threadCount() const { return int(m_threads.size()); }
 
 private:

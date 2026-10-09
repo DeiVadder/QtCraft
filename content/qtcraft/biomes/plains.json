@@ -12,6 +12,26 @@
         {
             "feature": "oak_tree",
             "density": 0.0015
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.12
+        },
+        {
+            "feature": "dandelion",
+            "density": 0.012
+        },
+        {
+            "feature": "poppy",
+            "density": 0.012
+        },
+        {
+            "feature": "cornflower",
+            "density": 0.006
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.15
         }
     ]
 }

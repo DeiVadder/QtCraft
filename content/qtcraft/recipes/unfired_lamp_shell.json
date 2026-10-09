@@ -1,0 +1,15 @@
+{
+    "name": "unfired_lamp_shell",
+    "type": "shaped",
+    "pattern": [
+        " C ",
+        "C C",
+        " C "
+    ],
+    "key": {
+        "C": "clay"
+    },
+    "result": {
+        "item": "unfired_lamp_shell"
+    }
+}

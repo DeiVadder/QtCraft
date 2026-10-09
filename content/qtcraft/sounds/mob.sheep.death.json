@@ -1,0 +1,19 @@
+{
+    "name": "mob.sheep.death",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "saw",
+            "duration": 0.45,
+            "frequency": 360,
+            "endFrequency": 180,
+            "attack": 0.03,
+            "curve": 1.5,
+            "lowpass": 1800,
+            "tremoloRate": 18,
+            "tremoloDepth": 0.5
+        }
+    ]
+}

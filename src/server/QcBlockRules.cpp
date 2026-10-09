@@ -131,13 +131,23 @@ QcBlockFace opposite(QcBlockFace face)
     return face;
 }
 
-std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, QcBlockPos clicked, QcBlockFace face,
+std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, QcBlockPos clicked, QcBlockFace clickedFace,
                                    const QcVec3 &hit, float yaw)
 {
     const QcContentRegistry &content = world.content();
     if (!content.isValidBlock(block)) {
         return std::nullopt;
     }
+    // A clicked replaceable block (tall grass) gives way: the new block takes its cell, as if placed
+    // on the ground below it.
+    const std::optional<QcBlockId> clickedBlock = world.blockAt(clicked);
+    const bool intoClicked = clickedBlock && *clickedBlock != qcAirBlockId && content.isValidBlock(*clickedBlock)
+                             && content.block(*clickedBlock).replaceable && !content.block(*clickedBlock).liquid
+                             && !content.isSameBlock(*clickedBlock, block);
+    if (intoClicked) {
+        clicked = clicked.offset(0, -1, 0);
+    }
+    const QcBlockFace face = intoClicked ? QcBlockFace::Up : clickedFace;
     QcBlockId state = content.stateTable().firstState(content.state(block).type);
     const QcBlockDefinition &definition = content.block(state);
     // Upper or lower half from the clicked face, or from the height of the hit on a side face.
@@ -147,9 +157,9 @@ std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, 
     // A slab clicked on its open side, or placed into a slab of the other half, doubles up.
     const QcBlockProperty *slabType = definition.property(u"type"_s);
     if (slabType && slabType->values.contains(u"double"_s)) {
-        const std::optional<QcBlockId> clickedBlock = world.blockAt(clicked);
-        if (clickedBlock && content.isSameBlock(*clickedBlock, state)) {
-            const QString type = content.property(*clickedBlock, u"type"_s);
+        const std::optional<QcBlockId> slabBelow = world.blockAt(clicked);
+        if (slabBelow && content.isSameBlock(*slabBelow, state)) {
+            const QString type = content.property(*slabBelow, u"type"_s);
             if ((type == u"bottom"_s && face == QcBlockFace::Up) || (type == u"top"_s && face == QcBlockFace::Down)) {
                 return Placement{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
             }
@@ -251,7 +261,26 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     case QcBlockSupport::Below: {
         // Unloaded neighbours never break anything.
         const QcBlockPos below = pos.offset(0, -1, 0);
-        return !world.blockAt(below) || hasSolidFace(world, below, QcBlockFace::Up);
+        const std::optional<QcBlockId> ground = world.blockAt(below);
+        if (!ground) {
+            return true;
+        }
+        if (definition.groundBlocks.isEmpty() && definition.groundLiquid.isEmpty()) {
+            return hasSolidFace(world, below, QcBlockFace::Up);
+        }
+        if (!content.isValidBlock(*ground)) {
+            return false;
+        }
+        const bool groundOk = definition.groundBlocks.isEmpty() ? hasSolidFace(world, below, QcBlockFace::Up)
+                                                                : definition.groundBlocks.contains(content.block(*ground).name);
+        if (!groundOk || definition.groundLiquid.isEmpty() || content.isSameBlock(*ground, id)) {
+            return groundOk;
+        }
+        // The liquid has to touch the ground block from a side (water next to the sand of a cane).
+        return std::ranges::any_of(horizontal, [&](QcBlockFace face) {
+            const std::optional<QcBlockId> side = world.blockAt(qcNeighbour(below, face));
+            return !side || (content.isValidBlock(*side) && content.block(*side).name == definition.groundLiquid);
+        });
     }
     case QcBlockSupport::Attached: {
         const std::optional<QcBlockFace> towards = faceFromName(content.property(id, u"attach"_s));

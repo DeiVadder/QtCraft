@@ -3,12 +3,16 @@
 #include "QcCrafting.h"
 #include "QcInProcessTransport.h"
 #include "QcMachineManager.h"
+#include "QcBlockRules.h"
+#include "QcFallingBlockManager.h"
+#include "QcLiquidFlow.h"
 #include "QcModLoader.h"
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestWorld.h"
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
+#include "worldgen/QcTerrainGenerator.h"
 
 #include <QDataStream>
 #include <QDir>
@@ -318,6 +322,18 @@ private slots:
         QVERIFY(loaded.has_value());
         QVERIFY(find(loaded->mods, u"ores"_s)->reason.contains(u"too many ores"_s));
         QVERIFY(std::ranges::none_of(loaded->content->ores(), [](const QcOreDefinition &ore) { return ore.name.startsWith(u"ores:"_s); }));
+        // Pools: the base game's two attempts plus 7 × 8 fit 64 per chunk, one more mod does not.
+        writeJson(dir.filePath(u"pools/pack.json"_s), {{u"id"_s, u"pools"_s}, {u"version"_s, u"1"_s}});
+        writeJson(dir.filePath(u"more/pack.json"_s), {{u"id"_s, u"more"_s}, {u"version"_s, u"1"_s}, {u"dependencies"_s, QJsonArray{u"pools"_s}}});
+        for (int i = 0; i < 8; ++i) {
+            writeJson(dir.filePath(i < 7 ? u"pools/features/p%1.json"_s.arg(i) : u"more/features/p%1.json"_s.arg(i)),
+                      {{u"name"_s, u"p%1"_s.arg(i)}, {u"type"_s, u"pool"_s}, {u"block"_s, u"qtcraft:lava"_s}, {u"attempts"_s, 8}});
+        }
+        warnings.clear();
+        const QcResult<QcModLoader::Result> pools = QcModLoader::load(dir.path(), warnings);
+        QVERIFY(pools.has_value());
+        QVERIFY2(find(pools->mods, u"pools"_s)->reason.isEmpty(), qPrintable(find(pools->mods, u"pools"_s)->reason));
+        QVERIFY(find(pools->mods, u"more"_s)->reason.contains(u"too many pools"_s));
     }
 
     void onlyTheModThatClientsRejectIsDropped()
@@ -539,6 +555,76 @@ private slots:
         QCOMPARE(machines.find(pos)->stacks[2], (QcItemStack{ruby, 1, 0}));
         QVERIFY(machines.find(pos)->stacks[1].isEmpty());
         QCOMPARE(machines.find(pos)->burnSeconds, 120.0);
+    }
+
+    void exampleModAddsLiquidPlantAndFallingBlock()
+    {
+        QTemporaryDir dir;
+        copyExampleMod(dir.filePath(u"rubies"_s));
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded));
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
+        auto content = loaded->content;
+        const auto state = [&](const QString &name) { return *content->stateId(name); };
+        QcTestWorld world(*content);
+        world.fillBox({-8, 63, -8}, {8, 63, 8}, state(u"qtcraft:stone"_s));
+        // Molten ruby flows four blocks wide, every 15 ticks, and fills its own bucket.
+        const QcBlockDefinition &molten = content->block(state(u"rubies:molten_ruby"_s));
+        QCOMPARE(molten.flow.distance, 4);
+        QCOMPARE(molten.flow.bucket, u"rubies:molten_ruby_bucket"_s);
+        QCOMPARE(content->item(*content->itemId(u"rubies:molten_ruby_bucket"_s)).emptiesTo, u"qtcraft:bucket"_s);
+        QcLiquidFlow flow(content);
+        world.set({0, 64, 0}, state(u"rubies:molten_ruby"_s));
+        flow.schedule(world, {0, 64, 0}, 0);
+        for (quint64 tick = 1; tick <= 300; ++tick) {
+            flow.tick(tick, world, [&world](QcBlockPos pos, QcBlockId block) { world.set(pos, block); });
+        }
+        QCOMPARE(content->stateName(*world.blockAt({4, 64, 0})), u"rubies:molten_ruby[falling=false,level=4]"_s);
+        QCOMPARE(*world.blockAt({5, 64, 0}), qcAirBlockId);
+        // Next to base water its flow turns into the mod's ruby sand, which falls.
+        world.set({1, 65, 0}, state(u"qtcraft:water"_s));
+        const std::optional<QcBlockId> turned = QcLiquidFlow::reaction(world, {1, 64, 0}, *world.blockAt({1, 64, 0}));
+        QCOMPARE(turned, std::optional<QcBlockId>(state(u"rubies:ruby_sand"_s)));
+        world.set({0, 70, 0}, state(u"rubies:ruby_sand"_s));
+        QVERIFY(QcFallingBlockManager::shouldFall(world, {0, 70, 0}));
+        // The ruby rose grows on grass only and is part of the plains the mod extends.
+        world.set({3, 70, 3}, state(u"qtcraft:grass_block"_s));
+        world.set({3, 71, 3}, state(u"rubies:ruby_rose"_s));
+        QVERIFY(QcBlockRules::isSupported(world, {3, 71, 3}, state(u"rubies:ruby_rose"_s)));
+        world.set({3, 70, 3}, state(u"qtcraft:stone"_s));
+        QVERIFY(!QcBlockRules::isSupported(world, {3, 71, 3}, state(u"rubies:ruby_rose"_s)));
+        const auto plains = std::ranges::find(content->biomes(), u"qtcraft:plains"_s, &QcBiomeDefinition::name);
+        QVERIFY(plains != content->biomes().end());
+        QVERIFY(std::ranges::any_of(plains->features, [](const QcFeaturePlacement &placement) {
+            return placement.feature == u"rubies:ruby_rose"_s;
+        }));
+        QVERIFY(std::ranges::any_of(plains->features, [](const QcFeaturePlacement &placement) {
+            return placement.feature == u"qtcraft:tall_grass"_s;
+        }));
+        // Pools of molten ruby sink into cave floors next to the base game's lava pools.
+        QStringList generatorWarnings;
+        const QcTerrainGenerator generator(content, 12345, &generatorWarnings);
+        QVERIFY2(generatorWarnings.isEmpty(), qPrintable(generatorWarnings.join(u'\n')));
+        const QcBlockId moltenSource = state(u"rubies:molten_ruby"_s);
+        const QcBlockId lavaSource = state(u"qtcraft:lava"_s);
+        int moltenCells = 0;
+        int lavaCells = 0;
+        for (int cz = 0; cz < 12; ++cz) {
+            for (int cx = 0; cx < 12; ++cx) {
+                const auto chunk = generator.generate({cx, cz});
+                for (int y = 1; y <= 40; ++y) {
+                    for (int z = 0; z < 16; ++z) {
+                        for (int x = 0; x < 16; ++x) {
+                            moltenCells += chunk->block(x, y, z) == moltenSource;
+                            lavaCells += chunk->block(x, y, z) == lavaSource;
+                        }
+                    }
+                }
+            }
+        }
+        QVERIFY(moltenCells > 0);
+        QVERIFY(lavaCells > 0);
     }
 
     void modsCanAddTheirOwnMachines()

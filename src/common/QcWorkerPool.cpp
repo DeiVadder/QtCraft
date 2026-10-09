@@ -48,6 +48,20 @@ void QcWorkerPool::waitForIdle()
     m_idle.wait(lock, [this] { return m_jobs.empty() && m_running == 0; });
 }
 
+qsizetype QcWorkerPool::discardQueued()
+{
+    std::deque<std::function<void()>> dropped;
+    {
+        const std::scoped_lock lock(m_mutex);
+        dropped.swap(m_jobs);
+        if (m_running == 0) {
+            m_idle.notify_all();
+        }
+    }
+    // The jobs' captures are released outside the lock.
+    return qsizetype(dropped.size());
+}
+
 void QcWorkerPool::run()
 {
     std::unique_lock lock(m_mutex);

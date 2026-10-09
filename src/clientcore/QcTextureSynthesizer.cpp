@@ -322,6 +322,118 @@ void paint(QImage &image, const QcTextureSpec &spec)
                 }
                 break;
             }
+            case QcTextureSpec::Pattern::Lava: {
+                const double wave = std::sin(x * 0.9 + 1.7 * noise(spec.seed, x / 3, y / 3)) + std::cos(y * 0.75 + x * 0.3);
+                if (wave > 1.1) {
+                    color = varied(spec, spec.secondary, x, y, 3);
+                } else if (wave < -1.3 || (hashPixel(spec.seed + 47, x, y) % 11) == 0) {
+                    color = scaled(spec.primary, 0.7);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Flower: {
+                const double dx = x - 7.5;
+                const double dy = y - 5.0;
+                const double radius = dx * dx + dy * dy;
+                const bool stem = (x == 7 || x == 8) && y >= 7;
+                const bool leaf = (y == 11 && x >= 4 && x <= 6) || (y == 10 && x >= 9 && x <= 11);
+                if (radius <= 2.0) {
+                    color = QColor(250, 220, 90);
+                } else if (radius <= 13.0 && (hashPixel(spec.seed + 53, x, y) % 7) != 0) {
+                    color = varied(spec, spec.primary, x, y);
+                } else if (stem || leaf) {
+                    color = varied(spec, spec.secondary, x, y, 5);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::TallGrass: {
+                const int height = 5 + int(hashPixel(spec.seed + 59, x, 0) % 10);
+                const bool blade = (hashPixel(spec.seed + 61, x, 1) % 3) != 0 && y >= size - height;
+                if (!blade) {
+                    color = QColor(0, 0, 0, 0);
+                } else if (y < size - height + 2) {
+                    color = varied(spec, spec.secondary, x, y, 3);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Mushroom: {
+                const double dx = (x - 7.5) / 6.5;
+                const double dy = (y - 7.5) / 4.0;
+                const bool cap = dx * dx + dy * dy <= 1.0 && y <= 8;
+                const bool stem = x >= 6 && x <= 9 && y >= 8;
+                if (cap) {
+                    color = (hashPixel(spec.seed + 67, x / 2, y / 2) % 5) == 0 ? scaled(spec.primary, 1.8) : varied(spec, spec.primary, x, y);
+                } else if (stem) {
+                    color = varied(spec, QColor(224, 214, 186), x, y, 5);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::SugarCane: {
+                const bool stalk = x == 2 || x == 3 || x == 7 || x == 8 || x == 12 || x == 13;
+                const bool leaf = (y == 5 && x >= 4 && x <= 6) || (y == 10 && x >= 9 && x <= 11) || (y == 13 && x >= 0 && x <= 1);
+                if (stalk) {
+                    color = (y + x / 5) % 5 == 0 ? scaled(spec.primary, 0.7) : varied(spec, spec.primary, x, y);
+                } else if (leaf) {
+                    color = varied(spec, spec.secondary, x, y, 3);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Bottle: {
+                const double dx = x - 7.5;
+                const double dy = y - 10.0;
+                const bool body = dx * dx + dy * dy <= 22.0;
+                const bool neck = x >= 6 && x <= 9 && y >= 2 && y <= 6;
+                const bool cork = x >= 6 && x <= 9 && y == 1;
+                const bool edge = body && dx * dx + dy * dy > 13.0;
+                if (cork) {
+                    color = QColor(150, 110, 70);
+                } else if (edge || (neck && (x == 6 || x == 9))) {
+                    color = varied(spec, spec.primary, x, y);
+                } else if (body && y >= 8) {
+                    // Glowing contents sparkle; an empty bottle shows a pale glass tint.
+                    color = spec.secondary.alpha() == 0 ? scaled(spec.primary, 1.15)
+                                                        : ((hashPixel(spec.seed + 71, x, y) % 4) == 0 ? QColor(255, 255, 200)
+                                                                                                      : varied(spec, spec.secondary, x, y, 3));
+                } else if (body || neck) {
+                    color = scaled(spec.primary, 1.15);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Bucket: {
+                const int inset = 3 + (y - 5) / 4;
+                const bool body = y >= 5 && y <= 14 && x >= inset && x <= size - 1 - inset;
+                const bool handle = (y == 1 && x >= 5 && x <= 10) || ((x == 4 || x == 11) && y >= 2 && y <= 4);
+                if (body && y <= 6 && x > inset && x < size - 1 - inset) {
+                    color = spec.secondary.alpha() == 0 ? scaled(spec.primary, 0.45) : varied(spec, spec.secondary, x, y, 3);
+                } else if (body) {
+                    color = x == inset || x == size - 1 - inset ? scaled(spec.primary, 0.75) : varied(spec, spec.primary, x, y);
+                } else if (handle) {
+                    color = scaled(spec.primary, 0.6);
+                } else {
+                    color = QColor(0, 0, 0, 0);
+                }
+                break;
+            }
+            case QcTextureSpec::Pattern::Lantern: {
+                const bool frame = x <= 2 || x >= size - 3 || y <= 2 || y >= size - 3;
+                const bool bar = x == 7 || x == 8 || y == 7 || y == 8;
+                if (frame) {
+                    color = varied(spec, spec.primary, x, y);
+                } else if (bar) {
+                    color = scaled(spec.primary, 0.6);
+                } else {
+                    color = (hashPixel(spec.seed + 73, x, y) % 6) == 0 ? QColor(255, 255, 210) : varied(spec, spec.secondary, x, y, 3);
+                }
+                break;
+            }
             case QcTextureSpec::Pattern::Lump: {
                 const double dx = x - 7.5;
                 const double dy = y - 7.5;

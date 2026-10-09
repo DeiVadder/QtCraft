@@ -10,7 +10,8 @@
 #include <memory>
 
 // Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature and
-// humidity), connected cave tunnels and caverns, ore veins and features (trees, cacti). All blocks
+// humidity), connected cave tunnels and caverns, ore veins, liquid pools sunk into cave floors and
+// features (trees, cacti). All blocks
 // come from the registry's biome, feature, ore and terrain definitions. Deterministic per seed and
 // thread-safe: generate() only reads immutable state.
 class QcTerrainGenerator : public QcWorldGenerator
@@ -32,6 +33,7 @@ public:
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;
+    QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -45,6 +47,7 @@ private:
     struct Feature;
     struct Biome;
     struct Ore;
+    struct Pool;
 
     QcBlockId resolve(const QString &name, QcBlockId fallback, QStringList *warnings) const;
     QcBlockId surfaceBlock(Column column) const;
@@ -52,6 +55,10 @@ private:
     void fillColumn(QcChunk &chunk, int localX, int localZ, Column column) const;
     void carveCaves(QcChunk &chunk, const QList<Column> &columns) const;
     void placeOres(QcChunk &chunk) const;
+    void placePools(QcChunk &chunk) const;
+    void sinkPool(QcChunk &chunk, const Pool &pool, int centreX, int floorY, int centreZ, int attempt) const;
+    // Whether a block holds a liquid in place (solid, neither liquid nor replaceable).
+    bool holdsLiquid(QcBlockId block) const;
     void placeFeatures(QcChunk &chunk) const;
     void placeFeature(QcChunk &chunk, const Feature &feature, int x, int baseY, int z, double random) const;
 
@@ -67,6 +74,7 @@ private:
     QList<Biome> m_biomes;
     QList<Feature> m_features;
     QList<Ore> m_ores;
+    QList<Pool> m_pools;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

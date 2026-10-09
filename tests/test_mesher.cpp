@@ -220,6 +220,63 @@ private slots:
         QCOMPARE(highest, 3.0f - QcChunkMesher::liquidSurfaceDrop);
     }
 
+    void flowingLiquidSurfacesFollowTheirLevel()
+    {
+        // Water with levels 0..7 (source to farthest flow) and a falling flag, plus stone.
+        QcContentRegistry content;
+        const QcBlockId stone = *content.registerBlock(makeBlock(u"t:stone"_s, QcRenderLayer::Opaque, true));
+        QcBlockDefinition water = makeBlock(u"t:water"_s, QcRenderLayer::Translucent, false, true);
+        QcBlockProperty level;
+        level.name = u"level"_s;
+        for (int i = 0; i <= 7; ++i) {
+            level.values.append(QString::number(i));
+        }
+        water.properties = {level, QcBlockProperty{u"falling"_s, {u"false"_s, u"true"_s}}};
+        water.flow.distance = 7;
+        const QcBlockId source = *content.registerBlock(water);
+        const QcBlockId flowing = content.withProperty(source, u"level"_s, u"3"_s);
+        const QcBlockId falling = content.withProperty(content.withProperty(source, u"level"_s, u"1"_s), u"falling"_s, u"true"_s);
+        const auto table = std::make_shared<const QcBlockRenderTable>(content, QcTextureAtlas::build(content));
+        const float full = 1.0f - QcChunkMesher::liquidSurfaceDrop;
+        QCOMPARE(table->entry(source).liquidHeight, full);
+        QCOMPARE(table->entry(flowing).liquidHeight, full * (1.0f - 3.0f / 8.0f));
+        QCOMPARE(table->entry(falling).liquidHeight, full);
+
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(5, 1, 5, stone);
+        chunk->setBlock(6, 1, 5, stone);
+        chunk->setBlock(5, 2, 5, source);
+        chunk->setBlock(6, 2, 5, flowing);
+        QcMeshInput in;
+        for (int i = 0; i < 9; ++i) {
+            in.chunks[std::size_t(i)] = std::make_shared<QcChunk>(QcChunkPos{i % 3 - 1, i / 3 - 1});
+        }
+        in.chunks[4] = chunk;
+        in.renderTable = table;
+        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        // Source: top, north, south, west and the step above the lower flow on its east side;
+        // flow: top, north, south, east (its west side is below the source's surface).
+        QCOMPARE(quadCount(mesh.translucentIndices), 9);
+        const float low = 2.0f + table->entry(flowing).liquidHeight;
+        int stepCorners = 0;
+        for (const QcBlockVertex &v : mesh.translucentVertices) {
+            QVERIFY(v.y <= 2.0f + full);
+            // The step quad lies in the plane x = 6 between the two surfaces.
+            if (v.x == 6.0f && v.z >= 5.0f && v.z <= 6.0f && (v.y == low || v.y == 2.0f + full)) {
+                ++stepCorners;
+            }
+        }
+        QVERIFY(stepCorners >= 4);
+        // Under falling water the source is filled to the top and shows no surface of its own.
+        chunk->setBlock(5, 3, 5, falling);
+        const QcChunkMesh covered = QcChunkMesher::mesh(in);
+        float highest = 0.0f;
+        for (const QcBlockVertex &v : covered.translucentVertices) {
+            highest = std::max(highest, v.y);
+        }
+        QCOMPARE(highest, 3.0f + full);
+    }
+
     void cutoutBlocksKeepFacesBetweenEachOther()
     {
         const Fixture f;

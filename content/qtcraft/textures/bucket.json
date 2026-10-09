@@ -1,0 +1,8 @@
+{
+    "name": "bucket",
+    "pattern": "bucket",
+    "primary": "#b8bcc4",
+    "secondary": "#00000000",
+    "variation": 0.08,
+    "seed": 303
+}

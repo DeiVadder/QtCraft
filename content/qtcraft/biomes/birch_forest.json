@@ -12,6 +12,22 @@
         {
             "feature": "birch_tree",
             "density": 0.012
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.06
+        },
+        {
+            "feature": "dandelion",
+            "density": 0.008
+        },
+        {
+            "feature": "cornflower",
+            "density": 0.008
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.15
         }
     ]
 }

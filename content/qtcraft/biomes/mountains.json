@@ -14,6 +14,14 @@
         {
             "feature": "spruce_tree",
             "density": 0.004
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.03
+        },
+        {
+            "feature": "cornflower",
+            "density": 0.004
         }
     ]
 }

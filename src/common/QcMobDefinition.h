@@ -53,4 +53,19 @@ struct QcMobDefinition
     QString ambientSound;
     QString hurtSound;
     QString deathSound;
+    // Flies (no gravity) and drifts a little above the ground.
+    bool flying = false;
+    // Drawn at least this bright (0..15): glowing creatures. It lights nothing around them.
+    int glow = 0;
+    // Ambient creatures (fireflies) have their own spawn cap and never count as passive or hostile.
+    bool ambient = false;
+    // Most creatures of this kind near one player; 0 for no limit beyond the category's cap.
+    int maxCount = 0;
+    // Biomes it spawns in; empty for all.
+    QStringList spawnBiomes;
+    // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it.
+    QString catchWith;
+    QString catchItem;
+
+    static constexpr int maxGlow = 15;
 };

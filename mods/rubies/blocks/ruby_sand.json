@@ -1,0 +1,10 @@
+{
+    "name": "ruby_sand",
+    "sound": "qtcraft:sand",
+    "falls": true,
+    "hardness": 0.5,
+    "tool": "shovel",
+    "textures": {
+        "all": "ruby_sand"
+    }
+}

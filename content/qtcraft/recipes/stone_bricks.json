@@ -1,0 +1,15 @@
+{
+    "name": "stone_bricks",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "stone"
+    },
+    "result": {
+        "item": "stone_bricks",
+        "count": 4
+    }
+}

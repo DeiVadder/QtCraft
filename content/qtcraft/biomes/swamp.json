@@ -12,6 +12,22 @@
         {
             "feature": "oak_tree",
             "density": 0.006
+        },
+        {
+            "feature": "tall_grass",
+            "density": 0.08
+        },
+        {
+            "feature": "brown_mushroom",
+            "density": 0.012
+        },
+        {
+            "feature": "red_mushroom",
+            "density": 0.006
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.25
         }
     ]
 }

@@ -1,0 +1,8 @@
+{
+    "name": "green_dye",
+    "input": "cactus",
+    "result": {
+        "item": "green_dye"
+    },
+    "seconds": 10
+}

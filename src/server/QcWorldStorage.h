@@ -7,6 +7,7 @@
 #include "QcEntityMotion.h"
 #include "QcInventory.h"
 #include "QcContainerManager.h"
+#include "QcFallingBlockManager.h"
 #include "QcItemEntityManager.h"
 #include "QcMachineManager.h"
 #include "QcPlantManager.h"
@@ -35,11 +36,13 @@ struct QcWorldInfo
     bool keepInventory = true;
 };
 
-// Dropped items and growing saplings of a world (entities.qce).
+// Dropped items, growing saplings and falling blocks of a world (entities.qce).
 struct QcWorldEntities
 {
     QList<QcItemEntityManager::Drop> items;
     QList<QcPlantManager::Sapling> saplings;
+    // Since format 2 of entities.qce.
+    QList<QcFallingBlockManager::Falling> fallingBlocks;
 };
 
 struct QcPlayerData

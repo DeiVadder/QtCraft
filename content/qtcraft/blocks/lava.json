@@ -1,0 +1,40 @@
+{
+    "name": "lava",
+    "render": "cutout",
+    "solid": false,
+    "liquid": true,
+    "replaceable": true,
+    "hardness": -1,
+    "drops": [],
+    "light": 15,
+    "contactDamage": 3,
+    "states": {
+        "level": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ],
+        "falling": [
+            false,
+            true
+        ]
+    },
+    "flow": {
+        "distance": 3,
+        "ticks": 30,
+        "movement": 0.45,
+        "bucket": "lava_bucket",
+        "sound": "liquid.lava.pop",
+        "reactions": [
+            {
+                "with": "water",
+                "source": "obsidian",
+                "flowing": "cobblestone"
+            }
+        ]
+    },
+    "textures": {
+        "all": "lava"
+    }
+}

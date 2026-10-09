@@ -14,6 +14,10 @@ int height(const Params &params, double random)
 
 void build(const Params &params, QcBlockPos base, double random, quint64 seed, const Put &put)
 {
+    if (params.type == QcFeatureDefinition::Type::Plant) {
+        put(base, params.trunk, true);
+        return;
+    }
     const int trunkHeight = height(params, random);
     for (int dy = 0; dy < trunkHeight; ++dy) {
         put(base.offset(0, dy, 0), params.trunk, false);

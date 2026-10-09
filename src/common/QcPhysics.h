@@ -57,6 +57,8 @@ QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos);
 // Whether a box overlaps a climbable block.
 bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box);
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos);
+// Movement factor of the liquid at `pos` (lava is slow), 1 outside liquids.
+double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos);
 QcBlockPos blockContaining(const QcVec3 &point);
 
 // Moves `box` by `delta`, clipped against solid blocks (Y first, then X, then Z).

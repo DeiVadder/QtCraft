@@ -3,9 +3,15 @@
 #include "QcMeshScheduler.h"
 #include "QcSectionKey.h"
 #include "QcTextureAtlas.h"
+#include "QcWorkerPool.h"
 
+#include <QRandomGenerator>
 #include <QSignalSpy>
 #include <QTest>
+
+#include <atomic>
+#include <condition_variable>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -166,15 +172,32 @@ private slots:
         pumpUntilIdle(scheduler, world);
         meshed.clear();
 
-        // Opening a hole at the top of section 3 changes the light down to two sections below; those
-        // sections are meshed again (neighbour chunks are marked too but lack side neighbours here).
+        // A shaft from y = 40 up to y = 62, still closed at the top: no light reaches it.
+        for (int y = 40; y <= 62; ++y) {
+            QVERIFY(world.setBlock({15, y, 15}, qcAirBlockId));
+        }
+        // Opening it lets sky light down to y = 40, into the light volume of section 1 (y 0..47 with
+        // its margin); those sections are meshed again, section 0 (up to y = 31) is not (neighbour
+        // chunks are marked too but lack side neighbours here).
         QVERIFY(world.setBlock({15, 63, 15}, qcAirBlockId));
         scheduler.blockChanged(world, {15, 63, 15}, 1);
         // Only the centre chunk has all side neighbours, so only its sections produce results.
         pumpUntilIdle(scheduler, world);
         QVERIFY(meshed.contains(qcSectionKey({0, 0}, 1)));
         QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
-        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 6)));
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 4)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 0)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 5)));
+
+        // A block put into the shaft at y = 50 shades y = 40..49 again: sections 1 to 4.
+        meshed.clear();
+        QVERIFY(world.setBlock({15, 50, 15}, 1));
+        scheduler.blockChanged(world, {15, 50, 15}, qcAirBlockId);
+        pumpUntilIdle(scheduler, world);
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 1)));
+        QVERIFY(meshed.contains(qcSectionKey({0, 0}, 3)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 0)));
+        QVERIFY(!meshed.contains(qcSectionKey({0, 0}, 5)));
     }
 
     void blockChangesRemeshOnlyWhatTheyReach()
@@ -226,6 +249,78 @@ private slots:
         QVERIFY(stats.lightJobs >= 1);
     }
 
+    void remeshedSectionsKeepEveryMeshCurrent()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        connect(&scheduler, &QcMeshScheduler::meshRemoved, this, [&meshes](quint64 key) { meshes.remove(key); });
+        loadSquare(world, scheduler, 64);
+        pumpUntilIdle(scheduler, world);
+        const auto change = [&](QcBlockPos pos, QcBlockId block) {
+            const QcBlockId previous = *world.blockAt(pos);
+            QVERIFY(world.setBlock(pos, block));
+            scheduler.blockChanged(world, pos, previous);
+        };
+        // A shaft dug from the top down to y = 30 and closed at the top; a second one dug below a
+        // closed top and then opened; a pit next to the chunk border; then random changes around
+        // the surface and in the shafts.
+        // Meshing in between, so that every step has to bring the meshes up to date by itself.
+        for (int y = 63; y >= 30; --y) {
+            change({3, y, 3}, qcAirBlockId);
+        }
+        pumpUntilIdle(scheduler, world);
+        change({3, 63, 3}, 1);
+        pumpUntilIdle(scheduler, world);
+        for (int y = 62; y >= 30; --y) {
+            change({12, y, 12}, qcAirBlockId);
+        }
+        pumpUntilIdle(scheduler, world);
+        change({12, 63, 12}, qcAirBlockId);
+        pumpUntilIdle(scheduler, world);
+        for (int y = 63; y >= 50; --y) {
+            change({15, y, 7}, qcAirBlockId);
+        }
+        // Every section of the centre chunk looks exactly as if meshed from scratch.
+        const auto verifyCurrent = [&] {
+            pumpUntilIdle(scheduler, world);
+            for (int section = 0; section < QcWorld::sectionCount; ++section) {
+                QcMeshInput input;
+                for (int dz = -1; dz <= 1; ++dz) {
+                    for (int dx = -1; dx <= 1; ++dx) {
+                        input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
+                    }
+                }
+                input.sectionIndex = section;
+                input.renderTable = m_table;
+                const QcChunkMesh direct = QcChunkMesher::mesh(input);
+                const std::shared_ptr<const QcChunkMesh> scheduled = meshes.value(qcSectionKey({0, 0}, section));
+                QCOMPARE(bool(scheduled), !direct.isEmpty());
+                if (!scheduled) {
+                    continue;
+                }
+                QCOMPARE(scheduled->opaqueIndices, direct.opaqueIndices);
+                QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
+                for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
+                    QCOMPARE(scheduled->opaqueVertices[i].skyLight, direct.opaqueVertices[i].skyLight);
+                }
+            }
+        };
+        verifyCurrent();
+        QRandomGenerator random(14);
+        for (int i = 0; i < 120; ++i) {
+            const QcBlockPos pos{random.bounded(-6, 22), random.bounded(28, 72), random.bounded(-6, 22)};
+            change(pos, *world.blockAt(pos) == qcAirBlockId ? QcBlockId(1) : qcAirBlockId);
+            if (i % 10 == 9) {
+                pumpUntilIdle(scheduler, world);
+            }
+        }
+        verifyCurrent();
+    }
+
     void meshesWithEngineLightEqualTheSelfLitMesher()
     {
         QcClientWorld world(m_content);
@@ -261,6 +356,60 @@ private slots:
             brightest = std::max(brightest, direct.opaqueVertices[i].blockLight);
         }
         QVERIFY(brightest > 0.8f);
+    }
+
+    void poolDiscardsQueuedJobsButFinishesRunningOnes()
+    {
+        QcWorkerPool pool(1);
+        std::mutex mutex;
+        std::condition_variable released;
+        bool release = false;
+        std::atomic<bool> started = false;
+        std::atomic<int> ran = 0;
+        pool.submit([&] {
+            started = true;
+            std::unique_lock lock(mutex);
+            released.wait(lock, [&] { return release; });
+            ++ran;
+        });
+        QVERIFY(QTest::qWaitFor([&] { return started.load(); }, timeoutMs));
+        for (int i = 0; i < 25; ++i) {
+            pool.submit([&] { ++ran; });
+        }
+        // The blocked job runs; the 25 behind it never start.
+        QCOMPARE(pool.discardQueued(), qsizetype(25));
+        {
+            const std::scoped_lock lock(mutex);
+            release = true;
+        }
+        released.notify_all();
+        pool.waitForIdle();
+        QCOMPARE(ran.load(), 1);
+        QCOMPARE(pool.discardQueued(), qsizetype(0));
+    }
+
+    void clearDropsQueuedWorkAndMeshesAgain()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        loadSquare(world, scheduler, 20);
+        scheduler.pump(world);
+        // Queued light and mesh jobs of the old world are dropped, running ones are discarded on arrival.
+        scheduler.clear();
+        QCOMPARE(scheduler.lightJobsPending(), 0);
+        QCOMPARE(scheduler.jobsInFlight(), qsizetype(0));
+        scheduler.waitForJobs();
+        QCoreApplication::processEvents();
+        meshes.clear();
+        // Nothing of the old world is stuck: the same chunks mesh again from scratch.
+        loadSquare(world, scheduler, 20);
+        pumpUntilIdle(scheduler, world);
+        QCOMPARE(meshes.size(), 1);
+        QVERIFY(meshes.contains(qcSectionKey({0, 0}, 1)));
     }
 
     void unloadRemovesMeshesAndDropsRunningResults()
