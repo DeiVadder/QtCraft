@@ -46,6 +46,7 @@ Peaceful farm animal of grassy land; drops porkchops.
 | Size | 0.9 m wide, 0.9 m tall |
 | Speed | 1 m/s walking, 2.5 m/s fleeing |
 | Appears | by day |
+| Stays | never despawns and is saved with the world |
 | Group size | up to 4 |
 | Spawn weight | 2 |
 | Limit | all peaceful creatures together: 6 per player |
@@ -71,6 +72,7 @@ Peaceful animal of grassy land; drops wool.
 | Size | 0.9 m wide, 1.2 m tall |
 | Speed | 1 m/s walking, 2.5 m/s fleeing |
 | Appears | by day |
+| Stays | never despawns and is saved with the world |
 | Group size | up to 4 |
 | Spawn weight | 2 |
 | Limit | all peaceful creatures together: 6 per player |
@@ -86,7 +88,7 @@ All biomes.
 
 ### <a id="mob-qtcraft-slime"></a>Slime
 
-A bouncing blob of the caves, weak but persistent.
+A bouncing blob, weak but persistent. Underground it lives deep down and only in some chunks, the slime chunks; at night it also comes out in swamps.
 
 | | |
 |---|---|
@@ -100,8 +102,10 @@ A bouncing blob of the caves, weak but persistent.
 | Appears | day and night |
 | Caves | also in caves at any time |
 | Spawn light | block light up to 7 |
+| Spawn height | up to y 40 |
+| Spawn chunks | only in 10 % of the chunks, fixed by the world's seed |
 | Group size | up to 2 |
-| Spawn weight | 1 |
+| Spawn weight | 4 |
 | Limit | all hostile creatures together: 8 per player |
 | Drops | [Slimeball](items.md#item-qtcraft-slimeball) |
 
@@ -112,6 +116,12 @@ A bouncing blob of the caves, weak but persistent.
 **Appears in biomes**
 
 All biomes.
+
+**Also appears**
+
+at night; up to y 70; block light up to 7
+
+[Swamp](biomes.md#biome-qtcraft-swamp), [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt)
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 

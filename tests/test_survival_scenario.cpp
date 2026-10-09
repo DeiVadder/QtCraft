@@ -21,8 +21,8 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 60000;
-// A seed whose spawn lies in a birch forest (see docs/screenshots/03-birch-forest-lighting.png).
-constexpr qint64 forestSeed = 12345;
+// A seed whose spawn lies among trees (logs within eight blocks), with grass for a crafting table.
+constexpr qint64 forestSeed = 2024;
 
 } // namespace
 
@@ -362,19 +362,29 @@ private slots:
             }
         }
         std::ranges::sort(spots, {}, [](std::pair<int, int> spot) { return std::abs(spot.first) + std::abs(spot.second); });
+        // The ground may be a block higher or lower than the player's feet.
         for (const auto &[ox, oz] : std::as_const(spots)) {
             const int x = int(std::floor(here.x)) + ox;
             const int z = int(std::floor(here.z)) + oz;
-            // Tall grass gives way to a placed block.
-            const QString free = request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString();
-            if (free != u"qtcraft:air"_s && free != u"qtcraft:tall_grass"_s) {
-                continue;
+            for (const int y : {feetY, feetY + 1, feetY - 1}) {
+                const auto blockAt = [&](int at) {
+                    return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, at}, {u"z"_s, z}}).value(u"block"_s).toString();
+                };
+                // Tall grass gives way to a placed block.
+                const QString free = blockAt(y);
+                const QString ground = blockAt(y - 1);
+                if ((free != u"qtcraft:air"_s && free != u"qtcraft:tall_grass"_s) || ground == u"qtcraft:air"_s
+                    || ground == u"qtcraft:tall_grass"_s) {
+                    continue;
+                }
+                request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+                if (blockAt(y) == u"qtcraft:crafting_table"_s) {
+                    placed = true;
+                    m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
+                    break;
+                }
             }
-            request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, feetY - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
-            if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}}).value(u"block"_s).toString()
-                == u"qtcraft:crafting_table"_s) {
-                placed = true;
-                m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, feetY}, {u"z"_s, z}};
+            if (placed) {
                 break;
             }
         }

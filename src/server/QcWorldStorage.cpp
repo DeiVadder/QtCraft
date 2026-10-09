@@ -39,6 +39,7 @@ constexpr QByteArrayView machinesMagic("QCMA");
 constexpr QByteArrayView containersMagic("QCCO");
 constexpr quint16 containersVersion = 1;
 constexpr QByteArrayView blockUpdatesMagic("QCBU");
+constexpr QByteArrayView mobsMagic("QCMB");
 // Far more than the item manager keeps, so a valid file is never cut short.
 constexpr quint32 maxStoredEntities = 65536;
 
@@ -618,6 +619,94 @@ QcResult<QList<QcMachineManager::Machine>> QcWorldStorage::readMachines(QStringL
         return qcError(u"%1 is damaged"_s.arg(path));
     }
     return machines;
+}
+
+QcStatus QcWorldStorage::writeMobs(const QcWorldMobs &mobs) const
+{
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+    // The same limits as reading, so a saved world always opens again; what is left out is
+    // reported but does not fail the save.
+    if (mobs.mobs.size() > qsizetype(maxStoredEntities) || mobs.populatedChunks.size() > qsizetype(maxStoredPopulatedChunks)) {
+        qWarning("mobs.qce: keeping %d of %lld creatures and %d of %lld populated chunks", int(maxStoredEntities),
+                 qlonglong(mobs.mobs.size()), int(maxStoredPopulatedChunks), qlonglong(mobs.populatedChunks.size()));
+    }
+    QByteArray payload;
+    QDataStream stream(&payload, QIODevice::WriteOnly);
+    stream.setVersion(streamVersion);
+    const qsizetype mobCount = std::min(mobs.mobs.size(), qsizetype(maxStoredEntities));
+    stream << quint32(mobCount);
+    const QList<QcMobManager::Stored> kept = mobs.mobs.first(mobCount);
+    for (const QcMobManager::Stored &mob : kept) {
+        stream << m_content->mobs()[mob.type].name << mob.position.x << mob.position.y << mob.position.z << mob.yaw << mob.health;
+    }
+    const qsizetype chunkCount = std::min(mobs.populatedChunks.size(), qsizetype(maxStoredPopulatedChunks));
+    stream << quint32(chunkCount);
+    qsizetype written = 0;
+    for (auto it = mobs.populatedChunks.cbegin(); it != mobs.populatedChunks.cend() && written < chunkCount; ++it, ++written) {
+        stream << qint32(it->x) << qint32(it->z);
+    }
+    return writeContainer(QDir(m_directory).filePath(u"mobs.qce"_s), mobsMagic, payload);
+}
+
+QcResult<QcWorldMobs> QcWorldStorage::readMobs(QStringList &warnings) const
+{
+    const QString path = QDir(m_directory).filePath(u"mobs.qce"_s);
+    if (!QFile::exists(path)) {
+        return QcWorldMobs();
+    }
+    const QcResult<QByteArray> payload = readContainer(path, mobsMagic, baseVersion);
+    if (!payload) {
+        return qcError(payload.error());
+    }
+    QDataStream stream(*payload);
+    stream.setVersion(streamVersion);
+    QcWorldMobs result;
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, maxStoredEntities, count)) {
+        return qcError(u"%1 is damaged (creature count)"_s.arg(path));
+    }
+    QSet<QString> unknown;
+    for (quint32 i = 0; i < count; ++i) {
+        QString name;
+        QcMobManager::Stored mob;
+        stream >> name >> mob.position.x >> mob.position.y >> mob.position.z >> mob.yaw >> mob.health;
+        const bool finite = std::isfinite(mob.position.x) && std::isfinite(mob.position.y) && std::isfinite(mob.position.z)
+                            && std::isfinite(mob.yaw) && std::isfinite(mob.health);
+        if (stream.status() != QDataStream::Ok || !finite || std::abs(mob.position.x) > QcWorld::maxHorizontalBlock
+            || std::abs(mob.position.z) > QcWorld::maxHorizontalBlock || std::abs(mob.position.y) > 4.0 * QcWorld::worldHeight) {
+            return qcError(u"%1 is damaged (creature %2)"_s.arg(path).arg(i));
+        }
+        const std::optional<int> type = m_content->mobIndex(name);
+        if (!type) {
+            if (!unknown.contains(name)) {
+                unknown.insert(name);
+                warnings.append(u"%1: unknown creature '%2' dropped"_s.arg(path, name));
+            }
+            continue;
+        }
+        mob.type = *type;
+        mob.yaw = std::fmod(mob.yaw, 360.0f);
+        result.mobs.append(mob);
+    }
+    quint32 chunkCount = 0;
+    if (!QcStreamLimits::readCount(stream, maxStoredPopulatedChunks, chunkCount)) {
+        return qcError(u"%1 is damaged (chunk count)"_s.arg(path));
+    }
+    // Eight bytes per chunk: never reserve more than the file can hold.
+    const qint64 left = stream.device() ? stream.device()->bytesAvailable() : 0;
+    result.populatedChunks.reserve(qsizetype(std::min<qint64>(chunkCount, left / 8)));
+    for (quint32 i = 0; i < chunkCount && stream.status() == QDataStream::Ok; ++i) {
+        qint32 x = 0;
+        qint32 z = 0;
+        stream >> x >> z;
+        result.populatedChunks.insert({x, z});
+    }
+    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
+        return qcError(u"%1 is damaged"_s.arg(path));
+    }
+    return result;
 }
 
 QcStatus QcWorldStorage::writeContainers(const QList<QcContainerManager::Container> &containers) const

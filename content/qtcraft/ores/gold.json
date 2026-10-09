@@ -4,6 +4,6 @@
     "block": "gold_ore",
     "minY": 5,
     "maxY": 32,
-    "veinsPerChunk": 3,
-    "veinSize": 6
+    "veinsPerChunk": 2,
+    "veinSize": 7
 }

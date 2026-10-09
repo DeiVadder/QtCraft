@@ -46,6 +46,7 @@ Friedliches Tier des Graslands; lässt Wolle fallen.
 | Größe | 0,9 m breit, 1,2 m hoch |
 | Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
 | Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
 | Gruppengröße | bis 4 |
 | Erscheinungsgewicht | 2 |
 | Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
@@ -61,7 +62,7 @@ Alle Biome.
 
 ### <a id="mob-qtcraft-slime"></a>Schleim
 
-Ein hüpfender Klumpen der Höhlen, schwach, aber hartnäckig.
+Ein hüpfender Klumpen, schwach, aber hartnäckig. Unter der Erde lebt er tief unten und nur in manchen Chunks, den Slime-Chunks; nachts kommt er auch in Sümpfen heraus.
 
 | | |
 |---|---|
@@ -75,8 +76,10 @@ Ein hüpfender Klumpen der Höhlen, schwach, aber hartnäckig.
 | Erscheint | Tag und Nacht |
 | Höhlen | auch in Höhlen zu jeder Zeit |
 | Licht beim Erscheinen | Blocklicht bis 7 |
+| Spawnhöhe | bis y 40 |
+| Spawn-Chunks | nur in 10 % der Chunks, festgelegt durch den Seed der Welt |
 | Gruppengröße | bis 2 |
-| Erscheinungsgewicht | 1 |
+| Erscheinungsgewicht | 4 |
 | Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
 | Beute | [Schleimball](items.md#item-qtcraft-slimeball) |
 
@@ -87,6 +90,12 @@ Ein hüpfender Klumpen der Höhlen, schwach, aber hartnäckig.
 **Erscheint in Biomen**
 
 Alle Biome.
+
+**Erscheint auch**
+
+nachts; bis y 70; Blocklicht bis 7
+
+[Sumpf](biomes.md#biome-qtcraft-swamp), [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt)
 
 ### <a id="mob-qtcraft-pig"></a>Schwein
 
@@ -100,6 +109,7 @@ Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
 | Größe | 0,9 m breit, 0,9 m hoch |
 | Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
 | Erscheint | bei Tag |
+| Bleibt | verschwindet nie und wird mit der Welt gespeichert |
 | Gruppengröße | bis 4 |
 | Erscheinungsgewicht | 2 |
 | Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |

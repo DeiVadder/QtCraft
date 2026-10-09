@@ -474,7 +474,7 @@ Braucht eine Spitzhacke der Stufe 2 oder besser. Im Ofen wird daraus Eisen für 
 
 **Kommt vor in**
 
-[Eisenerz-Vorkommen](worldgen.md#ore-qtcraft-iron) (y 5–64)
+[Eisenerz-Vorkommen](worldgen.md#ore-qtcraft-iron) (y 5–72)
 
 ### <a id="block-qtcraft-dirt"></a>Erde
 
@@ -826,11 +826,11 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Kommt vor in**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Oberfläche), [Ebene](biomes.md#biome-qtcraft-plains) (Oberfläche), [Gebirge](biomes.md#biome-qtcraft-mountains) (Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Oberfläche, Strände), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Oberfläche)
 
 **Wesen, die darauf erscheinen**
 
-[Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-bedrock"></a>Grundgestein
 
@@ -1386,6 +1386,10 @@ Gepresster Sand, liegt unter Wüsten.
 
 [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+**Kommt vor in**
+
+[Wüste](biomes.md#biome-qtcraft-desert) (Steile Hänge)
+
 ### <a id="block-qtcraft-snow_block"></a>Schneeblock
 
 Fester Schnee kalter Berge und der Tundra.
@@ -1410,7 +1414,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Kommt vor in**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (Schnee), [Taiga](biomes.md#biome-qtcraft-taiga) (Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Oberfläche, Strände)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Schnee), [Tundra](biomes.md#biome-qtcraft-tundra) (Oberfläche, Strände)
 
 **Wesen, die darauf erscheinen**
 
@@ -1446,7 +1450,7 @@ Eine dünne Schneedecke, die einen Block darunter braucht.
 
 **Kommt vor in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Schneedecke), [Tundra](biomes.md#biome-qtcraft-tundra) (Schneedecke)
+[Taiga](biomes.md#biome-qtcraft-taiga) (Schneedecke)
 
 ### <a id="block-qtcraft-black_wool"></a>Schwarze Wolle
 
@@ -1529,6 +1533,10 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 
 [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+**Kommt vor in**
+
+[Gebirge](biomes.md#biome-qtcraft-mountains) (Steile Hänge), [Taiga](biomes.md#biome-qtcraft-taiga) (Steile Hänge)
+
 **Wesen, die darauf erscheinen**
 
 [Schleim](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
@@ -1554,7 +1562,7 @@ Das häufigste Erz; ergibt Kohle, den besten frühen Brennstoff.
 
 **Kommt vor in**
 
-[Steinkohle-Vorkommen](worldgen.md#ore-qtcraft-coal) (y 5–128)
+[Steinkohle-Vorkommen](worldgen.md#ore-qtcraft-coal) (y 5–110)
 
 ### <a id="block-qtcraft-stone_bricks"></a>Steinziegel
 

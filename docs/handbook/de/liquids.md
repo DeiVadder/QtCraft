@@ -28,7 +28,7 @@ Heiße Flüssigkeit, die leuchtet, Items verbrennt und verletzt. Neben Wasser wi
 
 **Kommt vor in**
 
-[Lavabecken](worldgen.md#feature-qtcraft-lava_pool) (y 5–40)
+[Lavabecken](worldgen.md#feature-qtcraft-lava_pool) (y 12–44), [Lavasee](worldgen.md#feature-qtcraft-lava_lake) (y 8–40)
 
 ### <a id="block-qtcraft-water"></a>Wasser
 

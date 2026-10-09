@@ -910,6 +910,49 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     return result;
 }
 
+// One spawn rule of a creature: the `spawn` object itself or an entry of its `also` list.
+QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, FieldReader &reader, bool hostile, const QString &packNamespace)
+{
+    QcMobDefinition::SpawnRule rule;
+    const QString time = reader.string(u"time"_s, u"any"_s);
+    if (time == u"day"_s) {
+        rule.time = QcMobDefinition::SpawnTime::Day;
+    } else if (time == u"night"_s) {
+        rule.time = QcMobDefinition::SpawnTime::Night;
+    } else if (time != u"any"_s) {
+        reader.fail(u"'time' must be day, night or any"_s);
+    }
+    rule.weight = reader.number(u"weight"_s, 1.0, 0.0, 100.0);
+    rule.caves = reader.boolean(u"caves"_s, false);
+    // Hostile creatures keep away from lit places unless their data says otherwise.
+    rule.maxLight = reader.integer(u"maxLight"_s, hostile ? 7 : 15, 0, 15);
+    rule.chunkChance = reader.number(u"chunkChance"_s, 1.0, 0.0, 1.0);
+    rule.maxY = reader.integer(u"maxY"_s, QcWorld::worldHeight, 1, QcWorld::worldHeight);
+    const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
+    for (const auto &entry : blocks) {
+        const QString name = QcContentNames::qualify(entry.toString(), packNamespace);
+        if (name.isEmpty()) {
+            reader.fail(u"invalid 'blocks' entry"_s);
+            break;
+        }
+        rule.blocks.append(name);
+    }
+    const QJsonValue biomes = spawn.value(u"biomes"_s);
+    if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
+        reader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
+    }
+    const QJsonArray biomeList = biomes.toArray();
+    for (const auto &entry : biomeList) {
+        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        if (name.isEmpty()) {
+            reader.fail(u"invalid 'biomes' entry"_s);
+            break;
+        }
+        rule.biomes.append(name);
+    }
+    return rule;
+}
+
 } // namespace
 
 QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace)
@@ -937,46 +980,41 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
 
     const QJsonObject spawn = json.value(u"spawn"_s).toObject();
     FieldReader spawnReader{spawn, reader.context + u" spawn"_s, {}};
-    const QString time = spawnReader.string(u"time"_s, u"any"_s);
-    if (time == u"day"_s) {
-        mob.spawnTime = QcMobDefinition::SpawnTime::Day;
-    } else if (time == u"night"_s) {
-        mob.spawnTime = QcMobDefinition::SpawnTime::Night;
-    } else if (time != u"any"_s) {
-        spawnReader.fail(u"'time' must be day, night or any"_s);
-    }
+    const QcMobDefinition::SpawnRule main = parseSpawnRule(spawn, spawnReader, mob.hostile, packNamespace);
+    mob.spawnTime = main.time;
+    mob.spawnBlocks = main.blocks;
+    mob.spawnWeight = main.weight;
+    mob.spawnsInCaves = main.caves;
+    mob.maxSpawnLight = main.maxLight;
+    mob.spawnChunkChance = main.chunkChance;
+    mob.spawnMaxY = main.maxY;
+    mob.spawnBiomes = main.biomes;
     mob.maxGroup = spawnReader.integer(u"maxGroup"_s, 2, 1, 4);
-    mob.spawnWeight = spawnReader.number(u"weight"_s, 1.0, 0.0, 100.0);
-    mob.spawnsInCaves = spawnReader.boolean(u"caves"_s, false);
-    // Hostile creatures keep away from lit places unless their data says otherwise.
-    mob.maxSpawnLight = spawnReader.integer(u"maxLight"_s, mob.hostile ? 7 : 15, 0, 15);
-    const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
-    for (const auto &entry : blocks) {
-        const QString name = QcContentNames::qualify(entry.toString(), packNamespace);
-        if (name.isEmpty()) {
-            spawnReader.fail(u"invalid 'blocks' entry"_s);
-            break;
-        }
-        mob.spawnBlocks.append(name);
-    }
-    if (!spawnReader.ok()) {
-        reader.fail(spawnReader.error);
-    }
-
     mob.ambient = spawnReader.boolean(u"ambient"_s, false);
     mob.maxCount = spawnReader.integer(u"maxCount"_s, 0, 0, 64);
-    const QJsonValue biomes = spawn.value(u"biomes"_s);
-    if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
-        spawnReader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
+    // Further places and times with their own rules; group size and caps stay shared.
+    const QJsonValue also = spawn.value(u"also"_s);
+    if (!also.isUndefined() && (!also.isArray() || also.toArray().size() > QcMobDefinition::maxExtraSpawns)) {
+        spawnReader.fail(u"'also' must be an array of at most %1 spawn rules"_s.arg(QcMobDefinition::maxExtraSpawns));
     }
-    const QJsonArray biomeList = biomes.toArray();
-    for (const auto &entry : biomeList) {
-        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
-        if (name.isEmpty()) {
-            spawnReader.fail(u"invalid 'biomes' entry"_s);
+    const QJsonArray alsoList = also.toArray();
+    for (const auto &entry : alsoList) {
+        if (!entry.isObject()) {
+            spawnReader.fail(u"'also' entries must be objects"_s);
             break;
         }
-        mob.spawnBiomes.append(name);
+        FieldReader ruleReader{entry.toObject(), spawnReader.context + u" also"_s, {}};
+        // Group size and caps belong to the creature, not to one rule.
+        for (const QString &shared : {u"maxGroup"_s, u"ambient"_s, u"maxCount"_s}) {
+            if (entry.toObject().contains(shared)) {
+                ruleReader.fail(u"'%1' belongs to the main spawn rule"_s.arg(shared));
+            }
+        }
+        mob.extraSpawns.append(parseSpawnRule(entry.toObject(), ruleReader, mob.hostile, packNamespace));
+        if (!ruleReader.ok()) {
+            spawnReader.fail(ruleReader.error);
+            break;
+        }
     }
     if (!spawnReader.ok()) {
         reader.fail(spawnReader.error);
@@ -1414,8 +1452,14 @@ QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &p
     biome.descriptionKey = reader.string(u"description"_s, biome.translationKey + u".description"_s);
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
+    biome.ruggedness = reader.number(u"ruggedness"_s, biome.ruggedness, 0.0, 1.0);
     biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
     biome.heightVariation = reader.number(u"heightVariation"_s, 6.0, 0.0, 120.0);
+    biome.ridges = reader.number(u"ridges"_s, 0.0, 0.0, 1.0);
+    biome.terraceHeight = reader.integer(u"terraceHeight"_s, 0, 0, 32);
+    biome.overhang = reader.integer(u"overhang"_s, 0, 0, 16);
+    biome.steepBlock = reader.name(u"steep"_s, packNamespace);
+    biome.steepSlope = reader.integer(u"steepSlope"_s, biome.steepSlope, 1, 32);
     biome.surfaceBlock = reader.name(u"surface"_s, packNamespace);
     biome.subsurfaceBlock = reader.name(u"subsurface"_s, packNamespace, biome.surfaceBlock);
     biome.subsurfaceDepth = reader.integer(u"subsurfaceDepth"_s, 3, 0, 16);
@@ -1485,8 +1529,23 @@ QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QStrin
         feature.chance = reader.number(u"chance"_s, feature.chance, 0.0, 1.0);
         feature.radius = reader.integer(u"radius"_s, feature.radius, 1, 6);
         feature.depth = reader.integer(u"depth"_s, feature.depth, 1, 4);
+        feature.surface = reader.boolean(u"surface"_s, false);
+        const QJsonValue biomes = json.value(u"biomes"_s);
+        if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
+            reader.fail(u"'biomes' must be an array of at most 64 biome names"_s);
+        }
+        const QJsonArray biomeList = biomes.toArray();
+        for (const auto &entry : biomeList) {
+            const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+            if (name.isEmpty()) {
+                reader.fail(u"invalid 'biomes' entry"_s);
+                break;
+            }
+            feature.biomes.append(name);
+        }
     }
     feature.nearWater = reader.boolean(u"nearWater"_s, false);
+    feature.patchSize = reader.integer(u"patchSize"_s, 0, 0, 512);
     feature.leavesBlock = reader.name(u"leaves"_s, packNamespace);
     feature.minHeight = reader.integer(u"minHeight"_s, 4, 1, 32);
     feature.maxHeight = reader.integer(u"maxHeight"_s, feature.minHeight, feature.minHeight, 32);
@@ -1551,6 +1610,11 @@ QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const 
     settings.caves = reader.boolean(u"caves"_s, true);
     settings.caveTunnelWidth = reader.number(u"caveTunnelWidth"_s, settings.caveTunnelWidth, 0.0, 0.5);
     settings.caveCavernThreshold = reader.number(u"caveCavernThreshold"_s, settings.caveCavernThreshold, 0.0, 1.0);
+    settings.caveLiquidBlock = reader.name(u"caveLiquid"_s, packNamespace);
+    settings.caveLiquidLevel = reader.integer(u"caveLiquidLevel"_s, settings.caveLiquidLevel, 1, QcWorld::worldHeight - 1);
+    settings.caveRoof = reader.integer(u"caveRoof"_s, settings.caveRoof, 0, 32);
+    settings.caveEntrances = reader.number(u"caveEntrances"_s, settings.caveEntrances, 0.0, 1.0);
+    settings.bedrockLayers = reader.integer(u"bedrockLayers"_s, settings.bedrockLayers, 1, 16);
     if (settings.stoneBlock.isEmpty() || settings.waterBlock.isEmpty()) {
         reader.fail(u"'stone' and 'water' are required"_s);
     }

@@ -28,7 +28,7 @@ Hot liquid that glows, burns items and hurts. Next to water it turns into obsidi
 
 **Found in**
 
-[Lava pool](worldgen.md#feature-qtcraft-lava_pool) (y 5–40)
+[Lava lake](worldgen.md#feature-qtcraft-lava_lake) (y 8–40), [Lava pool](worldgen.md#feature-qtcraft-lava_pool) (y 12–44)
 
 ### <a id="block-qtcraft-water"></a>Water
 

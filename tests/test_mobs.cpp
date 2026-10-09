@@ -132,6 +132,198 @@ private slots:
         QVERIFY(!mobs.find(1));
     }
 
+    void newChunksGetPersistentAnimals()
+    {
+        auto world = makeWorld(12);
+        QcMobManager mobs(m_content, 21);
+        int groups = 0;
+        int chunks = 0;
+        for (int x = -12; x <= 12; ++x) {
+            for (int z = -12; z <= 12; ++z) {
+                const qsizetype before = mobs.mobs().size();
+                mobs.populateChunk(*world, {x, z}, [this] { return m_nextId++; });
+                ++chunks;
+                QVERIFY(mobs.isPopulated({x, z}));
+                groups += mobs.mobs().size() > before;
+                // A second call never adds more.
+                const qsizetype after = mobs.mobs().size();
+                mobs.populateChunk(*world, {x, z}, [this] { return m_nextId++; });
+                QCOMPARE(mobs.mobs().size(), after);
+            }
+        }
+        // At most about chunkAnimalChance of the 625 chunks get a group (fewer where the chosen
+        // column is sand or water).
+        const double share = double(groups) / chunks;
+        QVERIFY2(share > 0.03 && share < QcMobManager::chunkAnimalChance + 0.04, qPrintable(QString::number(share)));
+        for (const QcMobManager::Mob &mob : mobs.mobs()) {
+            const QcMobDefinition &definition = m_content->mobs()[mob.type];
+            QVERIFY(!definition.hostile && !definition.ambient && mob.persistent);
+            const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
+            QCOMPARE(m_content->block(*world->blockAt(feet.offset(0, -1, 0))).name, u"qtcraft:grass_block"_s);
+            QVERIFY(!m_content->block(*world->blockAt(feet)).solid);
+        }
+        // The same seed gives the same animals; a chunk that is not loaded is left for later.
+        QcMobManager again(m_content, 21);
+        for (int x = -12; x <= 12; ++x) {
+            for (int z = -12; z <= 12; ++z) {
+                again.populateChunk(*world, {x, z}, [this] { return m_nextId++; });
+            }
+        }
+        QCOMPARE(again.mobs().size(), mobs.mobs().size());
+        for (qsizetype i = 0; i < mobs.mobs().size(); ++i) {
+            QCOMPARE(again.mobs()[i].motion.position, mobs.mobs()[i].motion.position);
+            QCOMPARE(again.mobs()[i].type, mobs.mobs()[i].type);
+        }
+        again.populateChunk(*world, {40, 40}, [this] { return m_nextId++; });
+        QVERIFY(!again.isPopulated({40, 40}));
+    }
+
+    void animalsRestInUnloadedChunksInsteadOfDespawning()
+    {
+        auto world = makeWorld(8);
+        QcMobManager mobs(m_content, 22);
+        const QcVec3 farAway = surface(*world, 120, 0);
+        const QcVec3 player = surface(*world, 0, 0);
+        mobs.spawn(type("pig"), farAway, 1, false, true);
+        mobs.spawn(type("pig"), surface(*world, 110, 0), 2);
+        mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        // The persistent pig stays far from every player; the ordinary one despawns.
+        QVERIFY(mobs.find(1));
+        QVERIFY(!mobs.find(2));
+        QVERIFY(!mobs.find(1)->dormant);
+        // Its chunk goes away: it rests where it is, is not counted and does not move.
+        world->unloadChunk(QcPhysics::blockContaining(mobs.find(1)->motion.position).chunk());
+        mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        const QcVec3 resting = mobs.find(1)->motion.position;
+        for (int tick = 0; tick < 100; ++tick) {
+            mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        }
+        QVERIFY(mobs.find(1)->dormant);
+        QCOMPARE(mobs.find(1)->motion.position, resting);
+        QCOMPARE(mobs.awakeCount(), mobs.mobs().size() - 1);
+        // Saved and restored, it comes back dormant with the remembered chunks.
+        QcMobManager loaded(m_content, 22);
+        loaded.restore(mobs.persistentMobs(), {{1, 2}}, [this] { return m_nextId++; });
+        // Animals that spawned near the player meanwhile are persistent too.
+        QCOMPARE(loaded.mobs().size(), mobs.persistentMobs().size());
+        const auto restored = std::ranges::find(loaded.mobs(), resting, [](const QcMobManager::Mob &mob) { return mob.motion.position; });
+        QVERIFY(restored != loaded.mobs().end());
+        const quint32 restoredId = restored->id;
+        for (const QcMobManager::Mob &mob : loaded.mobs()) {
+            QVERIFY(mob.dormant && mob.persistent);
+        }
+        QVERIFY(loaded.isPopulated({1, 2}));
+        world->loadChunk(QcPhysics::blockContaining(resting).chunk());
+        loaded.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        QVERIFY(!loaded.find(restoredId)->dormant);
+    }
+
+    void animalsOnlySpawnWhereNoneAreAround()
+    {
+        auto world = makeWorld(6);
+        const QcVec3 player = surface(*world, 0, 0);
+        bool allAnimalsPersistent = true;
+        const auto animalsSpawned = [&](bool withAnimal) -> qsizetype {
+            QcMobManager mobs(m_content, 23);
+            if (withAnimal) {
+                mobs.spawn(type("sheep"), surface(*world, 60, 60), 1, false, true);
+            }
+            const qsizetype before = mobs.mobs().size();
+            for (int tick = 0; tick < 20 * 30; ++tick) {
+                mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+            }
+            qsizetype animals = 0;
+            for (const QcMobManager::Mob &mob : mobs.mobs()) {
+                const QcMobDefinition &definition = m_content->mobs()[mob.type];
+                animals += !definition.hostile && !definition.ambient;
+                allAnimalsPersistent = allAnimalsPersistent && (definition.hostile || definition.ambient || mob.persistent);
+            }
+            return animals - before;
+        };
+        QVERIFY(animalsSpawned(false) > 0);
+        // A sheep 85 m away is within animalSearchDistance: no new animals.
+        QCOMPARE(animalsSpawned(true), qsizetype(0));
+        QVERIFY(allAnimalsPersistent);
+    }
+
+    void extraSpawnRulesAddPlacesAndTimes()
+    {
+        // In this world (no biomes, no caves) slimes only come through an extra rule.
+        const auto surfaceSlimes = [&](const std::shared_ptr<const QcContentRegistry> &content, double time) {
+            auto world = std::make_unique<QcServerWorld>(content, std::make_unique<QcTestTerrainGenerator>(content));
+            for (int x = -5; x <= 5; ++x) {
+                for (int z = -5; z <= 5; ++z) {
+                    world->loadChunk({x, z});
+                }
+            }
+            QcMobManager mobs(content, 31);
+            const QcVec3 player = surface(*world, 0, 0);
+            const int slime = *content->mobIndex(u"qtcraft:slime"_s);
+            QSet<quint32> seen;
+            for (int tick = 0; tick < 20 * 40; ++tick) {
+                mobs.tick(*world, {{7, player, true}}, time, dt, [this] { return m_nextId++; });
+                for (const QcMobManager::Mob &mob : mobs.mobs()) {
+                    if (mob.type == slime && !mob.underground) {
+                        seen.insert(mob.id);
+                    }
+                }
+            }
+            return seen.size();
+        };
+        // The base slime's swamp rule needs a swamp.
+        QCOMPARE(surfaceSlimes(m_content, midnight), qsizetype(0));
+        auto everywhere = std::make_shared<QcContentRegistry>(*m_content);
+        QcMobDefinition slime = everywhere->mobs()[type("slime")];
+        QCOMPARE(slime.extraSpawns.size(), 1);
+        slime.extraSpawns.first().biomes.clear();
+        everywhere->registerMob(slime);
+        QVERIFY(surfaceSlimes(everywhere, midnight) > 0);
+        // The rule is for the night: none by day.
+        QCOMPARE(surfaceSlimes(everywhere, noon), qsizetype(0));
+
+        // A slime of the night rule goes with the daylight once nobody is near, like night creatures.
+        auto world = makeWorld(5);
+        QcMobManager mobs(everywhere, 32);
+        const QcVec3 player = surface(*world, 0, 0);
+        bool spawned = false;
+        for (int tick = 0; tick < 20 * 40 && !spawned; ++tick) {
+            mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
+            spawned = std::ranges::any_of(mobs.mobs(), [&](const QcMobManager::Mob &mob) {
+                return mob.type == type("slime") && mob.nightRule && (mob.motion.position - player).length() > 24.0;
+            });
+        }
+        QVERIFY(spawned);
+        mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        QVERIFY(std::ranges::none_of(mobs.mobs(), [&](const QcMobManager::Mob &mob) {
+            return mob.nightRule && (mob.motion.position - player).length() > 24.0;
+        }));
+    }
+
+    void slimeChunksAreFixedBySeed()
+    {
+        const int slime = type("slime");
+        QVERIFY(m_content->mobs()[slime].spawnChunkChance < 1.0);
+        QVERIFY(m_content->mobs()[slime].spawnMaxY < QcWorld::seaLevel);
+        QcMobManager mobs(m_content, 24);
+        QcMobManager same(m_content, 24);
+        QcMobManager other(m_content, 25);
+        int slimeChunks = 0;
+        int differences = 0;
+        for (int x = -50; x < 50; ++x) {
+            for (int z = -50; z < 50; ++z) {
+                const bool here = mobs.spawnsInChunk(slime, {x, z});
+                QCOMPARE(same.spawnsInChunk(slime, {x, z}), here);
+                slimeChunks += here;
+                differences += other.spawnsInChunk(slime, {x, z}) != here;
+                // Kinds without the rule spawn everywhere.
+                QVERIFY(mobs.spawnsInChunk(type("zombie"), {x, z}));
+            }
+        }
+        const double share = slimeChunks / 10000.0;
+        QVERIFY2(std::abs(share - m_content->mobs()[slime].spawnChunkChance) < 0.02, qPrintable(QString::number(share)));
+        QVERIFY(differences > 1000);
+    }
+
     void mobsFarFromPlayersDespawn()
     {
         auto world = makeWorld(8);

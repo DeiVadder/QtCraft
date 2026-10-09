@@ -2,6 +2,7 @@
     "name": "cornflower",
     "type": "plant",
     "block": "cornflower",
+    "patchSize": 14,
     "ground": [
         "grass_block",
         "dirt"

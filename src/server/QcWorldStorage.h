@@ -10,11 +10,13 @@
 #include "QcFallingBlockManager.h"
 #include "QcItemEntityManager.h"
 #include "QcMachineManager.h"
+#include "QcMobManager.h"
 #include "QcPlantManager.h"
 #include "QcResult.h"
 
 #include <QDateTime>
 #include <QHash>
+#include <QSet>
 #include <QString>
 
 #include <memory>
@@ -45,6 +47,13 @@ struct QcWorldEntities
     QList<QcFallingBlockManager::Falling> fallingBlocks;
 };
 
+// Persistent creatures (peaceful animals) and the chunks that already got their animals (mobs.qce).
+struct QcWorldMobs
+{
+    QList<QcMobManager::Stored> mobs;
+    QSet<QcChunkPos> populatedChunks;
+};
+
 struct QcPlayerData
 {
     QcEntityMotion motion;
@@ -59,7 +68,7 @@ struct QcPlayerData
 
 // Reads and writes one world directory: world.json, modified chunks in region files
 // (regions/r.<x>.<z>.qcr, 32 x 32 chunks each), players (players/<name>.qcp) and dropped items with
-// growing saplings (entities.qce), machines (machines.qce), chests (containers.qce) and pending
+// growing saplings (entities.qce), animals (mobs.qce), machines (machines.qce), chests (containers.qce) and pending
 // neighbour updates (blockupdates.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
@@ -88,6 +97,12 @@ public:
     // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
     QcResult<QcWorldEntities> readEntities(QStringList &warnings) const;
     QcStatus writeEntities(const QcWorldEntities &entities) const;
+
+    // Persistent creatures (mobs.qce). Empty without error when nothing was saved yet. Unknown kinds
+    // are dropped with a warning.
+    static constexpr quint32 maxStoredPopulatedChunks = 16 * 1024 * 1024;
+    QcResult<QcWorldMobs> readMobs(QStringList &warnings) const;
+    QcStatus writeMobs(const QcWorldMobs &mobs) const;
 
     // Machines with their contents (machines.qce). Empty without error when nothing was saved yet.
     // Unknown items are dropped with a warning.

@@ -126,6 +126,16 @@ QcStatus QcServer::openWorld()
     m_items.restore(entities->items, [this] { return m_nextEntityId++; });
     m_plants.restoreSaplings(entities->saplings);
     m_falling.restore(entities->fallingBlocks, [this] { return m_nextEntityId++; });
+    QStringList mobWarnings;
+    const QcResult<QcWorldMobs> mobs = m_storage->readMobs(mobWarnings);
+    for (const QString &warning : std::as_const(mobWarnings)) {
+        qCWarning(lcServer) << warning;
+    }
+    m_openWarnings.append(mobWarnings);
+    if (!mobs) {
+        return qcError(mobs.error());
+    }
+    m_mobs.restore(mobs->mobs, mobs->populatedChunks, [this] { return m_nextEntityId++; });
     QStringList machineWarnings;
     const QcResult<QList<QcMachineManager::Machine>> machines = m_storage->readMachines(machineWarnings);
     for (const QString &warning : std::as_const(machineWarnings)) {
@@ -224,6 +234,7 @@ QcStatus QcServer::save()
         keep(written);
     }
     keep(saveEntities());
+    keep(storage.writeMobs({m_mobs.persistentMobs(), m_mobs.populatedChunks()}));
     keep(storage.writeMachines(m_machines.machines()));
     keep(storage.writeContainers(m_containers.containers()));
     // Pending neighbour updates survive a restart, so a large /fill never leaves floating torches.
@@ -443,7 +454,10 @@ void QcServer::sendOpenWarnings(Client &client)
 
 QcVec3 QcServer::spawnPosition()
 {
-    QcBlockPos spawn = m_world.generator().spawnPoint();
+    if (!m_generatorSpawn) {
+        m_generatorSpawn = m_world.generator().spawnPoint();
+    }
+    QcBlockPos spawn = *m_generatorSpawn;
     if (m_config.spawnColumn) {
         spawn = {(*m_config.spawnColumn)[0], 0, (*m_config.spawnColumn)[1]};
     }

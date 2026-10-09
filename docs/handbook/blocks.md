@@ -371,7 +371,7 @@ The most common ore; drops coal, the best early fuel.
 
 **Found in**
 
-[Coal ore veins](worldgen.md#ore-qtcraft-coal) (y 5–128)
+[Coal ore veins](worldgen.md#ore-qtcraft-coal) (y 5–110)
 
 ### <a id="block-qtcraft-cobblestone"></a>Cobblestone
 
@@ -783,11 +783,11 @@ Earth covered with grass, the surface of most land.
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface, Beaches)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface)
 
 **Creatures appearing on it**
 
-[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
@@ -902,7 +902,7 @@ Needs a pickaxe of level 2 or better. Smelt it into iron for better tools, bucke
 
 **Found in**
 
-[Iron ore veins](worldgen.md#ore-qtcraft-iron) (y 5–64)
+[Iron ore veins](worldgen.md#ore-qtcraft-iron) (y 5–72)
 
 ### <a id="block-qtcraft-ladder"></a>Ladder
 
@@ -1413,6 +1413,10 @@ Pressed sand, found under deserts.
 
 [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
+**Found in**
+
+[Desert](biomes.md#biome-qtcraft-desert) (Steep slopes)
+
 ### <a id="block-qtcraft-snow_block"></a>Snow block
 
 Packed snow of cold mountains and tundra.
@@ -1437,7 +1441,7 @@ Packed snow of cold mountains and tundra.
 
 **Found in**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (Snow), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface), [Tundra](biomes.md#biome-qtcraft-tundra) (Surface, Beaches)
+[Mountains](biomes.md#biome-qtcraft-mountains) (Snow), [Tundra](biomes.md#biome-qtcraft-tundra) (Surface, Beaches)
 
 **Creatures appearing on it**
 
@@ -1473,7 +1477,7 @@ A thin cover of snow that needs a block below.
 
 **Found in**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (Snow cover), [Tundra](biomes.md#biome-qtcraft-tundra) (Snow cover)
+[Taiga](biomes.md#biome-qtcraft-taiga) (Snow cover)
 
 ### <a id="block-qtcraft-spruce_leaves"></a>Spruce leaves
 
@@ -1641,6 +1645,10 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 **Mined with**
 
 [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Mountains](biomes.md#biome-qtcraft-mountains) (Steep slopes), [Taiga](biomes.md#biome-qtcraft-taiga) (Steep slopes)
 
 **Creatures appearing on it**
 

@@ -247,6 +247,55 @@ private slots:
         QVERIFY(!storage.readEntities(warnings).has_value());
     }
 
+    void mobsRoundTripWithPopulatedChunksAndUnknownKinds()
+    {
+        QTemporaryDir dir;
+        auto content = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
+        QcMobDefinition pig;
+        pig.name = u"a:pig"_s;
+        pig.maxHealth = 10.0;
+        content->registerMob(pig);
+        QcMobDefinition beetle;
+        beetle.name = u"mod:beetle"_s;
+        content->registerMob(beetle);
+        const QcWorldStorage storage(dir.path(), content);
+        QStringList warnings;
+        // Nothing saved yet: empty, no error.
+        QVERIFY(storage.readMobs(warnings)->mobs.isEmpty());
+        QcWorldMobs mobs;
+        mobs.mobs.append({*content->mobIndex(u"a:pig"_s), {10.5, 70.0, -3.5}, 90.0f, 7.5});
+        mobs.mobs.append({*content->mobIndex(u"mod:beetle"_s), {1.0, 65.0, 1.0}, 0.0f, 1.0});
+        mobs.populatedChunks = {{0, 0}, {-3, 7}, {100000, -100000}};
+        QVERIFY(storage.writeMobs(mobs).has_value());
+
+        // Read without the mod: the beetle is dropped with one warning, the rest comes back.
+        auto withoutMod = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
+        withoutMod->registerMob(pig);
+        const auto read = QcWorldStorage(dir.path(), withoutMod).readMobs(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->mobs.size(), 1);
+        QCOMPARE(read->mobs.first().type, *withoutMod->mobIndex(u"a:pig"_s));
+        QCOMPARE(read->mobs.first().position, (QcVec3{10.5, 70.0, -3.5}));
+        QCOMPARE(read->mobs.first().yaw, 90.0f);
+        QCOMPARE(read->mobs.first().health, 7.5);
+        QCOMPARE(read->populatedChunks, mobs.populatedChunks);
+        QCOMPARE(warnings.size(), 1);
+        QVERIFY(warnings.first().contains(u"mod:beetle"_s));
+
+        // An implausible position is rejected, a flipped byte fails the checksum.
+        mobs.mobs = {{0, {qInf(), 70.0, 0.0}, 0.0f, 1.0}};
+        QVERIFY(storage.writeMobs(mobs).has_value());
+        QVERIFY(!storage.readMobs(warnings).has_value());
+        mobs.mobs.clear();
+        QVERIFY(storage.writeMobs(mobs).has_value());
+        QFile file(dir.filePath(u"mobs.qce"_s));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.seek(file.size() - 3);
+        file.write("\x7f");
+        file.close();
+        QVERIFY(!storage.readMobs(warnings).has_value());
+    }
+
     void fallingBlocksRoundTripAndOldEntityFilesLoad()
     {
         QTemporaryDir dir;

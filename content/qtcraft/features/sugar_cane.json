@@ -5,6 +5,7 @@
     "minHeight": 1,
     "maxHeight": 3,
     "nearWater": true,
+    "patchSize": 10,
     "ground": [
         "grass_block",
         "dirt",

@@ -205,6 +205,8 @@ private:
     void sendOpenWarnings(Client &client);
     const QcItemDefinition *heldItem(const Client &client) const;
     QcVec3 spawnPosition();
+    // The generator's spawn point, searched once (it may generate chunks to find open ground).
+    std::optional<QcBlockPos> m_generatorSpawn;
     void handleAttack(Client &client, quint32 entityId);
     void handleRespawn(Client &client);
     void damagePlayer(Client &client, double amount, const QcVec3 &knockback);

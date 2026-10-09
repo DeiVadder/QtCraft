@@ -2,6 +2,7 @@
     "name": "poppy",
     "type": "plant",
     "block": "poppy",
+    "patchSize": 14,
     "ground": [
         "grass_block",
         "dirt"

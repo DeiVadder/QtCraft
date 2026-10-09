@@ -500,6 +500,42 @@ private slots:
                      .has_value());
         QVERIFY(!QcContentParser::parseMob(json(R"({"name":"x","model":[{"from":[0,0,0],"to":[20,1,1],"texture":"t"}]})"), u"b"_s)
                      .has_value());
+
+        // Extra spawn rules: own time, biomes, blocks, height and light; defaults like the main rule.
+        const auto slime = QcContentParser::parseMob(
+            json(R"({"name":"slime","hostile":true,"spawn":{"caves":true,"chunkChance":0.1,"maxY":40,
+                     "also":[{"time":"night","biomes":["swamp"],"blocks":["grass"],"maxY":70,"weight":2}]},
+                     "model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})"),
+            u"b"_s);
+        QVERIFY2(slime.has_value(), qcErrorText(slime).constData());
+        QCOMPARE(slime->spawnChunkChance, 0.1);
+        QCOMPARE(slime->spawnMaxY, 40);
+        QCOMPARE(slime->extraSpawns.size(), 1);
+        const QcMobDefinition::SpawnRule &swamp = slime->extraSpawns.first();
+        QCOMPARE(swamp.time, QcMobDefinition::SpawnTime::Night);
+        QCOMPARE(swamp.biomes, (QStringList{u"b:swamp"_s}));
+        QCOMPARE(swamp.blocks, (QList<QString>{u"b:grass"_s}));
+        QCOMPARE(swamp.maxY, 70);
+        QCOMPARE(swamp.weight, 2.0);
+        QCOMPARE(swamp.maxLight, 7);
+        QCOMPARE(swamp.chunkChance, 1.0);
+        QVERIFY(!swamp.caves);
+        QCOMPARE(slime->spawnRules().size(), 2);
+        QCOMPARE(slime->spawnRules().first().maxY, 40);
+        const auto bad = [&](const char *spawn) {
+            return !QcContentParser::parseMob(
+                        json(QByteArray(QByteArray(R"({"name":"x","spawn":)") + spawn + R"(,"model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})").constData()),
+                        u"b"_s)
+                        .has_value();
+        };
+        QVERIFY(bad(R"({"also":{}})"));
+        QVERIFY(bad(R"({"also":[1]})"));
+        QVERIFY(bad(R"({"also":[{"time":"dusk"}]})"));
+        QVERIFY(bad(R"({"also":[{"maxY":0}]})"));
+        QVERIFY(bad(R"({"also":[{},{},{},{},{},{},{},{},{}]})"));
+        QVERIFY(bad(R"({"also":[{"maxGroup":3}]})"));
+        QVERIFY(bad(R"({"also":[{"maxCount":3}]})"));
+        QVERIFY(!bad(R"({"also":[{},{},{},{},{},{},{},{}]})"));
     }
 
     void parsesItems()

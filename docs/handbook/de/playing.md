@@ -155,7 +155,7 @@ Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf
 
 **Obergrenzen**
 
-Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Wesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden.
+Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist.
 
 **Siehe auch**
 

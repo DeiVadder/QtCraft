@@ -24,9 +24,25 @@ struct QcBiomeDefinition
     // Climate point in [0, 1]; each column takes the biome closest to its local climate.
     double temperature = 0.5;
     double humidity = 0.5;
+    // Third climate coordinate in [0, 1]: how rugged the land is. The world's ruggedness is low
+    // almost everywhere and high along chains, so a biome with a high value forms mountain ranges
+    // across all climates. Counts twice as much as temperature and humidity.
+    double ruggedness = 0.2;
     // Surface height in blocks for land in this biome.
     double baseHeight = 68.0;
     double heightVariation = 6.0;
+    // Share of the variation in [0, 1] that comes from sharp ridges instead of rolling hills.
+    double ridges = 0.0;
+    // Overhangs: a 3D noise of this many blocks reshapes the ground around the surface (ledges,
+    // arches, overhanging cliffs); 0 keeps plain columns.
+    int overhang = 0;
+    // Height of terrace steps in blocks (0: none). Where a slowly changing mask allows it, the land
+    // rises in flat steps with cliffs between them.
+    int terraceHeight = 0;
+    // Surface block where the ground drops at least `steepSlope` blocks to a neighbour (rock on
+    // cliffs); empty keeps the normal surface.
+    QString steepBlock;
+    int steepSlope = 3;
     QString surfaceBlock;
     QString subsurfaceBlock;
     int subsurfaceDepth = 3;
@@ -59,6 +75,9 @@ struct QcFeatureDefinition
     QList<QString> groundBlocks;
     // Only on ground at sea level with water right next to it (sugar cane on a shore).
     bool nearWater = false;
+    // Size in blocks of the patches the feature grows in (flower meadows, groves); 0 scatters it
+    // evenly. The average density stays the same.
+    int patchSize = 0;
     // Pools: `attempts` tries per chunk, each taken with `chance`, at a cave floor between minY and
     // maxY; a basin of up to `radius` blocks is sunk `depth` blocks into the floor.
     int minY = 8;
@@ -67,6 +86,10 @@ struct QcFeatureDefinition
     double chance = 0.0;
     int radius = 3;
     int depth = 2;
+    // Pools on the surface of dry land instead of cave floors (lava lakes); minY/maxY do not apply.
+    bool surface = false;
+    // Biomes a pool may lie in; empty for all.
+    QList<QString> biomes;
 };
 
 struct QcOreDefinition
@@ -91,4 +114,15 @@ struct QcTerrainSettings
     double caveTunnelWidth = 0.075;
     // Lower values make the open caverns larger (threshold on one noise field).
     double caveCavernThreshold = 0.58;
+    // Cave air at or below this height is filled with `caveLiquid` (lava lakes deep down); an empty
+    // block name keeps the caves dry.
+    QString caveLiquidBlock;
+    int caveLiquidLevel = 10;
+    // Caves break through the ground only where an entrance noise allows it; elsewhere this many
+    // blocks of rock stay above them.
+    int caveRoof = 4;
+    // Share of the land, about, where caves may open to the surface.
+    double caveEntrances = 0.04;
+    // Bedrock: the bottom layer is solid, the layers above it get thinner up to this many layers.
+    int bedrockLayers = 3;
 };

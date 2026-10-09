@@ -1,0 +1,16 @@
+{
+    "name": "lava_lake",
+    "type": "pool",
+    "block": "lava",
+    "surface": true,
+    "attempts": 1,
+    "chance": 0.03,
+    "radius": 5,
+    "depth": 3,
+    "biomes": [
+        "desert",
+        "mountains",
+        "plains",
+        "taiga"
+    ]
+}

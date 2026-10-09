@@ -2,6 +2,7 @@
     "name": "brown_mushroom",
     "type": "plant",
     "block": "brown_mushroom",
+    "patchSize": 8,
     "ground": [
         "grass_block",
         "dirt"

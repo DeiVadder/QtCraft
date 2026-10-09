@@ -2,6 +2,7 @@
     "name": "dandelion",
     "type": "plant",
     "block": "dandelion",
+    "patchSize": 14,
     "ground": [
         "grass_block",
         "dirt"

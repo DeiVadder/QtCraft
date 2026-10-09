@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava pool](#feature-qtcraft-lava_pool) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain)
+**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain)
 
 ## QtCraft
 
@@ -19,7 +19,7 @@
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (1.2 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.5 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (2.8 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Brown mushrooms
 
@@ -33,7 +33,7 @@
 
 **In biomes**
 
-[Forest](biomes.md#biome-qtcraft-forest) (0.4 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (1.2 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (0.3 % of columns)
+[Forest](biomes.md#biome-qtcraft-forest) (0.6 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (1.2 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (0.4 % of columns)
 
 ### <a id="feature-qtcraft-cactus"></a>Cactus
 
@@ -47,7 +47,7 @@
 
 **In biomes**
 
-[Desert](biomes.md#biome-qtcraft-desert) (0.4 % of columns)
+[Desert](biomes.md#biome-qtcraft-desert) (0.6 % of columns)
 
 ### <a id="ore-qtcraft-clay_pocket"></a>Clay veins
 
@@ -66,8 +66,8 @@
 | ID | `qtcraft:coal` |
 | Block | [Coal ore](blocks.md#block-qtcraft-coal_ore) |
 | Replaces | [Stone](blocks.md#block-qtcraft-stone) |
-| Heights | y 5–128 |
-| Veins | 18 per chunk, up to 10 blocks each |
+| Heights | y 5–110 |
+| Veins | 20 per chunk, up to 12 blocks each |
 
 ### <a id="feature-qtcraft-cornflower"></a>Cornflowers
 
@@ -81,7 +81,7 @@
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (0.8 % of columns), [Mountains](biomes.md#biome-qtcraft-mountains) (0.4 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.6 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (1.4 % of columns), [Mountains](biomes.md#biome-qtcraft-mountains) (0.6 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (1.2 % of columns)
 
 ### <a id="feature-qtcraft-dandelion"></a>Dandelions
 
@@ -95,7 +95,7 @@
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (0.8 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.4 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (1.2 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (1.2 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.5 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (2.2 % of columns)
 
 ### <a id="ore-qtcraft-diamond"></a>Diamond ore veins
 
@@ -105,7 +105,7 @@
 | Block | [Diamond ore](blocks.md#block-qtcraft-diamond_ore) |
 | Replaces | [Stone](blocks.md#block-qtcraft-stone) |
 | Heights | y 2–16 |
-| Veins | 1 per chunk, up to 5 blocks each |
+| Veins | 1 per chunk, up to 6 blocks each |
 
 ### <a id="ore-qtcraft-dirt_pocket"></a>Dirt veins
 
@@ -125,7 +125,7 @@
 | Block | [Gold ore](blocks.md#block-qtcraft-gold_ore) |
 | Replaces | [Stone](blocks.md#block-qtcraft-stone) |
 | Heights | y 5–32 |
-| Veins | 3 per chunk, up to 6 blocks each |
+| Veins | 2 per chunk, up to 7 blocks each |
 
 ### <a id="ore-qtcraft-gravel_pocket"></a>Gravel veins
 
@@ -144,8 +144,24 @@
 | ID | `qtcraft:iron` |
 | Block | [Iron ore](blocks.md#block-qtcraft-iron_ore) |
 | Replaces | [Stone](blocks.md#block-qtcraft-stone) |
-| Heights | y 5–64 |
-| Veins | 10 per chunk, up to 7 blocks each |
+| Heights | y 5–72 |
+| Veins | 12 per chunk, up to 8 blocks each |
+
+### <a id="feature-qtcraft-lava_lake"></a>Lava lake
+
+| | |
+|---|---|
+| ID | `qtcraft:lava_lake` |
+| Kind | lake on the surface of dry land |
+| Blocks | [Lava](liquids.md#block-qtcraft-lava) |
+| Chance | 1 tries per chunk, each 3 % |
+| Size | radius up to 5, 3 deep |
+
+**In biomes**
+
+Tried in every chunk of these biomes.
+
+[Desert](biomes.md#biome-qtcraft-desert), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [Taiga](biomes.md#biome-qtcraft-taiga)
 
 ### <a id="feature-qtcraft-lava_pool"></a>Lava pool
 
@@ -154,7 +170,7 @@
 | ID | `qtcraft:lava_pool` |
 | Kind | pool in cave floors |
 | Blocks | [Lava](liquids.md#block-qtcraft-lava) |
-| Heights | y 5–40 |
+| Heights | y 12–44 |
 | Chance | 2 tries per chunk, each 30 % |
 | Size | radius up to 3, 2 deep |
 
@@ -175,7 +191,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Forest](biomes.md#biome-qtcraft-forest) (1.2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.15 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.6 % of columns)
+[Forest](biomes.md#biome-qtcraft-forest) (3.2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (1.2 % of columns)
 
 ### <a id="feature-qtcraft-poppy"></a>Poppies
 
@@ -189,7 +205,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Forest](biomes.md#biome-qtcraft-forest) (0.6 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (1.2 % of columns)
+[Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (2.2 % of columns)
 
 ### <a id="feature-qtcraft-red_mushroom"></a>Red mushrooms
 
@@ -203,7 +219,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Forest](biomes.md#biome-qtcraft-forest) (0.2 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.6 % of columns)
+[Forest](biomes.md#biome-qtcraft-forest) (0.3 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.6 % of columns)
 
 ### <a id="feature-qtcraft-snow_layer"></a>Snow cover
 
@@ -217,7 +233,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (3 % of columns), [Tundra](biomes.md#biome-qtcraft-tundra) (5 % of columns)
+[Taiga](biomes.md#biome-qtcraft-taiga) (25 % of columns)
 
 ### <a id="feature-qtcraft-spruce_tree"></a>Spruce tree
 
@@ -232,7 +248,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Mountains](biomes.md#biome-qtcraft-mountains) (0.4 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (1.2 % of columns), [Tundra](biomes.md#biome-qtcraft-tundra) (0.1 % of columns)
+[Mountains](biomes.md#biome-qtcraft-mountains) (0.6 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (2.2 % of columns), [Tundra](biomes.md#biome-qtcraft-tundra) (0.15 % of columns)
 
 ### <a id="feature-qtcraft-sugar_cane"></a>Sugar cane
 
@@ -247,7 +263,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (15 % of columns), [Desert](biomes.md#biome-qtcraft-desert) (20 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (15 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (15 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (25 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (15 % of columns), [Desert](biomes.md#biome-qtcraft-desert) (20 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (15 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (15 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (30 % of columns)
 
 ### <a id="feature-qtcraft-tall_grass"></a>Tall grass
 
@@ -261,7 +277,7 @@ Tried in every chunk, whatever the biome.
 
 **In biomes**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (6 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (6 % of columns), [Mountains](biomes.md#biome-qtcraft-mountains) (3 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (12 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (8 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (2 % of columns)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (16 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (15 % of columns), [Mountains](biomes.md#biome-qtcraft-mountains) (6 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (30 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (16 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (8 % of columns)
 
 ### <a id="world-terrain"></a>Terrain
 
@@ -277,7 +293,7 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Ore veins**
 
-[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–128), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–64)
+[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–72)
 
 **Biomes**
 

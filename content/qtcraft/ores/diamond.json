@@ -5,5 +5,5 @@
     "minY": 2,
     "maxY": 16,
     "veinsPerChunk": 1,
-    "veinSize": 5
+    "veinSize": 6
 }

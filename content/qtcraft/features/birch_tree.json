@@ -6,6 +6,7 @@
     "minHeight": 5,
     "maxHeight": 7,
     "shape": "round",
+    "patchSize": 48,
     "ground": [
         "grass_block",
         "dirt"

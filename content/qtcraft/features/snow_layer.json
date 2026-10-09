@@ -2,6 +2,7 @@
     "name": "snow_layer",
     "type": "plant",
     "block": "snow_layer",
+    "patchSize": 20,
     "ground": [
         "grass_block",
         "dirt"

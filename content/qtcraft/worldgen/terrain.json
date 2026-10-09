@@ -4,6 +4,11 @@
     "water": "water",
     "bedrock": "bedrock",
     "caves": true,
-    "caveTunnelWidth": 0.075,
-    "caveCavernThreshold": 0.58
+    "caveTunnelWidth": 0.085,
+    "caveCavernThreshold": 0.5,
+    "caveLiquid": "lava",
+    "caveLiquidLevel": 10,
+    "caveRoof": 4,
+    "caveEntrances": 0.08,
+    "bedrockLayers": 5
 }

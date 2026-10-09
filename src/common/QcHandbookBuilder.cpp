@@ -502,13 +502,19 @@ void Builder::indexContent()
         for (const QString &block : mob.spawnBlocks) {
             appendUnique(m_spawnersOn[block], mobLink(mob));
         }
+        for (const QcMobDefinition::SpawnRule &rule : mob.extraSpawns) {
+            for (const QString &block : rule.blocks) {
+                appendUnique(m_spawnersOn[block], mobLink(mob));
+            }
+        }
     }
     // Where blocks occur: biome layers, features listed by biomes, ore veins and pools.
     for (const QcBiomeDefinition &biome : m_content.biomes()) {
-        const std::array<std::pair<QString, QString>, 6> layers{{{biome.surfaceBlock, u"biome.surface"_s},
+        const std::array<std::pair<QString, QString>, 7> layers{{{biome.surfaceBlock, u"biome.surface"_s},
                                                                  {biome.subsurfaceBlock, u"biome.subsurface"_s},
                                                                  {biome.underwaterBlock, u"biome.underwater"_s},
                                                                  {biome.beachBlock, u"biome.beach"_s},
+                                                                 {biome.steepBlock, u"biome.steep"_s},
                                                                  {biome.frozenWaterBlock, u"biome.frozenWater"_s},
                                                                  {biome.snowBlock, u"biome.snow"_s}}};
         for (const auto &[block, role] : layers) {
@@ -953,6 +959,15 @@ void Builder::addMobs()
         if (mob.maxSpawnLight < QcBlockDefinition::maxLightLevel) {
             facts.append({label(u"fact.spawnLight"_s), label(u"value.maxLight"_s).arg(mob.maxSpawnLight), {}});
         }
+        if (mob.spawnMaxY < QcWorld::worldHeight) {
+            facts.append({label(u"fact.spawnMaxY"_s), label(u"value.belowY"_s).arg(mob.spawnMaxY), {}});
+        }
+        if (mob.spawnChunkChance < 1.0) {
+            facts.append({label(u"fact.spawnChunks"_s), label(u"value.spawnChunks"_s).arg(number(100.0 * mob.spawnChunkChance)), {}});
+        }
+        if (!mob.hostile && !mob.ambient) {
+            facts.append({label(u"fact.persistent"_s), label(u"value.persistent"_s), {}});
+        }
         facts.append({label(u"fact.group"_s), label(u"value.group"_s).arg(mob.maxGroup), {}});
         facts.append({label(u"fact.weight"_s), number(mob.spawnWeight), {}});
         const QString capRule = u"mobs.%1Cap"_s.arg(kind);
@@ -1001,6 +1016,39 @@ void Builder::addMobs()
             biomes.text = label(u"value.allBiomes"_s);
         }
         entry.sections.append(std::move(biomes));
+        // Further places and times (slimes on swamp surfaces at night): conditions as text, biomes
+        // and blocks as links.
+        for (const QcMobDefinition::SpawnRule &rule : mob.extraSpawns) {
+            const QString ruleTime = rule.time == QcMobDefinition::SpawnTime::Day     ? u"day"_s
+                                     : rule.time == QcMobDefinition::SpawnTime::Night ? u"night"_s
+                                                                                      : u"any"_s;
+            QStringList conditions{label(u"value.time."_s + ruleTime)};
+            if (rule.caves) {
+                conditions.append(label(u"value.caves"_s));
+            }
+            if (rule.maxY < QcWorld::worldHeight) {
+                conditions.append(label(u"value.belowY"_s).arg(rule.maxY));
+            }
+            if (rule.maxLight < QcBlockDefinition::maxLightLevel) {
+                conditions.append(label(u"value.maxLight"_s).arg(rule.maxLight));
+            }
+            if (rule.chunkChance < 1.0) {
+                conditions.append(label(u"value.spawnChunks"_s).arg(number(100.0 * rule.chunkChance)));
+            }
+            Section also{label(u"section.alsoSpawns"_s), conditions.join(u"; "_s), {}, {}};
+            for (const QcBiomeDefinition &biome : m_content.biomes()) {
+                if (rule.biomes.contains(biome.name)) {
+                    also.links.append(biomeLink(biome));
+                }
+            }
+            for (const QString &block : rule.blocks) {
+                also.links.append(blockLink(block));
+            }
+            if (rule.biomes.isEmpty()) {
+                also.text += u"; "_s + label(u"value.allBiomes"_s);
+            }
+            entry.sections.append(std::move(also));
+        }
         add(std::move(entry), m_content.translate(mob.translationKey, QString::fromLatin1(english)));
     }
 }
@@ -1018,7 +1066,7 @@ void Builder::addBiomes()
         entry.text = description(biome.descriptionKey, biome.name);
         QList<Fact> &facts = entry.facts;
         facts.append({label(u"fact.id"_s), biome.name, {}});
-        facts.append({label(u"fact.climate"_s), label(u"value.climate"_s).arg(number(biome.temperature), number(biome.humidity)), {}});
+        facts.append({label(u"fact.climate"_s), label(u"value.climate"_s).arg(number(biome.temperature), number(biome.humidity), number(biome.ruggedness)), {}});
         facts.append({label(u"fact.height"_s), label(u"value.height"_s).arg(number(biome.baseHeight), number(biome.heightVariation)), {}});
         const auto layer = [&](const QString &block, const QString &key, const QString &note = {}) {
             if (!block.isEmpty()) {
@@ -1029,6 +1077,7 @@ void Builder::addBiomes()
         layer(biome.subsurfaceBlock, u"biome.subsurface"_s, label(u"unit.blocks"_s).arg(biome.subsurfaceDepth));
         layer(biome.underwaterBlock, u"biome.underwater"_s);
         layer(biome.beachBlock, u"biome.beach"_s);
+        layer(biome.steepBlock, u"biome.steep"_s, label(u"value.steep"_s).arg(biome.steepSlope));
         layer(biome.frozenWaterBlock, u"biome.frozenWater"_s);
         if (biome.snowLine > 0) {
             layer(biome.snowBlock, u"biome.snow"_s, label(u"value.above"_s).arg(biome.snowLine));
@@ -1048,7 +1097,10 @@ void Builder::addBiomes()
         }
         Section creatures{label(u"section.creatures"_s), {}, {}, {}};
         for (const QcMobDefinition &mob : m_content.mobs()) {
-            if (mob.spawnBiomes.isEmpty() || mob.spawnBiomes.contains(biome.name)) {
+            const bool extra = std::ranges::any_of(mob.extraSpawns, [&](const QcMobDefinition::SpawnRule &rule) {
+                return rule.biomes.isEmpty() || rule.biomes.contains(biome.name);
+            });
+            if (mob.spawnBiomes.isEmpty() || mob.spawnBiomes.contains(biome.name) || extra) {
                 creatures.links.append(mobLink(mob));
             }
         }
@@ -1121,7 +1173,10 @@ void Builder::addWorldGeneration()
         entry.icon = itemIcon(feature.trunkBlock);
         entry.facts.append({label(u"fact.id"_s), feature.name, {}});
         static constexpr std::array<const char16_t *, 4> types{u"tree", u"column", u"plant", u"pool"};
-        entry.facts.append({label(u"fact.featureType"_s), label(u"value.feature."_s + QString::fromUtf16(types[std::size_t(feature.type)])), {}});
+        const QString kind = feature.type == QcFeatureDefinition::Type::Pool && feature.surface
+                                 ? u"surfacePool"_s
+                                 : QString::fromUtf16(types[std::size_t(feature.type)]);
+        entry.facts.append({label(u"fact.featureType"_s), label(u"value.feature."_s + kind), {}});
         Fact blocks{label(u"fact.blocks"_s), {}, {}};
         for (const QString &block : {feature.trunkBlock, feature.leavesBlock}) {
             if (!block.isEmpty()) {
@@ -1130,7 +1185,9 @@ void Builder::addWorldGeneration()
         }
         entry.facts.append(std::move(blocks));
         if (feature.type == QcFeatureDefinition::Type::Pool) {
-            entry.facts.append({label(u"fact.heights"_s), heightRange(feature.minY, feature.maxY), {}});
+            if (!feature.surface) {
+                entry.facts.append({label(u"fact.heights"_s), heightRange(feature.minY, feature.maxY), {}});
+            }
             entry.facts.append({label(u"fact.poolChance"_s),
                                 label(u"value.pool"_s).arg(feature.attempts).arg(percent(feature.chance)), {}});
             entry.facts.append({label(u"fact.poolSize"_s), label(u"value.poolSize"_s).arg(feature.radius).arg(feature.depth), {}});
@@ -1157,7 +1214,13 @@ void Builder::addWorldGeneration()
         }
         sortLinks(biomes.links);
         if (feature.type == QcFeatureDefinition::Type::Pool) {
-            biomes.text = label(u"value.everyChunk"_s);
+            for (const QcBiomeDefinition &biome : m_content.biomes()) {
+                if (feature.biomes.contains(biome.name)) {
+                    appendUnique(biomes.links, biomeLink(biome));
+                }
+            }
+            sortLinks(biomes.links);
+            biomes.text = feature.biomes.isEmpty() ? label(u"value.everyChunk"_s) : label(u"value.poolBiomes"_s);
         }
         for (const QcBlockDefinition &block : m_content.blocks()) {
             if (block.sapling.feature == feature.name) {

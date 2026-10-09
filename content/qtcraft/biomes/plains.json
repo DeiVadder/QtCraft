@@ -1,9 +1,9 @@
 {
     "name": "plains",
-    "temperature": 0.55,
-    "humidity": 0.4,
-    "baseHeight": 67,
-    "heightVariation": 5,
+    "temperature": 0.58,
+    "humidity": 0.32,
+    "baseHeight": 68,
+    "heightVariation": 7,
     "surface": "grass_block",
     "subsurface": "dirt",
     "underwater": "sand",
@@ -11,23 +11,23 @@
     "features": [
         {
             "feature": "oak_tree",
-            "density": 0.0015
+            "density": 0.002
         },
         {
             "feature": "tall_grass",
-            "density": 0.12
+            "density": 0.3
         },
         {
             "feature": "dandelion",
-            "density": 0.012
+            "density": 0.022
         },
         {
             "feature": "poppy",
-            "density": 0.012
+            "density": 0.022
         },
         {
             "feature": "cornflower",
-            "density": 0.006
+            "density": 0.012
         },
         {
             "feature": "sugar_cane",

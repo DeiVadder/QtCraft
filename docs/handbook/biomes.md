@@ -13,8 +13,8 @@ Light forest of birches.
 | | |
 |---|---|
 | ID | `qtcraft:birch_forest` |
-| Climate | temperature 0.45, humidity 0.55 |
-| Terrain height | around y 70, ± 8 |
+| Climate | temperature 0.38, humidity 0.58, ruggedness 0.2 |
+| Terrain height | around y 71, ± 16 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Dirt](blocks.md#block-qtcraft-dirt) |
@@ -22,7 +22,7 @@ Light forest of birches.
 
 **Plants and trees**
 
-[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (1.2 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.8 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (0.8 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (6 % of columns)
+[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (2.8 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.4 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (1.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
 
 **Creatures**
 
@@ -35,16 +35,17 @@ Sand and sandstone with cacti and little else.
 | | |
 |---|---|
 | ID | `qtcraft:desert` |
-| Climate | temperature 0.95, humidity 0.1 |
-| Terrain height | around y 66, ± 6 |
+| Climate | temperature 0.92, humidity 0.15, ruggedness 0.2 |
+| Terrain height | around y 67, ± 10 |
 | Surface | [Sand](blocks.md#block-qtcraft-sand) |
 | Below the surface | [Sand](blocks.md#block-qtcraft-sand) (4 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand) |
 | Beaches | [Sand](blocks.md#block-qtcraft-sand) |
+| Steep slopes | [Sandstone](blocks.md#block-qtcraft-sandstone) (drops of 3+ blocks) |
 
 **Plants and trees**
 
-[Cactus](worldgen.md#feature-qtcraft-cactus) (0.4 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+[Cactus](worldgen.md#feature-qtcraft-cactus) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
 
 **Creatures**
 
@@ -57,8 +58,8 @@ Dense oaks and birches with mushrooms in the shade.
 | | |
 |---|---|
 | ID | `qtcraft:forest` |
-| Climate | temperature 0.5, humidity 0.7 |
-| Terrain height | around y 69, ± 9 |
+| Climate | temperature 0.62, humidity 0.68, ruggedness 0.2 |
+| Terrain height | around y 71, ± 18 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Dirt](blocks.md#block-qtcraft-dirt) |
@@ -66,7 +67,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Plants and trees**
 
-[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (0.5 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (0.4 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (0.6 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (6 % of columns)
+[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (0.8 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.6 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (0.5 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (3.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (0.8 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.3 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (15 % of columns)
 
 **Creatures**
 
@@ -79,17 +80,18 @@ High rocky peaks with snow on top.
 | | |
 |---|---|
 | ID | `qtcraft:mountains` |
-| Climate | temperature 0.35, humidity 0.35 |
-| Terrain height | around y 92, ± 38 |
+| Climate | temperature 0.4, humidity 0.45, ruggedness 0.9 |
+| Terrain height | around y 94, ± 40 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Gravel](blocks.md#block-qtcraft-gravel) |
 | Beaches | [Gravel](blocks.md#block-qtcraft-gravel) |
-| Snow | [Snow block](blocks.md#block-qtcraft-snow_block) (above y 110) |
+| Steep slopes | [Stone](blocks.md#block-qtcraft-stone) (drops of 2+ blocks) |
+| Snow | [Snow block](blocks.md#block-qtcraft-snow_block) (above y 112) |
 
 **Plants and trees**
 
-[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.4 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.4 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (3 % of columns)
+[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.6 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.6 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (6 % of columns)
 
 **Creatures**
 
@@ -102,8 +104,8 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 | | |
 |---|---|
 | ID | `qtcraft:plains` |
-| Climate | temperature 0.55, humidity 0.4 |
-| Terrain height | around y 67, ± 5 |
+| Climate | temperature 0.58, humidity 0.32, ruggedness 0.2 |
+| Terrain height | around y 68, ± 7 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Sand](blocks.md#block-qtcraft-sand) |
@@ -111,7 +113,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Plants and trees**
 
-[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.6 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (1.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.15 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (1.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (12 % of columns)
+[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.2 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (2.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (2.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (30 % of columns)
 
 **Creatures**
 
@@ -124,7 +126,7 @@ Low wet land with clay, sugar cane and, at night, fireflies.
 | | |
 |---|---|
 | ID | `qtcraft:swamp` |
-| Climate | temperature 0.7, humidity 0.9 |
+| Climate | temperature 0.8, humidity 0.9, ruggedness 0.2 |
 | Terrain height | around y 63, ± 2 |
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
@@ -133,7 +135,7 @@ Low wet land with clay, sugar cane and, at night, fireflies.
 
 **Plants and trees**
 
-[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.6 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (25 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (8 % of columns)
+[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (30 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
 
 **Creatures**
 
@@ -146,17 +148,18 @@ Cool spruce forest with snow on the ground.
 | | |
 |---|---|
 | ID | `qtcraft:taiga` |
-| Climate | temperature 0.15, humidity 0.6 |
-| Terrain height | around y 70, ± 10 |
-| Surface | [Snow block](blocks.md#block-qtcraft-snow_block) |
+| Climate | temperature 0.15, humidity 0.72, ruggedness 0.2 |
+| Terrain height | around y 72, ± 20 |
+| Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Gravel](blocks.md#block-qtcraft-gravel) |
 | Beaches | [Gravel](blocks.md#block-qtcraft-gravel) |
+| Steep slopes | [Stone](blocks.md#block-qtcraft-stone) (drops of 4+ blocks) |
 | Frozen water | [Ice](blocks.md#block-qtcraft-ice) |
 
 **Plants and trees**
 
-[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.3 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (3 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (1.2 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (2 % of columns)
+[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (25 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (2.2 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (8 % of columns)
 
 **Creatures**
 
@@ -169,8 +172,8 @@ Cold flat land under snow; its water freezes.
 | | |
 |---|---|
 | ID | `qtcraft:tundra` |
-| Climate | temperature 0.05, humidity 0.25 |
-| Terrain height | around y 67, ± 4 |
+| Climate | temperature 0.08, humidity 0.3, ruggedness 0.2 |
+| Terrain height | around y 68, ± 9 |
 | Surface | [Snow block](blocks.md#block-qtcraft-snow_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Gravel](blocks.md#block-qtcraft-gravel) |
@@ -179,7 +182,7 @@ Cold flat land under snow; its water freezes.
 
 **Plants and trees**
 
-[Snow cover](worldgen.md#feature-qtcraft-snow_layer) (5 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.1 % of columns)
+[Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.15 % of columns)
 
 **Creatures**
 

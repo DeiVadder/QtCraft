@@ -290,31 +290,217 @@ private slots:
         const QSet<QcBlockId> logs = {*m_base->blockId(u"qtcraft:oak_log"_s), *m_base->blockId(u"qtcraft:birch_log"_s)};
         const QSet<QcBlockId> leaves = {*m_base->blockId(u"qtcraft:oak_leaves"_s), *m_base->blockId(u"qtcraft:birch_leaves"_s)};
         int checkedTrees = 0;
-        for (int cz = 0; cz < 40 && checkedTrees < 3; ++cz) {
-            const auto chunk = generator.generate({0, cz});
-            for (int z = 2; z < 14; ++z) {
-                const QcTerrainGenerator::Column column = generator.column(15, cz * 16 + z);
-                const QcBlockId base = chunk->block(15, column.height, z);
-                if (!logs.contains(base)) {
-                    continue;
+        // Several strips of chunks, so that the test does not depend on one biome.
+        for (int cx = 0; cx < 64 && checkedTrees < 3; cx += 8) {
+            for (int cz = 0; cz < 40 && checkedTrees < 3; ++cz) {
+                const auto chunk = generator.generate({cx, cz});
+                for (int z = 2; z < 14; ++z) {
+                    const QcTerrainGenerator::Column column = generator.column(cx * 16 + 15, cz * 16 + z);
+                    const QcBlockId base = chunk->block(15, column.height, z);
+                    if (!logs.contains(base)) {
+                        continue;
+                    }
+                    // A round crown spans two blocks around the trunk, so it must reach into the next chunk.
+                    const auto east = generator.generate({cx + 1, cz});
+                    bool leavesAcrossBorder = false;
+                    for (int y = column.height; y < column.height + 10; ++y) {
+                        leavesAcrossBorder |= leaves.contains(east->block(0, y, z));
+                    }
+                    QVERIFY2(leavesAcrossBorder, qPrintable(u"tree at %1 %2"_s.arg(cx * 16 + 15).arg(cz * 16 + z)));
+                    ++checkedTrees;
                 }
-                // A round crown spans two blocks around the trunk, so it must reach into chunk x = 1.
-                const auto east = generator.generate({1, cz});
-                bool leavesAcrossBorder = false;
-                for (int y = column.height; y < column.height + 10; ++y) {
-                    leavesAcrossBorder |= leaves.contains(east->block(0, y, z));
-                }
-                QVERIFY2(leavesAcrossBorder, qPrintable(u"tree at z %1"_s.arg(cz * 16 + z)));
-                ++checkedTrees;
             }
         }
         QVERIFY(checkedTrees > 0);
+    }
+
+    void everyLeafHasItsTrunkAcrossChunkBorders()
+    {
+        // Both chunks at a border decide each tree on their own; a leaf without a trunk next to it
+        // means one side placed the tree and the other did not.
+        const QcTerrainGenerator generator(m_base, 12345);
+        QHash<QcBlockId, QcBlockId> trunkOf;
+        for (const char *wood : {"oak", "birch", "spruce"}) {
+            trunkOf.insert(*m_base->blockId(u"qtcraft:%1_leaves"_s.arg(QLatin1StringView(wood))),
+                           *m_base->blockId(u"qtcraft:%1_log"_s.arg(QLatin1StringView(wood))));
+        }
+        int checked = 0;
+        for (int cx = -40; cx <= 40; cx += 20) {
+            for (int cz = -40; cz <= 40; cz += 20) {
+                QHash<QcChunkPos, std::shared_ptr<QcChunk>> area;
+                for (int dx = -1; dx <= 1; ++dx) {
+                    for (int dz = -1; dz <= 1; ++dz) {
+                        area.insert({cx + dx, cz + dz}, generator.generate({cx + dx, cz + dz}));
+                    }
+                }
+                const auto blockAt = [&](int x, int y, int z) {
+                    const QcBlockPos pos{x, y, z};
+                    return area.value(pos.chunk())->block(pos.localX(), y, pos.localZ());
+                };
+                const std::shared_ptr<QcChunk> &centre = area[{cx, cz}];
+                for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
+                    for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
+                        const int x = cx * QcWorld::chunkSize + lx;
+                        const int z = cz * QcWorld::chunkSize + lz;
+                        for (int y = 1; y < QcWorld::worldHeight - 1; ++y) {
+                            const auto trunk = trunkOf.constFind(centre->block(lx, y, lz));
+                            if (trunk == trunkOf.constEnd()) {
+                                continue;
+                            }
+                            // Crowns reach at most three blocks from the trunk, which ends at most
+                            // one block below the highest leaves.
+                            bool found = false;
+                            for (int dx = -3; dx <= 3 && !found; ++dx) {
+                                for (int dz = -3; dz <= 3 && !found; ++dz) {
+                                    found = blockAt(x + dx, y, z + dz) == *trunk || blockAt(x + dx, y - 1, z + dz) == *trunk;
+                                }
+                            }
+                            QVERIFY2(found, qPrintable(u"leaf without trunk at %1 %2 %3"_s.arg(x).arg(y).arg(z)));
+                            ++checked;
+                        }
+                    }
+                }
+            }
+        }
+        QVERIFY2(checked > 1000, qPrintable(QString::number(checked)));
+    }
+
+    void cavesOpenOnlyAtEntrancesAndHoldLavaDeepDown()
+    {
+        const QcTerrainGenerator generator(m_base, 42);
+        const QcTerrainSettings &terrain = m_base->terrainSettings();
+        const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
+        const QcBlockId bedrock = *m_base->blockId(u"qtcraft:bedrock"_s);
+        int dry = 0;
+        int open = 0;
+        int deepCave = 0;
+        int deepLava = 0;
+        std::array<int, 6> bedrockPerLayer{};
+        constexpr int half = 8;
+        for (int cz = -half; cz < half; ++cz) {
+            for (int cx = -half; cx < half; ++cx) {
+                const auto chunk = generator.generate({cx, cz});
+                for (int z = 0; z < 16; ++z) {
+                    for (int x = 0; x < 16; ++x) {
+                        const QcTerrainGenerator::Column column = generator.column(cx * 16 + x, cz * 16 + z);
+                        if (column.height - 1 > generator.seaLevel()) {
+                            ++dry;
+                            open += chunk->block(x, generator.groundTop(cx * 16 + x, cz * 16 + z, column), z) == qcAirBlockId;
+                        }
+                        for (int y = 0; y < 6; ++y) {
+                            bedrockPerLayer[std::size_t(y)] += chunk->block(x, y, z) == bedrock;
+                        }
+                        // Below the liquid level, caves hold lava and never air.
+                        for (int y = 1; y <= terrain.caveLiquidLevel; ++y) {
+                            const QcBlockId block = chunk->block(x, y, z);
+                            QVERIFY2(block != qcAirBlockId, qPrintable(u"air at %1 %2 %3"_s.arg(cx * 16 + x).arg(y).arg(cz * 16 + z)));
+                            deepLava += block == lava;
+                            deepCave += generator.isCave(cx * 16 + x, y, cz * 16 + z);
+                        }
+                    }
+                }
+            }
+        }
+        // A small share of the ground opens into caves (about caveEntrances of the land at most).
+        const double share = double(open) / dry;
+        qInfo("open ground %.4f, deep lava %d", share, deepLava);
+        QVERIFY2(share > 0.0005 && share < terrain.caveEntrances / 4.0, qPrintable(QString::number(share)));
+        QVERIFY(deepLava > 1000 && deepLava <= deepCave);
+        // Bedrock: solid at the bottom, thinning out to nothing above bedrockLayers.
+        const int columns = 4 * half * half * 256;
+        QCOMPARE(bedrockPerLayer[0], columns);
+        for (int y = 1; y < terrain.bedrockLayers; ++y) {
+            const double expected = double(terrain.bedrockLayers - y) / terrain.bedrockLayers;
+            QVERIFY(std::abs(double(bedrockPerLayer[std::size_t(y)]) / columns - expected) < 0.03);
+        }
+        for (int y = terrain.bedrockLayers; y < 6; ++y) {
+            QCOMPARE(bedrockPerLayer[std::size_t(y)], 0);
+        }
+    }
+
+    void lavaLakesLieOpenOnDryLandOfTheirBiomes()
+    {
+        const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
+        const auto lake = std::ranges::find(m_base->features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
+        QVERIFY(lake != m_base->features().end() && lake->surface);
+        int lakes = 0;
+        for (const qint64 seed : {42, 777}) {
+            const QcTerrainGenerator generator(m_base, seed);
+            for (int cz = -8; cz < 8; ++cz) {
+                for (int cx = -8; cx < 8; ++cx) {
+                    const auto chunk = generator.generate({cx, cz});
+                    bool found = false;
+                    for (int z = 0; z < 16; ++z) {
+                        for (int x = 0; x < 16; ++x) {
+                            const QcTerrainGenerator::Column column = generator.column(cx * 16 + x, cz * 16 + z);
+                            for (int y = generator.seaLevel(); y < QcWorld::worldHeight - 1; ++y) {
+                                if (chunk->block(x, y, z) != lava) {
+                                    continue;
+                                }
+                                found = true;
+                                QVERIFY(x > 0 && x < 15 && z > 0 && z < 15);
+                                QVERIFY(lake->biomes.contains(generator.biomeName(column.biome)));
+                                // Nothing for it to flow into, and only liquid or open air above.
+                                for (const auto &[dx, dy, dz] : {std::array{1, 0, 0}, std::array{-1, 0, 0}, std::array{0, 0, 1},
+                                                                 std::array{0, 0, -1}, std::array{0, -1, 0}}) {
+                                    const QcBlockId next = chunk->block(x + dx, y + dy, z + dz);
+                                    QVERIFY(next == lava || (m_base->block(next).solid && !m_base->block(next).replaceable));
+                                }
+                                const QcBlockId above = chunk->block(x, y + 1, z);
+                                QVERIFY(above == lava || above == qcAirBlockId || m_base->block(above).solid);
+                            }
+                        }
+                    }
+                    lakes += found;
+                }
+            }
+        }
+        qInfo("chunks with a lava lake: %d of %d", lakes, 2 * 256);
+        QVERIFY(lakes >= 2 && lakes < 2 * 256 / 10);
+    }
+
+    void overhangsShapeMountainsAboveTheSea()
+    {
+        const QcTerrainGenerator generator(m_base, 42);
+        int overhanging = 0;
+        int columns = 0;
+        for (int cz = -6; cz < 6; ++cz) {
+            for (int cx = -6; cx < 6; ++cx) {
+                const auto chunk = generator.generate({cx, cz});
+                for (int z = 0; z < 16; ++z) {
+                    for (int x = 0; x < 16; ++x) {
+                        const int wx = cx * 16 + x;
+                        const int wz = cz * 16 + z;
+                        const QcTerrainGenerator::Column column = generator.column(wx, wz);
+                        if (column.overhang < 1.0) {
+                            continue;
+                        }
+                        ++columns;
+                        // The band never reaches down to the sea, so no hollow meets water.
+                        QVERIFY(column.height - column.overhang >= generator.seaLevel() + 3 - 1e-9);
+                        // Air below solid ground within the column (not a cave): an overhang.
+                        const int top = generator.groundTop(wx, wz, column);
+                        QVERIFY(chunk->block(x, top, z) != qcAirBlockId || generator.isCave(wx, top, wz));
+                        bool airBelow = false;
+                        for (int y = top - 1; y > top - 2 * int(column.overhang) && y > 0; --y) {
+                            airBelow = airBelow || (chunk->block(x, y, z) == qcAirBlockId && !generator.isCave(wx, y, wz));
+                        }
+                        overhanging += airBelow;
+                    }
+                }
+            }
+        }
+        qInfo("overhang columns %d, with air under ground %d", columns, overhanging);
+        QVERIFY(columns > 1000);
+        QVERIFY(overhanging > columns / 100);
     }
 
     void isCaveAgreesWithTheCarvedChunk()
     {
         const QcTerrainGenerator generator(m_base, 2024);
         const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
+        const int liquidLevel = m_base->terrainSettings().caveLiquidLevel;
+        const QcBlockId bedrock = *m_base->blockId(u"qtcraft:bedrock"_s);
         int checked = 0;
         for (const QcChunkPos pos : {QcChunkPos{0, 0}, QcChunkPos{-3, 5}, QcChunkPos{7, -2}}) {
             const auto chunk = generator.generate(pos);
@@ -325,15 +511,26 @@ private slots:
                     const QcTerrainGenerator::Column column = generator.column(wx, wz);
                     const bool wet = column.height <= generator.seaLevel() + 1;
                     const int top = wet ? column.height - 6 : column.height - 1;
-                    // Below the protected top, a stone/ore-free cell is air exactly where isCave says so
-                    // (columns with a lava pool, sunk into a cave floor and hollowed above, are left out).
+                    // Below the protected top, a stone/ore-free cell is carved exactly where isCave says
+                    // so; carved cells deep down hold lava. Columns with a lava pool (sunk into a cave
+                    // floor and hollowed above) and with overhangs are left out.
                     bool pool = false;
-                    for (int y = 1; y < 64; ++y) {
+                    for (int y = liquidLevel + 1; y < 64; ++y) {
                         pool |= chunk->block(x, y, z) == lava;
                     }
-                    for (int y = 3; y < std::min(top, 60) && !pool; ++y) {
-                        const bool air = chunk->block(x, y, z) == qcAirBlockId;
-                        QCOMPARE(air, generator.isCave(wx, y, wz));
+                    if (pool) {
+                        continue;
+                    }
+                    // Overhang hollows are not caves: stop below the band they reshape.
+                    const int checkTop = column.overhang >= 1.0 ? std::min(top, column.height - int(std::ceil(column.overhang)) - 1) : top;
+                    for (int y = 3; y < std::min(checkTop, 60); ++y) {
+                        const QcBlockId block = chunk->block(x, y, z);
+                        // Bedrock is never carved.
+                        if (block == bedrock) {
+                            continue;
+                        }
+                        const bool carved = y <= liquidLevel ? block == lava : block == qcAirBlockId;
+                        QCOMPARE(carved, generator.isCave(wx, y, wz));
                         ++checked;
                     }
                 }
@@ -389,7 +586,10 @@ private slots:
                     for (int y = 0; y < QcWorld::worldHeight; ++y) {
                         for (int z = 0; z < 16; ++z) {
                             for (int x = 0; x < 16; ++x) {
-                                if (chunk->block(x, y, z) != lava) {
+                                // Pools only: the lava lakes at the bottom of the caves (up to caveLiquidLevel)
+                                // and the lakes on the surface are other features.
+                                if (chunk->block(x, y, z) != lava || y <= m_base->terrainSettings().caveLiquidLevel
+                                    || y >= QcWorld::seaLevel) {
                                     continue;
                                 }
                                 cells.append({cx * 16 + x, y, cz * 16 + z});
@@ -423,7 +623,7 @@ private slots:
         QVERIFY(!other.isEmpty());
         QVERIFY(other != first);
         for (const QcBlockPos &cell : first) {
-            QVERIFY(cell.y >= 3 && cell.y < 40);
+            QVERIFY(cell.y > m_base->terrainSettings().caveLiquidLevel && cell.y < 44);
         }
     }
 

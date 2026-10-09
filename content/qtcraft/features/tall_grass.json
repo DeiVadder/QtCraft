@@ -2,6 +2,7 @@
     "name": "tall_grass",
     "type": "plant",
     "block": "tall_grass",
+    "patchSize": 28,
     "ground": [
         "grass_block",
         "dirt"

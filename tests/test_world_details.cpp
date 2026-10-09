@@ -522,10 +522,19 @@ private slots:
         m_server->mobs().spawn(*pig, {cell.x + 1.0, double(cell.y), cell.z + 0.5}, 900001);
         const double sandBefore = dropped(item("sand")) + count(item("sand"));
         chat(u"/setblock %1 sand"_s.arg(cmdPos(cell.offset(0, 2, 0))));
-        ticks(20);
-        const auto body = std::ranges::find(m_server->mobs().mobs(), quint32(900001), &QcMobManager::Mob::id);
-        QVERIFY(body != m_server->mobs().mobs().end());
-        const double x = body->motion.position.x;
+        // The pig wanders, so its place is taken in the last tick the sand is still falling.
+        double x = 0.0;
+        bool fell = false;
+        for (int tick = 0; tick < 20; ++tick) {
+            const auto body = std::ranges::find(m_server->mobs().mobs(), quint32(900001), &QcMobManager::Mob::id);
+            QVERIFY(body != m_server->mobs().mobs().end());
+            if (!m_server->fallingBlocks().all().isEmpty()) {
+                x = body->motion.position.x;
+                fell = true;
+            }
+            ticks(1);
+        }
+        QVERIFY(fell);
         QVERIFY2(x - 0.45 < cell.x + 1.0 && x + 0.45 > cell.x + 1.0, qPrintable(u"%1 %2"_s.arg(x).arg(cell.x)));
         QCOMPARE(nameAt(cell), u"qtcraft:air"_s);
         QCOMPARE(dropped(item("sand")) + count(item("sand")), sandBefore + 1);

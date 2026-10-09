@@ -2,7 +2,9 @@
 #include "QcClientSession.h"
 #include "QcLocalServerHost.h"
 #include "QcTestTerrainGenerator.h"
+#include "QcTestUtil.h"
 #include "QcTransport.h"
+#include "QcWorldStorage.h"
 
 #include <QDir>
 #include <QFile>
@@ -92,6 +94,54 @@ private slots:
         QCOMPARE(session.playerMotion().position, position);
         QCOMPARE(session.worldName(), u"Saved"_s);
         QVERIFY(server->shutdown().has_value());
+    }
+
+    void animalsAndPopulatedChunksSurviveARestart()
+    {
+        QTemporaryDir dir;
+        {
+            auto server = host(dir.path());
+            QVERIFY(server->startError().isEmpty());
+            QcClientSession session(server->connectClient(), u"Herder"_s);
+            session.start();
+            QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing && session.playerMotion().onGround,
+                                     timeoutMs);
+            QVERIFY(server->shutdown().has_value());
+        }
+        QStringList warnings;
+        const QcResult<QcWorldMobs> saved = QcWorldStorage(dir.path(), m_content).readMobs(warnings);
+        QVERIFY2(saved.has_value(), qcErrorText(saved).constData());
+        // The chunks around the spawn were seen and some of them got animals.
+        QVERIFY(saved->populatedChunks.contains({0, 0}));
+        QVERIFY(!saved->mobs.isEmpty());
+        QSet<QString> kinds;
+        for (const QcMobManager::Stored &mob : saved->mobs) {
+            kinds.insert(m_content->mobs()[mob.type].name);
+            QVERIFY(!m_content->mobs()[mob.type].hostile);
+        }
+
+        // Keep a single marked animal: after the restart exactly it must come back. Regenerated
+        // animals would show up as more creatures with full health.
+        QcWorldMobs marked;
+        marked.populatedChunks = saved->populatedChunks;
+        marked.mobs.append(saved->mobs.first());
+        marked.mobs.first().health = 3.5;
+        QVERIFY(QcWorldStorage(dir.path(), m_content).writeMobs(marked).has_value());
+
+        auto server = host(dir.path());
+        QVERIFY2(server->startError().isEmpty(), qPrintable(server->startError()));
+        QcClientSession session(server->connectClient(), u"Herder"_s);
+        session.start();
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing && session.playerMotion().onGround,
+                                 timeoutMs);
+        QVERIFY(server->shutdown().has_value());
+        const QcResult<QcWorldMobs> again = QcWorldStorage(dir.path(), m_content).readMobs(warnings);
+        QVERIFY(again.has_value());
+        QVERIFY(again->populatedChunks.contains(saved->populatedChunks));
+        QCOMPARE(again->mobs.size(), qsizetype(1));
+        QCOMPARE(again->mobs.first().type, marked.mobs.first().type);
+        QCOMPARE(again->mobs.first().health, 3.5);
+        QVERIFY(kinds.contains(m_content->mobs()[again->mobs.first().type].name));
     }
 
     void damagedWorldInfoRefusesToStart()

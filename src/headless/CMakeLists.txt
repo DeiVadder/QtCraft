@@ -4,6 +4,7 @@ qt_add_executable(qtcraft-headless
     QcMapRenderer.h QcMapRenderer.cpp
     QcSoundExporter.h QcSoundExporter.cpp
     QcStdinReader.h QcStdinReader.cpp
+    QcWorldStats.h QcWorldStats.cpp
 )
 qc_configure_target(qtcraft-headless)
 set_target_properties(qtcraft-headless PROPERTIES MACOSX_BUNDLE OFF)

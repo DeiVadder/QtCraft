@@ -18,6 +18,7 @@
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldLibrary.h"
+#include "QcWorldStats.h"
 
 #include <QCommandLineParser>
 #include <QCoreApplication>
@@ -74,6 +75,16 @@ bool QcHeadlessGame::start(const QStringList &arguments)
                                         QString::number(defaultTimeLimitSeconds));
     const QCommandLineOption mapOption(u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s);
     const QCommandLineOption mapRadiusOption(u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s);
+    const QCommandLineOption biomeMapOption(u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s,
+                                            u"file"_s);
+    const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
+    const QCommandLineOption sliceOption(u"slice-map"_s,
+                                         u"Write a vertical cut through the world along x at z = 0 (--map-radius blocks to each side) and exit."_s,
+                                         u"file"_s);
+    const QCommandLineOption statsOption(u"world-stats"_s,
+                                         u"Print numbers about the generated world (ores, surface, biomes, slopes) and exit."_s);
+    const QCommandLineOption statsRadiusOption(u"stats-radius"_s, u"Chunk radius generated for --world-stats."_s, u"chunks"_s,
+                                               u"16"_s);
     const QCommandLineOption dataOption(u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
@@ -90,6 +101,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
                                         u"dir"_s);
     parser.addOptions({soundsOption, iconOption});
     parser.addOptions({handbookOption, languageOption});
+    parser.addOptions({statsOption, statsRadiusOption, biomeMapOption, sliceOption, spawnOption});
     parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
                        modsOption, noModsOption});
     if (!parser.parse(arguments)) {
@@ -125,7 +137,17 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     config.viewDistance = std::clamp(parser.value(viewOption).toInt(&viewOk), 1, 32);
     bool timeOk = false;
     const int timeLimit = parser.value(timeOption).toInt(&timeOk);
-    if (!seedOk || !viewOk || !timeOk || timeLimit <= 0) {
+    bool spawnOk = true;
+    if (parser.isSet(spawnOption)) {
+        const QStringList parts = parser.value(spawnOption).split(u',');
+        bool xOk = false;
+        bool zOk = false;
+        if (parts.size() == 2) {
+            config.spawnColumn = std::array<int, 2>{parts[0].toInt(&xOk), parts[1].toInt(&zOk)};
+        }
+        spawnOk = xOk && zOk;
+    }
+    if (!seedOk || !viewOk || !timeOk || timeLimit <= 0 || !spawnOk) {
         printError(u"Invalid numeric option"_s);
         return false;
     }
@@ -189,6 +211,55 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     auto generator = std::make_unique<QcTerrainGenerator>(shared, config.seed, &generatorWarnings);
     for (const QString &warning : std::as_const(generatorWarnings)) {
         printError(u"world generation warning: "_s + warning);
+    }
+    if (parser.isSet(statsOption)) {
+        const int chunks = std::clamp(parser.value(statsRadiusOption).toInt(), 1, 64);
+        const int biomeRadius = std::clamp(parser.value(mapRadiusOption).toInt(), 256, 16384);
+        const QStringList lines = QcWorldStats::report(*generator, *shared, chunks, biomeRadius);
+        for (const QString &line : lines) {
+            std::println("{}", line.toStdString());
+        }
+        QTimer::singleShot(0, qApp, [] { QCoreApplication::exit(0); });
+        return true;
+    }
+    if (parser.isSet(sliceOption)) {
+        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 16, 1024);
+        const bool saved = QcMapRenderer::renderSlice(*generator, *shared, 0, 0, radius, 4).save(parser.value(sliceOption));
+        if (!saved) {
+            printError(u"Cannot write map"_s);
+        }
+        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
+        return true;
+    }
+    if (parser.isSet(biomeMapOption)) {
+        const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 64, 8192);
+        const bool saved =
+            QcMapRenderer::renderBiomes(*generator, 0, 0, radius, std::max(1, radius / 512)).save(parser.value(biomeMapOption));
+        if (!saved) {
+            printError(u"Cannot write map"_s);
+        }
+        // Legend with the nearest dry column of each biome that lies well inside it.
+        for (qsizetype i = 0; i < shared->biomes().size(); ++i) {
+            const auto inside = [&](int x, int z) {
+                const QcTerrainGenerator::Column column = generator->column(x, z);
+                return column.biome == int(i) && column.height > generator->seaLevel() + 1;
+            };
+            QString where = u"not found"_s;
+            for (int ring = 0; ring <= radius && where.startsWith(u'n'); ring += 16) {
+                for (int dz = -ring; dz <= ring && where.startsWith(u'n'); dz += 16) {
+                    for (int dx = -ring; dx <= ring; dx += 16) {
+                        if (std::max(std::abs(dx), std::abs(dz)) == ring && inside(dx, dz) && inside(dx + 32, dz)
+                            && inside(dx - 32, dz) && inside(dx, dz + 32) && inside(dx, dz - 32)) {
+                            where = u"at %1,%2"_s.arg(dx).arg(dz);
+                            break;
+                        }
+                    }
+                }
+            }
+            std::println("{} {} {}", i, generator->biomeName(int(i)).toStdString(), where.toStdString());
+        }
+        QTimer::singleShot(0, qApp, [saved] { QCoreApplication::exit(saved ? 0 : 1); });
+        return true;
     }
     if (parser.isSet(mapOption)) {
         const int radius = std::clamp(parser.value(mapRadiusOption).toInt(), 64, 8192);

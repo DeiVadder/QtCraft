@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Lavabecken](#feature-qtcraft-lava_pool) · [Löwenzahn](#feature-qtcraft-dandelion) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -19,7 +19,7 @@
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,5 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (2,8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Braune Pilze
 
@@ -33,7 +33,7 @@
 
 **In Biomen**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (0,3 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,4 % der Säulen)
+[Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (0,4 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,6 % der Säulen)
 
 ### <a id="ore-qtcraft-diamond"></a>Diamanterz-Vorkommen
 
@@ -43,7 +43,7 @@
 | Block | [Diamanterz](blocks.md#block-qtcraft-diamond_ore) |
 | Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
 | Höhen | y 2–16 |
-| Adern | 1 pro Chunk, je bis 5 Blöcke |
+| Adern | 1 pro Chunk, je bis 6 Blöcke |
 
 ### <a id="feature-qtcraft-oak_tree"></a>Eiche
 
@@ -58,7 +58,7 @@
 
 **In Biomen**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (0,15 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (0,6 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (1,2 % der Säulen)
+[Ebene](biomes.md#biome-qtcraft-plains) (0,2 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (3,2 % der Säulen)
 
 ### <a id="ore-qtcraft-iron"></a>Eisenerz-Vorkommen
 
@@ -67,8 +67,8 @@
 | ID | `qtcraft:iron` |
 | Block | [Eisenerz](blocks.md#block-qtcraft-iron_ore) |
 | Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
-| Höhen | y 5–64 |
-| Adern | 10 pro Chunk, je bis 7 Blöcke |
+| Höhen | y 5–72 |
+| Adern | 12 pro Chunk, je bis 8 Blöcke |
 
 ### <a id="ore-qtcraft-dirt_pocket"></a>Erde-Vorkommen
 
@@ -93,7 +93,7 @@
 
 **In Biomen**
 
-[Gebirge](biomes.md#biome-qtcraft-mountains) (0,4 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (1,2 % der Säulen), [Tundra](biomes.md#biome-qtcraft-tundra) (0,1 % der Säulen)
+[Gebirge](biomes.md#biome-qtcraft-mountains) (0,6 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (2,2 % der Säulen), [Tundra](biomes.md#biome-qtcraft-tundra) (0,15 % der Säulen)
 
 ### <a id="world-terrain"></a>Gelände
 
@@ -109,7 +109,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Erzadern**
 
-[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–64), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–128), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
+[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
 
 **Biome**
 
@@ -123,7 +123,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 | Block | [Golderz](blocks.md#block-qtcraft-gold_ore) |
 | Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
 | Höhen | y 5–32 |
-| Adern | 3 pro Chunk, je bis 6 Blöcke |
+| Adern | 2 pro Chunk, je bis 7 Blöcke |
 
 ### <a id="feature-qtcraft-tall_grass"></a>Hohes Gras
 
@@ -137,7 +137,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (6 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (12 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (3 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (8 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (6 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (16 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (30 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (6 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (16 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen)
 
 ### <a id="feature-qtcraft-cactus"></a>Kaktus
 
@@ -151,7 +151,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **In Biomen**
 
-[Wüste](biomes.md#biome-qtcraft-desert) (0,4 % der Säulen)
+[Wüste](biomes.md#biome-qtcraft-desert) (0,6 % der Säulen)
 
 ### <a id="ore-qtcraft-gravel_pocket"></a>Kies-Vorkommen
 
@@ -175,7 +175,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,8 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,6 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (0,4 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (1,4 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (1,2 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (0,6 % der Säulen)
 
 ### <a id="feature-qtcraft-lava_pool"></a>Lavabecken
 
@@ -184,13 +184,29 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 | ID | `qtcraft:lava_pool` |
 | Art | Becken in Höhlenböden |
 | Blöcke | [Lava](liquids.md#block-qtcraft-lava) |
-| Höhen | y 5–40 |
+| Höhen | y 12–44 |
 | Häufigkeit | 2 Versuche pro Chunk, je 30 % |
 | Größe | Radius bis 3, 2 tief |
 
 **In Biomen**
 
 Wird in jedem Chunk versucht, unabhängig vom Biom.
+
+### <a id="feature-qtcraft-lava_lake"></a>Lavasee
+
+| | |
+|---|---|
+| ID | `qtcraft:lava_lake` |
+| Art | See an der Oberfläche von trockenem Land |
+| Blöcke | [Lava](liquids.md#block-qtcraft-lava) |
+| Häufigkeit | 1 Versuche pro Chunk, je 3 % |
+| Größe | Radius bis 5, 3 tief |
+
+**In Biomen**
+
+In jedem Chunk dieser Biome versucht.
+
+[Ebene](biomes.md#biome-qtcraft-plains), [Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Wüste](biomes.md#biome-qtcraft-desert)
 
 ### <a id="feature-qtcraft-dandelion"></a>Löwenzahn
 
@@ -204,7 +220,7 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,8 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,4 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (1,2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (2,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,5 % der Säulen)
 
 ### <a id="feature-qtcraft-poppy"></a>Mohn
 
@@ -218,7 +234,7 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 
 **In Biomen**
 
-[Ebene](biomes.md#biome-qtcraft-plains) (1,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,6 % der Säulen)
+[Ebene](biomes.md#biome-qtcraft-plains) (2,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
 
 ### <a id="feature-qtcraft-red_mushroom"></a>Rote Pilze
 
@@ -232,7 +248,7 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 
 **In Biomen**
 
-[Sumpf](biomes.md#biome-qtcraft-swamp) (0,6 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,2 % der Säulen)
+[Sumpf](biomes.md#biome-qtcraft-swamp) (0,6 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,3 % der Säulen)
 
 ### <a id="feature-qtcraft-snow_layer"></a>Schneedecke
 
@@ -246,7 +262,7 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 
 **In Biomen**
 
-[Taiga](biomes.md#biome-qtcraft-taiga) (3 % der Säulen), [Tundra](biomes.md#biome-qtcraft-tundra) (5 % der Säulen)
+[Taiga](biomes.md#biome-qtcraft-taiga) (25 % der Säulen)
 
 ### <a id="ore-qtcraft-coal"></a>Steinkohle-Vorkommen
 
@@ -255,8 +271,8 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 | ID | `qtcraft:coal` |
 | Block | [Steinkohle](blocks.md#block-qtcraft-coal_ore) |
 | Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
-| Höhen | y 5–128 |
-| Adern | 18 pro Chunk, je bis 10 Blöcke |
+| Höhen | y 5–110 |
+| Adern | 20 pro Chunk, je bis 12 Blöcke |
 
 ### <a id="ore-qtcraft-clay_pocket"></a>Ton-Vorkommen
 
@@ -281,4 +297,4 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 
 **In Biomen**
 
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (15 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (15 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (25 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen), [Wüste](biomes.md#biome-qtcraft-desert) (20 % der Säulen)
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (15 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (15 % der Säulen), [Sumpf](biomes.md#biome-qtcraft-swamp) (30 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (15 % der Säulen), [Wüste](biomes.md#biome-qtcraft-desert) (20 % der Säulen)

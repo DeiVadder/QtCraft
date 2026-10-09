@@ -211,7 +211,9 @@ private slots:
     void quitEndsTheProcess()
     {
         QCOMPARE(ask(R"({"cmd":"quit"})").value(u"ok"_s).toBool(), true);
-        QVERIFY(m_process.waitForFinished(timeoutMs));
+        // The process may already be gone when the answer has been read; waitForFinished() is false then.
+        QVERIFY(m_process.state() == QProcess::NotRunning || m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitStatus(), QProcess::NormalExit);
         QCOMPARE(m_process.exitCode(), 0);
     }
 };

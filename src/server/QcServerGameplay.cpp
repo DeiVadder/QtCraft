@@ -294,6 +294,8 @@ void QcServer::handleLoadedChunks()
         if (!m_world.chunk(chunk)) {
             continue;
         }
+        // A chunk seen for the first time gets its animals (decision E-086).
+        m_mobs.populateChunk(m_world, chunk, [this] { return m_nextEntityId++; });
         m_commandUpdateMode = true;
         if (const auto waiting = m_waitingUpdates.constFind(chunk); waiting != m_waitingUpdates.constEnd()) {
             for (const QcBlockPos &pos : *waiting) {
@@ -1270,7 +1272,7 @@ void QcServer::handleChat(Client &client, const QString &text)
             reply(u"Unknown mob or invalid count: %1"_s.arg(text));
             return;
         }
-        if (m_mobs.mobs().size() + count > QcMobManager::summonLimit) {
+        if (m_mobs.awakeCount() + count > QcMobManager::summonLimit) {
             reply(u"Too many creatures in the world (at most %1)"_s.arg(QcMobManager::summonLimit));
             return;
         }
@@ -1279,7 +1281,10 @@ void QcServer::handleChat(Client &client, const QString &text)
         const QcVec3 position = client.motion.position + QcVec3{std::sin(yaw) * 3.0, 0.5, -std::cos(yaw) * 3.0};
         for (int i = 0; i < count; ++i) {
             const int row = i / 3; // NOLINT(bugprone-integer-division): grid row
-            m_mobs.spawn(*type, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8}, m_nextEntityId++);
+            // Summoned animals stay like natural ones.
+            const QcMobDefinition &summoned = m_content->mobs()[*type];
+            m_mobs.spawn(*type, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8}, m_nextEntityId++, false,
+                         !summoned.hostile && !summoned.ambient && !summoned.flying);
         }
         reply(u"Summoned %1 x %2"_s.arg(count).arg(name));
     } else if (command == u"spawnitem"_s && words.size() >= 2) {
@@ -1591,7 +1596,7 @@ void QcServer::tickGameplay()
         m_mobs.tick(m_world, players, m_info.worldTime, dt, [this] { return m_nextEntityId++; });
     for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
         const QcMobDefinition &definition = m_content->mobs()[mob.type];
-        if (!definition.ambientSound.isEmpty() && m_soundRandom.generateDouble() < dt / mobAmbientSeconds) {
+        if (!mob.dormant && !definition.ambientSound.isEmpty() && m_soundRandom.generateDouble() < dt / mobAmbientSeconds) {
             playSound(definition.ambientSound, mob.motion.position + QcVec3{0.0, definition.height * 0.8, 0.0});
         }
     }
@@ -1628,6 +1633,9 @@ void QcServer::syncEntities(Client &client)
         }
     };
     for (const QcMobManager::Mob &mob : m_mobs.mobs()) {
+        if (mob.dormant) {
+            continue;
+        }
         consider({mob.id, mob.type, QString(), mob.motion.position, mob.yaw, mob.health, {}, {}, 0.0f,
                   flagsOf(mob.motion, mob.attackedThisTick, false, false), qcNoItem},
                  mob.hurtThisTick);

@@ -1,18 +1,21 @@
 {
     "name": "desert",
-    "temperature": 0.95,
-    "humidity": 0.1,
-    "baseHeight": 66,
-    "heightVariation": 6,
+    "temperature": 0.92,
+    "humidity": 0.15,
+    "baseHeight": 67,
+    "heightVariation": 10,
+    "terraceHeight": 5,
     "surface": "sand",
     "subsurface": "sand",
     "subsurfaceDepth": 4,
     "underwater": "sand",
     "beach": "sand",
+    "steep": "sandstone",
+    "steepSlope": 3,
     "features": [
         {
             "feature": "cactus",
-            "density": 0.004
+            "density": 0.006
         },
         {
             "feature": "sugar_cane",

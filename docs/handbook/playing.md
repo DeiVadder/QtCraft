@@ -155,7 +155,7 @@ Creatures appear 20–48 m away from players: peaceful animals on grass by day, 
 
 **Limits**
 
-Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Creatures farther than 96 m from every player vanish.
+Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around.
 
 **See also**
 

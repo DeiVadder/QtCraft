@@ -1,27 +1,33 @@
 {
     "name": "mountains",
-    "temperature": 0.35,
-    "humidity": 0.35,
-    "baseHeight": 92,
-    "heightVariation": 38,
+    "temperature": 0.4,
+    "humidity": 0.45,
+    "ruggedness": 0.9,
+    "baseHeight": 94,
+    "heightVariation": 40,
+    "ridges": 0.7,
+    "overhang": 6,
+    "terraceHeight": 7,
     "surface": "grass_block",
     "subsurface": "dirt",
     "underwater": "gravel",
     "beach": "gravel",
-    "snowLine": 110,
+    "steep": "stone",
+    "steepSlope": 2,
+    "snowLine": 112,
     "snow": "snow_block",
     "features": [
         {
             "feature": "spruce_tree",
-            "density": 0.004
+            "density": 0.006
         },
         {
             "feature": "tall_grass",
-            "density": 0.03
+            "density": 0.06
         },
         {
             "feature": "cornflower",
-            "density": 0.004
+            "density": 0.006
         }
     ]
 }
