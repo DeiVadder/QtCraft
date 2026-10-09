@@ -1,0 +1,373 @@
+#!/bin/sh
+# Release pipeline (macOS): builds the game in its own Release build directory (preset "deploy",
+# build/deploy), assembles a standalone deploy/QtCraft.app with macdeployqt (Qt frameworks, QML
+# modules, platform, image format and multimedia plugins with the FFmpeg libraries), adds the
+# example mods, signs it ad hoc, checks the result and packs it as .zip and .dmg next to it.
+#
+# Checks (any failure makes the script exit with 1):
+#   - every Mach-O file links only to the bundle (@rpath, @executable_path, @loader_path) or to the
+#     system, and has no rpath or install name pointing at the build or Qt directory (otool)
+#   - required parts are present (Info.plist keys, icon, qt.conf, frameworks, plugins, QML modules,
+#     FFmpeg libraries, example mod) and the signature verifies (codesign --verify --strict)
+#   - a copy of the bundle in a temporary directory starts a world and saves a screenshot, loads
+#     only libraries from inside the copy or the system (DYLD_PRINT_LIBRARIES), opens the audio
+#     output (muted through settings.ini), installs the example mod switched off on the first start;
+#     a second start with the mod switched on and German texts loads both; a third start goes
+#     through Launch Services (open) like a double click; a fourth runs the Intel half under
+#     Rosetta (arch -x86_64) when Rosetta is installed; all starts open the audio output and keep
+#     QML and pipeline caches in the temporary directory, not in ~/Library/Caches
+# Every run opens on the built-in display in the background (--screen builtin --background): no
+# focus, no captured mouse, sound muted. Temporary data lives in a directory below
+# QTCRAFT_RELEASE_TMP (default: $TMPDIR) and is removed when all checks pass.
+#
+# Usage: scripts/release.sh            (QT_DIR overrides ~/Qt/6.8.3/macos; QTCRAFT_RELEASE_DMG=0
+#                                       skips the disk image)
+
+set -u
+
+PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+cd "$PROJECT_DIR" || exit 2
+QT_DIR=${QT_DIR:-"$HOME/Qt/6.8.3/macos"}
+BUILD_DIR="$PROJECT_DIR/build/deploy"
+DEPLOY_DIR="$PROJECT_DIR/deploy"
+APP="$DEPLOY_DIR/QtCraft.app"
+VERSION=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+# CFBundleVersion: UTC build time as year.monthday.hourminute (e.g. 2026.1009.1130). It grows with
+# every build on any branch; a commit count would shrink after a squash merge.
+BUILD_NUMBER=$(date -u +%Y.%m%d.%H%M)
+PACKAGE="$DEPLOY_DIR/QtCraft-$VERSION-macOS"
+TMP_ROOT=${QTCRAFT_RELEASE_TMP:-${TMPDIR:-/tmp}}
+mkdir -p "$TMP_ROOT" || exit 2
+WORK=$(mktemp -d "$TMP_ROOT/qtcraft-release.XXXXXX") || exit 2
+failures=""
+
+limited() {
+    perl -e 'alarm shift; exec @ARGV or die' "$@"
+}
+
+# Stops the pipeline at once (build and packaging steps).
+abort() {
+    echo "RELEASE FAILED: $* (logs: $WORK)"
+    exit 1
+}
+
+# Records a failed check; the pipeline goes on so every problem is reported.
+problem() {
+    echo "FAIL $*"
+    failures="$failures
+$*"
+}
+
+ok() {
+    echo "ok   $*"
+}
+
+# Mach-O files of a bundle (executables, dylibs, framework binaries), one per line.
+macho_files() {
+    find "$1" -type f ! -name '*.qml' ! -name '*.json' ! -name '*.png' ! -name '*.qmltypes' ! -name '*.plist' -print |
+        while IFS= read -r file; do
+            case "$(file -b "$file")" in
+            Mach-O*) echo "$file" ;;
+            esac
+        done
+}
+
+echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
+[ -x "$QT_DIR/bin/macdeployqt" ] || abort "macdeployqt not found in $QT_DIR/bin"
+
+echo "== build (preset deploy, $BUILD_DIR)"
+limited 300 cmake --preset deploy -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
+limited 1800 cmake --build --preset deploy --target qtcraft >"$WORK/build.log" 2>&1 || abort "build failed, see $WORK/build.log"
+
+echo "== assemble $APP"
+mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"
+# Only the results of earlier runs of this script are replaced.
+rm -rf "$APP" "$PACKAGE.zip" "$PACKAGE.dmg"
+ditto "$BUILD_DIR/src/app/qtcraft.app" "$APP" || abort "cannot copy the app bundle"
+mkdir -p "$APP/Contents/Resources/mods" || abort "cannot create the mods folder"
+for mod in "$PROJECT_DIR"/mods/*/; do
+    [ -f "$mod/pack.json" ] || continue
+    rsync -a --exclude '.*' "$mod" "$APP/Contents/Resources/mods/$(basename "$mod")/" || abort "cannot copy $mod"
+done
+
+echo "== macdeployqt"
+limited 600 "$QT_DIR/bin/macdeployqt" "$APP" -qmldir="$PROJECT_DIR/src/app/qml" -verbose=1 >"$WORK/macdeployqt.log" 2>&1 ||
+    abort "macdeployqt failed, see $WORK/macdeployqt.log"
+# SQL drivers come with QtSql (pulled in by QtQuick.LocalStorage); the game keeps no data in SQL.
+# The Mimer, ODBC and PostgreSQL drivers need client libraries that are not part of Qt (macdeployqt
+# reports them as missing), so they are left out; SQLite needs nothing else and stays.
+grep "ERROR" "$WORK/macdeployqt.log" | grep -v -e 'libmimerapi\.dylib' -e 'libiodbc\.2\.dylib' -e 'libpq\.5\.dylib' >"$WORK/macdeployqt-errors.txt"
+if [ -s "$WORK/macdeployqt-errors.txt" ]; then
+    cat "$WORK/macdeployqt-errors.txt"
+    abort "macdeployqt reported errors"
+fi
+for driver in libqsqlmimer libqsqlodbc libqsqlpsql; do
+    rm -f "$APP/Contents/PlugIns/sqldrivers/$driver.dylib"
+done
+
+echo "== ad-hoc signature (inside out)"
+# Loose libraries and plugins first, then each framework as a whole, then the app.
+macho_files "$APP/Contents" | grep -v '\.framework/' >"$WORK/loose-binaries.txt"
+while IFS= read -r binary; do
+    [ "$binary" = "$APP/Contents/MacOS/qtcraft" ] && continue
+    codesign --force --sign - --timestamp=none "$binary" >>"$WORK/codesign.log" 2>&1 || abort "cannot sign $binary"
+done <"$WORK/loose-binaries.txt"
+for framework in "$APP"/Contents/Frameworks/*.framework; do
+    [ -d "$framework" ] || continue
+    codesign --force --sign - --timestamp=none "$framework" >>"$WORK/codesign.log" 2>&1 || abort "cannot sign $framework"
+done
+codesign --force --sign - --timestamp=none "$APP" >>"$WORK/codesign.log" 2>&1 || abort "cannot sign the app"
+
+echo "== checks"
+if codesign --verify --deep --strict "$APP" >"$WORK/verify.log" 2>&1; then
+    ok "signature verifies"
+else
+    problem "signature does not verify ($WORK/verify.log)"
+fi
+
+# Links and rpaths: nothing may point at the build tree, the source tree or a Qt installation.
+macho_files "$APP" >"$WORK/binaries.txt"
+binaries=$(wc -l <"$WORK/binaries.txt" | tr -d ' ')
+bad_links=0
+while IFS= read -r binary; do
+    otool -L "$binary" | grep '^[[:space:]]' | sed 's/^[[:space:]]*//; s/ (compatibility.*//' | sort -u >"$WORK/links.txt"
+    while IFS= read -r link; do
+        case "$link" in
+        @rpath/* | @executable_path/* | @loader_path/* | /System/Library/* | /usr/lib/*) ;;
+        *)
+            problem "$binary links to $link"
+            bad_links=$((bad_links + 1))
+            ;;
+        esac
+    done <"$WORK/links.txt"
+    otool -l "$binary" | awk '/cmd LC_RPATH/ { getline; getline; print $2 }' >"$WORK/rpaths.txt"
+    while IFS= read -r rpath; do
+        case "$rpath" in
+        @executable_path/* | @loader_path/*) ;;
+        *)
+            problem "$binary has rpath $rpath"
+            bad_links=$((bad_links + 1))
+            ;;
+        esac
+    done <"$WORK/rpaths.txt"
+done <"$WORK/binaries.txt"
+if strings -a "$APP/Contents/MacOS/qtcraft" | grep -q -e "$BUILD_DIR" -e "$QT_DIR/lib"; then
+    problem "the executable contains a path into the build or Qt directory"
+    bad_links=$((bad_links + 1))
+fi
+[ "$bad_links" -eq 0 ] && ok "otool: $binaries Mach-O files link only into the bundle and the system"
+
+# Universal executable: Apple silicon and Intel Macs (Qt and FFmpeg come universal as well).
+architectures=$(lipo -archs "$APP/Contents/MacOS/qtcraft" 2>/dev/null)
+if echo " $architectures " | grep -q ' arm64 ' && echo " $architectures " | grep -q ' x86_64 '; then
+    ok "executable for $architectures"
+else
+    problem "executable is not universal ($architectures)"
+fi
+
+plist="$APP/Contents/Info.plist"
+for key in CFBundleIdentifier CFBundleShortVersionString CFBundleVersion CFBundleIconFile LSMinimumSystemVersion \
+    LSApplicationCategoryType NSHumanReadableCopyright NSHighResolutionCapable; do
+    value=$(plutil -extract "$key" raw -o - "$plist" 2>/dev/null)
+    if [ -n "$value" ]; then
+        ok "Info.plist $key = $value"
+    else
+        problem "Info.plist has no $key"
+    fi
+done
+[ "$(plutil -extract CFBundleShortVersionString raw -o - "$plist" 2>/dev/null)" = "$VERSION" ] || problem "CFBundleShortVersionString is not $VERSION"
+[ "$(plutil -extract CFBundleVersion raw -o - "$plist" 2>/dev/null)" = "$BUILD_NUMBER" ] || problem "CFBundleVersion is not $BUILD_NUMBER"
+
+for part in Contents/Resources/QtCraft.icns Contents/Resources/qt.conf \
+    Contents/Frameworks/QtCore.framework Contents/Frameworks/QtGui.framework Contents/Frameworks/QtQuick.framework \
+    Contents/Frameworks/QtQml.framework Contents/Frameworks/QtQuickControls2.framework Contents/Frameworks/QtMultimedia.framework \
+    Contents/PlugIns/platforms/libqcocoa.dylib Contents/PlugIns/imageformats/libqjpeg.dylib \
+    Contents/PlugIns/multimedia/libffmpegmediaplugin.dylib Contents/Resources/qml/QtQuick/Controls \
+    Contents/Resources/qml/QtQuick/Layouts Contents/Resources/mods/rubies/pack.json; do
+    if [ -e "$APP/$part" ]; then
+        ok "contains $part"
+    else
+        problem "missing $part"
+    fi
+done
+for library in libavcodec libavformat libavutil libswresample libswscale; do
+    if ls "$APP/Contents/Frameworks/$library".*dylib >/dev/null 2>&1; then
+        ok "contains FFmpeg $library"
+    else
+        problem "missing FFmpeg $library"
+    fi
+done
+
+# Runs the copy of the bundle with a clean environment (no Qt paths from the shell). Perl sets
+# DYLD_PRINT_LIBRARIES itself: the system strips DYLD_ variables when it starts env or perl (and
+# arch, so runs under Rosetta print no library list). Caches stay in the temporary directory
+# ($CACHE_ENV), not in the player's ~/Library/Caches.
+# Usage: [RUN_ARCH=x86_64] run_copy <name> <data dir> <args...>
+run_copy() {
+    name=$1
+    data=$2
+    shift 2
+    if [ -n "${RUN_ARCH:-}" ]; then
+        set -- arch "-$RUN_ARCH" "$RUN_APP/Contents/MacOS/qtcraft" --screen builtin --background "$@"
+    else
+        set -- "$RUN_APP/Contents/MacOS/qtcraft" --screen builtin --background "$@"
+    fi
+    # shellcheck disable=SC2086
+    env -i HOME="$HOME" USER="${USER:-}" PATH=/usr/bin:/bin TMPDIR="${TMPDIR:-/tmp}" $CACHE_ENV \
+        QTCRAFT_SCREEN=builtin QTCRAFT_BACKGROUND=1 QTCRAFT_AUDIO=1 QTCRAFT_DATA_DIR="$data" \
+        QTCRAFT_SCREENSHOT="$WORK/$name.png" QTCRAFT_SCREENSHOT_FRAMES=90 \
+        perl -e '$ENV{DYLD_PRINT_LIBRARIES} = 1; alarm shift; exec @ARGV or die' 180 "$@" \
+        >"$WORK/$name.log" 2>&1
+}
+
+# The log of run $1 names the audio output (sound is mixed, settings.ini mutes it).
+check_audio() {
+    if grep -q "Audio output: " "$WORK/$1.log"; then
+        ok "$1: $(grep -o 'Audio output: .*' "$WORK/$1.log" | head -1)"
+    else
+        problem "$1: no audio output in the log"
+    fi
+}
+
+# Screenshot exists and is not a blank image (a flat PNG of this size is a few KiB).
+check_screenshot() {
+    size=$(stat -f %z "$1" 2>/dev/null || echo 0)
+    if [ "$size" -gt 50000 ]; then
+        ok "screenshot $(basename "$1") ($((size / 1024)) KiB)"
+    else
+        problem "screenshot $1 missing or blank ($size bytes)"
+    fi
+}
+
+# Every image dyld loaded comes from the copy or the system.
+check_loaded_libraries() {
+    log=$1
+    real_app=$(cd "$RUN_APP" && pwd -P)
+    sed -n 's/^dyld\[[0-9]*\]: \(<[^>]*> \)\{0,1\}//p' "$log" | grep '^/' | sort -u >"$log.libraries"
+    loaded=$(wc -l <"$log.libraries" | tr -d ' ')
+    outside=$(grep -v -e "^$real_app/" -e "^$RUN_APP/" -e '^/System/' -e '^/usr/lib/' "$log.libraries")
+    if [ "$loaded" -eq 0 ]; then
+        problem "no library list in $log"
+    elif [ -n "$outside" ]; then
+        problem "libraries loaded from outside the bundle: $(echo "$outside" | tr '\n' ' ')"
+    else
+        ok "$loaded loaded images, all from the bundle copy or the system"
+    fi
+    if grep -q -e "^$real_app/Contents/PlugIns/multimedia/libffmpegmediaplugin.dylib" -e "^$RUN_APP/Contents/PlugIns/multimedia/libffmpegmediaplugin.dylib" "$log.libraries" &&
+        grep -q "/Contents/Frameworks/libavcodec" "$log.libraries"; then
+        ok "FFmpeg multimedia backend loaded from the bundle"
+    else
+        problem "FFmpeg multimedia backend not loaded from the bundle"
+    fi
+}
+
+echo "== start a copy in $WORK/copy"
+RUN_APP="$WORK/copy/QtCraft.app"
+# QML byte code and the graphics pipeline cache would otherwise go to ~/Library/Caches/QtCraft.
+mkdir -p "$WORK/cache/qml"
+CACHE_ENV="QML_DISK_CACHE_PATH=$WORK/cache/qml QSG_RHI_DISABLE_DISK_CACHE=1"
+touch "$WORK/started"
+mkdir -p "$WORK/copy" && ditto "$APP" "$RUN_APP" || abort "cannot copy the bundle"
+DATA="$WORK/data"
+mkdir -p "$DATA" && printf '[audio]\nmuted=true\n' >"$DATA/settings.ini"
+
+if run_copy world "$DATA" --play --seed 42 --look 45,-20; then
+    ok "world run exited normally"
+else
+    problem "world run failed (log: $WORK/world.log)"
+fi
+check_screenshot "$WORK/world.png"
+check_loaded_libraries "$WORK/world.log"
+check_audio world
+if grep -q "Installed bundled mods (switched off) in .*: rubies" "$WORK/world.log" && [ -f "$DATA/mods/rubies/pack.json" ] &&
+    grep -q '"rubies"' "$DATA/mods/mods.json" && grep -q "Mods loaded: none" "$WORK/world.log"; then
+    ok "example mod installed switched off in the data directory"
+else
+    problem "example mod not installed switched off"
+fi
+
+# Second start: the player switches the mod on and plays in German.
+printf '{"disabled": []}\n' >"$DATA/mods/mods.json"
+if run_copy mod "$DATA" --play --seed 42 --look 45,-20 --language de --overlay inventory --chat "/give rubies:ruby_pickaxe 1" --chat "/give rubies:ruby_block 8"; then
+    ok "run with the example mod exited normally"
+else
+    problem "run with the example mod failed (log: $WORK/mod.log)"
+fi
+check_screenshot "$WORK/mod.png"
+if grep -q "Mods loaded: rubies " "$WORK/mod.log" && ! grep -q "Content:" "$WORK/mod.log"; then
+    ok "$(grep -o 'Mods loaded: .*' "$WORK/mod.log" | head -1), no content warnings"
+else
+    problem "example mod not loaded cleanly (log: $WORK/mod.log)"
+fi
+if grep -q "UI language de.*: translation loaded" "$WORK/mod.log"; then
+    ok "German translation loaded"
+else
+    problem "German translation not loaded"
+fi
+
+# Third start through Launch Services, as a double click does (main menu, no world).
+LS_DATA="$WORK/data-ls"
+mkdir -p "$LS_DATA" && printf '[audio]\nmuted=true\n' >"$LS_DATA/settings.ini"
+if limited 120 open -g -n -W --stdout "$WORK/open.log" --stderr "$WORK/open.log" \
+    --env QTCRAFT_DATA_DIR="$LS_DATA" --env QTCRAFT_SCREENSHOT="$WORK/open.png" --env QTCRAFT_SCREENSHOT_FRAMES=60 \
+    --env QTCRAFT_SCREEN=builtin --env QTCRAFT_BACKGROUND=1 --env QTCRAFT_AUDIO=1 \
+    --env QML_DISK_CACHE_PATH="$WORK/cache/qml" --env QSG_RHI_DISABLE_DISK_CACHE=1 "$RUN_APP" --args --screen builtin --background; then
+    ok "start through Launch Services exited normally"
+else
+    problem "start through Launch Services failed (log: $WORK/open.log)"
+    # open itself was stopped by the time limit; end the copy it started.
+    for pid in $(pgrep -f "$RUN_APP/Contents/MacOS/qtcraft"); do
+        kill "$pid"
+    done
+fi
+check_screenshot "$WORK/open.png"
+check_audio open
+
+# Fourth start: the Intel half of the universal app under Rosetta, when it is installed.
+if arch -x86_64 /usr/bin/true 2>/dev/null; then
+    X86_DATA="$WORK/data-x86_64"
+    mkdir -p "$X86_DATA" && printf '[audio]\nmuted=true\n' >"$X86_DATA/settings.ini"
+    if RUN_ARCH=x86_64 run_copy x86_64 "$X86_DATA" --play --seed 42 --look 45,-20; then
+        ok "world run as x86_64 (Rosetta) exited normally"
+    else
+        problem "world run as x86_64 (Rosetta) failed (log: $WORK/x86_64.log)"
+    fi
+    check_screenshot "$WORK/x86_64.png"
+    check_audio x86_64
+else
+    echo "skip x86_64 start: Rosetta is not installed"
+fi
+
+# Nothing of the runs went to the player's caches.
+if [ -d "$HOME/Library/Caches/QtCraft" ] && [ -n "$(find "$HOME/Library/Caches/QtCraft" -newer "$WORK/started" -print | head -1)" ]; then
+    problem "the runs wrote to ~/Library/Caches/QtCraft"
+else
+    ok "no files written to ~/Library/Caches/QtCraft"
+fi
+
+echo "== packages"
+limited 300 ditto -c -k --sequesterRsrc --keepParent "$APP" "$PACKAGE.zip" || abort "cannot create the zip"
+ok "$(basename "$PACKAGE.zip") ($(du -h "$PACKAGE.zip" | cut -f1))"
+if [ "${QTCRAFT_RELEASE_DMG:-1}" = "1" ]; then
+    mkdir -p "$WORK/dmg" && ditto "$APP" "$WORK/dmg/QtCraft.app" && ln -s /Applications "$WORK/dmg/Applications" ||
+        abort "cannot stage the disk image"
+    limited 600 hdiutil create -quiet -volname "QtCraft $VERSION" -srcfolder "$WORK/dmg" -ov -format UDZO "$PACKAGE.dmg" ||
+        abort "cannot create the disk image"
+    if limited 300 hdiutil verify -quiet "$PACKAGE.dmg"; then
+        ok "$(basename "$PACKAGE.dmg") ($(du -h "$PACKAGE.dmg" | cut -f1))"
+    else
+        problem "disk image does not verify"
+    fi
+fi
+
+echo "== result"
+echo "bundle:  $APP ($(du -sh "$APP" | cut -f1))"
+if [ -n "$failures" ]; then
+    echo "RELEASE CHECKS FAILED:$failures"
+    echo "logs and screenshots: $WORK"
+    exit 1
+fi
+cp "$WORK/world.png" "$DEPLOY_DIR/release-check-world.png"
+cp "$WORK/mod.png" "$DEPLOY_DIR/release-check-mod-de.png"
+rm -rf "$WORK"
+echo "RELEASE OK (screenshots of the checks in $DEPLOY_DIR)"

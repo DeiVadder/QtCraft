@@ -646,11 +646,15 @@ void QcGameController::startWorld(const QString &directory, const QString &world
         return;
     }
     m_modLoadFailures.clear();
+    QStringList loadedMods;
     for (const QcModStatus &mod : std::as_const(content->mods)) {
         if (mod.state == QcModStatus::State::Failed && !mod.info.id.isEmpty()) {
             m_modLoadFailures.insert(mod.info.id, mod.reason);
+        } else if (mod.state == QcModStatus::State::Loaded) {
+            loadedMods.append(mod.info.id + u' ' + mod.info.version);
         }
     }
+    qCInfo(lcGame).noquote() << u"Mods loaded: %1"_s.arg(loadedMods.isEmpty() ? u"none"_s : loadedMods.join(u", "_s));
     refreshMods();
     const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
     m_characterContent = shared;

@@ -1,5 +1,7 @@
 #include "QcWorldRenderer.h"
 
+#include "QcFrustum.h"
+#include "QcIndexPacking.h"
 #include "QcWorldView.h"
 #include "QcThreadCpuClock.h"
 
@@ -338,13 +340,9 @@ QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBat
     buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, vertexBytes));
     buffers.vertices->create();
     updates->uploadStaticBuffer(buffers.vertices.get(), vertices.constData());
-    // Almost every section has fewer than 65536 vertices; its indices then take two bytes each.
-    if (vertices.size() <= std::numeric_limits<quint16>::max() + 1) {
-        QByteArray shortIndices(indices.size() * qsizetype(sizeof(quint16)), Qt::Uninitialized);
-        auto *out = reinterpret_cast<quint16 *>(shortIndices.data());
-        for (const quint32 index : indices) {
-            *out++ = quint16(index);
-        }
+    // Almost every section has at most 65536 vertices; its indices then take two bytes each.
+    if (QcIndexPacking::fitsShortIndices(vertices.size())) {
+        const QByteArray shortIndices = QcIndexPacking::toShortIndices(indices);
         buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, quint32(shortIndices.size())));
         buffers.indices->create();
         updates->uploadStaticBuffer(buffers.indices.get(), shortIndices.constData());
@@ -397,32 +395,6 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
         m_meshes.insert_or_assign(key, std::move(gpuMesh));
     }
     m_meshUploads.clear();
-}
-
-std::array<QVector4D, 6> QcWorldRenderer::frustumPlanes(const QMatrix4x4 &viewProjection)
-{
-    // A point p is inside when dot(plane, (p, 1)) >= 0 for every plane: -w <= x <= w,
-    // -w <= y <= w, z <= w and w > 0 in clip space.
-    const QVector4D x = viewProjection.row(0);
-    const QVector4D y = viewProjection.row(1);
-    const QVector4D z = viewProjection.row(2);
-    const QVector4D w = viewProjection.row(3);
-    return {w + x, w - x, w + y, w - y, w - z, w};
-}
-
-bool QcWorldRenderer::isVisible(const GpuMesh &mesh, const std::array<QVector4D, 6> &planes)
-{
-    // A box is culled when it lies entirely outside one plane, i.e. when its corner furthest along
-    // the plane normal does.
-    for (const QVector4D &plane : planes) {
-        const float furthest = plane.x() * (plane.x() >= 0.0f ? mesh.boundsMax.x() : mesh.boundsMin.x())
-                               + plane.y() * (plane.y() >= 0.0f ? mesh.boundsMax.y() : mesh.boundsMin.y())
-                               + plane.z() * (plane.z() >= 0.0f ? mesh.boundsMax.z() : mesh.boundsMin.z()) + plane.w();
-        if (furthest < 0.0f) {
-            return false;
-        }
-    }
-    return true;
 }
 
 void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
@@ -482,11 +454,11 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     if (m_opaquePipeline && m_translucentPipeline) {
         commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
 
-        const std::array<QVector4D, 6> planes = frustumPlanes(viewProjection);
+        const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
         QList<const GpuMesh *> visible;
         visible.reserve(m_meshes.size());
         for (const auto &[key, mesh] : m_meshes) {
-            if (isVisible(mesh, planes)) {
+            if (QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
                 visible.append(&mesh);
             }
         }

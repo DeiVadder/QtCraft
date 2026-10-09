@@ -1,6 +1,7 @@
 qt_add_library(qc_clientcore STATIC
     QcAmbience.h QcAmbience.cpp
     QcAnimator.h QcAnimator.cpp
+    QcAppIcon.h QcAppIcon.cpp
     QcAudioMixer.h QcAudioMixer.cpp
     QcBlockIcon.h QcBlockIcon.cpp
     QcBlockLightEngine.h QcBlockLightEngine.cpp
@@ -18,7 +19,9 @@ qt_add_library(qc_clientcore STATIC
     QcEntityPose.h
     QcEntityLight.h
     QcEntityVertex.h
+    QcFrustum.h QcFrustum.cpp
     QcGameSettings.h QcGameSettings.cpp
+    QcIndexPacking.h QcIndexPacking.cpp
     QcLocalSounds.h QcLocalSounds.cpp
     QcMusicComposer.h QcMusicComposer.cpp
     QcControlInterface.h QcControlInterface.cpp

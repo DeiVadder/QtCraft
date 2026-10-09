@@ -25,11 +25,35 @@ target_compile_definitions(qtcraft PRIVATE QTCRAFT_VERSION="${PROJECT_VERSION}")
 if(QC_QML_DEBUG)
     target_compile_definitions(qtcraft PRIVATE QT_QML_DEBUG)
 endif()
+# CFBundleVersion: the build number release builds pass (scripts/release.sh: UTC build time, e.g. 2026.1009.1130).
+set(QC_BUILD_NUMBER "${PROJECT_VERSION}" CACHE STRING "Build number of the app bundle (CFBundleVersion)")
 set_target_properties(qtcraft PROPERTIES
     MACOSX_BUNDLE ON
+    MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/cmake/Info.plist.in
     MACOSX_BUNDLE_BUNDLE_NAME QtCraft
     MACOSX_BUNDLE_GUI_IDENTIFIER org.qtcraft.QtCraft
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${QC_BUILD_NUMBER}
+    MACOSX_BUNDLE_INFO_STRING "QtCraft ${PROJECT_VERSION}, a voxel sandbox game built with Qt"
+    MACOSX_BUNDLE_COPYRIGHT "Copyright 2026 the QtCraft authors"
+    MACOSX_BUNDLE_ICON_FILE QtCraft.icns
     WIN32_EXECUTABLE ON)
+
+if(APPLE)
+    # The icon is drawn from the base game's procedural textures (qtcraft-headless --export-icon)
+    # and packed by iconutil into Contents/Resources/QtCraft.icns.
+    set(QC_ICONSET ${CMAKE_CURRENT_BINARY_DIR}/QtCraft.iconset)
+    set(QC_ICNS ${CMAKE_CURRENT_BINARY_DIR}/QtCraft.icns)
+    add_custom_command(OUTPUT ${QC_ICNS}
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${QC_ICONSET}
+        COMMAND $<TARGET_FILE:qtcraft-headless> --export-icon ${QC_ICONSET}
+        COMMAND iconutil --convert icns --output ${QC_ICNS} ${QC_ICONSET}
+        DEPENDS qtcraft-headless
+        COMMENT "Drawing the application icon"
+        VERBATIM)
+    target_sources(qtcraft PRIVATE ${QC_ICNS})
+    set_source_files_properties(${QC_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif()
 
 target_link_libraries(qtcraft PRIVATE
     qc_common qc_server qc_clientcore qc_audio

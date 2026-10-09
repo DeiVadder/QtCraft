@@ -36,18 +36,21 @@ for scenario in stand sprint crowd; do
         failed=1
         continue
     fi
-    echo "$LIMITS" | while read -r key limit; do
+    # Every limit is checked; the scenario fails when any of them is exceeded or missing.
+    results=$(echo "$LIMITS" | while read -r key limit; do
         measured=$(echo "$line" | value "$key")
         if [ -z "$measured" ]; then
             echo "FAIL $scenario: $key missing"
-            exit 1
-        fi
-        if awk -v m="$measured" -v l="$limit" 'BEGIN { exit !(m > l) }'; then
+        elif awk -v m="$measured" -v l="$limit" 'BEGIN { exit !(m > l) }'; then
             echo "FAIL $scenario: $key=$measured > $limit"
-            exit 1
+        else
+            echo "ok   $scenario: $key=$measured <= $limit"
         fi
-        echo "ok   $scenario: $key=$measured <= $limit"
-    done || failed=1
+    done)
+    echo "$results"
+    if echo "$results" | grep -q '^FAIL'; then
+        failed=1
+    fi
 done
 echo "raw logs: $WORK"
 if [ "$failed" -ne 0 ]; then

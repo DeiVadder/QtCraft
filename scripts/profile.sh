@@ -48,22 +48,43 @@ esac
 limited 300 cmake --preset profile >/dev/null 2>&1 || exit 1
 limited 1200 cmake --build --preset profile >/dev/null 2>&1 || exit 1
 
-# Writes a wrapper that starts the game and attaches an xctrace template to it. Attaching (not
-# --launch) keeps the exact binary: a launch by bundle may pick another build of the same app.
-xctrace_wrapper() {
-    template=$1
-    output=$2
-    wrapper="$WORK/xctrace-$(echo "$template" | tr ' ' '-').sh"
+# Writes a wrapper script that run_game puts in front of the game and prints its path.
+# Usage: guarded_wrapper <name> <command prefix> <body>
+# The prefix (e.g. a profiler that launches the game) and the game run as a background job in their
+# own process group ($pid); the body runs meanwhile and may use $pid. When the time limit of
+# run_game (SIGALRM) or an interrupt ends the wrapper, the trap ends that whole process group and
+# any tool the body started in the background ($tool), so no game instance outlives the run.
+guarded_wrapper() {
+    wrapper="$WORK/$1.sh"
     cat >"$wrapper" <<EOF
 #!/bin/sh
-"\$@" &
+set -m
+$2 "\$@" </dev/null &
 pid=\$!
-perl -e 'select(undef, undef, undef, 2.0)'
-xcrun xctrace record --template "$template" --time-limit ${RECORD_LIMIT}s --output "$output" --attach \$pid >"$output.log" 2>&1
+tool=
+stop() {
+    [ -n "\$tool" ] && kill -INT "\$tool" 2>/dev/null
+    kill -TERM -"\$pid" 2>/dev/null
+}
+trap 'stop; exit 124' ALRM TERM INT HUP
+$3
 wait \$pid
+status=\$?
+[ -n "\$tool" ] && wait "\$tool"
+exit \$status
 EOF
     chmod +x "$wrapper"
     echo "$wrapper"
+}
+
+# Starts the game and attaches an xctrace template to it. Attaching (not --launch) keeps the exact
+# binary: a launch by bundle may pick another build of the same app.
+xctrace_wrapper() {
+    template=$1
+    output=$2
+    guarded_wrapper "xctrace-$(echo "$template" | tr ' ' '-')" "" "perl -e 'select(undef, undef, undef, 2.0)'
+xcrun xctrace record --template \"$template\" --time-limit ${RECORD_LIMIT}s --output \"$output\" --attach \$pid >\"$output.log\" 2>&1 &
+tool=\$!"
 }
 
 run() {
@@ -89,17 +110,10 @@ alloc)
     # Heap by type and memory regions 10 s into the run (heap(1), vmmap(1)). The Instruments
     # Allocations template does not finish on this machine (neither attached nor launched), see
     # docs/Performance.md.
-    cat >"$WORK/heap.sh" <<EOF
-#!/bin/sh
-"\$@" &
-pid=\$!
-perl -e 'select(undef, undef, undef, 10.0)'
-heap -s \$pid >"$WORK/heap.txt" 2>&1
-vmmap --summary \$pid >"$WORK/vmmap.txt" 2>&1
-wait \$pid
-EOF
-    chmod +x "$WORK/heap.sh"
-    run alloc "$WORK/heap.sh"
+    wrapper=$(guarded_wrapper heap "" "perl -e 'select(undef, undef, undef, 10.0)'
+heap -s \$pid >\"$WORK/heap.txt\" 2>&1
+vmmap --summary \$pid >\"$WORK/vmmap.txt\" 2>&1")
+    run alloc "$wrapper"
     grep -E "^(Physical footprint|All zones)" "$WORK/heap.txt" "$WORK/vmmap.txt"
     sed -n '/COUNT/,+25p' "$WORK/heap.txt"
     ;;
@@ -108,24 +122,17 @@ metal)
     ;;
 leaks)
     # leaks starts the binary itself and reports what is unreachable when it exits.
-    run leaks "env MallocStackLogging=1 leaks --atExit --"
+    run leaks "$(guarded_wrapper leaks "env MallocStackLogging=1 leaks --atExit --" "")"
     grep -E "leaks for|total leaked" "$WORK/leaks.log"
     ;;
 sample)
-    cat >"$WORK/sample.sh" <<EOF
-#!/bin/sh
-"\$@" &
-pid=\$!
-perl -e 'select(undef, undef, undef, 8.0)'
-sample \$pid 10 -file "$WORK/sample.txt" >/dev/null 2>&1
-wait \$pid
-EOF
-    chmod +x "$WORK/sample.sh"
-    run sample "$WORK/sample.sh"
+    wrapper=$(guarded_wrapper sample "" "perl -e 'select(undef, undef, undef, 8.0)'
+sample \$pid 10 -file \"$WORK/sample.txt\" >/dev/null 2>&1")
+    run sample "$wrapper"
     grep -E "^ *[0-9]+ Thread_|Thread_[0-9]+" "$WORK/sample.txt" | head -20
     ;;
 qml)
-    run qml "$QT_BIN/qmlprofiler --output $WORK/qml.qtd"
+    run qml "$(guarded_wrapper qmlprofiler "$QT_BIN/qmlprofiler --output $WORK/qml.qtd" "")"
     python3 -I "$PROJECT_DIR/scripts/profile-report.py" qml "$WORK/qml.qtd" 30 | tee "$WORK/qml-report.txt"
     ;;
 sg)

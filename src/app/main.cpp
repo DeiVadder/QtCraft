@@ -1,3 +1,4 @@
+#include "QcBundledMods.h"
 #include "QcGameController.h"
 #include "QcModLoader.h"
 #include "QcItemIconProvider.h"
@@ -77,6 +78,9 @@ int main(int argc, char *argv[])
         QCoreApplication::removeTranslator(&translator);
         if (translator.load(locale, u"qtcraft"_s, u"_"_s, u":/i18n"_s)) {
             QCoreApplication::installTranslator(&translator);
+            qInfo().noquote() << u"UI language %1: translation loaded"_s.arg(locale.name());
+        } else {
+            qInfo().noquote() << u"UI language %1: no translation, English texts"_s.arg(locale.name());
         }
         return locale.name().left(2);
     };
@@ -127,6 +131,16 @@ int main(int argc, char *argv[])
                          engine.retranslate();
                      });
     game->refreshWorlds();
+    if (!parser.isSet(noModsOption) && parser.value(modsOption).isEmpty()) {
+        // First start of a release bundle: its example mods go, switched off, into the player's
+        // mods directory.
+        const QString bundled = QcBundledMods::directory(QCoreApplication::applicationDirPath());
+        if (const QcResult<QStringList> installed = QcBundledMods::installDisabled(bundled, QcModLoader::defaultDirectory()); !installed) {
+            qWarning().noquote() << u"Cannot install the bundled mods:"_s << installed.error();
+        } else if (!installed->isEmpty()) {
+            qInfo().noquote() << u"Installed bundled mods (switched off) in %1: %2"_s.arg(QcModLoader::defaultDirectory(), installed->join(u", "_s));
+        }
+    }
     game->setModsDirectory(parser.isSet(noModsOption)          ? QString()
                            : parser.value(modsOption).isEmpty() ? QcModLoader::defaultDirectory()
                                                                 : parser.value(modsOption));

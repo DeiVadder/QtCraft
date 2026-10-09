@@ -56,9 +56,6 @@ private:
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
                              const QList<quint32> &indices);
-    // Clip planes of the view frustum as (a, b, c, d) with a x + b y + c z + d >= 0 inside.
-    static std::array<QVector4D, 6> frustumPlanes(const QMatrix4x4 &viewProjection);
-    static bool isVisible(const GpuMesh &mesh, const std::array<QVector4D, 6> &planes);
 
     QRhi *m_rhi = nullptr;
     std::unique_ptr<QRhiBuffer> m_frameUniforms;

@@ -1,5 +1,6 @@
 #include "QcHeadlessGame.h"
 
+#include "QcAppIcon.h"
 #include "QcBaseContent.h"
 #include "QcModLoader.h"
 #include "QcClientSession.h"
@@ -13,6 +14,7 @@
 #include "QcSoundExporter.h"
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
+#include "QcTextureAtlas.h"
 #include "QcTransport.h"
 #include "QcWorldLibrary.h"
 
@@ -82,7 +84,10 @@ bool QcHeadlessGame::start(const QStringList &arguments)
                                             u"dir"_s);
     const QCommandLineOption languageOption(u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s,
                                             u"locale"_s, u"en"_s);
-    parser.addOption(soundsOption);
+    const QCommandLineOption iconOption(u"export-icon"_s,
+                                        u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
+                                        u"dir"_s);
+    parser.addOptions({soundsOption, iconOption});
     parser.addOptions({handbookOption, languageOption});
     parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
                        modsOption, noModsOption});
@@ -93,6 +98,21 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     if (parser.isSet(u"help"_s)) {
         std::print("{}", parser.helpText().toStdString());
         QTimer::singleShot(0, qApp, [] { QCoreApplication::exit(0); });
+        return true;
+    }
+    if (parser.isSet(iconOption)) {
+        // Base game only: the icon must not depend on the mods of whoever builds the game.
+        QStringList baseWarnings;
+        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+        if (!base) {
+            printError(u"Cannot load the base game: "_s + base.error());
+            return false;
+        }
+        const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(**base), parser.value(iconOption));
+        if (!written) {
+            printError(written.error());
+        }
+        QTimer::singleShot(0, qApp, [ok = written.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
         return true;
     }
 

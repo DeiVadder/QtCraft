@@ -13,6 +13,7 @@
         },
         { "name": "debug", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
         { "name": "release", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
+        { "name": "deploy", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64" } },
         { "name": "profile", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo", "QC_QML_DEBUG": "ON" } },
         {
             "name": "asan", "inherits": "base",
@@ -26,6 +27,7 @@
     "buildPresets": [
         { "name": "debug", "configurePreset": "debug", "jobs": 16 },
         { "name": "release", "configurePreset": "release", "jobs": 16 },
+        { "name": "deploy", "configurePreset": "deploy", "jobs": 16 },
         { "name": "profile", "configurePreset": "profile", "jobs": 16 },
         { "name": "asan", "configurePreset": "asan", "jobs": 16 },
         { "name": "tsan", "configurePreset": "tsan", "jobs": 16 }

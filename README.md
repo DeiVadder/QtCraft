@@ -13,9 +13,23 @@ cmake --preset release
 cmake --build --preset release
 ```
 
-Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer). Build directories are `build/<preset>`.
+Presets: `debug`, `release`, `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer), `profile` and `deploy` (used by the scripts below). Build directories are `build/<preset>`.
+
+## Release: a standalone app
+
+```sh
+scripts/release.sh
+```
+
+One command builds a universal (Apple silicon and Intel) Release build in `build/deploy` and puts a standalone `deploy/QtCraft.app` next to `deploy/QtCraft-<version>-macOS.zip` and `.dmg` (the `deploy/` folder is not in git). The app runs by double click on any Mac with macOS 13.3 or later, without Qt, build directory or command line. Inside are the Qt frameworks, QML modules and plugins (platform, image formats, styles, multimedia with the FFmpeg backend), the base content and translations (built into the program), the example mod and the icon, which the build draws from the game's own textures. Saves, settings and mods stay in `~/Library/Application Support/QtCraft/QtCraft`; on the first start the example mod is copied to its `mods` folder switched off – turn it on in the Mods screen.
+
+Requirements: the build requirements above, Xcode command line tools (`codesign`, `otool`, `lipo`, `iconutil`, `hdiutil`) and `macdeployqt` from the Qt installation (`QT_DIR` overrides `~/Qt/6.8.3/macos`). The script checks its result and exits with 1 if any check fails: links and rpaths of every binary (`otool`), the required parts and Info.plist keys, the signature, and three starts of a copy in a temporary folder (a world with screenshot and the list of loaded libraries, which must all come from the copy or the system, the audio output, the example mod and the German texts, a start through Launch Services like a double click, and on Macs with Rosetta a start of the Intel half). Every start opens the (muted) audio output and keeps its caches in the temporary folder. `CFBundleVersion` is the UTC build time (`2026.1009.1130`). The starts open on the built-in display in the background and are muted. `QTCRAFT_RELEASE_DMG=0` skips the disk image. It takes a few minutes and is not part of `scripts/verify.sh`.
+
+The app is signed ad hoc only (`codesign -s -`); notarisation needs an Apple developer account. Another Mac therefore shows on the first start of a downloaded copy that “QtCraft” cannot be opened because Apple cannot check it for malicious software (macOS 15 and later: “QtCraft Not Opened”). To open it anyway: move the app to Applications, try to open it once, then in **System Settings → Privacy & Security** click **Open Anyway** next to the QtCraft message and confirm with your password; on macOS 13 and 14 right click (Control-click) the app in Finder, choose **Open** and confirm. macOS remembers the choice. Alternatively remove the download mark in Terminal: `xattr -dr com.apple.quarantine /Applications/QtCraft.app`. A copy without the download mark (for example built on that Mac) opens directly.
 
 ## Play
+
+Double-click `deploy/QtCraft.app` after `scripts/release.sh`, or start a build directly:
 
 ```sh
 build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft

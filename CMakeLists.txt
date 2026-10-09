@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.25)
 
+# Oldest macOS the app runs on, also LSMinimumSystemVersion: Qt 6.8 needs 12, the floating-point
+# formatting of std::format/std::print in the C++ library 13.3.
+if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 13.3)
+endif()
+
 project(QtCraft VERSION 0.1.0 DESCRIPTION "Voxel sandbox game built with Qt" LANGUAGES CXX)
 if(APPLE)
     # The platform part of the mouse capture talks to AppKit.
