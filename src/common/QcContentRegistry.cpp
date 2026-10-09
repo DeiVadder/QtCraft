@@ -511,6 +511,7 @@ void QcContentRegistry::createBlockItems()
         QcItemDefinition item;
         item.name = block.name;
         item.translationKey = block.translationKey;
+        item.descriptionKey = block.descriptionKey;
         item.texture = block.texture(QcBlockFace::Up);
         item.placesBlock = block.name;
         item.fuelSeconds = block.fuelSeconds;
@@ -669,6 +670,11 @@ const QcSoundDefinition *QcContentRegistry::sound(const QString &name) const
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, m_biomeIndex, std::move(definition));
+}
+
+void QcContentRegistry::registerHandbookChapter(QcHandbookChapter chapter)
+{
+    registerByName(m_handbookChapters, m_handbookChapterIndex, std::move(chapter));
 }
 
 void QcContentRegistry::registerFeature(QcFeatureDefinition definition)

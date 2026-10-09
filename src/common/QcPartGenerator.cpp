@@ -91,6 +91,10 @@ QStringList generate(QcContentRegistry &registry)
             QJsonObject json = family.block;
             json.insert(u"name"_s, name);
             json.insert(u"translation"_s, translationKey);
+            // All parts of a family share one handbook text unless the family's template names one.
+            if (!json.contains(u"description"_s)) {
+                json.insert(u"description"_s, u"part.%1.%2.description"_s.arg(namespaceOf(family.name), localPart(family.name)));
+            }
             json.insert(u"textures"_s, QJsonObject{{u"east"_s, base.texture(QcBlockFace::East)},
                                                    {u"west"_s, base.texture(QcBlockFace::West)},
                                                    {u"top"_s, base.texture(QcBlockFace::Up)},

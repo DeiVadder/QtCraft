@@ -205,6 +205,12 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
+                    text: qsTr("Handbook (F1)")
+                    onClicked: menu.game.openHandbook("")
+                }
+
+                Button {
+                    Layout.fillWidth: true
                     text: qsTr("Quit")
                     onClicked: menu.quitRequested()
                 }

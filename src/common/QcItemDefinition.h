@@ -17,6 +17,9 @@ struct QcItemDefinition
 
     QString name;
     QString translationKey;
+    // Translation key of the handbook's text about it ("<translation>.description" unless set); a
+    // missing text leaves only the facts. Server side only.
+    QString descriptionKey;
     // Icon texture; block items use the block's top texture unless set.
     QString texture;
     int maxStack = 64;

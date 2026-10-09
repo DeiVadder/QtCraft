@@ -26,6 +26,12 @@ qt_add_library(qc_common STATIC
     QcMaterialDefinition.h
     QcCrafting.h QcCrafting.cpp
     QcEntityMotion.h
+    QcHandbook.h QcHandbook.cpp
+    QcHandbookBuilder.h QcHandbookBuilder.cpp
+    QcHandbookChapter.h
+    QcHandbookEntry.h
+    QcHandbookJson.h QcHandbookJson.cpp
+    QcHandbookMarkdown.h QcHandbookMarkdown.cpp
     QcInProcessTransport.h QcInProcessTransport.cpp
     QcIntMath.h
     QcInventory.h QcInventory.cpp

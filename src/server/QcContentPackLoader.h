@@ -29,6 +29,8 @@ class QcContentPackLoader
 public:
     // Largest file a pack may contain.
     static constexpr qint64 maxContentFileBytes = qint64(4) * 1024 * 1024;
+    // lang/<language><suffix>.json adds to <language> (handbook texts kept apart from names).
+    static constexpr auto handbookLanguageSuffix = ".handbook";
 
     static QcResult<QcContentPackInfo> readManifest(const QString &directory);
     // Lower-case letters, digits, '_', '-', '.', at most 64 characters, no "..".
@@ -44,7 +46,7 @@ public:
     // pack can be rejected before anything is read (hard links make small packs read large).
     static qint64 measure(const QString &directory);
 
-    // Loads the content folders of the pack (shapes/, parts/, materials/, blocks/, items/, recipes/, smelting/, sounds/, textures/, lang/, ...). Invalid entries are skipped and reported in
+    // Loads the content folders of the pack (shapes/, parts/, materials/, blocks/, items/, recipes/, smelting/, sounds/, textures/, lang/, handbook/, ...). Invalid entries are skipped and reported in
     // `warnings`; the pack itself only fails when the manifest is unusable.
     static QcResult<QcContentPackInfo> load(const QString &directory, QcContentRegistry &registry, QStringList &warnings);
 };

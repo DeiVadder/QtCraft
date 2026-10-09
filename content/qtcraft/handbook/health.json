@@ -1,0 +1,14 @@
+{
+    "name": "health",
+    "order": 80,
+    "icon": "iron_sword",
+    "sections": [
+        "health",
+        "fighting"
+    ],
+    "related": [
+        "iron_sword",
+        "zombie",
+        "lava"
+    ]
+}

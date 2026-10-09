@@ -1,0 +1,14 @@
+{
+    "name": "crafting",
+    "order": 50,
+    "icon": "crafting_table",
+    "sections": [
+        "grid",
+        "book"
+    ],
+    "related": [
+        "crafting_table",
+        "stick",
+        "oak_planks"
+    ]
+}

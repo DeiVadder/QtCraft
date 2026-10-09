@@ -3,6 +3,7 @@ qt_add_executable(qtcraft
     QcScreenshotHook.h QcScreenshotHook.cpp
     QcGameController.h QcGameController.cpp
     QcInventoryModel.h QcInventoryModel.cpp
+    QcHandbookModel.h QcHandbookModel.cpp
     QcSlotRange.h QcSlotRange.cpp
     QcItemIconProvider.h QcItemIconProvider.cpp
     QcWorldRenderer.h QcWorldRenderer.cpp
@@ -35,6 +36,9 @@ qt_add_qml_module(qtcraft
         qml/ChatOverlay.qml
         qml/DeathScreen.qml
         qml/FurnaceScreen.qml
+        qml/HandbookScreen.qml
+        qml/HandbookRecipe.qml
+        qml/HandbookLink.qml
         qml/ChestScreen.qml
         qml/Hud.qml
         qml/InventoryScreen.qml

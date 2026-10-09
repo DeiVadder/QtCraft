@@ -12,6 +12,8 @@ Rectangle {
 
     required property GameController game
     property int pickedSlot: -1
+    // Item under the mouse; F1 opens its handbook page.
+    property string hoveredItem
 
     readonly property int gridFirst: 36
     readonly property int resultSlot: 45
@@ -26,6 +28,9 @@ Rectangle {
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape || event.key === Qt.Key_E) {
             screen.game.overlay = "";
+            event.accepted = true;
+        } else if (event.key === Qt.Key_F1) {
+            screen.game.openHandbook(screen.hoveredItem);
             event.accepted = true;
         }
     }
@@ -71,7 +76,11 @@ Rectangle {
         required property real durability
         required property bool empty
         required property string label
+        required property string itemName
 
+        infoItem: itemName
+        infoEnabled: screen.pickedSlot < 0
+        onInfoRequested: item => screen.game.openHandbook(item)
         slotIcon: icon
         slotCount: count
         slotDurability: durability
@@ -84,6 +93,8 @@ Rectangle {
 
         HoverHandler {
             id: hover
+
+            onHoveredChanged: screen.hoveredItem = hovered && !slotItem.empty ? slotItem.itemName : ""
         }
 
         TapHandler {

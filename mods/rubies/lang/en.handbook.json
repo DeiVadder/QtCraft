@@ -1,0 +1,18 @@
+{
+    "block.rubies.molten_ruby.description": "A slow, glowing liquid that collects in pools deep in caves.",
+    "block.rubies.ruby_block.description": "Nine rubies pressed into a block; turns back into nine.",
+    "block.rubies.ruby_lantern.description": "A ruby lantern that glows a little weaker than a torch.",
+    "block.rubies.ruby_ore.description": "Red gems in deep rock. Needs a pickaxe of level {rubies:ruby_ore.toolLevel}.",
+    "block.rubies.ruby_rose.description": "A rare red flower of the plains.",
+    "block.rubies.ruby_sand.description": "Red sand that falls like ordinary sand.",
+    "feature.rubies.molten_ruby_pool": "Molten ruby pool",
+    "feature.rubies.ruby_rose": "Ruby roses",
+    "handbook.family.pillar": "Pillar",
+    "item.rubies.ember_shard.description": "A glowing splinter that burns as fuel.",
+    "item.rubies.molten_ruby_bucket.description": "Pours a source of molten ruby.",
+    "item.rubies.ruby.description": "A red gem for ruby tools.",
+    "item.rubies.ruby_pickaxe.description": "Mines faster than iron.",
+    "item.rubies.ruby_sword.description": "A sharp ruby blade.",
+    "mob.rubies.crystal_beetle.description": "A hostile beetle with a crystal shell that lurks in caves.",
+    "part.rubies.pillar.description": "A round column of the material."
+}

@@ -1,0 +1,14 @@
+{
+    "name": "smelting",
+    "order": 60,
+    "icon": "furnace",
+    "sections": [
+        "furnace"
+    ],
+    "related": [
+        "furnace",
+        "coal",
+        "charcoal",
+        "iron_ingot"
+    ]
+}

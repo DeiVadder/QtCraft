@@ -5,6 +5,7 @@
 #include "QcWorldConstants.h"
 
 #include <QJsonArray>
+#include <QRegularExpression>
 
 #include <array>
 
@@ -300,6 +301,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 
     block.translationKey = reader.string(u"translation"_s,
                                          u"block.%1.%2"_s.arg(blockNamespace, localPart(block.name).replace(u'/', u'.')));
+    block.descriptionKey = reader.string(u"description"_s, block.translationKey + u".description"_s);
     // "cube" and "cross" always name the base shapes; other names resolve in the pack's namespace.
     const QJsonValue shapeValue = json.value(u"shape"_s);
     if (shapeValue.isObject()) {
@@ -921,6 +923,7 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
     reader.context = u"mob '%1'"_s.arg(mob.name);
     mob.translationKey = reader.string(
         u"translation"_s, u"mob.%1.%2"_s.arg(mob.name.left(mob.name.indexOf(u':')), localPart(mob.name).replace(u'/', u'.')));
+    mob.descriptionKey = reader.string(u"description"_s, mob.translationKey + u".description"_s);
     mob.maxHealth = reader.number(u"health"_s, 10.0, 1.0, 1000.0);
     mob.width = reader.number(u"width"_s, 0.6, 0.2, 4.0);
     mob.height = reader.number(u"height"_s, 1.8, 0.2, 4.0);
@@ -1249,6 +1252,7 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     reader.context = u"item '%1'"_s.arg(item.name);
     item.translationKey = reader.string(
         u"translation"_s, u"item.%1.%2"_s.arg(item.name.left(item.name.indexOf(u':')), localPart(item.name).replace(u'/', u'.')));
+    item.descriptionKey = reader.string(u"description"_s, item.translationKey + u".description"_s);
     item.texture = reader.name(u"texture"_s, packNamespace, item.name);
     item.maxStack = reader.integer(u"maxStack"_s, 64, 1, QcItemDefinition::maxStackLimit);
     item.placesBlock = reader.name(u"places"_s, packNamespace);
@@ -1407,6 +1411,7 @@ QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &p
     reader.context = u"biome '%1'"_s.arg(biome.name);
     biome.translationKey = reader.string(
         u"translation"_s, u"biome.%1.%2"_s.arg(biome.name.left(biome.name.indexOf(u':')), localPart(biome.name)));
+    biome.descriptionKey = reader.string(u"description"_s, biome.translationKey + u".description"_s);
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);
     biome.baseHeight = reader.number(u"baseHeight"_s, 68.0, 1.0, QcWorld::worldHeight - 40.0);
@@ -1553,6 +1558,51 @@ QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const 
         return qcError(reader.error);
     }
     return settings;
+}
+
+QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace)
+{
+    FieldReader reader{json, u"handbook chapter"_s, {}};
+    QcHandbookChapter chapter;
+    chapter.name = reader.name(u"name"_s, packNamespace);
+    if (chapter.name.isEmpty()) {
+        return qcError(reader.ok() ? u"handbook chapter: 'name' is required"_s : reader.error);
+    }
+    reader.context = u"handbook chapter '%1'"_s.arg(chapter.name);
+    chapter.titleKey = reader.string(
+        u"title"_s, u"chapter.%1.%2"_s.arg(chapter.name.left(chapter.name.indexOf(u':')), localPart(chapter.name).replace(u'/', u'.')));
+    chapter.order = reader.integer(u"order"_s, chapter.order, -1000000, 1000000);
+    chapter.iconItem = reader.name(u"icon"_s, packNamespace);
+    static const QRegularExpression sectionPattern(u"^[a-z0-9_]{1,32}$"_s);
+    const QJsonValue sections = json.value(u"sections"_s);
+    if (!sections.isArray() || sections.toArray().isEmpty() || sections.toArray().size() > QcHandbookChapter::maxSections) {
+        reader.fail(u"'sections' must be an array of 1..%1 section names"_s.arg(QcHandbookChapter::maxSections));
+    }
+    const QJsonArray sectionList = sections.toArray();
+    for (const auto &section : sectionList) {
+        if (!section.isString() || !sectionPattern.match(section.toString()).hasMatch() || chapter.sections.contains(section.toString())) {
+            reader.fail(u"section names are distinct lower-case words"_s);
+            break;
+        }
+        chapter.sections.append(section.toString());
+    }
+    const QJsonValue related = json.value(u"related"_s);
+    if (!related.isUndefined() && (!related.isArray() || related.toArray().size() > QcHandbookChapter::maxRelated)) {
+        reader.fail(u"'related' must be an array of at most %1 names"_s.arg(QcHandbookChapter::maxRelated));
+    }
+    const QJsonArray relatedList = related.toArray();
+    for (const auto &name : relatedList) {
+        const QString qualified = name.isString() ? QcContentNames::qualify(name.toString(), packNamespace) : QString();
+        if (qualified.isEmpty()) {
+            reader.fail(u"'related' entries must be content names"_s);
+            break;
+        }
+        chapter.related.append(qualified);
+    }
+    if (!reader.ok()) {
+        return qcError(reader.error);
+    }
+    return chapter;
 }
 
 } // namespace QcContentParser

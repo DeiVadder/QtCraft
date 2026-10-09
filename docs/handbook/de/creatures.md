@@ -1,0 +1,143 @@
+# Wesen
+
+[Zurück zum Inhalt](index.md)
+
+**QtCraft:** [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
+
+## QtCraft
+
+### <a id="mob-qtcraft-firefly"></a>Glühwürmchen
+
+Leuchtet nachts über Sümpfen. Mit einer leeren Glasflasche fangbar.
+
+| | |
+|---|---|
+| ID | `qtcraft:firefly` |
+| Verhalten | harmlose Umgebung |
+| Gesundheit | 1 Lebenspunkt |
+| Größe | 0,25 m breit, 0,25 m hoch |
+| Geschwindigkeit | 0,8 m/s |
+| Erscheint | nachts |
+| Gruppengröße | bis 3 |
+| Erscheinungsgewicht | 10 |
+| Obergrenze | 8 bei jedem Spieler; alle Umgebungswesen zusammen: 10 pro Spieler |
+| Fliegt | ja |
+| Leuchtet | 15 von 15 |
+| Fangbar | [Glasflasche](items.md#item-qtcraft-glass_bottle), [Glühwürmchen in der Flasche](items.md#item-qtcraft-firefly_bottle) |
+| Beute | nichts |
+
+**Erscheint auf**
+
+Jeder feste Block oder eine Flüssigkeitsoberfläche.
+
+**Erscheint in Biomen**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-sheep"></a>Schaf
+
+Friedliches Tier des Graslands; lässt Wolle fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:sheep` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 8 Lebenspunkte |
+| Größe | 0,9 m breit, 1,2 m hoch |
+| Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Beute | [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool) |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-slime"></a>Schleim
+
+Ein hüpfender Klumpen der Höhlen, schwach, aber hartnäckig.
+
+| | |
+|---|---|
+| ID | `qtcraft:slime` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 8 Lebenspunkte |
+| Größe | 0,8 m breit, 0,8 m hoch |
+| Geschwindigkeit | 1 m/s beim Gehen, 2,4 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,3 m, alle 1,2 s |
+| Sieht Spieler bis | 12 m |
+| Erscheint | Tag und Nacht |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 1 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Schleimball](items.md#item-qtcraft-slimeball) |
+
+**Erscheint auf**
+
+[Erde](blocks.md#block-qtcraft-dirt), [Kies](blocks.md#block-qtcraft-gravel), [Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-pig"></a>Schwein
+
+Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:pig` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 10 Lebenspunkte |
+| Größe | 0,9 m breit, 0,9 m hoch |
+| Geschwindigkeit | 1 m/s beim Gehen, 2,5 m/s auf der Flucht |
+| Erscheint | bei Tag |
+| Gruppengröße | bis 4 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Beute | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) (2×) |
+
+**Erscheint auf**
+
+[Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-zombie"></a>Zombie
+
+Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu.
+
+| | |
+|---|---|
+| ID | `qtcraft:zombie` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,2 m/s beim Verfolgen |
+| Angriff | 3 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 20 m |
+| Erscheint | nachts |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 7 |
+| Gruppengröße | bis 3 |
+| Erscheinungsgewicht | 3 |
+| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh) |
+
+**Erscheint auf**
+
+[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+
+**Erscheint in Biomen**
+
+Alle Biome.

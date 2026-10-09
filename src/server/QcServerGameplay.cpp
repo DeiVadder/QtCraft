@@ -358,7 +358,9 @@ void QcServer::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards)
                 const QcBlockPos pos{chunkPos.x * QcWorld::chunkSize + x, index * QcWorld::sectionHeight + y,
                                      chunkPos.z * QcWorld::chunkSize + z};
                 // A still source only matters where it can flow across the border or reacts with a
-                // liquid there (oceans would otherwise queue every border cell on each load).
+                // liquid there (oceans would otherwise queue every border cell on each load). Only the
+                // neighbour across the border is looked at: the other sides lie inside a chunk that
+                // was already loaded, where the source settled when it was generated or last updated.
                 if (QcLiquidFlow::flows(*m_content, block)) {
                     const std::optional<QcBlockId> neighbour = m_world.blockAt(qcNeighbour(pos, towards));
                     if (!lastCheck || lastCheck->block != block || lastCheck->neighbour != neighbour) {

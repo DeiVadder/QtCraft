@@ -77,5 +77,12 @@
     "Mute all sounds": "Alle Töne stumm",
     "%1 %": "%1 %",
     "Chest": "Truhe",
-    "Left click: pick up and put down. Right click: put down one. E or Esc closes. Breaking the chest drops its contents.": "Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt."
+    "Left click: pick up and put down. Right click: put down one. E or Esc closes. Breaking the chest drops its contents.": "Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt.",
+    "‹ Back": "‹ Zurück",
+    "Handbook": "Handbuch",
+    "Search blocks, items, creatures …": "Blöcke, Items, Wesen suchen …",
+    "Close (Esc)": "Schließen (Esc)",
+    "Nothing found.": "Nichts gefunden.",
+    "Click a name or an item to open its page. Backspace goes back, Esc or F1 closes.": "Klicke auf einen Namen oder ein Item, um seine Seite zu öffnen. Rücktaste geht zurück, Esc oder F1 schließt.",
+    "Handbook (F1)": "Handbuch (F1)"
 }

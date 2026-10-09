@@ -81,6 +81,9 @@ struct QcBlockDefinition
 {
     QString name;
     QString translationKey;
+    // Translation key of the handbook's text about it ("<translation>.description" unless set); a
+    // missing text leaves only the facts. Server side only.
+    QString descriptionKey;
     QcRenderLayer renderLayer = QcRenderLayer::Opaque;
     // Named state properties; every combination of values is a state with its own runtime id.
     QList<QcBlockProperty> properties;

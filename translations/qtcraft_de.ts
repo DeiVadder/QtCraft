@@ -60,12 +60,12 @@
 <context>
     <name>ChestScreen</name>
     <message>
-        <location filename="../src/app/qml/ChestScreen.qml" line="94"/>
+        <location filename="../src/app/qml/ChestScreen.qml" line="104"/>
         <source>Chest</source>
         <translation>Truhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/ChestScreen.qml" line="140"/>
+        <location filename="../src/app/qml/ChestScreen.qml" line="155"/>
         <source>Left click: pick up and put down. Right click: put down one. E or Esc closes. Breaking the chest drops its contents.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt.</translation>
     </message>
@@ -96,25 +96,58 @@
 <context>
     <name>FurnaceScreen</name>
     <message>
-        <location filename="../src/app/qml/FurnaceScreen.qml" line="96"/>
+        <location filename="../src/app/qml/FurnaceScreen.qml" line="106"/>
         <source>Furnace</source>
         <translation>Ofen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/FurnaceScreen.qml" line="216"/>
+        <location filename="../src/app/qml/FurnaceScreen.qml" line="237"/>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. E or Esc closes.</source>
         <translation>Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. E oder Esc schließt.</translation>
     </message>
 </context>
 <context>
+    <name>HandbookScreen</name>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="122"/>
+        <source>‹ Back</source>
+        <translation>‹ Zurück</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="128"/>
+        <source>Handbook</source>
+        <translation>Handbuch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="142"/>
+        <source>Search blocks, items, creatures …</source>
+        <translation>Blöcke, Items, Wesen suchen …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="161"/>
+        <source>Close (Esc)</source>
+        <translation>Schließen (Esc)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="237"/>
+        <source>Nothing found.</source>
+        <translation>Nichts gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/HandbookScreen.qml" line="495"/>
+        <source>Click a name or an item to open its page. Backspace goes back, Esc or F1 closes.</source>
+        <translation>Klicke auf einen Namen oder ein Item, um seine Seite zu öffnen. Rücktaste geht zurück, Esc oder F1 schließt.</translation>
+    </message>
+</context>
+<context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="246"/>
+        <location filename="../src/app/qml/Hud.qml" line="248"/>
         <source>Left: mine/attack  F: mine  Right/R: place  Q: drop  1-9/wheel: select  E: inventory  T: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  F: abbauen  Rechts/R: setzen  Q: wegwerfen  1–9/Mausrad: wählen  E: Inventar  T: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="247"/>
+        <location filename="../src/app/qml/Hud.qml" line="249"/>
         <source>Click to look around. WASD to move, Space to jump, Shift to sneak.</source>
         <translation>Klicken, um dich umzusehen. WASD bewegt, Leertaste springt, Umschalt schleicht.</translation>
     </message>
@@ -122,32 +155,32 @@
 <context>
     <name>InventoryScreen</name>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="109"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="119"/>
         <source>Crafting table</source>
         <translation>Werkbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="109"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="119"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="165"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="183"/>
         <source>Left click: pick up and put down. Right click: put down one. E or Esc closes.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. E oder Esc schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="176"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="194"/>
         <source>Can craft now</source>
         <translation>Jetzt herstellbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="194"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="212"/>
         <source>Collect materials to see recipes here.</source>
         <translation>Sammle Material, um hier Rezepte zu sehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="206"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="224"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
@@ -243,16 +276,21 @@
     </message>
     <message>
         <location filename="../src/app/qml/MainMenu.qml" line="208"/>
+        <source>Handbook (F1)</source>
+        <translation>Handbuch (F1)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/MainMenu.qml" line="214"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="241"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="247"/>
         <source>Delete world</source>
         <translation>Welt löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/MainMenu.qml" line="245"/>
+        <location filename="../src/app/qml/MainMenu.qml" line="251"/>
         <source>Delete “%1” permanently? This cannot be undone.</source>
         <translation>„%1“ endgültig löschen? Das lässt sich nicht rückgängig machen.</translation>
     </message>
@@ -326,37 +364,42 @@
 <context>
     <name>PauseMenu</name>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="28"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="31"/>
         <source>Game paused</source>
         <translation>Spiel pausiert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="36"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="39"/>
         <source>Back to game</source>
         <translation>Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="44"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="47"/>
         <source>Save world</source>
         <translation>Welt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="53"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="56"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="59"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="62"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="65"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="68"/>
+        <source>Handbook (F1)</source>
+        <translation>Handbuch (F1)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/PauseMenu.qml" line="74"/>
         <source>Save and quit to menu</source>
         <translation>Speichern und zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/PauseMenu.qml" line="65"/>
+        <location filename="../src/app/qml/PauseMenu.qml" line="74"/>
         <source>Quit to menu</source>
         <translation>Zum Menü</translation>
     </message>
@@ -364,64 +407,64 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="418"/>
-        <location filename="../src/app/QcGameController.cpp" line="488"/>
+        <location filename="../src/app/QcGameController.cpp" line="426"/>
+        <location filename="../src/app/QcGameController.cpp" line="496"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="491"/>
+        <location filename="../src/app/QcGameController.cpp" line="499"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="504"/>
+        <location filename="../src/app/QcGameController.cpp" line="512"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="504"/>
-        <location filename="../src/app/QcGameController.cpp" line="669"/>
+        <location filename="../src/app/QcGameController.cpp" line="512"/>
+        <location filename="../src/app/QcGameController.cpp" line="674"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="631"/>
+        <location filename="../src/app/QcGameController.cpp" line="635"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="639"/>
+        <location filename="../src/app/QcGameController.cpp" line="643"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="802"/>
+        <location filename="../src/app/QcGameController.cpp" line="826"/>
         <source>Disconnected: %1</source>
         <translation>Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="822"/>
+        <location filename="../src/app/QcGameController.cpp" line="846"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1079"/>
+        <location filename="../src/app/QcGameController.cpp" line="1179"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1143"/>
+        <location filename="../src/app/QcGameController.cpp" line="1243"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1143"/>
+        <location filename="../src/app/QcGameController.cpp" line="1243"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1204"/>
+        <location filename="../src/app/QcGameController.cpp" line="1304"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>

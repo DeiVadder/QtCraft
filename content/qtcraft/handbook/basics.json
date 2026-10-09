@@ -1,0 +1,16 @@
+{
+    "name": "basics",
+    "order": 10,
+    "icon": "grass_block",
+    "sections": [
+        "goal",
+        "first",
+        "handbook"
+    ],
+    "related": [
+        "oak_log",
+        "crafting_table",
+        "wooden_pickaxe",
+        "torch"
+    ]
+}

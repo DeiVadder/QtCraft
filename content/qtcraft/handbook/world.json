@@ -1,0 +1,15 @@
+{
+    "name": "world",
+    "order": 110,
+    "icon": "water_bucket",
+    "sections": [
+        "time",
+        "liquids"
+    ],
+    "related": [
+        "water",
+        "lava",
+        "bucket",
+        "obsidian"
+    ]
+}

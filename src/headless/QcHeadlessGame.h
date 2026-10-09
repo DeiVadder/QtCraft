@@ -3,6 +3,7 @@
 #include "QcResult.h"
 #include "QcServerConfig.h"
 
+#include <QHash>
 #include <QJsonObject>
 #include <QObject>
 #include <QStringList>
@@ -10,6 +11,7 @@
 #include <memory>
 
 class QcClientSession;
+class QcHandbook;
 class QcContentRegistry;
 class QcWorldLibrary;
 class QcControlInterface;
@@ -36,6 +38,9 @@ private:
     // Opens a world and switches the bot to it, replacing the running one only on success.
     QcStatus openWorld(const QcServerConfig &config);
     bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
+    // The `handbook` command: categories, a category's entries, a search or one entry.
+    void handleHandbookCommand(const QJsonObject &request, QJsonObject &response);
+    const QcHandbook &handbook(const QString &language);
 
     std::unique_ptr<QcLocalServerHost> m_server;
     std::shared_ptr<const QcContentRegistry> m_content;
@@ -46,4 +51,6 @@ private:
     QcControlInterface *m_control = nullptr;
     QFile *m_output = nullptr;
     bool m_scriptMode = false;
+    // Built on first use per language.
+    QHash<QString, std::shared_ptr<const QcHandbook>> m_handbooks;
 };

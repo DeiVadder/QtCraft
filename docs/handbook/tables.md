@@ -1,0 +1,143 @@
+# Overviews
+
+[Back to the contents](index.md)
+
+**QtCraft:** [Fuels](#table-fuels) · [Tool tiers](#table-tools) · [Furnace recipes](#table-smelting)
+
+## QtCraft
+
+### <a id="table-fuels"></a>Fuels
+
+Machines such as the furnace burn one fuel item at a time while they have something to process. The times are at machine speed 1.
+
+**Fuels, longest first**
+
+[Lava bucket](items.md#item-qtcraft-lava_bucket) (1000 s), [Charcoal](items.md#item-qtcraft-charcoal) (80 s), [Coal](items.md#item-qtcraft-coal) (80 s), [Birch fence](parts.md#block-qtcraft-birch_fence) (15 s), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate) (15 s), [Birch log](blocks.md#block-qtcraft-birch_log) (15 s), [Birch planks](blocks.md#block-qtcraft-birch_planks) (15 s), [Chest](blocks.md#block-qtcraft-chest) (15 s), [Crafting table](blocks.md#block-qtcraft-crafting_table) (15 s), [Oak fence](parts.md#block-qtcraft-oak_fence) (15 s), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate) (15 s), [Oak log](blocks.md#block-qtcraft-oak_log) (15 s), [Oak planks](blocks.md#block-qtcraft-oak_planks) (15 s), [Spruce fence](parts.md#block-qtcraft-spruce_fence) (15 s), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate) (15 s), [Spruce log](blocks.md#block-qtcraft-spruce_log) (15 s), [Spruce planks](blocks.md#block-qtcraft-spruce_planks) (15 s), [Birch stairs](parts.md#block-qtcraft-birch_stairs) (11.25 s), [Oak stairs](parts.md#block-qtcraft-oak_stairs) (11.25 s), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs) (11.25 s), [Oak door](blocks.md#block-qtcraft-oak_door) (10 s), [Oak trapdoor](blocks.md#block-qtcraft-oak_trapdoor) (10 s), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (10 s), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (10 s), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (10 s), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (10 s), [Birch slab](parts.md#block-qtcraft-birch_slab) (7.5 s), [Oak slab](parts.md#block-qtcraft-oak_slab) (7.5 s), [Spruce slab](parts.md#block-qtcraft-spruce_slab) (7.5 s), [Birch sapling](blocks.md#block-qtcraft-birch_sapling) (5 s), [Black wool](blocks.md#block-qtcraft-black_wool) (5 s), [Blue wool](blocks.md#block-qtcraft-blue_wool) (5 s), [Green wool](blocks.md#block-qtcraft-green_wool) (5 s), [Ladder](blocks.md#block-qtcraft-ladder) (5 s), [Oak sapling](blocks.md#block-qtcraft-oak_sapling) (5 s), [Orange wool](blocks.md#block-qtcraft-orange_wool) (5 s), [Purple wool](blocks.md#block-qtcraft-purple_wool) (5 s), [Red wool](blocks.md#block-qtcraft-red_wool) (5 s), [Spruce sapling](blocks.md#block-qtcraft-spruce_sapling) (5 s), [Stick](items.md#item-qtcraft-stick) (5 s), [White wool](blocks.md#block-qtcraft-white_wool) (5 s), [Yellow wool](blocks.md#block-qtcraft-yellow_wool) (5 s), [Black carpet](parts.md#block-qtcraft-black_wool_carpet) (2.5 s), [Blue carpet](parts.md#block-qtcraft-blue_wool_carpet) (2.5 s), [Green carpet](parts.md#block-qtcraft-green_wool_carpet) (2.5 s), [Orange carpet](parts.md#block-qtcraft-orange_wool_carpet) (2.5 s), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet) (2.5 s), [Red carpet](parts.md#block-qtcraft-red_wool_carpet) (2.5 s), [White carpet](parts.md#block-qtcraft-white_wool_carpet) (2.5 s), [Yellow carpet](parts.md#block-qtcraft-yellow_wool_carpet) (2.5 s)
+
+**Machines**
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+### <a id="table-tools"></a>Tool tiers
+
+A block that needs a tool drops its items only when mined with that kind of tool of at least its level. Higher levels mine faster and last longer.
+
+**Axe**
+
+[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1, × 2, 59 uses), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2, × 4, 131 uses), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3, × 6, 250 uses), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4, × 8, 1561 uses)
+
+**Pickaxe**
+
+- Level 1 needed for: Bricks, Coal ore, Cobblestone, Furnace, Polished stone, Sandstone, Stone, Stone bricks
+- Level 2 needed for: Iron ore
+- Level 3 needed for: Diamond ore, Gold ore, Obsidian
+
+[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1, × 2, 59 uses), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2, × 4, 131 uses), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3, × 6, 250 uses), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4, × 8, 1561 uses)
+
+**Shovel**
+
+[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1, × 2, 59 uses), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2, × 4, 131 uses), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3, × 6, 250 uses), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4, × 8, 1561 uses)
+
+### <a id="table-smelting"></a>Furnace recipes
+
+Everything machines make, with the time per item.
+
+**All machine recipes**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Clay](blocks.md#block-qtcraft-clay) | [Bricks](blocks.md#block-qtcraft-bricks) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Birch log](blocks.md#block-qtcraft-birch_log) | [Charcoal](items.md#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Oak log](blocks.md#block-qtcraft-oak_log) | [Charcoal](items.md#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Spruce log](blocks.md#block-qtcraft-spruce_log) | [Charcoal](items.md#item-qtcraft-charcoal) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw porkchop](food.md#item-qtcraft-raw_porkchop) | [Cooked porkchop](food.md#item-qtcraft-cooked_porkchop) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Unfired lamp shell](items.md#item-qtcraft-unfired_lamp_shell) | [Fired lamp shell](items.md#item-qtcraft-fired_lamp_shell) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Sand](blocks.md#block-qtcraft-sand) | [Glass](blocks.md#block-qtcraft-glass) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Gold ore](blocks.md#block-qtcraft-gold_ore) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Cactus](blocks.md#block-qtcraft-cactus) | [Green dye](items.md#item-qtcraft-green_dye) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Iron ore](blocks.md#block-qtcraft-iron_ore) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Stone](blocks.md#block-qtcraft-stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Stone](blocks.md#block-qtcraft-stone) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](#table-fuels)

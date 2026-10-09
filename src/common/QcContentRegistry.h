@@ -3,6 +3,7 @@
 #include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockStateTable.h"
+#include "QcHandbookChapter.h"
 #include "QcItemDefinition.h"
 #include "QcMaterialDefinition.h"
 #include "QcPartFamily.h"
@@ -127,6 +128,9 @@ public:
     void registerFeature(QcFeatureDefinition definition);
     void registerOre(QcOreDefinition definition);
     void setTerrainSettings(QcTerrainSettings settings) { m_terrain = std::move(settings); }
+    // Handbook chapters about playing, replaced by name (server side only, not synchronised).
+    void registerHandbookChapter(QcHandbookChapter chapter);
+    const QList<QcHandbookChapter> &handbookChapters() const { return m_handbookChapters; }
     const QList<QcBiomeDefinition> &biomes() const { return m_biomes; }
     const QList<QcFeatureDefinition> &features() const { return m_features; }
     const QList<QcOreDefinition> &ores() const { return m_ores; }
@@ -179,6 +183,8 @@ private:
     QList<QcOreDefinition> m_ores;
     QHash<QString, qsizetype> m_oreIndex;
     QcTerrainSettings m_terrain;
+    QList<QcHandbookChapter> m_handbookChapters;
+    QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;
     QList<QcPartFamily> m_partFamilies;
     QHash<QString, qsizetype> m_partFamilyIndex;

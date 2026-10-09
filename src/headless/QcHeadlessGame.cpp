@@ -1,8 +1,13 @@
 #include "QcHeadlessGame.h"
 
+#include "QcBaseContent.h"
 #include "QcModLoader.h"
 #include "QcClientSession.h"
 #include "QcControlInterface.h"
+#include "QcHandbookBuilder.h"
+#include "QcHandbookJson.h"
+#include "QcHandbookMarkdown.h"
+#include "QcHandbookRules.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
 #include "QcSoundExporter.h"
@@ -72,7 +77,13 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     const QCommandLineOption soundsOption(u"export-sounds"_s,
                                           u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
                                           u"dir"_s);
+    const QCommandLineOption handbookOption(u"export-handbook"_s,
+                                            u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
+                                            u"dir"_s);
+    const QCommandLineOption languageOption(u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s,
+                                            u"locale"_s, u"en"_s);
     parser.addOption(soundsOption);
+    parser.addOptions({handbookOption, languageOption});
     parser.addOptions({seedOption, worldOption, viewOption, scriptOption, timeOption, mapOption, mapRadiusOption, dataOption,
                        modsOption, noModsOption});
     if (!parser.parse(arguments)) {
@@ -126,6 +137,31 @@ bool QcHeadlessGame::start(const QStringList &arguments)
             printError(exported.error());
         }
         QTimer::singleShot(0, qApp, [ok = exported.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
+        return true;
+    }
+    if (parser.isSet(handbookOption)) {
+        // The export documents the base game unless mods are asked for with --mods-dir.
+        std::shared_ptr<const QcContentRegistry> exported = shared;
+        if (!parser.isSet(modsOption)) {
+            QStringList baseWarnings;
+            QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+            if (!base) {
+                printError(u"Cannot load the base game: "_s + base.error());
+                return false;
+            }
+            exported = *base;
+        }
+        const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(languageOption), QcHandbookRules::values());
+        for (const QString &problem : book.problems()) {
+            printError(u"handbook problem: "_s + problem);
+        }
+        const QcStatus written = QcHandbookMarkdown::write(book, parser.value(handbookOption));
+        if (written) {
+            std::println("{} entries in {} files", book.entries().size(), QcHandbookMarkdown::files(book).size());
+        } else {
+            printError(written.error());
+        }
+        QTimer::singleShot(0, qApp, [ok = written.has_value()] { QCoreApplication::exit(ok ? 0 : 1); });
         return true;
     }
     QStringList generatorWarnings;
@@ -333,6 +369,10 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         response.insert(u"note"_s, u"Send waitUntilReady before acting in the world."_s);
         return true;
     }
+    if (command == u"handbook"_s) {
+        handleHandbookCommand(request, response);
+        return true;
+    }
     if (command == u"worldSave"_s) {
         const QcStatus saved = m_server ? m_server->save() : QcStatus(qcError(u"No world is open"_s));
         if (!saved) {
@@ -342,6 +382,68 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         return true;
     }
     return false;
+}
+
+const QcHandbook &QcHeadlessGame::handbook(const QString &language)
+{
+    std::shared_ptr<const QcHandbook> &book = m_handbooks[language];
+    if (!book) {
+        book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(*m_content, language, QcHandbookRules::values()));
+    }
+    return *book;
+}
+
+void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObject &response)
+{
+    // Only languages the content has get a handbook of their own, so the cache stays small.
+    const QString language = request.value(u"language"_s).toString(u"en"_s);
+    if (!m_content->languages().contains(language)) {
+        response = {{u"ok"_s, false},
+                    {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->languages().join(u", "_s))}};
+        return;
+    }
+    const QcHandbook &book = handbook(language);
+    const auto summaries = [&book](const QList<qsizetype> &indices) {
+        QJsonArray list;
+        for (const qsizetype index : indices) {
+            list.append(QcHandbookJson::summary(book.entries()[index]));
+        }
+        return list;
+    };
+    if (request.contains(u"entry"_s)) {
+        // An entry id ("block:qtcraft:stone") or a content name ("stone", "qtcraft:zombie").
+        QString id = request.value(u"entry"_s).toString();
+        const QcHandbookEntry *entry = book.entry(id);
+        const QString name = id.contains(u':') ? id : u"qtcraft:"_s + id;
+        for (const QString &prefix : {u"block:"_s, u"item:"_s, u"mob:"_s, u"biome:"_s, u"chapter:"_s, u"tag:"_s, u"feature:"_s, u"ore:"_s}) {
+            if (entry) {
+                break;
+            }
+            entry = book.entry(prefix + name);
+        }
+        if (!entry) {
+            response = {{u"ok"_s, false}, {u"error"_s, u"No handbook entry '%1'"_s.arg(id)}};
+            return;
+        }
+        response = {{u"entry"_s, QcHandbookJson::entry(book, *entry)}};
+        return;
+    }
+    if (request.contains(u"search"_s)) {
+        response = {{u"results"_s, summaries(book.search(request.value(u"search"_s).toString()))}};
+        return;
+    }
+    if (request.contains(u"category"_s)) {
+        const QcHandbook::Category *category = book.category(request.value(u"category"_s).toString());
+        if (!category) {
+            response = {{u"ok"_s, false}, {u"error"_s, u"No handbook category '%1'"_s.arg(request.value(u"category"_s).toString())}};
+            return;
+        }
+        response = {{u"entries"_s, summaries(category->entries)}};
+        return;
+    }
+    response = {{u"categories"_s, QcHandbookJson::categories(book)},
+                {u"entries"_s, book.entries().size()},
+                {u"problems"_s, QJsonArray::fromStringList(book.problems())}};
 }
 
 void QcHeadlessGame::finishScript()

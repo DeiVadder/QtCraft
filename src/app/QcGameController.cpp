@@ -22,10 +22,13 @@
 #include "QcDayCycle.h"
 #include "QcEntityMesher.h"
 #include "QcGameSettings.h"
+#include "QcHandbookBuilder.h"
+#include "QcHandbookRules.h"
 #include "QcItemIconProvider.h"
 #include "QcWorldLibrary.h"
 
 #include <QCursor>
+#include <QElapsedTimer>
 #include <QQuickItem>
 #include <QDesktopServices>
 #include <QDir>
@@ -101,6 +104,7 @@ QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
     , m_audio(new QcAudioEngine(this))
     , m_inventory(new QcInventoryModel(this))
+    , m_handbookModel(new QcHandbookModel(this))
 {
     m_frameClock.start();
     m_fpsClock.start();
@@ -380,6 +384,9 @@ void QcGameController::setLanguage(const QString &language)
         updateInventory();
     }
     emit appearancesChanged();
+    if (m_handbookOpen) {
+        ensureHandbook();
+    }
 }
 
 void QcGameController::requestLanguage(const QString &requested)
@@ -645,6 +652,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     refreshMods();
     const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
     m_characterContent = shared;
+    ++m_contentGeneration;
     emit appearancesChanged();
 
     QcServerConfig config;
@@ -805,6 +813,8 @@ void QcGameController::startWorld(const QString &directory, const QString &world
                         m_screenshotHook->release();
                     }
                 });
+            } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
+                openHandbook(m_startupHandbook);
             } else if (!m_startupOverlay.isEmpty()) {
                 setOverlay(m_startupOverlay);
             }
@@ -846,7 +856,7 @@ void QcGameController::onContentReady()
     }
     m_renderTable = std::make_shared<const QcBlockRenderTable>(*m_session->content(), atlas);
     m_atlas = std::make_shared<const QcTextureAtlas>(atlas);
-    updateIcons(atlas);
+    updateIcons(*m_session->content(), atlas, m_renderTable.get());
     m_inventory->setContent(m_session->content(), m_language);
     updateInventory();
     m_meshes->setRenderTable(m_renderTable);
@@ -1059,6 +1069,11 @@ const QcContentRegistry &QcGameController::characterContent() const
     if (m_session && m_session->content()) {
         return *m_session->content();
     }
+    return fullContent();
+}
+
+const QcContentRegistry &QcGameController::fullContent() const
+{
     if (!m_characterContent) {
         QStringList warnings;
         QcResult<QcModLoader::Result> loaded = QcModLoader::load(m_modsDirectory, warnings);
@@ -1074,7 +1089,75 @@ const QcContentRegistry &QcGameController::characterContent() const
 void QcGameController::resetCharacterContent()
 {
     m_characterContent.reset();
+    ++m_contentGeneration;
+    if (!m_session) {
+        m_iconsReady = false;
+    }
     emit appearancesChanged();
+}
+
+void QcGameController::ensureHandbook()
+{
+    if (m_handbookModel->handbook() && m_handbookGeneration == m_contentGeneration && m_handbookLanguage == m_language) {
+        return;
+    }
+    QElapsedTimer timer;
+    timer.start();
+    const QcContentRegistry &content = fullContent();
+    const qint64 loadedMs = timer.elapsed();
+    auto book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(content, m_language, QcHandbookRules::values()));
+    const qint64 builtMs = timer.elapsed() - loadedMs;
+    for (const QString &problem : book->problems()) {
+        qCWarning(lcGame) << "Handbook:" << problem;
+    }
+    // In the menu nothing has drawn icons yet; draw them from the same content.
+    if (!m_iconsReady) {
+        const QcTextureAtlas atlas = QcTextureAtlas::build(content);
+        const QcBlockRenderTable table(content, atlas);
+        updateIcons(content, atlas, &table);
+    }
+    qCInfo(lcGame).nospace() << "Handbook: " << book->entries().size() << " entries; content " << loadedMs << " ms, built in " << builtMs
+                             << " ms, icons " << (timer.elapsed() - loadedMs - builtMs) << " ms";
+    m_handbookGeneration = m_contentGeneration;
+    m_handbookLanguage = m_language;
+    m_handbookModel->setHandbook(std::move(book));
+}
+
+void QcGameController::openHandbook(const QString &target)
+{
+    ensureHandbook();
+    m_handbookTarget = m_handbookModel->resolve(target);
+    m_handbookQuery = m_handbookTarget.isEmpty() ? target : QString();
+    m_handbookOpen = true;
+    m_keysDown.clear();
+    if (m_session) {
+        m_session->setMining(false);
+    }
+    releaseMouse();
+    // Logs how long the first frame with the handbook took (building the page included).
+    if (m_window) {
+        auto timer = std::make_shared<QElapsedTimer>();
+        timer->start();
+        auto connection = std::make_shared<QMetaObject::Connection>();
+        // frameSwapped comes from the render thread; a second queued call may already wait.
+        *connection = connect(m_window, &QQuickWindow::frameSwapped, this, [timer, connection] {
+            if (*connection) {
+                qCInfo(lcGame) << "Handbook: first frame after opening" << timer->elapsed() << "ms";
+                QObject::disconnect(*connection);
+                *connection = {};
+            }
+        });
+    }
+    emit handbookOpenChanged();
+}
+
+void QcGameController::closeHandbook()
+{
+    if (!m_handbookOpen) {
+        return;
+    }
+    m_handbookOpen = false;
+    emit handbookOpenChanged();
 }
 
 QVariantList QcGameController::appearanceList(QcAppearanceDefinition::Kind kind) const
@@ -1168,21 +1251,21 @@ void QcGameController::updateSky(double alpha)
     }
 }
 
-void QcGameController::updateIcons(const QcTextureAtlas &atlas)
+void QcGameController::updateIcons(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable)
 {
+    m_iconsReady = true;
     if (!m_iconProvider) {
         return;
     }
     QHash<QString, QImage> icons;
-    const QcContentRegistry &content = *m_session->content();
     const std::array<QImage, 6> shaded = QcBlockIcon::shadedAtlases(atlas.image());
     for (const QcItemDefinition &item : content.items()) {
         // Blocks show their shape, unless they bring a flat icon (torches, doors) or are plants.
         const std::optional<QcBlockId> block = content.blockId(item.placesBlock);
-        const bool model = block && m_renderTable && content.block(*block).itemTexture.isEmpty()
+        const bool model = block && renderTable && content.block(*block).itemTexture.isEmpty()
                            && content.block(*block).renderLayer != QcRenderLayer::Invisible
                            && !content.state(*block).boxes.isEmpty();
-        icons.insert(item.name, model ? QcBlockIcon::render(m_renderTable->entry(itemState(content, *block)), shaded)
+        icons.insert(item.name, model ? QcBlockIcon::render(renderTable->entry(itemState(content, *block)), shaded)
                                       : atlas.tile(item.texture));
     }
     m_iconProvider->setIcons(std::move(icons));
@@ -1265,7 +1348,7 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
     // Overlays (inventory, pause menu, chat) and the death screen are QML items that take keyboard and
     // mouse themselves.
     if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()
-        || m_session->isDead()) {
+        || m_handbookOpen || m_session->isDead()) {
         return QObject::eventFilter(watched, event);
     }
     switch (event->type()) {
@@ -1290,6 +1373,10 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
             return true;
         case Qt::Key_F:
             m_session->setMining(true);
+            return true;
+        case Qt::Key_F1:
+            // The page of what the crosshair points at, else the page shown last.
+            openHandbook(m_targetName);
             return true;
         case Qt::Key_F5: {
             // Cycles first person, behind, front; the choice is kept in the settings.
@@ -1608,17 +1695,22 @@ void QcGameController::onFrame()
     }
     m_view->setSelection(selection);
     QString targetLabel;
+    m_targetName.clear();
     if (targetEntity) {
         const QcClientEntity entity = m_session->entities().value(*targetEntity);
         const auto &mobs = m_session->content()->mobs();
         targetLabel = entity.mobType >= 0 && entity.mobType < mobs.size()
                           ? m_session->content()->translate(mobs[entity.mobType].translationKey, m_language)
                           : entity.name;
+        if (entity.mobType >= 0 && entity.mobType < mobs.size()) {
+            m_targetName = u"mob:"_s + mobs[entity.mobType].name;
+        }
         targetLabel += u" (%1)"_s.arg(qRound(entity.health));
     } else if (target) {
         if (const std::optional<QcBlockId> block = m_session->world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = m_session->content()->block(*block);
             targetLabel = m_session->content()->translate(definition.translationKey, m_language);
+            m_targetName = definition.name;
         }
     }
     if (targetLabel != m_targetLabel || m_session->miningProgress() != m_miningProgress) {

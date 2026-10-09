@@ -3,6 +3,7 @@
 #include "QcAppearanceDefinition.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockStateTable.h"
+#include "QcHandbookChapter.h"
 #include "QcItemDefinition.h"
 #include "QcMaterialDefinition.h"
 #include "QcPartFamily.h"
@@ -41,5 +42,6 @@ QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &p
 QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);
 QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace);
+QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcContentParser

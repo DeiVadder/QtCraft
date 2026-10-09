@@ -1,0 +1,9 @@
+{
+    "name": "death",
+    "order": 90,
+    "icon": "rotten_flesh",
+    "sections": [
+        "death",
+        "items"
+    ]
+}

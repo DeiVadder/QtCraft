@@ -82,4 +82,18 @@ ApplicationWindow {
         showBackButton: game.phase === "error"
         onBackRequested: game.leaveGame()
     }
+
+    // Over everything else, so it opens from the menu, the world and every in-game screen.
+    HandbookScreen {
+        anchors.fill: parent
+        game: game
+    }
+
+    // In the world F1 goes through the game controller (the page of the block in view), in screens
+    // through their own key handling.
+    Shortcut {
+        sequence: "F1"
+        enabled: game.phase === "menu" && !game.handbookOpen
+        onActivated: game.openHandbook("")
+    }
 }

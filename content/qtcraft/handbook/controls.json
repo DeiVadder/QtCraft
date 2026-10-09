@@ -1,0 +1,10 @@
+{
+    "name": "controls",
+    "order": 20,
+    "icon": "stick",
+    "sections": [
+        "keys",
+        "moving",
+        "screens"
+    ]
+}

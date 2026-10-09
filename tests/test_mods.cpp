@@ -1,3 +1,4 @@
+#include "QcBaseContent.h"
 #include "QcContentPackLoader.h"
 #include "QcConnection.h"
 #include "QcCrafting.h"
@@ -8,6 +9,7 @@
 #include "QcLiquidFlow.h"
 #include "QcModLoader.h"
 #include "QcServer.h"
+#include "QcStreamLimits.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestWorld.h"
 #include "QcTestUtil.h"
@@ -427,10 +429,14 @@ private slots:
             }
             return entries;
         };
-        // b0 fills the English table almost up; b1 and b3 each tip it over, b2 and b4 are harmless,
-        // b5 depends on b3.
+        // b0 fills the English table almost up (500 entries stay free next to the base game's); b1 and
+        // b3 each tip it over, b2 and b4 are harmless, b5 depends on b3.
+        QStringList baseWarnings;
+        const QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
+        QVERIFY(base.has_value());
+        const int baseEntries = int((*base)->translationCount(u"en"_s));
         writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
-        writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, 65000));
+        writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, int(QcStreamLimits::maxDefinitions) - baseEntries - 500));
         for (const QString &id : {u"b1"_s, u"b3"_s}) {
             writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
             writeJson(dir.filePath(id + u"/lang/en.json"_s), words(id == u"b1"_s ? 70000 : 80000, 1000));

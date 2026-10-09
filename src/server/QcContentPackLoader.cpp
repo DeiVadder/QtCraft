@@ -155,7 +155,7 @@ qint64 QcContentPackLoader::measure(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
@@ -260,6 +260,8 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                     [&registry](QcFeatureDefinition feature) { registry.registerFeature(std::move(feature)); });
     loadDefinitions(root.filePath(u"ores"_s), info->id, warnings, QcContentParser::parseOre,
                     [&registry](QcOreDefinition ore) { registry.registerOre(std::move(ore)); });
+    loadDefinitions(root.filePath(u"handbook"_s), info->id, warnings, QcContentParser::parseHandbookChapter,
+                    [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
     const QString terrainPath = root.filePath(u"worldgen/terrain.json"_s);
     if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink() && QFileInfo::exists(terrainPath)) {
         const QcResult<QJsonObject> json = readJsonObject(terrainPath);
@@ -281,7 +283,13 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
             warnings.append(u"%1: %2"_s.arg(path, entries.error()));
             continue;
         }
-        registry.addTranslations(QFileInfo(path).completeBaseName(), *entries);
+        // "de.json" and "de.handbook.json" both hold German texts; other dots belong to the language.
+        QString language = QFileInfo(path).completeBaseName();
+        const QLatin1StringView suffix(handbookLanguageSuffix);
+        if (language.endsWith(suffix)) {
+            language.chop(suffix.size());
+        }
+        registry.addTranslations(language, *entries);
     }
     return info;
 }

@@ -1,0 +1,16 @@
+{
+    "name": "creatures",
+    "order": 100,
+    "icon": "rotten_flesh",
+    "sections": [
+        "spawning",
+        "limits"
+    ],
+    "related": [
+        "zombie",
+        "slime",
+        "pig",
+        "sheep",
+        "firefly"
+    ]
+}

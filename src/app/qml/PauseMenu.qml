@@ -15,6 +15,9 @@ Rectangle {
         if (event.key === Qt.Key_Escape) {
             menu.game.overlay = "";
             event.accepted = true;
+        } else if (event.key === Qt.Key_F1) {
+            menu.game.openHandbook("");
+            event.accepted = true;
         }
     }
 
@@ -58,6 +61,12 @@ Rectangle {
             Layout.fillWidth: true
             text: qsTr("Character")
             onClicked: menu.game.overlay = "character"
+        }
+
+        Button {
+            Layout.fillWidth: true
+            text: qsTr("Handbook (F1)")
+            onClicked: menu.game.openHandbook("")
         }
 
         Button {

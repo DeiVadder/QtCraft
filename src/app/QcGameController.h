@@ -5,6 +5,7 @@
 
 #include "QcClientSession.h"
 #include "QcEntityMesher.h"
+#include "QcHandbookModel.h"
 #include "QcInventoryModel.h"
 #include "QcPlayerInput.h"
 #include "QcRelativeMouse.h"
@@ -86,6 +87,12 @@ class QcGameController : public QObject
     Q_PROPERTY(double musicVolume READ musicVolume WRITE setMusicVolume NOTIFY settingsChanged FINAL)
     Q_PROPERTY(double ambientVolume READ ambientVolume WRITE setAmbientVolume NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY settingsChanged FINAL)
+    // The handbook screen lies over everything else (menu, world, inventory); `handbookTarget` is the
+    // entry to show when it opens (empty: where it was left), `handbookQuery` a search to start with.
+    Q_PROPERTY(QcHandbookModel *handbook READ handbook CONSTANT FINAL)
+    Q_PROPERTY(bool handbookOpen READ handbookOpen NOTIFY handbookOpenChanged FINAL)
+    Q_PROPERTY(QString handbookTarget READ handbookTarget NOTIFY handbookOpenChanged FINAL)
+    Q_PROPERTY(QString handbookQuery READ handbookQuery NOTIFY handbookOpenChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = QcGameSettings::defaultViewDistance;
@@ -154,6 +161,16 @@ public:
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
     QcInventoryModel *inventory() const { return m_inventory; }
+    QcHandbookModel *handbook() const { return m_handbookModel; }
+    bool handbookOpen() const { return m_handbookOpen; }
+    QString handbookTarget() const { return m_handbookTarget; }
+    QString handbookQuery() const { return m_handbookQuery; }
+    // Opens the handbook at an entry id or content name ("qtcraft:stone"); anything else becomes a
+    // search. The handbook is built on first use and again after the content or language changed.
+    Q_INVOKABLE void openHandbook(const QString &target = QString());
+    Q_INVOKABLE void closeHandbook();
+    // Test hook --handbook: opened once the world plays (at once without --play).
+    void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
     double miningProgress() const { return m_miningProgress; }
     QString targetLabel() const { return m_targetLabel; }
     QStringList chatLines() const { return m_chatLines; }
@@ -255,6 +272,7 @@ signals:
     void foodChanged();
     void machineChanged();
     void craftingChanged();
+    void handbookOpenChanged();
 
 private:
     void setPhase(const QString &phase, const QString &status = {});
@@ -266,7 +284,11 @@ private:
     QcStatus stopSession();
     void startWorld(const QString &directory, const QString &worldName, qint64 seed);
     void handleMouseButton(Qt::MouseButton button, bool pressed);
-    void updateIcons(const QcTextureAtlas &atlas);
+    void updateIcons(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable);
+    // Base game plus enabled mods with the server-side data (world generation, chapters): the content
+    // of the running world or, in the menu, loaded on demand.
+    const QcContentRegistry &fullContent() const;
+    void ensureHandbook();
     void updateEntities(double alpha, QcCameraMode mode);
     void updateHand(double alpha, const QcVec3 &eye);
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
@@ -340,6 +362,20 @@ private:
     float m_initialPitch = 0.0f;
     std::optional<std::array<int, 2>> m_spawnColumn;
     QcInventoryModel *m_inventory = nullptr;
+    QcHandbookModel *m_handbookModel = nullptr;
+    bool m_handbookOpen = false;
+    QString m_handbookTarget;
+    QString m_handbookQuery;
+    QString m_startupHandbook;
+    // What the current handbook was built from: content generation and language.
+    int m_handbookGeneration = -1;
+    QString m_handbookLanguage;
+    // Bumped whenever fullContent() may change (mods switched, world started).
+    int m_contentGeneration = 0;
+    // The icon provider holds icons of the current content (from the world or built for the handbook).
+    bool m_iconsReady = false;
+    // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for F1.
+    QString m_targetName;
     QcItemIconProvider *m_iconProvider = nullptr;
     QString m_language = QStringLiteral("en");
     double m_miningProgress = 0.0;

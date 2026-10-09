@@ -1,0 +1,18 @@
+{
+    "block.rubies.molten_ruby.description": "Eine langsame, leuchtende Flüssigkeit, die sich tief in Höhlen in Becken sammelt.",
+    "block.rubies.ruby_block.description": "Neun Rubine zu einem Block gepresst; wird wieder zu neun.",
+    "block.rubies.ruby_lantern.description": "Eine Rubinlaterne, die etwas schwächer leuchtet als eine Fackel.",
+    "block.rubies.ruby_ore.description": "Rote Edelsteine in tiefem Gestein. Braucht eine Spitzhacke der Stufe {rubies:ruby_ore.toolLevel}.",
+    "block.rubies.ruby_rose.description": "Eine seltene rote Blume der Ebenen.",
+    "block.rubies.ruby_sand.description": "Roter Sand, der wie gewöhnlicher Sand fällt.",
+    "feature.rubies.molten_ruby_pool": "Becken aus geschmolzenem Rubin",
+    "feature.rubies.ruby_rose": "Rubinrosen",
+    "handbook.family.pillar": "Säule",
+    "item.rubies.ember_shard.description": "Ein glühender Splitter, der als Brennstoff brennt.",
+    "item.rubies.molten_ruby_bucket.description": "Gießt eine Quelle geschmolzenen Rubins aus.",
+    "item.rubies.ruby.description": "Ein roter Edelstein für Rubinwerkzeuge.",
+    "item.rubies.ruby_pickaxe.description": "Baut schneller ab als Eisen.",
+    "item.rubies.ruby_sword.description": "Eine scharfe Rubinklinge.",
+    "mob.rubies.crystal_beetle.description": "Ein feindlicher Käfer mit Kristallpanzer, der in Höhlen lauert.",
+    "part.rubies.pillar.description": "Eine runde Säule aus dem Material."
+}

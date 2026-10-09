@@ -1,4 +1,6 @@
 #include <QDir>
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -12,6 +14,19 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 30000;
+
+bool copyDirectory(const QString &from, const QString &to)
+{
+    QDirIterator it(from, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        const QString source = it.next();
+        const QString target = QDir(to).filePath(QDir(from).relativeFilePath(source));
+        if (!QDir().mkpath(QFileInfo(target).path()) || !QFile::copy(source, target)) {
+            return false;
+        }
+    }
+    return true;
+}
 
 } // namespace
 
@@ -69,6 +84,57 @@ private slots:
         QVERIFY(std::ranges::any_of(stacks, [](const QJsonValue &slot) {
             return slot.toObject().value(u"item"_s).toString() == u"rubies:ruby_sword"_s;
         }));
+    }
+
+    void answersHandbookRequests()
+    {
+        const QJsonObject overview = ask(R"({"cmd":"handbook"})");
+        QCOMPARE(overview.value(u"ok"_s).toBool(), true);
+        QCOMPARE(overview.value(u"problems"_s).toArray().size(), 0);
+        QCOMPARE(overview.value(u"categories"_s).toArray().first().toObject().value(u"id"_s).toString(), u"playing"_s);
+        const QJsonObject ore = ask(R"({"cmd":"handbook","entry":"iron_ore"})").value(u"entry"_s).toObject();
+        QCOMPARE(ore.value(u"id"_s).toString(), u"block:qtcraft:iron_ore"_s);
+        QCOMPARE(ore.value(u"title"_s).toString(), u"Iron ore"_s);
+        const QJsonArray facts = ore.value(u"facts"_s).toArray();
+        QVERIFY(std::ranges::any_of(facts, [](const QJsonValue &fact) {
+            return fact.toObject().value(u"label"_s).toString() == u"Tool"_s
+                   && fact.toObject().value(u"value"_s).toString().contains(u"level 2"_s);
+        }));
+        const QJsonArray found = ask(R"({"cmd":"handbook","search":"Eisenerz","language":"de"})").value(u"results"_s).toArray();
+        QVERIFY(!found.isEmpty());
+        QCOMPARE(found.first().toObject().value(u"id"_s).toString(), u"block:qtcraft:iron_ore"_s);
+        QCOMPARE(found.first().toObject().value(u"title"_s).toString(), u"Eisenerz"_s);
+        const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
+        QCOMPARE(creatures.size(), 5);
+        const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
+        QCOMPARE(missing.value(u"ok"_s).toBool(), false);
+        QVERIFY(missing.value(u"error"_s).toString().contains(u"no_such_block"_s));
+        QCOMPARE(ask(R"({"cmd":"handbook","category":"nothing"})").value(u"ok"_s).toBool(), false);
+        // Only languages of the content get a handbook.
+        const QJsonObject klingon = ask(R"({"cmd":"handbook","language":"tlh"})");
+        QCOMPARE(klingon.value(u"ok"_s).toBool(), false);
+        QVERIFY(klingon.value(u"error"_s).toString().contains(u"de"_s));
+    }
+
+    void exportsTheHandbook()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QTemporaryDir dir;
+        // A data directory with the example mod: the export still documents only the base game.
+        QTemporaryDir data;
+        QVERIFY(copyDirectory(QStringLiteral(QTCRAFT_MODS_SOURCE_DIR), QDir(data.path()).filePath(u"mods"_s)));
+        m_process.setArguments({u"--data-dir"_s, data.path(), u"--export-handbook"_s, dir.path(), u"--language"_s, u"de"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+        QVERIFY(m_process.readAllStandardOutput().contains(" entries in 13 files"));
+        QFile index(QDir(dir.path()).filePath(u"index.md"_s));
+        QVERIFY(index.open(QIODevice::ReadOnly));
+        const QByteArray indexText = index.readAll();
+        QVERIFY(indexText.startsWith("# QtCraft-Handbuch\n"));
+        QVERIFY(indexText.contains("**Inhaltspakete:** QtCraft 0.1.0\n"));
+        QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"blocks.md"_s)));
     }
 
     void answersEachRequestWhileInputStaysOpen()

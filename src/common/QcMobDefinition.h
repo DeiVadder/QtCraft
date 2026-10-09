@@ -21,6 +21,9 @@ struct QcMobDefinition
 
     QString name;
     QString translationKey;
+    // Translation key of the handbook's text about it ("<translation>.description" unless set); a
+    // missing text leaves only the facts. Server side only.
+    QString descriptionKey;
     double maxHealth = 10.0;
     double width = 0.6;
     double height = 1.8;

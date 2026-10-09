@@ -1,0 +1,14 @@
+{
+    "name": "hunger",
+    "order": 70,
+    "icon": "cooked_porkchop",
+    "sections": [
+        "food",
+        "effects"
+    ],
+    "related": [
+        "cooked_porkchop",
+        "raw_porkchop",
+        "pig"
+    ]
+}

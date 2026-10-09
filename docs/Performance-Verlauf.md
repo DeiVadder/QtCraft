@@ -102,3 +102,13 @@ Korrekturen (je Commit, Werte aus der Phasenmessung, Etappe 14 vorher → nachhe
 | Etappe 14 (ba90146) | 10,31 | 0,305 [0,278–0,335] | 324 | 10,3 / 28,9 | 2619 (−42 %) | 55 |
 
 **Bewertung Etappe 14:** Nach den Korrekturen liegt kein Wert mehr über der Schwelle von 10 %. Server-Tick: stand +4 %, sprint −3 %, crowd +9 % in der ersten und −1 % in der zweiten Reihe (zusammen +4 %, Spannen überlappen); eine Phasenmessung über drei weitere Crowd-Runden zeigt die Wesen-Logik gleich teuer wie in der Basis. Die schlechtesten Ticks schwanken in beiden Ständen zwischen etwa 0,8 und 2,5 ms (Sprint bis 6,6 ms beim Chunk-Streaming) und zeigen keinen wiederholbaren Anstieg. Frame p99 liegt bei beiden Ständen bei 10,2–10,3 ms; der Unterschied der ersten Messung (Basis 9,4 ms) war die bekannte Zweiteilung von p99 (9,1 bzw. 10,3 ms je nach Messzeitpunkt, siehe Etappe 12), die in dieser Reihe auch die Basis traf. Die Vegetation erhöht die Zahl der gezeichneten Dreiecke um rund 12 % bei gleicher Zahl von Draw-Calls (GPU-Last, gewollt). Wiederholbar ist der Spitzenspeicher +12 bis +15 MB (+4 bis +5 %, 44 neue Texturen samt Mod, Vegetation in den Vertexpuffern, Flüssigkeits- und Mob-Daten), unter der Schwelle. Im Szenario liquids vernetzt der Client 42 % weniger Sektionen neu, der Rückstau sinkt von 84 auf 55 und die Zeit von der Änderung bis zum Bild von 15,2 auf 10,3 ms im Mittel und von 43,9 auf 28,9 ms im schlechtesten Fall; der Tick (Flüssigkeits-Schritte) bleibt in der Streuung der Vorher-Läufe. Rest und Abhilfen sind in E-062 festgehalten.
+
+**Etappe 15 (Spielhandbuch), verschränkt gegen `dev` 0b4679e, je 3 Runden (Mittel [Spanne]):**
+
+| Szenario | Frame p99 ms (Basis → 15) | Tick Ø ms | Tick max ms | Speicher MB |
+|----------|---------------------------|-----------|-------------|-------------|
+| stand | 10,27 → 10,26 | 0,305 → 0,304 | 2,26 → 2,27 | 312 → 317 |
+| sprint | 10,29 → 10,27 | 0,329 → 0,321 | 5,62 [2,95–8,51] → 3,13 [1,97–5,27] | 381 → 387 |
+| crowd | 10,22 → 10,21 | 0,489 → 0,510 (+4 %) | 1,27 → 3,93 [0,98–9,35] | 318 → 324 |
+
+**Bewertung Etappe 15:** Keine Verschlechterung über der Schwelle. Frame-Zeiten und mittlere Tick-Zeit sind gleich (±4 %, Spannen überlappen). Der schlechteste Tick schwankt in beiden Ständen um einzelne Spitzen bis 8–9 ms (Basis im Sprint, Etappe 15 im Gedränge) und ist nicht wiederholbar. Der Spitzenspeicher steigt um 5–6 MB (+2 %) durch das Handbuchmodell und rund 430 zusätzliche Übersetzungen je Sprache.

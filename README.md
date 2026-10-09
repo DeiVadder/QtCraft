@@ -1,6 +1,6 @@
 # QtCraft
 
-A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, smelting in furnaces, hunger, creatures, day and night, flowing water and lava, falling sand, plants, fireflies and mine lamps, synthesized sound and music, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
+A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, smelting in furnaces, hunger, creatures, day and night, flowing water and lava, falling sand, plants, fireflies and mine lamps, synthesized sound and music, an in-game handbook generated from the content, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
 
 ![Day view at view distance 8](docs/screenshots/08-day-view-distance-8.png)
 
@@ -36,6 +36,7 @@ The main menu lists saved worlds, creates new ones (name, optional seed, whether
 | Ladders | Walk into the wall behind a ladder or jump to climb, sneak to hold on |
 | Furnace screen | Something to smelt goes on top, fuel below, the result appears on the right; eat when the food bar right of the hearts runs low |
 | Mine lamp | Clay (4, crafting table) → unfired lamp shell → furnace → fired shell + firefly in a bottle (fireflies glow over swamps at night) → lamp for floors, walls and ceilings |
+| F1 | Handbook: every block, item, recipe, creature and biome with its values and links, plus chapters on playing (opens at the block in view; in the inventory, furnace and chests at the item under the mouse, or click the small ? on a slot) |
 | T or Enter | Chat and commands (`/help`) |
 | Esc | Pause menu (settings, save, quit to menu) |
 
@@ -60,7 +61,7 @@ printf '%s\n' '{"cmd":"waitUntilReady"}' '{"cmd":"move","forward":1,"ticks":40}'
   | build/release/src/headless/qtcraft-headless --seed 42
 ```
 
-All commands are described in [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md). `qtcraft-headless --export-sounds DIR` writes every sound of the content (and one music piece) as WAV files.
+All commands are described in [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md). `qtcraft-headless --export-sounds DIR` writes every sound of the content (and one music piece) as WAV files. `qtcraft-headless --export-handbook DIR [--language de]` writes the base game's handbook as Markdown (add `--mods-dir DIR` to include mods); the base game's handbook is in [docs/handbook/](docs/handbook/index.md) (German: [docs/handbook/de/](docs/handbook/de/index.md)) and a test keeps it in sync with the content.
 
 ## Tests and checks
 
@@ -71,10 +72,11 @@ scripts/verify.sh
 
 `scripts/verify.sh` builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, runs clang-tidy, clazy and qmllint, and takes smoke screenshots. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
 
-Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT` (`@<ms> TEXT` delays it), `--overlay inventory|pause|settings|character|chat|furnace`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `--no-audio`, `QTCRAFT_AUDIO=0|1`, `QTCRAFT_SCREENSHOT=file.png` (silent unless `QTCRAFT_AUDIO=1`), `QTCRAFT_BENCHMARK=seconds` (`QTCRAFT_BENCHMARK_SCENARIO=stand|light|liquids`). The full list is in [docs/Architektur.md](docs/Architektur.md).
+Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT` (`@<ms> TEXT` delays it), `--overlay inventory|pause|settings|character|chat|furnace|chest|handbook`, `--handbook ENTRY|SEARCH`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `--no-audio`, `QTCRAFT_AUDIO=0|1`, `QTCRAFT_SCREENSHOT=file.png` (silent unless `QTCRAFT_AUDIO=1`), `QTCRAFT_BENCHMARK=seconds` (`QTCRAFT_BENCHMARK_SCENARIO=stand|light|liquids`). The full list is in [docs/Architektur.md](docs/Architektur.md).
 
 ## Documentation
 
+- [docs/handbook/index.md](docs/handbook/index.md) – the game's handbook (generated)
 - [docs/Architektur.md](docs/Architektur.md) – modules, threads, protocol, content, persistence, gameplay rules, options
 - [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md) – control interface
 - [docs/Modding.md](docs/Modding.md), [docs/Mod-Sicherheit.md](docs/Mod-Sicherheit.md) – mods and their security (German)

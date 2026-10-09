@@ -65,7 +65,8 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `appearance/` | outfit or hair style | Textures and tints per slot; hair boxes. |
 | `sounds/` | sound | Synthesis parameters; see below. |
 | `textures/` | texture | `*.json` procedural textures or `*.png` files (scaled to 16 × 16), named by file name. |
-| `lang/` | language | `en.json`, `de.json`, …: translation key → text. |
+| `lang/` | language | `en.json`, `de.json`, …: translation key → text. The language is the file name; a suffix `.handbook` is left out, so `de.handbook.json` adds German texts as well (other dots stay part of the language). |
+| `handbook/` | handbook chapter | A chapter of the handbook's "Playing" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 
@@ -222,6 +223,19 @@ Blocks name a sound **material**: `"sound": "stone"` makes the block use `<names
 
 The fields of every definition type are listed in `docs/Architektur.md` (sections Content, Interaction, Crafting, Creatures). Display names are never stored in definitions: blocks, items and mobs use translation keys (`block.<namespace>.<name>`, `item.…`, `mob.…`, `biome.…` by default) that the `lang/` files fill. English (`en`) is the fallback.
 
+### Handbook (stage 15)
+
+The handbook (F1 in the game, `qtcraft-headless --export-handbook <dir>` as Markdown) is built from the loaded content, so every block, item, recipe, smelting recipe, creature, biome, liquid, ore, feature and item tag of a mod appears automatically, in its own section after the base game (grouped by the namespace of its names). What a mod can add:
+
+- **Texts:** blocks, items, mobs and biomes take an optional `"description"` (a translation key; default `<translation>.description`, e.g. `block.mymod.gem_ore.description`). Fill it in the `lang/` files; without it the page shows only the facts. Generated building parts share `part.<namespace>.<family>.description` of their family. Titles of features come from `feature.<namespace>.<name>` (else the file name), of item tags from `tag.<namespace>.<tag>`, of part families from `handbook.family.<family>`. Texts may use a small Markdown subset: paragraphs, `- ` lists, `**bold**`, `` `code` ``. Descriptions and chapters may quote values as `{name}` instead of writing numbers: rule values of the game (below) and content values `<block>.toolLevel`, `.slots`, `.flowDistance`, `.light`, `.hardness`, `<item>.toolLevel`, `.food`, `.fuelSeconds`, `.durability`, `<mob>.health` (e.g. `{mymod:gem_ore.toolLevel}`).
+- **Chapters:** `handbook/<name>.json` with `name`, `order` (sort number, base chapters use 10–120), `icon` (an item), `sections` (1–32 lower-case words) and `related` (content names linked at the end). The title is the translation of `chapter.<namespace>.<name>`, each section `chapter.<namespace>.<name>.<section>.title` and `.text`. A text may quote rule values of the game as `{name}` (e.g. `{hunger.maxFood}`, `{day.length}`; the list is `QcHandbookRules::values()`); an unknown name is reported as a handbook problem.
+
+```json
+{ "name": "gems", "order": 200, "icon": "gem", "sections": ["finding"], "related": ["gem_ore"] }
+```
+
+`qtcraft-headless --mods-dir <mods> --export-handbook <dir>` (without `--mods-dir` the export covers only the base game) prints every problem (links to unknown content, unknown rule values) and writes the pages to check a mod.
+
 ### Replacing existing content
 
 A definition whose name already exists **replaces the earlier one completely** (decision E-026), for example `blocks/glass.json` with `"name": "qtcraft:glass"`. Copy the original file and change what you need; fields you leave out get their defaults, not the old values. Runtime ids stay the same, so saved worlds are not affected. Translations are merged key by key.
@@ -246,7 +260,7 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 | Falling block | `ruby_sand` (4 sand + ruby) falls like sand |
 | Sounds | the material `crystal` of the ruby block (break, place, step, hit) and the beetle's ambient, hurt and death sounds |
 | Textures | procedural (ore, gem, tools, beetle) |
-| Translations | English and German |
+| Translations | English and German, including handbook texts (`lang/*.handbook.json`) |
 
 Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory, the ruby recipe on offer). `tests/test_mods.cpp` loads it, checks every part and crafts with its recipes; `tests/test_headless_cli.cpp` starts `qtcraft-headless --mods-dir mods`.
 

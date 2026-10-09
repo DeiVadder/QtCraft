@@ -35,14 +35,16 @@ int main(int argc, char *argv[])
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
                                         u"text"_s);
-    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it)."_s,
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it)."_s,
                                            u"name"_s);
+    const QCommandLineOption handbookOption(u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
+                                            u"entry"_s);
     const QCommandLineOption viewOption(u"view-distance"_s, u"View distance in chunks."_s, u"chunks"_s);
     const QCommandLineOption languageOption(u"language"_s, u"UI language, e.g. 'de'."_s, u"locale"_s);
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
     const QCommandLineOption noAudioOption(u"no-audio"_s, u"Do not open an audio device; the game is silent."_s);
-    parser.addOptions({playOption, worldOption, seedOption, lookOption, cameraOption, poseOption, spawnOption, chatOption, overlayOption, viewOption, languageOption,
+    parser.addOptions({playOption, worldOption, seedOption, lookOption, cameraOption, poseOption, spawnOption, chatOption, overlayOption, handbookOption, viewOption, languageOption,
                        modsOption, noModsOption, noAudioOption});
     parser.process(app);
 
@@ -121,6 +123,7 @@ int main(int argc, char *argv[])
     const bool audio = !parser.isSet(noAudioOption) && audioSetting != u"0"_s && (screenshot == nullptr || audioSetting == u"1"_s);
     game->startAudio(audio);
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
+    game->setStartupHandbook(parser.value(handbookOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
     // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand|light|liquids: walk ahead (default), stand still, or stand
     // while torches come and go around the player.
@@ -129,6 +132,8 @@ int main(int argc, char *argv[])
     if (parser.isSet(playOption)) {
         game->setScreenshotHook(screenshot);
         game->startSingleplayer(parser.value(worldOption), parser.value(seedOption));
+    } else if (parser.isSet(handbookOption) || parser.value(overlayOption) == u"handbook"_s) {
+        game->openHandbook(parser.value(handbookOption));
     }
 
     return QGuiApplication::exec();

@@ -1,0 +1,17 @@
+{
+    "name": "mining",
+    "order": 30,
+    "icon": "stone_pickaxe",
+    "sections": [
+        "breaking",
+        "tools"
+    ],
+    "related": [
+        "wooden_pickaxe",
+        "stone_pickaxe",
+        "iron_pickaxe",
+        "diamond_pickaxe",
+        "iron_ore",
+        "diamond_ore"
+    ]
+}

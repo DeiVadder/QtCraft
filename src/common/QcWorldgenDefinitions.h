@@ -18,6 +18,9 @@ struct QcBiomeDefinition
 {
     QString name;
     QString translationKey;
+    // Translation key of the handbook's text about it ("<translation>.description" unless set); a
+    // missing text leaves only the facts. Server side only.
+    QString descriptionKey;
     // Climate point in [0, 1]; each column takes the biome closest to its local climate.
     double temperature = 0.5;
     double humidity = 0.5;

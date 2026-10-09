@@ -4,6 +4,7 @@ qt_add_library(qc_server STATIC
     QcContainerManager.h QcContainerManager.cpp
     QcContentPackLoader.h QcContentPackLoader.cpp
     QcHunger.h QcHunger.cpp
+    QcHandbookRules.h QcHandbookRules.cpp
     QcItemEntityManager.h QcItemEntityManager.cpp
     QcFallingBlockManager.h QcFallingBlockManager.cpp
     QcLiquidFlow.h QcLiquidFlow.cpp
