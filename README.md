@@ -72,7 +72,17 @@ scripts/verify.sh
 
 `scripts/verify.sh` builds debug, ASan/UBSan, TSan and release, runs all tests in each sanitizer build, runs clang-tidy, clazy and qmllint, and takes smoke screenshots. Set `QTCRAFT_DATA_DIR` to keep runs away from your real worlds; the tests always use `build/<preset>/test-data`.
 
-Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT` (`@<ms> TEXT` delays it), `--overlay inventory|pause|settings|character|chat|furnace|chest|handbook`, `--handbook ENTRY|SEARCH`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--language de`, `--mods-dir DIR`, `--no-mods`, `--no-audio`, `QTCRAFT_AUDIO=0|1`, `QTCRAFT_SCREENSHOT=file.png` (silent unless `QTCRAFT_AUDIO=1`), `QTCRAFT_BENCHMARK=seconds` (`QTCRAFT_BENCHMARK_SCENARIO=stand|light|liquids`). The full list is in [docs/Architektur.md](docs/Architektur.md).
+## Performance and profiling
+
+```sh
+scripts/bench.sh [runs] [seconds]        # median per scenario, release build, view distance 8 (VIEW=12 for others)
+scripts/perf-check.sh                    # fixed generous limits for stand, sprint and crowd; exit code 1 on a regression
+scripts/profile.sh <tool> [scenario] [seconds] [view distance]
+```
+
+`profile.sh` builds the `profile` preset (`build/profile`, RelWithDebInfo with QML debugging) and runs one short benchmark under a tool: `breakdown` (frame cost per scenario without VSync: GUI and render thread CPU time, GPU time, uploads, entity meshing, meshing per section, memory, sections), `time` (Instruments Time Profiler plus a text report of the hottest functions per thread), `metal` (Metal System Trace), `alloc` (`heap` and `vmmap`), `leaks`, `sample`, `qml` (`qmlprofiler` plus a report of the slowest bindings), `sg` (scene graph timing log) and `visualize` (`QSG_VISUALIZE` screenshots). Scenarios: `stand`, `walk`, `sprint`, `crowd`, `light`, `liquids`, `inventory`, `furnace`, `handbook` (see `scripts/bench-common.sh`). Raw data goes to a temporary directory outside the repository. All scripted runs open the window on the built-in display and in the background (`QTCRAFT_SCREEN=builtin`, `QTCRAFT_BACKGROUND=1`): they never take the focus or capture the mouse; set `QTCRAFT_SCREEN` to another screen index or name to override. None of these is part of `ctest`; never run them while building or testing. Results and goals: [docs/Performance.md](docs/Performance.md).
+
+Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x,z`, `--chat TEXT` (`@<ms> TEXT` delays it), `--overlay inventory|pause|settings|character|chat|furnace|chest|handbook`, `--handbook ENTRY|SEARCH`, `--camera first|behind|front`, `--pose walk|swing|swim|jump|sneak|death`, `--view-distance N`, `--screen builtin|INDEX|NAME`, `--background`, `--language de`, `--mods-dir DIR`, `--no-mods`, `--no-audio`, `QTCRAFT_AUDIO=0|1`, `QTCRAFT_SCREENSHOT=file.png` (silent unless `QTCRAFT_AUDIO=1`), `QTCRAFT_BENCHMARK=seconds` (`QTCRAFT_BENCHMARK_SCENARIO=sprint|walk|stand|light|liquids`). The full list is in [docs/Architektur.md](docs/Architektur.md).
 
 ## Documentation
 
@@ -80,5 +90,6 @@ Useful hooks: `--play [--seed N] [--world NAME]`, `--look yaw,pitch`, `--spawn x
 - [docs/Architektur.md](docs/Architektur.md) – modules, threads, protocol, content, persistence, gameplay rules, options
 - [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md) – control interface
 - [docs/Modding.md](docs/Modding.md), [docs/Mod-Sicherheit.md](docs/Mod-Sicherheit.md) – mods and their security (German)
+- [docs/Performance.md](docs/Performance.md), [docs/Performance-Verlauf.md](docs/Performance-Verlauf.md) – frame cost, hotspots, memory, goals and the per-stage measurements (German)
 - [docs/Entscheidungen.md](docs/Entscheidungen.md), [docs/FORTSCHRITT.md](docs/FORTSCHRITT.md), [docs/Abschlussbericht.md](docs/Abschlussbericht.md) – decisions, progress and final report (German)
 - [docs/ASSETS.md](docs/ASSETS.md) – textures and sounds (all procedural)

@@ -4,14 +4,8 @@
 # builds or tests, the machine load would distort the numbers.
 # Usage: scripts/bench.sh [runs] [seconds]   (SCENARIOS="liquids" runs a subset)
 #
-# Scenarios:
-#   stand  - standing still at the spawn
-#   sprint - sprinting and jumping straight ahead, streaming new chunks
-#   crowd  - standing among summoned mobs (humanoid zombies included) and dropped items
-#   light  - standing on a cleared stone floor while torches appear and vanish around the player
-#            four times a second (block light and remeshing in the background)
-#   liquids - standing on a cleared stone floor while water and lava sources appear above it and
-#            vanish again twice a second (flow steps on the server, liquid meshing)
+# Scenarios: see scripts/bench-common.sh. VIEW=12 measures another view distance, KEYS="..." other
+# values of the BENCH line.
 
 set -u
 
@@ -22,61 +16,17 @@ SECONDS_PER_RUN=${2:-20}
 APP=build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-bench.XXXXXX") || exit 2
 
-limited() {
-    perl -e 'alarm shift; exec @ARGV or die' "$@"
-}
+. "$PROJECT_DIR/scripts/bench-common.sh"
 
 limited 300 cmake --preset release >/dev/null 2>&1 || exit 1
 limited 1200 cmake --build --preset release >/dev/null 2>&1 || exit 1
 
-CROWD_ITEMS="coal diamond gold_ingot iron_ingot stick raw_porkchop rotten_flesh slimeball wooden_sword stone_sword
-iron_sword diamond_sword wooden_pickaxe stone_pickaxe iron_pickaxe diamond_pickaxe wooden_axe stone_axe iron_axe
-diamond_axe wooden_shovel stone_shovel iron_shovel diamond_shovel"
-
 run_scenario() {
-    scenario=$1
-    run=$2
-    data="$WORK/$scenario-$run"
-    log="$WORK/$scenario-$run.log"
-    set -- --play --seed 42 --view-distance 8 --look 45,-10
-    walk=sprint
-    if [ "$scenario" != sprint ]; then
-        walk=stand
-    fi
-    if [ "$scenario" = light ]; then
-        walk=light
-        set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
-    fi
-    if [ "$scenario" = liquids ]; then
-        walk=liquids
-        set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air"
-    fi
-    if [ "$scenario" = crowd ]; then
-        set -- "$@" --chat "/time set day" --chat "/summon qtcraft:pig 16" --chat "/summon qtcraft:pig 16" \
-            --chat "/summon qtcraft:zombie 16" --chat "/summon qtcraft:slime 8"
-        for item in $CROWD_ITEMS; do
-            set -- "$@" --chat "/spawnitem qtcraft:$item 1"
-        done
-    fi
-    # Sound is mixed as in a normal game but muted, so runs stay quiet.
-    mkdir -p "$data"
-    printf '[audio]\nmuted=true\n' >"$data/settings.ini"
-    env QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$SECONDS_PER_RUN" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
-        perl -e 'alarm shift; exec @ARGV or die' $((SECONDS_PER_RUN + 90)) "$APP" "$@" >"$log" 2>&1
-    grep -o 'BENCH .*' "$log" | tail -1
-}
-
-# Median of the numbers on stdin.
-median() {
-    sort -n | awk '{ v[NR] = $1 } END { if (NR == 0) { print "-" } else if (NR % 2) { print v[(NR + 1) / 2] } else { print (v[NR / 2] + v[NR / 2 + 1]) / 2 } }'
-}
-
-value() {
-    sed -n "s/.*$1=\([0-9.]*\).*/\1/p"
+    run_game "$APP" "$1" "$SECONDS_PER_RUN" "${VIEW:-8}" "$WORK/$1-$2" "$WORK/$1-$2.log"
 }
 
 failed=0
-KEYS="frame_avg_ms frame_p99_ms tick_avg_ms tick_worst_ms peak_rss_mb entities change_mesh_avg_ms change_mesh_max_ms mesh_backlog_max light_job_avg_ms"
+KEYS=${KEYS:-"frame_avg_ms frame_p99_ms gui_cpu_avg_ms render_cpu_avg_ms gpu_avg_ms tick_avg_ms tick_worst_ms peak_rss_mb entities change_mesh_avg_ms change_mesh_max_ms mesh_backlog_max light_job_avg_ms"}
 printf '%-8s' scenario
 for key in $KEYS; do
     printf ' %18s' "$key"

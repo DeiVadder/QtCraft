@@ -1,7 +1,9 @@
 #include "QcWorldRenderer.h"
 
 #include "QcWorldView.h"
+#include "QcThreadCpuClock.h"
 
+#include <QElapsedTimer>
 #include <QFile>
 #include <QLoggingCategory>
 
@@ -49,6 +51,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     Q_UNUSED(commandBuffer);
     if (m_rhi != rhi()) {
         m_meshes.clear();
+        m_sectionBytes = 0;
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
         m_entityPipeline.reset();
@@ -109,6 +112,11 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
         m_meshUploads.append({update.key, std::move(update.mesh)});
     }
     view->m_pendingMeshUpdates.clear();
+    m_collectSamples = view->m_collectRenderSamples;
+    if (m_collectSamples) {
+        view->m_renderSamples.append(m_samples);
+    }
+    m_samples.clear();
 }
 
 void QcWorldRenderer::ensureAtlasTexture(QRhiResourceUpdateBatch *updates)
@@ -157,9 +165,7 @@ void QcWorldRenderer::createPipelines()
     inputLayout.setAttributes({
         {0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(QcBlockVertex, x))},
         {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcBlockVertex, u))},
-        {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, shade))},
-        {0, 3, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, skyLight))},
-        {0, 4, QRhiVertexInputAttribute::Float, quint32(offsetof(QcBlockVertex, blockLight))},
+        {0, 2, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcBlockVertex, light))},
     });
 
     const auto makePipeline = [&](bool translucent) {
@@ -316,6 +322,7 @@ void QcWorldRenderer::uploadEntityMesh(QRhiResourceUpdateBatch *updates, const Q
     }
     updates->updateDynamicBuffer(buffers.vertices.get(), 0, vertexBytes, mesh->vertices.constData());
     updates->updateDynamicBuffer(buffers.indices.get(), 0, indexBytes, mesh->indices.constData());
+    m_sample.uploadBytes += vertexBytes + indexBytes;
     buffers.indexCount = quint32(mesh->indices.size());
 }
 
@@ -328,13 +335,26 @@ QcWorldRenderer::GpuBuffers QcWorldRenderer::createBuffers(QRhiResourceUpdateBat
         return buffers;
     }
     const quint32 vertexBytes = quint32(vertices.size() * qsizetype(sizeof(QcBlockVertex)));
-    const quint32 indexBytes = quint32(indices.size() * qsizetype(sizeof(quint32)));
     buffers.vertices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, vertexBytes));
-    buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, indexBytes));
     buffers.vertices->create();
-    buffers.indices->create();
     updates->uploadStaticBuffer(buffers.vertices.get(), vertices.constData());
-    updates->uploadStaticBuffer(buffers.indices.get(), indices.constData());
+    // Almost every section has fewer than 65536 vertices; its indices then take two bytes each.
+    if (vertices.size() <= std::numeric_limits<quint16>::max() + 1) {
+        QByteArray shortIndices(indices.size() * qsizetype(sizeof(quint16)), Qt::Uninitialized);
+        auto *out = reinterpret_cast<quint16 *>(shortIndices.data());
+        for (const quint32 index : indices) {
+            *out++ = quint16(index);
+        }
+        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, quint32(shortIndices.size())));
+        buffers.indices->create();
+        updates->uploadStaticBuffer(buffers.indices.get(), shortIndices.constData());
+        buffers.indexFormat = QRhiCommandBuffer::IndexUInt16;
+    } else {
+        const quint32 indexBytes = quint32(indices.size() * qsizetype(sizeof(quint32)));
+        buffers.indices.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::IndexBuffer, indexBytes));
+        buffers.indices->create();
+        updates->uploadStaticBuffer(buffers.indices.get(), indices.constData());
+    }
     buffers.indexCount = quint32(indices.size());
     return buffers;
 }
@@ -343,11 +363,18 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
 {
     if (m_clearAllMeshes) {
         m_meshes.clear();
+        m_sectionBytes = 0;
         m_clearAllMeshes = false;
     }
+    const auto release = [this](quint64 key) {
+        if (const auto found = m_meshes.find(key); found != m_meshes.end()) {
+            m_sectionBytes -= found->second.opaque.bytes() + found->second.translucent.bytes();
+            m_meshes.erase(found);
+        }
+    };
     for (auto &[key, mesh] : m_meshUploads) {
+        release(key);
         if (!mesh) {
-            m_meshes.erase(key);
             continue;
         }
         GpuMesh gpuMesh;
@@ -364,32 +391,55 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
         }
         gpuMesh.boundsMin = low;
         gpuMesh.boundsMax = high;
+        const quint64 bytes = gpuMesh.opaque.bytes() + gpuMesh.translucent.bytes();
+        m_sectionBytes += bytes;
+        m_sample.uploadBytes += bytes;
         m_meshes.insert_or_assign(key, std::move(gpuMesh));
     }
     m_meshUploads.clear();
 }
 
-bool QcWorldRenderer::isVisible(const GpuMesh &mesh, const QMatrix4x4 &viewProjection) const
+std::array<QVector4D, 6> QcWorldRenderer::frustumPlanes(const QMatrix4x4 &viewProjection)
 {
-    // A box is culled when all eight corners lie outside the same clip plane.
-    std::array<int, 6> outside{};
-    for (int corner = 0; corner < 8; ++corner) {
-        const QVector4D point((corner & 1) ? mesh.boundsMax.x() : mesh.boundsMin.x(),
-                              (corner & 2) ? mesh.boundsMax.y() : mesh.boundsMin.y(),
-                              (corner & 4) ? mesh.boundsMax.z() : mesh.boundsMin.z(), 1.0f);
-        const QVector4D clip = viewProjection * point;
-        outside[0] += clip.x() < -clip.w();
-        outside[1] += clip.x() > clip.w();
-        outside[2] += clip.y() < -clip.w();
-        outside[3] += clip.y() > clip.w();
-        outside[4] += clip.z() > clip.w();
-        outside[5] += clip.w() <= 0.0f;
+    // A point p is inside when dot(plane, (p, 1)) >= 0 for every plane: -w <= x <= w,
+    // -w <= y <= w, z <= w and w > 0 in clip space.
+    const QVector4D x = viewProjection.row(0);
+    const QVector4D y = viewProjection.row(1);
+    const QVector4D z = viewProjection.row(2);
+    const QVector4D w = viewProjection.row(3);
+    return {w + x, w - x, w + y, w - y, w - z, w};
+}
+
+bool QcWorldRenderer::isVisible(const GpuMesh &mesh, const std::array<QVector4D, 6> &planes)
+{
+    // A box is culled when it lies entirely outside one plane, i.e. when its corner furthest along
+    // the plane normal does.
+    for (const QVector4D &plane : planes) {
+        const float furthest = plane.x() * (plane.x() >= 0.0f ? mesh.boundsMax.x() : mesh.boundsMin.x())
+                               + plane.y() * (plane.y() >= 0.0f ? mesh.boundsMax.y() : mesh.boundsMin.y())
+                               + plane.z() * (plane.z() >= 0.0f ? mesh.boundsMax.z() : mesh.boundsMin.z()) + plane.w();
+        if (furthest < 0.0f) {
+            return false;
+        }
     }
-    return std::ranges::none_of(outside, [](int count) { return count == 8; });
+    return true;
 }
 
 void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
 {
+    QElapsedTimer renderTime;
+    renderTime.start();
+    m_sample = {};
+    if (m_collectSamples) {
+        const qint64 threadCpuNs = QcThreadCpuClock::nowNs();
+        if (threadCpuNs >= 0 && m_lastThreadCpuNs >= 0) {
+            m_sample.renderThreadCpuMs = double(threadCpuNs - m_lastThreadCpuNs) / 1e6;
+        }
+        m_lastThreadCpuNs = threadCpuNs;
+        m_sample.gpuMs = commandBuffer->lastCompletedGpuTime() * 1000.0;
+    } else {
+        m_lastThreadCpuNs = -1;
+    }
     QRhiResourceUpdateBatch *updates = m_rhi->nextResourceUpdateBatch();
     ensureAtlasTexture(updates);
     if (!m_opaquePipeline || !m_translucentPipeline) {
@@ -398,10 +448,13 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     if (!m_outlinePipeline) {
         createOutlinePipeline();
     }
+    QElapsedTimer uploadTime;
+    uploadTime.start();
     uploadOutline(updates);
     uploadEntityMesh(updates, m_entityMesh.get(), m_entityBuffers);
     uploadEntityMesh(updates, m_handMesh.get(), m_handBuffers);
     uploadPendingMeshes(updates);
+    m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
 
     const QSize outputSize = renderTarget()->pixelSize();
     const float aspect = outputSize.height() > 0 ? float(outputSize.width()) / float(outputSize.height()) : 1.0f;
@@ -429,21 +482,25 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     if (m_opaquePipeline && m_translucentPipeline) {
         commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
 
+        const std::array<QVector4D, 6> planes = frustumPlanes(viewProjection);
         QList<const GpuMesh *> visible;
         visible.reserve(m_meshes.size());
         for (const auto &[key, mesh] : m_meshes) {
-            if (isVisible(mesh, viewProjection)) {
+            if (isVisible(mesh, planes)) {
                 visible.append(&mesh);
             }
         }
 
-        const auto drawBuffers = [commandBuffer](const GpuBuffers &buffers) {
+        m_sample.visibleSections = int(visible.size());
+        const auto drawBuffers = [this, commandBuffer](const GpuBuffers &buffers) {
             if (buffers.indexCount == 0) {
                 return;
             }
             const QRhiCommandBuffer::VertexInput input(buffers.vertices.get(), 0);
-            commandBuffer->setVertexInput(0, 1, &input, buffers.indices.get(), 0, QRhiCommandBuffer::IndexUInt32);
+            commandBuffer->setVertexInput(0, 1, &input, buffers.indices.get(), 0, buffers.indexFormat);
             commandBuffer->drawIndexed(buffers.indexCount);
+            ++m_sample.drawCalls;
+            m_sample.indicesDrawn += buffers.indexCount;
         };
 
         commandBuffer->setGraphicsPipeline(m_opaquePipeline.get());
@@ -479,6 +536,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
             const QRhiCommandBuffer::VertexInput input(m_outlineVertices.get(), 0);
             commandBuffer->setVertexInput(0, 1, &input);
             commandBuffer->draw(m_outlineVertexCount);
+            ++m_sample.drawCalls;
         }
         // Last, with its depth squeezed to the front: the arm never disappears into a wall.
         if (m_handBuffers.indexCount > 0 && m_handPipeline) {
@@ -488,4 +546,10 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         }
     }
     commandBuffer->endPass();
+    if (m_collectSamples) {
+        m_sample.sections = int(m_meshes.size());
+        m_sample.sectionBytes = m_sectionBytes;
+        m_sample.worldRenderMs = double(renderTime.nsecsElapsed()) / 1e6;
+        m_samples.append(m_sample);
+    }
 }

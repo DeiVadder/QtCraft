@@ -5,13 +5,16 @@
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
+#include "QcRenderSample.h"
 
 #include <QColor>
 #include <QImage>
 #include <QQuickRhiItemRenderer>
 #include <QVector3D>
+#include <QVector4D>
 #include <rhi/qrhi.h>
 
+#include <array>
 #include <memory>
 #include <optional>
 #include <unordered_map>
@@ -33,6 +36,8 @@ private:
         std::unique_ptr<QRhiBuffer> vertices;
         std::unique_ptr<QRhiBuffer> indices;
         quint32 indexCount = 0;
+        QRhiCommandBuffer::IndexFormat indexFormat = QRhiCommandBuffer::IndexUInt32;
+        quint64 bytes() const { return (vertices ? vertices->size() : 0) + (indices ? indices->size() : 0); }
     };
 
     struct GpuMesh
@@ -51,7 +56,9 @@ private:
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
                              const QList<quint32> &indices);
-    bool isVisible(const GpuMesh &mesh, const QMatrix4x4 &viewProjection) const;
+    // Clip planes of the view frustum as (a, b, c, d) with a x + b y + c z + d >= 0 inside.
+    static std::array<QVector4D, 6> frustumPlanes(const QMatrix4x4 &viewProjection);
+    static bool isVisible(const GpuMesh &mesh, const std::array<QVector4D, 6> &planes);
 
     QRhi *m_rhi = nullptr;
     std::unique_ptr<QRhiBuffer> m_frameUniforms;
@@ -87,4 +94,11 @@ private:
     float m_daylight = 1.0f;
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
+
+    // Benchmark samples, handed to the view in synchronize() while it collects them.
+    bool m_collectSamples = false;
+    QList<QcRenderSample> m_samples;
+    QcRenderSample m_sample;
+    qint64 m_lastThreadCpuNs = -1;
+    quint64 m_sectionBytes = 0;
 };

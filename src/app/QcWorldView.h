@@ -5,6 +5,7 @@
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
+#include "QcRenderSample.h"
 
 #include <QColor>
 #include <QImage>
@@ -14,6 +15,7 @@
 
 #include <memory>
 #include <optional>
+#include <utility>
 
 // Qt Quick item that renders the voxel world with QRhi.
 // All setters are called on the GUI thread; the renderer copies the state in synchronize().
@@ -53,6 +55,10 @@ public:
 
     qsizetype meshCount() const { return m_meshKeys.size(); }
 
+    // Benchmark: while enabled, the renderer hands over one QcRenderSample per rendered frame.
+    void setCollectRenderSamples(bool collect) { m_collectRenderSamples = collect; }
+    QList<QcRenderSample> takeRenderSamples() { return std::exchange(m_renderSamples, {}); }
+
 protected:
     QQuickRhiItemRenderer *createRenderer() override;
 
@@ -72,4 +78,6 @@ private:
     QList<QcAabb> m_selection;
     std::shared_ptr<const QcEntityMesh> m_entityMesh;
     std::shared_ptr<const QcEntityMesh> m_handMesh;
+    bool m_collectRenderSamples = false;
+    QList<QcRenderSample> m_renderSamples;
 };

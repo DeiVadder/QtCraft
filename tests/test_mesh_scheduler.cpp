@@ -305,7 +305,7 @@ private slots:
                 QCOMPARE(scheduled->opaqueIndices, direct.opaqueIndices);
                 QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
                 for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
-                    QCOMPARE(scheduled->opaqueVertices[i].skyLight, direct.opaqueVertices[i].skyLight);
+                    QCOMPARE(scheduled->opaqueVertices[i].skyLight(), direct.opaqueVertices[i].skyLight());
                 }
             }
         };
@@ -352,8 +352,8 @@ private slots:
         QCOMPARE(scheduled->opaqueVertices.size(), direct.opaqueVertices.size());
         float brightest = 0.0f;
         for (qsizetype i = 0; i < direct.opaqueVertices.size(); ++i) {
-            QCOMPARE(scheduled->opaqueVertices[i].blockLight, direct.opaqueVertices[i].blockLight);
-            brightest = std::max(brightest, direct.opaqueVertices[i].blockLight);
+            QCOMPARE(scheduled->opaqueVertices[i].blockLight(), direct.opaqueVertices[i].blockLight());
+            brightest = std::max(brightest, direct.opaqueVertices[i].blockLight());
         }
         QVERIFY(brightest > 0.8f);
     }

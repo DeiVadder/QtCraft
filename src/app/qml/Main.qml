@@ -7,7 +7,8 @@ ApplicationWindow {
 
     width: 1280
     height: 720
-    visible: true
+    // Shown by main() once the screen is chosen.
+    visible: false
     title: qsTr("QtCraft")
     color: "#87bee9"
 

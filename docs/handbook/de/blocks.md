@@ -773,7 +773,7 @@ Im Ofen geglätteter Stein.
 
 ### <a id="block-qtcraft-gold_ore"></a>Golderz
 
-Tiefes Erz, das eine Spitzhacke der Stufe 3 braucht; wird im Ofen zu Goldbarren.
+Tiefes Erz, das eine Spitzhacke der Stufe 3 oder besser braucht; wird im Ofen zu Goldbarren.
 
 | | |
 |---|---|
@@ -1081,7 +1081,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
-Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhacke der Stufe 3.
+Entsteht, wo Wasser auf eine Lavaquelle trifft. Sehr hart; braucht eine Spitzhacke der Stufe 3 oder besser.
 
 | | |
 |---|---|

@@ -1,14 +1,21 @@
 #include "QcGameController.h"
 #include "QcModLoader.h"
 #include "QcItemIconProvider.h"
+#include "QcScreenChoice.h"
 #include "QcScreenshotHook.h"
+#include "QcScriptedRun.h"
 
 #include <QCommandLineParser>
 #include <QGuiApplication>
 #include <QLocale>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
+#include <QScreen>
 #include <QTranslator>
+#if defined(QT_QML_DEBUG)
+// Profiling builds (QC_QML_DEBUG): the header's static enabler lets qmlprofiler connect.
+#include <QtQml/qqmldebug.h>
+#endif
 
 #include <algorithm>
 
@@ -44,9 +51,16 @@ int main(int argc, char *argv[])
     const QCommandLineOption modsOption(u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s);
     const QCommandLineOption noModsOption(u"no-mods"_s, u"Load only the base game."_s);
     const QCommandLineOption noAudioOption(u"no-audio"_s, u"Do not open an audio device; the game is silent."_s);
+    const QCommandLineOption screenOption(u"screen"_s, u"Open the window on this screen: 'builtin' (the computer's own display), an index or a name (also QTCRAFT_SCREEN)."_s,
+                                          u"screen"_s);
+    const QCommandLineOption backgroundOption(u"background"_s, u"Scripted run: never take the focus or capture the mouse (also QTCRAFT_BACKGROUND=1)."_s);
     parser.addOptions({playOption, worldOption, seedOption, lookOption, cameraOption, poseOption, spawnOption, chatOption, overlayOption, handbookOption, viewOption, languageOption,
-                       modsOption, noModsOption, noAudioOption});
+                       modsOption, noModsOption, noAudioOption, screenOption, backgroundOption});
     parser.process(app);
+    const bool background = parser.isSet(backgroundOption) || qEnvironmentVariable("QTCRAFT_BACKGROUND") == u"1"_s;
+    if (background) {
+        QcScriptedRun::stayInBackground();
+    }
 
     // --language or QTCRAFT_LANGUAGE override the language chosen in the settings, which overrides
     // the system language.
@@ -85,6 +99,25 @@ int main(int argc, char *argv[])
         qCritical("Main.qml must contain a GameController with objectName 'game'");
         return 1;
     }
+    if (background) {
+        window->setFlag(Qt::WindowDoesNotAcceptFocus, true);
+        game->setBackgroundRun(true);
+    }
+    // Scripted runs open on a fixed screen (the built-in display), not where the mouse happens to be.
+    const QString screenRequest = parser.isSet(screenOption) ? parser.value(screenOption) : qEnvironmentVariable("QTCRAFT_SCREEN");
+    const QList<QScreen *> screens = QGuiApplication::screens();
+    QList<QcScreenChoice::Screen> descriptions;
+    const QList<QRect> builtIn = QcScriptedRun::builtInDisplays();
+    for (const QScreen *screen : screens) {
+        descriptions.append({screen->name(), screen->geometry(), builtIn.contains(screen->geometry()), screen == QGuiApplication::primaryScreen()});
+    }
+    if (const std::optional<QcScreenChoice::Result> chosen = QcScreenChoice::choose(descriptions, screenRequest)) {
+        QScreen *screen = screens[chosen->index];
+        window->setScreen(screen);
+        window->setGeometry(QcScreenChoice::placeInside(screen->availableGeometry(), window->size()));
+        qInfo().noquote() << u"Window on screen %1 \"%2\" (%3)"_s.arg(chosen->index).arg(screen->name(), chosen->reason);
+    }
+    window->show();
     game->setIconProvider(icons);
     game->loadSettings();
     game->setLanguage(contentLanguage);
@@ -125,8 +158,8 @@ int main(int argc, char *argv[])
     game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
     game->setStartupHandbook(parser.value(handbookOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
-    // QTCRAFT_BENCHMARK_SCENARIO=sprint|stand|light|liquids: walk ahead (default), stand still, or stand
-    // while torches come and go around the player.
+    // QTCRAFT_BENCHMARK_SCENARIO=sprint|walk|stand|light|liquids: sprint ahead (default), walk ahead,
+    // stand still, or stand while torches or liquid sources come and go around the player.
     game->setBenchmark(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600),
                        qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"));
     if (parser.isSet(playOption)) {

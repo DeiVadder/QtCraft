@@ -14,6 +14,7 @@
 #include "QcMeshScheduler.h"
 #include "QcPhysics.h"
 #include "QcScreenshotHook.h"
+#include "QcThreadCpuClock.h"
 #include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
@@ -371,6 +372,7 @@ void QcGameController::setShowDebug(bool show)
 {
     if (m_showDebug != show) {
         m_showDebug = show;
+        m_debugClock.invalidate();
         emit settingsChanged();
     }
 }
@@ -963,6 +965,9 @@ void QcGameController::updateEntities(double alpha, QcCameraMode mode)
         return;
     }
     auto mesh = std::make_shared<QcEntityMesh>();
+    // Sized like the previous frame's mesh, so the lists do not grow vertex by vertex.
+    mesh->vertices.reserve(m_entityMeshSize.first);
+    mesh->indices.reserve(m_entityMeshSize.second);
     const QcClientWorld &world = *m_session->world();
     const QcContentRegistry &content = *m_session->content();
     const auto &mobs = content.mobs();
@@ -1038,6 +1043,7 @@ void QcGameController::updateEntities(double alpha, QcCameraMode mode)
         QcEntityMesher::appendModel(*mesh, playerLook(m_appearance), QcAnimator::animateBody(localPose(alpha), seconds),
                                     {feet, double(m_session->intent().yaw), lightAt(feet), false}, held ? &*held : nullptr, uv);
     }
+    m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
     m_view->setEntityMesh(std::move(mesh));
 }
 
@@ -1313,7 +1319,7 @@ void QcGameController::leaveGame()
 
 void QcGameController::captureMouse()
 {
-    if (m_mouseCaptured || !m_window || m_phase != u"playing"_s || !m_inputEnabled) {
+    if (m_mouseCaptured || !m_window || m_phase != u"playing"_s || !m_inputEnabled || m_backgroundRun) {
         return;
     }
     m_mouseCaptured = true;
@@ -1491,6 +1497,12 @@ void QcGameController::startBenchmark()
         return;
     }
     m_benchmarkFrameNs.clear();
+    m_frameProfile.clear();
+    m_benchmarkGuiCpuNs = QcThreadCpuClock::nowNs();
+    if (m_view) {
+        m_view->setCollectRenderSamples(true);
+        m_view->takeRenderSamples();
+    }
     if (m_server) {
         m_server->resetTickTimes();
     }
@@ -1544,7 +1556,7 @@ void QcGameController::startBenchmark()
         return;
     }
     m_inputEnabled = true;
-    m_keysDown = {Qt::Key_W, Qt::Key_Control, Qt::Key_Space};
+    m_keysDown = m_benchmarkSprint ? QSet<int>{Qt::Key_W, Qt::Key_Control, Qt::Key_Space} : QSet<int>{Qt::Key_W};
     m_benchmarkFrameNs.reserve(qsizetype(m_benchmarkSeconds) * 240);
     m_benchmarkFrame.start();
     m_benchmarkRunning = true;
@@ -1573,6 +1585,10 @@ void QcGameController::finishBenchmark()
 {
     m_benchmarkRunning = false;
     m_keysDown.clear();
+    if (m_view) {
+        m_frameProfile.addRenderSamples(m_view->takeRenderSamples());
+        m_view->setCollectRenderSamples(false);
+    }
     QList<qint64> sorted = m_benchmarkFrameNs;
     std::ranges::sort(sorted);
     if (sorted.isEmpty()) {
@@ -1599,7 +1615,7 @@ void QcGameController::finishBenchmark()
     const double lightMs = mesh.lightJobs > 0 ? mesh.lightTotalMs / double(mesh.lightJobs) : 0.0;
     qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
                                 u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
-                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13"_s
+                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13 mesh_jobs=%14 mesh_job_avg_ms=%15 mesh_job_max_ms=%16 %17"_s
                                     .arg(averageMs, 0, 'f', 3)
                                     .arg(p99Ms, 0, 'f', 3)
                                     .arg(tickMs, 0, 'f', 3)
@@ -1612,7 +1628,11 @@ void QcGameController::finishBenchmark()
                                     .arg(mesh.worstBacklog)
                                     .arg(mesh.lightJobs)
                                     .arg(lightMs, 0, 'f', 3)
-                                    .arg(mesh.lightWorstMs, 0, 'f', 3);
+                                    .arg(mesh.lightWorstMs, 0, 'f', 3)
+                                    .arg(mesh.meshJobs)
+                                    .arg(mesh.meshJobs > 0 ? mesh.meshTotalMs / double(mesh.meshJobs) : 0.0, 0, 'f', 3)
+                                    .arg(mesh.meshWorstMs, 0, 'f', 3)
+                                    .arg(m_frameProfile.summary());
     const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
                            u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())
                                .arg(m_benchmarkSeconds)
@@ -1652,6 +1672,11 @@ void QcGameController::onFrame()
     if (!m_session || !m_view || !m_session->world()) {
         return;
     }
+    // The world moves every frame (interpolated motion, animations, day cycle): the next frame is
+    // requested explicitly, not left to item changes made during this one.
+    if (m_window) {
+        m_window->update();
+    }
     if (m_mouseCaptured && !mouseDelta.isNull()) {
         m_session->setIntent(QcMouseLook::apply(m_session->intent(), mouseDelta, m_mouseSensitivity, m_invertMouse));
     }
@@ -1673,11 +1698,20 @@ void QcGameController::onFrame()
     camera.fieldOfView = float(m_fieldOfView);
     m_view->setCamera(camera);
 
+    QElapsedTimer entityTime;
+    entityTime.start();
     updateEntities(alpha, mode);
     if (mode == QcCameraMode::FirstPerson) {
         updateHand(alpha, eye);
     } else {
         m_view->setHandMesh(nullptr);
+    }
+    if (m_benchmarkRunning) {
+        const qint64 guiCpuNs = QcThreadCpuClock::nowNs();
+        const double guiCpuMs = guiCpuNs >= 0 && m_benchmarkGuiCpuNs >= 0 ? double(guiCpuNs - m_benchmarkGuiCpuNs) / 1e6 : -1.0;
+        m_benchmarkGuiCpuNs = guiCpuNs;
+        m_frameProfile.addGuiFrame(guiCpuMs, double(entityTime.nsecsElapsed()) / 1e6);
+        m_frameProfile.addRenderSamples(m_view->takeRenderSamples());
     }
     updateSky(alpha);
     const std::optional<QcRaycastHit> &target = m_session->target();
@@ -1722,14 +1756,21 @@ void QcGameController::onFrame()
     m_meshes->setFocus({feet.x, feet.y, feet.z});
     m_meshes->pump(*m_session->world());
 
-    m_debugText = u"%1 FPS | XYZ %2 / %3 / %4 | chunks %5 | meshes %6 (pending %7)"_s.arg(qRound(m_fps))
-                      .arg(feet.x, 0, 'f', 1)
-                      .arg(feet.y, 0, 'f', 1)
-                      .arg(feet.z, 0, 'f', 1)
-                      .arg(m_session->world()->chunkCount())
-                      .arg(m_view->meshCount())
-                      .arg(m_meshes->dirtyCount() + m_meshes->jobsInFlight());
-    emit debugTextChanged();
+    // The overlay is laid out anew for every change of its text; a few updates a second suffice.
+    if (m_showDebug && (!m_debugClock.isValid() || m_debugClock.elapsed() >= debugTextIntervalMs)) {
+        m_debugClock.start();
+        const QString debugText = u"%1 FPS | XYZ %2 / %3 / %4 | chunks %5 | meshes %6 (pending %7)"_s.arg(qRound(m_fps))
+                                      .arg(feet.x, 0, 'f', 1)
+                                      .arg(feet.y, 0, 'f', 1)
+                                      .arg(feet.z, 0, 'f', 1)
+                                      .arg(m_session->world()->chunkCount())
+                                      .arg(m_view->meshCount())
+                                      .arg(m_meshes->dirtyCount() + m_meshes->jobsInFlight());
+        if (debugText != m_debugText) {
+            m_debugText = debugText;
+            emit debugTextChanged();
+        }
+    }
 
     const int ring = 2 * (m_viewDistance + 1) + 1;
     const bool allChunksArrived = m_session->world()->chunkCount() >= qsizetype(ring) * ring;

@@ -314,14 +314,19 @@ void Builder::addContentValues()
 QString Builder::substituteRules(const QString &text, const QString &context)
 {
     static const QRegularExpression placeholder(u"\\{([A-Za-z0-9_.:-]+)\\}"_s);
+    // One report per text, naming at most this many distinct unknown names.
+    constexpr qsizetype maxNamedUnknown = 8;
     QString result;
+    QStringList unknown;
     qsizetype last = 0;
     for (QRegularExpressionMatchIterator it = placeholder.globalMatch(text); it.hasNext();) {
         const QRegularExpressionMatch match = it.next();
         result += QStringView(text).mid(last, match.capturedStart() - last);
         const auto value = m_rules.constFind(match.captured(1));
         if (value == m_rules.constEnd()) {
-            m_problems.append(u"%1: unknown rule {%2}"_s.arg(context, match.captured(1)));
+            if (!unknown.contains(match.captured(1))) {
+                unknown.append(match.captured(1));
+            }
             result += match.captured(0);
         } else {
             result += number(*value);
@@ -329,6 +334,19 @@ QString Builder::substituteRules(const QString &text, const QString &context)
         last = match.capturedEnd();
     }
     result += QStringView(text).mid(last);
+    if (unknown.size() == 1) {
+        m_problems.append(u"%1: unknown rule {%2}"_s.arg(context, unknown.first()));
+    } else if (!unknown.isEmpty()) {
+        QStringList named;
+        for (qsizetype i = 0; i < std::min(unknown.size(), maxNamedUnknown); ++i) {
+            named.append(u'{' + unknown[i] + u'}');
+        }
+        QString problem = u"%1: unknown rules %2"_s.arg(context, named.join(u", "_s));
+        if (unknown.size() > maxNamedUnknown) {
+            problem += u" and %1 more"_s.arg(unknown.size() - maxNamedUnknown);
+        }
+        m_problems.append(problem);
+    }
     return result;
 }
 

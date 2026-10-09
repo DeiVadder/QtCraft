@@ -1,6 +1,7 @@
 qc_add_test(test_coordinates SOURCES test_coordinates.cpp LIBRARIES qc_common)
 qc_add_test(test_texture_synthesizer SOURCES test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_camera SOURCES test_camera.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_screen_choice SOURCES test_screen_choice.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_content SOURCES test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES test_chunk.cpp LIBRARIES qc_common)
 qc_add_test(test_protocol SOURCES test_protocol.cpp LIBRARIES qc_common)

@@ -1,0 +1,164 @@
+# Performance
+
+Auswertung der Etappe 16 (Profiling und Optimierung). Messrechner: MacBook Pro M4 Max, macOS 26, eingebautes Display 120 Hz (ab der Schlussmessung zusätzlich zwei externe Displays mit 60 Hz angeschlossen, siehe unten). Alle Werte aus RelWithDebInfo-Builds. Der Verlauf pro Etappe steht in [Performance-Verlauf.md](Performance-Verlauf.md), die Entscheidungen in E-068 bis E-072.
+
+## Messaufbau
+
+| Werkzeug | Aufruf | Liefert |
+|----------|--------|---------|
+| Benchmark-Pfad | `QTCRAFT_BENCHMARK=<s>`, `QTCRAFT_BENCHMARK_SCENARIO=…` | `BENCH`-Zeile: Frame-Abstand Ø/p99, Server-Tick Ø/max, Spitzenspeicher, **Frame-Kosten unabhängig von VSync** (E-068): CPU-Zeit pro Frame von GUI- und Render-Thread (Thread-CPU-Uhr), Welt-Renderer, Upload (Zeit, MB), Entity-Vernetzung, GPU-Zeit (RHI-Zeitstempel, `QSG_RHI_PROFILE=1`), Meshing pro Sektion (Worker), Draw-Calls, sichtbare Sektionen, Dreiecke, Sektionen und ihre Pufferbytes |
+| `scripts/bench.sh` | `[runs] [seconds]`, `SCENARIOS=…`, `VIEW=…`, `KEYS=…` | Median über mehrere Läufe (Etappen-Check) |
+| `scripts/profile.sh` | `<tool> [scenario] [seconds] [view]` | Preset `profile` (`build/profile`, RelWithDebInfo, QML-Debugging); Rohdaten in einem Temp-Verzeichnis außerhalb des Repos |
+| `profile.sh breakdown` | alle Szenarien | Frame-Kosten-Tabelle wie unten |
+| `profile.sh time` | `xctrace` Time Profiler (angehängt) | `scripts/profile-report.py time`: heißeste Funktionen pro Thread, selbst und inklusive |
+| `profile.sh metal` | `xctrace` Metal System Trace | GPU-Intervalle pro Frame (Instruments) |
+| `profile.sh alloc` | `heap`, `vmmap --summary` nach 10 s | Heap nach Typ, Speicherregionen, physischer Footprint |
+| `profile.sh leaks` | `leaks --atExit` mit `MallocStackLogging` | Lecks beim Beenden |
+| `profile.sh sample` | `sample` 10 s | Aufrufbäume aller Threads |
+| `profile.sh qml` | `qmlprofiler` | `profile-report.py qml`: teuerste Bindungen, Signale, Erzeugungen |
+| `profile.sh sg` | `QSG_RENDER_TIMING=1`, `QT_LOGGING_RULES=qt.scenegraph.time.*=true` | Szenengraph-Zeiten pro Frame |
+| `profile.sh visualize` | `QSG_VISUALIZE=overdraw/batches/clip/changes` | Screenshots mit geöffnetem Inventar |
+| `scripts/perf-check.sh` | ohne Argumente | Regressionsschutz mit festen Grenzen (siehe „Ziele“) |
+
+Szenarien (`scripts/bench-common.sh`): **stand** (Stehen am Spawn), **walk** (Gehen geradeaus), **sprint** (Sprinten und Springen, Chunk-Streaming), **crowd** (56 Mobs und 24 Items), **inventory**, **furnace** (gefüllter Ofen, Blick nach unten), **handbook** (Handbuchseite Stein), **light** (Fackeln erscheinen/verschwinden), **liquids** (Wasser- und Lavaquellen fluten die Fläche). Seed 42, Blick 45°/−10°, Ton gemischt, aber stumm.
+
+Erkenntnisse zu den Werkzeugen:
+
+- VSync lässt sich auf macOS nicht abschalten: `QSG_NO_VSYNC=1` (auch mit `QSG_RENDER_LOOP=basic`) meldet „attempting to disable vsync“, die Frames bleiben aber bei 120 Hz, weil der Display-Link die Update-Anforderungen taktet. Deshalb misst der Benchmark CPU- und GPU-Zeit pro Frame (E-068). Das Szenengraph-Log zeigt im Render-Schritt 5–9 ms: Das ist überwiegend Warten auf das nächste Drawable, keine Arbeit.
+- `xctrace record --launch` startete über die Bundle-Kennung eine andere Build-Variante desselben Bundles (ASan-Build) und ohne die Umgebungsvariablen; `profile.sh` startet das Spiel selbst und hängt `xctrace --attach` an. Das Template „Allocations“ beendet auf diesem Rechner weder angehängt noch gestartet (nach 400 s abgebrochen); `profile.sh alloc` nutzt `heap` und `vmmap`.
+- Qt-Frameworks werden im Time Profiler nicht symbolisiert (nur Adressen); die eigenen Funktionen und die Systembibliotheken schon.
+- Der Frame-Abstand (p99) hängt am Display und an der Tageszeit der Messung (Zweiteilung 9,1/10,3 ms seit Etappe 12); er wird nur verschränkt (A/B abwechselnd) verglichen.
+
+## Erste Messung: Frame-Kosten (vor den Optimierungen)
+
+Stand 562ecc8 (Etappe 15 plus Messpunkte), je ein Lauf à 15 s, 120-Hz-Display. Frame-Abstand in allen Szenarien Ø 8,33–8,35 ms (VSync), p99 10,0–10,3 ms. Zeiten in ms pro Frame (Mittel), Speicher in MB.
+
+| Szenario | Chunks | GUI-CPU | Render-CPU | davon Welt-Renderer | GPU | Entity-Vernetzung | Meshing pro Sektion (Jobs) | Tick Ø / max | Spitzenspeicher | Sektionspuffer | Draw-Calls | Dreiecke |
+|----------|-------:|--------:|-----------:|--------------------:|----:|------------------:|---------------------------:|-------------:|----------------:|---------------:|-----------:|---------:|
+| stand | 8 | 0,56 | 1,74 | 0,90 | 0,87 | 0,20 | – | 0,28 / 2,6 | 317 | 61,3 | 274 | 227 000 |
+| walk | 8 | 0,55 | 1,73 | 0,82 | 0,98 | 0,16 | 1,24 (85) | 0,25 / 1,5 | 382 | 64,8 | 303 | 263 000 |
+| sprint | 8 | 0,60 | 1,83 | 0,87 | 0,95 | 0,15 | 1,27 (620) | 0,31 / 4,8 | 373 | 79,2 | 295 | 238 000 |
+| crowd | 8 | 1,31 | 1,42 | 1,08 | 1,30 | 1,00 | – | 0,53 / 0,9 | 321 | 61,3 | 273 | 231 000 |
+| inventory | 8 | 0,49 | 1,78 | 0,76 | 0,97 | 0,18 | – | 0,26 / 1,7 | 319 | 61,3 | 274 | 227 000 |
+| furnace | 8 | 0,64 (p99 2,5) | 1,38 | 0,39 | 0,60 | 0,19 | – | 0,33 / 2,5 | 306 | 61,3 | 88 | 64 000 |
+| handbook | 8 | 0,43 | 2,10 | 0,81 | 1,00 | 0,15 | – | 0,26 / 1,6 | 339 | 61,3 | 274 | 227 000 |
+| stand | 12 | 0,50 | 2,20 | 1,48 | 1,33 | 0,18 | – | 0,33 / 1,3 | 477 | 136,1 | 608 | 511 000 |
+| sprint | 12 | 0,61 | 2,22 | 1,39 | 1,45 | 0,13 | 1,26 (945) | 0,34 / 1,7 | 560 | 162,9 | 635 | 542 000 |
+| crowd | 12 | 1,14 | 2,02 | 1,70 | 1,70 | 0,83 | – | 0,52 / 0,9 | 478 | 136,1 | 607 | 514 000 |
+| stand | 16 | 0,32 | 2,46 | 1,88 | 1,89 | 0,12 | – | 0,34 / 1,8 | 698 | 237,1 | 1077 | 911 000 |
+| sprint | 16 | 0,39 | 2,41 | 1,72 | 2,05 | 0,08 | 1,03 (1278) | 0,31 / 1,7 | 810 | 276,1 | 1088 | 926 000 |
+| crowd | 16 | 0,75 | 2,42 | 2,12 | 2,34 | 0,52 | – | 0,44 / 0,7 | 699 | 237,1 | 1076 | 915 000 |
+
+Aufteilung eines Frames (8 Chunks, stand): Die Threads arbeiten verschachtelt (GUI-Thread bereitet Frame n+1 vor, während der Render-Thread Frame n zeichnet); die Kosten eines Frames sind daher das Maximum, nicht die Summe.
+
+| Anteil | ms pro Frame | Quelle |
+|--------|-------------:|--------|
+| Meshing | 0 im Stehen; 1,0–1,3 ms pro Sektion auf 4 bis 11 Workern, nicht im Frame | `mesh_job_avg_ms` |
+| Mesh-Upload | 0,01 (Spitzen 0,3–1,4 beim Streaming) | `upload_avg_ms`/`upload_max_ms` |
+| Server-Tick | 0,28 (eigener Thread, 20 Ticks/s) | `tick_avg_ms` |
+| Entities/Charaktere | 0,20 (crowd: 1,00) im GUI-Thread | `entity_mesh_avg_ms` |
+| QML/HUD (GUI-Thread ohne Entities) | 0,36 (crowd: 0,31) | `gui_cpu_avg_ms` − Entities |
+| Szenengraph (Render-Thread ohne Welt) | 0,84 | `render_cpu_avg_ms` − `world_render_avg_ms` |
+| Welt-Renderer (Culling, Draw-Calls, Uploads) | 0,90 | `world_render_avg_ms` |
+| GPU (ganzes Fenster) | 0,87 | `gpu_avg_ms` |
+
+Bewertung: Bei 8 Chunks liegt jeder Frame bei unter 2 ms Arbeit pro Thread; die 8,33 ms sind VSync. Teuerster Thread ist der Render-Thread; er und die GPU wachsen mit der Sichtweite (Draw-Calls 274 → 1077, Dreiecke 0,23 → 0,91 Mio.), der GUI-Thread mit der Zahl der Wesen. Der größte mit der Sichtweite wachsende Posten ist der Speicher (317 → 698 MB, Sprint 810 MB).
+
+## Hotspots
+
+**C++ (Time Profiler, `profile.sh time`):**
+
+- **GUI-Thread, crowd:** 92 % von `QcGameController::onFrame` in `updateEntities` (1576 von 1709 ms im Profil); davon 637 ms in `QcEntityMesher::turn` und 259 ms in `rotate`, fast nur `sin`/`cos` aus libm (unsymbolisiert, 814 ms selbst), dazu Vergrößern der Vertexliste (`detachAndGrow`, `realloc`, 110 ms). → E-070.
+- **Render-Thread, sprint/stand:** 70–80 % von `QQuickRhiItemNode::render` sind die Draw-Calls der Sektionen im Metal-Treiber (`drawIndexed` 475 ms, `setVertexInput` 298 ms, Ressourcen-Verfolgung `ioGPUResourceListAddHashValue` 185 ms); `isVisible` (Culling) 150 ms; `renderSceneGraph` (HUD und Komposition des Welt-Items) rund 25 %. Die Kosten wachsen mit der Zahl der Draw-Calls (eine pro sichtbarer Sektion und Pass).
+- **Worker:** Generierung (`QcTerrainGenerator::carveCaves`, Rauschen) und Meshing (`Neighbourhood::block`, `Lighting`-Aufbau) verteilen sich auf die Worker, nicht im Frame.
+- **Server-Thread:** unauffällig (`streamChunks` und Mob-Physik, siehe E-062).
+
+**QML (`profile.sh qml`, sprint 15 s):** Bindungen 380 ms, davon **318 ms die Debug-Zeile `Hud.qml:22`** (2097 Auswertungen, 0,15 ms je Auswertung: Textlayout in jedem Frame). Erzeugen 207 ms und Kompilieren 113 ms fallen beim Start an (Menüs, Bildschirme), nicht im Spiel. Inventar, Ofen und Handbuch kosten im Stehen keine messbare zusätzliche GUI-Zeit (0,43–0,64 ms gegen 0,56 ms); der Ofen hat wegen der Flammen-Animation p99 2,5 ms. Das Handbuch braucht beim Öffnen 50 ms für den ersten Frame (bekannt, E-067).
+
+**Szenengraph (`profile.sh sg`, `visualize`):** Synchronisation unter 1 ms, Render-Schritt durch das Warten auf das Drawable bestimmt; GPU-Frame 0,8–0,9 ms. `QSG_VISUALIZE=overdraw` mit geöffnetem Inventar: die Welt als ein opaker Vollbild-Layer (das Textur-Item des `QQuickRhiItem`), darüber eine halbtransparente Abdunklung, das Inventarfeld und die Felder, Icons und Texte – keine gestapelten Vollbildschichten über die Abdunklung hinaus; `batches` zeigt wenige Batches (Rechtecke, Texte, Icons). Kein Handlungsbedarf.
+
+## Speicher und Chunk-/Mesh-Statistik
+
+`profile.sh alloc` (8 Chunks, stand, nach 10 s): physischer Footprint 520 MB (Spitze 657 MB), davon Heap 143 MB in 217 000 Blöcken, `IOAccelerator (graphics)` 41 MB (Sektions- und Entity-Puffer, Atlas), `IOSurface` 42 MB (Drawables), `owned unmapped (graphics)` 250 MB. Letzterer Posten wächst nicht mit der Sichtweite (Sichtweite 2: 386 MB, 16: 250 MB) und ändert sich nicht mit dem Puffertyp (`Static` statt `Immutable` probiert); er gehört zum Grafiktreiber und ist im Spitzenwert `peak_rss_mb` des Benchmarks nicht enthalten. Bei 16 Chunks: Footprint 908 MB, `IOAccelerator` 143 MB, Heap (`MALLOC_SMALL`) 379 MB – vor allem Chunks im Client und im Server (In-Process-Server), 4-KiB-Paletten-Indizes pro Sektion.
+
+Lecks (`profile.sh leaks`): 288 Lecks mit 18,8 KB, alle in Systemframeworks (XPC-Verbindung von AppIntents), keines in QtCraft.
+
+Sektionen bei 8/12/16 Chunks: 972 / 2160 / 3744 (Sprint am Ende 1250 / 2587 / 4373), davon sichtbar 272 / 606 / 1075; im Mittel rund 230 Dreiecke pro sichtbarer Sektion.
+
+## Optimierungen (Vorher-Nachher, verschränkt gemessen)
+
+Jede Optimierung wurde gegen den Stand direkt davor verschränkt gemessen (je 3 Runden à 15 s, Mittel [Spanne]). Tests, Determinismus der Weltgenerierung und Dateiformate sind unverändert; die Mesher-Tests lesen Licht und Schatten über Getter und erlauben eine halbe Byte-Stufe Toleranz (E-069).
+
+| # | Änderung | Szenario | Vorher | Nachher |
+|---|----------|----------|--------|---------|
+| 1 | Entity-Vernetzung ohne Winkelfunktionen pro Eckpunkt, Ecken einmal, Liste vorab reserviert (E-070) | crowd 8 | Entity 0,93 [0,85–1,01] ms, GUI-CPU 1,30 [1,25–1,34] ms, p99 GUI 1,89 ms | Entity 0,51 [0,44–0,57] ms, GUI-CPU 0,84 [0,77–0,91] ms, p99 GUI 1,33 ms |
+| 2 | Block-Vertex 24 statt 32 Byte, 16-Bit-Indizes (E-069) | stand 8 | Sektionspuffer 61,3 MB, Speicher 318 MB, GPU 0,866 ms | 43,6 MB (−29 %), 293 MB (−8 %), 0,833 ms |
+| 2 | | sprint 8 | 79,2 MB, 375 MB, GPU 0,929 ms | 56,2 MB, 338 MB (−10 %), 0,899 ms |
+| 2 | | stand 16 | 237,1 MB, 697 MB, GPU 1,910 ms | 168,5 MB, 605 MB (−13 %), 1,882 ms |
+| 2 | | sprint 16 | 276,1 MB, 803 MB, GPU 2,042 ms | 196,1 MB, 691 MB (−14 %), 1,962 ms |
+| 3 | Debug-Zeile höchstens viermal pro Sekunde, nächster Frame ausdrücklich angefordert, Culling über Ebenen (E-071) | stand 8 | GUI-CPU 0,452 ms, Render-CPU 1,705 ms | 0,411 ms, 1,635 ms |
+| 3 | | sprint 8 | GUI-CPU 0,573 ms, Render-CPU 1,772 ms | 0,414 ms (−28 %), 1,674 ms |
+| 3 | | stand 16 | GUI-CPU 0,304 ms, Welt-Renderer 1,938 ms | 0,261 ms, 1,867 ms |
+| 3 | | sprint 16 | GUI-CPU 0,375 ms, Render-CPU 2,336 ms | 0,292 ms, 2,241 ms |
+
+Sichtbare Sektionen sind vor und nach dem Culling-Umbau gleich (272, 293, 1075, 1085/1086). Geprüft und verworfen: `Static`- statt `Immutable`-Puffer (kein Speicherunterschied), gemeinsamer Quad-Indexpuffer und Instancing der Wesen (Aufwand gegenüber dem Restgewinn, E-069/E-070).
+
+Hinweis zu Optimierung 3: Bis dahin löste das Setzen der Debug-Zeile in jedem Frame unbeabsichtigt den nächsten Frame aus; mit der Drosselung stand das Bild im Stehen still (Benchmark: „no frames rendered“). Seitdem fordert `onFrame` den nächsten Frame ausdrücklich an.
+
+## Schlussmessung
+
+Vorher (562ecc8: Etappe 15 plus Messpunkte) und nachher (Endstand Etappe 16, Release) verschränkt, je 2 Runden à 15 s, Fenster auf dem eingebauten Display im Hintergrund (`QTCRAFT_SCREEN=builtin`, `QTCRAFT_BACKGROUND=1`, beide Stände mit denselben Haken gebaut), Mittelwerte. Zeiten in ms pro Frame, Speicher in MB.
+
+| Szenario | Chunks | GUI-CPU vorher → nachher | Render-CPU | GPU | Entity-Vernetzung | Tick Ø | Spitzenspeicher | Sektionspuffer | Frame Ø / p99 nachher |
+|----------|-------:|-------------------------:|-----------:|----:|------------------:|-------:|----------------:|---------------:|----------------------:|
+| stand | 8 | 0,35 → 0,28 | 1,04 → 1,08 | 0,83 → 0,84 | 0,11 → 0,07 | 0,17 → 0,16 | 318 → 295 | 61,3 → 43,6 | 8,43 / 13,6 |
+| walk | 8 | 0,40 → 0,26 | 1,27 → 1,05 | 0,95 → 0,95 | 0,09 → 0,05 | 0,19 → 0,15 | 387 → 345 | 68,3 → 48,5 | 8,49 / 12,9 |
+| sprint | 8 | 0,44 → 0,29 | 1,21 → 1,13 | 0,91 → 0,90 | 0,08 → 0,06 | 0,19 → 0,21 | 376 → 343 | 79,2 → 56,2 | 8,56 / 13,8 |
+| crowd | 8 | 0,65 → 0,49 | 0,77 → 0,83 | 1,43 → 1,29 | 0,41 → 0,25 | 0,24 → 0,27 | 321 → 299 | 61,3 → 43,6 | 8,40 / 12,5 |
+| inventory | 8 | 0,34 → 0,32 | 1,17 → 1,36 | 0,93 → 0,92 | 0,11 → 0,08 | 0,15 → 0,18 | 321 → 299 | 61,3 → 43,6 | 8,48 / 14,2 |
+| furnace | 8 | 0,46 → 0,36 | 1,08 → 0,96 | 0,65 → 0,65 | 0,12 → 0,07 | 0,18 → 0,18 | 309 → 288 | 61,3 → 43,6 | 8,59 / 16,0 |
+| handbook | 8 | 0,34 → 0,26 | 1,30 → 1,29 | 0,93 → 0,96 | 0,11 → 0,06 | 0,15 → 0,16 | 340 → 316 | 61,3 → 43,6 | 8,45 / 13,9 |
+| light | 8 | 0,46 → 0,30 | 1,25 → 1,07 | 0,83 → 0,82 | 0,14 → 0,07 | 0,19 → 0,15 | 327 → 301 | 61,3 → 43,5 | 8,46 / 14,2 |
+| liquids | 8 | 0,36 → 0,31 | 1,09 → 1,15 | 0,82 → 0,84 | 0,11 → 0,07 | 0,15 → 0,17 | 326 → 300 | 61,1 → 43,4 | 8,45 / 13,9 |
+| stand | 12 | 0,46 → 0,29 | 2,06 → 1,55 | 1,32 → 1,36 | 0,14 → 0,07 | 0,29 → 0,22 | 483 → 431 | 136,1 → 96,7 | 8,43 / 13,1 |
+| sprint | 12 | 0,49 → 0,36 | 1,94 → 1,90 | 1,46 → 1,47 | 0,11 → 0,08 | 0,28 → 0,32 | 566 → 490 | 162,9 → 115,7 | 8,54 / 15,6 |
+| crowd | 12 | 0,67 → 0,61 | 1,26 → 1,69 | 1,77 → 1,79 | 0,44 → 0,33 | 0,31 → 0,41 | 481 → 428 | 136,1 → 96,7 | 8,52 / 14,3 |
+| stand | 16 | 0,34 → 0,26 | 2,36 → 2,18 | 1,90 → 2,03 | 0,11 → 0,07 | 0,36 → 0,33 | 700 → 609 | 237,1 → 168,5 | 8,45 / 14,4 |
+| sprint | 16 | 0,41 → 0,29 | 2,26 → 2,18 | 2,08 → 1,62 | 0,08 → 0,06 | 0,41 → 0,41 | 780 → 692 | 270,2 → 196,1 | 8,42 / 12,4 |
+| crowd | 16 | 0,72 → 0,54 | 2,07 → 2,37 | 2,37 → 2,33 | 0,47 → 0,28 | 0,49 → 0,48 | 693 → 602 | 237,1 → 168,5 | 8,41 / 13,0 |
+
+Draw-Calls, sichtbare Sektionen und Dreiecke sind vorher und nachher gleich (z. B. 274 / 272 / 226 700 bei stand 8, 1077 / 1075 / 911 000 bei stand 16). Meshing pro Sektion unverändert 1,0–1,5 ms (sprint 8: 1,12 → 1,14 ms, 620 Jobs), Änderung bis Bild (light) 8,7 → 8,8 ms.
+
+Bewertung: GUI-CPU sinkt in allen Szenarien um 7–35 % (Entity-Vernetzung −35 bis −50 %, Debug-Zeile), der Spitzenspeicher um 7–13 % (Sektionspuffer −29 %). Render-CPU und GPU liegen in der Streuung (±15 % zwischen den zwei Runden; die Render-CPU schwankt mit dem Takt, den das System dem Render-Thread gibt). Der Server-Code ist zwischen beiden Ständen unverändert; die Tick-Zeiten streuen in beide Richtungen (−24 % bis +34 %), wie in den Etappen 11–15 beobachtet.
+
+Hinweise: Die Messungen der einzelnen Optimierungen (Tabelle oben) liefen, wie sich später zeigte, neben zwei versehentlich weiterlaufenden Spielinstanzen (ein ASan-Build, den `xctrace --launch` über die Bundle-Kennung gestartet hatte); beide Seiten jedes A/B waren gleich betroffen, die absoluten Werte (z. B. Entity-Vernetzung 0,93 ms) liegen daher höher als in dieser Schlussmessung (0,41 ms). Die Frame-Abstände dieser Schlussmessung (p99 12,4–16,0 ms) entstanden, während der Mensch am Rechner arbeitete und das Spielfenster im Hintergrund lag; auf ruhigem Desktop liegt p99 bei 9,9–10,3 ms (Perf-Check unten, erste Messung). Die Frame-Kosten-p99 bleiben in allen Läufen unter 3,6 ms, die längeren Abstände kommen also nicht aus dem Spiel.
+
+## Ziele
+
+Festgelegt nach der ersten Messung (E-072). „Frame-Kosten“ ist der größte Mittelwert aus GUI-CPU, Render-CPU und GPU pro Frame – die Grenze, unter der ein Frame ohne VSync möglich wäre.
+
+| Sichtweite | Bildrate | p99 Frame-Abstand | Frame-Kosten | Spitzenspeicher | Begründung |
+|-----------:|----------|------------------:|-------------:|----------------:|------------|
+| 8 Chunks | ≥ 60 FPS (hart) | ≤ 12,5 ms | ≤ 4 ms | (≤ 600 MB, Perf-Check) | 12,5 ms = 1,5 Refresh-Intervalle bei 120 Hz: höchstens 1 % der Frames verpassen einen Refresh. 4 ms lässt einem viermal langsameren Mac noch 60 FPS. Gemessen 1,7–2,1 ms. |
+| 12 Chunks | ≥ 60 FPS | ≤ 16,7 ms | ≤ 6 ms | ≤ 600 MB | Render-Thread und GPU wachsen mit den Draw-Calls (rund 2,2× gegenüber 8 Chunks); Speicher vorher 477–560 MB. |
+| 16 Chunks | ≥ 60 FPS | ≤ 16,7 ms | ≤ 8,3 ms | ≤ 800 MB | 8,3 ms = 120 FPS auf diesem Rechner. Speicher war vor den Optimierungen mit 810 MB (sprint) über dem Ziel. |
+
+Erfüllung (Endstand, Werte aus der Schlussmessung und dem Perf-Check):
+
+| Sichtweite | Bildrate | p99 Frame-Abstand | Frame-Kosten | Spitzenspeicher | Ergebnis |
+|-----------:|----------|------------------:|-------------:|----------------:|----------|
+| 8 Chunks | 117–119 FPS (Ø 8,40–8,59 ms) | 9,9–10,3 ms ruhig; 12,5–16,0 ms bei Arbeit am Rechner | 0,9–1,4 ms (max. Mittel aus GUI, Render, GPU) | 288–345 MB | erfüllt; p99 nur auf ruhigem Desktop |
+| 12 Chunks | 117–119 FPS | 13,1–15,6 ms | 1,4–1,9 ms | 428–490 MB | erfüllt (vorher Speicher bis 566 MB) |
+| 16 Chunks | 118–119 FPS | 12,4–14,4 ms | 2,2–2,4 ms | 602–692 MB | erfüllt (vorher sprint 780–810 MB, über dem Ziel) |
+
+## Regressionsschutz
+
+`scripts/perf-check.sh [seconds]` baut das Release-Preset, misst stand, sprint und crowd bei 8 Chunks je einmal und scheitert, wenn ein Wert seine Grenze überschreitet: Frame Ø ≤ 16,7 ms (60 FPS), p99 ≤ 25 ms, GUI-CPU ≤ 4 ms, Render-CPU ≤ 6 ms, GPU ≤ 6 ms, Tick Ø ≤ 5 ms, Spitzenspeicher ≤ 600 MB, Meshing pro Sektion ≤ 5 ms. Die Grenzen liegen beim 3- bis 10-Fachen der Messwerte, damit die Tageslast der Maschine die Prüfung nicht scheitern lässt; nicht Teil von `ctest`.
+
+Lauf am Ende der Etappe (Release, 10 s je Szenario): bestanden. stand: Frame Ø 8,33 ms, p99 10,29 ms, GUI 0,40, Render 1,67, GPU 0,84, Tick 0,22 ms, 293 MB; sprint: 8,33 / 10,24 ms, GUI 0,50, Render 1,87, GPU 0,89, Tick 0,26 ms, 331 MB, Meshing 1,28 ms; crowd: 8,34 / 9,89 ms, GUI 0,81, Render 1,57, GPU 1,28, Tick 0,54 ms, 297 MB.
+
+## Nächste Kandidaten
+
+- Weniger Draw-Calls bei großer Sichtweite (Sektionen einer Chunk-Säule zusammenfassen oder gemeinsame Puffer mit Offsets): größter Posten im Render-Thread bei 16 Chunks.
+- Speicher der Chunks (Client und Server halten im Einzelspieler je eine Kopie; Paletten-Indizes mit 4 KiB pro Sektion): größter Heap-Posten bei 16 Chunks.
+- Entity-Puffer werden jeden Frame vollständig hochgeladen (crowd rund 380 KB pro Frame); Instancing erst bei deutlich mehr Wesen.

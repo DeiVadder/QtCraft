@@ -349,8 +349,10 @@ void QcMeshScheduler::pump(const QcClientWorld &world)
         m_inFlight.insert(key);
         const quint64 version = m_versions.value(key);
         m_pool.submit([this, key, version, input = std::move(input)] {
+            QElapsedTimer work;
+            work.start();
             auto mesh = std::make_shared<const QcChunkMesh>(QcChunkMesher::mesh(input));
-            if (m_results.push({key, version, std::move(mesh)})) {
+            if (m_results.push({key, version, std::move(mesh), double(work.nsecsElapsed()) / 1e6})) {
                 QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverResults, Qt::QueuedConnection);
             }
         });
@@ -361,6 +363,9 @@ void QcMeshScheduler::deliverResults()
 {
     for (Result &result : m_results.takeAll()) {
         m_inFlight.remove(result.key);
+        ++m_stats.meshJobs;
+        m_stats.meshTotalMs += result.workMs;
+        m_stats.meshWorstMs = std::max(m_stats.meshWorstMs, result.workMs);
         if (m_versions.value(result.key) != result.version) {
             continue;
         }

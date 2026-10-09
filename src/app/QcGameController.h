@@ -5,6 +5,7 @@
 
 #include "QcClientSession.h"
 #include "QcEntityMesher.h"
+#include "QcFrameProfile.h"
 #include "QcHandbookModel.h"
 #include "QcInventoryModel.h"
 #include "QcPlayerInput.h"
@@ -24,6 +25,7 @@
 #include <array>
 #include <memory>
 #include <optional>
+#include <utility>
 
 class QcAudioEngine;
 class QcBlockRenderTable;
@@ -230,18 +232,21 @@ public:
     void setInitialLook(float yaw, float pitch);
     void setSpawnColumn(int x, int z) { m_spawnColumn = std::array<int, 2>{x, z}; }
     void setScreenshotHook(QcScreenshotHook *hook);
+    // Scripted run (--background): the mouse is never captured, input comes only from the script.
+    void setBackgroundRun(bool background) { m_backgroundRun = background; }
     // Test hook: chat lines sent and overlay opened once the world is playable.
     void setStartupScript(QStringList chatLines, QString overlay);
     // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing and after a short warm-up, frame and
     // server tick times are recorded, then the result is logged and the application quits.
-    // Benchmark scenarios: "sprint" walks ahead, "stand" stands still, "light" stands while torches
-    // are placed and removed around the player (block light updates and remeshing), "liquids"
-    // stands while water and lava sources appear above the floor around the player, flood it and
-    // drain again (flow steps, liquid meshing).
+    // Benchmark scenarios: "sprint" sprints and jumps ahead, "walk" walks ahead, "stand" stands
+    // still, "light" stands while torches are placed and removed around the player (block light
+    // updates and remeshing), "liquids" stands while water and lava sources appear above the floor
+    // around the player, flood it and drain again (flow steps, liquid meshing).
     void setBenchmark(int seconds, const QString &scenario)
     {
         m_benchmarkSeconds = seconds;
         m_benchmarkWalk = scenario != u"stand" && scenario != u"light" && scenario != u"liquids";
+        m_benchmarkSprint = scenario != u"walk";
         m_benchmarkLight = scenario == u"light";
         m_benchmarkLiquids = scenario == u"liquids";
     }
@@ -316,6 +321,8 @@ private:
     QString m_phase = QStringLiteral("menu");
     QString m_statusText;
     QString m_debugText;
+    static constexpr qint64 debugTextIntervalMs = 250;
+    QElapsedTimer m_debugClock;
     bool m_mouseCaptured = false;
     bool m_inputEnabled = true;
     int m_viewDistance = defaultViewDistance;
@@ -339,11 +346,17 @@ private:
     int m_benchmarkSeconds = 0;
     bool m_benchmarkRunning = false;
     bool m_benchmarkWalk = true;
+    bool m_benchmarkSprint = true;
+    bool m_backgroundRun = false;
     bool m_benchmarkLight = false;
     bool m_benchmarkLiquids = false;
     QElapsedTimer m_benchmarkFrame;
     QcVec3 m_benchmarkCheckpoint;
     QList<qint64> m_benchmarkFrameNs;
+    QcFrameProfile m_frameProfile;
+    // Vertex and index count of the last entity mesh.
+    std::pair<qsizetype, qsizetype> m_entityMeshSize;
+    qint64 m_benchmarkGuiCpuNs = -1;
     void startBenchmark();
     void finishBenchmark();
 

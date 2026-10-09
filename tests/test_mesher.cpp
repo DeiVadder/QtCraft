@@ -85,6 +85,30 @@ class TestMesher : public QObject
     Q_OBJECT
 
 private slots:
+    void vertexBytesKeepLightLevelsExact()
+    {
+        // Light levels k / 15 survive the byte packing exactly (17 k of 255); other values within
+        // half a step; out-of-range values are clamped.
+        for (int level = 0; level <= 15; ++level) {
+            QcBlockVertex vertex;
+            vertex.setSkyLight(float(level) / 15.0f);
+            vertex.setBlockLight(float(level) / 15.0f);
+            QCOMPARE(vertex.light[QcBlockVertex::skyLightIndex], quint8(17 * level));
+            QCOMPARE(vertex.skyLight(), float(level) / 15.0f);
+            QCOMPARE(vertex.blockLight(), float(level) / 15.0f);
+        }
+        QcBlockVertex vertex;
+        QCOMPARE(vertex.shade(), 1.0f);
+        QCOMPARE(vertex.skyLight(), 1.0f);
+        QCOMPARE(vertex.blockLight(), 0.0f);
+        vertex.setShade(0.65f * 0.45f);
+        QCOMPARE(vertex.light[QcBlockVertex::shadeIndex], quint8(75)); // 0.2925 × 255 = 74.6
+        vertex.setShade(1.5f);
+        QCOMPARE(vertex.shade(), 1.0f);
+        vertex.setBlockLight(-0.2f);
+        QCOMPARE(vertex.blockLight(), 0.0f);
+    }
+
     void singleBlockHasSixFacesInsideItsCube()
     {
         const Fixture f;
@@ -298,7 +322,7 @@ private slots:
                                                 [](const QcBlockVertex &v) { return v.y == 10.0f; });
             for (qsizetype i = quad; i < quad + 4; ++i) {
                 // The cell below the block is in its shadow: level 14 from the side instead of 15.
-                const float light = mesh.opaqueVertices[i].skyLight;
+                const float light = mesh.opaqueVertices[i].skyLight();
                 if (bottomFace) {
                     QVERIFY(light < 1.0f && light > 0.9f);
                 } else {
@@ -335,13 +359,13 @@ private slots:
         bool sawOverhang = false;
         for (const QcBlockVertex &v : mesh.opaqueVertices) {
             if (v.y == 1.0f && v.x >= 3.0f && v.x <= 6.0f && v.z >= 3.0f && v.z <= 6.0f) {
-                QCOMPARE(v.skyLight, 0.0f);
+                QCOMPARE(v.skyLight(), 0.0f);
                 sawInside = true;
             }
             if (v.y == 1.0f && v.x == 12.0f && v.z == 8.0f) {
                 // Three blocks in from the open side at x = 9: level 15 - 3 steps, minus the light lost
                 // in averaging, but clearly between dark and full sky.
-                QVERIFY2(v.skyLight > 0.5f && v.skyLight < 1.0f, qPrintable(QString::number(v.skyLight)));
+                QVERIFY2(v.skyLight() > 0.5f && v.skyLight() < 1.0f, qPrintable(QString::number(v.skyLight())));
                 sawOverhang = true;
             }
         }
@@ -393,8 +417,9 @@ private slots:
                 const QcBlockVertex &v = mesh.opaqueVertices[i];
                 const int cornerX = int(v.x);
                 const double expected = (expectedLevel(cornerX - 1) + expectedLevel(cornerX)) / 2.0 / 15.0;
-                QVERIFY2(std::abs(v.skyLight - expected) < 1e-6,
-                         qPrintable(u"x %1: %2 vs %3"_s.arg(v.x).arg(v.skyLight).arg(expected)));
+                // Light is stored as a byte (value × 255), exact to half a step.
+                QVERIFY2(std::abs(v.skyLight() - expected) <= 0.5 / 255.0 + 1e-6,
+                         qPrintable(u"x %1: %2 vs %3"_s.arg(v.x).arg(v.skyLight()).arg(expected)));
                 ++checked;
             }
         }
@@ -429,10 +454,11 @@ private slots:
                 }
                 // Top faces have face shade 1.0. Corners touching the wall have one occluder: level 2 of 3.
                 if (v.z == 1.0f) {
-                    QCOMPARE(v.shade, 0.82f);
+                    // Stored as a byte (value × 255), exact to half a step.
+                    QVERIFY2(std::abs(v.shade() - 0.82f) <= 0.5f / 255.0f + 1e-6f, qPrintable(QString::number(v.shade())));
                     ++occluded;
                 } else if (v.z == 2.0f) {
-                    QCOMPARE(v.shade, 1.0f);
+                    QCOMPARE(v.shade(), 1.0f);
                     ++open;
                 }
             }

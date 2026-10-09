@@ -296,9 +296,9 @@ void appendCross(QcChunkMesh &mesh, const Entry &entry, const QcBlockRenderTable
                 vertex.z = float(pos.z) + end[1];
                 vertex.u = float((corner == 0 || corner == 3) ? uv.left() : uv.right());
                 vertex.v = float(corner < 2 ? uv.bottom() : uv.top());
-                vertex.shade = 0.9f;
-                vertex.skyLight = sky;
-                vertex.blockLight = block;
+                vertex.setShade(0.9f);
+                vertex.setSkyLight(sky);
+                vertex.setBlockLight(block);
             }
             appendQuad(vertices, indices, corners, false);
         }
@@ -375,18 +375,18 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                                     sky += weight * full.sky[k];
                                     block += weight * full.block[k];
                                 }
-                                corners[corner].shade = shade * occlusion;
-                                corners[corner].skyLight = sky;
-                                corners[corner].blockLight = block;
+                                corners[corner].setShade(shade * occlusion);
+                                corners[corner].setSkyLight(sky);
+                                corners[corner].setBlockLight(block);
                             }
                         } else {
                             // Inside the cell: lit like the open space in front of the face.
                             const float sky = std::max(ownSky, float(light.sky(nx, ny, nz))) / maxLevel;
                             const float block = std::max(ownBlock, float(light.block(nx, ny, nz))) / maxLevel;
                             for (QcBlockVertex &vertex : corners) {
-                                vertex.shade = shade;
-                                vertex.skyLight = sky;
-                                vertex.blockLight = block;
+                                vertex.setShade(shade);
+                                vertex.setSkyLight(sky);
+                                vertex.setBlockLight(block);
                             }
                         }
                         for (std::size_t corner = 0; corner < 4; ++corner) {
@@ -447,9 +447,9 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                         vertex.z = float(world.z + c[2]);
                         vertex.u = float(leftEdge ? uv.left() : uv.right());
                         vertex.v = float(bottomEdge ? uv.bottom() : uv.top());
-                        vertex.shade = faceShade[faceIndex] * ambientOcclusionLevels[std::size_t(values.ao[corner])];
-                        vertex.skyLight = values.sky[corner];
-                        vertex.blockLight = values.block[corner];
+                        vertex.setShade(faceShade[faceIndex] * ambientOcclusionLevels[std::size_t(values.ao[corner])]);
+                        vertex.setSkyLight(values.sky[corner]);
+                        vertex.setBlockLight(values.block[corner]);
                     }
                     // Split along the brighter diagonal so occlusion gradients stay symmetric.
                     appendQuad(vertices, indices, corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3]);

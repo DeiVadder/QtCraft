@@ -730,7 +730,7 @@ A thin glass wall that connects to its neighbours.
 
 ### <a id="block-qtcraft-gold_ore"></a>Gold ore
 
-Deep ore that needs a pickaxe of level 3; smelts into gold ingots.
+Deep ore that needs a pickaxe of level 3 or better; smelts into gold ingots.
 
 | | |
 |---|---|
@@ -1144,7 +1144,7 @@ A hatch on the floor or the ceiling; use it to open or close it.
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
-Forms where water meets a lava source. Very hard; needs a pickaxe of level 3.
+Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or better.
 
 | | |
 |---|---|

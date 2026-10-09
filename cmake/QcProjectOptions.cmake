@@ -2,6 +2,7 @@
 # Qt headers come in through imported targets and are therefore SYSTEM includes.
 
 set(QC_SANITIZERS "" CACHE STRING "Sanitizers for all QtCraft targets: empty, 'address;undefined' or 'thread'")
+option(QC_QML_DEBUG "Let the game accept a QML profiler/debugger (-qmljsdebugger); profiling builds only" OFF)
 
 add_library(qc_project_options INTERFACE)
 

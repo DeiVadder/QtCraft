@@ -229,7 +229,8 @@ private slots:
                 const int x = int(v.x);
                 const int z = int(v.z);
                 const double expected = (levelAt(x - 1, 17, z - 1) + levelAt(x, 17, z - 1) + levelAt(x - 1, 17, z) + levelAt(x, 17, z)) / 4.0 / 15.0;
-                QVERIFY2(std::abs(v.blockLight - expected) < 1e-6, qPrintable(u"%1 %2: %3 vs %4"_s.arg(x).arg(z).arg(v.blockLight).arg(expected)));
+                // Light is stored as a byte (value × 255), exact to half a step.
+                QVERIFY2(std::abs(v.blockLight() - expected) <= 0.5 / 255.0 + 1e-6, qPrintable(u"%1 %2: %3 vs %4"_s.arg(x).arg(z).arg(v.blockLight()).arg(expected)));
                 ++checked;
             }
         }
@@ -239,7 +240,7 @@ private slots:
         const QList<Quad> dark = quads(QcChunkMesher::mesh(m_f.input(centre, 1, chunks)).opaqueVertices);
         for (const Quad &quad : dark) {
             for (const QcBlockVertex &v : quad.corners) {
-                QCOMPARE(v.blockLight, 0.0f);
+                QCOMPARE(v.blockLight(), 0.0f);
             }
         }
     }
@@ -258,9 +259,9 @@ private slots:
             for (const QcBlockVertex &v : quad.corners) {
                 QVERIFY(v.x > 5.4f && v.x < 5.6f);
                 if (bottom) {
-                    QVERIFY2(v.blockLight > 11.0f / 15.0f && v.blockLight <= 13.0f / 15.0f, qPrintable(QString::number(v.blockLight)));
+                    QVERIFY2(v.blockLight() > 11.0f / 15.0f && v.blockLight() <= 13.0f / 15.0f, qPrintable(QString::number(v.blockLight())));
                 } else {
-                    QCOMPARE(v.blockLight, 14.0f / 15.0f);
+                    QCOMPARE(v.blockLight(), 14.0f / 15.0f);
                 }
             }
         }

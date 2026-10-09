@@ -25,6 +25,7 @@ qt_add_library(qc_clientcore STATIC
     QcMeshScheduler.h QcMeshScheduler.cpp
     QcMouseLook.h QcMouseLook.cpp
     QcSampleBuffer.h
+    QcScreenChoice.h QcScreenChoice.cpp
     QcSectionKey.h
     QcSoundBank.h QcSoundBank.cpp
     QcSoundCue.h

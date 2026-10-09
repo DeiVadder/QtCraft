@@ -392,25 +392,111 @@ private slots:
 
     void factsReadCorrectly()
     {
+        const auto factIn = [](const QcHandbook &book, const QString &id, const QString &label) -> const QcHandbookEntry::Fact * {
+            const QcHandbookEntry *entry = book.entry(id);
+            return entry ? fact(*entry, label) : nullptr;
+        };
         // Glass lets all light through: nothing is blocked.
-        QCOMPARE(fact(*m_english.entry(u"block:qtcraft:glass"_s), u"Light blocked"_s)->value, u"0 of 15"_s);
-        QCOMPARE(fact(*m_german.entry(u"block:qtcraft:glass"_s), u"Lichtdämpfung"_s)->value, u"0 von 15"_s);
-        QCOMPARE(fact(*m_english.entry(u"block:qtcraft:furnace"_s), u"Machine"_s)->value, u"smelting, speed × 1"_s);
-        QCOMPARE(fact(*m_german.entry(u"block:qtcraft:furnace"_s), u"Maschine"_s)->value, u"Schmelzen, Tempo × 1"_s);
-        QVERIFY(m_german.entry(u"block:qtcraft:iron_ore"_s)->sections.first().recipes.first().note.startsWith(u"Ofen: 10 s"_s));
-        const QcHandbookEntry *lava = m_english.entry(u"block:qtcraft:lava"_s);
-        QCOMPARE(targets(fact(*lava, u"Water nearby"_s)->links), (QStringList{u"block:qtcraft:obsidian"_s, u"block:qtcraft:cobblestone"_s}));
+        const QcHandbookEntry::Fact *glass = factIn(m_english, u"block:qtcraft:glass"_s, u"Light blocked"_s);
+        QVERIFY(glass);
+        QCOMPARE(glass->value, u"0 of 15"_s);
+        const QcHandbookEntry::Fact *glassGerman = factIn(m_german, u"block:qtcraft:glass"_s, u"Lichtdämpfung"_s);
+        QVERIFY(glassGerman);
+        QCOMPARE(glassGerman->value, u"0 von 15"_s);
+        const QcHandbookEntry::Fact *furnace = factIn(m_english, u"block:qtcraft:furnace"_s, u"Machine"_s);
+        QVERIFY(furnace);
+        QCOMPARE(furnace->value, u"smelting, speed × 1"_s);
+        const QcHandbookEntry::Fact *furnaceGerman = factIn(m_german, u"block:qtcraft:furnace"_s, u"Maschine"_s);
+        QVERIFY(furnaceGerman);
+        QCOMPARE(furnaceGerman->value, u"Schmelzen, Tempo × 1"_s);
+        const QcHandbookEntry *ironOre = m_german.entry(u"block:qtcraft:iron_ore"_s);
+        QVERIFY(ironOre && !ironOre->sections.isEmpty() && !ironOre->sections.first().recipes.isEmpty());
+        QVERIFY(ironOre->sections.first().recipes.first().note.startsWith(u"Ofen: 10 s"_s));
+        const QcHandbookEntry::Fact *lavaWater = factIn(m_english, u"block:qtcraft:lava"_s, u"Water nearby"_s);
+        QVERIFY(lavaWater);
+        QCOMPARE(targets(lavaWater->links), (QStringList{u"block:qtcraft:obsidian"_s, u"block:qtcraft:cobblestone"_s}));
+        const QcHandbookEntry::Fact *fireflyHealth = factIn(m_english, u"mob:qtcraft:firefly"_s, u"Health"_s);
+        QVERIFY(fireflyHealth);
+        QCOMPARE(fireflyHealth->value, u"1 health point"_s);
+        const QcHandbookEntry::Fact *fireflyHealthGerman = factIn(m_german, u"mob:qtcraft:firefly"_s, u"Gesundheit"_s);
+        QVERIFY(fireflyHealthGerman);
+        QCOMPARE(fireflyHealthGerman->value, u"1 Lebenspunkt"_s);
+        const QcHandbookEntry::Fact *fireflySpeed = factIn(m_english, u"mob:qtcraft:firefly"_s, u"Speed"_s);
+        QVERIFY(fireflySpeed);
+        QCOMPARE(fireflySpeed->value, u"0.8 m/s"_s);
         const QcHandbookEntry *firefly = m_english.entry(u"mob:qtcraft:firefly"_s);
-        QCOMPARE(fact(*firefly, u"Health"_s)->value, u"1 health point"_s);
-        QCOMPARE(fact(*m_german.entry(u"mob:qtcraft:firefly"_s), u"Gesundheit"_s)->value, u"1 Lebenspunkt"_s);
-        QCOMPARE(fact(*firefly, u"Speed"_s)->value, u"0.8 m/s"_s);
+        QVERIFY(firefly);
         QVERIFY(!fact(*firefly, u"Spawn light"_s));
-        QCOMPARE(section(*firefly, u"Appears on"_s)->text, u"Any solid block or the surface of a liquid."_s);
-        QCOMPARE(fact(*m_english.entry(u"mob:qtcraft:pig"_s), u"Speed"_s)->value.contains(u"fleeing"_s), true);
-        QCOMPARE(section(*m_english.entry(u"mob:qtcraft:pig"_s), u"Appears on"_s)->links.isEmpty(), false);
-        const QcHandbookEntry::Section *biomes = section(*m_english.entry(u"mob:qtcraft:zombie"_s), u"Appears in biomes"_s);
+        const QcHandbookEntry::Section *fireflyGround = section(*firefly, u"Appears on"_s);
+        QVERIFY(fireflyGround);
+        QCOMPARE(fireflyGround->text, u"Any solid block or the surface of a liquid."_s);
+        const QcHandbookEntry::Fact *pigSpeed = factIn(m_english, u"mob:qtcraft:pig"_s, u"Speed"_s);
+        QVERIFY(pigSpeed);
+        QVERIFY(pigSpeed->value.contains(u"fleeing"_s));
+        const QcHandbookEntry *pig = m_english.entry(u"mob:qtcraft:pig"_s);
+        QVERIFY(pig);
+        const QcHandbookEntry::Section *pigGround = section(*pig, u"Appears on"_s);
+        QVERIFY(pigGround);
+        QCOMPARE(pigGround->links.isEmpty(), false);
+        const QcHandbookEntry *zombie = m_english.entry(u"mob:qtcraft:zombie"_s);
+        QVERIFY(zombie);
+        const QcHandbookEntry::Section *biomes = section(*zombie, u"Appears in biomes"_s);
+        QVERIFY(biomes);
         QCOMPARE(biomes->text, u"All biomes."_s);
         QVERIFY(biomes->links.isEmpty());
+    }
+
+    void machineCategoryWithoutTranslationShowsItsId()
+    {
+        QcContentRegistry content = *m_base;
+        QcBlockDefinition grinder;
+        grinder.name = u"test:grinder"_s;
+        grinder.translationKey = u"block.test.grinder"_s;
+        grinder.hardness = 2.0;
+        grinder.machine.category = u"test_grinding"_s;
+        grinder.machine.speed = 2.0;
+        grinder.drops = {{grinder.name, 1, 1.0}};
+        QVERIFY(content.registerBlock(grinder).has_value());
+        for (const QString &language : {u"en"_s, u"de"_s}) {
+            const QcHandbook book = QcHandbookBuilder::build(content, language, QcHandbookRules::values());
+            const QcHandbookEntry *entry = book.entry(u"block:test:grinder"_s);
+            QVERIFY(entry);
+            const QcHandbookEntry::Fact *machine = fact(*entry, language == u"en"_s ? u"Machine"_s : u"Maschine"_s);
+            QVERIFY2(machine, qPrintable(language));
+            QCOMPARE(machine->value, language == u"en"_s ? u"test_grinding, speed × 2"_s : u"test_grinding, Tempo × 2"_s);
+        }
+    }
+
+    void unknownPlaceholdersAreReportedOncePerText()
+    {
+        QcContentRegistry content = *m_base;
+        QcBlockDefinition noisy;
+        noisy.name = u"test:noisy"_s;
+        noisy.translationKey = u"block.test.noisy"_s;
+        noisy.descriptionKey = u"block.test.noisy.description"_s;
+        noisy.hardness = 1.0;
+        QVERIFY(content.registerBlock(noisy).has_value());
+        // The same unknown name 200 times and 40 different ones in a single text.
+        QString text = u"Hardness {test:noisy.hardness}."_s;
+        for (int i = 0; i < 200; ++i) {
+            text += u" {test:missing}"_s;
+        }
+        for (int i = 0; i < 40; ++i) {
+            text += u" {test:other%1}"_s.arg(i);
+        }
+        content.addTranslations(u"en"_s, {{u"block.test.noisy.description"_s, text}});
+        const QcHandbook book = QcHandbookBuilder::build(content, u"en"_s, QcHandbookRules::values());
+        const QcHandbookEntry *entry = book.entry(u"block:test:noisy"_s);
+        QVERIFY(entry);
+        QVERIFY(entry->text.startsWith(u"Hardness 1. {test:missing} {test:missing}"_s));
+        const QStringList reports = book.problems().filter(u"test:noisy: "_s);
+        QCOMPARE(reports.size(), 1);
+        const QString &report = reports.first();
+        QCOMPARE(report.count(u"{test:missing}"_s), 1);
+        QVERIFY(report.contains(u"{test:other0}"_s));
+        // 41 distinct names: a few are named, the rest counted.
+        QVERIFY2(!report.contains(u"{test:other39}"_s), qPrintable(report));
+        QVERIFY2(report.contains(u"and 33 more"_s), qPrintable(report));
     }
 
     void languageFilesKeepDotsOtherThanTheHandbookSuffix()

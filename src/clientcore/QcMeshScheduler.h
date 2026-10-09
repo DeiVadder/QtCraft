@@ -43,6 +43,10 @@ public:
         double lightWorstMs = 0.0;
         // Mesh and light jobs dropped unstarted by clear().
         qsizetype discardedJobs = 0;
+        // Worker time per section mesh (results that arrived, outdated ones included).
+        quint64 meshJobs = 0;
+        double meshTotalMs = 0.0;
+        double meshWorstMs = 0.0;
     };
 
     explicit QcMeshScheduler(QObject *parent = nullptr);
@@ -87,6 +91,7 @@ private:
         quint64 key = 0;
         quint64 version = 0;
         std::shared_ptr<const QcChunkMesh> mesh;
+        double workMs = 0.0;
     };
 
     struct LightResult

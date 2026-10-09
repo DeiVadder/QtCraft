@@ -2,9 +2,8 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoord;
-layout(location = 2) in float shade;
-layout(location = 3) in float skyLight;
-layout(location = 4) in float blockLight;
+// x: face shading and ambient occlusion, y: sky light, z: block light (unsigned normalised bytes).
+layout(location = 2) in vec4 light;
 
 layout(location = 0) out vec2 vTexCoord;
 layout(location = 1) out vec3 vLight;
@@ -24,8 +23,8 @@ const vec3 blockTint = vec3(1.0, 0.86, 0.66);
 void main()
 {
     vTexCoord = texCoord;
-    float sky = max(skyLight * frame.params.z, frame.params.w);
-    vLight = shade * max(vec3(sky), blockLight * blockTint);
+    float sky = max(light.y * frame.params.z, frame.params.w);
+    vLight = light.x * max(vec3(sky), light.z * blockTint);
     vDistance = length(position - frame.cameraPosition.xyz);
     gl_Position = frame.viewProjection * vec4(position, 1.0);
 }
