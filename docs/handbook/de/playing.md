@@ -22,7 +22,7 @@ QtCraft ist eine Welt aus Blöcken. Sammle sie, baue damit, stelle Werkzeuge her
 
 **Dieses Handbuch**
 
-Drücke jederzeit F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom hat eine Seite mit seinen Werten, Rezepten und Verweisen darauf, woher es kommt und wofür es dient. Im Inventar, im Ofen und in Truhen auf ein Item zeigen und F1 drücken oder das kleine ? darauf anklicken.
+Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom hat eine Seite mit seinen Werten, Rezepten und Verweisen darauf, woher es kommt und wofür es dient. Im Inventar, im Ofen und in Truhen auf ein Item zeigen und H / F1 drücken oder das kleine ? darauf anklicken.
 
 **Siehe auch**
 
@@ -32,13 +32,18 @@ Drücke jederzeit F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom hat ei
 
 **Tasten und Maus**
 
-- **Maus**: umsehen (zuerst ins Fenster klicken)
+- **Maus**: umsehen (zuerst ins Fenster klicken), oder **↑ ← ↓ →**
 - **W A S D**: gehen, **Leertaste**: springen oder aufwärts schwimmen, **Umschalt**: schleichen, **Strg**: rennen
 - **Linke Maustaste** oder **F**: abbauen, Wesen angreifen
 - **Rechte Maustaste** oder **R**: setzen, benutzen, essen
 - **Q**: ein Item werfen, **Strg+Q**: den ganzen Stapel
 - **1–9**, Mausrad: Feld der Schnellleiste wählen
-- **E**: Inventar, **T** oder **Enter**: Chat, **F5**: Kameraansicht, **F1**: Handbuch, **Esc**: Menü
+- **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Bildrate und Position, **Esc**: Menü
+- Alle Tasten außer Esc lassen sich unter Einstellungen → Steuerung ändern.
+
+**Mac-Tastaturen**
+
+Auf einem Mac steuern die Tasten F1–F12 Helligkeit, Mission Control, die Suche und andere Systemfunktionen; das Spiel bekommt sie deshalb nicht. Jede Aktion hat darum eine Buchstabentaste, zum Beispiel **V** für die Kameraansicht und **H** für das Handbuch. Um die Funktionstasten im Spiel zu nutzen, halte fn gedrückt oder schalte in den Systemeinstellungen „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ ein (Tastatur → Tastaturkurzbefehle → Funktionstasten). Keine Taste des Spiels nutzt Cmd, und mit Cmd gedrückte Tasten tun im Spiel nichts, weil macOS Cmd+Q, Cmd+H, Cmd+W, Cmd+Leertaste und Cmd+Tab für sich behält: Rennen ist am Mac Option, und Control+Q wirft den ganzen Stapel. Wer eine Aktion auf Control legt: Control mit den Pfeiltasten oder der Leertaste wechselt Schreibtische oder die Eingabequelle. Option+E, U, N und I sind nur beim Tippen von Text Tottasten; in der Welt wirken sie als Rennen plus diese Taste.
 
 **Bewegen**
 

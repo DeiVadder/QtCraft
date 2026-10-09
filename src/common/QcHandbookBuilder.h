@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <QString>
+#include <QStringList>
 
 // Builds the handbook from a complete content registry (base game and mods, including the server-side
 // world-generation data and chapters): every block, item, recipe, creature, biome, liquid, world
@@ -15,7 +16,10 @@ namespace QcHandbookBuilder {
 
 // `rules` are the values chapters refer to as {name} in their texts (e.g. {hunger.regenerationFood})
 // and creature pages show as caps; the server provides them (QcHandbookRules). Unknown placeholders
-// are listed in QcHandbook::problems().
-QcHandbook build(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules = {});
+// are listed in QcHandbook::problems(). `keys` fill key placeholders such as {key.cameraView} with
+// key names (QcKeyBindings::placeholderKeys(): the defaults for the export, the player's keys in the
+// game); "handbook.key.<name>" translates a key name.
+QcHandbook build(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules = {},
+                 const QMap<QString, QStringList> &keys = {});
 
 } // namespace QcHandbookBuilder

@@ -22,7 +22,7 @@ QtCraft is a world of blocks. Collect them, build with them, craft tools, smelt 
 
 **This handbook**
 
-Press F1 at any time. Every block, item, creature and biome has a page with its values, its recipes and links to where it comes from and what it is used for. In the inventory, the furnace and chests, point at an item and press F1 or click the small ? on it.
+Press H / F1 at any time. Every block, item, creature and biome has a page with its values, its recipes and links to where it comes from and what it is used for. In the inventory, the furnace and chests, point at an item and press H / F1 or click the small ? on it.
 
 **See also**
 
@@ -32,13 +32,18 @@ Press F1 at any time. Every block, item, creature and biome has a page with its 
 
 **Keys and mouse**
 
-- **Mouse**: look around (click into the window first)
+- **Mouse**: look around (click into the window first), or **↑ ← ↓ →**
 - **W A S D**: walk, **Space**: jump or swim up, **Shift**: sneak, **Ctrl**: sprint
 - **Left mouse** or **F**: mine, attack a creature
 - **Right mouse** or **R**: place, use, eat
 - **Q**: throw one item, **Ctrl+Q**: the whole stack
 - **1–9**, mouse wheel: choose the hotbar slot
-- **E**: inventory, **T** or **Enter**: chat, **F5**: camera view, **F1**: handbook, **Esc**: menu
+- **E**: inventory, **T / Enter**: chat, **/**: command, **V / F5**: camera view, **H / F1**: handbook, **I / F3**: frame rate and position, **Esc**: menu
+- Every key except Esc can be changed under Settings → Controls.
+
+**Mac keyboards**
+
+On a Mac the keys F1–F12 control the brightness, Mission Control, the search and other system features, so the game does not receive them. Every action therefore has a letter key, for example **V** for the camera view and **H** for the handbook pages. To use the function keys in the game, hold fn or switch on “Use F1, F2, etc. keys as standard function keys” in the system settings (Keyboard → Keyboard Shortcuts → Function Keys). No key of the game uses Cmd, and keys pressed with Cmd do nothing in the game, because macOS keeps Cmd+Q, Cmd+H, Cmd+W, Cmd+Space and Cmd+Tab for itself: sprint is Option on a Mac, and Control+Q throws the whole stack. If you put an action on Control, note that Control with the arrow keys or Space switches desktops or the input source. Option+E, U, N and I are dead keys only while typing text; in the world they work as sprint plus that key.
 
 **Moving**
 

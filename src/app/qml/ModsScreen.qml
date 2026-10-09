@@ -16,12 +16,17 @@ Popup {
     width: Math.min(parent.width - 64, 760)
     height: Math.min(parent.height - 64, 560)
     modal: true
+    focus: true
     padding: 16
 
     onOpened: game.refreshMods()
 
     ColumnLayout {
         anchors.fill: parent
+        focus: true
+        // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
+        Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
+                                                  && event.key !== Qt.Key_Backtab
         spacing: 8
 
         Label {

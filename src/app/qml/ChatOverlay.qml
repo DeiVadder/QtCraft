@@ -9,10 +9,12 @@ Item {
 
     onVisibleChanged: {
         if (visible) {
-            input.text = "";
+            input.text = overlay.game.chatStart;
             input.forceActiveFocus();
         }
     }
+    // Keys the line leaves (function keys, ...) end here.
+    Keys.onPressed: event => event.accepted = true
 
     TextField {
         id: input

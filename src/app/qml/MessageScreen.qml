@@ -11,6 +11,13 @@ Rectangle {
     signal backRequested
 
     color: "#c0202830"
+    focus: visible
+    onVisibleChanged: if (visible) forceActiveFocus()
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Escape && screen.showBackButton)
+            screen.backRequested();
+        event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
+    }
 
     ColumnLayout {
         anchors.centerIn: parent

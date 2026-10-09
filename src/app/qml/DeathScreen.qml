@@ -9,6 +9,10 @@ Rectangle {
     required property GameController game
 
     color: "#a0600000"
+    // Takes the keyboard, so keys held when dying do nothing in the world below.
+    focus: visible
+    onVisibleChanged: if (visible) forceActiveFocus()
+    Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab
 
     ColumnLayout {
         anchors.centerIn: parent

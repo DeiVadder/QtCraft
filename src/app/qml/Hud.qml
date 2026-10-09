@@ -237,6 +237,8 @@ Item {
     Label {
         id: hint
 
+        readonly property var keys: hud.game.keys.labels
+
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
@@ -245,7 +247,9 @@ Item {
         styleColor: "#a0000000"
         font.pixelSize: 13
         text: hud.game.mouseCaptured
-              ? qsTr("Left: mine/attack  F: mine  Right/R: place  Q: drop  1-9/wheel: select  E: inventory  T: chat  Esc: menu")
-              : qsTr("Click to look around. WASD to move, Space to jump, Shift to sneak.")
+              ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")
+                    .arg(hint.keys.mine).arg(hint.keys.use).arg(hint.keys.drop).arg(hint.keys.hotbar1).arg(hint.keys.hotbar9).arg(hint.keys.inventory).arg(hint.keys.chat)
+              : qsTr("Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.")
+                    .arg(hint.keys.forward).arg(hint.keys.left).arg(hint.keys.back).arg(hint.keys.right).arg(hint.keys.jump).arg(hint.keys.sneak)
     }
 }

@@ -8,6 +8,8 @@ qt_add_library(qc_clientcore STATIC
     QcBlockRenderTable.h QcBlockRenderTable.cpp
     QcBlockVertex.h
     QcCamera.h QcCamera.cpp
+    QcKeyControls.h QcKeyControls.cpp
+    QcKeyLabels.h QcKeyLabels.cpp
     QcChunkLight.h
     QcChunkMesh.h
     QcChunkMesher.h QcChunkMesher.cpp

@@ -3,6 +3,7 @@ qt_add_executable(qtcraft
     QcScreenshotHook.h QcScreenshotHook.cpp
     QcGameController.h QcGameController.cpp
     QcInventoryModel.h QcInventoryModel.cpp
+    QcKeyControlsForeign.h
     QcHandbookModel.h QcHandbookModel.cpp
     QcSlotRange.h QcSlotRange.cpp
     QcItemIconProvider.h QcItemIconProvider.cpp
@@ -65,6 +66,7 @@ qt_add_qml_module(qtcraft
         qml/Main.qml
         qml/CharacterScreen.qml
         qml/ChatOverlay.qml
+        qml/ControlsPage.qml
         qml/DeathScreen.qml
         qml/FurnaceScreen.qml
         qml/HandbookScreen.qml
@@ -95,6 +97,7 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
 )
 
 qt_add_translations(qtcraft
+    SOURCE_TARGETS qtcraft qc_clientcore
     TS_FILE_DIR ${PROJECT_SOURCE_DIR}/translations
     TS_FILE_BASE qtcraft
     RESOURCE_PREFIX /i18n)

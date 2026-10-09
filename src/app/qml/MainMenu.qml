@@ -17,7 +17,30 @@ Rectangle {
         GradientStop { position: 1.0; color: "#2f4f6e" }
     }
 
-    onVisibleChanged: if (visible) game.refreshWorlds()
+    focus: visible
+    onVisibleChanged: {
+        if (visible) {
+            game.refreshWorlds();
+            forceActiveFocus();
+        } else {
+            // Its sub-screens belong to the menu and close with it.
+            settingsScreen.close();
+            modsScreen.close();
+            characterScreen.close();
+            deleteDialog.close();
+        }
+    }
+    // Keys the text fields and buttons leave; Tab moves the focus.
+    Keys.onPressed: event => {
+        if (menu.game.keys.matches("handbook", event.key) && !menu.game.handbookOpen)
+            menu.game.openHandbook("");
+        event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
+    }
+
+    function subScreenClosed() {
+        if (visible)
+            forceActiveFocus();
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -205,7 +228,7 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
-                    text: qsTr("Handbook (F1)")
+                    text: qsTr("Handbook (%1)").arg(menu.game.keys.labels.handbook)
                     onClicked: menu.game.openHandbook("")
                 }
 
@@ -222,18 +245,21 @@ Rectangle {
         id: settingsScreen
 
         game: menu.game
+        onClosed: menu.subScreenClosed()
     }
 
     ModsScreen {
         id: modsScreen
 
         game: menu.game
+        onClosed: menu.subScreenClosed()
     }
 
     CharacterScreen {
         id: characterScreen
 
         game: menu.game
+        onClosed: menu.subScreenClosed()
     }
 
     Dialog {
@@ -252,5 +278,6 @@ Rectangle {
         }
 
         onAccepted: menu.game.deleteWorld(folder)
+        onClosed: menu.subScreenClosed()
     }
 }

@@ -12,7 +12,7 @@ Rectangle {
 
     required property GameController game
     property int pickedSlot: -1
-    // Item under the mouse; F1 opens its handbook page.
+    // Item under the mouse; the handbook key opens its page.
     property string hoveredItem
 
     readonly property int inputRow: 46
@@ -27,13 +27,13 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || event.key === Qt.Key_E) {
+        if (event.key === Qt.Key_Escape || screen.game.keys.matches("inventory", event.key)) {
             screen.game.overlay = "";
-            event.accepted = true;
-        } else if (event.key === Qt.Key_F1) {
+        } else if (screen.game.keys.matches("handbook", event.key)) {
             screen.game.openHandbook(screen.hoveredItem);
-            event.accepted = true;
         }
+        // Other keys end here as well; Tab moves the focus.
+        event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
     function clicked(slot, empty, button) {
@@ -235,7 +235,7 @@ Rectangle {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. E or Esc closes.")
+            text: qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. %1 or Esc closes.").arg(screen.game.keys.labels.inventory)
             color: "#e0ffffff"
         }
     }

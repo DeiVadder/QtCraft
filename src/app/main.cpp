@@ -12,6 +12,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 #include <QScreen>
+#include <QStyleHints>
 #include <QTranslator>
 #if defined(QT_QML_DEBUG)
 // Profiling builds (QC_QML_DEBUG): the header's static enabler lets qmlprofiler connect.
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
     const QCommandLineOption spawnOption(u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s);
     const QCommandLineOption chatOption(u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
                                         u"text"_s);
-    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it)."_s,
+    const QCommandLineOption overlayOption(u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen)."_s,
                                            u"name"_s);
     const QCommandLineOption handbookOption(u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
                                             u"entry"_s);
@@ -72,6 +73,13 @@ int main(int argc, char *argv[])
     if (language.isEmpty()) {
         language = QcGameController::storedLanguage();
     }
+    // The game screens are drawn dark over the world (E-079), so the controls are dark too, whatever
+    // the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison.
+    const QString scheme = qEnvironmentVariable("QTCRAFT_COLOR_SCHEME");
+    if (scheme != u"system"_s) {
+        QGuiApplication::styleHints()->setColorScheme(scheme == u"light"_s ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+    }
+
     QTranslator translator;
     const auto installLanguage = [&translator](const QString &name) {
         const QLocale locale = name.isEmpty() ? QLocale::system() : QLocale(name);
@@ -169,7 +177,7 @@ int main(int argc, char *argv[])
     const QString audioSetting = qEnvironmentVariable("QTCRAFT_AUDIO");
     const bool audio = !parser.isSet(noAudioOption) && audioSetting != u"0"_s && (screenshot == nullptr || audioSetting == u"1"_s);
     game->startAudio(audio);
-    game->setStartupScript(parser.values(chatOption), parser.value(overlayOption));
+    game->setStartupScript(parser.values(chatOption), parser.values(overlayOption));
     game->setStartupHandbook(parser.value(handbookOption));
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
     // QTCRAFT_BENCHMARK_SCENARIO=sprint|walk|stand|light|liquids: sprint ahead (default), walk ahead,
@@ -179,7 +187,7 @@ int main(int argc, char *argv[])
     if (parser.isSet(playOption)) {
         game->setScreenshotHook(screenshot);
         game->startSingleplayer(parser.value(worldOption), parser.value(seedOption));
-    } else if (parser.isSet(handbookOption) || parser.value(overlayOption) == u"handbook"_s) {
+    } else if (parser.isSet(handbookOption) || parser.values(overlayOption).contains(u"handbook"_s)) {
         game->openHandbook(parser.value(handbookOption));
     }
 

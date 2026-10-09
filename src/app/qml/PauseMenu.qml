@@ -10,15 +10,23 @@ Rectangle {
 
     color: "#a0000000"
     focus: visible
-    onVisibleChanged: if (visible) forceActiveFocus()
+    onVisibleChanged: {
+        if (visible) {
+            forceActiveFocus();
+        } else {
+            // Its sub-screens belong to the menu: they close (and store the settings) with it.
+            settingsScreen.close();
+            characterScreen.close();
+        }
+    }
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape) {
             menu.game.overlay = "";
-            event.accepted = true;
-        } else if (event.key === Qt.Key_F1) {
+        } else if (menu.game.keys.matches("handbook", event.key)) {
             menu.game.openHandbook("");
-            event.accepted = true;
         }
+        // Other keys end here as well; Tab moves between the buttons.
+        event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
     ColumnLayout {
@@ -65,7 +73,7 @@ Rectangle {
 
         Button {
             Layout.fillWidth: true
-            text: qsTr("Handbook (F1)")
+            text: qsTr("Handbook (%1)").arg(menu.game.keys.labels.handbook)
             onClicked: menu.game.openHandbook("")
         }
 
@@ -77,27 +85,42 @@ Rectangle {
     }
 
     // The settings are an overlay of their own ("settings") so the --overlay test hook can open them.
+    // Closing a sub-screen returns to the menu and its keys.
+    function subScreenClosed(overlays) {
+        if (overlays.includes(menu.game.overlay))
+            menu.game.overlay = "pause";
+        if (visible)
+            forceActiveFocus();
+    }
+
     SettingsScreen {
         id: settingsScreen
 
         game: menu.game
-        onClosed: if (menu.game.overlay === "settings") menu.game.overlay = "pause"
+        onClosed: menu.subScreenClosed(["settings", "controls"])
     }
 
     CharacterScreen {
         id: characterScreen
 
         game: menu.game
-        onClosed: if (menu.game.overlay === "character") menu.game.overlay = "pause"
+        onClosed: menu.subScreenClosed(["character"])
     }
 
+    // One sub-screen at a time, the one the overlay names; any other overlay closes them.
     Connections {
         target: menu.game
 
         function onOverlayChanged() {
-            if (menu.game.overlay === "settings") {
+            const overlay = menu.game.overlay;
+            if (overlay !== "settings" && overlay !== "controls")
+                settingsScreen.close();
+            if (overlay !== "character")
+                characterScreen.close();
+            if (overlay === "settings" || overlay === "controls") {
+                settingsScreen.startOnControls = overlay === "controls";
                 settingsScreen.open();
-            } else if (menu.game.overlay === "character") {
+            } else if (overlay === "character") {
                 characterScreen.open();
             }
         }

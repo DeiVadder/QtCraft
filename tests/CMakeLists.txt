@@ -74,3 +74,4 @@ qc_add_test(test_world_details SOURCES test_world_details.cpp QcTestWorld.h LIBR
 qc_add_test(test_handbook SOURCES test_handbook.cpp LIBRARIES qc_server)
 target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods"
                                                 QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+qc_add_test(test_key_bindings SOURCES test_key_bindings.cpp LIBRARIES qc_clientcore)

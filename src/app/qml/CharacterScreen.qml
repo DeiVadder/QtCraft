@@ -35,6 +35,7 @@ Popup {
     y: (parent.height - height) / 2
     width: Math.min(parent.width - 64, 560)
     modal: true
+    focus: true
     padding: 20
 
     onAboutToShow: showStoredLook()
@@ -87,6 +88,10 @@ Popup {
 
     ColumnLayout {
         anchors.fill: parent
+        focus: true
+        // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
+        Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
+                                                  && event.key !== Qt.Key_Backtab
         spacing: 10
 
         Label {
@@ -151,7 +156,7 @@ Popup {
 
         Label {
             Layout.fillWidth: true
-            text: qsTr("Press F5 in the game to look at your character from behind or from the front.")
+            text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.keys.labels.cameraView)
             wrapMode: Text.Wrap
             opacity: 0.7
         }

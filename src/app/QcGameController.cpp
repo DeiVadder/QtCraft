@@ -26,6 +26,7 @@
 #include "QcHandbookBuilder.h"
 #include "QcHandbookRules.h"
 #include "QcItemIconProvider.h"
+#include "QcKeyLabels.h"
 #include "QcWorldLibrary.h"
 
 #include <QCursor>
@@ -104,11 +105,17 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
     , m_audio(new QcAudioEngine(this))
+    , m_keyControls(new QcKeyControls(this))
     , m_inventory(new QcInventoryModel(this))
     , m_handbookModel(new QcHandbookModel(this))
 {
     m_frameClock.start();
     m_fpsClock.start();
+    connect(m_keyControls, &QcKeyControls::edited, this, &QcGameController::saveSettings);
+    // On the application: shortcut overrides go to the focused item, not to the window.
+    if (QCoreApplication *application = QCoreApplication::instance()) {
+        application->installEventFilter(this);
+    }
 }
 
 QcGameController::~QcGameController()
@@ -139,12 +146,10 @@ void QcGameController::attachWindow(QQuickWindow *window)
         return;
     }
     if (m_window) {
-        m_window->removeEventFilter(this);
         disconnect(m_window, nullptr, this, nullptr);
     }
     m_window = window;
     if (m_window) {
-        m_window->installEventFilter(this);
         connect(m_window, &QQuickWindow::afterAnimating, this, &QcGameController::onFrame);
         connect(m_window, &QWindow::activeChanged, this, [this] {
             if (!m_window->isActive()) {
@@ -216,6 +221,7 @@ void QcGameController::loadSettings()
     m_musicVolume = m_storedSettings.musicVolume;
     m_ambientVolume = m_storedSettings.ambientVolume;
     m_muted = m_storedSettings.muted;
+    m_keyControls->setBindings(m_storedSettings.keys);
     applyVolumes();
     emit settingsChanged();
 }
@@ -335,6 +341,7 @@ void QcGameController::saveSettings()
     settings.musicVolume = m_musicVolume;
     settings.ambientVolume = m_ambientVolume;
     settings.muted = m_muted;
+    settings.keys = m_keyControls->bindings();
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {
         qCWarning(lcGame) << saved.error();
         return;
@@ -386,6 +393,8 @@ void QcGameController::setLanguage(const QString &language)
         updateInventory();
     }
     emit appearancesChanged();
+    // Key and action names are translated.
+    m_keyControls->retranslate();
     if (m_handbookOpen) {
         ensureHandbook();
     }
@@ -408,10 +417,18 @@ void QcGameController::setInitialLook(float yaw, float pitch)
     m_initialPitch = std::clamp(pitch, -90.0f, 90.0f);
 }
 
-void QcGameController::setStartupScript(QStringList chatLines, QString overlay)
+void QcGameController::setStartupScript(QStringList chatLines, const QStringList &overlays)
 {
     m_startupChat = std::move(chatLines);
-    m_startupOverlay = std::move(overlay);
+    m_startupOverlay.clear();
+    m_startupOverlaySteps.clear();
+    for (const QString &overlay : overlays) {
+        if (overlay.startsWith(u'@')) {
+            m_startupOverlaySteps.append(overlay);
+        } else if (m_startupOverlay.isEmpty()) {
+            m_startupOverlay = overlay;
+        }
+    }
 }
 
 void QcGameController::setScreenshotHook(QcScreenshotHook *hook)
@@ -610,6 +627,9 @@ void QcGameController::setOverlay(const QString &overlay)
     }
     m_overlay = overlay;
     m_keysDown.clear();
+    if (m_overlay != u"chat"_s) {
+        m_chatStart.clear();
+    }
     if (m_session) {
         m_session->setMining(false);
         // Leaving the inventory hands back the grid contents (and closes a crafting table); leaving
@@ -823,6 +843,26 @@ void QcGameController::startWorld(const QString &directory, const QString &world
                 openHandbook(m_startupHandbook);
             } else if (!m_startupOverlay.isEmpty()) {
                 setOverlay(m_startupOverlay);
+            }
+            for (const QString &step : std::as_const(m_startupOverlaySteps)) {
+                const qsizetype space = step.indexOf(u' ');
+                bool valid = false;
+                const int delayMs = space > 1 ? QStringView(step).mid(1, space - 1).toInt(&valid) : 0;
+                if (!valid || delayMs < 0) {
+                    qCWarning(lcGame) << "--overlay" << step << ": expected '@<ms> <overlay>'";
+                    continue;
+                }
+                if (m_screenshotHook) {
+                    m_screenshotHook->hold();
+                }
+                QTimer::singleShot(delayMs, this, [this, overlay = step.mid(space + 1)] {
+                    if (m_session) {
+                        setOverlay(overlay);
+                    }
+                    if (m_screenshotHook) {
+                        m_screenshotHook->release();
+                    }
+                });
             }
             if (m_benchmarkSeconds > 0) {
                 QTimer::singleShot(3000, this, &QcGameController::startBenchmark);
@@ -1108,14 +1148,15 @@ void QcGameController::resetCharacterContent()
 
 void QcGameController::ensureHandbook()
 {
-    if (m_handbookModel->handbook() && m_handbookGeneration == m_contentGeneration && m_handbookLanguage == m_language) {
+    if (m_handbookModel->handbook() && m_handbookGeneration == m_contentGeneration && m_handbookLanguage == m_language
+        && m_handbookKeys == m_keyControls->bindings()) {
         return;
     }
     QElapsedTimer timer;
     timer.start();
     const QcContentRegistry &content = fullContent();
     const qint64 loadedMs = timer.elapsed();
-    auto book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(content, m_language, QcHandbookRules::values()));
+    auto book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(content, m_language, QcHandbookRules::values(), m_keyControls->bindings().placeholderKeys()));
     const qint64 builtMs = timer.elapsed() - loadedMs;
     for (const QString &problem : book->problems()) {
         qCWarning(lcGame) << "Handbook:" << problem;
@@ -1130,6 +1171,7 @@ void QcGameController::ensureHandbook()
                              << " ms, icons " << (timer.elapsed() - loadedMs - builtMs) << " ms";
     m_handbookGeneration = m_contentGeneration;
     m_handbookLanguage = m_language;
+    m_handbookKeys = m_keyControls->bindings();
     m_handbookModel->setHandbook(std::move(book));
 }
 
@@ -1355,71 +1397,30 @@ bool QcGameController::eventFilter(QObject *watched, QEvent *event)
     if (watched == m_window && event->type() == QEvent::MouseButtonRelease && !m_mouseCaptured) {
         clickIfButton(static_cast<QMouseEvent *>(event)->scenePosition());
     }
-    // Overlays (inventory, pause menu, chat) and the death screen are QML items that take keyboard and
-    // mouse themselves.
-    if (watched != m_window || !m_session || m_phase != u"playing"_s || !m_inputEnabled || !m_overlay.isEmpty()
-        || m_handbookOpen || m_session->isDead()) {
+    // Keys of the game come before shortcuts (of the platform or of items below the world).
+    if (event->type() == QEvent::ShortcutOverride && worldInput()) {
+        const auto *key = static_cast<QKeyEvent *>(event);
+        if (m_keyControls->bindings().actionForPress(key->key(), key->modifiers())) {
+            event->accept();
+            return true;
+        }
+    }
+    if (watched != m_window || !worldInput()) {
         return QObject::eventFilter(watched, event);
     }
     switch (event->type()) {
-    case QEvent::KeyPress: {
-        auto *key = static_cast<QKeyEvent *>(event);
-        if (key->isAutoRepeat()) {
-            return false;
-        }
-        switch (key->key()) {
-        case Qt::Key_Escape:
-            setOverlay(u"pause"_s);
-            return true;
-        case Qt::Key_E:
-            setOverlay(u"inventory"_s);
-            return true;
-        case Qt::Key_T:
-        case Qt::Key_Return:
-            setOverlay(u"chat"_s);
-            return true;
-        case Qt::Key_R:
-            m_session->useItem();
-            return true;
-        case Qt::Key_F:
-            m_session->setMining(true);
-            return true;
-        case Qt::Key_F1:
-            // The page of what the crosshair points at, else the page shown last.
-            openHandbook(m_targetName);
-            return true;
-        case Qt::Key_F5: {
-            // Cycles first person, behind, front; the choice is kept in the settings.
-            const QcCameraMode next = QcViewCamera::next(m_session->cameraMode());
-            setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
-            m_session->setCameraMode(next);
-            saveSettings();
-            return true;
-        }
-        case Qt::Key_Q:
-            // Q throws one item, Ctrl+Q the whole stack.
-            m_session->dropItem(key->modifiers().testFlag(Qt::ControlModifier));
-            return true;
-        default:
-            break;
-        }
-        if (key->key() >= Qt::Key_1 && key->key() <= Qt::Key_9) {
-            m_session->selectHotbarSlot(key->key() - Qt::Key_1);
-            return true;
-        }
-        m_keysDown.insert(key->key());
-        return false;
-    }
+    case QEvent::KeyPress:
+        handleWorldKey(*static_cast<QKeyEvent *>(event));
+        return true;
     case QEvent::KeyRelease: {
         auto *key = static_cast<QKeyEvent *>(event);
-        if (key->isAutoRepeat()) {
-            return false;
+        if (!key->isAutoRepeat()) {
+            if (m_keyControls->bindings().matches(QcKeyBindings::Action::Mine, key->key())) {
+                m_session->setMining(false);
+            }
+            m_keysDown.remove(key->key());
         }
-        if (key->key() == Qt::Key_F) {
-            m_session->setMining(false);
-        }
-        m_keysDown.remove(key->key());
-        return false;
+        return true;
     }
     case QEvent::MouseButtonPress:
         if (!m_mouseCaptured) {
@@ -1480,18 +1481,91 @@ void QcGameController::handleMouseButton(Qt::MouseButton button, bool pressed)
     }
 }
 
+bool QcGameController::worldInput() const
+{
+    // Overlays (inventory, pause menu, chat), the handbook and the death screen are QML items that
+    // take keyboard and mouse themselves.
+    return m_session && m_phase == u"playing"_s && m_inputEnabled && m_overlay.isEmpty() && !m_handbookOpen && !m_session->isDead();
+}
+
+bool QcGameController::keyDown(QcKeyBindings::Action action) const
+{
+    return std::ranges::any_of(m_keyControls->bindings().keys(action), [this](int key) { return m_keysDown.contains(key); });
+}
+
+void QcGameController::handleWorldKey(const QKeyEvent &key)
+{
+    if (key.isAutoRepeat()) {
+        return;
+    }
+    using A = QcKeyBindings::Action;
+    const std::optional<A> action = m_keyControls->bindings().actionForPress(key.key(), key.modifiers());
+    if (!action) {
+        return;
+    }
+    if (*action >= A::Hotbar1 && *action <= A::Hotbar9) {
+        m_session->selectHotbarSlot(int(*action) - int(A::Hotbar1));
+        return;
+    }
+    switch (*action) {
+    case A::Pause:
+        setOverlay(u"pause"_s);
+        return;
+    case A::Inventory:
+        setOverlay(u"inventory"_s);
+        return;
+    case A::Chat:
+        setOverlay(u"chat"_s);
+        return;
+    case A::Command:
+        m_chatStart = u"/"_s;
+        setOverlay(u"chat"_s);
+        return;
+    case A::Use:
+        m_session->useItem();
+        return;
+    case A::Mine:
+        m_session->setMining(true);
+        return;
+    case A::Handbook:
+        // The page of what the crosshair points at, else the page shown last.
+        openHandbook(m_targetName);
+        return;
+    case A::CameraView: {
+        // Cycles first person, behind, front; the choice is kept in the settings.
+        const QcCameraMode next = QcViewCamera::next(m_session->cameraMode());
+        setCameraMode(QString::fromLatin1(QcViewCamera::name(next)));
+        m_session->setCameraMode(next);
+        saveSettings();
+        return;
+    }
+    case A::DebugOverlay:
+        setShowDebug(!m_showDebug);
+        saveSettings();
+        return;
+    case A::Drop:
+        // With Ctrl (on a Mac Control) the whole stack.
+        m_session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_keyControls->bindings().platform())));
+        return;
+    default:
+        // Movement and look keys count while held (updateIntentFromKeys()).
+        m_keysDown.insert(key.key());
+        return;
+    }
+}
+
 void QcGameController::updateIntentFromKeys(float frameSeconds)
 {
-    const auto down = [this](int key) { return m_keysDown.contains(key); };
+    using A = QcKeyBindings::Action;
     QcPlayerInput intent = m_session->intent();
-    intent.forward = float(int(down(Qt::Key_W)) - int(down(Qt::Key_S)));
-    intent.strafe = float(int(down(Qt::Key_D)) - int(down(Qt::Key_A)));
-    intent.jump = down(Qt::Key_Space);
-    intent.sneak = down(Qt::Key_Shift);
-    intent.sprint = down(Qt::Key_Control) || down(Qt::Key_Meta);
+    intent.forward = float(int(keyDown(A::Forward)) - int(keyDown(A::Back)));
+    intent.strafe = float(int(keyDown(A::Right)) - int(keyDown(A::Left)));
+    intent.jump = keyDown(A::Jump);
+    intent.sneak = keyDown(A::Sneak);
+    intent.sprint = keyDown(A::Sprint);
     const float look = keyboardLookSpeed * frameSeconds;
-    intent.yaw += look * float(int(down(Qt::Key_Right)) - int(down(Qt::Key_Left)));
-    intent.pitch = std::clamp(intent.pitch + look * float(int(down(Qt::Key_Up)) - int(down(Qt::Key_Down))), -89.9f, 89.9f);
+    intent.yaw += look * float(int(keyDown(A::LookRight)) - int(keyDown(A::LookLeft)));
+    intent.pitch = std::clamp(intent.pitch + look * float(int(keyDown(A::LookUp)) - int(keyDown(A::LookDown))), -89.9f, 89.9f);
     m_session->setIntent(intent);
 }
 
@@ -1560,7 +1634,12 @@ void QcGameController::startBenchmark()
         return;
     }
     m_inputEnabled = true;
-    m_keysDown = m_benchmarkSprint ? QSet<int>{Qt::Key_W, Qt::Key_Control, Qt::Key_Space} : QSet<int>{Qt::Key_W};
+    using A = QcKeyBindings::Action;
+    m_keysDown = {m_keyControls->bindings().key(A::Forward, 0)};
+    if (m_benchmarkSprint) {
+        m_keysDown.insert(m_keyControls->bindings().key(A::Sprint, 0));
+        m_keysDown.insert(m_keyControls->bindings().key(A::Jump, 0));
+    }
     m_benchmarkFrameNs.reserve(qsizetype(m_benchmarkSeconds) * 240);
     m_benchmarkFrame.start();
     m_benchmarkRunning = true;

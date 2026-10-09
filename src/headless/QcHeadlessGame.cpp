@@ -9,6 +9,7 @@
 #include "QcHandbookJson.h"
 #include "QcHandbookMarkdown.h"
 #include "QcHandbookRules.h"
+#include "QcKeyBindings.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
 #include "QcSoundExporter.h"
@@ -171,7 +172,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
             }
             exported = *base;
         }
-        const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(languageOption), QcHandbookRules::values());
+        const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(languageOption), QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
         for (const QString &problem : book.problems()) {
             printError(u"handbook problem: "_s + problem);
         }
@@ -408,7 +409,7 @@ const QcHandbook &QcHeadlessGame::handbook(const QString &language)
 {
     std::shared_ptr<const QcHandbook> &book = m_handbooks[language];
     if (!book) {
-        book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(*m_content, language, QcHandbookRules::values()));
+        book = std::make_shared<const QcHandbook>(QcHandbookBuilder::build(*m_content, language, QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys()));
     }
     return *book;
 }

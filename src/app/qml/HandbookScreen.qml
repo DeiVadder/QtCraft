@@ -7,7 +7,7 @@ import QtCraft
 
 // The handbook: categories on the left, the entries of a category (or the search results) in the
 // middle and the open page on the right. Links and recipe cells open other pages; Back returns.
-// Esc or F1 closes it and gives the keyboard back to the screen below.
+// Esc or the handbook key closes it and gives the keyboard back to the screen below.
 Rectangle {
     id: screen
 
@@ -86,13 +86,13 @@ Rectangle {
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || event.key === Qt.Key_F1) {
+        if (event.key === Qt.Key_Escape || screen.game.keys.matches("handbook", event.key)) {
             screen.close();
-            event.accepted = true;
         } else if (event.key === Qt.Key_Backspace || (event.key === Qt.Key_Left && (event.modifiers & Qt.AltModifier))) {
             screen.back();
-            event.accepted = true;
         }
+        // Other keys end here as well; Tab moves the focus.
+        event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
     // Swallows clicks so nothing below reacts.
@@ -142,7 +142,9 @@ Rectangle {
                     placeholderText: qsTr("Search blocks, items, creatures …")
                     selectByMouse: true
                     Keys.onPressed: event => {
-                        if (event.key === Qt.Key_Escape || event.key === Qt.Key_F1) {
+                        // A handbook key that types a character (H) goes into the search.
+                        if (event.key === Qt.Key_Escape
+                            || (screen.game.keys.matches("handbook", event.key) && (event.text.length === 0 || event.text < " "))) {
                             screen.close();
                             event.accepted = true;
                         } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && screen.listed.length > 0) {
@@ -492,7 +494,7 @@ Rectangle {
             }
 
             Label {
-                text: qsTr("Click a name or an item to open its page. Backspace goes back, Esc or F1 closes.")
+                text: qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.keys.labels.handbook)
                 color: "#a0ffffff"
             }
         }

@@ -10,6 +10,35 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+QString keySetting(QcKeyBindings::Action action, int slot)
+{
+    return u"keys/"_s + QcKeyBindings::id(action) + (slot == 0 ? QString() : u".%1"_s.arg(slot + 1));
+}
+
+QcKeyBindings loadKeys(const QSettings &file)
+{
+    // setKey() ignores keys the platform cannot bind; those slots keep their default.
+    QcKeyBindings keys = QcKeyBindings::defaults();
+    for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
+        if (QcKeyBindings::isFixed(action)) {
+            continue;
+        }
+        for (int slot = 0; slot < QcKeyBindings::slotCount; ++slot) {
+            const QVariant value = file.value(keySetting(action, slot));
+            const std::optional<int> key = value.isValid() ? QcKeyBindings::keyFromName(value.toString()) : std::nullopt;
+            if (key) {
+                keys.setKey(action, slot, *key);
+            }
+        }
+    }
+    keys.dropConflicts();
+    return keys;
+}
+
+} // namespace
+
 int QcGameSettings::clampViewDistance(int chunks)
 {
     return std::clamp(chunks, minViewDistance, maxViewDistance);
@@ -82,6 +111,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.musicVolume = volume(u"audio/music"_s, defaultMusicVolume);
     settings.ambientVolume = volume(u"audio/ambient"_s, defaultAmbientVolume);
     settings.muted = file.value(u"audio/muted"_s, false).toBool();
+    settings.keys = loadKeys(file);
     return settings;
 }
 
@@ -110,6 +140,14 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"audio/music"_s, musicVolume);
     file.setValue(u"audio/ambient"_s, ambientVolume);
     file.setValue(u"audio/muted"_s, muted);
+    for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
+        if (QcKeyBindings::isFixed(action)) {
+            continue;
+        }
+        for (int slot = 0; slot < QcKeyBindings::slotCount; ++slot) {
+            file.setValue(keySetting(action, slot), QcKeyBindings::keyName(keys.key(action, slot)));
+        }
+    }
     file.sync();
     if (file.status() != QSettings::NoError) {
         return qcError(u"Cannot write the settings to %1"_s.arg(path));

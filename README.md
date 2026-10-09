@@ -37,22 +37,25 @@ build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft
 
 The main menu lists saved worlds, creates new ones (name, optional seed, whether the inventory is kept on death), and opens the settings, the character screen (outfit, hair, colours) and the mod list.
 
-| Input | Action |
+| Input (default) | Action |
 |-------|--------|
-| Mouse | Look around (click into the window to capture the mouse) |
-| W A S D, Space, Shift, Ctrl | Move, jump, sneak, sprint |
+| Mouse, arrow keys | Look around (click into the window to capture the mouse) |
+| W A S D, Space, Shift, Ctrl (Option on a Mac) | Move, jump, sneak, sprint |
 | Left mouse / F | Mine; left click on a creature attacks it |
 | Right mouse / R | Place the held block (stairs, slabs, torches, doors … turn and attach by where you look and click), eat held food when hungry, open a crafting table, furnace or chest, open and close doors, trapdoors and gates (sneak to place against them); with an empty bucket take water or lava, with a full one pour it; with an empty glass bottle catch a firefly |
-| Q, Ctrl+Q | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
-| F5 | Switch the view: first person, third person behind, third person in front |
+| Q, Ctrl+Q (Control+Q on a Mac) | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
+| V or F5 | Switch the view: first person, third person behind, third person in front |
 | 1–9, mouse wheel | Select a hotbar slot |
 | E | Inventory with 2 × 2 crafting grid and recipe list |
 | Ladders | Walk into the wall behind a ladder or jump to climb, sneak to hold on |
 | Furnace screen | Something to smelt goes on top, fuel below, the result appears on the right; eat when the food bar right of the hearts runs low |
 | Mine lamp | Clay (4, crafting table) → unfired lamp shell → furnace → fired shell + firefly in a bottle (fireflies glow over swamps at night) → lamp for floors, walls and ceilings |
-| F1 | Handbook: every block, item, recipe, creature and biome with its values and links, plus chapters on playing (opens at the block in view; in the inventory, furnace and chests at the item under the mouse, or click the small ? on a slot) |
-| T or Enter | Chat and commands (`/help`) |
-| Esc | Pause menu (settings, save, quit to menu) |
+| H or F1 | Handbook: every block, item, recipe, creature and biome with its values and links, plus chapters on playing (opens at the block in view; in the inventory, furnace and chests at the item under the mouse, or click the small ? on a slot) |
+| T or Enter, / | Chat; `/` opens it with a command started (`/help`) |
+| I or F3 | Show or hide frame rate and position |
+| Esc | Pause menu (settings, save, quit to menu); closes the topmost screen first |
+
+Every key except Esc can be changed under Settings → Controls (click a key, press the new one; Esc cancels, Backspace removes it, a key used by another action is swapped). The keys are stored in `settings.ini`; *Reset to defaults* restores the table above. **Mac keyboards:** F1–F12 control brightness, Mission Control, search and other system features, so macOS keeps them from the game; that is why every default key is a letter or another normal key, and the function keys are only second keys. To use them, hold fn or switch on “Use F1, F2, etc. keys as standard function keys” in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. No default key uses Cmd or Control there, because macOS keeps Cmd+Q, Cmd+H, Cmd+Space, Cmd+Tab, Control+arrow keys and Control+Space for itself: sprint is Option, the whole stack is thrown with Control+Q, and Cmd cannot be bound at all. Putting an action on Control is allowed, but Control with the arrow keys or Space then switches desktops or the input source. Keys pressed together with Cmd do nothing in the game, so Cmd+Q quits (saving the world), Cmd+H hides and Cmd+W closes the window. Option+E, U, N and I are dead keys only while typing text; in the world they work as sprint plus that key.
 
 Settings (view distance, field of view, mouse sensitivity, invert mouse, debug overlay, language, view mode, the character's look and the volumes of all sound, effects, music and ambience plus a mute switch) are stored in `settings.ini` in the data directory. The UI is available in English and German.
 

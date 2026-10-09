@@ -64,10 +64,12 @@ void appendUnique(QList<Link> &links, Link link)
 class Builder
 {
 public:
-    Builder(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules)
+    Builder(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules,
+            const QMap<QString, QStringList> &keys)
         : m_content(content)
         , m_language(language)
         , m_rules(rules)
+        , m_keys(keys)
         , m_locale(language)
     {
         m_locale.setNumberOptions(QLocale::OmitGroupSeparator);
@@ -132,6 +134,8 @@ private:
     QString toolName(const QString &tool) const;
     QString heightRange(int minY, int maxY) const { return label(u"unit.heightRange"_s).arg(minY).arg(maxY); }
     QString substituteRules(const QString &text, const QString &context);
+    // Key names in the handbook's language ("handbook.key.<name>", else the name), joined by " / ".
+    QString keyText(const QStringList &keys) const;
     // Content values texts may quote: "<block>.toolLevel", ".slots", ".flowDistance", ".light",
     // ".hardness", "<item>.toolLevel", ".food", ".fuelSeconds", ".durability", "<mob>.health".
     void addContentValues();
@@ -177,6 +181,8 @@ private:
     QString m_language;
     // The server's rule values plus values of the content ("qtcraft:chest.slots", see addContentValues()).
     QMap<QString, double> m_rules;
+    // Key placeholders ("key.cameraView") with portable key names.
+    QMap<QString, QStringList> m_keys;
     QLocale m_locale;
     QList<QcHandbookEntry> m_entries;
     QStringList m_problems;
@@ -311,6 +317,19 @@ void Builder::addContentValues()
     }
 }
 
+QString Builder::keyText(const QStringList &keys) const
+{
+    if (keys.isEmpty()) {
+        return label(u"key.none"_s);
+    }
+    QStringList names;
+    for (const QString &key : keys) {
+        const QString name = lookup(u"handbook.key."_s + key);
+        names.append(name.isEmpty() ? key : name);
+    }
+    return names.join(u" / "_s);
+}
+
 QString Builder::substituteRules(const QString &text, const QString &context)
 {
     static const QRegularExpression placeholder(u"\\{([A-Za-z0-9_.:-]+)\\}"_s);
@@ -323,7 +342,9 @@ QString Builder::substituteRules(const QString &text, const QString &context)
         const QRegularExpressionMatch match = it.next();
         result += QStringView(text).mid(last, match.capturedStart() - last);
         const auto value = m_rules.constFind(match.captured(1));
-        if (value == m_rules.constEnd()) {
+        if (const auto keys = m_keys.constFind(match.captured(1)); keys != m_keys.constEnd()) {
+            result += keyText(*keys);
+        } else if (value == m_rules.constEnd()) {
             if (!unknown.contains(match.captured(1))) {
                 unknown.append(match.captured(1));
             }
@@ -1438,7 +1459,7 @@ QcHandbook Builder::build()
     }
     QMap<QString, QString> labels;
     for (const QString &key : {u"title"_s, u"intro"_s, u"contents"_s, u"index"_s, u"packs"_s, u"entries"_s, u"fact.id"_s}) {
-        labels.insert(key, label(key));
+        labels.insert(key, key == u"intro"_s ? substituteRules(label(key), u"handbook intro"_s) : label(key));
     }
     return QcHandbook(m_language, std::move(packs), std::move(categories), std::move(m_entries), std::move(m_problems),
                       std::move(labels));
@@ -1448,9 +1469,10 @@ QcHandbook Builder::build()
 
 namespace QcHandbookBuilder {
 
-QcHandbook build(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules)
+QcHandbook build(const QcContentRegistry &content, const QString &language, const QMap<QString, double> &rules,
+                 const QMap<QString, QStringList> &keys)
 {
-    return Builder(content, language, rules).build();
+    return Builder(content, language, rules, keys).build();
 }
 
 } // namespace QcHandbookBuilder

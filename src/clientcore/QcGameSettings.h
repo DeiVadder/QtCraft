@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcKeyBindings.h"
 #include "QcResult.h"
 #include "QcViewCamera.h"
 
@@ -40,6 +41,10 @@ struct QcGameSettings
     double musicVolume = defaultMusicVolume;
     double ambientVolume = defaultAmbientVolume;
     bool muted = false;
+    // Stored as "keys/<action>" (primary) and "keys/<action>.2" (secondary) with portable key names,
+    // "" for no key. A missing or unknown name gives that slot's default; keys an earlier action
+    // already uses are dropped. The pause key (Esc) is fixed.
+    QcKeyBindings keys = QcKeyBindings::defaults();
 
     static int clampViewDistance(int chunks);
     static double clampFieldOfView(double degrees);

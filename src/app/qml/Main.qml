@@ -53,7 +53,8 @@ ApplicationWindow {
 
     PauseMenu {
         anchors.fill: parent
-        visible: game.phase === "playing" && (game.overlay === "pause" || game.overlay === "settings" || game.overlay === "character")
+        visible: game.phase === "playing"
+                 && (game.overlay === "pause" || game.overlay === "settings" || game.overlay === "controls" || game.overlay === "character")
         game: game
     }
 
@@ -90,11 +91,10 @@ ApplicationWindow {
         game: game
     }
 
-    // In the world F1 goes through the game controller (the page of the block in view), in screens
-    // through their own key handling.
+    // Cmd+W (elsewhere Ctrl+W or Ctrl+F4) closes the window like its close button: the world is
+    // saved on the way out. In the world the game leaves Cmd combinations to the system.
     Shortcut {
-        sequence: "F1"
-        enabled: game.phase === "menu" && !game.handbookOpen
-        onActivated: game.openHandbook("")
+        sequences: [StandardKey.Close]
+        onActivated: root.close()
     }
 }

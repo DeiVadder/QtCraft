@@ -4,6 +4,7 @@
     "icon": "stick",
     "sections": [
         "keys",
+        "mac",
         "moving",
         "screens"
     ]

@@ -8,6 +8,8 @@
 #include "QcFrameProfile.h"
 #include "QcHandbookModel.h"
 #include "QcInventoryModel.h"
+#include "QcKeyBindings.h"
+#include "QcKeyControlsForeign.h"
 #include "QcPlayerInput.h"
 #include "QcRelativeMouse.h"
 #include "QcWorldView.h"
@@ -35,6 +37,7 @@ class QcContentRegistry;
 class QcLocalServerHost;
 class QcMeshScheduler;
 class QcScreenshotHook;
+class QKeyEvent;
 class QQuickWindow;
 
 // Connects a client session to the world view and to keyboard/mouse input. Owns the in-process
@@ -95,6 +98,10 @@ class QcGameController : public QObject
     Q_PROPERTY(bool handbookOpen READ handbookOpen NOTIFY handbookOpenChanged FINAL)
     Q_PROPERTY(QString handbookTarget READ handbookTarget NOTIFY handbookOpenChanged FINAL)
     Q_PROPERTY(QString handbookQuery READ handbookQuery NOTIFY handbookOpenChanged FINAL)
+    // The player's keys (stored with the settings).
+    Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
+    // Text the chat line starts with when it opens ("/" for the command key).
+    Q_PROPERTY(QString chatStart READ chatStart NOTIFY overlayChanged FINAL)
 
 public:
     static constexpr int defaultViewDistance = QcGameSettings::defaultViewDistance;
@@ -136,7 +143,7 @@ public:
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
-    // "first", "behind" or "front"; F5 cycles through them.
+    // "first", "behind" or "front"; the camera view key cycles through them.
     QString cameraMode() const;
     void setCameraMode(const QString &mode);
     // The player's look as {outfit, hair, skin, hairColor, shirt, pants} with "#rrggbb" colours.
@@ -171,13 +178,15 @@ public:
     // search. The handbook is built on first use and again after the content or language changed.
     Q_INVOKABLE void openHandbook(const QString &target = QString());
     Q_INVOKABLE void closeHandbook();
+    QcKeyControls *keys() const { return m_keyControls; }
+    QString chatStart() const { return m_chatStart; }
     // Test hook --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
     double miningProgress() const { return m_miningProgress; }
     QString targetLabel() const { return m_targetLabel; }
     QStringList chatLines() const { return m_chatLines; }
     // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
-    // "pause" or "chat".
+    // "chest", "pause", "settings", "controls" (settings at the key table), "character" or "chat".
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QVariantList worlds() const { return m_worlds; }
@@ -234,8 +243,9 @@ public:
     void setScreenshotHook(QcScreenshotHook *hook);
     // Scripted run (--background): the mouse is never captured, input comes only from the script.
     void setBackgroundRun(bool background) { m_backgroundRun = background; }
-    // Test hook: chat lines sent and overlay opened once the world is playable.
-    void setStartupScript(QStringList chatLines, QString overlay);
+    // Test hook: chat lines sent and overlays opened once the world is playable. Like chat lines,
+    // an overlay "@<ms> <name>" opens that many milliseconds later ("@<ms> " closes the overlay).
+    void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // Test hook (QTCRAFT_BENCHMARK=<seconds>): once playing and after a short warm-up, frame and
     // server tick times are recorded, then the result is logged and the application quits.
     // Benchmark scenarios: "sprint" sprints and jumps ahead, "walk" walks ahead, "stand" stands
@@ -285,6 +295,11 @@ private:
     void onContentReady();
     void onFrame();
     void updateIntentFromKeys(float frameSeconds);
+    // World keys while no screen is open; every key event is taken, so nothing else reacts to it.
+    void handleWorldKey(const QKeyEvent &key);
+    bool keyDown(QcKeyBindings::Action action) const;
+    // The world takes keyboard and mouse: playing, no screen open, alive.
+    bool worldInput() const;
     // Ends the session and the server; returns the result of the final save.
     QcStatus stopSession();
     void startWorld(const QString &directory, const QString &worldName, qint64 seed);
@@ -341,6 +356,8 @@ private:
     bool m_invertMouse = false;
     bool m_showDebug = true;
     QString m_languageSetting;
+    QcKeyControls *m_keyControls = nullptr;
+    QString m_chatStart;
     QcGameSettings m_storedSettings;
     int m_commandLineViewDistance = 0;
     int m_benchmarkSeconds = 0;
@@ -380,14 +397,15 @@ private:
     QString m_handbookTarget;
     QString m_handbookQuery;
     QString m_startupHandbook;
-    // What the current handbook was built from: content generation and language.
+    // What the current handbook was built from: content generation, language and keys.
     int m_handbookGeneration = -1;
     QString m_handbookLanguage;
+    QcKeyBindings m_handbookKeys;
     // Bumped whenever fullContent() may change (mods switched, world started).
     int m_contentGeneration = 0;
     // The icon provider holds icons of the current content (from the world or built for the handbook).
     bool m_iconsReady = false;
-    // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for F1.
+    // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for the handbook key.
     QString m_targetName;
     QcItemIconProvider *m_iconProvider = nullptr;
     QString m_language = QStringLiteral("en");
@@ -406,6 +424,7 @@ private:
     QVariantList m_craftableRecipes;
     QStringList m_startupChat;
     QString m_startupOverlay;
+    QStringList m_startupOverlaySteps;
     QString m_machineLabel;
     // Test hook --overlay furnace: the screenshot waits until the machine has opened and filled.
     bool m_fillMachineOnOpen = false;
