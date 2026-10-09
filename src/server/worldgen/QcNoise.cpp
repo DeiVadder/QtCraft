@@ -62,12 +62,14 @@ QcNoise::QcNoise(quint64 seed)
     for (int i = 0; i < 256; ++i) {
         values[std::size_t(i)] = quint8(i);
     }
+
     quint64 state = seed;
     // Fisher-Yates shuffle driven by SplitMix64: platform independent, unlike std::shuffle.
     for (int i = 255; i > 0; --i) {
         const auto j = std::size_t(splitMix(state) % quint64(i + 1));
         std::swap(values[std::size_t(i)], values[j]);
     }
+
     for (std::size_t i = 0; i < 512; ++i) {
         m_permutation[i] = values[i & 255];
     }
@@ -84,9 +86,11 @@ double QcNoise::noise3(double x, double y, double z) const
     x -= fx;
     y -= fy;
     z -= fz;
+
     const double u = fade(x);
     const double v = fade(y);
     const double w = fade(z);
+
     const auto p = [this](int index) { return int(m_permutation[std::size_t(index)]); };
     const int A = p(X) + Y;
     const int AA = p(A) + Z;
@@ -94,6 +98,7 @@ double QcNoise::noise3(double x, double y, double z) const
     const int B = p(X + 1) + Y;
     const int BA = p(B) + Z;
     const int BB = p(B + 1) + Z;
+
     return lerp(w,
                 lerp(v, lerp(u, gradient3(p(AA), x, y, z), gradient3(p(BA), x - 1, y, z)),
                      lerp(u, gradient3(p(AB), x, y - 1, z), gradient3(p(BB), x - 1, y - 1, z))),
@@ -109,11 +114,14 @@ double QcNoise::noise2(double x, double z) const
     const int Z = int(qint64(fz) & 255);
     x -= fx;
     z -= fz;
+
     const double u = fade(x);
     const double w = fade(z);
+
     const auto p = [this](int index) { return int(m_permutation[std::size_t(index)]); };
     const int A = p(X) + Z;
     const int B = p(X + 1) + Z;
+
     // Gradients of length up to sqrt(2) keep the output within about [-1, 1], like the 3D variant.
     return lerp(w, lerp(u, gradient2(p(A), x, z), gradient2(p(B), x - 1, z)),
                 lerp(u, gradient2(p(A + 1), x, z - 1), gradient2(p(B + 1), x - 1, z - 1)));
@@ -125,6 +133,7 @@ double QcNoise::fractal2(double x, double z, int octaves, double persistence) co
     double amplitude = 1.0;
     double frequency = 1.0;
     double total = 0.0;
+
     for (int i = 0; i < octaves; ++i) {
         // Offsetting each octave avoids the shared zero at integer lattice points.
         sum += amplitude * noise2(x * frequency + i * 17.31, z * frequency - i * 9.73);
@@ -132,6 +141,7 @@ double QcNoise::fractal2(double x, double z, int octaves, double persistence) co
         amplitude *= persistence;
         frequency *= 2.0;
     }
+
     return total > 0.0 ? sum / total : 0.0;
 }
 
@@ -141,12 +151,14 @@ double QcNoise::fractal3(double x, double y, double z, int octaves, double persi
     double amplitude = 1.0;
     double frequency = 1.0;
     double total = 0.0;
+
     for (int i = 0; i < octaves; ++i) {
         sum += amplitude * noise3(x * frequency + i * 17.31, y * frequency + i * 5.17, z * frequency - i * 9.73);
         total += amplitude;
         amplitude *= persistence;
         frequency *= 2.0;
     }
+
     return total > 0.0 ? sum / total : 0.0;
 }
 

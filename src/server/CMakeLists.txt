@@ -1,46 +1,46 @@
 qt_add_library(qc_server STATIC
-    QcBaseContent.h QcBaseContent.cpp
-    QcBlockEntityStorage.h QcBlockEntityStorage.cpp
-    QcBlockRules.h QcBlockRules.cpp
-    QcBlockSimulation.h QcBlockSimulation.cpp
-    QcBlockUpdateQueue.h QcBlockUpdateQueue.cpp
-    QcBundledMods.h QcBundledMods.cpp
-    QcChatCommands.h QcChatCommands.cpp
-    QcChunkStreaming.h QcChunkStreaming.cpp
-    QcContainerManager.h QcContainerManager.cpp
-    QcContentPackLoader.h QcContentPackLoader.cpp
-    QcEntityStorage.h QcEntityStorage.cpp
-    QcEntitySync.h QcEntitySync.cpp
-    QcHunger.h QcHunger.cpp
-    QcHandbookRules.h QcHandbookRules.cpp
-    QcItemEntityManager.h QcItemEntityManager.cpp
-    QcFallingBlockManager.h QcFallingBlockManager.cpp
-    QcLiquidFlow.h QcLiquidFlow.cpp
-    QcLocalServerHost.h QcLocalServerHost.cpp
-    QcMachineManager.h QcMachineManager.cpp
-    QcModLoader.h QcModLoader.cpp
-    QcModStatus.h
-    QcMobManager.h QcMobManager.cpp
-    QcPlantManager.h QcPlantManager.cpp
-    QcRegionStorage.h QcRegionStorage.cpp
-    QcSaveFile.h QcSaveFile.cpp
-    QcServer.h QcServer.cpp
-    QcServerBlocks.h QcServerBlocks.cpp
-    QcServerClient.h
-    QcServerCombat.h QcServerCombat.cpp
-    QcServerConfig.h
-    QcServerInteraction.h QcServerInteraction.cpp
-    QcServerInventory.h QcServerInventory.cpp
-    QcServerItemsAndPlants.h QcServerItemsAndPlants.cpp
-    QcServerMachines.h QcServerMachines.cpp
-    QcServerPersistence.h QcServerPersistence.cpp
-    QcServerSounds.h QcServerSounds.cpp
-    QcServerState.h QcServerState.cpp
-    QcServerWorld.h QcServerWorld.cpp
-    QcTestTerrainGenerator.h QcTestTerrainGenerator.cpp
-    QcWorldGenerator.h
-    QcWorldLibrary.h QcWorldLibrary.cpp
-    QcWorldStorage.h QcWorldStorage.cpp
+    content/QcBaseContent.h content/QcBaseContent.cpp
+    storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
+    blocks/QcBlockRules.h blocks/QcBlockRules.cpp
+    blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
+    blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
+    content/QcBundledMods.h content/QcBundledMods.cpp
+    core/QcChatCommands.h core/QcChatCommands.cpp
+    core/QcChunkStreaming.h core/QcChunkStreaming.cpp
+    machines/QcContainerManager.h machines/QcContainerManager.cpp
+    content/QcContentPackLoader.h content/QcContentPackLoader.cpp
+    storage/QcEntityStorage.h storage/QcEntityStorage.cpp
+    core/QcEntitySync.h core/QcEntitySync.cpp
+    gameplay/QcHunger.h gameplay/QcHunger.cpp
+    gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
+    gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
+    blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
+    blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
+    core/QcLocalServerHost.h core/QcLocalServerHost.cpp
+    machines/QcMachineManager.h machines/QcMachineManager.cpp
+    content/QcModLoader.h content/QcModLoader.cpp
+    content/QcModStatus.h
+    gameplay/QcMobManager.h gameplay/QcMobManager.cpp
+    gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
+    storage/QcRegionStorage.h storage/QcRegionStorage.cpp
+    storage/QcSaveFile.h storage/QcSaveFile.cpp
+    core/QcServer.h core/QcServer.cpp
+    blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
+    core/QcServerClient.h
+    gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
+    core/QcServerConfig.h
+    gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
+    gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
+    gameplay/QcServerItemsAndPlants.h gameplay/QcServerItemsAndPlants.cpp
+    machines/QcServerMachines.h machines/QcServerMachines.cpp
+    storage/QcServerPersistence.h storage/QcServerPersistence.cpp
+    core/QcServerSounds.h core/QcServerSounds.cpp
+    core/QcServerState.h core/QcServerState.cpp
+    core/QcServerWorld.h core/QcServerWorld.cpp
+    worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
+    worldgen/QcWorldGenerator.h
+    storage/QcWorldLibrary.h storage/QcWorldLibrary.cpp
+    storage/QcWorldStorage.h storage/QcWorldStorage.cpp
     worldgen/QcCaveCarver.h worldgen/QcCaveCarver.cpp
     worldgen/QcNoise.h worldgen/QcNoise.cpp
     worldgen/QcPoolPlacer.h worldgen/QcPoolPlacer.cpp
@@ -61,5 +61,14 @@ if(MSVC)
 else()
     set_source_files_properties(${qc_worldgen_sources} PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
 endif()
-target_include_directories(qc_server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/worldgen)
+# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
+# stay "QcName.h" without a path.
+target_include_directories(qc_server PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/blocks
+    ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
+    ${CMAKE_CURRENT_SOURCE_DIR}/machines
+    ${CMAKE_CURRENT_SOURCE_DIR}/storage
+    ${CMAKE_CURRENT_SOURCE_DIR}/content
+    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen)
 target_link_libraries(qc_server PUBLIC qc_common qc_base_content Qt::Core Qt::Concurrent)

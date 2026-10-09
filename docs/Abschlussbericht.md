@@ -29,7 +29,7 @@ Etappen 5 bis 8 brauchten Nachbesserungsrunden: Die Verifikation fand jeweils Bl
 | Punkt | Stand | Nachweis |
 |-------|-------|----------|
 | Viele Blocktypen mit unterschiedlichen Eigenschaften | erfüllt | 27 Blöcke in `content/qtcraft/blocks`, Eigenschaften in `docs/Architektur.md` (Content) |
-| Keine feste Blockanzahl, Namen statt Ids in Speicherung | erfüllt | Paletten-Chunks, Regionsdateien mit Namenspalette, `tests/test_world_storage.cpp`, `test_mods` (Welt ohne Mod) |
+| Keine feste Blockanzahl, Namen statt Ids in Speicherung | erfüllt | Paletten-Chunks, Regionsdateien mit Namenspalette, `tests/world/test_world_storage.cpp`, `test_mods` (Welt ohne Mod) |
 | Generierung über Biom-/Schichtdaten aus der Registry | erfüllt | `biomes/`, `features/`, `ores/`, `worldgen/terrain.json`; Beispiel-Mod fügt Erz hinzu |
 | Welten erstellen, speichern, laden, verwalten | erfüllt | Hauptmenü, `QcWorldLibrary`, `test_persistence`, Durchspiel-Test mit Neustart |
 | Dynamische Generierung ohne spürbare Ruckler | erfüllt, Restrisiko | Worker-Threads für Generierung und Meshing; Benchmark unten (zwei unerklärte Einzelruckler unter Last) |
@@ -76,7 +76,7 @@ scripts/verify.sh                                                         # alle
 ## Tests
 
 - **Umfang:** 31 CTest-Ziele, darunter drei Headless-Szenarien. Sie laufen in den Builds Debug, ASan/UBSan und TSan.
-- **Automatisierter Durchspiel-Test:** `tests/test_survival_scenario.cpp`. Er läuft nur über die Steuerschnittstelle:
+- **Automatisierter Durchspiel-Test:** `tests/gameplay/test_survival_scenario.cpp`. Er läuft nur über die Steuerschnittstelle:
   1. Schwein jagen, Fleisch aufsammeln, Zombie bekämpfen, Fleisch essen, Schwert wegwerfen und wieder aufheben.
   2. Baum fällen, Stämme aufsammeln, Bretter im 2 × 2-Raster und per Rezeptbuch herstellen, Werkbank bauen; ohne Werkbank wird das 3 × 3-Rezept abgelehnt.
   3. Werkbank setzen, Spitzhacke herstellen, bis zum Stein graben.

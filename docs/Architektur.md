@@ -18,6 +18,44 @@ The client code never includes server headers except in the two composition root
 
 ## Source layout
 
+Inside each library folder the classes live in thematic subfolders (E-089); the library boundaries are those of the module table. Every subfolder is an include directory of its target, so includes name only the header (`#include "QcChunk.h"`), and a class keeps its name when it moves.
+
+| Folder | Files | Content |
+|--------|------:|---------|
+| `src/common/core` | 15 | Vectors, boxes, integer maths, block and chunk positions, faces, world constants, CRC, `QcResult`, worker pool, mailbox |
+| `src/common/world` | 9 | Chunks and palette sections, `QcBlockAccess`, light volume (block light flood fill), day cycle |
+| `src/common/physics` | 6 | Movement physics, raycast, entity motion, player input |
+| `src/common/gameplay` | 9 | Inventory and item stacks, crafting, mining times, key bindings table |
+| `src/common/protocol` | 14 | Connection, transports, message structs and variant, codec, stream limits |
+| `src/common/content/definitions` | 25 | Plain definition structs (blocks, items, shapes, materials, mobs, models, sounds, recipes, worldgen) and sound keys |
+| `src/common/content/registry` | 13 | `QcContentRegistry`, block states (`QcBlockStateTable`), content names, building parts, content-sync serializers |
+| `src/common/content/parser` | 22 | JSON parser entry point and one parser per definition kind, field readers |
+| `src/common/handbook` | 10 | Handbook model, chapters and entries, Markdown and JSON output, link check |
+| `src/common/handbook/builder` | 21 | `QcHandbookBuilder`, pages per category and their shared helpers |
+| `src/server/core` | 18 | `QcServer`, shared state, clients, config, local host, chat commands, chunk streaming, entity sync, server world, sounds |
+| `src/server/blocks` | 12 | Block rules, neighbour updates, liquids, falling blocks, block changes |
+| `src/server/gameplay` | 18 | Interaction, inventory, combat, items and plants, mobs, hunger, handbook rule values |
+| `src/server/machines` | 6 | Machines (furnace) and containers (chest) |
+| `src/server/storage` | 14 | World storage and its file kinds, save container, persistence, world library |
+| `src/server/content` | 9 | Base content, bundled mods, content pack and mod loading |
+| `src/server/worldgen` | 19 | `QcWorldGenerator` interface, terrain generator and its parts, noise, trees, test terrain |
+| `src/clientcore/session` | 7 | `QcClientSession`, client world and entity mirror |
+| `src/clientcore/control` | 25 | Control interface, command table and command groups |
+| `src/clientcore/meshing` | 18 | Chunk and entity meshers, vertex formats, render table, mesh scheduler, animator |
+| `src/clientcore/light` | 4 | Client block light engine and light snapshots for meshing |
+| `src/clientcore/textures` | 10 | Texture synthesis, atlas, block and app icons |
+| `src/clientcore/camera` | 8 | Camera, view camera, frustum, mouse look |
+| `src/clientcore/sound` | 16 | Synthesis, sound bank, mixer, spatial sound, local sounds, ambience, music |
+| `src/clientcore/settings` | 8 | Game settings, screen choice, key controls and labels |
+| `src/app/controllers` | 17 | `QcGameController` and its QML sub-objects (settings, library, player, HUD, handbook) |
+| `src/app/models` | 10 | QML list models (inventory, handbook, slot ranges) and item icons |
+| `src/app/rendering` | 7 | `QcWorldView`, `QcWorldRenderer` (QRhi), render bridge and samples |
+| `src/app/input` | 6 | World keyboard and mouse, relative mouse per platform, key controls for QML |
+| `src/app/hooks` | 13 | Test and benchmark hooks: screenshots, startup options, benchmark, scripted runs, frame profile, thread CPU clock |
+| `src/app/qml`, `src/app/shaders` | 18, 7 | QML screens and the QRhi shaders (unchanged locations: QML module and shader resources) |
+| `src/audio`, `src/headless` | 6, 11 | Small single-purpose targets, kept flat |
+| `tests/{content,world,gameplay,client,sound}` | 8, 12, 13, 13, 5 | Test programs by topic; the shared fixtures (`QcTestWorld.h`, `QcServerTestFixture.h`, `QcRawClient.h`, `QcTestUtil.h`) and scenario scripts stay in `tests/` |
+
 Every class has its own header and source, except the thematic message headers and small header-only types; no function is longer than 80 lines and no source file longer than 800 lines (E-088). The larger subsystems are split into collaborating classes:
 
 | Subsystem | Classes |

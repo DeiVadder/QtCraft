@@ -50,10 +50,12 @@ void QcStdinReader::start()
             if (!line.endsWith('\n')) {
                 continue;
             }
+
             const std::scoped_lock lock(shared->mutex);
             shared->lines.push_back(std::exchange(line, {}));
             shared->wake();
         }
+
         const std::scoped_lock lock(shared->mutex);
         if (!line.isEmpty()) {
             shared->lines.push_back(line);
@@ -61,6 +63,7 @@ void QcStdinReader::start()
         shared->endOfInput = true;
         shared->wake();
     });
+
     thread->setObjectName(QStringLiteral("QtCraft stdin"));
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     thread->start();
@@ -76,6 +79,7 @@ void QcStdinReader::deliver()
         finished = m_shared->endOfInput;
         m_shared->wakePending = false;
     }
+
     for (const QByteArray &line : lines) {
         emit lineReceived(line);
     }

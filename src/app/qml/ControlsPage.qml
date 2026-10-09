@@ -44,6 +44,7 @@ ColumnLayout {
     function cancelCapture() {
         if (captureSlot < 0)
             return;
+
         captureAction = "";
         captureSlot = -1;
         keyList.forceActiveFocus();
@@ -66,6 +67,7 @@ ColumnLayout {
             event.accepted = true;
             if (event.isAutoRepeat)
                 return;
+
             if (event.key === Qt.Key_Escape) {
                 page.cancelCapture();
             } else if (page.isModifier(event.key)) {
@@ -112,6 +114,7 @@ ColumnLayout {
                 text: keyRow.modelData.label
                 elide: Text.ElideRight
             }
+
             Repeater {
                 model: 2
 

@@ -121,6 +121,7 @@ void QcPoolPlacer::addBowlLayer(const QcChunk &chunk, const Pool &pool, const Bo
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
     const auto [centreX, y, centreZ] = layer.centre;
+
     for (int z = std::max(1, centreZ - pool.radius); z <= std::min(last - 1, centreZ + pool.radius); ++z) {
         for (int x = std::max(1, centreX - pool.radius); x <= std::min(last - 1, centreX + pool.radius); ++x) {
             const double distance = std::hypot(x - centreX, z - centreZ) + 0.8 * qcPositionRandom(pool.seed, baseX + x, y, baseZ + z);
@@ -178,6 +179,7 @@ void QcPoolPlacer::fill(QcChunk &chunk, const Pool &pool, const QSet<int> &cells
             }
             continue;
         }
+
         if (y == floorY - 1) {
             hollowAbove(chunk, {x, y, z}, floorY);
         }
@@ -191,6 +193,7 @@ void QcPoolPlacer::hollowAbove(QcChunk &chunk, QcBlockPos cell, int floorY) cons
     // that holds back another liquid (beside or above it) or carries a falling block stays.
     const int x = cell.x;
     const int z = cell.z;
+
     for (int above = floorY; above <= floorY + 1; ++above) {
         const QcBlockId block = chunk.block(x, above, z);
         const QcBlockId top = chunk.block(x, above + 1, z);

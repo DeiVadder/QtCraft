@@ -277,21 +277,25 @@ bool runWorldTool(const QCommandLineParser &parser, const Options &options, cons
         exitSoon(0);
         return true;
     }
+
     if (parser.isSet(options.slice)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 16, 1024);
         saveMap(QcMapRenderer::renderSlice(generator, content, {0, 0, radius, 4}), parser.value(options.slice));
         return true;
     }
+
     if (parser.isSet(options.biomeMap)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
         writeBiomeMap(generator, content, radius, parser.value(options.biomeMap));
         return true;
     }
+
     if (parser.isSet(options.map)) {
         const int radius = std::clamp(parser.value(options.mapRadius).toInt(), 64, 8192);
         saveMap(QcMapRenderer::render(generator, content, {0, 0, radius, std::max(1, radius / 512)}), parser.value(options.map));
         return true;
     }
+
     return false;
 }
 
@@ -444,9 +448,11 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
             m_session->deleteLater();
             m_session = nullptr;
         }
+
         if (const QcStatus stopped = m_server->shutdown(); !stopped) {
             printError(u"saving the world failed: "_s + stopped.error());
         }
+
         m_server.reset();
         if (const QcStatus reopened = openWorld(config); !reopened) {
             // No world is open now; requests answer with errors until another world is loaded.
@@ -455,14 +461,17 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
             }
             return reopened;
         }
+
         return {};
     }
+
     // Save first so the current world is safe whatever happens next.
     if (m_server) {
         if (const QcStatus saved = m_server->save(); !saved) {
             return qcError(u"Cannot save the current world: %1"_s.arg(saved.error()));
         }
     }
+
     return openWorld(config);
 }
 
@@ -473,22 +482,26 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     for (const QString &warning : std::as_const(generatorWarnings)) {
         printError(u"world generation warning: "_s + warning);
     }
+
     // The current world keeps running when the new one cannot be opened.
     auto server = std::make_unique<QcLocalServerHost>(config, m_content, std::move(generator));
     if (!server->startError().isEmpty()) {
         return qcError(server->startError());
     }
+
     if (m_session) {
         m_session->disconnectFromServer();
         m_session->deleteLater();
         m_session = nullptr;
     }
+
     if (m_server) {
         if (const QcStatus stopped = m_server->shutdown(); !stopped) {
             printError(u"saving the previous world failed: "_s + stopped.error());
         }
         m_server.reset();
     }
+
     m_server = std::move(server);
     m_currentConfig = config;
     m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
@@ -498,6 +511,7 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     if (m_control) {
         m_control->setSession(m_session);
     }
+
     m_session->start();
     return {};
 }
@@ -509,6 +523,7 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         response = {{u"worlds"_s, worldList()}};
         return true;
     }
+
     if (command == u"worldCreate"_s || command == u"worldLoad"_s) {
         const QcResult<QcServerConfig> config = command == u"worldCreate"_s ? createdWorld(request, response) : listedWorld(request, response);
         if (!config) {
@@ -520,10 +535,12 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         response.insert(u"note"_s, u"Send waitUntilReady before acting in the world."_s);
         return true;
     }
+
     if (command == u"handbook"_s) {
         handleHandbookCommand(request, response);
         return true;
     }
+
     if (command == u"worldSave"_s) {
         const QcStatus saved = m_server ? m_server->save() : QcStatus(qcError(u"No world is open"_s));
         if (!saved) {
@@ -532,6 +549,7 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         response = {{u"saved"_s, true}};
         return true;
     }
+
     return false;
 }
 
@@ -607,6 +625,7 @@ void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObje
                     {u"error"_s, u"Unknown language '%1' (the content has: %2)"_s.arg(language.left(32), m_content->languages().join(u", "_s))}};
         return;
     }
+
     const QcHandbook &book = handbook(language);
     const auto summaries = [&book](const QList<qsizetype> &indices) {
         QJsonArray list;
@@ -615,6 +634,7 @@ void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObje
         }
         return list;
     };
+
     if (request.contains(u"entry"_s)) {
         // An entry id ("block:qtcraft:stone") or a content name ("stone", "qtcraft:zombie").
         QString id = request.value(u"entry"_s).toString();
@@ -626,17 +646,21 @@ void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObje
             }
             entry = book.entry(prefix + name);
         }
+
         if (!entry) {
             response = {{u"ok"_s, false}, {u"error"_s, u"No handbook entry '%1'"_s.arg(id)}};
             return;
         }
+
         response = {{u"entry"_s, QcHandbookJson::entry(book, *entry)}};
         return;
     }
+
     if (request.contains(u"search"_s)) {
         response = {{u"results"_s, summaries(book.search(request.value(u"search"_s).toString()))}};
         return;
     }
+
     if (request.contains(u"category"_s)) {
         const QcHandbook::Category *category = book.category(request.value(u"category"_s).toString());
         if (!category) {
@@ -646,6 +670,7 @@ void QcHeadlessGame::handleHandbookCommand(const QJsonObject &request, QJsonObje
         response = {{u"entries"_s, summaries(category->entries)}};
         return;
     }
+
     response = {{u"categories"_s, QcHandbookJson::categories(book)},
                 {u"entries"_s, book.entries().size()},
                 {u"problems"_s, QJsonArray::fromStringList(book.problems())}};

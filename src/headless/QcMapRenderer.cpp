@@ -58,6 +58,7 @@ QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &cont
     const int size = 2 * area.radius / area.blocksPerPixel;
     QImage image(size, size, QImage::Format_RGB32);
     QHash<QcBlockId, QColor> colours;
+
     for (int py = 0; py < size; ++py) {
         for (int px = 0; px < size; ++px) {
             const int x = area.centreX - area.radius + px * area.blocksPerPixel;
@@ -69,6 +70,7 @@ QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &cont
             image.setPixelColor(px, py, mapPixel(generator, generator.column(x, z), colours.value(surface)));
         }
     }
+
     return image;
 }
 
@@ -76,6 +78,7 @@ QImage renderBiomes(const QcTerrainGenerator &generator, Area area)
 {
     const int size = 2 * area.radius / area.blocksPerPixel;
     QImage image(size, size, QImage::Format_RGB32);
+
     for (int py = 0; py < size; ++py) {
         for (int px = 0; px < size; ++px) {
             const int x = area.centreX - area.radius + px * area.blocksPerPixel;
@@ -90,6 +93,7 @@ QImage renderBiomes(const QcTerrainGenerator &generator, Area area)
             image.setPixelColor(px, py, QColor::fromHsvF(std::fmod(float(column.biome) * 0.381966f, 1.0f), 0.65f, light));
         }
     }
+
     return image;
 }
 
@@ -101,6 +105,7 @@ QImage renderSlice(const QcTerrainGenerator &generator, const QcContentRegistry 
     QHash<QcBlockId, QColor> colours;
     const QcBlockPos first{cut.centreX - cut.radius, 0, cut.z};
     std::shared_ptr<QcChunk> chunk;
+
     for (int i = 0; i < width; ++i) {
         const QcBlockPos column{first.x + i, 0, cut.z};
         if (!chunk || chunk->pos() != column.chunk()) {
@@ -117,6 +122,7 @@ QImage renderSlice(const QcTerrainGenerator &generator, const QcContentRegistry 
             fillCell(image, {i * cut.scale, (sliceHeight - 1 - y) * cut.scale}, cut.scale, colours.value(block));
         }
     }
+
     return image;
 }
 

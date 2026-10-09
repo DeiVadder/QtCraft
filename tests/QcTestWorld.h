@@ -52,6 +52,7 @@ inline QcContentRegistry qcMakeTestContent()
     if (!content.registerBlock(stone)) {
         qFatal("cannot register test:stone");
     }
+
     QcBlockDefinition water;
     water.name = QStringLiteral("test:water");
     water.renderLayer = QcRenderLayer::Translucent;
@@ -64,5 +65,6 @@ inline QcContentRegistry qcMakeTestContent()
     if (!content.registerBlock(water)) {
         qFatal("cannot register test:water");
     }
+
     return content;
 }

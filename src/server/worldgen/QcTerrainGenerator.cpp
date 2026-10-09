@@ -265,6 +265,7 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
             depth = -1;
             continue;
         }
+
         depth += 1;
         QcBlockId block = stone;
         if (depth == 0) {
@@ -272,14 +273,17 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
         } else if (depth <= biome.subsurfaceDepth) {
             block = subsurface;
         }
+
         // Sand and gravel would fall into the hollows of an overhang band: rock instead.
         if (overhangs && block != stone && m_content->isValidBlock(block) && m_content->block(block).falls) {
             block = stone;
         }
+
         // Solid at the bottom, thinning out over the layers above.
         if (y == 0 || (y < bedrockLayers && qcPositionRandom(m_seed, worldX, y, worldZ) < double(bedrockLayers - y) / bedrockLayers)) {
             block = bedrock;
         }
+
         chunk.setBlock(localX, y, localZ, block);
     }
 

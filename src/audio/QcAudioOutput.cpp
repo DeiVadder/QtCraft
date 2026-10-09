@@ -37,11 +37,13 @@ bool QcAudioOutput::start()
     if (m_sink) {
         return true;
     }
+
     const QAudioDevice device = QMediaDevices::defaultAudioOutput();
     if (device.isNull()) {
         fail(u"no audio output device"_s);
         return false;
     }
+
     QAudioFormat format = device.preferredFormat();
     format.setChannelCount(2);
     format.setSampleFormat(QAudioFormat::Float);
@@ -54,10 +56,12 @@ bool QcAudioOutput::start()
         fail(u"the device '%1' supports neither float nor 16-bit stereo output"_s.arg(device.description()));
         return false;
     }
+
     {
         const std::scoped_lock lock(m_mutex);
         m_mixer = QcAudioMixer(format.sampleRate());
     }
+
     m_device = new QcMixerDevice([this](float *out, int frames) { render(out, frames); }, sampleFormat, this);
     m_device->open(QIODevice::ReadOnly);
     m_sink = std::make_unique<QAudioSink>(device, format);
@@ -71,12 +75,14 @@ bool QcAudioOutput::start()
         fail(u"the audio output could not be started (error %1)"_s.arg(code));
         return false;
     }
+
     // A device that goes away later stops the sink; say so instead of going quiet without a word.
     connect(m_sink.get(), &QAudioSink::stateChanged, this, [this](QtAudio::State state) {
         if (state == QtAudio::StoppedState && m_sink && m_sink->error() != QtAudio::NoError) {
             qCWarning(lcAudio) << "Audio output stopped, error" << int(m_sink->error());
         }
     });
+
     m_error.clear();
     qCInfo(lcAudio).noquote() << u"Audio output: %1, %2 Hz, %3"_s.arg(device.description())
                                      .arg(format.sampleRate())

@@ -89,7 +89,7 @@ printf '%s\n' '{"cmd":"waitUntilReady"}' '{"cmd":"look","yaw":90}' \
   | build/debug/src/headless/qtcraft-headless --seed 42
 ```
 
-The scenario tests (`tests/test_scenarios.cpp`, `tests/scenarios/*.jsonl`) use exactly this interface.
+The scenario tests (`tests/gameplay/test_scenarios.cpp`, `tests/scenarios/*.jsonl`) use exactly this interface.
 
 ## Relation to future bridges
 

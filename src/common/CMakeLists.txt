@@ -1,98 +1,110 @@
 qt_add_library(qc_common STATIC
-    QcAabb.h
-    QcBlockAccess.h
-    QcBlockDefinition.h
-    QcBlockProperty.h
-    QcBlockState.h
-    QcBlockStateTable.h QcBlockStateTable.cpp
-    QcShapeCondition.h
-    QcShapeDefinition.h
-    QcShapePart.h
-    QcLightVolume.h QcLightVolume.cpp
-    QcBlockFace.h
-    QcBlockPos.h QcBlockPos.cpp
-    QcChunk.h QcChunk.cpp
-    QcChunkPos.h QcChunkPos.cpp
-    QcChunkSection.h QcChunkSection.cpp
-    QcConnection.h QcConnection.cpp
-    QcContentNames.h QcContentNames.cpp
-    QcCrc32.h QcCrc32.cpp
-    QcDayCycle.h QcDayCycle.cpp
-    QcBlockParser.h QcBlockParser.cpp
-    QcContentFields.h QcContentFields.cpp
-    QcContentParser.h QcContentParser.cpp
-    QcItemParser.h QcItemParser.cpp
-    QcJsonFieldReader.h QcJsonFieldReader.cpp
-    QcMaterialParser.h QcMaterialParser.cpp
-    QcMobParser.h QcMobParser.cpp
-    QcRecipeParser.h QcRecipeParser.cpp
-    QcShapeParser.h QcShapeParser.cpp
-    QcSoundParser.h QcSoundParser.cpp
-    QcWorldgenParser.h QcWorldgenParser.cpp
-    QcContentRegistry.h QcContentRegistry.cpp
-    QcBlockSerializer.h QcBlockSerializer.cpp
-    QcContentSerializer.h QcContentSerializer.cpp
-    QcPackReference.h
-    QcPartFamily.h
-    QcPartGenerator.h QcPartGenerator.cpp
-    QcMaterialDefinition.h
-    QcCrafting.h QcCrafting.cpp
-    QcEntityMotion.h
-    QcHandbook.h QcHandbook.cpp
-    QcHandbookBlockPages.h QcHandbookBlockPages.cpp
-    QcHandbookBuilder.h QcHandbookBuilder.cpp
-    QcHandbookChapter.h
-    QcHandbookChapterPages.h QcHandbookChapterPages.cpp
-    QcHandbookContext.h
-    QcHandbookCreaturePages.h QcHandbookCreaturePages.cpp
-    QcHandbookEntry.h
-    QcHandbookIndex.h QcHandbookIndex.cpp
-    QcHandbookItemPages.h QcHandbookItemPages.cpp
-    QcHandbookJson.h QcHandbookJson.cpp
-    QcHandbookLinks.h QcHandbookLinks.cpp
-    QcHandbookMarkdown.h QcHandbookMarkdown.cpp
-    QcHandbookOverviewPages.h QcHandbookOverviewPages.cpp
-    QcHandbookRecipes.h QcHandbookRecipes.cpp
-    QcHandbookText.h QcHandbookText.cpp
-    QcHandbookWorldPages.h QcHandbookWorldPages.cpp
-    QcInProcessTransport.h QcInProcessTransport.cpp
-    QcIntMath.h
-    QcInventory.h QcInventory.cpp
-    QcItemDefinition.h
-    QcItemStack.h
-    QcKeyBindings.h QcKeyBindings.cpp
-    QcLiquidDefinition.h
-    QcLiquidReaction.h
-    QcMachineDefinition.h
-    QcMailbox.h
-    QcMessages.h
-    QcEntityMessages.h
-    QcMachineMessages.h
-    QcPlayerMessages.h
-    QcSessionMessages.h
-    QcWorldMessages.h
-    QcMining.h QcMining.cpp
-    QcAppearance.h
-    QcAppearanceDefinition.h
-    QcMobDefinition.h
-    QcModelDefinition.h
-    QcPhysics.h QcPhysics.cpp
-    QcPlayerInput.h
-    QcProtocol.h QcProtocol.cpp
-    QcRaycast.h QcRaycast.cpp
-    QcRecipeDefinition.h QcRecipeDefinition.cpp
-    QcResult.h
-    QcSmeltingRecipe.h
-    QcSoundDefinition.h QcSoundDefinition.cpp
-    QcSoundKeys.h QcSoundKeys.cpp
-    QcStreamLimits.h
-    QcTextureDefinition.h
-    QcTransport.h
-    QcVec3.h
-    QcWorldgenDefinitions.h
-    QcWorkerPool.h QcWorkerPool.cpp
-    QcWorldConstants.h
+    core/QcAabb.h
+    world/QcBlockAccess.h
+    content/definitions/QcBlockDefinition.h
+    content/definitions/QcBlockProperty.h
+    content/registry/QcBlockState.h
+    content/registry/QcBlockStateTable.h content/registry/QcBlockStateTable.cpp
+    content/definitions/QcShapeCondition.h
+    content/definitions/QcShapeDefinition.h
+    content/definitions/QcShapePart.h
+    world/QcLightVolume.h world/QcLightVolume.cpp
+    core/QcBlockFace.h
+    core/QcBlockPos.h core/QcBlockPos.cpp
+    world/QcChunk.h world/QcChunk.cpp
+    core/QcChunkPos.h core/QcChunkPos.cpp
+    world/QcChunkSection.h world/QcChunkSection.cpp
+    protocol/QcConnection.h protocol/QcConnection.cpp
+    content/registry/QcContentNames.h content/registry/QcContentNames.cpp
+    core/QcCrc32.h core/QcCrc32.cpp
+    world/QcDayCycle.h world/QcDayCycle.cpp
+    content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
+    content/parser/QcContentFields.h content/parser/QcContentFields.cpp
+    content/parser/QcContentParser.h content/parser/QcContentParser.cpp
+    content/parser/QcItemParser.h content/parser/QcItemParser.cpp
+    content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
+    content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
+    content/parser/QcMobParser.h content/parser/QcMobParser.cpp
+    content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
+    content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
+    content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
+    content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
+    content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
+    content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp
+    content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/definitions/QcPackReference.h
+    content/definitions/QcPartFamily.h
+    content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
+    content/definitions/QcMaterialDefinition.h
+    gameplay/QcCrafting.h gameplay/QcCrafting.cpp
+    physics/QcEntityMotion.h
+    handbook/QcHandbook.h handbook/QcHandbook.cpp
+    handbook/builder/QcHandbookBlockPages.h handbook/builder/QcHandbookBlockPages.cpp
+    handbook/builder/QcHandbookBuilder.h handbook/builder/QcHandbookBuilder.cpp
+    handbook/QcHandbookChapter.h
+    handbook/builder/QcHandbookChapterPages.h handbook/builder/QcHandbookChapterPages.cpp
+    handbook/builder/QcHandbookContext.h
+    handbook/builder/QcHandbookCreaturePages.h handbook/builder/QcHandbookCreaturePages.cpp
+    handbook/QcHandbookEntry.h
+    handbook/builder/QcHandbookIndex.h handbook/builder/QcHandbookIndex.cpp
+    handbook/builder/QcHandbookItemPages.h handbook/builder/QcHandbookItemPages.cpp
+    handbook/QcHandbookJson.h handbook/QcHandbookJson.cpp
+    handbook/QcHandbookLinks.h handbook/QcHandbookLinks.cpp
+    handbook/QcHandbookMarkdown.h handbook/QcHandbookMarkdown.cpp
+    handbook/builder/QcHandbookOverviewPages.h handbook/builder/QcHandbookOverviewPages.cpp
+    handbook/builder/QcHandbookRecipes.h handbook/builder/QcHandbookRecipes.cpp
+    handbook/builder/QcHandbookText.h handbook/builder/QcHandbookText.cpp
+    handbook/builder/QcHandbookWorldPages.h handbook/builder/QcHandbookWorldPages.cpp
+    protocol/QcInProcessTransport.h protocol/QcInProcessTransport.cpp
+    core/QcIntMath.h
+    gameplay/QcInventory.h gameplay/QcInventory.cpp
+    content/definitions/QcItemDefinition.h
+    gameplay/QcItemStack.h
+    gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp
+    content/definitions/QcLiquidDefinition.h
+    content/definitions/QcLiquidReaction.h
+    content/definitions/QcMachineDefinition.h
+    core/QcMailbox.h
+    protocol/QcMessages.h
+    protocol/QcEntityMessages.h
+    protocol/QcMachineMessages.h
+    protocol/QcPlayerMessages.h
+    protocol/QcSessionMessages.h
+    protocol/QcWorldMessages.h
+    gameplay/QcMining.h gameplay/QcMining.cpp
+    content/definitions/QcAppearance.h
+    content/definitions/QcAppearanceDefinition.h
+    content/definitions/QcMobDefinition.h
+    content/definitions/QcModelDefinition.h
+    physics/QcPhysics.h physics/QcPhysics.cpp
+    physics/QcPlayerInput.h
+    protocol/QcProtocol.h protocol/QcProtocol.cpp
+    physics/QcRaycast.h physics/QcRaycast.cpp
+    content/definitions/QcRecipeDefinition.h content/definitions/QcRecipeDefinition.cpp
+    core/QcResult.h
+    content/definitions/QcSmeltingRecipe.h
+    content/definitions/QcSoundDefinition.h content/definitions/QcSoundDefinition.cpp
+    content/definitions/QcSoundKeys.h content/definitions/QcSoundKeys.cpp
+    protocol/QcStreamLimits.h
+    content/definitions/QcTextureDefinition.h
+    protocol/QcTransport.h
+    core/QcVec3.h
+    content/definitions/QcWorldgenDefinitions.h
+    core/QcWorkerPool.h core/QcWorkerPool.cpp
+    core/QcWorldConstants.h
 )
 qc_configure_target(qc_common)
-target_include_directories(qc_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
+# stay "QcName.h" without a path.
+target_include_directories(qc_common PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/world
+    ${CMAKE_CURRENT_SOURCE_DIR}/physics
+    ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
+    ${CMAKE_CURRENT_SOURCE_DIR}/protocol
+    ${CMAKE_CURRENT_SOURCE_DIR}/content/definitions
+    ${CMAKE_CURRENT_SOURCE_DIR}/content/registry
+    ${CMAKE_CURRENT_SOURCE_DIR}/content/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/handbook
+    ${CMAKE_CURRENT_SOURCE_DIR}/handbook/builder)
 target_link_libraries(qc_common PUBLIC Qt::Core)

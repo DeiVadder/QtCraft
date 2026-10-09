@@ -32,6 +32,7 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
 {
     m_musicTimer.setSingleShot(true);
     connect(&m_musicTimer, &QTimer::timeout, this, &QcAudioEngine::renderMusic);
+
     connect(&m_bankWatcher, &QFutureWatcherBase::finished, this, [this] {
         m_bank = m_bankWatcher.result();
         for (const QString &name : m_bank->skipped()) {
@@ -39,11 +40,13 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
         }
         emit bankReady();
     });
+
     connect(&m_musicWatcher, &QFutureWatcherBase::finished, this, [this] {
         const std::shared_ptr<const QcSampleBuffer> piece = m_musicWatcher.result();
         if (!m_musicEnabled || !isActive() || !piece || piece->samples.empty()) {
             return;
         }
+
         m_output.withMixer([this, &piece](QcAudioMixer &mixer) {
             m_musicVoice = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundBus::Music, false});
         });
@@ -66,6 +69,7 @@ void QcAudioEngine::start(bool enabled)
         qCInfo(lcAudioEngine) << "Audio is switched off";
         return;
     }
+
     m_output.start();
 }
 
@@ -74,12 +78,14 @@ void QcAudioEngine::setContent(std::shared_ptr<const QcContentRegistry> content)
     if (content == m_content) {
         return;
     }
+
     stopWorldSounds();
     m_content = std::move(content);
     m_bank.reset();
     if (!m_content || !isActive()) {
         return;
     }
+
     const int rate = m_output.sampleRate();
     m_bankWatcher.setFuture(QtConcurrent::run([content = m_content, rate] {
         return std::make_shared<const QcSoundBank>(QcSoundBank::build(*content, rate));
@@ -102,6 +108,7 @@ std::shared_ptr<const QcSampleBuffer> QcAudioEngine::pickVariant(const QcSoundBa
     if (entry.variants.isEmpty()) {
         return {};
     }
+
     return entry.variants[m_random.bounded(int(entry.variants.size()))];
 }
 
@@ -128,11 +135,13 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcVec3 &ears, double yawDe
     if (!isActive() || !m_bank) {
         return;
     }
+
     const QcSoundBank::Entry *entry = m_bank->find(cue.key);
     if (!entry) {
         warnUnknown(cue.key);
         return;
     }
+
     const QcSoundDefinition &sound = entry->definition;
     const QcSoundSpatial::Placement placement =
         QcSoundSpatial::place(ears, yawDegrees, cue.position, sound.range * std::max(1.0, double(cue.volume)));
@@ -140,6 +149,7 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcVec3 &ears, double yawDe
     if (gain < audibleGain) {
         return;
     }
+
     const double pitch = cue.pitch * (1.0 + sound.pitchVariation * (2.0 * m_random.generateDouble() - 1.0));
     startVoice(*entry, {gain, placement.pan, pitch, sound.bus, false});
 }
@@ -149,11 +159,13 @@ void QcAudioEngine::playUi(const QString &key)
     if (!isActive() || !m_bank) {
         return;
     }
+
     const QcSoundBank::Entry *entry = m_bank->find(key);
     if (!entry) {
         warnUnknown(key);
         return;
     }
+
     const double pitch = 1.0 + entry->definition.pitchVariation * (2.0 * m_random.generateDouble() - 1.0);
     startVoice(*entry, {float(entry->definition.volume), 0.0f, pitch, entry->definition.bus, false});
 }
@@ -164,12 +176,14 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
     if (!isActive() || !m_bank) {
         return;
     }
+
     const std::array<float, 3> values = {levels.wind, levels.cave, levels.water};
     for (std::size_t i = 0; i < values.size(); ++i) {
         const QcSoundBank::Entry *entry = m_bank->find(ambienceKeys()[i]);
         if (!entry) {
             continue;
         }
+
         const float gain = values[i] * float(entry->definition.volume);
         QcAudioMixer::VoiceId &voice = m_ambienceVoices[i];
         if (voice == 0) {
@@ -188,11 +202,13 @@ void QcAudioEngine::setMusicEnabled(bool enabled)
     if (m_musicEnabled == enabled) {
         return;
     }
+
     m_musicEnabled = enabled;
     if (enabled) {
         scheduleMusic(firstMusicDelay + m_random.bounded(firstMusicDelay + 1));
         return;
     }
+
     m_musicTimer.stop();
     const QcAudioMixer::VoiceId voice = m_musicVoice;
     m_output.withMixer([voice](QcAudioMixer &mixer) { mixer.stop(voice); });
@@ -209,6 +225,7 @@ void QcAudioEngine::renderMusic()
     if (!m_musicEnabled || !isActive()) {
         return;
     }
+
     const quint64 seed = m_random.generate64();
     const int rate = m_output.sampleRate();
     m_musicWatcher.setFuture(QtConcurrent::run([seed, rate] {

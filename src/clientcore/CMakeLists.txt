@@ -1,59 +1,69 @@
 qt_add_library(qc_clientcore STATIC
-    QcAmbience.h QcAmbience.cpp
-    QcAnimator.h QcAnimator.cpp
-    QcAppIcon.h QcAppIcon.cpp
-    QcAudioMixer.h QcAudioMixer.cpp
-    QcBlockIcon.h QcBlockIcon.cpp
-    QcBlockLightEngine.h QcBlockLightEngine.cpp
-    QcBlockRenderTable.h QcBlockRenderTable.cpp
-    QcBlockVertex.h
-    QcCamera.h QcCamera.cpp
-    QcKeyControls.h QcKeyControls.cpp
-    QcKeyLabels.h QcKeyLabels.cpp
-    QcChunkLight.h
-    QcChunkMesh.h
-    QcChunkMesher.h QcChunkMesher.cpp
-    QcClientEntities.h QcClientEntities.cpp
-    QcClientEntity.h
-    QcClientSession.h QcClientSession.cpp
-    QcClientWorld.h QcClientWorld.cpp
-    QcEntityMesh.h
-    QcEntityMesher.h QcEntityMesher.cpp
-    QcEntityPose.h
-    QcEntityLight.h
-    QcEntityVertex.h
-    QcFrustum.h QcFrustum.cpp
-    QcGameSettings.h QcGameSettings.cpp
-    QcIndexPacking.h QcIndexPacking.cpp
-    QcLocalSounds.h QcLocalSounds.cpp
-    QcMusicComposer.h QcMusicComposer.cpp
-    QcControlActiveCommand.h
-    QcControlAim.h QcControlAim.cpp
-    QcControlArguments.h QcControlArguments.cpp
-    QcControlCommandTable.h QcControlCommandTable.cpp
-    QcControlContext.h QcControlContext.cpp
-    QcControlEntityCommands.h QcControlEntityCommands.cpp
-    QcControlInterface.h QcControlInterface.cpp
-    QcControlInventoryCommands.h QcControlInventoryCommands.cpp
-    QcControlMachineCommands.h QcControlMachineCommands.cpp
-    QcControlMovementCommands.h QcControlMovementCommands.cpp
-    QcControlReports.h QcControlReports.cpp
-    QcControlSessionCommands.h QcControlSessionCommands.cpp
-    QcControlWorldCommands.h QcControlWorldCommands.cpp
-    QcMeshScheduler.h QcMeshScheduler.cpp
-    QcMouseLook.h QcMouseLook.cpp
-    QcSampleBuffer.h
-    QcScreenChoice.h QcScreenChoice.cpp
-    QcSectionKey.h
-    QcSoundBank.h QcSoundBank.cpp
-    QcSoundCue.h
-    QcSoundSpatial.h QcSoundSpatial.cpp
-    QcSoundSynthesizer.h QcSoundSynthesizer.cpp
-    QcTextureAtlas.h QcTextureAtlas.cpp
-    QcTextureSpec.h QcTextureSpec.cpp
-    QcTextureSynthesizer.h QcTextureSynthesizer.cpp
-    QcViewCamera.h QcViewCamera.cpp
+    sound/QcAmbience.h sound/QcAmbience.cpp
+    meshing/QcAnimator.h meshing/QcAnimator.cpp
+    textures/QcAppIcon.h textures/QcAppIcon.cpp
+    sound/QcAudioMixer.h sound/QcAudioMixer.cpp
+    textures/QcBlockIcon.h textures/QcBlockIcon.cpp
+    light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp
+    meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
+    meshing/QcBlockVertex.h
+    camera/QcCamera.h camera/QcCamera.cpp
+    settings/QcKeyControls.h settings/QcKeyControls.cpp
+    settings/QcKeyLabels.h settings/QcKeyLabels.cpp
+    light/QcChunkLight.h
+    meshing/QcChunkMesh.h
+    meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
+    session/QcClientEntities.h session/QcClientEntities.cpp
+    session/QcClientEntity.h
+    session/QcClientSession.h session/QcClientSession.cpp
+    session/QcClientWorld.h session/QcClientWorld.cpp
+    meshing/QcEntityMesh.h
+    meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
+    meshing/QcEntityPose.h
+    light/QcEntityLight.h
+    meshing/QcEntityVertex.h
+    camera/QcFrustum.h camera/QcFrustum.cpp
+    settings/QcGameSettings.h settings/QcGameSettings.cpp
+    meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
+    sound/QcLocalSounds.h sound/QcLocalSounds.cpp
+    sound/QcMusicComposer.h sound/QcMusicComposer.cpp
+    control/QcControlActiveCommand.h
+    control/QcControlAim.h control/QcControlAim.cpp
+    control/QcControlArguments.h control/QcControlArguments.cpp
+    control/QcControlCommandTable.h control/QcControlCommandTable.cpp
+    control/QcControlContext.h control/QcControlContext.cpp
+    control/QcControlEntityCommands.h control/QcControlEntityCommands.cpp
+    control/QcControlInterface.h control/QcControlInterface.cpp
+    control/QcControlInventoryCommands.h control/QcControlInventoryCommands.cpp
+    control/QcControlMachineCommands.h control/QcControlMachineCommands.cpp
+    control/QcControlMovementCommands.h control/QcControlMovementCommands.cpp
+    control/QcControlReports.h control/QcControlReports.cpp
+    control/QcControlSessionCommands.h control/QcControlSessionCommands.cpp
+    control/QcControlWorldCommands.h control/QcControlWorldCommands.cpp
+    meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
+    camera/QcMouseLook.h camera/QcMouseLook.cpp
+    sound/QcSampleBuffer.h
+    settings/QcScreenChoice.h settings/QcScreenChoice.cpp
+    meshing/QcSectionKey.h
+    sound/QcSoundBank.h sound/QcSoundBank.cpp
+    sound/QcSoundCue.h
+    sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
+    sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
+    textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
+    textures/QcTextureSpec.h textures/QcTextureSpec.cpp
+    textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
+    camera/QcViewCamera.h camera/QcViewCamera.cpp
 )
 qc_configure_target(qc_clientcore)
-target_include_directories(qc_clientcore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
+# stay "QcName.h" without a path.
+target_include_directories(qc_clientcore PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/control
+    ${CMAKE_CURRENT_SOURCE_DIR}/meshing
+    ${CMAKE_CURRENT_SOURCE_DIR}/light
+    ${CMAKE_CURRENT_SOURCE_DIR}/textures
+    ${CMAKE_CURRENT_SOURCE_DIR}/camera
+    ${CMAKE_CURRENT_SOURCE_DIR}/sound
+    ${CMAKE_CURRENT_SOURCE_DIR}/session
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings)
 target_link_libraries(qc_clientcore PUBLIC qc_common Qt::Core Qt::Gui)

@@ -34,8 +34,10 @@ qint64 QcMixerDevice::readData(char *data, qint64 maxSize)
     if (frames <= 0) {
         return 0;
     }
+
     m_scratch.resize(std::size_t(frames) * 2);
     m_render(m_scratch.data(), frames);
+
     if (m_format == Format::Float) {
         std::memcpy(data, m_scratch.data(), m_scratch.size() * sizeof(float));
     } else {

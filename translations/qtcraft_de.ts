@@ -435,7 +435,7 @@
 <context>
     <name>QcCharacterSettings</name>
     <message>
-        <location filename="../src/app/QcCharacterSettings.cpp" line="83"/>
+        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="83"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
@@ -443,49 +443,49 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="445"/>
-        <location filename="../src/app/QcGameController.cpp" line="515"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="445"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="515"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="518"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="518"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="531"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="531"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="531"/>
-        <location filename="../src/app/QcGameController.cpp" line="700"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="531"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="700"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="657"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="657"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="665"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="665"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="872"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="872"/>
         <source>Disconnected: %1</source>
         <translation>Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="892"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="892"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/QcGameController.cpp" line="1360"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="1360"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -493,12 +493,12 @@
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/QcHudState.cpp" line="54"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="54"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/QcHudState.cpp" line="54"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="54"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -506,27 +506,27 @@
 <context>
     <name>QcKeyControls</name>
     <message>
-        <location filename="../src/clientcore/QcKeyControls.cpp" line="61"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="61"/>
         <source>Cmd cannot be used on a Mac: macOS keeps Cmd+Q, Cmd+H, Cmd+Space and other Cmd shortcuts for itself.</source>
         <translation>Cmd lässt sich am Mac nicht belegen: macOS behält Cmd+Q, Cmd+H, Cmd+Leertaste und andere Cmd-Kürzel für sich.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyControls.cpp" line="63"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="63"/>
         <source>This key cannot be used.</source>
         <translation>Diese Taste lässt sich nicht belegen.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyControls.cpp" line="75"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="75"/>
         <source>%1 was used for “%2”, which now has no key there.</source>
         <translation>%1 war für „%2“ belegt; dort ist jetzt keine Taste.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyControls.cpp" line="76"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="76"/>
         <source>%1 was used for “%2”, which now uses %3.</source>
         <translation>%1 war für „%2“ belegt; das nutzt jetzt %3.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyControls.cpp" line="80"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="80"/>
         <source>Careful: on a Mac, Control with the arrow keys or Space switches desktops or the input source.</source>
         <translation>Achtung: Am Mac wechselt Control mit den Pfeiltasten oder der Leertaste Schreibtische oder die Eingabequelle.</translation>
     </message>
@@ -534,177 +534,177 @@
 <context>
     <name>QcKeyLabels</name>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="11"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="11"/>
         <source>Space</source>
         <translation>Leertaste</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="13"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="13"/>
         <source>Shift</source>
         <translation>Umschalt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="23"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="23"/>
         <source>Ctrl</source>
         <translation>Strg</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="30"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="30"/>
         <source>Enter</source>
         <translation>Enter</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="32"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="32"/>
         <source>Keypad Enter</source>
         <translation>Enter (Ziffernblock)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="34"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="34"/>
         <source>Backspace</source>
         <translation>Rücktaste</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="36"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="36"/>
         <source>Del</source>
         <translation>Entf</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="38"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="38"/>
         <source>Insert</source>
         <translation>Einfg</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="40"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="40"/>
         <source>Home</source>
         <translation>Pos1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="42"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="42"/>
         <source>End</source>
         <translation>Ende</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="44"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="44"/>
         <source>Page Up</source>
         <translation>Bild auf</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="46"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="46"/>
         <source>Page Down</source>
         <translation>Bild ab</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="48"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="48"/>
         <source>Caps Lock</source>
         <translation>Feststelltaste</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="69"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="69"/>
         <source>Walk forward</source>
         <translation>Vorwärts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="71"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="71"/>
         <source>Walk back</source>
         <translation>Rückwärts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="73"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="73"/>
         <source>Walk left</source>
         <translation>Nach links gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="75"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="75"/>
         <source>Walk right</source>
         <translation>Nach rechts gehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="77"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="77"/>
         <source>Jump, swim up</source>
         <translation>Springen, aufwärts schwimmen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="79"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="79"/>
         <source>Sneak</source>
         <translation>Schleichen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="81"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="81"/>
         <source>Sprint</source>
         <translation>Rennen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="83"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="83"/>
         <source>Look up</source>
         <translation>Nach oben sehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="85"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="85"/>
         <source>Look down</source>
         <translation>Nach unten sehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="87"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="87"/>
         <source>Turn left</source>
         <translation>Nach links drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="89"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="89"/>
         <source>Turn right</source>
         <translation>Nach rechts drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="91"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="91"/>
         <source>Mine, attack</source>
         <translation>Abbauen, angreifen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="93"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="93"/>
         <source>Place, use, eat</source>
         <translation>Setzen, benutzen, essen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="95"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="95"/>
         <source>Throw item (with %1: stack)</source>
         <translation>Item werfen (mit %1: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="98"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="98"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="100"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="100"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="102"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="102"/>
         <source>Command</source>
         <translation>Befehl</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="104"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="104"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="106"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="106"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="108"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="108"/>
         <source>Frame rate and position</source>
         <translation>Bildrate und Position</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="110"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="110"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/QcKeyLabels.cpp" line="120"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="120"/>
         <source>Hotbar slot %1</source>
         <translation>Schnellleiste, Feld %1</translation>
     </message>

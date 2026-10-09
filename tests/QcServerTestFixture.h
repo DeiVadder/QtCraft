@@ -65,20 +65,24 @@ protected:
         config.viewDistance = 1;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->connection.send(QcMsg::Hello{QcProtocol::version, QStringLiteral("Raw"), {}});
         pump();
         ticks(2);
+
         const QcVec3 p = m_client->motion.position;
         m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+
         // The spawn lies at a chunk corner; generate the neighbours now so the whole stage exists.
         for (int cx = -1; cx <= 1; ++cx) {
             for (int cz = -1; cz <= 1; ++cz) {
                 m_server->world().loadChunk({m_feet.chunk().x + cx, m_feet.chunk().z + cz});
             }
         }
+
         // A flat 7 x 7 stage around the player, independent of the generated hills.
         for (int dx = -3; dx <= 3; ++dx) {
             for (int dz = -3; dz <= 3; ++dz) {

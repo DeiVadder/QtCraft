@@ -1,40 +1,48 @@
 qt_add_executable(qtcraft
     main.cpp
-    QcScreenshotHook.h QcScreenshotHook.cpp
-    QcGameController.h QcGameController.cpp
-    QcSessionParts.h
-    QcSettingsController.h QcSettingsController.cpp
-    QcAudioSettings.h QcAudioSettings.cpp
-    QcCharacterSettings.h QcCharacterSettings.cpp
-    QcWorldLibraryController.h QcWorldLibraryController.cpp
-    QcPlayerController.h QcPlayerController.cpp
-    QcHudState.h QcHudState.cpp
-    QcHandbookController.h QcHandbookController.cpp
-    QcItemIcons.h QcItemIcons.cpp
-    QcGameInput.h QcGameInput.cpp
-    QcRenderBridge.h QcRenderBridge.cpp
-    QcStartupHooks.h QcStartupHooks.cpp
-    QcBenchmarkRun.h QcBenchmarkRun.cpp
-    QcInventoryModel.h QcInventoryModel.cpp
-    QcKeyControlsForeign.h
-    QcHandbookModel.h QcHandbookModel.cpp
-    QcSlotRange.h QcSlotRange.cpp
-    QcItemIconProvider.h QcItemIconProvider.cpp
-    QcWorldRenderer.h QcWorldRenderer.cpp
-    QcWorldView.h QcWorldView.cpp
-    QcRenderSample.h
-    QcFrameProfile.h QcFrameProfile.cpp
-    QcThreadCpuClock.h QcThreadCpuClock.cpp
-    QcRelativeMouse.h
-    QcScriptedRun.h
+    hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
+    controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcSessionParts.h
+    controllers/QcSettingsController.h controllers/QcSettingsController.cpp
+    controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
+    controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
+    controllers/QcPlayerController.h controllers/QcPlayerController.cpp
+    controllers/QcHudState.h controllers/QcHudState.cpp
+    controllers/QcHandbookController.h controllers/QcHandbookController.cpp
+    models/QcItemIcons.h models/QcItemIcons.cpp
+    input/QcGameInput.h input/QcGameInput.cpp
+    rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
+    hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
+    hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
+    models/QcInventoryModel.h models/QcInventoryModel.cpp
+    input/QcKeyControlsForeign.h
+    models/QcHandbookModel.h models/QcHandbookModel.cpp
+    models/QcSlotRange.h models/QcSlotRange.cpp
+    models/QcItemIconProvider.h models/QcItemIconProvider.cpp
+    rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
+    rendering/QcWorldView.h rendering/QcWorldView.cpp
+    rendering/QcRenderSample.h
+    hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
+    hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
+    input/QcRelativeMouse.h
+    hooks/QcScriptedRun.h
 )
 if(APPLE)
-    target_sources(qtcraft PRIVATE QcRelativeMouse_mac.mm QcScriptedRun_mac.mm)
+    target_sources(qtcraft PRIVATE input/QcRelativeMouse_mac.mm hooks/QcScriptedRun_mac.mm)
     target_link_libraries(qtcraft PRIVATE "-framework AppKit" "-framework ApplicationServices")
 else()
-    target_sources(qtcraft PRIVATE QcRelativeMouse_other.cpp QcScriptedRun_other.cpp)
+    target_sources(qtcraft PRIVATE input/QcRelativeMouse_other.cpp hooks/QcScriptedRun_other.cpp)
 endif()
 qc_configure_target(qtcraft)
+# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
+# stay "QcName.h" without a path.
+target_include_directories(qtcraft PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/controllers
+    ${CMAKE_CURRENT_SOURCE_DIR}/models
+    ${CMAKE_CURRENT_SOURCE_DIR}/rendering
+    ${CMAKE_CURRENT_SOURCE_DIR}/hooks
+    ${CMAKE_CURRENT_SOURCE_DIR}/input)
 target_compile_definitions(qtcraft PRIVATE QTCRAFT_VERSION="${PROJECT_VERSION}")
 if(QC_QML_DEBUG)
     target_compile_definitions(qtcraft PRIVATE QT_QML_DEBUG)

@@ -21,6 +21,7 @@ QcStatus writeWav(const QString &path, const QcSampleBuffer &buffer)
     if (!file.open(QIODevice::WriteOnly)) {
         return qcError(u"Cannot write %1"_s.arg(path));
     }
+
     const auto dataBytes = quint32(buffer.samples.size() * sizeof(qint16));
     QDataStream stream(&file);
     stream.setByteOrder(QDataStream::LittleEndian);
@@ -34,6 +35,7 @@ QcStatus writeWav(const QString &path, const QcSampleBuffer &buffer)
     for (const float sample : buffer.samples) {
         stream << qint16(std::lround(std::clamp(sample, -1.0f, 1.0f) * 32767.0f));
     }
+
     if (!file.commit()) {
         return qcError(u"Cannot write %1"_s.arg(path));
     }
@@ -58,6 +60,7 @@ QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString 
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));
     }
+
     QStringList report;
     for (const QcSoundDefinition &sound : content.sounds()) {
         const QcSampleBuffer buffer = QcSoundSynthesizer::render(sound, 0);
@@ -68,6 +71,7 @@ QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString 
         }
         report.append(describe(sound.name, buffer));
     }
+
     const QcSampleBuffer music =
         QcMusicComposer::render(QcMusicComposer::compose(musicSeed), QcSoundSynthesizer::defaultSampleRate);
     const QString musicName = u"music-%1"_s.arg(musicSeed);

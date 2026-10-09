@@ -41,11 +41,13 @@ Rectangle {
                 game.player.takeCraftingResult();
             return;
         }
+
         if (pickedSlot < 0) {
             if (!empty)
                 pickedSlot = slot;
             return;
         }
+
         if (pickedSlot !== slot)
             game.player.moveItem(pickedSlot, slot, button === Qt.RightButton ? 1 : 0);
         // Right click keeps the stack picked up so several cells can be filled one by one.

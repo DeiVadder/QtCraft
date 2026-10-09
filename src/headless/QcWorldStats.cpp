@@ -135,6 +135,7 @@ ChunkCounts countChunk(const QcTerrainGenerator &generator, const QcContentRegis
     ChunkCounts counts;
     const std::shared_ptr<QcChunk> chunk = generator.generate(pos);
     const ChunkScan scan{generator, content, *chunk};
+
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
             const QcTerrainGenerator::Column column =
@@ -146,6 +147,7 @@ ChunkCounts countChunk(const QcTerrainGenerator &generator, const QcContentRegis
             }
         }
     }
+
     return counts;
 }
 
@@ -214,18 +216,21 @@ Region floodRegion(const BiomeGrid &grid, QList<int> &label, qsizetype start, in
     Region region;
     region.biome = grid.cells[start];
     label[start] = id;
+
     QList<qsizetype> stack{start};
     while (!stack.isEmpty()) {
         const qsizetype cell = stack.takeLast();
         region.cells += 1;
         const int cx = int(cell % grid.size);
         const int cz = int(cell / grid.size);
+
         for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}) {
             const int nx = cx + dx;
             const int nz = cz + dz;
             if (nx < 0 || nx >= grid.size || nz < 0 || nz >= grid.size) {
                 continue;
             }
+
             const qsizetype neighbour = qsizetype(nz) * grid.size + nx;
             if (grid.cells[neighbour] != region.biome) {
                 region.edges += 1;
@@ -235,6 +240,7 @@ Region floodRegion(const BiomeGrid &grid, QList<int> &label, qsizetype start, in
             }
         }
     }
+
     return region;
 }
 
@@ -321,14 +327,17 @@ QStringList surfaceLines(const ChunkCounts &total, const QcTerrainGenerator &gen
         for (const qint64 count : *biome) {
             columns += count;
         }
+
         QList<QcBlockId> tops = biome->keys();
         std::ranges::sort(tops, [&](QcBlockId a, QcBlockId b) { return biome->value(a) > biome->value(b); });
         QStringList parts;
         for (const QcBlockId top : std::as_const(tops)) {
             parts << u"%1 %2"_s.arg(content.block(top).name, percent(double(biome->value(top)), double(columns)));
         }
+
         lines << u"%1 (%2 columns): %3"_s.arg(biomeLabel(generator, biome.key())).arg(columns).arg(parts.join(u", "_s));
     }
+
     return lines;
 }
 
@@ -397,6 +406,7 @@ QMap<QString, TerrainStats> sampleTerrain(const QcTerrainGenerator &generator)
             if (column.height - 1 < generator.seaLevel()) {
                 continue;
             }
+
             const int steepest = std::max({std::abs(generator.column(x + 1, z).height - column.height),
                                            std::abs(generator.column(x, z + 1).height - column.height)});
             TerrainStats &entry = terrain[biomeLabel(generator, column.biome)];
@@ -405,6 +415,7 @@ QMap<QString, TerrainStats> sampleTerrain(const QcTerrainGenerator &generator)
             entry.heights.append(column.height - 1);
         }
     }
+
     return terrain;
 }
 
@@ -414,10 +425,12 @@ QStringList terrainLines(const QcTerrainGenerator &generator)
     QStringList lines{QString(), u"== Dry land within %1 blocks: steepest step to a neighbour, surface height"_s.arg(terrainRadius)};
     lines << u"%1 %2 %3 %4 %5 %6 %7 %8   %9"_s.arg(u"biome"_s, -14).arg(u"0"_s, 7).arg(u"1"_s, 7).arg(u"2"_s, 7).arg(u"3"_s, 7)
                  .arg(u"4"_s, 7).arg(u"5+"_s, 7).arg(u"cliff%"_s, 7).arg(u"height p5/p50/p95/max"_s);
+
     for (auto it = terrain.begin(); it != terrain.end(); ++it) {
         TerrainStats &entry = it.value();
         std::ranges::sort(entry.heights);
         const auto at = [&](double q) { return entry.heights[qsizetype(q * double(entry.heights.size() - 1))]; };
+
         QString line = u"%1"_s.arg(it.key(), -14);
         for (const qint64 count : entry.slope) {
             line += u" %1"_s.arg(percent(double(count), double(entry.columns)), 7);
@@ -426,6 +439,7 @@ QStringList terrainLines(const QcTerrainGenerator &generator)
                     .arg(at(0.05)).arg(at(0.5)).arg(at(0.95)).arg(entry.heights.constLast());
         lines << line;
     }
+
     return lines;
 }
 
