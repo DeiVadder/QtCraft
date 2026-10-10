@@ -93,7 +93,7 @@ run() {
 
 case "$TOOL" in
 breakdown)
-    scenarios=${2:-"stand walk sprint crowd inventory furnace handbook light liquids"}
+    scenarios=${2:-"stand walk sprint crowd inventory furnace handbook light liquids glass"}
     for SCENARIO in $scenarios; do
         line=$(run "$SCENARIO")
         echo "$SCENARIO view=$VIEW $line"

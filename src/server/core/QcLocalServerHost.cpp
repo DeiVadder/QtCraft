@@ -58,7 +58,8 @@ std::unique_ptr<QcTransport> QcLocalServerHost::connectClient()
 void QcLocalServerHost::acceptPendingClients(QcServer *server)
 {
     for (std::unique_ptr<QcTransport> &transport : m_pendingClients.takeAll()) {
-        server->addClient(std::move(transport));
+        // In-process transports exist only inside this process: the player who opened the world.
+        server->addClient(std::move(transport), QcServer::ClientOrigin::Local);
     }
 }
 

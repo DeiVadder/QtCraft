@@ -10,6 +10,14 @@
 #              four times a second (block light and remeshing in the background)
 #   liquids  - standing on a cleared stone floor while water and lava sources appear above it and
 #              vanish again twice a second (flow steps on the server, liquid meshing)
+#   glass    - standing at night on a cleared log floor inside three square walls of transparent
+#              blocks (panes at 4 m, glass at 7 m, leaves and ice at 10 m) with eight lamps, while
+#              patches of light sources and transparent blocks appear and vanish around the player
+#              twice a second (translucent sorting, cutout meshing, block light, remeshing). Uses
+#              only blocks from before the block expansion, so it also runs on older builds (A/B)
+#   glass-full - the same with the blocks of the block expansion: stained glass and panes, iron
+#              bars, firefly glass, lanterns, small torches and cobwebs (newer builds only; an
+#              older build answers /fill with an unknown block with a usage line and skips it)
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 
@@ -20,6 +28,79 @@ limited() {
 CROWD_ITEMS="coal diamond gold_ingot iron_ingot stick raw_porkchop rotten_flesh slimeball wooden_sword stone_sword
 iron_sword diamond_sword wooden_pickaxe stone_pickaxe iron_pickaxe diamond_pickaxe wooden_axe stone_axe iron_axe
 diamond_axe wooden_shovel stone_shovel iron_shovel diamond_shovel"
+
+# Blocks of the glass scenarios: the walls at 4, 7 and 10 m (one block per side: +x, -x, +z, -z),
+# the eight lamps and the eight toggled patches (light sources on floor rows, transparent blocks
+# in upright 3 x 3 patches).
+GLASS_WALLS="glass_pane glass_pane glass_pane glass_pane glass glass glass glass oak_leaves birch_leaves spruce_leaves ice"
+GLASS_LAMPS="torch mine_lamp torch mine_lamp mine_lamp torch mine_lamp torch"
+GLASS_TOGGLES="torch glass mine_lamp glass_pane torch oak_leaves mine_lamp glass"
+GLASS_FULL_WALLS="red_stained_glass_pane blue_stained_glass_pane iron_bars lime_stained_glass_pane yellow_stained_glass
+cyan_stained_glass firefly_glass magenta_stained_glass oak_leaves cobweb spruce_leaves white_stained_glass"
+GLASS_FULL_LAMPS="lantern small_torch firefly_glass torch small_torch lantern torch firefly_glass"
+GLASS_FULL_TOGGLES="small_torch red_stained_glass lantern blue_stained_glass_pane firefly_glass birch_leaves torch cobweb"
+
+# Word $1 (counted from 1) of the remaining arguments.
+word() {
+    shift "$1"
+    echo "$1"
+}
+
+# Prints the chat lines of a glass scenario, one per line.
+# Usage: glass_chat <walls> <lamps> <toggles> <seconds>
+# The lamps follow over the warm-up and the toggles come twice a second, each changing a row or patch
+# of blocks. (Paced below the chat limit of 2 a second, bursts of 20, which applied to the local
+# player before the exemption of E-091; kept so older builds get the same load.) The floor is
+# made of logs, so the leaves keep a trunk in reach and do not decay.
+glass_chat() {
+    walls=$1
+    lamps=$2
+    toggles=$3
+    echo "/time set night"
+    echo "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 oak_log"
+    echo "/fill ~-11 ~ ~-11 ~11 ~5 ~11 air"
+    i=0
+    for r in 4 7 10; do
+        q=$((r - 1))
+        # shellcheck disable=SC2086
+        echo "/fill ~$r ~ ~-$r ~$r ~3 ~$r $(word $((i + 1)) $walls)"
+        # shellcheck disable=SC2086
+        echo "/fill ~-$r ~ ~-$r ~-$r ~3 ~$r $(word $((i + 2)) $walls)"
+        # shellcheck disable=SC2086
+        echo "/fill ~-$q ~ ~$r ~$q ~3 ~$r $(word $((i + 3)) $walls)"
+        # shellcheck disable=SC2086
+        echo "/fill ~-$q ~ ~-$r ~$q ~3 ~-$r $(word $((i + 4)) $walls)"
+        i=$((i + 4))
+    done
+    i=1
+    for spot in "5 5" "-5 5" "5 -5" "-5 -5" "8 8" "-8 8" "8 -8" "-8 -8"; do
+        # shellcheck disable=SC2086
+        echo "@$((i * 300)) /setblock ~${spot% *} ~ ~${spot#* } $(word "$i" $lamps)"
+        i=$((i + 1))
+    done
+    end=$((3000 + $4 * 1000))
+    at=3500
+    step=0
+    while [ "$at" -lt "$end" ]; do
+        index=$(((step / 2) % 8))
+        # shellcheck disable=SC2086
+        block=$(word $((index + 1)) $toggles)
+        [ $((step % 2)) -eq 1 ] && block=air
+        case $index in
+        0) area="~5 ~ ~-1 ~5 ~ ~1" ;;
+        1) area="~-1 ~ ~8 ~1 ~2 ~8" ;;
+        2) area="~-5 ~ ~-1 ~-5 ~ ~1" ;;
+        3) area="~-1 ~ ~-8 ~1 ~2 ~-8" ;;
+        4) area="~8 ~ ~-1 ~8 ~ ~1" ;;
+        5) area="~-1 ~ ~5 ~1 ~2 ~5" ;;
+        6) area="~-8 ~ ~-1 ~-8 ~ ~1" ;;
+        *) area="~-1 ~ ~-5 ~1 ~2 ~-5" ;;
+        esac
+        echo "@$at /fill $area $block"
+        step=$((step + 1))
+        at=$((at + 500))
+    done
+}
 
 # Runs one benchmark of the game.
 # Usage: run_game <app> <scenario> <seconds> <view distance> <data dir> <log> [wrapper command...]
@@ -48,6 +129,18 @@ run_game() {
         ;;
     liquids)
         set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air"
+        ;;
+    glass | glass-full)
+        if [ "$scenario" = glass ]; then
+            chat=$(glass_chat "$GLASS_WALLS" "$GLASS_LAMPS" "$GLASS_TOGGLES" "$seconds")
+        else
+            chat=$(glass_chat "$GLASS_FULL_WALLS" "$GLASS_FULL_LAMPS" "$GLASS_FULL_TOGGLES" "$seconds")
+        fi
+        while IFS= read -r line; do
+            set -- "$@" --chat "$line"
+        done <<EOF
+$chat
+EOF
         ;;
     crowd)
         set -- "$@" --chat "/time set day" --chat "/summon qtcraft:pig 16" --chat "/summon qtcraft:pig 16" \

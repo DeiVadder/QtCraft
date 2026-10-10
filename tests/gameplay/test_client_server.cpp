@@ -145,6 +145,25 @@ private slots:
         QVERIFY(host->shutdown().has_value());
     }
 
+    void hostPlayerChatIsNotRateLimited()
+    {
+        // The client of the in-process host is the local player: a burst of commands far above the
+        // chat limit (bursts of 20) arrives complete, as the benchmark scenarios need it.
+        auto host = makeHost(m_content);
+        int healed = 0;
+        QcConnection connection(host->connectClient(), QcProtocol::Peer::Server, [&healed](QcMessage &&message) {
+            if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message); chat && chat->key == u"Healed"_s) {
+                ++healed;
+            }
+        });
+        connection.send(QcMsg::Hello{QcProtocol::version, u"Owner"_s, {}});
+        for (int i = 0; i < 100; ++i) {
+            connection.send(QcMsg::ChatInput{u"/heal"_s});
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(healed, 100, timeoutMs);
+        QVERIFY(host->shutdown().has_value());
+    }
+
     void messagesBeforeHelloAreRejected()
     {
         auto host = makeHost(m_content);

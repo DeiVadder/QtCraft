@@ -91,9 +91,10 @@ QcStatus QcServer::stop()
     return saved;
 }
 
-void QcServer::addClient(std::unique_ptr<QcTransport> transport)
+void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin)
 {
     auto client = std::make_unique<Client>();
+    client->local = origin == ClientOrigin::Local;
     Client *raw = client.get();
     client->connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Client,
                                                         [this, raw](QcMessage &&message) { handleMessage(*raw, std::move(message)); });
@@ -141,7 +142,10 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
 bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
 {
     const std::optional<QcRateLimiter::Kind> kind = QcRateLimiter::kindOf(message);
-    if (!kind || client.rateLimiter.allow(*kind, m_state.tickCount)) {
+    // The local player (in-process host, the operator) is not limited in chat: command bursts of
+    // scripts and benchmark scenarios must arrive complete. All other kinds stay limited for him.
+    const bool exempt = kind && client.local && *kind == QcRateLimiter::Kind::Chat;
+    if (!kind || exempt || client.rateLimiter.allow(*kind, m_state.tickCount)) {
         return true;
     }
 

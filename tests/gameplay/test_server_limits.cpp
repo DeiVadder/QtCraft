@@ -5,6 +5,10 @@
 #include "QcRateLimiter.h"
 #include "QcTestWorld.h"
 
+#include <QRegularExpression>
+
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 // Limits a server needs before strangers join: message rates and line of sight.
@@ -232,6 +236,47 @@ private slots:
         QCOMPARE(m_client->chatLines.size(), 22);
         ticks(1);
         QCOMPARE(m_server->clientCount(), 1);
+    }
+
+    void localPlayerChatIsNotLimited()
+    {
+        join();
+        // The player of the in-process host joins next to the raw client, which counts as remote.
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
+        RawClient owner(std::move(clientEnd));
+        owner.connection.send(QcMsg::Hello{QcProtocol::version, u"Owner"_s, {}});
+        pump();
+        ticks(2);
+        QCOMPARE(m_server->clientCount(), 2);
+        owner.chatKeys.clear();
+
+        // A burst of 100 commands within one tick: every one is answered, nothing is dropped.
+        QTest::failOnWarning(QRegularExpression(u"Rate limit: dropped \\d+ chat messages from Owner"_s));
+        for (int i = 0; i < 100; ++i) {
+            owner.connection.send(QcMsg::ChatInput{u"/heal"_s});
+        }
+        pump();
+        const auto healed = std::count_if(owner.chatKeys.cbegin(), owner.chatKeys.cend(),
+                                          [](const QcMsg::ChatMessage &line) { return line.key == u"Healed"_s; });
+        QCOMPARE(healed, 100);
+
+        // Only chat is exempt: the owner's other kinds keep their buckets (inventory: bursts of 80).
+        QTest::ignoreMessage(QtWarningMsg, "Rate limit: dropped 1 inventory messages from Owner");
+        for (int i = 0; i < 81; ++i) {
+            owner.connection.send(QcMsg::QuickMoveItem{QcMsg::QuickMoveItem::craftingResultSlot});
+        }
+        pump();
+
+        // The remote client is cut off as before: 20 of 30 commands go through.
+        m_client->chatKeys.clear();
+        QTest::ignoreMessage(QtWarningMsg, "Rate limit: dropped 1 chat messages from Raw");
+        for (int i = 0; i < 30; ++i) {
+            m_client->connection.send(QcMsg::ChatInput{u"/heal"_s});
+        }
+        pump();
+        QCOMPARE(m_client->chatKeys.size(), 20);
+        QCOMPARE(m_server->clientCount(), 2);
     }
 
     void serverRepliesCarryTranslationKeys()

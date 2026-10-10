@@ -47,7 +47,11 @@ public:
     void start();
     // Saves, then disconnects every client; returns the result of saving.
     QcStatus stop();
-    void addClient(std::unique_ptr<QcTransport> transport);
+    // Where a client connects from. Local clients are those of the in-process host (single player:
+    // the one who opened the world, who is the operator anyway); their chat lines and commands are
+    // not rate limited (decision E-091, supplement). Everything else is Remote and fully limited.
+    enum class ClientOrigin { Remote, Local };
+    void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
     int clientCount() const { return int(m_state.clients.size()); }
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;

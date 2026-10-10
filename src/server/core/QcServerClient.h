@@ -37,6 +37,8 @@ struct QcServerClient
     int inputBudget = maxInputBudget;
     // Budgets of the other spammable messages.
     QcRateLimiter rateLimiter;
+    // Connected through the in-process host (the local single player); exempt from the chat limit.
+    bool local = false;
     // Positions whose true block was resent in tick `miningResendTick` after a dropped mining message.
     QList<QcBlockPos> miningResends;
     quint64 miningResendTick = 0;
