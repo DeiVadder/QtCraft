@@ -97,12 +97,13 @@ private:
         return int(std::ranges::count(mobs.mobs(), zombie, &QcMobManager::Mob::type));
     }
 
-    // Animals the chunks around the origin get, with `block` over the surface if given.
-    int populatedAnimals(const char *block)
+    // Animals the chunks around the origin get, with `block` over the surface (dy 1, or `dy`) if
+    // given.
+    int populatedAnimals(const char *block, int dy = 1)
     {
         auto world = makeWorld(4);
         if (block) {
-            coverSurface(*world, *m_content, block, 1);
+            coverSurface(*world, *m_content, block, dy);
         }
 
         QcMobManager mobs(m_content, 21);
@@ -527,6 +528,16 @@ private slots:
         // Animals do not appear in cobwebs over their grass either.
         QVERIFY(populatedAnimals(nullptr) > 0);
         QCOMPARE(populatedAnimals("cobweb"), 0);
+    }
+
+    void animalsSpawnUnderTreeCrowns()
+    {
+        // A crown of leaves with room below: the groups stand on the grass under it, as without
+        // the crown. Kinds that never come with a chunk (the mannequin may stand on anything) must
+        // not make the search stop on the leaves.
+        const int open = populatedAnimals(nullptr);
+        QVERIFY(open > 0);
+        QCOMPARE(populatedAnimals("oak_leaves", 4), open);
     }
 };
 

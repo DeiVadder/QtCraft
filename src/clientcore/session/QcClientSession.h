@@ -143,8 +143,12 @@ public:
     double health() const { return m_health; }
     double maxHealth() const { return m_maxHealth; }
     bool isDead() const { return m_dead; }
-    // Seconds of world time, advanced locally between server updates.
+    // Seconds of world time, advanced locally between server updates while the time of day runs.
     double worldTime() const { return m_worldTime; }
+    // Labels floating in the loaded chunks (decision E-222) and a number that changes whenever a
+    // chunk's labels arrived.
+    const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
+    quint64 labelGeneration() const { return m_labelGeneration; }
 
     // Sounds of the last moments (server events and the client's own), oldest first; at most
     // recentSoundLimit. clearRecentSounds() empties the list (control interface).
@@ -268,6 +272,9 @@ private:
     bool m_dead = false;
     double m_worldTime = 0.0;
     double m_dayLength = 600.0;
+    bool m_timeRunning = true;
+    QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
+    quint64 m_labelGeneration = 0;
     QList<QcSoundCue> m_recentSounds;
     QcLocalSounds m_localSounds;
     QcAmbience::Levels m_ambience;

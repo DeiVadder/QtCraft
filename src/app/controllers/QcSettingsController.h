@@ -27,6 +27,7 @@ class QcSettingsController : public QObject
     Q_PROPERTY(double mouseSensitivity READ mouseSensitivity WRITE setMouseSensitivity NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool invertMouse READ invertMouse WRITE setInvertMouse NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool showDebug READ showDebug WRITE setShowDebug NOTIFY settingsChanged FINAL)
+    Q_PROPERTY(bool showLabels READ showLabels WRITE setShowLabels NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     Q_PROPERTY(QString cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
@@ -58,6 +59,9 @@ public:
     void setInvertMouse(bool invert);
     bool showDebug() const { return m_showDebug; }
     void setShowDebug(bool show);
+    // Labels floating in the world (decision E-222); the label key switches them.
+    bool showLabels() const { return m_showLabels; }
+    void setShowLabels(bool show);
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
@@ -91,6 +95,7 @@ private:
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
     bool m_showDebug = true;
+    bool m_showLabels = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QString m_contentLanguage = QStringLiteral("en");

@@ -11,6 +11,7 @@ target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SO
                                                   QTCRAFT_THEME_HEADER="${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 qc_add_test(test_screen_choice SOURCES client/test_screen_choice.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
@@ -31,6 +32,22 @@ add_test(NAME scenario_headless_unknown_command_fails
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(scenario_headless_walk_and_jump scenario_headless_unknown_command_fails PROPERTIES TIMEOUT 90
     ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+
+# Command line errors of the game itself end it before a window opens.
+add_test(NAME app_unknown_world_type_fails
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--world-type;spiral;--screen;builtin;--background;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=Unknown world type 'spiral'"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_flat_layers_need_flat_world_fails
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--world-type;void;--flat-layers;bedrock;--screen;builtin;--background;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=--flat-layers needs --world-type flat"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_unknown_world_type_fails app_flat_layers_need_flat_world_fails PROPERTIES TIMEOUT 60
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
 
 qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 120)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
@@ -54,6 +71,10 @@ qc_add_test(test_world_storage SOURCES world/test_world_storage.cpp LIBRARIES qc
 qc_add_test(test_persistence SOURCES world/test_persistence.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_interaction SOURCES world/test_interaction.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_world_library SOURCES world/test_world_library.cpp LIBRARIES qc_server)
+qc_add_test(test_structures SOURCES world/test_structures.cpp LIBRARIES qc_server)
+qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_server_validation SOURCES gameplay/test_server_validation.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_crafting SOURCES gameplay/test_server_crafting.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_quick_move SOURCES gameplay/test_quick_move.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)

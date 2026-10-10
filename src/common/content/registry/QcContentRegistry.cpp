@@ -409,6 +409,17 @@ void QcContentRegistry::registerOre(QcOreDefinition definition)
     registerByName(m_ores, m_oreIndex, std::move(definition));
 }
 
+void QcContentRegistry::registerStructure(QcStructureDefinition structure)
+{
+    registerByName(m_structures, m_structureIndex, std::move(structure));
+}
+
+const QcStructureDefinition *QcContentRegistry::structure(const QString &name) const
+{
+    const auto it = m_structureIndex.constFind(name);
+    return it != m_structureIndex.constEnd() ? &m_structures[*it] : nullptr;
+}
+
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const
 {
     Q_ASSERT(isValidBlock(id));

@@ -7,6 +7,8 @@
 #include <QList>
 #include <QString>
 
+#include <algorithm>
+
 // One box of a mob's model, in metres relative to the mob's feet centre, facing north (-Z).
 struct QcMobPart
 {
@@ -95,6 +97,12 @@ struct QcMobDefinition
         return rules;
     }
     static constexpr int maxExtraSpawns = 8;
+    // Whether any rule lets it spawn by itself; with all weights 0 it only comes from /summon and
+    // world setups (the showcase's mannequin).
+    bool spawnsNaturally() const
+    {
+        return spawnWeight > 0.0 || std::ranges::any_of(extraSpawns, [](const SpawnRule &rule) { return rule.weight > 0.0; });
+    }
     // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it.
     QString catchWith;
     QString catchItem;

@@ -314,6 +314,10 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
         m_settings.setShowDebug(!m_settings.showDebug());
         m_settings.saveSettings();
         return;
+    case A::Labels:
+        m_settings.setShowLabels(!m_settings.showLabels());
+        m_settings.saveSettings();
+        return;
     case A::Drop:
         // With Ctrl (on a Mac Control) the whole stack.
         m_parts.session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_settings.keys()->bindings().platform())));

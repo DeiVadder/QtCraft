@@ -23,37 +23,38 @@ Inside each library folder the classes live in thematic subfolders (E-089); the 
 | Folder | Files | Content |
 |--------|------:|---------|
 | `src/common/core` | 15 | Vectors, boxes, integer maths, block and chunk positions, faces, world constants, CRC, `QcResult`, worker pool, mailbox |
-| `src/common/world` | 9 | Chunks and palette sections, `QcBlockAccess`, light volume (block light flood fill), day cycle |
+| `src/common/world` | 11 | Chunks and palette sections, `QcBlockAccess`, light volume (block light flood fill), day cycle |
 | `src/common/physics` | 6 | Movement physics, raycast, entity motion, player input |
 | `src/common/gameplay` | 11 | Inventory and item stacks, shift-click targets (`QcQuickMove`), crafting, mining times, key bindings table |
-| `src/common/protocol` | 14 | Connection, transports, message structs and variant, codec, stream limits |
-| `src/common/content/definitions` | 25 | Plain definition structs (blocks, items, shapes, materials, mobs, models, sounds, recipes, worldgen) and sound keys |
+| `src/common/protocol` | 24 | Connection, transports, message structs and variant, codecs by topic, stream limits |
+| `src/common/content/definitions` | 27 | Plain definition structs (blocks, items, shapes, materials, mobs, models, sounds, recipes, worldgen) and sound keys |
 | `src/common/content/registry` | 13 | `QcContentRegistry`, block states (`QcBlockStateTable`), content names, building parts, content-sync serializers |
-| `src/common/content/parser` | 22 | JSON parser entry point and one parser per definition kind, field readers |
+| `src/common/content/parser` | 26 | JSON parser entry point and one parser per definition kind, field readers |
 | `src/common/handbook` | 10 | Handbook model, chapters and entries, Markdown and JSON output, link check |
 | `src/common/handbook/builder` | 21 | `QcHandbookBuilder`, pages per category and their shared helpers |
-| `src/server/core` | 18 | `QcServer`, shared state, clients, config, local host, chat commands, chunk streaming, entity sync, server world, sounds |
+| `src/server/core` | 28 | `QcServer`, shared state, clients, config, local host, chat commands, chunk streaming, entity sync, server world, sounds |
 | `src/server/blocks` | 12 | Block rules, neighbour updates, liquids, falling blocks, block changes |
 | `src/server/gameplay` | 18 | Interaction, inventory, combat, items and plants, mobs, hunger, handbook rule values |
 | `src/server/machines` | 6 | Machines (furnace) and containers (chest) |
 | `src/server/storage` | 14 | World storage and its file kinds, save container, persistence, world library |
 | `src/server/content` | 9 | Base content, bundled mods, content pack and mod loading |
-| `src/server/worldgen` | 19 | `QcWorldGenerator` interface, terrain generator and its parts, noise, trees, test terrain |
+| `src/server/worldgen` | 28 | `QcWorldGenerator` interface and the generator types (`QcWorldGenerators`), one-time world setup (`QcWorldSetup`), terrain generator and its parts, noise, trees, test terrain, structures (`QcStructure`, `QcStructurePlacement`, `QcStateRotation`) |
+| `src/server/worldgen/showcase` | 16 | Showcase world: generator, plan and planner, areas for block categories, creatures, items and trees, category matching |
 | `src/clientcore/session` | 7 | `QcClientSession`, client world and entity mirror |
 | `src/clientcore/control` | 25 | Control interface, command table and command groups |
 | `src/clientcore/meshing` | 18 | Chunk and entity meshers, vertex formats, render table, mesh scheduler, animator |
 | `src/clientcore/light` | 6 | Client block light engine, light snapshots for meshing, the sky of a moment (`QcSky`) |
 | `src/clientcore/textures` | 10 | Texture synthesis, atlas, block and app icons |
-| `src/clientcore/camera` | 10 | Camera, view camera, frustum, mouse look, mouse capture (`QcMouseCapture`) |
+| `src/clientcore/camera` | 12 | Camera, view camera, frustum, mouse look, mouse capture (`QcMouseCapture`), world labels on screen (`QcLabelProjector`) |
 | `src/clientcore/sound` | 16 | Synthesis, sound bank, mixer, spatial sound, local sounds, ambience, music |
 | `src/clientcore/settings` | 10 | Game settings, screen choice, key controls and labels, UI palette (`QcUiPalette`) |
 | `src/app/controllers` | 17 | `QcGameController` and its QML sub-objects (settings, library, player, HUD, handbook) |
-| `src/app/models` | 11 | QML list models (inventory, handbook, slot ranges), item icons, the palette as QML singleton `Theme` (`QcUiTheme`) |
+| `src/app/models` | 13 | QML list models (inventory, handbook, slot ranges), item icons, the palette as QML singleton `Theme` (`QcUiTheme`) |
 | `src/app/rendering` | 9 | `QcWorldView`, `QcWorldRenderer` (QRhi), `QcSkyRenderer`, render bridge and samples |
 | `src/app/input` | 6 | World keyboard and mouse, relative mouse per platform, key controls for QML |
 | `src/app/hooks` | 13 | Test and benchmark hooks: screenshots, startup options, benchmark, scripted runs, frame profile, thread CPU clock |
-| `src/app/qml`, `src/app/shaders` | 22, 9 | QML screens and the QRhi shaders (unchanged locations: QML module and shader resources) |
-| `src/audio`, `src/headless` | 6, 11 | Small single-purpose targets, kept flat |
+| `src/app/qml`, `src/app/shaders` | 23, 9 | QML screens and the QRhi shaders (unchanged locations: QML module and shader resources) |
+| `src/audio`, `src/headless` | 6, 14 | Small single-purpose targets, kept flat |
 | `tests/{content,world,gameplay,client,sound}` | 8, 12, 13, 13, 5 | Test programs by topic; the shared fixtures (`QcTestWorld.h`, `QcServerTestFixture.h`, `QcRawClient.h`, `QcTestUtil.h`) and scenario scripts stay in `tests/` |
 
 Every class has its own header and source, except the thematic message headers and small header-only types; no function is longer than 80 lines and no source file longer than 800 lines (E-088). The larger subsystems are split into collaborating classes:
@@ -88,7 +89,7 @@ Data crosses threads only as immutable snapshots (`std::shared_ptr<const QcChunk
 
 ## Protocol
 
-Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 18: stage 20 changed `ChatMessage` and added `QuickMoveItem`, the block and recipe expansion added the block fields `slowsInside`, `surface.speed`, `surface.jump` and the item field `bottles` to the content sync, because client prediction needs them). Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
+Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decision E-007. Version: `QcProtocol::version` (currently 19: stage 21 added `ChunkLabels` and `WorldTime.running`; 18: stage 20 changed `ChatMessage` and added `QuickMoveItem`, the block and recipe expansion added the block fields `slowsInside`, `surface.speed`, `surface.jump` and the item field `bottles` to the content sync, because client prediction needs them). The payload codecs are one encode/decode overload pair per message, grouped by topic (`QcSessionCodec`, `QcWorldCodec`, `QcPlayerCodec`, `QcEntityCodec`, `QcMachineCodec`, shared field codecs in `QcProtocolCodec`, chunks in `QcChunkCodec`); `QcProtocol.cpp` dispatches on the type tag. Each peer only accepts the message types the other side may send. Chunk sections are a palette plus run-length encoded indices (E-016).
 
 | Message | Direction | Content |
 |---------|-----------|---------|
@@ -96,7 +97,8 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `Welcome` | S→C | protocol version, entity id, world name, seed |
 | `ContentSync` | S→C | complete content registry (incl. the list of loaded packs, block properties and resolved shapes); runtime block ids = block state ids |
 | `ChunkData` | S→C | one chunk column (compressed palette sections) |
-| `ChunkUnload` | S→C | chunk position |
+| `ChunkUnload` | S→C | chunk position (the client drops the chunk's labels too) |
+| `ChunkLabels` | S→C | the labels floating in a chunk, right after its `ChunkData` when it has any: position, text (translation key), detail line, heading; at most 4096 per chunk, texts at most 256 characters (decision E-222) |
 | `BlockUpdate` | S→C | position, block state id |
 | `PlayerInput` | C→S | sequence, movement intent, view direction |
 | `PlayerState` | S→C | last processed input sequence, authoritative motion |
@@ -113,7 +115,7 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `ConsumeItem` | C→S | – (eat the held item) |
 | `EntitySpawn`, `EntityMoves`, `EntityRemove` | S→C | creatures, other players and falling blocks (`mobType` −3 with the block state) within 64 m, dropped items within 32 m (`mobType` −2 with the item stack; sent again when the count changes, moves only when the item moved); players' appearance, view pitch, state flags (swing started, on ground, in water, sneaking, sprinting) and held item; `EntityRemove.died` for deaths |
 | `PlayerHealth` | S→C | health, maximum, dead |
-| `WorldTime` | S→C | seconds, day length |
+| `WorldTime` | S→C | seconds, day length, whether the time runs (game rule `daylightCycle`, E-221) |
 | `AttackEntity`, `Respawn` | C→S | target id / – |
 | `DropItem` | C→S | whole stack or one item of the selected slot |
 | `SetAppearance` | C→S | new appearance (re-sent to other clients) |
@@ -152,7 +154,7 @@ A saved world is a directory below `<app data>/worlds/<folder>` (`QTCRAFT_DATA_D
 
 | File | Content |
 |------|---------|
-| `world.json` | `formatVersion`, `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime`, `packs` (`id`, `name`, `version` of the base game and mods in use), `gameRules` (`keepInventory`) |
+| `world.json` | `formatVersion` (2; format 1 loads as a set-up terrain world), `name`, `seed` (string, 64-bit), `created`, `lastPlayed`, `worldTime`, `packs` (`id`, `name`, `version` of the base game and mods in use), `generator` (`type`: `terrain`, `flat`, `void` or `showcase`, `options`: the layers of a flat world or the platform of a void world, resolved when the world is created, `setupDone`: the generator's one-time setup ran, E-221, E-223), `gameRules` (`keepInventory`, `daylightCycle`, `mobSpawning`) |
 | `regions/r.<rx>.<rz>.qcr` | Modified chunks of a 32 × 32 chunk region: palette of block state names (`name[property=value,...]`, format 2; format 1 has plain names, which load as default states) + chunks (palette sections, run-length indices) |
 | `players/<name>-<hash>.qcp` | Position, velocity, view direction, health, selected slot, inventory (item names, counts, damage), food points and exhaustion (format 2; format 1 files load with full food) |
 | `mobs.qce` | Persistent animals (kind name, position, yaw, health) and the chunks that already got their animals (E-086) |
@@ -235,6 +237,10 @@ Screens (E-078): overlays are QML items over the world (`GameController.overlay`
 
 `QcTerrainGenerator` (decision E-014) is deterministic per seed and thread-safe. The climate (temperature, humidity, ruggedness) is read at coordinates bent twice: the large warp shared with the coasts (420 blocks, ±140) and a smaller one only for the climate (160 blocks, ±200), which frays biome borders; mountains cover about a quarter of the land (E-085, E-101). Players spawn on natural ground of the stored world near the generator's spawn point (E-101). Features and ores take their seeds from their names (`qcNameSalt`, FNV-1a, plus a fixed offset per purpose, E-214), so new content does not move the trees and ores of others; ores may replace cave air (cobwebs, E-216). The server generates chunks on a `QcWorkerPool` (`QcServerWorld::requestChunk`), nearest first with a bounded queue, and collects finished chunks every tick; chunks no player needs are unloaded. Sky light is computed client-side while meshing, block light incrementally on the client's light thread (decisions E-015, E-049).
 
+World types (E-221, E-223): `terrain` (`QcTerrainGenerator`), `flat` (`QcFlatGenerator`: the same layers everywhere, from `worldgen/flat.json` or the world's own layer list), `void` (`QcVoidGenerator`: air but a platform at the spawn, `worldgen/void.json`) and `showcase`; `QcWorldGenerators::create` builds the generator of a world's type and options.
+
+Showcase world (stage 21, decisions E-219 to E-222): generator type `showcase` (`QcShowcaseGenerator`), chosen when a world is created and stored in `world.json`; `QcWorldGenerators::create` builds the generator of a type. `QcShowcasePlanner` lays out a `QcShowcasePlan` once per content: flat ground from `worldgen/showcase.json`, then in rows north of the spawn the demo structures (`structures/*.json` with `showcase`), the trees, an enclosure per creature, a podium area per block category with every state of every block, and every item in chests, each with a title and a lookout (tour stop). The plan holds `QcStructurePlacement`s indexed by chunk; `generate()` writes the ground and the placements of a chunk. Labels come per chunk (`labelsIn`, sent as `ChunkLabels`); the one-time setup (`setup()`: noon standing still, no natural spawning, creatures, chest and furnace contents, block updates, growing saplings) is applied by `QcServerSetup` when the world opens for the first time. Structures are general: a palette of block states and layers of palette keys, placed in quarter turns with turned states (QcStateRotation), chunk by chunk and thread-safe, so villages (stage 30) can use them. On the client `QcLabelProjector` picks the labels to draw each frame (reach, view, not behind an opaque block) and `QcWorldLabelModel` hands them to `WorldLabels.qml`.
+
 ## Rendering
 
 Sky (E-095): `QcSky::at(worldTime)` gives the colours of zenith and horizon, the sunrise and sunset glow, sun and moon directions, the moon phase, star visibility and cloud drift; `QcSkyRenderer` draws it first as one screen-filling triangle (`sky.{vert,frag}`, no vertex buffer, no depth test) with sun disc, lit-sphere moon, turning stars and noise clouds on a layer at 160 m. Fog takes the horizon colour.
@@ -252,10 +258,13 @@ Block light (E-049): `QcBlockLightEngine` keeps the light of all loaded chunks (
 | `scripts/verify.sh --quick\|--full [--tests <regex>] [--sanitizers asan\|tsan]` | `--quick`: debug build and tests (or those matching the regex), static analysis of the C++/QML files changed against `dev`; `--full` (default): all presets, sanitizer tests, release build, whole-project analysis, smoke screenshots. Durations per step |
 | `QTCRAFT_SCREENSHOT=<file.png>` | Saves a screenshot after `QTCRAFT_SCREENSHOT_FRAMES` (default 90) frames and quits; with `--play` it waits until the world is fully loaded and meshed |
 | `--screen builtin\|<index>\|<name>`, `QTCRAFT_SCREEN` | Opens the window on that screen, fully inside it, before it is shown: `builtin` takes the computer's own display (macOS: `CGDisplayIsBuiltin`, matched by geometry), else a screen whose name says built-in, else the primary screen; an index or a name (exact, else contained); the choice is logged. Default: wherever the system puts it |
-| `--background`, `QTCRAFT_BACKGROUND=1` | Scripted run: the application is an accessory (macOS: no Dock icon, never activates itself), the window does not accept focus, the mouse is never captured; input comes only from the script (benchmark keys, `--chat`). All scripts (`bench.sh`, `profile.sh`, `perf-check.sh`, `verify.sh` smoke runs) use `QTCRAFT_SCREEN=builtin` and `QTCRAFT_BACKGROUND=1` |
+| `--background`, `QTCRAFT_BACKGROUND=1` | Scripted run: the application is an accessory (macOS: no Dock icon, never activates itself), the window does not accept focus and stays above other windows (macOS stops drawing a completely covered window, a run behind the user's windows would get no frames), the mouse is never captured; input comes only from the script (benchmark keys, `--chat`). All scripts (`bench.sh`, `profile.sh`, `perf-check.sh`, `verify.sh` smoke runs) use `QTCRAFT_SCREEN=builtin` and `QTCRAFT_BACKGROUND=1` |
 | `QTCRAFT_BENCHMARK=<seconds>` (with `--play`) | After a 3 s warm-up the player sprints and jumps straight ahead; frame times are recorded and logged (average, 99th percentile, worst), then the game quits ; with `QTCRAFT_BENCHMARK_SCENARIO=walk` the player walks without sprinting, with `stand` the player stands still, with `light` the player stands while a torch appears or vanishes on a ring of radius 9 m four times a second, with `liquids` the player stands while water and lava sources appear 4 m up on a ring of radius 8 m or vanish again twice a second. A `BENCH ...` line adds server tick times, peak memory and the frame cost independent of VSync (CPU time per frame of the GUI and render thread, world renderer, uploads, entity meshing, GPU time with `QSG_RHI_PROFILE=1`, meshing per section, draw calls, sections and their buffer size, see E-068) for `scripts/bench.sh`, `scripts/perf-check.sh` and `scripts/profile.sh` |
 | `QTCRAFT_LANGUAGE=<locale>`, `--language <locale>` | Overrides the UI language (e.g. `de`) |
 | `--play`, `--world <name>`, `--seed <seed>` | Start a single-player world immediately |
+| `--world-type terrain\|flat\|void\|showcase`, `--flat-layers <layers>` | World type of the unsaved world `--play` starts (implies `--play`; decisions E-221, E-223); `--flat-layers` sets the layers of a flat world (`bedrock,59*stone,3*dirt,grass_block`). An unknown type or `--flat-layers` without `--world-type flat` ends the game with exit code 1 and a message on stderr before a window opens; layers that do not fit the content show the error screen and end the game with exit code 1 |
+| `--showcase` | Same as `--world-type showcase` (the seed does not matter) |
+| `scripts/showcase-tour.sh [out-dir] [build-dir]` | Screenshot tour through the showcase world: from every lookout and close to every area (stops from `qtcraft-headless --showcase-tour`), the light demo also at night; `TOUR_FILTER`, `TOUR_FRAMES` |
 | `--look <yaw,pitch>` | Initial view direction (for reproducible screenshots) |
 | `--view-distance <chunks>` | View distance (2–16, default 8) |
 | `--spawn <x,z>` | Spawn above this block column (reproducible scenes) |
@@ -264,6 +273,7 @@ Block light (E-049): `QcBlockLightEngine` keeps the light of all loaded chunks (
 | `--handbook <entry\|name\|search>`, `--overlay handbook` | Opens the handbook at an entry (`block:qtcraft:furnace`, `zombie`) or with a search, once the world is loaded; without `--play` in the main menu at once |
 | `qtcraft-headless --export-handbook <dir> [--language de]` | Writes the handbook as Markdown and prints problems: the base game, plus mods only when `--mods-dir` is given |
 | `QTCRAFT_COLOR_SCHEME=light\|system` | The UI is dark whatever the system appearance (E-079); this test hook forces the light scheme or follows the system, for comparison screenshots |
+| `QTCRAFT_MENU_WORLD_TYPE=flat\|void\|showcase` | Test hook: the main menu starts with that world type chosen for a new world, so screenshots show its fields (layers of a flat world) |
 | `--no-audio`, `QTCRAFT_AUDIO=0` | No audio device is opened; the game is silent. Runs with `QTCRAFT_SCREENSHOT` are silent unless `QTCRAFT_AUDIO=1` |
 | `qtcraft-headless --export-sounds <dir> [--seed n]` | Writes every sound of the content (first variant) and the music piece of the seed as 16-bit WAV files and prints length and peak per file |
 | `QTCRAFT_DATA_DIR=<dir>` | Base directory for saved worlds (`worlds/`) and mods (`mods/`); tests set it to `build/<preset>/test-data` |

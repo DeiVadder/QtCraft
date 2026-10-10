@@ -150,6 +150,9 @@ private slots:
         QVERIFY2(unsorted.isEmpty(), qPrintable(u"Message types without a rate limit decision: "_s + unsorted.join(u", ")));
         QVERIFY(QcRateLimiter::isUnlimited(QcMsg::PlayerInput{}));
         QVERIFY(!QcRateLimiter::isUnlimited(QcMsg::QuickMoveItem{}));
+        // Labels go from the server to clients only: no limit decision of their own.
+        QVERIFY(!QcProtocol::isSentBy(QcMessage(QcMsg::ChunkLabels{}).index(), QcProtocol::Peer::Client));
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::ChunkLabels{}), std::nullopt);
     }
 
     void quickMoveFloodIsCutOff()

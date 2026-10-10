@@ -1,0 +1,28 @@
+{
+    "timeOfDay": 150,
+    "layers": [
+        { "block": "bedrock", "depth": 1 },
+        { "block": "stone", "depth": 59 },
+        { "block": "dirt", "depth": 3 },
+        { "block": "grass_block", "depth": 1 }
+    ],
+    "podium": "polished_stone",
+    "enclosure": "glass",
+    "container": "chest",
+    "lookout": "showcase_lookout",
+    "rowWidth": 160,
+    "categories": [
+        { "name": "liquids", "match": { "liquid": true } },
+        { "name": "parts", "match": { "part": true } },
+        { "name": "light", "match": { "light": true } },
+        { "name": "plants", "match": { "plant": true } },
+        { "name": "functional", "match": { "functional": true } },
+        { "name": "wood", "match": { "nameContains": ["log", "_wood", "planks", "leaves", "bookshelf"] } },
+        { "name": "ores", "match": { "nameContains": ["_ore", "coal_block", "iron_block", "gold_block", "diamond_block"] } },
+        { "name": "colours", "match": { "nameContains": ["wool", "concrete", "terracotta", "stained"] } },
+        { "name": "glass", "match": { "render": ["translucent", "cutout"] } },
+        { "name": "earth", "match": { "tool": ["shovel"] } },
+        { "name": "stone", "match": { "tool": ["pickaxe"] } },
+        { "name": "other" }
+    ]
+}

@@ -1,0 +1,124 @@
+#pragma once
+
+// Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
+// topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp and
+// QcMachineCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+
+#include "QcMessages.h"
+#include "QcResult.h"
+
+#include <QDataStream>
+
+#include <type_traits>
+
+namespace QcProtocolCodec {
+
+// Shared field codecs.
+QDataStream &operator<<(QDataStream &stream, QcVec3 value);
+QDataStream &operator>>(QDataStream &stream, QcVec3 &value);
+QDataStream &operator<<(QDataStream &stream, const QcAppearance &value);
+// Names longer than the limit fail; colours keep only their RGB bits.
+bool readAppearance(QDataStream &stream, QcAppearance &value);
+void writePos(QDataStream &stream, QcBlockPos pos);
+QcBlockPos readPos(QDataStream &stream);
+void writeStack(QDataStream &stream, QcItemStack stack);
+QcItemStack readStack(QDataStream &stream);
+void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
+// At most 1024 stacks.
+bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks);
+bool isFinite(const QcVec3 &value);
+
+template<typename T>
+using Tag = std::type_identity<T>;
+
+// Session (QcSessionCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::Hello &m);
+void encode(QDataStream &stream, const QcMsg::Welcome &m);
+void encode(QDataStream &stream, const QcMsg::ContentSync &m);
+void encode(QDataStream &stream, const QcMsg::Disconnect &m);
+void encode(QDataStream &stream, const QcMsg::ChatInput &m);
+void encode(QDataStream &stream, const QcMsg::ChatMessage &m);
+void encode(QDataStream &stream, const QcMsg::WorldTime &m);
+QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ChatInput>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream);
+
+// World (QcWorldCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::ChunkData &m);
+void encode(QDataStream &stream, QcMsg::ChunkUnload m);
+void encode(QDataStream &stream, QcMsg::BlockUpdate m);
+void encode(QDataStream &stream, QcMsg::StartMining m);
+void encode(QDataStream &stream, QcMsg::CancelMining m);
+void encode(QDataStream &stream, QcMsg::FinishMining m);
+void encode(QDataStream &stream, const QcMsg::UseItem &m);
+void encode(QDataStream &stream, const QcMsg::SoundEvent &m);
+void encode(QDataStream &stream, const QcMsg::ChunkLabels &m);
+QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::StartMining>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::CancelMining>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::FinishMining>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::UseItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::SoundEvent>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ChunkLabels>, QDataStream &stream);
+
+// Player, inventory and crafting (QcPlayerCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::PlayerInput &m);
+void encode(QDataStream &stream, const QcMsg::PlayerState &m);
+void encode(QDataStream &stream, QcMsg::SelectHotbarSlot m);
+void encode(QDataStream &stream, QcMsg::MoveInventoryItem m);
+void encode(QDataStream &stream, QcMsg::QuickMoveItem m);
+void encode(QDataStream &stream, const QcMsg::InventoryState &m);
+void encode(QDataStream &stream, QcMsg::TakeCraftingResult m);
+void encode(QDataStream &stream, const QcMsg::CraftRecipe &m);
+void encode(QDataStream &stream, QcMsg::CloseCrafting m);
+void encode(QDataStream &stream, QcMsg::ConsumeItem m);
+void encode(QDataStream &stream, QcMsg::OpenCrafting m);
+void encode(QDataStream &stream, const QcMsg::PlayerHealth &m);
+void encode(QDataStream &stream, QcMsg::Respawn m);
+void encode(QDataStream &stream, const QcMsg::SetAppearance &m);
+void encode(QDataStream &stream, QcMsg::DropItem m);
+void encode(QDataStream &stream, QcMsg::PlayerFood m);
+QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::SelectHotbarSlot>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::MoveInventoryItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::QuickMoveItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::TakeCraftingResult>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::CraftRecipe>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::CloseCrafting>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ConsumeItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::OpenCrafting>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::PlayerHealth>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::Respawn>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream);
+
+// Entities (QcEntityCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::EntitySpawn &m);
+void encode(QDataStream &stream, const QcMsg::EntityMoves &m);
+void encode(QDataStream &stream, QcMsg::EntityRemove m);
+void encode(QDataStream &stream, QcMsg::AttackEntity m);
+void encode(QDataStream &stream, QcMsg::UseEntity m);
+QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::EntityRemove>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::AttackEntity>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::UseEntity>, QDataStream &stream);
+
+// Machines and chests (QcMachineCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::OpenMachine &m);
+void encode(QDataStream &stream, const QcMsg::MachineState &m);
+void encode(QDataStream &stream, QcMsg::CloseMachine m);
+QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &stream);
+
+} // namespace QcProtocolCodec

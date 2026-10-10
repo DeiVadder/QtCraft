@@ -121,7 +121,13 @@ Rectangle {
                                 Label {
                                     text: worldRow.modelData.error.length > 0
                                           ? worldRow.modelData.error
-                                          : qsTr("Last played %1 · Seed %2").arg(worldRow.modelData.lastPlayed).arg(worldRow.modelData.seed)
+                                          : worldRow.modelData.generator === "showcase"
+                                            ? qsTr("Last played %1 · Showcase").arg(worldRow.modelData.lastPlayed)
+                                          : worldRow.modelData.generator === "flat"
+                                            ? qsTr("Last played %1 · Flat").arg(worldRow.modelData.lastPlayed)
+                                          : worldRow.modelData.generator === "void"
+                                            ? qsTr("Last played %1 · Void").arg(worldRow.modelData.lastPlayed)
+                                            : qsTr("Last played %1 · Seed %2").arg(worldRow.modelData.lastPlayed).arg(worldRow.modelData.seed)
                                     color: worldRow.modelData.error.length > 0 ? Theme.error : Theme.textSecondary
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
@@ -175,6 +181,37 @@ Rectangle {
                 }
 
                 Label {
+                    text: qsTr("World type")
+                    color: Theme.text
+                }
+
+                ComboBox {
+                    id: worldType
+
+                    objectName: "worldTypeChoice"
+                    Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
+                    model: [
+                        { value: "terrain", text: qsTr("Normal") },
+                        { value: "flat", text: qsTr("Flat") },
+                        { value: "void", text: qsTr("Void") },
+                        { value: "showcase", text: qsTr("Showcase") }
+                    ]
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    color: Theme.textSecondary
+                    text: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
+                          : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
+                          : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
+                          : qsTr("Hills, mountains, caves, oceans and biomes.")
+                }
+
+                Label {
+                    visible: worldType.currentValue === "terrain"
                     text: qsTr("Seed (number or text, empty for random)")
                     color: Theme.text
                 }
@@ -182,8 +219,24 @@ Rectangle {
                 TextField {
                     id: seed
 
+                    visible: worldType.currentValue === "terrain"
                     Layout.fillWidth: true
                     selectByMouse: true
+                }
+
+                Label {
+                    visible: worldType.currentValue === "flat"
+                    text: qsTr("Layers from the bottom up (empty for the default)")
+                    color: Theme.text
+                }
+
+                TextField {
+                    id: flatLayers
+
+                    visible: worldType.currentValue === "flat"
+                    Layout.fillWidth: true
+                    selectByMouse: true
+                    placeholderText: visible ? menu.game.defaultFlatLayers() : ""
                 }
 
                 CheckBox {
@@ -201,7 +254,8 @@ Rectangle {
                     highlighted: true
                     onClicked: menu.game.createWorld(worldName.text,
                                                      seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)),
-                                                     keepInventory.checked)
+                                                     keepInventory.checked, worldType.currentValue,
+                                                     worldType.currentValue === "flat" ? flatLayers.text : "")
                 }
 
                 Item {

@@ -64,7 +64,7 @@ void addBiomeSections(const QcHandbookContext &context, const QcBiomeDefinition 
         const bool extra = std::ranges::any_of(mob.extraSpawns, [&](const QcMobDefinition::SpawnRule &rule) {
             return rule.biomes.isEmpty() || rule.biomes.contains(biome.name);
         });
-        if (mob.spawnBiomes.isEmpty() || mob.spawnBiomes.contains(biome.name) || extra) {
+        if (mob.spawnsNaturally() && (mob.spawnBiomes.isEmpty() || mob.spawnBiomes.contains(biome.name) || extra)) {
             creatures.links.append(context.links.mobLink(mob));
         }
     }

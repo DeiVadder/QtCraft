@@ -9,6 +9,7 @@
 #include "QcLiquidFlow.h"
 #include "QcModLoader.h"
 #include "QcServer.h"
+#include "QcShowcaseGenerator.h"
 #include "QcStreamLimits.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestWorld.h"
@@ -598,6 +599,28 @@ private slots:
         QCOMPARE(machines.find(pos)->stacks[2], (QcItemStack{ruby, 1, 0}));
         QVERIFY(machines.find(pos)->stacks[1].isEmpty());
         QCOMPARE(machines.find(pos)->burnSeconds, 120.0);
+    }
+
+    void exampleModShowsInTheShowcase()
+    {
+        QTemporaryDir dir;
+        copyExampleMod(dir.filePath(u"rubies"_s));
+        QStringList warnings;
+        const QcResult<QcModLoader::Result> loaded = QcModLoader::load(dir.path(), warnings);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded));
+
+        // The mod's demo structure, its creature and its blocks join the showcase without extra data.
+        QStringList generatorWarnings;
+        const QcShowcaseGenerator generator(loaded->content, &generatorWarnings);
+        QVERIFY2(generatorWarnings.isEmpty(), qPrintable(generatorWarnings.join(u'\n')));
+        const QList<QcShowcaseAreaInfo> &areas = generator.plan().areas;
+        QVERIFY(std::ranges::any_of(areas, [](const QcShowcaseAreaInfo &area) { return area.name == u"demo-ruby_shrine"_s; }));
+        QVERIFY(std::ranges::any_of(generator.setup().mobs, [](const QcWorldSetup::Mob &mob) { return mob.mob == u"rubies:crystal_beetle"_s; }));
+        bool rubyLabel = false;
+        for (const QList<QcWorldLabel> &labels : generator.plan().labelsByChunk) {
+            rubyLabel = rubyLabel || std::ranges::any_of(labels, [](const QcWorldLabel &label) { return label.text == u"block.rubies.ruby_ore"_s; });
+        }
+        QVERIFY(rubyLabel);
     }
 
     void exampleModAddsLiquidPlantAndFallingBlock()

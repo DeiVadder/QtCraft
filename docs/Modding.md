@@ -69,6 +69,9 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `handbook/` | handbook chapter | A chapter of the handbook's "Playing" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
+| `structures/` | structure | Buildings from block layers with creatures, contents, labels; a `showcase` entry makes it a demo of the showcase world; see below. |
+| `worldgen/showcase.json` | – | Settings of the showcase world: ground, time of day, podium blocks, block categories (replaces the earlier one). |
+| `worldgen/flat.json`, `worldgen/void.json` | – | Flat world: default layer `preset` (`"bedrock,59*stone,3*dirt,grass_block"`); void world: `platform`, `platformRadius`, `platformY`; both `timeOfDay`, `daylightCycle`, `mobSpawning` (E-223; replace the earlier ones). |
 
 Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-solid cutout by default), a drop can carry a `"chance"` (0–1, default 1), and a `"sapling"` object turns a block into a sapling that grows into a tree or column feature:
 
@@ -245,6 +248,28 @@ The handbook (F1 in the game, `qtcraft-headless --export-handbook <dir>` as Mark
 
 `qtcraft-headless --mods-dir <mods> --export-handbook <dir>` (without `--mods-dir` the export covers only the base game) prints every problem (links to unknown content, unknown rule values) and writes the pages to check a mod.
 
+### Structures and the showcase world
+
+A structure (`structures/<name>.json`, decision E-219) is a building made of block layers. `palette` maps single characters to block states (`"T": "torch[attach=north]"`, at most 64; a space in a layer keeps whatever is there, so map air explicitly to clear cells). `layers` go from the bottom up; each layer is a list of rows from north to south, each row a string from west to east (at most 64 × 64 × 64). Optional: `mobs` (`{"mob", "at": [x, y, z]}`), `contents` (`{"at": [x, y, z], "items": [{"item", "count"}]}`, fills the chest or machine in that cell; machines take input, fuel, output), `labels` (`{"at", "text" (a translation key), "detail", "heading"}`), `updates` (cells whose block update runs after placing: a liquid source starts to flow, sand falls) and `growing` (saplings that grow). Positions are local; points may lie up to 4 blocks outside the structure (labels above a roof). The translation key of its title is `structure.<namespace>.<name>`.
+
+`"showcase": {"order": 100}` puts the structure into the showcase world as a demo (ordered by `order`, the base game uses 10–70). There, layer 0 is the ground layer (replace it for pools and floors). The showcase also picks up everything else of a mod by itself: every state of every block on a podium (sorted by the categories of `worldgen/showcase.json`), every creature in an enclosure, every item in a chest and every tree feature with its saplings. The example mod adds `ruby_shrine`:
+
+```json
+{
+    "name": "ruby_shrine",
+    "showcase": { "order": 100 },
+    "palette": { "B": "ruby_block", "S": "qtcraft:stone_bricks", "L": "ruby_lantern", "R": "ruby_rose", "G": "qtcraft:grass_block" },
+    "layers": [
+        ["SSSSS", "SGGGS", "SGSGS", "SGGGS", "SSSSS"],
+        ["L   L", " R R ", "  B  ", " R R ", "L   L"],
+        ["     ", "     ", "  B  ", "     ", "     "]
+    ],
+    "labels": [{ "at": [2.5, 4.0, 2.5], "text": "block.rubies.ruby_block" }]
+}
+```
+
+`worldgen/showcase.json`: `timeOfDay` (seconds after sunrise, 150 = noon), `layers` (`{"block", "depth"}` from the bottom up), `podium`, `enclosure`, `container` (blocks), `lookout` (a structure placed in front of every area), `rowWidth` (metres) and `categories` (`{"name", "translation", "match"}`; `match` may hold `liquid`, `part`, `light`, `plant`, `functional`, `falls` (true/false) and the lists `render`, `tool`, `nameContains`; a block goes to the first category whose conditions all hold, else to the last one).
+
 ### Replacing existing content
 
 A definition whose name already exists **replaces the earlier one completely** (decision E-026), for example `blocks/glass.json` with `"name": "qtcraft:glass"`. Copy the original file and change what you need; fields you leave out get their defaults, not the old values. Runtime ids stay the same, so saved worlds are not affected. Translations are merged key by key.
@@ -269,13 +294,14 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 | Falling block | `ruby_sand` (4 sand + ruby) falls like sand |
 | Sounds | the material `crystal` of the ruby block (break, place, step, hit) and the beetle's ambient, hurt and death sounds |
 | Textures | procedural (ore, gem, tools, beetle) |
+| Structure | `ruby_shrine`: a demo of the showcase world (ruby block on a stone frame with roses and lanterns) |
 | Translations | English and German, including handbook texts (`lang/*.handbook.json`) |
 
 Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory, the ruby recipe on offer). `tests/content/test_mods.cpp` loads it, checks every part and crafts with its recipes; `tests/gameplay/test_headless_cli.cpp` starts `qtcraft-headless --mods-dir mods`.
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, textures, sounds and translations; depend on other mods.
+Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, structures, showcase settings, textures, sounds and translations; depend on other mods.
 
 Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen, every storage block the chest screen, state rules are the fixed ones above), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 

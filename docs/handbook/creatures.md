@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Firefly](#mob-qtcraft-firefly) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -33,6 +33,20 @@ Any solid block or the surface of a liquid.
 **Appears in biomes**
 
 [Swamp](biomes.md#biome-qtcraft-swamp)
+
+### <a id="mob-qtcraft-mannequin"></a>Mannequin
+
+A figure with the character model that walks about slowly. It never appears by itself; the showcase world has some, /summon makes more.
+
+| | |
+|---|---|
+| ID | `qtcraft:mannequin` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.8 m tall |
+| Speed | 0.9 m/s walking, 1.5 m/s fleeing |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | nothing |
 
 ### <a id="mob-qtcraft-pig"></a>Pig
 

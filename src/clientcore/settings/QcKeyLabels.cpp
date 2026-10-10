@@ -107,6 +107,8 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Handbook");
     case A::DebugOverlay:
         return tr("Frame rate and position");
+    case A::Labels:
+        return tr("Labels in the world");
     case A::Pause:
         return tr("Menu");
     case A::Hotbar1:

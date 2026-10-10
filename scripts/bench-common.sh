@@ -18,6 +18,16 @@
 #   glass-full - the same with the blocks of the block expansion: stained glass and panes, iron
 #              bars, firefly glass, lanterns, small torches and cobwebs (newer builds only; an
 #              older build answers /fill with an unknown block with a usage line and skips it)
+#   showcase - standing in the showcase world (stage 21) between the first rows of areas, looking
+#              north over the creature pens and the podiums of the building parts: one persistent
+#              creature of every kind (six in the base game), hundreds of labels in reach, many
+#              partial shapes and cutout blocks; the world is the same for every seed (--showcase)
+#   flat-<scenario>, void-<scenario> - any scenario above in a flat world (the default layers:
+#              grass on top at y 63, no trees, caves or creatures of their own accord) or in the void
+#              world (a 5 x 5 platform at y 63, noon): the same scene whatever the terrain generator
+#              does, so changes of the world generation (E-101, E-214) do not move the comparison.
+#              WORLD_TYPE=flat|void does the same for every scenario of a run. Crowd and sprint need
+#              ground: use flat, not void
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 
@@ -117,12 +127,24 @@ run_game() {
     wrapper="$*"
     look=45,-10
     walk=stand
+    world=${WORLD_TYPE:-}
+    case "$scenario" in
+    flat-* | void-*)
+        world=${scenario%%-*}
+        scenario=${scenario#*-}
+        ;;
+    esac
     case "$scenario" in
     sprint | walk) walk=$scenario ;;
     light | liquids) walk=$scenario ;;
     furnace) look=0,-89 ;;
     esac
     set -- --play --seed 42 --view-distance "$view" --look "$look"
+    if [ "$scenario" = showcase ]; then
+        set -- --showcase --view-distance "$view" --spawn 40,-19 --look 345,-8
+    elif [ -n "$world" ]; then
+        set -- "$@" --world-type "$world"
+    fi
     case "$scenario" in
     light)
         set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"

@@ -2,9 +2,23 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Gliederpuppe](#mob-qtcraft-mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-mannequin"></a>Gliederpuppe
+
+Eine Figur mit dem Charaktermodell, die langsam umhergeht. Sie erscheint nie von selbst; die Showcase-Welt hat einige, /summon erzeugt weitere.
+
+| | |
+|---|---|
+| ID | `qtcraft:mannequin` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,8 m hoch |
+| Geschwindigkeit | 0,9 m/s beim Gehen, 1,5 m/s auf der Flucht |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | nichts |
 
 ### <a id="mob-qtcraft-firefly"></a>Glühwürmchen
 

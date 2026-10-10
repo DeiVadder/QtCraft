@@ -20,6 +20,7 @@ qt_add_executable(qtcraft
     input/QcKeyControlsForeign.h
     models/QcHandbookModel.h models/QcHandbookModel.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
+    models/QcWorldLabelModel.h models/QcWorldLabelModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
@@ -108,6 +109,7 @@ qt_add_qml_module(qtcraft
         qml/MessageScreen.qml
         qml/ModsScreen.qml
         qml/SettingsScreen.qml
+        qml/WorldLabels.qml
 )
 
 qt_add_shaders(qtcraft "qtcraft_shaders"

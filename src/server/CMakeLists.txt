@@ -38,6 +38,7 @@ qt_add_library(qc_server STATIC
     machines/QcServerMachines.h machines/QcServerMachines.cpp
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
     core/QcSectionMarks.h core/QcSectionMarks.cpp
+    core/QcServerSetup.h core/QcServerSetup.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
@@ -56,6 +57,22 @@ qt_add_library(qc_server STATIC
     worldgen/QcTerrainGenerator.h worldgen/QcTerrainGenerator.cpp
     worldgen/QcTerrainMath.h
     worldgen/QcTreeShape.h worldgen/QcTreeShape.cpp
+    worldgen/QcStateRotation.h worldgen/QcStateRotation.cpp
+    worldgen/QcStructure.h worldgen/QcStructure.cpp
+    worldgen/QcStructurePlacement.h worldgen/QcStructurePlacement.cpp
+    worldgen/QcWorldGenerators.h worldgen/QcWorldGenerators.cpp
+    worldgen/QcFlatGenerator.h worldgen/QcFlatGenerator.cpp
+    worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
+    worldgen/QcWorldSetup.h
+    worldgen/showcase/QcShowcaseArea.h
+    worldgen/showcase/QcShowcaseBlockArea.h worldgen/showcase/QcShowcaseBlockArea.cpp
+    worldgen/showcase/QcShowcaseCategories.h worldgen/showcase/QcShowcaseCategories.cpp
+    worldgen/showcase/QcShowcaseCreatureArea.h worldgen/showcase/QcShowcaseCreatureArea.cpp
+    worldgen/showcase/QcShowcaseGenerator.h worldgen/showcase/QcShowcaseGenerator.cpp
+    worldgen/showcase/QcShowcaseItemArea.h worldgen/showcase/QcShowcaseItemArea.cpp
+    worldgen/showcase/QcShowcasePlan.h
+    worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
+    worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
 )
 qc_configure_target(qc_server)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
@@ -76,5 +93,6 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
     ${CMAKE_CURRENT_SOURCE_DIR}/storage
     ${CMAKE_CURRENT_SOURCE_DIR}/content
-    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen)
+    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen
+    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/showcase)
 target_link_libraries(qc_server PUBLIC qc_common qc_base_content Qt::Core Qt::Concurrent)

@@ -1,0 +1,4 @@
+{
+    "preset": "bedrock,59*stone,3*dirt,grass_block",
+    "mobSpawning": false
+}

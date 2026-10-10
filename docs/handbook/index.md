@@ -13,7 +13,7 @@ Everything the game contains, generated from the game's content data by `qtcraft
 - [Items](items.md) – 42 entries
 - [Tools and weapons](tools.md) – 20 entries
 - [Food](food.md) – 5 entries
-- [Creatures](creatures.md) – 5 entries
+- [Creatures](creatures.md) – 6 entries
 - [Biomes](biomes.md) – 8 entries
 - [World generation](worldgen.md) – 29 entries
 - [Item groups](tags.md) – 5 entries

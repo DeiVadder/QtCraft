@@ -53,6 +53,7 @@ Aus `docs/FORTSCHRITT.md`. Der Mensch entscheidet, was davon in einen Auftrag ko
   - Speicherverbrauch der Übersetzungsdateien, Steuerschnittstelle am grafischen Spiel (lokaler Socket, Screenshots), Mods: Teil-Patches, pro Welt, mehr als 64.
   - Disconnect-Gründe (`QcMsg::Disconnect`) noch nicht übersetzbar (nur der Chat hat Meldungsschlüssel, E-094).
   - `QcProtocol.cpp` steht bei 795 von 800 Zeilen: Encoder und Decoder vor der nächsten Nachricht nach Themen aufteilen (z. B. Etappe 22/23).
+  - Showcase-Welt: Hinzufügen eines Mods verschiebt das Layout unveränderter Chunks einer bestehenden Showcase-Welt; Wesen in den Gehegen jagen den Spieler weiter durch das Glas (kein Schaden; gemessen unkritisch, 6 Wesen, Tick 0,23 ms).
   - Nahkampf der Mobs ohne Sichtlinie: Ein Zombie trifft den Spieler über eine Kante oder Stufe (bis 2 m Höhenunterschied), während Angriffe des Spielers seit E-092 eine Sichtlinie brauchen. Mob-Angriffe ebenfalls über `QcLineOfSight` prüfen (gefunden bei der Stabilisierung von `test_survival_scenario`, Etappe 20).
 - **Backlog / nur auf Wunsch:** Klang-Verdeckung, Doppler und Hall; Klänge von einem Menschen anhören und nachbessern.
 

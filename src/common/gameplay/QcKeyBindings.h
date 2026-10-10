@@ -40,6 +40,7 @@ public:
         CameraView,
         Handbook,
         DebugOverlay,
+        Labels,
         Hotbar1,
         Hotbar2,
         Hotbar3,

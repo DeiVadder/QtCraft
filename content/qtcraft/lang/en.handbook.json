@@ -639,5 +639,7 @@
     "tag.qtcraft.dyes": "Any dye",
     "tag.qtcraft.planks": "Any planks",
     "tag.qtcraft.terracotta": "Any terracotta",
-    "tag.qtcraft.wool": "Any wool"
+    "tag.qtcraft.wool": "Any wool",
+    "mob.qtcraft.mannequin.description": "A figure with the character model that walks about slowly. It never appears by itself; the showcase world has some, /summon makes more.",
+    "handbook.value.time.never": "never by itself (/summon, showcase world)"
 }

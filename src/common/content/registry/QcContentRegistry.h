@@ -12,10 +12,13 @@
 #include "QcPackReference.h"
 #include "QcRecipeDefinition.h"
 #include "QcResult.h"
+#include "QcShowcaseDefinition.h"
 #include "QcSmeltingRecipe.h"
 #include "QcSoundDefinition.h"
+#include "QcStructureDefinition.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
+#include "QcWorldTypeDefinitions.h"
 
 #include <QDataStream>
 #include <QHash>
@@ -135,6 +138,18 @@ public:
     const QList<QcFeatureDefinition> &features() const { return m_features; }
     const QList<QcOreDefinition> &ores() const { return m_ores; }
     const QcTerrainSettings &terrainSettings() const { return m_terrain; }
+    // Structures (server side only, not synchronised), replaced by name.
+    void registerStructure(QcStructureDefinition structure);
+    const QList<QcStructureDefinition> &structures() const { return m_structures; }
+    const QcStructureDefinition *structure(const QString &name) const;
+    // Settings of the showcase world (server side only); a later pack replaces them.
+    void setShowcase(QcShowcaseDefinition showcase) { m_showcase = std::move(showcase); }
+    const QcShowcaseDefinition &showcase() const { return m_showcase; }
+    // Settings of the flat and void world types (server side only); a later pack replaces them.
+    void setFlatWorld(QcFlatDefinition flat) { m_flatWorld = std::move(flat); }
+    const QcFlatDefinition &flatWorld() const { return m_flatWorld; }
+    void setVoidWorld(QcVoidDefinition empty) { m_voidWorld = std::move(empty); }
+    const QcVoidDefinition &voidWorld() const { return m_voidWorld; }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -186,6 +201,11 @@ private:
     QList<QcOreDefinition> m_ores;
     QHash<QString, qsizetype> m_oreIndex;
     QcTerrainSettings m_terrain;
+    QList<QcStructureDefinition> m_structures;
+    QHash<QString, qsizetype> m_structureIndex;
+    QcShowcaseDefinition m_showcase;
+    QcFlatDefinition m_flatWorld;
+    QcVoidDefinition m_voidWorld;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

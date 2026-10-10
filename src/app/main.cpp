@@ -6,6 +6,7 @@
 #include "QcScreenChoice.h"
 #include "QcScreenshotHook.h"
 #include "QcScriptedRun.h"
+#include "QcWorldGenerators.h"
 
 #include <QCommandLineParser>
 #include <QGuiApplication>
@@ -22,6 +23,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -31,6 +33,9 @@ namespace {
 struct AppOptions
 {
     bool play = false;
+    // --world-type (or --showcase) and --flat-layers: the type of the world --play starts.
+    QString worldType;
+    QString flatLayers;
     QString world;
     QString seed;
     std::optional<QString> camera;
@@ -49,12 +54,18 @@ struct AppOptions
     QString screen;
     // --background or QTCRAFT_BACKGROUND=1.
     bool background = false;
+    // What is wrong with the command line beyond what QCommandLineParser checks.
+    QString error;
 };
 
 QList<QCommandLineOption> commandLineOptions()
 {
     return {
         {u"play"_s, u"Start a single-player world immediately."_s},
+        {u"world-type"_s, u"World type for --play: terrain (default), flat, void or showcase (implies --play)."_s, u"type"_s},
+        {u"flat-layers"_s, u"Layers of a flat world for --play, bottom up, e.g. 'bedrock,59*stone,3*dirt,grass_block' (with --world-type flat)."_s,
+         u"layers"_s},
+        {u"showcase"_s, u"Start an unsaved showcase world immediately: every block, creature and item on show (same as --world-type showcase)."_s},
         {u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s},
         {u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s},
         {u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s},
@@ -78,6 +89,19 @@ QList<QCommandLineOption> commandLineOptions()
     };
 }
 
+// --world-type names a known type, --flat-layers comes with --world-type flat. Whether the layers
+// themselves are valid is known once the content is loaded (QcGameController::worldRefused).
+QString worldTypeError(const AppOptions &options, bool flatLayersGiven)
+{
+    if (!options.worldType.isEmpty() && !QcWorldGenerators::isKnown(options.worldType)) {
+        return u"Unknown world type '%1' (%2)"_s.arg(options.worldType, QcWorldGenerators::types().join(u", "_s));
+    }
+    if (flatLayersGiven && options.worldType != QLatin1StringView(QcWorldGenerators::flat)) {
+        return u"--flat-layers needs --world-type flat"_s;
+    }
+    return {};
+}
+
 // Handles --help and --version itself (and quits).
 AppOptions parseOptions(const QGuiApplication &app)
 {
@@ -90,7 +114,9 @@ AppOptions parseOptions(const QGuiApplication &app)
 
     const auto optional = [&parser](const QString &name) { return parser.isSet(name) ? std::optional(parser.value(name)) : std::nullopt; };
     AppOptions options;
-    options.play = parser.isSet(u"play"_s);
+    options.worldType = parser.isSet(u"showcase"_s) ? u"showcase"_s : parser.value(u"world-type"_s);
+    options.flatLayers = parser.value(u"flat-layers"_s);
+    options.play = parser.isSet(u"play"_s) || !options.worldType.isEmpty();
     options.world = parser.value(u"world"_s);
     options.seed = parser.value(u"seed"_s);
     options.camera = optional(u"camera"_s);
@@ -107,6 +133,7 @@ AppOptions parseOptions(const QGuiApplication &app)
     options.noAudio = parser.isSet(u"no-audio"_s);
     options.screen = parser.isSet(u"screen"_s) ? parser.value(u"screen"_s) : qEnvironmentVariable("QTCRAFT_SCREEN");
     options.background = parser.isSet(u"background"_s) || qEnvironmentVariable("QTCRAFT_BACKGROUND") == u"1"_s;
+    options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
     return options;
 }
 
@@ -131,6 +158,17 @@ void applyColorScheme()
     const QString scheme = qEnvironmentVariable("QTCRAFT_COLOR_SCHEME");
     if (scheme != u"system"_s) {
         QGuiApplication::styleHints()->setColorScheme(scheme == u"light"_s ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+    }
+}
+
+// QTCRAFT_MENU_WORLD_TYPE=flat|void|showcase is a test hook that preselects the world type of the
+// menu's new world, so that screenshots show the fields of that type.
+void preselectWorldType(const QQuickWindow &window)
+{
+    const qsizetype index = QcWorldGenerators::types().indexOf(qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"));
+    QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
+    if (index >= 0 && choice) {
+        choice->setProperty("currentIndex", int(index));
     }
 }
 
@@ -228,8 +266,16 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
                                            qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"));
 
     if (options.play) {
+        // Layers that do not fit the content end a run from the command line like a bad option.
+        QObject::connect(
+            &game, &QcGameController::worldRefused, qApp,
+            [](const QString &reason) {
+                std::println(stderr, "qtcraft: {}", reason.toStdString());
+                QCoreApplication::exit(1);
+            },
+            Qt::QueuedConnection);
         game.startup()->setScreenshotHook(screenshot);
-        game.startSingleplayer(options.world, options.seed);
+        game.startSingleplayer(options.world, options.seed, options.worldType.isEmpty() ? u"terrain"_s : options.worldType, options.flatLayers);
     } else if (options.handbook || options.overlays.contains(u"handbook"_s)) {
         game.handbook()->open(options.handbook.value_or(QString()));
     }
@@ -244,6 +290,10 @@ int main(int argc, char *argv[])
     QGuiApplication::setOrganizationName(u"QtCraft"_s);
     QGuiApplication::setApplicationVersion(QStringLiteral(QTCRAFT_VERSION));
     const AppOptions options = parseOptions(app);
+    if (!options.error.isEmpty()) {
+        std::println(stderr, "qtcraft: {}", options.error.toStdString());
+        return 1;
+    }
     if (options.background) {
         QcScriptedRun::stayInBackground();
     }
@@ -272,9 +322,13 @@ int main(int argc, char *argv[])
     }
     if (options.background) {
         window->setFlag(Qt::WindowDoesNotAcceptFocus, true);
+        // Above other windows: macOS stops drawing a window that others cover completely, and a
+        // benchmark or screenshot behind the user's windows would get no frames.
+        window->setFlag(Qt::WindowStaysOnTopHint, true);
         game->input()->setBackgroundRun(true);
     }
     placeWindow(window, options.screen);
+    preselectWorldType(*window);
     window->show();
 
     game->setIconProvider(icons);

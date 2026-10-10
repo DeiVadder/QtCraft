@@ -20,5 +20,8 @@ public:
     void unloadUnneeded();
 
 private:
+    // The generator's labels of a chunk just sent (decision E-222).
+    void sendLabels(QcServerClient &client, QcChunkPos pos) const;
+
     QcServerState &m_state;
 };

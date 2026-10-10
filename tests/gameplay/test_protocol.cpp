@@ -8,6 +8,7 @@
 #include <QTest>
 #include <QTranslator>
 
+#include <cmath>
 #include <limits>
 
 using namespace Qt::StringLiterals;
@@ -269,6 +270,49 @@ private slots:
         huge.layers[0].frequency = 220.0;
         content->registerSound(huge);
         QVERIFY(QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+    }
+
+    void chunkLabelsRoundTripAndAreValidated()
+    {
+        const QcMsg::ChunkLabels labels{{-3, 7}, {{{-40.5, 66.8, 120.5}, u"block.qtcraft.oak_stairs"_s, u"facing=north, half=top"_s, false},
+                                                 {{-33.0, 70.5, 115.5}, u"showcase.category.parts"_s, {}, true}}};
+        const QcMsg::ChunkLabels copy = roundTrip(labels);
+        QCOMPARE(copy.pos, (QcChunkPos{-3, 7}));
+        QCOMPARE(copy.labels, labels.labels);
+        QVERIFY(!QcProtocol::isSentBy(QcMessage(labels).index(), QcProtocol::Peer::Client));
+
+        // Clients reject too long texts and positions that are not numbers.
+        QcMsg::ChunkLabels bad = labels;
+        bad.labels[0].text = QString(QcWorldLabel::maxTextLength + 1, u'x');
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(bad), QcProtocol::Peer::Server));
+        bad = labels;
+        bad.labels[1].position.y = std::nan("");
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(bad), QcProtocol::Peer::Server));
+        // And servers never get them.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(labels), QcProtocol::Peer::Client));
+    }
+
+    void longLabelTextsAreCutOnCharacterBoundaries()
+    {
+        const QString ellipsis(QChar(0x2026));
+        const QString fits(QcWorldLabel::maxTextLength, u'x');
+        QCOMPARE(QcWorldLabel::limitedText(fits), fits);
+
+        // Plain text: 255 characters and the ellipsis, exactly the limit.
+        const QString plain = QString(300, u'a');
+        QCOMPARE(QcWorldLabel::limitedText(plain), QString(255, u'a') + ellipsis);
+
+        // A surrogate pair or a letter with its combining mark across the cut moves the cut before it.
+        const QString emoji = QString(254, u'a') + QString::fromUtf8("\xF0\x9F\x98\x80") + QString(20, u'b');
+        QCOMPARE(QcWorldLabel::limitedText(emoji), QString(254, u'a') + ellipsis);
+        const QString accent = QString(254, u'a') + u"e\u0301"_s + QString(20, u'b');
+        QCOMPARE(QcWorldLabel::limitedText(accent), QString(254, u'a') + ellipsis);
+
+        // A limited label passes the client's checks.
+        const QcWorldLabel label{{1.5, 64.0, 2.5}, plain, emoji, false};
+        const QcMsg::ChunkLabels limited{{0, 0}, {label.limited()}};
+        QCOMPARE(roundTrip(limited).labels, limited.labels);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ChunkLabels{{0, 0}, {label}}), QcProtocol::Peer::Server));
     }
 
     void chatMessagesCarryKeyAndArguments()
@@ -649,6 +693,8 @@ private slots:
         QCOMPARE(health.health, 3.0);
         QCOMPARE(health.dead, true);
         QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).time, 1234.5);
+        QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).running, true);
+        QCOMPARE(roundTrip(QcMsg::WorldTime{150.0, 600.0, false}).running, false);
         QCOMPARE(roundTrip(QcMsg::AttackEntity{9}).id, 9u);
         roundTrip(QcMsg::Respawn{});
 

@@ -7,6 +7,7 @@
 #include "QcBlockPos.h"
 #include "QcChunk.h"
 #include "QcVec3.h"
+#include "QcWorldLabel.h"
 
 #include <QString>
 
@@ -22,6 +23,14 @@ struct ChunkData
 struct ChunkUnload
 {
     QcChunkPos pos;
+};
+
+// Server -> client: the labels floating in a chunk (decision E-222), sent right after its ChunkData
+// when there are any; they go with the chunk's ChunkUnload.
+struct ChunkLabels
+{
+    QcChunkPos pos;
+    QList<QcWorldLabel> labels;
 };
 
 struct BlockUpdate

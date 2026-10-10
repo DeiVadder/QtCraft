@@ -8,9 +8,12 @@
 #include "QcRecipeParser.h"
 #include "QcResult.h"
 #include "QcShapeParser.h"
+#include "QcShowcaseParser.h"
 #include "QcSoundParser.h"
+#include "QcStructureParser.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenParser.h"
+#include "QcWorldTypeParser.h"
 
 #include <QHash>
 #include <QJsonObject>
@@ -30,11 +33,15 @@ using QcMobParser::parseAppearance;
 using QcRecipeParser::parseRecipe;
 using QcItemParser::parseItem;
 using QcRecipeParser::parseSmeltingRecipe;
+using QcShowcaseParser::parseShowcase;
 using QcSoundParser::parseSound;
+using QcStructureParser::parseStructure;
 using QcWorldgenParser::parseBiome;
 using QcWorldgenParser::parseFeature;
 using QcWorldgenParser::parseOre;
 using QcWorldgenParser::parseTerrainSettings;
+using QcWorldTypeParser::parseFlat;
+using QcWorldTypeParser::parseVoid;
 
 QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);

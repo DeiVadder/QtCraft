@@ -42,6 +42,7 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::CameraView, u"cameraView", Qt::Key_V, Qt::Key_F5},
     {A::Handbook, u"handbook", Qt::Key_H, Qt::Key_F1},
     {A::DebugOverlay, u"debugOverlay", Qt::Key_I, Qt::Key_F3},
+    {A::Labels, u"labels", Qt::Key_L, 0},
     {A::Hotbar1, u"hotbar1", Qt::Key_1, 0},
     {A::Hotbar2, u"hotbar2", Qt::Key_2, 0},
     {A::Hotbar3, u"hotbar3", Qt::Key_3, 0},

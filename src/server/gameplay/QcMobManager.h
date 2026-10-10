@@ -111,6 +111,10 @@ public:
     // Spawns a mob directly (commands, tests); returns its id.
     quint32 spawn(int type, const QcVec3 &position, quint32 id, bool underground = false, bool persistent = false);
     void removeAll() { m_mobs.clear(); }
+    // Game rule mobSpawning: without it no creature spawns by itself, neither around players nor
+    // with new chunks (decision E-221); /summon and world setups still add them.
+    void setNaturalSpawning(bool on) { m_naturalSpawning = on; }
+    bool naturalSpawning() const { return m_naturalSpawning; }
 
     // Gives a chunk seen for the first time its group of animals (chunkAnimalChance, decided by the
     // seed) and remembers it; later calls for the same chunk do nothing. The chunk must be loaded.
@@ -209,4 +213,5 @@ private:
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;
     double m_spawnTimer = 0.0;
+    bool m_naturalSpawning = true;
 };

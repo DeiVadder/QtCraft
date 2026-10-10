@@ -1,0 +1,17 @@
+{
+    "name": "sugar_cane_shore",
+    "showcase": { "order": 60 },
+    "palette": {
+        "a": "sand",
+        "w": "water",
+        "c": "sugar_cane"
+    },
+    "layers": [
+        ["         ", "aaaaaaaaa", "wwwwwwwww", "aaaaaaaaa", "         "],
+        ["         ", " c c c c ", "         ", "  c c c  ", "         "],
+        ["         ", " c   c   ", "         ", "    c    ", "         "]
+    ],
+    "labels": [
+        { "at": [4.5, 4.5, 2.5], "text": "block.qtcraft.sugar_cane" }
+    ]
+}

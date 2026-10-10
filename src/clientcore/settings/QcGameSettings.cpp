@@ -85,6 +85,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.mouseSensitivity = ok ? clampMouseSensitivity(sensitivity) : defaultMouseSensitivity;
     settings.invertMouse = file.value(u"invertMouse"_s, false).toBool();
     settings.showDebug = file.value(u"showDebug"_s, true).toBool();
+    settings.showLabels = file.value(u"showLabels"_s, true).toBool();
     settings.language = cleanLanguage(file.value(u"language"_s).toString());
     settings.cameraMode = QcViewCamera::fromName(file.value(u"cameraMode"_s).toString()).value_or(QcCameraMode::FirstPerson);
 
@@ -134,6 +135,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"mouseSensitivity"_s, mouseSensitivity);
     file.setValue(u"invertMouse"_s, invertMouse);
     file.setValue(u"showDebug"_s, showDebug);
+    file.setValue(u"showLabels"_s, showLabels);
     file.setValue(u"language"_s, language);
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));
 

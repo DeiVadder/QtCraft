@@ -2,6 +2,7 @@
 
 #include "QcClientSession.h"
 #include "QcDayCycle.h"
+#include "QcLabelProjector.h"
 #include "QcMeshScheduler.h"
 #include "QcPhysics.h"
 #include "QcSessionParts.h"
@@ -13,6 +14,7 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     : QObject(parent)
     , m_parts(parts)
     , m_settings(settings)
+    , m_labels(new QcWorldLabelModel(this))
 {
 }
 
@@ -89,4 +91,16 @@ void QcHudState::addChatLine(const QString &text)
         m_chatLines.removeFirst();
     }
     emit chatLinesChanged();
+}
+
+void QcHudState::updateLabels()
+{
+    const QcClientSession &session = *m_parts.session;
+    if (!m_settings.showLabels() || session.labels().isEmpty() || !session.content()) {
+        m_labels->clear();
+        return;
+    }
+
+    const QcLabelProjector::View view{m_parts.view->camera(), m_parts.view->width(), m_parts.view->height()};
+    m_labels->update(QcLabelProjector::visible(session.labels(), view, session.world()), *session.content(), m_settings.contentLanguage());
 }

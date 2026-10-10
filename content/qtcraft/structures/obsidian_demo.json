@@ -1,0 +1,19 @@
+{
+    "name": "obsidian_demo",
+    "showcase": { "order": 30 },
+    "palette": {
+        "B": "stone_bricks",
+        "S": "stone",
+        "w": "water",
+        "l": "lava"
+    },
+    "layers": [
+        ["     ", "     ", "     ", "     ", "SSSSS", "SSSSS", "SSSSS", "     "],
+        ["BBBBB", "B B B", "B   B", "B   B", "BlllB", "BlllB", "BlllB", "BBBBB"],
+        ["BBBBB", "B w B", "B   B", "B   B", "B   B", "B   B", "B   B", "BBBBB"]
+    ],
+    "updates": [[2, 2, 1]],
+    "labels": [
+        { "at": [2.5, 3.6, 5.5], "text": "block.qtcraft.obsidian" }
+    ]
+}

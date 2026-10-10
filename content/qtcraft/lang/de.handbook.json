@@ -639,5 +639,7 @@
     "tag.qtcraft.dyes": "Beliebiger Farbstoff",
     "tag.qtcraft.planks": "Beliebige Bretter",
     "tag.qtcraft.terracotta": "Beliebige Terrakotta",
-    "tag.qtcraft.wool": "Beliebige Wolle"
+    "tag.qtcraft.wool": "Beliebige Wolle",
+    "mob.qtcraft.mannequin.description": "Eine Figur mit dem Charaktermodell, die langsam umhergeht. Sie erscheint nie von selbst; die Showcase-Welt hat einige, /summon erzeugt weitere.",
+    "handbook.value.time.never": "nie von selbst (/summon, Showcase-Welt)"
 }

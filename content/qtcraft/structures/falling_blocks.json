@@ -1,0 +1,26 @@
+{
+    "name": "falling_blocks",
+    "showcase": { "order": 40 },
+    "palette": {
+        "w": "water",
+        "a": "sand",
+        "g": "gravel",
+        "1": "white_concrete_powder",
+        "2": "orange_concrete_powder",
+        "3": "light_blue_concrete_powder",
+        "4": "lime_concrete_powder"
+    },
+    "layers": [
+        ["           ", "      wwww ", "      wwww ", "      wwww ", "           "],
+        ["           ", "           ", "           ", "           ", "           "],
+        ["           ", "           ", "           ", "           ", "           "],
+        ["           ", "           ", "           ", "           ", "           "],
+        ["           ", "           ", " a g  1 2  ", "       3 4 ", "           "]
+    ],
+    "updates": [[1, 4, 2], [3, 4, 2], [6, 4, 2], [8, 4, 2], [7, 4, 3], [9, 4, 3]],
+    "labels": [
+        { "at": [1.5, 2.8, 2.5], "text": "block.qtcraft.sand" },
+        { "at": [3.5, 2.8, 2.5], "text": "block.qtcraft.gravel" },
+        { "at": [7.5, 2.8, 2.5], "text": "block.qtcraft.white_concrete_powder" }
+    ]
+}

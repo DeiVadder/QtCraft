@@ -62,11 +62,13 @@ struct ChatMessage
     QStringList arguments;
 };
 
-// Server -> client: seconds since the world began and the length of a full day.
+// Server -> client: seconds since the world began and the length of a full day; `running` is false
+// while the time of day stands still (game rule daylightCycle, decision E-221).
 struct WorldTime
 {
     double time = 0.0;
     double dayLength = 0.0;
+    bool running = true;
 };
 
 } // namespace QcMsg

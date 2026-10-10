@@ -32,9 +32,12 @@ QcServerPersistence::~QcServerPersistence() = default;
 
 QcStatus QcServerPersistence::open()
 {
-    // New worlds, saved or not, start in the morning.
+    // New worlds, saved or not, start in the morning; their generator's setup is still to run.
     m_state.info.worldTime = QcDayCycle::startTime;
     m_state.info.keepInventory = m_state.config.keepInventory;
+    m_state.info.generator = m_state.config.generator;
+    m_state.info.generatorOptions = m_state.config.generatorOptions;
+    m_state.info.setupDone = false;
 
     if (m_state.config.worldDirectory.isEmpty()) {
         return {};
@@ -59,6 +62,29 @@ QcStatus QcServerPersistence::open()
         return qcError(chunkCount.error());
     }
 
+    m_setupSaved = m_state.info.setupDone;
+    if (const QcStatus read = readWorldState(storage); !read) {
+        return read;
+    }
+
+    qCInfo(lcPersistence) << "Opened world" << m_state.info.name << "with" << *chunkCount << "stored chunks and"
+                          << m_state.items.items().size() << "dropped items";
+    return {};
+}
+
+QcStatus QcServerPersistence::readWorldState(const QcWorldStorage &storage)
+{
+    // world.json is written last and says the setup is done only after everything else was saved.
+    // Without that, what is stored may come from a save that broke off after a setup that brings
+    // creatures, contents or plants: it is left out, the setup runs again and nothing exists twice.
+    // Setups of only rules (terrain, flat, void) keep what is stored.
+    const QcWorldSetup setup = m_state.world.generator().setup();
+    const bool bringsState = !setup.mobs.isEmpty() || !setup.contents.isEmpty() || !setup.growing.isEmpty() || !setup.updates.isEmpty();
+    if (!m_state.info.setupDone && bringsState) {
+        qCInfo(lcPersistence) << "The world's setup was not saved completely; it runs again";
+        return {};
+    }
+
     if (const QcStatus read = readEntities(storage); !read) {
         return read;
     }
@@ -71,13 +97,7 @@ QcStatus QcServerPersistence::open()
     if (const QcStatus read = readContainers(storage); !read) {
         return read;
     }
-    if (const QcStatus read = readBlockUpdates(storage); !read) {
-        return read;
-    }
-
-    qCInfo(lcPersistence) << "Opened world" << m_state.info.name << "with" << *chunkCount << "stored chunks and"
-                          << m_state.items.items().size() << "dropped items";
-    return {};
+    return readBlockUpdates(storage);
 }
 
 QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
@@ -99,6 +119,12 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
 
     if (info->seed != m_state.config.seed) {
         return qcError(u"World seed %1 does not match the generator seed %2"_s.arg(info->seed).arg(m_state.config.seed));
+    }
+    if (info->generator != m_state.config.generator) {
+        return qcError(u"The world was made by the generator '%1', not '%2'"_s.arg(info->generator, m_state.config.generator));
+    }
+    if (info->generatorOptions != m_state.config.generatorOptions) {
+        return qcError(u"The world was made with the options '%1', not '%2'"_s.arg(info->generatorOptions, m_state.config.generatorOptions));
     }
 
     m_state.info = *info;
@@ -297,9 +323,6 @@ QcStatus QcServerPersistence::save()
         }
     }
 
-    m_state.info.lastPlayed = QDateTime::currentDateTimeUtc();
-    keep(storage.writeInfo(m_state.info));
-
     const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks = m_state.world.takeChunksToSave();
     if (const QcStatus written = storage.writeChunks(chunks); !written) {
         // Keep the regions dirty so the next save tries again.
@@ -312,6 +335,14 @@ QcStatus QcServerPersistence::save()
     keep(storage.writeMachines(m_state.machines.machines()));
     keep(storage.writeContainers(m_state.containers.containers()));
     keep(saveBlockUpdates(storage));
+
+    // Last: the setup counts as done once everything it brought is stored (see readWorldState()).
+    m_state.info.lastPlayed = QDateTime::currentDateTimeUtc();
+    QcWorldInfo info = m_state.info;
+    info.setupDone = m_state.info.setupDone && (m_setupSaved || result.has_value());
+    const QcStatus written = storage.writeInfo(info);
+    m_setupSaved = m_setupSaved || (written && info.setupDone);
+    keep(written);
     return result;
 }
 

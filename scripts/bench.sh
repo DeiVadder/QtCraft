@@ -32,7 +32,7 @@ for key in $KEYS; do
     printf ' %18s' "$key"
 done
 printf '\n'
-for scenario in ${SCENARIOS:-stand sprint crowd light liquids}; do
+for scenario in ${SCENARIOS:-stand sprint crowd light liquids showcase flat-crowd flat-liquids}; do
     results="$WORK/$scenario.results"
     : >"$results"
     i=1

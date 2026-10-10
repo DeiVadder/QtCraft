@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcVec3.h"
+#include "QcWorldLabelModel.h"
 
 #include <QElapsedTimer>
 #include <QObject>
@@ -22,6 +23,8 @@ class QcHudState : public QObject
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(QString debugText READ debugText NOTIFY debugTextChanged FINAL)
     Q_PROPERTY(QStringList chatLines READ chatLines NOTIFY chatLinesChanged FINAL)
+    // Labels floating in the world, drawn over it (decision E-222).
+    Q_PROPERTY(QcWorldLabelModel *labels READ labels CONSTANT FINAL)
 
 public:
     QcHudState(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
@@ -31,6 +34,7 @@ public:
     QString timeOfDay() const { return m_timeOfDay; }
     QString debugText() const { return m_debugText; }
     QStringList chatLines() const { return m_chatLines; }
+    QcWorldLabelModel *labels() const { return m_labels; }
     // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for the handbook key.
     QString targetName() const { return m_targetName; }
 
@@ -42,6 +46,8 @@ public:
     // The debug overlay was switched: the next frame writes the text at once.
     void resetDebugClock() { m_debugClock.invalidate(); }
     void addChatLine(const QString &text);
+    // Places the labels near the camera on the view, once per frame (empty while switched off).
+    void updateLabels();
 
 signals:
     void frameStateChanged();
@@ -60,4 +66,5 @@ private:
     QString m_debugText;
     QElapsedTimer m_debugClock;
     QStringList m_chatLines;
+    QcWorldLabelModel *m_labels = nullptr;
 };

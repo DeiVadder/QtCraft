@@ -1,0 +1,19 @@
+{
+    "name": "mannequin",
+    "sounds": {
+        "ambient": "block.wood.step",
+        "hurt": "block.wood.hit",
+        "death": "block.wood.break"
+    },
+    "health": 20,
+    "width": 0.6,
+    "height": 1.8,
+    "walkSpeed": 0.9,
+    "chaseSpeed": 1.5,
+    "hostile": false,
+    "spawn": {
+        "weight": 0
+    },
+    "skeleton": "humanoid",
+    "outfit": "explorer"
+}

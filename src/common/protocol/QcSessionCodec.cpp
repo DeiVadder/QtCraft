@@ -1,0 +1,133 @@
+// Payloads of the session messages (QcSessionMessages.h): handshake, content, chat and world time.
+
+#include "QcProtocolCodec.h"
+
+#include "QcProtocol.h"
+#include "QcStreamLimits.h"
+
+#include <QIODevice>
+
+#include <cmath>
+
+using namespace Qt::StringLiterals;
+
+namespace QcProtocolCodec {
+
+void encode(QDataStream &stream, const QcMsg::Hello &m)
+{
+    stream << m.protocolVersion << m.playerName << m.appearance;
+}
+
+void encode(QDataStream &stream, const QcMsg::Welcome &m)
+{
+    stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView;
+}
+
+void encode(QDataStream &stream, const QcMsg::ContentSync &m)
+{
+    Q_ASSERT(m.content);
+    m.content->writeTo(stream);
+}
+
+void encode(QDataStream &stream, const QcMsg::Disconnect &m)
+{
+    stream << m.reason;
+}
+
+void encode(QDataStream &stream, const QcMsg::ChatInput &m)
+{
+    stream << m.text;
+}
+
+void encode(QDataStream &stream, const QcMsg::ChatMessage &m)
+{
+    stream << m.text << m.key << quint32(m.arguments.size());
+    for (const QString &argument : m.arguments) {
+        stream << argument;
+    }
+}
+
+void encode(QDataStream &stream, const QcMsg::WorldTime &m)
+{
+    stream << m.time << m.dayLength << m.running;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
+{
+    QcMsg::Hello m;
+    stream >> m.protocolVersion >> m.playerName;
+
+    // Other versions may lay out the rest differently: skip it so the server can report the version
+    // mismatch instead of a decode error.
+    if (m.protocolVersion != QcProtocol::version) {
+        stream.skipRawData(int(stream.device()->bytesAvailable()));
+        return m;
+    }
+
+    if (!readAppearance(stream, m.appearance)) {
+        return qcError(u"Invalid appearance"_s);
+    }
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
+{
+    QcMsg::Welcome m;
+    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView;
+    if (!std::isfinite(m.yaw) || !std::isfinite(m.pitch)) {
+        return qcError(u"Non-finite view direction"_s);
+    }
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream)
+{
+    QcResult<QcContentRegistry> content = QcContentRegistry::readFrom(stream);
+    if (!content) {
+        return qcError(content.error());
+    }
+    return QcMsg::ContentSync{std::make_shared<const QcContentRegistry>(std::move(*content))};
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
+{
+    QcMsg::Disconnect m;
+    stream >> m.reason;
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::ChatInput>, QDataStream &stream)
+{
+    QcMsg::ChatInput m;
+    stream >> m.text;
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
+{
+    QcMsg::ChatMessage m;
+    quint32 count = 0;
+    stream >> m.text >> m.key;
+    if (!QcStreamLimits::readCount(stream, QcMsg::ChatMessage::maxArguments, count)) {
+        return qcError(u"Too many chat arguments"_s);
+    }
+
+    for (quint32 i = 0; i < count; ++i) {
+        QString argument;
+        stream >> argument;
+        m.arguments.append(argument);
+    }
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream)
+{
+    QcMsg::WorldTime m;
+    stream >> m.time >> m.dayLength >> m.running;
+    if (!std::isfinite(m.time) || !std::isfinite(m.dayLength) || m.dayLength <= 0.0) {
+        return qcError(u"Invalid world time"_s);
+    }
+    return m;
+}
+
+} // namespace QcProtocolCodec

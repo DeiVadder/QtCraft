@@ -144,10 +144,14 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     if (const auto *chunkData = std::get_if<QcMsg::ChunkData>(&message)) {
         onChunkData(*chunkData);
     } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
+        m_labelGeneration += m_labels.remove(unload->pos) ? 1 : 0;
         if (m_world) {
             m_world->removeChunk(unload->pos);
             emit chunkUnloaded(unload->pos);
         }
+    } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
+        m_labels.insert(labels->pos, labels->labels);
+        ++m_labelGeneration;
     } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
         const QcBlockId previous = m_world ? m_world->blockAt(update->pos).value_or(qcAirBlockId) : qcAirBlockId;
         if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
@@ -158,6 +162,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
         m_worldTime = time->time;
         m_dayLength = time->dayLength;
+        m_timeRunning = time->running;
     } else {
         return false;
     }
@@ -360,7 +365,9 @@ void QcClientSession::tick()
     }
 
     ++m_tickCount;
-    m_worldTime += QcPhysics::tickDuration;
+    if (m_timeRunning) {
+        m_worldTime += QcPhysics::tickDuration;
+    }
     m_entities.tick();
 
     const auto advance = [](int &ticks, int length) {

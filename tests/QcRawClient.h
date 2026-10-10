@@ -59,6 +59,11 @@ public:
             if (removed->died) {
                 died.insert(removed->id);
             }
+        } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
+            chunkLabels.insert(labels->pos, labels->labels);
+        } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
+            worldTime = time->time;
+            timeRunning = time->running;
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
             for (const QcMsg::EntityMove &move : moves->moves) {
                 flags[move.id] |= move.flags;
@@ -98,4 +103,8 @@ public:
     QHash<quint32, quint8> flags;
     // Entities reported hurt in any move.
     QSet<quint32> hurt;
+    // Labels per chunk and the last world time.
+    QHash<QcChunkPos, QList<QcWorldLabel>> chunkLabels;
+    double worldTime = -1.0;
+    bool timeRunning = true;
 };

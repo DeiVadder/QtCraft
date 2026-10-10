@@ -1,0 +1,18 @@
+{
+    "name": "showcase_lookout",
+    "palette": {
+        "S": "stone_bricks",
+        "P": "polished_stone",
+        "L": "ladder[attach=north]"
+    },
+    "layers": [
+        ["   ", " S ", "   "],
+        ["   ", " S ", " L "],
+        ["   ", " S ", " L "],
+        ["   ", " S ", " L "],
+        ["   ", " S ", " L "],
+        ["   ", " S ", " L "],
+        ["   ", " S ", " L "],
+        ["PPP", "PPP", "PLP"]
+    ]
+}

@@ -24,6 +24,7 @@ qt_add_library(qc_clientcore STATIC
     light/QcSky.h light/QcSky.cpp
     meshing/QcEntityVertex.h
     camera/QcFrustum.h camera/QcFrustum.cpp
+    camera/QcLabelProjector.h camera/QcLabelProjector.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     sound/QcLocalSounds.h sound/QcLocalSounds.cpp

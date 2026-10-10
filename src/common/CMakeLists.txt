@@ -20,6 +20,7 @@ qt_add_library(qc_common STATIC
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     core/QcCrc32.h core/QcCrc32.cpp
     world/QcDayCycle.h world/QcDayCycle.cpp
+    world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
@@ -30,6 +31,12 @@ qt_add_library(qc_common STATIC
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
     content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
+    content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
+    content/parser/QcStructureParser.h content/parser/QcStructureParser.cpp
+    content/definitions/QcShowcaseDefinition.h
+    content/definitions/QcStructureDefinition.h
+    content/definitions/QcWorldTypeDefinitions.h
+    content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp
@@ -82,6 +89,13 @@ qt_add_library(qc_common STATIC
     physics/QcPhysics.h physics/QcPhysics.cpp
     physics/QcPlayerInput.h
     protocol/QcProtocol.h protocol/QcProtocol.cpp
+    protocol/QcProtocolCodec.h protocol/QcProtocolCodec.cpp
+    protocol/QcChunkCodec.cpp
+    protocol/QcSessionCodec.cpp
+    protocol/QcWorldCodec.cpp
+    protocol/QcPlayerCodec.cpp
+    protocol/QcEntityCodec.cpp
+    protocol/QcMachineCodec.cpp
     physics/QcRaycast.h physics/QcRaycast.cpp
     content/definitions/QcRecipeDefinition.h content/definitions/QcRecipeDefinition.cpp
     core/QcResult.h

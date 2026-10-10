@@ -46,6 +46,7 @@ void QcSettingsController::loadSettings()
     setMouseSensitivity(m_storedSettings.mouseSensitivity);
     setInvertMouse(m_storedSettings.invertMouse);
     setShowDebug(m_storedSettings.showDebug);
+    setShowLabels(m_storedSettings.showLabels);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
     m_character->load(m_storedSettings.appearance);
@@ -69,6 +70,7 @@ void QcSettingsController::saveSettings()
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
     settings.showDebug = m_showDebug;
+    settings.showLabels = m_showLabels;
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.appearance = m_character->appearance();
@@ -124,6 +126,14 @@ void QcSettingsController::setShowDebug(bool show)
     if (m_showDebug != show) {
         m_showDebug = show;
         emit debugOverlaySwitched();
+        emit settingsChanged();
+    }
+}
+
+void QcSettingsController::setShowLabels(bool show)
+{
+    if (m_showLabels != show) {
+        m_showLabels = show;
         emit settingsChanged();
     }
 }

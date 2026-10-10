@@ -1,0 +1,19 @@
+{
+    "name": "ruby_shrine",
+    "showcase": { "order": 100 },
+    "palette": {
+        "B": "ruby_block",
+        "S": "qtcraft:stone_bricks",
+        "L": "ruby_lantern",
+        "R": "ruby_rose",
+        "G": "qtcraft:grass_block"
+    },
+    "layers": [
+        ["SSSSS", "SGGGS", "SGSGS", "SGGGS", "SSSSS"],
+        ["L   L", " R R ", "  B  ", " R R ", "L   L"],
+        ["     ", "     ", "  B  ", "     ", "     "]
+    ],
+    "labels": [
+        { "at": [2.5, 4.0, 2.5], "text": "block.rubies.ruby_block" }
+    ]
+}

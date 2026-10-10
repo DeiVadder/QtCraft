@@ -2,6 +2,7 @@
 
 #include "QcSaveFile.h"
 #include "QcStreamLimits.h"
+#include "QcWorldGenerators.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -95,8 +96,9 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     }
 
     const QJsonObject json = document.object();
-    if (json.value(u"formatVersion"_s).toInt() != QcWorldInfo::formatVersion) {
-        return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(json.value(u"formatVersion"_s).toInt()));
+    const int version = json.value(u"formatVersion"_s).toInt();
+    if (version < QcWorldInfo::oldestFormatVersion || version > QcWorldInfo::formatVersion) {
+        return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(version));
     }
 
     bool seedOk = false;
@@ -106,7 +108,15 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.created = QDateTime::fromString(json.value(u"created"_s).toString(), Qt::ISODate);
     info.lastPlayed = QDateTime::fromString(json.value(u"lastPlayed"_s).toString(), Qt::ISODate);
     info.worldTime = std::max(0.0, json.value(u"worldTime"_s).toDouble());
-    info.keepInventory = json.value(u"gameRules"_s).toObject().value(u"keepInventory"_s).toBool(true);
+    const QJsonObject rules = json.value(u"gameRules"_s).toObject();
+    info.keepInventory = rules.value(u"keepInventory"_s).toBool(true);
+    info.daylightCycle = rules.value(u"daylightCycle"_s).toBool(true);
+    info.mobSpawning = rules.value(u"mobSpawning"_s).toBool(true);
+    // Worlds without a generator entry (format 1) are terrain worlds that need no setup.
+    const QJsonObject generator = json.value(u"generator"_s).toObject();
+    info.generator = generator.value(u"type"_s).toString(QString::fromLatin1(QcWorldInfo::defaultGenerator));
+    info.setupDone = generator.value(u"setupDone"_s).toBool(true);
+    info.generatorOptions = generator.value(u"options"_s).toString();
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
@@ -116,8 +126,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         }
     }
 
-    if (!seedOk || info.name.isEmpty()) {
-        return qcError(u"%1 is damaged: missing name or seed"_s.arg(path));
+    if (!seedOk || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength) {
+        return qcError(u"%1 is damaged: missing name, seed or generator"_s.arg(path));
     }
     return info;
 }
@@ -141,7 +151,10 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
                            {u"created"_s, info.created.toString(Qt::ISODate)},
                            {u"lastPlayed"_s, info.lastPlayed.toString(Qt::ISODate)},
                            {u"worldTime"_s, info.worldTime},
-                           {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory}}}};
+                           {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
+                           {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},
+                                                        {u"daylightCycle"_s, info.daylightCycle},
+                                                        {u"mobSpawning"_s, info.mobSpawning}}}};
 
     QSaveFile file(QDir(m_directory).filePath(u"world.json"_s));
     if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(json).toJson()) < 0 || !file.commit()) {

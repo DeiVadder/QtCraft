@@ -1,0 +1,36 @@
+{
+    "name": "light_row",
+    "showcase": { "order": 10 },
+    "palette": {
+        "B": "stone_bricks",
+        "W": "oak_log",
+        "O": "oak_planks",
+        "T": "torch[attach=floor]",
+        "t": "torch[attach=north]",
+        "s": "small_torch[attach=floor]",
+        "u": "small_torch[attach=north]",
+        "l": "lantern[attach=floor]",
+        "n": "lantern[attach=north]",
+        "c": "lantern[attach=ceiling]",
+        "m": "mine_lamp[attach=floor]",
+        "w": "mine_lamp[attach=north]",
+        "e": "mine_lamp[attach=ceiling]",
+        "f": "firefly_glass",
+        "M": "magma_block"
+    },
+    "layers": [
+        ["                   ", "                   ", "                   ", "                   ", "                   "],
+        ["BBBBBBBBBBBBBBBBBBB", "                   ", "W T  s  l  m  f M W", "                   ", "                   "],
+        ["BBBBBBBBBBBBBBBBBBB", "  t  u  n  w       ", "W                 W", "                   ", "                   "],
+        ["                   ", "                   ", "W       c  e      W", "                   ", "                   "],
+        ["                   ", "                   ", "OOOOOOOOOOOOOOOOOOO", "                   ", "                   "]
+    ],
+    "labels": [
+        { "at": [2.5, 3.4, 4.5], "text": "block.qtcraft.torch" },
+        { "at": [5.5, 3.4, 4.5], "text": "block.qtcraft.small_torch" },
+        { "at": [8.5, 3.4, 4.5], "text": "block.qtcraft.lantern" },
+        { "at": [11.5, 3.4, 4.5], "text": "block.qtcraft.mine_lamp" },
+        { "at": [14.5, 3.4, 4.5], "text": "block.qtcraft.firefly_glass" },
+        { "at": [16.5, 3.4, 4.5], "text": "block.qtcraft.magma_block" }
+    ]
+}

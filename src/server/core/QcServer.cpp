@@ -5,6 +5,7 @@
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
+#include "QcServerSetup.h"
 #include "QcTransport.h"
 
 #include <QLoggingCategory>
@@ -59,7 +60,15 @@ void QcServer::start()
 
 QcStatus QcServer::openWorld()
 {
-    return m_persistence.open();
+    if (const QcStatus opened = m_persistence.open(); !opened) {
+        return opened;
+    }
+
+    // A new world gets what its generator sets up once (decision E-221).
+    if (!m_state.info.setupDone) {
+        QcServerSetup::apply(m_state, m_blockUpdates, m_state.world.generator().setup());
+    }
+    return {};
 }
 
 QcStatus QcServer::save()
@@ -430,7 +439,10 @@ void QcServer::armTickTimer(qint64 remainingNs)
 void QcServer::tick()
 {
     ++m_state.tickCount;
-    m_state.info.worldTime += QcPhysics::tickDuration;
+    if (m_state.info.daylightCycle) {
+        m_state.info.worldTime += QcPhysics::tickDuration;
+    }
+    m_state.mobs.setNaturalSpawning(m_state.info.mobSpawning);
 
     removeClosedClients();
     autosave();
@@ -530,7 +542,7 @@ void QcServer::setWorldTime(double seconds)
 
 void QcServer::sendTime(Client &client)
 {
-    client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength});
+    client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength, m_state.info.daylightCycle});
 }
 
 QcAppearance QcServer::validAppearance(const QcAppearance &requested) const

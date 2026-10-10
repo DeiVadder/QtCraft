@@ -26,6 +26,7 @@ class QcBlockRenderTable;
 class QcContentRegistry;
 class QcItemIconProvider;
 class QQuickWindow;
+struct QcWorldInfo;
 
 // The game for QML (GameController, `game` in Main.qml): runs a single-player session with its
 // in-process server and shows its phase, status and in-game screen. Settings, library, player,
@@ -80,10 +81,16 @@ public:
     // Command line test hooks and the benchmark.
     QcStartupHooks *startup() const { return m_startup; }
 
-    // A world that is not saved (test hook --play).
-    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText);
-    // Creates a saved world in the library and starts it.
-    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, bool keepInventory = true);
+    // A world that is not saved (test hooks --play and --showcase), made by the generator type
+    // `generator` (QcWorldGenerators).
+    Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
+                                       const QString &options = {});
+    // Creates a saved world of a world type (terrain, flat, void, showcase; E-221, E-223) in the
+    // library and starts it; `options` are the layers of a flat world (empty: the default).
+    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, bool keepInventory = true,
+                                 const QString &generator = QStringLiteral("terrain"), const QString &options = {});
+    // The layers a flat world gets by default (shown in the menu).
+    Q_INVOKABLE QString defaultFlatLayers();
     Q_INVOKABLE void playWorld(const QString &folder);
     Q_INVOKABLE void saveWorld() const;
     Q_INVOKABLE void sendChat(const QString &text) const;
@@ -102,6 +109,8 @@ signals:
     void statusChanged();
     void inputEnabledChanged();
     void sessionStarted(QcClientSession *session);
+    // An unsaved world (startSingleplayer) was not started: its options do not suit its type.
+    void worldRefused(const QString &reason);
     void overlayChanged();
 
 private:
@@ -109,10 +118,11 @@ private:
     void attachWindow(QQuickWindow *window);
     // Ends the session and the server; returns the result of the final save.
     QcStatus stopSession();
-    void startWorld(const QString &directory, const QString &worldName, qint64 seed);
+    // Name, seed, generator type and options of `world`; an empty directory runs it unsaved.
+    void startWorld(const QString &directory, const QcWorldInfo &world);
     // Base game plus enabled mods for a new world; null (and the error phase) when it cannot load.
     std::shared_ptr<const QcContentRegistry> loadContent();
-    bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QString &worldName, qint64 seed);
+    bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
     void createSession();
     void connectSessionWorld();
     void connectSessionPlayer();

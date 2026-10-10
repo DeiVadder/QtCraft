@@ -51,6 +51,8 @@ private:
     QcStatus readMachines(const QcWorldStorage &storage);
     QcStatus readContainers(const QcWorldStorage &storage);
     QcStatus readBlockUpdates(const QcWorldStorage &storage);
+    // Entities, creatures, machines, chests and block updates, if the world's setup was saved.
+    QcStatus readWorldState(const QcWorldStorage &storage);
     // Logs the warnings and keeps them for the players.
     void noteWarnings(const QStringList &warnings);
     QcStatus saveEntities(const QcWorldStorage &storage) const;
@@ -62,5 +64,7 @@ private:
     std::optional<QcWorldStorage> m_storage;
     std::unique_ptr<QLockFile> m_lock;
     bool m_worldInUse = false;
+    // world.json on disk says the generator's setup is done.
+    bool m_setupSaved = false;
     QStringList m_openWarnings;
 };

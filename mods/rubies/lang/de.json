@@ -11,5 +11,6 @@
     "block.rubies.molten_ruby": "Geschmolzener Rubin",
     "item.rubies.molten_ruby_bucket": "Eimer mit geschmolzenem Rubin",
     "block.rubies.ruby_rose": "Rubinrose",
-    "block.rubies.ruby_sand": "Rubinsand"
+    "block.rubies.ruby_sand": "Rubinsand",
+    "structure.rubies.ruby_shrine": "Rubinschrein"
 }

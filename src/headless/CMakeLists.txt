@@ -2,6 +2,7 @@ qt_add_executable(qtcraft-headless
     main.cpp
     QcHeadlessGame.h QcHeadlessGame.cpp
     QcMapRenderer.h QcMapRenderer.cpp
+    QcShowcaseTour.h QcShowcaseTour.cpp
     QcSoundExporter.h QcSoundExporter.cpp
     QcStdinReader.h QcStdinReader.cpp
     QcWorldStats.h QcWorldStats.cpp

@@ -7,7 +7,7 @@
 #include "QcMeshScheduler.h"
 #include "QcModLoader.h"
 #include "QcPhysics.h"
-#include "QcTerrainGenerator.h"
+#include "QcWorldGenerators.h"
 #include "QcTextureAtlas.h"
 #include "QcWorldLibrary.h"
 
@@ -181,23 +181,43 @@ void QcGameController::setLanguage(const QString &language)
     m_handbook->refreshIfOpen();
 }
 
-void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText)
+void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator,
+                                         const QString &options)
 {
-    startWorld({}, worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed(), seedFromText(seedText));
+    QcWorldInfo world;
+    world.name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
+    world.seed = seedFromText(seedText);
+    world.generator = generator;
+    world.generatorOptions = options.trimmed();
+    startWorld({}, world);
 }
 
-void QcGameController::createWorld(const QString &worldName, const QString &seedText, bool keepInventory)
+void QcGameController::createWorld(const QString &worldName, const QString &seedText, bool keepInventory, const QString &generator,
+                                   const QString &options)
 {
+    // Wrong layers of a flat world are refused before anything is created; the world keeps the
+    // defaults of its type as they are now.
+    const QcResult<QString> stored = QcWorldGenerators::optionsToStore(generator, options.trimmed(), m_library->content());
+    if (!stored) {
+        setPhase(u"error"_s, tr("Cannot create the world: %1").arg(stored.error()));
+        return;
+    }
+
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
     const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
-    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), keepInventory);
+    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), keepInventory, generator, *stored);
     if (!entry) {
         setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
         return;
     }
 
     m_library->refreshWorlds();
-    startWorld(entry->directory, entry->info.name, entry->info.seed);
+    startWorld(entry->directory, entry->info);
+}
+
+QString QcGameController::defaultFlatLayers()
+{
+    return m_library->content().flatWorld().preset;
 }
 
 void QcGameController::playWorld(const QString &folder)
@@ -210,7 +230,7 @@ void QcGameController::playWorld(const QString &folder)
         return;
     }
 
-    startWorld(it->directory, it->info.name, it->info.seed);
+    startWorld(it->directory, it->info);
 }
 
 void QcGameController::saveWorld() const
@@ -258,7 +278,7 @@ void QcGameController::openChat(const QString &start)
     setOverlay(u"chat"_s);
 }
 
-void QcGameController::startWorld(const QString &directory, const QString &worldName, qint64 seed)
+void QcGameController::startWorld(const QString &directory, const QcWorldInfo &world)
 {
     if (const QcStatus saved = stopSession(); !saved) {
         qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
@@ -268,7 +288,7 @@ void QcGameController::startWorld(const QString &directory, const QString &world
     setPhase(u"loading"_s, tr("Loading content..."));
 
     const std::shared_ptr<const QcContentRegistry> content = loadContent();
-    if (!content || !startServer(content, worldName, seed)) {
+    if (!content || !startServer(content, world)) {
         return;
     }
 
@@ -306,19 +326,35 @@ std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
     return shared;
 }
 
-bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QString &worldName, qint64 seed)
+bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world)
 {
     QcServerConfig config;
-    config.worldName = worldName;
-    config.seed = seed;
+    config.worldName = world.name;
+    config.seed = world.seed;
+    config.generator = world.generator;
+    config.generatorOptions = world.generatorOptions;
     config.worldDirectory = m_worldDirectory;
     // One extra ring: sections are meshed only once their neighbours are known.
     config.viewDistance = m_settings->viewDistance() + 1;
     config.spawnColumn = m_startup->spawnColumn();
+    // Options given for an unsaved world (--flat-layers) must fit; a saved world with damaged ones
+    // falls back to the defaults with a warning.
+    if (const QcStatus checked = QcWorldGenerators::checkOptions(world.generator, world.generatorOptions, *content);
+        m_worldDirectory.isEmpty() && !checked) {
+        setPhase(u"error"_s, tr("Cannot start the world: %1").arg(checked.error()));
+        emit worldRefused(checked.error());
+        return false;
+    }
+
     QStringList generatorWarnings;
-    auto generator = std::make_unique<QcTerrainGenerator>(content, config.seed, &generatorWarnings);
+    std::unique_ptr<QcWorldGenerator> generator =
+        QcWorldGenerators::create(world.generator, content, config.seed, &generatorWarnings, world.generatorOptions);
     for (const QString &warning : std::as_const(generatorWarnings)) {
         qCWarning(lcGame) << "World generation:" << warning;
+    }
+    if (!generator) {
+        setPhase(u"error"_s, tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator));
+        return false;
     }
 
     m_parts.server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
@@ -546,6 +582,7 @@ void QcGameController::onFrame()
     m_hud->updateTimeOfDay(alpha);
     m_render.updateSelection();
     m_hud->updateTarget();
+    m_hud->updateLabels();
 
     m_parts.meshes->setFocus({feet.x, feet.y, feet.z});
     m_parts.meshes->pump(*m_parts.session->world());

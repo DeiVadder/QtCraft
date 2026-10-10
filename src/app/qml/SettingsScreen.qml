@@ -141,6 +141,13 @@ Popup {
                     onToggled: screen.game.settings.showDebug = checked
                 }
 
+                CheckBox {
+                    Layout.columnSpan: 3
+                    text: qsTr("Show labels in the world (%1)").arg(screen.game.settings.keys.labels.labels)
+                    checked: screen.game.settings.showLabels
+                    onToggled: screen.game.settings.showLabels = checked
+                }
+
                 Label {
                     text: qsTr("Master volume")
                 }

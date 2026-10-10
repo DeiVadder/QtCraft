@@ -2,6 +2,8 @@
 
 #include "QcServerState.h"
 
+#include <QtLogging>
+
 #include <algorithm>
 #include <cmath>
 
@@ -59,6 +61,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
         if (const std::shared_ptr<const QcChunk> chunk = m_state.world.chunk(pos)) {
             if (sent < m_state.config.chunksPerTick) {
                 client.connection->send(QcMsg::ChunkData{chunk});
+                sendLabels(client, pos);
                 client.sentChunks.insert(pos);
                 ++sent;
             }
@@ -67,6 +70,25 @@ void QcChunkStreaming::stream(QcServerClient &client)
             m_state.world.requestChunk(pos);
         }
     }
+}
+
+void QcChunkStreaming::sendLabels(QcServerClient &client, QcChunkPos pos) const
+{
+    QList<QcWorldLabel> labels = m_state.world.generator().labelsIn(pos);
+    if (labels.isEmpty()) {
+        return;
+    }
+
+    // Bounded like the protocol allows, so that no generator can make the client drop the
+    // connection; the showcase planner keeps within these limits already.
+    if (labels.size() > QcWorldLabel::maxPerChunk) {
+        qWarning("chunk %d, %d has %lld labels, only the first %lld are sent", pos.x, pos.z, qlonglong(labels.size()), qlonglong(QcWorldLabel::maxPerChunk));
+        labels.resize(QcWorldLabel::maxPerChunk);
+    }
+    for (QcWorldLabel &label : labels) {
+        label = label.limited();
+    }
+    client.connection->send(QcMsg::ChunkLabels{pos, std::move(labels)});
 }
 
 void QcChunkStreaming::unloadUnneeded()

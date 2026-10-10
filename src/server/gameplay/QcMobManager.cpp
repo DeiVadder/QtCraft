@@ -105,7 +105,9 @@ QcPhysics::Steering chase(QcMobManager::Mob &mob, const QcMobDefinition &definit
     return steering;
 }
 
-// Blocks animals may stand on; `any` when one of them may stand on anything solid.
+// Blocks animals of the chunk groups may stand on; `any` when one of them may stand on anything
+// solid. Kinds that never come with a chunk (weight 0, like the showcase's mannequin) do not count:
+// they would let the search stop on tree crowns, where none of the others may stand.
 struct AnimalGrounds
 {
     QSet<QString> blocks;
@@ -116,7 +118,7 @@ AnimalGrounds animalGrounds(const QcContentRegistry &content)
 {
     AnimalGrounds grounds;
     for (const QcMobDefinition &definition : content.mobs()) {
-        if (isAnimal(definition)) {
+        if (isAnimal(definition) && definition.spawnWeight > 0.0) {
             grounds.any = grounds.any || definition.spawnBlocks.isEmpty();
             grounds.blocks.unite(QSet<QString>(definition.spawnBlocks.begin(), definition.spawnBlocks.end()));
         }
@@ -261,7 +263,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     });
 
     m_spawnTimer += dt;
-    if (m_spawnTimer >= spawnInterval) {
+    if (m_naturalSpawning && m_spawnTimer >= spawnInterval) {
         m_spawnTimer = 0.0;
         for (const PlayerView &player : players) {
             if (player.alive) {
@@ -633,7 +635,8 @@ bool QcMobManager::spawnsInChunk(int type, QcChunkPos pos, double chance, int ru
 
 void QcMobManager::populateChunk(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId)
 {
-    if (m_populated.contains(pos)) {
+    // Chunks seen while creatures do not spawn get their animals when they load again later.
+    if (!m_naturalSpawning || m_populated.contains(pos)) {
         return;
     }
     const std::shared_ptr<const QcChunk> chunk = world.chunk(pos);

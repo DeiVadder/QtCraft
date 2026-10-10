@@ -12,11 +12,14 @@
 #include "QcKeyBindings.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
+#include "QcShowcaseGenerator.h"
+#include "QcShowcaseTour.h"
 #include "QcSoundExporter.h"
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
 #include "QcTransport.h"
+#include "QcWorldGenerators.h"
 #include "QcWorldLibrary.h"
 #include "QcWorldStats.h"
 
@@ -91,6 +94,13 @@ struct Options
                                 u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
                                 u"dir"_s};
     QCommandLineOption language{u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s, u"locale"_s, u"en"_s};
+    QCommandLineOption generator{u"generator"_s, u"World type of the world started at once: terrain, flat, void or showcase."_s, u"type"_s,
+                                 u"terrain"_s};
+    QCommandLineOption generatorOptions{u"generator-options"_s,
+                                        u"Options of --generator: the layers of a flat world ('bedrock,3*dirt,grass_block') or the platform of a void world ('platform=glass,radius=4,y=40')."_s,
+                                        u"options"_s};
+    QCommandLineOption tour{u"showcase-tour"_s,
+                            u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
     QCommandLineOption icon{u"export-icon"_s,
                             u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
                             u"dir"_s};
@@ -100,8 +110,8 @@ struct Options
     {
         parser.addOptions({sounds, icon});
         parser.addOptions({handbook, language});
-        parser.addOptions({stats, statsRadius, biomeMap, slice, spawn});
-        parser.addOptions({seed, world, view, script, time, map, mapRadius, data, mods, noMods});
+        parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
+        parser.addOptions({seed, world, generator, generatorOptions, view, script, time, map, mapRadius, data, mods, noMods});
     }
 };
 
@@ -129,6 +139,8 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
     bool seedOk = false;
     config.seed = parser.value(options.seed).toLongLong(&seedOk);
     config.worldName = parser.value(options.world);
+    config.generator = parser.value(options.generator);
+    config.generatorOptions = parser.value(options.generatorOptions);
     bool viewOk = false;
     config.viewDistance = std::clamp(parser.value(options.view).toInt(&viewOk), 1, 32);
     bool timeOk = false;
@@ -144,7 +156,7 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
         }
         spawnOk = xOk && zOk;
     }
-    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk;
+    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk && QcWorldGenerators::isKnown(config.generator);
 }
 
 // The base game with the mods of --mods-dir, else of the data directory's mods folder; nullptr
@@ -340,11 +352,15 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     QcServerConfig config;
     int timeLimit = 0;
     if (!readConfig(parser, options, config, timeLimit)) {
-        printError(u"Invalid numeric option"_s);
+        printError(u"Invalid numeric option or world type"_s);
         return false;
     }
     const std::shared_ptr<const QcContentRegistry> shared = loadContent(parser, options);
     if (!shared) {
+        return false;
+    }
+    if (const QcStatus checked = QcWorldGenerators::checkOptions(config.generator, config.generatorOptions, *shared); !checked) {
+        printError(u"Invalid --generator-options: "_s + checked.error());
         return false;
     }
     if (parser.isSet(options.sounds)) {
@@ -353,6 +369,12 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
     if (parser.isSet(options.handbook)) {
         return exportHandbook(parser, options, shared);
+    }
+
+    if (parser.isSet(options.tour)) {
+        printLines(QcShowcaseTour::lines(QcShowcaseGenerator(shared).plan()));
+        exitSoon(0);
+        return true;
     }
 
     QStringList generatorWarnings;
@@ -478,9 +500,13 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 {
     QStringList generatorWarnings;
-    auto generator = std::make_unique<QcTerrainGenerator>(m_content, config.seed, &generatorWarnings);
+    std::unique_ptr<QcWorldGenerator> generator =
+        QcWorldGenerators::create(config.generator, m_content, config.seed, &generatorWarnings, config.generatorOptions);
     for (const QString &warning : std::as_const(generatorWarnings)) {
         printError(u"world generation warning: "_s + warning);
+    }
+    if (!generator) {
+        return qcError(u"Unknown world type '%1'"_s.arg(config.generator));
     }
 
     // The current world keeps running when the new one cannot be opened.
@@ -561,6 +587,7 @@ QJsonArray QcHeadlessGame::worldList() const
         worlds.append(QJsonObject{{u"folder"_s, entry.folder},
                                   {u"name"_s, entry.info.name},
                                   {u"seed"_s, QString::number(entry.info.seed)},
+                                  {u"generator"_s, entry.info.generator},
                                   {u"error"_s, entry.error}});
     }
     return worlds;
@@ -574,7 +601,12 @@ QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request
     if (!seedOk) {
         return qcError(u"'seed' must be an integer"_s);
     }
-    const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed);
+    const QString generator = request.value(u"generator"_s).toString(QString::fromLatin1(QcWorldGenerators::terrain));
+    const QcResult<QString> options = QcWorldGenerators::optionsToStore(generator, request.value(u"options"_s).toString(), *m_content);
+    if (!options) {
+        return qcError(options.error());
+    }
+    const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, true, generator, *options);
     if (!entry) {
         return qcError(entry.error());
     }
@@ -582,6 +614,8 @@ QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request
     QcServerConfig config = m_baseConfig;
     config.worldName = entry->info.name;
     config.seed = entry->info.seed;
+    config.generator = entry->info.generator;
+    config.generatorOptions = entry->info.generatorOptions;
     config.worldDirectory = entry->directory;
     response = {{u"folder"_s, entry->folder}};
     return config;
@@ -602,6 +636,8 @@ QcResult<QcServerConfig> QcHeadlessGame::listedWorld(const QJsonObject &request,
     QcServerConfig config = m_baseConfig;
     config.worldName = it->info.name;
     config.seed = it->info.seed;
+    config.generator = it->info.generator;
+    config.generatorOptions = it->info.generatorOptions;
     config.worldDirectory = it->directory;
     response = {{u"folder"_s, folder}};
     return config;

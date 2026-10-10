@@ -30,6 +30,7 @@ private slots:
         settings.mouseSensitivity = 0.3;
         settings.invertMouse = true;
         settings.showDebug = false;
+        settings.showLabels = false;
         settings.language = u"de"_s;
         settings.cameraMode = QcCameraMode::Front;
         settings.appearance.outfit = u"mod:robe"_s;

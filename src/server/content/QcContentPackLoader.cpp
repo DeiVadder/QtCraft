@@ -12,6 +12,8 @@
 #include <QRegularExpression>
 
 #include <algorithm>
+#include <optional>
+#include <type_traits>
 
 using namespace Qt::StringLiterals;
 
@@ -169,13 +171,16 @@ qint64 QcContentPackLoader::measure(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
     if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink()) {
         files.append(root.filePath(u"worldgen/terrain.json"_s));
+        files.append(root.filePath(u"worldgen/showcase.json"_s));
+        files.append(root.filePath(u"worldgen/flat.json"_s));
+        files.append(root.filePath(u"worldgen/void.json"_s));
     }
 
     qint64 total = 0;
@@ -281,22 +286,48 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcOreDefinition ore) { registry.registerOre(std::move(ore)); });
     loadDefinitions(root.filePath(u"handbook"_s), packId, warnings, QcContentParser::parseHandbookChapter,
                     [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
+    loadDefinitions(root.filePath(u"structures"_s), packId, warnings, QcContentParser::parseStructure,
+                    [&registry](QcStructureDefinition structure) { registry.registerStructure(std::move(structure)); });
 }
 
-void loadTerrain(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+// worldgen/<file>: one settings object of the pack, parsed; std::nullopt (with a warning when it
+// is broken) when there is none.
+template<typename Parse>
+auto readWorldgenFile(const QDir &root, const QString &file, const QString &packId, QStringList &warnings, Parse parse)
+    -> std::optional<typename std::invoke_result_t<Parse, const QJsonObject &, const QString &>::value_type>
 {
-    const QString terrainPath = root.filePath(u"worldgen/terrain.json"_s);
-    if (QFileInfo(root.filePath(u"worldgen"_s)).isSymLink() || !QFileInfo::exists(terrainPath)) {
-        return;
+    const QString path = root.filePath(u"worldgen/"_s + file);
+    if (QFileInfo(root.filePath(u"worldgen"_s)).isSymLink() || !QFileInfo::exists(path)) {
+        return std::nullopt;
     }
 
-    const QcResult<QJsonObject> json = readJsonObject(terrainPath);
-    const QcResult<QcTerrainSettings> terrain =
-        json ? QcContentParser::parseTerrainSettings(*json, packId) : QcResult<QcTerrainSettings>(qcError(json.error()));
-    if (terrain) {
-        registry.setTerrainSettings(*terrain);
-    } else {
-        warnings.append(u"%1: %2"_s.arg(terrainPath, terrain.error()));
+    const QcResult<QJsonObject> json = readJsonObject(path);
+    if (!json) {
+        warnings.append(u"%1: %2"_s.arg(path, json.error()));
+        return std::nullopt;
+    }
+
+    auto parsed = parse(*json, packId);
+    if (!parsed) {
+        warnings.append(u"%1: %2"_s.arg(path, parsed.error()));
+        return std::nullopt;
+    }
+    return std::move(*parsed);
+}
+
+void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+{
+    if (auto terrain = readWorldgenFile(root, u"terrain.json"_s, packId, warnings, QcContentParser::parseTerrainSettings)) {
+        registry.setTerrainSettings(std::move(*terrain));
+    }
+    if (auto showcase = readWorldgenFile(root, u"showcase.json"_s, packId, warnings, QcContentParser::parseShowcase)) {
+        registry.setShowcase(std::move(*showcase));
+    }
+    if (auto flat = readWorldgenFile(root, u"flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
+        registry.setFlatWorld(std::move(*flat));
+    }
+    if (auto empty = readWorldgenFile(root, u"void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
+        registry.setVoidWorld(std::move(*empty));
     }
 }
 
@@ -342,7 +373,7 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
                     });
     loadBlocks(root, info->id, registry, warnings);
     loadLaterDefinitions(root, info->id, registry, warnings);
-    loadTerrain(root, info->id, registry, warnings);
+    loadWorldgenSettings(root, info->id, registry, warnings);
     loadTranslations(root, registry, warnings);
 
     return info;

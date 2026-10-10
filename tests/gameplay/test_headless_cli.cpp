@@ -111,7 +111,8 @@ private slots:
         QCOMPARE(found.first().toObject().value(u"title"_s).toString(), u"Eisenerz"_s);
 
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
-        QCOMPARE(creatures.size(), 5);
+        // Zombie, pig, slime, firefly, sheep and the mannequin of the showcase.
+        QCOMPARE(creatures.size(), 6);
 
         const QJsonObject missing = ask(R"({"cmd":"handbook","entry":"no_such_block"})");
         QCOMPARE(missing.value(u"ok"_s).toBool(), false);
@@ -215,6 +216,66 @@ private slots:
         const QJsonObject status = ask(R"({"cmd":"status"})");
         QCOMPARE(status.value(u"state"_s).toString(), u"Playing"_s);
         QCOMPARE(status.value(u"world"_s).toString(), u"Test World"_s);
+    }
+
+    void showcaseWorldsAndTour()
+    {
+        QTemporaryDir data;
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+
+        QCOMPARE(ask(R"({"cmd":"worldCreate","name":"Odd","generator":"spiral"})").value(u"ok"_s).toBool(true), false);
+        QCOMPARE(ask(R"({"cmd":"worldCreate","name":"Odd","generator":"flat","options":"3*nothing"})").value(u"ok"_s).toBool(true), false);
+        QCOMPARE(ask(R"({"cmd":"worldCreate","name":"Odd","generator":"void","options":"stone"})").value(u"ok"_s).toBool(true), false);
+        QVERIFY(!ask(R"({"cmd":"worldCreate","name":"Show","generator":"showcase"})").value(u"folder"_s).toString().isEmpty());
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        const QJsonArray worlds = ask(R"({"cmd":"worldList"})").value(u"worlds"_s).toArray();
+        QCOMPARE(worlds.size(), 1);
+        QCOMPARE(worlds.at(0).toObject().value(u"generator"_s).toString(), u"showcase"_s);
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+
+        // The tour: two stops per area, "name x z yaw pitch".
+        m_process.setArguments({u"--no-mods"_s, u"--showcase-tour"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+        const QList<QByteArray> lines = m_process.readAllStandardOutput().trimmed().split('\n');
+        QVERIFY(lines.size() >= 36);
+        for (const QByteArray &line : lines) {
+            QCOMPARE(line.split(' ').size(), 5);
+        }
+        QVERIFY(lines.first().startsWith("demo-light_row "));
+    }
+
+    void generatorOptionsOnTheCommandLine()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+
+        // Wrong layers, or options for a type that takes none, end the start like a bad number.
+        const QList<QStringList> refused{{u"--generator"_s, u"flat"_s, u"--generator-options"_s, u"3*nothing"_s},
+                                         {u"--generator"_s, u"terrain"_s, u"--generator-options"_s, u"stone"_s},
+                                         {u"--generator"_s, u"void"_s, u"--generator-options"_s, u"radius=99"_s}};
+        for (const QStringList &arguments : refused) {
+            m_process.setArguments(arguments + QStringList{u"--time-limit"_s, u"30"_s});
+            m_process.start();
+            QVERIFY(m_process.waitForFinished(timeoutMs));
+            QCOMPARE(m_process.exitCode(), 1);
+            QVERIFY2(m_process.readAllStandardError().contains("Invalid --generator-options"), qPrintable(arguments.join(u' ')));
+        }
+
+        // Valid layers make the world: the player stands on the fifth layer.
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"60"_s, u"--generator"_s, u"flat"_s,
+                                u"--generator-options"_s, u"bedrock,3*dirt,grass_block"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        QVERIFY(ask(R"({"cmd":"wait","ticks":20})").value(u"ok"_s).toBool());
+        QCOMPARE(ask(R"({"cmd":"status"})").value(u"position"_s).toArray().at(1).toDouble(), 5.0);
     }
 
     void quitEndsTheProcess()

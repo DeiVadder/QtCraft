@@ -1,6 +1,8 @@
 #pragma once
 
 #include "QcChunk.h"
+#include "QcWorldLabel.h"
+#include "QcWorldSetup.h"
 
 #include <memory>
 
@@ -27,5 +29,13 @@ public:
     {
         Q_UNUSED(block);
         return true;
+    }
+    // Set up once when a world is created (rules, creatures, contents, updates; decision E-221).
+    virtual QcWorldSetup setup() const { return {}; }
+    // Labels floating in a chunk (decision E-222); the server sends them with the chunk.
+    virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return {};
     }
 };

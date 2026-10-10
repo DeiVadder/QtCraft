@@ -10,6 +10,12 @@ Item {
 
     required property GameController game
 
+    WorldLabels {
+        anchors.fill: parent
+        visible: hud.game.settings.showLabels
+        game: hud.game
+    }
+
     HudLabel {
         anchors.left: parent.left
         anchors.top: parent.top

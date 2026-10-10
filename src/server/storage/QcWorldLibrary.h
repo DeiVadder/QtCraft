@@ -30,8 +30,11 @@ public:
     const QString &root() const { return m_root; }
     // Newest first by last played time.
     QList<Entry> list() const;
-    // Creates the directory and world.json; returns the new entry.
-    QcResult<Entry> create(const QString &name, qint64 seed, bool keepInventory = true) const;
+    // Creates the directory and world.json for a world of the generator type `generator`
+    // (QcWorldGenerators); returns the new entry. The generator's setup runs when the world first opens.
+    // `options` are those of the generator (the layers of a flat world).
+    QcResult<Entry> create(const QString &name, qint64 seed, bool keepInventory = true,
+                           const QString &generator = QString::fromLatin1(QcWorldInfo::defaultGenerator), const QString &options = {}) const;
     // Deletes a world directory. Only plain folder names directly below the root are accepted.
     QcStatus remove(const QString &folder) const;
     QString directoryOf(const QString &folder) const;

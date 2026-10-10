@@ -1,0 +1,87 @@
+{
+    "name": "liquid_flow",
+    "showcase": {
+        "order": 20
+    },
+    "palette": {
+        "B": "stone_bricks",
+        "w": "water",
+        "l": "lava"
+    },
+    "layers": [
+        [
+            "               ",
+            "               ",
+            "               ",
+            "               ",
+            "               ",
+            "               ",
+            "               ",
+            "               ",
+            "               "
+        ],
+        [
+            "BBBBBBB BBBBBBB",
+            "B  B  B B  B  B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "BBBBBBB BBBBBBB"
+        ],
+        [
+            "BBBBBBB BBBBBBB",
+            "B  w  B B  l  B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "BBBBBBB BBBBBBB"
+        ],
+        [
+            "BBBBBBB BBBBBBB",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "B     B B     B",
+            "BBBBBBB BBBBBBB"
+        ]
+    ],
+    "updates": [
+        [
+            3,
+            2,
+            1
+        ],
+        [
+            11,
+            2,
+            1
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                5.0,
+                1.5
+            ],
+            "text": "block.qtcraft.water"
+        },
+        {
+            "at": [
+                11.5,
+                5.0,
+                1.5
+            ],
+            "text": "block.qtcraft.lava"
+        }
+    ]
+}

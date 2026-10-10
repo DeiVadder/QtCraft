@@ -117,26 +117,38 @@ void QcChatCommands::help(const Command &command)
 {
     command.reply(QT_TRANSLATE_NOOP("QcServerMessages",
                                     "Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
-                                    "/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
+                                    "/summon <mob> [count], /kill, /heal, /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false], "
+                                    "/spawnitem <item> [count], "
                                     "/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative "
                                     "coordinates), /feed [food], /locatebiome <biome>"));
 }
 
 void QcChatCommands::gamerule(const Command &command)
 {
+    // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221).
+    const std::array<std::pair<QStringView, bool QcWorldInfo::*>, 3> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
+                                                                            {u"daylightCycle", &QcWorldInfo::daylightCycle},
+                                                                            {u"mobSpawning", &QcWorldInfo::mobSpawning}}};
     const QStringList &words = command.words;
-    if (words[1] != u"keepInventory"_s) {
+    const auto rule = std::ranges::find(rules, QStringView(words[1]), &std::pair<QStringView, bool QcWorldInfo::*>::first);
+    if (rule == rules.end()) {
         command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown command: %1"), {words.first()});
-    } else if (words.size() == 2) {
-        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "keepInventory is %1"),
-            {m_state.info.keepInventory ? u"true"_s : u"false"_s});
+        return;
+    }
+
+    bool &value = m_state.info.*(rule->second);
+    if (words.size() == 2) {
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is %2"), {words[1], value ? u"true"_s : u"false"_s});
     } else if (!m_state.config.allowCheats) {
         command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Cheats are disabled on this server"));
     } else if (words[2] == u"true"_s || words[2] == u"false"_s) {
-        m_state.info.keepInventory = words[2] == u"true"_s;
-        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "keepInventory is now %1"), {words[2]});
+        value = words[2] == u"true"_s;
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now %2"), {words[1], words[2]});
+        if (rule->second == &QcWorldInfo::daylightCycle) {
+            m_actions.setWorldTime(m_state.info.worldTime);
+        }
     } else {
-        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule keepInventory [true|false]"));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]"));
     }
 }
 

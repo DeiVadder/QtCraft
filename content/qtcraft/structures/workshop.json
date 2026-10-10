@@ -1,0 +1,26 @@
+{
+    "name": "workshop",
+    "showcase": { "order": 50 },
+    "palette": {
+        "P": "polished_stone",
+        "C": "crafting_table",
+        "F": "furnace[facing=south]",
+        "H": "chest[facing=south]",
+        "R": "barrel[facing=south]"
+    },
+    "layers": [
+        ["PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP"],
+        ["         ", " C F H R ", "         "]
+    ],
+    "contents": [
+        { "at": [3, 1, 1], "items": [{ "item": "iron_ore", "count": 16 }, { "item": "coal", "count": 8 }] },
+        { "at": [5, 1, 1], "items": [{ "item": "oak_planks", "count": 32 }, { "item": "stick", "count": 16 }, { "item": "iron_ingot", "count": 8 }, { "item": "coal", "count": 16 }, { "item": "torch", "count": 16 }] },
+        { "at": [7, 1, 1], "items": [{ "item": "apple", "count": 8 }, { "item": "cooked_porkchop", "count": 8 }] }
+    ],
+    "labels": [
+        { "at": [1.5, 2.8, 1.5], "text": "block.qtcraft.crafting_table" },
+        { "at": [3.5, 2.8, 1.5], "text": "block.qtcraft.furnace" },
+        { "at": [5.5, 2.8, 1.5], "text": "block.qtcraft.chest" },
+        { "at": [7.5, 2.8, 1.5], "text": "block.qtcraft.barrel" }
+    ]
+}

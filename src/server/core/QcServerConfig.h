@@ -9,6 +9,9 @@ struct QcServerConfig
 {
     QString worldName = QStringLiteral("World");
     qint64 seed = 0;
+    // Generator type of the world (QcWorldGenerators); a saved world must have been made with it.
+    QString generator = QStringLiteral("terrain");
+    QString generatorOptions;
     // Radius in chunks streamed around each player.
     int viewDistance = 8;
     // Upper bound of chunks sent per client and tick, keeps ticks short while a client catches up.

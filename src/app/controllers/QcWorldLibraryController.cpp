@@ -52,6 +52,7 @@ void QcWorldLibraryController::refreshWorlds()
         m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
                                     {u"name"_s, entry.info.name},
                                     {u"seed"_s, QString::number(entry.info.seed)},
+                                    {u"generator"_s, entry.info.generator},
                                     {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
                                     {u"error"_s, entry.error}});
     }

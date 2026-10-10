@@ -55,6 +55,11 @@ void addCapFact(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fa
 // When, where, how many and how often it spawns.
 void addSpawnFacts(const QcHandbookText &text, const QcMobDefinition &mob, QList<Fact> &facts)
 {
+    if (!mob.spawnsNaturally()) {
+        facts.append({text.label(u"fact.spawnTime"_s), text.label(u"value.time.never"_s), {}});
+        return;
+    }
+
     const QString time = mob.spawnTime == QcMobDefinition::SpawnTime::Day     ? u"day"_s
                          : mob.spawnTime == QcMobDefinition::SpawnTime::Night ? u"night"_s
                                                                               : u"any"_s;
@@ -111,6 +116,9 @@ void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
 void addSpawnSections(const QcHandbookContext &context, const QcMobDefinition &mob, QList<Section> &sections)
 {
     const QcHandbookText &text = context.text;
+    if (!mob.spawnsNaturally()) {
+        return;
+    }
 
     Section spawnsOn{text.label(u"section.spawnBlocks"_s), {}, {}, {}};
     for (const QString &block : mob.spawnBlocks) {

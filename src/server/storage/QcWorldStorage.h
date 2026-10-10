@@ -18,10 +18,14 @@
 
 #include <memory>
 
-// Metadata of a saved world (world.json).
+// Metadata of a saved world (world.json). Format 2 adds the generator type, whether its one-time
+// setup ran and the game rules daylightCycle and mobSpawning (decision E-221); format 1 files load
+// as terrain worlds that are set up, with both rules on.
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 1;
+    static constexpr int formatVersion = 2;
+    static constexpr int oldestFormatVersion = 1;
+    static constexpr auto defaultGenerator = "terrain";
 
     QString name;
     qint64 seed = 0;
@@ -33,6 +37,14 @@ struct QcWorldInfo
     QList<QcPackReference> packs;
     // Game rule: players keep their inventory when they die instead of dropping it.
     bool keepInventory = true;
+    // Game rules: the time of day runs, creatures spawn by themselves.
+    bool daylightCycle = true;
+    bool mobSpawning = true;
+    // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether
+    // its one-time setup has run.
+    QString generator = QString::fromLatin1(defaultGenerator);
+    QString generatorOptions;
+    bool setupDone = true;
 };
 
 struct QcPlayerData

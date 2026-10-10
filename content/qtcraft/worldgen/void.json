@@ -1,0 +1,7 @@
+{
+    "platform": "stone",
+    "platformRadius": 2,
+    "platformY": 63,
+    "timeOfDay": 150,
+    "mobSpawning": false
+}
