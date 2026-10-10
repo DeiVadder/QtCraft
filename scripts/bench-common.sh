@@ -31,6 +31,10 @@
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 
+# Display awake while the calling script runs; runs wait while the screen is locked (screen-guard.sh).
+. "${QC_SCRIPTS_DIR:-$PROJECT_DIR/scripts}/screen-guard.sh"
+keep_awake
+
 limited() {
     perl -e 'alarm shift; exec @ARGV or die' "$@"
 }
@@ -186,9 +190,21 @@ EOF
     # (QTCRAFT_SCREEN overrides it) and stays in the background: no focus, no captured mouse.
     mkdir -p "$data"
     printf '[audio]\nmuted=true\n' >"$data/settings.ini"
-    # shellcheck disable=SC2086
-    env QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
-        perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
+    # A run during which the screen was locked rendered no or too few frames: it is repeated (at most
+    # twice) once the screen is unlocked again.
+    attempt=1
+    while :; do
+        wait_for_screen || return 1
+        # shellcheck disable=SC2086
+        env QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+            perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
+        if ! screen_locked || [ "$attempt" -ge 3 ]; then
+            break
+        fi
+        echo "screen was locked during the run; repeating it ($log)" >&2
+        attempt=$((attempt + 1))
+    done
+    screen_locked && return 1
     grep -o 'BENCH .*' "$log" | tail -1
 }
 

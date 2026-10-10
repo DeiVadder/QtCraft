@@ -47,8 +47,13 @@ shoot() {
     fi
 }
 
+# Screenshots need a shown window: keep the display awake and wait while the screen is locked.
+. "$PROJECT_DIR/scripts/screen-guard.sh"
+keep_awake
+
 failed=0
 while read -r name x z yaw pitch; do
+    wait_for_screen || exit 1
     echo "$name" | grep -Eq "$FILTER" || continue
     shoot "$name" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch"
     case "$name" in

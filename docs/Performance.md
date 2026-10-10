@@ -163,3 +163,5 @@ Lauf am Ende der Etappe (Release, 10 s je Szenario): bestanden. stand: Frame Ø 
 - Weniger Draw-Calls bei großer Sichtweite (Sektionen einer Chunk-Säule zusammenfassen oder gemeinsame Puffer mit Offsets): größter Posten im Render-Thread bei 16 Chunks.
 - Speicher der Chunks (Client und Server halten im Einzelspieler je eine Kopie; Paletten-Indizes mit 4 KiB pro Sektion): größter Heap-Posten bei 16 Chunks.
 - Entity-Puffer werden jeden Frame vollständig hochgeladen (crowd rund 380 KB pro Frame); Instancing erst bei deutlich mehr Wesen.
+
+**Bildschirm (seit dem Zusatz nach Etappe 21):** Ein Fenster, das macOS nicht zeigt (Bildschirm aus, gesperrt, verdeckt), rendert keine Frames. `scripts/screen-guard.sh` hält deshalb während Benchmark-, Profil-, Screenshot- und Verify-Läufen den Bildschirm wach (`caffeinate -dimsu`, endet mit dem Skript) und lässt Läufe warten, solange der Bildschirm gesperrt ist (`IOConsoleLocked`); ein Lauf, während dessen gesperrt wurde, wird wiederholt (höchstens zweimal). Eine Sperre von Hand verhindert das nicht; das MacBook während der Läufe offen und entsperrt lassen.

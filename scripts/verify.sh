@@ -125,6 +125,11 @@ else
 
     step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
 
+    # Smoke runs need a shown window: keep the display awake and wait while the screen is locked.
+    . "$PROJECT_DIR/scripts/screen-guard.sh"
+    keep_awake
+    step "screen-unlocked" wait_for_screen
+
     rm -f "$SCREENSHOT"
     # Smoke runs keep their settings and worlds in the build tree, never in the player's data.
     SMOKE_DATA="$PROJECT_DIR/build/smoke-data"
