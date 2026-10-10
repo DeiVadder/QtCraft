@@ -27,3 +27,11 @@ void QcScriptedRun::stayInBackground()
 {
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 }
+
+void QcScriptedRun::keepTimersRunning()
+{
+    // Retained and held until the process ends.
+    static const id activity = [[[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiatedAllowingIdleSystemSleep | NSActivityLatencyCritical
+                                                                               reason:@"Scripted offscreen run"] retain];
+    (void)activity;
+}

@@ -11,6 +11,7 @@
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
 #include "QcRaycast.h"
+#include "QcServerDebugMirror.h"
 #include "QcSoundCue.h"
 
 #include <QHash>
@@ -150,6 +151,16 @@ public:
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
     quint64 labelGeneration() const { return m_labelGeneration; }
 
+    // Debug data to ask the server for (QcMsg::DebugSubscribe flags, 0 for none); sent at once when
+    // connected, otherwise with the welcome. What arrived is in serverDebug(). The base flags stay
+    // subscribed whatever setDebugSubscription() asks for (the statistics log of a headless game,
+    // which the control command `debug off` must not cut off).
+    void setDebugSubscription(quint8 flags);
+    void setDebugSubscriptionBase(quint8 flags);
+    // What the server is asked for: both together.
+    quint8 debugSubscription() const { return m_debugFlags | m_debugBaseFlags; }
+    const QcServerDebugMirror &serverDebug() const { return m_serverDebug; }
+
     // Sounds of the last moments (server events and the client's own), oldest first; at most
     // recentSoundLimit. clearRecentSounds() empties the list (control interface).
     static constexpr qsizetype recentSoundLimit = 64;
@@ -214,6 +225,8 @@ private:
     void updateTargetAndMining();
     void cue(QcSoundCue cue);
     void updateSounds();
+    // Tells the server when the subscription differs from `before`.
+    void sendDebugSubscription(quint8 before);
 
     std::unique_ptr<QcConnection> m_connection;
     QString m_playerName;
@@ -275,6 +288,9 @@ private:
     bool m_timeRunning = true;
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
+    quint8 m_debugFlags = 0;
+    quint8 m_debugBaseFlags = 0;
+    QcServerDebugMirror m_serverDebug;
     QList<QcSoundCue> m_recentSounds;
     QcLocalSounds m_localSounds;
     QcAmbience::Levels m_ambience;

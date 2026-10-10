@@ -659,7 +659,7 @@ private slots:
         QVERIFY(controls);
         const QString keys = controls->sections.first().text;
         QVERIFY2(keys.contains(u"**W A S D**: walk"_s), qPrintable(keys));
-        QVERIFY2(keys.contains(u"**V / F5**: camera view, **H / F1**: handbook, **I / F3**: frame rate and position, **Esc**: menu"_s),
+        QVERIFY2(keys.contains(u"**V / F5**: camera view, **H / F1**: handbook, **I / F3**: debug display (off, compact, full), **O / F4**: debug options, **Esc**: menu"_s),
                  qPrintable(keys));
         QVERIFY2(keys.contains(u"**T / Enter**: chat"_s), qPrintable(keys));
         QVERIFY2(keys.contains(u"**1–9**"_s), qPrintable(keys));

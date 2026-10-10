@@ -59,6 +59,8 @@ public:
             if (removed->died) {
                 died.insert(removed->id);
             }
+        } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
+            debugMessages.append(*debug);
         } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
             chunkLabels.insert(labels->pos, labels->labels);
         } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
@@ -107,4 +109,6 @@ public:
     QHash<QcChunkPos, QList<QcWorldLabel>> chunkLabels;
     double worldTime = -1.0;
     bool timeRunning = true;
+    // Debug data received after a DebugSubscribe, oldest first.
+    QList<QcMsg::ServerDebug> debugMessages;
 };

@@ -1,6 +1,7 @@
 #include "QcBaseContent.h"
 #include "QcClientSession.h"
 #include "QcConnection.h"
+#include "QcDebugSnapshot.h"
 #include "QcInProcessTransport.h"
 #include "QcLocalServerHost.h"
 #include "QcPhysics.h"
@@ -142,6 +143,35 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(closed.count(), 1, timeoutMs);
         QCOMPARE(reasons.size(), 1);
         QVERIFY(reasons.constFirst().contains(u"version"_s));
+        QVERIFY(host->shutdown().has_value());
+    }
+
+    void debugSubscriptionBaseStaysAndFeetChooseTheLight()
+    {
+        auto host = makeHost(m_content, 2);
+        QcClientSession session(host->connectClient(), u"Tester"_s);
+        session.setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+        session.start();
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing && session.serverDebug().latest(), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(session.playerMotion().onGround, timeoutMs);
+
+        // Switching the requested part off keeps the base: the server data keeps coming.
+        session.setDebugSubscription(QcMsg::DebugSubscribe::all);
+        session.setDebugSubscription(0);
+        QCOMPARE(session.debugSubscription(), QcMsg::DebugSubscribe::stats);
+        const quint64 seen = session.serverDebug().latest()->tick;
+        QTRY_VERIFY_WITH_TIMEOUT(session.serverDebug().latest() && session.serverDebug().latest()->tick > seen, timeoutMs);
+
+        // The snapshot names light and block of the position it is given (the drawn one), here
+        // three blocks down in the ground, where no sky light reaches.
+        const QcVec3 below = session.playerMotion().position - QcVec3{0.0, 3.0, 0.0};
+        const QcDebugSnapshot snapshot = QcDebugSnapshot::collect(session, below);
+        QCOMPARE(snapshot.position, below);
+        const QcBlockPos block = QcPhysics::blockContaining(below);
+        QCOMPARE(snapshot.block(), block);
+        QCOMPARE(snapshot.feetLight.sky, QcLightProbe(*session.world(), block).at(block).sky);
+        QCOMPARE(snapshot.feetLight.sky, 0);
+        QCOMPARE(QcDebugSnapshot::collect(session).feetLight.sky, 15);
         QVERIFY(host->shutdown().has_value());
     }
 

@@ -138,6 +138,9 @@ private slots:
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::MoveInventoryItem{}), std::optional(Kind::Inventory));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::QuickMoveItem{}), std::optional(Kind::Inventory));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::SetAppearance{}), std::optional(Kind::Appearance));
+        // A subscription is state: the latest one counts, none is dropped.
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::DebugSubscribe{}), std::nullopt);
+        QVERIFY(QcRateLimiter::isUnlimited(QcMsg::DebugSubscribe{}));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::PlayerInput{}), std::nullopt);
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::Respawn{}), std::nullopt);
     }
@@ -153,6 +156,9 @@ private slots:
         // Labels go from the server to clients only: no limit decision of their own.
         QVERIFY(!QcProtocol::isSentBy(QcMessage(QcMsg::ChunkLabels{}).index(), QcProtocol::Peer::Client));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::ChunkLabels{}), std::nullopt);
+        // So is the server's debug data.
+        QVERIFY(!QcProtocol::isSentBy(QcMessage(QcMsg::ServerDebug{}).index(), QcProtocol::Peer::Client));
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::ServerDebug{}), std::nullopt);
     }
 
     void quickMoveFloodIsCutOff()

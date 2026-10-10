@@ -25,6 +25,7 @@ class QcBenchmarkRun;
 class QcBlockRenderTable;
 class QcContentRegistry;
 class QcItemIconProvider;
+class QcStatsLog;
 class QQuickWindow;
 struct QcWorldInfo;
 
@@ -64,7 +65,8 @@ public:
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
-    // "chest", "pause", "settings", "controls" (settings at the key table), "character" or "chat".
+    // "chest", "pause", "settings", "controls" (settings at the key table), "debug" (settings at the
+    // debug options), "character" or "chat".
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QString chatStart() const { return m_chatStart; }
@@ -102,6 +104,9 @@ public:
     // Opens the audio output (or stays silent when `enabled` is false, e.g. for screenshots) and
     // prepares the menu sounds from the base content.
     void startAudio(bool enabled);
+    // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` while a
+    // world runs (decision E-225); 0 leaves it off.
+    void startStatsLog(int intervalMs);
 
 signals:
     void viewChanged();
@@ -134,7 +139,7 @@ private:
     // Enabling or disabling a mod changes the outfits on offer and the icons.
     void onContentReset();
     void onFrame();
-    // Seconds since the last frame (at most 0.1) and the frame rate.
+    // Seconds since the last frame (at most 0.1).
     float advanceFrameClocks();
 
     QcSessionParts m_parts;
@@ -158,7 +163,7 @@ private:
     std::shared_ptr<const QcBlockRenderTable> m_renderTable;
     QElapsedTimer m_sinceTick;
     QElapsedTimer m_frameClock;
-    QElapsedTimer m_fpsClock;
-    int m_framesSinceFps = 0;
-    double m_fps = 0.0;
+    // The player's feet as drawn in the latest frame (interpolated between ticks).
+    QcVec3 m_drawnFeet;
+    QcStatsLog *m_statsLog = nullptr;
 };

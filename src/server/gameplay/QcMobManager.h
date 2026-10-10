@@ -70,6 +70,8 @@ public:
         bool dormant = false;
         // Spawned by a rule for the night only: leaves by day like night creatures.
         bool nightRule = false;
+        // Entity id of the player it chases this tick; 0 for none (debug display of goals).
+        quint32 chasing = 0;
     };
 
     // A persistent mob as saved with the world.

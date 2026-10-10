@@ -13,4 +13,7 @@ public:
     // Makes the application an accessory that does not activate itself or show in the Dock
     // (macOS); a no-op elsewhere. Call before the first window is shown.
     static void stayInBackground();
+    // Keeps the system from throttling the timers of an application without a shown window (App
+    // Nap on macOS) for the rest of the run; a no-op elsewhere.
+    static void keepTimersRunning();
 };

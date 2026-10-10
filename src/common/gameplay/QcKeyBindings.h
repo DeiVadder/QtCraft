@@ -40,6 +40,8 @@ public:
         CameraView,
         Handbook,
         DebugOverlay,
+        // The debug options: visualisations switched one by one (decision E-225).
+        DebugOptions,
         Labels,
         Hotbar1,
         Hotbar2,
@@ -107,8 +109,10 @@ public:
     void setKey(Action action, int slot, int key);
     // Pairs of (action, slot) that share a key with an earlier one; empty for a consistent table.
     QList<std::pair<Action, int>> conflicts() const;
-    // Removes keys that an earlier action in table order already uses.
-    void dropConflicts();
+    // Removes keys used twice. A key stays with the first of the `preferred` slots that holds it
+    // (loading: the slots the player set himself beat defaults that came later), otherwise with the
+    // first action in table order. Returns the slots that lost their key.
+    QList<std::pair<Action, int>> dropConflicts(const QList<std::pair<Action, int>> &preferred = {});
 
     // Values for handbook placeholders: "key.<id>" lists all keys of an action, "key1.<id>" only
     // the primary key, both as key names; on a Mac the modifiers are "MacCmd", "MacControl" and

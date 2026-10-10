@@ -58,6 +58,10 @@ enum class Role {
     RowHighlight,
     LinkBackground,
     LinkHover,
+    // Debug display: the frame and tick graphs and their budget line (16.7 ms, 50 ms).
+    GraphFrame,
+    GraphTick,
+    GraphLimit,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

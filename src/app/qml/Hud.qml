@@ -13,15 +13,19 @@ Item {
     WorldLabels {
         anchors.fill: parent
         visible: hud.game.settings.showLabels
-        game: hud.game
+        labels: hud.game.hud.labels
     }
 
-    HudLabel {
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: 8
-        visible: hud.game.settings.showDebug
-        text: hud.game.hud.debugText
+    // Light values around the target (debug options).
+    WorldLabels {
+        anchors.fill: parent
+        visible: hud.game.settings.debug.lightValues
+        labels: hud.game.hud.debug.lightLabels
+    }
+
+    DebugOverlay {
+        anchors.fill: parent
+        game: hud.game
     }
 
     Item {

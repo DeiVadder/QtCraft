@@ -4,6 +4,7 @@
 #include "QcContentRegistry.h"
 #include "QcControlCommandTable.h"
 #include "QcControlContext.h"
+#include "QcDebugJson.h"
 
 #include <QJsonArray>
 
@@ -22,6 +23,7 @@ void QcControlSessionCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"chat"_s, [this](const QJsonObject &request) { chat(request); });
     table.add(u"sounds"_s, [this](const QJsonObject &request) { sounds(request); });
     table.add(u"mods"_s, [this](const QJsonObject &request) { mods(request); });
+    table.add(u"debug"_s, [this](const QJsonObject &request) { debug(request); });
 }
 
 QcClientSession &QcControlSessionCommands::session() const
@@ -83,4 +85,32 @@ void QcControlSessionCommands::mods(const QJsonObject &request)
     }
 
     m_context.finish(request, {{u"packs"_s, packs}});
+}
+
+void QcControlSessionCommands::debug(const QJsonObject &request)
+{
+    if (request.value(u"off"_s).toBool(false)) {
+        session().setDebugSubscription(0);
+        m_context.finish(request, {});
+        return;
+    }
+
+    const quint8 wanted = QcMsg::DebugSubscribe::stats | (request.value(u"goals"_s).toBool(false) ? QcMsg::DebugSubscribe::mobGoals : 0);
+    const quint8 before = session().debugSubscription();
+    const std::optional<QcMsg::ServerDebug> &latest = session().serverDebug().latest();
+    const auto result = [this] { return QcDebugJson::toJson(QcDebugSnapshot::collect(session())); };
+    if ((before & wanted) == wanted && latest) {
+        m_context.finish(request, result());
+        return;
+    }
+
+    // A new subscription answers once the server's next message arrived (at most half a second).
+    const quint64 seenTick = latest ? latest->tick : 0;
+    session().setDebugSubscription(before | wanted);
+    m_context.begin({request, QcControlActiveCommand::timeoutPolls(20),
+                     [this, seenTick] {
+                         const std::optional<QcMsg::ServerDebug> &arrived = session().serverDebug().latest();
+                         return arrived && arrived->tick > seenTick;
+                     },
+                     result});
 }

@@ -1,7 +1,23 @@
 # Shared by the scripts that start the real game (sourced, not run). A window that macOS does not
-# show (display asleep, screen locked, window covered) renders no frames, so benchmarks, screenshots
-# and smoke runs of such a moment are worthless. These helpers keep the display awake while the
-# calling script runs and hold runs back while the screen is locked.
+# show (display asleep, screen locked, window covered) renders no frames, so benchmarks and window
+# runs of such a moment are worthless. These helpers keep the display awake while the calling
+# script runs and hold window runs back while the screen is locked.
+
+# Screenshot runs render offscreen by default (decision E-229): no window, so neither a sleeping
+# display nor a locked or covered screen matters. QTCRAFT_SHOT_MODE=window takes the real window
+# instead, for checking the window itself. Benchmarks and profiles always use the real window.
+shot_needs_screen() {
+    [ "${QTCRAFT_SHOT_MODE:-offscreen}" = window ]
+}
+
+# Environment for a screenshot run of the game (for env).
+shot_env() {
+    if shot_needs_screen; then
+        echo QTCRAFT_OFFSCREEN=0
+    else
+        echo QTCRAFT_OFFSCREEN=1
+    fi
+}
 
 # Keeps display and system awake until the calling script ends (once per script).
 keep_awake() {

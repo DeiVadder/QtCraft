@@ -54,7 +54,9 @@ public:
     // The bucket a client message pays into; std::nullopt for messages that are not limited here.
     static std::optional<Kind> kindOf(const QcMessage &message);
     // The client messages that are deliberately not limited here: PlayerInput has its own budget,
-    // Hello, Respawn and Disconnect are harmless. Every other client message needs a bucket.
+    // Hello, Respawn and Disconnect are harmless, DebugSubscribe is state (the latest one counts and
+    // must never be dropped; the debug data itself comes at a fixed pace, decision E-225). Every
+    // other client message needs a bucket.
     static bool isUnlimited(const QcMessage &message);
     static const char *name(Kind kind);
 

@@ -190,13 +190,19 @@ EOF
     # (QTCRAFT_SCREEN overrides it) and stays in the background: no focus, no captured mouse.
     mkdir -p "$data"
     printf '[audio]\nmuted=true\n' >"$data/settings.ini"
+    # DEBUG_DISPLAY=off|compact|full: level of the debug display during the run (default: the
+    # game's default, compact; decision E-225).
+    if [ -n "${DEBUG_DISPLAY:-}" ]; then
+        printf '[debug]\nlevel=%s\n' "$DEBUG_DISPLAY" >>"$data/settings.ini"
+    fi
+    # Benchmarks measure the real window, never offscreen (E-229; the game refuses that anyway).
     # A run during which the screen was locked rendered no or too few frames: it is repeated (at most
     # twice) once the screen is unlocked again.
     attempt=1
     while :; do
         wait_for_screen || return 1
         # shellcheck disable=SC2086
-        env QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+        env QTCRAFT_OFFSCREEN=0 QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
             perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
         if ! screen_locked || [ "$attempt" -ge 3 ]; then
             break

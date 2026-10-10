@@ -27,6 +27,22 @@ void QcTickStats::addSkipped(quint64 count)
     m_skipped += count;
 }
 
+void QcTickStats::addPhases(const std::array<qint64, QcTickPhases::count> &phaseNs)
+{
+    const std::scoped_lock lock(m_mutex);
+    for (std::size_t phase = 0; phase < phaseNs.size(); ++phase) {
+        m_phaseTotalNs[phase] += phaseNs[phase];
+        m_phaseWorstNs[phase] = std::max(m_phaseWorstNs[phase], phaseNs[phase]);
+    }
+    ++m_phaseTicks;
+}
+
+quint64 QcTickStats::skipped() const
+{
+    const std::scoped_lock lock(m_mutex);
+    return m_skipped;
+}
+
 QcTickStats::Summary QcTickStats::summary() const
 {
     std::vector<float> sorted;
@@ -34,6 +50,10 @@ QcTickStats::Summary QcTickStats::summary() const
     {
         const std::scoped_lock lock(m_mutex);
         result.skipped = m_skipped;
+        for (std::size_t phase = 0; m_phaseTicks > 0 && phase < m_phaseTotalNs.size(); ++phase) {
+            result.phaseAverageMs[phase] = double(m_phaseTotalNs[phase]) / double(m_phaseTicks) / 1e6;
+            result.phaseWorstMs[phase] = double(m_phaseWorstNs[phase]) / 1e6;
+        }
         if (m_ticks == 0) {
             return result;
         }
@@ -64,4 +84,7 @@ void QcTickStats::reset()
     m_durationWorstNs = 0;
     m_ticks = 0;
     m_skipped = 0;
+    m_phaseTotalNs.fill(0);
+    m_phaseWorstNs.fill(0);
+    m_phaseTicks = 0;
 }

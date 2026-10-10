@@ -5,9 +5,9 @@
 #include "QcGameInput.h"
 #include "QcLocalServerHost.h"
 #include "QcMeshScheduler.h"
+#include "QcProcessMemory.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
-#include "QcThreadCpuClock.h"
 
 #include <QCoreApplication>
 #include <QLoggingCategory>
@@ -18,9 +18,6 @@
 #include <memory>
 #include <numbers>
 
-#if defined(Q_OS_UNIX)
-#include <sys/resource.h>
-#endif
 
 using namespace Qt::StringLiterals;
 
@@ -28,22 +25,16 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
-// Highest resident memory of the process so far; 0 where the platform does not report it.
-double peakMemoryMegabytes()
+// Mean and longest time per server tick phase (decision E-225), "key=value" pairs for the BENCH line.
+QString tickPhasePairs(const QcTickStats::Summary &ticks)
 {
-#if defined(Q_OS_UNIX)
-    rusage usage{};
-    if (getrusage(RUSAGE_SELF, &usage) != 0) {
-        return 0.0;
+    QStringList pairs;
+    for (int phase = 0; phase < QcTickPhases::count; ++phase) {
+        const QLatin1StringView id(QcTickPhases::ids[std::size_t(phase)]);
+        pairs.append(u"tick_%1_avg_ms=%2"_s.arg(id).arg(ticks.phaseAverageMs[std::size_t(phase)], 0, 'f', 4));
+        pairs.append(u"tick_%1_max_ms=%2"_s.arg(id).arg(ticks.phaseWorstMs[std::size_t(phase)], 0, 'f', 3));
     }
-#if defined(Q_OS_DARWIN)
-    return double(usage.ru_maxrss) / (1024.0 * 1024.0); // bytes
-#else
-    return double(usage.ru_maxrss) / 1024.0; // kilobytes
-#endif
-#else
-    return 0.0;
-#endif
+    return pairs.join(u' ');
 }
 
 } // namespace
@@ -92,17 +83,14 @@ void QcBenchmarkRun::recordFrame()
     m_frame.restart();
 }
 
-void QcBenchmarkRun::recordGuiFrame(qint64 entityNs)
+void QcBenchmarkRun::recordGuiFrame(double guiCpuMs, qint64 entityNs, const QList<QcRenderSample> &samples)
 {
     if (!m_running) {
         return;
     }
 
-    const qint64 guiCpuNs = QcThreadCpuClock::nowNs();
-    const double guiCpuMs = guiCpuNs >= 0 && m_guiCpuNs >= 0 ? double(guiCpuNs - m_guiCpuNs) / 1e6 : -1.0;
-    m_guiCpuNs = guiCpuNs;
     m_frameProfile.addGuiFrame(guiCpuMs, double(entityNs) / 1e6);
-    m_frameProfile.addRenderSamples(m_parts.view->takeRenderSamples());
+    m_frameProfile.addRenderSamples(samples);
 }
 
 void QcBenchmarkRun::start()
@@ -123,11 +111,6 @@ void QcBenchmarkRun::resetMeasurement()
 {
     m_frameNs.clear();
     m_frameProfile.clear();
-    m_guiCpuNs = QcThreadCpuClock::nowNs();
-    if (m_parts.view) {
-        m_parts.view->setCollectRenderSamples(true);
-        m_parts.view->takeRenderSamples();
-    }
     if (m_parts.server) {
         m_parts.server->resetTickTimes();
     }
@@ -233,10 +216,6 @@ void QcBenchmarkRun::finish()
 {
     m_running = false;
     m_input.clearKeys();
-    if (m_parts.view) {
-        m_frameProfile.addRenderSamples(m_parts.view->takeRenderSamples());
-        m_parts.view->setCollectRenderSamples(false);
-    }
     QList<qint64> sorted = m_frameNs;
     std::ranges::sort(sorted);
     if (sorted.isEmpty()) {
@@ -271,12 +250,12 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
     qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
                                 u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
                                 u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13 mesh_jobs=%14 mesh_job_avg_ms=%15 mesh_job_max_ms=%16 "
-                                u"tick_late_avg_ms=%17 tick_late_p99_ms=%18 tick_late_max_ms=%19 ticks=%20 ticks_skipped=%21 %22"_s
+                                u"tick_late_avg_ms=%17 tick_late_p99_ms=%18 tick_late_max_ms=%19 ticks=%20 ticks_skipped=%21 %22 %23"_s
                                     .arg(averageMs, 0, 'f', 3)
                                     .arg(p99Ms, 0, 'f', 3)
                                     .arg(ticks.averageMs, 0, 'f', 3)
                                     .arg(ticks.worstMs, 0, 'f', 3)
-                                    .arg(peakMemoryMegabytes(), 0, 'f', 1)
+                                    .arg(QcProcessMemory::peakMb(), 0, 'f', 1)
                                     .arg(entities)
                                     .arg(latencyMs, 0, 'f', 3)
                                     .arg(mesh.latencyWorstMs, 0, 'f', 3)
@@ -293,7 +272,7 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(ticks.lateMaxMs, 0, 'f', 3)
                                     .arg(ticks.ticks)
                                     .arg(ticks.skipped)
-                                    .arg(m_frameProfile.summary());
+                                    .arg(m_frameProfile.summary(), tickPhasePairs(ticks));
 }
 
 void QcBenchmarkRun::logReport(const QList<qint64> &sorted, double p99Ms) const

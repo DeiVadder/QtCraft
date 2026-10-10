@@ -8,3 +8,7 @@ QList<QRect> QcScriptedRun::builtInDisplays()
 void QcScriptedRun::stayInBackground()
 {
 }
+
+void QcScriptedRun::keepTimersRunning()
+{
+}

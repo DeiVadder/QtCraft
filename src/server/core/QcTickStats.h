@@ -1,6 +1,10 @@
 #pragma once
 
+#include "QcTickPhase.h"
+
 #include <QtGlobal>
+
+#include <array>
 
 #include <mutex>
 #include <vector>
@@ -25,11 +29,18 @@ public:
         double lateMaxMs = 0.0;
         // Ticks dropped because the server fell too far behind.
         quint64 skipped = 0;
+        // Mean and longest time per phase (QcTickPhase) over the ticks that reported phases.
+        std::array<double, QcTickPhases::count> phaseAverageMs{};
+        std::array<double, QcTickPhases::count> phaseWorstMs{};
     };
 
     void record(qint64 lateNs, qint64 durationNs);
     void addSkipped(quint64 count);
+    // Nanoseconds per phase of one tick (QcTickPhaseTimer::lastTick).
+    void addPhases(const std::array<qint64, QcTickPhases::count> &phaseNs);
     Summary summary() const;
+    // Ticks dropped so far (cheap, unlike summary()).
+    quint64 skipped() const;
     void reset();
 
 private:
@@ -42,4 +53,7 @@ private:
     qint64 m_durationWorstNs = 0;
     quint64 m_ticks = 0;
     quint64 m_skipped = 0;
+    std::array<qint64, QcTickPhases::count> m_phaseTotalNs{};
+    std::array<qint64, QcTickPhases::count> m_phaseWorstNs{};
+    quint64 m_phaseTicks = 0;
 };

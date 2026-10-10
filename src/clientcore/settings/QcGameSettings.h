@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcDebugOptions.h"
 #include "QcKeyBindings.h"
 #include "QcResult.h"
 #include "QcViewCamera.h"
@@ -30,7 +31,8 @@ struct QcGameSettings
     double fieldOfView = defaultFieldOfView;
     double mouseSensitivity = defaultMouseSensitivity;
     bool invertMouse = false;
-    bool showDebug = true;
+    // Debug display level and visualisations (decision E-225).
+    QcDebugOptions debug;
     // Labels floating in the world (showcase names, decision E-222).
     bool showLabels = true;
     // "" follows the system language, otherwise a two-letter language code such as "de".

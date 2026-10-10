@@ -5,14 +5,14 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Game settings on two pages, general and controls (the key table); stored when the screen closes,
-// key changes at once.
+// Game settings on three pages, general, controls (the key table) and debug (the debug display and
+// its visualisations); stored when the screen closes, key changes at once.
 Popup {
     id: screen
 
     required property GameController game
-    // Open on the controls page (overlay "controls").
-    property bool startOnControls
+    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 debug (overlay "debug").
+    property int startPage
 
     anchors.centerIn: parent
     width: Math.min(parent.width - 64, 600)
@@ -24,7 +24,7 @@ Popup {
     onAboutToShow: {
         languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
         cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
-        pages.currentIndex = startOnControls ? 1 : 0;
+        pages.currentIndex = startPage;
         controlsPage.clear();
     }
     onClosed: {
@@ -58,6 +58,9 @@ Popup {
             }
             TabButton {
                 text: qsTr("Controls")
+            }
+            TabButton {
+                text: qsTr("Debug")
             }
         }
 
@@ -132,13 +135,6 @@ Popup {
                     text: qsTr("Invert mouse")
                     checked: screen.game.settings.invertMouse
                     onToggled: screen.game.settings.invertMouse = checked
-                }
-
-                CheckBox {
-                    Layout.columnSpan: 3
-                    text: qsTr("Show frame rate and position")
-                    checked: screen.game.settings.showDebug
-                    onToggled: screen.game.settings.showDebug = checked
                 }
 
                 CheckBox {
@@ -269,6 +265,10 @@ Popup {
                 id: controlsPage
 
                 keys: screen.game.settings.keys
+            }
+
+            DebugOptionsPage {
+                game: screen.game
             }
         }
 

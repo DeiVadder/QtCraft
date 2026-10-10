@@ -33,6 +33,8 @@ public:
     qint64 runDue(const std::function<void()> &tick);
 
     qint64 nextDueNs() const { return m_nextDueNs; }
+    // How late the tick that runDue() is running now started against its due time; 0 outside.
+    qint64 currentLateNs() const { return m_currentLateNs; }
     // Nanoseconds until the next tick is due; negative when it is overdue.
     qint64 untilDueNs() const { return m_nextDueNs - m_clock(); }
     QcTickStats &stats() { return m_stats; }
@@ -44,5 +46,6 @@ private:
 
     Clock m_clock;
     qint64 m_nextDueNs = 0;
+    qint64 m_currentLateNs = 0;
     QcTickStats m_stats;
 };

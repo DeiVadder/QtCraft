@@ -1,5 +1,6 @@
 #include "QcChatText.h"
 #include "QcProtocol.h"
+#include "QcWorldConstants.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -290,6 +291,71 @@ private slots:
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(bad), QcProtocol::Peer::Server));
         // And servers never get them.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(labels), QcProtocol::Peer::Client));
+    }
+
+    void debugMessagesRoundTripAndAreValidated()
+    {
+        QCOMPARE(roundTrip(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::all}).flags, QcMsg::DebugSubscribe::all);
+        QVERIFY(QcProtocol::isSentBy(QcMessage(QcMsg::DebugSubscribe{}).index(), QcProtocol::Peer::Client));
+        // Unknown flags are refused.
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DebugSubscribe{0x80}), QcProtocol::Peer::Client));
+
+        QcMsg::ServerDebug debug;
+        debug.phaseMeanMs[std::size_t(QcTickPhase::Liquids)] = 1.25f;
+        debug.phaseMaxMs[std::size_t(QcTickPhase::Messages)] = 7.5f;
+        debug.tickMeanMs = 3.0f;
+        debug.tickMaxMs = 12.0f;
+        debug.lateMeanMs = 0.25f;
+        debug.lateMaxMs = 0.75f;
+        debug.recentTickMs = {2.0f, 3.5f, 1.0f};
+        debug.tick = 123456789012;
+        debug.skippedTicks = 7;
+        debug.loadedChunks = 441;
+        debug.players = 2;
+        debug.mobs = 9;
+        debug.items = 4;
+        debug.fallingBlocks = 1;
+        debug.pendingBlockUpdates = 30;
+        debug.waitingBlockUpdates = 5;
+        debug.biome = u"qtcraft:swamp"_s;
+        debug.worldType = u"showcase"_s;
+        debug.goals = {{17, QcMsg::MobGoal::Kind::Chase, {1.5, 64.0, -2.5}}, {18, QcMsg::MobGoal::Kind::Flee, {-4.0, 70.0, 8.0}}};
+        QCOMPARE(roundTrip(debug), debug);
+        QVERIFY(!QcProtocol::isSentBy(QcMessage(debug).index(), QcProtocol::Peer::Client));
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(debug), QcProtocol::Peer::Client));
+
+        // Clients reject times that are no times, too many goals or ticks, too long names and
+        // goals that are not positions.
+        const auto rejected = [](const QcMsg::ServerDebug &bad) {
+            return !QcProtocol::decode(QcProtocol::encode(bad), QcProtocol::Peer::Server).has_value();
+        };
+        QcMsg::ServerDebug bad = debug;
+        bad.tickMaxMs = -1.0f;
+        QVERIFY(rejected(bad));
+        bad = debug;
+        bad.phaseMeanMs[0] = std::numeric_limits<float>::infinity();
+        QVERIFY(rejected(bad));
+        bad = debug;
+        bad.recentTickMs = QList<float>(QcMsg::ServerDebug::maxRecentTicks + 1, 1.0f);
+        QVERIFY(rejected(bad));
+        bad = debug;
+        bad.goals = QList<QcMsg::MobGoal>(QcMsg::ServerDebug::maxGoals + 1);
+        QVERIFY(rejected(bad));
+        bad = debug;
+        bad.goals[1].goal.x = std::nan("");
+        QVERIFY(rejected(bad));
+        bad = debug;
+        bad.biome = QString(QcMsg::ServerDebug::maxTextLength + 1, u'b');
+        QVERIFY(rejected(bad));
+
+        // Goals far outside the world arrive at its edge.
+        QcMsg::ServerDebug far = debug;
+        far.goals[0].goal = {1e12, -1e9, -3e7 - 5.0};
+        const QcVec3 clamped = roundTrip(far).goals[0].goal;
+        QCOMPARE(clamped.x, double(QcWorld::maxHorizontalBlock));
+        QCOMPARE(clamped.y, -double(QcWorld::worldHeight));
+        QCOMPARE(clamped.z, -double(QcWorld::maxHorizontalBlock));
+        QCOMPARE(roundTrip(far).goals[1], debug.goals[1]);
     }
 
     void longLabelTextsAreCutOnCharacterBoundaries()

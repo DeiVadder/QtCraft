@@ -18,6 +18,7 @@ class QcContentRegistry;
 class QcWorldLibrary;
 class QcControlInterface;
 class QcLocalServerHost;
+class QcStatsLog;
 class QFile;
 
 // Server and control-interface client in one process without any window: the base of the
@@ -38,6 +39,8 @@ private:
     // from standard input; exits with failure after `timeLimit` seconds.
     bool startControl(const std::optional<QString> &scriptFile, int timeLimit);
     void readStandardInput();
+    // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` (0: off).
+    void startStatsLog(int intervalMs);
     void finishScript();
     // Starts (or restarts) server and bot session for a world; the control interface follows.
     QcStatus startWorld(const QcServerConfig &config);
@@ -60,6 +63,7 @@ private:
     std::unique_ptr<QcWorldLibrary> m_library;
     QcClientSession *m_session = nullptr;
     QcControlInterface *m_control = nullptr;
+    QcStatsLog *m_statsLog = nullptr;
     QFile *m_output = nullptr;
     bool m_scriptMode = false;
     // Built on first use per language.

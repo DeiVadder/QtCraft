@@ -1,5 +1,10 @@
 # Runs COMMAND (a ;-list) and fails unless it exits with EXPECTED_EXIT_CODE and, if given, prints
-# EXPECTED_OUTPUT (standard output) and EXPECTED_ERROR (standard error). Unlike WILL_FAIL this does not accept crashes or timeouts as success.
+# EXPECTED_OUTPUT (standard output) and EXPECTED_ERROR (standard error), prints nothing matching
+# FORBIDDEN_ERROR (standard error) and writes EXPECTED_FILE (removed first) of at least
+# EXPECTED_MIN_SIZE bytes. Unlike WILL_FAIL this does not accept crashes or timeouts as success.
+if(DEFINED EXPECTED_FILE)
+    file(REMOVE "${EXPECTED_FILE}")
+endif()
 execute_process(COMMAND ${COMMAND} RESULT_VARIABLE exit_code OUTPUT_VARIABLE output ERROR_VARIABLE errors)
 if(NOT exit_code STREQUAL EXPECTED_EXIT_CODE)
     message(FATAL_ERROR "Expected exit code ${EXPECTED_EXIT_CODE}, got '${exit_code}'\n${output}\n${errors}")
@@ -9,4 +14,16 @@ if(DEFINED EXPECTED_OUTPUT AND NOT output MATCHES "${EXPECTED_OUTPUT}")
 endif()
 if(DEFINED EXPECTED_ERROR AND NOT errors MATCHES "${EXPECTED_ERROR}")
     message(FATAL_ERROR "Errors do not match '${EXPECTED_ERROR}':\n${errors}")
+endif()
+if(DEFINED FORBIDDEN_ERROR AND errors MATCHES "${FORBIDDEN_ERROR}")
+    message(FATAL_ERROR "Errors match the forbidden '${FORBIDDEN_ERROR}' ('${CMAKE_MATCH_0}'):\n${errors}")
+endif()
+if(DEFINED EXPECTED_FILE)
+    if(NOT EXISTS "${EXPECTED_FILE}")
+        message(FATAL_ERROR "No file ${EXPECTED_FILE}:\n${errors}")
+    endif()
+    file(SIZE "${EXPECTED_FILE}" size)
+    if(DEFINED EXPECTED_MIN_SIZE AND size LESS EXPECTED_MIN_SIZE)
+        message(FATAL_ERROR "${EXPECTED_FILE} has ${size} bytes, expected at least ${EXPECTED_MIN_SIZE}")
+    endif()
 endif()

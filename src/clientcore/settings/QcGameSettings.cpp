@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QLoggingCategory>
 #include <QRegularExpression>
 #include <QSettings>
 
@@ -12,6 +13,8 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+Q_LOGGING_CATEGORY(lcSettings, "qtcraft.settings")
+
 QString keySetting(QcKeyBindings::Action action, int slot)
 {
     return u"keys/"_s + QcKeyBindings::id(action) + (slot == 0 ? QString() : u".%1"_s.arg(slot + 1));
@@ -21,6 +24,7 @@ QcKeyBindings loadKeys(const QSettings &file)
 {
     // setKey() ignores keys the platform cannot bind; those slots keep their default.
     QcKeyBindings keys = QcKeyBindings::defaults();
+    QList<std::pair<QcKeyBindings::Action, int>> fromFile;
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
         if (QcKeyBindings::isFixed(action)) {
             continue;
@@ -32,10 +36,20 @@ QcKeyBindings loadKeys(const QSettings &file)
             if (key) {
                 keys.setKey(action, slot, *key);
             }
+            if (key && keys.key(action, slot) == *key) {
+                fromFile.append({action, slot});
+            }
         }
     }
 
-    keys.dropConflicts();
+    // A key the player chose beats a default that a newer version gave to another action; that
+    // action goes without it (its other key, if any, still works).
+    const QcKeyBindings before = keys;
+    const QList<std::pair<QcKeyBindings::Action, int>> dropped = keys.dropConflicts(fromFile);
+    for (const auto &[action, slot] : dropped) {
+        qCWarning(lcSettings).noquote() << u"Key %1 of '%2' is already bound to another action; '%2' goes without it"_s.arg(
+            QcKeyBindings::keyName(before.key(action, slot)), QcKeyBindings::id(action));
+    }
     return keys;
 }
 
@@ -84,7 +98,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     const double sensitivity = file.value(u"mouseSensitivity"_s).toDouble(&ok);
     settings.mouseSensitivity = ok ? clampMouseSensitivity(sensitivity) : defaultMouseSensitivity;
     settings.invertMouse = file.value(u"invertMouse"_s, false).toBool();
-    settings.showDebug = file.value(u"showDebug"_s, true).toBool();
+    settings.debug = QcDebugOptions::load(file);
     settings.showLabels = file.value(u"showLabels"_s, true).toBool();
     settings.language = cleanLanguage(file.value(u"language"_s).toString());
     settings.cameraMode = QcViewCamera::fromName(file.value(u"cameraMode"_s).toString()).value_or(QcCameraMode::FirstPerson);
@@ -134,7 +148,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"fieldOfView"_s, fieldOfView);
     file.setValue(u"mouseSensitivity"_s, mouseSensitivity);
     file.setValue(u"invertMouse"_s, invertMouse);
-    file.setValue(u"showDebug"_s, showDebug);
+    debug.save(file);
     file.setValue(u"showLabels"_s, showLabels);
     file.setValue(u"language"_s, language);
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));

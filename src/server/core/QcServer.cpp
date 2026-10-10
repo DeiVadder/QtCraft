@@ -43,6 +43,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
              {[this] { return save(); }, [this](double seconds) { setWorldTime(seconds); }})
     , m_persistence(m_state, m_blocks, m_blockUpdates)
     , m_tickTimer(new QTimer(this))
+    , m_debug(m_state, m_blockUpdates, m_phases, m_ticks)
 {
     static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -115,6 +116,7 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
 
 void QcServer::handleMessage(Client &client, QcMessage &&message)
 {
+    const QcTickPhaseTimer::MessageScope timed(m_phases);
     if (client.state == Client::State::Closed) {
         return;
     }
@@ -221,6 +223,8 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
         m_chat.handle(client, chat->text.left(256));
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
         client.connection->close();
+    } else if (const auto *debug = std::get_if<QcMsg::DebugSubscribe>(&message)) {
+        m_debug.subscribe(client, debug->flags);
     } else {
         return false;
     }
@@ -438,6 +442,9 @@ void QcServer::armTickTimer(qint64 remainingNs)
 
 void QcServer::tick()
 {
+    // Each lap gives the time since the previous one to its phase (decision E-225).
+    using Phase = QcTickPhase;
+    m_phases.beginTick();
     ++m_state.tickCount;
     if (m_state.info.daylightCycle) {
         m_state.info.worldTime += QcPhysics::tickDuration;
@@ -445,17 +452,14 @@ void QcServer::tick()
     m_state.mobs.setNaturalSpawning(m_state.info.mobSpawning);
 
     removeClosedClients();
+    m_phases.lap(Phase::Players);
     autosave();
+    m_phases.lap(Phase::Saving);
     m_state.world.collectGeneratedChunks();
     m_blockUpdates.handleLoadedChunks();
+    m_phases.lap(Phase::ChunkLoading);
 
-    m_blockSimulation.processBlockUpdates();
-    m_blockSimulation.processLiquids();
-    m_combat.tick();
-    m_combat.applyContactDamage();
-    m_itemsAndPlants.tick();
-    m_blockSimulation.tickFallingBlocks();
-    m_machineScreens.tick();
+    simulate();
 
     for (const auto &client : m_state.clients) {
         if (client->state == Client::State::Playing) {
@@ -469,9 +473,33 @@ void QcServer::tick()
     }
 
     m_state.died.clear();
+    m_phases.lap(Phase::ClientSync);
 
     // Drop chunks no player needs any more.
     m_chunkStreaming.unloadUnneeded();
+    m_phases.lap(Phase::Streaming);
+    m_phases.endTick(m_ticks.currentLateNs());
+    m_ticks.stats().addPhases(m_phases.lastTick());
+}
+
+void QcServer::simulate()
+{
+    using Phase = QcTickPhase;
+    m_blockSimulation.processBlockUpdates();
+    m_phases.lap(Phase::BlockUpdates);
+    m_blockSimulation.processLiquids();
+    m_phases.lap(Phase::Liquids);
+    m_combat.tick();
+    m_combat.applyContactDamage();
+    m_phases.lap(Phase::Mobs);
+    m_itemsAndPlants.tickItems();
+    m_phases.lap(Phase::Items);
+    m_itemsAndPlants.tickPlants();
+    m_phases.lap(Phase::Plants);
+    m_blockSimulation.tickFallingBlocks();
+    m_phases.lap(Phase::FallingBlocks);
+    m_machineScreens.tick();
+    m_phases.lap(Phase::Machines);
 }
 
 void QcServer::autosave()
@@ -493,7 +521,9 @@ void QcServer::autosave()
 void QcServer::updateClient(Client &client)
 {
     client.inputBudget = std::min(client.inputBudget + 1, QcServerClient::maxInputBudget);
+    m_phases.lap(QcTickPhase::ClientSync);
     m_chunkStreaming.stream(client);
+    m_phases.lap(QcTickPhase::Streaming);
     m_entitySync.sync(client);
 
     if (m_state.tickCount % quint64(QcPhysics::tickRate) == 0) {
@@ -508,6 +538,8 @@ void QcServer::updateClient(Client &client)
         client.connection->send(QcMsg::PlayerState{client.lastInputSequence, client.motion});
         client.stateDirty = false;
     }
+
+    m_debug.update(client);
 }
 
 void QcServer::removeClosedClients()

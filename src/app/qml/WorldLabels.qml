@@ -4,17 +4,19 @@ import QtQuick
 import QtQuick.Controls
 import QtCraft
 
-// Labels floating in the world (the names in the showcase world): drawn where the game puts them on
-// the view every frame, nearer ones larger, fading out with distance; the label key switches them.
+// Labels floating in the world (the names in the showcase world, the debug display's light values):
+// drawn where the game puts them on the view every frame, nearer ones larger, fading out with
+// distance; the label key switches the names.
 // A label is no wider than the space to its neighbour (labelMaxWidth): longer lines end in "…",
 // the detail line is smaller than the name.
 Item {
     id: layer
 
-    required property GameController game
+    // A QcWorldLabelModel.
+    required property var labels
 
     Repeater {
-        model: layer.game.hud.labels
+        model: layer.labels
 
         delegate: Rectangle {
             id: worldLabel

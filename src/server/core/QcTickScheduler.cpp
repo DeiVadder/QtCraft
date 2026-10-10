@@ -34,9 +34,11 @@ qint64 QcTickScheduler::runDue(const std::function<void()> &tick)
 
     for (int i = 0; i < count; ++i) {
         const qint64 started = m_clock();
+        m_currentLateNs = started - m_nextDueNs;
         tick();
-        m_stats.record(started - m_nextDueNs, m_clock() - started);
+        m_stats.record(m_currentLateNs, m_clock() - started);
         m_nextDueNs += intervalNs;
+        m_currentLateNs = 0;
     }
 
     return std::max<qint64>(0, m_nextDueNs - m_clock());

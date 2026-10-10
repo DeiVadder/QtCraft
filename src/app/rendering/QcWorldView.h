@@ -4,6 +4,7 @@
 #include "QcAabb.h"
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
+#include "QcDebugLines.h"
 #include "QcEntityMesh.h"
 #include "QcRenderSample.h"
 #include "QcSky.h"
@@ -54,6 +55,8 @@ public:
     // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.
     void setSky(const QcSkyState &sky);
     void setFogRange(float start, float end);
+    // Debug visualisations for this frame (decision E-225); null or empty draws none.
+    void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines);
 
     qsizetype meshCount() const { return m_meshKeys.size(); }
 
@@ -79,6 +82,7 @@ private:
     QList<QcAabb> m_selection;
     std::shared_ptr<const QcEntityMesh> m_entityMesh;
     std::shared_ptr<const QcEntityMesh> m_handMesh;
+    std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
     bool m_collectRenderSamples = false;
     QList<QcRenderSample> m_renderSamples;
 };

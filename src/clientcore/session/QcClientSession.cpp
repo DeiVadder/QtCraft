@@ -152,6 +152,8 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
         m_labels.insert(labels->pos, labels->labels);
         ++m_labelGeneration;
+    } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
+        m_serverDebug.receive(*debug);
     } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
         const QcBlockId previous = m_world ? m_world->blockAt(update->pos).value_or(qcAirBlockId) : qcAirBlockId;
         if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
@@ -259,6 +261,9 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
     if (m_appearancePending) {
         m_appearancePending = false;
         m_connection->send(QcMsg::SetAppearance{m_appearance});
+    }
+    if (debugSubscription() != 0) {
+        m_connection->send(QcMsg::DebugSubscribe{debugSubscription()});
     }
 }
 
@@ -725,5 +730,35 @@ void QcClientSession::sendChat(const QString &text)
 {
     if (!text.trimmed().isEmpty()) {
         m_connection->send(QcMsg::ChatInput{text.trimmed()});
+    }
+}
+
+void QcClientSession::setDebugSubscription(quint8 flags)
+{
+    const quint8 before = debugSubscription();
+    m_debugFlags = flags;
+    sendDebugSubscription(before);
+}
+
+void QcClientSession::setDebugSubscriptionBase(quint8 flags)
+{
+    const quint8 before = debugSubscription();
+    m_debugBaseFlags = flags;
+    sendDebugSubscription(before);
+}
+
+void QcClientSession::sendDebugSubscription(quint8 before)
+{
+    const quint8 flags = debugSubscription();
+    if (flags == before) {
+        return;
+    }
+
+    if (flags == 0) {
+        m_serverDebug.clear();
+    }
+    // Before the welcome the server expects nothing but Hello; onWelcome() sends it then.
+    if (m_state == State::Loading || m_state == State::Playing) {
+        m_connection->send(QcMsg::DebugSubscribe{flags});
     }
 }

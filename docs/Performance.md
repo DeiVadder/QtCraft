@@ -164,4 +164,22 @@ Lauf am Ende der Etappe (Release, 10 s je Szenario): bestanden. stand: Frame Ø 
 - Speicher der Chunks (Client und Server halten im Einzelspieler je eine Kopie; Paletten-Indizes mit 4 KiB pro Sektion): größter Heap-Posten bei 16 Chunks.
 - Entity-Puffer werden jeden Frame vollständig hochgeladen (crowd rund 380 KB pro Frame); Instancing erst bei deutlich mehr Wesen.
 
-**Bildschirm (seit dem Zusatz nach Etappe 21):** Ein Fenster, das macOS nicht zeigt (Bildschirm aus, gesperrt, verdeckt), rendert keine Frames. `scripts/screen-guard.sh` hält deshalb während Benchmark-, Profil-, Screenshot- und Verify-Läufen den Bildschirm wach (`caffeinate -dimsu`, endet mit dem Skript) und lässt Läufe warten, solange der Bildschirm gesperrt ist (`IOConsoleLocked`); ein Lauf, während dessen gesperrt wurde, wird wiederholt (höchstens zweimal). Eine Sperre von Hand verhindert das nicht; das MacBook während der Läufe offen und entsperrt lassen.
+**Bildschirm (seit dem Zusatz nach Etappe 21):** Ein Fenster, das macOS nicht zeigt (Bildschirm aus, gesperrt, verdeckt), rendert keine Frames. `scripts/screen-guard.sh` hält deshalb während Benchmark-, Profil-, Screenshot- und Verify-Läufen den Bildschirm wach (`caffeinate -dimsu`, endet mit dem Skript) und lässt Läufe warten, solange der Bildschirm gesperrt ist (`IOConsoleLocked`); ein Lauf, während dessen gesperrt wurde, wird wiederholt (höchstens zweimal). Eine Sperre von Hand verhindert das nicht; das MacBook während der Läufe offen und entsperrt lassen. **Benchmarks und Profile laufen immer am echten Fenster:** Screenshots (Rundgang, Smoke) rendern seit Etappe 21b offscreen und hängen nicht mehr am Bildschirm (E-229), offscreen gemessene Bildzeiten wären aber wertlos (Takt per Timer, kein Präsentieren über den Compositor, keine Bildschirm-Synchronisation).
+
+## Debug-Anzeige (Etappe 21b)
+
+Seit Etappe 21b sind die Zeitaufteilung des Server-Ticks (Phasen in der BENCH-Zeile: `tick_<phase>_avg_ms`, `tick_<phase>_max_ms` für `players`, `saving`, `chunkLoading`, `blockUpdates`, `liquids`, `mobs`, `items`, `plants`, `fallingBlocks`, `machines`, `streaming`, `clientSync` und `messages`, die Nachrichten zwischen den Ticks) und die Frame-Kosten dauerhaft im Spiel zu sehen (Debug-Taste I: aus, kompakt, voll; E-225) und als JSON-Zeilen abrufbar (`--stats <ms>`, `QTCRAFT_STATS`, Steuerbefehl `debug`). Für eine schnelle Eingrenzung reicht oft ein kurzer Lauf mit `QTCRAFT_STATS=1000`; der volle A/B-Benchmark bestätigt dann. `bench.sh`/`bench-common.sh` nehmen `DEBUG_DISPLAY=off|compact|full` (Standard: die Spielvorgabe kompakt).
+
+Zusatzkosten der Anzeige (Release, 2 verschränkte Runden à 15 s je Stufe, 8 Chunks, ruhiges System: 1-min-Last 2,3–2,9; Mittel der Runden; im Benchmark misst der Frame-Monitor immer voll, die Unterschiede sind also Texte, Graphen, Lichtsonden und das Server-Abo):
+
+| Szenario | Stufe | GUI-CPU Ø / p99 (ms) | Render-CPU Ø | GPU Ø | Frame Ø / p99 | Tick Ø / max | Client-Abgleich im Tick Ø |
+|----------|-------|---------------------:|-------------:|------:|--------------:|-------------:|--------------------------:|
+| stand | aus | 0,384 / 0,67 | 1,61 | 1,86 | 8,43 / 13,0 | 0,63 / 2,06 | 0,040 |
+| stand | kompakt | 0,401 / 0,79 | 1,67 | 1,87 | 8,44 / 15,6 | 0,64 / 1,96 | 0,047 |
+| stand | voll | 0,457 / 2,33 | 1,74 | 1,92 | 8,48 / 15,7 | 0,65 / 2,38 | 0,051 |
+| crowd | aus | 0,734 / 1,29 | 1,49 | 2,32 | 8,38 / 9,9 | 0,90 / 1,93 | 0,073 |
+| crowd | kompakt | 0,743 / 1,36 | 1,43 | 2,30 | 8,39 / 10,0 | 0,71 / 1,88 | 0,057 |
+| crowd | voll | 0,789 / 2,82 | 1,42 | 2,31 | 8,37 / 9,8 | 0,72 / 1,83 | 0,060 |
+
+Bewertung: Kompakt kostet 1–4 % GUI-CPU (eine Zeile, Frame-Abstand), voll 7–19 % im Mittel (+0,05–0,07 ms) und hebt das p99 der GUI-CPU auf 2,3–2,8 ms (viermal pro Sekunde: Schnappschuss 0,2 ms, Textlayout rund 1,5 ms); alles weit unter dem Frame-Budget (8,3 ms bei 120 Hz). Render-CPU, GPU, Frame-Abstand und Tick liegen in der Streuung. Die Phasen-Zähler kosten 21 ns pro Runde (rund 0,3 µs pro Tick). Erste Fassung (Lichtsonde flutete immer): GUI-p99 voll 5,4–6,0 ms, Textaktualisierung 3,5–6 ms; seitdem überspringt die Sonde die Flutung ohne Lichtquelle in Reichweite und für eine Zelle unter freiem Himmel (1,6–2,6 ms pro Aktualisierung).
+

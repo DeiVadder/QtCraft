@@ -51,6 +51,9 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor rowHighlight MEMBER m_rowHighlight CONSTANT FINAL)
     Q_PROPERTY(QColor linkBackground MEMBER m_linkBackground CONSTANT FINAL)
     Q_PROPERTY(QColor linkHover MEMBER m_linkHover CONSTANT FINAL)
+    Q_PROPERTY(QColor graphFrame MEMBER m_graphFrame CONSTANT FINAL)
+    Q_PROPERTY(QColor graphTick MEMBER m_graphTick CONSTANT FINAL)
+    Q_PROPERTY(QColor graphLimit MEMBER m_graphLimit CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -98,5 +101,8 @@ private:
     QColor m_rowHighlight = QcUiPalette::color(QcUiPalette::Role::RowHighlight);
     QColor m_linkBackground = QcUiPalette::color(QcUiPalette::Role::LinkBackground);
     QColor m_linkHover = QcUiPalette::color(QcUiPalette::Role::LinkHover);
+    QColor m_graphFrame = QcUiPalette::color(QcUiPalette::Role::GraphFrame);
+    QColor m_graphTick = QcUiPalette::color(QcUiPalette::Role::GraphTick);
+    QColor m_graphLimit = QcUiPalette::color(QcUiPalette::Role::GraphLimit);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };

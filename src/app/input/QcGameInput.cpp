@@ -311,8 +311,12 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
         return;
     }
     case A::DebugOverlay:
-        m_settings.setShowDebug(!m_settings.showDebug());
+        // Off, compact, full (decision E-225).
+        m_settings.debug()->cycleLevel();
         m_settings.saveSettings();
+        return;
+    case A::DebugOptions:
+        m_game.setOverlay(u"debug"_s);
         return;
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());

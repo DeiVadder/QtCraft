@@ -48,6 +48,9 @@ protected:
     std::unique_ptr<RawClient> m_client;
     QcBlockPos m_feet;
     quint32 m_sequence = 1000;
+    // How the raw client of the next join() connects: like a client over the network, or like the
+    // local player of the in-process host.
+    QcServer::ClientOrigin m_origin = QcServer::ClientOrigin::Remote;
 
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
@@ -71,7 +74,7 @@ protected:
         QVERIFY(m_server->openWorld().has_value());
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
-        m_server->addClient(std::move(serverEnd));
+        m_server->addClient(std::move(serverEnd), m_origin);
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
         m_client->connection.send(QcMsg::Hello{QcProtocol::version, QStringLiteral("Raw"), {}});
         pump();

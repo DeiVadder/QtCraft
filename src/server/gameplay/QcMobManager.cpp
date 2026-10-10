@@ -287,6 +287,7 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
 
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
     const PlayerView *target = definition.hostile ? nearestTarget(mob, definition, players) : nullptr;
+    mob.chasing = target ? target->entityId : 0;
     QcPhysics::Steering steering = target ? chase(mob, definition, *target, hits) : wander(mob, definition, dt);
 
     // While knocked back the mob does not steer.

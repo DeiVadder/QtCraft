@@ -5,6 +5,7 @@
 #include "QcModLoader.h"
 #include "QcClientSession.h"
 #include "QcControlInterface.h"
+#include "QcDebugJson.h"
 #include "QcHandbookBuilder.h"
 #include "QcHandbookJson.h"
 #include "QcHandbookMarkdown.h"
@@ -15,6 +16,7 @@
 #include "QcShowcaseGenerator.h"
 #include "QcShowcaseTour.h"
 #include "QcSoundExporter.h"
+#include "QcStatsLog.h"
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
@@ -101,6 +103,9 @@ struct Options
                                         u"options"_s};
     QCommandLineOption tour{u"showcase-tour"_s,
                             u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
+    QCommandLineOption statsLog{u"stats"_s,
+                                u"Log the debug data as a JSON line 'STATS {...}' every this many milliseconds (also QTCRAFT_STATS)."_s,
+                                u"ms"_s};
     QCommandLineOption icon{u"export-icon"_s,
                             u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
                             u"dir"_s};
@@ -111,7 +116,7 @@ struct Options
         parser.addOptions({sounds, icon});
         parser.addOptions({handbook, language});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, view, script, time, map, mapRadius, data, mods, noMods});
+        parser.addOptions({seed, world, generator, generatorOptions, view, script, time, map, mapRadius, data, mods, noMods, statsLog});
     }
 };
 
@@ -390,11 +395,26 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     m_baseConfig = config;
     m_library = std::make_unique<QcWorldLibrary>(parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"worlds"_s)
                                                                             : QcWorldLibrary::defaultRoot());
+    startStatsLog(QcStatsLog::interval(parser.value(options.statsLog)));
     if (const QcStatus started = startWorld(config); !started) {
         printError(started.error());
         return false;
     }
     return startControl(parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt, timeLimit);
+}
+
+void QcHeadlessGame::startStatsLog(int intervalMs)
+{
+    if (intervalMs <= 0) {
+        return;
+    }
+
+    m_statsLog = new QcStatsLog(intervalMs, [this]() -> std::optional<QJsonObject> {
+        if (!m_session || m_session->state() != QcClientSession::State::Playing) {
+            return std::nullopt;
+        }
+        return QcDebugJson::toJson(QcDebugSnapshot::collect(*m_session));
+    }, this);
 }
 
 bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int timeLimit)
@@ -531,6 +551,9 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     m_server = std::move(server);
     m_currentConfig = config;
     m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
+    if (m_statsLog) {
+        m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+    }
     connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);
     });

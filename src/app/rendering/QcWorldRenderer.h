@@ -6,6 +6,7 @@
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
 #include "QcRenderSample.h"
+#include "QcDebugLineRenderer.h"
 #include "QcSkyRenderer.h"
 
 #include <QColor>
@@ -64,7 +65,7 @@ private:
     void startSample(QRhiCommandBuffer *commandBuffer);
     // Atlas, pipelines and the uploads of this frame.
     void prepareResources(QRhiResourceUpdateBatch *updates);
-    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection);
+    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize);
     // Visible sections, entities, translucent faces, outline and hand, in this order.
     void drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4x4 &viewProjection, QSize outputSize);
     void drawTranslucent(QRhiCommandBuffer *commandBuffer, const QList<const GpuMesh *> &visible);
@@ -105,6 +106,8 @@ private:
     quint64 m_uploadedAtlasVersion = 0;
     QcSkyState m_sky;
     QcSkyRenderer m_skyRenderer;
+    QcDebugLineRenderer m_debugLineRenderer;
+    std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
 

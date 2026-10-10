@@ -3,6 +3,7 @@
 // Protocol messages. Plain data structs in thematic headers; together they form the QcMessage
 // variant whose alternative index is the wire type tag. New messages are appended at the end.
 
+#include "QcDebugMessages.h"
 #include "QcEntityMessages.h"
 #include "QcMachineMessages.h"
 #include "QcPlayerMessages.h"
@@ -20,4 +21,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::Respawn, QcMsg::TakeCraftingResult, QcMsg::CraftRecipe, QcMsg::CloseCrafting,
                                QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance,
                                QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood,
-                               QcMsg::SoundEvent, QcMsg::UseEntity, QcMsg::QuickMoveItem, QcMsg::ChunkLabels>;
+                               QcMsg::SoundEvent, QcMsg::UseEntity, QcMsg::QuickMoveItem, QcMsg::ChunkLabels,
+                               QcMsg::DebugSubscribe, QcMsg::ServerDebug>;

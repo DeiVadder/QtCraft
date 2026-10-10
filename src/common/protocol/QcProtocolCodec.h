@@ -1,8 +1,8 @@
 #pragma once
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
-// topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp and
-// QcMachineCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
+// QcMachineCodec.cpp and QcDebugCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "QcMessages.h"
 #include "QcResult.h"
@@ -120,5 +120,11 @@ void encode(QDataStream &stream, QcMsg::CloseMachine m);
 QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &stream);
+
+// Debug display and statistics (QcDebugCodec.cpp)
+void encode(QDataStream &stream, QcMsg::DebugSubscribe m);
+void encode(QDataStream &stream, const QcMsg::ServerDebug &m);
+QcResult<QcMessage> decode(Tag<QcMsg::DebugSubscribe>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::ServerDebug>, QDataStream &stream);
 
 } // namespace QcProtocolCodec

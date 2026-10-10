@@ -106,7 +106,9 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
     case A::Handbook:
         return tr("Handbook");
     case A::DebugOverlay:
-        return tr("Frame rate and position");
+        return tr("Debug display (off, compact, full)");
+    case A::DebugOptions:
+        return tr("Debug options");
     case A::Labels:
         return tr("Labels in the world");
     case A::Pause:

@@ -75,9 +75,14 @@ Additional fields: `health`, `maxHealth`, `dead`, `food`, `maxFood`, `worldTime`
 | `attack` | `entity` (id from `entities`) | Turns towards the entity and hits it with the held item (reach 4 m). Fails if the entity is out of reach, hidden behind blocks, or the hit did not land (0.4 s attack cooldown, short invulnerability after a hit). |
 | `useEntity` | `entity` (id from `entities`) | Turns towards the creature and uses the held item on it (an empty glass bottle catches a firefly). Fails if the creature is out of reach or hidden, or when nothing happened (the held item does not catch it). |
 | `respawn` | – | Leaves the death screen; answers when the player is alive again. |
+| `debug` | optional `goals` (bool: also where creatures near the player are heading), `off` (bool: stop the server's debug data) | The debug display's data as JSON (decision E-225): `{"client":{"tick","protocol","world","seed","position","block","chunk","section","yaw","pitch","facing","light":{"sky","block"},"target":{"position","block","state","tags","light"},"targetEntity","entities":{"mobs","players","items","fallingBlocks"},"loadedChunks","memoryMb","peakMemoryMb"},"server":{"tick","phases":{"players","saving","chunkLoading","blockUpdates","liquids","mobs","items","plants","fallingBlocks","machines","streaming","clientSync","messages"},"tickMs","lateMs","skippedTicks","loadedChunks","players","mobs","items","fallingBlocks","pendingBlockUpdates","waitingBlockUpdates","biome","worldType","goals":[{"id","kind":"wander"\|"chase"\|"flee","goal"}]}}`; every phase and `tickMs`/`lateMs` as `{"mean","max"}` in milliseconds over the server's latest 100 ticks (5 s). The first request subscribes and answers with the server's next message (within half a second); later ones answer at once. Light is -1 where unknown. |
 | `quit` | – | Ends the process (the current world is saved). |
 
 All tick-based commands fail with `"Timed out"` if the session stops ticking for much longer than requested (e.g. after a disconnect).
+
+## Statistics log
+
+`--stats <ms>` or `QTCRAFT_STATS=<ms>` (at least 100) writes the same JSON every interval as one line `STATS {...}` into the log (stderr, category `qtcraft.stats`) while a world runs, in `qtcraft-headless` and in the graphical game. The game has no control interface; its lines add `"frame":{"fps","phases":{"frame","guiCpu","entityMesh","renderCpu","worldRender","upload","gpu"},"drawCalls","visibleSections","meshedSections","meshBacklog","lightJobsPending","meshJobMs","lightJobMs"}` (frame phases over the latest 240 frames; `gpu` only with `QSG_RHI_PROFILE=1`). Example: `QTCRAFT_STATS=1000 qtcraft --play 2>&1 | grep STATS`.
 
 Not available: screenshots through the interface (the graphical game's `QTCRAFT_SCREENSHOT` hook covers visual checks) and a local socket in the graphical game (see above).
 

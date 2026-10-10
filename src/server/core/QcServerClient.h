@@ -37,7 +37,8 @@ struct QcServerClient
     int inputBudget = maxInputBudget;
     // Budgets of the other spammable messages.
     QcRateLimiter rateLimiter;
-    // Connected through the in-process host (the local single player); exempt from the chat limit.
+    // Connected through the in-process host (the local single player): exempt from the chat limit,
+    // the only client that gets debug data.
     bool local = false;
     // Positions whose true block was resent in tick `miningResendTick` after a dropped mining message.
     QList<QcBlockPos> miningResends;
@@ -86,4 +87,7 @@ struct QcServerClient
     // The machine whose screen the player has open, and what the client was last told about it.
     std::optional<QcBlockPos> machine;
     std::optional<QcMsg::MachineState> sentMachine;
+    // Debug data the client subscribed to (QcMsg::DebugSubscribe) and when it was last sent.
+    quint8 debugFlags = 0;
+    std::optional<quint64> debugSentTick;
 };

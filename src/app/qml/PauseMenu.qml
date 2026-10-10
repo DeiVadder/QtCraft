@@ -87,7 +87,10 @@ Rectangle {
     // The settings are an overlay of their own ("settings") so the --overlay test hook can open them.
     // Closing a sub-screen returns to the menu and its keys.
     function subScreenClosed(overlays) {
-        if (overlays.includes(menu.game.overlay))
+        // The debug options open from the world (debug options key) and return there.
+        if (menu.game.overlay === "debug")
+            menu.game.overlay = "";
+        else if (overlays.includes(menu.game.overlay))
             menu.game.overlay = "pause";
         if (visible)
             forceActiveFocus();
@@ -97,7 +100,7 @@ Rectangle {
         id: settingsScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed(["settings", "controls"])
+        onClosed: menu.subScreenClosed(["settings", "controls", "debug"])
     }
 
     CharacterScreen {
@@ -113,12 +116,13 @@ Rectangle {
 
         function onOverlayChanged() {
             const overlay = menu.game.overlay;
-            if (overlay !== "settings" && overlay !== "controls")
+            const settingsPages = ["settings", "controls", "debug"];
+            if (!settingsPages.includes(overlay))
                 settingsScreen.close();
             if (overlay !== "character")
                 characterScreen.close();
-            if (overlay === "settings" || overlay === "controls") {
-                settingsScreen.startOnControls = overlay === "controls";
+            if (settingsPages.includes(overlay)) {
+                settingsScreen.startPage = settingsPages.indexOf(overlay);
                 settingsScreen.open();
             } else if (overlay === "character") {
                 characterScreen.open();

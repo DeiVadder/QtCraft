@@ -7,6 +7,7 @@
 #include "QcEntitySync.h"
 #include "QcMessages.h"
 #include "QcServerBlocks.h"
+#include "QcServerDebug.h"
 #include "QcServerCombat.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
@@ -15,6 +16,7 @@
 #include "QcServerPersistence.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
+#include "QcTickPhaseTimer.h"
 #include "QcTickScheduler.h"
 
 #include <QObject>
@@ -99,6 +101,8 @@ public:
     // Duration and lateness of the timed ticks; safe to read and reset from other threads (benchmark).
     QcTickStats::Summary tickTimes() const { return m_ticks.stats().summary(); }
     void resetTickTimes() { m_ticks.stats().reset(); }
+    // Time per phase of the latest ticks (decision E-225); server thread only.
+    const QcTickPhaseTimer &tickPhases() const { return m_phases; }
 
 signals:
     void clientCountChanged(int count);
@@ -128,6 +132,8 @@ private:
     void sendOpenWarnings(Client &client);
     void sendTime(Client &client);
     void autosave();
+    // Block updates, liquids, creatures, items, plants, falling blocks and machines of one tick.
+    void simulate();
     // Chunks, entities, time, food and the player's own state for one client after a tick.
     void updateClient(Client &client);
     // Timer slot: runs the due ticks and plans the next as a single shot (decision E-090).
@@ -156,4 +162,6 @@ private:
     // clients.
     QTimer *m_tickTimer = nullptr;
     QcTickScheduler m_ticks;
+    QcTickPhaseTimer m_phases;
+    QcServerDebug m_debug;
 };

@@ -123,6 +123,11 @@ private slots:
         QCOMPARE(defaults.key(A::Handbook, 1), int(Qt::Key_F1));
         QCOMPARE(defaults.key(A::DebugOverlay, 0), int(Qt::Key_I));
         QCOMPARE(defaults.key(A::DebugOverlay, 1), int(Qt::Key_F3));
+        // E-225: the debug options on O (options), F4 as in Factorio.
+        QCOMPARE(defaults.key(A::DebugOptions, 0), int(Qt::Key_O));
+        QCOMPARE(defaults.key(A::DebugOptions, 1), int(Qt::Key_F4));
+        QCOMPARE(defaults.actionFor(Qt::Key_O), std::optional<A>(A::DebugOptions));
+        QVERIFY(defaults.conflicts().isEmpty());
         QCOMPARE(defaults.key(A::Forward, 0), int(Qt::Key_W));
         QCOMPARE(defaults.key(A::Chat, 1), int(Qt::Key_Return));
         QCOMPARE(defaults.key(A::Hotbar9, 0), int(Qt::Key_9));
@@ -299,13 +304,28 @@ private slots:
     {
         QTemporaryDir dir;
         const QString path = dir.filePath(u"settings.ini"_s);
-        // The inventory comes before the handbook in the table and keeps E.
-        writeFile(path, "[keys]\nhandbook=E\n");
+        // Both chosen by the player: the inventory comes before the handbook in the table and keeps E.
+        writeFile(path, "[keys]\nhandbook=E\ninventory=E\n");
         const QcKeyBindings keys = QcGameSettings::load(path).keys;
         QVERIFY(keys.conflicts().isEmpty());
         QCOMPARE(keys.key(A::Inventory, 0), int(Qt::Key_E));
         QCOMPARE(keys.key(A::Handbook, 0), 0);
         QCOMPARE(keys.key(A::Handbook, 1), int(Qt::Key_F1));
+    }
+
+    void playersKeyBeatsANewDefault()
+    {
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        // Labels on O, set before the debug options got O as their default (stage 21b): the player's
+        // choice stays, the debug options keep only F4.
+        writeFile(path, "[keys]\nlabels=O\n");
+        QTest::ignoreMessage(QtWarningMsg, "Key O of 'debugOptions' is already bound to another action; 'debugOptions' goes without it");
+        const QcKeyBindings keys = QcGameSettings::load(path).keys;
+        QVERIFY(keys.conflicts().isEmpty());
+        QCOMPARE(keys.key(A::Labels, 0), int(Qt::Key_O));
+        QCOMPARE(keys.keys(A::DebugOptions), QList<int>{int(Qt::Key_F4)});
+        QCOMPARE(keys.actionFor(Qt::Key_O), std::optional(A::Labels));
     }
 
     void macSettingsRefuseCmd()

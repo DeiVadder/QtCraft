@@ -16,7 +16,7 @@ QcServerItemsAndPlants::QcServerItemsAndPlants(QcServerState &state, QcServerSou
 {
 }
 
-void QcServerItemsAndPlants::tick()
+void QcServerItemsAndPlants::tickItems()
 {
     const double dt = QcPhysics::tickDuration;
     QList<QcItemEntityManager::PlayerView> players;
@@ -39,8 +39,6 @@ void QcServerItemsAndPlants::tick()
     for (const QcItemEntityManager::Item &item : despawned) {
         tryPlant(item);
     }
-
-    tickPlants(dt);
 }
 
 int QcServerItemsAndPlants::giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed)
@@ -60,8 +58,9 @@ int QcServerItemsAndPlants::giveToPlayer(quint32 entityId, QcItemStack stack, QS
     return stack.count;
 }
 
-void QcServerItemsAndPlants::tickPlants(double dt)
+void QcServerItemsAndPlants::tickPlants()
 {
+    const double dt = QcPhysics::tickDuration;
     const auto setBlock = [this](QcBlockPos pos, QcBlockId block) {
         m_blocks.setAndBroadcast(pos, block);
         return m_state.world.blockAt(pos) == block;

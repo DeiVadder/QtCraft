@@ -87,3 +87,11 @@ void QcWorldView::setFogRange(float start, float end)
     m_fogEnd = end;
     update();
 }
+
+void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines)
+{
+    if (lines || m_debugLines) {
+        m_debugLines = std::move(lines);
+        update();
+    }
+}

@@ -50,6 +50,9 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::RowHighlight, "rowHighlight", 0x20ffffff},
     {R::LinkBackground, "linkBackground", 0x26ffffff},
     {R::LinkHover, "linkHover", 0x60507aa8},
+    {R::GraphFrame, "graphFrame", 0xff8ee68e},
+    {R::GraphTick, "graphTick", 0xff8ecaff},
+    {R::GraphLimit, "graphLimit", 0xffffb060},
     {R::Clear, "clear", 0x00000000},
 }};
 
@@ -104,6 +107,10 @@ QList<TextPair> textPairs()
         {"Main menu world details", R::TextSecondary, {R::MenuTop, R::Scrim}},
         {"Main menu errors", R::Error, {R::MenuTop, R::Scrim}},
         {"Loading and error message", R::Text, {R::ScrimStrong}, true},
+        // Lines are graphics, not text: 3:1 like large text (WCAG 1.4.11).
+        {"Debug frame graph", R::GraphFrame, {R::HudBackdrop}, true},
+        {"Debug tick graph", R::GraphTick, {R::HudBackdrop}, true},
+        {"Debug graph budget line", R::GraphLimit, {R::HudBackdrop}, true},
     };
 }
 

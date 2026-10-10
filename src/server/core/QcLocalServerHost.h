@@ -32,7 +32,8 @@ public:
     bool worldInUse() const { return m_worldInUse; }
 
     // Connects a new client; the returned transport belongs to the caller's thread. Clients of the
-    // host are local players (QcServer::ClientOrigin::Local: chat is not rate limited).
+    // host are local players (QcServer::ClientOrigin::Local: chat is not rate limited, debug data
+    // is sent).
     std::unique_ptr<QcTransport> connectClient();
     // Saves the world now (blocks until done).
     QcStatus save();

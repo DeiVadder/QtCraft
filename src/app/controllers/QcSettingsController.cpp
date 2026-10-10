@@ -22,6 +22,7 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     , m_keyControls(new QcKeyControls(this))
     , m_audio(new QcAudioSettings(audio, this))
     , m_character(new QcCharacterSettings(parts, library, *this, this))
+    , m_debug(new QcDebugSettings(this))
 {
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
 }
@@ -45,7 +46,7 @@ void QcSettingsController::loadSettings()
     setFieldOfView(m_storedSettings.fieldOfView);
     setMouseSensitivity(m_storedSettings.mouseSensitivity);
     setInvertMouse(m_storedSettings.invertMouse);
-    setShowDebug(m_storedSettings.showDebug);
+    m_debug->load(m_storedSettings.debug);
     setShowLabels(m_storedSettings.showLabels);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
@@ -69,7 +70,7 @@ void QcSettingsController::saveSettings()
     settings.fieldOfView = m_fieldOfView;
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
-    settings.showDebug = m_showDebug;
+    settings.debug = m_debug->options();
     settings.showLabels = m_showLabels;
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
@@ -117,15 +118,6 @@ void QcSettingsController::setInvertMouse(bool invert)
 {
     if (m_invertMouse != invert) {
         m_invertMouse = invert;
-        emit settingsChanged();
-    }
-}
-
-void QcSettingsController::setShowDebug(bool show)
-{
-    if (m_showDebug != show) {
-        m_showDebug = show;
-        emit debugOverlaySwitched();
         emit settingsChanged();
     }
 }

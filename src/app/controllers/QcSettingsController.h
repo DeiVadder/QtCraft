@@ -3,6 +3,7 @@
 #include "QcAudioSettings.h"
 #include "QcCamera.h"
 #include "QcCharacterSettings.h"
+#include "QcDebugSettings.h"
 #include "QcGameSettings.h"
 #include "QcKeyControlsForeign.h"
 
@@ -15,8 +16,8 @@ class QcWorldLibraryController;
 struct QcSessionParts;
 
 // The player's settings (GameController.settings), stored in a file below the data root
-// (QTCRAFT_DATA_DIR in tests): view distance, field of view, mouse, debug overlay, language, camera
-// mode and keys, with the volumes and the character's look as their own objects. The accessors
+// (QTCRAFT_DATA_DIR in tests): view distance, field of view, mouse, labels, language, camera mode
+// and keys, with the volumes, the character's look and the debug display as their own objects. The accessors
 // are the QML properties of this one responsibility.
 class QcSettingsController : public QObject
 {
@@ -26,7 +27,6 @@ class QcSettingsController : public QObject
     Q_PROPERTY(double fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY settingsChanged FINAL)
     Q_PROPERTY(double mouseSensitivity READ mouseSensitivity WRITE setMouseSensitivity NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool invertMouse READ invertMouse WRITE setInvertMouse NOTIFY settingsChanged FINAL)
-    Q_PROPERTY(bool showDebug READ showDebug WRITE setShowDebug NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool showLabels READ showLabels WRITE setShowLabels NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
@@ -35,6 +35,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
     Q_PROPERTY(QcCharacterSettings *character READ character CONSTANT FINAL)
+    // Debug display level and visualisations (decision E-225).
+    Q_PROPERTY(QcDebugSettings *debug READ debug CONSTANT FINAL)
 
 public:
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
@@ -57,8 +59,6 @@ public:
     void setMouseSensitivity(double sensitivity);
     bool invertMouse() const { return m_invertMouse; }
     void setInvertMouse(bool invert);
-    bool showDebug() const { return m_showDebug; }
-    void setShowDebug(bool show);
     // Labels floating in the world (decision E-222); the label key switches them.
     bool showLabels() const { return m_showLabels; }
     void setShowLabels(bool show);
@@ -72,6 +72,7 @@ public:
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcCharacterSettings *character() const { return m_character; }
+    QcDebugSettings *debug() const { return m_debug; }
 
     // Language used for content names (block and item labels).
     QString contentLanguage() const { return m_contentLanguage; }
@@ -82,19 +83,17 @@ signals:
     void viewDistanceChanged();
     // The application installs the translator for `language` ("" = system) and retranslates.
     void languageChangeRequested(const QString &language);
-    // The debug overlay was switched on or off: its text is due at once.
-    void debugOverlaySwitched();
 
 private:
     const QcSessionParts &m_parts;
     QcKeyControls *m_keyControls = nullptr;
     QcAudioSettings *m_audio = nullptr;
     QcCharacterSettings *m_character = nullptr;
+    QcDebugSettings *m_debug = nullptr;
     int m_viewDistance = QcGameSettings::defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
-    bool m_showDebug = true;
     bool m_showLabels = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;

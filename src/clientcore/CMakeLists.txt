@@ -17,6 +17,14 @@ qt_add_library(qc_clientcore STATIC
     session/QcClientEntity.h
     session/QcClientSession.h session/QcClientSession.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
+    debug/QcDebugSnapshot.h debug/QcDebugSnapshot.cpp
+    debug/QcDebugText.h debug/QcDebugText.cpp
+    debug/QcDebugJson.h debug/QcDebugJson.cpp
+    debug/QcDebugLines.h debug/QcDebugLines.cpp
+    debug/QcProcessMemory.h debug/QcProcessMemory.cpp
+    debug/QcStatsLog.h debug/QcStatsLog.cpp
+    light/QcLightProbe.h light/QcLightProbe.cpp
     meshing/QcEntityMesh.h
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
     meshing/QcEntityPose.h
@@ -25,6 +33,7 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcEntityVertex.h
     camera/QcFrustum.h camera/QcFrustum.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
+    settings/QcDebugOptions.h settings/QcDebugOptions.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     sound/QcLocalSounds.h sound/QcLocalSounds.cpp
@@ -65,6 +74,7 @@ qc_configure_target(qc_clientcore)
 # stay "QcName.h" without a path.
 target_include_directories(qc_clientcore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/control
+    ${CMAKE_CURRENT_SOURCE_DIR}/debug
     ${CMAKE_CURRENT_SOURCE_DIR}/meshing
     ${CMAKE_CURRENT_SOURCE_DIR}/light
     ${CMAKE_CURRENT_SOURCE_DIR}/textures

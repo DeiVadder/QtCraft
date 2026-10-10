@@ -3,10 +3,12 @@
 #include "QcAudioEngine.h"
 #include "QcBenchmarkRun.h"
 #include "QcBlockRenderTable.h"
+#include "QcDebugJson.h"
 #include "QcLocalServerHost.h"
 #include "QcMeshScheduler.h"
 #include "QcModLoader.h"
 #include "QcPhysics.h"
+#include "QcStatsLog.h"
 #include "QcWorldGenerators.h"
 #include "QcTextureAtlas.h"
 #include "QcWorldLibrary.h"
@@ -60,7 +62,6 @@ QcGameController::QcGameController(QObject *parent)
     , m_render(m_parts, *m_settings)
 {
     m_frameClock.start();
-    m_fpsClock.start();
     connect(m_handbook, &QcHandbookController::opening, this, [this] {
         m_input->clearKeys();
         if (m_parts.session) {
@@ -71,7 +72,6 @@ QcGameController::QcGameController(QObject *parent)
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook, &QcHandbookController::openChanged, m_input, &QcGameInput::syncCapture);
     connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
-    connect(m_settings, &QcSettingsController::debugOverlaySwitched, m_hud, &QcHudState::resetDebugClock);
 }
 
 QcGameController::~QcGameController()
@@ -377,6 +377,7 @@ void QcGameController::createSession()
     m_parts.meshes = new QcMeshScheduler(this);
     m_parts.session->setIntent(m_startup->initialIntent());
     m_render.setForcedPose(m_startup->forcedPose());
+    m_hud->debug()->syncSubscription();
 }
 
 void QcGameController::connectSessionWorld()
@@ -402,6 +403,7 @@ void QcGameController::connectSessionWorld()
     connect(session, &QcClientSession::stateChanged, this, &QcGameController::onSessionState);
 
     connect(m_parts.meshes, &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
+        m_hud->debug()->meshed(key);
         if (m_parts.view) {
             m_parts.view->submitMesh(key, std::move(mesh));
         }
@@ -521,6 +523,7 @@ QcStatus QcGameController::stopSession()
     if (m_parts.view) {
         m_parts.view->clearMeshes();
     }
+    m_hud->debug()->clearWorld();
 
     // Back in the menu: the menu's own content instead of the last world's sounds.
     if (m_audio->isActive() && m_library->loadedContent()) {
@@ -541,13 +544,22 @@ void QcGameController::leaveGame()
 
 float QcGameController::advanceFrameClocks()
 {
-    const float frameSeconds = float(std::min<qint64>(m_frameClock.restart(), 100)) / 1000.0f;
-    ++m_framesSinceFps;
-    if (m_fpsClock.elapsed() >= 500) {
-        m_fps = m_framesSinceFps * 1000.0 / double(m_fpsClock.restart());
-        m_framesSinceFps = 0;
+    return float(std::min<qint64>(m_frameClock.restart(), 100)) / 1000.0f;
+}
+
+void QcGameController::startStatsLog(int intervalMs)
+{
+    if (intervalMs <= 0 || m_statsLog) {
+        return;
     }
-    return frameSeconds;
+
+    m_hud->debug()->setStatsLogging(true);
+    m_statsLog = new QcStatsLog(intervalMs, [this]() -> std::optional<QJsonObject> {
+        if (!m_parts.session || m_parts.session->state() != QcClientSession::State::Playing) {
+            return std::nullopt;
+        }
+        return QcDebugJson::toJson(m_hud->debug()->snapshot(m_drawnFeet, QcFrameMonitor::Reader::StatsLog));
+    }, this);
 }
 
 void QcGameController::onFrame()
@@ -577,7 +589,9 @@ void QcGameController::onFrame()
     entityTime.start();
     m_render.updateEntities(alpha, mode);
     m_render.updateHand(alpha, eye, mode);
-    m_benchmark->recordGuiFrame(entityTime.nsecsElapsed());
+    const qint64 entityNs = entityTime.nsecsElapsed();
+    const QList<QcRenderSample> renderSamples = m_hud->debug()->recordFrame(entityNs, m_benchmark->isRunning());
+    m_benchmark->recordGuiFrame(m_hud->debug()->lastGuiCpuMs(), entityNs, renderSamples);
     m_render.updateSky(alpha);
     m_hud->updateTimeOfDay(alpha);
     m_render.updateSelection();
@@ -587,6 +601,8 @@ void QcGameController::onFrame()
     m_parts.meshes->setFocus({feet.x, feet.y, feet.z});
     m_parts.meshes->pump(*m_parts.session->world());
 
-    m_hud->updateDebugText(feet, m_fps);
+    m_drawnFeet = feet;
+    m_hud->debug()->update(feet);
+    m_hud->debug()->updateWorld(alpha, feet);
     m_startup->releaseScreenshotWhenLoaded(m_settings->viewDistance(), m_phase == u"playing"_s);
 }

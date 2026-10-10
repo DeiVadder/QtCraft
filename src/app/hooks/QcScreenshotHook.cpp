@@ -51,6 +51,11 @@ void QcScreenshotHook::release()
     }
 }
 
+void QcScreenshotHook::setGrabber(std::function<QImage()> grabber)
+{
+    m_grabber = std::move(grabber);
+}
+
 void QcScreenshotHook::onFrameSwapped()
 {
     if (m_done || !m_window) {
@@ -64,7 +69,7 @@ void QcScreenshotHook::onFrameSwapped()
     }
 
     m_done = true;
-    const QImage image = m_window->grabWindow();
+    const QImage image = m_grabber ? m_grabber() : m_window->grabWindow();
     if (image.isNull() || !image.save(m_filePath)) {
         qCCritical(lcScreenshot) << "Failed to save screenshot to" << m_filePath;
         QCoreApplication::exit(1);

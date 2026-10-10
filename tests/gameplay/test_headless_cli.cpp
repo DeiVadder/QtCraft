@@ -278,6 +278,59 @@ private slots:
         QCOMPARE(ask(R"({"cmd":"status"})").value(u"position"_s).toArray().at(1).toDouble(), 5.0);
     }
 
+    void debugDataThroughTheInterfaceAndTheLog()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--stats"_s, u"200"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        QCOMPARE(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool(), true);
+
+        // The same numbers as the debug display: the client's part and, once subscribed, the server's.
+        const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
+        QCOMPARE(debug.value(u"ok"_s).toBool(), true);
+        const QJsonObject client = debug.value(u"client"_s).toObject();
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 20);
+        QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
+        QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
+        const QJsonObject server = debug.value(u"server"_s).toObject();
+        QCOMPARE(server.value(u"worldType"_s).toString(), u"terrain"_s);
+        QVERIFY(server.value(u"tickMs"_s).toObject().contains(u"mean"_s));
+        const QJsonObject phases = server.value(u"phases"_s).toObject();
+        for (const char *phase : {"players", "saving", "chunkLoading", "blockUpdates", "liquids", "mobs", "items", "plants", "fallingBlocks",
+                                  "machines", "streaming", "clientSync", "messages"}) {
+            QVERIFY2(phases.value(QLatin1StringView(phase)).toObject().contains(u"max"_s), phase);
+        }
+        // No frame statistics without a window.
+        QVERIFY(!debug.contains(u"frame"_s));
+
+        // The statistics log writes the same JSON to the log (stderr) every 200 ms.
+        QByteArray log;
+        QVERIFY(QTest::qWaitFor(
+            [this, &log] {
+                log += m_process.readAllStandardError();
+                return log.count("STATS {") >= 2;
+            },
+            timeoutMs));
+        const qsizetype start = log.indexOf("STATS {") + 6;
+        const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 20);
+        QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
+
+        // The statistics log keeps its share of the subscription: the server's part stays in it.
+        log = m_process.readAllStandardError();
+        QVERIFY(QTest::qWaitFor(
+            [this, &log] {
+                log += m_process.readAllStandardError();
+                return log.count("STATS {") >= 3 && log.endsWith('\n');
+            },
+            timeoutMs));
+        const qsizetype last = log.lastIndexOf("STATS {") + 6;
+        const QJsonObject after = QJsonDocument::fromJson(log.mid(last, log.indexOf('\n', last) - last)).object();
+        QVERIFY(after.value(u"server"_s).toObject().contains(u"tickMs"_s));
+    }
+
     void quitEndsTheProcess()
     {
         QCOMPARE(ask(R"({"cmd":"quit"})").value(u"ok"_s).toBool(), true);

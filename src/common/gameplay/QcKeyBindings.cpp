@@ -1,5 +1,6 @@
 #include "QcKeyBindings.h"
 
+#include <QHash>
 #include <QSet>
 
 #include <algorithm>
@@ -42,6 +43,7 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::CameraView, u"cameraView", Qt::Key_V, Qt::Key_F5},
     {A::Handbook, u"handbook", Qt::Key_H, Qt::Key_F1},
     {A::DebugOverlay, u"debugOverlay", Qt::Key_I, Qt::Key_F3},
+    {A::DebugOptions, u"debugOptions", Qt::Key_O, Qt::Key_F4},
     {A::Labels, u"labels", Qt::Key_L, 0},
     {A::Hotbar1, u"hotbar1", Qt::Key_1, 0},
     {A::Hotbar2, u"hotbar2", Qt::Key_2, 0},
@@ -340,12 +342,35 @@ QList<std::pair<QcKeyBindings::Action, int>> QcKeyBindings::conflicts() const
     return list;
 }
 
-void QcKeyBindings::dropConflicts()
+QList<std::pair<QcKeyBindings::Action, int>> QcKeyBindings::dropConflicts(const QList<std::pair<Action, int>> &preferred)
 {
-    const QList<std::pair<Action, int>> found = conflicts();
-    for (const auto &[action, slot] : found) {
-        set(action, slot, 0);
+    // Who keeps each key: preferred slots first, then the table order.
+    QHash<int, std::pair<Action, int>> owners;
+    const auto claim = [this, &owners](Action action, int slot) {
+        if (const int key = this->key(action, slot); key != 0 && !owners.contains(key)) {
+            owners.insert(key, {action, slot});
+        }
+    };
+    for (const auto &[action, slot] : preferred) {
+        claim(action, slot);
     }
+    for (const ActionRow &row : actionRows) {
+        for (int slot = 0; slot < slotCount; ++slot) {
+            claim(row.action, slot);
+        }
+    }
+
+    QList<std::pair<Action, int>> dropped;
+    for (const ActionRow &row : actionRows) {
+        for (int slot = 0; slot < slotCount; ++slot) {
+            const int key = this->key(row.action, slot);
+            if (key != 0 && owners.value(key) != std::pair(row.action, slot)) {
+                set(row.action, slot, 0);
+                dropped.append({row.action, slot});
+            }
+        }
+    }
+    return dropped;
 }
 
 QMap<QString, QStringList> QcKeyBindings::placeholderKeys() const

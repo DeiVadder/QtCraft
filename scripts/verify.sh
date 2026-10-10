@@ -1,7 +1,8 @@
 #!/bin/sh
 # Stage verification with two modes.
 #   --full (default): debug build + tests, ASan/UBSan and TSan builds + tests, release build, static analysis
-#                     of the whole project and time-limited smoke runs of the real game with screenshots.
+#                     of the whole project and time-limited smoke runs of the real game with screenshots
+#                     (rendered offscreen; QTCRAFT_SHOT_MODE=window takes the real window).
 #   --quick:          debug build, debug tests (optionally only those matching --tests) and static analysis
 #                     of the files changed against dev (committed on this branch or not yet committed).
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
@@ -125,16 +126,19 @@ else
 
     step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
 
-    # Smoke runs need a shown window: keep the display awake and wait while the screen is locked.
+    # Smoke runs render offscreen (E-229); QTCRAFT_SHOT_MODE=window takes the real window, which
+    # needs a shown screen: keep the display awake and wait while the screen is locked.
     . "$PROJECT_DIR/scripts/screen-guard.sh"
     keep_awake
-    step "screen-unlocked" wait_for_screen
+    if shot_needs_screen; then
+        step "screen-unlocked" wait_for_screen
+    fi
 
     rm -f "$SCREENSHOT"
     # Smoke runs keep their settings and worlds in the build tree, never in the player's data.
     SMOKE_DATA="$PROJECT_DIR/build/smoke-data"
-    # Smoke runs open on the built-in display in the background (no focus, no captured mouse) and stay silent.
-    step "smoke-run" env QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
+    # Window smoke runs open on the built-in display in the background (no focus, no captured mouse); all stay silent.
+    step "smoke-run" env $(shot_env) QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
         perl -e 'alarm shift; exec @ARGV or die' 120 build/debug/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20 --no-audio
     step "smoke-screenshot" test -s "$SCREENSHOT"
 
@@ -142,7 +146,7 @@ else
     case " $SANITIZERS " in
     *" asan "*)
         rm -f "$SCREENSHOT.asan.png"
-        step "smoke-run-asan" env QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT.asan.png" QTCRAFT_SCREENSHOT_FRAMES=60 \
+        step "smoke-run-asan" env $(shot_env) QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT.asan.png" QTCRAFT_SCREENSHOT_FRAMES=60 \
             perl -e 'alarm shift; exec @ARGV or die' 180 build/asan/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20 --no-audio
         step "smoke-screenshot-asan" test -s "$SCREENSHOT.asan.png"
         ;;

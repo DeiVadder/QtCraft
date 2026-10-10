@@ -1,14 +1,18 @@
 qt_add_executable(qtcraft
     main.cpp
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
+    hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcSessionParts.h
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
+    controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
+    controllers/QcDebugHud.h controllers/QcDebugHud.cpp
+    controllers/QcDebugVisuals.h controllers/QcDebugVisuals.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcUiTheme.h
@@ -25,8 +29,11 @@ qt_add_executable(qtcraft
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
+    rendering/QcGraphItem.h rendering/QcGraphItem.cpp
+    rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcRenderSample.h
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
+    hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
     hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
     input/QcRelativeMouse.h
     hooks/QcScriptedRun.h
@@ -110,6 +117,8 @@ qt_add_qml_module(qtcraft
         qml/ModsScreen.qml
         qml/SettingsScreen.qml
         qml/WorldLabels.qml
+        qml/DebugOverlay.qml
+        qml/DebugOptionsPage.qml
 )
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
@@ -120,6 +129,8 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/debugline.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/debugline.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert

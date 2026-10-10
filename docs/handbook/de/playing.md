@@ -38,7 +38,7 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 - **Rechte Maustaste** oder **R**: setzen, benutzen, essen
 - **Q**: ein Item werfen, **Strg+Q**: den ganzen Stapel
 - **1–9**, Mausrad: Feld der Schnellleiste wählen
-- **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Bildrate und Position, **Esc**: Menü
+- **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Debug-Anzeige (aus, kompakt, voll), **O / F4**: Debug-Optionen, **Esc**: Menü
 - Alle Tasten außer Esc lassen sich unter Einstellungen → Steuerung ändern.
 
 **Mac-Tastaturen**

@@ -33,9 +33,10 @@ public:
     void scheduleStart() const;
     // Time since the previous frame; called first in every frame.
     void recordFrame();
-    // CPU time of the GUI thread in this frame, the time of its entity meshing and the render
-    // thread's samples.
-    void recordGuiFrame(qint64 entityNs);
+    // CPU time of the GUI thread in this frame (-1 if unknown), the time of its entity meshing and
+    // the render thread's samples (QcFrameMonitor collects them while the benchmark runs).
+    void recordGuiFrame(double guiCpuMs, qint64 entityNs, const QList<QcRenderSample> &samples);
+    bool isRunning() const { return m_running; }
 
 private:
     void start();
@@ -70,5 +71,4 @@ private:
     QcVec3 m_checkpoint;
     QList<qint64> m_frameNs;
     QcFrameProfile m_frameProfile;
-    qint64 m_guiCpuNs = -1;
 };

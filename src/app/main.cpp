@@ -2,10 +2,12 @@
 #include "QcBundledMods.h"
 #include "QcGameController.h"
 #include "QcModLoader.h"
+#include "QcOffscreenRender.h"
 #include "QcItemIconProvider.h"
 #include "QcScreenChoice.h"
 #include "QcScreenshotHook.h"
 #include "QcScriptedRun.h"
+#include "QcStatsLog.h"
 #include "QcWorldGenerators.h"
 
 #include <QCommandLineParser>
@@ -22,6 +24,7 @@
 #endif
 
 #include <algorithm>
+#include <memory>
 #include <optional>
 #include <print>
 
@@ -54,6 +57,10 @@ struct AppOptions
     QString screen;
     // --background or QTCRAFT_BACKGROUND=1.
     bool background = false;
+    // --stats (or QTCRAFT_STATS), --debug-display and --debug-show (decision E-225).
+    QString stats;
+    std::optional<QString> debugDisplay;
+    std::optional<QString> debugShow;
     // What is wrong with the command line beyond what QCommandLineParser checks.
     QString error;
 };
@@ -74,7 +81,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},
-        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen)."_s,
+        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen)."_s,
          u"name"_s},
         {u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
          u"entry"_s},
@@ -86,6 +93,11 @@ QList<QCommandLineOption> commandLineOptions()
         {u"screen"_s, u"Open the window on this screen: 'builtin' (the computer's own display), an index or a name (also QTCRAFT_SCREEN)."_s,
          u"screen"_s},
         {u"background"_s, u"Scripted run: never take the focus or capture the mouse (also QTCRAFT_BACKGROUND=1)."_s},
+        {u"stats"_s, u"Log the debug data as a JSON line 'STATS {...}' every this many milliseconds while a world runs (also QTCRAFT_STATS)."_s,
+         u"ms"_s},
+        {u"debug-display"_s, u"Debug display level: off, compact or full (like the debug key; kept in the settings)."_s, u"level"_s},
+        {u"debug-show"_s, u"Debug visualisations to switch on, comma-separated: chunkBorders, hitboxes, lightValues, mobGoals, remeshFlash (kept in the settings)."_s,
+         u"list"_s},
     };
 }
 
@@ -98,6 +110,21 @@ QString worldTypeError(const AppOptions &options, bool flatLayersGiven)
     }
     if (flatLayersGiven && options.worldType != QLatin1StringView(QcWorldGenerators::flat)) {
         return u"--flat-layers needs --world-type flat"_s;
+    }
+    return {};
+}
+
+// --debug-display names a level, --debug-show only known visualisations.
+QString debugOptionsError(const AppOptions &options)
+{
+    if (options.debugDisplay && !QcDebugOptions::levelFromName(*options.debugDisplay)) {
+        return u"Unknown debug display level '%1' (off, compact, full)"_s.arg(*options.debugDisplay);
+    }
+    const QStringList visuals = options.debugShow.value_or(QString()).split(u',', Qt::SkipEmptyParts);
+    for (const QString &visual : visuals) {
+        if (!QcDebugOptions::visualFromId(visual.trimmed())) {
+            return u"Unknown debug visualisation '%1'"_s.arg(visual.trimmed());
+        }
     }
     return {};
 }
@@ -133,7 +160,13 @@ AppOptions parseOptions(const QGuiApplication &app)
     options.noAudio = parser.isSet(u"no-audio"_s);
     options.screen = parser.isSet(u"screen"_s) ? parser.value(u"screen"_s) : qEnvironmentVariable("QTCRAFT_SCREEN");
     options.background = parser.isSet(u"background"_s) || qEnvironmentVariable("QTCRAFT_BACKGROUND") == u"1"_s;
+    options.stats = parser.value(u"stats"_s);
+    options.debugDisplay = optional(u"debug-display"_s);
+    options.debugShow = optional(u"debug-show"_s);
     options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
+    if (options.error.isEmpty()) {
+        options.error = debugOptionsError(options);
+    }
     return options;
 }
 
@@ -247,6 +280,16 @@ void applySceneOptions(QcGameController &game, const AppOptions &options)
     if (options.viewDistance) {
         game.settings()->overrideViewDistance(options.viewDistance->toInt());
     }
+    // Both were checked by debugOptionsError().
+    if (const std::optional<QcDebugOptions::Level> level = QcDebugOptions::levelFromName(options.debugDisplay.value_or(QString()))) {
+        game.settings()->debug()->setLevel(int(*level));
+    }
+    const QStringList visuals = options.debugShow.value_or(QString()).split(u',', Qt::SkipEmptyParts);
+    for (const QString &name : visuals) {
+        if (const std::optional<QcDebugOptions::Visual> visual = QcDebugOptions::visualFromId(name.trimmed())) {
+            game.settings()->debug()->setShown(*visual, true);
+        }
+    }
 }
 
 // Audio, the startup script, the benchmark and the world or handbook to open at once.
@@ -262,6 +305,7 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
     // QTCRAFT_BENCHMARK=<seconds>: measure frame times while walking, then quit (needs --play).
     // QTCRAFT_BENCHMARK_SCENARIO=sprint|walk|stand|light|liquids: sprint ahead (default), walk ahead,
     // stand still, or stand while torches or liquid sources come and go around the player.
+    game.startStatsLog(QcStatsLog::interval(options.stats));
     game.startup()->benchmark()->configure(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600),
                                            qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"));
 
@@ -281,6 +325,91 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
     }
 }
 
+// Offscreen runs (E-229) are for screenshots: their frame times say nothing about the real window
+// (benchmarks measure that), and without a screenshot to take nothing would ever end them.
+QString offscreenRunError()
+{
+    if (qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK") > 0) {
+        return u"Benchmarks measure the real window and do not run offscreen (set QTCRAFT_OFFSCREEN=0, decision E-229)"_s;
+    }
+    if (qEnvironmentVariableIsEmpty("QTCRAFT_SCREENSHOT")) {
+        return u"An offscreen run needs QTCRAFT_SCREENSHOT: without a window nothing would end it"_s;
+    }
+    return {};
+}
+
+// Scripted runs keep out of the user's way; offscreen runs are scripted runs too.
+void prepareScriptedRun(const AppOptions &options, bool offscreen)
+{
+    if (options.background || offscreen) {
+        QcScriptedRun::stayInBackground();
+    }
+    if (offscreen) {
+        QcScriptedRun::keepTimersRunning();
+        QcOffscreenRender::prepare();
+    }
+}
+
+// Shows the main window, or moves its content into an offscreen renderer (returned). The error
+// when offscreen rendering cannot start.
+QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow &window, QcGameController &game, const AppOptions &options,
+                                                                    bool offscreen)
+{
+    if (options.background || offscreen) {
+        window.setFlag(Qt::WindowDoesNotAcceptFocus, true);
+        // Above other windows: macOS stops drawing a window that others cover completely, and a
+        // benchmark or screenshot behind the user's windows would get no frames.
+        window.setFlag(Qt::WindowStaysOnTopHint, true);
+        game.input()->setBackgroundRun(true);
+    }
+    placeWindow(&window, options.screen);
+    preselectWorldType(window);
+
+    if (!offscreen) {
+        window.show();
+        return nullptr;
+    }
+    // Created after placing: it takes the window's size and screen.
+    auto render = std::make_unique<QcOffscreenRender>(window);
+    if (!render->start()) {
+        return std::unexpected(u"Cannot render offscreen"_s);
+    }
+    return render;
+}
+
+// The parts of the user interface the running game keeps using: the engine and translator switch
+// the language, the icon provider draws item icons.
+struct UiParts
+{
+    QQmlApplicationEngine &engine;
+    QTranslator &translator;
+    QString contentLanguage;
+    QcItemIconProvider *icons = nullptr;
+};
+
+// Settings, language, worlds, mods and the scripted parts of the run; screenshots come from the
+// offscreen renderer when there is one.
+void startGame(const UiParts &ui, QcGameController &game, const AppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
+{
+    game.setIconProvider(ui.icons);
+    game.settings()->loadSettings();
+    game.setLanguage(ui.contentLanguage);
+    QObject::connect(game.settings(), &QcSettingsController::languageChangeRequested, &ui.engine,
+                     [&engine = ui.engine, &translator = ui.translator, &game](const QString &name) {
+                         game.setLanguage(installLanguage(translator, name));
+                         engine.retranslate();
+                     });
+    game.library()->refreshWorlds();
+    setUpMods(game, options);
+    applySceneOptions(game, options);
+
+    QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(offscreenRender ? offscreenRender->window() : &window, qApp);
+    if (screenshot && offscreenRender) {
+        screenshot->setGrabber([offscreenRender] { return offscreenRender->grab(); });
+    }
+    startScriptedRun(game, options, screenshot);
+}
+
 } // namespace
 
 int main(int argc, char *argv[])
@@ -289,14 +418,16 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName(u"QtCraft"_s);
     QGuiApplication::setOrganizationName(u"QtCraft"_s);
     QGuiApplication::setApplicationVersion(QStringLiteral(QTCRAFT_VERSION));
-    const AppOptions options = parseOptions(app);
+    AppOptions options = parseOptions(app);
+    const bool offscreen = QcOffscreenRender::requested();
+    if (options.error.isEmpty() && offscreen) {
+        options.error = offscreenRunError();
+    }
     if (!options.error.isEmpty()) {
         std::println(stderr, "qtcraft: {}", options.error.toStdString());
         return 1;
     }
-    if (options.background) {
-        QcScriptedRun::stayInBackground();
-    }
+    prepareScriptedRun(options, offscreen);
 
     const QString language = uiLanguage(options);
     applyColorScheme();
@@ -320,30 +451,12 @@ int main(int argc, char *argv[])
         qCritical("Main.qml must contain a GameController with objectName 'game'");
         return 1;
     }
-    if (options.background) {
-        window->setFlag(Qt::WindowDoesNotAcceptFocus, true);
-        // Above other windows: macOS stops drawing a window that others cover completely, and a
-        // benchmark or screenshot behind the user's windows would get no frames.
-        window->setFlag(Qt::WindowStaysOnTopHint, true);
-        game->input()->setBackgroundRun(true);
+    const QcResult<std::unique_ptr<QcOffscreenRender>> offscreenRender = startWindowOrOffscreen(*window, *game, options, offscreen);
+    if (!offscreenRender) {
+        std::println(stderr, "qtcraft: {}", offscreenRender.error().toStdString());
+        return 1;
     }
-    placeWindow(window, options.screen);
-    preselectWorldType(*window);
-    window->show();
 
-    game->setIconProvider(icons);
-    game->settings()->loadSettings();
-    game->setLanguage(contentLanguage);
-    QObject::connect(game->settings(), &QcSettingsController::languageChangeRequested, &engine,
-                     [&engine, &translator, game](const QString &name) {
-                         game->setLanguage(installLanguage(translator, name));
-                         engine.retranslate();
-                     });
-    game->library()->refreshWorlds();
-    setUpMods(*game, options);
-    applySceneOptions(*game, options);
-    QcScreenshotHook *screenshot = QcScreenshotHook::createFromEnvironment(window, &app);
-    startScriptedRun(*game, options, screenshot);
-
+    startGame({engine, translator, contentLanguage, icons}, *game, options, *window, offscreenRender->get());
     return QGuiApplication::exec();
 }

@@ -141,7 +141,7 @@ sg)
     ;;
 visualize)
     for mode in overdraw batches clip changes; do
-        env QSG_VISUALIZE="$mode" QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$WORK/data-$mode" QTCRAFT_SCREENSHOT="$WORK/visualize-$mode.png" \
+        env QTCRAFT_OFFSCREEN=0 QSG_VISUALIZE="$mode" QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$WORK/data-$mode" QTCRAFT_SCREENSHOT="$WORK/visualize-$mode.png" \
             QTCRAFT_SCREENSHOT_FRAMES=60 perl -e 'alarm shift; exec @ARGV or die' 120 "$APP" --play --seed 42 --view-distance "$VIEW" --look 45,-10 --no-audio \
             --overlay inventory >"$WORK/visualize-$mode.log" 2>&1
         ls "$WORK/visualize-$mode.png"

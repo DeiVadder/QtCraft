@@ -17,7 +17,10 @@ class QcServerItemsAndPlants
 public:
     QcServerItemsAndPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory);
 
-    void tick();
+    // Dropped items: pick-up, merging, despawning (saplings plant themselves).
+    void tickItems();
+    // Growing saplings and plants that grow upwards.
+    void tickPlants();
 
 private:
     // Puts the stack into the inventory of the playing player with this entity id; returns what
@@ -25,7 +28,6 @@ private:
     int giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed);
     // Puts a despawning sapling item into the ground when there is room.
     void tryPlant(const QcItemEntityManager::Item &item);
-    void tickPlants(double dt);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

@@ -3,7 +3,6 @@
 #include "QcClientSession.h"
 #include "QcDayCycle.h"
 #include "QcLabelProjector.h"
-#include "QcMeshScheduler.h"
 #include "QcPhysics.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
@@ -15,6 +14,7 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     , m_parts(parts)
     , m_settings(settings)
     , m_labels(new QcWorldLabelModel(this))
+    , m_debug(new QcDebugHud(parts, settings, this))
 {
 }
 
@@ -57,28 +57,6 @@ void QcHudState::updateTimeOfDay(double alpha)
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
         emit frameStateChanged();
-    }
-}
-
-void QcHudState::updateDebugText(const QcVec3 &feet, double fps)
-{
-    // The overlay is laid out anew for every change of its text; a few updates a second suffice.
-    if (!m_settings.showDebug() || (m_debugClock.isValid() && m_debugClock.elapsed() < debugTextIntervalMs)) {
-        return;
-    }
-
-    m_debugClock.start();
-    const QcMeshScheduler &meshes = *m_parts.meshes;
-    const QString debugText = u"%1 FPS | XYZ %2 / %3 / %4 | chunks %5 | meshes %6 (pending %7)"_s.arg(qRound(fps))
-                                  .arg(feet.x, 0, 'f', 1)
-                                  .arg(feet.y, 0, 'f', 1)
-                                  .arg(feet.z, 0, 'f', 1)
-                                  .arg(m_parts.session->world()->chunkCount())
-                                  .arg(m_parts.view->meshCount())
-                                  .arg(meshes.dirtyCount() + meshes.jobsInFlight());
-    if (debugText != m_debugText) {
-        m_debugText = debugText;
-        emit debugTextChanged();
     }
 }
 

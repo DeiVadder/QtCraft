@@ -5,7 +5,8 @@
 # Usage: scripts/bench.sh [runs] [seconds]   (SCENARIOS="liquids" runs a subset)
 #
 # Scenarios: see scripts/bench-common.sh. VIEW=12 measures another view distance, KEYS="..." other
-# values of the BENCH line.
+# values of the BENCH line (among them the server tick phases tick_<phase>_avg_ms and _max_ms,
+# decision E-225), DEBUG_DISPLAY=off|compact|full the level of the debug display.
 
 set -u
 

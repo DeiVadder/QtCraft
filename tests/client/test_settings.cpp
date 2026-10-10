@@ -3,6 +3,7 @@
 
 #include <QFile>
 #include <QTemporaryDir>
+#include <QSettings>
 #include <QTest>
 
 #include <limits>
@@ -29,7 +30,9 @@ private slots:
         settings.fieldOfView = 90.0;
         settings.mouseSensitivity = 0.3;
         settings.invertMouse = true;
-        settings.showDebug = false;
+        settings.debug.level = QcDebugOptions::Level::Full;
+        settings.debug.set(QcDebugOptions::Visual::Hitboxes, true);
+        settings.debug.set(QcDebugOptions::Visual::RemeshFlash, true);
         settings.showLabels = false;
         settings.language = u"de"_s;
         settings.cameraMode = QcCameraMode::Front;
@@ -111,8 +114,59 @@ private slots:
         QCOMPARE(settings.fieldOfView, QcGameSettings::maxFieldOfView);
         QCOMPARE(settings.mouseSensitivity, QcGameSettings::defaultMouseSensitivity);
         QVERIFY(settings.invertMouse);
-        QVERIFY(!settings.showDebug);
+        // An older file with only showDebug=false has the debug display off.
+        QCOMPARE(settings.debug.level, QcDebugOptions::Level::Off);
         QCOMPARE(settings.language, QString());
+    }
+
+    void debugOptionsAndOlderFiles()
+    {
+        // The compact display by default, no visualisations.
+        const QcGameSettings defaults;
+        QCOMPARE(defaults.debug.level, QcDebugOptions::Level::Compact);
+        QVERIFY(!defaults.debug.anyVisual());
+
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("[General]\nshowDebug=true\n[debug]\nmobGoals=true\nlightValues=nonsense\n");
+        file.close();
+        QcGameSettings loaded = QcGameSettings::load(path);
+        QCOMPARE(loaded.debug.level, QcDebugOptions::Level::Compact);
+        QVERIFY(loaded.debug.shows(QcDebugOptions::Visual::MobGoals));
+        QVERIFY(!loaded.debug.shows(QcDebugOptions::Visual::LightValues));
+        QVERIFY(!loaded.debug.shows(QcDebugOptions::Visual::ChunkBorders));
+
+        // Saving writes the level and drops the old key; the level wins over it from then on.
+        loaded.debug.level = QcDebugOptions::Level::Full;
+        QVERIFY(loaded.save(path).has_value());
+        const QSettings stored(path, QSettings::IniFormat);
+        QVERIFY(!stored.contains(u"showDebug"_s));
+        QCOMPARE(stored.value(u"debug/level"_s).toString(), u"full"_s);
+        QCOMPARE(QcGameSettings::load(path).debug, loaded.debug);
+
+        // An unknown level falls back to the default.
+        QSettings broken(path, QSettings::IniFormat);
+        broken.setValue(u"debug/level"_s, u"loud"_s);
+        broken.sync();
+        QCOMPARE(QcGameSettings::load(path).debug.level, QcDebugOptions::Level::Compact);
+    }
+
+    void debugLevelsCycleAndNamesRoundTrip()
+    {
+        using L = QcDebugOptions::Level;
+        QCOMPARE(QcDebugOptions::nextLevel(L::Off), L::Compact);
+        QCOMPARE(QcDebugOptions::nextLevel(L::Compact), L::Full);
+        QCOMPARE(QcDebugOptions::nextLevel(L::Full), L::Off);
+        for (const L level : {L::Off, L::Compact, L::Full}) {
+            QCOMPARE(QcDebugOptions::levelFromName(QcDebugOptions::levelName(level)), std::optional(level));
+        }
+        for (int visual = 0; visual < QcDebugOptions::visualCount; ++visual) {
+            const auto id = QcDebugOptions::visualId(QcDebugOptions::Visual(visual));
+            QCOMPARE(QcDebugOptions::visualFromId(id), std::optional(QcDebugOptions::Visual(visual)));
+        }
+        QCOMPARE(QcDebugOptions::visualFromId(u"xray"_s), std::nullopt);
     }
 
     void clampHelpers()

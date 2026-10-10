@@ -42,6 +42,8 @@ qt_add_library(qc_server STATIC
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
+    core/QcServerDebug.h core/QcServerDebug.cpp
+    core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
     core/QcTickScheduler.h core/QcTickScheduler.cpp
     core/QcTickStats.h core/QcTickStats.cpp
     worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp

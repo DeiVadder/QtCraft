@@ -12,6 +12,7 @@ target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SO
 qc_add_test(test_screen_choice SOURCES client/test_screen_choice.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
@@ -48,6 +49,64 @@ add_test(NAME app_flat_layers_need_flat_world_fails
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_unknown_world_type_fails app_flat_layers_need_flat_world_fails PROPERTIES TIMEOUT 60
     ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+
+# Offscreen rendering (E-229): the platform without windows shows the main menu and the error screen
+# without crashing, and a scripted run draws the world without a shown window.
+add_test(NAME app_offscreen_platform_menu_screenshot
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=Rendering offscreen with Metal"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-menu.png
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+add_test(NAME app_offscreen_platform_error_screen_fails
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--world-type;flat;--flat-layers;bedrock,3*nonsense;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=Invalid layer '3\\*nonsense'"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_platform_menu_screenshot app_offscreen_platform_error_screen_fails PROPERTIES TIMEOUT 60
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-menu.png;QTCRAFT_SCREENSHOT_FRAMES=10")
+# A picture of the world is far larger than one of the bare HUD over the background (about 50 kB).
+add_test(NAME app_offscreen_world_screenshot
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--look;45,-20;--view-distance;4;--no-audio"
+        -DEXPECTED_EXIT_CODE=0
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png
+        -DEXPECTED_MIN_SIZE=200000
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_world_screenshot PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+
+# The full debug display with every visualisation and the debug options page load without QML
+# errors, binding loops or other warnings of the QML files (decision E-225).
+add_test(NAME app_offscreen_debug_display_qml
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--debug-display;full;--debug-show;chunkBorders,hitboxes,lightValues,mobGoals,remeshFlash;--overlay;debug;--no-audio"
+        -DEXPECTED_EXIT_CODE=0
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-debug.png
+        "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read)"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_debug_display_qml PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-debug;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-debug.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+# Offscreen runs are screenshot runs: a benchmark (frame times of the real window) and a run
+# without a screenshot (nothing would end it) are refused at once.
+add_test(NAME app_offscreen_benchmark_refused
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=Benchmarks measure the real window"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_benchmark_refused PROPERTIES TIMEOUT 60
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_BENCHMARK=5;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-refused.png")
+add_test(NAME app_offscreen_without_screenshot_refused
+    COMMAND ${CMAKE_COMMAND} -E env --unset=QTCRAFT_SCREENSHOT --unset=QTCRAFT_BENCHMARK ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=An offscreen run needs QTCRAFT_SCREENSHOT"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT 60
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
 
 qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 120)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
@@ -93,6 +152,7 @@ qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRA
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
+qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_server)
 target_compile_definitions(test_sound_content PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_sound_synthesis SOURCES sound/test_sound_synthesis.cpp LIBRARIES qc_clientcore)
@@ -113,3 +173,7 @@ qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_server)
 target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods"
                                                 QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
+# The graph of the debug display lives in the app; its scene graph nodes need no window.
+qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcGraphItem.cpp
+            LIBRARIES Qt::Quick)
+target_include_directories(test_graph_item PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)

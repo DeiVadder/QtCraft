@@ -54,7 +54,7 @@ ApplicationWindow {
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === "playing"
-                 && (game.overlay === "pause" || game.overlay === "settings" || game.overlay === "controls" || game.overlay === "character")
+                 && ["pause", "settings", "controls", "debug", "character"].includes(game.overlay)
         game: game
     }
 

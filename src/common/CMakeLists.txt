@@ -17,8 +17,11 @@ qt_add_library(qc_common STATIC
     world/QcChunkSection.h world/QcChunkSection.cpp
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp
+    protocol/QcDebugMessages.h protocol/QcDebugCodec.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     core/QcCrc32.h core/QcCrc32.cpp
+    core/QcPhaseWindow.h core/QcPhaseWindow.cpp
+    core/QcTickPhase.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp

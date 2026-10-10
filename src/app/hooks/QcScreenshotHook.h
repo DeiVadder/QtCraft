@@ -1,8 +1,11 @@
 #pragma once
 
+#include <QImage>
 #include <QObject>
 #include <QPointer>
 #include <QString>
+
+#include <functional>
 
 class QQuickWindow;
 
@@ -23,11 +26,14 @@ public:
     // Delays the capture until release() is called, e.g. until a world finished loading.
     void hold();
     void release();
+    // Takes the picture some other way than QQuickWindow::grabWindow() (offscreen rendering).
+    void setGrabber(std::function<QImage()> grabber);
 
 private:
     void onFrameSwapped();
 
     QPointer<QQuickWindow> m_window;
+    std::function<QImage()> m_grabber;
     QString m_filePath;
     int m_remainingFrames = 0;
     int m_holdCount = 0;

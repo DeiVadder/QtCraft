@@ -28,7 +28,8 @@ struct FrameUniforms
     float cameraPosition[4];
     float fogColor[4];
     float params[4];
-    // x: 1 when clip-space depth runs from 0 to 1 (else -1 to 1).
+    // x: 1 when clip-space depth runs from 0 to 1 (else -1 to 1); y, z: size of the output in
+    // pixels (debug lines are drawn that many pixels wide, decision E-225).
     float extra[4];
 };
 static_assert(sizeof(FrameUniforms) == 128);
@@ -98,6 +99,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_frameUniforms.reset();
         m_pipelineRenderPass.reset();
         m_skyRenderer.reset();
+        m_debugLineRenderer.reset();
         m_uploadedAtlasVersion = 0;
         m_rhi = rhi();
     }
@@ -117,6 +119,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_handPipeline.reset();
         m_outlinePipeline.reset();
         m_skyRenderer.reset();
+        m_debugLineRenderer.reset();
     }
 }
 
@@ -127,6 +130,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     m_selection = view->m_selection;
     m_entityMesh = view->m_entityMesh;
     m_handMesh = view->m_handMesh;
+    m_debugLines = view->m_debugLines;
     m_sky = view->m_sky;
     m_fogStart = view->m_fogStart;
     m_fogEnd = view->m_fogEnd;
@@ -476,7 +480,7 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
 }
 
-void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection)
+void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize)
 {
     FrameUniforms uniforms{};
     std::copy_n(viewProjection.constData(), 16, uniforms.viewProjection);
@@ -493,6 +497,8 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.params[2] = float(m_sky.daylight);
     uniforms.params[3] = minimumLight;
     uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
+    uniforms.extra[1] = float(outputSize.width());
+    uniforms.extra[2] = float(outputSize.height());
 
     updates->updateDynamicBuffer(m_frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
@@ -575,6 +581,7 @@ void QcWorldRenderer::drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4
     }
 
     drawTranslucent(commandBuffer, visible);
+    m_sample.drawCalls += m_debugLineRenderer.draw(commandBuffer) ? 1 : 0;
     drawOutlineAndHand(commandBuffer);
 }
 
@@ -591,7 +598,8 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     const float farPlane = m_fogEnd + QcCamera::farPlaneMargin;
     const QMatrix4x4 viewProjection =
         m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewMatrix();
-    uploadFrameUniforms(updates, viewProjection);
+    uploadFrameUniforms(updates, viewProjection, outputSize);
+    m_debugLineRenderer.prepare(m_rhi, renderTarget(), updates, m_frameUniforms.get(), m_debugLines);
     // The sky is seen from the camera's position: the same view without the translation.
     QMatrix4x4 viewRotation = m_camera.viewMatrix();
     viewRotation.setColumn(3, QVector4D(0.0f, 0.0f, 0.0f, 1.0f));

@@ -38,7 +38,7 @@ Press H / F1 at any time. Every block, item, creature and biome has a page with 
 - **Right mouse** or **R**: place, use, eat
 - **Q**: throw one item, **Ctrl+Q**: the whole stack
 - **1–9**, mouse wheel: choose the hotbar slot
-- **E**: inventory, **T / Enter**: chat, **/**: command, **V / F5**: camera view, **H / F1**: handbook, **I / F3**: frame rate and position, **Esc**: menu
+- **E**: inventory, **T / Enter**: chat, **/**: command, **V / F5**: camera view, **H / F1**: handbook, **I / F3**: debug display (off, compact, full), **O / F4**: debug options, **Esc**: menu
 - Every key except Esc can be changed under Settings → Controls.
 
 **Mac keyboards**
