@@ -80,6 +80,22 @@ bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks)
     return true;
 }
 
+void writeEquipment(QDataStream &stream, const QcEquipment &equipment)
+{
+    for (const QcItemStack &stack : equipment.stacks) {
+        writeStack(stream, stack);
+    }
+}
+
+QcEquipment readEquipment(QDataStream &stream)
+{
+    QcEquipment equipment;
+    for (QcItemStack &stack : equipment.stacks) {
+        stack = readStack(stream);
+    }
+    return equipment;
+}
+
 bool isFinite(const QcVec3 &value)
 {
     return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z);

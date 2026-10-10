@@ -1,14 +1,46 @@
+#include "QcCharacterPresets.h"
 #include "QcGameSettings.h"
+#include "QcNameText.h"
 #include "QcTestUtil.h"
 
+#include <QCoreApplication>
 #include <QFile>
+#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QSettings>
 #include <QTest>
+#include <QTranslator>
 
 #include <limits>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// A German translation of one preset name, without a .qm file.
+class PresetTranslator : public QTranslator
+{
+    Q_OBJECT
+
+public:
+    QString translate(const char *context, const char *sourceText, const char *, int) const override
+    {
+        return QByteArrayView(context) == "QcCharacterProfile" && QByteArrayView(sourceText) == "Miner" ? u"Bergmann"_s : QString();
+    }
+    bool isEmpty() const override { return false; }
+};
+
+QStringList labels(const QcCharacterPresets &presets)
+{
+    QStringList list;
+    const QVariantList rows = presets.rows();
+    for (const QVariant &row : rows) {
+        list.append(row.toMap().value(u"label"_s).toString());
+    }
+    return list;
+}
+
+} // namespace
 
 class TestSettings : public QObject
 {
@@ -47,10 +79,136 @@ private slots:
         settings.musicVolume = 1.0;
         settings.ambientVolume = 0.4;
         settings.muted = true;
+        settings.characterPresets = {{u"Cave look"_s, {u"qtcraft:miner"_s, u"qtcraft:cap"_s, 0x111111, 0x222222, 0x333333, 0x444444}},
+                                     {u"Bald"_s, {u"qtcraft:tunic"_s, QString(), 0xabcdef, 0, 0xffffff, 0x010101}}};
 
         const QcStatus saved = settings.save(path);
         QVERIFY2(saved.has_value(), qcErrorText(saved));
         QCOMPARE(QcGameSettings::load(path), settings);
+
+        // Fewer presets saved later leave none of the old ones behind.
+        settings.characterPresets.removeFirst();
+        QVERIFY(settings.save(path).has_value());
+        QCOMPARE(QcGameSettings::load(path).characterPresets, settings.characterPresets);
+    }
+
+    void characterPresetsAreBounded()
+    {
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        {
+            QSettings file(path, QSettings::IniFormat);
+            // More than allowed, a nameless one and a name with control characters and spaces.
+            file.setValue(u"characterPresets/size"_s, 50);
+            for (int index = 1; index <= 12; ++index) {
+                file.setValue(u"characterPresets/%1/name"_s.arg(index), index == 2 ? QString() : u"  Look\t%1 "_s.arg(index));
+                file.setValue(u"characterPresets/%1/skin"_s.arg(index), u"#00000%1"_s.arg(index % 10));
+            }
+            file.setValue(u"characterPresets/3/outfit"_s, QString(QcAppearance::maxNameLength + 1, u'x'));
+        }
+        const QList<QcCharacterPreset> presets = QcGameSettings::load(path).characterPresets;
+        // Eight places read, the nameless one skipped.
+        QCOMPARE(presets.size(), QcCharacterProfile::maxPresets - 1);
+        QCOMPARE(presets.first().name, u"Look1"_s);
+        QCOMPARE(presets.first().appearance.skinColor, 0x000001u);
+        // An overlong outfit name falls back to the default outfit.
+        QCOMPARE(presets[1].appearance.outfit, QcAppearance().outfit);
+
+        QCOMPARE(QcCharacterProfile::cleanPresetName(QString(40, u'a')).size(), QcCharacterProfile::maxPresetNameLength);
+        QCOMPARE(QcCharacterProfile::cleanPresetName(u"\n\t"_s), QString());
+    }
+
+    void presetNamesCountCodePoints()
+    {
+        // 31 letters and an emoji are 32 code points and stay whole; one letter more drops the emoji
+        // whole; a lone surrogate never survives (decision E-232).
+        const QString emoji = u"\U0001F600"_s;
+        QCOMPARE(QcCharacterProfile::cleanPresetName(QString(31, u'a') + emoji), QString(31, u'a') + emoji);
+        QCOMPARE(QcCharacterProfile::cleanPresetName(QString(32, u'a') + emoji), QString(32, u'a'));
+        QCOMPARE(QcCharacterProfile::cleanPresetName(u"Mi"_s + QChar(0xDC00) + u"ner"_s + QChar(0xD800)), u"Miner"_s);
+        QVERIFY(QcCharacterProfile::cleanPresetName(QString(31, u'a') + emoji + emoji).isValidUtf16());
+
+        // The name field cuts while typing, between graphemes and without trimming.
+        QCOMPARE(QcNameText::fit(u" ab "_s, 32), u" ab "_s);
+        QCOMPARE(QcNameText::fit(QString(31, u'a') + emoji + u"b"_s, 32), QString(31, u'a') + emoji);
+        QCOMPARE(QcNameText::fit(QString(31, u'a') + u"e\u0301"_s, 32), QString(31, u'a'));
+        QCOMPARE(QcNameText::codePoints(QString(emoji + u"x"_s + QChar(0xD800))), 3);
+    }
+
+    void presetsFollowTheLanguage()
+    {
+        QcCharacterPresets presets;
+        QCOMPARE(labels(presets).at(1), u"Miner"_s);
+        QSignalSpy changed(&presets, &QcCharacterPresets::changed);
+
+        // Installing a translator (a language switch) updates the built-in names; the player's own
+        // names are never translated.
+        PresetTranslator german;
+        QVERIFY(QCoreApplication::installTranslator(&german));
+        QVERIFY(changed.count() >= 1);
+        QCOMPARE(labels(presets).at(1), u"Bergmann"_s);
+
+        const int before = int(changed.count());
+        QVERIFY(QCoreApplication::removeTranslator(&german));
+        QVERIFY(changed.count() > before);
+        QCOMPARE(labels(presets).at(1), u"Miner"_s);
+    }
+
+    void presetPlacesAreLimited()
+    {
+        QcCharacterPresets presets;
+        const int builtIn = int(QcCharacterProfile::builtInPresets().size());
+        QcAppearance look;
+        for (int index = 0; index < QcCharacterProfile::maxPresets; ++index) {
+            look.skinColor = quint32(index);
+            QVERIFY(presets.save(u"Look %1"_s.arg(index), look));
+        }
+        QVERIFY(!presets.canSave());
+        // Full: a new name cannot be saved, an existing one can be replaced.
+        QVERIFY(!presets.canSaveAs(u"Another"_s));
+        QVERIFY(!presets.save(u"Another"_s, look));
+        QVERIFY(presets.canSaveAs(u"  Look 3 "_s));
+        look.skinColor = 0xabcdef;
+        QVERIFY(presets.save(u"Look 3"_s, look));
+        QCOMPARE(presets.appearance(builtIn + 3)->skinColor, 0xabcdefu);
+        QVERIFY(!presets.canSaveAs(u" \t"_s));
+
+        presets.remove(builtIn);
+        QVERIFY(presets.canSaveAs(u"Another"_s));
+        // Built-in presets cannot be removed; rows outside both lists have no look.
+        presets.remove(0);
+        QCOMPARE(presets.rows().size(), builtIn + QcCharacterProfile::maxPresets - 1);
+        QVERIFY(!presets.appearance(-1));
+        QVERIFY(!presets.appearance(int(presets.rows().size())));
+    }
+
+    void randomLooksAndBuiltInPresets()
+    {
+        const QStringList outfits{u"a:one"_s, u"a:two"_s};
+        const QStringList hair{u"a:short"_s};
+        // The same seed, the same look; every part from the offered choices.
+        QCOMPARE(QcCharacterProfile::random(outfits, hair, 7), QcCharacterProfile::random(outfits, hair, 7));
+        QSet<QString> seenOutfits;
+        QSet<QString> seenHair;
+        for (quint32 seed = 0; seed < 200; ++seed) {
+            const QcAppearance look = QcCharacterProfile::random(outfits, hair, seed);
+            seenOutfits.insert(look.outfit);
+            seenHair.insert(look.hair);
+            QVERIFY(QcCharacterProfile::skinColors().contains(look.skinColor));
+            QVERIFY(QcCharacterProfile::hairColors().contains(look.hairColor));
+            QVERIFY(QcCharacterProfile::clothColors().contains(look.shirtColor));
+            QVERIFY(QcCharacterProfile::clothColors().contains(look.pantsColor));
+        }
+        QCOMPARE(seenOutfits, (QSet<QString>{u"a:one"_s, u"a:two"_s}));
+        // Hair or none.
+        QCOMPARE(seenHair, (QSet<QString>{u"a:short"_s, QString()}));
+        QCOMPARE(QcCharacterProfile::random({}, {}, 3).outfit, QcAppearance().outfit);
+
+        // The first built-in preset is the default look; all have names.
+        const QList<QcCharacterPreset> &builtIn = QcCharacterProfile::builtInPresets();
+        QVERIFY(builtIn.size() >= 3);
+        QCOMPARE(builtIn.first().appearance, QcAppearance());
+        QVERIFY(std::ranges::none_of(builtIn, [](const QcCharacterPreset &preset) { return preset.name.isEmpty(); }));
     }
 
     void audioDefaultsAndBadVolumes()

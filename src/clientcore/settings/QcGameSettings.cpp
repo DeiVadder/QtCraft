@@ -103,24 +103,8 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.language = cleanLanguage(file.value(u"language"_s).toString());
     settings.cameraMode = QcViewCamera::fromName(file.value(u"cameraMode"_s).toString()).value_or(QcCameraMode::FirstPerson);
 
-    const auto name = [&file](const QString &key, const QString &fallback) {
-        const QVariant value = file.value(key);
-        return value.isValid() && value.toString().size() <= QcAppearance::maxNameLength ? value.toString() : fallback;
-    };
-    const auto color = [&file](const QString &key, quint32 fallback) {
-        const QString text = file.value(key).toString();
-        bool ok = false;
-        const quint32 rgb = text.startsWith(u'#') && text.size() == 7 ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
-        return ok ? rgb : fallback;
-    };
-
-    const QcAppearance defaults;
-    settings.appearance.outfit = name(u"character/outfit"_s, defaults.outfit);
-    settings.appearance.hair = name(u"character/hair"_s, defaults.hair);
-    settings.appearance.skinColor = color(u"character/skin"_s, defaults.skinColor);
-    settings.appearance.hairColor = color(u"character/hairColor"_s, defaults.hairColor);
-    settings.appearance.shirtColor = color(u"character/shirt"_s, defaults.shirtColor);
-    settings.appearance.pantsColor = color(u"character/pants"_s, defaults.pantsColor);
+    settings.appearance = QcCharacterProfile::loadAppearance(file, u"character"_s);
+    settings.characterPresets = QcCharacterProfile::loadPresets(file);
 
     const auto volume = [&file](const QString &key, double fallback) {
         bool ok = false;
@@ -153,13 +137,8 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"language"_s, language);
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));
 
-    const auto hex = [](quint32 rgb) { return u"#%1"_s.arg(uint(rgb & 0xFFFFFFu), 6, 16, QChar(u'0')); };
-    file.setValue(u"character/outfit"_s, appearance.outfit);
-    file.setValue(u"character/hair"_s, appearance.hair);
-    file.setValue(u"character/skin"_s, hex(appearance.skinColor));
-    file.setValue(u"character/hairColor"_s, hex(appearance.hairColor));
-    file.setValue(u"character/shirt"_s, hex(appearance.shirtColor));
-    file.setValue(u"character/pants"_s, hex(appearance.pantsColor));
+    QcCharacterProfile::saveAppearance(file, u"character"_s, appearance);
+    QcCharacterProfile::savePresets(file, characterPresets);
 
     file.setValue(u"audio/master"_s, masterVolume);
     file.setValue(u"audio/effects"_s, effectsVolume);

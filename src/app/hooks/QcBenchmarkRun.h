@@ -34,8 +34,9 @@ public:
     // Time since the previous frame; called first in every frame.
     void recordFrame();
     // CPU time of the GUI thread in this frame (-1 if unknown), the time of its entity meshing and
-    // the render thread's samples (QcFrameMonitor collects them while the benchmark runs).
-    void recordGuiFrame(double guiCpuMs, qint64 entityNs, const QList<QcRenderSample> &samples);
+    // of the character previews' meshing, and the render thread's samples (QcFrameMonitor collects
+    // them while the benchmark runs).
+    void recordGuiFrame(double guiCpuMs, qint64 entityNs, qint64 previewNs, const QList<QcRenderSample> &samples);
     bool isRunning() const { return m_running; }
 
 private:

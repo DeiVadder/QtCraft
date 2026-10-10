@@ -4,6 +4,7 @@
 #include "QcConnection.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
+#include "QcProfileValidation.h"
 #include "QcProtocol.h"
 #include "QcServerSetup.h"
 #include "QcTransport.h"
@@ -279,8 +280,8 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     }
 
     client.entityId = m_state.newEntityId();
-    client.name = hello.playerName.left(32);
-    client.appearance = validAppearance(hello.appearance);
+    client.name = QcProfileValidation::playerName(hello.playerName);
+    client.appearance = QcProfileValidation::appearance(*m_state.content, hello.appearance);
     if (restorePlayer(client)) {
         return;
     }
@@ -577,36 +578,9 @@ void QcServer::sendTime(Client &client)
     client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength, m_state.info.daylightCycle});
 }
 
-QcAppearance QcServer::validAppearance(const QcAppearance &requested) const
-{
-    QcAppearance result = requested;
-    const QcAppearanceDefinition *outfit = m_state.content->appearance(requested.outfit);
-    if (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit || !outfit->playable) {
-        // The default outfit, or else any outfit the content offers.
-        result.outfit = QcAppearance().outfit;
-        const QcAppearanceDefinition *fallback = m_state.content->appearance(result.outfit);
-        if (!fallback || fallback->kind != QcAppearanceDefinition::Kind::Outfit || !fallback->playable) {
-            const auto any = std::ranges::find_if(m_state.content->appearances(), [](const QcAppearanceDefinition &definition) {
-                return definition.kind == QcAppearanceDefinition::Kind::Outfit && definition.playable;
-            });
-            result.outfit = any != m_state.content->appearances().end() ? any->name : QString();
-        }
-    }
-
-    const QcAppearanceDefinition *hair = m_state.content->appearance(requested.hair);
-    if (!hair || hair->kind != QcAppearanceDefinition::Kind::Hair || !hair->playable) {
-        result.hair.clear();
-    }
-
-    for (quint32 *color : {&result.skinColor, &result.hairColor, &result.shirtColor, &result.pantsColor}) {
-        *color &= 0xFFFFFFu;
-    }
-    return result;
-}
-
 void QcServer::handleSetAppearance(Client &client, const QcAppearance &appearance)
 {
-    client.appearance = validAppearance(appearance);
+    client.appearance = QcProfileValidation::appearance(*m_state.content, appearance);
 
     // Others that know the player get the spawn again with the new look.
     for (const auto &other : m_state.clients) {

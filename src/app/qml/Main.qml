@@ -7,6 +7,9 @@ ApplicationWindow {
 
     width: 1280
     height: 720
+    // Every screen fits from this size on (the inventory, the character screen; decision E-231).
+    minimumWidth: 1024
+    minimumHeight: 640
     // Shown by main() once the screen is chosen.
     visible: false
     title: qsTr("QtCraft")

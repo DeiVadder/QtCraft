@@ -1,6 +1,8 @@
 #include "QcHunger.h"
 #include "QcMining.h"
+#include "QcNameText.h"
 #include "QcPhysics.h"
+#include "QcProfileValidation.h"
 #include "QcServerTestFixture.h"
 
 #include <QTest>
@@ -445,6 +447,65 @@ private slots:
         pump();
         ticks(2);
         QVERIFY((m_client->flags.value(bobId) & QcMsg::Swing) != 0);
+
+        bob.connection.send(QcMsg::Disconnect{});
+        pump();
+        ticks(1);
+    }
+
+    void profileIsCheckedBeforeItIsTakenOver()
+    {
+        // Names: no control or format characters, trimmed, at most 32 characters, never empty.
+        QCOMPARE(QcProfileValidation::playerName(u"  Ann\x07\n "_s), u"Ann"_s);
+        QCOMPARE(QcProfileValidation::playerName(u"Bo\u200Bb"_s), u"Bob"_s);
+        QCOMPARE(QcProfileValidation::playerName(QString(40, u'x')), QString(32, u'x'));
+        QCOMPARE(QcProfileValidation::playerName(u" \t "_s), u"Player"_s);
+        QCOMPARE(QcProfileValidation::playerName(u"Jörg Müller"_s), u"Jörg Müller"_s);
+
+        // The limit counts code points and cuts between graphemes (decision E-232): 31 letters and
+        // an emoji (two UTF-16 units) are 32 and stay whole; one letter more and the emoji goes
+        // whole, no lone surrogate is left.
+        const QString emoji = u"\U0001F600"_s;
+        QCOMPARE(emoji.size(), 2);
+        QCOMPARE(QcProfileValidation::playerName(QString(31, u'x') + emoji), QString(31, u'x') + emoji);
+        QCOMPARE(QcProfileValidation::playerName(QString(32, u'x') + emoji), QString(32, u'x'));
+        // A letter with a combining accent past the limit goes with its accent.
+        QCOMPARE(QcProfileValidation::playerName(QString(31, u'x') + u"e\u0301"_s), QString(31, u'x'));
+        // Unpaired surrogates (a high one alone, a low one alone, a high one at the end) are dropped.
+        QCOMPARE(QcProfileValidation::playerName(u"An"_s + QChar(0xD83D) + u"n"_s + QChar(0xDE00) + u"e"_s + QChar(0xD83D)), u"Anne"_s);
+        const QStringList names{QString(31, u'x') + emoji, QString(40, u'x') + emoji, u"a"_s + QChar(0xD800)};
+        for (const QString &name : names) {
+            const QString checked = QcProfileValidation::playerName(name);
+            QVERIFY(checked.isValidUtf16());
+            QVERIFY(QcNameText::codePoints(checked) <= QcProfileValidation::maxPlayerNameLength);
+        }
+
+        // Looks: only playable outfits and hair styles of the content, colours with RGB bits only.
+        QcAppearance look;
+        look.outfit = u"qtcraft:zombie"_s;
+        look.hair = u"qtcraft:miner"_s;
+        look.skinColor = 0xFF123456;
+        const QcAppearance checked = QcProfileValidation::appearance(*m_content, look);
+        QCOMPARE(checked.outfit, QcAppearance().outfit);
+        QVERIFY(checked.hair.isEmpty());
+        QCOMPARE(checked.skinColor, 0x123456u);
+        look = {u"qtcraft:tunic"_s, u"qtcraft:cap"_s, 1, 2, 3, 4};
+        QCOMPARE(QcProfileValidation::appearance(*m_content, look), look);
+        // Content without the default outfit: any playable outfit; without any: none.
+        QcContentRegistry bare;
+        QVERIFY(QcProfileValidation::appearance(bare, look).outfit.isEmpty());
+
+        // Over the protocol: the name others see is the checked one, the armour slots are empty.
+        join();
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        RawClient bob(std::move(clientEnd));
+        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"\x01 Bob\t"_s, {}});
+        pump();
+        ticks(2);
+        const auto seen = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) { return spawn.name == u"Bob"_s; });
+        QVERIFY(seen != m_client->spawns.end());
+        QVERIFY(seen->equipment.isEmpty());
 
         bob.connection.send(QcMsg::Disconnect{});
         pump();

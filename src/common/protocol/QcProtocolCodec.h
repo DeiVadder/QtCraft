@@ -26,6 +26,9 @@ QcItemStack readStack(QDataStream &stream);
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
 // At most 1024 stacks.
 bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks);
+// The armour slots: always QcEquipment::slotCount stacks, without a count.
+void writeEquipment(QDataStream &stream, const QcEquipment &equipment);
+QcEquipment readEquipment(QDataStream &stream);
 bool isFinite(const QcVec3 &value);
 
 template<typename T>

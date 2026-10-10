@@ -1,3 +1,4 @@
+#include "QcCharacterProfile.h"
 #include "QcUiPalette.h"
 
 #include <QDir>
@@ -89,6 +90,28 @@ private slots:
             const double worst = QcUiPalette::worstContrast(pair);
             QVERIFY2(worst >= minimum, qPrintable(u"%1: %2 < %3"_s.arg(QString::fromLatin1(pair.where)).arg(worst, 0, 'f', 2).arg(minimum)));
         }
+    }
+
+    // The colour swatches of the character screen have an edge that stands out (3:1, WCAG for
+    // controls) on the panel over every world and against every colour they offer, so the dark hair
+    // swatch does not vanish into the dark panel.
+    void swatchBorderStandsOut()
+    {
+        const QcUiPalette::TextPair onPanel{"swatch border", QcUiPalette::Role::SwatchBorder, {QcUiPalette::Role::Scrim, QcUiPalette::Role::Panel}};
+        QVERIFY2(QcUiPalette::worstContrast(onPanel) >= 3.0, qPrintable(QString::number(QcUiPalette::worstContrast(onPanel))));
+        const QColor border = QcUiPalette::color(QcUiPalette::Role::SwatchBorder);
+        QCOMPARE(border.alpha(), 255);
+        for (const QList<quint32> *colors : {&QcCharacterProfile::skinColors(), &QcCharacterProfile::hairColors(), &QcCharacterProfile::clothColors()}) {
+            for (const quint32 rgb : *colors) {
+                // Dark swatches need the edge; light ones stand out from the dark panel themselves.
+                const QColor swatch = QColor::fromRgb(rgb);
+                const double againstPanel = QcUiPalette::contrast(swatch, QcUiPalette::composite(QcUiPalette::color(QcUiPalette::Role::Panel), Qt::black));
+                QVERIFY2(againstPanel >= 3.0 || QcUiPalette::contrast(border, swatch) >= 3.0, qPrintable(QString::number(rgb, 16)));
+            }
+        }
+        // The old edge (the slot border, dark and half transparent) fails for the dark hair colour.
+        const QColor slotEdge = QcUiPalette::composite(QcUiPalette::color(QcUiPalette::Role::SlotBorder), QColor::fromRgb(0x262626));
+        QVERIFY(QcUiPalette::contrast(slotEdge, QColor::fromRgb(0x1e1a18)) < 3.0);
     }
 
     // White text straight on the world (what the HUD did before) fails over snow: the check is not

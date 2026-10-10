@@ -1,6 +1,7 @@
 #include "QcRenderBridge.h"
 
 #include "QcClientSession.h"
+#include "QcFigureLook.h"
 #include "QcLightVolume.h"
 #include "QcMeshScheduler.h"
 #include "QcPhysics.h"
@@ -8,7 +9,6 @@
 #include "QcSettingsController.h"
 #include "QcSky.h"
 #include "QcTextureAtlas.h"
-
 
 #include <algorithm>
 #include <cmath>
@@ -63,63 +63,15 @@ float QcRenderBridge::blockLightAt(QcBlockPos pos) const
     return float(m_parts.meshes->blockLight(pos)) / float(QcLightVolume::maxLevel);
 }
 
-QcBlockId QcRenderBridge::itemState(const QcContentRegistry &content, QcBlockId block)
-{
-    // Fences, walls and panes show a piece of a run rather than a lone post.
-    if (!content.block(block).connectsTo.isEmpty()) {
-        block = content.withProperty(content.withProperty(block, u"east"_s, u"true"_s), u"west"_s, u"true"_s);
-    }
-    return block;
-}
-
-QcEntityMesher::ItemLook QcRenderBridge::itemLook(const QcContentRegistry &content, QcItemId item)
-{
-    QcEntityMesher::ItemLook look;
-    if (!content.isValidItem(item)) {
-        return look;
-    }
-
-    const QcItemDefinition &definition = content.item(item);
-    look.sprite = definition.texture;
-    const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
-    if (block) {
-        look.glow = float(content.block(*block).lightLevel) / float(QcLightVolume::maxLevel);
-    }
-    if (block && content.block(*block).itemTexture.isEmpty() && !content.state(*block).boxes.isEmpty()
-        && content.block(*block).renderLayer != QcRenderLayer::Invisible) {
-        look.cube = true;
-        look.faces = content.block(*block).faceTextures;
-        if (!content.state(itemState(content, *block)).fullCube) {
-            look.boxes = content.state(itemState(content, *block)).boxes;
-        }
-    }
-    return look;
-}
-
 std::optional<QcEntityMesher::ItemLook> QcRenderBridge::heldLook(QcItemId item) const
 {
     const auto content = m_parts.session->content();
-    if (item == qcNoItem || !content || !content->isValidItem(item)) {
-        return std::nullopt;
-    }
-    return itemLook(*content, item);
+    return content ? QcFigureLook::held(*content, item) : std::nullopt;
 }
 
 QcEntityMesher::ModelLook QcRenderBridge::playerLook(const QcAppearance &appearance) const
 {
-    const QcContentRegistry &content = *m_parts.session->content();
-    QcEntityMesher::ModelLook look;
-    look.model = content.model(u"qtcraft:humanoid"_s);
-    look.outfit = content.appearance(appearance.outfit);
-    if (!look.outfit || look.outfit->kind != QcAppearanceDefinition::Kind::Outfit) {
-        look.outfit = content.appearance(QcAppearance().outfit);
-    }
-    look.hair = content.appearance(appearance.hair);
-    if (look.hair && look.hair->kind != QcAppearanceDefinition::Kind::Hair) {
-        look.hair = nullptr;
-    }
-    look.colors = appearance;
-    return look;
+    return QcFigureLook::player(*m_parts.session->content(), appearance);
 }
 
 QcEntityPose QcRenderBridge::localPose(double alpha) const
@@ -235,7 +187,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
 
     for (const QcClientEntity &entity : session.entities()) {
         if (entity.isItem()) {
-            QcEntityMesher::appendItem(*mesh, entity, itemLook(frame.content, entity.item.item),
+            QcEntityMesher::appendItem(*mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
                                        {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
         } else if (entity.isFallingBlock()) {
             QcEntityMesher::ItemLook look;

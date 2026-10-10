@@ -5,6 +5,9 @@
 # pictures, so the tour serves as visual check after changes; every new feature extends the world.
 # The debug display (stage 21b, E-225) has its own stops: the full display over the podiums of the
 # building parts, and the visualisations (hitboxes, creature goals, chunk borders) at the creatures.
+# The character preview (stage 22, E-231) has its stops at the character stand: the character
+# screen and the inventory with their previews, and the player seen from the front in the world
+# (the same look and pose as the preview, for comparison).
 # Renders offscreen (no window, independent of the display, decision E-229), silent, with its
 # settings and world in a temporary directory that is removed at the end.
 # Usage: scripts/showcase-tour.sh [out-dir] [build-dir]
@@ -66,6 +69,13 @@ while read -r name x z yaw pitch; do
         ;;
     blocks-parts)
         shoot "debug-display" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display full
+        ;;
+    demo-character_stand-near)
+        shoot "character-preview" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --overlay character \
+            --preview side=front,time=0
+        shoot "character-preview-inventory" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --overlay inventory \
+            --preview animation=walk,time=0.4
+        shoot "character-ingame-front" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,0" --camera front
         ;;
     creatures-near)
         shoot "debug-visuals" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display compact \

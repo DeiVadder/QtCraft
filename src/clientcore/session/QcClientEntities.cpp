@@ -18,7 +18,13 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
              || (item && (!content || spawn.item.isEmpty() || !content->isValidItem(spawn.item.item))));
 }
 
-QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn)
+// Armour only for players and only of items the content knows (decision E-232).
+QcEquipment equipmentOf(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
+{
+    return spawn.mobType == QcMsg::EntitySpawn::playerType && content ? spawn.equipment.knownTo(*content) : QcEquipment();
+}
+
+QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
     const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
     const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType;
@@ -26,6 +32,7 @@ QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn)
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();
     entity.appearance = spawn.appearance;
+    entity.equipment = equipmentOf(spawn, content);
     entity.pitch = entity.previousPitch = spawn.pitch;
     entity.flags = spawn.flags;
     entity.held = spawn.held;
@@ -52,10 +59,11 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
     if (const auto known = m_entities.find(spawn.id); known != m_entities.end() && known->mobType == spawn.mobType) {
         known->item = item ? spawn.item : QcItemStack();
         known->appearance = spawn.appearance;
+        known->equipment = equipmentOf(spawn, content);
         return true;
     }
 
-    const QcClientEntity entity = entityFromSpawn(spawn);
+    const QcClientEntity entity = entityFromSpawn(spawn, content);
     m_entities.insert(entity.id, entity);
     return true;
 }

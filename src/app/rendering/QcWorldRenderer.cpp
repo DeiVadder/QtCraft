@@ -2,11 +2,11 @@
 
 #include "QcFrustum.h"
 #include "QcIndexPacking.h"
+#include "QcRenderPipelines.h"
 #include "QcWorldView.h"
 #include "QcThreadCpuClock.h"
 
 #include <QElapsedTimer>
-#include <QFile>
 #include <QLoggingCategory>
 
 #include <algorithm>
@@ -15,37 +15,15 @@
 #include <limits>
 
 using namespace Qt::StringLiterals;
+using QcRenderPipelines::FrameUniforms;
+using QcRenderPipelines::loadShader;
+using QcRenderPipelines::minimumLight;
 
 namespace {
 
 Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
 
-// std140 layout of the Frame uniform block in the shaders (the block shaders read only the first
-// four members).
-struct FrameUniforms
-{
-    float viewProjection[16];
-    float cameraPosition[4];
-    float fogColor[4];
-    float params[4];
-    // x: 1 when clip-space depth runs from 0 to 1 (else -1 to 1); y, z: size of the output in
-    // pixels (debug lines are drawn that many pixels wide, decision E-225).
-    float extra[4];
-};
-static_assert(sizeof(FrameUniforms) == 128);
-
-constexpr float minimumLight = 0.08f;
 constexpr int maxOutlineBoxes = 16;
-
-QShader loadShader(const QString &path)
-{
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qCCritical(lcRenderer) << "Cannot open shader" << path;
-        return {};
-    }
-    return QShader::fromSerialized(file.readAll());
-}
 
 // 12 edges as line segments of two corners per box.
 using OutlineVertices = std::array<float, std::size_t(maxOutlineBoxes) * 24 * 3>;
@@ -229,33 +207,12 @@ std::unique_ptr<QRhiGraphicsPipeline> QcWorldRenderer::createBlockPipeline(const
     return pipeline;
 }
 
-std::unique_ptr<QRhiGraphicsPipeline> QcWorldRenderer::createEntityPipeline(const QShader &vertexShader, const QShader &fragmentShader,
-                                                                           const QRhiVertexInputLayout &inputLayout)
-{
-    std::unique_ptr<QRhiGraphicsPipeline> pipeline(m_rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, vertexShader}, {QRhiShaderStage::Fragment, fragmentShader}});
-    pipeline->setVertexInputLayout(inputLayout);
-    pipeline->setShaderResourceBindings(m_bindings.get());
-    pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
-    pipeline->setSampleCount(renderTarget()->sampleCount());
-    pipeline->setDepthTest(true);
-    pipeline->setDepthWrite(true);
-    pipeline->setFrontFace(QRhiGraphicsPipeline::CCW);
-    pipeline->setCullMode(QRhiGraphicsPipeline::Back);
-
-    if (!pipeline->create()) {
-        qCCritical(lcRenderer) << "Cannot create entity pipeline";
-        return std::unique_ptr<QRhiGraphicsPipeline>();
-    }
-    return pipeline;
-}
-
 void QcWorldRenderer::createPipelines()
 {
     ensureBindings();
 
-    const QShader vertexShader = loadShader(u":/shaders/block.vert.qsb"_s);
-    const QShader fragmentShader = loadShader(u":/shaders/block.frag.qsb"_s);
+    const QShader vertexShader = loadShader(u":/shaders/block.vert.qsb"_s, lcRenderer());
+    const QShader fragmentShader = loadShader(u":/shaders/block.frag.qsb"_s, lcRenderer());
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({{sizeof(QcBlockVertex)}});
     inputLayout.setAttributes({
@@ -266,19 +223,11 @@ void QcWorldRenderer::createPipelines()
     m_opaquePipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, false);
     m_translucentPipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, true);
 
-    QRhiVertexInputLayout entityLayout;
-    entityLayout.setBindings({{sizeof(QcEntityVertex)}});
-    entityLayout.setAttributes({
-        {0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(QcEntityVertex, x))},
-        {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcEntityVertex, u))},
-        {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, shade))},
-        {0, 3, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, skyLight))},
-        {0, 5, QRhiVertexInputAttribute::Float, quint32(offsetof(QcEntityVertex, blockLight))},
-        {0, 4, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcEntityVertex, tint))},
-    });
-    const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s);
-    m_entityPipeline = createEntityPipeline(loadShader(u":/shaders/entity.vert.qsb"_s), entityFragment, entityLayout);
-    m_handPipeline = createEntityPipeline(loadShader(u":/shaders/hand.vert.qsb"_s), entityFragment, entityLayout);
+    const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s, lcRenderer());
+    m_entityPipeline = QcRenderPipelines::createEntityPipeline(m_rhi, renderTarget(), m_bindings.get(),
+                                                               loadShader(u":/shaders/entity.vert.qsb"_s, lcRenderer()), entityFragment);
+    m_handPipeline = QcRenderPipelines::createEntityPipeline(m_rhi, renderTarget(), m_bindings.get(), loadShader(u":/shaders/hand.vert.qsb"_s, lcRenderer()),
+                                                             entityFragment);
     m_pipelineRenderPass.reset(renderTarget()->renderPassDescriptor()->newCompatibleRenderPassDescriptor());
 }
 
@@ -297,8 +246,8 @@ void QcWorldRenderer::createOutlinePipeline()
     }
 
     std::unique_ptr<QRhiGraphicsPipeline> pipeline(m_rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/outline.vert.qsb"_s)},
-                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/outline.frag.qsb"_s)}});
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/outline.vert.qsb"_s, lcRenderer())},
+                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/outline.frag.qsb"_s, lcRenderer())}});
 
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({{3 * sizeof(float)}});

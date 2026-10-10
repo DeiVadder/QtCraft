@@ -16,6 +16,7 @@ void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
     stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
     writeStack(stream, m.item);
     stream << m.appearance << m.pitch << m.flags << m.held << m.block;
+    writeEquipment(stream, m.equipment);
 }
 
 void encode(QDataStream &stream, const QcMsg::EntityMoves &m)
@@ -51,6 +52,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
     }
 
     stream >> m.pitch >> m.flags >> m.held >> m.block;
+    m.equipment = readEquipment(stream);
     if (!std::isfinite(m.pitch)) {
         return qcError(u"Non-finite entity data"_s);
     }

@@ -39,6 +39,9 @@ enum class Role {
     HudSlot,
     SlotHover,
     SlotBorder,
+    // Edge of the colour swatches of the character screen: visible on the panel and around the
+    // darkest colours (black hair), 3:1 as WCAG asks of controls.
+    SwatchBorder,
     SlotPicked,
     // Faint light behind item icons, so dark items (coal, obsidian) stand out on dark slots.
     IconBackdrop,

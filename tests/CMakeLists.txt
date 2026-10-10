@@ -89,6 +89,27 @@ add_test(NAME app_offscreen_debug_display_qml
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_debug_display_qml PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-debug;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-debug.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+# The character previews (decision E-231): the main menu's profile card, the character screen with
+# its presets and the inventory load without QML errors or binding loops, with the --preview hook,
+# and the previews of the character screen and the inventory draw the figure.
+add_test(NAME app_offscreen_character_preview_qml
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--seed;42;--view-distance;2;--overlay;character;--overlay;@1500 inventory;--preview;animation=mine,side=back,gaze=0.5:0.5,zoom=0.3;--no-audio"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=characterPreview: first figure with [1-9][0-9]+ vertices.*inventoryPreview: first figure with [1-9][0-9]+ vertices"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-preview.png
+        "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_character_preview_qml PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-preview;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-preview.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+add_test(NAME app_preview_hook_refused
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--preview;animation=dance;--screen;builtin;--background;--no-audio"
+        -DEXPECTED_EXIT_CODE=1
+        "-DEXPECTED_ERROR=Invalid --preview setting 'animation=dance'"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_preview_hook_refused PROPERTIES TIMEOUT 60
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
 # Offscreen runs are screenshot runs: a benchmark (frame times of the real window) and a run
 # without a screenshot (nothing would end it) are refused at once.
 add_test(NAME app_offscreen_benchmark_refused
@@ -149,6 +170,7 @@ target_compile_definitions(test_bundled_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_items SOURCES gameplay/test_items.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
@@ -177,3 +199,7 @@ qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcGraphItem.cpp
             LIBRARIES Qt::Quick)
 target_include_directories(test_graph_item PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+# The shared atlas texture of the character previews, on the Null backend of QRhi.
+qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcPreviewAtlasCache.cpp
+            LIBRARIES Qt::Gui Qt::GuiPrivate)
+target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)

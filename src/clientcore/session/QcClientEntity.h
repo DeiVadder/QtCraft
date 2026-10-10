@@ -2,6 +2,7 @@
 
 #include "QcAppearance.h"
 #include "QcBlockDefinition.h"
+#include "QcEquipment.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
 
@@ -32,6 +33,8 @@ struct QcClientEntity
     float previousPitch = 0.0f;
     quint8 flags = 0;
     QcItemId held = qcNoItem;
+    // Players: their armour slots (drawn from stage 23 on).
+    QcEquipment equipment;
     // Distance walked (drives the stride) and the last step's length per tick.
     double walkDistance = 0.0;
     double lastStep = 0.0;

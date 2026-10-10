@@ -103,6 +103,7 @@ public:
     QcItemStack craftingResult() const { return m_craftingResult; }
     void sendChat(const QString &text);
     const QcInventory &inventory() const { return m_inventory; }
+    const QcEquipment &equipment() const { return m_equipment; }
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
     // Entity under the crosshair when it is closer than any targeted block.
@@ -247,8 +248,8 @@ private:
     QcEntityMotion m_previousMotion;
     bool m_hasServerState = false;
     quint32 m_lastAcknowledged = 0;
-
     QcInventory m_inventory;
+    QcEquipment m_equipment;
     QList<QcItemStack> m_craftingGrid = QList<QcItemStack>(9);
     int m_craftingSize = 2;
     QcItemStack m_craftingResult;

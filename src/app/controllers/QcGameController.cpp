@@ -57,6 +57,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_hud(new QcHudState(m_parts, *m_settings, this))
     , m_handbook(new QcHandbookController(m_parts, *m_settings, *m_library, m_icons, this))
     , m_input(new QcGameInput(*this, m_parts, *m_settings, m_audio, this))
+    , m_preview(new QcPreviewSource(m_parts, *m_library, *m_settings->character(), this))
     , m_benchmark(new QcBenchmarkRun(*this, m_parts, *m_input, *m_settings, this))
     , m_startup(new QcStartupHooks(*this, m_parts, m_benchmark, this))
     , m_render(m_parts, *m_settings)
@@ -481,7 +482,9 @@ void QcGameController::onContentReady()
     }
 
     m_renderTable = std::make_shared<const QcBlockRenderTable>(content, atlas);
-    m_render.setAtlas(std::make_shared<const QcTextureAtlas>(atlas));
+    const auto sharedAtlas = std::make_shared<const QcTextureAtlas>(atlas);
+    m_render.setAtlas(sharedAtlas);
+    m_preview->useWorld(m_parts.session->content(), sharedAtlas);
     m_icons.draw(content, atlas, m_renderTable.get());
     m_player->useContent();
     m_parts.meshes->setRenderTable(m_renderTable);
@@ -496,6 +499,7 @@ void QcGameController::onContentReset()
 {
     if (!m_parts.session) {
         m_icons.invalidate();
+        m_preview->useMenu();
     }
     m_settings->character()->refreshLists();
 }
@@ -524,6 +528,7 @@ QcStatus QcGameController::stopSession()
         m_parts.view->clearMeshes();
     }
     m_hud->debug()->clearWorld();
+    m_preview->useMenu();
 
     // Back in the menu: the menu's own content instead of the last world's sounds.
     if (m_audio->isActive() && m_library->loadedContent()) {
@@ -567,6 +572,8 @@ void QcGameController::onFrame()
     m_benchmark->recordFrame();
     const float frameSeconds = advanceFrameClocks();
     const QPointF mouseDelta = m_input->takeMouseDelta();
+    // Taken every frame, also in the menu, so it never adds up across frames.
+    const qint64 previewNs = m_preview->takeBuildNs();
     if (!m_parts.session || !m_parts.view || !m_parts.session->world()) {
         return;
     }
@@ -590,8 +597,8 @@ void QcGameController::onFrame()
     m_render.updateEntities(alpha, mode);
     m_render.updateHand(alpha, eye, mode);
     const qint64 entityNs = entityTime.nsecsElapsed();
-    const QList<QcRenderSample> renderSamples = m_hud->debug()->recordFrame(entityNs, m_benchmark->isRunning());
-    m_benchmark->recordGuiFrame(m_hud->debug()->lastGuiCpuMs(), entityNs, renderSamples);
+    const QList<QcRenderSample> renderSamples = m_hud->debug()->recordFrame(entityNs, previewNs, m_benchmark->isRunning());
+    m_benchmark->recordGuiFrame(m_hud->debug()->lastGuiCpuMs(), entityNs, previewNs, renderSamples);
     m_render.updateSky(alpha);
     m_hud->updateTimeOfDay(alpha);
     m_render.updateSelection();

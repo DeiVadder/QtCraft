@@ -26,6 +26,7 @@ qt_add_library(qc_server STATIC
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
+    core/QcProfileValidation.h core/QcProfileValidation.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcServer.h core/QcServer.cpp
     blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp

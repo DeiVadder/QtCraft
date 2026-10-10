@@ -33,6 +33,7 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::HudSlot, "hudSlot", 0xc8181818},
     {R::SlotHover, "slotHover", 0xc0707070},
     {R::SlotBorder, "slotBorder", 0x80000000},
+    {R::SwatchBorder, "swatchBorder", 0xffcfcfcf},
     {R::SlotPicked, "slotPicked", 0xc0000000},
     {R::IconBackdrop, "iconBackdrop", 0x30ffffff},
     {R::Selection, "selection", 0xffffffff},

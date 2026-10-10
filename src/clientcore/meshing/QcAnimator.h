@@ -11,11 +11,14 @@
 namespace QcAnimator {
 
 // Rotation of a bone around its pivot in degrees. Positive pitch swings a hanging limb forward
-// (towards the facing direction, -Z); positive roll lifts it outwards to the entity's right (+X).
+// (towards the facing direction, -Z); positive roll lifts it outwards to the entity's right (+X);
+// positive yaw turns it around the vertical towards the entity's right (the head looking aside).
+// Applied in this order: pitch, roll, yaw.
 struct BoneRotation
 {
     double pitch = 0.0;
     double roll = 0.0;
+    double yaw = 0.0;
 };
 
 struct BodyPose

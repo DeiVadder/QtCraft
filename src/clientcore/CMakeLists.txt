@@ -28,11 +28,14 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcEntityMesh.h
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
     meshing/QcEntityPose.h
+    meshing/QcFigureLook.h meshing/QcFigureLook.cpp
     light/QcEntityLight.h
     light/QcSky.h light/QcSky.cpp
     meshing/QcEntityVertex.h
     camera/QcFrustum.h camera/QcFrustum.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
+    settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
+    settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp
     meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
@@ -68,6 +71,12 @@ qt_add_library(qc_clientcore STATIC
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
     camera/QcViewCamera.h camera/QcViewCamera.cpp
+    preview/QcPreviewActivity.h preview/QcPreviewActivity.cpp
+    preview/QcPreviewCamera.h preview/QcPreviewCamera.cpp
+    preview/QcPreviewHook.h preview/QcPreviewHook.cpp
+    preview/QcPreviewPacer.h preview/QcPreviewPacer.cpp
+    preview/QcPreviewPose.h preview/QcPreviewPose.cpp
+    preview/QcPreviewScene.h preview/QcPreviewScene.cpp
 )
 qc_configure_target(qc_clientcore)
 # Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
@@ -79,6 +88,7 @@ target_include_directories(qc_clientcore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/light
     ${CMAKE_CURRENT_SOURCE_DIR}/textures
     ${CMAKE_CURRENT_SOURCE_DIR}/camera
+    ${CMAKE_CURRENT_SOURCE_DIR}/preview
     ${CMAKE_CURRENT_SOURCE_DIR}/sound
     ${CMAKE_CURRENT_SOURCE_DIR}/session
     ${CMAKE_CURRENT_SOURCE_DIR}/settings)

@@ -8,6 +8,7 @@ qt_add_executable(qtcraft
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcPreviewSource.h controllers/QcPreviewSource.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
@@ -28,6 +29,10 @@ qt_add_executable(qtcraft
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
+    rendering/QcRenderPipelines.h rendering/QcRenderPipelines.cpp
+    rendering/QcCharacterPreview.h rendering/QcCharacterPreview.cpp
+    rendering/QcCharacterPreviewRenderer.h rendering/QcCharacterPreviewRenderer.cpp
+    rendering/QcPreviewAtlasCache.h rendering/QcPreviewAtlasCache.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcGraphItem.h rendering/QcGraphItem.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
@@ -89,13 +94,17 @@ endif()
 
 target_link_libraries(qtcraft PRIVATE
     qc_common qc_server qc_clientcore qc_audio
-    Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
+    Qt::Concurrent Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
 
 qt_add_qml_module(qtcraft
     URI QtCraft
     QML_FILES
         qml/Main.qml
         qml/CharacterScreen.qml
+        qml/CharacterPresets.qml
+        qml/CharacterPreviewPanel.qml
+        qml/CharacterPreviewHost.qml
+        qml/ProfileCard.qml
         qml/ChatOverlay.qml
         qml/ControlsPage.qml
         qml/DeathScreen.qml

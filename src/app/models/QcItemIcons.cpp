@@ -3,8 +3,8 @@
 #include "QcBlockIcon.h"
 #include "QcBlockRenderTable.h"
 #include "QcContentRegistry.h"
+#include "QcFigureLook.h"
 #include "QcItemIconProvider.h"
-#include "QcRenderBridge.h"
 #include "QcTextureAtlas.h"
 
 #include <QHash>
@@ -27,7 +27,7 @@ void QcItemIcons::draw(const QcContentRegistry &content, const QcTextureAtlas &a
         const bool model = block && renderTable && content.block(*block).itemTexture.isEmpty()
                            && content.block(*block).renderLayer != QcRenderLayer::Invisible
                            && !content.state(*block).boxes.isEmpty();
-        icons.insert(item.name, model ? QcBlockIcon::render(renderTable->entry(QcRenderBridge::itemState(content, *block)), shaded)
+        icons.insert(item.name, model ? QcBlockIcon::render(renderTable->entry(QcFigureLook::itemState(content, *block)), shaded)
                                       : atlas.tile(item.texture));
     }
     m_provider->setIcons(std::move(icons));

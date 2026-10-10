@@ -3,6 +3,7 @@
 #include "QcConnection.h"
 #include "QcEntityMotion.h"
 #include "QcAppearance.h"
+#include "QcEquipment.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
@@ -84,6 +85,8 @@ struct QcServerClient
     // Set when damage was taken; reported to other clients in this tick's sync.
     bool hurtThisTick = false;
     QcAppearance appearance;
+    // Armour slots (stage 23 fills them); sent to the player and to everyone who sees them.
+    QcEquipment equipment;
     // The machine whose screen the player has open, and what the client was last told about it.
     std::optional<QcBlockPos> machine;
     std::optional<QcMsg::MachineState> sentMachine;

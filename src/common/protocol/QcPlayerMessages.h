@@ -5,6 +5,7 @@
 
 #include "QcAppearance.h"
 #include "QcEntityMotion.h"
+#include "QcEquipment.h"
 #include "QcItemStack.h"
 #include "QcPlayerInput.h"
 
@@ -59,7 +60,8 @@ struct QuickMoveItem
     qint32 slot = 0;
 };
 
-// Server -> client: the receiving player's complete inventory and crafting grid.
+// Server -> client: the receiving player's complete inventory, crafting grid and armour slots
+// (empty until stage 23 adds armour).
 struct InventoryState
 {
     QList<QcItemStack> stacks;
@@ -67,6 +69,7 @@ struct InventoryState
     QList<QcItemStack> craftingGrid;
     qint32 craftingSize = 2;
     QcItemStack craftingResult;
+    QcEquipment equipment{};
 };
 
 // Client -> server: take the crafting result once into the inventory.

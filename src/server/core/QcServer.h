@@ -127,7 +127,6 @@ private:
     void sendWelcome(Client &client, bool rejoined);
     void handleInput(Client &client, const QcMsg::PlayerInput &message);
     // Replaces unknown outfits and hair styles with defaults; names come from the content.
-    QcAppearance validAppearance(const QcAppearance &requested) const;
     void handleSetAppearance(Client &client, const QcAppearance &appearance);
     void sendOpenWarnings(Client &client);
     void sendTime(Client &client);

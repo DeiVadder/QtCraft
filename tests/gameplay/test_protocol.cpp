@@ -456,12 +456,31 @@ private slots:
         state.craftingGrid[8] = {5, 1, 3};
         state.craftingSize = 3;
         state.craftingResult = {7, 4, 0};
+        state.equipment.at(QcEquipmentSlot::Chest) = {9, 1, 17};
         const QcMsg::InventoryState copy = roundTrip(state);
         QCOMPARE(copy.stacks, state.stacks);
         QCOMPARE(copy.selected, 4);
         QCOMPARE(copy.craftingGrid, state.craftingGrid);
         QCOMPARE(copy.craftingSize, 3);
         QCOMPARE(copy.craftingResult, state.craftingResult);
+        QCOMPARE(copy.equipment, state.equipment);
+        QVERIFY(copy.equipment.at(QcEquipmentSlot::Head).isEmpty());
+        QVERIFY(!copy.equipment.isEmpty());
+        QVERIFY(QcMsg::InventoryState().equipment.isEmpty());
+    }
+
+    void equipmentOfOthersRoundTrips()
+    {
+        // Armour slots (stage 23) travel with a player's spawn, so others can draw them.
+        QcMsg::EntitySpawn spawn;
+        spawn.name = u"Ann"_s;
+        spawn.equipment.at(QcEquipmentSlot::Head) = {3, 1, 0};
+        spawn.equipment.at(QcEquipmentSlot::Feet) = {4, 1, 120};
+        const QcMsg::EntitySpawn copy = roundTrip(spawn);
+        QCOMPARE(copy.equipment, spawn.equipment);
+        QCOMPARE(copy.equipment.at(QcEquipmentSlot::Feet).damage, 120);
+        QCOMPARE(copy.name, u"Ann"_s);
+        QCOMPARE(QcEquipment::slotCount, std::size_t(4));
     }
 
     void machineAndFoodMessagesRoundTrip()

@@ -1,25 +1,17 @@
 #include "QcDebugLineRenderer.h"
 
-#include <QFile>
+#include "QcRenderPipelines.h"
+
 #include <QLoggingCategory>
 
 #include <cstddef>
 
 using namespace Qt::StringLiterals;
+using QcRenderPipelines::loadShader;
 
 namespace {
 
 Q_LOGGING_CATEGORY(lcRenderer, "qtcraft.renderer")
-
-QShader loadShader(const QString &path)
-{
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qCCritical(lcRenderer) << "Cannot open shader" << path;
-        return {};
-    }
-    return QShader::fromSerialized(file.readAll());
-}
 
 } // namespace
 
@@ -89,8 +81,8 @@ void QcDebugLineRenderer::createPipeline(QRhi *rhi, QRhiRenderTarget *target, QR
     m_bindings->create();
 
     std::unique_ptr<QRhiGraphicsPipeline> pipeline(rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/debugline.vert.qsb"_s)},
-                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/debugline.frag.qsb"_s)}});
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/debugline.vert.qsb"_s, lcRenderer())},
+                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/debugline.frag.qsb"_s, lcRenderer())}});
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({{sizeof(Corner)}});
     inputLayout.setAttributes({{0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(Corner, position))},

@@ -1,12 +1,14 @@
 #include "QcSkyRenderer.h"
 
-#include <QFile>
+#include "QcRenderPipelines.h"
+
 #include <QLoggingCategory>
 
 #include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
+using QcRenderPipelines::loadShader;
 
 namespace {
 
@@ -35,16 +37,6 @@ void copy(QVector3D value, float w, float (&target)[4])
     target[3] = w;
 }
 
-QShader loadShader(const QString &path)
-{
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qCCritical(lcSky) << "Cannot open shader" << path;
-        return {};
-    }
-    return QShader::fromSerialized(file.readAll());
-}
-
 } // namespace
 
 void QcSkyRenderer::reset()
@@ -64,8 +56,8 @@ void QcSkyRenderer::createPipeline(QRhi *rhi, QRhiRenderTarget *target)
     m_bindings->create();
 
     std::unique_ptr<QRhiGraphicsPipeline> pipeline(rhi->newGraphicsPipeline());
-    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/sky.vert.qsb"_s)},
-                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/sky.frag.qsb"_s)}});
+    pipeline->setShaderStages({{QRhiShaderStage::Vertex, loadShader(u":/shaders/sky.vert.qsb"_s, lcSky())},
+                               {QRhiShaderStage::Fragment, loadShader(u":/shaders/sky.frag.qsb"_s, lcSky())}});
     // No vertex buffer: the shader makes the triangle from the vertex index.
     pipeline->setVertexInputLayout({});
     pipeline->setShaderResourceBindings(m_bindings.get());

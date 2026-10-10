@@ -20,6 +20,7 @@ qt_add_library(qc_common STATIC
     protocol/QcDebugMessages.h protocol/QcDebugCodec.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     core/QcCrc32.h core/QcCrc32.cpp
+    core/QcNameText.h core/QcNameText.cpp
     core/QcPhaseWindow.h core/QcPhaseWindow.cpp
     core/QcTickPhase.h
     world/QcDayCycle.h world/QcDayCycle.cpp
@@ -69,6 +70,7 @@ qt_add_library(qc_common STATIC
     handbook/builder/QcHandbookWorldPages.h handbook/builder/QcHandbookWorldPages.cpp
     protocol/QcInProcessTransport.h protocol/QcInProcessTransport.cpp
     core/QcIntMath.h
+    gameplay/QcEquipment.h gameplay/QcEquipment.cpp
     gameplay/QcInventory.h gameplay/QcInventory.cpp
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     content/definitions/QcItemDefinition.h

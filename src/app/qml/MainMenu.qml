@@ -152,6 +152,14 @@ Rectangle {
                         }
                     }
                 }
+
+                ProfileCard {
+                    Layout.fillWidth: true
+                    game: menu.game
+                    covered: settingsScreen.visible || modsScreen.visible || characterScreen.visible || deleteDialog.visible
+                             || menu.game.handbook.isOpen
+                    onCustomizeRequested: characterScreen.open()
+                }
             }
 
             ColumnLayout {
@@ -266,12 +274,6 @@ Rectangle {
                     Layout.fillWidth: true
                     text: qsTr("Settings")
                     onClicked: settingsScreen.open()
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Character")
-                    onClicked: characterScreen.open()
                 }
 
                 Button {

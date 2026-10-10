@@ -42,6 +42,7 @@ void encode(QDataStream &stream, const QcMsg::InventoryState &m)
     writeStacks(stream, m.craftingGrid);
     stream << m.craftingSize;
     writeStack(stream, m.craftingResult);
+    writeEquipment(stream, m.equipment);
 }
 
 void encode(QDataStream &, QcMsg::TakeCraftingResult) {}
@@ -139,6 +140,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
     }
     stream >> m.craftingSize;
     m.craftingResult = readStack(stream);
+    m.equipment = readEquipment(stream);
     return m;
 }
 

@@ -33,9 +33,10 @@ public:
     void setDepth(Depth depth, QcWorldView *view);
     Depth depth() const { return m_depth; }
 
-    // Once per GUI frame with the time spent meshing entities and the hand. Returns the render
-    // samples taken from the view this frame (for the benchmark).
-    QList<QcRenderSample> recordFrame(QcWorldView *view, qint64 entityNs);
+    // Once per GUI frame with the time spent meshing entities and the hand, and the character
+    // previews since the previous frame. Returns the render samples taken from the view this frame
+    // (for the benchmark).
+    QList<QcRenderSample> recordFrame(QcWorldView *view, qint64 entityNs, qint64 previewNs);
     // The GUI thread's CPU time of the last frame (-1 if unknown or not collected).
     double lastGuiCpuMs() const { return m_lastGuiCpuMs; }
 

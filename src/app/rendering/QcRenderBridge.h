@@ -37,9 +37,6 @@ public:
     void updateSky(double alpha);
     void updateSelection();
 
-    // The state a block item is drawn in (icons, hand, dropped items).
-    static QcBlockId itemState(const QcContentRegistry &content, QcBlockId block);
-
 private:
     // What every entity of one frame is drawn with.
     struct EntityFrame
@@ -64,7 +61,6 @@ private:
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
     QcEntityPose localPose(double alpha) const;
     std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
-    static QcEntityMesher::ItemLook itemLook(const QcContentRegistry &content, QcItemId item);
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;

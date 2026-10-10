@@ -2,11 +2,27 @@
 
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcNameText.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
 #include "QcWorldLibraryController.h"
 
+#include <QRandomGenerator>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+QStringList hexList(const QList<quint32> &colors)
+{
+    QStringList list;
+    for (const quint32 color : colors) {
+        list.append(QcCharacterProfile::hex(color));
+    }
+    return list;
+}
+
+} // namespace
 
 QcCharacterSettings::QcCharacterSettings(const QcSessionParts &parts, const QcWorldLibraryController &library,
                                          const QcSettingsController &settings, QObject *parent)
@@ -15,14 +31,12 @@ QcCharacterSettings::QcCharacterSettings(const QcSessionParts &parts, const QcWo
     , m_library(library)
     , m_settings(settings)
 {
+    connect(&m_presets, &QcCharacterPresets::changed, this, &QcCharacterSettings::presetsChanged);
 }
 
 QVariantMap QcCharacterSettings::look() const
 {
-    const auto hex = [](quint32 rgb) { return u"#%1"_s.arg(uint(rgb & 0xFFFFFFu), 6, 16, QChar(u'0')); };
-    return {{u"outfit"_s, m_appearance.outfit},          {u"hair"_s, m_appearance.hair},
-            {u"skin"_s, hex(m_appearance.skinColor)},    {u"hairColor"_s, hex(m_appearance.hairColor)},
-            {u"shirt"_s, hex(m_appearance.shirtColor)},  {u"pants"_s, hex(m_appearance.pantsColor)}};
+    return QcCharacterProfile::lookMap(m_appearance);
 }
 
 void QcCharacterSettings::setLook(const QVariantMap &look)
@@ -40,6 +54,11 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
     appearance.hairColor = color(u"hairColor"_s, appearance.hairColor);
     appearance.shirtColor = color(u"shirt"_s, appearance.shirtColor);
     appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
+    setAppearance(appearance);
+}
+
+void QcCharacterSettings::setAppearance(const QcAppearance &appearance)
+{
     if (appearance == m_appearance) {
         return;
     }
@@ -49,6 +68,13 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
         m_parts.session->setAppearance(m_appearance);
     }
     emit lookChanged();
+}
+
+void QcCharacterSettings::load(const QcAppearance &appearance, const QList<QcCharacterPreset> &presets)
+{
+    m_appearance = appearance;
+    emit lookChanged();
+    m_presets.load(presets);
 }
 
 const QcContentRegistry &QcCharacterSettings::content() const
@@ -72,6 +98,17 @@ QVariantList QcCharacterSettings::appearanceList(QcAppearanceDefinition::Kind ki
     return list;
 }
 
+QStringList QcCharacterSettings::playableNames(QcAppearanceDefinition::Kind kind) const
+{
+    QStringList names;
+    for (const QcAppearanceDefinition &definition : content().appearances()) {
+        if (definition.kind == kind && definition.playable) {
+            names.append(definition.name);
+        }
+    }
+    return names;
+}
+
 QVariantList QcCharacterSettings::outfits() const
 {
     return appearanceList(QcAppearanceDefinition::Kind::Outfit);
@@ -82,6 +119,54 @@ QVariantList QcCharacterSettings::hairStyles() const
     QVariantList list = appearanceList(QcAppearanceDefinition::Kind::Hair);
     list.prepend(QVariantMap{{u"name"_s, QString()}, {u"label"_s, tr("No hair")}});
     return list;
+}
+
+QStringList QcCharacterSettings::skinColors()
+{
+    return hexList(QcCharacterProfile::skinColors());
+}
+
+QStringList QcCharacterSettings::hairColors()
+{
+    return hexList(QcCharacterProfile::hairColors());
+}
+
+QStringList QcCharacterSettings::clothColors()
+{
+    return hexList(QcCharacterProfile::clothColors());
+}
+
+void QcCharacterSettings::randomize()
+{
+    setAppearance(QcCharacterProfile::random(playableNames(QcAppearanceDefinition::Kind::Outfit),
+                                             playableNames(QcAppearanceDefinition::Kind::Hair), QRandomGenerator::global()->generate()));
+}
+
+void QcCharacterSettings::reset()
+{
+    setAppearance(QcAppearance());
+}
+
+void QcCharacterSettings::applyPreset(int row)
+{
+    if (const std::optional<QcAppearance> look = m_presets.appearance(row)) {
+        setAppearance(*look);
+    }
+}
+
+bool QcCharacterSettings::savePreset(const QString &name)
+{
+    return m_presets.save(name, m_appearance);
+}
+
+QString QcCharacterSettings::fitPresetName(const QString &text) const
+{
+    return QcNameText::fit(text, QcCharacterProfile::maxPresetNameLength);
+}
+
+void QcCharacterSettings::removePreset(int row)
+{
+    m_presets.remove(row);
 }
 
 void QcCharacterSettings::refreshLists()

@@ -4,6 +4,7 @@
 // Part of the QcMessage variant (QcMessages.h).
 
 #include "QcAppearance.h"
+#include "QcEquipment.h"
 #include "QcBlockDefinition.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
@@ -50,6 +51,8 @@ struct EntitySpawn
     QcItemId held = qcNoItem;
     // The block of a falling block entity; air otherwise.
     QcBlockId block = qcAirBlockId;
+    // Players only: what they wear (armour, stage 23), so others draw it; empty for the rest.
+    QcEquipment equipment{};
 };
 
 struct EntityMove

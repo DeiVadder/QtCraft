@@ -61,6 +61,8 @@ struct AppOptions
     QString stats;
     std::optional<QString> debugDisplay;
     std::optional<QString> debugShow;
+    // --preview: what every character preview shows (decision E-231).
+    QcPreviewHook preview;
     // What is wrong with the command line beyond what QCommandLineParser checks.
     QString error;
 };
@@ -98,6 +100,8 @@ QList<QCommandLineOption> commandLineOptions()
         {u"debug-display"_s, u"Debug display level: off, compact or full (like the debug key; kept in the settings)."_s, u"level"_s},
         {u"debug-show"_s, u"Debug visualisations to switch on, comma-separated: chunkBorders, hitboxes, lightValues, mobGoals, remeshFlash (kept in the settings)."_s,
          u"list"_s},
+        {u"preview"_s, u"Fix what the character previews show (test hook), comma-separated: animation=stand|walk|mine, side=front|back, turn=<degrees>, zoom=<0..1>, gaze=<x>:<y>, time=<seconds>."_s,
+         u"settings"_s},
     };
 }
 
@@ -166,6 +170,11 @@ AppOptions parseOptions(const QGuiApplication &app)
     options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
     if (options.error.isEmpty()) {
         options.error = debugOptionsError(options);
+    }
+    if (const QcResult<QcPreviewHook> preview = QcPreviewHook::parse(parser.value(u"preview"_s)); !preview) {
+        options.error = options.error.isEmpty() ? preview.error() : options.error;
+    } else {
+        options.preview = *preview;
     }
     return options;
 }
@@ -236,6 +245,16 @@ void placeWindow(QQuickWindow *window, const QString &screenRequest)
     }
 }
 
+// QTCRAFT_WINDOW_SIZE=<width>x<height> (test hook): screenshots of small windows. The window's
+// minimum size still applies.
+void applyWindowSize(QQuickWindow &window)
+{
+    const QStringList size = qEnvironmentVariable("QTCRAFT_WINDOW_SIZE").split(u'x');
+    if (size.size() == 2 && size[0].toInt() > 0 && size[1].toInt() > 0) {
+        window.resize(QSize(size[0].toInt(), size[1].toInt()).expandedTo(window.minimumSize()));
+    }
+}
+
 // First start of a release bundle: its example mods go, switched off, into the player's mods
 // directory.
 void installBundledMods()
@@ -271,6 +290,9 @@ void applySceneOptions(QcGameController &game, const AppOptions &options)
         game.settings()->setCameraMode(*options.camera);
     }
     game.startup()->setForcedPose(options.pose);
+    game.preview()->setHook(options.preview);
+    // Benchmarks of the preview's costs: animated although the scripted run's window is inactive.
+    game.preview()->setForceActive(qEnvironmentVariable("QTCRAFT_PREVIEW_ACTIVE") == u"1"_s);
     if (options.spawn) {
         const QStringList parts = options.spawn->split(u',');
         if (parts.size() == 2) {
@@ -362,6 +384,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow
         window.setFlag(Qt::WindowStaysOnTopHint, true);
         game.input()->setBackgroundRun(true);
     }
+    applyWindowSize(window);
     placeWindow(&window, options.screen);
     preselectWorldType(window);
 
@@ -369,6 +392,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow
         window.show();
         return nullptr;
     }
+    game.preview()->setOffscreen(true);
     // Created after placing: it takes the window's size and screen.
     auto render = std::make_unique<QcOffscreenRender>(window);
     if (!render->start()) {

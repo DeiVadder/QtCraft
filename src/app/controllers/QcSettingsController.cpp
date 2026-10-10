@@ -50,7 +50,7 @@ void QcSettingsController::loadSettings()
     setShowLabels(m_storedSettings.showLabels);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
-    m_character->load(m_storedSettings.appearance);
+    m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings);
     emit settingsChanged();
@@ -75,6 +75,7 @@ void QcSettingsController::saveSettings()
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.appearance = m_character->appearance();
+    settings.characterPresets = m_character->savedPresets();
     m_audio->store(settings);
     settings.keys = m_keyControls->bindings();
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {

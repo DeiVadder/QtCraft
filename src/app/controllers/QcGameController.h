@@ -6,6 +6,7 @@
 #include "QcHudState.h"
 #include "QcItemIcons.h"
 #include "QcPlayerController.h"
+#include "QcPreviewSource.h"
 #include "QcRenderBridge.h"
 #include "QcResult.h"
 #include "QcSessionParts.h"
@@ -52,6 +53,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
+    // What the character previews draw (decision E-231).
+    Q_PROPERTY(QcPreviewSource *preview READ preview CONSTANT FINAL)
 
 public:
     explicit QcGameController(QObject *parent = nullptr);
@@ -80,6 +83,7 @@ public:
     QcHudState *hud() const { return m_hud; }
     QcHandbookController *handbook() const { return m_handbook; }
     QcGameInput *input() const { return m_input; }
+    QcPreviewSource *preview() const { return m_preview; }
     // Command line test hooks and the benchmark.
     QcStartupHooks *startup() const { return m_startup; }
 
@@ -151,6 +155,7 @@ private:
     QcHudState *m_hud = nullptr;
     QcHandbookController *m_handbook = nullptr;
     QcGameInput *m_input = nullptr;
+    QcPreviewSource *m_preview = nullptr;
     QcBenchmarkRun *m_benchmark = nullptr;
     QcStartupHooks *m_startup = nullptr;
     QcRenderBridge m_render;

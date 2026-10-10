@@ -49,6 +49,7 @@ void QcServerInventory::send(QcServerClient &client)
     state.selected = client.inventory.selectedHotbarSlot();
     state.craftingGrid = client.craftingGrid;
     state.craftingSize = client.craftingSize;
+    state.equipment = client.equipment;
 
     if (const std::optional<qsizetype> recipe = craftingMatch(client)) {
         const QcRecipeDefinition &definition = m_state.content->recipes()[*recipe];

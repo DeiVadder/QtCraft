@@ -83,7 +83,7 @@ void QcDebugHud::syncSubscription() const
     m_parts.session->setDebugSubscription(flags);
 }
 
-QList<QcRenderSample> QcDebugHud::recordFrame(qint64 entityNs, bool benchmarkRunning)
+QList<QcRenderSample> QcDebugHud::recordFrame(qint64 entityNs, qint64 previewNs, bool benchmarkRunning)
 {
     using Depth = QcFrameMonitor::Depth;
     const QcDebugOptions::Level shown = m_settings.debug()->levelValue();
@@ -93,7 +93,7 @@ QList<QcRenderSample> QcDebugHud::recordFrame(qint64 entityNs, bool benchmarkRun
     if (depth != m_frames.depth()) {
         m_frames.setDepth(depth, m_parts.view);
     }
-    return m_frames.recordFrame(m_parts.view, entityNs);
+    return m_frames.recordFrame(m_parts.view, entityNs, previewNs);
 }
 
 void QcDebugHud::update(const QcVec3 &feet)

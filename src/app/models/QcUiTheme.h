@@ -34,6 +34,7 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor hudSlot MEMBER m_hudSlot CONSTANT FINAL)
     Q_PROPERTY(QColor slotHover MEMBER m_slotHover CONSTANT FINAL)
     Q_PROPERTY(QColor slotBorder MEMBER m_slotBorder CONSTANT FINAL)
+    Q_PROPERTY(QColor swatchBorder MEMBER m_swatchBorder CONSTANT FINAL)
     Q_PROPERTY(QColor slotPicked MEMBER m_slotPicked CONSTANT FINAL)
     Q_PROPERTY(QColor iconBackdrop MEMBER m_iconBackdrop CONSTANT FINAL)
     Q_PROPERTY(QColor selection MEMBER m_selection CONSTANT FINAL)
@@ -84,6 +85,7 @@ private:
     QColor m_hudSlot = QcUiPalette::color(QcUiPalette::Role::HudSlot);
     QColor m_slotHover = QcUiPalette::color(QcUiPalette::Role::SlotHover);
     QColor m_slotBorder = QcUiPalette::color(QcUiPalette::Role::SlotBorder);
+    QColor m_swatchBorder = QcUiPalette::color(QcUiPalette::Role::SwatchBorder);
     QColor m_slotPicked = QcUiPalette::color(QcUiPalette::Role::SlotPicked);
     QColor m_iconBackdrop = QcUiPalette::color(QcUiPalette::Role::IconBackdrop);
     QColor m_selection = QcUiPalette::color(QcUiPalette::Role::Selection);

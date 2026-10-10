@@ -55,27 +55,33 @@ Tint tintFor(QcTint tint, const QcAppearance &colors)
     return white;
 }
 
-// Rotation around the X axis (positive moves -Y towards -Z) and then around Z (positive moves -Y
-// towards +X), both in degrees. Sine and cosine are taken once, not per vertex.
+// Rotation around the X axis (positive moves -Y towards -Z), then around Z (positive moves -Y
+// towards +X) and then around Y (positive moves -Z towards +X), all in degrees. Sine and cosine are
+// taken once, not per vertex.
 struct Rotate
 {
     double cosPitch;
     double sinPitch;
     double cosRoll;
     double sinRoll;
+    double cosYaw;
+    double sinYaw;
 
-    Rotate(double pitch, double roll)
+    Rotate(double pitch, double roll, double yaw = 0.0)
         : cosPitch(std::cos(qDegreesToRadians(pitch)))
         , sinPitch(std::sin(qDegreesToRadians(pitch)))
         , cosRoll(std::cos(qDegreesToRadians(roll)))
         , sinRoll(std::sin(qDegreesToRadians(roll)))
+        , cosYaw(std::cos(qDegreesToRadians(yaw)))
+        , sinYaw(std::sin(qDegreesToRadians(yaw)))
     {
     }
 
     QcVec3 operator()(const QcVec3 &p) const
     {
         const QcVec3 q{p.x, p.y * cosPitch - p.z * sinPitch, p.y * sinPitch + p.z * cosPitch};
-        return {q.x * cosRoll - q.y * sinRoll, q.x * sinRoll + q.y * cosRoll, q.z};
+        const QcVec3 r{q.x * cosRoll - q.y * sinRoll, q.x * sinRoll + q.y * cosRoll, q.z};
+        return {r.x * cosYaw - r.z * sinYaw, r.y, r.x * sinYaw + r.z * cosYaw};
     }
 };
 
@@ -233,7 +239,7 @@ public:
     auto bone(const QcModelBone &bone) const
     {
         const QcAnimator::BoneRotation rotation = m_pose.bone(bone.role);
-        const Rotate rotate(rotation.pitch, rotation.roll);
+        const Rotate rotate(rotation.pitch, rotation.roll, rotation.yaw);
         const QcVec3 pivot = bone.pivot;
         return [this, rotate, pivot](const QcVec3 &p) { return (*this)(rotate(p - pivot) + pivot); };
     }

@@ -17,14 +17,15 @@
 class QcClientSession;
 
 // Phases of a client frame for the debug display (decision E-225): the time between frames, CPU
-// time of the GUI thread, its entity and hand meshing, CPU time of the render thread, the world
-// renderer, its uploads and the GPU time of the window.
-enum class QcFramePhase : quint8 { Interval, GuiCpu, EntityMesh, RenderCpu, WorldRender, Upload, Gpu };
+// time of the GUI thread, its entity and hand meshing, the meshing of the character previews
+// (decision E-231), CPU time of the render thread, the world renderer, its uploads and the GPU
+// time of the window.
+enum class QcFramePhase : quint8 { Interval, GuiCpu, EntityMesh, Preview, RenderCpu, WorldRender, Upload, Gpu };
 
 namespace QcFramePhases {
 
 inline constexpr int count = int(QcFramePhase::Gpu) + 1;
-inline constexpr std::array<const char *, count> ids{"frame", "guiCpu", "entityMesh", "renderCpu", "worldRender", "upload", "gpu"};
+inline constexpr std::array<const char *, count> ids{"frame", "guiCpu", "entityMesh", "preview", "renderCpu", "worldRender", "upload", "gpu"};
 
 } // namespace QcFramePhases
 

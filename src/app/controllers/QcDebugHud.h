@@ -53,9 +53,10 @@ public:
 
     // The statistics log needs the full frame statistics and the server's data.
     void setStatsLogging(bool on);
-    // Once per frame after the entities were meshed: records the frame and returns the render
-    // samples (for the benchmark, which needs the full statistics while `benchmarkRunning`).
-    QList<QcRenderSample> recordFrame(qint64 entityNs, bool benchmarkRunning);
+    // Once per frame after the entities were meshed: records the frame (with the character
+    // previews' meshing since the previous one) and returns the render samples (for the benchmark,
+    // which needs the full statistics while `benchmarkRunning`).
+    QList<QcRenderSample> recordFrame(qint64 entityNs, qint64 previewNs, bool benchmarkRunning);
     double lastGuiCpuMs() const { return m_frames.lastGuiCpuMs(); }
     // Text, graphs and light values, a few times a second while shown; `feet` is the interpolated
     // position of the drawn frame.

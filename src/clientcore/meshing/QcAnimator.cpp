@@ -17,6 +17,8 @@ constexpr double walkAmplitude = 38.0;
 constexpr double sprintAmplitude = 55.0;
 // Pivot of the whole body for leaning: the hips of a 1.8 m humanoid.
 constexpr double hipHeight = 0.7;
+// How far the head turns aside against the body.
+constexpr double maxHeadYaw = 80.0;
 
 double smooth(double t)
 {
@@ -105,6 +107,7 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
 
     // The head follows the view pitch: looking up tilts its top backwards, looking down forwards.
     bone(result, QcBoneRole::Head).pitch = std::clamp(double(pose.headPitch), -80.0, 80.0);
+    bone(result, QcBoneRole::Head).yaw = std::clamp(double(pose.headYaw), -maxHeadYaw, maxHeadYaw);
     if (pose.deathProgress >= 0.0) {
         // Topple sideways around the feet.
         result.bodyPivot = {};

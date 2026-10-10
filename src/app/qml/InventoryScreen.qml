@@ -12,6 +12,9 @@ SlotScreen {
     id: screen
 
     readonly property int gridFirst: 36
+    // Small windows (from the minimum 1024 x 640 on): a smaller preview and recipe list, so the
+    // panel keeps its margin to the window's edges.
+    readonly property bool narrow: width < 1200
 
     resultSlot: 45
     panelContent: content
@@ -20,7 +23,34 @@ SlotScreen {
         id: content
 
         anchors.centerIn: parent
-        spacing: 28
+        spacing: screen.narrow ? 16 : 28
+
+        // The character as others see it; the armour slots of stage 23 take the column beside it.
+        RowLayout {
+            Layout.alignment: Qt.AlignTop
+            spacing: 8
+
+            Item {
+                objectName: "equipmentColumn"
+                Layout.preferredWidth: 52
+                Layout.preferredHeight: 4 * 54
+            }
+
+            Rectangle {
+                Layout.preferredWidth: screen.narrow ? 120 : 160
+                Layout.preferredHeight: screen.narrow ? 200 : 260
+                radius: 4
+                color: Theme.panelRaised
+
+                CharacterPreviewHost {
+                    previewName: "inventoryPreview"
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    source: screen.game.preview
+                    paused: screen.game.handbook.isOpen
+                }
+            }
+        }
 
         ColumnLayout {
             spacing: 12
@@ -90,7 +120,7 @@ SlotScreen {
         }
 
         ColumnLayout {
-            Layout.preferredWidth: 260
+            Layout.preferredWidth: screen.narrow ? 200 : 260
             Layout.fillHeight: true
             spacing: 6
 

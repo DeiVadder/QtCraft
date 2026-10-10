@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcCharacterProfile.h"
 #include "QcDebugOptions.h"
 #include "QcKeyBindings.h"
 #include "QcResult.h"
@@ -40,6 +41,8 @@ struct QcGameSettings
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;
     // The player's look; names are checked against the content by the server.
     QcAppearance appearance;
+    // Looks the player saved under a name (at most QcCharacterProfile::maxPresets).
+    QList<QcCharacterPreset> characterPresets;
     double masterVolume = defaultMasterVolume;
     double effectsVolume = defaultEffectsVolume;
     double musicVolume = defaultMusicVolume;

@@ -8,15 +8,17 @@ void QcFrameProfile::clear()
 {
     m_guiCpuMs.clear();
     m_entityMeshMs.clear();
+    m_previewMeshMs.clear();
     m_render.clear();
 }
 
-void QcFrameProfile::addGuiFrame(double guiCpuMs, double entityMeshMs)
+void QcFrameProfile::addGuiFrame(double guiCpuMs, double entityMeshMs, double previewMeshMs)
 {
     if (guiCpuMs >= 0.0) {
         m_guiCpuMs.append(guiCpuMs);
     }
     m_entityMeshMs.append(entityMeshMs);
+    m_previewMeshMs.append(previewMeshMs);
 }
 
 void QcFrameProfile::addRenderSamples(const QList<QcRenderSample> &samples)
@@ -78,15 +80,14 @@ QString QcFrameProfile::summary() const
     return u"gui_cpu_avg_ms=%1 gui_cpu_p99_ms=%2 render_cpu_avg_ms=%3 render_cpu_p99_ms=%4 world_render_avg_ms=%5 "
            u"world_render_p99_ms=%6 upload_avg_ms=%7 upload_max_ms=%8 upload_mb=%9 gpu_avg_ms=%10 gpu_p99_ms=%11 "
            u"entity_mesh_avg_ms=%12 entity_mesh_p99_ms=%13 draw_calls=%14 visible_sections=%15 triangles=%16 "
-           u"sections=%17 section_mb=%18 render_frames=%19"_s.arg(ms(average(m_guiCpuMs)), ms(percentile99(m_guiCpuMs)),
-                                                                ms(average(renderCpu)), ms(percentile99(renderCpu)),
-                                                                ms(average(worldRender)), ms(percentile99(worldRender)),
-                                                                ms(average(upload)),
-                                                                ms(upload.isEmpty() ? 0.0 : *std::ranges::max_element(upload)),
-                                                                QString::number(uploadBytes / 1e6, 'f', 1))
+           u"sections=%17 section_mb=%18 render_frames=%19 preview_mesh_avg_ms=%20 preview_mesh_max_ms=%21"_s
+        .arg(ms(average(m_guiCpuMs)), ms(percentile99(m_guiCpuMs)), ms(average(renderCpu)), ms(percentile99(renderCpu)),
+             ms(average(worldRender)), ms(percentile99(worldRender)), ms(average(upload)),
+             ms(upload.isEmpty() ? 0.0 : *std::ranges::max_element(upload)), QString::number(uploadBytes / 1e6, 'f', 1))
         .arg(ms(average(gpu)), ms(percentile99(gpu)), ms(average(m_entityMeshMs)), ms(percentile99(m_entityMeshMs)),
              QString::number(average(drawCalls), 'f', 0), QString::number(average(visible), 'f', 0),
              QString::number(average(triangles), 'f', 0), QString::number(last.sections),
              QString::number(double(last.sectionBytes) / 1e6, 'f', 1))
-        .arg(m_render.size());
+        .arg(QString::number(m_render.size()), ms(average(m_previewMeshMs)),
+             ms(m_previewMeshMs.isEmpty() ? 0.0 : *std::ranges::max_element(m_previewMeshMs)));
 }

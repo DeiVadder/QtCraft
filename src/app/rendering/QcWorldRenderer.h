@@ -54,8 +54,6 @@ private:
     void ensureBindings();
     std::unique_ptr<QRhiGraphicsPipeline> createBlockPipeline(const QShader &vertexShader, const QShader &fragmentShader,
                                                               const QRhiVertexInputLayout &inputLayout, bool translucent);
-    std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(const QShader &vertexShader, const QShader &fragmentShader,
-                                                               const QRhiVertexInputLayout &inputLayout);
     void createOutlinePipeline();
     void uploadOutline(QRhiResourceUpdateBatch *updates);
     void uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers);

@@ -34,7 +34,8 @@ constexpr std::array<const char *, QcTickPhases::count> tickPhaseNames{
 
 constexpr std::array<const char *, QcFramePhases::count> framePhaseNames{
     QT_TRANSLATE_NOOP("QcDebugText", "Frame interval"), QT_TRANSLATE_NOOP("QcDebugText", "GUI thread"),
-    QT_TRANSLATE_NOOP("QcDebugText", "Entity meshing"), QT_TRANSLATE_NOOP("QcDebugText", "Render thread"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Entity meshing"), QT_TRANSLATE_NOOP("QcDebugText", "Character preview"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Render thread"),
     QT_TRANSLATE_NOOP("QcDebugText", "World renderer"), QT_TRANSLATE_NOOP("QcDebugText", "Uploads"),
     QT_TRANSLATE_NOOP("QcDebugText", "GPU"),
 };

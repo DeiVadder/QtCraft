@@ -268,7 +268,9 @@ QcResult<std::optional<QcPlayerData>> QcServerPersistence::readPlayer(const QStr
 
 QcStatus QcServerPersistence::savePlayer(const QcServerClient &client)
 {
-    if (!m_storage || client.name.isEmpty()) {
+    // Only joined players are saved, and their names are never empty (QcProfileValidation).
+    Q_ASSERT(client.joined && !client.name.isEmpty());
+    if (!m_storage) {
         return {};
     }
 

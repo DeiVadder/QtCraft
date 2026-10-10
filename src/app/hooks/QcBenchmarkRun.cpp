@@ -83,13 +83,13 @@ void QcBenchmarkRun::recordFrame()
     m_frame.restart();
 }
 
-void QcBenchmarkRun::recordGuiFrame(double guiCpuMs, qint64 entityNs, const QList<QcRenderSample> &samples)
+void QcBenchmarkRun::recordGuiFrame(double guiCpuMs, qint64 entityNs, qint64 previewNs, const QList<QcRenderSample> &samples)
 {
     if (!m_running) {
         return;
     }
 
-    m_frameProfile.addGuiFrame(guiCpuMs, double(entityNs) / 1e6);
+    m_frameProfile.addGuiFrame(guiCpuMs, double(entityNs) / 1e6, double(previewNs) / 1e6);
     m_frameProfile.addRenderSamples(samples);
 }
 

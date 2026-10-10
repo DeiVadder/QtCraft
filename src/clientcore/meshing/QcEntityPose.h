@@ -19,5 +19,8 @@ struct QcEntityPose
     double deathProgress = -1.0;
     // View pitch in degrees, positive looks up.
     float headPitch = 0.0f;
+    // Head turned against the body in degrees, positive to the entity's right (the character
+    // preview's gaze; 0 in the world, where the body follows the view).
+    float headYaw = 0.0f;
     bool armsForward = false;
 };

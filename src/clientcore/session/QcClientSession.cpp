@@ -309,6 +309,8 @@ void QcClientSession::onInventoryState(const QcMsg::InventoryState &inventory)
         m_craftingSize = inventory.craftingSize;
         m_craftingResult = inventory.craftingResult;
     }
+    // Only items of the content are ever drawn (decision E-232).
+    m_equipment = m_content ? inventory.equipment.knownTo(*m_content) : QcEquipment();
 
     emit inventoryChanged();
 }

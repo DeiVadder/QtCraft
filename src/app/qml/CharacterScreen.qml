@@ -5,35 +5,30 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The player's look: outfit, hair style and four colours. Changes apply at once (also in a running
+// The player's look: outfit, hair style, four colours and presets, next to a live preview of the
+// character as other players see it (decision E-231). Changes apply at once (also in a running
 // game) and are stored when the screen closes.
 Popup {
     id: screen
 
     required property GameController game
-
-    // Colours offered for each part; the settings file may hold any other colour.
-    readonly property var skinColors: ["#f3d2b3", "#e8b48f", "#d8a07a", "#b97b56", "#8d5a3b", "#5c3a24"]  // not a UI colour: character colour choices
-    readonly property var hairColors: ["#f1d77a", "#c99a4e", "#8a5a2b", "#4a3020", "#1e1a18", "#b23a24", "#9a9a9a"]  // not a UI colour: character colour choices
-    readonly property var clothColors: ["#3a7bc8", "#2f8f4e", "#c83a3a", "#d8a030", "#7a4ab8", "#e8e8e8", "#34406a", "#3a3a3a",  // not a UI colour: character colour choices
-        "#8a5a2b"]  // not a UI colour: character colour choices
+    readonly property var character: game.settings.character
 
     function setPart(key, value) {
-        const look = game.settings.character.look;
+        const look = character.look;
         look[key] = value;
-        game.settings.character.look = look;
+        character.look = look;
     }
 
     // Selects the stored outfit and hair; the lists may have changed (language, mods) since.
     function showStoredLook() {
-        outfitBox.currentIndex = outfitBox.indexOfValue(game.settings.character.look.outfit);
-        hairBox.currentIndex = hairBox.indexOfValue(game.settings.character.look.hair);
+        outfitBox.currentIndex = outfitBox.indexOfValue(character.look.outfit);
+        hairBox.currentIndex = hairBox.indexOfValue(character.look.hair);
     }
 
-    // On the left, so the character stays visible in the front view.
     x: 32
     y: (parent.height - height) / 2
-    width: Math.min(parent.width - 64, 560)
+    width: Math.min(parent.width - 64, 940)
     modal: true
     focus: true
     padding: 20
@@ -42,9 +37,12 @@ Popup {
     onClosed: game.settings.saveSettings()
 
     Connections {
-        target: screen.game.settings.character
+        target: screen.character
 
         function onAppearancesChanged() {
+            screen.showStoredLook();
+        }
+        function onLookChanged() {
             screen.showStoredLook();
         }
     }
@@ -64,108 +62,174 @@ Popup {
             text: row.label
         }
         Repeater {
+            id: swatches
+
             model: row.colors
 
+            // Tab reaches every swatch; arrows move along the row, Space or Enter chooses.
             delegate: Rectangle {
                 id: swatch
 
                 required property string modelData
+                required property int index
+                readonly property bool chosen: screen.character.look[row.key] === modelData
+
+                function moveFocus(step) {
+                    const next = swatches.itemAt(index + step);
+                    if (next)
+                        next.forceActiveFocus(Qt.TabFocusReason);
+                }
 
                 width: 28
                 height: 28
                 radius: 4
                 color: modelData
-                border.width: screen.game.settings.character.look[row.key] === modelData ? 3 : 1
-                border.color: screen.game.settings.character.look[row.key] === modelData ? Theme.text : Theme.slotBorder
+                border.width: chosen ? 3 : 2
+                border.color: chosen ? Theme.heading : Theme.swatchBorder
+                activeFocusOnTab: true
+                Accessible.role: Accessible.RadioButton
+                Accessible.name: row.label + " " + modelData
+                Accessible.checked: chosen
+                Keys.onLeftPressed: moveFocus(-1)
+                Keys.onRightPressed: moveFocus(1)
+                Keys.onSpacePressed: screen.setPart(row.key, modelData)
+                Keys.onReturnPressed: screen.setPart(row.key, modelData)
+                Keys.onEnterPressed: screen.setPart(row.key, modelData)
+
+                // Focus ring outside the edge.
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: -4
+                    radius: 6
+                    color: Theme.clear
+                    border.width: 2
+                    border.color: Theme.link
+                    visible: swatch.activeFocus
+                }
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: screen.setPart(row.key, swatch.modelData)
+                    onClicked: {
+                        screen.setPart(row.key, swatch.modelData);
+                        swatch.forceActiveFocus(Qt.MouseFocusReason);
+                    }
                 }
             }
         }
     }
 
-    ColumnLayout {
+    RowLayout {
         anchors.fill: parent
-        focus: true
-        // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
-        Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
-                                                  && event.key !== Qt.Key_Backtab
-        spacing: 10
+        spacing: 20
 
-        Label {
-            text: qsTr("Character")
-            font.pixelSize: 24
-            font.bold: true
-        }
-
-        GridLayout {
+        ColumnLayout {
             Layout.fillWidth: true
-            columns: 2
-            columnSpacing: 12
+            Layout.alignment: Qt.AlignTop
+            focus: true
+            // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
+            Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
+                                                      && event.key !== Qt.Key_Backtab
+            spacing: 10
 
             Label {
-                Layout.preferredWidth: 110
-                text: qsTr("Outfit")
+                text: qsTr("Character")
+                font.pixelSize: 24
+                font.bold: true
             }
-            ComboBox {
-                id: outfitBox
 
+            GridLayout {
                 Layout.fillWidth: true
-                textRole: "label"
-                valueRole: "name"
-                model: screen.game.settings.character.outfits
-                onActivated: screen.setPart("outfit", currentValue)
+                columns: 2
+                columnSpacing: 12
+
+                Label {
+                    Layout.preferredWidth: 110
+                    text: qsTr("Outfit")
+                }
+                ComboBox {
+                    id: outfitBox
+
+                    Layout.fillWidth: true
+                    textRole: "label"
+                    valueRole: "name"
+                    model: screen.character.outfits
+                    onActivated: screen.setPart("outfit", currentValue)
+                }
+
+                Label {
+                    text: qsTr("Hair")
+                }
+                ComboBox {
+                    id: hairBox
+
+                    Layout.fillWidth: true
+                    textRole: "label"
+                    valueRole: "name"
+                    model: screen.character.hairStyles
+                    onActivated: screen.setPart("hair", currentValue)
+                }
+            }
+
+            ColorRow {
+                label: qsTr("Skin")
+                key: "skin"
+                colors: screen.character.skinColors
+            }
+            ColorRow {
+                label: qsTr("Hair colour")
+                key: "hairColor"
+                colors: screen.character.hairColors
+            }
+            ColorRow {
+                label: qsTr("Shirt")
+                key: "shirt"
+                colors: screen.character.clothColors
+            }
+            ColorRow {
+                label: qsTr("Trousers")
+                key: "pants"
+                colors: screen.character.clothColors
+            }
+
+            CharacterPresets {
+                Layout.fillWidth: true
+                character: screen.character
             }
 
             Label {
-                text: qsTr("Hair")
-            }
-            ComboBox {
-                id: hairBox
-
                 Layout.fillWidth: true
-                textRole: "label"
-                valueRole: "name"
-                model: screen.game.settings.character.hairStyles
-                onActivated: screen.setPart("hair", currentValue)
+                text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.settings.keys.labels.cameraView)
+                wrapMode: Text.Wrap
+                opacity: 0.7
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                Button {
+                    text: qsTr("Random")
+                    onClicked: screen.character.randomize()
+                }
+                Button {
+                    text: qsTr("Reset")
+                    onClicked: screen.character.reset()
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
+                Button {
+                    text: qsTr("Done")
+                    highlighted: true
+                    onClicked: screen.close()
+                }
             }
         }
 
-        ColorRow {
-            label: qsTr("Skin")
-            key: "skin"
-            colors: screen.skinColors
-        }
-        ColorRow {
-            label: qsTr("Hair colour")
-            key: "hairColor"
-            colors: screen.hairColors
-        }
-        ColorRow {
-            label: qsTr("Shirt")
-            key: "shirt"
-            colors: screen.clothColors
-        }
-        ColorRow {
-            label: qsTr("Trousers")
-            key: "pants"
-            colors: screen.clothColors
-        }
-
-        Label {
-            Layout.fillWidth: true
-            text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.settings.keys.labels.cameraView)
-            wrapMode: Text.Wrap
-            opacity: 0.7
-        }
-
-        Button {
-            Layout.alignment: Qt.AlignRight
-            text: qsTr("Done")
-            highlighted: true
-            onClicked: screen.close()
+        CharacterPreviewPanel {
+            Layout.preferredWidth: 300
+            Layout.fillHeight: true
+            Layout.minimumHeight: 460
+            game: screen.game
         }
     }
 }

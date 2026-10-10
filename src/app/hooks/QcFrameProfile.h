@@ -13,8 +13,9 @@ class QcFrameProfile
 public:
     void clear();
     // Once per GUI frame: CPU time of the GUI thread since the previous frame (-1 if unknown) and
-    // the time spent building entity and hand meshes in this frame.
-    void addGuiFrame(double guiCpuMs, double entityMeshMs);
+    // the time spent building entity and hand meshes and the character previews' meshes (E-231) in
+    // this frame.
+    void addGuiFrame(double guiCpuMs, double entityMeshMs, double previewMeshMs);
     void addRenderSamples(const QList<QcRenderSample> &samples);
 
     // "key=value" pairs separated by spaces, for the BENCH line.
@@ -27,5 +28,6 @@ public:
 private:
     QList<double> m_guiCpuMs;
     QList<double> m_entityMeshMs;
+    QList<double> m_previewMeshMs;
     QList<QcRenderSample> m_render;
 };

@@ -22,7 +22,7 @@ void QcFrameMonitor::setDepth(Depth depth, QcWorldView *view)
     }
 }
 
-QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 entityNs)
+QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 entityNs, qint64 previewNs)
 {
     if (m_depth == Depth::None) {
         return {};
@@ -51,6 +51,7 @@ QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 enti
         values[std::size_t(QcFramePhase::Interval)] = float(double(intervalNs) / 1e6);
         values[std::size_t(QcFramePhase::GuiCpu)] = float(std::max(0.0, m_lastGuiCpuMs));
         values[std::size_t(QcFramePhase::EntityMesh)] = float(double(entityNs) / 1e6);
+        values[std::size_t(QcFramePhase::Preview)] = float(double(previewNs) / 1e6);
         values[std::size_t(QcFramePhase::RenderCpu)] = float(std::max(0.0, m_render.renderThreadCpuMs));
         values[std::size_t(QcFramePhase::WorldRender)] = float(m_render.worldRenderMs);
         values[std::size_t(QcFramePhase::Upload)] = float(m_render.uploadMs);

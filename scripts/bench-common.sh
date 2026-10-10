@@ -30,6 +30,10 @@
 #              ground: use flat, not void
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
+#
+# PREVIEW_ACTIVE=1 animates the character previews (inventory, main menu) although the window of a
+# scripted run is inactive (QTCRAFT_PREVIEW_ACTIVE, decision E-231); otherwise they draw one still
+# picture, as in a game whose window lost the focus.
 
 # Display awake while the calling script runs; runs wait while the screen is locked (screen-guard.sh).
 . "${QC_SCRIPTS_DIR:-$PROJECT_DIR/scripts}/screen-guard.sh"
@@ -202,7 +206,7 @@ EOF
     while :; do
         wait_for_screen || return 1
         # shellcheck disable=SC2086
-        env QTCRAFT_OFFSCREEN=0 QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+        env QTCRAFT_OFFSCREEN=0 QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
             perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
         if ! screen_locked || [ "$attempt" -ge 3 ]; then
             break

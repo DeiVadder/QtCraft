@@ -66,11 +66,11 @@ void QcEntitySync::considerPlayers(Pass &pass)
     for (const auto &other : m_state.clients) {
         if (other.get() != &pass.client && other->state == QcServerClient::State::Playing && !other->dead) {
             const QcItemStack &held = other->inventory.selectedStack();
-            consider(pass,
-                     {other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw, other->health,
-                      {}, other->appearance, other->pitch, flagsOf(other->motion, other->swung, other->sneaking, other->sprinting),
-                      held.isEmpty() ? qcNoItem : held.item},
-                     other->hurtThisTick);
+            QcMsg::EntitySpawn spawn{other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw,
+                                     other->health, {}, other->appearance, other->pitch,
+                                     flagsOf(other->motion, other->swung, other->sneaking, other->sprinting), held.isEmpty() ? qcNoItem : held.item};
+            spawn.equipment = other->equipment;
+            consider(pass, spawn, other->hurtThisTick);
         }
     }
 }
