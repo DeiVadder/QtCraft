@@ -2,16 +2,22 @@
 
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
+#include "QcTickScheduler.h"
 
 #include <algorithm>
 
-QcServerSounds::QcServerSounds(QcServerState &state)
+QcServerSounds::QcServerSounds(QcServerState &state, const QcTickScheduler &ticks)
     : m_state(state)
+    , m_ticks(ticks)
 {
 }
 
 void QcServerSounds::play(const QString &key, const QcVec3 &position, float volume, float pitch)
 {
+    if (m_ticks.sprinting()) {
+        return;
+    }
+
     const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_state.content->sound(key);
     if (!sound) {
         return;

@@ -49,6 +49,11 @@ public:
     QList<QcChunkPos> takeNewlyLoaded() { return std::exchange(m_newlyLoaded, {}); }
     QList<QcChunkPos> loadedChunks() const { return m_chunks.keys(); }
 
+    // Replaces a loaded chunk with what the generator makes of it (decision E-246). It stays marked
+    // as modified, so the next save also overwrites the stored copy. False when it is not loaded
+    // (then nothing was changed in it since it was last generated).
+    bool regenerateChunk(QcChunkPos pos);
+
     // Fails for unloaded chunks, positions outside the world height and unknown block ids.
     bool setBlock(QcBlockPos pos, QcBlockId block);
 

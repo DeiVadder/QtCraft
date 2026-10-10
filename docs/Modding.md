@@ -68,6 +68,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `lang/` | language | `en.json`, `de.json`, …: translation key → text. The language is the file name; a suffix `.handbook` is left out, so `de.handbook.json` adds German texts as well (other dots stay part of the language). |
 | `handbook/` | handbook chapter | A chapter of the handbook's "Playing" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
+| `commands/` | command macro | A chat and console command made of other commands; see below. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 | `structures/` | structure | Buildings from block layers with creatures, armour stands, contents, labels; a `showcase` entry makes it a demo of the showcase world; see below. |
 | `worldgen/showcase.json` | – | Settings of the showcase world: ground, time of day, podium blocks, block categories (replaces the earlier one). |
@@ -290,6 +291,28 @@ A structure (`structures/<name>.json`, decision E-219) is a building made of blo
 ```
 
 `worldgen/showcase.json`: `timeOfDay` (seconds after sunrise, 150 = noon), `layers` (`{"block", "depth"}` from the bottom up), `podium`, `enclosure`, `container` (blocks), `lookout` (a structure placed in front of every area), `rowWidth` (metres) and `categories` (`{"name", "translation", "match"}`; `match` may hold `liquid`, `part`, `light`, `plant`, `functional`, `falls` (true/false) and the lists `render`, `tool`, `nameContains`; a block goes to the first category whose conditions all hold, else to the last one).
+
+### Commands (stage 24)
+
+Mods cannot run code, so they add commands as **macros** (decision E-248): `commands/kit.json`
+
+```json
+{
+    "name": "kit",
+    "permission": "player",
+    "usage": "/kit <item> <count>",
+    "description": "Gives a starter kit.",
+    "run": ["/give $1 $2", "/give torch 8"]
+}
+```
+
+- `name`: the command players type (`/kit`), lower-case letters, digits and `_`, at most 32. It is not namespaced; a later pack replaces an earlier macro of the same name, and a command of the game always wins over a macro (the server ignores the macro then).
+- `permission`: `player` (everyone may call it) or `operator` (default).
+- `run`: 1 to 16 command lines starting with `/`, at most 256 characters each. `$1` … `$9` are the words after the macro's name, `$*` all of them; called with fewer words than the highest `$n`, the macro answers with its `usage`.
+- Every line runs as the player (or console) who called the macro and is checked for him again: in the example a player without operator rights gets "Only operators can use /give". A macro never grants rights. Macros cannot call other macros.
+- `usage` and `description` are shown by `/help` as they are (not translated).
+
+Code that is compiled into the game (not mods) adds real commands through the registry: `QcServer::commands().add(QcCommandSpec{...})` with a name, aliases, the permission (`QcPermission::Player`, `Operator`, `Console`), whether it needs a player, the minimum number of words, usage and description (English texts marked with `QT_TRANSLATE_NOOP("QcServerMessages", …)`) and a handler that receives a `QcCommandContext` (source, words, whole line). Taken names are refused. See `src/server/commands/QcCommandRegistry.h` and the command groups next to it.
 
 ### Replacing existing content
 

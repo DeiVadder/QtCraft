@@ -22,10 +22,13 @@ qt_add_library(qc_common STATIC
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcNameText.h core/QcNameText.cpp
     core/QcPhaseWindow.h core/QcPhaseWindow.cpp
+    core/QcProcessMemory.h core/QcProcessMemory.cpp
     core/QcTickPhase.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
+    content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
+    content/definitions/QcCommandMacroDefinition.h
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
     content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp

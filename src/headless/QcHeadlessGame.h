@@ -39,6 +39,9 @@ private:
     // from standard input; exits with failure after `timeLimit` seconds.
     bool startControl(const std::optional<QString> &scriptFile, int timeLimit);
     void readStandardInput();
+    // --console: standard input runs server commands (decision E-247); `timeLimit` 0 for none.
+    // Without `stopAtEndOfInput` (--no-eof-stop) the server outlives its input.
+    void startConsole(int timeLimit, bool stopAtEndOfInput);
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` (0: off).
     void startStatsLog(int intervalMs);
     void finishScript();
@@ -66,6 +69,8 @@ private:
     QcStatsLog *m_statsLog = nullptr;
     QFile *m_output = nullptr;
     bool m_scriptMode = false;
+    // --console: no bot and no control interface, standard input is the server console.
+    bool m_consoleMode = false;
     // Built on first use per language.
     QHash<QString, std::shared_ptr<const QcHandbook>> m_handbooks;
 };

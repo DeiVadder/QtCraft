@@ -29,7 +29,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
                    std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
     : QObject(parent)
     , m_state(std::move(config), std::move(content), std::move(generator))
-    , m_sounds(m_state)
+    , m_sounds(m_state, m_ticks)
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
@@ -41,9 +41,11 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_combat(m_state, m_sounds, m_inventory)
     , m_entitySync(m_state)
     , m_chunkStreaming(m_state)
-    , m_chat(m_state, {m_blocks, m_blockUpdates, m_inventory, m_combat, m_stands},
-             {[this] { return save(); }, [this](double seconds) { setWorldTime(seconds); }})
     , m_persistence(m_state, m_blocks, m_blockUpdates)
+    , m_commands(m_state, {m_blocks, m_blockUpdates,
+                           {m_inventory, m_combat, m_stands, [this](double seconds) { setWorldTime(seconds); }},
+                           {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
+                           {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_phases, m_ticks)
 {
@@ -66,6 +68,10 @@ QcStatus QcServer::openWorld()
     if (const QcStatus opened = m_persistence.open(); !opened) {
         return opened;
     }
+
+    QStringList accessWarnings;
+    m_state.access.open(m_state.config.worldDirectory, m_state.config.operators, accessWarnings);
+    m_persistence.noteWarnings(accessWarnings);
 
     // A new world gets what its generator sets up once (decision E-221).
     if (!m_state.info.setupDone) {
@@ -158,7 +164,7 @@ bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
     // The local player (in-process host, the operator) is not limited in chat: command bursts of
     // scripts and benchmark scenarios must arrive complete. All other kinds stay limited for him.
     const bool exempt = kind && client.local && *kind == QcRateLimiter::Kind::Chat;
-    if (!kind || exempt || client.rateLimiter.allow(*kind, m_state.tickCount)) {
+    if (!kind || exempt || client.rateLimiter.allow(*kind, m_state.playerTimeNs)) {
         return true;
     }
 
@@ -167,7 +173,7 @@ bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
     }
 
     // Dropped without a kick; the log names the spammer at most once a second per kind.
-    if (const quint64 dropped = client.rateLimiter.takeDropReport(*kind, m_state.tickCount); dropped > 0) {
+    if (const quint64 dropped = client.rateLimiter.takeDropReport(*kind, m_state.playerTimeNs); dropped > 0) {
         const QLatin1StringView kindName(QcRateLimiter::name(*kind));
         qCWarning(lcServer).noquote() << u"Rate limit: dropped %1 %2 messages from %3"_s.arg(dropped).arg(kindName, client.name);
     }
@@ -209,6 +215,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *start = std::get_if<QcMsg::StartMining>(&message)) {
         client.miningPos = start->pos;
         client.miningStartTick = m_state.tickCount;
+        client.miningStartNs = m_state.playerTimeNs;
     } else if (std::holds_alternative<QcMsg::CancelMining>(message)) {
         client.miningPos.reset();
     } else if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
@@ -226,7 +233,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
         m_combat.respawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
-        m_chat.handle(client, chat->text.left(256));
+        m_commands.chat(client, chat->text.left(256));
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
         client.connection->close();
     } else if (const auto *debug = std::get_if<QcMsg::DebugSubscribe>(&message)) {
@@ -287,7 +294,7 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     client.entityId = m_state.newEntityId();
     client.name = QcProfileValidation::playerName(hello.playerName);
     client.appearance = QcProfileValidation::appearance(*m_state.content, hello.appearance);
-    if (restorePlayer(client)) {
+    if (!admitted(client) || restorePlayer(client)) {
         return;
     }
 
@@ -300,6 +307,24 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
     sendWelcome(client, false);
     m_chunkStreaming.stream(client);
+}
+
+bool QcServer::admitted(Client &client) const
+{
+    const std::optional<QString> refusal = m_state.access.refusal(client.name, client.local);
+    if (!refusal) {
+        return true;
+    }
+
+    qCInfo(lcServer).noquote() << u"Player %1 refused: %2"_s.arg(client.name, *refusal);
+    client.connection->send(QcMsg::Disconnect{*refusal});
+    client.connection->close();
+    return false;
+}
+
+void QcServer::runConsoleCommand(const QString &line, const QcCommandSource::Output &output)
+{
+    m_commands.console(line, output);
 }
 
 bool QcServer::restorePlayer(Client &client)
@@ -358,6 +383,26 @@ void QcServer::sendWelcome(Client &client, bool rejoined)
     m_combat.sendFood(client);
     sendTime(client);
     sendOpenWarnings(client);
+    sendAccessWarning(client);
+}
+
+void QcServer::sendAccessWarning(Client &client)
+{
+    // Operators (the host among them) should repair the lists of a damaged access.json (E-244).
+    if (!m_state.access.wasDamaged() || m_state.permissionOf(client) == QcPermission::Player) {
+        return;
+    }
+
+    if (m_state.access.damagedCopy().isEmpty()) {
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP(
+            "QcServerMessages", "access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty "
+                                "with the whitelist on, and changes are not saved until the file is repaired")));
+    } else {
+        client.connection->send(QcChatText::message(
+            QT_TRANSLATE_NOOP("QcServerMessages", "access.json was damaged: operators, bans and the whitelist start empty with the "
+                                                  "whitelist on; the damaged file was kept as %1"),
+            {m_state.access.damagedCopy()}));
+    }
 }
 
 void QcServer::sendOpenWarnings(Client &client)
@@ -378,7 +423,7 @@ void QcServer::sendOpenWarnings(Client &client)
 
 void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
 {
-    if (client.inputBudget <= 0) {
+    if (client.inputBudget < 1.0) {
         return;
     }
 
@@ -389,7 +434,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
         return;
     }
 
-    --client.inputBudget;
+    client.inputBudget -= 1.0;
 
     // The decoder already rejects non-finite values; ranges are enforced here.
     QcPlayerInput input = message.input;
@@ -422,6 +467,7 @@ void QcServer::runDueTicks()
 {
     waitUntilDue();
     armTickTimer(m_ticks.runDue([this] { tick(); }));
+    m_commands.afterTicks();
 }
 
 void QcServer::waitUntilDue() const
@@ -453,7 +499,11 @@ void QcServer::tick()
     using Phase = QcTickPhase;
     m_phases.beginTick();
     ++m_state.tickCount;
-    if (m_state.info.daylightCycle) {
+    m_state.lastTickNs = m_ticks.tickRealNs();
+    m_state.playerTimeNs += m_state.lastTickNs;
+    // A frozen world only ticks for the players (decision E-249).
+    const bool simulating = m_tickControl.simulateNext();
+    if (simulating && m_state.info.daylightCycle) {
         m_state.info.worldTime += QcPhysics::tickDuration;
     }
     m_state.mobs.setNaturalSpawning(m_state.info.mobSpawning);
@@ -466,11 +516,18 @@ void QcServer::tick()
     m_blockUpdates.handleLoadedChunks();
     m_phases.lap(Phase::ChunkLoading);
 
-    simulate();
+    if (simulating) {
+        simulate();
+    }
+    // A step of a frozen world moves the time the clients do not advance themselves.
+    if (simulating && m_tickControl.frozen()) {
+        sendTimeToAll();
+    }
 
+    const ClientSync sync = clientSyncDue();
     for (const auto &client : m_state.clients) {
         if (client->state == Client::State::Playing) {
-            updateClient(*client);
+            updateClient(*client, sync);
         }
     }
 
@@ -511,11 +568,14 @@ void QcServer::simulate()
 
 void QcServer::autosave()
 {
-    if (!m_persistence.hasStorage() || m_state.config.autosaveSeconds <= 0
-        || m_state.tickCount % quint64(m_state.config.autosaveSeconds * QcPhysics::tickRate) != 0) {
+    // In the players' time: neither a high tick rate nor a sprint saves more often (decision E-249).
+    const qint64 intervalNs = qint64(m_state.config.autosaveSeconds) * 1'000'000'000;
+    if (!m_persistence.hasStorage() || intervalNs <= 0 || m_state.playerTimeNs - m_lastAutosaveNs < intervalNs) {
         return;
     }
 
+    m_lastAutosaveNs = m_state.playerTimeNs;
+    ++m_autosaves;
     if (const QcStatus saved = save(); !saved) {
         qCWarning(lcServer) << "Autosave failed:" << saved.error();
         for (const auto &client : m_state.clients) {
@@ -525,15 +585,43 @@ void QcServer::autosave()
     }
 }
 
-void QcServer::updateClient(Client &client)
+QcServer::ClientSync QcServer::clientSyncDue()
 {
-    client.inputBudget = std::min(client.inputBudget + 1, QcServerClient::maxInputBudget);
-    m_phases.lap(QcTickPhase::ClientSync);
-    m_chunkStreaming.stream(client);
-    m_phases.lap(QcTickPhase::Streaming);
-    m_entitySync.sync(client);
+    // During a sprint the clients hear of the world at most once per interval of real time, not
+    // with every tick (decision E-249); the time of day goes along then, at its sprint speed.
+    const bool sprinting = m_ticks.sprinting();
+    const bool world = !sprinting || m_state.playerTimeNs - m_lastSprintSyncNs >= QcTickScheduler::intervalNs;
+    if (sprinting && world) {
+        m_lastSprintSyncNs = m_state.playerTimeNs;
+    }
 
-    if (m_state.tickCount % quint64(QcPhysics::tickRate) == 0) {
+    // Otherwise the time goes out once per second of the players' time.
+    constexpr qint64 secondNs = 1'000'000'000;
+    const bool second = m_state.playerTimeNs / secondNs != (m_state.playerTimeNs - m_state.lastTickNs) / secondNs;
+    return {world, sprinting ? world : second};
+}
+
+void QcServer::refillInputBudget(Client &client) const
+{
+    // One input per 50 ms of the real time the tick stands for, whatever the tick rate; the cap
+    // holds a whole tick's share, so slow rates keep the player's pace (decision E-249).
+    const double share = double(m_state.lastTickNs) / double(QcTickScheduler::intervalNs);
+    const double cap = std::max(double(Client::maxInputBudget), share + Client::inputMargin);
+    client.inputBudget = std::min(client.inputBudget + share, cap);
+}
+
+void QcServer::updateClient(Client &client, ClientSync sync)
+{
+    refillInputBudget(client);
+    m_phases.lap(QcTickPhase::ClientSync);
+    if (sync.world) {
+        m_chunkStreaming.stream(client);
+        m_phases.lap(QcTickPhase::Streaming);
+        m_entitySync.sync(client);
+        m_debug.update(client);
+    }
+
+    if (sync.time) {
         sendTime(client);
     }
 
@@ -545,8 +633,6 @@ void QcServer::updateClient(Client &client)
         client.connection->send(QcMsg::PlayerState{client.lastInputSequence, client.motion});
         client.stateDirty = false;
     }
-
-    m_debug.update(client);
 }
 
 void QcServer::removeClosedClients()
@@ -554,6 +640,7 @@ void QcServer::removeClosedClients()
     for (const auto &client : m_state.clients) {
         if (client->state == Client::State::Closed && client->joined) {
             m_inventory.returnCraftingGrid(*client);
+            m_commands.playerLeft(client->entityId);
             // Failures are logged by savePlayer; the client is gone and cannot be told.
             [[maybe_unused]] const QcStatus saved = m_persistence.savePlayer(*client);
         }
@@ -571,7 +658,11 @@ void QcServer::removeClosedClients()
 void QcServer::setWorldTime(double seconds)
 {
     m_state.info.worldTime = std::max(0.0, seconds);
+    sendTimeToAll();
+}
 
+void QcServer::sendTimeToAll()
+{
     for (const auto &client : m_state.clients) {
         if (client->state == Client::State::Playing) {
             sendTime(*client);
@@ -579,9 +670,20 @@ void QcServer::setWorldTime(double seconds)
     }
 }
 
+double QcServer::timeSpeed() const
+{
+    if (m_tickControl.frozen()) {
+        return 0.0;
+    }
+
+    // A sprint runs the day as fast as its ticks run (decision E-249).
+    const double rate = m_ticks.sprinting() ? std::max(m_ticks.sprintRate(), m_ticks.rate()) : m_ticks.rate();
+    return std::min(rate / QcTickScheduler::defaultRate, QcMsg::WorldTime::maxSpeed);
+}
+
 void QcServer::sendTime(Client &client)
 {
-    client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength, m_state.info.daylightCycle});
+    client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength, m_state.info.daylightCycle, timeSpeed()});
 }
 
 void QcServer::handleSetAppearance(Client &client, const QcAppearance &appearance)

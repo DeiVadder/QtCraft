@@ -102,6 +102,113 @@ private slots:
         QVERIFY(stats.lateMaxMs >= 130.0);
     }
 
+    void theRateChangesTheInterval()
+    {
+        Simulation simulation;
+        simulation.start();
+        simulation.scheduler.setRate(5.0);
+        QCOMPARE(simulation.scheduler.currentIntervalNs(), 200 * ms);
+        QCOMPARE(simulation.scheduler.nextDueNs() - simulation.now, 200 * ms);
+
+        // Five ticks per second: a second of time runs five ticks, with no catch-up warning.
+        const quint64 before = simulation.ticks;
+        simulation.now = simulation.scheduler.nextDueNs();
+        for (int i = 0; i < 5; ++i) {
+            simulation.fire([](quint64) { return ms; }, 0);
+        }
+        QCOMPARE(simulation.ticks - before, quint64(5));
+        QCOMPARE(simulation.scheduler.stats().skipped(), quint64(0));
+        QCOMPARE(qRound(simulation.scheduler.measuredRate()), 5);
+
+        // Limits and the way back.
+        simulation.scheduler.setRate(1000.0);
+        QCOMPARE(simulation.scheduler.rate(), QcTickScheduler::maxRate);
+        simulation.scheduler.setRate(0.0);
+        QCOMPARE(simulation.scheduler.rate(), QcTickScheduler::minRate);
+        simulation.scheduler.setRate(QcTickScheduler::defaultRate);
+        QCOMPARE(simulation.scheduler.currentIntervalNs(), QcTickScheduler::intervalNs);
+    }
+
+    void aSprintRunsBackToBackAndLeavesNoBacklog()
+    {
+        Simulation simulation;
+        simulation.start();
+        simulation.scheduler.startSprint(1000);
+        QVERIFY(simulation.scheduler.sprinting());
+
+        // Each tick costs 1 ms: a slice of 20 ms runs 20 ticks and asks to be called at once again.
+        const qint64 remaining = simulation.scheduler.runDue([&] {
+            ++simulation.ticks;
+            simulation.now += ms;
+        });
+        QCOMPARE(remaining, 0);
+        QCOMPARE(simulation.ticks, quint64(20));
+        while (simulation.scheduler.sprinting()) {
+            simulation.fire([](quint64) { return ms; }, 0);
+        }
+        QCOMPARE(simulation.ticks, quint64(1000));
+
+        // One second passed for 1000 ticks; afterwards the normal grid starts anew without catching up.
+        quint64 ran = 0;
+        qint64 elapsed = 0;
+        QVERIFY(simulation.scheduler.takeSprintEnded(ran, elapsed));
+        QCOMPARE(ran, quint64(1000));
+        QVERIFY(!simulation.scheduler.takeSprintEnded(ran, elapsed));
+        // The last slice asked for one interval of rest: the next tick is due exactly then.
+        QCOMPARE(simulation.scheduler.nextDueNs(), simulation.now);
+        simulation.fire([](quint64) { return ms; }, 0);
+        QCOMPARE(simulation.ticks, quint64(1001));
+        QCOMPARE(simulation.scheduler.stats().skipped(), quint64(0));
+        QCOMPARE(simulation.scheduler.stats().summary().lateMaxMs, 0.0);
+    }
+
+    void aSprintTickStandsForItsRealTime()
+    {
+        // What follows real time (budgets, limits, autosaves) gets the real time of a sprint tick,
+        // never a whole interval per tick (decision E-249).
+        Simulation simulation;
+        simulation.start();
+        QCOMPARE(simulation.scheduler.tickRealNs(), QcTickScheduler::intervalNs);
+        QList<qint64> realTimes;
+        simulation.scheduler.startSprint(10);
+        simulation.now += 3 * ms;
+        simulation.scheduler.runDue([&] {
+            realTimes.append(simulation.scheduler.tickRealNs());
+            simulation.now += ms;
+        });
+        QCOMPARE(realTimes, (QList<qint64>{3 * ms, ms, ms, ms, ms, ms, ms, ms, ms, ms}));
+        QCOMPARE(simulation.scheduler.tickRealNs(), QcTickScheduler::intervalNs);
+
+        // A pause of the event loop counts up to one interval.
+        realTimes.clear();
+        simulation.scheduler.startSprint(2);
+        simulation.now += 5'000 * ms;
+        simulation.scheduler.runDue([&] { realTimes.append(simulation.scheduler.tickRealNs()); });
+        QCOMPARE(realTimes, (QList<qint64>{QcTickScheduler::intervalNs, 0}));
+
+        // Normal ticks stand for one interval of their rate.
+        simulation.scheduler.setRate(1.0);
+        simulation.now = simulation.scheduler.nextDueNs();
+        realTimes.clear();
+        simulation.scheduler.runDue([&] { realTimes.append(simulation.scheduler.tickRealNs()); });
+        QCOMPARE(realTimes, QList<qint64>{1'000 * ms});
+    }
+
+    void aSprintCanBeStopped()
+    {
+        Simulation simulation;
+        simulation.start();
+        simulation.scheduler.startSprint(100'000);
+        simulation.fire([](quint64) { return ms; }, 0);
+        simulation.scheduler.stopSprint();
+        QVERIFY(!simulation.scheduler.sprinting());
+        quint64 ran = 0;
+        qint64 elapsed = 0;
+        QVERIFY(simulation.scheduler.takeSprintEnded(ran, elapsed));
+        QCOMPARE(ran, quint64(20));
+        QCOMPARE(simulation.scheduler.nextDueNs() - simulation.now, QcTickScheduler::intervalNs);
+    }
+
     void backlogBeyondTheLimitIsDropped()
     {
         Simulation simulation;

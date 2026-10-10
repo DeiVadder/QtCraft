@@ -4,6 +4,7 @@ qt_add_executable(qtcraft-headless
     QcMapRenderer.h QcMapRenderer.cpp
     QcShowcaseTour.h QcShowcaseTour.cpp
     QcSoundExporter.h QcSoundExporter.cpp
+    QcServerConsole.h QcServerConsole.cpp
     QcStdinReader.h QcStdinReader.cpp
     QcWorldStats.h QcWorldStats.cpp
 )

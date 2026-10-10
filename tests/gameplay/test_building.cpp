@@ -134,6 +134,7 @@ private:
     void join(QcServerConfig config = {}, bool stage = true)
     {
         config.viewDistance = 1;
+        config.operators = {u"Builder"_s};
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
 
@@ -744,6 +745,9 @@ private slots:
         const int x0 = low.x * QcWorld::chunkSize;
         const int z0 = low.z * QcWorld::chunkSize;
         chat(u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(x0).arg(m_feet.y + 2).arg(z0).arg(x0 + 47).arg(m_feet.y + 4).arg(z0 + 47));
+        // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
+        m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
+        pump();
         QVERIFY2(m_server->pendingCommandBlockUpdates() > qsizetype(10) * QcServer::maxBlockUpdatesPerTick,
                  qPrintable(QString::number(m_server->pendingCommandBlockUpdates())));
 
@@ -770,6 +774,9 @@ private slots:
         const QcBlockPos low{corner.x * QcWorld::chunkSize, m_feet.y + 2, corner.z * QcWorld::chunkSize};
         const QcBlockPos high = low.offset(47, 2, 47);
         chat(u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(high.x).arg(high.y).arg(high.z));
+        // Large fills wait for /confirm (decision E-245); sent without a tick so nothing is worked off yet.
+        m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
+        pump();
         QVERIFY(m_server->pendingBlockUpdates() > 0);
         QVERIFY(m_server->save().has_value());
         const auto stored = QcWorldStorage(directory.path(), m_content).readBlockUpdates();
@@ -819,6 +826,7 @@ private slots:
         const QcBlockPos low = m_feet.offset(-23, 2, -23);
         m_client->connection.send(
             QcMsg::ChatInput{u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(low.x + 47).arg(low.y + 2).arg(low.z + 47)});
+        m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
         pump();
         QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1000));
         QVERIFY(m_server->droppedBlockUpdates() > 5000);

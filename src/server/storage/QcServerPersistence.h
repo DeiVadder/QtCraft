@@ -35,6 +35,8 @@ public:
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_openWarnings; }
+    // Logs the warnings and keeps them for the players.
+    void noteWarnings(const QStringList &warnings);
     // Whether open() failed because another server (in this or another process) has the world open.
     bool worldInUse() const { return m_worldInUse; }
 
@@ -55,8 +57,6 @@ private:
     QcStatus readBlockUpdates(const QcWorldStorage &storage);
     // Entities, creatures, machines, chests and block updates, if the world's setup was saved.
     QcStatus readWorldState(const QcWorldStorage &storage);
-    // Logs the warnings and keeps them for the players.
-    void noteWarnings(const QStringList &warnings);
     QcStatus saveEntities(const QcWorldStorage &storage) const;
     QcStatus saveBlockUpdates(const QcWorldStorage &storage) const;
 

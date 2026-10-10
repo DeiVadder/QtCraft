@@ -249,11 +249,11 @@ private slots:
         }
     }
 
-    void remoteClientsGetNoDebugData()
+    void playersWithoutOperatorRightsGetNoDebugData()
     {
-        // Until operators exist only the local player sees the server's counts and whom creatures chase.
+        // Only operators see the server's counts and whom creatures chase (widened in stage 24).
         m_origin = QcServer::ClientOrigin::Remote;
-        join();
+        join(notOperator());
         const std::optional<int> zombie = m_content->mobIndex(u"qtcraft:zombie"_s);
         QVERIFY(zombie.has_value());
         m_server->mobs().spawn(*zombie, m_client->motion.position + QcVec3{4.0, 0.0, 0.0}, 900001);
@@ -263,6 +263,26 @@ private slots:
         ticks(40);
         QVERIFY(m_client->debugMessages.isEmpty());
         QCOMPARE(m_server->clientCount(), 1);
+    }
+
+    void remoteOperatorsGetDebugDataUntilDeopped()
+    {
+        m_origin = QcServer::ClientOrigin::Remote;
+        join();
+        m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::stats});
+        pump();
+        ticks(20);
+        QVERIFY(!m_client->debugMessages.isEmpty());
+
+        // The console takes the rights away: the subscription ends with them.
+        m_server->runConsoleCommand(u"deop Raw"_s, {});
+        m_client->debugMessages.clear();
+        ticks(20);
+        QVERIFY(m_client->debugMessages.isEmpty());
+        m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::stats});
+        pump();
+        ticks(20);
+        QVERIFY(m_client->debugMessages.isEmpty());
     }
 
     void countersAreCheap()

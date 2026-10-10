@@ -1,0 +1,38 @@
+#include "QcClientSounds.h"
+
+#include "QcPhysics.h"
+#include "QcSoundKeys.h"
+
+bool QcClientSounds::record(QcSoundCue &cue, quint64 tick)
+{
+    if (cue.key.isEmpty()) {
+        return false;
+    }
+
+    cue.tick = tick;
+    if (m_recent.size() >= recentLimit) {
+        m_recent.removeFirst();
+    }
+    m_recent.append(cue);
+    return true;
+}
+
+void QcClientSounds::updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, quint64 tick,
+                                    const std::function<void(const QcSoundCue &)> &play)
+{
+    if (tick % ambienceTicks == 1) {
+        m_ambienceTarget = QcAmbience::targets(world, eye);
+
+        // A fixed pseudo-random sequence over the samples keeps sessions reproducible.
+        const quint64 sample = tick / ambienceTicks;
+        const double roll = double((sample * 2654435761ULL) % 1000ULL) / 1000.0;
+        if (roll < QcAmbience::lavaPopChance) {
+            if (const std::optional<QcBlockPos> lava = QcAmbience::nearestGlowingLiquid(world, eye)) {
+                play({QString::fromLatin1(QcSoundKeys::lavaPop), {lava->x + 0.5, lava->y + 1.0, lava->z + 0.5}, 1.0f, 1.0f,
+                      QcSoundCue::Origin::Local, 0});
+            }
+        }
+    }
+
+    m_ambience = QcAmbience::approach(m_ambience, m_ambienceTarget, QcPhysics::tickDuration);
+}

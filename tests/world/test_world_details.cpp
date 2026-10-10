@@ -151,6 +151,7 @@ private:
     void join(QcServerConfig config = {}, bool stage = true)
     {
         config.viewDistance = 1;
+        config.operators = {u"Tester"_s};
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
 
@@ -404,6 +405,7 @@ private slots:
         const int spawnX = pool->x * 16 + 8;
         const int spawnZ = pool->z * 16 + 8;
         generator->spawn = {spawnX, generator->column(spawnX, spawnZ).height + 1, spawnZ};
+        config.operators = {u"Tester"_s};
         m_server = std::make_unique<QcServer>(config, m_content, std::move(generator));
         QVERIFY(m_server->openWorld().has_value());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();

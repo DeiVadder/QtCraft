@@ -16,6 +16,14 @@ bool isPlayable(const QcAppearanceDefinition *definition, QcAppearanceDefinition
     return definition && definition->kind == kind && definition->playable;
 }
 
+// Letters, digits and symbols (emoji) name somebody; spaces and punctuation alone do not.
+bool namesSomebody(char32_t codePoint)
+{
+    const QChar::Category category = QChar::category(codePoint);
+    return QChar::isLetterOrNumber(codePoint) || category == QChar::Symbol_Math || category == QChar::Symbol_Currency
+           || category == QChar::Symbol_Modifier || category == QChar::Symbol_Other;
+}
+
 } // namespace
 
 QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &requested)
@@ -45,10 +53,19 @@ QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &re
     return result;
 }
 
+std::optional<QString> validPlayerName(const QString &requested)
+{
+    QString name = QcNameText::clean(requested, maxPlayerNameLength);
+    const QList<uint> codePoints = name.toUcs4();
+    if (std::ranges::none_of(codePoints, [](uint codePoint) { return namesSomebody(char32_t(codePoint)); })) {
+        return std::nullopt;
+    }
+    return name;
+}
+
 QString playerName(const QString &requested)
 {
-    const QString name = QcNameText::clean(requested, maxPlayerNameLength);
-    return name.isEmpty() ? u"Player"_s : name;
+    return validPlayerName(requested).value_or(u"Player"_s);
 }
 
 } // namespace QcProfileValidation

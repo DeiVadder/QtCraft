@@ -1,18 +1,17 @@
 #pragma once
 
 #include "QcClientEntities.h"
-#include "QcAmbience.h"
+#include "QcClientMachineScreen.h"
+#include "QcClientSounds.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
 #include "QcEntityPose.h"
 #include "QcViewCamera.h"
 #include "QcInventory.h"
-#include "QcLocalSounds.h"
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
 #include "QcRaycast.h"
 #include "QcServerDebugMirror.h"
-#include "QcSoundCue.h"
 
 #include <QHash>
 #include <QList>
@@ -89,14 +88,14 @@ public:
     void closeCrafting();
     // The machine screen the server opened (position, category), its slots (input, fuel, output)
     // and progress; machineOpen() is false when none is open.
-    bool machineOpen() const { return m_machine.has_value(); }
-    std::optional<QcBlockPos> machinePos() const { return m_machine; }
-    QString machineCategory() const { return m_machineCategory; }
+    bool machineOpen() const { return m_machine.isOpen(); }
+    std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
+    QString machineCategory() const { return m_machine.category(); }
     // The open screen belongs to a storage block (chest) rather than a machine.
-    bool containerOpen() const { return m_machine.has_value() && m_machineCategory.isEmpty(); }
-    const QList<QcItemStack> &machineSlots() const { return m_machineSlots; }
-    double machineBurn() const { return m_machineBurn; }
-    double machineProgress() const { return m_machineProgress; }
+    bool containerOpen() const { return m_machine.isContainer(); }
+    const QList<QcItemStack> &machineSlots() const { return m_machine.stacks(); }
+    double machineBurn() const { return m_machine.burn(); }
+    double machineProgress() const { return m_machine.progress(); }
     void closeMachine();
     const QList<QcItemStack> &craftingGrid() const { return m_craftingGrid; }
     int craftingSize() const { return m_craftingSize; }
@@ -145,8 +144,10 @@ public:
     double health() const { return m_health; }
     double maxHealth() const { return m_maxHealth; }
     bool isDead() const { return m_dead; }
-    // Seconds of world time, advanced locally between server updates while the time of day runs.
+    // Seconds of world time, advanced locally between server updates while the time of day runs, by
+    // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
     double worldTime() const { return m_worldTime; }
+    double timeSpeed() const { return m_timeSpeed; }
     // Labels floating in the loaded chunks (decision E-222) and a number that changes whenever a
     // chunk's labels arrived.
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
@@ -163,24 +164,15 @@ public:
     const QcServerDebugMirror &serverDebug() const { return m_serverDebug; }
 
     // Sounds of the last moments (server events and the client's own), oldest first; at most
-    // recentSoundLimit. clearRecentSounds() empties the list (control interface).
-    static constexpr qsizetype recentSoundLimit = 64;
-    const QList<QcSoundCue> &recentSounds() const { return m_recentSounds; }
-    void clearRecentSounds() { m_recentSounds.clear(); }
+    // QcClientSounds::recentLimit. clearRecentSounds() empties the list (control interface).
+    const QList<QcSoundCue> &recentSounds() const { return m_sounds.recent(); }
+    void clearRecentSounds() { m_sounds.clearRecent(); }
     // Ambience loop levels around the player, faded towards the surroundings every tick.
-    const QcAmbience::Levels &ambience() const { return m_ambience; }
-    // Mining strikes make a sound every this many ticks; other creatures step every this many metres.
+    const QcAmbience::Levels &ambience() const { return m_sounds.ambience(); }
+    // Mining strikes make a sound every this many ticks.
     static constexpr int miningHitTicks = 4;
-    static constexpr double entityStrideMetres = QcClientEntities::strideMetres;
-    static constexpr float entityStepVolume = QcClientEntities::stepVolume;
-    // The ambience targets are sampled every this many ticks.
-    static constexpr int ambienceTicks = 10;
-
     // Melee reach of the player.
     static constexpr double attackReach = 4.0;
-    static constexpr int hurtFlashTicks = QcClientEntities::hurtFlashTicks;
-    // Share of the newest tick in the smoothed walking speed of other entities.
-    static constexpr double speedSmoothing = QcClientEntities::speedSmoothing;
 
 signals:
     void stateChanged(QcClientSession::State state);
@@ -210,13 +202,12 @@ private:
     bool handleWorldMessage(const QcMessage &message);
     bool handlePlayerMessage(const QcMessage &message);
     bool handleEntityMessage(const QcMessage &message);
+    // The machine screen's messages (QcClientMachineScreen).
     bool handleMachineMessage(const QcMessage &message);
     void onWelcome(const QcMsg::Welcome &welcome);
     void onContentSync(const QcMsg::ContentSync &sync);
     void onChunkData(const QcMsg::ChunkData &chunkData);
     void onInventoryState(const QcMsg::InventoryState &inventory);
-    void onOpenMachine(const QcMsg::OpenMachine &open);
-    void onMachineState(const QcMsg::MachineState &machine);
     // Closes the connection; `reason` is reported as the disconnect reason.
     void closeWithError(const QString &reason);
     void setState(State state);
@@ -272,13 +263,7 @@ private:
     double m_lastStep = 0.0;
     QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
-    std::optional<QcBlockPos> m_machine;
-    // The player closed a machine screen and has not used a block since.
-    bool m_machineClosedLocally = false;
-    QString m_machineCategory;
-    QList<QcItemStack> m_machineSlots = QList<QcItemStack>(QcMsg::MachineState::slotCount);
-    double m_machineBurn = 0.0;
-    double m_machineProgress = 0.0;
+    QcClientMachineScreen m_machine;
     int m_food = QcItemDefinition::maxFood;
     int m_maxFood = QcItemDefinition::maxFood;
     double m_health = 20.0;
@@ -287,14 +272,12 @@ private:
     double m_worldTime = 0.0;
     double m_dayLength = 600.0;
     bool m_timeRunning = true;
+    double m_timeSpeed = 1.0;
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     quint8 m_debugFlags = 0;
     quint8 m_debugBaseFlags = 0;
     QcServerDebugMirror m_serverDebug;
-    QList<QcSoundCue> m_recentSounds;
-    QcLocalSounds m_localSounds;
-    QcAmbience::Levels m_ambience;
-    QcAmbience::Levels m_ambienceTarget;
+    QcClientSounds m_sounds;
     int m_miningTicks = 0;
 };

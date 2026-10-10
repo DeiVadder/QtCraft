@@ -171,7 +171,7 @@ qint64 QcContentPackLoader::measure(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -288,6 +288,8 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
     loadDefinitions(root.filePath(u"structures"_s), packId, warnings, QcContentParser::parseStructure,
                     [&registry](QcStructureDefinition structure) { registry.registerStructure(std::move(structure)); });
+    loadDefinitions(root.filePath(u"commands"_s), packId, warnings, QcContentParser::parseCommandMacro,
+                    [&registry](QcCommandMacroDefinition macro) { registry.registerCommandMacro(std::move(macro)); });
 }
 
 // worldgen/<file>: one settings object of the pack, parsed; std::nullopt (with a warning when it

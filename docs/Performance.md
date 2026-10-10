@@ -184,3 +184,29 @@ Zusatzkosten der Anzeige (Release, 2 verschränkte Runden à 15 s je Stufe, 8 Ch
 
 Bewertung: Kompakt kostet 1–4 % GUI-CPU (eine Zeile, Frame-Abstand), voll 7–19 % im Mittel (+0,05–0,07 ms) und hebt das p99 der GUI-CPU auf 2,3–2,8 ms (viermal pro Sekunde: Schnappschuss 0,2 ms, Textlayout rund 1,5 ms); alles weit unter dem Frame-Budget (8,3 ms bei 120 Hz). Render-CPU, GPU, Frame-Abstand und Tick liegen in der Streuung. Die Phasen-Zähler kosten 21 ns pro Runde (rund 0,3 µs pro Tick). Erste Fassung (Lichtsonde flutete immer): GUI-p99 voll 5,4–6,0 ms, Textaktualisierung 3,5–6 ms; seitdem überspringt die Sonde die Flutung ohne Lichtquelle in Reichweite und für eine Zelle unter freiem Himmel (1,6–2,6 ms pro Aktualisierung).
 
+
+## Tick-Steuerung als Messwerkzeug (Etappe 24)
+
+`/tick` (E-249) hilft bei Messungen und Tests, über `--chat` des Spiels, `chat`/`console` der Steuerschnittstelle oder die Server-Konsole:
+
+- `/tick sprint <n|Ns|Nmin|Nh|Nd>` lässt Spielzeit ohne Takt ablaufen (Wachstum, Öfen, Flüssigkeiten, Tageszeit) und meldet am Ende Ticks, Dauer und Ticks pro Sekunde, also die reine Simulationsleistung ohne die 50-ms-Pausen (Beispiel: `qtcraft-headless --console` mit `tick sprint 1d`). Danach läuft der normale Takt ohne Aufholschuld weiter (keine übersprungenen Ticks).
+- `/tick freeze` hält eine Szene an (Wesen, Flüssigkeiten, Tageszeit), damit Screenshots und Frame-Messungen nicht von der Simulation abhängen; Spieler und Kamera bewegen sich weiter, `/tick step <n>` rückt genau n Ticks vor.
+- `/tick rate <1..100>` prüft Last bei höherer Tick-Rate (z. B. 40 statt 20), `/tick query` zeigt Soll- und gemessene Rate und die Phasen wie die Debug-Anzeige.
+
+Rate und Einfrieren werden nicht gespeichert; die Benchmark-Szenarien laufen weiter mit 20 Ticks pro Sekunde. Das Szenario `liquids` schickt nach seinem großen `/fill` ein `/confirm` (E-245), sonst bliebe die Fläche ungefüllt.
+
+**Werkzeugwerte (Etappe 24, Release, 8 Chunks, je 3 Läufe à 20 s, Mittel [Spanne], Last 2,9–5,5, kein Lauf belastet):** Nachrichten an den Client gezählt mit einem vorübergehenden Zähler in `QcClientSession::handleMessage` (nicht im Repository), sonst die BENCH-Zeile; Vergleich jeweils mit demselben Build bei 20 Ticks pro Sekunde.
+
+| Szenario | Modus | Ticks/s | Tick Ø ms | Client-Abgleich ms pro Tick | GUI-CPU Ø ms | Nachrichten/s an den Client | Wesen am Ende |
+|----------|-------|--------:|----------:|----------------------------:|-------------:|----------------------------:|--------------:|
+| crowd | 20 Ticks/s | 20 | 0,494 [0,45–0,57] | 0,043 | 0,486 | 27 (Entity-Bewegung 20, Klänge 4,5, Zeit 1) | 81 |
+| crowd | `/tick rate 100` | 99 | 0,448 [0,43–0,48] | 0,033 | 0,452 | 119 (Entity-Bewegung 99, Klänge 17, Zeit 1) | 80 |
+| crowd | `/tick sprint 864000` | 10 900 [10 650–11 170] | 0,091 | 0,0001 | 0,155 | 184 (Klänge 105, Entity-Bewegung, Zeit, Erscheinen, Entfernen je ≈ 20) | 12 |
+| crowd | `/tick sprint 2000` (volles Gedränge) | 6 800 [6 640–7 120] | – | – | – | – | 83–85 |
+| flat-crowd | 20 Ticks/s | 20 | 0,253 | 0,048 | 0,435 | 28 | 80 |
+| flat-crowd | `/tick rate 100` | 100 | 0,193 | 0,032 | 0,421 | 123 | 73 |
+| flat-crowd | `/tick sprint 864000` | 31 400 [31 300–31 650] | 0,032 | 0 | 0,094 | 123 (Klänge 58, Zeit 20, Bewegung 20, Erscheinen und Entfernen je 13) | 2 |
+| flat-crowd | `/tick sprint 2000` (volles Gedränge) | 13 700 [12 900–14 600] | – | – | – | – | 77 |
+
+- **Sprint:** Der Server schafft im Gedränge rund 6 800 Ticks pro Sekunde (340-fache Geschwindigkeit; `Sprint ended: 2000 ticks in 281–301 ms` im Log), in der flachen Welt rund 13 700. Ein langer Sprint räumt die Szene selbst ab (Items verfallen nach 6000 Ticks, Zombies verbrennen am Tag, Wesen verschwinden): nach wenigen Sekunden laufen 11 000 bzw. 31 000 Ticks pro Sekunde mit 12 bzw. 2 Wesen. Der Client bekommt Welt, Entities und Zeit höchstens alle 50 ms (je ≈ 20 pro Sekunde, E-249), dazu aber jeden Klang einzeln: im kurzen Sprint mit vollem Gedränge rund 400 Klänge in 0,3 s, im langen 105 pro Sekunde (normal 4,5). GUI- und Render-CPU sinken im Sprint (weniger Wesen), der Server-Thread ist voll ausgelastet; Frame p99 bleibt bei 9,3–10,3 ms.
+- **Rate 100:** Der Tick kostet so viel wie bei Rate 20 (0,45 statt 0,49 ms, 4,5 % des 10-ms-Intervalls), der Client-Abgleich 0,033 ms pro Tick, also 3,3 statt 0,9 ms pro Sekunde; der Client bekommt rund 120 statt 27 Nachrichten pro Sekunde (vor allem Entity-Bewegungen mit jedem Tick, E-249). GUI-CPU, Render-CPU, GPU und Frame p99 bleiben gleich (GUI-CPU −7 %, Streuung): Der Client interpoliert weiter mit seinem 20-Hz-Takt, die zusätzlichen Bewegungen kosten im GUI-Thread nichts Messbares.

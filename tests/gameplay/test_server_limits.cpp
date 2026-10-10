@@ -17,6 +17,9 @@ class TestServerLimits : public QcServerTestFixture
     Q_OBJECT
 
 private:
+    // The players' time of server tick n at 20 ticks per second.
+    static constexpr qint64 atTick(qint64 tick) { return tick * 50'000'000; }
+
     // A stone wall three wide and four high two blocks east of the player, and a dirt block behind
     // it at eye level, within reach (3.5 m).
     QcBlockPos buildWallWithTargetBehind()
@@ -85,45 +88,45 @@ private slots:
 
         int allowed = 0;
         for (int i = 0; i < 30; ++i) {
-            allowed += limiter.allow(kind, 100) ? 1 : 0;
+            allowed += limiter.allow(kind, atTick(100)) ? 1 : 0;
         }
         QCOMPARE(allowed, 20);
 
         // Half a second later one more token is back (2 per second at 20 ticks per second).
-        QVERIFY(!limiter.allow(kind, 109));
-        QVERIFY(limiter.allow(kind, 110));
-        QVERIFY(!limiter.allow(kind, 110));
+        QVERIFY(!limiter.allow(kind, atTick(109)));
+        QVERIFY(limiter.allow(kind, atTick(110)));
+        QVERIFY(!limiter.allow(kind, atTick(110)));
 
         // A long pause refills to the burst, not beyond.
         allowed = 0;
         for (int i = 0; i < 30; ++i) {
-            allowed += limiter.allow(kind, 10'000) ? 1 : 0;
+            allowed += limiter.allow(kind, atTick(10'000)) ? 1 : 0;
         }
         QCOMPARE(allowed, 20);
 
         // Other kinds have their own buckets.
-        QVERIFY(limiter.allow(QcRateLimiter::Kind::Use, 10'000));
+        QVERIFY(limiter.allow(QcRateLimiter::Kind::Use, atTick(10'000)));
     }
 
     void dropsAreReportedAtMostOncePerSecond()
     {
         QcRateLimiter limiter;
         constexpr auto kind = QcRateLimiter::Kind::Appearance;
-        QCOMPARE(limiter.takeDropReport(kind, 0), quint64(0));
+        QCOMPARE(limiter.takeDropReport(kind, atTick(0)), quint64(0));
 
         for (int i = 0; i < 13; ++i) {
-            limiter.allow(kind, 0);
+            limiter.allow(kind, atTick(0));
         }
         // 10 allowed, 3 dropped: the first report comes at once with everything so far.
-        QCOMPARE(limiter.takeDropReport(kind, 0), quint64(3));
+        QCOMPARE(limiter.takeDropReport(kind, atTick(0)), quint64(3));
 
         // Still empty a few ticks later (2 per second refill a token every 10 ticks).
-        QVERIFY(!limiter.allow(kind, 2));
-        QVERIFY(!limiter.allow(kind, 4));
-        QCOMPARE(limiter.takeDropReport(kind, 10), quint64(0));
+        QVERIFY(!limiter.allow(kind, atTick(2)));
+        QVERIFY(!limiter.allow(kind, atTick(4)));
+        QCOMPARE(limiter.takeDropReport(kind, atTick(10)), quint64(0));
         // One second after the last report the waiting drops are reported.
-        QCOMPARE(limiter.takeDropReport(kind, 20), quint64(2));
-        QCOMPARE(limiter.takeDropReport(kind, 100), quint64(0));
+        QCOMPARE(limiter.takeDropReport(kind, atTick(20)), quint64(2));
+        QCOMPARE(limiter.takeDropReport(kind, atTick(100)), quint64(0));
     }
 
     void messagesMapToTheirBuckets()

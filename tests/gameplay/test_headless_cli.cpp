@@ -218,6 +218,81 @@ private slots:
         QCOMPARE(status.value(u"world"_s).toString(), u"Test World"_s);
     }
 
+    void consoleCommandsThroughTheInterface()
+    {
+        // The control interface runs console lines with the console's rights (decision E-247); the
+        // backup lands next to the folder of worlds and opens like the world.
+        QTemporaryDir data;
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+
+        QVERIFY(ask(R"({"cmd":"worldCreate","name":"Kept","seed":3})").value(u"ok"_s).toBool());
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        QCOMPARE(ask(R"({"cmd":"console","text":"op Friend"})").value(u"lines"_s).toArray(), QJsonArray{u"Friend is an operator"_s});
+        QCOMPARE(ask(R"({"cmd":"console","text":"/list"})").value(u"lines"_s).toArray(), QJsonArray{u"1 players online: Bot"_s});
+        const QJsonArray backup = ask(R"({"cmd":"console","text":"backup first"})").value(u"lines"_s).toArray();
+        QVERIFY2(backup.first().toString().startsWith(u"Backup with "_s), qPrintable(backup.first().toString()));
+        QCOMPARE(ask(R"({"cmd":"console","text":5})").value(u"ok"_s).toBool(true), false);
+
+        const QStringList backups = QDir(QDir(data.path()).filePath(u"backups"_s)).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+        QCOMPARE(backups.size(), 1);
+        const QString copy = QDir(data.path()).filePath(u"backups/"_s + backups.first());
+        QVERIFY(QFile::exists(copy + u"/world.json"_s));
+        QVERIFY(QFile::exists(copy + u"/access.json"_s));
+        QVERIFY(!QFile::exists(copy + u"/session.lock"_s));
+
+        // Moved into the folder of worlds, the copy loads.
+        QVERIFY(QDir().rename(copy, QDir(data.path()).filePath(u"worlds/Restored"_s)));
+        QCOMPARE(ask(R"({"cmd":"worldLoad","folder":"Restored"})").value(u"ok"_s).toBool(), true);
+        QVERIFY(ask(R"({"cmd":"waitUntilReady"})").value(u"ok"_s).toBool());
+        QCOMPARE(ask(R"({"cmd":"console","text":"op"})").value(u"lines"_s).toArray(), QJsonArray{u"Operators: Friend"_s});
+    }
+
+    void theServerConsoleReadsStandardInput()
+    {
+        // --console: no bot joins, every line is a command, stop ends the process (decision E-247).
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--console"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"60"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        m_process.write("list\n/whitelist on\ngive dirt\ntick rate 40\ntick query\nhelp tick\nstop\n");
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+
+        const QString output = QString::fromUtf8(m_process.readAllStandardOutput());
+        QVERIFY(output.startsWith(u"QtCraft server console"_s));
+        QVERIFY(output.contains(u"\n0 players online: \n"_s));
+        QVERIFY(output.contains(u"\nThe whitelist is on\n"_s));
+        QVERIFY(output.contains(u"\nOnly players can use /give\n"_s));
+        QVERIFY(output.contains(u"\nTick rate 40.0 per second"_s));
+        QVERIFY(output.contains(u"\nUsage: /tick "_s));
+        QVERIFY(output.contains(u"\nStopping the server\n"_s));
+
+        // The end of the input also stops it; the time limit only applies when given.
+        m_process.setArguments({u"--console"_s, u"--view-distance"_s, u"2"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        m_process.write("save\n");
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+        QVERIFY(QString::fromUtf8(m_process.readAllStandardOutput()).contains(u"World saved"_s));
+
+        // A service without input keeps running past the end of it, here until its time limit.
+        m_process.setArguments({u"--console"_s, u"--no-eof-stop"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"3"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        m_process.closeWriteChannel();
+        QVERIFY(!m_process.waitForFinished(1500));
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 2);
+        QVERIFY(QString::fromUtf8(m_process.readAllStandardOutput()).contains(u"Standard input closed; the server keeps running."_s));
+    }
+
     void showcaseWorldsAndTour()
     {
         QTemporaryDir data;
@@ -291,7 +366,7 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 23);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 25);
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
         QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
         const QJsonObject server = debug.value(u"server"_s).toObject();
@@ -315,7 +390,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 23);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 25);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

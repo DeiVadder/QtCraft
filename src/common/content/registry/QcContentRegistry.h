@@ -16,6 +16,7 @@
 #include "QcSmeltingRecipe.h"
 #include "QcSoundDefinition.h"
 #include "QcStructureDefinition.h"
+#include "QcCommandMacroDefinition.h"
 #include "QcTextureDefinition.h"
 #include "QcWorldgenDefinitions.h"
 #include "QcWorldTypeDefinitions.h"
@@ -142,6 +143,10 @@ public:
     void registerStructure(QcStructureDefinition structure);
     const QList<QcStructureDefinition> &structures() const { return m_structures; }
     const QcStructureDefinition *structure(const QString &name) const;
+    // Command macros of the packs (server side only, not synchronised), replaced by name.
+    void registerCommandMacro(QcCommandMacroDefinition macro);
+    const QList<QcCommandMacroDefinition> &commandMacros() const { return m_commandMacros; }
+    const QcCommandMacroDefinition *commandMacro(const QString &name) const;
     // Settings of the showcase world (server side only); a later pack replaces them.
     void setShowcase(QcShowcaseDefinition showcase) { m_showcase = std::move(showcase); }
     const QcShowcaseDefinition &showcase() const { return m_showcase; }
@@ -203,6 +208,8 @@ private:
     QcTerrainSettings m_terrain;
     QList<QcStructureDefinition> m_structures;
     QHash<QString, qsizetype> m_structureIndex;
+    QList<QcCommandMacroDefinition> m_commandMacros;
+    QHash<QString, qsizetype> m_commandMacroIndex;
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;

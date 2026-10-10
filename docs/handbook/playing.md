@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Game rules and commands](#chapter-qtcraft-rules)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands)
 
 ## QtCraft
 
@@ -175,21 +175,60 @@ Water and lava flow from their sources; a bucket takes a source and pours it els
 
 [Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
 
-### <a id="chapter-qtcraft-rules"></a>Game rules and commands
+### <a id="chapter-qtcraft-rules"></a>Game rules
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). Show or change it with `/gamerule keepInventory [true|false]`.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
-**Commands**
+### <a id="chapter-qtcraft-commands"></a>Commands
 
-Open the chat with T and type a command:
-- `/help`, `/save`
+**Using commands**
+
+Open the chat with T (or /) and type a command starting with `/`. `/help` lists the commands you may use, `/help <command>` shows how to use one. `~` stands for your position in coordinates (`~2` is two blocks further). A server without a window (`qtcraft-headless --console`) reads the same commands from its console, there without the leading `/`; every command is written to the server log with who ran it.
+
+**Operators and confirmations**
+
+Most commands are for **operators**. In single player you are always an operator; on a server, operators make others operators with `/op <player>` and take the rights away with `/deop`. Every player may use `/help`, `/list`, `/locatebiome`, reading a game rule, `/confirm` and `/cancel`. Commands that destroy a lot wait for `/confirm` (within 30 s; `/cancel` drops them): `/regenerate`, `/fill` and `/clear` of more than 4096 blocks, `/remove` of more than 16 entities, of armour stands or in the whole world.
+
+**Players**
+
+- `/list`: who is online
+- `/locatebiome <biome>`: where the nearest place of a biome is
+- `/kick <player> [reason]`: disconnect a player (he may come back)
+- `/ban <player> [reason]`, `/unban <player>`, `/banlist`: keep a name out of this world
+- `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too
+- `/op [player]`, `/deop <player>`: operator rights; `/op` alone lists the operators
+- `/tp <x> <y> <z>`, `/tp <player>`, `/tp <player> <x> <y> <z>`, `/tp <player> <target player>`: teleport
+Operators, bans and the whitelist are saved with the world. The host of a world cannot be kicked, banned or lose his rights.
+
+**Repairing and cleaning up**
+
+- `/regenerate [<x> <z> [<x2> <z2>]]`: generate the chunk at your feet (or the chunks of an area, at most 64) again as the world type makes it; every change in it is lost, chests and furnaces in it lose their contents
+- `/remove <mobs|hostile|animals|ambient|items|stands|all|<creature>|item:<item>> [radius|world]`: remove entities within 32 m (at most 256 m) or in the whole loaded world; `all` means creatures and items
+- `/fill <x1> <y1> <z1> <x2> <y2> <z2> <block> [replace <block>]` and `/clear <x1> <y1> <z1> <x2> <y2> <z2> [block]`: fill a box or turn it into air, at most 32768 blocks; `replace` and the block of `/clear` limit the change to one kind of block
+- `/setblock <x> <y> <z> <block>`
+- `/save`: save now; `/backup [label]`: save and copy the world folder into the folder backups next to the worlds, named with date and time
+- `/worldinfo`: loaded chunks, entities, tick times and memory
+
+**Time and ticks**
+
+- `/time [set day|night|<seconds>]`, `/time add <seconds>`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
+- `/gamemode [survival] [player]`: so far there is only survival
+- `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
+- `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs
+- `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)
+- `/tick query`: rate, measured rate, freezing and the time per tick phase
+Rate and freezing are not saved; a world always opens normally.
+
+**Items, creatures and armour**
+
 - `/give <item> [count]`, `/spawnitem <item> [count]`
-- `/time set day|night|<seconds>`, `/time add <seconds>`
 - `/summon <creature> [count]` (at most 64 creatures), `/kill`, `/heal`, `/feed [points]`
-- `/setblock <x> <y> <z> <block>`, `/fill <x1> <y1> <z1> <x2> <y2> <z2> <block>` (at most 32768 blocks; `~` means your position)
-- `/locatebiome <biome>`
 - `/equip <set|armour|clear>` puts on armour (`/equip iron`)
-- `/summon armor_stand [property=value …]` and `/armorstand <nearest|looking|id> <property> [values]` place and change armour stands. Properties: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (degrees), `rotation <degrees>`, `arms`, `plate`, `small`, `showname` with `true|false`, `name [text]`, `equip <set|item>`, `cape <cape|none>`, `clear`, `reset`; `info` lists them. Stand ids are only valid until the world is loaded again; scripts use `nearest` or `looking`. Armour and items that `equip` or `clear` replace fall to the ground, `/equip` puts replaced pieces into your inventory. In `/summon` values follow `=` separated by commas: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
-All but `/help`, `/save` and reading a game rule are cheats; single-player worlds allow them.
+- `/summon armor_stand [property=value …]` and `/armorstand <nearest|looking|id> <property> [values]` place and change armour stands. Properties: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (degrees), `rotation <degrees>`, `arms`, `plate`, `small`, `showname` with `true|false`, `name [text]`, `equip <set|item>`, `cape <cape|none>`, `clear`, `reset`; `info` lists them. Stand ids are only valid until the world is loaded again; scripts use `nearest` or `looking`. In `/summon` values follow `=` separated by commas: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
+
+**Commands from mods**
+
+Mods add commands as macros (`commands/*.json`): a name and command lines that run one after another with your rights, so a macro never lets you do more than you may do anyway. `/help` lists them with the others.

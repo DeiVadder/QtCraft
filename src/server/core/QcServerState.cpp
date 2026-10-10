@@ -37,6 +37,11 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
 {
 }
 
+QcPermission QcServerState::permissionOf(const QcServerClient &client) const
+{
+    return client.local || access.isOperator(client.name) ? QcPermission::Operator : QcPermission::Player;
+}
+
 bool QcServerState::isLoadedAt(QcBlockPos pos) const
 {
     return world.chunk(pos.chunk()) != nullptr;

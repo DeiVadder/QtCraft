@@ -1,0 +1,239 @@
+#include "QcWorldCommands.h"
+
+#include "QcCommandArguments.h"
+#include "QcPendingCommands.h"
+#include "QcProcessMemory.h"
+#include "QcServerState.h"
+#include "QcTickPhaseTimer.h"
+#include "QcTickScheduler.h"
+#include "QcWorldBackup.h"
+
+#include <QElapsedTimer>
+#include <QLoggingCategory>
+
+#include <algorithm>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+
+Q_LOGGING_CATEGORY(lcWorldCommands, "qtcraft.commands")
+
+const QStringList kinds{u"mobs"_s, u"hostile"_s, u"animals"_s, u"ambient"_s, u"items"_s, u"stands"_s, u"all"_s};
+
+bool inRange(const std::optional<QcVec3> &centre, double radius, const QcVec3 &position)
+{
+    return !centre || (position - *centre).length() <= radius;
+}
+
+QString megabytes(double value)
+{
+    return QString::number(value, 'f', 0);
+}
+
+} // namespace
+
+QcWorldCommands::QcWorldCommands(QcServerState &state, QcPendingCommands &pending, Parts parts)
+    : m_state(state)
+    , m_pending(pending)
+    , m_parts(std::move(parts))
+{
+}
+
+void QcWorldCommands::addTo(QcCommandRegistry &registry)
+{
+    registry.addBuiltIn({.name = u"save"_s,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /save"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Saves the world now."),
+                         .run = [this](const QcCommandContext &context) { save(context); }});
+    registry.addBuiltIn({.name = u"backup"_s,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /backup [label]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                          "Saves the world and copies its folder into the backups folder, named with date and time."),
+                         .run = [this](const QcCommandContext &context) { backup(context); }});
+    registry.addBuiltIn({.name = u"worldinfo"_s,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /worldinfo"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows chunks, entities, tick times and memory of the server."),
+                         .run = [this](const QcCommandContext &context) { worldInfo(context); }});
+    registry.addBuiltIn({.name = u"remove"_s, .minArguments = 1,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                    "Usage: /remove <mobs|hostile|animals|ambient|items|stands|all|<creature>|item:<item>> [radius|world]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                          "Removes entities around you (32 m unless given, at most 256 m) or in the whole loaded world; "
+                                                          "'all' means creatures and items."),
+                         .run = [this](const QcCommandContext &context) { remove(context); }});
+    registry.addBuiltIn({.name = u"stop"_s, .permission = QcPermission::Console,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /stop"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Saves the world and stops the server."),
+                         .run = [this](const QcCommandContext &context) {
+                             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Stopping the server"));
+                             m_parts.stop();
+                         }});
+}
+
+void QcWorldCommands::save(const QcCommandContext &context) const
+{
+    const QcStatus saved = m_parts.save();
+    if (saved) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "World saved"));
+    } else {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Saving failed: %1"), {saved.error()});
+    }
+}
+
+void QcWorldCommands::backup(const QcCommandContext &context) const
+{
+    const QString label = context.args.value(0);
+    if (m_state.config.worldDirectory.isEmpty() || !QcWorldBackup::isValidLabel(label) || context.args.size() > 1) {
+        context.reply(m_state.config.worldDirectory.isEmpty() ? QT_TRANSLATE_NOOP("QcServerMessages", "This world is not saved, there is nothing to back up")
+                                                              : QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /backup [label]"));
+        return;
+    }
+
+    // Saved first, so the copy holds the world as it is now.
+    if (const QcStatus saved = m_parts.save(); !saved) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Saving failed: %1"), {saved.error()});
+        return;
+    }
+
+    QElapsedTimer timer;
+    timer.start();
+    const QString root = m_state.config.backupDirectory.isEmpty() ? QcWorldBackup::defaultRoot(m_state.config.worldDirectory)
+                                                                  : m_state.config.backupDirectory;
+    const QcResult<QcWorldBackup::Summary> copied = QcWorldBackup::copy(m_state.config.worldDirectory, root, label, QDateTime::currentDateTime());
+    if (!copied) {
+        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(copied.error());
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {copied.error()});
+        return;
+    }
+
+    qCInfo(lcWorldCommands).noquote() << u"Backup of %1 files (%2 bytes) in %3 ms: %4"_s.arg(copied->files).arg(copied->bytes).arg(timer.elapsed()).arg(copied->directory);
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup with %1 files (%2 MB) in %3"),
+                  {QString::number(copied->files), megabytes(double(copied->bytes) / (1024.0 * 1024.0)), copied->directory});
+}
+
+void QcWorldCommands::worldInfo(const QcCommandContext &context) const
+{
+    const QcPhaseWindow &window = m_parts.phases.window();
+    int slowest = 0;
+    for (int phase = 1; phase < QcTickPhases::inTick; ++phase) {
+        slowest = window.mean(phase) > window.mean(slowest) ? phase : slowest;
+    }
+    const auto ms = [](double value) { return QString::number(value, 'f', 2); };
+
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "World %1 (%2, seed %3), tick %4"),
+                  {m_state.config.worldName, m_state.config.generator, QString::number(m_state.config.seed), QString::number(m_state.tickCount)});
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Chunks: %1 loaded, %2 changed; players: %3"),
+                  {QString::number(m_state.world.loadedChunkCount()), QString::number(m_state.world.modifiedChunkCount()),
+                   QString::number(std::ranges::count_if(m_state.clients, [](const auto &client) { return client->joined; }))});
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands; %5 machines, %6 chests"),
+                  {QString::number(m_state.mobs.awakeCount()), QString::number(m_state.items.items().size()),
+                   QString::number(m_state.falling.all().size()), QString::number(m_state.stands.stands().size()),
+                   QString::number(m_state.machines.count()), QString::number(m_state.containers.count())});
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Tick: %1 ms mean, %2 ms max, %3 ms late on average, %4 skipped; slowest phase %5 (%6 ms)"),
+                  {ms(window.mean(QcTickPhaseTimer::durationSeries)), ms(window.max(QcTickPhaseTimer::durationSeries)),
+                   ms(window.mean(QcTickPhaseTimer::lateSeries)), QString::number(m_parts.ticks.stats().skipped()),
+                   QString::fromLatin1(QcTickPhases::ids[std::size_t(slowest)]), ms(window.mean(slowest))});
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Memory: %1 MB now, %2 MB at most"),
+                  {megabytes(QcProcessMemory::currentMb()), megabytes(QcProcessMemory::peakMb())});
+}
+
+bool QcWorldCommands::isKnownSelector(const QString &what) const
+{
+    if (what.startsWith(u"item:"_s)) {
+        return m_state.content->itemId(QcCommandArguments::qualified(what.mid(5))).has_value();
+    }
+    return kinds.contains(what) || m_state.content->mobIndex(QcCommandArguments::qualified(what)).has_value();
+}
+
+bool QcWorldCommands::matchesMob(const QString &what, int type) const
+{
+    const QcMobDefinition &mob = m_state.content->mobs()[type];
+    if (what == u"mobs"_s || what == u"all"_s) {
+        return true;
+    }
+    if (what == u"hostile"_s || what == u"animals"_s || what == u"ambient"_s) {
+        const bool animal = !mob.hostile && !mob.ambient;
+        return (what == u"hostile"_s && mob.hostile) || (what == u"animals"_s && animal) || (what == u"ambient"_s && mob.ambient);
+    }
+    return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content->mobIndex(QcCommandArguments::qualified(what)) == type;
+}
+
+bool QcWorldCommands::matchesItem(const QString &what, QcItemStack stack) const
+{
+    if (what == u"items"_s || what == u"all"_s) {
+        return true;
+    }
+    return what.startsWith(u"item:"_s) && m_state.content->itemId(QcCommandArguments::qualified(what.mid(5))) == stack.item;
+}
+
+void QcWorldCommands::sweep(Removal &removal, bool apply)
+{
+    removal.mobs = removal.items = removal.stands = 0;
+    QList<quint32> mobs;
+    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
+        if (!mob.dormant && matchesMob(removal.what, mob.type) && inRange(removal.centre, removal.radius, mob.motion.position)) {
+            mobs.append(mob.id);
+        }
+    }
+
+    QList<quint32> stands;
+    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
+        if (removal.what == u"stands"_s && inRange(removal.centre, removal.radius, stand.position)) {
+            stands.append(stand.id);
+        }
+    }
+
+    const auto itemMatches = [&](const QcItemEntityManager::Item &item) {
+        return matchesItem(removal.what, item.stack) && inRange(removal.centre, removal.radius, item.motion.position);
+    };
+    removal.mobs = int(mobs.size());
+    removal.stands = int(stands.size());
+    removal.items = int(std::ranges::count_if(m_state.items.items(), itemMatches));
+    if (!apply) {
+        return;
+    }
+
+    // Removed without dying: no drops; the clients drop them with the next entity sync.
+    for (const quint32 id : std::as_const(mobs)) {
+        m_state.mobs.remove(id);
+    }
+    for (const quint32 id : std::as_const(stands)) {
+        m_state.stands.remove(id);
+    }
+    m_state.items.removeWhere(itemMatches);
+}
+
+void QcWorldCommands::remove(const QcCommandContext &context)
+{
+    const QStringList &args = context.args;
+    Removal removal{args[0].toLower(), std::nullopt, 0.0};
+    const bool world = args.value(1) == u"world"_s;
+    const std::optional<int> radius = world ? std::optional<int>(0) : QcCommandArguments::count(args, 1, defaultRemoveRadius, 1, maxRemoveRadius);
+    const bool known = isKnownSelector(removal.what);
+    if (!radius || !known || args.size() > 2 || (!world && !context.source.player())) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages",
+                                        "Usage: /remove <mobs|hostile|animals|ambient|items|stands|all|<creature>|item:<item>> [radius|world]"));
+        return;
+    }
+    if (!world) {
+        removal.centre = context.source.player()->motion.position;
+        removal.radius = *radius;
+    }
+
+    sweep(removal, false);
+    const int total = removal.mobs + removal.items + removal.stands;
+    auto run = [this, removal](const QcCommandSource &source) mutable {
+        sweep(removal, true);
+        source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Removed %1 creatures, %2 item stacks and %3 armour stands"),
+                     {QString::number(removal.mobs), QString::number(removal.items), QString::number(removal.stands)});
+    };
+    if (total <= confirmRemoveCount && removal.stands == 0 && !world) {
+        run(context.source);
+        return;
+    }
+
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "This removes %1 creatures, %2 item stacks and %3 armour stands."),
+                  {QString::number(removal.mobs), QString::number(removal.items), QString::number(removal.stands)});
+    m_pending.ask(context, run, m_state.playerTimeNs);
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockParser.h"
+#include "QcCommandMacroParser.h"
 #include "QcHandbookChapter.h"
 #include "QcItemParser.h"
 #include "QcMaterialParser.h"
@@ -23,6 +24,7 @@
 namespace QcContentParser {
 
 using QcBlockParser::parseBlock;
+using QcCommandMacroParser::parseCommandMacro;
 using QcShapeParser::parseShape;
 using QcMaterialParser::parsePartFamily;
 using QcMaterialParser::parseMaterial;

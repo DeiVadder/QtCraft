@@ -1,5 +1,6 @@
 #include "QcLocalServerHost.h"
 
+#include "QcChatText.h"
 #include "QcInProcessTransport.h"
 #include "QcServer.h"
 #include "QcWorldGenerator.h"
@@ -27,6 +28,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
         return;
     }
 
+    connect(m_server, &QcServer::stopRequested, this, &QcLocalServerHost::stopRequested, Qt::QueuedConnection);
     m_server->moveToThread(m_thread);
     // Above the render and worker threads, so the ticks start on time (decision E-090).
     m_thread->start(QThread::HighPriority);
@@ -98,6 +100,28 @@ QcStatus QcLocalServerHost::save()
 
     const std::scoped_lock lock(mutex);
     return result;
+}
+
+QStringList QcLocalServerHost::runConsoleCommand(const QString &line)
+{
+    if (!m_server) {
+        return {u"No world is open"_s};
+    }
+
+    // The replies come back under a std::mutex like the result of save() (decision E-010).
+    std::mutex mutex;
+    QStringList replies;
+    QcServer *server = m_server;
+    QMetaObject::invokeMethod(
+        server,
+        [server, &line, &replies, &mutex] {
+            const std::scoped_lock lock(mutex);
+            server->runConsoleCommand(line, [&replies](const QcMsg::ChatMessage &reply) { replies.append(QcChatText::display(reply)); });
+        },
+        Qt::BlockingQueuedConnection);
+
+    const std::scoped_lock lock(mutex);
+    return replies;
 }
 
 QcStatus QcLocalServerHost::shutdown()

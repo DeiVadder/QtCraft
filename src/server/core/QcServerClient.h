@@ -22,8 +22,10 @@ struct QcServerClient
 {
     enum class State { AwaitingHello, Playing, Closed };
 
-    // Inputs a client may queue beyond one per tick before further inputs are dropped (anti speed-hack).
+    // Inputs a client may queue before further inputs are dropped (anti speed-hack); at slow tick
+    // rates a whole tick's share of inputs plus inputMargin (decision E-249).
     static constexpr int maxInputBudget = 10;
+    static constexpr int inputMargin = 5;
     static constexpr double maxHealth = 20.0;
     // Blocks resent per tick for dropped mining messages (QcServer::resendDroppedMiningTarget).
     static constexpr qsizetype maxMiningResendsPerTick = 3;
@@ -35,11 +37,13 @@ struct QcServerClient
     QcEntityMotion motion;
     // Position before the last processed input; actions may have been aimed from there.
     std::optional<QcVec3> previousPosition;
-    int inputBudget = maxInputBudget;
+    // Refilled each tick by the real time it stands for, one input per 50 ms (decision E-249), so
+    // other tick rates and sprints keep the player's pace.
+    double inputBudget = maxInputBudget;
     // Budgets of the other spammable messages.
     QcRateLimiter rateLimiter;
     // Connected through the in-process host (the local single player): exempt from the chat limit,
-    // the only client that gets debug data.
+    // always an operator.
     bool local = false;
     // Positions whose true block was resent in tick `miningResendTick` after a dropped mining message.
     QList<QcBlockPos> miningResends;
@@ -53,6 +57,8 @@ struct QcServerClient
     bool joined = false;
     std::optional<QcBlockPos> miningPos;
     quint64 miningStartTick = 0;
+    // Players' time (QcServerState::playerTimeNs) when the mining started.
+    qint64 miningStartNs = 0;
 
     double health = maxHealth;
     bool dead = false;

@@ -61,6 +61,8 @@ public:
     QList<Landing> tick(const QcBlockAccess &world, double dt, const LoadedFunction &isLoaded);
 
     const QList<Falling> &all() const { return m_falling; }
+    // Removes the blocks falling inside the chunk; returns how many.
+    qsizetype removeInChunk(QcChunkPos chunk);
     // Replaces all falling blocks (from a save); ids come from `nextEntityId`.
     void restore(const QList<Falling> &falling, const std::function<quint32()> &nextEntityId);
 

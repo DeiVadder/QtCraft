@@ -420,6 +420,17 @@ const QcStructureDefinition *QcContentRegistry::structure(const QString &name) c
     return it != m_structureIndex.constEnd() ? &m_structures[*it] : nullptr;
 }
 
+void QcContentRegistry::registerCommandMacro(QcCommandMacroDefinition macro)
+{
+    registerByName(m_commandMacros, m_commandMacroIndex, std::move(macro));
+}
+
+const QcCommandMacroDefinition *QcContentRegistry::commandMacro(const QString &name) const
+{
+    const auto it = m_commandMacroIndex.constFind(name);
+    return it != m_commandMacroIndex.constEnd() ? &m_commandMacros[*it] : nullptr;
+}
+
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const
 {
     Q_ASSERT(isValidBlock(id));

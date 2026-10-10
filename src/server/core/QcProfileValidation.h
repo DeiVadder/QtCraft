@@ -4,6 +4,8 @@
 
 #include <QString>
 
+#include <optional>
+
 class QcContentRegistry;
 
 // The server's check of a player's profile before it takes it over (Hello, SetAppearance; decisions
@@ -21,8 +23,10 @@ inline constexpr qsizetype maxPlayerNameLength = 32;
 QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &requested);
 
 // Without unpaired surrogates, control and format characters, trimmed, at most
-// maxPlayerNameLength code points cut between graphemes (QcNameText::clean); "Player" when
-// nothing is left.
+// maxPlayerNameLength code points cut between graphemes (QcNameText::clean); std::nullopt when no
+// letter, digit or symbol is left (empty, only spaces or punctuation). Commands refuse such names.
+std::optional<QString> validPlayerName(const QString &requested);
+// The same with "Player" for a name that names nobody (Hello).
 QString playerName(const QString &requested);
 
 } // namespace QcProfileValidation

@@ -135,7 +135,7 @@ private slots:
         QCOMPARE(m_client->stacks, before);
     }
 
-    void cheatCommandsCanBeDisabled_data()
+    void cheatCommandsNeedAnOperator_data()
     {
         QTest::addColumn<QString>("command");
         QTest::newRow("give") << u"/give glass 1"_s;
@@ -145,15 +145,13 @@ private slots:
         QTest::newRow("heal") << u"/heal"_s;
     }
 
-    void cheatCommandsCanBeDisabled()
+    void cheatCommandsNeedAnOperator()
     {
         QFETCH(QString, command);
-        QcServerConfig config;
-        config.allowCheats = false;
-        join(config);
+        join(notOperator());
         const double time = m_server->worldTime();
         chat(command);
-        QVERIFY(m_client->chatLines.constLast().contains(u"disabled"_s));
+        QVERIFY(m_client->chatLines.constLast().contains(u"Only operators"_s));
         QVERIFY(!m_client->dead);
         QCOMPARE(m_server->worldTime(), time);
         QCOMPARE(countOf(item("qtcraft:glass")), 0);
@@ -181,7 +179,7 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:dirt")), 4);
     }
 
-    void giveRejectsBadCountsAndCanBeDisabled()
+    void giveRejectsBadCountsAndNeedsAnOperator()
     {
         join();
         chat(u"/give glass -5"_s);
@@ -191,12 +189,10 @@ private slots:
         QCOMPARE(m_client->chatLines.size(), 3);
         cleanup();
 
-        QcServerConfig config;
-        config.allowCheats = false;
-        join(config);
+        join(notOperator());
         chat(u"/give glass 1"_s);
         QCOMPARE(countOf(item("qtcraft:glass")), 0);
-        QVERIFY(m_client->chatLines.constLast().contains(u"disabled"_s));
+        QVERIFY(m_client->chatLines.constLast().contains(u"Only operators"_s));
     }
 
     void attacksNeedReachAndKillGivesLoot()
@@ -336,16 +332,15 @@ private slots:
         QVERIFY2(m_client->food >= 18 && m_client->food <= 19, qPrintable(QString::number(m_client->food)));
     }
 
-    void gameRuleNeedsCheatsAndAValue()
+    void gameRuleNeedsAnOperatorAndAValue()
     {
-        QcServerConfig config;
-        config.allowCheats = false;
+        QcServerConfig config = notOperator();
         config.keepInventory = false;
         join(config);
         chat(u"/gamerule keepInventory"_s);
         QVERIFY(m_client->chatLines.last().contains(u"false"_s));
         chat(u"/gamerule keepInventory true"_s);
-        QVERIFY(m_client->chatLines.last().contains(u"disabled"_s));
+        QVERIFY(m_client->chatLines.last().contains(u"Only operators"_s));
         QVERIFY(!m_server->keepInventory());
         cleanup();
         join();
@@ -386,9 +381,7 @@ private slots:
         QVERIFY(m_client->chatLines.last().startsWith(u"Usage"_s));
 
         cleanup();
-        QcServerConfig noCheats;
-        noCheats.allowCheats = false;
-        join(noCheats);
+        join(notOperator());
         chat(u"/spawnitem dirt"_s);
         chat(u"/setblock ~1 ~ ~ glass"_s);
         QVERIFY(m_server->items().items().isEmpty());

@@ -17,14 +17,15 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h
+    session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
     session/QcClientSession.h session/QcClientSession.cpp
+    session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     debug/QcDebugSnapshot.h debug/QcDebugSnapshot.cpp
     debug/QcDebugText.h debug/QcDebugText.cpp
     debug/QcDebugJson.h debug/QcDebugJson.cpp
     debug/QcDebugLines.h debug/QcDebugLines.cpp
-    debug/QcProcessMemory.h debug/QcProcessMemory.cpp
     debug/QcStatsLog.h debug/QcStatsLog.cpp
     light/QcLightProbe.h light/QcLightProbe.cpp
     meshing/QcEntityMesh.h

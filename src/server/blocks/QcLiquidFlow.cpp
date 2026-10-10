@@ -331,6 +331,16 @@ void QcLiquidFlow::clear()
     m_planned.clear();
 }
 
+void QcLiquidFlow::forgetChunk(QcChunkPos chunk)
+{
+    const auto inChunk = [chunk](QcBlockPos pos) { return pos.chunk() == chunk; };
+    m_planned.removeIf([&inChunk](const auto &planned) { return inChunk(planned.key()); });
+    std::erase_if(m_due, [&inChunk](auto &due) {
+        due.second.removeIf(inChunk);
+        return due.second.isEmpty();
+    });
+}
+
 void QcLiquidFlow::change(QcBlockPos pos, QcBlockId block, const StepContext &context)
 {
     context.set(pos, block);

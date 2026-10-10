@@ -1,11 +1,25 @@
 qt_add_library(qc_server STATIC
+    commands/QcAccessList.h commands/QcAccessList.cpp
+    commands/QcBlockCommands.h commands/QcBlockCommands.cpp
+    commands/QcCheatCommands.h commands/QcCheatCommands.cpp
+    commands/QcChunkRegeneration.h commands/QcChunkRegeneration.cpp
+    commands/QcCommandArguments.h commands/QcCommandArguments.cpp
+    commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
+    commands/QcCommandSource.h commands/QcCommandSource.cpp
+    commands/QcPendingCommands.h commands/QcPendingCommands.cpp
+    commands/QcPermission.h
+    commands/QcPlayerCommands.h commands/QcPlayerCommands.cpp
+    commands/QcServerCommands.h commands/QcServerCommands.cpp
+    commands/QcStandCommands.h commands/QcStandCommands.cpp
+    commands/QcTickCommands.h commands/QcTickCommands.cpp
+    commands/QcWorldBackup.h commands/QcWorldBackup.cpp
+    commands/QcWorldCommands.h commands/QcWorldCommands.cpp
     content/QcBaseContent.h content/QcBaseContent.cpp
     storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
-    core/QcChatCommands.h core/QcChatCommands.cpp
     core/QcChunkStreaming.h core/QcChunkStreaming.cpp
     machines/QcContainerManager.h machines/QcContainerManager.cpp
     content/QcContentPackLoader.h content/QcContentPackLoader.cpp
@@ -47,9 +61,9 @@ qt_add_library(qc_server STATIC
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
-    core/QcStandCommands.h core/QcStandCommands.cpp
     core/QcServerDebug.h core/QcServerDebug.cpp
     core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
+    core/QcTickControl.h
     core/QcTickScheduler.h core/QcTickScheduler.cpp
     core/QcTickStats.h core/QcTickStats.cpp
     worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
@@ -97,6 +111,7 @@ endif()
 # stay "QcName.h" without a path.
 target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/commands
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines

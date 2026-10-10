@@ -18,8 +18,10 @@ public:
 
     void received(QcMessage &&message)
     {
+        ++messageCount;
         if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
+            acknowledged = state->lastInputSequence;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
         } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
@@ -52,6 +54,8 @@ public:
         } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
             openMachine.reset();
             machineClosed = true;
+        } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
+            disconnectReason = disconnect->reason;
         } else {
             receivedWorld(message);
         }
@@ -74,12 +78,17 @@ public:
             }
         } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
             debugMessages.append(*debug);
+        } else if (const auto *chunk = std::get_if<QcMsg::ChunkData>(&message)) {
+            chunks.append(chunk->chunk->pos());
         } else if (const auto *labels = std::get_if<QcMsg::ChunkLabels>(&message)) {
             chunkLabels.insert(labels->pos, labels->labels);
         } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
+            ++timeMessages;
             worldTime = time->time;
             timeRunning = time->running;
+            timeSpeed = time->speed;
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
+            ++entityMoveMessages;
             for (const QcMsg::EntityMove &move : moves->moves) {
                 flags[move.id] |= move.flags;
                 if (move.hurt) {
@@ -93,6 +102,12 @@ public:
     // The player's own entity id (from Welcome).
     quint32 entityId = 0;
     QcEntityMotion motion;
+    // The latest input the server acknowledged (PlayerState).
+    quint32 acknowledged = 0;
+    // Messages received in all, and the WorldTime and EntityMoves among them.
+    int messageCount = 0;
+    int timeMessages = 0;
+    int entityMoveMessages = 0;
     // Keys of all sounds heard, oldest first.
     QStringList sounds;
     QList<QcItemStack> stacks;
@@ -102,7 +117,11 @@ public:
     QcEquipment equipment;
     qint32 openedCrafting = 0;
     QList<QcMsg::BlockUpdate> blockUpdates;
+    // Positions of the chunks received, in order.
+    QList<QcChunkPos> chunks;
     QStringList chatLines;
+    // Why the server closed the connection; empty while connected.
+    QString disconnectReason;
     // The same lines with their translation keys and arguments.
     QList<QcMsg::ChatMessage> chatKeys;
     double health = 0.0;
@@ -127,6 +146,8 @@ public:
     QHash<QcChunkPos, QList<QcWorldLabel>> chunkLabels;
     double worldTime = -1.0;
     bool timeRunning = true;
+    // Server ticks per client tick for the time of day (decision E-249).
+    double timeSpeed = 1.0;
     // Debug data received after a DebugSubscribe, oldest first.
     QList<QcMsg::ServerDebug> debugMessages;
 };

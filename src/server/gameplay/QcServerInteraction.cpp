@@ -13,6 +13,7 @@
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -40,8 +41,11 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     const QcBlockDefinition &definition = m_state.content->block(*block);
     const QcItemDefinition *held = m_state.heldItem(client);
     const double seconds = QcMining::breakSeconds(definition, held);
-    const auto requiredTicks = quint64(std::ceil(seconds * QcPhysics::tickRate));
-    if (seconds < 0.0 || m_state.tickCount - client.miningStartTick + miningToleranceTicks < requiredTicks) {
+    // In the players' time, so the mining takes as long at every tick rate.
+    constexpr qint64 tickNs = qint64(QcPhysics::tickDuration * 1e9);
+    const qint64 requiredNs = qint64(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
+    const qint64 toleranceNs = (miningToleranceTicks - 1) * tickNs + std::max(tickNs, m_state.lastTickNs);
+    if (seconds < 0.0 || m_state.playerTimeNs - client.miningStartNs + toleranceNs < requiredNs) {
         client.connection->send(QcMsg::BlockUpdate{pos, *block});
         return;
     }

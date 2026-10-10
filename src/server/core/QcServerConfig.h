@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QStringList>
 
 #include <array>
 #include <optional>
@@ -21,9 +22,10 @@ struct QcServerConfig
     // Directory of the saved world; empty runs without persistence (tests, throw-away worlds).
     QString worldDirectory;
     int autosaveSeconds = 60;
-    // Commands that bypass the rules (/give). On for single player; a dedicated server would
-    // restrict them to operators.
-    bool allowCheats = true;
+    // Operators besides the world's list (access.json) and the local player (decision E-244).
+    QStringList operators;
+    // Where /backup puts copies; empty: "backups" next to the folder of worlds.
+    QString backupDirectory;
     // Game rule for new and unsaved worlds; saved worlds keep the value in world.json.
     bool keepInventory = true;
     // Neighbour updates of commands (/fill) queued at most; further ones are dropped with a warning.

@@ -13,8 +13,9 @@ struct QcServerState;
 // Debug data for the clients that ask for it (QcMsg::DebugSubscribe, decision E-225): the tick
 // phases of the server's window, its counts and, on request, where the creatures near the player
 // are heading. Sent at most twice a second per client and only while subscribed, so a client
-// without a debug display costs nothing. Only the local player gets it: the counts of the whole
-// server and the positions of chased players are not for every client (until operators exist).
+// without a debug display costs nothing. Only operators get it (the local player and listed
+// operators; widened from the local player in stage 24): the counts of the whole server and the
+// positions of chased players are not for every client.
 class QcServerDebug
 {
 public:
@@ -27,7 +28,7 @@ public:
 
     // `flags` as in QcMsg::DebugSubscribe, the latest subscription counts. The first message
     // follows with the next tick, unless the previous one went out less than intervalTicks ago (a
-    // flood of subscriptions does not speed up the messages). Remote clients get nothing.
+    // flood of subscriptions does not speed up the messages). Players without operator rights get nothing.
     void subscribe(QcServerClient &client, quint8 flags) const;
     // Sends the client its debug data when it is subscribed and the interval has passed.
     void update(QcServerClient &client) const;

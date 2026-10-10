@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Spielregeln und Befehle](#chapter-qtcraft-rules)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands)
 
 ## QtCraft
 
@@ -175,21 +175,60 @@ Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und 
 
 [Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
 
-### <a id="chapter-qtcraft-rules"></a>Spielregeln und Befehle
+### <a id="chapter-qtcraft-rules"></a>Spielregeln
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). Mit `/gamerule keepInventory [true|false]` anzeigen oder ändern.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
-**Befehle**
+### <a id="chapter-qtcraft-commands"></a>Befehle
 
-Öffne den Chat mit T und gib einen Befehl ein:
-- `/help`, `/save`
+**Befehle eingeben**
+
+Öffne den Chat mit T (oder /) und gib einen Befehl mit `/` am Anfang ein. `/help` listet die Befehle, die du verwenden darfst, `/help <Befehl>` zeigt, wie einer geht. `~` steht in Koordinaten für deine Position (`~2` ist zwei Blöcke weiter). Ein Server ohne Fenster (`qtcraft-headless --console`) liest dieselben Befehle in seiner Konsole, dort ohne `/` am Anfang; jeder Befehl landet mit seinem Absender im Server-Log.
+
+**Operatoren und Bestätigungen**
+
+Die meisten Befehle sind für **Operatoren**. Im Einzelspieler bist du immer Operator; auf einem Server machen Operatoren andere mit `/op <Spieler>` zu Operatoren und nehmen die Rechte mit `/deop` wieder. Jeder Spieler darf `/help`, `/list`, `/locatebiome`, das Lesen einer Spielregel, `/confirm` und `/cancel` verwenden. Befehle, die viel zerstören, warten auf `/confirm` (innerhalb von 30 s; `/cancel` verwirft sie): `/regenerate`, `/fill` und `/clear` mit mehr als 4096 Blöcken, `/remove` von mehr als 16 Entities, von Rüstungsständern oder in der ganzen Welt.
+
+**Spieler**
+
+- `/list`: wer online ist
+- `/locatebiome <Biom>`: wo der nächste Ort eines Bioms liegt
+- `/kick <Spieler> [Grund]`: einen Spieler trennen (er darf wiederkommen)
+- `/ban <Spieler> [Grund]`, `/unban <Spieler>`, `/banlist`: einen Namen aus dieser Welt aussperren
+- `/whitelist on|off|list|add <Spieler>|remove <Spieler>`: mit eingeschalteter Whitelist kommen nur gelistete Spieler und Operatoren herein; eine Sperre gilt auch für Operatoren
+- `/op [Spieler]`, `/deop <Spieler>`: Operator-Rechte; `/op` allein listet die Operatoren
+- `/tp <x> <y> <z>`, `/tp <Spieler>`, `/tp <Spieler> <x> <y> <z>`, `/tp <Spieler> <Zielspieler>`: teleportieren
+Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastgeber einer Welt kann nicht getrennt oder gesperrt werden und behält seine Rechte.
+
+**Reparieren und aufräumen**
+
+- `/regenerate [<x> <z> [<x2> <z2>]]`: den Chunk unter dir (oder die Chunks eines Bereichs, höchstens 64) so neu erzeugen, wie der Welttyp ihn macht; jede Änderung darin geht verloren, Truhen und Öfen darin verlieren ihren Inhalt
+- `/remove <mobs|hostile|animals|ambient|items|stands|all|<Wesen>|item:<Item>> [Radius|world]`: Entities im Umkreis von 32 m (höchstens 256 m) oder in der ganzen geladenen Welt entfernen; `all` meint Wesen und Items
+- `/fill <x1> <y1> <z1> <x2> <y2> <z2> <Block> [replace <Block>]` und `/clear <x1> <y1> <z1> <x2> <y2> <z2> [Block]`: einen Quader füllen oder zu Luft machen, höchstens 32768 Blöcke; `replace` und der Block von `/clear` beschränken die Änderung auf eine Blockart
+- `/setblock <x> <y> <z> <Block>`
+- `/save`: sofort speichern; `/backup [Bezeichnung]`: speichern und den Weltordner in den Ordner backups neben den Welten kopieren, benannt mit Datum und Uhrzeit
+- `/worldinfo`: geladene Chunks, Entities, Tick-Zeiten und Speicher
+
+**Zeit und Ticks**
+
+- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
+- `/gamemode [survival] [Spieler]`: bisher gibt es nur Überleben
+- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
+- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft
+- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)
+- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase
+Rate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.
+
+**Items, Wesen und Rüstung**
+
 - `/give <item> [anzahl]`, `/spawnitem <item> [anzahl]`
-- `/time set day|night|<sekunden>`, `/time add <sekunden>`
 - `/summon <wesen> [anzahl]` (höchstens 64 Wesen), `/kill`, `/heal`, `/feed [punkte]`
-- `/setblock <x> <y> <z> <block>`, `/fill <x1> <y1> <z1> <x2> <y2> <z2> <block>` (höchstens 32768 Blöcke; `~` steht für deine Position)
-- `/locatebiome <biom>`
-- `/equip <Satz|Rüstung|clear>` legt Rüstung an (`/equip iron`)
-- `/summon armor_stand [Eigenschaft=Wert …]` und `/armorstand <nearest|looking|Id> <Eigenschaft> [Werte]` stellen Rüstungsständer auf und verändern sie. Eigenschaften: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (Grad), `rotation <Grad>`, `arms`, `plate`, `small`, `showname` mit `true|false`, `name [Text]`, `equip <Satz|Item>`, `cape <Umhang|none>`, `clear`, `reset`; `info` zeigt sie an. Ständer-Ids gelten nur, bis die Welt neu geladen wird; Skripte nutzen `nearest` oder `looking`. Rüstung und Items, die `equip` oder `clear` ersetzen, fallen auf den Boden, `/equip` legt ersetzte Teile in dein Inventar. Bei `/summon` folgen die Werte nach `=`, durch Kommas getrennt: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
-Alle außer `/help`, `/save` und dem Lesen einer Spielregel sind Cheats; Einzelspieler-Welten erlauben sie.
+- `/equip <satz|rüstung|clear>` legt Rüstung an (`/equip iron`)
+- `/summon armor_stand [eigenschaft=wert …]` und `/armorstand <nearest|looking|id> <eigenschaft> [werte]` stellen und ändern Rüstungsständer. Eigenschaften: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (Grad), `rotation <grad>`, `arms`, `plate`, `small`, `showname` mit `true|false`, `name [text]`, `equip <satz|item>`, `cape <umhang|none>`, `clear`, `reset`; `info` listet sie. Ständer-Ids gelten nur bis zum nächsten Laden der Welt; Skripte nutzen `nearest` oder `looking`. In `/summon` folgen Werte auf `=`, durch Kommas getrennt: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
+
+**Befehle aus Mods**
+
+Mods ergänzen Befehle als Makros (`commands/*.json`): ein Name und Befehlszeilen, die nacheinander mit deinen Rechten laufen; ein Makro erlaubt also nie mehr, als du ohnehin darfst. `/help` listet sie mit den anderen.

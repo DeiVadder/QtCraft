@@ -46,6 +46,8 @@ public:
     // Re-queues waiting updates of chunks that loaded since the last tick and the blocks along their
     // borders that connect or hang across them.
     void handleLoadedChunks();
+    // Drops every pending and waiting update inside the chunk (it was generated again).
+    void forgetChunk(QcChunkPos chunk);
 
     QList<QcBlockPos> playerUpdates() const { return {m_playerUpdates.begin(), m_playerUpdates.end()}; }
     QList<QcBlockPos> commandUpdates() const { return {m_commandUpdates.begin(), m_commandUpdates.end()}; }

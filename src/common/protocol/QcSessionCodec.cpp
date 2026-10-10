@@ -49,7 +49,7 @@ void encode(QDataStream &stream, const QcMsg::ChatMessage &m)
 
 void encode(QDataStream &stream, const QcMsg::WorldTime &m)
 {
-    stream << m.time << m.dayLength << m.running;
+    stream << m.time << m.dayLength << m.running << m.speed;
 }
 
 QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
@@ -123,8 +123,9 @@ QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
 QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream)
 {
     QcMsg::WorldTime m;
-    stream >> m.time >> m.dayLength >> m.running;
-    if (!std::isfinite(m.time) || !std::isfinite(m.dayLength) || m.dayLength <= 0.0) {
+    stream >> m.time >> m.dayLength >> m.running >> m.speed;
+    if (!std::isfinite(m.time) || !std::isfinite(m.dayLength) || m.dayLength <= 0.0 || !std::isfinite(m.speed) || m.speed < 0.0
+        || m.speed > QcMsg::WorldTime::maxSpeed) {
         return qcError(u"Invalid world time"_s);
     }
     return m;

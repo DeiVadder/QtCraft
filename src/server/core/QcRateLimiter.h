@@ -8,9 +8,10 @@
 #include <optional>
 
 // Token buckets of one player, one per kind of spammable message (decision E-091). A bucket starts
-// full, refills with the server ticks (so it follows game time, also when ticks are caught up) and
-// pays one token per message; a message finding its bucket empty is dropped. The limits lie well
-// above what the real client sends while playing.
+// full, refills with the players' time of the server (QcServerState::playerTimeNs: real time at every
+// tick rate and during a sprint, deterministic in tests) and pays one token per message; a message
+// finding its bucket empty is dropped. The limits lie well above what the real client sends while
+// playing.
 class QcRateLimiter
 {
 public:
@@ -48,7 +49,7 @@ public:
         {2.0, 10.0},
     }};
     // Drops are logged at most this often per player and kind (the first one at once).
-    static constexpr quint64 reportIntervalTicks = 20;
+    static constexpr qint64 reportIntervalNs = 1'000'000'000;
 
     static constexpr Limit limit(Kind kind) { return limits[size_t(kind)]; }
     // The bucket a client message pays into; std::nullopt for messages that are not limited here.
@@ -60,20 +61,20 @@ public:
     static bool isUnlimited(const QcMessage &message);
     static const char *name(Kind kind);
 
-    // Takes a token at server tick `tick`; false when the bucket is empty (the drop is counted).
-    bool allow(Kind kind, quint64 tick);
-    // Drops of `kind` not yet reported, when a report is due at `tick` (then they count as
+    // Takes a token at `nowNs` (players' time); false when the bucket is empty (the drop is counted).
+    bool allow(Kind kind, qint64 nowNs);
+    // Drops of `kind` not yet reported, when a report is due at `nowNs` (then they count as
     // reported); 0 otherwise.
-    quint64 takeDropReport(Kind kind, quint64 tick);
+    quint64 takeDropReport(Kind kind, qint64 nowNs);
 
 private:
     struct Bucket
     {
         double tokens = -1.0;
-        quint64 refilledAt = 0;
+        qint64 refilledAt = 0;
         quint64 dropped = 0;
         bool reported = false;
-        quint64 reportedAt = 0;
+        qint64 reportedAt = 0;
     };
 
     std::array<Bucket, kindCount> m_buckets;

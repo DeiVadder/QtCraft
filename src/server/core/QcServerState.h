@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcAccessList.h"
 #include "QcArmourStandManager.h"
 #include "QcContainerManager.h"
 #include "QcContentRegistry.h"
@@ -8,6 +9,7 @@
 #include "QcLiquidFlow.h"
 #include "QcMachineManager.h"
 #include "QcMobManager.h"
+#include "QcPermission.h"
 #include "QcPlantGrowth.h"
 #include "QcPlantManager.h"
 #include "QcServerClient.h"
@@ -43,13 +45,24 @@ struct QcServerState
     QcVec3 spawnPosition();
     // Clients that know the entity get its spawn again (a new look, armour or stand pose).
     void markStale(quint32 entityId);
+    // The local player (host of a single player world) and listed operators are operators
+    // (decision E-243).
+    QcPermission permissionOf(const QcServerClient &client) const;
 
     QcServerConfig config;
     std::shared_ptr<const QcContentRegistry> content;
     QcServerWorld world;
     std::vector<std::unique_ptr<QcServerClient>> clients;
     QcWorldInfo info;
+    QcAccessList access;
     quint64 tickCount = 0;
+    // Real time as the players live it (decision E-249): each tick adds the real time it stands for
+    // (QcTickScheduler::tickRealNs). Input budgets, rate limits, autosaves, confirmations and the
+    // pace of messages to the clients follow it at every tick rate and during a sprint; the
+    // simulation follows tickCount.
+    qint64 playerTimeNs = 0;
+    // The real time the latest tick stood for.
+    qint64 lastTickNs = 50'000'000;
     quint32 nextEntityId = 1;
     QcMobManager mobs;
     QcItemEntityManager items;

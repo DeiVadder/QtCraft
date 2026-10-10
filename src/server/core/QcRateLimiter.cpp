@@ -1,7 +1,5 @@
 #include "QcRateLimiter.h"
 
-#include "QcPhysics.h"
-
 #include <algorithm>
 
 std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &message)
@@ -54,7 +52,7 @@ const char *QcRateLimiter::name(Kind kind)
     return names[size_t(kind)];
 }
 
-bool QcRateLimiter::allow(Kind kind, quint64 tick)
+bool QcRateLimiter::allow(Kind kind, qint64 nowNs)
 {
     const Limit rule = limit(kind);
     Bucket &bucket = m_buckets[size_t(kind)];
@@ -62,13 +60,13 @@ bool QcRateLimiter::allow(Kind kind, quint64 tick)
     // A bucket starts full on its first message.
     if (bucket.tokens < 0.0) {
         bucket.tokens = rule.burst;
-        bucket.refilledAt = tick;
+        bucket.refilledAt = nowNs;
     }
 
-    if (tick > bucket.refilledAt) {
-        const double refill = double(tick - bucket.refilledAt) * rule.perSecond * QcPhysics::tickDuration;
+    if (nowNs > bucket.refilledAt) {
+        const double refill = double(nowNs - bucket.refilledAt) * 1e-9 * rule.perSecond;
         bucket.tokens = std::min(rule.burst, bucket.tokens + refill);
-        bucket.refilledAt = tick;
+        bucket.refilledAt = nowNs;
     }
 
     if (bucket.tokens < 1.0) {
@@ -80,16 +78,16 @@ bool QcRateLimiter::allow(Kind kind, quint64 tick)
     return true;
 }
 
-quint64 QcRateLimiter::takeDropReport(Kind kind, quint64 tick)
+quint64 QcRateLimiter::takeDropReport(Kind kind, qint64 nowNs)
 {
     Bucket &bucket = m_buckets[size_t(kind)];
-    if (bucket.dropped == 0 || (bucket.reported && tick - bucket.reportedAt < reportIntervalTicks)) {
+    if (bucket.dropped == 0 || (bucket.reported && nowNs - bucket.reportedAt < reportIntervalNs)) {
         return 0;
     }
 
     const quint64 dropped = bucket.dropped;
     bucket.dropped = 0;
     bucket.reported = true;
-    bucket.reportedAt = tick;
+    bucket.reportedAt = nowNs;
     return dropped;
 }

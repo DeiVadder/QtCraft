@@ -3,7 +3,6 @@
     "order": 120,
     "icon": "bedrock",
     "sections": [
-        "rules",
-        "commands"
+        "rules"
     ]
 }

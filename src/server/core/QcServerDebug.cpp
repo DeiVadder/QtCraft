@@ -27,7 +27,8 @@ QcServerDebug::QcServerDebug(const QcServerState &state, const QcBlockUpdateQueu
 
 void QcServerDebug::subscribe(QcServerClient &client, quint8 flags) const
 {
-    if (!client.local) {
+    // Server-wide counts and the positions of chased players are for operators (decision E-225).
+    if (m_state.permissionOf(client) == QcPermission::Player) {
         return;
     }
     client.debugFlags = flags & QcMsg::DebugSubscribe::all;

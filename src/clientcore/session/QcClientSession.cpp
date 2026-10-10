@@ -179,6 +179,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         m_worldTime = time->time;
         m_dayLength = time->dayLength;
         m_timeRunning = time->running;
+        m_timeSpeed = time->speed;
     } else {
         return false;
     }
@@ -238,17 +239,23 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
 
 bool QcClientSession::handleMachineMessage(const QcMessage &message)
 {
-    if (const auto *open = std::get_if<QcMsg::OpenMachine>(&message)) {
-        onOpenMachine(*open);
-    } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
-        onMachineState(*machine);
-    } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
-        if (m_machine) {
-            m_machine.reset();
-            emit machineClosed();
-        }
-    } else {
+    const std::optional<QcClientMachineScreen::Change> change = m_machine.handle(message, m_content.get());
+    if (!change) {
         return false;
+    }
+
+    switch (*change) {
+    case QcClientMachineScreen::Change::Opened:
+        emit machineOpened();
+        break;
+    case QcClientMachineScreen::Change::Changed:
+        emit machineChanged();
+        break;
+    case QcClientMachineScreen::Change::Closed:
+        emit machineClosed();
+        break;
+    case QcClientMachineScreen::Change::None:
+        break;
     }
     return true;
 }
@@ -329,36 +336,6 @@ void QcClientSession::onInventoryState(const QcMsg::InventoryState &inventory)
     emit inventoryChanged();
 }
 
-void QcClientSession::onOpenMachine(const QcMsg::OpenMachine &open)
-{
-    // An answer to a use that the player already closed again; the server has closed it too.
-    if (m_machineClosedLocally) {
-        return;
-    }
-
-    m_machine = open.pos;
-    m_machineCategory = open.category;
-    m_machineSlots = QList<QcItemStack>(open.category.isEmpty() ? 0 : QcMsg::MachineState::slotCount);
-    m_machineBurn = 0.0;
-    m_machineProgress = 0.0;
-    emit machineOpened();
-}
-
-void QcClientSession::onMachineState(const QcMsg::MachineState &machine)
-{
-    // Only the open machine's state is shown; unknown items would break the screen.
-    const bool known = std::ranges::all_of(machine.stacks, [this](QcItemStack stack) {
-        return stack.isEmpty() || (m_content && m_content->isValidItem(stack.item));
-    });
-
-    if (m_machine == machine.pos && known) {
-        m_machineSlots = machine.stacks;
-        m_machineBurn = machine.burn;
-        m_machineProgress = machine.progress;
-        emit machineChanged();
-    }
-}
-
 void QcClientSession::reconcile(const QcMsg::PlayerState &state)
 {
     // A state older than one already applied would roll the prediction back; ignore it.
@@ -387,7 +364,8 @@ void QcClientSession::tick()
 
     ++m_tickCount;
     if (m_timeRunning) {
-        m_worldTime += QcPhysics::tickDuration;
+        // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
+        m_worldTime += QcPhysics::tickDuration * m_timeSpeed;
     }
     m_entities.tick();
 
@@ -437,7 +415,7 @@ void QcClientSession::tick()
         m_landingTicks = 0;
     }
 
-    const QList<QcSoundCue> steps = m_localSounds.update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
+    const QList<QcSoundCue> steps = m_sounds.local().update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
     for (const QcSoundCue &step : steps) {
         cue(step);
     }
@@ -454,39 +432,16 @@ void QcClientSession::tick()
 
 void QcClientSession::cue(QcSoundCue cue)
 {
-    if (cue.key.isEmpty()) {
-        return;
+    if (m_sounds.record(cue, m_tickCount)) {
+        emit soundCue(cue);
     }
-
-    cue.tick = m_tickCount;
-    if (m_recentSounds.size() >= recentSoundLimit) {
-        m_recentSounds.removeFirst();
-    }
-
-    m_recentSounds.append(cue);
-    emit soundCue(cue);
 }
 
 void QcClientSession::updateSounds()
 {
     m_entities.stepSounds(*m_world, [this](const QcSoundCue &step) { cue(step); });
-
-    if (m_tickCount % ambienceTicks == 1) {
-        const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-        m_ambienceTarget = QcAmbience::targets(*m_world, eye);
-
-        // A fixed pseudo-random sequence over the samples keeps sessions reproducible.
-        const quint64 sample = m_tickCount / ambienceTicks;
-        const double roll = double((sample * 2654435761ULL) % 1000ULL) / 1000.0;
-        if (roll < QcAmbience::lavaPopChance) {
-            if (const std::optional<QcBlockPos> lava = QcAmbience::nearestGlowingLiquid(*m_world, eye)) {
-                cue({QString::fromLatin1(QcSoundKeys::lavaPop), {lava->x + 0.5, lava->y + 1.0, lava->z + 0.5}, 1.0f, 1.0f,
-                     QcSoundCue::Origin::Local, 0});
-            }
-        }
-    }
-
-    m_ambience = QcAmbience::approach(m_ambience, m_ambienceTarget, QcPhysics::tickDuration);
+    const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    m_sounds.updateAmbience(*m_world, eye, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
 }
 
 void QcClientSession::refreshTarget()
@@ -576,7 +531,7 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
     pose.sneaking = (entity.flags & QcMsg::Sneaking) != 0;
     pose.sprinting = (entity.flags & QcMsg::Sprinting) != 0;
     pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
-    pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / hurtFlashTicks : -1.0;
+    pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
     pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * float(alpha);
     return pose;
@@ -694,7 +649,7 @@ bool QcClientSession::useItem()
         return false;
     }
 
-    m_machineClosedLocally = false;
+    m_machine.usedBlock();
 
     const QcVec3 hit = m_target->point - QcVec3{double(m_target->block.x), double(m_target->block.y), double(m_target->block.z)};
     const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
@@ -720,12 +675,10 @@ void QcClientSession::closeCrafting()
 
 void QcClientSession::closeMachine()
 {
-    if (!m_machine) {
+    if (!m_machine.closeLocally()) {
         return;
     }
 
-    m_machine.reset();
-    m_machineClosedLocally = true;
     m_connection->send(QcMsg::CloseMachine{});
     emit machineClosed();
 }

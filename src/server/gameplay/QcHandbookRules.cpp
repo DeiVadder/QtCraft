@@ -1,14 +1,18 @@
 #include "QcHandbookRules.h"
 
+#include "QcBlockCommands.h"
+#include "QcChunkRegeneration.h"
 #include "QcDayCycle.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcItemEntityManager.h"
 #include "QcMining.h"
 #include "QcMobManager.h"
+#include "QcPendingCommands.h"
 #include "QcPhysics.h"
 #include "QcRaycast.h"
 #include "QcServer.h"
+#include "QcWorldCommands.h"
 
 #include <cmath>
 
@@ -60,6 +64,11 @@ QMap<QString, double> values()
         {u"mobs.caveDepth"_s, QcMobManager::caveDepth},
         {u"commands.maxFill"_s, double(QcServer::maxFillBlocks)},
         {u"commands.summonLimit"_s, QcMobManager::summonLimit},
+        {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},
+        {u"commands.confirmFill"_s, double(QcBlockCommands::confirmFillBlocks)},
+        {u"commands.confirmRemove"_s, QcWorldCommands::confirmRemoveCount},
+        {u"commands.maxRegenerate"_s, double(QcChunkRegeneration::maxChunks)},
+        {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
 }
 

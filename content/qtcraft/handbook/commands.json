@@ -1,0 +1,14 @@
+{
+    "name": "commands",
+    "order": 125,
+    "icon": "book",
+    "sections": [
+        "basics",
+        "rights",
+        "players",
+        "repair",
+        "control",
+        "cheats",
+        "macros"
+    ]
+}

@@ -37,12 +37,19 @@ public:
     std::unique_ptr<QcTransport> connectClient();
     // Saves the world now (blocks until done).
     QcStatus save();
+    // Runs a line of the server console in the server thread (decision E-247) and returns the
+    // replies as English text (blocks until done).
+    QStringList runConsoleCommand(const QString &line);
     // Server tick durations, lateness and skipped ticks so far (benchmark); zero when no world is open.
     QcTickStats::Summary tickStats() const;
     void resetTickTimes();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
     // calls report success.
     QcStatus shutdown();
+
+signals:
+    // The console asked to stop the server (/stop); the owner shuts the host down.
+    void stopRequested();
 
 private:
     // Runs in the server thread.

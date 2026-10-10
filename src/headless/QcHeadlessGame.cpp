@@ -13,6 +13,7 @@
 #include "QcKeyBindings.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
+#include "QcServerConsole.h"
 #include "QcShowcaseGenerator.h"
 #include "QcShowcaseTour.h"
 #include "QcSoundExporter.h"
@@ -106,6 +107,12 @@ struct Options
     QCommandLineOption statsLog{u"stats"_s,
                                 u"Log the debug data as a JSON line 'STATS {...}' every this many milliseconds (also QTCRAFT_STATS)."_s,
                                 u"ms"_s};
+    QCommandLineOption console{u"console"_s,
+                               u"Run a server console on standard input instead of the control interface (no bot joins; "
+                               u"the time limit applies only when given)."_s};
+    QCommandLineOption noEofStop{u"no-eof-stop"_s,
+                                 u"With --console: the end of standard input does not stop the server (a service without input); "
+                                 u"it runs until the time limit or until the process is ended."_s};
     QCommandLineOption icon{u"export-icon"_s,
                             u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
                             u"dir"_s};
@@ -116,7 +123,7 @@ struct Options
         parser.addOptions({sounds, icon});
         parser.addOptions({handbook, language});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, view, script, time, map, mapRadius, data, mods, noMods, statsLog});
+        parser.addOptions({seed, world, generator, generatorOptions, view, script, console, noEofStop, time, map, mapRadius, data, mods, noMods, statsLog});
     }
 };
 
@@ -396,9 +403,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     m_library = std::make_unique<QcWorldLibrary>(parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"worlds"_s)
                                                                             : QcWorldLibrary::defaultRoot());
     startStatsLog(QcStatsLog::interval(parser.value(options.statsLog)));
+    m_consoleMode = parser.isSet(options.console);
     if (const QcStatus started = startWorld(config); !started) {
         printError(started.error());
         return false;
+    }
+    if (m_consoleMode) {
+        startConsole(parser.isSet(options.time) ? timeLimit : 0, !parser.isSet(options.noEofStop));
+        return true;
     }
     return startControl(parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt, timeLimit);
 }
@@ -463,6 +475,19 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int 
         QCoreApplication::exit(2);
     });
     return true;
+}
+
+void QcHeadlessGame::startConsole(int timeLimit, bool stopAtEndOfInput)
+{
+    auto *console = new QcServerConsole([this](const QString &line) { return m_server->runConsoleCommand(line); }, stopAtEndOfInput, this);
+    connect(console, &QcServerConsole::finished, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    console->start();
+    if (timeLimit > 0) {
+        QTimer::singleShot(timeLimit * 1000, this, [] {
+            printError(u"time limit reached"_s);
+            QCoreApplication::exit(2);
+        });
+    }
 }
 
 void QcHeadlessGame::readStandardInput()
@@ -550,6 +575,10 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 
     m_server = std::move(server);
     m_currentConfig = config;
+    connect(m_server.get(), &QcLocalServerHost::stopRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    if (m_consoleMode) {
+        return {};
+    }
     m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
     if (m_statsLog) {
         m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
@@ -587,6 +616,15 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
 
     if (command == u"handbook"_s) {
         handleHandbookCommand(request, response);
+        return true;
+    }
+
+    if (command == u"console"_s) {
+        // A line of the server console (decision E-247), with the console's rights.
+        if (!m_server || !request.value(u"text"_s).isString()) {
+            return fail(response, m_server ? u"'text' must be a string"_s : u"No world is open"_s);
+        }
+        response = {{u"lines"_s, QJsonArray::fromStringList(m_server->runConsoleCommand(request.value(u"text"_s).toString()))}};
         return true;
     }
 

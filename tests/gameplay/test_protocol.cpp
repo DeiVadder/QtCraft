@@ -505,7 +505,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.mobType = QcMsg::EntitySpawn::playerType;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 23u);
+        QCOMPARE(QcProtocol::version, 25u);
     }
 
     void machineAndFoodMessagesRoundTrip()
@@ -817,6 +817,11 @@ private slots:
         QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).time, 1234.5);
         QCOMPARE(roundTrip(QcMsg::WorldTime{1234.5, 600.0}).running, true);
         QCOMPARE(roundTrip(QcMsg::WorldTime{150.0, 600.0, false}).running, false);
+        // The speed of the time of day follows the server's tick rate (decision E-249).
+        QCOMPARE(roundTrip(QcMsg::WorldTime{150.0, 600.0, true, 2.5}).speed, 2.5);
+        QCOMPARE(roundTrip(QcMsg::WorldTime{150.0, 600.0, true, 0.0}).speed, 0.0);
+        // A sprint reports its own speed (protocol 25).
+        QCOMPARE(roundTrip(QcMsg::WorldTime{150.0, 600.0, true, 2400.0}).speed, 2400.0);
         QCOMPARE(roundTrip(QcMsg::AttackEntity{9}).id, 9u);
         roundTrip(QcMsg::Respawn{});
 
@@ -915,6 +920,8 @@ private slots:
         spawn.position.x = std::numeric_limits<double>::infinity();
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(spawn), QcProtocol::Peer::Server).has_value());
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::WorldTime{0.0, 0.0}), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::WorldTime{0.0, 600.0, true, -1.0}), QcProtocol::Peer::Server).has_value());
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::WorldTime{0.0, 600.0, true, 1.0e6}), QcProtocol::Peer::Server).has_value());
         // Combat messages only come from clients.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::AttackEntity{1}), QcProtocol::Peer::Server).has_value());
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::PlayerHealth{}), QcProtocol::Peer::Client).has_value());

@@ -114,6 +114,7 @@ private:
     {
         QcServerConfig config;
         config.viewDistance = 2;
+        config.operators = {u"Ears"_s};
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
 

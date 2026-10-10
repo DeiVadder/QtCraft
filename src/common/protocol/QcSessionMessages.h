@@ -63,12 +63,19 @@ struct ChatMessage
 };
 
 // Server -> client: seconds since the world began and the length of a full day; `running` is false
-// while the time of day stands still (game rule daylightCycle, decision E-221).
+// while the time of day stands still (game rule daylightCycle, decision E-221). `speed` is how many
+// server ticks pass per tick of the client's clock (tick rate / 20, the speed of a running sprint;
+// 0 while the server is frozen; decision E-249); the client advances the time of day by it between
+// two messages.
 struct WorldTime
 {
+    // A sprint runs as many ticks as the server manages, thousands per second in a small world.
+    static constexpr double maxSpeed = 100'000.0;
+
     double time = 0.0;
     double dayLength = 0.0;
     bool running = true;
+    double speed = 1.0;
 };
 
 } // namespace QcMsg

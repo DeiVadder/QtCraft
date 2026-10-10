@@ -28,11 +28,12 @@ public:
     // are left 0 (the server assigns them).
     QList<QcArmourStandManager::Stand> read(QStringList &warnings) const;
     QcStatus write(const QList<QcArmourStandManager::Stand> &stands) const;
+    // Copies a damaged file to the first free name <path>.damaged, .damaged.2, … (also used for
+    // access.json); that name, or empty when copying failed.
+    static QString keepAside(const QString &path);
 
 private:
     QcResult<QList<QcArmourStandManager::Stand>> readFile(const QString &path, QStringList &warnings) const;
-    // Copies the file to the first free backup name; that name, or empty when copying failed.
-    static QString keepAside(const QString &path);
     // One stored stand; false when it is damaged.
     bool readStand(QDataStream &stream, quint16 version, QcArmourStandManager::Stand &stand, QStringList &warnings) const;
     // Drops a cape the content no longer offers, with a warning.

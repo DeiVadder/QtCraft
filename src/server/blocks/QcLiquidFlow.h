@@ -52,6 +52,8 @@ public:
     QList<QcBlockPos> plannedPositions() const { return m_planned.keys(); }
     quint64 droppedCount() const { return m_dropped; }
     void clear();
+    // Drops the planned steps inside the chunk (it was generated again).
+    void forgetChunk(QcChunkPos chunk);
 
     // Rules, shared with tests.
     static bool flows(const QcContentRegistry &content, QcBlockId id);

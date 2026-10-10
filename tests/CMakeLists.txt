@@ -141,7 +141,7 @@ add_test(NAME app_offscreen_without_screenshot_refused
 set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT 60
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
 
-qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 120)
+qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 240)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                     QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_headless_cli qtcraft-headless)
@@ -167,6 +167,10 @@ qc_add_test(test_structures SOURCES world/test_structures.cpp LIBRARIES qc_serve
 qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_server_commands SOURCES gameplay/test_server_commands.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_player_management SOURCES gameplay/test_player_management.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_world_maintenance SOURCES gameplay/test_world_maintenance.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 240)
+qc_add_test(test_tick_control SOURCES gameplay/test_tick_control.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_server_validation SOURCES gameplay/test_server_validation.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_crafting SOURCES gameplay/test_server_crafting.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_armour_server SOURCES gameplay/test_armour_server.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
@@ -212,6 +216,8 @@ qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp QcServerTestFixtur
 qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_server)
 target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods"
                                                 QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+qc_add_test(test_server_messages SOURCES content/test_server_messages.cpp LIBRARIES Qt::Core)
+target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
 # The graph of the debug display lives in the app; its scene graph nodes need no window.
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcGraphItem.cpp

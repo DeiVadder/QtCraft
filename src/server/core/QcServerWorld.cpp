@@ -193,6 +193,22 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
     m_growingSections.forgetChunk(pos);
 }
 
+bool QcServerWorld::regenerateChunk(QcChunkPos pos)
+{
+    const auto it = m_chunks.find(pos);
+    if (it == m_chunks.end()) {
+        return false;
+    }
+
+    *it = m_generator->generate(pos);
+    m_damagingSections.forgetChunk(pos);
+    m_growingSections.forgetChunk(pos);
+    noteSections(pos, **it);
+    m_modified.insert(pos);
+    m_dirtyRegions.insert(QcWorldStorage::regionOf(pos));
+    return true;
+}
+
 bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
 {
     if (!pos.isInsideWorldHeight() || !m_content->isValidBlock(block)) {

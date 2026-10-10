@@ -94,6 +94,11 @@ QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockA
     return landed;
 }
 
+qsizetype QcFallingBlockManager::removeInChunk(QcChunkPos chunk)
+{
+    return m_falling.removeIf([chunk](const Falling &falling) { return QcPhysics::blockContaining(falling.motion.position).chunk() == chunk; });
+}
+
 void QcFallingBlockManager::restore(const QList<Falling> &falling, const std::function<quint32()> &nextEntityId)
 {
     m_falling.clear();

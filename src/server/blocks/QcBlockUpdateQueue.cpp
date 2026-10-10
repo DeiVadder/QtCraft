@@ -109,6 +109,16 @@ std::optional<QcBlockUpdateQueue::Update> QcBlockUpdateQueue::takeNext()
     return Update{pos, fromCommand};
 }
 
+void QcBlockUpdateQueue::forgetChunk(QcChunkPos chunk)
+{
+    const auto inChunk = [chunk](QcBlockPos pos) { return pos.chunk() == chunk; };
+    std::erase_if(m_playerUpdates, inChunk);
+    std::erase_if(m_commandUpdates, inChunk);
+    m_queuedPlayerUpdates.removeIf(inChunk);
+    m_queuedCommandUpdates.removeIf(inChunk);
+    m_waitingCount -= m_waitingUpdates.take(chunk).size();
+}
+
 void QcBlockUpdateQueue::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
 {
     if (m_waitingCount < maxWaitingBlockUpdates) {

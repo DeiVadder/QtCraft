@@ -63,10 +63,14 @@ protected:
         }
     }
 
-    // Joins a server on the test terrain, or on the world of `generator` if given.
+    // Joins a server on the test terrain, or on the world of `generator` if given. The raw client
+    // is an operator unless the config names other operators (notOperator()).
     void join(QcServerConfig config = {}, std::unique_ptr<QcWorldGenerator> generator = nullptr)
     {
         config.viewDistance = 1;
+        if (config.operators.isEmpty()) {
+            config.operators = {QStringLiteral("Raw")};
+        }
         if (!generator) {
             generator = std::make_unique<QcTestTerrainGenerator>(m_content);
         }
@@ -99,6 +103,13 @@ protected:
                 }
             }
         }
+    }
+
+    // A config whose raw client is no operator.
+    static QcServerConfig notOperator(QcServerConfig config = {})
+    {
+        config.operators = {QStringLiteral("SomebodyElse")};
+        return config;
     }
 
     void chat(const QString &text)

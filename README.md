@@ -79,7 +79,7 @@ printf '%s\n' '{"cmd":"waitUntilReady"}' '{"cmd":"move","forward":1,"ticks":40}'
   | build/release/src/headless/qtcraft-headless --seed 42
 ```
 
-All commands are described in [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md). `qtcraft-headless --export-sounds DIR` writes every sound of the content (and one music piece) as WAV files. `qtcraft-headless --export-handbook DIR [--language de]` writes the base game's handbook as Markdown (add `--mods-dir DIR` to include mods); the base game's handbook is in [docs/handbook/](docs/handbook/index.md) (German: [docs/handbook/de/](docs/handbook/de/index.md)) and a test keeps it in sync with the content.
+All commands are described in [docs/Steuerschnittstelle.md](docs/Steuerschnittstelle.md). `qtcraft-headless --console` runs a server console instead: every line of stdin is a server command (`help`, `op`, `whitelist`, `backup`, `tick`, `stop`, …; see the handbook chapter Commands). `qtcraft-headless --export-sounds DIR` writes every sound of the content (and one music piece) as WAV files. `qtcraft-headless --export-handbook DIR [--language de]` writes the base game's handbook as Markdown (add `--mods-dir DIR` to include mods); the base game's handbook is in [docs/handbook/](docs/handbook/index.md) (German: [docs/handbook/de/](docs/handbook/de/index.md)) and a test keeps it in sync with the content.
 
 ## Tests and checks
 

@@ -177,7 +177,9 @@ run_game() {
         set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
         ;;
     liquids)
-        set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air"
+        # The second fill is larger than a /fill without /confirm may be (stage 24, decision E-245);
+        # builds before stage 24 answer /confirm as an unknown command.
+        set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air" --chat "/confirm"
         ;;
     glass | glass-full)
         if [ "$scenario" = glass ]; then

@@ -2,7 +2,6 @@
 
 #include "QcBlockSimulation.h"
 #include "QcBlockUpdateQueue.h"
-#include "QcChatCommands.h"
 #include "QcChunkStreaming.h"
 #include "QcEntitySync.h"
 #include "QcMessages.h"
@@ -14,9 +13,11 @@
 #include "QcServerStands.h"
 #include "QcServerItemsAndPlants.h"
 #include "QcServerMachines.h"
+#include "QcServerCommands.h"
 #include "QcServerPersistence.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
+#include "QcTickControl.h"
 #include "QcTickPhaseTimer.h"
 #include "QcTickScheduler.h"
 
@@ -86,9 +87,14 @@ public:
 
     // Runs one simulation tick immediately (used by tests and by the tick timer).
     void tick();
+    // Autosaves since the server started.
+    quint64 autosaveCount() const { return m_autosaves; }
+    // Server ticks per tick of a client's clock, sent with WorldTime: the tick rate / 20, the
+    // sprint's speed while one runs, 0 while frozen (decision E-249).
+    double timeSpeed() const;
 
     static constexpr int maxBlockUpdatesPerTick = QcBlockSimulation::maxBlockUpdatesPerTick;
-    static constexpr qint64 maxFillBlocks = QcChatCommands::maxFillBlocks;
+    static constexpr qint64 maxFillBlocks = QcBlockCommands::maxFillBlocks;
     // Queued updates of loaded chunks (the next ticks work on them).
     qsizetype pendingBlockUpdates() const { return m_blockUpdates.pendingPlayerCount() + m_blockUpdates.pendingCommandCount(); }
     // Updates of positions in chunks that are not loaded.
@@ -105,9 +111,18 @@ public:
     void resetTickTimes() { m_ticks.stats().reset(); }
     // Time per phase of the latest ticks (decision E-225); server thread only.
     const QcTickPhaseTimer &tickPhases() const { return m_phases; }
+    // Tick rate, sprints and freezing (/tick, decision E-249); server thread only.
+    QcTickScheduler &tickScheduler() { return m_ticks; }
+    const QcTickControl &tickControl() const { return m_tickControl; }
+
+    // Runs a line of the server console (decision E-247); the replies go to `output`.
+    void runConsoleCommand(const QString &line, const QcCommandSource::Output &output);
+    QcServerCommands &commands() { return m_commands; }
 
 signals:
     void clientCountChanged(int count);
+    // /stop from the console: the host should stop the server.
+    void stopRequested();
 
 private:
     using Client = QcServerClient;
@@ -131,12 +146,26 @@ private:
     // Replaces unknown outfits and hair styles with defaults; names come from the content.
     void handleSetAppearance(Client &client, const QcAppearance &appearance);
     void sendOpenWarnings(Client &client);
+    // Tells an operator who joins that access.json was damaged when the world opened.
+    void sendAccessWarning(Client &client);
     void sendTime(Client &client);
+    void sendTimeToAll();
+    // Who may join: a refusal disconnects the client with the reason (decision E-244).
+    bool admitted(Client &client) const;
     void autosave();
     // Block updates, liquids, creatures, items, plants, falling blocks and machines of one tick.
     void simulate();
-    // Chunks, entities, time, food and the player's own state for one client after a tick.
-    void updateClient(Client &client);
+    // What the clients get after this tick besides their own state: the world around them
+    // (chunks, entities, debug data) and the time of day.
+    struct ClientSync
+    {
+        bool world = true;
+        bool time = false;
+    };
+    ClientSync clientSyncDue();
+    void refillInputBudget(Client &client) const;
+    // Input budget, the world and time as due, food and the player's own state for one client.
+    void updateClient(Client &client, ClientSync sync);
     // Timer slot: runs the due ticks and plans the next as a single shot (decision E-090).
     void runDueTicks();
     // Waits for the next tick when it is due within timerLeadNs (the timer fires that early).
@@ -146,6 +175,9 @@ private:
     void removeClosedClients();
 
     QcServerState m_state;
+    QcTickScheduler m_ticks;
+    QcTickPhaseTimer m_phases;
+    QcTickControl m_tickControl;
     QcServerSounds m_sounds;
     QcBlockUpdateQueue m_blockUpdates;
     QcServerBlocks m_blocks;
@@ -158,12 +190,14 @@ private:
     QcServerCombat m_combat;
     QcEntitySync m_entitySync;
     QcChunkStreaming m_chunkStreaming;
-    QcChatCommands m_chat;
     QcServerPersistence m_persistence;
+    QcServerCommands m_commands;
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
-    QcTickScheduler m_ticks;
-    QcTickPhaseTimer m_phases;
+    // Players' time (QcServerState::playerTimeNs) of the latest autosave and sprint sync.
+    qint64 m_lastAutosaveNs = 0;
+    qint64 m_lastSprintSyncNs = 0;
+    quint64 m_autosaves = 0;
     QcServerDebug m_debug;
 };

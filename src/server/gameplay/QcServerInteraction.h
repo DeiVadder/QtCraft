@@ -17,7 +17,9 @@ struct QcServerState;
 class QcServerInteraction
 {
 public:
-    // Ticks of slack when checking a client's claim that a block is broken (network jitter).
+    // Ticks of slack (of 50 ms) when checking a client's claim that a block is broken (network
+    // jitter); at a slower tick rate the latest tick's real time counts as slack too, since the
+    // players' time only moves with the ticks (decision E-249).
     static constexpr int miningToleranceTicks = 2;
 
     struct Parts

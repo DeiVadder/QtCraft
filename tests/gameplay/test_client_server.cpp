@@ -79,6 +79,33 @@ private slots:
         QVERIFY(host->shutdown().has_value());
     }
 
+    void theClientsDayFollowsTheServersTickRate()
+    {
+        // The session advances the time of day between two WorldTime messages by the server's speed
+        // (decision E-249): twice as fast at 40 ticks per second, not at all while frozen.
+        auto host = makeHost(m_content, 1);
+        QcClientSession session(host->connectClient(), u"Tester"_s);
+        session.start();
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
+
+        session.sendChat(u"/tick rate 40"_s);
+        QTRY_COMPARE_WITH_TIMEOUT(session.timeSpeed(), 2.0, timeoutMs);
+        double before = session.worldTime();
+        for (int i = 0; i < 10; ++i) {
+            session.tick();
+        }
+        QCOMPARE(session.worldTime(), before + 10 * QcPhysics::tickDuration * 2.0);
+
+        session.sendChat(u"/tick freeze"_s);
+        QTRY_COMPARE_WITH_TIMEOUT(session.timeSpeed(), 0.0, timeoutMs);
+        before = session.worldTime();
+        for (int i = 0; i < 10; ++i) {
+            session.tick();
+        }
+        QCOMPARE(session.worldTime(), before);
+        QVERIFY(host->shutdown().has_value());
+    }
+
     void clientMirrorMatchesServerGeneration()
     {
         auto host = makeHost(m_content, 1);
