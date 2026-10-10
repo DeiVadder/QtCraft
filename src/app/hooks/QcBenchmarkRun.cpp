@@ -258,8 +258,7 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
         total += ns;
     }
 
-    const double tickMs = m_parts.server ? m_parts.server->tickAverageMs() : 0.0;
-    const double tickWorstMs = m_parts.server ? m_parts.server->tickWorstMs() : 0.0;
+    const QcTickStats::Summary ticks = m_parts.server ? m_parts.server->tickStats() : QcTickStats::Summary();
     const double averageMs = double(total) / double(sorted.size()) / 1e6;
     const qsizetype entities = m_parts.session ? m_parts.session->entities().size() : 0;
 
@@ -271,11 +270,12 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
 
     qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
                                 u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
-                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13 mesh_jobs=%14 mesh_job_avg_ms=%15 mesh_job_max_ms=%16 %17"_s
+                                u"light_jobs=%11 light_job_avg_ms=%12 light_job_max_ms=%13 mesh_jobs=%14 mesh_job_avg_ms=%15 mesh_job_max_ms=%16 "
+                                u"tick_late_avg_ms=%17 tick_late_p99_ms=%18 tick_late_max_ms=%19 ticks=%20 ticks_skipped=%21 %22"_s
                                     .arg(averageMs, 0, 'f', 3)
                                     .arg(p99Ms, 0, 'f', 3)
-                                    .arg(tickMs, 0, 'f', 3)
-                                    .arg(tickWorstMs, 0, 'f', 3)
+                                    .arg(ticks.averageMs, 0, 'f', 3)
+                                    .arg(ticks.worstMs, 0, 'f', 3)
                                     .arg(peakMemoryMegabytes(), 0, 'f', 1)
                                     .arg(entities)
                                     .arg(latencyMs, 0, 'f', 3)
@@ -288,6 +288,11 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(mesh.meshJobs)
                                     .arg(mesh.meshJobs > 0 ? mesh.meshTotalMs / double(mesh.meshJobs) : 0.0, 0, 'f', 3)
                                     .arg(mesh.meshWorstMs, 0, 'f', 3)
+                                    .arg(ticks.lateAverageMs, 0, 'f', 3)
+                                    .arg(ticks.lateP99Ms, 0, 'f', 3)
+                                    .arg(ticks.lateMaxMs, 0, 'f', 3)
+                                    .arg(ticks.ticks)
+                                    .arg(ticks.skipped)
                                     .arg(m_frameProfile.summary());
 }
 

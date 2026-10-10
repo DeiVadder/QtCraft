@@ -200,8 +200,8 @@ private slots:
     void attacksNeedReachAndKillGivesLoot()
     {
         join();
-        // A pig in a 1 x 1 pit two blocks deep next to the player cannot run away.
-        const QcBlockPos pit = m_feet.offset(2, -1, 0);
+        // A pig in a 1 x 1 pit two blocks deep right next to the player (who sees into it) cannot run away.
+        const QcBlockPos pit = m_feet.offset(1, -1, 0);
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
@@ -322,8 +322,8 @@ private slots:
         join();
         idle(600);
         QCOMPARE(m_client->food, 20);
-        // About 100 jumps at 0.05 exhaustion each: at least one and at most two food points.
-        for (int i = 0; i < 1200; ++i) {
+        // About 250 jumps at 0.02 exhaustion each: at least one and at most two food points.
+        for (int i = 0; i < 3000; ++i) {
             QcPlayerInput input;
             input.sequence = ++m_sequence;
             input.jump = true;

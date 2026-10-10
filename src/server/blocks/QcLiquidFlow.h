@@ -16,7 +16,7 @@
 // takes the level of its best feeder plus one, falls back to nothing without one, and becomes a
 // source between two sources over solid ground when the liquid is infinite; then the liquid falls
 // into the cell below if it can and otherwise (and always for sources) spreads sideways one level
-// further, up to its distance. Liquids touching another liquid they react with turn into the
+// further, up to its distance, preferring the sides that lead to the nearest drop. Liquids touching another liquid they react with turn into the
 // reaction's block. Steps are planned per position (each at most once) and worked off in order of
 // their due tick, at most a budget per tick; everything a step changes plans its neighbours.
 class QcLiquidFlow
@@ -70,6 +70,10 @@ public:
     static bool canFlowInto(const QcBlockAccess &world, QcBlockPos pos, QcBlockId state);
     // The same for a cell holding `block` inside the world height (std::nullopt: not loaded).
     static bool canReplace(const QcContentRegistry &content, std::optional<QcBlockId> block, QcBlockId state);
+    // The sides the liquid at `pos` spreads to as `spread`: of the sides it can flow into, those
+    // whose way leads to the nearest drop within the liquid's `dropSearch` blocks and the reach
+    // left to `spread` (decision E-103), or all of them when no drop is that near.
+    static QList<QcBlockFace> spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread);
 
 private:
     // What the steps of one tick work on.

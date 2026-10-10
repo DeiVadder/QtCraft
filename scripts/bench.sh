@@ -26,7 +26,7 @@ run_scenario() {
 }
 
 failed=0
-KEYS=${KEYS:-"frame_avg_ms frame_p99_ms gui_cpu_avg_ms render_cpu_avg_ms gpu_avg_ms tick_avg_ms tick_worst_ms peak_rss_mb entities change_mesh_avg_ms change_mesh_max_ms mesh_backlog_max light_job_avg_ms"}
+KEYS=${KEYS:-"frame_avg_ms frame_p99_ms gui_cpu_avg_ms render_cpu_avg_ms gpu_avg_ms tick_avg_ms tick_worst_ms tick_late_avg_ms tick_late_p99_ms tick_late_max_ms ticks_skipped peak_rss_mb entities change_mesh_avg_ms change_mesh_max_ms mesh_backlog_max light_job_avg_ms"}
 printf '%-8s' scenario
 for key in $KEYS; do
     printf ' %18s' "$key"

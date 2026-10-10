@@ -12,8 +12,10 @@ qt_add_library(qc_server STATIC
     storage/QcEntityStorage.h storage/QcEntityStorage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
+    gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
     gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
     gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
+    gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
     blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
@@ -24,6 +26,7 @@ qt_add_library(qc_server STATIC
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
+    core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcServer.h core/QcServer.cpp
     blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
     core/QcServerClient.h
@@ -34,9 +37,12 @@ qt_add_library(qc_server STATIC
     gameplay/QcServerItemsAndPlants.h gameplay/QcServerItemsAndPlants.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
+    core/QcSectionMarks.h core/QcSectionMarks.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
+    core/QcTickScheduler.h core/QcTickScheduler.cpp
+    core/QcTickStats.h core/QcTickStats.cpp
     worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
     worldgen/QcWorldGenerator.h
     storage/QcWorldLibrary.h storage/QcWorldLibrary.cpp

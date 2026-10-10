@@ -8,6 +8,8 @@
 #include "QcSessionParts.h"
 
 #include <QLoggingCategory>
+#include <QQuickItem>
+#include <QQuickWindow>
 #include <QTimer>
 
 #include <algorithm>
@@ -164,11 +166,41 @@ void QcStartupHooks::scheduleOverlaySteps()
         holdScreenshot();
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
             if (m_parts.session) {
-                m_game.setOverlay(overlay);
+                runOverlayStep(overlay);
             }
             releaseScreenshot();
         });
     }
+}
+
+void QcStartupHooks::runOverlayStep(const QString &step)
+{
+    if (step.startsWith(u"pick:"_s)) {
+        pickInOpenScreen(QStringView(step).mid(5).toInt());
+    } else if (step == u"handbook"_s) {
+        m_game.handbook()->open({});
+    } else {
+        // "@<ms> " closes the screen and the handbook.
+        m_game.setOverlay(step);
+        if (step.isEmpty()) {
+            m_game.handbook()->close();
+        }
+    }
+}
+
+void QcStartupHooks::pickInOpenScreen(int row) const
+{
+    if (!m_parts.window) {
+        return;
+    }
+    const QList<QQuickItem *> screens = m_parts.window->findChildren<QQuickItem *>(u"slotScreen"_s);
+    for (QQuickItem *screen : screens) {
+        if (screen->isVisible()) {
+            screen->setProperty("pickedSlot", row);
+            return;
+        }
+    }
+    qCWarning(lcGame) << "--overlay pick:" << row << ": no slot screen is open";
 }
 
 void QcStartupHooks::machineOpened()

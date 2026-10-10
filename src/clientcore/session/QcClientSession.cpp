@@ -1,5 +1,6 @@
 #include "QcClientSession.h"
 
+#include "QcChatText.h"
 #include "QcConnection.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
@@ -176,7 +177,7 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
     } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
         emit craftingOpened(open->size);
     } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
-        emit chatReceived(chat->text);
+        emit chatReceived(QcChatText::display(*chat));
     } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
         m_health = health->health;
         m_maxHealth = health->maxHealth;
@@ -705,6 +706,11 @@ void QcClientSession::selectHotbarSlot(int slot)
 void QcClientSession::moveInventoryItem(int from, int to, int count)
 {
     m_connection->send(QcMsg::MoveInventoryItem{from, to, count});
+}
+
+void QcClientSession::quickMoveItem(int slot)
+{
+    m_connection->send(QcMsg::QuickMoveItem{slot});
 }
 
 void QcClientSession::sendChat(const QString &text)

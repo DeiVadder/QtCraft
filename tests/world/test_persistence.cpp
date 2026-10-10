@@ -8,6 +8,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QSysInfo>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -46,6 +47,41 @@ private:
     }
 
 private slots:
+    void aWorldOpensInOneServerAtATime()
+    {
+        QTemporaryDir dir;
+        auto first = host(dir.path());
+        QVERIFY(first->startError().isEmpty());
+        QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"session.lock"_s)));
+
+        // A second window or process gets a clear refusal instead of overwriting the first one's saves.
+        auto second = host(dir.path());
+        QVERIFY(second->worldInUse());
+        QVERIFY2(second->startError().contains(u"already open"_s), qPrintable(second->startError()));
+        second.reset();
+
+        // Stopping the first server releases the world.
+        QVERIFY(first->shutdown().has_value());
+        first.reset();
+        QVERIFY(!QFile::exists(QDir(dir.path()).filePath(u"session.lock"_s)));
+        auto third = host(dir.path());
+        QVERIFY2(third->startError().isEmpty(), qPrintable(third->startError()));
+        QVERIFY(!third->worldInUse());
+    }
+
+    void aLockOfACrashedProcessDoesNotBlockTheWorld()
+    {
+        QTemporaryDir dir;
+        // QLockFile's format: process id, application name, host name; no process has this id.
+        QFile lock(QDir(dir.path()).filePath(u"session.lock"_s));
+        QVERIFY(lock.open(QIODevice::WriteOnly));
+        lock.write("999999\nqtcraft\n" + QSysInfo::machineHostName().toUtf8() + "\n");
+        lock.close();
+
+        auto server = host(dir.path());
+        QVERIFY2(server->startError().isEmpty(), qPrintable(server->startError()));
+    }
+
     void blocksInventoryAndPositionSurviveARestart()
     {
         QTemporaryDir dir;
@@ -83,7 +119,7 @@ private slots:
         }
 
         QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"world.json"_s)));
-        QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"players/Saver.qcp"_s)));
+        QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Saver"_s))));
 
         auto server = host(dir.path());
         QVERIFY2(server->startError().isEmpty(), qPrintable(server->startError()));

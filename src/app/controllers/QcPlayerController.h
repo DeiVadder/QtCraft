@@ -50,6 +50,9 @@ public:
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
     // Rows of QcInventoryModel; count 0 moves the whole stack.
     Q_INVOKABLE void moveItem(int from, int to, int count = 0) const;
+    // Shift-click on a row: the server moves the stack where it belongs; on the crafting result
+    // it crafts as often as possible.
+    Q_INVOKABLE void quickMove(int row) const;
     Q_INVOKABLE void takeCraftingResult() const;
     Q_INVOKABLE void craftRecipe(const QString &recipe) const;
     Q_INVOKABLE void respawn() const;

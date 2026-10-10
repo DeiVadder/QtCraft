@@ -206,12 +206,20 @@ bool QcControlEntityCommands::walkToNearestItem(double radius, bool timeUp)
     QcPlayerInput intent = session().intent();
     const bool done = !nearest || timeUp;
     if (!done) {
-        const QcVec3 delta = nearest->position - me;
+        // An item lower down (in a hole) is reached by stepping into the middle of its block, where
+        // the player fits; others by walking up to the item itself.
+        QcVec3 target = nearest->position;
+        const bool below = target.y < me.y - 0.5;
+        if (below) {
+            target = {std::floor(target.x) + 0.5, target.y, std::floor(target.z) + 0.5};
+        }
+        const QcVec3 delta = target - me;
         intent.yaw = float(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
         const double horizontal = std::hypot(delta.x, delta.z);
         // Walk until the item is within the pickup reach, jump onto steps.
-        intent.forward = horizontal > 0.4 ? 1.0f : 0.0f;
-        intent.jump = horizontal > 0.4 && session().playerMotion().onGround && delta.y > 0.6;
+        const double close = below ? 0.1 : 0.4;
+        intent.forward = horizontal > close ? (below ? 0.4f : 1.0f) : 0.0f;
+        intent.jump = horizontal > close && session().playerMotion().onGround && delta.y > 0.6;
     } else {
         intent.forward = 0.0f;
         intent.jump = false;

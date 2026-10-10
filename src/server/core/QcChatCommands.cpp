@@ -2,6 +2,7 @@
 
 #include "QcBlockRules.h"
 #include "QcBlockUpdateQueue.h"
+#include "QcChatText.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
 #include "QcServerBlocks.h"
@@ -35,7 +36,9 @@ struct QcChatCommands::Command
     const QStringList &words;
     const QString &text;
 
-    void reply(const QString &line) const { client.connection->send(QcMsg::ChatMessage{line}); }
+    // `key` is marked with QT_TRANSLATE_NOOP("QcServerMessages", ...); the client translates it.
+    void reply(const char *key, const QStringList &arguments = {}) const { client.connection->send(QcChatText::message(key, arguments)); }
+    void replyPlain(const QString &line) const { client.connection->send(QcChatText::plain(line)); }
 };
 
 struct QcChatCommands::BlockArea
@@ -93,9 +96,9 @@ void QcChatCommands::handle(QcServerClient &client, const QString &text)
     const Command command{client, words, text};
     const Entry *entry = find(words.first().mid(1).toLower());
     if (entry && entry->cheat && !m_state.config.allowCheats) {
-        command.reply(u"Cheats are disabled on this server"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Cheats are disabled on this server"));
     } else if (!entry || words.size() < entry->minWords) {
-        command.reply(u"Unknown command: %1"_s.arg(words.first()));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown command: %1"), {words.first()});
     } else {
         entry->run(*this, command);
     }
@@ -105,33 +108,35 @@ void QcChatCommands::broadcast(const QcServerClient &client, const QString &text
 {
     for (const auto &other : m_state.clients) {
         if (other->state == QcServerClient::State::Playing) {
-            other->connection->send(QcMsg::ChatMessage{u"<%1> %2"_s.arg(client.name, text)});
+            other->connection->send(QcChatText::plain(u"<%1> %2"_s.arg(client.name, text)));
         }
     }
 }
 
 void QcChatCommands::help(const Command &command)
 {
-    command.reply(u"Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
-                  u"/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
-                  u"/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative coordinates), "
-                  u"/feed [food], /locatebiome <biome>"_s);
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages",
+                                    "Commands: /help, /give <item> [count], /save, /time set <day|night|seconds>, /time add <seconds>, "
+                                    "/summon <mob> [count], /kill, /heal, /gamerule keepInventory [true|false], /spawnitem <item> [count], "
+                                    "/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative "
+                                    "coordinates), /feed [food], /locatebiome <biome>"));
 }
 
 void QcChatCommands::gamerule(const Command &command)
 {
     const QStringList &words = command.words;
     if (words[1] != u"keepInventory"_s) {
-        command.reply(u"Unknown command: %1"_s.arg(words.first()));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown command: %1"), {words.first()});
     } else if (words.size() == 2) {
-        command.reply(u"keepInventory is %1"_s.arg(m_state.info.keepInventory ? u"true"_s : u"false"_s));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "keepInventory is %1"),
+            {m_state.info.keepInventory ? u"true"_s : u"false"_s});
     } else if (!m_state.config.allowCheats) {
-        command.reply(u"Cheats are disabled on this server"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Cheats are disabled on this server"));
     } else if (words[2] == u"true"_s || words[2] == u"false"_s) {
         m_state.info.keepInventory = words[2] == u"true"_s;
-        command.reply(u"keepInventory is now %1"_s.arg(words[2]));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "keepInventory is now %1"), {words[2]});
     } else {
-        command.reply(u"Usage: /gamerule keepInventory [true|false]"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule keepInventory [true|false]"));
     }
 }
 
@@ -155,12 +160,15 @@ void QcChatCommands::time(const Command &command) const
     }
 
     if (!ok || !std::isfinite(seconds) || seconds < 0.0 || seconds > 1e9) {
-        command.reply(u"Usage: /time set <day|night|seconds> or /time add <seconds>"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /time set <day|night|seconds> or /time add <seconds>"));
         return;
     }
 
     m_actions.setWorldTime(seconds);
-    command.reply(u"Time is now %1 s (%2)"_s.arg(qRound(seconds)).arg(QcDayCycle::isNight(seconds) ? u"night"_s : u"day"_s));
+    const QStringList shown{QString::number(qRound(seconds))};
+    command.reply(QcDayCycle::isNight(seconds) ? QT_TRANSLATE_NOOP("QcServerMessages", "Time is now %1 s (night)")
+                                               : QT_TRANSLATE_NOOP("QcServerMessages", "Time is now %1 s (day)"),
+                  shown);
 }
 
 void QcChatCommands::summon(const Command &command)
@@ -171,12 +179,13 @@ void QcChatCommands::summon(const Command &command)
     bool countOk = true;
     const int count = words.size() >= 3 ? words[2].toInt(&countOk) : 1;
     if (!type || !countOk || count < 1 || count > 16) {
-        command.reply(u"Unknown mob or invalid count: %1"_s.arg(command.text));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {command.text});
         return;
     }
 
     if (m_state.mobs.awakeCount() + count > QcMobManager::summonLimit) {
-        command.reply(u"Too many creatures in the world (at most %1)"_s.arg(QcMobManager::summonLimit));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many creatures in the world (at most %1)"),
+            {QString::number(QcMobManager::summonLimit)});
         return;
     }
 
@@ -191,7 +200,7 @@ void QcChatCommands::summon(const Command &command)
                            !summoned.hostile && !summoned.ambient && !summoned.flying);
     }
 
-    command.reply(u"Summoned %1 x %2"_s.arg(count).arg(name));
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(count), name});
 }
 
 void QcChatCommands::spawnItem(const Command &command)
@@ -202,7 +211,7 @@ void QcChatCommands::spawnItem(const Command &command)
     bool countOk = true;
     const int count = words.size() >= 3 ? words[2].toInt(&countOk) : 1;
     if (!item || !countOk || count < 1 || count > 64) {
-        command.reply(u"Unknown item or invalid count: %1"_s.arg(command.text));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown item or invalid count: %1"), {command.text});
         return;
     }
 
@@ -210,7 +219,7 @@ void QcChatCommands::spawnItem(const Command &command)
     const double yaw = qDegreesToRadians(double(command.client.yaw));
     const QcVec3 position = command.client.motion.position + QcVec3{std::sin(yaw) * 2.0, 0.5, -std::cos(yaw) * 2.0};
     m_state.items.spawnScattered({*item, count, 0}, position, m_state.newEntityId());
-    command.reply(u"Dropped %1 x %2"_s.arg(count).arg(name));
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Dropped %1 x %2"), {QString::number(count), name});
 }
 
 void QcChatCommands::setBlock(const Command &command)
@@ -246,13 +255,18 @@ void QcChatCommands::placeBlocks(const Command &command, bool fill)
     }
 
     if (changed == 0) {
-        command.reply(u"Nothing set: the chunks are not loaded%1"_s.arg(machine ? u" or there are too many machines"_s : QString()));
+        command.reply(machine ? QT_TRANSLATE_NOOP("QcServerMessages", "Nothing set: the chunks are not loaded or there are too many machines")
+                              : QT_TRANSLATE_NOOP("QcServerMessages", "Nothing set: the chunks are not loaded"));
         return;
     }
 
     const QcBlockPos &from = area->from;
-    command.reply(fill ? u"Filled %1 blocks with %2"_s.arg(changed).arg(area->name)
-                       : u"Set %1 at %2 %3 %4"_s.arg(area->name).arg(from.x).arg(from.y).arg(from.z));
+    if (fill) {
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Filled %1 blocks with %2"), {QString::number(changed), area->name});
+    } else {
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Set %1 at %2 %3 %4"),
+            {area->name, QString::number(from.x), QString::number(from.y), QString::number(from.z)});
+    }
 }
 
 std::optional<QcChatCommands::BlockArea> QcChatCommands::parseBlockArea(const Command &command, bool fill) const
@@ -289,7 +303,7 @@ std::optional<QcChatCommands::BlockArea> QcChatCommands::parseBlockArea(const Co
     QStringList problems;
     const std::optional<QcBlockId> block = m_state.content->stateId(area.name, &problems);
     if (block && !problems.isEmpty()) {
-        command.reply(problems.join(u"; "_s));
+        command.replyPlain(problems.join(u"; "_s));
         return std::nullopt;
     }
 
@@ -297,8 +311,9 @@ std::optional<QcChatCommands::BlockArea> QcChatCommands::parseBlockArea(const Co
     area.high = {std::max(area.from.x, to.x), std::max(area.from.y, to.y), std::max(area.from.z, to.z)};
     const qint64 volume = qint64(area.high.x - area.low.x + 1) * (area.high.y - area.low.y + 1) * (area.high.z - area.low.z + 1);
     if (!ok || !block || !area.low.isInsideWorldHeight() || !area.high.isInsideWorldHeight() || volume > maxFillBlocks) {
-        command.reply(u"Usage: /setblock <x> <y> <z> <block>, /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (at most %1 blocks; "
-                      u"block may carry states: name[property=value,...]) in loaded chunks"_s.arg(maxFillBlocks));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>, /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> "
+                                                            "(at most %1 blocks; block may carry states: name[property=value,...]) in loaded chunks"),
+                      {QString::number(maxFillBlocks)});
         return std::nullopt;
     }
 
@@ -338,13 +353,14 @@ void QcChatCommands::locateBiome(const Command &command)
     for (int radius = 0; radius <= biomeSearchRadius; radius += 8) {
         for (int dx = -radius; dx <= radius; dx += 8) {
             if (const std::optional<int> dz = findBiomeAlong(feet, radius, dx, name)) {
-                command.reply(u"%1 at %2 %3"_s.arg(name).arg(feet.x + dx).arg(feet.z + *dz));
+                command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3"),
+                    {name, QString::number(feet.x + dx), QString::number(feet.z + *dz)});
                 return;
             }
         }
     }
 
-    command.reply(u"No %1 within %2 blocks"_s.arg(name).arg(biomeSearchRadius));
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No %1 within %2 blocks"), {name, QString::number(biomeSearchRadius)});
 }
 
 std::optional<int> QcChatCommands::findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const
@@ -366,38 +382,42 @@ void QcChatCommands::kill(const Command &command)
 void QcChatCommands::feed(const Command &command)
 {
     if (command.client.dead) {
-        command.reply(u"Respawn first"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Respawn first"));
         return;
     }
 
     bool ok = true;
     const int food = command.words.size() >= 2 ? command.words[1].toInt(&ok) : QcHunger::maxFood;
     if (!ok || food < 0 || food > QcHunger::maxFood) {
-        command.reply(u"Usage: /feed [0..%1]"_s.arg(QcHunger::maxFood));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /feed [0..%1]"), {QString::number(QcHunger::maxFood)});
         return;
     }
 
     command.client.hunger.restore(food, 0.0);
     m_parts.combat.sendFood(command.client);
-    command.reply(u"Food is now %1"_s.arg(food));
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Food is now %1"), {QString::number(food)});
 }
 
 void QcChatCommands::heal(const Command &command)
 {
     if (command.client.dead) {
-        command.reply(u"Respawn first"_s);
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Respawn first"));
         return;
     }
 
     command.client.health = QcServerClient::maxHealth;
     m_parts.combat.sendHealth(command.client);
-    command.reply(u"Healed"_s);
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Healed"));
 }
 
 void QcChatCommands::save(const Command &command) const
 {
     const QcStatus saved = m_actions.save();
-    command.reply(saved ? u"World saved"_s : u"Saving failed: %1"_s.arg(saved.error()));
+    if (saved) {
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "World saved"));
+    } else {
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Saving failed: %1"), {saved.error()});
+    }
 }
 
 void QcChatCommands::give(const Command &command)
@@ -407,11 +427,11 @@ void QcChatCommands::give(const Command &command)
     bool countOk = true;
     const int count = command.words.size() >= 3 ? command.words[2].toInt(&countOk) : 1;
     if (!item || !countOk || count < 1 || count > 64 * QcInventory::slotCount) {
-        command.reply(u"Unknown item or invalid count: %1"_s.arg(command.text));
+        command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown item or invalid count: %1"), {command.text});
         return;
     }
 
     const int leftover = command.client.inventory.add(*item, count, *m_state.content);
     m_parts.inventory.send(command.client);
-    command.reply(u"Gave %1 x %2"_s.arg(count - leftover).arg(name));
+    command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Gave %1 x %2"), {QString::number(count - leftover), name});
 }

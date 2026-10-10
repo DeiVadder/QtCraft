@@ -3,6 +3,7 @@
 #include "QcMailbox.h"
 #include "QcResult.h"
 #include "QcServerConfig.h"
+#include "QcTickStats.h"
 #include "QcTransport.h"
 
 #include <QObject>
@@ -27,14 +28,15 @@ public:
 
     // Empty when the world opened; otherwise the reason, and the host serves no clients.
     QString startError() const { return m_startError; }
+    // Whether the world could not open because another server (window or process) has it open.
+    bool worldInUse() const { return m_worldInUse; }
 
     // Connects a new client; the returned transport belongs to the caller's thread.
     std::unique_ptr<QcTransport> connectClient();
     // Saves the world now (blocks until done).
     QcStatus save();
-    // Server tick times so far (benchmark); zero when no world is open.
-    double tickAverageMs() const;
-    double tickWorstMs() const;
+    // Server tick durations, lateness and skipped ticks so far (benchmark); zero when no world is open.
+    QcTickStats::Summary tickStats() const;
     void resetTickTimes();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
     // calls report success.
@@ -46,6 +48,7 @@ private:
 
     QThread *m_thread = nullptr;
     QString m_startError;
+    bool m_worldInUse = false;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
     QcServer *m_server = nullptr;
 };

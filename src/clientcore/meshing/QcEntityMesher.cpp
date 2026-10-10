@@ -406,8 +406,9 @@ void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Hand
     // Camera space (x right, y up, z backwards) -> world.
     const auto toWorld = [&](const QcVec3 &c) { return view.eye + right * c.x + up * c.y - forward * c.z; };
 
-    // The shoulder sits low on the right; the arm points forward, slightly up and inwards.
-    const QcVec3 shoulder = QcVec3{0.4, -0.36, 0.05} + hand.offset;
+    // The shoulder sits low on the right, a little ahead of the eyes so the sleeve's cuff shows;
+    // the arm points forward, slightly up and inwards.
+    const QcVec3 shoulder = QcVec3{0.4, -0.36, -0.06} + hand.offset;
     const Rotate armRotate(108.0 + hand.pitch, 0.0);
     const Turn armTurn(-14.0 - hand.yaw);
     const auto armCamera = [&](const QcVec3 &local) { return shoulder + armTurn(armRotate(local)); };

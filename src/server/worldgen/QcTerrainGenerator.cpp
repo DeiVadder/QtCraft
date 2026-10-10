@@ -23,12 +23,16 @@ constexpr double ruggednessScale = 1500.0;
 // Biome borders and coasts are bent by up to this many blocks.
 constexpr double warpScale = 420.0;
 constexpr double warpAmplitude = 140.0;
+// The climate maps are bent a second time on a smaller scale, which frays biome borders into lobes
+// and tongues instead of round patches (decision E-101).
+constexpr double climateWarpScale = 160.0;
+constexpr double climateWarpAmplitude = 200.0;
 // Terraces form only in patches of about this size.
 constexpr double terraceScale = 380.0;
 // Spreads the climate noise (about +-0.3 around 0) over most of [0, 1].
 constexpr double climateContrast = 1.5;
 // Ruggedness only rises where the ruggedness noise is near zero: long winding chains.
-constexpr double ruggednessSharpness = 8.0;
+constexpr double ruggednessSharpness = 6.0;
 // The ruggedness axis counts twice as much as temperature and humidity.
 constexpr double ruggednessWeight = 2.0;
 // Ocean floor lies this far below sea level (before detail noise).
@@ -61,6 +65,8 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_ruggednessNoise(qcMixSeed(quint64(seed), 8))
     , m_warpNoiseX(qcMixSeed(quint64(seed), 9))
     , m_warpNoiseZ(qcMixSeed(quint64(seed), 10))
+    , m_climateWarpNoiseX(qcMixSeed(quint64(seed), 18))
+    , m_climateWarpNoiseZ(qcMixSeed(quint64(seed), 19))
     , m_hillNoise(qcMixSeed(quint64(seed), 11))
     , m_ridgeNoise(qcMixSeed(quint64(seed), 12))
     , m_terraceNoise(qcMixSeed(quint64(seed), 13))
@@ -89,12 +95,14 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     // Bent coordinates for the large-scale maps, so biome borders and coasts meander.
     const double warpedX = x + warpAmplitude * m_warpNoiseX.fractal2(x / warpScale, z / warpScale, 3);
     const double warpedZ = z + warpAmplitude * m_warpNoiseZ.fractal2(x / warpScale, z / warpScale, 3);
+    const double climateX = warpedX + climateWarpAmplitude * m_climateWarpNoiseX.fractal2(x / climateWarpScale, z / climateWarpScale, 3);
+    const double climateZ = warpedZ + climateWarpAmplitude * m_climateWarpNoiseZ.fractal2(x / climateWarpScale, z / climateWarpScale, 3);
     const double temperature = std::clamp(
-        0.5 + climateContrast * m_temperatureNoise.fractal2(warpedX / temperatureScale, warpedZ / temperatureScale, 3), 0.0, 1.0);
+        0.5 + climateContrast * m_temperatureNoise.fractal2(climateX / temperatureScale, climateZ / temperatureScale, 3), 0.0, 1.0);
     const double humidity =
-        std::clamp(0.5 + climateContrast * m_humidityNoise.fractal2(warpedX / humidityScale, warpedZ / humidityScale, 3), 0.0, 1.0);
+        std::clamp(0.5 + climateContrast * m_humidityNoise.fractal2(climateX / humidityScale, climateZ / humidityScale, 3), 0.0, 1.0);
     const double ruggedness = std::clamp(
-        1.0 - ruggednessSharpness * std::abs(m_ruggednessNoise.fractal2(warpedX / ruggednessScale, warpedZ / ruggednessScale, 3)),
+        1.0 - ruggednessSharpness * std::abs(m_ruggednessNoise.fractal2(climateX / ruggednessScale, climateZ / ruggednessScale, 3)),
         0.0, 1.0);
 
     // Rolling hills: broad swells with smaller hills on top, in [-1, 1].
@@ -484,7 +492,7 @@ bool QcTerrainGenerator::fitsSpawn(int x, int z, const Column &column, std::shar
         chunk = generate(pos.chunk());
     }
     return chunk->highestNonAir(pos.localX(), pos.localZ()) == pos.y
-           && m_content->block(chunk->block(pos.localX(), pos.y, pos.localZ())).solid;
+           && isNaturalGround(chunk->block(pos.localX(), pos.y, pos.localZ()));
 }
 
 std::optional<QcBlockPos> QcTerrainGenerator::spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const

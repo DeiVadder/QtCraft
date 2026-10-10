@@ -15,10 +15,10 @@
 #include "QcServerPersistence.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
+#include "QcTickScheduler.h"
 
 #include <QObject>
 
-#include <atomic>
 #include <memory>
 
 class QcConnection;
@@ -65,6 +65,8 @@ public:
     double worldTime() const { return m_state.info.worldTime; }
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_persistence.openWarnings(); }
+    // Whether openWorld() failed because another server has the world open.
+    bool worldInUse() const { return m_persistence.worldInUse(); }
     void setWorldTime(double seconds);
 
     static constexpr double attackReach = QcServerCombat::attackReach;
@@ -90,15 +92,9 @@ public:
     // Command updates dropped because the command queue was full (config.maxCommandBlockUpdates).
     quint64 droppedBlockUpdates() const { return m_blockUpdates.droppedCount(); }
 
-    // Wall time spent in tick(); safe to read and reset from other threads (benchmark).
-    struct TickTimes
-    {
-        double averageMs = 0.0;
-        double worstMs = 0.0;
-        quint64 ticks = 0;
-    };
-    TickTimes tickTimes() const;
-    void resetTickTimes();
+    // Duration and lateness of the timed ticks; safe to read and reset from other threads (benchmark).
+    QcTickStats::Summary tickTimes() const { return m_ticks.stats().summary(); }
+    void resetTickTimes() { m_ticks.stats().reset(); }
 
 signals:
     void clientCountChanged(int count);
@@ -107,6 +103,11 @@ private:
     using Client = QcServerClient;
 
     void handleMessage(Client &client, QcMessage &&message);
+    // Pays the message's token (decision E-091); false when it is dropped.
+    bool withinRateLimit(Client &client, const QcMessage &message);
+    // Sends the true block of a dropped StartMining or FinishMining back, so a client that predicted
+    // the break does not keep a phantom gap; once per position and tick, a few positions per tick.
+    void resendDroppedMiningTarget(Client &client, const QcMessage &message);
     // Messages about moving, mining, using and fighting, chat and leaving; false for other types.
     bool handlePlayerMessage(Client &client, const QcMessage &message);
     // Messages about the inventory, crafting, machine screens and the look; false for other types.
@@ -125,7 +126,12 @@ private:
     void autosave();
     // Chunks, entities, time, food and the player's own state for one client after a tick.
     void updateClient(Client &client);
-    void recordTickTime(qint64 ns);
+    // Timer slot: runs the due ticks and plans the next as a single shot (decision E-090).
+    void runDueTicks();
+    // Waits for the next tick when it is due within timerLeadNs (the timer fires that early).
+    void waitUntilDue() const;
+    // Arms the single shot timerLeadNs before the next tick is due, `remainingNs` from now.
+    void armTickTimer(qint64 remainingNs);
     void removeClosedClients();
 
     QcServerState m_state;
@@ -142,8 +148,8 @@ private:
     QcChunkStreaming m_chunkStreaming;
     QcChatCommands m_chat;
     QcServerPersistence m_persistence;
+    // Single shot shortly before the next due tick, in the same event loop as the messages of the
+    // clients.
     QTimer *m_tickTimer = nullptr;
-    std::atomic<qint64> m_tickNsTotal{0};
-    std::atomic<qint64> m_tickNsWorst{0};
-    std::atomic<quint64> m_ticksTimed{0};
+    QcTickScheduler m_ticks;
 };

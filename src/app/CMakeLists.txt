@@ -11,6 +11,7 @@ qt_add_executable(qtcraft
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
+    models/QcUiTheme.h
     input/QcGameInput.h input/QcGameInput.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
@@ -22,6 +23,7 @@ qt_add_executable(qtcraft
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
+    rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcRenderSample.h
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
     hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
@@ -97,6 +99,10 @@ qt_add_qml_module(qtcraft
         qml/Hud.qml
         qml/InventoryScreen.qml
         qml/ItemSlot.qml
+        qml/InventorySlot.qml
+        qml/PlayerSlots.qml
+        qml/SlotScreen.qml
+        qml/HudLabel.qml
         qml/PauseMenu.qml
         qml/MainMenu.qml
         qml/MessageScreen.qml
@@ -115,10 +121,12 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.frag
 )
 
 qt_add_translations(qtcraft
-    SOURCE_TARGETS qtcraft qc_clientcore
+    SOURCE_TARGETS qtcraft qc_clientcore qc_server
     TS_FILE_DIR ${PROJECT_SOURCE_DIR}/translations
     TS_FILE_BASE qtcraft
     RESOURCE_PREFIX /i18n)

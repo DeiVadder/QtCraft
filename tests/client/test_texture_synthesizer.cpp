@@ -74,6 +74,26 @@ private slots:
         QCOMPARE(image.pixelColor(7, 9), QColor(30, 26, 24));
     }
 
+    // Arm textures read as round limbs: darker at the left and right edge than in the middle; the
+    // sleeve ends in a darker cuff, the skin in finger gaps.
+    void armTexturesAreShadedAndHaveCuffAndFingers()
+    {
+        QCOMPARE(qcTexturePatternFromName(u"limb"_s), QcTextureSpec::Pattern::Limb);
+        QCOMPARE(qcTexturePatternFromName(u"sleeve"_s), QcTextureSpec::Pattern::Sleeve);
+        const QcTextureSpec skinSpec{QcTextureSpec::Pattern::Limb, QColor(240, 240, 240), QColor(200, 200, 200), 0.0, 1};
+        const QImage skin = QcTextureSynthesizer::synthesize(skinSpec);
+        QCOMPARE(transparentPixels(skin), 0);
+        QVERIFY(skin.pixelColor(0, 5).red() < skin.pixelColor(7, 5).red() - 20);
+        QVERIFY(skin.pixelColor(15, 5).red() < skin.pixelColor(8, 5).red() - 20);
+        QVERIFY(skin.pixelColor(4, 14).red() < skin.pixelColor(6, 14).red());
+
+        const QcTextureSpec sleeveSpec{QcTextureSpec::Pattern::Sleeve, QColor(240, 240, 240), QColor(170, 170, 170), 0.0, 1};
+        const QImage sleeve = QcTextureSynthesizer::synthesize(sleeveSpec);
+        QCOMPARE(transparentPixels(sleeve), 0);
+        QVERIFY(sleeve.pixelColor(7, 14).red() < sleeve.pixelColor(7, 4).red() - 30);
+        QVERIFY(sleeve.pixelColor(0, 4).red() < sleeve.pixelColor(7, 4).red());
+    }
+
     void patternNamesResolve()
     {
         QCOMPARE(qcTexturePatternFromName(u"planks"_s), QcTextureSpec::Pattern::Planks);

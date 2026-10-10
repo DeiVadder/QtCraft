@@ -31,6 +31,20 @@ BoneRotation &bone(BodyPose &pose, QcBoneRole role)
 
 } // namespace
 
+double swingLift(double progress)
+{
+    const double p = std::clamp(progress, 0.0, 1.0);
+    if (p < swingTop) {
+        return smooth(p / swingTop);
+    }
+    if (p < swingBottom) {
+        // Accelerates into the blow like a real strike.
+        const double t = (p - swingTop) / (swingBottom - swingTop);
+        return 1.0 - 2.0 * t * t;
+    }
+    return -1.0 + smooth((p - swingBottom) / (1.0 - swingBottom));
+}
+
 BodyPose animateBody(const QcEntityPose &pose, double time)
 {
     BodyPose result;
@@ -71,9 +85,19 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         result.bodyLift = -0.12;
     }
     if (pose.swingProgress >= 0.0) {
-        // Raise the right arm forward and strike down.
-        const double swing = std::sin(std::clamp(pose.swingProgress, 0.0, 1.0) * M_PI);
-        bone(result, QcBoneRole::RightArm) = {40.0 + swing * 70.0, -swing * 10.0};
+        // Raise the right arm high over the head, strike down in front of the body, settle back.
+        constexpr double raised = 160.0;
+        constexpr double struck = 30.0;
+        const double rest = bone(result, QcBoneRole::RightArm).pitch;
+        const double progress = std::clamp(pose.swingProgress, 0.0, 1.0);
+        const double lift = swingLift(progress);
+        double pitch = struck + (raised - struck) * (lift + 1.0) / 2.0;
+        if (progress < swingTop) {
+            pitch = rest + (raised - rest) * lift;
+        } else if (progress > swingBottom) {
+            pitch = rest + (struck - rest) * -lift;
+        }
+        bone(result, QcBoneRole::RightArm) = {pitch, -10.0 * std::abs(lift)};
     }
     if (pose.hurtProgress >= 0.0) {
         result.bodyPitch -= 12.0 * std::sin(std::clamp(pose.hurtProgress, 0.0, 1.0) * M_PI);
@@ -113,13 +137,16 @@ HandPose animateHand(const QcEntityPose &pose, double time, double switchProgres
     }
 
     if (pose.swingProgress >= 0.0) {
-        const double swing = std::sin(std::clamp(pose.swingProgress, 0.0, 1.0) * M_PI);
-        const double sweep = std::sin(std::sqrt(std::clamp(pose.swingProgress, 0.0, 1.0)) * M_PI);
-        hand.offset.x -= 0.15 * sweep;
-        hand.offset.y += 0.08 * sweep;
-        hand.offset.z -= 0.2 * swing;
-        hand.pitch += 50.0 * swing;
-        hand.yaw += 25.0 * sweep;
+        // Up first, then down and inwards across the crosshair, then back to rest; small angles
+        // keep the arm and the held item on the screen.
+        const double lift = swingLift(pose.swingProgress);
+        const double down = std::max(0.0, -lift);
+        const double thrust = std::sin(std::clamp(pose.swingProgress, 0.0, 1.0) * M_PI);
+        hand.offset.x -= 0.08 * down;
+        hand.offset.y += 0.04 * lift;
+        hand.offset.z -= 0.10 * thrust;
+        hand.pitch += lift >= 0.0 ? 22.0 * lift : 12.0 * lift;
+        hand.yaw += 18.0 * down;
     }
     if (useProgress >= 0.0) {
         const double push = std::sin(std::clamp(useProgress, 0.0, 1.0) * M_PI);

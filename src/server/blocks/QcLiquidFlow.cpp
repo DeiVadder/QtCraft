@@ -2,12 +2,142 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
+#include <cstdlib>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
 constexpr std::array<QcBlockFace, 4> sideways = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
+constexpr int sideCount = int(sideways.size());
+
+// Cells the liquid `spread` may run through: those it could flow into at any level (air, replaceable
+// and washable blocks, flowing parts of the same liquid).
+bool isPassable(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread)
+{
+    const QcContentRegistry &content = world.content();
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    const bool sameFlowing = block && content.isValidBlock(*block) && content.isSameBlock(*block, spread)
+                             && !QcLiquidFlow::isSource(content, *block);
+    return pos.isInsideWorldHeight() && (sameFlowing || QcLiquidFlow::canReplace(content, block, spread));
+}
+
+// Breadth-first search over the cells around a spreading liquid at the same height for the nearest
+// drops (cells the liquid can fall out of). Each cell remembers through which of the four first
+// steps (bit per entry of `sideways`) it is reached on a shortest way.
+class DropSearch
+{
+public:
+    // Looks `radius` blocks (at most QcLiquidDefinition::maxDropSearch) around `centre`.
+    DropSearch(const QcBlockAccess &world, QcBlockPos centre, QcBlockId spread, int radius)
+        : m_world(world)
+        , m_content(world.content())
+        , m_centre(centre)
+        , m_spread(spread)
+        , m_falling(QcLiquidFlow::stateWith(m_content, spread, 1, true))
+        , m_radius(std::min(radius, QcLiquidDefinition::maxDropSearch))
+    {
+    }
+
+    // Bits of the first steps that lead to a nearest drop; 0 without a drop within the radius.
+    int nearestDropSteps(int openSteps)
+    {
+        QList<QcBlockPos> frontier;
+        for (int i = 0; i < sideCount; ++i) {
+            if (openSteps & (1 << i)) {
+                const QcBlockPos side = qcNeighbour(m_centre, sideways[std::size_t(i)]);
+                cell(side) = {1, 1 << i};
+                frontier.append(side);
+            }
+        }
+        cell(m_centre).distance = blocked;
+
+        for (int distance = 1; !frontier.isEmpty(); ++distance) {
+            if (const int steps = stepsToDrops(frontier)) {
+                return steps;
+            }
+            if (distance == m_radius) {
+                break;
+            }
+            frontier = expand(frontier, distance + 1);
+        }
+        return 0;
+    }
+
+private:
+    static constexpr int size = 2 * QcLiquidDefinition::maxDropSearch + 1;
+    static constexpr int blocked = -1;
+
+    struct Cell
+    {
+        // 0: not looked at yet, `blocked`, or the walking distance from the centre.
+        int distance = 0;
+        // Bits of the first steps of the shortest ways here.
+        int steps = 0;
+    };
+
+    Cell &cell(QcBlockPos pos)
+    {
+        const int index = (pos.z - m_centre.z + size / 2) * size + pos.x - m_centre.x + size / 2;
+        return m_cells[std::size_t(index)];
+    }
+
+    int stepsToDrops(const QList<QcBlockPos> &frontier)
+    {
+        int steps = 0;
+        for (const QcBlockPos &pos : frontier) {
+            if (isDrop(pos.offset(0, -1, 0))) {
+                steps |= cell(pos).steps;
+            }
+        }
+        return steps;
+    }
+
+    // The ring of open cells at `distance`; a cell reached from several cells of the ring before
+    // joins their steps. Every cell is checked for passing at most once.
+    QList<QcBlockPos> expand(const QList<QcBlockPos> &frontier, int distance)
+    {
+        QList<QcBlockPos> next;
+        for (const QcBlockPos &pos : frontier) {
+            for (const QcBlockFace face : sideways) {
+                const QcBlockPos neighbour = qcNeighbour(pos, face);
+                if (std::max(std::abs(neighbour.x - m_centre.x), std::abs(neighbour.z - m_centre.z)) > m_radius) {
+                    continue;
+                }
+
+                Cell &reached = cell(neighbour);
+                if (reached.distance == 0) {
+                    reached.distance = isPassable(m_world, neighbour, m_spread) ? distance : blocked;
+                    next.append(neighbour);
+                }
+                if (reached.distance == distance) {
+                    reached.steps |= cell(pos).steps;
+                }
+            }
+        }
+
+        next.removeIf([this](QcBlockPos pos) { return cell(pos).distance == blocked; });
+        return next;
+    }
+
+    // A cell below that the liquid can fall into or that already holds it (a filled hole stays a
+    // drop, so the stream keeps running there).
+    bool isDrop(QcBlockPos below) const
+    {
+        const std::optional<QcBlockId> block = m_world.blockAt(below);
+        const bool holdsLiquid = block && m_content.isValidBlock(*block) && m_content.isSameBlock(*block, m_spread);
+        return holdsLiquid || QcLiquidFlow::canFlowInto(m_world, below, m_falling);
+    }
+
+    const QcBlockAccess &m_world;
+    const QcContentRegistry &m_content;
+    QcBlockPos m_centre;
+    QcBlockId m_spread;
+    QcBlockId m_falling;
+    int m_radius;
+    std::array<Cell, std::size_t(size * size)> m_cells{};
+};
 
 } // namespace
 
@@ -267,10 +397,36 @@ void QcLiquidFlow::step(QcBlockPos pos, const StepContext &context)
     }
 
     const QcBlockId spread = stateWith(content, current, next, false);
-    for (const QcBlockFace face : sideways) {
-        const QcBlockPos side = qcNeighbour(pos, face);
-        if (canFlowInto(world, side, spread)) {
-            change(side, spread, context);
+    const QList<QcBlockFace> faces = spreadFaces(world, pos, spread);
+    for (const QcBlockFace face : faces) {
+        change(qcNeighbour(pos, face), spread, context);
+    }
+}
+
+QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlockPos pos, QcBlockId spread)
+{
+    // Sides it can flow into now, and sides the search runs through (also those that already
+    // carry its flow, so an established stream keeps its direction).
+    int flowable = 0;
+    int passable = 0;
+    for (int i = 0; i < sideCount; ++i) {
+        const QcBlockPos side = qcNeighbour(pos, sideways[std::size_t(i)]);
+        flowable |= canFlowInto(world, side, spread) ? 1 << i : 0;
+        passable |= isPassable(world, side, spread) ? 1 << i : 0;
+    }
+
+    // Drops further than the spreading parts can still reach do not matter.
+    const QcLiquidDefinition &definition = world.content().block(spread).flow;
+    const int radius = std::min(definition.dropSearch, definition.distance - level(world.content(), spread) + 1);
+    const bool search = flowable != 0 && radius > 0 && std::popcount(unsigned(passable)) > 1;
+    const int nearest = search ? DropSearch(world, pos, spread, radius).nearestDropSteps(passable) : 0;
+    const int chosen = (nearest != 0 ? nearest : passable) & flowable;
+
+    QList<QcBlockFace> faces;
+    for (int i = 0; i < sideCount; ++i) {
+        if (chosen & (1 << i)) {
+            faces.append(sideways[std::size_t(i)]);
         }
     }
+    return faces;
 }

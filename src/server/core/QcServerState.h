@@ -7,6 +7,7 @@
 #include "QcLiquidFlow.h"
 #include "QcMachineManager.h"
 #include "QcMobManager.h"
+#include "QcPlantGrowth.h"
 #include "QcPlantManager.h"
 #include "QcServerClient.h"
 #include "QcServerConfig.h"
@@ -31,7 +32,13 @@ struct QcServerState
     bool isLoadedAt(QcBlockPos pos) const;
     const QcItemDefinition *heldItem(const QcServerClient &client) const;
     bool isWithinReach(const QcServerClient &client, QcBlockPos pos) const;
-    // On the generated surface of the spawn column (or the configured one).
+
+    // Line of sight from the player's eye, now or before the last input (decision E-092), to a
+    // block (which does not hide itself) or to a body.
+    bool canSee(const QcServerClient &client, QcBlockPos pos) const;
+    bool canSee(const QcServerClient &client, const QcAabb &body) const;
+    // On the surface of the spawn column (or the configured one) as the world stores it; when that
+    // is no natural ground (a tree, a building, water), on the nearest natural ground around it.
     QcVec3 spawnPosition();
 
     QcServerConfig config;
@@ -44,6 +51,7 @@ struct QcServerState
     QcMobManager mobs;
     QcItemEntityManager items;
     QcPlantManager plants;
+    QcPlantGrowth growth;
     QcMachineManager machines;
     QcContainerManager containers;
     QcLiquidFlow liquids;
@@ -55,4 +63,15 @@ struct QcServerState
     QSet<quint32> died;
     // The generator's spawn point, searched once (it may generate chunks to find open ground).
     std::optional<QcBlockPos> generatorSpawn;
+
+private:
+    // Searched by spawnPosition() on squares of growing radius around the spawn column.
+    static constexpr int spawnGroundRadius = 16;
+    // Nearest stored column around `column` (within spawnGroundRadius) whose top block is natural
+    // ground; returns that top block.
+    std::optional<QcBlockPos> naturalGroundNear(QcBlockPos column);
+    // The same on the square ring of `radius` around `column`.
+    std::optional<QcBlockPos> naturalGroundOnRing(QcBlockPos column, int radius);
+    // The top block of a stored column if it is natural ground, else nullopt.
+    std::optional<QcBlockPos> naturalGroundAt(int x, int z);
 };

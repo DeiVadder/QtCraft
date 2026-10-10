@@ -25,8 +25,11 @@ public:
             craftingGrid = inventory->craftingGrid;
             craftingSize = inventory->craftingSize;
             craftingResult = inventory->craftingResult;
+        } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
+            blockUpdates.append(*update);
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
+            chatKeys.append(*chat);
         } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
             this->health = health->health;
             dead = health->dead;
@@ -73,7 +76,10 @@ public:
     qint32 craftingSize = 0;
     QcItemStack craftingResult;
     qint32 openedCrafting = 0;
+    QList<QcMsg::BlockUpdate> blockUpdates;
     QStringList chatLines;
+    // The same lines with their translation keys and arguments.
+    QList<QcMsg::ChatMessage> chatKeys;
     double health = 0.0;
     bool dead = false;
     int food = -1;

@@ -1,7 +1,23 @@
 #include "QcServerState.h"
 
+#include "QcLineOfSight.h"
 #include "QcPhysics.h"
 #include "QcRaycast.h"
+
+#include <utility>
+
+namespace {
+
+bool seenFromEyes(const QcServerState &state, const QcServerClient &client, const QcAabb &box, std::optional<QcBlockPos> target)
+{
+    const QcVec3 eyeOffset{0.0, QcPhysics::playerEyeHeight, 0.0};
+    if (QcLineOfSight::reaches(state.world, client.motion.position + eyeOffset, box, target)) {
+        return true;
+    }
+    return client.previousPosition && QcLineOfSight::reaches(state.world, *client.previousPosition + eyeOffset, box, target);
+}
+
+} // namespace
 
 QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const QcContentRegistry> registry,
                              std::unique_ptr<QcWorldGenerator> generator)
@@ -11,6 +27,7 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     , mobs(content, quint64(config.seed))
     , items(content, quint64(config.seed))
     , plants(content, quint64(config.seed))
+    , growth(content, quint64(config.seed))
     , machines(content)
     , containers(content)
     , liquids(content)
@@ -40,6 +57,16 @@ bool QcServerState::isWithinReach(const QcServerClient &client, QcBlockPos pos) 
     return (centre - eye).length() <= QcRaycast::playerReach + tolerance;
 }
 
+bool QcServerState::canSee(const QcServerClient &client, QcBlockPos pos) const
+{
+    return seenFromEyes(*this, client, QcLineOfSight::blockBox(pos), pos);
+}
+
+bool QcServerState::canSee(const QcServerClient &client, const QcAabb &body) const
+{
+    return seenFromEyes(*this, client, body, std::nullopt);
+}
+
 QcVec3 QcServerState::spawnPosition()
 {
     if (!generatorSpawn) {
@@ -51,8 +78,49 @@ QcVec3 QcServerState::spawnPosition()
         spawn = {(*config.spawnColumn)[0], 0, (*config.spawnColumn)[1]};
     }
 
-    // Stand on whatever the generated column really contains (caves, trees, water surface).
+    if (!config.spawnColumn) {
+        if (const std::optional<QcBlockPos> ground = naturalGroundNear(spawn)) {
+            return {ground->x + 0.5, double(ground->y + 1), ground->z + 0.5};
+        }
+    }
+
+    // Stand on whatever the stored column contains (the test hook's column, or no ground nearby).
     const std::shared_ptr<const QcChunk> spawnChunk = world.loadChunk(spawn.chunk());
     spawn.y = spawnChunk->highestNonAir(spawn.localX(), spawn.localZ()) + 1;
     return {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
+}
+
+std::optional<QcBlockPos> QcServerState::naturalGroundNear(QcBlockPos column)
+{
+    for (int radius = 0; radius <= spawnGroundRadius; ++radius) {
+        if (const std::optional<QcBlockPos> ground = naturalGroundOnRing(column, radius)) {
+            return ground;
+        }
+    }
+    return std::nullopt;
+}
+
+std::optional<QcBlockPos> QcServerState::naturalGroundOnRing(QcBlockPos column, int radius)
+{
+    // Each side of the square ring is walked once (corners twice, which is harmless).
+    for (int i = -radius; i <= radius; ++i) {
+        const std::pair<int, int> sides[] = {{i, -radius}, {i, radius}, {-radius, i}, {radius, i}};
+        for (const auto [dx, dz] : sides) {
+            if (const std::optional<QcBlockPos> ground = naturalGroundAt(column.x + dx, column.z + dz)) {
+                return ground;
+            }
+        }
+    }
+    return std::nullopt;
+}
+
+std::optional<QcBlockPos> QcServerState::naturalGroundAt(int x, int z)
+{
+    QcBlockPos top{x, 0, z};
+    const std::shared_ptr<const QcChunk> chunk = world.loadChunk(top.chunk());
+    top.y = chunk->highestNonAir(top.localX(), top.localZ());
+    if (top.y < 0 || !world.generator().isNaturalGround(chunk->block(top.localX(), top.y, top.localZ()))) {
+        return std::nullopt;
+    }
+    return top;
 }

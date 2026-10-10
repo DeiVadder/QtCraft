@@ -1,6 +1,7 @@
 #include "QcBlockLightEngine.h"
 
 #include "QcBlockFace.h"
+#include "QcLightPassage.h"
 #include "QcSectionKey.h"
 
 #include <algorithm>
@@ -159,6 +160,7 @@ void QcBlockLightEngine::propagateAdd()
             continue;
         }
 
+        const quint8 blocked = entryAt(*own, cell.x, cell.y, cell.z).lightBlockedFaces;
         for (const QcBlockFace face : qcAllBlockFaces) {
             const QcFaceOffset offset = qcFaceOffset(face);
             const Cell next{cell.x + offset.dx, cell.y + offset.dy, cell.z + offset.dz};
@@ -170,9 +172,11 @@ void QcBlockLightEngine::propagateAdd()
                 continue;
             }
 
-            const int opacity = entryAt(*target, next.x, next.y, next.z).lightOpacity;
+            const QcBlockRenderTable::Entry &entry = entryAt(*target, next.x, next.y, next.z);
+            const int opacity = entry.lightOpacity;
             const int candidate = light - std::max(1, opacity);
-            if (opacity < maxLevel && candidate > levelIn(*target, next.x, next.y, next.z)) {
+            const bool passes = opacity < maxLevel && QcLightPassage::crosses(blocked, entry.lightBlockedFaces, face);
+            if (passes && candidate > levelIn(*target, next.x, next.y, next.z)) {
                 setLevel(*target, next.x, next.y, next.z, candidate);
                 m_add.push_back(next);
             }
@@ -344,7 +348,7 @@ void QcBlockLightEngine::changeBlock(QcBlockPos pos, std::shared_ptr<const QcChu
     const QcBlockRenderTable::Entry &before = entryAt(*own, pos.x, pos.y, pos.z);
     own->blocks = std::move(chunk);
     const QcBlockRenderTable::Entry &after = entryAt(*own, pos.x, pos.y, pos.z);
-    if (before.lightOpacity == after.lightOpacity && before.lightLevel == after.lightLevel) {
+    if (!before.lightDiffers(after) && before.lightLevel == after.lightLevel) {
         return;
     }
 

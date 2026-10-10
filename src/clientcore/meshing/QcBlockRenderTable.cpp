@@ -178,6 +178,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     }
     entry.fullCube = state.fullCube;
     entry.lightOpacity = state.lightOpacity;
+    entry.lightBlockedFaces = state.lightBlockedFaces;
     entry.lightLevel = block.lightLevel;
     for (const QcBlockFace face : qcAllBlockFaces) {
         entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));

@@ -178,7 +178,13 @@ struct Encoder
     void operator()(QcMsg::CloseCrafting) {}
     void operator()(QcMsg::ConsumeItem) {}
     void operator()(QcMsg::OpenCrafting m) { stream << m.size; }
-    void operator()(const QcMsg::ChatMessage &m) { stream << m.text; }
+    void operator()(const QcMsg::ChatMessage &m)
+    {
+        stream << m.text << m.key << quint32(m.arguments.size());
+        for (const QString &argument : m.arguments) {
+            stream << argument;
+        }
+    }
     void operator()(const QcMsg::EntitySpawn &m)
     {
         stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
@@ -197,6 +203,7 @@ struct Encoder
     void operator()(QcMsg::WorldTime m) { stream << m.time << m.dayLength; }
     void operator()(QcMsg::AttackEntity m) { stream << m.id; }
     void operator()(QcMsg::UseEntity m) { stream << m.id; }
+    void operator()(QcMsg::QuickMoveItem m) { stream << m.slot; }
     void operator()(QcMsg::Respawn) {}
     void operator()(QcMsg::DropItem m) { stream << m.wholeStack; }
     void operator()(const QcMsg::SetAppearance &m) { stream << m.appearance; }
@@ -385,6 +392,18 @@ QcResult<QcMessage> decodePayload<QcMsg::MoveInventoryItem>(QDataStream &stream)
 }
 
 template<>
+QcResult<QcMessage> decodePayload<QcMsg::QuickMoveItem>(QDataStream &stream)
+{
+    QcMsg::QuickMoveItem m;
+    stream >> m.slot;
+    if (m.slot < QcMsg::QuickMoveItem::craftingResultSlot
+        || m.slot >= QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots) {
+        return qcError(u"Quick move slot %1 out of range"_s.arg(m.slot));
+    }
+    return m;
+}
+
+template<>
 QcResult<QcMessage> decodePayload<QcMsg::ChatInput>(QDataStream &stream)
 {
     QcMsg::ChatInput m;
@@ -469,7 +488,17 @@ template<>
 QcResult<QcMessage> decodePayload<QcMsg::ChatMessage>(QDataStream &stream)
 {
     QcMsg::ChatMessage m;
-    stream >> m.text;
+    quint32 count = 0;
+    stream >> m.text >> m.key;
+    if (!QcStreamLimits::readCount(stream, QcMsg::ChatMessage::maxArguments, count)) {
+        return qcError(u"Too many chat arguments"_s);
+    }
+
+    for (quint32 i = 0; i < count; ++i) {
+        QString argument;
+        stream >> argument;
+        m.arguments.append(argument);
+    }
     return m;
 }
 
@@ -702,7 +731,7 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::SelectHotbarSlot>()
                                || is.template operator()<QcMsg::MoveInventoryItem>() || is.template operator()<QcMsg::ChatInput>()
                                || is.template operator()<QcMsg::AttackEntity>() || is.template operator()<QcMsg::Respawn>()
-                               || is.template operator()<QcMsg::UseEntity>()
+                               || is.template operator()<QcMsg::UseEntity>() || is.template operator()<QcMsg::QuickMoveItem>()
                                || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
                                || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
                                || is.template operator()<QcMsg::DropItem>() || is.template operator()<QcMsg::SetAppearance>();

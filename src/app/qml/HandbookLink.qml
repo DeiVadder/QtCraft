@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCraft
 
 // A reference to another handbook entry: icon, name and an optional note; a click opens the entry.
 Rectangle {
@@ -14,8 +15,8 @@ Rectangle {
     implicitWidth: row.implicitWidth + 12
     implicitHeight: 28
     radius: 3
-    color: hover.hovered ? "#60507aa8" : "#26ffffff"
-    border.color: "#40ffffff"
+    color: hover.hovered ? Theme.linkHover : Theme.linkBackground
+    border.color: Theme.separator
 
     RowLayout {
         id: row
@@ -35,13 +36,13 @@ Rectangle {
 
         Label {
             text: chip.link.text
-            color: "#a8d4ff"
+            color: Theme.link
         }
 
         Label {
             visible: chip.link.note.length > 0
             text: "(" + chip.link.note + ")"
-            color: "#b8ffffff"
+            color: Theme.textMuted
         }
     }
 

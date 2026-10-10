@@ -6,6 +6,8 @@
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
 #include "QcRenderSample.h"
+#include "QcSky.h"
+#include "QcDayCycle.h"
 
 #include <QColor>
 #include <QImage>
@@ -49,8 +51,8 @@ public:
     void setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh);
     // First-person arm and held item; drawn in front of everything else. Null hides it.
     void setHandMesh(std::shared_ptr<const QcEntityMesh> mesh);
-    void setSkyColor(const QColor &color);
-    void setDaylight(float daylight);
+    // Sky dome, fog colour (its horizon) and the daylight factor of the shaders.
+    void setSky(const QcSkyState &sky);
     void setFogRange(float start, float end);
 
     qsizetype meshCount() const { return m_meshKeys.size(); }
@@ -70,8 +72,7 @@ private:
     quint64 m_atlasVersion = 0;
     QList<MeshUpdate> m_pendingMeshUpdates;
     bool m_clearAllMeshes = false;
-    QColor m_skyColor = QColor(135, 190, 235);
-    float m_daylight = 1.0f;
+    QcSkyState m_sky = QcSky::at(QcDayCycle::startTime);
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
     QSet<quint64> m_meshKeys;

@@ -86,6 +86,9 @@ struct QcTerrainDefinitions
     QList<Feature> features;
     QList<Ore> ores;
     QList<Pool> pools;
+    // Solid blocks the terrain itself is made of (stone and every biome's ground layers, no
+    // features, liquids or ice): where a player may spawn.
+    QSet<QcBlockId> naturalGround;
     // Whether any biome uses ridges or terraces (their noise is skipped otherwise).
     bool anyRidges = false;
     bool anyTerraces = false;

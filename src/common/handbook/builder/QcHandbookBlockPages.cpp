@@ -214,6 +214,10 @@ void BlockPage::addPhysicalFacts()
     if (!block.groundLiquid.isEmpty()) {
         addFact(u"groundLiquid"_s, {}, {m_links.blockLink(block.groundLiquid)});
     }
+    if (block.growth.grows()) {
+        const QString minutes = m_text.number(block.growth.averageSeconds / 60.0);
+        addFact(u"growth"_s, label(u"unit.growth"_s).arg(block.growth.maxHeight).arg(minutes));
+    }
 
     addFlag(block.falls, u"falls"_s);
     addFlag(block.washable, u"washable"_s);

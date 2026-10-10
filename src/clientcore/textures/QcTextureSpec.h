@@ -69,6 +69,12 @@ struct QcTextureSpec
         Bucket,
         // Lamp housing (primary) around a glowing window (secondary) with bars, for a stretched box.
         Lantern,
+        // Bare skin of an arm or hand (meant to be tinted): rounded shading towards the edges, soft
+        // mottling, at the bottom a knuckle line and fingers (secondary).
+        Limb,
+        // Sleeve fabric (meant to be tinted): fine weave, rounded shading and folds, a darker cuff
+        // with a stitched seam at the bottom.
+        Sleeve,
     };
 
     Pattern pattern = Pattern::Noise;

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCraft
 
 // A recipe drawn like the crafting screen: the grid (or a machine's input), an arrow and the result;
 // below it how and where it is made. Every cell opens its entry when clicked.
@@ -24,8 +25,8 @@ ColumnLayout {
 
         implicitWidth: 44
         implicitHeight: 44
-        color: hover.hovered && cell.link ? "#c0606060" : "#a0303030"
-        border.color: "#80000000"
+        color: hover.hovered && cell.link ? Theme.slotHover : Theme.panelRaised
+        border.color: Theme.slotBorder
         radius: 2
 
         Image {
@@ -43,7 +44,7 @@ ColumnLayout {
             anchors.margins: 2
             visible: cell.link !== null && cell.link.icon.length === 0
             text: cell.link ? cell.link.text : ""
-            color: "white"
+            color: Theme.text
             font.pixelSize: 9
             wrapMode: Text.Wrap
             elide: Text.ElideRight
@@ -55,9 +56,9 @@ ColumnLayout {
             anchors.margins: 3
             visible: cell.count > 1
             text: cell.count
-            color: "white"
+            color: Theme.text
             style: Text.Outline
-            styleColor: "black"
+            styleColor: Theme.textOutline
             font.bold: true
         }
 
@@ -96,7 +97,7 @@ ColumnLayout {
 
         Label {
             text: view.recipe.kind === "machine" ? "⟶" : "→"
-            color: view.recipe.kind === "machine" ? "#ffb060" : "white"
+            color: view.recipe.kind === "machine" ? Theme.warning : Theme.text
             font.pixelSize: 26
         }
 
@@ -109,7 +110,7 @@ ColumnLayout {
     Label {
         Layout.maximumWidth: 360
         text: view.recipe.note
-        color: "#c8ffffff"
+        color: Theme.textMuted
         font.pixelSize: 12
         wrapMode: Text.Wrap
     }

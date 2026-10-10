@@ -1,6 +1,7 @@
 #include "QcServerInteraction.h"
 
 #include "QcBlockRules.h"
+#include "QcChatText.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcServerCombat.h"
@@ -27,7 +28,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     client.miningPos.reset();
 
     const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (!sameTarget || !block || *block == qcAirBlockId || !m_state.isWithinReach(client, pos)) {
+    if (!sameTarget || !block || *block == qcAirBlockId || !m_state.isWithinReach(client, pos) || !m_state.canSee(client, pos)) {
         // Resend the true block so a client that predicted the break shows it again.
         if (block) {
             client.connection->send(QcMsg::BlockUpdate{pos, *block});
@@ -63,6 +64,16 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
 void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &message)
 {
     client.swung = true;
+
+    // Nothing is used, placed or scooped through walls; the client may have predicted a placement.
+    if (!m_state.canSee(client, message.target)) {
+        if (const std::optional<QcBlockId> clicked = m_state.world.blockAt(message.target)) {
+            client.connection->send(QcMsg::BlockUpdate{message.target, *clicked});
+        }
+        rejectPlacement(client, qcNeighbour(message.target, message.face));
+        return;
+    }
+
     if (useClickedBlock(client, message.target)) {
         return;
     }
@@ -138,12 +149,14 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
     }
 
     if (placedDefinition.containerSlots > 0 && m_state.containers.isFull()) {
-        client.connection->send(QcMsg::ChatMessage{u"Too many chests in the world (at most %1)"_s.arg(QcContainerManager::maxContainers)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many chests in the world (at most %1)"),
+            {QString::number(QcContainerManager::maxContainers)}));
         return false;
     }
 
     if (placedDefinition.machine.isMachine() && m_state.machines.isFull()) {
-        client.connection->send(QcMsg::ChatMessage{u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many machines in the world (at most %1)"),
+            {QString::number(QcMachineManager::maxMachines)}));
         return false;
     }
 
@@ -233,7 +246,8 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
     if (definition.catchWith != held->name || !m_state.content->itemId(definition.catchItem)
-        || (centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0) {
+        || (centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0
+        || !m_state.canSee(client, QcPhysics::boxAt(mob->motion.position, definition.width, definition.height))) {
         return;
     }
 

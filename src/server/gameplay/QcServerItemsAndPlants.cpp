@@ -62,13 +62,14 @@ int QcServerItemsAndPlants::giveToPlayer(quint32 entityId, QcItemStack stack, QS
 
 void QcServerItemsAndPlants::tickPlants(double dt)
 {
+    const auto setBlock = [this](QcBlockPos pos, QcBlockId block) {
+        m_blocks.setAndBroadcast(pos, block);
+        return m_state.world.blockAt(pos) == block;
+    };
     m_state.plants.tick(
-        m_state.world, dt, [this](QcBlockPos pos) { return m_state.isLoadedAt(pos); },
-        [this](QcBlockPos pos, QcBlockId block) {
-            m_blocks.setAndBroadcast(pos, block);
-            return m_state.world.blockAt(pos) == block;
-        },
+        m_state.world, dt, [this](QcBlockPos pos) { return m_state.isLoadedAt(pos); }, setBlock,
         [this](QcBlockPos pos) { m_blocks.breakBlock(pos, true); });
+    m_state.growth.tick(m_state.world, setBlock);
 }
 
 void QcServerItemsAndPlants::tryPlant(const QcItemEntityManager::Item &item)

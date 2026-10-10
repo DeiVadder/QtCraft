@@ -90,6 +90,8 @@ Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-s
 
 `plantOn` lists the blocks it may stand on (empty: any solid block), `plantChance` is the chance that a dropped sapling item plants itself when it despawns. Leaves of tree features decay once no trunk of a tree feature is within four blocks; give them a drop with a chance (e.g. the sapling, 0.08) to let forests regrow. The procedural texture pattern `sapling` draws a small plant.
 
+A plant that grows upwards by itself (like sugar cane) gets a `"growth"` object: `maxHeight` (2–64, default 3) is the tallest column it reaches, `averageSeconds` (1–86400, default 600) the average time between two growth steps of one column. It needs `"support": "below"`. Growth runs on random ticks of loaded sections (three random blocks per section and tick, so each block is ticked about every 68 s); a ticked top block adds a block of its kind above when the block above is air, the column is shorter than `maxHeight` and the column's base still has its `ground` and `groundLiquid`. Example: `"growth": { "maxHeight": 4, "averageSeconds": 300 }`. Server side only (not sent to clients); the handbook shows it on the block page.
+
 Furnaces and other machines come from data too. A block with a `machine` object opens a screen with an input, a fuel and an output slot; `smelting/*.json` says what a machine of that category makes, and `fuelSeconds` on items or blocks says how long they burn (an item created for a block inherits the block's value):
 
 ```json
@@ -135,6 +137,8 @@ Blocks can be any set of boxes (decision E-045). A shape is named in `shapes/` (
 
 Block states (decision E-046) are declared per block: `"states": { "facing": ["north", "east", "south", "west"], "open": [false, true] }` (the first value is the default; at most 8 properties of 16 values and 1024 states per block). The server derives these properties when a block is placed or its neighbours change: `facing` (`"facing": "away"` from the player, or `"toward"` for fronts), `half` and `type` (`bottom`/`top`, slabs add `double`), `attach` (`floor`, `ceiling`, `north`, … towards the clicked block), `hinge`, `north`/`east`/`south`/`west` and `up` for blocks with `connects` (`{"group": "fence", "to": ["fence"]}`: connect to members of these groups and full solid blocks). Further flags: `support` (`below` or `attached`: breaks and drops without it), `toggles` (using flips `open`), `door` (two blocks tall), `climbable`, `light` (0–15), `container` (`{"slots": 27}`, a chest), `tags` (of the block's item) and `itemTexture` (a flat icon instead of the block model). Worlds store states by name (`qtcraft:oak_stairs[facing=east,half=bottom]`), so reordering values or adding properties keeps old worlds; dropped properties fall back to defaults with a warning.
 
+Light and shapes (decision E-104): `lightOpacity` counts for states that are a full cube. A state of a light-dimming block (`lightOpacity` above 0) whose shape is not a full cube (stairs, bottom and top slabs, walls, carpets) lets light into its cell and only stops it at the sides its boxes cover completely: a bottom slab is lit from above and the sides but shades the cell below, a top slab keeps the sky out of its cell, a stair passes light through its open quarter. Blocks with `lightOpacity` 0 let light through whatever their shape.
+
 Building parts (decision E-048) come from two kinds of files. A family in `parts/` describes one part for all materials of the kinds it lists; the block, item, recipe and names of every part are generated after all packs are loaded, so families and materials of different packs combine:
 
 ```json
@@ -168,6 +172,7 @@ Liquids flow when they have a `flow` object (decision E-054). They need the stat
 |-------|---------|
 | `flow.distance` | 1–15 blocks a flow reaches sideways from a source (water 7, lava 3). |
 | `flow.ticks` | 1–1200 server ticks (20 per second) between flow steps (water 5, lava 30). |
+| `flow.dropSearch` | 0–8 blocks (default 4, lava 2) searched sideways for the nearest drop: a spreading liquid only runs towards the nearest drops it can still reach, like the vanilla game; 0 or no drop that near spreads it evenly. Server side only. |
 | `flow.infinite` | Two sources next to each other over solid ground make a new source (water). |
 | `flow.movement` | 0.05–2: factor on swimming speed inside the liquid (lava 0.45). |
 | `flow.bucket` | Item an item with `scoops` (the empty bucket) becomes when it takes a source; without it the liquid cannot be taken. |

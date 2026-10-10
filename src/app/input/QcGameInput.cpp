@@ -10,7 +10,9 @@
 
 #include <QCoreApplication>
 #include <QCursor>
+#include <QGuiApplication>
 #include <QKeyEvent>
+#include <QLoggingCategory>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QWheelEvent>
@@ -20,6 +22,8 @@
 using namespace Qt::StringLiterals;
 
 namespace {
+
+Q_LOGGING_CATEGORY(lcInput, "qtcraft.input")
 
 // The topmost visible item under the mouse, children in front of their parents and higher z first.
 QQuickItem *topmostItemAt(QQuickItem *item, QPointF scenePosition)
@@ -54,34 +58,47 @@ QcGameInput::QcGameInput(QcGameController &game, const QcSessionParts &parts, Qc
     }
 }
 
-void QcGameInput::captureMouse()
+QcMouseCapture::Situation QcGameInput::situation() const
 {
-    if (m_mouseCaptured || !m_parts.window || m_game.phase() != u"playing"_s || !m_game.inputEnabled() || m_backgroundRun) {
-        return;
-    }
+    return {worldInput(), m_parts.window && m_parts.window->isActive(), m_backgroundRun, QGuiApplication::mouseButtons()};
+}
 
-    m_mouseCaptured = true;
-    m_parts.window->setCursor(Qt::BlankCursor);
-    // With platform deltas the cursor is detached and stays put; elsewhere motion is measured
-    // against the window centre.
-    if (!QcRelativeMouse::hasPlatformDeltas()) {
-        QCursor::setPos(m_parts.window->mapToGlobal(QPoint(m_parts.window->width() / 2, m_parts.window->height() / 2)));
+void QcGameInput::syncCapture()
+{
+    applyCapture(m_capture.update(situation()));
+    if (m_capture.returnedWithoutCapture()) {
+        qCInfo(lcInput) << "Mouse capture: back in the world, left free"
+                        << (m_backgroundRun ? "(scripted run)" : "(window not active)");
     }
-    m_relativeMouse.setCaptured(true);
-    emit mouseCapturedChanged();
 }
 
 void QcGameInput::releaseMouse()
 {
-    if (!m_mouseCaptured) {
+    if (m_capture.captured()) {
+        m_capture.released();
+        applyCapture(QcMouseCapture::Change::Release);
+    }
+}
+
+void QcGameInput::applyCapture(QcMouseCapture::Change change)
+{
+    if (change == QcMouseCapture::Change::None) {
         return;
     }
 
-    m_mouseCaptured = false;
-    m_relativeMouse.setCaptured(false);
-    if (m_parts.window) {
+    const bool capture = change == QcMouseCapture::Change::Capture;
+    if (capture && m_parts.window) {
+        m_parts.window->setCursor(Qt::BlankCursor);
+        // With platform deltas the cursor is detached and stays put; elsewhere motion is measured
+        // against the window centre.
+        if (!QcRelativeMouse::hasPlatformDeltas()) {
+            QCursor::setPos(m_parts.window->mapToGlobal(QPoint(m_parts.window->width() / 2, m_parts.window->height() / 2)));
+        }
+    } else if (m_parts.window) {
         m_parts.window->unsetCursor();
     }
+    m_relativeMouse.setCaptured(capture);
+    qCInfo(lcInput) << (capture ? "Mouse capture: on" : "Mouse capture: off");
     emit mouseCapturedChanged();
 }
 
@@ -92,7 +109,7 @@ QPointF QcGameInput::takeMouseDelta()
 
 void QcGameInput::applyFrame(QPointF mouseDelta, float frameSeconds)
 {
-    if (m_mouseCaptured && !mouseDelta.isNull()) {
+    if (m_capture.captured() && !mouseDelta.isNull()) {
         m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), mouseDelta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
     }
     if (m_game.inputEnabled() && m_game.phase() == u"playing"_s) {
@@ -107,7 +124,8 @@ void QcGameInput::clickIfButton(QPointF scenePosition) const
     }
 
     for (const QQuickItem *item = topmostItemAt(m_parts.window->contentItem(), scenePosition); item; item = item->parentItem()) {
-        if (item->inherits("QQuickAbstractButton")) {
+        // Buttons and the slots of the inventory screens (property clickSound in InventorySlot.qml).
+        if (item->inherits("QQuickAbstractButton") || item->property("clickSound").toBool()) {
             m_audio->playUi(QString::fromLatin1(QcSoundKeys::uiClick));
             return;
         }
@@ -116,7 +134,7 @@ void QcGameInput::clickIfButton(QPointF scenePosition) const
 
 bool QcGameInput::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == m_parts.window && event->type() == QEvent::MouseButtonRelease && !m_mouseCaptured) {
+    if (watched == m_parts.window && event->type() == QEvent::MouseButtonRelease && !m_capture.captured()) {
         clickIfButton(static_cast<QMouseEvent *>(event)->scenePosition());
     }
 
@@ -147,12 +165,15 @@ bool QcGameInput::filterWorldEvent(QEvent *event)
     case QEvent::MouseButtonPress:
         handleMousePress(*static_cast<QMouseEvent *>(event));
         return true;
-    case QEvent::MouseButtonRelease:
-        if (m_mouseCaptured) {
+    case QEvent::MouseButtonRelease: {
+        const bool captured = m_capture.captured();
+        // The release of the click that captured the mouse, or of a button held while a screen
+        // closed, does nothing.
+        if (m_capture.acceptRelease(static_cast<QMouseEvent *>(event)->button())) {
             handleMouseButton(static_cast<QMouseEvent *>(event)->button(), false);
-            return true;
         }
-        return false;
+        return captured;
+    }
     case QEvent::Wheel:
         return handleWheel(*static_cast<QWheelEvent *>(event));
     case QEvent::MouseMove:
@@ -176,8 +197,8 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
 
 void QcGameInput::handleMousePress(const QMouseEvent &mouse)
 {
-    if (!m_mouseCaptured) {
-        captureMouse();
+    if (!m_capture.captured()) {
+        applyCapture(m_capture.clickedIntoWorld(situation(), mouse.button()));
         return;
     }
 
@@ -199,7 +220,7 @@ void QcGameInput::handleMouseButton(Qt::MouseButton button, bool pressed) const
 
 bool QcGameInput::handleWheel(const QWheelEvent &wheel) const
 {
-    if (!m_mouseCaptured) {
+    if (!m_capture.captured()) {
         return false;
     }
 
@@ -213,7 +234,7 @@ bool QcGameInput::handleWheel(const QWheelEvent &wheel) const
 
 bool QcGameInput::handleMouseMove(const QMouseEvent &mouse) const
 {
-    if (!m_mouseCaptured) {
+    if (!m_capture.captured()) {
         return false;
     }
     // With platform deltas the view turns once per frame in applyFrame().

@@ -143,6 +143,103 @@ private slots:
         }
     }
 
+    // Like the vanilla game: within dropSearch (4) blocks the liquid only runs towards the nearest
+    // drops (decision E-103).
+    void waterRunsTowardsTheNearestDrop()
+    {
+        QcTestWorld world(*m_content);
+        floor(world, 12);
+        world.set({3, 0, 0}, qcAirBlockId);
+
+        QcLiquidFlow flow(m_content);
+        place(flow, world, {0, 1, 0}, id(u"water"_s), 0);
+        run(flow, world, 1, 400);
+
+        // A single stream east into the hole; nothing goes the other ways.
+        QCOMPARE(name(world, {1, 1, 0}), water(1));
+        QCOMPARE(name(world, {2, 1, 0}), water(2));
+        QCOMPARE(name(world, {3, 1, 0}), water(3));
+        QCOMPARE(name(world, {3, 0, 0}), water(1, true));
+        for (const QcBlockPos dry : {QcBlockPos{-1, 1, 0}, QcBlockPos{0, 1, 1}, QcBlockPos{0, 1, -1}, QcBlockPos{1, 1, 1}}) {
+            QCOMPARE(name(world, dry), u"qtcraft:air"_s);
+        }
+    }
+
+    void equallyNearDropsShareTheFlow_data()
+    {
+        QTest::addColumn<int>("wallX");
+        QTest::addColumn<int>("holeX");
+        QTest::addColumn<QList<QcBlockPos>>("wet");
+        QTest::addColumn<QList<QcBlockPos>>("dry");
+
+        // Holes three blocks east and west: the water splits east and west.
+        QTest::newRow("two holes") << 99 << 3 << QList<QcBlockPos>{{2, 1, 0}, {-2, 1, 0}}
+                                   << QList<QcBlockPos>{{0, 1, 1}, {0, 1, -1}};
+        // A wall right east of the source: the hole two blocks east is four steps away around it,
+        // both ways round equally, so the water goes north and south but not west.
+        QTest::newRow("around a wall") << 1 << 2 << QList<QcBlockPos>{{0, 1, 1}, {0, 1, -1}, {2, 0, 0}}
+                                       << QList<QcBlockPos>{{-1, 1, 0}};
+        // The nearest hole is six blocks away, beyond the search: the water spreads evenly.
+        QTest::newRow("too far") << 99 << 6 << QList<QcBlockPos>{{0, 1, 1}, {0, 1, -1}, {-1, 1, 0}, {1, 1, 0}}
+                                 << QList<QcBlockPos>{};
+    }
+
+    void equallyNearDropsShareTheFlow()
+    {
+        QFETCH(int, wallX);
+        QFETCH(int, holeX);
+        QFETCH(QList<QcBlockPos>, wet);
+        QFETCH(QList<QcBlockPos>, dry);
+
+        QcTestWorld world(*m_content);
+        floor(world, 12);
+        world.set({holeX, 0, 0}, qcAirBlockId);
+        if (wallX == 1) {
+            world.set({1, 1, 0}, id(u"stone"_s));
+        } else {
+            world.set({-holeX, 0, 0}, qcAirBlockId);
+        }
+
+        QcLiquidFlow flow(m_content);
+        place(flow, world, {0, 1, 0}, id(u"water"_s), 0);
+        run(flow, world, 1, 400);
+        for (const QcBlockPos &pos : std::as_const(wet)) {
+            QVERIFY2(m_content->block(*world.blockAt(pos)).liquid, qPrintable(name(world, pos)));
+        }
+        for (const QcBlockPos &pos : std::as_const(dry)) {
+            QCOMPARE(name(world, pos), u"qtcraft:air"_s);
+        }
+    }
+
+    void dropSearchIsData()
+    {
+        QCOMPARE(m_content->block(id(u"water"_s)).flow.dropSearch, 4);
+        const auto still = QcContentParser::parseBlock(
+            json(R"({"name":"w","liquid":true,"solid":false,"flow":{"distance":1,"dropSearch":0},"states":{"level":["0","1"]},"textures":{"all":"x"}})"),
+            u"t"_s);
+        QVERIFY2(still.has_value(), qPrintable(still.error()));
+        QCOMPARE(still->flow.dropSearch, 0);
+        QVERIFY(!QcContentParser::parseBlock(
+            json(R"({"name":"w","liquid":true,"solid":false,"flow":{"distance":1,"dropSearch":9},"states":{"level":["0","1"]},"textures":{"all":"x"}})"),
+            u"t"_s));
+
+        // Without the search the water spreads evenly despite the hole.
+        QcBlockDefinition plainWater = m_content->block(id(u"water"_s));
+        plainWater.flow.dropSearch = 0;
+        const auto content = makeContent();
+        QVERIFY(content->registerBlock(plainWater).has_value());
+        QcTestWorld world(*content);
+        world.fillBox({-12, 0, -12}, {12, 0, 12}, *content->blockId(u"t:stone"_s));
+        world.set({3, 0, 0}, qcAirBlockId);
+        QcLiquidFlow flow(content);
+        world.set({0, 1, 0}, *content->blockId(u"t:water"_s));
+        flow.schedule(world, {0, 1, 0}, 0);
+        for (quint64 tick = 1; tick <= 400; ++tick) {
+            flow.tick(tick, world, [&world](QcBlockPos pos, QcBlockId block) { world.set(pos, block); });
+        }
+        QCOMPARE(content->stateName(*world.blockAt({-1, 1, 0})), water(1));
+    }
+
     void waterFallsBeforeItSpreads()
     {
         QcTestWorld world(*m_content);

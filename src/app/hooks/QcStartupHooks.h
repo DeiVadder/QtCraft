@@ -34,7 +34,8 @@ public:
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
     QString forcedPose() const { return m_forcedPose; }
     // Chat lines sent and overlays opened once the world is playable. Like chat lines, an overlay
-    // "@<ms> <name>" opens that many milliseconds later ("@<ms> " closes the overlay).
+    // "@<ms> <name>" opens that many milliseconds later ("@<ms> " closes the overlay and the
+    // handbook, "@<ms> pick:<row>" picks up the stack of an inventory model row in the open screen).
     void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
@@ -55,6 +56,9 @@ private:
     // Uses the block in view once the startup commands have placed it.
     void openMachineInView();
     void scheduleOverlaySteps();
+    // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
+    void runOverlayStep(const QString &step);
+    void pickInOpenScreen(int row) const;
     // Holds the screenshot until the matching releaseScreenshot().
     void holdScreenshot() const;
     void releaseScreenshot() const;

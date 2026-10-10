@@ -78,6 +78,18 @@ void QcPlayerController::moveItem(int from, int to, int count) const
     }
 }
 
+void QcPlayerController::quickMove(int row) const
+{
+    if (!m_parts.session) {
+        return;
+    }
+    if (row == QcInventoryModel::resultRow) {
+        m_parts.session->quickMoveItem(QcMsg::QuickMoveItem::craftingResultSlot);
+    } else if (const int slot = QcInventoryModel::slotOfRow(row); slot >= 0) {
+        m_parts.session->quickMoveItem(slot);
+    }
+}
+
 void QcPlayerController::takeCraftingResult() const
 {
     if (m_parts.session) {

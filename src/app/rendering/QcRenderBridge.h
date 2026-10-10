@@ -25,7 +25,7 @@ public:
 
     // Texture atlas of the running world's content; without one no entities are drawn.
     void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_atlas = std::move(atlas); }
-    // Test hook: freezes the local player's pose ("walk", "swing", "swim", "jump", "sneak", "death")
+    // Test hook: freezes the local player's pose ("walk", "swing" or "swing:<progress>", "swim", "jump", "sneak", "death")
     // for screenshots.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
@@ -54,7 +54,10 @@ private:
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const;
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame) const;
     void updateHandMesh(double alpha, const QcVec3 &eye);
-    // Entities under a roof are dimmed; a cheap stand-in for sampling the light volume.
+    // Share of sky light at a position (0.35 under a roof, 1 in the open); a cheap stand-in for
+    // sampling the meshes' sky light.
+    static float skyExposure(const QcClientWorld &world, QcBlockPos pos);
+    // Entities under a roof are dimmed by skyExposure().
     QcEntityLight entityLight(const QcClientWorld &world, const QcVec3 &position) const;
     // Block light (0..1) of entities and the hand at a position, as the meshes show it.
     float blockLightAt(QcBlockPos pos) const;

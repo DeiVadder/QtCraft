@@ -10,6 +10,8 @@
 #include "QcRaycast.h"
 #include "QcServer.h"
 
+#include <cmath>
+
 using namespace Qt::StringLiterals;
 
 namespace QcHandbookRules {
@@ -42,6 +44,11 @@ QMap<QString, double> values()
         {u"hunger.exhaustionPerFood"_s, QcHunger::exhaustionPerFood},
         {u"hunger.starvationInterval"_s, QcHunger::starvationInterval},
         {u"hunger.starvationFloor"_s, QcHunger::starvationFloor},
+        {u"hunger.regenerationFoodPerHealth"_s, QcHunger::regenerationExhaustion / QcHunger::exhaustionPerFood},
+        {u"hunger.walkMinutesForFullBar"_s,
+         std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
+        {u"hunger.sprintMinutesForFullBar"_s,
+         std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
         {u"items.despawnSeconds"_s, QcItemEntityManager::despawnSeconds},
         {u"items.thrownPickupDelay"_s, QcItemEntityManager::thrownPickupDelay},
         {u"mobs.hostileCap"_s, QcMobManager::hostileCapPerPlayer},

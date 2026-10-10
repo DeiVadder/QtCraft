@@ -68,6 +68,8 @@ QcGameController::QcGameController(QObject *parent)
         }
         m_input->releaseMouse();
     });
+    // Closing the handbook gives the world its mouse back without a click.
+    connect(m_handbook, &QcHandbookController::openChanged, m_input, &QcGameInput::syncCapture);
     connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
     connect(m_settings, &QcSettingsController::debugOverlaySwitched, m_hud, &QcHudState::resetDebugClock);
 }
@@ -136,6 +138,7 @@ void QcGameController::setPhase(const QString &phase, const QString &status)
     if (m_phase != phase) {
         m_phase = phase;
         emit phaseChanged();
+        m_input->syncCapture();
     }
 }
 
@@ -151,6 +154,7 @@ void QcGameController::setInputEnabled(bool enabled)
         m_input->releaseMouse();
     }
     emit inputEnabledChanged();
+    m_input->syncCapture();
 }
 
 void QcGameController::startAudio(bool enabled)
@@ -243,10 +247,9 @@ void QcGameController::setOverlay(const QString &overlay)
             m_parts.session->closeMachine();
         }
     }
-    if (!overlay.isEmpty()) {
-        m_input->releaseMouse();
-    }
     emit overlayChanged();
+    // Opening a screen frees the mouse; closing the last one captures it again without a click.
+    m_input->syncCapture();
 }
 
 void QcGameController::openChat(const QString &start)
@@ -320,7 +323,9 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
 
     m_parts.server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
     if (!m_parts.server->startError().isEmpty()) {
-        const QString error = m_parts.server->startError();
+        const QString error = m_parts.server->worldInUse()
+                                  ? tr("It is already open in another QtCraft window or process. Close it there first.")
+                                  : m_parts.server->startError();
         m_parts.server.reset();
         setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
         return false;
@@ -416,6 +421,8 @@ void QcGameController::onMachineClosed()
 void QcGameController::onHealthChanged()
 {
     if (!m_parts.session->isDead()) {
+        // Respawned: back into the world with the mouse captured.
+        m_input->syncCapture();
         return;
     }
 

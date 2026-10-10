@@ -21,13 +21,15 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
     // Opened before the thread starts, so a damaged save is reported right here.
     if (const QcStatus opened = m_server->openWorld(); !opened) {
         m_startError = opened.error();
+        m_worldInUse = m_server->worldInUse();
         delete m_server;
         m_server = nullptr;
         return;
     }
 
     m_server->moveToThread(m_thread);
-    m_thread->start();
+    // Above the render and worker threads, so the ticks start on time (decision E-090).
+    m_thread->start(QThread::HighPriority);
     QMetaObject::invokeMethod(m_server, &QcServer::start, Qt::QueuedConnection);
 }
 
@@ -60,14 +62,9 @@ void QcLocalServerHost::acceptPendingClients(QcServer *server)
     }
 }
 
-double QcLocalServerHost::tickAverageMs() const
+QcTickStats::Summary QcLocalServerHost::tickStats() const
 {
-    return m_server ? m_server->tickTimes().averageMs : 0.0;
-}
-
-double QcLocalServerHost::tickWorstMs() const
-{
-    return m_server ? m_server->tickTimes().worstMs : 0.0;
+    return m_server ? m_server->tickTimes() : QcTickStats::Summary();
 }
 
 void QcLocalServerHost::resetTickTimes()

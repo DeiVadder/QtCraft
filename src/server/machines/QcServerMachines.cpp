@@ -1,5 +1,6 @@
 #include "QcServerMachines.h"
 
+#include "QcChatText.h"
 #include "QcPhysics.h"
 #include "QcServerBlocks.h"
 #include "QcServerSounds.h"
@@ -39,7 +40,8 @@ void QcServerMachines::open(QcServerClient &client, QcBlockPos pos)
     const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
     if (const int slotCount = block ? m_state.containers.slotsOf(*block) : 0; slotCount > 0) {
         if (!m_state.containers.add(pos, slotCount)) {
-            client.connection->send(QcMsg::ChatMessage{u"Too many chests in the world (at most %1)"_s.arg(QcContainerManager::maxContainers)});
+            client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many chests in the world (at most %1)"),
+                {QString::number(QcContainerManager::maxContainers)}));
             return;
         }
 
@@ -56,7 +58,8 @@ void QcServerMachines::open(QcServerClient &client, QcBlockPos pos)
     }
 
     if (!m_state.machines.add(pos)) {
-        client.connection->send(QcMsg::ChatMessage{u"Too many machines in the world (at most %1)"_s.arg(QcMachineManager::maxMachines)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many machines in the world (at most %1)"),
+            {QString::number(QcMachineManager::maxMachines)}));
         return;
     }
 

@@ -8,12 +8,14 @@ qt_add_library(qc_common STATIC
     content/definitions/QcShapeCondition.h
     content/definitions/QcShapeDefinition.h
     content/definitions/QcShapePart.h
+    world/QcLightPassage.h
     world/QcLightVolume.h world/QcLightVolume.cpp
     core/QcBlockFace.h
     core/QcBlockPos.h core/QcBlockPos.cpp
     world/QcChunk.h world/QcChunk.cpp
     core/QcChunkPos.h core/QcChunkPos.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
+    protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     core/QcCrc32.h core/QcCrc32.cpp
@@ -58,6 +60,7 @@ qt_add_library(qc_common STATIC
     protocol/QcInProcessTransport.h protocol/QcInProcessTransport.cpp
     core/QcIntMath.h
     gameplay/QcInventory.h gameplay/QcInventory.cpp
+    gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     content/definitions/QcItemDefinition.h
     gameplay/QcItemStack.h
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp

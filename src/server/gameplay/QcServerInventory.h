@@ -30,8 +30,14 @@ public:
     QcServerInventory(QcServerState &state, QcServerMachines &machines);
 
     void send(QcServerClient &client);
+    // Shift-clicks on a crafting result take it as often as possible.
+    static constexpr int maxCraftAllRounds = 64;
+
     void moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move);
+    // Shift-click: moves the whole stack to where it belongs (QcQuickMove).
+    void quickMove(QcServerClient &client, QcMsg::QuickMoveItem move);
     void takeCraftingResult(QcServerClient &client);
+    void craftAll(QcServerClient &client);
     void craftRecipe(QcServerClient &client, const QcMsg::CraftRecipe &request);
     // Opens the 3 x 3 grid of the crafting table at `pos`.
     void openCraftingTable(QcServerClient &client, QcBlockPos pos);
@@ -48,6 +54,22 @@ public:
     void exchangeHeld(QcServerClient &client, const QString &item);
 
 private:
+    enum class CraftOutcome { Crafted, NoRecipe, NoRoom, TooFar };
+
+    // Inventory, crafting grid and the open machine or chest as one slot list.
+    struct OpenSlots
+    {
+        QcMachineManager::Machine *machine = nullptr;
+        QcContainerManager::Container *container = nullptr;
+        QList<QcItemStack> combined;
+    };
+
+    OpenSlots openSlots(QcServerClient &client);
+    // Writes the slot list back and sends it; false (and nothing changed) when the machine refuses.
+    bool applyOpenSlots(QcServerClient &client, const OpenSlots &open);
+    // Takes the crafting result once.
+    CraftOutcome craftOnce(QcServerClient &client);
+    void finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore);
     // The grid of the current size as a size x size list, and the recipe it makes.
     QList<QcItemStack> craftingView(const QcServerClient &client) const;
     std::optional<qsizetype> craftingMatch(const QcServerClient &client) const;

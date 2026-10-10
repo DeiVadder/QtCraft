@@ -317,6 +317,7 @@ void parseFlow(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldRea
     liquid.distance = flowReader.integer(u"distance"_s, 7, 1, QcLiquidDefinition::maxDistance);
     liquid.ticks = flowReader.integer(u"ticks"_s, 5, 1, QcLiquidDefinition::maxTicks);
     liquid.infinite = flowReader.boolean(u"infinite"_s, false);
+    liquid.dropSearch = flowReader.integer(u"dropSearch"_s, 4, 0, QcLiquidDefinition::maxDropSearch);
     liquid.movementFactor = flowReader.number(u"movement"_s, 1.0, 0.05, 2.0);
     liquid.bucket = flowReader.name(u"bucket"_s, packNamespace);
     liquid.sound = flowReader.name(u"sound"_s, packNamespace);
@@ -356,6 +357,16 @@ void parseGround(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldR
     block.groundLiquid = reader.name(u"groundLiquid"_s, packNamespace);
     if ((!block.groundBlocks.isEmpty() || !block.groundLiquid.isEmpty()) && block.support != QcBlockSupport::Below) {
         reader.fail(u"'ground' and 'groundLiquid' need 'support': \"below\""_s);
+    }
+}
+
+void parseGrowth(QcBlockDefinition &block, QcJsonFieldReader &growthReader)
+{
+    QcGrowthDefinition &growth = block.growth;
+    growth.maxHeight = growthReader.integer(u"maxHeight"_s, 3, 2, 64);
+    growth.averageSeconds = growthReader.number(u"averageSeconds"_s, 600.0, 1.0, 86400.0);
+    if (growthReader.ok() && block.support != QcBlockSupport::Below) {
+        growthReader.fail(u"growing blocks need 'support': \"below\""_s);
     }
 }
 
@@ -468,6 +479,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     parseFlow(json, block, reader, packNamespace);
     parseBehaviourFields(block, reader);
     parseGround(json, block, reader, packNamespace);
+    reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
     block.soundMaterial = reader.name(u"sound"_s, packNamespace, QcSoundKeys::defaultMaterialFor(block));
     reader.nestedObject(u"sounds"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseSounds(block, nested, packNamespace);

@@ -5,6 +5,7 @@
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
 #include "QcMailbox.h"
+#include "QcSectionMarks.h"
 #include "QcWorkerPool.h"
 #include "QcWorldGenerator.h"
 
@@ -30,6 +31,8 @@ public:
     double contactDamageIn(const QcAabb &box) const;
     // False when no loaded chunk holds a block with contact damage, so nothing can burn.
     bool mayHaveContactDamage() const { return !m_damagingSections.isEmpty(); }
+    // Sections of the loaded chunks that may hold a growing plant (blocks with `growth`).
+    const QcSectionMarks &growingSections() const { return m_growingSections; }
 
     std::shared_ptr<const QcChunk> chunk(QcChunkPos pos) const;
     // Returns the chunk, generating it synchronously when needed (spawn, tests).
@@ -65,16 +68,16 @@ public:
     void markDirty(const QList<QcChunkPos> &chunks);
 
 private:
-    // Records which sections of a chunk that entered the world hold blocks with contact damage.
-    void noteDamagingSections(QcChunkPos pos, const QcChunk &chunk);
+    // Records which sections of a chunk that entered the world hold blocks with contact damage or
+    // growing plants.
+    void noteSections(QcChunkPos pos, const QcChunk &chunk);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcWorldGenerator> m_generator;
     // Contact damage of every block state, indexed by id.
     std::vector<double> m_contactDamage;
-    // Per chunk, a bit for each section that may hold a block with contact damage (set when the
-    // chunk arrives or such a block is placed; chunks without any are missing).
-    QHash<QcChunkPos, quint32> m_damagingSections;
+    QcSectionMarks m_damagingSections;
+    QcSectionMarks m_growingSections;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;

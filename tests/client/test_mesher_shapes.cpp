@@ -1,12 +1,16 @@
 #include "QcChunkMesher.h"
 #include "QcContentParser.h"
 #include "QcContentRegistry.h"
+#include "QcLightPassage.h"
+#include "QcLightVolume.h"
 #include "QcTextureAtlas.h"
 
 #include <QJsonDocument>
 #include <QTest>
 
+#include <bit>
 #include <cmath>
+#include <tuple>
 #include <cstdlib>
 
 using namespace Qt::StringLiterals;
@@ -140,6 +144,103 @@ private:
     Fixture m_f;
 
 private slots:
+    // Partial shapes dim light only at the faces they cover completely (decision E-104).
+    void partialShapesBlockLightAtCoveredFaces()
+    {
+        const QcBlockState &bottom = m_f.content.state(m_f.id(u"t:slab[type=bottom]"_s));
+        QCOMPARE(bottom.lightOpacity, 0);
+        QCOMPARE(bottom.lightBlockedFaces, QcLightPassage::bit(QcBlockFace::Down));
+        QCOMPARE(m_f.content.state(m_f.id(u"t:slab[type=top]"_s)).lightBlockedFaces, QcLightPassage::bit(QcBlockFace::Up));
+
+        // A double slab is a full cube and keeps the block's opacity.
+        const QcBlockState &full = m_f.content.state(m_f.id(u"t:slab[type=double]"_s));
+        QCOMPARE(full.lightOpacity, 15);
+        QCOMPARE(full.lightBlockedFaces, quint8(0));
+
+        // A stair covers its bottom and its back.
+        const QcBlockState &stairs = m_f.content.state(m_f.id(u"t:stairs[facing=north,half=bottom]"_s));
+        QCOMPARE(stairs.lightOpacity, 0);
+        QVERIFY(stairs.lightBlockedFaces & QcLightPassage::bit(QcBlockFace::Down));
+        QCOMPARE(std::popcount(unsigned(stairs.lightBlockedFaces)), 2);
+
+        // Blocks that let light through anyway stay as they are.
+        QCOMPARE(m_f.content.state(m_f.id(u"t:fence"_s)).lightBlockedFaces, quint8(0));
+    }
+
+    void lightVolumeStopsAtCoveredFaces()
+    {
+        // A column of three cells lit from the top: a covered top face keeps the light out of the
+        // cell, a covered bottom face lets it in but not further down.
+        for (const auto &[faces, middle, low] : {std::tuple{quint8(0), 9, 8}, std::tuple{QcLightPassage::bit(QcBlockFace::Up), 0, 0},
+                                                 std::tuple{QcLightPassage::bit(QcBlockFace::Down), 9, 0}}) {
+            QcLightVolume volume(1, 3, 1);
+            volume.setOpacity(0, 1, 0, 0, faces);
+            volume.addSource(0, 2, 0, 10);
+            volume.propagate();
+            QCOMPARE(volume.level(0, 1, 0), middle);
+            QCOMPARE(volume.level(0, 0, 0), low);
+        }
+    }
+
+    void facesNextToSlabsAndStairsGetSkyLight()
+    {
+        // In the open: the west face of stone next to a bottom slab, and the stair's step, are lit
+        // by the sky through the partial cells (they were dark while those cells counted as walls).
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(5, 20, 5, m_f.id(u"t:slab[type=bottom]"_s));
+        chunk->setBlock(6, 20, 5, m_f.id(u"t:stone"_s));
+        chunk->setBlock(5, 20, 8, m_f.id(u"t:stairs[facing=north,half=bottom]"_s));
+        chunk->setBlock(5, 21, 8, m_f.id(u"t:stone"_s));
+        const QcChunkMesh mesh = QcChunkMesher::mesh(m_f.input(chunk, 1));
+
+        int checked = 0;
+        const QList<Quad> meshQuads = quads(mesh.opaqueVertices);
+        for (const Quad &quad : meshQuads) {
+            const QcBlockVertex &first = quad.corners[0];
+            const bool stoneWestFace = quad.normal() == std::array{-1, 0, 0} && first.x == 6.0f && first.z < 6.0f;
+            const bool stepTop = quad.normal() == std::array{0, 1, 0} && first.y == 20.5f && first.z >= 8.0f;
+            if (!stoneWestFace && !stepTop) {
+                continue;
+            }
+            for (const QcBlockVertex &vertex : quad.corners) {
+                QVERIFY2(vertex.skyLight() > 0.8f, qPrintable(QString::number(vertex.skyLight())));
+            }
+            ++checked;
+        }
+        QCOMPARE(checked, 2);
+    }
+
+    void aSlabRoofShadowsTheGroundBelow()
+    {
+        // A 9 x 9 roof of bottom slabs at y 24 over a stone floor at y 16: the slabs' tops get full
+        // sky, the floor under the middle of the roof only light from the sides.
+        auto chunk = std::make_shared<QcChunk>();
+        for (int x = 1; x <= 14; ++x) {
+            for (int z = 1; z <= 14; ++z) {
+                chunk->setBlock(x, 16, z, m_f.id(u"t:stone"_s));
+            }
+        }
+        for (int x = 4; x <= 12; ++x) {
+            for (int z = 4; z <= 12; ++z) {
+                chunk->setBlock(x, 24, z, m_f.id(u"t:slab[type=bottom]"_s));
+            }
+        }
+        const QcChunkMesh mesh = QcChunkMesher::mesh(m_f.input(chunk, 1));
+
+        const QList<Quad> meshQuads = quads(mesh.opaqueVertices);
+        for (const Quad &quad : meshQuads) {
+            const QcBlockVertex &first = quad.corners[0];
+            if (quad.normal() != std::array{0, 1, 0} || first.x < 7.0f || first.x > 9.0f || first.z < 7.0f || first.z > 9.0f) {
+                continue;
+            }
+            if (first.y == 24.5f) {
+                QCOMPARE(first.skyLight(), 1.0f);
+            } else if (first.y == 17.0f) {
+                QVERIFY2(first.skyLight() < 0.8f, qPrintable(QString::number(first.skyLight())));
+            }
+        }
+    }
+
     void slabsCullOnlyWhatIsCovered()
     {
         const QcBlockId slab = m_f.id(u"t:slab[type=bottom]"_s);

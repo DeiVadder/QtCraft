@@ -75,15 +75,9 @@ void QcWorldView::setHandMesh(std::shared_ptr<const QcEntityMesh> mesh)
     update();
 }
 
-void QcWorldView::setSkyColor(const QColor &color)
+void QcWorldView::setSky(const QcSkyState &sky)
 {
-    m_skyColor = color;
-    update();
-}
-
-void QcWorldView::setDaylight(float daylight)
-{
-    m_daylight = daylight;
+    m_sky = sky;
     update();
 }
 

@@ -15,11 +15,11 @@
             "tint": "shirt"
         },
         "sleeve": {
-            "texture": "skin",
+            "texture": "arm_skin",
             "tint": "skin"
         },
         "hand": {
-            "texture": "skin",
+            "texture": "arm_skin",
             "tint": "skin"
         },
         "legs": {

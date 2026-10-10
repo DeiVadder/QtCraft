@@ -171,6 +171,20 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     return ore;
 }
 
+QSet<QcBlockId> naturalGroundOf(const QList<QcTerrainDefinitions::Biome> &biomes, QcBlockId stone, QcBlockId water)
+{
+    QSet<QcBlockId> ground{stone};
+    for (const QcTerrainDefinitions::Biome &biome : biomes) {
+        for (const QcBlockId block : {biome.surface, biome.subsurface, biome.underwater, biome.beach, biome.steep, biome.snow}) {
+            ground.insert(block);
+        }
+    }
+
+    ground.remove(qcAirBlockId);
+    ground.remove(water);
+    return ground;
+}
+
 } // namespace
 
 QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed, QStringList *warnings)
@@ -214,6 +228,8 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
             warnings->append(u"No biomes defined; using a stone fallback"_s);
         }
     }
+
+    naturalGround = naturalGroundOf(biomes, stone, water);
 
     quint64 oreIndex = 100;
     for (const QcOreDefinition &definition : content.ores()) {

@@ -10,14 +10,10 @@ Item {
 
     required property GameController game
 
-    Label {
+    HudLabel {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 8
-        color: "white"
-        style: Text.Outline
-        styleColor: "#80000000"
-        font.pixelSize: 14
         visible: hud.game.settings.showDebug
         text: hud.game.hud.debugText
     }
@@ -33,14 +29,18 @@ Item {
             anchors.centerIn: parent
             width: parent.width
             height: 2
-            color: "#e0ffffff"
+            color: Theme.crosshair
+            border.color: Theme.textOutline
+            border.width: 0.5
         }
 
         Rectangle {
             anchors.centerIn: parent
             width: 2
             height: parent.height
-            color: "#e0ffffff"
+            color: Theme.crosshair
+            border.color: Theme.textOutline
+            border.width: 0.5
         }
     }
 
@@ -52,24 +52,21 @@ Item {
         visible: hud.game.hud.miningProgress > 0
         width: 80
         height: 6
-        color: "#80000000"
+        color: Theme.hudBackdrop
 
         Rectangle {
             width: parent.width * Math.min(1, hud.game.hud.miningProgress)
             height: parent.height
-            color: "white"
+            color: Theme.progress
         }
     }
 
-    Label {
+    HudLabel {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 12
         visible: text.length > 0
         text: hud.game.hud.targetLabel
-        color: "white"
-        style: Text.Outline
-        styleColor: "#a0000000"
         font.pixelSize: 16
     }
 
@@ -82,13 +79,10 @@ Item {
         Repeater {
             model: hud.game.hud.chatLines
 
-            Label {
+            HudLabel {
                 required property string modelData
 
                 text: modelData
-                color: "white"
-                style: Text.Outline
-                styleColor: "#a0000000"
                 font.pixelSize: 15
             }
         }
@@ -116,7 +110,7 @@ Item {
                 Text {
                     anchors.fill: parent
                     text: "\u2665"
-                    color: "#60000000"
+                    color: Theme.slotBorder
                     font.pixelSize: 22
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -130,9 +124,9 @@ Item {
                         width: heart.width
                         height: heart.height
                         text: "\u2665"
-                        color: "#e02828"
+                        color: Theme.health
                         style: Text.Outline
-                        styleColor: "#80000000"
+                        styleColor: Theme.textOutline
                         font.pixelSize: 22
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -192,14 +186,10 @@ Item {
         }
     }
 
-    Label {
+    HudLabel {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: 8
-        color: "white"
-        style: Text.Outline
-        styleColor: "#80000000"
-        font.pixelSize: 14
         text: hud.game.hud.timeOfDay
     }
 
@@ -225,6 +215,7 @@ Item {
                 required property real durability
                 required property bool empty
 
+                baseColor: Theme.hudSlot
                 slotIcon: icon
                 slotCount: count
                 slotDurability: durability
@@ -234,7 +225,7 @@ Item {
         }
     }
 
-    Label {
+    HudLabel {
         id: hint
 
         readonly property var keys: hud.game.settings.keys.labels
@@ -242,9 +233,6 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
-        color: "white"
-        style: Text.Outline
-        styleColor: "#a0000000"
         font.pixelSize: 13
         text: hud.game.input.mouseCaptured
               ? qsTr("Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu")

@@ -1808,6 +1808,7 @@ Wächst auf Sand oder Erde direkt neben Wasser.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt), [Sand](#block-qtcraft-sand), [Zuckerrohr](#block-qtcraft-sugar_cane) |
 | Braucht neben dem Boden | [Wasser](liquids.md#block-qtcraft-water) |
+| Wächst von selbst | bis 3 Blöcke hoch, etwa alle 10 min ein Block |
 | Wird von Flüssigkeiten weggespült | ja |
 | Klang | Gras und Pflanzen |
 

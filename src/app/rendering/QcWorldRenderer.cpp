@@ -97,6 +97,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_atlasSampler.reset();
         m_frameUniforms.reset();
         m_pipelineRenderPass.reset();
+        m_skyRenderer.reset();
         m_uploadedAtlasVersion = 0;
         m_rhi = rhi();
     }
@@ -115,6 +116,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_entityPipeline.reset();
         m_handPipeline.reset();
         m_outlinePipeline.reset();
+        m_skyRenderer.reset();
     }
 }
 
@@ -125,8 +127,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     m_selection = view->m_selection;
     m_entityMesh = view->m_entityMesh;
     m_handMesh = view->m_handMesh;
-    m_skyColor = view->m_skyColor;
-    m_daylight = view->m_daylight;
+    m_sky = view->m_sky;
     m_fogStart = view->m_fogStart;
     m_fogEnd = view->m_fogEnd;
 
@@ -482,13 +483,14 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.cameraPosition[0] = m_camera.position.x();
     uniforms.cameraPosition[1] = m_camera.position.y();
     uniforms.cameraPosition[2] = m_camera.position.z();
-    uniforms.fogColor[0] = m_skyColor.redF();
-    uniforms.fogColor[1] = m_skyColor.greenF();
-    uniforms.fogColor[2] = m_skyColor.blueF();
+    const QVector3D fog = m_sky.fogColor();
+    uniforms.fogColor[0] = fog.x();
+    uniforms.fogColor[1] = fog.y();
+    uniforms.fogColor[2] = fog.z();
     uniforms.fogColor[3] = 1.0f;
     uniforms.params[0] = m_fogStart;
     uniforms.params[1] = m_fogEnd;
-    uniforms.params[2] = m_daylight;
+    uniforms.params[2] = float(m_sky.daylight);
     uniforms.params[3] = minimumLight;
     uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
 
@@ -549,6 +551,7 @@ void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
 void QcWorldRenderer::drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4x4 &viewProjection, QSize outputSize)
 {
     commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
+    m_skyRenderer.draw(commandBuffer);
 
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
     QList<const GpuMesh *> visible;
@@ -589,8 +592,14 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     const QMatrix4x4 viewProjection =
         m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewMatrix();
     uploadFrameUniforms(updates, viewProjection);
+    // The sky is seen from the camera's position: the same view without the translation.
+    QMatrix4x4 viewRotation = m_camera.viewMatrix();
+    viewRotation.setColumn(3, QVector4D(0.0f, 0.0f, 0.0f, 1.0f));
+    m_skyRenderer.prepare(m_rhi, renderTarget(), updates,
+                          {m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * viewRotation, m_sky, m_camera.position});
 
-    commandBuffer->beginPass(renderTarget(), m_skyColor, {1.0f, 0}, updates);
+    const QVector3D horizon = m_sky.horizon;
+    commandBuffer->beginPass(renderTarget(), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
     if (m_opaquePipeline && m_translucentPipeline) {
         drawWorld(commandBuffer, viewProjection, outputSize);
     }

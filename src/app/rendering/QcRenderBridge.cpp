@@ -1,15 +1,14 @@
 #include "QcRenderBridge.h"
 
 #include "QcClientSession.h"
-#include "QcDayCycle.h"
 #include "QcLightVolume.h"
 #include "QcMeshScheduler.h"
 #include "QcPhysics.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
+#include "QcSky.h"
 #include "QcTextureAtlas.h"
 
-#include <QColor>
 
 #include <algorithm>
 #include <cmath>
@@ -135,8 +134,11 @@ QcEntityPose QcRenderBridge::localPose(double alpha) const
     if (m_forcedPose == u"walk"_s) {
         pose.speed = QcPhysics::walkSpeed;
         pose.walkDistance = 0.3;
-    } else if (m_forcedPose == u"swing"_s) {
-        pose.swingProgress = 0.45;
+    } else if (m_forcedPose.startsWith(u"swing"_s)) {
+        // "swing:0.3" freezes that moment of the swing (screenshot series).
+        bool ok = false;
+        const double progress = m_forcedPose.section(u':', 1).toDouble(&ok);
+        pose.swingProgress = ok ? std::clamp(progress, 0.0, 1.0) : 0.45;
     } else if (m_forcedPose == u"swim"_s) {
         pose.onGround = false;
         pose.inWater = true;
@@ -151,14 +153,26 @@ QcEntityPose QcRenderBridge::localPose(double alpha) const
     return pose;
 }
 
+float QcRenderBridge::skyExposure(const QcClientWorld &world, QcBlockPos pos)
+{
+    // Share of the 3 x 3 columns around `pos` open to the sky: light fades gradually under the
+    // edge of a roof or a tree instead of switching.
+    constexpr float covered = 0.35f;
+    int open = 0;
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dz = -1; dz <= 1; ++dz) {
+            const QcBlockPos column = pos.offset(dx, 0, dz);
+            const std::shared_ptr<const QcChunk> chunk = world.chunk(column.chunk());
+            open += !chunk || chunk->highestNonAir(column.localX(), column.localZ()) < pos.y ? 1 : 0;
+        }
+    }
+    return covered + (1.0f - covered) * float(open) / 9.0f;
+}
+
 QcEntityLight QcRenderBridge::entityLight(const QcClientWorld &world, const QcVec3 &position) const
 {
     const QcBlockPos feet{int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
-    float sky = 1.0f;
-    if (const std::shared_ptr<const QcChunk> chunk = world.chunk(feet.chunk())) {
-        sky = chunk->highestNonAir(feet.localX(), feet.localZ()) >= feet.y + 2 ? 0.35f : 1.0f;
-    }
-    return QcEntityLight(sky, blockLightAt(feet.offset(0, 1, 0)));
+    return QcEntityLight(skyExposure(world, feet.offset(0, 1, 0)), blockLightAt(feet.offset(0, 1, 0)));
 }
 
 void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const
@@ -269,11 +283,9 @@ void QcRenderBridge::updateHandMesh(double alpha, const QcVec3 &eye)
     const QcClientSession::HandTimers timers = session.handTimers(alpha);
     const double seconds = session.worldTime() + alpha * QcPhysics::tickDuration;
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
-    const QcBlockPos feet{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
-    QcEntityLight light(1.0f, blockLightAt(feet));
-    if (const std::shared_ptr<const QcChunk> chunk = session.world()->chunk(feet.chunk())) {
-        light.sky = chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y ? 0.45f : 1.0f;
-    }
+    // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
+    const QcBlockPos head{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    const QcEntityLight light(skyExposure(*session.world(), head), blockLightAt(head));
     QcEntityMesher::appendHand(*mesh, {playerLook(m_settings.character()->appearance()), held ? &*held : nullptr}, hand,
                                {eye, session.intent().yaw, session.intent().pitch, light}, uv);
     m_parts.view->setHandMesh(std::move(mesh));
@@ -281,13 +293,7 @@ void QcRenderBridge::updateHandMesh(double alpha, const QcVec3 &eye)
 
 void QcRenderBridge::updateSky(double alpha)
 {
-    const double time = m_parts.session->worldTime() + alpha * QcPhysics::tickDuration;
-    const double daylight = QcDayCycle::daylight(time);
-    // Night sky dark blue, day sky light blue; fog uses the same colour.
-    const double t = (daylight - QcDayCycle::minimumDaylight) / (1.0 - QcDayCycle::minimumDaylight);
-    const QColor sky = QColor::fromRgbF(float(0.03 + 0.50 * t), float(0.04 + 0.70 * t), float(0.12 + 0.80 * t));
-    m_parts.view->setDaylight(float(daylight));
-    m_parts.view->setSkyColor(sky);
+    m_parts.view->setSky(QcSky::at(m_parts.session->worldTime() + alpha * QcPhysics::tickDuration));
 }
 
 void QcRenderBridge::updateSelection()

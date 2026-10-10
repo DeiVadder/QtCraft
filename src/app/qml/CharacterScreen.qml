@@ -13,10 +13,10 @@ Popup {
     required property GameController game
 
     // Colours offered for each part; the settings file may hold any other colour.
-    readonly property var skinColors: ["#f3d2b3", "#e8b48f", "#d8a07a", "#b97b56", "#8d5a3b", "#5c3a24"]
-    readonly property var hairColors: ["#f1d77a", "#c99a4e", "#8a5a2b", "#4a3020", "#1e1a18", "#b23a24", "#9a9a9a"]
-    readonly property var clothColors: ["#3a7bc8", "#2f8f4e", "#c83a3a", "#d8a030", "#7a4ab8", "#e8e8e8", "#34406a", "#3a3a3a",
-        "#8a5a2b"]
+    readonly property var skinColors: ["#f3d2b3", "#e8b48f", "#d8a07a", "#b97b56", "#8d5a3b", "#5c3a24"]  // not a UI colour: character colour choices
+    readonly property var hairColors: ["#f1d77a", "#c99a4e", "#8a5a2b", "#4a3020", "#1e1a18", "#b23a24", "#9a9a9a"]  // not a UI colour: character colour choices
+    readonly property var clothColors: ["#3a7bc8", "#2f8f4e", "#c83a3a", "#d8a030", "#7a4ab8", "#e8e8e8", "#34406a", "#3a3a3a",  // not a UI colour: character colour choices
+        "#8a5a2b"]  // not a UI colour: character colour choices
 
     function setPart(key, value) {
         const look = game.settings.character.look;
@@ -76,7 +76,7 @@ Popup {
                 radius: 4
                 color: modelData
                 border.width: screen.game.settings.character.look[row.key] === modelData ? 3 : 1
-                border.color: screen.game.settings.character.look[row.key] === modelData ? "white" : "#80000000"
+                border.color: screen.game.settings.character.look[row.key] === modelData ? Theme.text : Theme.slotBorder
 
                 MouseArea {
                     anchors.fill: parent

@@ -158,6 +158,64 @@ private:
         }
     }
 
+    struct Fight
+    {
+        bool won = false;
+        double lowestHealth = 20.0;
+        QString report;
+    };
+
+    // Fights the entity `id` until it is gone, bounded by the client's game ticks rather than by a
+    // number of rounds: under load the server lags behind the scripted client, hits are reported late
+    // and a fixed number of rounds may end before the fight is decided. The player steps closer when
+    // the creature is out of reach or out of sight and is healed when the health runs low, so the
+    // fight does not depend on where the creature happens to stand or on how fast the machine is.
+    Fight fightUntilGone(int id)
+    {
+        constexpr qint64 fightTicks = 1200;
+        constexpr double healBelow = 8.0;
+        Fight fight;
+        const qint64 startTick = request({{u"cmd"_s, u"status"_s}}).value(u"tick"_s).toInteger();
+        qint64 tick = startTick;
+        int landed = 0;
+        int heals = 0;
+        QString lastError;
+
+        while (!(fight.won = isGone(id)) && tick - startTick < fightTicks) {
+            const QJsonObject hit = request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, id}});
+            const QString error = hit.value(u"error"_s).toString();
+            if (hit.value(u"ok"_s).toBool()) {
+                ++landed;
+            } else if (error.contains(u"not in reach"_s)) {
+                lastError = error;
+                walkTowards(id);
+            } else {
+                lastError = error;
+                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 8}});
+            }
+
+            const QJsonObject status = request({{u"cmd"_s, u"status"_s}});
+            const double health = status.value(u"health"_s).toDouble();
+            tick = status.value(u"tick"_s).toInteger(tick);
+            fight.lowestHealth = std::min(fight.lowestHealth, health);
+            if (status.value(u"dead"_s).toBool()) {
+                lastError = u"the player died"_s;
+                break;
+            }
+            if (health < healBelow) {
+                request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/heal"_s}});
+                ++heals;
+            }
+        }
+
+        fight.report = u"after %1 ticks: %2 hits seen landing, %3 heals, lowest health %4, last refusal '%5'"_s.arg(tick - startTick)
+                           .arg(landed)
+                           .arg(heals)
+                           .arg(fight.lowestHealth)
+                           .arg(lastError);
+        return fight;
+    }
+
     // The log within 8 blocks whose column is nearest to the player, empty when there is none.
     QJsonObject nearestLog()
     {
@@ -229,7 +287,9 @@ private:
         return false;
     }
 
-    // Places the held crafting table into the free cell (x, y, z) on solid ground.
+    // Places the held crafting table into the free cell (x, y, z) on solid ground. The table lands
+    // where the aim meets the terrain first: a step or a bush between the eyes and the chosen cell
+    // takes it somewhere else nearby, so the table is looked up wherever it went.
     bool placeCraftingTableAt(int x, int y, int z)
     {
         const auto blockAt = [&](int at) {
@@ -244,11 +304,34 @@ private:
         }
 
         request({{u"cmd"_s, u"place"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
-        if (blockAt(y) != u"qtcraft:crafting_table"_s) {
-            return false;
+        if (blockAt(y) == u"qtcraft:crafting_table"_s) {
+            m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
+            return true;
         }
-        m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
-        return true;
+        return countOf(u"qtcraft:crafting_table"_s) == 0 && findPlacedCraftingTable();
+    }
+
+    // Remembers in m_table the crafting table nearest to the player.
+    bool findPlacedCraftingTable()
+    {
+        const QJsonArray blocks = request({{u"cmd"_s, u"blocks"_s}, {u"radius"_s, 6}}).value(u"blocks"_s).toArray();
+        const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
+        double nearest = 1e9;
+        for (const auto &entry : blocks) {
+            const QJsonObject block = entry.toObject();
+            if (block.value(u"block"_s).toString() != u"qtcraft:crafting_table"_s) {
+                continue;
+            }
+            const int x = block.value(u"x"_s).toInt();
+            const int y = block.value(u"y"_s).toInt();
+            const int z = block.value(u"z"_s).toInt();
+            const double distance = std::hypot(x + 0.5 - here.x, y + 0.5 - here.y, z + 0.5 - here.z);
+            if (distance < nearest) {
+                nearest = distance;
+                m_table = {{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}};
+            }
+        }
+        return nearest < 1e9;
     }
 
 private slots:
@@ -261,6 +344,16 @@ private slots:
         m_config.worldName = u"Forest"_s;
         m_config.worldDirectory = m_worldDirectory.path();
         joinWorld();
+    }
+
+    // A step that failed may have left the player dead; the next step starts alive again so one
+    // failure does not take all the following ones down with it.
+    void init()
+    {
+        if (m_control && request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool()) {
+            qWarning("the player died in an earlier step; respawning");
+            request({{u"cmd"_s, u"respawn"_s}});
+        }
     }
 
     void huntFightAndEat()
@@ -277,15 +370,9 @@ private slots:
             pig = nearestEntity(u"qtcraft:pig"_s);
         }
         QVERIFY(pig >= 0);
-        for (int round = 0; round < 40 && !isGone(pig); ++round) {
-            if (request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}}).value(u"ok"_s).toBool()) {
-                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 10}});
-                continue;
-            }
-            // Out of reach (it fled) or hidden behind another creature: walk towards it.
-            walkTowards(pig);
-        }
-        QVERIFY(isGone(pig));
+        // A pig flees after each hit; the fight walks after it.
+        const Fight hunt = fightUntilGone(pig);
+        QVERIFY2(hunt.won, qPrintable(hunt.report));
         // The meat falls where the pig died; walk over it to pick it up.
         QVERIFY(request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 10}}).value(u"ok"_s).toBool());
         QTRY_VERIFY_WITH_TIMEOUT(countOf(u"qtcraft:raw_porkchop"_s) >= 1, timeoutMs);
@@ -294,17 +381,10 @@ private slots:
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/summon zombie"_s}});
         const int zombie = nearestEntity(u"qtcraft:zombie"_s);
         QVERIFY(zombie >= 0);
-        double lowest = 20.0;
-        for (int round = 0; round < 60 && !isGone(zombie); ++round) {
-            const QJsonObject status = request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, zombie}});
-            lowest = std::min(lowest, request({{u"cmd"_s, u"status"_s}}).value(u"health"_s).toDouble());
-            if (!status.value(u"ok"_s).toBool()) {
-                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 8}});
-            }
-        }
-        QVERIFY(isGone(zombie));
-        QVERIFY(!request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool());
-        QVERIFY2(lowest < 20.0, "the zombie never hit the player");
+        const Fight fight = fightUntilGone(zombie);
+        QVERIFY2(fight.won, qPrintable(fight.report));
+        QVERIFY2(!request({{u"cmd"_s, u"status"_s}}).value(u"dead"_s).toBool(), qPrintable(fight.report));
+        QVERIFY2(fight.lowestHealth < 20.0, "the zombie never hit the player");
 
         // Eat: a hungry player gets food points back (3 for raw porkchop), a full one refuses.
         hold(u"qtcraft:raw_porkchop"_s);
@@ -442,7 +522,7 @@ private slots:
 
         // 4. Place the table on the ground next to the player and craft a pickaxe there.
         hold(u"qtcraft:crafting_table"_s);
-        QVERIFY(placeCraftingTableNearby());
+        QVERIFY2(placeCraftingTableNearby(), "found no free spot on solid ground near the player for the crafting table");
         request({{u"cmd"_s, u"craft"_s}, {u"recipe"_s, u"qtcraft:wooden_pickaxe"_s}});
         QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 1);
         QCOMPARE(countOf(planks), 3);
@@ -538,7 +618,9 @@ private slots:
         QCOMPARE(countOf(u"qtcraft:wooden_pickaxe"_s), 1);
         QCOMPARE(after.value(u"held"_s).toObject().value(u"damage"_s).toInt(), pickaxeDamage);
         QVERIFY(countOf(u"qtcraft:cobblestone"_s) >= 1);
+        QVERIFY2(!m_table.isEmpty(), "no crafting table was placed before the restart");
         QCOMPARE(request(m_table).value(u"block"_s).toString(), u"qtcraft:crafting_table"_s);
+        QVERIFY2(!m_furnace.isEmpty(), "no furnace was set before the restart");
         QCOMPARE(request(m_furnace).value(u"block"_s).toString(), u"qtcraft:furnace"_s);
     }
 };

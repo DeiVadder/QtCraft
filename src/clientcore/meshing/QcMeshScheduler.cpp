@@ -2,6 +2,7 @@
 
 #include "QcChunkMesher.h"
 #include "QcClientWorld.h"
+#include "QcLightPassage.h"
 #include "QcSectionKey.h"
 
 #include <QThread>
@@ -10,8 +11,14 @@
 
 namespace {
 
-// Highest cell of the column (x, z) of `chunk`, other than `skip`, whose block dims sky light; -1
-// for none. The same rule as the sky light of QcChunkMesher.
+// Highest cell sky light coming straight down does not reach when `entry` stands at `y`; -1 when it
+// passes. The same rule as the sky light of QcChunkMesher.
+int skyTopOf(const QcBlockRenderTable::Entry &entry, int y)
+{
+    return QcLightPassage::skyTop(QcLightPassage::skyStop(entry.lightOpacity, entry.lightBlockedFaces), y);
+}
+
+// The sky top of the column (x, z) of `chunk` from its cells other than `skip`; -1 for none.
 int highestDimming(const QcChunk &chunk, const QcBlockRenderTable &table, int x, int z, int skip)
 {
     for (int section = QcWorld::sectionCount - 1; section >= 0; --section) {
@@ -19,8 +26,9 @@ int highestDimming(const QcChunk &chunk, const QcBlockRenderTable &table, int x,
             continue;
         }
         for (int y = (section + 1) * QcWorld::sectionHeight - 1; y >= section * QcWorld::sectionHeight; --y) {
-            if (y != skip && table.entry(chunk.block(x, y, z)).lightOpacity > 0) {
-                return y;
+            const QcBlockRenderTable::Entry &entry = table.entry(chunk.block(x, y, z));
+            if (y != skip && QcLightPassage::skyStop(entry.lightOpacity, entry.lightBlockedFaces) != QcLightPassage::SkyStop::None) {
+                return skyTopOf(entry, y);
             }
         }
     }
@@ -170,8 +178,8 @@ std::pair<int, int> QcMeshScheduler::skyLightRange(const QcClientWorld &world, Q
         return {0, high};
     }
     const int others = highestDimming(*chunk, *m_renderTable, pos.localX(), pos.localZ(), pos.y);
-    const int topBefore = std::max(others, before.lightOpacity > 0 ? pos.y : -1);
-    const int topAfter = std::max(others, after.lightOpacity > 0 ? pos.y : -1);
+    const int topBefore = std::max(others, skyTopOf(before, pos.y));
+    const int topAfter = std::max(others, skyTopOf(after, pos.y));
     if (topBefore != topAfter) {
         low = std::min(low, std::min(topBefore, topAfter) + 1);
         high = std::max({high, topBefore, topAfter});
@@ -204,11 +212,11 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
     if (m_renderTable) {
         const QcBlockRenderTable::Entry &before = m_renderTable->entry(previous);
         const QcBlockRenderTable::Entry &after = m_renderTable->entry(current);
-        if (before.lightOpacity != after.lightOpacity) {
+        if (before.lightDiffers(after)) {
             const auto [low, high] = skyLightRange(world, pos, before, after);
             appendSkyLightSections(dirty, pos.chunk(), low, high);
         }
-        lightChanges = before.lightOpacity != after.lightOpacity || before.lightLevel != after.lightLevel;
+        lightChanges = before.lightDiffers(after) || before.lightLevel != after.lightLevel;
     }
 
     if (m_lightEngine && lightChanges) {

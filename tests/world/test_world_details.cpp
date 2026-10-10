@@ -251,9 +251,11 @@ private slots:
         QCOMPARE(count(item("water_bucket")), 0);
         QCOMPARE(count(item("bucket")), 2);
 
-        // The poured source spreads over the grass.
+        // The poured source spreads over the grass, towards the emptied pool four blocks east (the
+        // nearest drop, E-103), not west.
         ticks(12);
-        QCOMPARE(nameAt(ground.offset(-1, 1, 0)), u"qtcraft:water[falling=false,level=1]"_s);
+        QCOMPARE(nameAt(ground.offset(1, 1, 0)), u"qtcraft:water[falling=false,level=1]"_s);
+        QCOMPARE(nameAt(ground.offset(-1, 1, 0)), u"qtcraft:air"_s);
 
         // Lava the same way.
         const QcBlockPos lava = m_feet.offset(0, -1, 3);
@@ -678,7 +680,11 @@ private slots:
         use(m_feet.offset(-2, 0, 2), QcBlockFace::East);
         QCOMPARE(nameAt(m_feet.offset(-2, 0, 2)), u"qtcraft:stone"_s);
         QCOMPARE(nameAt(m_feet.offset(-1, 0, 2)), u"qtcraft:air"_s);
+        // Walls on the other sides make the flower the only way for the water, whatever drops lie near.
         set(m_feet.offset(-3, 0, -3), u"poppy"_s);
+        for (const QcBlockPos wall : {m_feet.offset(-5, 0, -3), m_feet.offset(-4, 0, -2), m_feet.offset(-4, 0, -4)}) {
+            set(wall, u"stone"_s);
+        }
         chat(u"/setblock %1 water"_s.arg(cmdPos(m_feet.offset(-4, 0, -3))));
         ticks(12);
         QCOMPARE(nameAt(m_feet.offset(-3, 0, -3)), u"qtcraft:water[falling=false,level=1]"_s);

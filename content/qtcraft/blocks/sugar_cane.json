@@ -11,6 +11,10 @@
         "sugar_cane"
     ],
     "groundLiquid": "water",
+    "growth": {
+        "maxHeight": 3,
+        "averageSeconds": 600
+    },
     "textures": {
         "all": "sugar_cane"
     }

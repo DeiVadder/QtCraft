@@ -32,11 +32,11 @@ private slots:
         ticks(20);
         QVERIFY(QFile::exists(regionFile(dir.path(), m_feet.offset(1, 0, 0))));
         // The autosave wrote the player too; remove it so only the save on disconnect can recreate it.
-        QVERIFY(QFile::remove(dir.filePath(u"players/Raw.qcp"_s)));
+        QVERIFY(QFile::remove(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Raw"_s))));
         m_client->connection.close();
         pump();
         ticks(1);
-        QVERIFY(QFile::exists(dir.filePath(u"players/Raw.qcp"_s)));
+        QVERIFY(QFile::exists(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Raw"_s))));
     }
 
     void deathSurvivesReconnecting()

@@ -48,7 +48,7 @@ struct QcPlayerData
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
-// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), players (players/<name>.qcp) and dropped items with
+// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), players (players/<name>-<hash>.qcp) and dropped items with
 // growing saplings (entities.qce), animals (mobs.qce, both QcEntityStorage), machines (machines.qce), chests
 // (containers.qce, both QcBlockEntityStorage) and pending neighbour updates (blockupdates.qce). Only modified chunks
 // are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
@@ -71,7 +71,11 @@ public:
     // Rewrites the region files that contain any of the given chunks with all chunks of those regions.
     QcStatus writeChunks(const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> &chunks) const { return m_regions.write(chunks); }
 
-    // std::nullopt without error when the player has never been saved.
+    // File of a player in players/: the name in lower case (other characters than letters, digits,
+    // '_' and '-' replaced) and a hash of the exact name, "<name>-<hash>.qcp".
+    static QString playerFileName(const QString &playerName);
+    // std::nullopt without error when the player has never been saved. A file of an older version
+    // (players/<name>.qcp, exactly as written then) is renamed to the current name first.
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const;
     QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const;
 
@@ -111,6 +115,8 @@ public:
 
 private:
     QString playerPath(const QString &playerName) const;
+    // playerPath(), after renaming a file of an older version (players/<name>.qcp) to it.
+    QString migratedPlayerPath(const QString &playerName, QStringList &warnings) const;
 
     QString m_directory;
     std::shared_ptr<const QcContentRegistry> m_content;

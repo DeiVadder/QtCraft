@@ -95,8 +95,8 @@ private slots:
     void actionsAndStatesHaveTheirPoses()
     {
         QcEntityPose pose;
-        pose.swingProgress = 0.5;
-        QVERIFY(QcAnimator::animateBody(pose, 0.0).bone(QcBoneRole::RightArm).pitch > 90.0);
+        pose.swingProgress = QcAnimator::swingTop;
+        QVERIFY(QcAnimator::animateBody(pose, 0.0).bone(QcBoneRole::RightArm).pitch > 150.0);
         QCOMPARE(QcAnimator::animateBody(pose, 0.0).bone(QcBoneRole::LeftArm).pitch, 0.0);
 
         QcEntityPose swimming;
@@ -147,8 +147,7 @@ private slots:
         QcEntityPose swinging;
         swinging.swingProgress = 0.5;
         const QcAnimator::HandPose swing = QcAnimator::animateHand(swinging, 0.0, -1.0, -1.0, -1.0);
-        QVERIFY(swing.pitch > 30.0);
-        QVERIFY(swing.offset.z < -0.1);
+        QVERIFY(swing.offset.z < -0.05);
         QVERIFY(QcAnimator::animateHand(idle, 0.0, -1.0, -1.0, 0.5).offset.z < -0.05);
         QVERIFY(QcAnimator::animateHand(idle, 0.0, -1.0, 0.5, -1.0).offset.y < -0.02);
 
@@ -156,6 +155,51 @@ private slots:
         walking.speed = QcPhysics::walkSpeed;
         walking.walkDistance = 0.3;
         QVERIFY(QcAnimator::animateHand(walking, 0.0, -1.0, -1.0, -1.0).offset.length() > 0.01);
+    }
+
+    // The swing strikes from top to bottom: the arm is raised early, then falls steadily to its
+    // lowest point and settles back to rest; the first-person hand and the body agree.
+    void swingStrikesFromTopToBottom()
+    {
+        QCOMPARE(QcAnimator::swingLift(0.0), 0.0);
+        QCOMPARE(QcAnimator::swingLift(QcAnimator::swingTop), 1.0);
+        QCOMPARE(QcAnimator::swingLift(QcAnimator::swingBottom), -1.0);
+        QCOMPARE(QcAnimator::swingLift(1.0), 0.0);
+        QVERIFY(QcAnimator::swingTop < 0.25);
+
+        const auto handAt = [](double progress) {
+            QcEntityPose pose;
+            pose.swingProgress = progress;
+            return QcAnimator::animateHand(pose, 0.0, -1.0, -1.0, -1.0);
+        };
+        const auto armAt = [](double progress) {
+            QcEntityPose pose;
+            pose.swingProgress = progress;
+            return QcAnimator::animateBody(pose, 0.0).bone(QcBoneRole::RightArm).pitch;
+        };
+        const QcAnimator::HandPose rest = handAt(0.0);
+        QVERIFY(handAt(QcAnimator::swingTop).pitch > rest.pitch + 15.0);
+        QVERIFY(handAt(QcAnimator::swingTop).offset.y > rest.offset.y + 0.02);
+        QVERIFY(handAt(QcAnimator::swingBottom).pitch < rest.pitch - 10.0);
+        QVERIFY(handAt(QcAnimator::swingBottom).offset.y < rest.offset.y - 0.03);
+
+        // Between the highest and the lowest point every step goes down, in both views.
+        double previousLift = 2.0;
+        double previousHand = 1e9;
+        double previousArm = 1e9;
+        for (int step = 0; step <= 8; ++step) {
+            const double progress = QcAnimator::swingTop + step * 0.05;
+            QVERIFY(QcAnimator::swingLift(progress) < previousLift);
+            QVERIFY(handAt(progress).pitch < previousHand);
+            QVERIFY(armAt(progress) < previousArm);
+            previousLift = QcAnimator::swingLift(progress);
+            previousHand = handAt(progress).pitch;
+            previousArm = armAt(progress);
+        }
+        // The rise before is short; the arm hangs again at the end.
+        QVERIFY(armAt(QcAnimator::swingTop) > 150.0);
+        QVERIFY(armAt(QcAnimator::swingBottom) < 40.0);
+        QCOMPARE(armAt(1.0), armAt(0.0));
     }
 
     void modelsAreMeshedWithTintedLayers()

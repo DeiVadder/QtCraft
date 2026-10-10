@@ -10,7 +10,7 @@ ApplicationWindow {
     // Shown by main() once the screen is chosen.
     visible: false
     title: qsTr("QtCraft")
-    color: "#87bee9"
+    color: Theme.menuBottom
 
     GameController {
         id: game

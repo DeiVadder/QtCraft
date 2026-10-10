@@ -12,6 +12,7 @@ struct QcLiquidDefinition
 {
     static constexpr int maxDistance = 15;
     static constexpr int maxTicks = 1200;
+    static constexpr int maxDropSearch = 8;
 
     // Blocks a flow reaches sideways from its source; 0 for liquids that stay where they are.
     int distance = 0;
@@ -19,6 +20,9 @@ struct QcLiquidDefinition
     int ticks = 5;
     // Two sources next to each other over solid ground (or a source) make a new source.
     bool infinite = false;
+    // Blocks searched sideways for the nearest drop: the liquid then spreads only towards the
+    // nearest drops (0, or no drop that near: to every side). Server side only.
+    int dropSearch = 4;
     // Factor on swimming speed inside the liquid.
     double movementFactor = 1.0;
     // Item a scooping item (empty bucket) turns into when it takes a source; empty: cannot be taken.

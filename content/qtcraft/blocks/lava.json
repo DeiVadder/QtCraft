@@ -23,6 +23,7 @@
     "flow": {
         "distance": 3,
         "ticks": 30,
+        "dropSearch": 2,
         "movement": 0.45,
         "bucket": "lava_bucket",
         "sound": "liquid.lava.pop",

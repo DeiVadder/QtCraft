@@ -77,6 +77,18 @@ struct QcSaplingDefinition
     bool isSapling() const { return !feature.isEmpty(); }
 };
 
+// A plant that grows upwards by itself (sugar cane): random ticks of its top block add a block of the
+// same kind above until the column is `maxHeight` tall. Server side only.
+struct QcGrowthDefinition
+{
+    // Tallest column it grows to; 0 for blocks that do not grow.
+    int maxHeight = 0;
+    // Average seconds between two growth steps of one column.
+    double averageSeconds = 600.0;
+
+    bool grows() const { return maxHeight > 0; }
+};
+
 struct QcBlockDefinition
 {
     QString name;
@@ -156,6 +168,7 @@ struct QcBlockDefinition
     // A liquid that must touch the ground block from a side (sugar cane: water), unless the ground is
     // this block itself. Server side only.
     QString groundLiquid;
+    QcGrowthDefinition growth;
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;

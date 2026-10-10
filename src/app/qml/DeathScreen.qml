@@ -8,7 +8,7 @@ Rectangle {
 
     required property GameController game
 
-    color: "#a0600000"
+    color: Theme.deathScrim
     // Takes the keyboard, so keys held when dying do nothing in the world below.
     focus: visible
     onVisibleChanged: if (visible) forceActiveFocus()
@@ -21,7 +21,7 @@ Rectangle {
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("You died")
-            color: "white"
+            color: Theme.text
             font.pixelSize: 48
             font.bold: true
         }
@@ -29,7 +29,7 @@ Rectangle {
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Your inventory is kept.")
-            color: "#e0ffffff"
+            color: Theme.textSecondary
         }
 
         Button {

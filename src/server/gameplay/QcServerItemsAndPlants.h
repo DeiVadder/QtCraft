@@ -11,7 +11,7 @@ struct QcServerClient;
 struct QcServerState;
 
 // The per-tick life of dropped items (players pick them up, despawning saplings plant themselves)
-// and of plants (growing saplings and crops).
+// and of plants (growing saplings, plants that grow upwards like sugar cane).
 class QcServerItemsAndPlants
 {
 public:

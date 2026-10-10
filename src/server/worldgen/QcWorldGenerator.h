@@ -21,4 +21,11 @@ public:
         Q_UNUSED(z);
         return {};
     }
+    // Whether a player may spawn standing on `block`: ground of the terrain itself, not a tree,
+    // plant or liquid. Generators without that knowledge accept every block.
+    virtual bool isNaturalGround(QcBlockId block) const
+    {
+        Q_UNUSED(block);
+        return true;
+    }
 };

@@ -35,6 +35,7 @@ public:
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
+    bool isNaturalGround(QcBlockId block) const override { return m_definitions.naturalGround.contains(block); }
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -92,6 +93,8 @@ private:
     QcNoise m_ruggednessNoise;
     QcNoise m_warpNoiseX;
     QcNoise m_warpNoiseZ;
+    QcNoise m_climateWarpNoiseX;
+    QcNoise m_climateWarpNoiseZ;
     QcNoise m_hillNoise;
     QcNoise m_ridgeNoise;
     QcNoise m_terraceNoise;

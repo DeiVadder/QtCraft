@@ -41,6 +41,15 @@ struct HandPose
     double yaw = 0.0;
 };
 
+// Share of a mining or attack swing at which the arm is highest and lowest.
+inline constexpr double swingTop = 0.2;
+inline constexpr double swingBottom = 0.6;
+
+// Height of the swinging arm over its progress (0..1): rises quickly to 1 at swingTop, strikes
+// down to -1 at swingBottom, and settles back to 0 at the end. Shared by the first-person hand and
+// the body, so both strike from top to bottom.
+double swingLift(double progress);
+
 // `time` is a free-running clock in seconds for idle motion.
 BodyPose animateBody(const QcEntityPose &pose, double time);
 

@@ -11,7 +11,8 @@
 #include <array>
 
 // Block light of a box-shaped volume of cells: sources flood outwards breadth-first, every step into
-// a cell costs max(1, opacity of that cell) levels and cells of opacity 15 stay dark. The result is
+// a cell costs max(1, opacity of that cell) levels, cells of opacity 15 stay dark and no step
+// crosses a face that a partial shape covers (QcLightPassage). The result is
 // the unique fixpoint "brightest source minus cheapest path", so recomputing a volume after a change
 // (a torch removed) gives exactly what an incremental update would. Cells outside read 0.
 class QcLightVolume
@@ -29,7 +30,8 @@ public:
         return x >= 0 && x < m_sizeX && y >= 0 && y < m_sizeY && z >= 0 && z < m_sizeZ;
     }
 
-    void setOpacity(int x, int y, int z, int opacity);
+    // `blockedFaces`: faces of the cell light cannot cross (QcLightPassage bits).
+    void setOpacity(int x, int y, int z, int opacity, quint8 blockedFaces = 0);
     // A source shines with `level` in its own cell, whatever that cell's opacity.
     void addSource(int x, int y, int z, int level);
     bool hasSources() const { return !m_queue.isEmpty(); }
@@ -46,6 +48,8 @@ public:
                               const std::function<const QcChunk *(QcChunkPos)> &chunkAt);
 
 private:
+    // Opacity, blocked faces and light source of the world's block `cell` at volume cell (x, y, z).
+    void setCell(const QcBlockAccess &world, int x, int y, int z, QcBlockPos cell);
     qsizetype index(int x, int y, int z) const { return (qsizetype(y) * m_sizeZ + z) * m_sizeX + x; }
 
     int m_sizeX = 0;
@@ -53,5 +57,6 @@ private:
     int m_sizeZ = 0;
     QList<quint8> m_levels;
     QList<quint8> m_opacity;
+    QList<quint8> m_blockedFaces;
     QList<std::array<int, 3>> m_queue;
 };

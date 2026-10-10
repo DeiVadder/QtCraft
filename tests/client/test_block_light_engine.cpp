@@ -1,8 +1,10 @@
 #include "QcBlockLightEngine.h"
+#include "QcContentParser.h"
 #include "QcLightVolume.h"
 #include "QcSectionKey.h"
 #include "QcTextureAtlas.h"
 
+#include <QJsonDocument>
 #include <QRandomGenerator>
 #include <QTest>
 
@@ -10,7 +12,31 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Stone, a torch (14), a glowing opaque lamp (15), a dim block (opacity 3) and a weak glow (6).
+// Stairs and slabs of a light-blocking material: their states let light through except on the
+// faces their boxes cover (decision E-104).
+void addPartialShapes(QcContentRegistry &content)
+{
+    for (const char *shape : {
+             R"({"name":"stairs","rotate":"facing","flip":"half","boxes":[[0,0,0,1,0.5,1],[0,0.5,0,1,1,0.5]]})",
+             R"({"name":"slab","parts":[{"when":{"type":"bottom"},"boxes":[[0,0,0,1,0.5,1]]},
+                 {"when":{"type":"top"},"boxes":[[0,0.5,0,1,1,1]]},{"when":{"type":"double"},"boxes":[[0,0,0,1,1,1]]}]})"}) {
+        if (!content.registerShape(*QcContentParser::parseShape(QJsonDocument::fromJson(shape).object(), u"t"_s))) {
+            qFatal("cannot register shape %s", shape);
+        }
+    }
+
+    for (const char *block : {
+             R"({"name":"stairs","shape":"stairs","states":{"facing":["north","east","south","west"],"half":["bottom","top"]},"textures":{"all":"stone"}})",
+             R"({"name":"slab","shape":"slab","states":{"type":["bottom","top","double"]},"textures":{"all":"stone"}})"}) {
+        const auto parsed = QcContentParser::parseBlock(QJsonDocument::fromJson(block).object(), u"t"_s);
+        if (!parsed || !content.registerBlock(*parsed)) {
+            qFatal("cannot register %s", block);
+        }
+    }
+}
+
+// Stone, a torch (14), a glowing opaque lamp (15), a dim block (opacity 3) and a weak glow (6),
+// then stairs and slabs.
 std::shared_ptr<QcContentRegistry> makeContent()
 {
     auto content = std::make_shared<QcContentRegistry>();
@@ -33,6 +59,7 @@ std::shared_ptr<QcContentRegistry> makeContent()
     add("t:lamp", true, 15, 15);
     add("t:leaves", false, 3, 0);
     add("t:glow", false, 1, 6);
+    addPartialShapes(*content);
 
     return content;
 }
@@ -51,6 +78,10 @@ public:
     QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks;
     QSet<QcChunkPos> loaded;
     QRandomGenerator random{1234};
+    // The square of chunks that is loaded and compared: all of them, or a smaller one for tests
+    // that need less (cells outside it are dark walls for both).
+    int checkFirst = first;
+    int checkSpan = span;
 
     QcBlockId randomBlock()
     {
@@ -89,25 +120,51 @@ public:
         }
     }
 
-    // Full flood fill of the loaded chunks; unloaded ones are dark walls.
+    QcBlockId state(const QString &name) const { return *content->stateId(name); }
+
+    // Empty chunks of the checked square, all loaded into `engine`.
+    void loadEmpty(QcBlockLightEngine &engine)
+    {
+        for (int cx = checkFirst; cx < checkFirst + checkSpan; ++cx) {
+            for (int cz = checkFirst; cz < checkFirst + checkSpan; ++cz) {
+                auto chunk = std::make_shared<QcChunk>(QcChunkPos{cx, cz});
+                chunks.insert({cx, cz}, chunk);
+                engine.addChunk(chunk);
+                loaded.insert({cx, cz});
+            }
+        }
+        engine.takeChanges();
+    }
+
+    // Sets one block in the fixture and the engine, as the client does after a block update.
+    void set(QcBlockLightEngine &engine, QcBlockPos pos, QcBlockId block)
+    {
+        auto changed = std::make_shared<QcChunk>(*chunks.value(pos.chunk()));
+        changed->setBlock(pos.localX(), pos.y, pos.localZ(), block);
+        chunks.insert(pos.chunk(), changed);
+        engine.changeBlock(pos, changed);
+        engine.takeChanges();
+    }
+
+    // Full flood fill of the loaded chunks of the checked square; unloaded ones are dark walls.
     QcLightVolume reference() const
     {
-        QcLightVolume volume(span * 16, QcWorld::worldHeight, span * 16);
-        for (int cx = 0; cx < span; ++cx) {
-            for (int cz = 0; cz < span; ++cz) {
-                const QcChunkPos pos{first + cx, first + cz};
-                const bool present = loaded.contains(pos);
+        QcLightVolume volume(checkSpan * 16, QcWorld::worldHeight, checkSpan * 16);
+        for (int cx = 0; cx < checkSpan; ++cx) {
+            for (int cz = 0; cz < checkSpan; ++cz) {
+                const QcChunkPos pos{checkFirst + cx, checkFirst + cz};
+                const QcChunk *chunk = loaded.contains(pos) ? chunks.value(pos).get() : nullptr;
                 for (int y = 0; y < QcWorld::worldHeight; ++y) {
                     for (int z = 0; z < 16; ++z) {
                         for (int x = 0; x < 16; ++x) {
                             const int vx = cx * 16 + x;
                             const int vz = cz * 16 + z;
-                            if (!present) {
+                            if (!chunk) {
                                 volume.setOpacity(vx, y, vz, 15);
                                 continue;
                             }
-                            const QcBlockRenderTable::Entry &entry = table->entry(chunks.value(pos)->block(x, y, z));
-                            volume.setOpacity(vx, y, vz, entry.lightOpacity);
+                            const QcBlockRenderTable::Entry &entry = table->entry(chunk->block(x, y, z));
+                            volume.setOpacity(vx, y, vz, entry.lightOpacity, entry.lightBlockedFaces);
                             volume.addSource(vx, y, vz, entry.lightLevel);
                         }
                     }
@@ -123,9 +180,9 @@ public:
     QString difference(const QcBlockLightEngine &engine) const
     {
         const QcLightVolume expected = reference();
-        for (int vx = 0; vx < span * 16; ++vx) {
-            for (int vz = 0; vz < span * 16; ++vz) {
-                const QcBlockPos column{first * 16 + vx, 0, first * 16 + vz};
+        for (int vx = 0; vx < checkSpan * 16; ++vx) {
+            for (int vz = 0; vz < checkSpan * 16; ++vz) {
+                const QcBlockPos column{checkFirst * 16 + vx, 0, checkFirst * 16 + vz};
                 const QcChunkLight published = engine.snapshot(column.chunk());
                 for (int y = 0; y < QcWorld::worldHeight; ++y) {
                     const QcBlockPos pos{column.x, y, column.z};
@@ -314,6 +371,70 @@ private slots:
 
         // The edits really moved light around.
         QVERIFY2(lightChanges > 1000, qPrintable(QString::number(lightChanges)));
+    }
+
+    void stairsAndSlabsMatchTheFullFloodFill()
+    {
+        // The four chunks around the origin are enough.
+        Fixture fixture;
+        fixture.checkFirst = -1;
+        fixture.checkSpan = 2;
+        QcBlockLightEngine engine(fixture.table);
+        fixture.loadEmpty(engine);
+
+        // A closed stone tube two blocks high running south across the chunk border at z = 0 (its
+        // west wall lies across the border at x = 0), a torch at its north end and a bottom stair in
+        // the middle; light reaches the far end only through or over the stair.
+        constexpr int y = 64;
+        for (int z = -3; z <= 4; ++z) {
+            for (int dy = -1; dy <= 2; ++dy) {
+                for (int x = -1; x <= 1; ++x) {
+                    const bool inside = x == 0 && dy >= 0 && dy <= 1 && z >= -2 && z <= 3;
+                    fixture.set(engine, {x, y + dy, z}, inside ? qcAirBlockId : QcBlockId(1));
+                }
+            }
+        }
+        const QcBlockPos stair{0, y, 0};
+        const QcBlockPos beyond{0, y, 2};
+        fixture.set(engine, {0, y, -2}, 2);
+        const auto expectMatch = [&fixture, &engine](const char *step) {
+            const QString problem = fixture.difference(engine);
+            QVERIFY2(problem.isEmpty(), qPrintable(QString::fromLatin1(step) + u": "_s + problem));
+        };
+        expectMatch("tube");
+
+        // Facing north the stair covers its north face (towards the torch) and its bottom; light
+        // comes in from above only.
+        const QcBlockId north = fixture.state(u"t:stairs[facing=north,half=bottom]"_s);
+        const QcBlockId south = fixture.state(u"t:stairs[facing=south,half=bottom]"_s);
+        QCOMPARE(fixture.table->entry(north).lightOpacity, fixture.table->entry(south).lightOpacity);
+        QVERIFY(fixture.table->entry(north).lightBlockedFaces != fixture.table->entry(south).lightBlockedFaces);
+        fixture.set(engine, stair, north);
+        expectMatch("stair facing north");
+        const int northLevel = engine.level(beyond);
+        const int litFromAbove = engine.level(stair);
+
+        // Turned around: the same opacity, a different covered face; light now enters the stair
+        // straight from the torch and is stopped on its south face.
+        fixture.set(engine, stair, south);
+        expectMatch("stair facing south");
+        QVERIFY2(engine.level(stair) > litFromAbove, qPrintable(u"%1 %2"_s.arg(engine.level(stair)).arg(litFromAbove)));
+        fixture.set(engine, stair, north);
+        expectMatch("stair facing north again");
+        QCOMPARE(engine.level(beyond), northLevel);
+        fixture.set(engine, stair, fixture.state(u"t:stairs[facing=east,half=top]"_s));
+        expectMatch("upside-down stair facing east");
+
+        // Slabs above the stair close the way over it, from below and from above, then go away.
+        const QcBlockPos over = stair.offset(0, 1, 0);
+        for (const char *slab : {"t:slab[type=bottom]", "t:slab[type=top]", "t:slab[type=double]"}) {
+            fixture.set(engine, over, fixture.state(QString::fromLatin1(slab)));
+            expectMatch(slab);
+        }
+        fixture.set(engine, over, qcAirBlockId);
+        expectMatch("slab removed");
+        fixture.set(engine, stair, qcAirBlockId);
+        expectMatch("stair removed");
     }
 };
 

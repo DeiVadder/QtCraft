@@ -26,7 +26,10 @@ struct QcBlockState
     bool fullCube = true;
     // Full cube of an opaque block: hides neighbour faces completely.
     bool opaque = true;
+    // Light lost entering the cell; 0 for partial shapes, which block light at covered faces.
     int lightOpacity = 15;
+    // Faces light cannot cross (bits per QcBlockFace, see QcLightPassage).
+    quint8 lightBlockedFaces = 0;
     // Whether the boxes cover the whole side of the cell, per QcBlockFace (supports torches).
     std::array<bool, qcBlockFaceCount> fullFace{};
     // Face of the definition whose texture shows on each world face (turned blocks such as furnaces).

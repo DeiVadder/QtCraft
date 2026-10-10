@@ -80,6 +80,9 @@ public:
     void selectHotbarSlot(int slot);
     // Slots 0..35 inventory, 36..44 crafting grid (see QcMsg::MoveInventoryItem); count 0 = all.
     void moveInventoryItem(int from, int to, int count = 0);
+    // Shift-click: the server moves the stack to where it belongs; the crafting result
+    // (QcMsg::QuickMoveItem::craftingResultSlot) is crafted as often as possible.
+    void quickMoveItem(int slot);
     void takeCraftingResult();
     void craftRecipe(const QString &recipe, int count = 1);
     void closeCrafting();

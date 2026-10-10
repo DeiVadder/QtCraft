@@ -1,5 +1,6 @@
 #include "QcServerCombat.h"
 
+#include "QcChatText.h"
 #include "QcPhysics.h"
 #include "QcServerInventory.h"
 #include "QcServerSounds.h"
@@ -150,7 +151,7 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
         client.dead = true;
         client.miningPos.reset();
         m_state.died.insert(client.entityId);
-        client.connection->send(QcMsg::ChatMessage{u"%1 died"_s.arg(client.name)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 died"), {client.name}));
         if (!m_state.info.keepInventory) {
             m_inventory.dropAll(client);
         }
@@ -192,8 +193,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
 
-    // Generous slack for the mob's size and movement since the client aimed.
-    if ((centre - eye).length() > attackReach + definition.width + 1.0) {
+    // Generous slack for the mob's size and movement since the client aimed; no hits through walls.
+    if ((centre - eye).length() > attackReach + definition.width + 1.0
+        || !m_state.canSee(client, QcPhysics::boxAt(mob->motion.position, definition.width, definition.height))) {
         return;
     }
 
@@ -254,6 +256,7 @@ void QcServerCombat::respawn(QcServerClient &client)
     client.hunger.reset();
     client.motion = {};
     client.motion.position = m_state.spawnPosition();
+    client.previousPosition.reset();
     client.fallPeak = client.motion.position.y;
     client.stateDirty = true;
 

@@ -47,6 +47,18 @@ struct MoveInventoryItem
     qint32 count = 0;
 };
 
+// Client -> server: shift-click on a slot. The server moves the whole stack to where it belongs
+// (QcQuickMove): between hotbar and storage, from the grid or an open block into the inventory,
+// from the inventory into the open chest or the machine's input or fuel. On the crafting result it
+// crafts as often as the grid and the inventory allow.
+struct QuickMoveItem
+{
+    static constexpr qint32 craftingResultSlot = -1;
+
+    // Slot numbers as in MoveInventoryItem.
+    qint32 slot = 0;
+};
+
 // Server -> client: the receiving player's complete inventory and crafting grid.
 struct InventoryState
 {

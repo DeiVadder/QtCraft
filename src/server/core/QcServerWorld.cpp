@@ -14,10 +14,19 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
 {
-    m_contactDamage.resize(std::size_t(m_content->stateCount()));
-    for (qsizetype id = 0; id < m_content->stateCount(); ++id) {
-        m_contactDamage[std::size_t(id)] = m_content->block(QcBlockId(id)).contactDamage;
+    const auto stateCount = std::size_t(m_content->stateCount());
+    std::vector<bool> damaging(stateCount);
+    std::vector<bool> growing(stateCount);
+    m_contactDamage.resize(stateCount);
+    for (std::size_t id = 0; id < stateCount; ++id) {
+        const QcBlockDefinition &block = m_content->block(QcBlockId(id));
+        m_contactDamage[id] = block.contactDamage;
+        damaging[id] = block.contactDamage > 0.0;
+        growing[id] = block.growth.grows();
     }
+
+    m_damagingSections = QcSectionMarks(std::move(damaging));
+    m_growingSections = QcSectionMarks(std::move(growing));
 }
 
 void QcServerWorld::requestChunk(QcChunkPos pos)
@@ -40,7 +49,7 @@ QList<QcChunkPos> QcServerWorld::collectGeneratedChunks()
         // A synchronous load may have won the race; the first chunk stays authoritative.
         if (!m_chunks.contains(pos)) {
             m_chunks.insert(pos, chunk);
-            noteDamagingSections(pos, *chunk);
+            noteSections(pos, *chunk);
             m_newlyLoaded.append(pos);
             collected.append(pos);
         }
@@ -136,8 +145,8 @@ double QcServerWorld::contactDamageIn(const QcAabb &box) const
     for (int chunkX = qcFloorDiv(bounds.minX, size); chunkX <= qcFloorDiv(bounds.maxX, size); ++chunkX) {
         for (int chunkZ = qcFloorDiv(bounds.minZ, size); chunkZ <= qcFloorDiv(bounds.maxZ, size); ++chunkZ) {
             const QcChunkPos pos{chunkX, chunkZ};
-            const auto mask = m_damagingSections.constFind(pos);
-            if (mask == m_damagingSections.constEnd()) {
+            const quint32 sections = m_damagingSections.sectionsOf(pos);
+            if (sections == 0) {
                 continue;
             }
 
@@ -146,27 +155,16 @@ double QcServerWorld::contactDamageIn(const QcAabb &box) const
             local.maxX = std::min(bounds.maxX, chunkX * size + size - 1) - chunkX * size;
             local.minZ = std::max(bounds.minZ, chunkZ * size) - chunkZ * size;
             local.maxZ = std::min(bounds.maxZ, chunkZ * size + size - 1) - chunkZ * size;
-            damage = std::max(damage, contactDamageInChunk(**m_chunks.constFind(pos), *mask, local, m_contactDamage));
+            damage = std::max(damage, contactDamageInChunk(**m_chunks.constFind(pos), sections, local, m_contactDamage));
         }
     }
     return damage;
 }
 
-void QcServerWorld::noteDamagingSections(QcChunkPos pos, const QcChunk &chunk)
+void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
 {
-    const auto damaging = [this](QcBlockId id) { return std::size_t(id) < m_contactDamage.size() && m_contactDamage[std::size_t(id)] > 0.0; };
-    quint32 mask = 0;
-    for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        if (std::ranges::any_of(chunk.section(index).palette(), damaging)) {
-            mask |= 1u << index;
-        }
-    }
-
-    if (mask != 0) {
-        m_damagingSections.insert(pos, mask);
-    } else {
-        m_damagingSections.remove(pos);
-    }
+    m_damagingSections.noteChunk(pos, chunk);
+    m_growingSections.noteChunk(pos, chunk);
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
@@ -179,7 +177,7 @@ std::shared_ptr<const QcChunk> QcServerWorld::loadChunk(QcChunkPos pos)
     auto it = m_chunks.find(pos);
     if (it == m_chunks.end()) {
         it = m_chunks.insert(pos, m_generator->generate(pos));
-        noteDamagingSections(pos, **it);
+        noteSections(pos, **it);
         m_newlyLoaded.append(pos);
     }
     return *it;
@@ -191,7 +189,8 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
         return;
     }
     m_chunks.remove(pos);
-    m_damagingSections.remove(pos);
+    m_damagingSections.forgetChunk(pos);
+    m_growingSections.forgetChunk(pos);
 }
 
 bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
@@ -210,9 +209,8 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     }
 
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
-    if (m_contactDamage[std::size_t(block)] > 0.0) {
-        m_damagingSections[pos.chunk()] |= 1u << (pos.y / QcWorld::sectionHeight);
-    }
+    m_damagingSections.noteBlock(pos, block);
+    m_growingSections.noteBlock(pos, block);
 
     m_modified.insert(pos.chunk());
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos.chunk()));
@@ -223,7 +221,7 @@ void QcServerWorld::adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<Qc
 {
     for (auto it = chunks.constBegin(); it != chunks.constEnd(); ++it) {
         m_chunks.insert(it.key(), it.value());
-        noteDamagingSections(it.key(), *it.value());
+        noteSections(it.key(), *it.value());
         m_modified.insert(it.key());
         m_newlyLoaded.append(it.key());
     }

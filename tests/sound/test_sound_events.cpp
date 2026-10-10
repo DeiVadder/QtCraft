@@ -215,7 +215,7 @@ private slots:
         join();
 
         // A pig in a pit next to the player cannot run away (as in the server validation test).
-        const QcBlockPos pit = m_feet.offset(2, -1, 0);
+        const QcBlockPos pit = m_feet.offset(1, -1, 0);
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));

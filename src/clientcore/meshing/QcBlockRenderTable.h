@@ -63,6 +63,14 @@ public:
         // Light lost when passing through this block (0..15) and block light emitted (0..15).
         int lightOpacity = 0;
         int lightLevel = 0;
+        // Faces light cannot cross (QcLightPassage bits; covered faces of partial shapes).
+        quint8 lightBlockedFaces = 0;
+
+        // Whether light passes differently after a change from `other` to this entry.
+        bool lightDiffers(const Entry &other) const
+        {
+            return lightOpacity != other.lightOpacity || lightBlockedFaces != other.lightBlockedFaces;
+        }
         std::array<QRectF, 6> faceUv;
         QList<Quad> quads;
         QList<Cross> crosses;

@@ -6,6 +6,7 @@
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
 #include "QcRenderSample.h"
+#include "QcSkyRenderer.h"
 
 #include <QColor>
 #include <QImage>
@@ -102,8 +103,8 @@ private:
     QImage m_atlasImage;
     quint64 m_atlasVersion = 0;
     quint64 m_uploadedAtlasVersion = 0;
-    QColor m_skyColor;
-    float m_daylight = 1.0f;
+    QcSkyState m_sky;
+    QcSkyRenderer m_skyRenderer;
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
 

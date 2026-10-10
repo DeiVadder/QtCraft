@@ -48,7 +48,7 @@ Popup {
             Layout.fillWidth: true
             text: qsTr("Opening a world without a mod it was played with removes that mod's blocks and items from it.")
             wrapMode: Text.Wrap
-            color: "#e67e22"
+            color: Theme.warning
         }
 
         ListView {
@@ -101,7 +101,7 @@ Popup {
                             text: modRow.modelData.state === "loaded" ? qsTr("Active")
                                 : modRow.modelData.state === "disabled" ? qsTr("Disabled")
                                 : qsTr("Not loaded: %1").arg(modRow.modelData.reason)
-                            color: modRow.modelData.state === "failed" ? "#c0392b" : palette.text
+                            color: modRow.modelData.state === "failed" ? Theme.error : palette.text
                             wrapMode: Text.Wrap
                         }
                     }

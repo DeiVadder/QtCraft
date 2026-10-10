@@ -1,8 +1,10 @@
 import QtQuick
 import QtQuick.Controls
+import QtCraft
 
 // One inventory slot: item icon, stack count and a durability bar for tools. While highlighted
-// (hovered), a filled slot shows a small "?" that asks for the item's handbook page.
+// (hovered), a filled slot shows a small "?" that asks for the item's handbook page. A slot whose
+// stack is picked up is dimmed; the stack itself is drawn at the mouse (`carried`).
 Rectangle {
     id: slot
 
@@ -16,20 +18,33 @@ Rectangle {
     property bool slotEmpty: true
     property bool selected
     property bool highlighted
+    property bool picked
+    property bool carried
+    // Background of an idle slot (the hotbar lies on the world and is darker).
+    property color baseColor: Theme.slot
 
     signal infoRequested(string item)
 
     implicitWidth: 52
     implicitHeight: 52
-    color: highlighted ? "#c08a8a8a" : "#a0303030"
-    border.color: selected ? "white" : "#80000000"
+    color: carried ? Theme.clear : (picked ? Theme.slotPicked : (highlighted ? Theme.slotHover : baseColor))
+    border.color: carried ? Theme.clear : (selected ? Theme.selection : Theme.slotBorder)
     border.width: selected ? 3 : 1
     radius: 2
 
+    Rectangle {
+        anchors.fill: parent
+        anchors.margins: 6
+        visible: !slot.slotEmpty && !slot.carried && !slot.picked
+        radius: 6
+        color: Theme.iconBackdrop
+    }
+
     Image {
         anchors.fill: parent
-        anchors.margins: 8
+        anchors.margins: slot.carried ? 4 : 8
         visible: !slot.slotEmpty
+        opacity: slot.picked ? 0.3 : 1.0
         source: slot.slotIcon
         smooth: false
         sourceSize: Qt.size(32, 32)
@@ -39,11 +54,11 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 3
-        visible: !slot.slotEmpty && slot.slotCount > 1
+        visible: !slot.slotEmpty && slot.slotCount > 1 && !slot.picked
         text: slot.slotCount
-        color: "white"
+        color: Theme.text
         style: Text.Outline
-        styleColor: "black"
+        styleColor: Theme.textOutline
         font.pixelSize: 13
         font.bold: true
     }
@@ -52,10 +67,10 @@ Rectangle {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.margins: 5
-        visible: !slot.slotEmpty && slot.slotDurability >= 0 && slot.slotDurability < 1
+        visible: !slot.slotEmpty && !slot.picked && slot.slotDurability >= 0 && slot.slotDurability < 1
         height: 3
         width: (parent.width - 10) * slot.slotDurability
-        color: slot.slotDurability > 0.5 ? "#40d040" : (slot.slotDurability > 0.2 ? "#e0c030" : "#e04030")
+        color: slot.slotDurability > 0.5 ? Theme.durabilityGood : (slot.slotDurability > 0.2 ? Theme.durabilityLow : Theme.durabilityBad)
     }
 
     // Its own MouseArea takes the click, so the slot's pick-up and put-down handling never sees it.
@@ -67,13 +82,13 @@ Rectangle {
         height: 16
         radius: 8
         visible: slot.infoEnabled && slot.highlighted && !slot.slotEmpty && slot.infoItem.length > 0
-        color: infoArea.containsMouse ? "#f0ffd27a" : "#c0202020"
-        border.color: "#c0ffffff"
+        color: infoArea.containsMouse ? Theme.infoButtonHover : Theme.infoButton
+        border.color: Theme.panelBorder
 
         Label {
             anchors.centerIn: parent
             text: "?"
-            color: infoArea.containsMouse ? "black" : "white"
+            color: infoArea.containsMouse ? Theme.infoButton : Theme.text
             font.pixelSize: 11
             font.bold: true
         }

@@ -7,6 +7,7 @@
 #include "QcContentRegistry.h"
 
 #include <QString>
+#include <QStringList>
 
 #include <memory>
 
@@ -50,10 +51,15 @@ struct ChatInput
     QString text;
 };
 
-// Server -> client: chat line or command feedback.
+// Server -> client: chat line or command feedback. `text` is the English line; a non-empty `key`
+// with its `arguments` lets the client show it translated (QcChatText, decision E-094).
 struct ChatMessage
 {
+    static constexpr quint32 maxArguments = 16;
+
     QString text;
+    QString key;
+    QStringList arguments;
 };
 
 // Server -> client: seconds since the world began and the length of a full day.

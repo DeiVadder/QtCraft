@@ -8,6 +8,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QLockFile>
 #include <QLoggingCategory>
 
 #include <algorithm>
@@ -27,6 +28,8 @@ QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &b
 {
 }
 
+QcServerPersistence::~QcServerPersistence() = default;
+
 QcStatus QcServerPersistence::open()
 {
     // New worlds, saved or not, start in the morning.
@@ -35,6 +38,10 @@ QcStatus QcServerPersistence::open()
 
     if (m_state.config.worldDirectory.isEmpty()) {
         return {};
+    }
+
+    if (const QcStatus locked = lockWorld(); !locked) {
+        return locked;
     }
 
     const QcWorldStorage &storage = m_storage.emplace(m_state.config.worldDirectory, m_state.content);
@@ -204,6 +211,28 @@ void QcServerPersistence::noteWarnings(const QStringList &warnings)
         qCWarning(lcPersistence) << warning;
     }
     m_openWarnings.append(warnings);
+}
+
+QcStatus QcServerPersistence::lockWorld()
+{
+    const QDir directory(m_state.config.worldDirectory);
+    if (!QDir().mkpath(directory.path())) {
+        return qcError(u"Cannot create %1"_s.arg(directory.path()));
+    }
+
+    // A lock never goes stale by age, only when its process is gone (QLockFile checks the PID).
+    auto lock = std::make_unique<QLockFile>(directory.filePath(lockFileName.toString()));
+    lock->setStaleLockTime(0);
+    if (lock->tryLock(0)) {
+        m_lock = std::move(lock);
+        return {};
+    }
+
+    if (lock->error() == QLockFile::LockFailedError) {
+        m_worldInUse = true;
+        return qcError(u"The world %1 is already open in another QtCraft window or process"_s.arg(directory.path()));
+    }
+    return qcError(u"Cannot lock the world %1"_s.arg(directory.path()));
 }
 
 QcResult<std::optional<QcPlayerData>> QcServerPersistence::readPlayer(const QString &name, QStringList &warnings) const

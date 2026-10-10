@@ -8,7 +8,7 @@ Rectangle {
 
     required property GameController game
 
-    color: "#a0000000"
+    color: Theme.scrim
     focus: visible
     onVisibleChanged: {
         if (visible) {
@@ -37,7 +37,7 @@ Rectangle {
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Game paused")
-            color: "white"
+            color: Theme.text
             font.pixelSize: 28
             font.bold: true
         }

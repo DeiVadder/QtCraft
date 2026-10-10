@@ -1,25 +1,25 @@
 #include "QcServer.h"
 
+#include "QcChatText.h"
 #include "QcConnection.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
 #include "QcTransport.h"
 
-#include <QElapsedTimer>
 #include <QLoggingCategory>
 #include <QTimer>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <thread>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
 Q_LOGGING_CATEGORY(lcServer, "qtcraft.server")
-
-constexpr int tickIntervalMs = int(QcPhysics::tickDuration * 1000.0);
 
 } // namespace
 
@@ -43,16 +43,18 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_persistence(m_state, m_blocks, m_blockUpdates)
     , m_tickTimer(new QTimer(this))
 {
+    static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
-    m_tickTimer->setInterval(tickIntervalMs);
-    connect(m_tickTimer, &QTimer::timeout, this, &QcServer::tick);
+    m_tickTimer->setSingleShot(true);
+    connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
 }
 
 QcServer::~QcServer() = default;
 
 void QcServer::start()
 {
-    m_tickTimer->start();
+    m_ticks.start();
+    armTickTimer(QcTickScheduler::intervalNs);
 }
 
 QcStatus QcServer::openWorld()
@@ -118,6 +120,10 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         return;
     }
 
+    if (!withinRateLimit(client, message)) {
+        return;
+    }
+
     // The dead neither mine nor use items; their mining state is dropped.
     const bool worldAction = std::holds_alternative<QcMsg::StartMining>(message)
                              || std::holds_alternative<QcMsg::FinishMining>(message)
@@ -129,6 +135,53 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
 
     if (!handlePlayerMessage(client, message) && !handleInventoryMessage(client, message)) {
         qCWarning(lcServer) << "Ignoring unexpected message type" << message.index() << "from" << client.name;
+    }
+}
+
+bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
+{
+    const std::optional<QcRateLimiter::Kind> kind = QcRateLimiter::kindOf(message);
+    if (!kind || client.rateLimiter.allow(*kind, m_state.tickCount)) {
+        return true;
+    }
+
+    if (*kind == QcRateLimiter::Kind::Mining) {
+        resendDroppedMiningTarget(client, message);
+    }
+
+    // Dropped without a kick; the log names the spammer at most once a second per kind.
+    if (const quint64 dropped = client.rateLimiter.takeDropReport(*kind, m_state.tickCount); dropped > 0) {
+        const QLatin1StringView kindName(QcRateLimiter::name(*kind));
+        qCWarning(lcServer).noquote() << u"Rate limit: dropped %1 %2 messages from %3"_s.arg(dropped).arg(kindName, client.name);
+    }
+    return false;
+}
+
+void QcServer::resendDroppedMiningTarget(Client &client, const QcMessage &message)
+{
+    std::optional<QcBlockPos> pos;
+    if (const auto *start = std::get_if<QcMsg::StartMining>(&message)) {
+        pos = start->pos;
+    } else if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
+        pos = finish->pos;
+    }
+    if (!pos || !m_state.isWithinReach(client, *pos)) {
+        return;
+    }
+
+    // A flood must not turn into a flood of answers: each position once per tick, and only as many
+    // positions as the real client mines in one tick.
+    if (client.miningResendTick != m_state.tickCount) {
+        client.miningResendTick = m_state.tickCount;
+        client.miningResends.clear();
+    }
+    if (client.miningResends.contains(*pos) || client.miningResends.size() >= Client::maxMiningResendsPerTick) {
+        return;
+    }
+
+    if (const std::optional<QcBlockId> block = m_state.world.blockAt(*pos)) {
+        client.miningResends.append(*pos);
+        client.connection->send(QcMsg::BlockUpdate{*pos, *block});
     }
 }
 
@@ -171,6 +224,9 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
     } else if (const auto *move = std::get_if<QcMsg::MoveInventoryItem>(&message)) {
         client.miningPos.reset();
         m_inventory.moveItem(client, *move);
+    } else if (const auto *quick = std::get_if<QcMsg::QuickMoveItem>(&message)) {
+        client.miningPos.reset();
+        m_inventory.quickMove(client, *quick);
     } else if (std::holds_alternative<QcMsg::TakeCraftingResult>(message)) {
         m_inventory.takeCraftingResult(client);
     } else if (const auto *craft = std::get_if<QcMsg::CraftRecipe>(&message)) {
@@ -287,11 +343,12 @@ void QcServer::sendOpenWarnings(Client &client)
     const QStringList first = m_persistence.openWarnings().first(std::min(shown, m_persistence.openWarnings().size()));
 
     for (const QString &warning : first) {
-        client.connection->send(QcMsg::ChatMessage{warning});
+        client.connection->send(QcChatText::plain(warning));
     }
 
     if (m_persistence.openWarnings().size() > shown) {
-        client.connection->send(QcMsg::ChatMessage{u"... and %1 more warnings in the log"_s.arg(m_persistence.openWarnings().size() - shown)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "... and %1 more warnings in the log"),
+            {QString::number(m_persistence.openWarnings().size() - shown)}));
     }
 }
 
@@ -320,6 +377,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const bool wasOnGround = client.motion.onGround;
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
+    client.previousPosition = previous;
     QcPhysics::stepPlayer(client.motion, input, m_state.world, QcPhysics::tickDuration);
     m_combat.updateHealth(client, wasOnGround, wasInWater, previous.y);
 
@@ -336,10 +394,37 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     client.stateDirty = true;
 }
 
+void QcServer::runDueTicks()
+{
+    waitUntilDue();
+    armTickTimer(m_ticks.runDue([this] { tick(); }));
+}
+
+void QcServer::waitUntilDue() const
+{
+    // The timer fired up to timerLeadNs early. A sleep ends 0.1-0.5 ms late, the event loop's
+    // timers 1-3 ms; the last fraction of a millisecond is waited out actively.
+    constexpr qint64 activeWaitNs = 200'000;
+    const qint64 untilDue = m_ticks.untilDueNs();
+    if (untilDue <= 0 || untilDue > QcTickScheduler::timerLeadNs) {
+        return;
+    }
+
+    if (untilDue > activeWaitNs) {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(untilDue - activeWaitNs));
+    }
+    while (m_ticks.untilDueNs() > 0) {
+        std::this_thread::yield();
+    }
+}
+
+void QcServer::armTickTimer(qint64 remainingNs)
+{
+    m_tickTimer->start(std::chrono::milliseconds(std::max<qint64>(0, remainingNs - QcTickScheduler::timerLeadNs) / 1'000'000));
+}
+
 void QcServer::tick()
 {
-    QElapsedTimer timer;
-    timer.start();
     ++m_state.tickCount;
     m_state.info.worldTime += QcPhysics::tickDuration;
 
@@ -371,8 +456,6 @@ void QcServer::tick()
 
     // Drop chunks no player needs any more.
     m_chunkStreaming.unloadUnneeded();
-
-    recordTickTime(timer.nsecsElapsed());
 }
 
 void QcServer::autosave()
@@ -385,7 +468,8 @@ void QcServer::autosave()
     if (const QcStatus saved = save(); !saved) {
         qCWarning(lcServer) << "Autosave failed:" << saved.error();
         for (const auto &client : m_state.clients) {
-            client->connection->send(QcMsg::ChatMessage{u"Autosave failed: %1"_s.arg(saved.error())});
+            client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"),
+                {saved.error()}));
         }
     }
 }
@@ -408,34 +492,6 @@ void QcServer::updateClient(Client &client)
         client.connection->send(QcMsg::PlayerState{client.lastInputSequence, client.motion});
         client.stateDirty = false;
     }
-}
-
-void QcServer::recordTickTime(qint64 ns)
-{
-    m_tickNsTotal.fetch_add(ns, std::memory_order_relaxed);
-    m_ticksTimed.fetch_add(1, std::memory_order_relaxed);
-
-    qint64 worst = m_tickNsWorst.load(std::memory_order_relaxed);
-    while (ns > worst && !m_tickNsWorst.compare_exchange_weak(worst, ns, std::memory_order_relaxed)) {
-    }
-}
-
-QcServer::TickTimes QcServer::tickTimes() const
-{
-    const quint64 ticks = m_ticksTimed.load(std::memory_order_relaxed);
-    if (ticks == 0) {
-        return {};
-    }
-
-    return {double(m_tickNsTotal.load(std::memory_order_relaxed)) / double(ticks) / 1e6,
-            double(m_tickNsWorst.load(std::memory_order_relaxed)) / 1e6, ticks};
-}
-
-void QcServer::resetTickTimes()
-{
-    m_tickNsTotal.store(0, std::memory_order_relaxed);
-    m_tickNsWorst.store(0, std::memory_order_relaxed);
-    m_ticksTimed.store(0, std::memory_order_relaxed);
 }
 
 void QcServer::removeClosedClients()

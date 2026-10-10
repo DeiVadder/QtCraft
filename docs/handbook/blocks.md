@@ -1704,6 +1704,7 @@ Grows on sand or earth right next to water.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Sand](#block-qtcraft-sand), [Sugar cane](#block-qtcraft-sugar_cane) |
 | Needs next to its ground | [Water](liquids.md#block-qtcraft-water) |
+| Grows by itself | up to 3 blocks tall, one block about every 10 min |
 | Washed away by liquids | yes |
 | Sound | grass and plants |
 

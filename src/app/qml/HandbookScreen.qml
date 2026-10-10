@@ -25,7 +25,7 @@ Rectangle {
                                   : (searching ? game.handbook.model.search(searchField.text) : game.handbook.model.entries(category))
 
     visible: game.handbook.isOpen
-    color: "#b0000000"
+    color: Theme.scrimStrong
     focus: visible
 
     function navigate(target, remember) {
@@ -106,8 +106,8 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 20
         radius: 6
-        color: "#262626"
-        border.color: "#80ffffff"
+        color: Theme.panel
+        border.color: Theme.panelBorder
 
         ColumnLayout {
             anchors.fill: parent
@@ -126,7 +126,7 @@ Rectangle {
 
                 Label {
                     text: qsTr("Handbook")
-                    color: "white"
+                    color: Theme.text
                     font.pixelSize: 24
                     font.bold: true
                 }
@@ -197,7 +197,7 @@ Rectangle {
                             anchors.rightMargin: 10
                             anchors.verticalCenter: parent.verticalCenter
                             text: categoryRow.modelData.count
-                            color: "#90ffffff"
+                            color: Theme.textMuted
                         }
                     }
                 }
@@ -205,7 +205,7 @@ Rectangle {
                 Rectangle {
                     Layout.preferredWidth: 1
                     Layout.fillHeight: true
-                    color: "#40ffffff"
+                    color: Theme.separator
                 }
 
                 ListView {
@@ -237,7 +237,7 @@ Rectangle {
                         anchors.centerIn: parent
                         visible: screen.searching && entryList.count === 0
                         text: qsTr("Nothing found.")
-                        color: "#c0ffffff"
+                        color: Theme.textMuted
                     }
 
                     delegate: ItemDelegate {
@@ -272,7 +272,7 @@ Rectangle {
                                 Label {
                                     Layout.fillWidth: true
                                     text: entryRow.header ? entryRow.modelData.header : entryRow.modelData.title
-                                    color: entryRow.header ? "#ffd27a" : "white"
+                                    color: entryRow.header ? Theme.heading : Theme.text
                                     font.bold: entryRow.header
                                     elide: Text.ElideRight
                                 }
@@ -280,7 +280,7 @@ Rectangle {
                                 Label {
                                     visible: screen.searching && !entryRow.header
                                     text: entryRow.header ? "" : entryRow.modelData.categoryTitle
-                                    color: "#90ffffff"
+                                    color: Theme.textMuted
                                     font.pixelSize: 11
                                 }
                             }
@@ -291,7 +291,7 @@ Rectangle {
                 Rectangle {
                     Layout.preferredWidth: 1
                     Layout.fillHeight: true
-                    color: "#40ffffff"
+                    color: Theme.separator
                 }
 
                 Flickable {
@@ -319,7 +319,7 @@ Rectangle {
                                 Layout.preferredWidth: 56
                                 Layout.preferredHeight: 56
                                 visible: (screen.page.icon || "").length > 0
-                                color: "#a0303030"
+                                color: Theme.panelRaised
                                 radius: 3
 
                                 Image {
@@ -336,14 +336,14 @@ Rectangle {
 
                                 Label {
                                     text: screen.page.title || ""
-                                    color: "white"
+                                    color: Theme.text
                                     font.pixelSize: 26
                                     font.bold: true
                                 }
 
                                 Label {
                                     text: (screen.page.categoryTitle || "") + "  ·  " + (screen.page.packName || "")
-                                    color: "#a0ffffff"
+                                    color: Theme.textMuted
                                 }
                             }
                         }
@@ -352,7 +352,7 @@ Rectangle {
                             Layout.fillWidth: true
                             visible: text.length > 0
                             text: screen.page.text || ""
-                            color: "#f0ffffff"
+                            color: Theme.text
                             font.pixelSize: 15
                             wrapMode: Text.Wrap
                             textFormat: Text.MarkdownText
@@ -363,7 +363,7 @@ Rectangle {
                             Layout.fillWidth: true
                             visible: factRepeater.count > 0
                             implicitHeight: factColumn.implicitHeight + 12
-                            color: "#20ffffff"
+                            color: Theme.rowHighlight
                             radius: 4
 
                             ColumnLayout {
@@ -392,7 +392,7 @@ Rectangle {
                                             Layout.alignment: Qt.AlignTop
                                             topPadding: 4
                                             text: factRow.modelData.label
-                                            color: "#b8ffffff"
+                                            color: Theme.textMuted
                                             wrapMode: Text.Wrap
                                         }
 
@@ -405,7 +405,7 @@ Rectangle {
                                                 topPadding: 4
                                                 width: Math.min(implicitWidth, parent.width)
                                                 text: factRow.modelData.value
-                                                color: "white"
+                                                color: Theme.text
                                                 wrapMode: Text.Wrap
                                             }
 
@@ -439,7 +439,7 @@ Rectangle {
                                 Label {
                                     visible: text.length > 0
                                     text: sectionColumn.modelData.title
-                                    color: "#ffd27a"
+                                    color: Theme.heading
                                     font.pixelSize: 18
                                     font.bold: true
                                 }
@@ -448,7 +448,7 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: text.length > 0
                                     text: sectionColumn.modelData.text
-                                    color: "#f0ffffff"
+                                    color: Theme.text
                                     font.pixelSize: 15
                                     wrapMode: Text.Wrap
                                     textFormat: Text.MarkdownText
@@ -495,7 +495,7 @@ Rectangle {
 
             Label {
                 text: qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.settings.keys.labels.handbook)
-                color: "#a0ffffff"
+                color: Theme.textMuted
             }
         }
     }

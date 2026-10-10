@@ -5,7 +5,10 @@
 
 #include <QStringList>
 
+#include <memory>
 #include <optional>
+
+class QLockFile;
 
 class QcBlockUpdateQueue;
 class QcServerBlocks;
@@ -18,6 +21,10 @@ class QcServerPersistence
 {
 public:
     QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates);
+    ~QcServerPersistence();
+
+    // Name of the lock file in the world directory, held while the world is open (decision E-093).
+    static constexpr QStringView lockFileName = u"session.lock";
 
     // Opens or creates the world directory given in the config (no-op without one).
     QcStatus open();
@@ -28,8 +35,12 @@ public:
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_openWarnings; }
+    // Whether open() failed because another server (in this or another process) has the world open.
+    bool worldInUse() const { return m_worldInUse; }
 
 private:
+    // Takes the world's lock file; fails when another server holds it.
+    QcStatus lockWorld();
     QcStatus createInfo(const QcWorldStorage &storage);
     // Reads world.json; differences of the content packs are added to `warnings`.
     QcStatus readInfo(const QcWorldStorage &storage, QStringList &warnings);
@@ -49,5 +60,7 @@ private:
     QcServerBlocks &m_blocks;
     QcBlockUpdateQueue &m_updates;
     std::optional<QcWorldStorage> m_storage;
+    std::unique_ptr<QLockFile> m_lock;
+    bool m_worldInUse = false;
     QStringList m_openWarnings;
 };

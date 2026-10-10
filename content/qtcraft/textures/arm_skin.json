@@ -1,0 +1,8 @@
+{
+    "name": "arm_skin",
+    "pattern": "limb",
+    "primary": "#f6f6f6",
+    "secondary": "#dcdcdc",
+    "variation": 0.05,
+    "seed": 51
+}

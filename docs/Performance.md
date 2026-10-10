@@ -56,6 +56,7 @@ Aufteilung eines Frames (8 Chunks, stand): Die Threads arbeiten verschachtelt (G
 | Meshing | 0 im Stehen; 1,0–1,3 ms pro Sektion auf 4 bis 11 Workern, nicht im Frame | `mesh_job_avg_ms` |
 | Mesh-Upload | 0,01 (Spitzen 0,3–1,4 beim Streaming) | `upload_avg_ms`/`upload_max_ms` |
 | Server-Tick | 0,28 (eigener Thread, 20 Ticks/s) | `tick_avg_ms` |
+| Takt-Genauigkeit des Servers | Verspätung der Ticks gegen ihr 50-ms-Raster (Mittel, p99, Maximum) und verworfene Ticks (E-090) | `tick_late_avg_ms`/`tick_late_p99_ms`/`tick_late_max_ms`, `ticks_skipped` |
 | Entities/Charaktere | 0,20 (crowd: 1,00) im GUI-Thread | `entity_mesh_avg_ms` |
 | QML/HUD (GUI-Thread ohne Entities) | 0,36 (crowd: 0,31) | `gui_cpu_avg_ms` − Entities |
 | Szenengraph (Render-Thread ohne Welt) | 0,84 | `render_cpu_avg_ms` − `world_render_avg_ms` |

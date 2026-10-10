@@ -14,20 +14,28 @@ public:
     static constexpr int regenerationFood = 18;
     static constexpr double exhaustionPerFood = 4.0;
     static constexpr double regenerationInterval = 4.0;
-    static constexpr double regenerationExhaustion = 3.0;
+    static constexpr double regenerationExhaustion = 2.0;
     static constexpr double starvationInterval = 4.0;
     static constexpr double starvationDamage = 1.0;
     static constexpr double starvationFloor = 1.0;
 
-    // Exhaustion per activity.
-    static constexpr double walkPerMetre = 0.01;
-    static constexpr double sprintPerMetre = 0.1;
-    static constexpr double swimPerMetre = 0.015;
-    static constexpr double jump = 0.05;
-    static constexpr double sprintJump = 0.2;
+    // Exhaustion per activity (decision E-100). Without a saturation buffer these are about a quarter
+    // to a third of the classic values: walking empties a full bar in about two hours, sprinting in
+    // about eight minutes.
+    static constexpr double walkPerMetre = 0.0025;
+    static constexpr double sprintPerMetre = 0.03;
+    static constexpr double swimPerMetre = 0.005;
+    static constexpr double jump = 0.02;
+    static constexpr double sprintJump = 0.08;
     static constexpr double mineBlock = 0.005;
-    static constexpr double attack = 0.1;
-    static constexpr double damageTaken = 0.1;
+    static constexpr double attack = 0.05;
+    static constexpr double damageTaken = 0.05;
+
+    // Minutes of steady movement at `speed` metres per second that empty a full food bar.
+    static constexpr double minutesForFullBar(double perMetre, double speed)
+    {
+        return maxFood * exhaustionPerFood / (perMetre * speed) / 60.0;
+    }
 
     int food() const { return m_food; }
     double exhaustion() const { return m_exhaustion; }

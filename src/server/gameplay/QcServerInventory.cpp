@@ -1,7 +1,9 @@
 #include "QcServerInventory.h"
 
+#include "QcChatText.h"
 #include "QcCrafting.h"
 #include "QcPhysics.h"
+#include "QcQuickMove.h"
 #include "QcServerMachines.h"
 #include "QcServerState.h"
 
@@ -102,57 +104,93 @@ bool QcServerInventory::hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy
     return false;
 }
 
-void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move)
+QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
-    QcMachineManager::Machine *machine = m_machines.openMachineOf(client);
-    QcContainerManager::Container *container = m_machines.openContainerOf(client);
-    const auto refuse = [&] {
-        send(client);
-        m_machines.send(client, true);
-    };
-
-    if (client.dead || !isUsableSlot(client, move.from, machine, container) || !isUsableSlot(client, move.to, machine, container)
-        || (machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
-        refuse();
-        return;
+    OpenSlots open{m_machines.openMachineOf(client), m_machines.openContainerOf(client), {}};
+    open.combined = client.inventory.allSlots();
+    open.combined.append(client.craftingGrid);
+    if (open.machine) {
+        open.combined.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
+    } else if (open.container) {
+        open.combined.append(open.container->stacks);
     }
+    return open;
+}
 
-    QList<QcItemStack> combined = client.inventory.allSlots();
-    combined.append(client.craftingGrid);
-    if (machine) {
-        combined.append(QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()));
-    } else if (container) {
-        combined.append(container->stacks);
-    }
-
-    QcInventory::moveBetween(combined, move.from, move.to, std::max(0, move.count), *m_state.content);
-
-    if (machine) {
-        if (!machineAccepts(*machine, combined)) {
-            refuse();
-            return;
+bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
+{
+    if (open.machine) {
+        if (!machineAccepts(*open.machine, open.combined)) {
+            send(client);
+            m_machines.send(client, true);
+            return false;
         }
         for (int slot = 0; slot < QcMachineManager::slotCount; ++slot) {
-            machine->stacks[std::size_t(slot)] = combined[machineSlot + slot];
+            open.machine->stacks[std::size_t(slot)] = open.combined[machineSlot + slot];
         }
     }
 
     for (int i = 0; i < QcInventory::slotCount; ++i) {
-        client.inventory.setSlot(i, combined[i]);
+        client.inventory.setSlot(i, open.combined[i]);
     }
-    client.craftingGrid = combined.mid(QcInventory::slotCount, 9);
-    if (container) {
-        container->stacks = combined.mid(machineSlot, container->stacks.size());
+    client.craftingGrid = open.combined.mid(QcInventory::slotCount, 9);
+    if (open.container) {
+        open.container->stacks = open.combined.mid(machineSlot, open.container->stacks.size());
     }
 
     send(client);
-    if (container) {
-        m_machines.sendToViewers(container->pos);
+    // Everyone looking into this machine or chest sees the change.
+    if (open.container) {
+        m_machines.sendToViewers(open.container->pos);
     }
-    if (machine) {
-        // Everyone looking into this machine sees the change.
-        m_machines.sendToViewers(machine->pos);
+    if (open.machine) {
+        m_machines.sendToViewers(open.machine->pos);
     }
+    return true;
+}
+
+void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move)
+{
+    OpenSlots open = openSlots(client);
+    if (client.dead || !isUsableSlot(client, move.from, open.machine, open.container)
+        || !isUsableSlot(client, move.to, open.machine, open.container)
+        || (open.machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
+        send(client);
+        m_machines.send(client, true);
+        return;
+    }
+
+    QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), *m_state.content);
+    applyOpenSlots(client, open);
+}
+
+void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem move)
+{
+    if (move.slot == QcMsg::QuickMoveItem::craftingResultSlot) {
+        craftAll(client);
+        return;
+    }
+
+    OpenSlots open = openSlots(client);
+    if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined[move.slot].isEmpty()) {
+        send(client);
+        m_machines.send(client, true);
+        return;
+    }
+
+    QcQuickMove::Situation situation;
+    situation.containerSlots = open.container ? int(open.container->stacks.size()) : 0;
+    situation.machineOpen = open.machine != nullptr;
+    if (open.machine) {
+        const QcItemId item = open.combined[move.slot].item;
+        const std::optional<QcBlockId> block = m_state.world.blockAt(open.machine->pos);
+        const QcMachineDefinition *definition = block ? m_state.machines.machineOf(*block) : nullptr;
+        situation.smeltable = definition && m_state.machines.recipeFor(*definition, item);
+        situation.fuel = m_state.machines.fuelSeconds(item) > 0.0;
+    }
+
+    QcInventory::moveInto(open.combined, move.slot, QcQuickMove::targets(move.slot, situation), *m_state.content);
+    applyOpenSlots(client, open);
 }
 
 bool QcServerInventory::machineAccepts(const QcMachineManager::Machine &machine, const QList<QcItemStack> &combined) const
@@ -170,17 +208,15 @@ bool QcServerInventory::machineAccepts(const QcMachineManager::Machine &machine,
     return fuelOk && outputOk;
 }
 
-void QcServerInventory::takeCraftingResult(QcServerClient &client)
+QcServerInventory::CraftOutcome QcServerInventory::craftOnce(QcServerClient &client)
 {
     if (client.craftingSize == 3 && !isNearCraftingTable(client)) {
-        closeCrafting(client);
-        return;
+        return CraftOutcome::TooFar;
     }
 
     const std::optional<qsizetype> recipe = craftingMatch(client);
     if (client.dead || !recipe) {
-        send(client);
-        return;
+        return CraftOutcome::NoRecipe;
     }
 
     const QcContentRegistry &content = *m_state.content;
@@ -188,9 +224,7 @@ void QcServerInventory::takeCraftingResult(QcServerClient &client)
     const std::optional<QcItemId> item = content.itemId(definition.resultItem);
     QcInventory result = client.inventory;
     if (!item || result.add(*item, definition.resultCount, content) > 0) {
-        client.connection->send(QcMsg::ChatMessage{u"Not enough room in the inventory"_s});
-        send(client);
-        return;
+        return CraftOutcome::NoRoom;
     }
 
     client.inventory = result;
@@ -202,7 +236,38 @@ void QcServerInventory::takeCraftingResult(QcServerClient &client)
             }
         }
     }
+    return CraftOutcome::Crafted;
+}
 
+void QcServerInventory::takeCraftingResult(QcServerClient &client)
+{
+    finishCrafting(client, craftOnce(client), false);
+}
+
+void QcServerInventory::craftAll(QcServerClient &client)
+{
+    // As often as the grid and the inventory allow, at most a full stack of rounds.
+    CraftOutcome outcome = CraftOutcome::NoRecipe;
+    bool crafted = false;
+    for (int round = 0; round < maxCraftAllRounds; ++round) {
+        outcome = craftOnce(client);
+        if (outcome != CraftOutcome::Crafted) {
+            break;
+        }
+        crafted = true;
+    }
+    finishCrafting(client, outcome, crafted);
+}
+
+void QcServerInventory::finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore)
+{
+    if (outcome == CraftOutcome::TooFar) {
+        closeCrafting(client);
+        return;
+    }
+    if (outcome == CraftOutcome::NoRoom && !craftedBefore) {
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Not enough room in the inventory")));
+    }
     send(client);
 }
 
@@ -215,13 +280,15 @@ void QcServerInventory::craftRecipe(QcServerClient &client, const QcMsg::CraftRe
     }
 
     if (!index) {
-        client.connection->send(QcMsg::ChatMessage{u"Unknown recipe %1"_s.arg(request.recipe)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown recipe %1"),
+            {request.recipe}));
         return;
     }
 
     const QcRecipeDefinition &recipe = content.recipes()[*index];
     if (QcCrafting::gridSizeNeeded(recipe) > 2 && !isNearCraftingTable(client)) {
-        client.connection->send(QcMsg::ChatMessage{u"%1 needs a crafting table nearby"_s.arg(recipe.name)});
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 needs a crafting table nearby"),
+            {recipe.name}));
         return;
     }
 
@@ -238,8 +305,12 @@ void QcServerInventory::craftRecipe(QcServerClient &client, const QcMsg::CraftRe
         ++crafted;
     }
 
-    client.connection->send(QcMsg::ChatMessage{crafted > 0 ? u"Crafted %1 x %2"_s.arg(crafted * recipe.resultCount).arg(recipe.resultItem)
-                                                           : u"Missing ingredients or room for %1"_s.arg(recipe.name)});
+    if (crafted > 0) {
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Crafted %1 x %2"),
+                                                    {QString::number(crafted * recipe.resultCount), recipe.resultItem}));
+    } else {
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Missing ingredients or room for %1"), {recipe.name}));
+    }
     send(client);
 }
 

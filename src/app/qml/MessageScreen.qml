@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCraft
 
 Rectangle {
     id: screen
@@ -10,7 +11,7 @@ Rectangle {
 
     signal backRequested
 
-    color: "#c0202830"
+    color: Theme.scrimStrong
     focus: visible
     onVisibleChanged: if (visible) forceActiveFocus()
     Keys.onPressed: event => {
@@ -30,7 +31,7 @@ Rectangle {
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap
-            color: "white"
+            color: Theme.text
             font.pixelSize: 22
         }
 

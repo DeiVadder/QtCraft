@@ -113,7 +113,7 @@ Ein Ofen nimmt oben etwas zum Schmelzen und unten Brennstoff; rechts erscheint d
 
 **Essen**
 
-Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Nahrungspunkt.
+Die Nahrungsleiste fasst 20 Punkte. Halte Nahrung und benutze sie (rechte Maustaste), um zu essen, wenn du nicht satt bist. Gehen, Rennen, Schwimmen, Springen, Abbauen, Kämpfen und Verletzungen machen hungrig: Je 4 Punkte Erschöpfung kosten einen Nahrungspunkt. Gehen leert eine volle Leiste in etwa 124 min, Rennen in etwa 8 min; Sprünge, Abbauen und Kämpfe kosten etwas mehr. Ein geheilter Lebenspunkt kostet 0,5 Nahrungspunkte.
 
 **Heilen und Hungern**
 

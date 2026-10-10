@@ -469,7 +469,42 @@ QColor paintLump(const QcTextureSpec &spec, int x, int y, QColor color)
     return (hashPixel(spec.seed + 31, x, y) % 4) == 0 ? varied(spec, spec.secondary, x, y, 3) : color;
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 40> painters = {{
+// Darker towards the left and right edge, so a flat face of a box reads as a rounded limb.
+double roundShade(int x)
+{
+    const double across = (x - 7.5) / 7.5;
+    return 1.0 - 0.16 * across * across;
+}
+
+QColor paintLimb(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    // Large soft patches instead of per-pixel grain.
+    const double mottle = 0.5 * noise(spec.seed, x / 3, y / 3) + 0.5 * noise(spec.seed + 1, x / 2, y / 4);
+    const double shade = roundShade(x) * (1.0 + spec.variation * mottle);
+    // A faint knuckle line and three finger gaps near the lower end.
+    if ((y == 12 && x % 4 != 0) || (y >= 13 && x % 4 == 0 && x > 0)) {
+        return scaled(spec.secondary, shade);
+    }
+    return scaled(spec.primary, shade);
+}
+
+QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
+{
+    const double weave = (x + y) % 2 == 0 ? 1.0 : 0.96;
+    // Folds run diagonally around the sleeve.
+    const double fold = 1.0 - 0.08 * std::max(0.0, std::sin((x + 2.0 * y + double(spec.seed % 7)) * 0.55));
+    const double shade = roundShade(x) * weave * fold * (1.0 + spec.variation * noise(spec.seed, x, y));
+    if (y >= 13) {
+        return scaled(spec.secondary, shade);
+    }
+    if (y == 12) {
+        // Stitches of the cuff's seam.
+        return x % 2 == 0 ? scaled(spec.primary, 1.05) : scaled(spec.secondary, shade * 0.85);
+    }
+    return scaled(spec.primary, shade);
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 42> painters = {{
     {Pattern::Noise, paintNoise},
     {Pattern::Speckle, paintSpeckle},
     {Pattern::Planks, paintPlanks},
@@ -510,6 +545,8 @@ constexpr std::array<std::pair<Pattern, Painter>, 40> painters = {{
     {Pattern::Bottle, paintBottle},
     {Pattern::Bucket, paintBucket},
     {Pattern::Lantern, paintLantern},
+    {Pattern::Limb, paintLimb},
+    {Pattern::Sleeve, paintSleeve},
 }};
 
 Painter painterFor(Pattern pattern)

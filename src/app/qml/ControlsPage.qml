@@ -137,7 +137,7 @@ ColumnLayout {
         visible: text.length > 0
         text: page.message
         wrapMode: Text.Wrap
-        color: "#e67e22"
+        color: Theme.warning
     }
 
     Label {

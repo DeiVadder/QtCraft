@@ -13,8 +13,8 @@ Rectangle {
     signal quitRequested
 
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#5f9bd1" }
-        GradientStop { position: 1.0; color: "#2f4f6e" }
+        GradientStop { position: 0.0; color: Theme.menuTop }
+        GradientStop { position: 1.0; color: Theme.menuBottom }
     }
 
     focus: visible
@@ -50,7 +50,7 @@ Rectangle {
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("QtCraft")
-            color: "white"
+            color: Theme.text
             font.pixelSize: 64
             font.bold: true
         }
@@ -70,7 +70,7 @@ Rectangle {
 
                 Label {
                     text: qsTr("Your worlds")
-                    color: "white"
+                    color: Theme.text
                     font.pixelSize: 20
                 }
 
@@ -87,7 +87,7 @@ Rectangle {
                         anchors.centerIn: parent
                         visible: worldList.count === 0
                         text: qsTr("No saved worlds yet.")
-                        color: "#e0ffffff"
+                        color: Theme.textSecondary
                     }
 
                     delegate: Rectangle {
@@ -98,7 +98,7 @@ Rectangle {
                         width: ListView.view.width
                         height: 64
                         radius: 4
-                        color: "#40000000"
+                        color: Theme.scrim
 
                         RowLayout {
                             anchors.fill: parent
@@ -111,7 +111,7 @@ Rectangle {
 
                                 Label {
                                     text: worldRow.modelData.name
-                                    color: "white"
+                                    color: Theme.text
                                     font.pixelSize: 17
                                     font.bold: true
                                     elide: Text.ElideRight
@@ -122,7 +122,7 @@ Rectangle {
                                     text: worldRow.modelData.error.length > 0
                                           ? worldRow.modelData.error
                                           : qsTr("Last played %1 · Seed %2").arg(worldRow.modelData.lastPlayed).arg(worldRow.modelData.seed)
-                                    color: worldRow.modelData.error.length > 0 ? "#ffb0b0" : "#d0ffffff"
+                                    color: worldRow.modelData.error.length > 0 ? Theme.error : Theme.textSecondary
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
                                 }
@@ -157,13 +157,13 @@ Rectangle {
 
                 Label {
                     text: qsTr("New world")
-                    color: "white"
+                    color: Theme.text
                     font.pixelSize: 20
                 }
 
                 Label {
                     text: qsTr("World name")
-                    color: "white"
+                    color: Theme.text
                 }
 
                 TextField {
@@ -176,7 +176,7 @@ Rectangle {
 
                 Label {
                     text: qsTr("Seed (number or text, empty for random)")
-                    color: "white"
+                    color: Theme.text
                 }
 
                 TextField {
@@ -192,7 +192,7 @@ Rectangle {
                     Layout.fillWidth: true
                     checked: true
                     text: qsTr("Keep inventory on death")
-                    palette.windowText: "white"
+                    palette.windowText: Theme.text
                 }
 
                 Button {

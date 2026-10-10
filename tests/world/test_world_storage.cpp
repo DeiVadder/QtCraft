@@ -531,6 +531,65 @@ private slots:
         QCOMPARE((*storage.readPlayer(u"Hungry"_s, warnings))->food, 20);
     }
 
+    void playerNamesDifferingInCaseGetTheirOwnFiles()
+    {
+        QTemporaryDir dir;
+        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        QcPlayerData bob;
+        bob.motion.position = {0.5, 70.0, 0.5};
+        bob.health = 5.0;
+        QcPlayerData lowerBob = bob;
+        lowerBob.health = 9.0;
+        QVERIFY(storage.writePlayer(u"Bob"_s, bob).has_value());
+        QVERIFY(storage.writePlayer(u"bob"_s, lowerBob).has_value());
+        // "a.b" and "a_b" sanitize to the same readable part.
+        QVERIFY(storage.writePlayer(u"a.b"_s, bob).has_value());
+        QVERIFY(storage.writePlayer(u"a_b"_s, lowerBob).has_value());
+
+        // Four files whose names differ even when case is ignored (macOS, Windows).
+        QStringList files = QDir(dir.filePath(u"players"_s)).entryList(QDir::Files);
+        QCOMPARE(files.size(), 4);
+        for (QString &file : files) {
+            file = file.toLower();
+        }
+        files.removeDuplicates();
+        QCOMPARE(files.size(), 4);
+        QVERIFY(QcWorldStorage::playerFileName(u"Bob"_s).startsWith(u"bob-"_s));
+
+        QStringList warnings;
+        QCOMPARE((*storage.readPlayer(u"Bob"_s, warnings))->health, 5.0);
+        QCOMPARE((*storage.readPlayer(u"bob"_s, warnings))->health, 9.0);
+        QCOMPARE((*storage.readPlayer(u"a.b"_s, warnings))->health, 5.0);
+        QCOMPARE((*storage.readPlayer(u"a_b"_s, warnings))->health, 9.0);
+        QVERIFY(!*storage.readPlayer(u"BOB"_s, warnings));
+    }
+
+    void playerFilesOfOlderVersionsAreRenamedForTheirExactName()
+    {
+        QTemporaryDir dir;
+        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        QcPlayerData player;
+        player.motion.position = {0.5, 70.0, 0.5};
+        player.health = 7.0;
+        QVERIFY(storage.writePlayer(u"Alice"_s, player).has_value());
+
+        // Older versions named the file after the name as typed: players/Alice.qcp.
+        const QDir players(dir.filePath(u"players"_s));
+        const QString current = players.filePath(QcWorldStorage::playerFileName(u"Alice"_s));
+        QVERIFY(QFile::rename(current, players.filePath(u"Alice.qcp"_s)));
+
+        // Another case of the name does not take the file over, even where the file system ignores case.
+        QStringList warnings;
+        QVERIFY(!*storage.readPlayer(u"alice"_s, warnings));
+        QVERIFY(players.entryList(QDir::Files).contains(u"Alice.qcp"_s));
+
+        const auto read = storage.readPlayer(u"Alice"_s, warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE((*read)->health, 7.0);
+        QVERIFY(warnings.isEmpty());
+        QCOMPARE(players.entryList(QDir::Files), QStringList{QcWorldStorage::playerFileName(u"Alice"_s)});
+    }
+
     void blockStatesRoundTripByName()
     {
         QTemporaryDir dir;

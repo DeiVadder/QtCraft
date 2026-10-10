@@ -1,9 +1,12 @@
+#include "QcChatText.h"
 #include "QcProtocol.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QIODevice>
 #include <QRandomGenerator>
 #include <QTest>
+#include <QTranslator>
 
 #include <limits>
 
@@ -35,6 +38,25 @@ QByteArray frameWithTag(quint16 tag, const QByteArray &payload)
     frame.append(payload);
     return frame;
 }
+
+// German for two server texts, as a loaded .qm file would provide them.
+class GermanServerTexts : public QTranslator
+{
+    Q_OBJECT
+
+public:
+    QString translate(const char *context, const char *sourceText, const char *, int) const override
+    {
+        if (QByteArrayView(context) != QcChatText::context) {
+            return {};
+        }
+        if (QByteArrayView(sourceText) == "Gave %1 x %2") {
+            return u"%2 × %1 gegeben"_s;
+        }
+        return QByteArrayView(sourceText) == "Healed" ? u"Geheilt"_s : QString();
+    }
+    bool isEmpty() const override { return false; }
+};
 
 } // namespace
 
@@ -247,6 +269,59 @@ private slots:
         huge.layers[0].frequency = 220.0;
         content->registerSound(huge);
         QVERIFY(QcProtocol::decode(QcProtocol::encode(QcMsg::ContentSync{content}), QcProtocol::Peer::Server).has_value());
+    }
+
+    void chatMessagesCarryKeyAndArguments()
+    {
+        const QcMsg::ChatMessage gave = roundTrip(QcChatText::message("Gave %1 x %2", {u"3"_s, u"qtcraft:stone"_s}));
+        QCOMPARE(gave.text, u"Gave 3 x qtcraft:stone"_s);
+        QCOMPARE(gave.key, u"Gave %1 x %2"_s);
+        QCOMPARE(gave.arguments, (QStringList{u"3"_s, u"qtcraft:stone"_s}));
+
+        const QcMsg::ChatMessage chat = roundTrip(QcChatText::plain(u"<Bob> hi %1"_s));
+        QCOMPARE(chat.text, u"<Bob> hi %1"_s);
+        QVERIFY(chat.key.isEmpty());
+        QVERIFY(chat.arguments.isEmpty());
+
+        // More arguments than any text uses are refused.
+        QcMsg::ChatMessage many = QcChatText::message("%1");
+        for (quint32 i = 0; i <= QcMsg::ChatMessage::maxArguments; ++i) {
+            many.arguments.append(u"x"_s);
+        }
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(many), QcProtocol::Peer::Server).has_value());
+        many.arguments.removeLast();
+        QVERIFY(QcProtocol::decode(QcProtocol::encode(many), QcProtocol::Peer::Server).has_value());
+    }
+
+    void chatTextsAreFilledInOnePass()
+    {
+        // Arguments are not scanned again, so a player's "%1" stays literal.
+        QCOMPARE(QcChatText::format(u"<%1> %2", {u"Bob"_s, u"%1 and %2"_s}), u"<Bob> %1 and %2"_s);
+        QCOMPARE(QcChatText::format(u"%2 before %1", {u"a"_s, u"b"_s}), u"b before a"_s);
+        // Two digits; placeholders without an argument and a lone percent sign stay.
+        QStringList eleven;
+        for (int i = 1; i <= 11; ++i) {
+            eleven.append(QString::number(i * 10));
+        }
+        QCOMPARE(QcChatText::format(u"%11 %1 %3 100% %0", eleven), u"110 10 30 100% %0"_s);
+        QCOMPARE(QcChatText::format(u"%1 of %2", {u"x"_s}), u"x of %2"_s);
+    }
+
+    void chatLinesAreShownTranslated()
+    {
+        const QcMsg::ChatMessage gave = QcChatText::message("Gave %1 x %2", {u"3"_s, u"qtcraft:stone"_s});
+        const QcMsg::ChatMessage unknownKey{u"Brand new 7"_s, u"Brand new %1"_s, {u"7"_s}};
+        const QcMsg::ChatMessage plain = QcChatText::plain(u"<Bob> Gave %1 x %2"_s);
+        QCOMPARE(QcChatText::display(gave), u"Gave 3 x qtcraft:stone"_s);
+
+        GermanServerTexts german;
+        QVERIFY(QCoreApplication::installTranslator(&german));
+        QCOMPARE(QcChatText::display(gave), u"qtcraft:stone × 3 gegeben"_s);
+        QCOMPARE(QcChatText::display(QcChatText::message("Healed")), u"Geheilt"_s);
+        // A key without a translation falls back to the English text, a plain line stays as sent.
+        QCOMPARE(QcChatText::display(unknownKey), u"Brand new 7"_s);
+        QCOMPARE(QcChatText::display(plain), u"<Bob> Gave %1 x %2"_s);
+        QCoreApplication::removeTranslator(&german);
     }
 
     void craftingMessagesRoundTrip()
@@ -601,6 +676,17 @@ private slots:
         QCOMPARE(fallingCopy.block, 37u);
         QCOMPARE(roundTrip(QcMsg::UseEntity{21}).id, 21u);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseEntity{21}), QcProtocol::Peer::Server).has_value());
+
+        // Shift-click: the slot (or the crafting result) from the client only, within the slot space.
+        QCOMPARE(roundTrip(QcMsg::QuickMoveItem{47}).slot, 47);
+        QCOMPARE(roundTrip(QcMsg::QuickMoveItem{QcMsg::QuickMoveItem::craftingResultSlot}).slot, -1);
+        const auto decodes = [](qint32 slot) {
+            return QcProtocol::decode(QcProtocol::encode(QcMsg::QuickMoveItem{slot}), QcProtocol::Peer::Client).has_value();
+        };
+        QVERIFY(decodes(QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots - 1));
+        QVERIFY(!decodes(QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots));
+        QVERIFY(!decodes(-2));
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::QuickMoveItem{3}), QcProtocol::Peer::Server).has_value());
     }
 
     void contentSyncCarriesLiquidsBucketsAndCreatures()

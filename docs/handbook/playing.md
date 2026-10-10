@@ -113,7 +113,7 @@ A furnace takes something to smelt on top and fuel below; the result appears on 
 
 **Eating**
 
-The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one food point.
+The food bar holds 20 points. Hold food and use it (right mouse button) to eat when you are not full. Walking, sprinting, swimming, jumping, mining, fighting and being hurt make you hungry: every 4 points of exhaustion cost one food point. Walking empties a full bar in about 124 min, sprinting in about 8 min; jumps, mining and fights cost a little extra. Healing one health point costs 0.5 food points.
 
 **Healing and starving**
 

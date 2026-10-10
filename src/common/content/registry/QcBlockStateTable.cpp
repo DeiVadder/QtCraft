@@ -1,5 +1,7 @@
 #include "QcBlockStateTable.h"
 
+#include "QcLightPassage.h"
+
 #include <QHash>
 #include <QSet>
 #include <QVarLengthArray>
@@ -409,6 +411,14 @@ QcBlockState QcBlockStateTable::compute(const QcBlockDefinition &block, const Qc
 
     for (const QcBlockFace face : qcAllBlockFaces) {
         state.fullFace[std::size_t(face)] = coversSide(state.boxes, face);
+    }
+
+    // A partial shape of a light-dimming block (stairs, slabs) dims light by its covered faces only.
+    if (!state.fullCube && state.lightOpacity > 0) {
+        state.lightOpacity = 0;
+        for (const QcBlockFace face : qcAllBlockFaces) {
+            state.lightBlockedFaces |= state.fullFace[std::size_t(face)] ? QcLightPassage::bit(face) : quint8(0);
+        }
     }
     return state;
 }

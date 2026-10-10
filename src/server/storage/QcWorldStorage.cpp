@@ -3,6 +3,7 @@
 #include "QcSaveFile.h"
 #include "QcStreamLimits.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
@@ -42,9 +43,40 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
 {
 }
 
+QString QcWorldStorage::playerFileName(const QString &playerName)
+{
+    // Readable part in lower case plus a hash of the exact name (decision E-093): names differing
+    // only in case or in replaced characters get files that differ on case-insensitive file systems.
+    const QByteArray hash = QCryptographicHash::hash(playerName.toUtf8(), QCryptographicHash::Sha256).toHex().left(12);
+    return u"%1-%2.qcp"_s.arg(sanitizedPlayerName(playerName).toLower(), QString::fromLatin1(hash));
+}
+
 QString QcWorldStorage::playerPath(const QString &playerName) const
 {
-    return QDir(m_directory).filePath(u"players/%1.qcp"_s.arg(sanitizedPlayerName(playerName)));
+    return QDir(m_directory).filePath(u"players/"_s + playerFileName(playerName));
+}
+
+QString QcWorldStorage::migratedPlayerPath(const QString &playerName, QStringList &warnings) const
+{
+    QString path = playerPath(playerName);
+    if (QFile::exists(path)) {
+        return path;
+    }
+
+    // Files of older versions are named after the sanitized name as typed. They belong to the
+    // player whose name gives exactly that file name (also in case), which the directory listing
+    // tells even where the file system ignores case.
+    const QDir players(QDir(m_directory).filePath(u"players"_s));
+    const QString legacyName = sanitizedPlayerName(playerName) + u".qcp"_s;
+    if (!players.entryList(QDir::Files).contains(legacyName)) {
+        return path;
+    }
+
+    if (!QFile::rename(players.filePath(legacyName), path)) {
+        warnings.append(u"Cannot rename the player file %1; reading it under its old name"_s.arg(players.filePath(legacyName)));
+        return players.filePath(legacyName);
+    }
+    return path;
 }
 
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
@@ -142,7 +174,7 @@ QcStatus QcWorldStorage::writePlayer(const QString &playerName, const QcPlayerDa
 
 QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &playerName, QStringList &warnings) const
 {
-    const QString path = playerPath(playerName);
+    const QString path = migratedPlayerPath(playerName, warnings);
     if (!QFile::exists(path)) {
         return std::optional<QcPlayerData>();
     }

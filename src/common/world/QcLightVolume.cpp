@@ -2,6 +2,7 @@
 
 #include "QcBlockFace.h"
 #include "QcContentRegistry.h"
+#include "QcLightPassage.h"
 
 #include <algorithm>
 #include <utility>
@@ -28,13 +29,15 @@ QcLightVolume::QcLightVolume(int sizeX, int sizeY, int sizeZ)
     , m_sizeZ(std::max(0, sizeZ))
     , m_levels(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
     , m_opacity(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
+    , m_blockedFaces(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
 {
 }
 
-void QcLightVolume::setOpacity(int x, int y, int z, int opacity)
+void QcLightVolume::setOpacity(int x, int y, int z, int opacity, quint8 blockedFaces)
 {
     if (contains(x, y, z)) {
         m_opacity[index(x, y, z)] = quint8(std::clamp(opacity, 0, maxLevel));
+        m_blockedFaces[index(x, y, z)] = blockedFaces;
     }
 }
 
@@ -60,12 +63,13 @@ void QcLightVolume::propagate()
             continue;
         }
 
+        const quint8 blocked = m_blockedFaces[index(x, y, z)];
         for (const QcBlockFace face : qcAllBlockFaces) {
             const QcFaceOffset offset = qcFaceOffset(face);
             const int nx = x + offset.dx;
             const int ny = y + offset.dy;
             const int nz = z + offset.dz;
-            if (!contains(nx, ny, nz)) {
+            if (!contains(nx, ny, nz) || !QcLightPassage::crosses(blocked, m_blockedFaces[index(nx, ny, nz)], face)) {
                 continue;
             }
 
@@ -90,25 +94,33 @@ int QcLightVolume::blockLightAt(const QcBlockAccess &world, QcBlockPos pos)
         return 0;
     }
 
-    const QcContentRegistry &content = world.content();
-    const QcBlockPos low = pos.offset(-reach, -reach, -reach);
     QcLightVolume volume(size, size, size);
-
+    const QcBlockPos low = pos.offset(-reach, -reach, -reach);
     for (int y = 0; y < size; ++y) {
         for (int z = 0; z < size; ++z) {
             for (int x = 0; x < size; ++x) {
-                const QcBlockPos cell = low.offset(x, y, z);
-                const std::optional<QcBlockId> block = cell.y < 0 ? std::nullopt : world.blockAt(cell);
-                // Unknown cells are dark walls; addSource ignores level 0.
-                const bool known = block && content.isValidBlock(*block);
-                volume.setOpacity(x, y, z, known ? content.state(*block).lightOpacity : maxLevel);
-                volume.addSource(x, y, z, known ? content.block(*block).lightLevel : 0);
+                volume.setCell(world, x, y, z, low.offset(x, y, z));
             }
         }
     }
 
     volume.propagate();
     return volume.level(reach, reach, reach);
+}
+
+void QcLightVolume::setCell(const QcBlockAccess &world, int x, int y, int z, QcBlockPos cell)
+{
+    // Unknown cells are dark walls; addSource ignores level 0.
+    const QcContentRegistry &content = world.content();
+    const std::optional<QcBlockId> block = cell.y < 0 ? std::nullopt : world.blockAt(cell);
+    if (!block || !content.isValidBlock(*block)) {
+        setOpacity(x, y, z, maxLevel);
+        return;
+    }
+
+    const QcBlockState &state = content.state(*block);
+    setOpacity(x, y, z, state.lightOpacity, state.lightBlockedFaces);
+    addSource(x, y, z, content.block(*block).lightLevel);
 }
 
 bool QcLightVolume::anySourceNear(const QcContentRegistry &content, QcBlockPos pos, int reach,

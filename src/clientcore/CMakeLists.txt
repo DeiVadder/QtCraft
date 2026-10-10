@@ -21,6 +21,7 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
     meshing/QcEntityPose.h
     light/QcEntityLight.h
+    light/QcSky.h light/QcSky.cpp
     meshing/QcEntityVertex.h
     camera/QcFrustum.h camera/QcFrustum.cpp
     settings/QcGameSettings.h settings/QcGameSettings.cpp
@@ -42,8 +43,10 @@ qt_add_library(qc_clientcore STATIC
     control/QcControlWorldCommands.h control/QcControlWorldCommands.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     camera/QcMouseLook.h camera/QcMouseLook.cpp
+    camera/QcMouseCapture.h camera/QcMouseCapture.cpp
     sound/QcSampleBuffer.h
     settings/QcScreenChoice.h settings/QcScreenChoice.cpp
+    settings/QcUiPalette.h settings/QcUiPalette.cpp
     meshing/QcSectionKey.h
     sound/QcSoundBank.h sound/QcSoundBank.cpp
     sound/QcSoundCue.h

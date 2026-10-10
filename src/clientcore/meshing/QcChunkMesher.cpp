@@ -1,5 +1,6 @@
 #include "QcChunkMesher.h"
 
+#include "QcLightPassage.h"
 #include "QcLightVolume.h"
 
 namespace {
@@ -72,6 +73,7 @@ public:
         , m_height(m_maxY - m_minY + 1)
         , m_levels(qsizetype(extent) * extent * m_height, 0)
         , m_opacity(qsizetype(extent) * extent * m_height, 0)
+        , m_blockedFaces(qsizetype(extent) * extent * m_height, 0)
         , m_floodsBlockLight(input.renderTable->hasLightSources() && !input.hasBlockLight)
         , m_blockLight(m_floodsBlockLight ? extent : 0, m_height, extent)
         , m_input(input)
@@ -113,7 +115,8 @@ public:
 private:
     qsizetype index(int x, int y, int z) const { return (qsizetype(y - m_minY) * extent + z) * extent + x; }
 
-    // Highest block of the column that dims sky light; everything above it is fully lit.
+    // Highest cell of the column that sky light coming straight down does not reach; everything
+    // above it is fully lit (QcLightPassage::skyStop).
     int columnTop(Neighbourhood around, int lx, int lz) const
     {
         const int chunkIndex = (lz < 0 ? 0 : (lz >= QcWorld::chunkSize ? 2 : 1)) * 3
@@ -130,8 +133,10 @@ private:
             }
             for (int y = (section + 1) * QcWorld::sectionHeight - 1; y >= section * QcWorld::sectionHeight; --y) {
                 const std::optional<QcBlockId> id = around.block(lx, y, lz);
-                if (id && table.entry(*id).lightOpacity > 0) {
-                    return y;
+                const QcBlockRenderTable::Entry &entry = table.entry(id.value_or(qcAirBlockId));
+                const QcLightPassage::SkyStop stop = QcLightPassage::skyStop(entry.lightOpacity, entry.lightBlockedFaces);
+                if (id && stop != QcLightPassage::SkyStop::None) {
+                    return QcLightPassage::skyTop(stop, y);
                 }
             }
         }
@@ -149,6 +154,7 @@ private:
             const Entry &entry = table.entry(id.value_or(qcAirBlockId));
             const int opacity = id ? entry.lightOpacity : maxLevel;
             m_opacity[index(x, y, z)] = quint8(opacity);
+            m_blockedFaces[index(x, y, z)] = entry.lightBlockedFaces;
             if (y > top) {
                 m_levels[index(x, y, z)] = quint8(maxLevel);
             }
@@ -156,7 +162,7 @@ private:
             if (!m_floodsBlockLight) {
                 continue;
             }
-            m_blockLight.setOpacity(x, y - m_minY, z, opacity);
+            m_blockLight.setOpacity(x, y - m_minY, z, opacity, entry.lightBlockedFaces);
             if (id && entry.lightLevel > 0) {
                 m_blockLight.addSource(x, y - m_minY, z, entry.lightLevel);
             }
@@ -200,6 +206,7 @@ private:
             if (light <= 1) {
                 continue;
             }
+            const quint8 blocked = m_blockedFaces[index(x, y, z)];
             for (const QcBlockFace face : qcAllBlockFaces) {
                 const QcFaceOffset offset = qcFaceOffset(face);
                 const int nx = x + offset.dx;
@@ -209,6 +216,9 @@ private:
                     continue;
                 }
                 const qsizetype neighbour = index(nx, ny, nz);
+                if (!QcLightPassage::crosses(blocked, m_blockedFaces[neighbour], face)) {
+                    continue;
+                }
                 const int opacity = m_opacity[neighbour];
                 const int candidate = light - std::max(1, opacity);
                 const int current = m_levels[neighbour];
@@ -225,6 +235,7 @@ private:
     int m_height = 0;
     QList<quint8> m_levels;
     QList<quint8> m_opacity;
+    QList<quint8> m_blockedFaces;
     // Without light snapshots in the input the block light is flooded here.
     bool m_floodsBlockLight = false;
     QcLightVolume m_blockLight;

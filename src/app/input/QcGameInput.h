@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcKeyBindings.h"
+#include "QcMouseCapture.h"
 #include "QcRelativeMouse.h"
 
 #include <QObject>
@@ -31,9 +32,13 @@ public:
     QcGameInput(QcGameController &game, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
                 QObject *parent = nullptr);
 
-    bool mouseCaptured() const { return m_mouseCaptured; }
-    Q_INVOKABLE void captureMouse();
-    Q_INVOKABLE void releaseMouse();
+    bool mouseCaptured() const { return m_capture.captured(); }
+    // Frees the mouse (window lost the focus, world closed); a click or the next step back from a
+    // screen into the world captures it again.
+    void releaseMouse();
+    // Called after every change of the screens, the phase or the player's life: captures the mouse
+    // when the world takes the input back and frees it when a screen opens (QcMouseCapture).
+    void syncCapture();
     // Scripted run (--background): the mouse is never captured, input comes only from the script.
     void setBackgroundRun(bool background) { m_backgroundRun = background; }
 
@@ -61,11 +66,14 @@ private:
     void handleKeyRelease(const QKeyEvent &key);
     void handleMousePress(const QMouseEvent &mouse);
     void handleMouseButton(Qt::MouseButton button, bool pressed) const;
+    QcMouseCapture::Situation situation() const;
+    // Hides the cursor and starts relative motion, or the opposite.
+    void applyCapture(QcMouseCapture::Change change);
     bool handleWheel(const QWheelEvent &wheel) const;
     bool handleMouseMove(const QMouseEvent &mouse) const;
     bool keyDown(QcKeyBindings::Action action) const;
     void updateIntentFromKeys(float frameSeconds) const;
-    // Plays the click sound when the mouse is released over a button of the UI.
+    // Plays the click sound when the mouse is released over a button or an inventory slot.
     void clickIfButton(QPointF scenePosition) const;
 
     QcGameController &m_game;
@@ -74,6 +82,6 @@ private:
     QcAudioEngine *m_audio = nullptr;
     QcRelativeMouse m_relativeMouse;
     QSet<int> m_keysDown;
-    bool m_mouseCaptured = false;
+    QcMouseCapture m_capture;
     bool m_backgroundRun = false;
 };
