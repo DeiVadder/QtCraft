@@ -2,9 +2,23 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Birch tree](#feature-qtcraft-birch_tree) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain)
+**QtCraft:** [Alliums](#feature-qtcraft-allium) · [Birch tree](#feature-qtcraft-birch_tree) · [Blue orchids](#feature-qtcraft-blue_orchid) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Ferns](#feature-qtcraft-fern) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lilies of the valley](#feature-qtcraft-lily_of_the_valley) · [Magma block veins](#ore-qtcraft-magma) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain)
 
 ## QtCraft
+
+### <a id="feature-qtcraft-allium"></a>Alliums
+
+| | |
+|---|---|
+| ID | `qtcraft:allium` |
+| Kind | plant |
+| Blocks | [Allium](blocks.md#block-qtcraft-allium) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt) |
+
+**In biomes**
+
+[Mountains](biomes.md#biome-qtcraft-mountains) (0.6 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.6 % of columns)
 
 ### <a id="feature-qtcraft-birch_tree"></a>Birch tree
 
@@ -20,6 +34,20 @@
 **In biomes**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (2.8 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns)
+
+### <a id="feature-qtcraft-blue_orchid"></a>Blue orchids
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_orchid` |
+| Kind | plant |
+| Blocks | [Blue orchid](blocks.md#block-qtcraft-blue_orchid) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt), [Mud](blocks.md#block-qtcraft-mud) |
+
+**In biomes**
+
+[Swamp](biomes.md#biome-qtcraft-swamp) (2 % of columns)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Brown mushrooms
 
@@ -69,6 +97,16 @@
 | Heights | y 5–110 |
 | Veins | 20 per chunk, up to 12 blocks each |
 
+### <a id="ore-qtcraft-cobweb"></a>Cobweb veins
+
+| | |
+|---|---|
+| ID | `qtcraft:cobweb` |
+| Block | [Cobweb](blocks.md#block-qtcraft-cobweb) |
+| Replaces | Cave air |
+| Heights | y 10–50 |
+| Veins | 10 per chunk, up to 4 blocks each |
+
 ### <a id="feature-qtcraft-cornflower"></a>Cornflowers
 
 | | |
@@ -97,6 +135,20 @@
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (1.2 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.5 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (2.2 % of columns)
 
+### <a id="feature-qtcraft-dead_bush"></a>Dead bushes
+
+| | |
+|---|---|
+| ID | `qtcraft:dead_bush` |
+| Kind | plant |
+| Blocks | [Dead bush](blocks.md#block-qtcraft-dead_bush) |
+| Size | 4–4 blocks |
+| Grows on | [Sand](blocks.md#block-qtcraft-sand) |
+
+**In biomes**
+
+[Desert](biomes.md#biome-qtcraft-desert) (2 % of columns)
+
 ### <a id="ore-qtcraft-diamond"></a>Diamond ore veins
 
 | | |
@@ -116,6 +168,20 @@
 | Replaces | [Stone](blocks.md#block-qtcraft-stone) |
 | Heights | y 20–100 |
 | Veins | 5 per chunk, up to 20 blocks each |
+
+### <a id="feature-qtcraft-fern"></a>Ferns
+
+| | |
+|---|---|
+| ID | `qtcraft:fern` |
+| Kind | plant |
+| Blocks | [Fern](blocks.md#block-qtcraft-fern) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt) |
+
+**In biomes**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (10 % of columns)
 
 ### <a id="ore-qtcraft-gold"></a>Gold ore veins
 
@@ -177,6 +243,30 @@ Tried in every chunk of these biomes.
 **In biomes**
 
 Tried in every chunk, whatever the biome.
+
+### <a id="feature-qtcraft-lily_of_the_valley"></a>Lilies of the valley
+
+| | |
+|---|---|
+| ID | `qtcraft:lily_of_the_valley` |
+| Kind | plant |
+| Blocks | [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt) |
+
+**In biomes**
+
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (0.8 % of columns), [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns)
+
+### <a id="ore-qtcraft-magma"></a>Magma block veins
+
+| | |
+|---|---|
+| ID | `qtcraft:magma` |
+| Block | [Magma block](blocks.md#block-qtcraft-magma_block) |
+| Replaces | [Stone](blocks.md#block-qtcraft-stone) |
+| Heights | y 5–24 |
+| Veins | 1 per chunk, up to 10 blocks each |
 
 ### <a id="feature-qtcraft-oak_tree"></a>Oak tree
 
@@ -258,7 +348,7 @@ Tried in every chunk, whatever the biome.
 | Kind | column |
 | Blocks | [Sugar cane](blocks.md#block-qtcraft-sugar_cane) |
 | Size | 1–3 blocks |
-| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt), [Sand](blocks.md#block-qtcraft-sand) |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt), [Sand](blocks.md#block-qtcraft-sand), [Mud](blocks.md#block-qtcraft-mud) |
 | Only next to water | yes |
 
 **In biomes**
@@ -273,7 +363,7 @@ Tried in every chunk, whatever the biome.
 | Kind | plant |
 | Blocks | [Tall grass](blocks.md#block-qtcraft-tall_grass) |
 | Size | 4–4 blocks |
-| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt) |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt), [Mud](blocks.md#block-qtcraft-mud) |
 
 **In biomes**
 
@@ -293,7 +383,7 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Ore veins**
 
-[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–72)
+[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Magma block veins](#ore-qtcraft-magma) (y 5–24)
 
 **Biomes**
 

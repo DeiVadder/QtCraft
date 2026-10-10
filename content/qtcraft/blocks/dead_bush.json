@@ -1,0 +1,25 @@
+{
+    "name": "dead_bush",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "replaceable": true,
+    "ground": [
+        "sand"
+    ],
+    "washable": true,
+    "drops": [
+        {
+            "item": "stick"
+        },
+        {
+            "item": "stick",
+            "chance": 0.5
+        }
+    ],
+    "fuelSeconds": 5,
+    "textures": {
+        "all": "dead_bush"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "name": "brown_terracotta",
+    "sound": "stone",
+    "hardness": 1.25,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "tags": [
+        "terracotta"
+    ],
+    "textures": {
+        "all": "brown_terracotta"
+    }
+}

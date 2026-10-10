@@ -132,6 +132,51 @@ bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box)
     return false;
 }
 
+namespace {
+
+// Smallest `slowsInside` of the cells from `start` to z = `lastZ`, 1 without any.
+double slowdownInRow(const QcBlockAccess &world, const QcContentRegistry &content, QcBlockPos start, int lastZ)
+{
+    double factor = 1.0;
+    for (int z = start.z; z <= lastZ; ++z) {
+        const std::optional<QcBlockId> block = world.blockAt({start.x, start.y, z});
+        if (block && content.isValidBlock(*block)) {
+            factor = std::min(factor, content.block(*block).slowsInside);
+        }
+    }
+    return factor;
+}
+
+} // namespace
+
+double slowdownInside(const QcBlockAccess &world, const QcAabb &box)
+{
+    constexpr double inset = 1e-3;
+    const QcContentRegistry &content = world.content();
+    const int firstZ = int(std::floor(box.min.z + inset));
+    const int lastZ = int(std::floor(box.max.z - inset));
+
+    double factor = 1.0;
+    for (int x = int(std::floor(box.min.x + inset)); x <= int(std::floor(box.max.x - inset)); ++x) {
+        for (int y = int(std::floor(box.min.y + inset)); y <= int(std::floor(box.max.y - inset)); ++y) {
+            factor = std::min(factor, slowdownInRow(world, content, {x, y, firstZ}, lastZ));
+        }
+    }
+    return factor;
+}
+
+SurfaceFactors surfaceUnder(const QcBlockAccess &world, const QcVec3 &feet)
+{
+    const std::optional<QcBlockId> block = world.blockAt(blockContaining(feet - QcVec3{0.0, 0.01, 0.0}));
+    const QcContentRegistry &content = world.content();
+    if (!block || !content.isValidBlock(*block)) {
+        return {};
+    }
+
+    const QcBlockDefinition &definition = content.block(*block);
+    return {definition.surfaceSpeed, definition.surfaceJump};
+}
+
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
@@ -197,7 +242,8 @@ bool pushesIntoWall(const QcEntityMotion &motion, const QcVec3 &wish, BodySize s
 void applyAirVertical(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
 {
     if (steering.jump && motion.onGround) {
-        motion.velocity.y = jumpVelocity;
+        // Mud keeps a jump low (decision E-207).
+        motion.velocity.y = jumpVelocity * surfaceUnder(world, motion.position).jump;
     }
     motion.velocity.y = std::max(motion.velocity.y - gravity * dt, -terminalVelocity);
 
@@ -253,11 +299,16 @@ void applyMove(QcEntityMotion &motion, const MoveResult &move)
 
 MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt)
 {
-    motion.climbing = !motion.inWater && touchesClimbable(world, boxAt(motion.position, size.width, size.height));
+    const QcAabb body = boxAt(motion.position, size.width, size.height);
+    motion.climbing = !motion.inWater && touchesClimbable(world, body);
+    const double inside = slowdownInside(world, body);
+    motion.slowed = inside < 1.0;
     const double acceleration = motion.inWater ? waterAcceleration : (motion.onGround ? groundAcceleration : airAcceleration);
     const double blend = std::min(1.0, acceleration * dt);
-    // Thick liquids (lava) slow every movement inside them.
-    const double factor = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    // Thick liquids (lava) slow every movement inside them, cobwebs too, and mud slows walking on it.
+    const double liquid = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    const double surface = motion.onGround ? surfaceUnder(world, motion.position).speed : 1.0;
+    const double factor = liquid * inside * surface;
     motion.velocity.x += (steering.wish.x * steering.speed * factor - motion.velocity.x) * blend;
     motion.velocity.z += (steering.wish.z * steering.speed * factor - motion.velocity.z) * blend;
 
@@ -265,6 +316,10 @@ MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize
         applyWaterVertical(motion, steering.jump, factor, dt);
     } else {
         applyAirVertical(motion, steering, size, world, dt);
+    }
+    if (motion.slowed) {
+        // Sinks slowly through a cobweb and hardly jumps in it.
+        motion.velocity.y *= inside;
     }
 
     MoveResult move = moveBox(boxAt(motion.position, size.width, size.height), motion.velocity * dt, world);

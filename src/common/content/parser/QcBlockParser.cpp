@@ -320,6 +320,7 @@ void parseFlow(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldRea
     liquid.dropSearch = flowReader.integer(u"dropSearch"_s, 4, 0, QcLiquidDefinition::maxDropSearch);
     liquid.movementFactor = flowReader.number(u"movement"_s, 1.0, 0.05, 2.0);
     liquid.bucket = flowReader.name(u"bucket"_s, packNamespace);
+    liquid.bottle = flowReader.name(u"bottle"_s, packNamespace);
     liquid.sound = flowReader.name(u"sound"_s, packNamespace);
 
     parseLiquidReactions(flowJson, liquid, flowReader, packNamespace);
@@ -335,6 +336,31 @@ void parseBehaviourFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     if (block.falls && (block.liquid || !block.solid)) {
         reader.fail(u"only solid blocks can fall"_s);
     }
+}
+
+// Slowing inside (cobweb), the walking surface (mud) and hardening next to another block
+// (concrete powder), decisions E-207 and E-208.
+void parseMovementFields(QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    block.slowsInside = reader.number(u"slowsInside"_s, 1.0, 0.01, 1.0);
+    if (block.slowsInside < 1.0 && (block.solid || block.liquid)) {
+        reader.fail(u"only blocks that are neither solid nor liquid can slow bodies inside"_s);
+    }
+
+    reader.nestedObject(u"surface"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) {
+        block.surfaceSpeed = nested.number(u"speed"_s, 1.0, 0.1, 2.0);
+        block.surfaceJump = nested.number(u"jump"_s, 1.0, 0.1, 2.0);
+    });
+    reader.nestedObject(u"hardens"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        block.hardensWith = nested.name(u"with"_s, packNamespace);
+        block.hardensInto = nested.name(u"into"_s, packNamespace);
+        if (nested.ok() && (block.hardensWith.isEmpty() || block.hardensInto.isEmpty())) {
+            nested.fail(u"needs 'with' and 'into'"_s);
+        }
+        if (nested.ok() && (block.hardensInto == block.name || block.hardensWith == block.name)) {
+            nested.fail(u"a block cannot harden into or next to itself"_s);
+        }
+    });
 }
 
 void parseGround(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
@@ -478,6 +504,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 
     parseFlow(json, block, reader, packNamespace);
     parseBehaviourFields(block, reader);
+    parseMovementFields(block, reader, packNamespace);
     parseGround(json, block, reader, packNamespace);
     reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
     block.soundMaterial = reader.name(u"sound"_s, packNamespace, QcSoundKeys::defaultMaterialFor(block));

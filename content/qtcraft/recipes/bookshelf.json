@@ -1,0 +1,16 @@
+{
+    "name": "bookshelf",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "BBB",
+        "###"
+    ],
+    "key": {
+        "#": "#planks",
+        "B": "book"
+    },
+    "result": {
+        "item": "bookshelf"
+    }
+}

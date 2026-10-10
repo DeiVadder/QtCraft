@@ -39,6 +39,8 @@ private:
     bool useClickedBlock(QcServerClient &client, QcBlockPos target);
     // Empties a liquid source into the held scooping item; false when nothing was taken.
     bool scoopLiquid(QcServerClient &client, QcBlockPos pos);
+    // Fills a held glass bottle from the liquid at `pos`; the liquid stays.
+    bool fillBottle(QcServerClient &client, QcBlockPos pos);
     void placeHeld(QcServerClient &client, const QcMsg::UseItem &message, const QcItemDefinition *held);
     // Whether the block may be placed: saplings need suitable ground, chests and machines room in
     // their manager and nobody may end up inside it.

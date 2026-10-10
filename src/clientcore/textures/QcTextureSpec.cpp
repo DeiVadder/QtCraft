@@ -30,6 +30,16 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"sugar_cane"_s, Pattern::SugarCane}, {u"bottle"_s, Pattern::Bottle},
         {u"bucket"_s, Pattern::Bucket},     {u"lantern"_s, Pattern::Lantern},
         {u"limb"_s, Pattern::Limb},         {u"sleeve"_s, Pattern::Sleeve},
+        {u"nugget"_s, Pattern::Nugget},     {u"metal_block"_s, Pattern::MetalBlock},
+        {u"bars"_s, Pattern::Bars},         {u"bookshelf"_s, Pattern::Bookshelf},
+        {u"paper"_s, Pattern::Paper},       {u"book"_s, Pattern::Book},
+        {u"bowl"_s, Pattern::Bowl},         {u"stew"_s, Pattern::Stew},
+        {u"apple"_s, Pattern::Apple},       {u"leather"_s, Pattern::Leather},
+        {u"scrap"_s, Pattern::Scrap},       {u"string"_s, Pattern::String},
+        {u"cobweb"_s, Pattern::Cobweb},     {u"dead_bush"_s, Pattern::DeadBush},
+        {u"fern"_s, Pattern::Fern},         {u"firefly_glass"_s, Pattern::FireflyGlass},
+        {u"barrel_side"_s, Pattern::BarrelSide}, {u"barrel_top"_s, Pattern::BarrelTop},
+        {u"stained_glass"_s, Pattern::StainedGlass},
     };
 
     const auto it = patterns.constFind(name);

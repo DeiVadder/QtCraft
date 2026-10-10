@@ -1,0 +1,15 @@
+{
+    "name": "mud_bricks",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "packed_mud"
+    },
+    "result": {
+        "item": "mud_bricks",
+        "count": 4
+    }
+}

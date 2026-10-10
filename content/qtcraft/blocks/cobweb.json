@@ -1,0 +1,19 @@
+{
+    "name": "cobweb",
+    "sound": "wool",
+    "shape": "cross",
+    "render": "cutout",
+    "solid": false,
+    "support": "none",
+    "lightOpacity": 0,
+    "hardness": 2.0,
+    "slowsInside": 0.25,
+    "drops": [
+        {
+            "item": "string"
+        }
+    ],
+    "textures": {
+        "all": "cobweb"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "name": "blue_concrete_powder",
+    "sound": "sand",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "falls": true,
+    "hardens": {
+        "with": "water",
+        "into": "blue_concrete"
+    },
+    "textures": {
+        "all": "blue_concrete_powder"
+    }
+}

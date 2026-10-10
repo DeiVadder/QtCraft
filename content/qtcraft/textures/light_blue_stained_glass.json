@@ -1,0 +1,8 @@
+{
+    "name": "light_blue_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#48bce4",
+    "secondary": "#3aafd9",
+    "variation": 0.05,
+    "seed": 977
+}

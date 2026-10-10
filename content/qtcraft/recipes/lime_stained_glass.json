@@ -1,0 +1,17 @@
+{
+    "name": "lime_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "lime_dye"
+    },
+    "result": {
+        "item": "lime_stained_glass",
+        "count": 8
+    }
+}

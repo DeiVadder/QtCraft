@@ -1,0 +1,17 @@
+{
+    "name": "magenta_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "magenta_dye"
+    },
+    "result": {
+        "item": "magenta_terracotta",
+        "count": 8
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "name": "green_concrete_powder",
+    "sound": "sand",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "falls": true,
+    "hardens": {
+        "with": "water",
+        "into": "green_concrete"
+    },
+    "textures": {
+        "all": "green_concrete_powder"
+    }
+}

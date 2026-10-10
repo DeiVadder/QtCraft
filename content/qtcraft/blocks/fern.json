@@ -1,0 +1,17 @@
+{
+    "name": "fern",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "replaceable": true,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "washable": true,
+    "drops": [],
+    "textures": {
+        "all": "fern"
+    }
+}

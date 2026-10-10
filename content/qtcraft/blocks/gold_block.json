@@ -1,0 +1,10 @@
+{
+    "name": "gold_block",
+    "sound": "stone",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "textures": {
+        "all": "gold_block"
+    }
+}

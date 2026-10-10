@@ -1,0 +1,12 @@
+{
+    "name": "magma_block",
+    "sound": "stone",
+    "hardness": 0.5,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "light": 3,
+    "contactDamage": 1,
+    "textures": {
+        "all": "magma_block"
+    }
+}

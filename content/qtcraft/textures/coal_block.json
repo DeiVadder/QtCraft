@@ -1,0 +1,8 @@
+{
+    "name": "coal_block",
+    "pattern": "metal_block",
+    "primary": "#26262a",
+    "secondary": "#46464c",
+    "variation": 0.05,
+    "seed": 907
+}

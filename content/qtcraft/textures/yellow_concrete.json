@@ -1,0 +1,8 @@
+{
+    "name": "yellow_concrete",
+    "pattern": "noise",
+    "primary": "#f0af15",
+    "secondary": "#f0af15",
+    "variation": 0.025,
+    "seed": 922
+}

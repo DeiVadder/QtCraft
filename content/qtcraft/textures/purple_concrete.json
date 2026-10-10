@@ -1,0 +1,8 @@
+{
+    "name": "purple_concrete",
+    "pattern": "noise",
+    "primary": "#64209c",
+    "secondary": "#64209c",
+    "variation": 0.025,
+    "seed": 934
+}

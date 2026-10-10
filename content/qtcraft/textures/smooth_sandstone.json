@@ -1,0 +1,8 @@
+{
+    "name": "smooth_sandstone",
+    "pattern": "noise",
+    "primary": "#dccf9c",
+    "secondary": "#d0c290",
+    "variation": 0.03,
+    "seed": 933
+}

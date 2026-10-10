@@ -1,0 +1,11 @@
+{
+    "name": "coal_from_coal_block",
+    "type": "shapeless",
+    "ingredients": [
+        "coal_block"
+    ],
+    "result": {
+        "item": "coal",
+        "count": 9
+    }
+}

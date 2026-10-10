@@ -1,0 +1,40 @@
+{
+    "name": "iron_door",
+    "sound": "stone",
+    "shape": "door",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "door": true,
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ],
+        "hinge": [
+            "left",
+            "right"
+        ]
+    },
+    "itemTexture": "iron_door_item",
+    "textures": {
+        "all": "iron_door_lower",
+        "slots": {
+            "lower": "iron_door_lower",
+            "upper": "iron_door_upper"
+        }
+    },
+    "toolLevel": 1
+}

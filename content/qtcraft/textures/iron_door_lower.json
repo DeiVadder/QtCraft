@@ -1,0 +1,8 @@
+{
+    "name": "iron_door_lower",
+    "pattern": "door_lower",
+    "primary": "#c8c8cc",
+    "secondary": "#8a8a90",
+    "variation": 0.08,
+    "seed": 929
+}

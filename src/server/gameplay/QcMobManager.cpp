@@ -34,6 +34,13 @@ float yawTowards(const QcVec3 &direction)
     return float(qRadiansToDegrees(std::atan2(direction.x, -direction.z)));
 }
 
+// Mobs never spawn on or in a block that hurts on contact (magma) or holds bodies inside (cobwebs);
+// the block fields decide, so mod blocks follow the same rule.
+bool keepsSpawnsAway(const QcBlockDefinition &block)
+{
+    return block.contactDamage > 0.0 || block.slowsInside < 1.0;
+}
+
 // A group stands on these neighbouring columns.
 constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1}, {1, 1}}};
 
@@ -122,7 +129,7 @@ int animalGroundAt(const QcContentRegistry &content, const QcChunk &chunk, const
 {
     const auto open = [&](int y) {
         const QcBlockDefinition &block = content.block(chunk.block(x, y, z));
-        return !block.solid && !block.liquid;
+        return !block.solid && !block.liquid && !keepsSpawnsAway(block);
     };
 
     for (int y = std::min(chunk.highestNonAir(x, z), QcWorld::worldHeight - 3); y > 0; --y) {
@@ -131,7 +138,8 @@ int animalGroundAt(const QcContentRegistry &content, const QcChunk &chunk, const
         if (block.liquid) {
             return -1;
         }
-        if (block.solid && open(y + 1) && open(y + 2) && (grounds.any || grounds.blocks.contains(block.name))) {
+        if (block.solid && !keepsSpawnsAway(block) && open(y + 1) && open(y + 2)
+            && (grounds.any || grounds.blocks.contains(block.name))) {
             return y;
         }
     }
@@ -585,7 +593,9 @@ bool QcMobManager::spawnWalker(const QcServerWorld &world, const SpawnPlace &pla
                            && !content.block(blockAt(feet.offset(0, 1, 0))).solid;
     const QcBlockId floor = blockAt(feet.offset(0, -1, 0));
     const bool groundOk = chosen.rule->blocks.isEmpty() || chosen.rule->blocks.contains(content.block(floor).name);
-    if (member > 0 && (!standable || !groundOk)) {
+    const bool safe = !keepsSpawnsAway(content.block(floor)) && !keepsSpawnsAway(content.block(blockAt(feet)))
+                      && !keepsSpawnsAway(content.block(blockAt(feet.offset(0, 1, 0))));
+    if (!safe || (member > 0 && (!standable || !groundOk))) {
         return false;
     }
 

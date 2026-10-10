@@ -1,0 +1,14 @@
+{
+    "name": "white_wool_from_string",
+    "type": "shaped",
+    "pattern": [
+        "SS",
+        "SS"
+    ],
+    "key": {
+        "S": "string"
+    },
+    "result": {
+        "item": "white_wool"
+    }
+}

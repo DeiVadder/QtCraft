@@ -1,0 +1,10 @@
+{
+    "name": "magenta_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "allium"
+    ],
+    "result": {
+        "item": "magenta_dye"
+    }
+}

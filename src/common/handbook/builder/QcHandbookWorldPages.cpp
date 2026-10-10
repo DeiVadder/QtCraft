@@ -154,7 +154,10 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     entry.facts.append({text.label(u"fact.id"_s), ore.name, {}});
     entry.facts.append({text.label(u"fact.block"_s), {}, {links.blockLink(ore.block)}});
     const QString replaces = ore.replaces.isEmpty() ? context.content.terrainSettings().stoneBlock : ore.replaces;
-    if (!replaces.isEmpty()) {
+    if (context.content.blockId(replaces) == qcAirBlockId) {
+        // Veins in air hang in caves (cobwebs); air has no page.
+        entry.facts.append({text.label(u"fact.replaces"_s), text.label(u"value.caveAir"_s), {}});
+    } else if (!replaces.isEmpty()) {
         entry.facts.append({text.label(u"fact.replaces"_s), {}, {links.blockLink(replaces)}});
     }
     entry.facts.append({text.label(u"fact.heights"_s), text.heightRange(ore.minY, ore.maxY), {}});

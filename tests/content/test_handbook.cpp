@@ -398,13 +398,15 @@ private slots:
         QVERIFY(stickLink != usedIn->links.end());
         QCOMPARE(stickLink->note, u"Any planks"_s);
 
-        // Fuels, longest first: lava bucket 1000 s, then coal and charcoal 80 s.
+        // Fuels, longest first: lava bucket 1000 s, block of coal 720 s, then coal and charcoal 80 s.
         const QList<Link> &fuels = m_english.entry(u"table:fuels"_s)->sections.first().links;
         QCOMPARE(fuels.first().target, u"item:qtcraft:lava_bucket"_s);
         QCOMPARE(fuels.first().note, u"1000 s"_s);
-        QCOMPARE(fuels[1].target, u"item:qtcraft:charcoal"_s);
-        QCOMPARE(fuels[2].target, u"item:qtcraft:coal"_s);
-        QCOMPARE(fuels[2].note, u"80 s"_s);
+        QCOMPARE(fuels[1].target, u"block:qtcraft:coal_block"_s);
+        QCOMPARE(fuels[1].note, u"720 s"_s);
+        QCOMPARE(fuels[2].target, u"item:qtcraft:charcoal"_s);
+        QCOMPARE(fuels[3].target, u"item:qtcraft:coal"_s);
+        QCOMPARE(fuels[3].note, u"80 s"_s);
         QCOMPARE(fact(*m_english.entry(u"block:qtcraft:oak_planks"_s), u"Burns as fuel"_s)->value, u"15 s"_s);
 
         // The furnace processes every smelting recipe of the base game.
@@ -474,6 +476,44 @@ private slots:
         QVERIFY(biomes);
         QCOMPARE(biomes->text, u"All biomes."_s);
         QVERIFY(biomes->links.isEmpty());
+    }
+
+    void lightBlockingShowsTheEffectiveValue()
+    {
+        // Partial shapes block light only at the sides they cover (E-104): a cobweb lets all light
+        // through, slabs and stairs only hold it at their covered sides, a full block keeps its value.
+        const auto lightFact = [](const QcHandbook &book, const QString &id) -> QString {
+            const QcHandbookEntry *entry = book.entry(id);
+            const QcHandbookEntry::Fact *blocked = nullptr;
+            for (const QString &label : {u"Light blocked"_s, u"Lichtdämpfung"_s}) {
+                blocked = blocked ? blocked : (entry ? fact(*entry, label) : nullptr);
+            }
+            return blocked ? blocked->value : u"-"_s;
+        };
+        QCOMPARE(lightFact(m_english, u"block:qtcraft:cobweb"_s), u"0 of 15"_s);
+        QCOMPARE(lightFact(m_english, u"block:qtcraft:oak_fence"_s), u"0 of 15"_s);
+        QCOMPARE(lightFact(m_english, u"block:qtcraft:stone_slab"_s), u"only at the sides its shape covers fully"_s);
+        QCOMPARE(lightFact(m_german, u"block:qtcraft:stone_stairs"_s), u"nur an den Seiten, die seine Form ganz bedeckt"_s);
+        QCOMPARE(lightFact(m_english, u"block:qtcraft:ice"_s), u"2 of 15"_s);
+        QCOMPARE(lightFact(m_english, u"block:qtcraft:stone"_s), u"-"_s);
+
+        // No block's data claims a dimming that its shape cancels: a light-dimming block whose
+        // states all cover no side fully would have no effect.
+        for (const QcContentRegistry *content : {m_base.get(), m_modded.get()}) {
+            const QcBlockStateTable &states = content->stateTable();
+            for (qsizetype typeIndex = 0; typeIndex < states.typeCount(); ++typeIndex) {
+                const quint32 type = quint32(typeIndex);
+                bool partial = false;
+                bool coversSides = false;
+                for (int index = 0; index < states.stateCount(type); ++index) {
+                    const QcBlockState &state = states.state(states.firstState(type) + quint32(index));
+                    partial = partial || !state.fullCube;
+                    coversSides = coversSides || state.lightBlockedFaces != 0;
+                }
+                const QcBlockDefinition &block = content->block(states.firstState(type));
+                QVERIFY2(!partial || coversSides || block.lightOpacity == 0, qPrintable(block.name));
+            }
+        }
     }
 
     void machineCategoryWithoutTranslationShowsItsId()

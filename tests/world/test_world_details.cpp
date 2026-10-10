@@ -774,8 +774,8 @@ private slots:
 
     void mineLampChainLightAndSupport()
     {
-        // Clay -> unfired shell (crafting table) -> fired shell (furnace) + firefly bottle -> lamp.
-        const QcItemId clay = item("clay");
+        // Clay balls -> unfired shell (crafting table) -> fired shell (furnace) + firefly bottle -> lamp.
+        const QcItemId clay = item("clay_ball");
         QList<QcItemStack> grid(9);
         for (const int cell : {1, 3, 5, 7}) {
             grid[cell] = {clay, 1, 0};
@@ -850,10 +850,10 @@ private slots:
         QVERIFY(m_content->blockId(u"qtcraft:polished_stone_slab"_s));
         QVERIFY(!m_content->blockId(u"qtcraft:polished_stone_wall"_s));
 
-        // Dyes from flowers and coal, mixed dyes, coloured wool from any wool and a dye.
+        // Dyes from flowers and coal chunks, mixed dyes, coloured wool from any wool and a dye.
         QCOMPARE(crafted({{0, "poppy"}}, 2), u"qtcraft:red_dye"_s);
         QCOMPARE(crafted({{0, "cornflower"}}, 2), u"qtcraft:blue_dye"_s);
-        QCOMPARE(crafted({{0, "coal"}}, 2), u"qtcraft:black_dye"_s);
+        QCOMPARE(crafted({{0, "coal_chunk"}}, 2), u"qtcraft:black_dye"_s);
         QCOMPARE(crafted({{0, "red_dye"}, {1, "blue_dye"}}, 2), u"qtcraft:purple_dye"_s);
         QCOMPARE(crafted({{0, "white_wool"}, {3, "purple_dye"}}, 2), u"qtcraft:purple_wool"_s);
         QCOMPARE(crafted({{0, "red_wool"}, {1, "yellow_dye"}}, 2), u"qtcraft:yellow_wool"_s);

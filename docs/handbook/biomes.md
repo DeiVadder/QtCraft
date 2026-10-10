@@ -22,7 +22,7 @@ Light forest of birches.
 
 **Plants and trees**
 
-[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (2.8 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.4 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (1.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
+[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (2.8 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.4 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (1.2 % of columns), [Lilies of the valley](worldgen.md#feature-qtcraft-lily_of_the_valley) (0.8 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
 
 **Creatures**
 
@@ -45,7 +45,7 @@ Sand and sandstone with cacti and little else.
 
 **Plants and trees**
 
-[Cactus](worldgen.md#feature-qtcraft-cactus) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
+[Cactus](worldgen.md#feature-qtcraft-cactus) (0.6 % of columns), [Dead bushes](worldgen.md#feature-qtcraft-dead_bush) (2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
 
 **Creatures**
 
@@ -67,7 +67,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Plants and trees**
 
-[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (0.8 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.6 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (0.5 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (3.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (0.8 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.3 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (15 % of columns)
+[Birch tree](worldgen.md#feature-qtcraft-birch_tree) (0.8 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.6 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (0.5 % of columns), [Lilies of the valley](worldgen.md#feature-qtcraft-lily_of_the_valley) (0.8 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (3.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (0.8 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.3 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (15 % of columns)
 
 **Creatures**
 
@@ -91,7 +91,7 @@ High rocky peaks with snow on top.
 
 **Plants and trees**
 
-[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.6 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.6 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (6 % of columns)
+[Alliums](worldgen.md#feature-qtcraft-allium) (0.6 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (0.6 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.6 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (6 % of columns)
 
 **Creatures**
 
@@ -113,7 +113,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Plants and trees**
 
-[Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.2 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (2.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (2.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (30 % of columns)
+[Alliums](worldgen.md#feature-qtcraft-allium) (0.6 % of columns), [Cornflowers](worldgen.md#feature-qtcraft-cornflower) (1.2 % of columns), [Dandelions](worldgen.md#feature-qtcraft-dandelion) (2.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (0.2 % of columns), [Poppies](worldgen.md#feature-qtcraft-poppy) (2.2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (15 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (30 % of columns)
 
 **Creatures**
 
@@ -131,11 +131,11 @@ Low wet land with clay, sugar cane and, at night, fireflies.
 | Surface | [Grass block](blocks.md#block-qtcraft-grass_block) |
 | Below the surface | [Dirt](blocks.md#block-qtcraft-dirt) (3 blocks) |
 | Under water | [Clay](blocks.md#block-qtcraft-clay) |
-| Beaches | [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Beaches | [Mud](blocks.md#block-qtcraft-mud) |
 
 **Plants and trees**
 
-[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (30 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
+[Blue orchids](worldgen.md#feature-qtcraft-blue_orchid) (2 % of columns), [Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (1.2 % of columns), [Oak tree](worldgen.md#feature-qtcraft-oak_tree) (1.2 % of columns), [Red mushrooms](worldgen.md#feature-qtcraft-red_mushroom) (0.6 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (30 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (16 % of columns)
 
 **Creatures**
 
@@ -159,7 +159,7 @@ Cool spruce forest with snow on the ground.
 
 **Plants and trees**
 
-[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (25 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (2.2 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (8 % of columns)
+[Brown mushrooms](worldgen.md#feature-qtcraft-brown_mushroom) (0.4 % of columns), [Ferns](worldgen.md#feature-qtcraft-fern) (10 % of columns), [Snow cover](worldgen.md#feature-qtcraft-snow_layer) (25 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (2.2 % of columns), [Tall grass](worldgen.md#feature-qtcraft-tall_grass) (8 % of columns)
 
 **Creatures**
 

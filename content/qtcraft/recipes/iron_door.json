@@ -1,0 +1,16 @@
+{
+    "name": "iron_door",
+    "type": "shaped",
+    "pattern": [
+        "II",
+        "II",
+        "II"
+    ],
+    "key": {
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_door",
+        "count": 3
+    }
+}

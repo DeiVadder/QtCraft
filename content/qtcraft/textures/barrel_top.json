@@ -1,0 +1,8 @@
+{
+    "name": "barrel_top",
+    "pattern": "barrel_top",
+    "primary": "#9a7444",
+    "secondary": "#3a3a40",
+    "variation": 0.08,
+    "seed": 1001
+}

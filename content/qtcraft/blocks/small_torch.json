@@ -1,0 +1,28 @@
+{
+    "name": "small_torch",
+    "sound": "wood",
+    "shape": "small_torch",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 10,
+    "hardness": 0.0,
+    "support": "attached",
+    "replaceable": false,
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "itemTexture": "small_torch_item",
+    "textures": {
+        "all": "small_torch",
+        "top": "small_torch_top",
+        "bottom": "small_torch"
+    }
+}

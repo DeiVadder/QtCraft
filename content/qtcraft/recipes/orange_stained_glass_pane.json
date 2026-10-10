@@ -1,0 +1,15 @@
+{
+    "name": "orange_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "orange_stained_glass"
+    },
+    "result": {
+        "item": "orange_stained_glass_pane",
+        "count": 16
+    }
+}

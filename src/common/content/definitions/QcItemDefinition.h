@@ -42,6 +42,10 @@ struct QcItemDefinition
     QStringList tags;
     // Used on a liquid source, takes it and becomes the liquid's bucket item (empty bucket).
     bool scoops = false;
-    // What the item turns into once it placed its block (a filled bucket becomes empty).
+    // Used on a liquid, fills from it and becomes the liquid's bottle item, leaving the liquid
+    // (glass bottle, decision E-211).
+    bool bottles = false;
+    // What the item turns into once it placed its block (a filled bucket becomes empty) or was
+    // eaten (soup leaves its bowl).
     QString emptiesTo;
 };

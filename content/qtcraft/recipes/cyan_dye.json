@@ -1,0 +1,12 @@
+{
+    "name": "cyan_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "blue_dye",
+        "green_dye"
+    ],
+    "result": {
+        "item": "cyan_dye",
+        "count": 2
+    }
+}

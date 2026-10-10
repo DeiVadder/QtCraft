@@ -47,6 +47,10 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
 // Whether the block at `pos` (in state `id`) still has its support.
 bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
+// The block `id` at `pos` turns into when it touches its `hardensWith` block on any side (concrete
+// powder next to water), std::nullopt otherwise.
+std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+
 // Whether the other half of the door at `pos` is there (or not loaded).
 bool hasDoorPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 

@@ -1,0 +1,17 @@
+{
+    "name": "green_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "green_dye"
+    },
+    "result": {
+        "item": "green_terracotta",
+        "count": 8
+    }
+}

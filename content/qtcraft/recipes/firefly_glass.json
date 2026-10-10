@@ -1,0 +1,17 @@
+{
+    "name": "firefly_glass",
+    "type": "shaped",
+    "pattern": [
+        " G ",
+        "GfG",
+        " G "
+    ],
+    "key": {
+        "G": "glass",
+        "f": "firefly_bottle"
+    },
+    "result": {
+        "item": "firefly_glass",
+        "count": 4
+    }
+}

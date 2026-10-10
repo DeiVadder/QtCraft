@@ -13,8 +13,8 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcBlockUpdates, "qtcraft.server")
 
-// Only blocks whose state depends on the horizontal neighbour: connections, wall mounts and
-// flowing liquids.
+// Only blocks whose state depends on the horizontal neighbour: connections, wall mounts, flowing
+// liquids and blocks that harden next to another one.
 bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
 {
     if (!content.isValidBlock(id)) {
@@ -23,7 +23,7 @@ bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
 
     const QcBlockDefinition &definition = content.block(id);
     return !definition.connectsTo.isEmpty() || definition.support == QcBlockSupport::Attached
-           || (definition.liquid && definition.flow.flows());
+           || (definition.liquid && definition.flow.flows()) || !definition.hardensWith.isEmpty();
 }
 
 // Borders of oceans and lakes repeat the same pair of states over and over; the check whether

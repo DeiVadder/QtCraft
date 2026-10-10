@@ -1,0 +1,9 @@
+{
+    "name": "magma",
+    "replaces": "stone",
+    "block": "magma_block",
+    "minY": 5,
+    "maxY": 24,
+    "veinsPerChunk": 1,
+    "veinSize": 10
+}

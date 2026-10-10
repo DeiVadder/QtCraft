@@ -1,0 +1,15 @@
+{
+    "name": "coal_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "coal"
+    },
+    "result": {
+        "item": "coal_block"
+    }
+}

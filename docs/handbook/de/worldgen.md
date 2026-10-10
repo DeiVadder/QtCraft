@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -20,6 +20,20 @@
 **In Biomen**
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (2,8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
+
+### <a id="feature-qtcraft-blue_orchid"></a>Blaue Orchideen
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_orchid` |
+| Art | Pflanze |
+| Blöcke | [Blaue Orchidee](blocks.md#block-qtcraft-blue_orchid) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt), [Schlamm](blocks.md#block-qtcraft-mud) |
+
+**In Biomen**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp) (2 % der Säulen)
 
 ### <a id="feature-qtcraft-brown_mushroom"></a>Braune Pilze
 
@@ -80,6 +94,20 @@
 | Höhen | y 20–100 |
 | Adern | 5 pro Chunk, je bis 20 Blöcke |
 
+### <a id="feature-qtcraft-fern"></a>Farne
+
+| | |
+|---|---|
+| ID | `qtcraft:fern` |
+| Art | Pflanze |
+| Blöcke | [Farn](blocks.md#block-qtcraft-fern) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+
+**In Biomen**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (10 % der Säulen)
+
 ### <a id="feature-qtcraft-spruce_tree"></a>Fichte
 
 | | |
@@ -109,7 +137,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Erzadern**
 
-[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
+[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Magmablock-Vorkommen](#ore-qtcraft-magma) (y 5–24), [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) (y 10–50), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
 
 **Biome**
 
@@ -133,7 +161,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 | Art | Pflanze |
 | Blöcke | [Hohes Gras](blocks.md#block-qtcraft-tall_grass) |
 | Größe | 4–4 Blöcke |
-| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt), [Schlamm](blocks.md#block-qtcraft-mud) |
 
 **In Biomen**
 
@@ -222,6 +250,30 @@ In jedem Chunk dieser Biome versucht.
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (1,2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (2,2 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,5 % der Säulen)
 
+### <a id="ore-qtcraft-magma"></a>Magmablock-Vorkommen
+
+| | |
+|---|---|
+| ID | `qtcraft:magma` |
+| Block | [Magmablock](blocks.md#block-qtcraft-magma_block) |
+| Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
+| Höhen | y 5–24 |
+| Adern | 1 pro Chunk, je bis 10 Blöcke |
+
+### <a id="feature-qtcraft-lily_of_the_valley"></a>Maiglöckchen
+
+| | |
+|---|---|
+| ID | `qtcraft:lily_of_the_valley` |
+| Art | Pflanze |
+| Blöcke | [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+
+**In Biomen**
+
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
+
 ### <a id="feature-qtcraft-poppy"></a>Mohn
 
 | | |
@@ -264,6 +316,16 @@ In jedem Chunk dieser Biome versucht.
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (25 % der Säulen)
 
+### <a id="ore-qtcraft-cobweb"></a>Spinnennetz-Vorkommen
+
+| | |
+|---|---|
+| ID | `qtcraft:cobweb` |
+| Block | [Spinnennetz](blocks.md#block-qtcraft-cobweb) |
+| Ersetzt | Höhlenluft |
+| Höhen | y 10–50 |
+| Adern | 10 pro Chunk, je bis 4 Blöcke |
+
 ### <a id="ore-qtcraft-coal"></a>Steinkohle-Vorkommen
 
 | | |
@@ -284,6 +346,34 @@ In jedem Chunk dieser Biome versucht.
 | Höhen | y 40–70 |
 | Adern | 2 pro Chunk, je bis 12 Blöcke |
 
+### <a id="feature-qtcraft-dead_bush"></a>Tote Büsche
+
+| | |
+|---|---|
+| ID | `qtcraft:dead_bush` |
+| Art | Pflanze |
+| Blöcke | [Toter Busch](blocks.md#block-qtcraft-dead_bush) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Sand](blocks.md#block-qtcraft-sand) |
+
+**In Biomen**
+
+[Wüste](biomes.md#biome-qtcraft-desert) (2 % der Säulen)
+
+### <a id="feature-qtcraft-allium"></a>Zierlauch
+
+| | |
+|---|---|
+| ID | `qtcraft:allium` |
+| Art | Pflanze |
+| Blöcke | [Zierlauch](blocks.md#block-qtcraft-allium) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt) |
+
+**In Biomen**
+
+[Ebene](biomes.md#biome-qtcraft-plains) (0,6 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (0,6 % der Säulen)
+
 ### <a id="feature-qtcraft-sugar_cane"></a>Zuckerrohr
 
 | | |
@@ -292,7 +382,7 @@ In jedem Chunk dieser Biome versucht.
 | Art | Säule |
 | Blöcke | [Zuckerrohr](blocks.md#block-qtcraft-sugar_cane) |
 | Größe | 1–3 Blöcke |
-| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt), [Sand](blocks.md#block-qtcraft-sand) |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt), [Sand](blocks.md#block-qtcraft-sand), [Schlamm](blocks.md#block-qtcraft-mud) |
 | Nur neben Wasser | ja |
 
 **In Biomen**

@@ -1,0 +1,7 @@
+{
+    "name": "golden_sword",
+    "texture": "golden_sword",
+    "maxStack": 1,
+    "durability": 32,
+    "attackDamage": 4.0
+}

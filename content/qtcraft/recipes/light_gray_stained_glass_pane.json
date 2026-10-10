@@ -1,0 +1,15 @@
+{
+    "name": "light_gray_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "light_gray_stained_glass"
+    },
+    "result": {
+        "item": "light_gray_stained_glass_pane",
+        "count": 16
+    }
+}

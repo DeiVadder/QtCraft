@@ -1,0 +1,8 @@
+{
+    "name": "smooth_sandstone",
+    "input": "sandstone",
+    "result": {
+        "item": "smooth_sandstone"
+    },
+    "seconds": 10
+}

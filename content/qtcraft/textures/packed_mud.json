@@ -1,0 +1,8 @@
+{
+    "name": "packed_mud",
+    "pattern": "noise",
+    "primary": "#8e6a50",
+    "secondary": "#7e5c44",
+    "variation": 0.06,
+    "seed": 906
+}

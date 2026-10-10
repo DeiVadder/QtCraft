@@ -1,0 +1,19 @@
+{
+    "name": "lime_concrete_powder",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "sand",
+        "sand",
+        "gravel",
+        "gravel",
+        "gravel",
+        "gravel",
+        "lime_dye"
+    ],
+    "result": {
+        "item": "lime_concrete_powder",
+        "count": 8
+    }
+}

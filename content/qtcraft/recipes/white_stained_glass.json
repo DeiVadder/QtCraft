@@ -1,0 +1,17 @@
+{
+    "name": "white_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "white_dye"
+    },
+    "result": {
+        "item": "white_stained_glass",
+        "count": 8
+    }
+}

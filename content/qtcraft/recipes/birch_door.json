@@ -1,0 +1,16 @@
+{
+    "name": "birch_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "birch_planks"
+    },
+    "result": {
+        "item": "birch_door",
+        "count": 3
+    }
+}

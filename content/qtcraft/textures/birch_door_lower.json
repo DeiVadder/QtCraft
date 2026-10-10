@@ -1,0 +1,8 @@
+{
+    "name": "birch_door_lower",
+    "pattern": "door_lower",
+    "primary": "#d2bd88",
+    "secondary": "#a99366",
+    "variation": 0.08,
+    "seed": 920
+}

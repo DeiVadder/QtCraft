@@ -1,0 +1,14 @@
+{
+    "name": "red_concrete_powder",
+    "sound": "sand",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "falls": true,
+    "hardens": {
+        "with": "water",
+        "into": "red_concrete"
+    },
+    "textures": {
+        "all": "red_concrete_powder"
+    }
+}

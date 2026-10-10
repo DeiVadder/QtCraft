@@ -1,0 +1,11 @@
+{
+    "name": "coal_chunk",
+    "type": "shapeless",
+    "ingredients": [
+        "#coals"
+    ],
+    "result": {
+        "item": "coal_chunk",
+        "count": 9
+    }
+}

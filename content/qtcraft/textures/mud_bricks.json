@@ -1,0 +1,8 @@
+{
+    "name": "mud_bricks",
+    "pattern": "bricks",
+    "primary": "#8a6a4e",
+    "secondary": "#6e5440",
+    "variation": 0.06,
+    "seed": 907
+}

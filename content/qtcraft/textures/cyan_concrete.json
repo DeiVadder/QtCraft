@@ -1,0 +1,8 @@
+{
+    "name": "cyan_concrete",
+    "pattern": "noise",
+    "primary": "#157788",
+    "secondary": "#157788",
+    "variation": 0.025,
+    "seed": 928
+}

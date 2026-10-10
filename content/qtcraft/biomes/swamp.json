@@ -7,7 +7,7 @@
     "surface": "grass_block",
     "subsurface": "dirt",
     "underwater": "clay",
-    "beach": "grass_block",
+    "beach": "mud",
     "features": [
         {
             "feature": "oak_tree",
@@ -28,6 +28,10 @@
         {
             "feature": "sugar_cane",
             "density": 0.3
+        },
+        {
+            "feature": "blue_orchid",
+            "density": 0.02
         }
     ]
 }

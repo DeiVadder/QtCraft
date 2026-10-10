@@ -1,0 +1,15 @@
+{
+    "name": "iron_ingot_from_nuggets",
+    "type": "shaped",
+    "pattern": [
+        "NNN",
+        "NNN",
+        "NNN"
+    ],
+    "key": {
+        "N": "iron_nugget"
+    },
+    "result": {
+        "item": "iron_ingot"
+    }
+}

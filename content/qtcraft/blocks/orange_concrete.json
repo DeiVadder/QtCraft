@@ -1,0 +1,10 @@
+{
+    "name": "orange_concrete",
+    "sound": "stone",
+    "hardness": 1.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "orange_concrete"
+    }
+}

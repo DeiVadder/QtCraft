@@ -1,0 +1,15 @@
+{
+    "name": "lime_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "lime_stained_glass"
+    },
+    "result": {
+        "item": "lime_stained_glass_pane",
+        "count": 16
+    }
+}

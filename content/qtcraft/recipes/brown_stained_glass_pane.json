@@ -1,0 +1,15 @@
+{
+    "name": "brown_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "brown_stained_glass"
+    },
+    "result": {
+        "item": "brown_stained_glass_pane",
+        "count": 16
+    }
+}

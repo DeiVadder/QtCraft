@@ -1,0 +1,17 @@
+{
+    "name": "cyan_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "cyan_dye"
+    },
+    "result": {
+        "item": "cyan_terracotta",
+        "count": 8
+    }
+}

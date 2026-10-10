@@ -8,7 +8,8 @@
         "grass_block",
         "dirt",
         "sand",
-        "sugar_cane"
+        "sugar_cane",
+        "mud"
     ],
     "groundLiquid": "water",
     "growth": {

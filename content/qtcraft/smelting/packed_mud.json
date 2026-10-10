@@ -1,0 +1,8 @@
+{
+    "name": "packed_mud",
+    "input": "mud",
+    "result": {
+        "item": "packed_mud"
+    },
+    "seconds": 10
+}

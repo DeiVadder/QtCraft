@@ -1,0 +1,16 @@
+{
+    "name": "golden_axe",
+    "type": "shaped",
+    "pattern": [
+        "XX",
+        "X|",
+        " |"
+    ],
+    "key": {
+        "X": "gold_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "golden_axe"
+    }
+}

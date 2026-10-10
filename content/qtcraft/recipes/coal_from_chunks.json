@@ -1,0 +1,15 @@
+{
+    "name": "coal_from_chunks",
+    "type": "shaped",
+    "pattern": [
+        "CCC",
+        "CCC",
+        "CCC"
+    ],
+    "key": {
+        "C": "coal_chunk"
+    },
+    "result": {
+        "item": "coal"
+    }
+}

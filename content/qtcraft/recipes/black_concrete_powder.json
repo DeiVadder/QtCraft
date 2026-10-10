@@ -1,0 +1,19 @@
+{
+    "name": "black_concrete_powder",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "sand",
+        "sand",
+        "gravel",
+        "gravel",
+        "gravel",
+        "gravel",
+        "black_dye"
+    ],
+    "result": {
+        "item": "black_concrete_powder",
+        "count": 8
+    }
+}

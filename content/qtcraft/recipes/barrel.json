@@ -1,0 +1,16 @@
+{
+    "name": "barrel",
+    "type": "shaped",
+    "pattern": [
+        "#|#",
+        "# #",
+        "#|#"
+    ],
+    "key": {
+        "#": "#planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "barrel"
+    }
+}

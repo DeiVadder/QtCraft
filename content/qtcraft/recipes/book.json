@@ -1,0 +1,13 @@
+{
+    "name": "book",
+    "type": "shapeless",
+    "ingredients": [
+        "paper",
+        "paper",
+        "paper",
+        "leather"
+    ],
+    "result": {
+        "item": "book"
+    }
+}

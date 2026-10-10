@@ -227,11 +227,14 @@ private slots:
             }
         }
         expected.append({u"qtcraft:stone_stairs"_s, u"qtcraft:stone_slab"_s});
+        expected.append({u"qtcraft:mud_bricks_stairs"_s, u"qtcraft:mud_bricks_slab"_s, u"qtcraft:mud_bricks_wall"_s});
+        expected.append({u"qtcraft:smooth_sandstone_stairs"_s, u"qtcraft:smooth_sandstone_slab"_s, u"qtcraft:smooth_sandstone_wall"_s});
         expected.append({u"qtcraft:stone_bricks_stairs"_s, u"qtcraft:stone_bricks_slab"_s, u"qtcraft:stone_bricks_wall"_s,
                          u"qtcraft:polished_stone_stairs"_s, u"qtcraft:polished_stone_slab"_s});
 
         // Wool of every colour gets carpets only.
-        for (const QString &colour : {u"white"_s, u"red"_s, u"yellow"_s, u"blue"_s, u"green"_s, u"black"_s, u"orange"_s, u"purple"_s}) {
+        for (const QString &colour : {u"white"_s, u"red"_s, u"yellow"_s, u"blue"_s, u"green"_s, u"black"_s, u"orange"_s, u"purple"_s,
+                                      u"light_gray"_s, u"gray"_s, u"brown"_s, u"lime"_s, u"cyan"_s, u"light_blue"_s, u"magenta"_s, u"pink"_s}) {
             expected.append(u"qtcraft:%1_wool_carpet"_s.arg(colour));
         }
 

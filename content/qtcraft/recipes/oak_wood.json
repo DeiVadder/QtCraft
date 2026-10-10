@@ -1,0 +1,15 @@
+{
+    "name": "oak_wood",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "oak_log"
+    },
+    "result": {
+        "item": "oak_wood",
+        "count": 3
+    }
+}

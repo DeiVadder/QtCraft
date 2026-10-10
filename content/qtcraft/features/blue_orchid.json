@@ -1,0 +1,11 @@
+{
+    "name": "blue_orchid",
+    "type": "plant",
+    "block": "blue_orchid",
+    "patchSize": 12,
+    "ground": [
+        "grass_block",
+        "dirt",
+        "mud"
+    ]
+}

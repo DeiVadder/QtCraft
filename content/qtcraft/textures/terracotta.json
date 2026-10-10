@@ -1,0 +1,8 @@
+{
+    "name": "terracotta",
+    "pattern": "noise",
+    "primary": "#985e44",
+    "secondary": "#8a5440",
+    "variation": 0.04,
+    "seed": 937
+}

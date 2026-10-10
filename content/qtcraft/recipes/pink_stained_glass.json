@@ -1,0 +1,17 @@
+{
+    "name": "pink_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "pink_dye"
+    },
+    "result": {
+        "item": "pink_stained_glass",
+        "count": 8
+    }
+}

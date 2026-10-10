@@ -1,0 +1,8 @@
+{
+    "name": "orange_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#ec8a2a",
+    "secondary": "#e07a24",
+    "variation": 0.05,
+    "seed": 967
+}

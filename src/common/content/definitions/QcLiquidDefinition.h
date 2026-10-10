@@ -27,6 +27,8 @@ struct QcLiquidDefinition
     double movementFactor = 1.0;
     // Item a scooping item (empty bucket) turns into when it takes a source; empty: cannot be taken.
     QString bucket;
+    // Item a bottling item (glass bottle) turns into on the liquid; the liquid stays (server side only).
+    QString bottle;
     QList<QcLiquidReaction> reactions;
     // Played now and then where the liquid spreads (server side only).
     QString sound;

@@ -36,6 +36,7 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.fuelSeconds = reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
     item.tags = QcContentFields::parseTags(json.value(u"tags"_s), packNamespace, reader);
     item.scoops = reader.boolean(u"scoops"_s, false);
+    item.bottles = reader.boolean(u"bottles"_s, false);
     item.emptiesTo = reader.name(u"emptiesTo"_s, packNamespace);
 
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
@@ -44,6 +45,11 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     // Burnt fuel leaves its container in the fuel slot, which has room for it only after the last item.
     if (item.fuelSeconds > 0.0 && !item.emptiesTo.isEmpty() && item.maxStack != 1) {
         reader.fail(u"fuel with 'emptiesTo' (a container) needs 'maxStack' 1"_s);
+    }
+
+    // One click either takes the liquid (bucket) or fills from it (bottle); never both.
+    if (item.scoops && item.bottles) {
+        reader.fail(u"'scoops' and 'bottles' exclude each other"_s);
     }
 
     if (!reader.ok()) {

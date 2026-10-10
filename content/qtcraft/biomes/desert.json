@@ -20,6 +20,10 @@
         {
             "feature": "sugar_cane",
             "density": 0.2
+        },
+        {
+            "feature": "dead_bush",
+            "density": 0.02
         }
     ]
 }

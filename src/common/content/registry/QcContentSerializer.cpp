@@ -65,7 +65,7 @@ void writeItem(QDataStream &stream, const QcItemDefinition &item)
     for (const QString &tag : item.tags) {
         stream << tag;
     }
-    stream << item.scoops << item.emptiesTo;
+    stream << item.scoops << item.emptiesTo << item.bottles;
 }
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -178,7 +178,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         item.tags.append(tag);
     }
 
-    stream >> item.scoops >> item.emptiesTo;
+    stream >> item.scoops >> item.emptiesTo >> item.bottles;
     item.maxStack = maxStack;
     item.toolLevel = toolLevel;
     item.durability = durability;

@@ -1,0 +1,17 @@
+{
+    "name": "purple_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "purple_dye"
+    },
+    "result": {
+        "item": "purple_stained_glass",
+        "count": 8
+    }
+}

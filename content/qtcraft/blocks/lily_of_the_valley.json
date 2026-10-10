@@ -1,0 +1,15 @@
+{
+    "name": "lily_of_the_valley",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "washable": true,
+    "textures": {
+        "all": "lily_of_the_valley"
+    }
+}

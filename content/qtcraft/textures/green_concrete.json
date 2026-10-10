@@ -1,0 +1,8 @@
+{
+    "name": "green_concrete",
+    "pattern": "noise",
+    "primary": "#495b24",
+    "secondary": "#495b24",
+    "variation": 0.025,
+    "seed": 926
+}

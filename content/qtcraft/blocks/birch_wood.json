@@ -1,0 +1,10 @@
+{
+    "name": "birch_wood",
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "textures": {
+        "all": "birch_log"
+    },
+    "fuelSeconds": 15
+}

@@ -1,0 +1,16 @@
+{
+    "name": "golden_pickaxe",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        " | ",
+        " | "
+    ],
+    "key": {
+        "X": "gold_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "golden_pickaxe"
+    }
+}

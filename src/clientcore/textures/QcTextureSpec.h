@@ -75,6 +75,43 @@ struct QcTextureSpec
         // Sleeve fabric (meant to be tinted): fine weave, rounded shading and folds, a darker cuff
         // with a stitched seam at the bottom.
         Sleeve,
+        // Patterns of QcTextureCraftPatterns (storage blocks, crafted items, small plants).
+        // A few small grains (primary, highlights secondary) on a transparent background.
+        Nugget,
+        // Storage block: a solid face (primary) with a bevelled frame and highlights (secondary).
+        MetalBlock,
+        // Vertical bars (primary) with two cross bars on a transparent background.
+        Bars,
+        // Bookshelf side: planks (primary) holding two rows of coloured book spines.
+        Bookshelf,
+        // Sheet of paper (primary) with faint lines (secondary).
+        Paper,
+        // Book: cover (primary) with pages (secondary) at the edge.
+        Book,
+        // Wooden bowl (primary) seen from the side; Stew fills it with soup (secondary).
+        Bowl,
+        Stew,
+        // Round fruit (primary) with a stalk and leaf (secondary).
+        Apple,
+        // Hide (primary) with stitches (secondary); Scrap is a ragged small piece of it.
+        Leather,
+        Scrap,
+        // Coiled thread (primary).
+        String,
+        // Web of threads (primary) on a transparent background.
+        Cobweb,
+        // Dry twigs (primary) without leaves.
+        DeadBush,
+        // Fern fronds (primary, tips secondary).
+        Fern,
+        // Glass (primary) with glowing dots (secondary); keeps partial transparency.
+        FireflyGlass,
+        // Barrel: vertical staves (primary) with metal hoops (secondary); the top shows a lid.
+        BarrelSide,
+        BarrelTop,
+        // Tinted glass: a frame (secondary) around a clearly coloured pane (primary); keeps partial
+        // transparency.
+        StainedGlass,
     };
 
     Pattern pattern = Pattern::Noise;

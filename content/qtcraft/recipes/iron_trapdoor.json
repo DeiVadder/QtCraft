@@ -1,0 +1,14 @@
+{
+    "name": "iron_trapdoor",
+    "type": "shaped",
+    "pattern": [
+        "II",
+        "II"
+    ],
+    "key": {
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_trapdoor"
+    }
+}

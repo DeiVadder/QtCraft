@@ -1,0 +1,14 @@
+{
+    "name": "orange_concrete_powder",
+    "sound": "sand",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "falls": true,
+    "hardens": {
+        "with": "water",
+        "into": "orange_concrete"
+    },
+    "textures": {
+        "all": "orange_concrete_powder"
+    }
+}

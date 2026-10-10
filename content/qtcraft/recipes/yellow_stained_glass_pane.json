@@ -1,0 +1,15 @@
+{
+    "name": "yellow_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "yellow_stained_glass"
+    },
+    "result": {
+        "item": "yellow_stained_glass_pane",
+        "count": 16
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "yellow_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#f0d020",
+    "secondary": "#e6c628",
+    "variation": 0.05,
+    "seed": 969
+}

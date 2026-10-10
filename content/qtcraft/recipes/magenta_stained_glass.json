@@ -1,0 +1,17 @@
+{
+    "name": "magenta_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "magenta_dye"
+    },
+    "result": {
+        "item": "magenta_stained_glass",
+        "count": 8
+    }
+}

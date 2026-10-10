@@ -1,0 +1,8 @@
+{
+    "name": "leather_scrap",
+    "input": "rotten_flesh",
+    "result": {
+        "item": "leather_scrap"
+    },
+    "seconds": 15
+}

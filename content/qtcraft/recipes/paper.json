@@ -1,0 +1,14 @@
+{
+    "name": "paper",
+    "type": "shaped",
+    "pattern": [
+        "SSS"
+    ],
+    "key": {
+        "S": "sugar_cane"
+    },
+    "result": {
+        "item": "paper",
+        "count": 3
+    }
+}

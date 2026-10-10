@@ -1,0 +1,8 @@
+{
+    "name": "magenta_concrete",
+    "pattern": "noise",
+    "primary": "#a9309f",
+    "secondary": "#a9309f",
+    "variation": 0.025,
+    "seed": 936
+}

@@ -1,0 +1,9 @@
+{
+    "name": "dead_bush",
+    "type": "plant",
+    "block": "dead_bush",
+    "patchSize": 8,
+    "ground": [
+        "sand"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "purple_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#8a3cbc",
+    "secondary": "#7a36a8",
+    "variation": 0.05,
+    "seed": 981
+}

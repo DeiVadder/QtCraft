@@ -9,6 +9,7 @@
     "ground": [
         "grass_block",
         "dirt",
-        "sand"
+        "sand",
+        "mud"
     ]
 }

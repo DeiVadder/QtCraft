@@ -1,0 +1,10 @@
+{
+    "name": "fern",
+    "type": "plant",
+    "block": "fern",
+    "patchSize": 12,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

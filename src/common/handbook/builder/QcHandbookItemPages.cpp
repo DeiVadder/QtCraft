@@ -62,6 +62,15 @@ void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item
         }
         facts.append(std::move(scoops));
     }
+    if (item.bottles) {
+        Fact fills{text.label(u"fact.fills"_s), {}, {}};
+        for (const QcBlockDefinition &block : context.content.blocks()) {
+            if (block.liquid && !block.flow.bottle.isEmpty()) {
+                fills.links.append(links.blockLink(block.name, links.itemTitle(block.flow.bottle, text.language())));
+            }
+        }
+        facts.append(std::move(fills));
+    }
 
     if (!item.tags.isEmpty()) {
         Fact tags{text.label(u"fact.tags"_s), {}, {}};

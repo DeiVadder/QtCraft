@@ -6,7 +6,8 @@
     "hardness": 0.0,
     "ground": [
         "grass_block",
-        "dirt"
+        "dirt",
+        "mud"
     ],
     "replaceable": true,
     "drops": [],

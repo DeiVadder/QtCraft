@@ -1,0 +1,9 @@
+{
+    "name": "packed_ice",
+    "sound": "glass",
+    "hardness": 0.5,
+    "tool": "pickaxe",
+    "textures": {
+        "all": "packed_ice"
+    }
+}

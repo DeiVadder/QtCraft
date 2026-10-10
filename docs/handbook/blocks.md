@@ -2,9 +2,64 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Bedrock](#block-qtcraft-bedrock) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Black wool](#block-qtcraft-black_wool) · [Blue wool](#block-qtcraft-blue_wool) · [Bricks](#block-qtcraft-bricks) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Cactus](#block-qtcraft-cactus) · [Chest](#block-qtcraft-chest) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Dandelion](#block-qtcraft-dandelion) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Green wool](#block-qtcraft-green_wool) · [Ice](#block-qtcraft-ice) · [Iron ore](#block-qtcraft-iron_ore) · [Ladder](#block-qtcraft-ladder) · [Mine lamp](#block-qtcraft-mine_lamp) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Obsidian](#block-qtcraft-obsidian) · [Orange wool](#block-qtcraft-orange_wool) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Purple wool](#block-qtcraft-purple_wool) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Torch](#block-qtcraft-torch) · [White wool](#block-qtcraft-white_wool) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bedrock](#block-qtcraft-bedrock) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Chest](#block-qtcraft-chest) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Fern](#block-qtcraft-fern) · [Firefly glass](#block-qtcraft-firefly_glass) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Ice](#block-qtcraft-ice) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Mine lamp](#block-qtcraft-mine_lamp) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
+
+### <a id="block-qtcraft-allium"></a>Allium
+
+A purple ball of blossoms on meadows and mountains; gives magenta dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:allium` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Allium](#block-qtcraft-allium) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Used in**
+
+[Magenta dye](items.md#item-qtcraft-magenta_dye)
+
+**Found in**
+
+[Mountains](biomes.md#biome-qtcraft-mountains) (Alliums), [Plains](biomes.md#biome-qtcraft-plains) (Alliums)
+
+### <a id="block-qtcraft-barrel"></a>Barrel
+
+Holds as much as a chest and fits in a single block row next to others.
+
+| | |
+|---|---|
+| ID | `qtcraft:barrel` |
+| Hardness | 2.5 |
+| Breaking by hand | 3.75 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.31 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Barrel](#block-qtcraft-barrel) |
+| Storage | 27 slots |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+| States | facing (north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Any planks](tags.md#tag-qtcraft-planks) | [Stick](items.md#item-qtcraft-stick) | [Any planks](tags.md#tag-qtcraft-planks) | [Barrel](#block-qtcraft-barrel) |
+| [Any planks](tags.md#tag-qtcraft-planks) | · | [Any planks](tags.md#tag-qtcraft-planks) |  |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Stick](items.md#item-qtcraft-stick) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-bedrock"></a>Bedrock
 
@@ -15,6 +70,39 @@ The unbreakable floor of the world.
 | ID | `qtcraft:bedrock` |
 | Hardness | unbreakable |
 | Sound | stone |
+
+### <a id="block-qtcraft-birch_door"></a>Birch door
+
+Two blocks tall; open and close it with the use button.
+
+| | |
+|---|---|
+| ID | `qtcraft:birch_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Birch door](#block-qtcraft-birch_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) | 3 × [Birch door](#block-qtcraft-birch_door) |
+| [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) |  |
+| [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-birch_leaves"></a>Birch leaves
 
@@ -43,7 +131,7 @@ Wood of the birch. Four planks each; burns in the furnace into charcoal.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch log](#block-qtcraft-birch_log) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -62,11 +150,11 @@ Wood of the birch. Four planks each; burns in the furnace into charcoal.
 
 **Used in**
 
-[Birch planks](#block-qtcraft-birch_planks)
+[Birch planks](#block-qtcraft-birch_planks), [Birch wood](#block-qtcraft-birch_wood)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 **Found in**
 
@@ -82,7 +170,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch planks](#block-qtcraft-birch_planks) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -102,11 +190,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak door](#block-qtcraft-oak_door) (Any planks), [Oak trapdoor](#block-qtcraft-oak_trapdoor) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Birch door](#block-qtcraft-birch_door), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Birch trapdoor](#block-qtcraft-birch_trapdoor), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-birch_sapling"></a>Birch sapling
 
@@ -131,6 +219,195 @@ Plant it on grass or earth and it grows into a birch after a while.
 **Dropped by**
 
 [Birch leaves](#block-qtcraft-birch_leaves) (8 %)
+
+### <a id="block-qtcraft-birch_trapdoor"></a>Birch trapdoor
+
+A hatch that opens upwards; sits high or low in its block.
+
+| | |
+|---|---|
+| ID | `qtcraft:birch_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Birch trapdoor](#block-qtcraft-birch_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) | 2 × [Birch trapdoor](#block-qtcraft-birch_trapdoor) |
+| [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) | [Birch planks](#block-qtcraft-birch_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-birch_wood"></a>Birch wood
+
+A log with bark on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:birch_wood` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Birch wood](#block-qtcraft-birch_wood) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Birch log](#block-qtcraft-birch_log) | [Birch log](#block-qtcraft-birch_log) | 3 × [Birch wood](#block-qtcraft-birch_wood) |
+| [Birch log](#block-qtcraft-birch_log) | [Birch log](#block-qtcraft-birch_log) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-black_concrete"></a>Black concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Black concrete](#block-qtcraft-black_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-black_concrete_powder"></a>Black concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Black concrete powder](#block-qtcraft-black_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Black concrete](#block-qtcraft-black_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Black concrete powder](#block-qtcraft-black_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Black dye](items.md#item-qtcraft-black_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-black_stained_glass"></a>Black stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Black stained glass](#block-qtcraft-black_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Black dye](items.md#item-qtcraft-black_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Black stained glass pane](#block-qtcraft-black_stained_glass_pane)
+
+### <a id="block-qtcraft-black_stained_glass_pane"></a>Black stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Black stained glass](#block-qtcraft-black_stained_glass) | [Black stained glass](#block-qtcraft-black_stained_glass) | [Black stained glass](#block-qtcraft-black_stained_glass) | 16 × [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) |
+| [Black stained glass](#block-qtcraft-black_stained_glass) | [Black stained glass](#block-qtcraft-black_stained_glass) | [Black stained glass](#block-qtcraft-black_stained_glass) |  |
+
+### <a id="block-qtcraft-black_terracotta"></a>Black terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:black_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Black terracotta](#block-qtcraft-black_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Black terracotta](#block-qtcraft-black_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Black dye](items.md#item-qtcraft-black_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-black_wool"></a>Black wool
 
@@ -160,7 +437,294 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black carpet](parts.md#block-qtcraft-black_wool_carpet), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black carpet](parts.md#block-qtcraft-black_wool_carpet), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-coal_block"></a>Block of coal
+
+Nine pieces of coal packed into a block; crafting it back gives all nine.
+
+| | |
+|---|---|
+| ID | `qtcraft:coal_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Block of coal](#block-qtcraft-coal_block) |
+| Drops without the right tool | nothing |
+| Burns as fuel | 720 s: [Fuels](tables.md#table-fuels) |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) | [Block of coal](#block-qtcraft-coal_block) |
+| [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) |  |
+| [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) | [Coal](items.md#item-qtcraft-coal) |  |
+
+**Used in**
+
+[Coal](items.md#item-qtcraft-coal)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-diamond_block"></a>Block of diamond
+
+Nine diamonds packed into a block; crafting it back gives all nine.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of diamond](#block-qtcraft-diamond_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Block of diamond](#block-qtcraft-diamond_block) |
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) |  |
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) |  |
+
+**Used in**
+
+[Diamond](items.md#item-qtcraft-diamond)
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-gold_block"></a>Block of gold
+
+Nine gold ingots packed into a block; crafting it back gives all nine.
+
+| | |
+|---|---|
+| ID | `qtcraft:gold_block` |
+| Hardness | 3 |
+| Breaking by hand | 15 s |
+| Tool | Pickaxe, level 3 or better (needed for drops) |
+| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of gold](#block-qtcraft-gold_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Block of gold](#block-qtcraft-gold_block) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
+**Used in**
+
+[Gold ingot](items.md#item-qtcraft-gold_ingot)
+
+**Mined with**
+
+[Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-iron_block"></a>Block of iron
+
+Nine iron ingots packed into a block; crafting it back gives all nine.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_block` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 2 or better (needed for drops) |
+| Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Drops | [Block of iron](#block-qtcraft-iron_block) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Block of iron](#block-qtcraft-iron_block) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+**Used in**
+
+[Iron ingot](items.md#item-qtcraft-iron_ingot)
+
+**Mined with**
+
+[Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-blue_concrete"></a>Blue concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blue concrete](#block-qtcraft-blue_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-blue_concrete_powder"></a>Blue concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Blue concrete powder](#block-qtcraft-blue_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Blue concrete](#block-qtcraft-blue_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Blue concrete powder](#block-qtcraft-blue_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Blue dye](items.md#item-qtcraft-blue_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-blue_orchid"></a>Blue orchid
+
+A flower that only grows in swamps; gives light blue dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_orchid` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Blue orchid](#block-qtcraft-blue_orchid) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Mud](#block-qtcraft-mud) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Used in**
+
+[Light blue dye](items.md#item-qtcraft-light_blue_dye)
+
+**Found in**
+
+[Swamp](biomes.md#biome-qtcraft-swamp) (Blue orchids)
+
+### <a id="block-qtcraft-blue_stained_glass"></a>Blue stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Blue stained glass](#block-qtcraft-blue_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Blue dye](items.md#item-qtcraft-blue_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane)
+
+### <a id="block-qtcraft-blue_stained_glass_pane"></a>Blue stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Blue stained glass](#block-qtcraft-blue_stained_glass) | [Blue stained glass](#block-qtcraft-blue_stained_glass) | [Blue stained glass](#block-qtcraft-blue_stained_glass) | 16 × [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) |
+| [Blue stained glass](#block-qtcraft-blue_stained_glass) | [Blue stained glass](#block-qtcraft-blue_stained_glass) | [Blue stained glass](#block-qtcraft-blue_stained_glass) |  |
+
+### <a id="block-qtcraft-blue_terracotta"></a>Blue terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:blue_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Blue terracotta](#block-qtcraft-blue_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Blue terracotta](#block-qtcraft-blue_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Blue dye](items.md#item-qtcraft-blue_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-blue_wool"></a>Blue wool
 
@@ -190,7 +754,36 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue carpet](parts.md#block-qtcraft-blue_wool_carpet), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue carpet](parts.md#block-qtcraft-blue_wool_carpet), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-bookshelf"></a>Bookshelf
+
+Shelves full of books; breaking it gives the three books back.
+
+| | |
+|---|---|
+| ID | `qtcraft:bookshelf` |
+| Hardness | 1.5 |
+| Breaking by hand | 2.25 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.19 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Book](items.md#item-qtcraft-book) (3×) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Bookshelf](#block-qtcraft-bookshelf) |
+| [Book](items.md#item-qtcraft-book) | [Book](items.md#item-qtcraft-book) | [Book](items.md#item-qtcraft-book) |  |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-bricks"></a>Bricks
 
@@ -202,7 +795,7 @@ Fired clay, a sturdy building block.
 | Hardness | 2 |
 | Breaking by hand | 10 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.38 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Bricks](#block-qtcraft-bricks) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -211,17 +804,14 @@ Fired clay, a sturdy building block.
 
 [Brick slab](parts.md#block-qtcraft-brick_slab), [Brick stairs](parts.md#block-qtcraft-brick_stairs), [Brick wall](parts.md#block-qtcraft-brick_wall)
 
-**Made in a furnace**
+**How to make it**
 
-*Furnace: 10 s per item, needs fuel*
+*Crafting grid*
 
-| 1 | → |
-|---|---|
-| [Clay](#block-qtcraft-clay) | [Bricks](#block-qtcraft-bricks) |
-
-[Furnace](#block-qtcraft-furnace)
-
-[Fuels](tables.md#table-fuels)
+| 1 | 2 | → |
+|---|---|---|
+| [Brick](items.md#item-qtcraft-brick) | [Brick](items.md#item-qtcraft-brick) | [Bricks](#block-qtcraft-bricks) |
+| [Brick](items.md#item-qtcraft-brick) | [Brick](items.md#item-qtcraft-brick) |  |
 
 **Used in**
 
@@ -229,7 +819,56 @@ Fired clay, a sturdy building block.
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-brown_concrete"></a>Brown concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Brown concrete](#block-qtcraft-brown_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-brown_concrete_powder"></a>Brown concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Brown concrete powder](#block-qtcraft-brown_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Brown concrete](#block-qtcraft-brown_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Brown concrete powder](#block-qtcraft-brown_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Brown dye](items.md#item-qtcraft-brown_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 ### <a id="block-qtcraft-brown_mushroom"></a>Brown mushroom
 
@@ -247,9 +886,124 @@ Grows in the shade of forests and swamps.
 | Washed away by liquids | yes |
 | Sound | grass and plants |
 
+**Used in**
+
+[Brown dye](items.md#item-qtcraft-brown_dye), [Mushroom stew](food.md#item-qtcraft-mushroom_stew)
+
 **Found in**
 
 [Forest](biomes.md#biome-qtcraft-forest) (Brown mushrooms), [Swamp](biomes.md#biome-qtcraft-swamp) (Brown mushrooms), [Taiga](biomes.md#biome-qtcraft-taiga) (Brown mushrooms)
+
+### <a id="block-qtcraft-brown_stained_glass"></a>Brown stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Brown stained glass](#block-qtcraft-brown_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Brown dye](items.md#item-qtcraft-brown_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane)
+
+### <a id="block-qtcraft-brown_stained_glass_pane"></a>Brown stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Brown stained glass](#block-qtcraft-brown_stained_glass) | [Brown stained glass](#block-qtcraft-brown_stained_glass) | [Brown stained glass](#block-qtcraft-brown_stained_glass) | 16 × [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) |
+| [Brown stained glass](#block-qtcraft-brown_stained_glass) | [Brown stained glass](#block-qtcraft-brown_stained_glass) | [Brown stained glass](#block-qtcraft-brown_stained_glass) |  |
+
+### <a id="block-qtcraft-brown_terracotta"></a>Brown terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Brown terracotta](#block-qtcraft-brown_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Brown terracotta](#block-qtcraft-brown_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Brown dye](items.md#item-qtcraft-brown_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-brown_wool"></a>Brown wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Brown wool](#block-qtcraft-brown_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Brown carpet](parts.md#block-qtcraft-brown_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Brown dye](items.md#item-qtcraft-brown_dye) | [Brown wool](#block-qtcraft-brown_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown carpet](parts.md#block-qtcraft-brown_wool_carpet), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-cactus"></a>Cactus
 
@@ -290,7 +1044,7 @@ Stores 27 stacks. Its contents drop when it is broken.
 | Hardness | 2.5 |
 | Breaking by hand | 3.75 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.47 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.31 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Chest](#block-qtcraft-chest) |
 | Light blocked | 0 of 15 |
 | Storage | 27 slots |
@@ -310,7 +1064,7 @@ Stores 27 stacks. Its contents drop when it is broken.
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-clay"></a>Clay
 
@@ -322,9 +1076,18 @@ Found under shallow water. Four clay make an unfired lamp shell; bricks come fro
 | Hardness | 0.6 |
 | Breaking by hand | 0.9 s |
 | Tool | Shovel (faster, not needed) |
-| Breaking with the best tool | 0.11 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
-| Drops | [Clay](#block-qtcraft-clay) |
+| Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Clay ball](items.md#item-qtcraft-clay_ball) (4×) |
 | Sound | earth |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Clay ball](items.md#item-qtcraft-clay_ball) | [Clay ball](items.md#item-qtcraft-clay_ball) | [Clay](#block-qtcraft-clay) |
+| [Clay ball](items.md#item-qtcraft-clay_ball) | [Clay ball](items.md#item-qtcraft-clay_ball) |  |
 
 **Smelts into**
 
@@ -332,19 +1095,15 @@ Found under shallow water. Four clay make an unfired lamp shell; bricks come fro
 
 | 1 | → |
 |---|---|
-| [Clay](#block-qtcraft-clay) | [Bricks](#block-qtcraft-bricks) |
+| [Clay](#block-qtcraft-clay) | [Terracotta](#block-qtcraft-terracotta) |
 
 [Furnace](#block-qtcraft-furnace)
 
 [Fuels](tables.md#table-fuels)
 
-**Used in**
-
-[Unfired lamp shell](items.md#item-qtcraft-unfired_lamp_shell)
-
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
@@ -360,14 +1119,14 @@ The most common ore; drops coal, the best early fuel.
 | Hardness | 3 |
 | Breaking by hand | 15 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.38 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Coal](items.md#item-qtcraft-coal) |
 | Drops without the right tool | nothing |
 | Sound | stone |
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Found in**
 
@@ -383,7 +1142,7 @@ What stone becomes when mined. Material for stone tools and the furnace.
 | Hardness | 2 |
 | Breaking by hand | 10 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.38 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Cobblestone](#block-qtcraft-cobblestone) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -414,7 +1173,27 @@ What stone becomes when mined. Material for stone tools and the furnace.
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-cobweb"></a>Cobweb
+
+Found in caves. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.
+
+| | |
+|---|---|
+| ID | `qtcraft:cobweb` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Drops | [String](items.md#item-qtcraft-string) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Washed away by liquids | yes |
+| Movement inside | 25 % |
+| Sound | wool |
+
+**Found in**
+
+[Cobweb veins](worldgen.md#ore-qtcraft-cobweb) (y 10–50)
 
 ### <a id="block-qtcraft-cornflower"></a>Cornflower
 
@@ -450,7 +1229,7 @@ Opens the 3 × 3 crafting grid that bigger recipes need.
 | Hardness | 2.5 |
 | Breaking by hand | 3.75 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.47 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.31 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Crafting table](#block-qtcraft-crafting_table) |
 | Crafting | opens the 3 × 3 crafting grid |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
@@ -467,7 +1246,195 @@ Opens the 3 × 3 crafting grid that bigger recipes need.
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-cut_sandstone"></a>Cut sandstone
+
+Sandstone cut into large even slabs.
+
+| | |
+|---|---|
+| ID | `qtcraft:cut_sandstone` |
+| Hardness | 0.8 |
+| Breaking by hand | 4 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Cut sandstone](#block-qtcraft-cut_sandstone) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Sandstone](#block-qtcraft-sandstone) | [Sandstone](#block-qtcraft-sandstone) | 4 × [Cut sandstone](#block-qtcraft-cut_sandstone) |
+| [Sandstone](#block-qtcraft-sandstone) | [Sandstone](#block-qtcraft-sandstone) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-cyan_concrete"></a>Cyan concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Cyan concrete](#block-qtcraft-cyan_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-cyan_concrete_powder"></a>Cyan concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Cyan concrete](#block-qtcraft-cyan_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Cyan dye](items.md#item-qtcraft-cyan_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-cyan_stained_glass"></a>Cyan stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Cyan stained glass](#block-qtcraft-cyan_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Cyan dye](items.md#item-qtcraft-cyan_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane)
+
+### <a id="block-qtcraft-cyan_stained_glass_pane"></a>Cyan stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Cyan stained glass](#block-qtcraft-cyan_stained_glass) | [Cyan stained glass](#block-qtcraft-cyan_stained_glass) | [Cyan stained glass](#block-qtcraft-cyan_stained_glass) | 16 × [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) |
+| [Cyan stained glass](#block-qtcraft-cyan_stained_glass) | [Cyan stained glass](#block-qtcraft-cyan_stained_glass) | [Cyan stained glass](#block-qtcraft-cyan_stained_glass) |  |
+
+### <a id="block-qtcraft-cyan_terracotta"></a>Cyan terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Cyan terracotta](#block-qtcraft-cyan_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Cyan terracotta](#block-qtcraft-cyan_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Cyan dye](items.md#item-qtcraft-cyan_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-cyan_wool"></a>Cyan wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Cyan wool](#block-qtcraft-cyan_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Cyan carpet](parts.md#block-qtcraft-cyan_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Cyan dye](items.md#item-qtcraft-cyan_dye) | [Cyan wool](#block-qtcraft-cyan_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan carpet](parts.md#block-qtcraft-cyan_wool_carpet), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-dandelion"></a>Dandelion
 
@@ -492,6 +1459,28 @@ A yellow flower; gives yellow dye.
 **Found in**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Dandelions), [Forest](biomes.md#biome-qtcraft-forest) (Dandelions), [Plains](biomes.md#biome-qtcraft-plains) (Dandelions)
+
+### <a id="block-qtcraft-dead_bush"></a>Dead bush
+
+A dry shrub of the desert; breaking it gives a stick or two.
+
+| | |
+|---|---|
+| ID | `qtcraft:dead_bush` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Stick](items.md#item-qtcraft-stick), [Stick](items.md#item-qtcraft-stick) (50 %) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Sand](#block-qtcraft-sand) |
+| Washed away by liquids | yes |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | grass and plants |
+
+**Found in**
+
+[Desert](biomes.md#biome-qtcraft-desert) (Dead bushes)
 
 ### <a id="block-qtcraft-diamond_ore"></a>Diamond ore
 
@@ -526,9 +1515,13 @@ Plain earth below the grass.
 | Hardness | 0.5 |
 | Breaking by hand | 0.75 s |
 | Tool | Shovel (faster, not needed) |
-| Breaking with the best tool | 0.09 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Dirt](#block-qtcraft-dirt) |
 | Sound | earth |
+
+**Used in**
+
+[Mud](#block-qtcraft-mud)
 
 **Dropped by**
 
@@ -536,7 +1529,7 @@ Plain earth below the grass.
 
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
@@ -545,6 +1538,51 @@ Plain earth below the grass.
 **Creatures appearing on it**
 
 [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="block-qtcraft-fern"></a>Fern
+
+Grows in the shade of the taiga. Like tall grass, blocks placed into it replace it.
+
+| | |
+|---|---|
+| ID | `qtcraft:fern` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Found in**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (Ferns)
+
+### <a id="block-qtcraft-firefly_glass"></a>Firefly glass
+
+Glass with a firefly inside. It glimmers faintly: enough to find your way, too weak to keep monsters away.
+
+| | |
+|---|---|
+| ID | `qtcraft:firefly_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | [Firefly glass](#block-qtcraft-firefly_glass) |
+| Light | 4 of 15 |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| · | [Glass](#block-qtcraft-glass) | · | 4 × [Firefly glass](#block-qtcraft-firefly_glass) |
+| [Glass](#block-qtcraft-glass) | [Firefly in a bottle](items.md#item-qtcraft-firefly_bottle) | [Glass](#block-qtcraft-glass) |  |
+| · | [Glass](#block-qtcraft-glass) | · |  |
 
 ### <a id="block-qtcraft-furnace"></a>Furnace
 
@@ -556,7 +1594,7 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 | Hardness | 3.5 |
 | Breaking by hand | 17.5 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.66 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.44 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Furnace](#block-qtcraft-furnace) |
 | Drops without the right tool | nothing |
 | Machine | smelting, speed × 1: [Fuels](tables.md#table-fuels) |
@@ -575,7 +1613,7 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Processes**
 
@@ -583,7 +1621,7 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
-| [Clay](#block-qtcraft-clay) | [Bricks](#block-qtcraft-bricks) |
+| [Clay ball](items.md#item-qtcraft-clay_ball) | [Brick](items.md#item-qtcraft-brick) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -659,6 +1697,22 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 [Furnace](#block-qtcraft-furnace)
 
+*Furnace: 15 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Rotten flesh](food.md#item-qtcraft-rotten_flesh) | [Leather scrap](items.md#item-qtcraft-leather_scrap) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Mud](#block-qtcraft-mud) | [Packed mud](#block-qtcraft-packed_mud) |
+
+[Furnace](#block-qtcraft-furnace)
+
 *Furnace: 10 s per item, needs fuel*
 
 | 1 | → |
@@ -671,7 +1725,23 @@ Smelts ores, sand, clay and food while fuel burns: input on top, fuel below, res
 
 | 1 | → |
 |---|---|
+| [Sandstone](#block-qtcraft-sandstone) | [Smooth sandstone](#block-qtcraft-smooth_sandstone) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
 | [Cobblestone](#block-qtcraft-cobblestone) | [Stone](#block-qtcraft-stone) |
+
+[Furnace](#block-qtcraft-furnace)
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Clay](#block-qtcraft-clay) | [Terracotta](#block-qtcraft-terracotta) |
 
 [Furnace](#block-qtcraft-furnace)
 
@@ -702,7 +1772,7 @@ Clear block made from sand in the furnace.
 
 **Used in**
 
-[Glass bottle](items.md#item-qtcraft-glass_bottle), [Glass pane](#block-qtcraft-glass_pane)
+[Black stained glass](#block-qtcraft-black_stained_glass), [Blue stained glass](#block-qtcraft-blue_stained_glass), [Brown stained glass](#block-qtcraft-brown_stained_glass), [Cyan stained glass](#block-qtcraft-cyan_stained_glass), [Firefly glass](#block-qtcraft-firefly_glass), [Glass bottle](items.md#item-qtcraft-glass_bottle), [Glass pane](#block-qtcraft-glass_pane), [Gray stained glass](#block-qtcraft-gray_stained_glass), [Green stained glass](#block-qtcraft-green_stained_glass), [Light blue stained glass](#block-qtcraft-light_blue_stained_glass), [Light gray stained glass](#block-qtcraft-light_gray_stained_glass), [Lime stained glass](#block-qtcraft-lime_stained_glass), [Magenta stained glass](#block-qtcraft-magenta_stained_glass), [Orange stained glass](#block-qtcraft-orange_stained_glass), [Pink stained glass](#block-qtcraft-pink_stained_glass), [Purple stained glass](#block-qtcraft-purple_stained_glass), [Red stained glass](#block-qtcraft-red_stained_glass), [White stained glass](#block-qtcraft-white_stained_glass), [Yellow stained glass](#block-qtcraft-yellow_stained_glass)
 
 ### <a id="block-qtcraft-glass_pane"></a>Glass pane
 
@@ -773,17 +1843,17 @@ Earth covered with grass, the surface of most land.
 | Hardness | 0.6 |
 | Breaking by hand | 0.9 s |
 | Tool | Shovel (faster, not needed) |
-| Breaking with the best tool | 0.11 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
+| Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Dirt](#block-qtcraft-dirt) |
 | Sound | grass and plants |
 
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface)
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Surface), [Forest](biomes.md#biome-qtcraft-forest) (Surface), [Mountains](biomes.md#biome-qtcraft-mountains) (Surface), [Plains](biomes.md#biome-qtcraft-plains) (Surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Surface)
 
 **Creatures appearing on it**
 
@@ -799,14 +1869,18 @@ Loose stones that fall when nothing holds them.
 | Hardness | 0.6 |
 | Breaking by hand | 0.9 s |
 | Tool | Shovel (faster, not needed) |
-| Breaking with the best tool | 0.11 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
+| Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Gravel](#block-qtcraft-gravel) |
 | Falls without support | yes |
 | Sound | gravel |
 
+**Used in**
+
+[Black concrete powder](#block-qtcraft-black_concrete_powder), [Blue concrete powder](#block-qtcraft-blue_concrete_powder), [Brown concrete powder](#block-qtcraft-brown_concrete_powder), [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder), [Gray concrete powder](#block-qtcraft-gray_concrete_powder), [Green concrete powder](#block-qtcraft-green_concrete_powder), [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder), [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder), [Lime concrete powder](#block-qtcraft-lime_concrete_powder), [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder), [Orange concrete powder](#block-qtcraft-orange_concrete_powder), [Pink concrete powder](#block-qtcraft-pink_concrete_powder), [Purple concrete powder](#block-qtcraft-purple_concrete_powder), [Red concrete powder](#block-qtcraft-red_concrete_powder), [White concrete powder](#block-qtcraft-white_concrete_powder), [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder)
+
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
@@ -815,6 +1889,296 @@ Loose stones that fall when nothing holds them.
 **Creatures appearing on it**
 
 [Slime](creatures.md#mob-qtcraft-slime)
+
+### <a id="block-qtcraft-gray_concrete"></a>Gray concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Gray concrete](#block-qtcraft-gray_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-gray_concrete_powder"></a>Gray concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Gray concrete powder](#block-qtcraft-gray_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Gray concrete](#block-qtcraft-gray_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Gray concrete powder](#block-qtcraft-gray_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Gray dye](items.md#item-qtcraft-gray_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-gray_stained_glass"></a>Gray stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Gray stained glass](#block-qtcraft-gray_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Gray dye](items.md#item-qtcraft-gray_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane)
+
+### <a id="block-qtcraft-gray_stained_glass_pane"></a>Gray stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gray stained glass](#block-qtcraft-gray_stained_glass) | [Gray stained glass](#block-qtcraft-gray_stained_glass) | [Gray stained glass](#block-qtcraft-gray_stained_glass) | 16 × [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) |
+| [Gray stained glass](#block-qtcraft-gray_stained_glass) | [Gray stained glass](#block-qtcraft-gray_stained_glass) | [Gray stained glass](#block-qtcraft-gray_stained_glass) |  |
+
+### <a id="block-qtcraft-gray_terracotta"></a>Gray terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Gray terracotta](#block-qtcraft-gray_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Gray terracotta](#block-qtcraft-gray_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Gray dye](items.md#item-qtcraft-gray_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-gray_wool"></a>Gray wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Gray wool](#block-qtcraft-gray_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Gray carpet](parts.md#block-qtcraft-gray_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Gray dye](items.md#item-qtcraft-gray_dye) | [Gray wool](#block-qtcraft-gray_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray carpet](parts.md#block-qtcraft-gray_wool_carpet), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-green_concrete"></a>Green concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Green concrete](#block-qtcraft-green_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-green_concrete_powder"></a>Green concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Green concrete powder](#block-qtcraft-green_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Green concrete](#block-qtcraft-green_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Green concrete powder](#block-qtcraft-green_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Green dye](items.md#item-qtcraft-green_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-green_stained_glass"></a>Green stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Green stained glass](#block-qtcraft-green_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Green dye](items.md#item-qtcraft-green_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Green stained glass pane](#block-qtcraft-green_stained_glass_pane)
+
+### <a id="block-qtcraft-green_stained_glass_pane"></a>Green stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Green stained glass](#block-qtcraft-green_stained_glass) | [Green stained glass](#block-qtcraft-green_stained_glass) | [Green stained glass](#block-qtcraft-green_stained_glass) | 16 × [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) |
+| [Green stained glass](#block-qtcraft-green_stained_glass) | [Green stained glass](#block-qtcraft-green_stained_glass) | [Green stained glass](#block-qtcraft-green_stained_glass) |  |
+
+### <a id="block-qtcraft-green_terracotta"></a>Green terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:green_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Green terracotta](#block-qtcraft-green_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Green terracotta](#block-qtcraft-green_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Green dye](items.md#item-qtcraft-green_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-green_wool"></a>Green wool
 
@@ -844,7 +2208,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green carpet](parts.md#block-qtcraft-green_wool_carpet), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green carpet](parts.md#block-qtcraft-green_wool_carpet), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-ice"></a>Ice
 
@@ -856,18 +2220,86 @@ Covers the water of cold biomes.
 | Hardness | 0.5 |
 | Breaking by hand | 0.75 s |
 | Tool | Pickaxe (faster, not needed) |
-| Breaking with the best tool | 0.09 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.06 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | nothing |
 | Light blocked | 2 of 15 |
 | Sound | glass |
 
+**Used in**
+
+[Packed ice](#block-qtcraft-packed_ice)
+
 **Faster with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Found in**
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (Frozen water), [Tundra](biomes.md#biome-qtcraft-tundra) (Frozen water)
+
+### <a id="block-qtcraft-iron_bars"></a>Iron bars
+
+Bars that connect to their neighbours like glass panes.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_bars` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Iron bars](#block-qtcraft-iron_bars) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | stone |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | 16 × [Iron bars](#block-qtcraft-iron_bars) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-iron_door"></a>Iron door
+
+A heavy door; for now it opens by hand like a wooden one.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_door` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Iron door](#block-qtcraft-iron_door) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | 3 × [Iron door](#block-qtcraft-iron_door) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-iron_ore"></a>Iron ore
 
@@ -904,6 +2336,37 @@ Needs a pickaxe of level 2 or better. Smelt it into iron for better tools, bucke
 
 [Iron ore veins](worldgen.md#ore-qtcraft-iron) (y 5–72)
 
+### <a id="block-qtcraft-iron_trapdoor"></a>Iron trapdoor
+
+A heavy hatch; for now it opens by hand.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_trapdoor` |
+| Hardness | 5 |
+| Breaking by hand | 25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Iron trapdoor](#block-qtcraft-iron_trapdoor) |
+| Drops without the right tool | nothing |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Sound | stone |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron trapdoor](#block-qtcraft-iron_trapdoor) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
 ### <a id="block-qtcraft-ladder"></a>Ladder
 
 Hang it on a wall and climb up by walking into it or jumping; sneak to hold on.
@@ -914,7 +2377,7 @@ Hang it on a wall and climb up by walking into it or jumping; sneak to hold on.
 | Hardness | 0.4 |
 | Breaking by hand | 0.6 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.08 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.05 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Ladder](#block-qtcraft-ladder) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid face it hangs on |
@@ -935,7 +2398,729 @@ Hang it on a wall and climb up by walking into it or jumping; sneak to hold on.
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-lantern"></a>Lantern
+
+An iron lantern around a torch flame; the brightest light you can build.
+
+| | |
+|---|---|
+| ID | `qtcraft:lantern` |
+| Hardness | 1.5 |
+| Breaking by hand | 2.25 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Lantern](#block-qtcraft-lantern) |
+| Light | 15 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Sound | stone |
+| States | attach (floor, ceiling, north, east, south, west) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Lantern](#block-qtcraft-lantern) |
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Torch](#block-qtcraft-torch) | [Iron nugget](items.md#item-qtcraft-iron_nugget) |  |
+| [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) | [Iron nugget](items.md#item-qtcraft-iron_nugget) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-light_blue_concrete"></a>Light blue concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Light blue concrete](#block-qtcraft-light_blue_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-light_blue_concrete_powder"></a>Light blue concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Light blue concrete](#block-qtcraft-light_blue_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-light_blue_stained_glass"></a>Light blue stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane)
+
+### <a id="block-qtcraft-light_blue_stained_glass_pane"></a>Light blue stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) | [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) | [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) | 16 × [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) |
+| [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) | [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) | [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) |  |
+
+### <a id="block-qtcraft-light_blue_terracotta"></a>Light blue terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Light blue terracotta](#block-qtcraft-light_blue_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Light blue terracotta](#block-qtcraft-light_blue_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-light_blue_wool"></a>Light blue wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Light blue wool](#block-qtcraft-light_blue_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Light blue carpet](parts.md#block-qtcraft-light_blue_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) | [Light blue wool](#block-qtcraft-light_blue_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue carpet](parts.md#block-qtcraft-light_blue_wool_carpet), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-light_gray_concrete"></a>Light gray concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Light gray concrete](#block-qtcraft-light_gray_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-light_gray_concrete_powder"></a>Light gray concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Light gray concrete](#block-qtcraft-light_gray_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-light_gray_stained_glass"></a>Light gray stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane)
+
+### <a id="block-qtcraft-light_gray_stained_glass_pane"></a>Light gray stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) | [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) | [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) | 16 × [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) |
+| [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) | [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) | [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) |  |
+
+### <a id="block-qtcraft-light_gray_terracotta"></a>Light gray terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Light gray terracotta](#block-qtcraft-light_gray_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Light gray terracotta](#block-qtcraft-light_gray_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-light_gray_wool"></a>Light gray wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Light gray wool](#block-qtcraft-light_gray_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Light gray carpet](parts.md#block-qtcraft-light_gray_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) | [Light gray wool](#block-qtcraft-light_gray_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray carpet](parts.md#block-qtcraft-light_gray_wool_carpet), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-lily_of_the_valley"></a>Lily of the valley
+
+A small white flower of the woods; gives white dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:lily_of_the_valley` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Lily of the valley](#block-qtcraft-lily_of_the_valley) |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Washed away by liquids | yes |
+| Sound | grass and plants |
+
+**Used in**
+
+[White dye](items.md#item-qtcraft-white_dye)
+
+**Found in**
+
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Lilies of the valley), [Forest](biomes.md#biome-qtcraft-forest) (Lilies of the valley)
+
+### <a id="block-qtcraft-lime_concrete"></a>Lime concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Lime concrete](#block-qtcraft-lime_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-lime_concrete_powder"></a>Lime concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Lime concrete powder](#block-qtcraft-lime_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Lime concrete](#block-qtcraft-lime_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Lime concrete powder](#block-qtcraft-lime_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Lime dye](items.md#item-qtcraft-lime_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-lime_stained_glass"></a>Lime stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Lime stained glass](#block-qtcraft-lime_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Lime dye](items.md#item-qtcraft-lime_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane)
+
+### <a id="block-qtcraft-lime_stained_glass_pane"></a>Lime stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Lime stained glass](#block-qtcraft-lime_stained_glass) | [Lime stained glass](#block-qtcraft-lime_stained_glass) | [Lime stained glass](#block-qtcraft-lime_stained_glass) | 16 × [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) |
+| [Lime stained glass](#block-qtcraft-lime_stained_glass) | [Lime stained glass](#block-qtcraft-lime_stained_glass) | [Lime stained glass](#block-qtcraft-lime_stained_glass) |  |
+
+### <a id="block-qtcraft-lime_terracotta"></a>Lime terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Lime terracotta](#block-qtcraft-lime_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Lime terracotta](#block-qtcraft-lime_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Lime dye](items.md#item-qtcraft-lime_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-lime_wool"></a>Lime wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Lime wool](#block-qtcraft-lime_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Lime carpet](parts.md#block-qtcraft-lime_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Lime dye](items.md#item-qtcraft-lime_dye) | [Lime wool](#block-qtcraft-lime_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime carpet](parts.md#block-qtcraft-lime_wool_carpet), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-magenta_concrete"></a>Magenta concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Magenta concrete](#block-qtcraft-magenta_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-magenta_concrete_powder"></a>Magenta concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Magenta concrete](#block-qtcraft-magenta_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Magenta dye](items.md#item-qtcraft-magenta_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-magenta_stained_glass"></a>Magenta stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Magenta stained glass](#block-qtcraft-magenta_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Magenta dye](items.md#item-qtcraft-magenta_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane)
+
+### <a id="block-qtcraft-magenta_stained_glass_pane"></a>Magenta stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Magenta stained glass](#block-qtcraft-magenta_stained_glass) | [Magenta stained glass](#block-qtcraft-magenta_stained_glass) | [Magenta stained glass](#block-qtcraft-magenta_stained_glass) | 16 × [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) |
+| [Magenta stained glass](#block-qtcraft-magenta_stained_glass) | [Magenta stained glass](#block-qtcraft-magenta_stained_glass) | [Magenta stained glass](#block-qtcraft-magenta_stained_glass) |  |
+
+### <a id="block-qtcraft-magenta_terracotta"></a>Magenta terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Magenta terracotta](#block-qtcraft-magenta_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Magenta terracotta](#block-qtcraft-magenta_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Magenta dye](items.md#item-qtcraft-magenta_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-magenta_wool"></a>Magenta wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Magenta wool](#block-qtcraft-magenta_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Magenta carpet](parts.md#block-qtcraft-magenta_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Magenta dye](items.md#item-qtcraft-magenta_dye) | [Magenta wool](#block-qtcraft-magenta_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta carpet](parts.md#block-qtcraft-magenta_wool_carpet), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-magma_block"></a>Magma block
+
+Hot rock deep underground. It glows faintly and burns whoever stands on it.
+
+| | |
+|---|---|
+| ID | `qtcraft:magma_block` |
+| Hardness | 0.5 |
+| Breaking by hand | 2.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.06 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Magma block](#block-qtcraft-magma_block) |
+| Drops without the right tool | nothing |
+| Light | 3 of 15 |
+| Damage on contact | 1 health point |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+**Found in**
+
+[Magma block veins](worldgen.md#ore-qtcraft-magma) (y 5–24)
 
 ### <a id="block-qtcraft-mine_lamp"></a>Mine lamp
 
@@ -962,6 +3147,86 @@ A lamp with a firefly inside: hangs from ceilings, walls or floors and glows wit
 |---|---|---|
 | [Fired lamp shell](items.md#item-qtcraft-fired_lamp_shell) | [Firefly in a bottle](items.md#item-qtcraft-firefly_bottle) | [Mine lamp](#block-qtcraft-mine_lamp) |
 
+### <a id="block-qtcraft-mud"></a>Mud
+
+Soaked earth on the shores of swamps. You walk slowly on it and jump less high.
+
+| | |
+|---|---|
+| ID | `qtcraft:mud` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Mud](#block-qtcraft-mud) |
+| Walking speed on top | 60 % |
+| Jump strength on top | 93 % |
+| Sound | earth |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Dirt](#block-qtcraft-dirt) | [Water bottle](items.md#item-qtcraft-water_bottle) | [Mud](#block-qtcraft-mud) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Mud](#block-qtcraft-mud) | [Packed mud](#block-qtcraft-packed_mud) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+**Found in**
+
+[Swamp](biomes.md#biome-qtcraft-swamp) (Beaches)
+
+### <a id="block-qtcraft-mud_bricks"></a>Mud bricks
+
+Bricks of packed mud; a warm, earthy building block.
+
+| | |
+|---|---|
+| ID | `qtcraft:mud_bricks` |
+| Hardness | 1.5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Mud bricks](#block-qtcraft-mud_bricks) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Building parts**
+
+[Mud brick slab](parts.md#block-qtcraft-mud_bricks_slab), [Mud brick stairs](parts.md#block-qtcraft-mud_bricks_stairs), [Mud brick wall](parts.md#block-qtcraft-mud_bricks_wall)
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Packed mud](#block-qtcraft-packed_mud) | [Packed mud](#block-qtcraft-packed_mud) | 4 × [Mud bricks](#block-qtcraft-mud_bricks) |
+| [Packed mud](#block-qtcraft-packed_mud) | [Packed mud](#block-qtcraft-packed_mud) |  |
+
+**Used in**
+
+[Mud brick slab](parts.md#block-qtcraft-mud_bricks_slab), [Mud brick stairs](parts.md#block-qtcraft-mud_bricks_stairs), [Mud brick wall](parts.md#block-qtcraft-mud_bricks_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
 ### <a id="block-qtcraft-oak_door"></a>Oak door
 
 Two blocks tall; use it to open or close it.
@@ -972,7 +3237,7 @@ Two blocks tall; use it to open or close it.
 | Hardness | 3 |
 | Breaking by hand | 4.5 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.56 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak door](#block-qtcraft-oak_door) |
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
@@ -987,13 +3252,13 @@ Two blocks tall; use it to open or close it.
 
 | 1 | 2 | → |
 |---|---|---|
-| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | 3 × [Oak door](#block-qtcraft-oak_door) |
-| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
-| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+| [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) | 3 × [Oak door](#block-qtcraft-oak_door) |
+| [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) |  |
+| [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) |  |
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-oak_leaves"></a>Oak leaves
 
@@ -1004,7 +3269,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 | ID | `qtcraft:oak_leaves` |
 | Hardness | 0.2 |
 | Breaking by hand | 0.3 s |
-| Drops | [Oak sapling](#block-qtcraft-oak_sapling) (8 %) |
+| Drops | [Oak sapling](#block-qtcraft-oak_sapling) (8 %), [Apple](food.md#item-qtcraft-apple) (2 %) |
 | Light blocked | 1 of 15 |
 | Sound | grass and plants |
 
@@ -1022,7 +3287,7 @@ Wood of the oak: the first thing to collect. Four planks each.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak log](#block-qtcraft-oak_log) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -1041,11 +3306,11 @@ Wood of the oak: the first thing to collect. Four planks each.
 
 **Used in**
 
-[Oak planks](#block-qtcraft-oak_planks)
+[Oak planks](#block-qtcraft-oak_planks), [Oak wood](#block-qtcraft-oak_wood)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 **Found in**
 
@@ -1061,7 +3326,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak planks](#block-qtcraft-oak_planks) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -1081,11 +3346,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak door](#block-qtcraft-oak_door) (Any planks), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak door](#block-qtcraft-oak_door), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-oak_sapling"></a>Oak sapling
 
@@ -1121,7 +3386,7 @@ A hatch on the floor or the ceiling; use it to open or close it.
 | Hardness | 3 |
 | Breaking by hand | 4.5 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.56 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak trapdoor](#block-qtcraft-oak_trapdoor) |
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
@@ -1135,12 +3400,40 @@ A hatch on the floor or the ceiling; use it to open or close it.
 
 | 1 | 2 | 3 | → |
 |---|---|---|---|
-| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | 2 × [Oak trapdoor](#block-qtcraft-oak_trapdoor) |
-| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+| [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) | 2 × [Oak trapdoor](#block-qtcraft-oak_trapdoor) |
+| [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) | [Oak planks](#block-qtcraft-oak_planks) |  |
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-oak_wood"></a>Oak wood
+
+A log with bark on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:oak_wood` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Oak wood](#block-qtcraft-oak_wood) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Oak log](#block-qtcraft-oak_log) | [Oak log](#block-qtcraft-oak_log) | 3 × [Oak wood](#block-qtcraft-oak_wood) |
+| [Oak log](#block-qtcraft-oak_log) | [Oak log](#block-qtcraft-oak_log) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-obsidian"></a>Obsidian
 
@@ -1160,6 +3453,136 @@ Forms where water meets a lava source. Very hard; needs a pickaxe of level 3 or 
 **Mined with**
 
 [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-orange_concrete"></a>Orange concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Orange concrete](#block-qtcraft-orange_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-orange_concrete_powder"></a>Orange concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Orange concrete powder](#block-qtcraft-orange_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Orange concrete](#block-qtcraft-orange_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Orange concrete powder](#block-qtcraft-orange_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Orange dye](items.md#item-qtcraft-orange_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-orange_stained_glass"></a>Orange stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Orange stained glass](#block-qtcraft-orange_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Orange dye](items.md#item-qtcraft-orange_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane)
+
+### <a id="block-qtcraft-orange_stained_glass_pane"></a>Orange stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Orange stained glass](#block-qtcraft-orange_stained_glass) | [Orange stained glass](#block-qtcraft-orange_stained_glass) | [Orange stained glass](#block-qtcraft-orange_stained_glass) | 16 × [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) |
+| [Orange stained glass](#block-qtcraft-orange_stained_glass) | [Orange stained glass](#block-qtcraft-orange_stained_glass) | [Orange stained glass](#block-qtcraft-orange_stained_glass) |  |
+
+### <a id="block-qtcraft-orange_terracotta"></a>Orange terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:orange_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Orange terracotta](#block-qtcraft-orange_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Orange terracotta](#block-qtcraft-orange_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Orange dye](items.md#item-qtcraft-orange_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-orange_wool"></a>Orange wool
 
@@ -1189,7 +3612,229 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange carpet](parts.md#block-qtcraft-orange_wool_carpet), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange carpet](parts.md#block-qtcraft-orange_wool_carpet), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-packed_ice"></a>Packed ice
+
+Ice pressed so hard that it no longer lets light through or melts.
+
+| | |
+|---|---|
+| ID | `qtcraft:packed_ice` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Packed ice](#block-qtcraft-packed_ice) |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) | [Packed ice](#block-qtcraft-packed_ice) |
+| [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) |  |
+| [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) | [Ice](#block-qtcraft-ice) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-packed_mud"></a>Packed mud
+
+Mud dried hard in the furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:packed_mud` |
+| Hardness | 1 |
+| Breaking by hand | 1.5 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.13 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Packed mud](#block-qtcraft-packed_mud) |
+| Sound | earth |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Mud](#block-qtcraft-mud) | [Packed mud](#block-qtcraft-packed_mud) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Mud bricks](#block-qtcraft-mud_bricks)
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-pink_concrete"></a>Pink concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Pink concrete](#block-qtcraft-pink_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-pink_concrete_powder"></a>Pink concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Pink concrete powder](#block-qtcraft-pink_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Pink concrete](#block-qtcraft-pink_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Pink concrete powder](#block-qtcraft-pink_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Pink dye](items.md#item-qtcraft-pink_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-pink_stained_glass"></a>Pink stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Pink stained glass](#block-qtcraft-pink_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Pink dye](items.md#item-qtcraft-pink_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane)
+
+### <a id="block-qtcraft-pink_stained_glass_pane"></a>Pink stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Pink stained glass](#block-qtcraft-pink_stained_glass) | [Pink stained glass](#block-qtcraft-pink_stained_glass) | [Pink stained glass](#block-qtcraft-pink_stained_glass) | 16 × [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) |
+| [Pink stained glass](#block-qtcraft-pink_stained_glass) | [Pink stained glass](#block-qtcraft-pink_stained_glass) | [Pink stained glass](#block-qtcraft-pink_stained_glass) |  |
+
+### <a id="block-qtcraft-pink_terracotta"></a>Pink terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Pink terracotta](#block-qtcraft-pink_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Pink terracotta](#block-qtcraft-pink_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Pink dye](items.md#item-qtcraft-pink_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-pink_wool"></a>Pink wool
+
+Soft, quiet and burnable; dye any wool with a dye.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_wool` |
+| Hardness | 0.8 |
+| Breaking by hand | 1.2 s |
+| Drops | [Pink wool](#block-qtcraft-pink_wool) |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+| Sound | wool |
+| Groups | [Any wool](tags.md#tag-qtcraft-wool) |
+
+**Building parts**
+
+[Pink carpet](parts.md#block-qtcraft-pink_wool_carpet)
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Pink dye](items.md#item-qtcraft-pink_dye) | [Pink wool](#block-qtcraft-pink_wool) |
+
+**Used in**
+
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink carpet](parts.md#block-qtcraft-pink_wool_carpet), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-polished_stone"></a>Polished stone
 
@@ -1201,7 +3846,7 @@ Stone smoothed in the furnace.
 | Hardness | 1.5 |
 | Breaking by hand | 7.5 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.28 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Polished stone](#block-qtcraft-polished_stone) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1228,7 +3873,7 @@ Stone smoothed in the furnace.
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-poppy"></a>Poppy
 
@@ -1253,6 +3898,136 @@ A red flower; gives red dye.
 **Found in**
 
 [Forest](biomes.md#biome-qtcraft-forest) (Poppies), [Plains](biomes.md#biome-qtcraft-plains) (Poppies)
+
+### <a id="block-qtcraft-purple_concrete"></a>Purple concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Purple concrete](#block-qtcraft-purple_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-purple_concrete_powder"></a>Purple concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Purple concrete powder](#block-qtcraft-purple_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Purple concrete](#block-qtcraft-purple_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Purple concrete powder](#block-qtcraft-purple_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Purple dye](items.md#item-qtcraft-purple_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-purple_stained_glass"></a>Purple stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Purple stained glass](#block-qtcraft-purple_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Purple dye](items.md#item-qtcraft-purple_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane)
+
+### <a id="block-qtcraft-purple_stained_glass_pane"></a>Purple stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Purple stained glass](#block-qtcraft-purple_stained_glass) | [Purple stained glass](#block-qtcraft-purple_stained_glass) | [Purple stained glass](#block-qtcraft-purple_stained_glass) | 16 × [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) |
+| [Purple stained glass](#block-qtcraft-purple_stained_glass) | [Purple stained glass](#block-qtcraft-purple_stained_glass) | [Purple stained glass](#block-qtcraft-purple_stained_glass) |  |
+
+### <a id="block-qtcraft-purple_terracotta"></a>Purple terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:purple_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Purple terracotta](#block-qtcraft-purple_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Purple terracotta](#block-qtcraft-purple_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Purple dye](items.md#item-qtcraft-purple_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-purple_wool"></a>Purple wool
 
@@ -1282,7 +4057,56 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-red_concrete"></a>Red concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red concrete](#block-qtcraft-red_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-red_concrete_powder"></a>Red concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Red concrete powder](#block-qtcraft-red_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Red concrete](#block-qtcraft-red_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Red concrete powder](#block-qtcraft-red_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Red dye](items.md#item-qtcraft-red_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 ### <a id="block-qtcraft-red_mushroom"></a>Red mushroom
 
@@ -1300,9 +4124,94 @@ Grows in the shade of forests and swamps.
 | Washed away by liquids | yes |
 | Sound | grass and plants |
 
+**Used in**
+
+[Mushroom stew](food.md#item-qtcraft-mushroom_stew)
+
 **Found in**
 
 [Forest](biomes.md#biome-qtcraft-forest) (Red mushrooms), [Swamp](biomes.md#biome-qtcraft-swamp) (Red mushrooms)
+
+### <a id="block-qtcraft-red_stained_glass"></a>Red stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Red stained glass](#block-qtcraft-red_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Red dye](items.md#item-qtcraft-red_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Red stained glass pane](#block-qtcraft-red_stained_glass_pane)
+
+### <a id="block-qtcraft-red_stained_glass_pane"></a>Red stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Red stained glass](#block-qtcraft-red_stained_glass) | [Red stained glass](#block-qtcraft-red_stained_glass) | [Red stained glass](#block-qtcraft-red_stained_glass) | 16 × [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) |
+| [Red stained glass](#block-qtcraft-red_stained_glass) | [Red stained glass](#block-qtcraft-red_stained_glass) | [Red stained glass](#block-qtcraft-red_stained_glass) |  |
+
+### <a id="block-qtcraft-red_terracotta"></a>Red terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:red_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Red terracotta](#block-qtcraft-red_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Red terracotta](#block-qtcraft-red_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Red dye](items.md#item-qtcraft-red_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-red_wool"></a>Red wool
 
@@ -1332,7 +4241,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red carpet](parts.md#block-qtcraft-red_wool_carpet), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red carpet](parts.md#block-qtcraft-red_wool_carpet), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-sand"></a>Sand
 
@@ -1344,7 +4253,7 @@ Falls when nothing holds it. Smelts into glass.
 | Hardness | 0.5 |
 | Breaking by hand | 0.75 s |
 | Tool | Shovel (faster, not needed) |
-| Breaking with the best tool | 0.09 s: [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Sand](#block-qtcraft-sand) |
 | Falls without support | yes |
 | Sound | sand |
@@ -1363,11 +4272,11 @@ Falls when nothing holds it. Smelts into glass.
 
 **Used in**
 
-[Sandstone](#block-qtcraft-sandstone)
+[Black concrete powder](#block-qtcraft-black_concrete_powder), [Blue concrete powder](#block-qtcraft-blue_concrete_powder), [Brown concrete powder](#block-qtcraft-brown_concrete_powder), [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder), [Gray concrete powder](#block-qtcraft-gray_concrete_powder), [Green concrete powder](#block-qtcraft-green_concrete_powder), [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder), [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder), [Lime concrete powder](#block-qtcraft-lime_concrete_powder), [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder), [Orange concrete powder](#block-qtcraft-orange_concrete_powder), [Pink concrete powder](#block-qtcraft-pink_concrete_powder), [Purple concrete powder](#block-qtcraft-purple_concrete_powder), [Red concrete powder](#block-qtcraft-red_concrete_powder), [Sandstone](#block-qtcraft-sandstone), [White concrete powder](#block-qtcraft-white_concrete_powder), [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder)
 
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
@@ -1387,7 +4296,7 @@ Pressed sand, found under deserts.
 | Hardness | 0.8 |
 | Breaking by hand | 4 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.15 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.1 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Sandstone](#block-qtcraft-sandstone) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1405,17 +4314,122 @@ Pressed sand, found under deserts.
 | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sandstone](#block-qtcraft-sandstone) |
 | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) |  |
 
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](#block-qtcraft-sandstone) | [Smooth sandstone](#block-qtcraft-smooth_sandstone) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
 **Used in**
 
-[Sandstone slab](parts.md#block-qtcraft-sandstone_slab), [Sandstone stairs](parts.md#block-qtcraft-sandstone_stairs), [Sandstone wall](parts.md#block-qtcraft-sandstone_wall)
+[Cut sandstone](#block-qtcraft-cut_sandstone), [Sandstone slab](parts.md#block-qtcraft-sandstone_slab), [Sandstone stairs](parts.md#block-qtcraft-sandstone_stairs), [Sandstone wall](parts.md#block-qtcraft-sandstone_wall)
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Found in**
 
 [Desert](biomes.md#biome-qtcraft-desert) (Steep slopes)
+
+### <a id="block-qtcraft-slime_block"></a>Slime block
+
+Nine slimeballs pressed together.
+
+| | |
+|---|---|
+| ID | `qtcraft:slime_block` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Slime block](#block-qtcraft-slime_block) |
+| Light blocked | 1 of 15 |
+| Sound | wool |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) | [Slime block](#block-qtcraft-slime_block) |
+| [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) |  |
+| [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) | [Slimeball](items.md#item-qtcraft-slimeball) |  |
+
+**Used in**
+
+[Slimeball](items.md#item-qtcraft-slimeball)
+
+### <a id="block-qtcraft-small_torch"></a>Small torch
+
+A stub of a torch from a coal chunk: weaker light than a torch, but nine of them come from one coal.
+
+| | |
+|---|---|
+| ID | `qtcraft:small_torch` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | [Small torch](#block-qtcraft-small_torch) |
+| Light | 10 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Needs support | a solid face it hangs on |
+| Washed away by liquids | yes |
+| Sound | wood |
+| States | attach (floor, north, east, south, west) |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | → |
+|---|---|
+| [Coal chunk](items.md#item-qtcraft-coal_chunk) | [Small torch](#block-qtcraft-small_torch) |
+| [Stick](items.md#item-qtcraft-stick) |  |
+
+### <a id="block-qtcraft-smooth_sandstone"></a>Smooth sandstone
+
+Sandstone baked smooth in the furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:smooth_sandstone` |
+| Hardness | 1 |
+| Breaking by hand | 5 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.13 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Smooth sandstone](#block-qtcraft-smooth_sandstone) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Building parts**
+
+[Smooth sandstone slab](parts.md#block-qtcraft-smooth_sandstone_slab), [Smooth sandstone stairs](parts.md#block-qtcraft-smooth_sandstone_stairs), [Smooth sandstone wall](parts.md#block-qtcraft-smooth_sandstone_wall)
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Sandstone](#block-qtcraft-sandstone) | [Smooth sandstone](#block-qtcraft-smooth_sandstone) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Smooth sandstone slab](parts.md#block-qtcraft-smooth_sandstone_slab), [Smooth sandstone stairs](parts.md#block-qtcraft-smooth_sandstone_stairs), [Smooth sandstone wall](parts.md#block-qtcraft-smooth_sandstone_wall)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-snow_block"></a>Snow block
 
@@ -1437,7 +4451,7 @@ Packed snow of cold mountains and tundra.
 
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
@@ -1473,11 +4487,44 @@ A thin cover of snow that needs a block below.
 
 **Faster with**
 
-[Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 **Found in**
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (Snow cover)
+
+### <a id="block-qtcraft-spruce_door"></a>Spruce door
+
+Two blocks tall; open and close it with the use button.
+
+| | |
+|---|---|
+| ID | `qtcraft:spruce_door` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Spruce door](#block-qtcraft-spruce_door) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Two blocks tall | yes |
+| Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) | 3 × [Spruce door](#block-qtcraft-spruce_door) |
+| [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) |  |
+| [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-spruce_leaves"></a>Spruce leaves
 
@@ -1506,7 +4553,7 @@ Wood of the spruce. Four planks each.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce log](#block-qtcraft-spruce_log) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -1525,11 +4572,11 @@ Wood of the spruce. Four planks each.
 
 **Used in**
 
-[Spruce planks](#block-qtcraft-spruce_planks)
+[Spruce planks](#block-qtcraft-spruce_planks), [Spruce wood](#block-qtcraft-spruce_wood)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 **Found in**
 
@@ -1545,7 +4592,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Hardness | 2 |
 | Breaking by hand | 3 s |
 | Tool | Axe (faster, not needed) |
-| Breaking with the best tool | 0.38 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce planks](#block-qtcraft-spruce_planks) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
@@ -1565,11 +4612,11 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak door](#block-qtcraft-oak_door) (Any planks), [Oak trapdoor](#block-qtcraft-oak_trapdoor) (Any planks), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Spruce door](#block-qtcraft-spruce_door), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Spruce trapdoor](#block-qtcraft-spruce_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
-[Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
 ### <a id="block-qtcraft-spruce_sapling"></a>Spruce sapling
 
@@ -1595,6 +4642,65 @@ Plant it on grass, earth or snow and it grows into a spruce after a while.
 
 [Spruce leaves](#block-qtcraft-spruce_leaves) (8 %)
 
+### <a id="block-qtcraft-spruce_trapdoor"></a>Spruce trapdoor
+
+A hatch that opens upwards; sits high or low in its block.
+
+| | |
+|---|---|
+| ID | `qtcraft:spruce_trapdoor` |
+| Hardness | 3 |
+| Breaking by hand | 4.5 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.38 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) |
+| Light blocked | 0 of 15 |
+| Opens and closes when used | yes |
+| Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+| States | facing (north, east, south, west); half (bottom, top); open (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) | 2 × [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) |
+| [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) | [Spruce planks](#block-qtcraft-spruce_planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
+### <a id="block-qtcraft-spruce_wood"></a>Spruce wood
+
+A log with bark on all six sides, for walls and beams.
+
+| | |
+|---|---|
+| ID | `qtcraft:spruce_wood` |
+| Hardness | 2 |
+| Breaking by hand | 3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Spruce wood](#block-qtcraft-spruce_wood) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Spruce log](#block-qtcraft-spruce_log) | [Spruce log](#block-qtcraft-spruce_log) | 3 × [Spruce wood](#block-qtcraft-spruce_wood) |
+| [Spruce log](#block-qtcraft-spruce_log) | [Spruce log](#block-qtcraft-spruce_log) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
 ### <a id="block-qtcraft-stone"></a>Stone
 
 The rock of the world. Drops cobblestone; needs a pickaxe.
@@ -1605,7 +4711,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 | Hardness | 1.5 |
 | Breaking by hand | 7.5 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.28 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Cobblestone](#block-qtcraft-cobblestone) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1644,7 +4750,7 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 **Found in**
 
@@ -1664,7 +4770,7 @@ Neatly cut stone.
 | Hardness | 1.5 |
 | Breaking by hand | 7.5 s |
 | Tool | Pickaxe, level 1 or better (needed for drops) |
-| Breaking with the best tool | 0.28 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
+| Breaking with the best tool | 0.19 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Stone bricks](#block-qtcraft-stone_bricks) |
 | Drops without the right tool | nothing |
 | Sound | stone |
@@ -1688,7 +4794,7 @@ Neatly cut stone.
 
 **Mined with**
 
-[Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-sugar_cane"></a>Sugar cane
 
@@ -1702,11 +4808,15 @@ Grows on sand or earth right next to water.
 | Drops | [Sugar cane](#block-qtcraft-sugar_cane) |
 | Light blocked | 0 of 15 |
 | Solid | no |
-| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Sand](#block-qtcraft-sand), [Sugar cane](#block-qtcraft-sugar_cane) |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Sand](#block-qtcraft-sand), [Sugar cane](#block-qtcraft-sugar_cane), [Mud](#block-qtcraft-mud) |
 | Needs next to its ground | [Water](liquids.md#block-qtcraft-water) |
 | Grows by itself | up to 3 blocks tall, one block about every 10 min |
 | Washed away by liquids | yes |
 | Sound | grass and plants |
+
+**Used in**
+
+[Paper](items.md#item-qtcraft-paper)
 
 **Found in**
 
@@ -1725,13 +4835,49 @@ Covers meadows; you can build right into it.
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Replaced when building into it | yes |
-| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
+| Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Mud](#block-qtcraft-mud) |
 | Washed away by liquids | yes |
 | Sound | grass and plants |
 
 **Found in**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Tall grass), [Forest](biomes.md#biome-qtcraft-forest) (Tall grass), [Mountains](biomes.md#biome-qtcraft-mountains) (Tall grass), [Plains](biomes.md#biome-qtcraft-plains) (Tall grass), [Swamp](biomes.md#biome-qtcraft-swamp) (Tall grass), [Taiga](biomes.md#biome-qtcraft-taiga) (Tall grass)
+
+### <a id="block-qtcraft-terracotta"></a>Terracotta
+
+A clay block fired in the furnace: hard, smooth and ready to be dyed.
+
+| | |
+|---|---|
+| ID | `qtcraft:terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Terracotta](#block-qtcraft-terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Clay](#block-qtcraft-clay) | [Terracotta](#block-qtcraft-terracotta) |
+
+[Furnace](#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Black terracotta](#block-qtcraft-black_terracotta), [Blue terracotta](#block-qtcraft-blue_terracotta), [Brown terracotta](#block-qtcraft-brown_terracotta), [Cyan terracotta](#block-qtcraft-cyan_terracotta), [Gray terracotta](#block-qtcraft-gray_terracotta), [Green terracotta](#block-qtcraft-green_terracotta), [Light blue terracotta](#block-qtcraft-light_blue_terracotta), [Light gray terracotta](#block-qtcraft-light_gray_terracotta), [Lime terracotta](#block-qtcraft-lime_terracotta), [Magenta terracotta](#block-qtcraft-magenta_terracotta), [Orange terracotta](#block-qtcraft-orange_terracotta), [Pink terracotta](#block-qtcraft-pink_terracotta), [Purple terracotta](#block-qtcraft-purple_terracotta), [Red terracotta](#block-qtcraft-red_terracotta), [White terracotta](#block-qtcraft-white_terracotta), [Yellow terracotta](#block-qtcraft-yellow_terracotta)
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-torch"></a>Torch
 
@@ -1760,6 +4906,140 @@ The simplest light. Stands on floors or hangs on walls; water washes it away.
 | [Coal or charcoal](tags.md#tag-qtcraft-coals) | 4 × [Torch](#block-qtcraft-torch) |
 | [Stick](items.md#item-qtcraft-stick) |  |
 
+**Used in**
+
+[Lantern](#block-qtcraft-lantern)
+
+### <a id="block-qtcraft-white_concrete"></a>White concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [White concrete](#block-qtcraft-white_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-white_concrete_powder"></a>White concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [White concrete powder](#block-qtcraft-white_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [White concrete](#block-qtcraft-white_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [White concrete powder](#block-qtcraft-white_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [White dye](items.md#item-qtcraft-white_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-white_stained_glass"></a>White stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [White stained glass](#block-qtcraft-white_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [White dye](items.md#item-qtcraft-white_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[White stained glass pane](#block-qtcraft-white_stained_glass_pane)
+
+### <a id="block-qtcraft-white_stained_glass_pane"></a>White stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [White stained glass](#block-qtcraft-white_stained_glass) | [White stained glass](#block-qtcraft-white_stained_glass) | [White stained glass](#block-qtcraft-white_stained_glass) | 16 × [White stained glass pane](#block-qtcraft-white_stained_glass_pane) |
+| [White stained glass](#block-qtcraft-white_stained_glass) | [White stained glass](#block-qtcraft-white_stained_glass) | [White stained glass](#block-qtcraft-white_stained_glass) |  |
+
+### <a id="block-qtcraft-white_terracotta"></a>White terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [White terracotta](#block-qtcraft-white_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [White terracotta](#block-qtcraft-white_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [White dye](items.md#item-qtcraft-white_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
 ### <a id="block-qtcraft-white_wool"></a>White wool
 
 Soft block from sheep; dye any wool with a dye to colour it.
@@ -1778,13 +5058,152 @@ Soft block from sheep; dye any wool with a dye to colour it.
 
 [White carpet](parts.md#block-qtcraft-white_wool_carpet)
 
+**How to make it**
+
+*Crafting grid*
+
+| 1 | 2 | → |
+|---|---|---|
+| [String](items.md#item-qtcraft-string) | [String](items.md#item-qtcraft-string) | [White wool](#block-qtcraft-white_wool) |
+| [String](items.md#item-qtcraft-string) | [String](items.md#item-qtcraft-string) |  |
+
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [White carpet](parts.md#block-qtcraft-white_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [White carpet](parts.md#block-qtcraft-white_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 **Dropped by**
 
 [Sheep](creatures.md#mob-qtcraft-sheep)
+
+### <a id="block-qtcraft-yellow_concrete"></a>Yellow concrete
+
+Hard, smooth and evenly coloured; made by wetting concrete powder.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_concrete` |
+| Hardness | 1.8 |
+| Breaking by hand | 9 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.23 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Yellow concrete](#block-qtcraft-yellow_concrete) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
+
+### <a id="block-qtcraft-yellow_concrete_powder"></a>Yellow concrete powder
+
+Falls like sand. Touching water on any side, it hardens into concrete.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_concrete_powder` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) |
+| Falls without support | yes |
+| Water nearby: hardens into | [Yellow concrete](#block-qtcraft-yellow_concrete) |
+| Sound | sand |
+
+**How to make it**
+
+*Crafting table (3 × 3), any arrangement*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | [Sand](#block-qtcraft-sand) | 8 × [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) |
+| [Sand](#block-qtcraft-sand) | [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) |  |
+| [Gravel](#block-qtcraft-gravel) | [Gravel](#block-qtcraft-gravel) | [Yellow dye](items.md#item-qtcraft-yellow_dye) |  |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
+
+### <a id="block-qtcraft-yellow_stained_glass"></a>Yellow stained glass
+
+Tinted glass; like glass it breaks without a drop.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_stained_glass` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Sound | glass |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | 8 × [Yellow stained glass](#block-qtcraft-yellow_stained_glass) |
+| [Glass](#block-qtcraft-glass) | [Yellow dye](items.md#item-qtcraft-yellow_dye) | [Glass](#block-qtcraft-glass) |  |
+| [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) | [Glass](#block-qtcraft-glass) |  |
+
+**Used in**
+
+[Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane)
+
+### <a id="block-qtcraft-yellow_stained_glass_pane"></a>Yellow stained glass pane
+
+A thin wall of tinted glass that connects to its neighbours.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_stained_glass_pane` |
+| Hardness | 0.3 |
+| Breaking by hand | 0.45 s |
+| Drops | nothing |
+| Light blocked | 0 of 15 |
+| Connects to | panes, full solid blocks |
+| Sound | glass |
+| States | east (false, true); north (false, true); south (false, true); west (false, true) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Yellow stained glass](#block-qtcraft-yellow_stained_glass) | [Yellow stained glass](#block-qtcraft-yellow_stained_glass) | [Yellow stained glass](#block-qtcraft-yellow_stained_glass) | 16 × [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) |
+| [Yellow stained glass](#block-qtcraft-yellow_stained_glass) | [Yellow stained glass](#block-qtcraft-yellow_stained_glass) | [Yellow stained glass](#block-qtcraft-yellow_stained_glass) |  |
+
+### <a id="block-qtcraft-yellow_terracotta"></a>Yellow terracotta
+
+Dyed terracotta in earthy tones.
+
+| | |
+|---|---|
+| ID | `qtcraft:yellow_terracotta` |
+| Hardness | 1.25 |
+| Breaking by hand | 6.25 s |
+| Tool | Pickaxe, level 1 or better (needed for drops) |
+| Breaking with the best tool | 0.16 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Yellow terracotta](#block-qtcraft-yellow_terracotta) |
+| Drops without the right tool | nothing |
+| Sound | stone |
+| Groups | [Any terracotta](tags.md#tag-qtcraft-terracotta) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | 8 × [Yellow terracotta](#block-qtcraft-yellow_terracotta) |
+| [Terracotta](#block-qtcraft-terracotta) | [Yellow dye](items.md#item-qtcraft-yellow_dye) | [Terracotta](#block-qtcraft-terracotta) |  |
+| [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) | [Terracotta](#block-qtcraft-terracotta) |  |
+
+**Mined with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-yellow_wool"></a>Yellow wool
 
@@ -1814,4 +5233,4 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow carpet](parts.md#block-qtcraft-yellow_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow carpet](parts.md#block-qtcraft-yellow_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)

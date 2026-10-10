@@ -1,5 +1,8 @@
 #include "QcTextureSynthesizer.h"
 
+#include "QcTextureCraftPatterns.h"
+#include "QcTexturePaint.h"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -9,40 +12,9 @@ namespace {
 
 using Pattern = QcTextureSpec::Pattern;
 
-constexpr int size = QcTextureSynthesizer::tileSize;
-const QColor clear(0, 0, 0, 0);
+using namespace QcTexturePaint;
 
-quint32 hashPixel(quint32 seed, int x, int y)
-{
-    quint32 h = seed * 0x9E3779B1u ^ quint32(x) * 0x85EBCA77u ^ quint32(y) * 0xC2B2AE3Du;
-    h ^= h >> 15;
-    h *= 0x2C1B3C6Du;
-    h ^= h >> 12;
-    h *= 0x297A2D39u;
-    h ^= h >> 15;
-    return h;
-}
-
-// Uniform value in [-1, 1].
-double noise(quint32 seed, int x, int y)
-{
-    return double(hashPixel(seed, x, y) & 0xFFFFu) / 32767.5 - 1.0;
-}
-
-QColor scaled(const QColor &color, double factor, int alpha = 255)
-{
-    const auto channel = [factor](int value) { return std::clamp(int(std::lround(value * factor)), 0, 255); };
-    return QColor(channel(color.red()), channel(color.green()), channel(color.blue()), alpha);
-}
-
-QColor varied(const QcTextureSpec &spec, const QColor &color, int x, int y, quint32 salt = 0)
-{
-    return scaled(color, 1.0 + spec.variation * noise(spec.seed + salt, x, y));
-}
-
-// Colour of the pixel (x, y) of a pattern; `color` is the varied primary colour every pattern
-// starts from.
-using Painter = QColor (*)(const QcTextureSpec &spec, int x, int y, QColor color);
+static_assert(QcTexturePaint::size == QcTextureSynthesizer::tileSize);
 
 QColor paintNoise(const QcTextureSpec &, int, int, QColor color)
 {
@@ -90,7 +62,7 @@ QColor paintLogTop(const QcTextureSpec &spec, int x, int y, QColor color)
 QColor paintLeaves(const QcTextureSpec &spec, int x, int y, QColor color)
 {
     if ((hashPixel(spec.seed + 11, x, y) % 6) == 0) {
-        return clear;
+        return clear();
     }
     return (hashPixel(spec.seed + 13, x, y) % 4) == 0 ? varied(spec, spec.secondary, x, y, 3) : color;
 }
@@ -137,7 +109,7 @@ QColor paintTool(const QcTextureSpec &spec, int x, int y, QColor)
     if (handle) {
         return varied(spec, spec.secondary, x, y, 5);
     }
-    return clear;
+    return clear();
 }
 
 // Head shape of each tool pattern (none for a stick).
@@ -170,19 +142,19 @@ QColor paintToolWithHead(const QcTextureSpec &spec, int x, int y, QColor)
     if (handle || swordHandle || (spec.pattern == Pattern::Stick && x + y == size - 1 && x >= 3 && x <= 12)) {
         return varied(spec, spec.secondary, x, y, 5);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintIngot(const QcTextureSpec &spec, int x, int y, QColor)
 {
     const bool body = y >= 6 && y <= 10 && x >= 2 + (10 - y) / 2 && x <= 13 - (10 - y) / 2;
-    return body ? (y == 6 ? scaled(spec.primary, 1.25) : varied(spec, spec.primary, x, y)) : clear;
+    return body ? (y == 6 ? scaled(spec.primary, 1.25) : varied(spec, spec.primary, x, y)) : clear();
 }
 
 QColor paintGem(const QcTextureSpec &spec, int x, int y, QColor)
 {
     const int distance = std::abs(x - 7) + std::abs(y - 8);
-    return distance <= 6 ? (distance <= 2 ? scaled(spec.primary, 1.3) : varied(spec, spec.primary, x, y)) : clear;
+    return distance <= 6 ? (distance <= 2 ? scaled(spec.primary, 1.3) : varied(spec, spec.primary, x, y)) : clear();
 }
 
 QColor paintSapling(const QcTextureSpec &spec, int x, int y, QColor)
@@ -198,7 +170,7 @@ QColor paintSapling(const QcTextureSpec &spec, int x, int y, QColor)
     if (stem) {
         return varied(spec, spec.secondary, x, y, 5);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintFace(const QcTextureSpec &spec, int x, int y, QColor)
@@ -213,7 +185,7 @@ QColor paintFace(const QcTextureSpec &spec, int x, int y, QColor)
     if (y == 12 && x >= 6 && x <= 9) {
         return scaled(spec.secondary, 1.6);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintFurnace(const QcTextureSpec &spec, int x, int y, QColor color)
@@ -254,7 +226,7 @@ QColor paintTorchItem(const QcTextureSpec &spec, int x, int y, QColor)
         return varied(spec, x == 8 ? scaled(spec.primary, 0.75) : spec.primary, x, y, 5);
     }
     if (!inFlame) {
-        return clear;
+        return clear();
     }
 
     const bool core = (x == 7 || x == 8) && y >= 2 && y <= 5;
@@ -281,7 +253,7 @@ QColor paintLadder(const QcTextureSpec &spec, int x, int y, QColor)
     if (rung) {
         return scaled(spec.primary, 0.9);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintDoor(const QcTextureSpec &spec, int x, int y, QColor)
@@ -292,7 +264,7 @@ QColor paintDoor(const QcTextureSpec &spec, int x, int y, QColor)
     const bool window = !lower && x >= 3 && x <= 12 && y >= 2 && y <= 9 && x != 7 && x != 8 && y != 5;
 
     if (window) {
-        return clear;
+        return clear();
     }
     if (frame || (!lower && (x == 2 || x == 13) && y >= 1 && y <= 10)) {
         return varied(spec, spec.secondary, x, y, 5);
@@ -311,7 +283,7 @@ QColor paintTrapdoor(const QcTextureSpec &spec, int x, int y, QColor color)
     const bool frame = x == 0 || y == 0 || x == size - 1 || y == size - 1;
     const bool hole = y >= 3 && y <= 6 && ((x >= 3 && x <= 6) || (x >= 9 && x <= 12));
     if (hole) {
-        return clear;
+        return clear();
     }
     if (frame || y == 8) {
         return varied(spec, spec.secondary, x, y, 5);
@@ -360,7 +332,7 @@ QColor paintFlower(const QcTextureSpec &spec, int x, int y, QColor)
     if (stem || leaf) {
         return varied(spec, spec.secondary, x, y, 5);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintTallGrass(const QcTextureSpec &spec, int x, int y, QColor color)
@@ -368,7 +340,7 @@ QColor paintTallGrass(const QcTextureSpec &spec, int x, int y, QColor color)
     const int height = 5 + int(hashPixel(spec.seed + 59, x, 0) % 10);
     const bool blade = (hashPixel(spec.seed + 61, x, 1) % 3) != 0 && y >= size - height;
     if (!blade) {
-        return clear;
+        return clear();
     }
     return y < size - height + 2 ? varied(spec, spec.secondary, x, y, 3) : color;
 }
@@ -385,7 +357,7 @@ QColor paintMushroom(const QcTextureSpec &spec, int x, int y, QColor)
     if (stem) {
         return varied(spec, QColor(224, 214, 186), x, y, 5);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintSugarCane(const QcTextureSpec &spec, int x, int y, QColor)
@@ -398,7 +370,7 @@ QColor paintSugarCane(const QcTextureSpec &spec, int x, int y, QColor)
     if (leaf) {
         return varied(spec, spec.secondary, x, y, 3);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintBottle(const QcTextureSpec &spec, int x, int y, QColor)
@@ -426,7 +398,7 @@ QColor paintBottle(const QcTextureSpec &spec, int x, int y, QColor)
     if (body || neck) {
         return scaled(spec.primary, 1.15);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintBucket(const QcTextureSpec &spec, int x, int y, QColor)
@@ -443,7 +415,7 @@ QColor paintBucket(const QcTextureSpec &spec, int x, int y, QColor)
     if (handle) {
         return scaled(spec.primary, 0.6);
     }
-    return clear;
+    return clear();
 }
 
 QColor paintLantern(const QcTextureSpec &spec, int x, int y, QColor)
@@ -464,7 +436,7 @@ QColor paintLump(const QcTextureSpec &spec, int x, int y, QColor color)
     const double dx = x - 7.5;
     const double dy = y - 7.5;
     if (dx * dx + dy * dy > 30.0 + 6.0 * noise(spec.seed, x, y)) {
-        return clear;
+        return clear();
     }
     return (hashPixel(spec.seed + 31, x, y) % 4) == 0 ? varied(spec, spec.secondary, x, y, 3) : color;
 }
@@ -552,14 +524,18 @@ constexpr std::array<std::pair<Pattern, Painter>, 42> painters = {{
 Painter painterFor(Pattern pattern)
 {
     const auto it = std::ranges::find(painters, pattern, &std::pair<Pattern, Painter>::first);
-    return it != painters.end() ? it->second : paintNoise;
+    if (it != painters.end()) {
+        return it->second;
+    }
+    const Painter craft = qcCraftPatternPainter(pattern);
+    return craft ? craft : paintNoise;
 }
 
 void paint(QImage &image, const QcTextureSpec &spec)
 {
     const Painter painter = painterFor(spec.pattern);
-    // Only glass and water keep partial transparency.
-    const bool translucent = spec.pattern == Pattern::Glass || spec.pattern == Pattern::Water;
+    // Only glass, water and the glass-like craft patterns keep partial transparency.
+    const bool translucent = spec.pattern == Pattern::Glass || spec.pattern == Pattern::Water || qcCraftPatternIsTranslucent(spec.pattern);
     for (int y = 0; y < size; ++y) {
         for (int x = 0; x < size; ++x) {
             QColor color = painter(spec, x, y, varied(spec, spec.primary, x, y));

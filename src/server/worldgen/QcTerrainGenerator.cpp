@@ -391,8 +391,7 @@ std::optional<int> QcTerrainGenerator::chosenFeature(const Column &column, int x
             const double patch = feature.patches.fractal2(x / double(feature.patchSize), z / double(feature.patchSize), 2);
             localDensity *= std::clamp(1.0 + 3.0 * patch, 0.0, 2.0);
         }
-        const quint64 featureSeed = qcMixSeed(m_seed, 1000 + quint64(featureIndex));
-        if (qcPositionRandom(featureSeed, x, 0, z) < localDensity) {
+        if (qcPositionRandom(feature.seed, x, 0, z) < localDensity) {
             return featureIndex;
         }
     }
@@ -441,8 +440,7 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
         return;
     }
 
-    const quint64 featureSeed = qcMixSeed(m_seed, 1000 + quint64(*featureIndex));
-    placeFeature(chunk, feature, {x, top + 1, z}, qcPositionRandom(featureSeed, x, 1, z));
+    placeFeature(chunk, feature, {x, top + 1, z}, qcPositionRandom(feature.seed, x, 1, z));
 }
 
 void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved) const

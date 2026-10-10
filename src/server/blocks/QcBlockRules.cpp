@@ -386,4 +386,22 @@ QcBlockPos otherDoorHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
     return pos.offset(0, world.content().property(id, u"half"_s) == u"top"_s ? -1 : 1, 0);
 }
 
+std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+{
+    const QcContentRegistry &content = world.content();
+    const QcBlockDefinition &definition = content.block(id);
+    const std::optional<QcBlockId> into = definition.hardensWith.isEmpty() ? std::nullopt : content.blockId(definition.hardensInto);
+    if (!into) {
+        return std::nullopt;
+    }
+
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        const std::optional<QcBlockId> neighbour = world.blockAt(qcNeighbour(pos, face));
+        if (neighbour && content.isValidBlock(*neighbour) && content.block(*neighbour).name == definition.hardensWith) {
+            return into;
+        }
+    }
+    return std::nullopt;
+}
+
 } // namespace QcBlockRules

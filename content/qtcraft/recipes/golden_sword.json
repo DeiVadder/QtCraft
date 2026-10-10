@@ -1,0 +1,16 @@
+{
+    "name": "golden_sword",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "X",
+        "|"
+    ],
+    "key": {
+        "X": "gold_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "golden_sword"
+    }
+}

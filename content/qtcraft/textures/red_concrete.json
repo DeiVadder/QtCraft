@@ -1,0 +1,8 @@
+{
+    "name": "red_concrete",
+    "pattern": "noise",
+    "primary": "#8e2020",
+    "secondary": "#8e2020",
+    "variation": 0.025,
+    "seed": 918
+}

@@ -1,0 +1,19 @@
+{
+    "name": "pink_concrete_powder",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "sand",
+        "sand",
+        "gravel",
+        "gravel",
+        "gravel",
+        "gravel",
+        "pink_dye"
+    ],
+    "result": {
+        "item": "pink_concrete_powder",
+        "count": 8
+    }
+}

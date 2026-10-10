@@ -1,0 +1,8 @@
+{
+    "name": "light_gray_terracotta",
+    "pattern": "noise",
+    "primary": "#876b62",
+    "secondary": "#876b62",
+    "variation": 0.04,
+    "seed": 958
+}

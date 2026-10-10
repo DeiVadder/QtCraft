@@ -1,0 +1,15 @@
+{
+    "name": "iron_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_block"
+    }
+}

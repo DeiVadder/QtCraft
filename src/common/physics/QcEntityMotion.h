@@ -11,6 +11,8 @@ struct QcEntityMotion
     bool inWater = false;
     // Inside a climbable block (ladder) during the last step.
     bool climbing = false;
+    // Inside a block that slows bodies (cobweb) during the last step; breaks a fall like a ladder.
+    bool slowed = false;
 
     bool operator==(const QcEntityMotion &) const = default;
 };

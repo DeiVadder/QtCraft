@@ -1,0 +1,8 @@
+{
+    "name": "golden_axe",
+    "pattern": "axe",
+    "primary": "#f2d040",
+    "secondary": "#6e5432",
+    "variation": 0.08,
+    "seed": 917
+}

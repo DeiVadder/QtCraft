@@ -1,0 +1,8 @@
+{
+    "name": "lime_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#80c824",
+    "secondary": "#70b919",
+    "variation": 0.05,
+    "seed": 971
+}

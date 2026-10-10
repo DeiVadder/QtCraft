@@ -1,0 +1,11 @@
+{
+    "name": "slime_block",
+    "sound": "wool",
+    "hardness": 0.0,
+    "render": "translucent",
+    "opaque": false,
+    "lightOpacity": 1,
+    "textures": {
+        "all": "slime_block"
+    }
+}

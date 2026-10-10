@@ -1,0 +1,11 @@
+{
+    "name": "brown_wool",
+    "type": "shapeless",
+    "ingredients": [
+        "#wool",
+        "brown_dye"
+    ],
+    "result": {
+        "item": "brown_wool"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "gray_concrete",
+    "pattern": "noise",
+    "primary": "#36393d",
+    "secondary": "#36393d",
+    "variation": 0.025,
+    "seed": 912
+}

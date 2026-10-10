@@ -1,0 +1,8 @@
+{
+    "name": "lantern_top",
+    "pattern": "noise",
+    "primary": "#4a4a52",
+    "secondary": "#3a3a40",
+    "variation": 0.15,
+    "seed": 914
+}

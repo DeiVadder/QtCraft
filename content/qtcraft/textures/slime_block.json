@@ -1,0 +1,8 @@
+{
+    "name": "slime_block",
+    "pattern": "glass",
+    "primary": "#6ad06a",
+    "secondary": "#58b858",
+    "variation": 0.06,
+    "seed": 908
+}

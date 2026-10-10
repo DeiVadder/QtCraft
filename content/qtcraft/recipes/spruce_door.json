@@ -1,0 +1,16 @@
+{
+    "name": "spruce_door",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "spruce_planks"
+    },
+    "result": {
+        "item": "spruce_door",
+        "count": 3
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "red_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#c8281e",
+    "secondary": "#b8302a",
+    "variation": 0.05,
+    "seed": 965
+}

@@ -1,0 +1,10 @@
+{
+    "name": "blue_concrete",
+    "sound": "stone",
+    "hardness": 1.8,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "blue_concrete"
+    }
+}

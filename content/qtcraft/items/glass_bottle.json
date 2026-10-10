@@ -1,4 +1,5 @@
 {
     "name": "glass_bottle",
-    "maxStack": 16
+    "maxStack": 16,
+    "bottles": true
 }

@@ -1,0 +1,8 @@
+{
+    "name": "pink_concrete",
+    "pattern": "noise",
+    "primary": "#d5658e",
+    "secondary": "#d5658e",
+    "variation": 0.025,
+    "seed": 938
+}

@@ -1,0 +1,10 @@
+{
+    "name": "iron_block",
+    "sound": "stone",
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "textures": {
+        "all": "iron_block"
+    }
+}

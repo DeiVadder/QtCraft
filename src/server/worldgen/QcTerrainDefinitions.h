@@ -21,6 +21,8 @@ struct QcTerrainDefinitions
         bool nearWater = false;
         int patchSize = 0;
         QcNoise patches{0};
+        // Seed of the placement chances, derived from the feature's name.
+        quint64 seed = 0;
     };
 
     struct Biome

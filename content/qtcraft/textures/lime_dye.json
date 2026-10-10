@@ -1,0 +1,8 @@
+{
+    "name": "lime_dye",
+    "pattern": "lump",
+    "primary": "#80c824",
+    "secondary": "#80c824",
+    "variation": 0.12,
+    "seed": 945
+}

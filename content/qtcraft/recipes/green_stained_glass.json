@@ -1,0 +1,17 @@
+{
+    "name": "green_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "green_dye"
+    },
+    "result": {
+        "item": "green_stained_glass",
+        "count": 8
+    }
+}

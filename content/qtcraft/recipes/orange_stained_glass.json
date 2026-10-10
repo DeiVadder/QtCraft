@@ -1,0 +1,17 @@
+{
+    "name": "orange_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "orange_dye"
+    },
+    "result": {
+        "item": "orange_stained_glass",
+        "count": 8
+    }
+}

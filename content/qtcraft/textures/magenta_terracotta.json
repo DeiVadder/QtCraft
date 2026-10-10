@@ -1,0 +1,8 @@
+{
+    "name": "magenta_terracotta",
+    "pattern": "noise",
+    "primary": "#95576c",
+    "secondary": "#95576c",
+    "variation": 0.04,
+    "seed": 984
+}

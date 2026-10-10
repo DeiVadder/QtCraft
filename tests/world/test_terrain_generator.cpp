@@ -421,6 +421,8 @@ private:
         const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
         const int liquidLevel = m_base->terrainSettings().caveLiquidLevel;
         const QcBlockId bedrock = *m_base->blockId(u"qtcraft:bedrock"_s);
+        // Cobwebs grow into carved air like ores into stone.
+        const QcBlockId cobweb = *m_base->blockId(u"qtcraft:cobweb"_s);
         const int wx = chunk.pos().x * 16 + x;
         const int wz = chunk.pos().z * 16 + z;
         const QcTerrainGenerator::Column column = generator.column(wx, wz);
@@ -445,7 +447,7 @@ private:
             if (block == bedrock) {
                 continue;
             }
-            const bool carved = y <= liquidLevel ? block == lava : block == qcAirBlockId;
+            const bool carved = y <= liquidLevel ? block == lava : block == qcAirBlockId || block == cobweb;
             if (carved != generator.isCave(wx, y, wz)) {
                 return u"carved %1, isCave %2 at %3 %4 %5"_s.arg(int(carved)).arg(int(!carved)).arg(wx).arg(y).arg(wz);
             }

@@ -159,6 +159,15 @@ struct QcBlockDefinition
     QcLiquidDefinition flow;
     // Damage per hit to bodies touching the block (lava); items inside burn. Server side only.
     double contactDamage = 0.0;
+    // Factor on the movement of bodies inside the block (cobweb; 1 = no effect). Reaches the client.
+    double slowsInside = 1.0;
+    // Factors on walking speed and jump of bodies standing on the block (mud). Reach the client.
+    double surfaceSpeed = 1.0;
+    double surfaceJump = 1.0;
+    // Touching a block named `hardensWith` (any state, e.g. water) turns this block into
+    // `hardensInto` (concrete powder into concrete). Server side only.
+    QString hardensWith;
+    QString hardensInto;
     // A liquid flowing into the block breaks it with its drops (plants, torches). Server side only.
     bool washable = false;
     // Without a block below it falls as an entity and lands again (sand, gravel). Server side only.

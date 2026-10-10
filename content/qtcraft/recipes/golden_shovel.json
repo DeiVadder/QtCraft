@@ -1,0 +1,16 @@
+{
+    "name": "golden_shovel",
+    "type": "shaped",
+    "pattern": [
+        "X",
+        "|",
+        "|"
+    ],
+    "key": {
+        "X": "gold_ingot",
+        "|": "stick"
+    },
+    "result": {
+        "item": "golden_shovel"
+    }
+}

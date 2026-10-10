@@ -1,0 +1,8 @@
+{
+    "name": "cobweb",
+    "pattern": "cobweb",
+    "primary": "#e8e8ea",
+    "secondary": "#d0d0d4",
+    "variation": 0.05,
+    "seed": 902
+}

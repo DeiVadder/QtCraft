@@ -873,17 +873,17 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="317"/>
+        <location filename="../src/server/core/QcServer.cpp" line="350"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="417"/>
+        <location filename="../src/server/core/QcServer.cpp" line="471"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="154"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="175"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>

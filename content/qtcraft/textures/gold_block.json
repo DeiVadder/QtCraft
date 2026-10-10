@@ -1,0 +1,8 @@
+{
+    "name": "gold_block",
+    "pattern": "metal_block",
+    "primary": "#ecc430",
+    "secondary": "#fff2a0",
+    "variation": 0.05,
+    "seed": 905
+}

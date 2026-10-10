@@ -28,6 +28,10 @@
         {
             "feature": "cornflower",
             "density": 0.006
+        },
+        {
+            "feature": "allium",
+            "density": 0.006
         }
     ]
 }

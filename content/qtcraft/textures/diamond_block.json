@@ -1,0 +1,8 @@
+{
+    "name": "diamond_block",
+    "pattern": "metal_block",
+    "primary": "#5ad8d8",
+    "secondary": "#c8fafa",
+    "variation": 0.05,
+    "seed": 906
+}

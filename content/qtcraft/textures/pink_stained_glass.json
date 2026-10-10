@@ -1,0 +1,8 @@
+{
+    "name": "pink_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#f29ab6",
+    "secondary": "#ed8dac",
+    "variation": 0.05,
+    "seed": 985
+}

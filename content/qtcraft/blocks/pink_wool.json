@@ -1,0 +1,12 @@
+{
+    "name": "pink_wool",
+    "sound": "wool",
+    "hardness": 0.8,
+    "fuelSeconds": 5,
+    "tags": [
+        "wool"
+    ],
+    "textures": {
+        "all": "pink_wool"
+    }
+}

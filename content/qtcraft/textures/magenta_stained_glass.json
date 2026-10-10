@@ -1,0 +1,8 @@
+{
+    "name": "magenta_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#c850be",
+    "secondary": "#bd44b3",
+    "variation": 0.05,
+    "seed": 983
+}

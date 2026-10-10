@@ -198,6 +198,14 @@ private slots:
         QTest::newRow("missing name") << QByteArray(R"({"textures":{"all":"x"}})") << u"'name' is required"_s;
         QTest::newRow("bad name") << QByteArray(R"({"name":"Bad Name","textures":{"all":"x"}})") << u"not a valid name"_s;
         QTest::newRow("wrong type") << QByteArray(R"({"name":"x","solid":"yes","textures":{"all":"x"}})") << u"'solid'"_s;
+        QTest::newRow("hardens into itself")
+            << QByteArray(R"({"name":"p","hardens":{"with":"water","into":"p"},"textures":{"all":"x"}})") << u"harden into or next to itself"_s;
+        QTest::newRow("hardens without target")
+            << QByteArray(R"({"name":"p","hardens":{"with":"water"},"textures":{"all":"x"}})") << u"needs 'with' and 'into'"_s;
+        QTest::newRow("solid slows inside")
+            << QByteArray(R"({"name":"w","slowsInside":0.5,"textures":{"all":"x"}})") << u"neither solid nor liquid"_s;
+        QTest::newRow("surface out of range")
+            << QByteArray(R"({"name":"m","surface":{"speed":5},"textures":{"all":"x"}})") << u"'speed'"_s;
         QTest::newRow("range") << QByteArray(R"({"name":"x","lightOpacity":20,"textures":{"all":"x"}})") << u"lightOpacity"_s;
         QTest::newRow("fraction") << QByteArray(R"({"name":"x","toolLevel":1.5,"textures":{"all":"x"}})") << u"integer"_s;
         QTest::newRow("render") << QByteArray(R"({"name":"x","render":"shiny","textures":{"all":"x"}})") << u"'render'"_s;
@@ -606,6 +614,12 @@ private slots:
         QVERIFY(stackedCans.error().contains(u"maxStack"_s));
         QVERIFY(QcContentParser::parseItem(json(R"({"name":"can","fuelSeconds":80,"emptiesTo":"bucket","maxStack":1})"), u"b"_s));
         QVERIFY(QcContentParser::parseItem(json(R"({"name":"water_can","emptiesTo":"bucket","maxStack":16})"), u"b"_s));
+
+        // A bucket scoops, a bottle fills; an item cannot do both.
+        const auto both = QcContentParser::parseItem(json(R"({"name":"jug","scoops":true,"bottles":true})"), u"b"_s);
+        QVERIFY(!both);
+        QVERIFY2(both.error().contains(u"'scoops' and 'bottles' exclude each other"_s), qPrintable(both.error()));
+        QVERIFY(QcContentParser::parseItem(json(R"({"name":"jug","bottles":true})"), u"b"_s)->bottles);
         const auto coal = QcContentParser::parseItem(json(R"({"name":"coal","fuelSeconds":80})"), u"b"_s);
         QCOMPARE(coal->fuelSeconds, 80.0);
         QCOMPARE(coal->food, 0);

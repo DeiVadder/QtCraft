@@ -79,6 +79,27 @@ void QcServerCombat::playMobSounds(double dt)
     }
 }
 
+namespace {
+
+// Damage of the solid block under the centre of the feet (magma, decision E-209); a liquid next to
+// the block a body stands on does not count.
+double damageFromBelow(const QcServerState &state, const QcVec3 &feet)
+{
+    const std::optional<QcBlockId> below = state.world.blockAt(QcPhysics::blockContaining(feet - QcVec3{0.0, 0.01, 0.0}));
+    if (!below || !state.content->isValidBlock(*below) || !state.content->block(*below).solid) {
+        return 0.0;
+    }
+    return state.content->block(*below).contactDamage;
+}
+
+// Damage from what a body is inside of or stands on.
+double contactDamageOf(const QcServerState &state, const QcVec3 &feet, double width, double height)
+{
+    return std::max(state.world.contactDamageIn(QcPhysics::boxAt(feet, width, height)), damageFromBelow(state, feet));
+}
+
+} // namespace
+
 void QcServerCombat::applyContactDamage()
 {
     if (!m_state.world.mayHaveContactDamage()) {
@@ -90,7 +111,7 @@ void QcServerCombat::applyContactDamage()
             continue;
         }
 
-        const double damage = m_state.world.contactDamageIn(QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight));
+        const double damage = contactDamageOf(m_state, client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
         if (damage > 0.0) {
             damagePlayer(*client, damage, {});
         }
@@ -100,7 +121,7 @@ void QcServerCombat::applyContactDamage()
     QList<std::pair<quint32, double>> touched;
     for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
         const QcMobDefinition &definition = m_state.content->mobs()[mob.type];
-        if (const double damage = m_state.world.contactDamageIn(QcPhysics::boxAt(mob.motion.position, definition.width, definition.height));
+        if (const double damage = contactDamageOf(m_state, mob.motion.position, definition.width, definition.height);
             damage > 0.0) {
             touched.append({mob.id, damage});
         }
@@ -163,8 +184,8 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
 void QcServerCombat::updateHealth(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
 {
     // Falls are measured from their highest point, including the position before the first
-    // airborne tick; water and ladders break a fall.
-    if (client.motion.inWater || wasInWater || client.motion.climbing) {
+    // airborne tick; water, ladders and cobwebs break a fall.
+    if (client.motion.inWater || wasInWater || client.motion.climbing || client.motion.slowed) {
         client.fallPeak = client.motion.position.y;
     } else if (!client.motion.onGround) {
         client.fallPeak = wasOnGround ? std::max(previousY, client.motion.position.y)
@@ -271,7 +292,12 @@ void QcServerCombat::consume(QcServerClient &client)
         return;
     }
 
-    client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    // Soup leaves its bowl behind (decision E-212).
+    if (!held->emptiesTo.isEmpty() && m_state.content->itemId(held->emptiesTo)) {
+        m_inventory.exchangeHeld(client, held->emptiesTo);
+    } else {
+        client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    }
     m_sounds.play(QString::fromLatin1(QcSoundKeys::playerEat), client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0});
     sendFood(client);
     m_inventory.send(client);

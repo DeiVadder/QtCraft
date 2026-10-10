@@ -1,0 +1,15 @@
+{
+    "name": "small_torch",
+    "type": "shaped",
+    "pattern": [
+        "c",
+        "|"
+    ],
+    "key": {
+        "c": "coal_chunk",
+        "|": "stick"
+    },
+    "result": {
+        "item": "small_torch"
+    }
+}

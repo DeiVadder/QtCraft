@@ -1,0 +1,26 @@
+{
+    "name": "barrel",
+    "sound": "wood",
+    "shape": "facing_cube",
+    "facing": "toward",
+    "hardness": 2.5,
+    "tool": "axe",
+    "container": {
+        "slots": 27
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "textures": {
+        "side": "barrel_side",
+        "north": "barrel_top",
+        "top": "barrel_top",
+        "bottom": "barrel_top"
+    },
+    "fuelSeconds": 15
+}

@@ -64,18 +64,35 @@ private slots:
         QStringList warnings;
         const auto content = *QcBaseContent::load(warnings);
 
-        // Ingots, glass and bricks come from the furnace now, not from the crafting grid (E-037).
-        for (const char *result : {"qtcraft:iron_ingot", "qtcraft:gold_ingot", "qtcraft:glass", "qtcraft:bricks"}) {
-            QVERIFY2(std::ranges::none_of(content->recipes(),
-                                          [result](const QcRecipeDefinition &recipe) { return recipe.resultItem == QLatin1StringView(result); }),
-                     result);
+        // Ingots, glass and bricks come from the furnace now, not from ores in the crafting grid (E-037);
+        // the grid only packs nuggets or storage blocks back into ingots and bricks into a block
+        // (E-200, E-204).
+        const QList<std::pair<const char *, QStringList>> onlyFrom{
+            {"qtcraft:iron_ingot", {u"qtcraft:iron_nugget"_s, u"qtcraft:iron_block"_s}},
+            {"qtcraft:gold_ingot", {u"qtcraft:gold_nugget"_s, u"qtcraft:gold_block"_s}},
+            {"qtcraft:glass", {}},
+            {"qtcraft:bricks", {u"qtcraft:brick"_s}}};
+        for (const auto &[result, sources] : onlyFrom) {
+            for (const QcRecipeDefinition &recipe : content->recipes()) {
+                if (recipe.resultItem != QLatin1StringView(result)) {
+                    continue;
+                }
+                QStringList used = recipe.ingredients;
+                for (const auto &key : recipe.keys) {
+                    used.append(key.second);
+                }
+                QVERIFY2(!used.isEmpty(), qPrintable(recipe.name));
+                QVERIFY2(std::ranges::all_of(used, [&sources](const QString &name) { return sources.contains(name); }),
+                         qPrintable(recipe.name));
+            }
         }
 
         const QList<std::pair<const char *, const char *>> smelting{
             {"qtcraft:iron_ore", "qtcraft:iron_ingot"}, {"qtcraft:gold_ore", "qtcraft:gold_ingot"},
-            {"qtcraft:sand", "qtcraft:glass"},         {"qtcraft:clay", "qtcraft:bricks"},
-            {"qtcraft:cobblestone", "qtcraft:stone"},  {"qtcraft:oak_log", "qtcraft:charcoal"},
-            {"qtcraft:raw_porkchop", "qtcraft:cooked_porkchop"}};
+            {"qtcraft:sand", "qtcraft:glass"},         {"qtcraft:clay_ball", "qtcraft:brick"},
+            {"qtcraft:clay", "qtcraft:terracotta"},    {"qtcraft:cobblestone", "qtcraft:stone"},
+            {"qtcraft:oak_log", "qtcraft:charcoal"},   {"qtcraft:raw_porkchop", "qtcraft:cooked_porkchop"},
+            {"qtcraft:rotten_flesh", "qtcraft:leather_scrap"}};
         for (const auto &[input, result] : smelting) {
             const QcSmeltingRecipe *recipe = content->smeltingRecipe(u"smelting"_s, QString::fromLatin1(input));
             QVERIFY2(recipe && recipe->resultItem == QLatin1StringView(result), input);

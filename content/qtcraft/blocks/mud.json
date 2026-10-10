@@ -1,0 +1,13 @@
+{
+    "name": "mud",
+    "sound": "dirt",
+    "hardness": 0.5,
+    "tool": "shovel",
+    "surface": {
+        "speed": 0.6,
+        "jump": 0.93
+    },
+    "textures": {
+        "all": "mud"
+    }
+}

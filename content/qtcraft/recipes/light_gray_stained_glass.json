@@ -1,0 +1,17 @@
+{
+    "name": "light_gray_stained_glass",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "glass",
+        "d": "light_gray_dye"
+    },
+    "result": {
+        "item": "light_gray_stained_glass",
+        "count": 8
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "blue_concrete",
+    "pattern": "noise",
+    "primary": "#2c2e8f",
+    "secondary": "#2c2e8f",
+    "variation": 0.025,
+    "seed": 932
+}

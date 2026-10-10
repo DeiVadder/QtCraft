@@ -1,0 +1,15 @@
+{
+    "name": "slime_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "slimeball"
+    },
+    "result": {
+        "item": "slime_block"
+    }
+}

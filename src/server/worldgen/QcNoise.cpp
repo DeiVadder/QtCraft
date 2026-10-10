@@ -168,6 +168,16 @@ quint64 qcMixSeed(quint64 seed, quint64 salt)
     return splitMix(state);
 }
 
+quint64 qcNameSalt(const QString &name)
+{
+    quint64 hash = 0xCBF29CE484222325ull;
+    const QByteArray bytes = name.toUtf8();
+    for (const char byte : bytes) {
+        hash = (hash ^ quint8(byte)) * 0x100000001B3ull;
+    }
+    return hash;
+}
+
 double qcPositionRandom(quint64 seed, int x, int y, int z)
 {
     quint64 state = seed ^ (quint64(quint32(x)) * 0x9E3779B97F4A7C15ull) ^ (quint64(quint32(y)) * 0xC2B2AE3D27D4EB4Full)

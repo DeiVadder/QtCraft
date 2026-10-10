@@ -79,8 +79,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     }
 
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (held && held->scoops) {
-        if (!scoopLiquid(client, message.target)) {
+    if (held && (held->scoops || held->bottles)) {
+        if (!(held->bottles ? fillBottle(client, message.target) : scoopLiquid(client, message.target))) {
             if (const std::optional<QcBlockId> block = m_state.world.blockAt(message.target)) {
                 client.connection->send(QcMsg::BlockUpdate{message.target, *block});
             }
@@ -229,6 +229,24 @@ bool QcServerInteraction::scoopLiquid(QcServerClient &client, QcBlockPos pos)
     m_parts.blocks.setAndBroadcast(pos, qcAirBlockId);
     m_parts.sounds.play(QString::fromLatin1(QcSoundKeys::bucketFill), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
     m_parts.inventory.exchangeHeld(client, definition.flow.bucket);
+    m_parts.inventory.send(client);
+    return true;
+}
+
+bool QcServerInteraction::fillBottle(QcServerClient &client, QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    if (!block || !m_state.content->isValidBlock(*block) || !m_state.isWithinReach(client, pos)) {
+        return false;
+    }
+
+    const QcBlockDefinition &definition = m_state.content->block(*block);
+    if (!definition.liquid || definition.flow.bottle.isEmpty() || !m_state.content->itemId(definition.flow.bottle)) {
+        return false;
+    }
+
+    m_parts.sounds.play(QString::fromLatin1(QcSoundKeys::bucketFill), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
+    m_parts.inventory.exchangeHeld(client, definition.flow.bottle);
     m_parts.inventory.send(client);
     return true;
 }

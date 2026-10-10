@@ -1,0 +1,12 @@
+{
+    "name": "cyan_stained_glass",
+    "sound": "glass",
+    "render": "translucent",
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.3,
+    "drops": [],
+    "textures": {
+        "all": "cyan_stained_glass"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "oak_wood",
+    "sound": "wood",
+    "hardness": 2.0,
+    "tool": "axe",
+    "textures": {
+        "all": "oak_log"
+    },
+    "fuelSeconds": 15
+}

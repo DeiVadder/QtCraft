@@ -1,0 +1,10 @@
+{
+    "name": "light_blue_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "blue_orchid"
+    ],
+    "result": {
+        "item": "light_blue_dye"
+    }
+}

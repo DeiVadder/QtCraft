@@ -27,7 +27,8 @@
         "ticks": 5,
         "infinite": true,
         "bucket": "water_bucket",
-        "sound": "liquid.water.flow"
+        "sound": "liquid.water.flow",
+        "bottle": "water_bottle"
     },
     "textures": {
         "all": "water"

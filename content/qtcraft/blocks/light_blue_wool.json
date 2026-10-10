@@ -1,0 +1,12 @@
+{
+    "name": "light_blue_wool",
+    "sound": "wool",
+    "hardness": 0.8,
+    "fuelSeconds": 5,
+    "tags": [
+        "wool"
+    ],
+    "textures": {
+        "all": "light_blue_wool"
+    }
+}

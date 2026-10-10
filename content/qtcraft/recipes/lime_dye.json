@@ -1,0 +1,12 @@
+{
+    "name": "lime_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "green_dye",
+        "white_dye"
+    ],
+    "result": {
+        "item": "lime_dye",
+        "count": 2
+    }
+}

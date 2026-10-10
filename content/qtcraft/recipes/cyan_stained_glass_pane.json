@@ -1,0 +1,15 @@
+{
+    "name": "cyan_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "cyan_stained_glass"
+    },
+    "result": {
+        "item": "cyan_stained_glass_pane",
+        "count": 16
+    }
+}

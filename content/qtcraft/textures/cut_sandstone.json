@@ -1,0 +1,8 @@
+{
+    "name": "cut_sandstone",
+    "pattern": "bricks",
+    "primary": "#dccf9c",
+    "secondary": "#c8b884",
+    "variation": 0.04,
+    "seed": 934
+}

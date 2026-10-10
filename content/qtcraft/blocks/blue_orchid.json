@@ -1,0 +1,16 @@
+{
+    "name": "blue_orchid",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt",
+        "mud"
+    ],
+    "washable": true,
+    "textures": {
+        "all": "blue_orchid"
+    }
+}

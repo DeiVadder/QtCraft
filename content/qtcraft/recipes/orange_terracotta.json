@@ -1,0 +1,17 @@
+{
+    "name": "orange_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "orange_dye"
+    },
+    "result": {
+        "item": "orange_terracotta",
+        "count": 8
+    }
+}

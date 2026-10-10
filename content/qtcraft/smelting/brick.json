@@ -1,0 +1,8 @@
+{
+    "name": "brick",
+    "input": "clay_ball",
+    "result": {
+        "item": "brick"
+    },
+    "seconds": 10
+}

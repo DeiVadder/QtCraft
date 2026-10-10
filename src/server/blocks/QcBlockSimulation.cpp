@@ -46,7 +46,10 @@ void QcBlockSimulation::processBlockUpdates()
 void QcBlockSimulation::processUpdate(QcBlockPos pos, QcBlockId block)
 {
     const QcContentRegistry &content = *m_state.content;
-    if (QcFallingBlockManager::shouldFall(m_state.world, pos)) {
+    // Concrete powder hardens in water before it could fall on (decision E-208).
+    if (const std::optional<QcBlockId> hard = QcBlockRules::hardened(m_state.world, pos, block)) {
+        m_blocks.setAndBroadcast(pos, *hard);
+    } else if (QcFallingBlockManager::shouldFall(m_state.world, pos)) {
         startFalling(pos, block);
     } else if (QcLiquidFlow::flows(content, block)) {
         // Lava meeting water hardens at once; flowing waits for the liquid's next step.
@@ -138,8 +141,13 @@ void QcBlockSimulation::landBlock(QcBlockId block, QcBlockPos cell, bool placed)
     }
 
     if (placed && QcFallingBlockManager::isPassable(m_state.world, cell) && !m_blocks.overlapsBody(boxes)) {
-        m_blocks.setAndBroadcast(cell, block);
-        if (m_state.world.blockAt(cell) == block) {
+        // Concrete powder landing in water hardens there (decision E-208).
+        const std::optional<QcBlockId> replaced = m_state.world.blockAt(cell);
+        const bool hardens = replaced && !definition.hardensWith.isEmpty() && m_state.content->isValidBlock(*replaced)
+                             && m_state.content->block(*replaced).name == definition.hardensWith;
+        const QcBlockId landed = hardens ? m_state.content->blockId(definition.hardensInto).value_or(block) : block;
+        m_blocks.setAndBroadcast(cell, landed);
+        if (m_state.world.blockAt(cell) == landed) {
             m_sounds.playBlock(definition, QcBlockSoundAction::Place, cell);
             return;
         }

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
+**QtCraft:** [Beliebige Bretter](#tag-qtcraft-planks) · [Beliebige Terrakotta](#tag-qtcraft-terracotta) · [Beliebige Wolle](#tag-qtcraft-wool) · [Beliebiger Farbstoff](#tag-qtcraft-dyes) · [Kohle oder Holzkohle](#tag-qtcraft-coals)
 
 ## QtCraft
 
@@ -20,7 +20,19 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Eichenfalltür](blocks.md#block-qtcraft-oak_trapdoor), [Eichentür](blocks.md#block-qtcraft-oak_door), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
+[Bücherregal](blocks.md#block-qtcraft-bookshelf), [Fass](blocks.md#block-qtcraft-barrel), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Schüssel](items.md#item-qtcraft-bowl), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
+
+### <a id="tag-qtcraft-terracotta"></a>Beliebige Terrakotta
+
+Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:terracotta` |
+
+**Items dieser Gruppe**
+
+[Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta), [Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta), [Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta), [Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta), [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta), [Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta), [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta), [Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta), [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta), [Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta), [Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta), [Terrakotta](blocks.md#block-qtcraft-terracotta), [Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta), [Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta)
 
 ### <a id="tag-qtcraft-wool"></a>Beliebige Wolle
 
@@ -32,11 +44,11 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
+[Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
 
 **Wird verwendet für**
 
-[Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool)
+[Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool)
 
 ### <a id="tag-qtcraft-dyes"></a>Beliebiger Farbstoff
 
@@ -48,7 +60,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Items dieser Gruppe**
 
-[Blauer Farbstoff](items.md#item-qtcraft-blue_dye), [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye), [Grüner Farbstoff](items.md#item-qtcraft-green_dye), [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye), [Roter Farbstoff](items.md#item-qtcraft-red_dye), [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye), [Violetter Farbstoff](items.md#item-qtcraft-purple_dye)
+[Blauer Farbstoff](items.md#item-qtcraft-blue_dye), [Brauner Farbstoff](items.md#item-qtcraft-brown_dye), [Gelber Farbstoff](items.md#item-qtcraft-yellow_dye), [Grauer Farbstoff](items.md#item-qtcraft-gray_dye), [Grüner Farbstoff](items.md#item-qtcraft-green_dye), [Hellblauer Farbstoff](items.md#item-qtcraft-light_blue_dye), [Hellgrauer Farbstoff](items.md#item-qtcraft-light_gray_dye), [Hellgrüner Farbstoff](items.md#item-qtcraft-lime_dye), [Magentafarbener Farbstoff](items.md#item-qtcraft-magenta_dye), [Orangefarbener Farbstoff](items.md#item-qtcraft-orange_dye), [Rosafarbener Farbstoff](items.md#item-qtcraft-pink_dye), [Roter Farbstoff](items.md#item-qtcraft-red_dye), [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye), [Türkiser Farbstoff](items.md#item-qtcraft-cyan_dye), [Violetter Farbstoff](items.md#item-qtcraft-purple_dye), [Weißer Farbstoff](items.md#item-qtcraft-white_dye)
 
 ### <a id="tag-qtcraft-coals"></a>Kohle oder Holzkohle
 
@@ -64,4 +76,4 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Fackel](blocks.md#block-qtcraft-torch), [Schwarzer Farbstoff](items.md#item-qtcraft-black_dye)
+[Fackel](blocks.md#block-qtcraft-torch), [Kohlestück](items.md#item-qtcraft-coal_chunk)

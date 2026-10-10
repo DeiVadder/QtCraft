@@ -1,0 +1,43 @@
+{
+    "name": "small_torch",
+    "rotate": "attach",
+    "parts": [
+        {
+            "when": {
+                "attach": "floor"
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0,
+                    0.4375,
+                    0.5625,
+                    0.4375,
+                    0.5625
+                ]
+            ],
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ]
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.25,
+                    0,
+                    0.5625,
+                    0.6875,
+                    0.125
+                ]
+            ],
+            "uv": "box"
+        }
+    ]
+}

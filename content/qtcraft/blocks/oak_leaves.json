@@ -8,6 +8,10 @@
         {
             "item": "oak_sapling",
             "chance": 0.08
+        },
+        {
+            "item": "apple",
+            "chance": 0.02
         }
     ],
     "textures": {

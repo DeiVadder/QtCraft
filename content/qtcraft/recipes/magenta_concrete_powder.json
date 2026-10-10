@@ -1,0 +1,19 @@
+{
+    "name": "magenta_concrete_powder",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "sand",
+        "sand",
+        "gravel",
+        "gravel",
+        "gravel",
+        "gravel",
+        "magenta_dye"
+    ],
+    "result": {
+        "item": "magenta_concrete_powder",
+        "count": 8
+    }
+}

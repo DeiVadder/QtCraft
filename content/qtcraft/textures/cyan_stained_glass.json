@@ -1,0 +1,8 @@
+{
+    "name": "cyan_stained_glass",
+    "pattern": "stained_glass",
+    "primary": "#1a9aa2",
+    "secondary": "#158991",
+    "variation": 0.05,
+    "seed": 975
+}

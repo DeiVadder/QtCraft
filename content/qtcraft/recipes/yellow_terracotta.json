@@ -1,0 +1,17 @@
+{
+    "name": "yellow_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "yellow_dye"
+    },
+    "result": {
+        "item": "yellow_terracotta",
+        "count": 8
+    }
+}

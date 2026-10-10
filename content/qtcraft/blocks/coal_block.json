@@ -1,0 +1,11 @@
+{
+    "name": "coal_block",
+    "sound": "stone",
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "coal_block"
+    },
+    "fuelSeconds": 720
+}

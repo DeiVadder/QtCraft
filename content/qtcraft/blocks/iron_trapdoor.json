@@ -1,0 +1,30 @@
+{
+    "name": "iron_trapdoor",
+    "sound": "stone",
+    "shape": "trapdoor",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "iron_trapdoor"
+    },
+    "toolLevel": 1
+}

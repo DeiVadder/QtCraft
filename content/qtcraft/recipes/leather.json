@@ -1,0 +1,15 @@
+{
+    "name": "leather",
+    "type": "shaped",
+    "pattern": [
+        "SSS",
+        "SSS",
+        "SSS"
+    ],
+    "key": {
+        "S": "leather_scrap"
+    },
+    "result": {
+        "item": "leather"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "name": "magenta_stained_glass_pane",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "magenta_stained_glass"
+    },
+    "result": {
+        "item": "magenta_stained_glass_pane",
+        "count": 16
+    }
+}

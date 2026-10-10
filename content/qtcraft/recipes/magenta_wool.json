@@ -1,0 +1,11 @@
+{
+    "name": "magenta_wool",
+    "type": "shapeless",
+    "ingredients": [
+        "#wool",
+        "magenta_dye"
+    ],
+    "result": {
+        "item": "magenta_wool"
+    }
+}

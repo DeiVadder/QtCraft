@@ -32,6 +32,10 @@
         {
             "feature": "sugar_cane",
             "density": 0.15
+        },
+        {
+            "feature": "allium",
+            "density": 0.006
         }
     ]
 }

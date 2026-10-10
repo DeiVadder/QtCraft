@@ -619,3 +619,93 @@ Format je Eintrag: Was, Warum, verworfene Alternative.
 - **Warum:** A2-Punkt „Treppen und Stufen lassen kein Himmelslicht durch“: Teilformen erbten die Durchlässigkeit 15 ihres Materials, ihre Zelle blieb dunkel, Flächen daneben und die Stufe der Treppe wurden schwarz (Screenshot `docs/screenshots/20c-stairs-light-before.png`, nachher `20c-stairs-light-after.png`).
 - **Verworfen:** Teilformen einfach durchlässig machen (Stufendächer ließen den Himmel durch); ein eigenes Datenfeld pro Block (die Formdaten sagen schon, welche Seiten bedeckt sind).
 - **Kosten:** Ein Byte mehr pro Zelle in den Lichtvolumen und eine Bitprüfung pro Ausbreitungsschritt.
+
+## E-200 Nuggets und Kohlestücke
+
+- **Entscheidung:** `iron_nugget`, `gold_nugget` (1 Barren ↔ 9). Dazu `coal_chunk` (Kohlestück): 1 Kohle oder Holzkohle → 9, 9 → 1 Kohle; Brennwert 1/9 der Kohle. Speicherblöcke `iron_block`, `gold_block`, `diamond_block`, `coal_block` (Brennwert 9 × Kohle), `slime_block`, `packed_ice`, jeweils 9 ↔ 1 (Packeis nur 9 Eis → 1).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-201 Kleine Fackel und Laterne
+
+- **Entscheidung:** `small_torch` aus Kohlestück + Stock (1 Stück), Licht 10 (Fackel 14), kleinere Form; pro Kohle 9 kleine statt 4 großer Fackeln. `lantern` aus 8 Eisennuggets um eine Fackel, Licht 15, Form wie Minenlampe (Boden/Decke/Wand).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-202 Glühwürmchenglas
+
+- **Entscheidung:** durchscheinender Block, Licht **4**, lässt Licht durch; Rezept 4 Glas im Plus um eine Glühwürmchen-Flasche → 4. Droppt sich selbst. Glowstone (später, 15) bleibt deutlich besser.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-203 Leder aus Rotten Flesh
+
+- **Entscheidung:** Ofen: Rotten Flesh → `leather_scrap` (Lederfetzen) in 15 s; 9 Fetzen (3 × 3) → 1 Leder. Pro Leder also 9 Rotten Flesh und 135 s Ofenzeit plus Brennstoff; Kühe (später) bleiben weit günstiger.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-204 Ton wie Vanilla
+
+- **Entscheidung:** Tonblock droppt 4 `clay_ball`; 4 Klumpen → Tonblock; Klumpen im Ofen → `brick` (Item); 4 Ziegel → Ziegelblock; Tonblock im Ofen → `terracotta`. Ofenrezept Ton → Ziegelblock entfällt. Lampengehäuse aus Tonklumpen statt Tonblöcken.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-205 16 Farben wie Vanilla
+
+- **Entscheidung:** neue Farbstoffe weiß (Maiglöckchen), hellblau (Orchidee), magenta (Zierlauch), braun (brauner Pilz; Vanilla: Kakao), rosa (rot + weiß), hellgrün (grün + weiß), türkis (blau + grün), grau (schwarz + weiß), hellgrau (grau + weiß). Neue Wollfarben dazu, Teppiche kommen über die Bauteil-Familie.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-206 Farbige Familien ohne Bauteile
+
+- **Entscheidung:** gefärbtes Glas (8 Glas + Farbstoff → 8), gefärbte Scheiben (6 → 16), Terrakotta (8 + Farbstoff → 8), Betonpulver (4 Sand + 4 Kies + Farbstoff → 8), Beton (aus Pulver per Wasser, siehe E-208).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-207 Bewegung in und auf Blöcken
+
+- **Entscheidung:** Blockfelder `slowsInside` (Faktor für Körper im Block, Netz: 0,25 waagrecht, Fallen stark gebremst) und `surface: {speed, jump}` (Untergrund, Schlamm: Tempo 0,6, Sprungkraft 0,93 ⇒ Sprunghöhe ≈ 1,06 statt 1,23 Blöcke, ein voller Block bleibt knapp überspringbar; die Sprungweite sinkt vor allem über das Tempo). Läuft in `QcPhysics` (Server und Client), Felder im Content-Serializer.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-208 Aushärten
+
+- **Entscheidung:** Blockfeld `hardens: {with, into}`: liegt der Block an einem Block `with` (jeder Zustand, z. B. Wasser), wird er zu `into`. Geprüft in `QcBlockSimulation::processUpdate` vor dem Fallen (Pulver im Wasser härtet statt weiterzufallen) und beim Laden von Chunkrändern.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-209 Magma
+
+- **Entscheidung:** `contactDamage` zählt auch den **festen** Block unter der Fußmitte (`damageFromBelow` in `QcServerCombat.cpp`); eine nach unten verlängerte Box hätte Lava neben dem Standblock mitgezählt (Prüfbefund). Magmablock: Licht 3, Schaden 1, als Erzvene tief im Stein (y 5–24). Kein Rezept (kein Magmacreme). Mobs spawnen nicht auf Blöcken mit `contactDamage` und nicht mit Füßen oder Kopf in Blöcken mit `slowsInside` (Netz), unabhängig von ihrer `blocks`-Liste (`QcMobManager`, nach Feldern statt Namen, damit Mod-Blöcke dieselbe Regel bekommen).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-210 Schlamm
+
+- **Entscheidung:** Sumpf-Ufer (`beach`) wird Schlamm statt Gras; Zuckerrohr, hohes Gras und Orchidee wachsen auch auf Schlamm (sonst verschwand Zuckerrohr aus Sümpfen, Prüfbefund). Erde + Wasserflasche → Schlamm; Schlamm im Ofen → `packed_mud` (gestampfter Schlamm; Vanilla: + Weizen); 4 → 4 `mud_bricks`, Material mit Bauteilen.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-211 Wasserflasche
+
+- **Entscheidung:** Liquid-Feld `flow.bottle` und Item-Feld `bottles` (Glasflasche, `"bottles": true`): füllt aus Wasser, ohne die Quelle zu entfernen. Ein Item mit `scoops` und `bottles` zugleich lehnt der Parser mit Fehlermeldung ab (ein Klick nimmt entweder die Quelle oder füllt). Rezept-Rückgaben gibt es nicht ⇒ die Flasche geht im Schlamm-Rezept auf.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-212 Essen mit Rückgabe
+
+- **Entscheidung:** `consume` beachtet `emptiesTo` (Pilzsuppe → Schüssel).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-213 Grobe Erde / Podsol
+
+- **Entscheidung:** zurückgestellt (Biome kennen nur eine Oberfläche; Flecken bräuchten neues Worldgen).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-214 Feature- und Erz-Seeds nach Namen
+
+- **Entscheidung:** `QcTerrainDefinitions` leitete die Seeds aus der Listenposition ab (`1000/2000/3000 + Index`, Erze `100 + Index`); jedes neue Feature verschob dadurch Bäume und Erze der ganzen Welt (aufgefallen an `test_survival_scenario`: Spawn plötzlich unter Laub). Jetzt `qcNameSalt(name)` (FNV-1a) + fester Versatz je Zweck. Bestehende Welten bekommen in neuen Chunks einmalig andere Bäume/Erze an Chunkgrenzen; danach sind Inhaltszugänge (auch Mods) stabil.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-215 Schwarzer Farbstoff aus Kohlestück
+
+- **Entscheidung:** `#coals` allein im Raster ergibt jetzt 9 Kohlestücke; schwarzer Farbstoff kommt aus 1 Kohlestück (vorher 1 Kohle).
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-216 Netze als „Erz“ in Höhlenluft
+
+- **Entscheidung:** Es gibt keinen Feature-Typ für Höhlenwände; Netze kommen über `ores/cobweb.json` mit `"replaces": "air"` (y 10–50, rund 3 pro Chunk). Das Handbuch zeigt „Höhlenluft“ statt eines Links auf Luft; `test_terrain_generator` zählt Netze als ausgehöhlt. Netze haben `"support": "none"`: Kreuzformen brauchen sonst einen festen Block darunter, die Klumpen hängen aber frei in der Höhlenluft, und das erste Nachbar-Update (z. B. Abbau daneben) ließ ganze Klumpen abfallen (Prüfbefund, Test). `washable` bleibt wie im Vorbild: fließendes Wasser räumt Netze weg und lässt den Faden fallen. Generierte Netze ersetzen nur Höhlenluft, stehen also nicht in Flüssigkeit; weggespült werden sie nur, wenn später Wasser zu ihnen fließt (z. B. vom Spieler ausgegossen), was gewollt ist. `lightOpacity` ist 0, weil Teilformen seit E-104 keine eigene Dämpfung haben; das Handbuch zeigt für Teilformen jetzt den wirksamen Wert (0 bzw. „nur an den Seiten, die seine Form ganz bedeckt“ bei Stufen und Treppen) statt des Datenwerts.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.
+
+## E-217 Fallendes Pulver im Wasser
+
+- **Entscheidung:** landet Betonpulver in einer Zelle mit seinem `hardensWith`-Block, wird dort sofort `hardensInto` gesetzt (`QcBlockSimulation::landBlock`), sonst würde es das Wasser verdrängen und Pulver bleiben.
+- **Kontext:** Nebenstrang „Blöcke und Rezepte“ (`feature/blocks-recipes`, vom Menschen am 2026-10-09 beauftragt); Einzelheiten und Begründungen in `docs/FORTSCHRITT-Bloecke-Rezepte.md`. Nummern E-200 ff., um nicht mit dem parallelen Hauptstrang zu kollidieren.

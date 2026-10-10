@@ -53,6 +53,10 @@ private:
     void addDropFacts();
     void addPhysicalFacts();
     void addSupportFacts();
+    // Light the block holds back as the light engine applies it.
+    void addLightBlockingFact();
+    // Slowing inside, the walking surface and hardening (cobweb, mud, concrete powder).
+    void addMovementFacts();
     void addUseFacts();
     void addMachineFacts();
     void addSaplingFacts();
@@ -202,9 +206,7 @@ void BlockPage::addPhysicalFacts()
     if (block.lightLevel > 0) {
         addFact(u"light"_s, label(u"unit.lightLevel"_s).arg(block.lightLevel));
     }
-    if (block.lightOpacity < 15) {
-        addFact(u"lightOpacity"_s, label(u"unit.lightLevel"_s).arg(block.lightOpacity));
-    }
+    addLightBlockingFact();
 
     if (!block.solid) {
         addFact(u"solid"_s, m_text.yesNo(false));
@@ -225,6 +227,47 @@ void BlockPage::addPhysicalFacts()
         addFact(u"contactDamage"_s, m_text.healthPoints(block.contactDamage));
     }
     addFlag(block.climbable, u"climbable"_s);
+    addMovementFacts();
+}
+
+void BlockPage::addLightBlockingFact()
+{
+    // Partial shapes block light only at the sides they cover (E-104); their own value has no effect.
+    bool partial = false;
+    bool coversSides = false;
+    if (const std::optional<QcBlockId> id = m_content.blockId(m_block.name)) {
+        const QcBlockStateTable &states = m_content.stateTable();
+        const quint32 type = m_content.state(*id).type;
+        for (int index = 0; index < states.stateCount(type); ++index) {
+            const QcBlockState &state = states.state(states.firstState(type) + quint32(index));
+            partial = partial || !state.fullCube;
+            coversSides = coversSides || state.lightBlockedFaces != 0;
+        }
+    }
+
+    if (coversSides) {
+        addFact(u"lightOpacity"_s, label(u"value.coveredSides"_s));
+    } else if (partial || m_block.lightOpacity < 15) {
+        addFact(u"lightOpacity"_s, label(u"unit.lightLevel"_s).arg(partial ? 0 : m_block.lightOpacity));
+    }
+}
+
+void BlockPage::addMovementFacts()
+{
+    const QcBlockDefinition &block = m_block;
+    if (block.slowsInside < 1.0) {
+        addFact(u"slowsInside"_s, m_text.percent(block.slowsInside));
+    }
+    if (block.surfaceSpeed != 1.0) {
+        addFact(u"surfaceSpeed"_s, m_text.percent(block.surfaceSpeed));
+    }
+    if (block.surfaceJump != 1.0) {
+        addFact(u"surfaceJump"_s, m_text.percent(block.surfaceJump));
+    }
+    if (!block.hardensWith.isEmpty()) {
+        m_entry.facts.append({label(u"fact.hardens"_s).arg(m_links.itemTitle(block.hardensWith, m_text.language())), {},
+                              {m_links.blockLink(block.hardensInto)}});
+    }
 }
 
 void BlockPage::addSupportFacts()

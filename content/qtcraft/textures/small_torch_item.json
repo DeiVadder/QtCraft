@@ -1,0 +1,8 @@
+{
+    "name": "small_torch_item",
+    "pattern": "torch_item",
+    "primary": "#7a5a32",
+    "secondary": "#f0a840",
+    "variation": 0.12,
+    "seed": 912
+}

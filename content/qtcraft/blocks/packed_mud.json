@@ -1,0 +1,9 @@
+{
+    "name": "packed_mud",
+    "sound": "dirt",
+    "hardness": 1.0,
+    "tool": "pickaxe",
+    "textures": {
+        "all": "packed_mud"
+    }
+}

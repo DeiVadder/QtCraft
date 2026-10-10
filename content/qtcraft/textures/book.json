@@ -1,0 +1,8 @@
+{
+    "name": "book",
+    "pattern": "book",
+    "primary": "#8a4a2a",
+    "secondary": "#ece8d8",
+    "variation": 0.08,
+    "seed": 998
+}

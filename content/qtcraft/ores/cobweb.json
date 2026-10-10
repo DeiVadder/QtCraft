@@ -1,0 +1,9 @@
+{
+    "name": "cobweb",
+    "replaces": "air",
+    "block": "cobweb",
+    "minY": 10,
+    "maxY": 50,
+    "veinsPerChunk": 10,
+    "veinSize": 4
+}

@@ -198,15 +198,18 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     caveLiquid = terrain.caveLiquidBlock.isEmpty() ? qcAirBlockId : loader.resolve(terrain.caveLiquidBlock, qcAirBlockId);
     bedrockLayers = terrain.bedrockLayers;
 
-    quint64 featureIndex = 0;
+    // Seeds come from the names (decision E-214): new content leaves the other features and ores
+    // where they were.
     for (const QcFeatureDefinition &definition : content.features()) {
-        const quint64 poolSeed = qcMixSeed(seed, 3000 + featureIndex++);
+        const quint64 salt = qcNameSalt(definition.name);
         if (definition.type == QcFeatureDefinition::Type::Pool) {
-            if (const std::optional<Pool> pool = loader.pool(definition, poolSeed)) {
+            if (const std::optional<Pool> pool = loader.pool(definition, qcMixSeed(seed, salt + 3))) {
                 pools.append(*pool);
             }
         }
-        features.append(loader.feature(definition, qcMixSeed(seed, 2000 + featureIndex)));
+        Feature feature = loader.feature(definition, qcMixSeed(seed, salt + 2));
+        feature.seed = qcMixSeed(seed, salt + 1);
+        features.append(feature);
     }
 
     for (const QcBiomeDefinition &definition : content.biomes()) {
@@ -231,9 +234,8 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
 
     naturalGround = naturalGroundOf(biomes, stone, water);
 
-    quint64 oreIndex = 100;
     for (const QcOreDefinition &definition : content.ores()) {
-        if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, oreIndex++))) {
+        if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {
             ores.append(*ore);
         }
     }

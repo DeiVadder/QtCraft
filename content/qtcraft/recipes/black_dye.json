@@ -2,7 +2,7 @@
     "name": "black_dye",
     "type": "shapeless",
     "ingredients": [
-        "#coals"
+        "coal_chunk"
     ],
     "result": {
         "item": "black_dye"

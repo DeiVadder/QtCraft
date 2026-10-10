@@ -1,8 +1,8 @@
 {
-    "name": "bricks",
+    "name": "terracotta",
     "input": "clay",
     "result": {
-        "item": "bricks"
+        "item": "terracotta"
     },
     "seconds": 10
 }

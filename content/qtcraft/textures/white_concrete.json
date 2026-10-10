@@ -1,0 +1,8 @@
+{
+    "name": "white_concrete",
+    "pattern": "noise",
+    "primary": "#cfd5d6",
+    "secondary": "#cfd5d6",
+    "variation": 0.025,
+    "seed": 908
+}

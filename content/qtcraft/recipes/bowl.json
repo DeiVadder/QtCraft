@@ -1,0 +1,15 @@
+{
+    "name": "bowl",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        " # "
+    ],
+    "key": {
+        "#": "#planks"
+    },
+    "result": {
+        "item": "bowl",
+        "count": 4
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "name": "mushroom_stew",
+    "type": "shapeless",
+    "ingredients": [
+        "brown_mushroom",
+        "red_mushroom",
+        "bowl"
+    ],
+    "result": {
+        "item": "mushroom_stew"
+    }
+}

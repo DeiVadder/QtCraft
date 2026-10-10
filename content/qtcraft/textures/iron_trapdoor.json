@@ -1,0 +1,8 @@
+{
+    "name": "iron_trapdoor",
+    "pattern": "trapdoor",
+    "primary": "#c8c8cc",
+    "secondary": "#8a8a90",
+    "variation": 0.08,
+    "seed": 932
+}

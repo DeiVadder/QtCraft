@@ -1,0 +1,8 @@
+{
+    "name": "yellow_terracotta",
+    "pattern": "noise",
+    "primary": "#ba8523",
+    "secondary": "#ba8523",
+    "variation": 0.04,
+    "seed": 970
+}

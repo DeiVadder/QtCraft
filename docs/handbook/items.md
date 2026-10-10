@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Coal](#item-qtcraft-coal) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Lava bucket](#item-qtcraft-lava_bucket) · [Orange dye](#item-qtcraft-orange_dye) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bucket](#item-qtcraft-water_bucket) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -22,11 +22,11 @@ Made from coal; colours wool black.
 
 | 1 | → |
 |---|---|
-| [Coal or charcoal](tags.md#tag-qtcraft-coals) | [Black dye](#item-qtcraft-black_dye) |
+| [Coal chunk](#item-qtcraft-coal_chunk) | [Black dye](#item-qtcraft-black_dye) |
 
 **Used in**
 
-[Black wool](blocks.md#block-qtcraft-black_wool)
+[Black concrete powder](blocks.md#block-qtcraft-black_concrete_powder), [Black stained glass](blocks.md#block-qtcraft-black_stained_glass), [Black terracotta](blocks.md#block-qtcraft-black_terracotta), [Black wool](blocks.md#block-qtcraft-black_wool), [Gray dye](#item-qtcraft-gray_dye)
 
 ### <a id="item-qtcraft-blue_dye"></a>Blue dye
 
@@ -48,7 +48,103 @@ Made from cornflowers.
 
 **Used in**
 
-[Blue wool](blocks.md#block-qtcraft-blue_wool), [Purple dye](#item-qtcraft-purple_dye)
+[Blue concrete powder](blocks.md#block-qtcraft-blue_concrete_powder), [Blue stained glass](blocks.md#block-qtcraft-blue_stained_glass), [Blue terracotta](blocks.md#block-qtcraft-blue_terracotta), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Cyan dye](#item-qtcraft-cyan_dye), [Purple dye](#item-qtcraft-purple_dye)
+
+### <a id="item-qtcraft-book"></a>Book
+
+Paper bound in leather.
+
+| | |
+|---|---|
+| ID | `qtcraft:book` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Paper](#item-qtcraft-paper) | [Paper](#item-qtcraft-paper) | [Book](#item-qtcraft-book) |
+| [Paper](#item-qtcraft-paper) | [Leather](#item-qtcraft-leather) |  |
+
+**Used in**
+
+[Bookshelf](blocks.md#block-qtcraft-bookshelf)
+
+**Dropped by**
+
+[Bookshelf](blocks.md#block-qtcraft-bookshelf) (3×)
+
+### <a id="item-qtcraft-bowl"></a>Bowl
+
+A wooden bowl for soup.
+
+| | |
+|---|---|
+| ID | `qtcraft:bowl` |
+| Stack size | 64 |
+| Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Any planks](tags.md#tag-qtcraft-planks) | · | [Any planks](tags.md#tag-qtcraft-planks) | 4 × [Bowl](#item-qtcraft-bowl) |
+| · | [Any planks](tags.md#tag-qtcraft-planks) | · |  |
+
+**Used in**
+
+[Mushroom stew](food.md#item-qtcraft-mushroom_stew)
+
+### <a id="item-qtcraft-brick"></a>Brick
+
+A fired clay ball; four make a block of bricks.
+
+| | |
+|---|---|
+| ID | `qtcraft:brick` |
+| Stack size | 64 |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Clay ball](#item-qtcraft-clay_ball) | [Brick](#item-qtcraft-brick) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Bricks](blocks.md#block-qtcraft-bricks)
+
+### <a id="item-qtcraft-brown_dye"></a>Brown dye
+
+Colours wool, glass, terracotta and concrete brown.
+
+| | |
+|---|---|
+| ID | `qtcraft:brown_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Brown mushroom](blocks.md#block-qtcraft-brown_mushroom) | [Brown dye](#item-qtcraft-brown_dye) |
+
+**Used in**
+
+[Brown concrete powder](blocks.md#block-qtcraft-brown_concrete_powder), [Brown stained glass](blocks.md#block-qtcraft-brown_stained_glass), [Brown terracotta](blocks.md#block-qtcraft-brown_terracotta), [Brown wool](blocks.md#block-qtcraft-brown_wool)
 
 ### <a id="item-qtcraft-bucket"></a>Bucket
 
@@ -110,7 +206,36 @@ Burnt wood: fuel as good as coal and part of torches.
 
 **Used in**
 
-[Black dye](#item-qtcraft-black_dye) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+
+### <a id="item-qtcraft-clay_ball"></a>Clay ball
+
+Soft clay: four make a clay block, the furnace turns it into a brick.
+
+| | |
+|---|---|
+| ID | `qtcraft:clay_ball` |
+| Stack size | 64 |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Clay ball](#item-qtcraft-clay_ball) | [Brick](#item-qtcraft-brick) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Clay](blocks.md#block-qtcraft-clay), [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell)
+
+**Dropped by**
+
+[Clay](blocks.md#block-qtcraft-clay) (4×)
 
 ### <a id="item-qtcraft-coal"></a>Coal
 
@@ -123,13 +248,73 @@ Fuel for the furnace and part of torches.
 | Burns as fuel | 80 s: [Fuels](tables.md#table-fuels) |
 | Groups | [Coal or charcoal](tags.md#tag-qtcraft-coals) |
 
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) | [Coal](#item-qtcraft-coal) |
+| [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) |  |
+| [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) | [Coal chunk](#item-qtcraft-coal_chunk) |  |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of coal](blocks.md#block-qtcraft-coal_block) | 9 × [Coal](#item-qtcraft-coal) |
+
 **Used in**
 
-[Black dye](#item-qtcraft-black_dye) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
+[Block of coal](blocks.md#block-qtcraft-coal_block), [Coal chunk](#item-qtcraft-coal_chunk) (Coal or charcoal), [Torch](blocks.md#block-qtcraft-torch) (Coal or charcoal)
 
 **Dropped by**
 
 [Coal ore](blocks.md#block-qtcraft-coal_ore)
+
+### <a id="item-qtcraft-coal_chunk"></a>Coal chunk
+
+A ninth of a piece of coal: a little fuel, black dye and small torches.
+
+| | |
+|---|---|
+| ID | `qtcraft:coal_chunk` |
+| Stack size | 64 |
+| Burns as fuel | 9 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Coal or charcoal](tags.md#tag-qtcraft-coals) | 9 × [Coal chunk](#item-qtcraft-coal_chunk) |
+
+**Used in**
+
+[Black dye](#item-qtcraft-black_dye), [Coal](#item-qtcraft-coal), [Small torch](blocks.md#block-qtcraft-small_torch)
+
+### <a id="item-qtcraft-cyan_dye"></a>Cyan dye
+
+Colours wool, glass, terracotta and concrete cyan.
+
+| | |
+|---|---|
+| ID | `qtcraft:cyan_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Blue dye](#item-qtcraft-blue_dye) | [Green dye](#item-qtcraft-green_dye) | 2 × [Cyan dye](#item-qtcraft-cyan_dye) |
+
+**Used in**
+
+[Cyan concrete powder](blocks.md#block-qtcraft-cyan_concrete_powder), [Cyan stained glass](blocks.md#block-qtcraft-cyan_stained_glass), [Cyan terracotta](blocks.md#block-qtcraft-cyan_terracotta), [Cyan wool](blocks.md#block-qtcraft-cyan_wool)
 
 ### <a id="item-qtcraft-diamond"></a>Diamond
 
@@ -140,9 +325,17 @@ The hardest material, for the best tools.
 | ID | `qtcraft:diamond` |
 | Stack size | 64 |
 
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of diamond](blocks.md#block-qtcraft-diamond_block) | 9 × [Diamond](#item-qtcraft-diamond) |
+
 **Used in**
 
-[Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword)
+[Block of diamond](blocks.md#block-qtcraft-diamond_block), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword)
 
 **Dropped by**
 
@@ -184,7 +377,7 @@ A caught firefly. It lights the mine lamp.
 
 **Used in**
 
-[Mine lamp](blocks.md#block-qtcraft-mine_lamp)
+[Firefly glass](blocks.md#block-qtcraft-firefly_glass), [Mine lamp](blocks.md#block-qtcraft-mine_lamp)
 
 **Caught from**
 
@@ -198,6 +391,7 @@ Use it on a firefly at night in a swamp to catch it.
 |---|---|
 | ID | `qtcraft:glass_bottle` |
 | Stack size | 16 |
+| Fills from | [Water](liquids.md#block-qtcraft-water) (Water bottle) |
 
 **How to make it**
 
@@ -221,6 +415,22 @@ Smelted gold.
 | ID | `qtcraft:gold_ingot` |
 | Stack size | 64 |
 
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of gold](blocks.md#block-qtcraft-gold_block) | 9 × [Gold ingot](#item-qtcraft-gold_ingot) |
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) | [Gold ingot](#item-qtcraft-gold_ingot) |
+| [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) |  |
+| [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) | [Gold nugget](#item-qtcraft-gold_nugget) |  |
+
 **Made in a furnace**
 
 *Furnace: 10 s per item, needs fuel*
@@ -232,6 +442,53 @@ Smelted gold.
 [Furnace](blocks.md#block-qtcraft-furnace)
 
 [Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Block of gold](blocks.md#block-qtcraft-gold_block), [Gold nugget](#item-qtcraft-gold_nugget), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword)
+
+### <a id="item-qtcraft-gold_nugget"></a>Gold nugget
+
+A ninth of a gold ingot.
+
+| | |
+|---|---|
+| ID | `qtcraft:gold_nugget` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Gold ingot](#item-qtcraft-gold_ingot) | 9 × [Gold nugget](#item-qtcraft-gold_nugget) |
+
+**Used in**
+
+[Gold ingot](#item-qtcraft-gold_ingot)
+
+### <a id="item-qtcraft-gray_dye"></a>Gray dye
+
+Colours wool, glass, terracotta and concrete gray.
+
+| | |
+|---|---|
+| ID | `qtcraft:gray_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Black dye](#item-qtcraft-black_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Gray dye](#item-qtcraft-gray_dye) |
+
+**Used in**
+
+[Gray concrete powder](blocks.md#block-qtcraft-gray_concrete_powder), [Gray stained glass](blocks.md#block-qtcraft-gray_stained_glass), [Gray terracotta](blocks.md#block-qtcraft-gray_terracotta), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Light gray dye](#item-qtcraft-light_gray_dye)
 
 ### <a id="item-qtcraft-green_dye"></a>Green dye
 
@@ -257,7 +514,7 @@ Made from cactus in the furnace.
 
 **Used in**
 
-[Green wool](blocks.md#block-qtcraft-green_wool)
+[Cyan dye](#item-qtcraft-cyan_dye), [Green concrete powder](blocks.md#block-qtcraft-green_concrete_powder), [Green stained glass](blocks.md#block-qtcraft-green_stained_glass), [Green terracotta](blocks.md#block-qtcraft-green_terracotta), [Green wool](blocks.md#block-qtcraft-green_wool), [Lime dye](#item-qtcraft-lime_dye)
 
 ### <a id="item-qtcraft-iron_ingot"></a>Iron ingot
 
@@ -267,6 +524,22 @@ Smelted iron for tools, buckets and more.
 |---|---|
 | ID | `qtcraft:iron_ingot` |
 | Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of iron](blocks.md#block-qtcraft-iron_block) | 9 × [Iron ingot](#item-qtcraft-iron_ingot) |
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) | [Iron ingot](#item-qtcraft-iron_ingot) |
+| [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) |  |
+| [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) | [Iron nugget](#item-qtcraft-iron_nugget) |  |
 
 **Made in a furnace**
 
@@ -282,7 +555,28 @@ Smelted iron for tools, buckets and more.
 
 **Used in**
 
-[Bucket](#item-qtcraft-bucket), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword)
+[Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor)
+
+### <a id="item-qtcraft-iron_nugget"></a>Iron nugget
+
+A ninth of an iron ingot, for small metal parts like lanterns.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_nugget` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Iron ingot](#item-qtcraft-iron_ingot) | 9 × [Iron nugget](#item-qtcraft-iron_nugget) |
+
+**Used in**
+
+[Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern)
 
 ### <a id="item-qtcraft-lava_bucket"></a>Lava bucket
 
@@ -295,6 +589,142 @@ Pours a lava source. Burns very long as fuel; the bucket stays.
 | Burns as fuel | 1000 s: [Fuels](tables.md#table-fuels) |
 | Places | [Lava](liquids.md#block-qtcraft-lava) |
 | Afterwards | [Bucket](#item-qtcraft-bucket) |
+
+### <a id="item-qtcraft-leather"></a>Leather
+
+Tough hide for books; for now it can only be pieced together from scraps.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) | [Leather](#item-qtcraft-leather) |
+| [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) |  |
+| [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) | [Leather scrap](#item-qtcraft-leather_scrap) |  |
+
+**Used in**
+
+[Book](#item-qtcraft-book)
+
+### <a id="item-qtcraft-leather_scrap"></a>Leather scrap
+
+Rotten flesh dried in the furnace. It takes nine scraps to make a single piece of leather.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_scrap` |
+| Stack size | 64 |
+
+**Made in a furnace**
+
+*Furnace: 15 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Rotten flesh](food.md#item-qtcraft-rotten_flesh) | [Leather scrap](#item-qtcraft-leather_scrap) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Used in**
+
+[Leather](#item-qtcraft-leather)
+
+### <a id="item-qtcraft-light_blue_dye"></a>Light blue dye
+
+Colours wool, glass, terracotta and concrete light blue.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_blue_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Blue orchid](blocks.md#block-qtcraft-blue_orchid) | [Light blue dye](#item-qtcraft-light_blue_dye) |
+
+**Used in**
+
+[Light blue concrete powder](blocks.md#block-qtcraft-light_blue_concrete_powder), [Light blue stained glass](blocks.md#block-qtcraft-light_blue_stained_glass), [Light blue terracotta](blocks.md#block-qtcraft-light_blue_terracotta), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool)
+
+### <a id="item-qtcraft-light_gray_dye"></a>Light gray dye
+
+Colours wool, glass, terracotta and concrete light gray.
+
+| | |
+|---|---|
+| ID | `qtcraft:light_gray_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Gray dye](#item-qtcraft-gray_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Light gray dye](#item-qtcraft-light_gray_dye) |
+
+**Used in**
+
+[Light gray concrete powder](blocks.md#block-qtcraft-light_gray_concrete_powder), [Light gray stained glass](blocks.md#block-qtcraft-light_gray_stained_glass), [Light gray terracotta](blocks.md#block-qtcraft-light_gray_terracotta), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool)
+
+### <a id="item-qtcraft-lime_dye"></a>Lime dye
+
+Colours wool, glass, terracotta and concrete lime.
+
+| | |
+|---|---|
+| ID | `qtcraft:lime_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Green dye](#item-qtcraft-green_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Lime dye](#item-qtcraft-lime_dye) |
+
+**Used in**
+
+[Lime concrete powder](blocks.md#block-qtcraft-lime_concrete_powder), [Lime stained glass](blocks.md#block-qtcraft-lime_stained_glass), [Lime terracotta](blocks.md#block-qtcraft-lime_terracotta), [Lime wool](blocks.md#block-qtcraft-lime_wool)
+
+### <a id="item-qtcraft-magenta_dye"></a>Magenta dye
+
+Colours wool, glass, terracotta and concrete magenta.
+
+| | |
+|---|---|
+| ID | `qtcraft:magenta_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Allium](blocks.md#block-qtcraft-allium) | [Magenta dye](#item-qtcraft-magenta_dye) |
+
+**Used in**
+
+[Magenta concrete powder](blocks.md#block-qtcraft-magenta_concrete_powder), [Magenta stained glass](blocks.md#block-qtcraft-magenta_stained_glass), [Magenta terracotta](blocks.md#block-qtcraft-magenta_terracotta), [Magenta wool](blocks.md#block-qtcraft-magenta_wool)
 
 ### <a id="item-qtcraft-orange_dye"></a>Orange dye
 
@@ -316,7 +746,50 @@ Mixed from red and yellow dye.
 
 **Used in**
 
-[Orange wool](blocks.md#block-qtcraft-orange_wool)
+[Orange concrete powder](blocks.md#block-qtcraft-orange_concrete_powder), [Orange stained glass](blocks.md#block-qtcraft-orange_stained_glass), [Orange terracotta](blocks.md#block-qtcraft-orange_terracotta), [Orange wool](blocks.md#block-qtcraft-orange_wool)
+
+### <a id="item-qtcraft-paper"></a>Paper
+
+Pressed sugar cane.
+
+| | |
+|---|---|
+| ID | `qtcraft:paper` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Sugar cane](blocks.md#block-qtcraft-sugar_cane) | [Sugar cane](blocks.md#block-qtcraft-sugar_cane) | [Sugar cane](blocks.md#block-qtcraft-sugar_cane) | 3 × [Paper](#item-qtcraft-paper) |
+
+**Used in**
+
+[Book](#item-qtcraft-book)
+
+### <a id="item-qtcraft-pink_dye"></a>Pink dye
+
+Colours wool, glass, terracotta and concrete pink.
+
+| | |
+|---|---|
+| ID | `qtcraft:pink_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Red dye](#item-qtcraft-red_dye) | [White dye](#item-qtcraft-white_dye) | 2 × [Pink dye](#item-qtcraft-pink_dye) |
+
+**Used in**
+
+[Pink concrete powder](blocks.md#block-qtcraft-pink_concrete_powder), [Pink stained glass](blocks.md#block-qtcraft-pink_stained_glass), [Pink terracotta](blocks.md#block-qtcraft-pink_terracotta), [Pink wool](blocks.md#block-qtcraft-pink_wool)
 
 ### <a id="item-qtcraft-purple_dye"></a>Purple dye
 
@@ -338,7 +811,7 @@ Mixed from red and blue dye.
 
 **Used in**
 
-[Purple wool](blocks.md#block-qtcraft-purple_wool)
+[Purple concrete powder](blocks.md#block-qtcraft-purple_concrete_powder), [Purple stained glass](blocks.md#block-qtcraft-purple_stained_glass), [Purple terracotta](blocks.md#block-qtcraft-purple_terracotta), [Purple wool](blocks.md#block-qtcraft-purple_wool)
 
 ### <a id="item-qtcraft-red_dye"></a>Red dye
 
@@ -360,7 +833,7 @@ Made from poppies.
 
 **Used in**
 
-[Orange dye](#item-qtcraft-orange_dye), [Purple dye](#item-qtcraft-purple_dye), [Red wool](blocks.md#block-qtcraft-red_wool)
+[Orange dye](#item-qtcraft-orange_dye), [Pink dye](#item-qtcraft-pink_dye), [Purple dye](#item-qtcraft-purple_dye), [Red concrete powder](blocks.md#block-qtcraft-red_concrete_powder), [Red stained glass](blocks.md#block-qtcraft-red_stained_glass), [Red terracotta](blocks.md#block-qtcraft-red_terracotta), [Red wool](blocks.md#block-qtcraft-red_wool)
 
 ### <a id="item-qtcraft-slimeball"></a>Slimeball
 
@@ -370,6 +843,18 @@ Dropped by slimes.
 |---|---|
 | ID | `qtcraft:slimeball` |
 | Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Slime block](blocks.md#block-qtcraft-slime_block) | 9 × [Slimeball](#item-qtcraft-slimeball) |
+
+**Used in**
+
+[Slime block](blocks.md#block-qtcraft-slime_block)
 
 **Dropped by**
 
@@ -396,7 +881,28 @@ Handle of tools and torches.
 
 **Used in**
 
-[Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Barrel](blocks.md#block-qtcraft-barrel), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Ladder](blocks.md#block-qtcraft-ladder), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Small torch](blocks.md#block-qtcraft-small_torch), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Stone axe](tools.md#item-qtcraft-stone_axe), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe), [Stone shovel](tools.md#item-qtcraft-stone_shovel), [Stone sword](tools.md#item-qtcraft-stone_sword), [Torch](blocks.md#block-qtcraft-torch), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+
+**Dropped by**
+
+[Dead bush](blocks.md#block-qtcraft-dead_bush) (50 %)
+
+### <a id="item-qtcraft-string"></a>String
+
+Thread from a cobweb; four make white wool.
+
+| | |
+|---|---|
+| ID | `qtcraft:string` |
+| Stack size | 64 |
+
+**Used in**
+
+[White wool](blocks.md#block-qtcraft-white_wool)
+
+**Dropped by**
+
+[Cobweb](blocks.md#block-qtcraft-cobweb)
 
 ### <a id="item-qtcraft-unfired_lamp_shell"></a>Unfired lamp shell
 
@@ -413,9 +919,9 @@ Clay shaped into a lamp; fire it in the furnace.
 
 | 1 | 2 | 3 | → |
 |---|---|---|---|
-| · | [Clay](blocks.md#block-qtcraft-clay) | · | [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) |
-| [Clay](blocks.md#block-qtcraft-clay) | · | [Clay](blocks.md#block-qtcraft-clay) |  |
-| · | [Clay](blocks.md#block-qtcraft-clay) | · |  |
+| · | [Clay ball](#item-qtcraft-clay_ball) | · | [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) |
+| [Clay ball](#item-qtcraft-clay_ball) | · | [Clay ball](#item-qtcraft-clay_ball) |  |
+| · | [Clay ball](#item-qtcraft-clay_ball) | · |  |
 
 **Smelts into**
 
@@ -429,6 +935,19 @@ Clay shaped into a lamp; fire it in the furnace.
 
 [Fuels](tables.md#table-fuels)
 
+### <a id="item-qtcraft-water_bottle"></a>Water bottle
+
+A glass bottle filled at any water; the water stays where it is.
+
+| | |
+|---|---|
+| ID | `qtcraft:water_bottle` |
+| Stack size | 16 |
+
+**Used in**
+
+[Mud](blocks.md#block-qtcraft-mud)
+
 ### <a id="item-qtcraft-water_bucket"></a>Water bucket
 
 Pours a water source.
@@ -439,6 +958,28 @@ Pours a water source.
 | Stack size | 1 |
 | Places | [Water](liquids.md#block-qtcraft-water) |
 | Afterwards | [Bucket](#item-qtcraft-bucket) |
+
+### <a id="item-qtcraft-white_dye"></a>White dye
+
+Colours wool, glass, terracotta and concrete white.
+
+| | |
+|---|---|
+| ID | `qtcraft:white_dye` |
+| Stack size | 64 |
+| Groups | [Any dye](tags.md#tag-qtcraft-dyes) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) | [White dye](#item-qtcraft-white_dye) |
+
+**Used in**
+
+[Gray dye](#item-qtcraft-gray_dye), [Light gray dye](#item-qtcraft-light_gray_dye), [Lime dye](#item-qtcraft-lime_dye), [Pink dye](#item-qtcraft-pink_dye), [White concrete powder](blocks.md#block-qtcraft-white_concrete_powder), [White stained glass](blocks.md#block-qtcraft-white_stained_glass), [White terracotta](blocks.md#block-qtcraft-white_terracotta)
 
 ### <a id="item-qtcraft-yellow_dye"></a>Yellow dye
 
@@ -460,4 +1001,4 @@ Made from dandelions.
 
 **Used in**
 
-[Orange dye](#item-qtcraft-orange_dye), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
+[Orange dye](#item-qtcraft-orange_dye), [Yellow concrete powder](blocks.md#block-qtcraft-yellow_concrete_powder), [Yellow stained glass](blocks.md#block-qtcraft-yellow_stained_glass), [Yellow terracotta](blocks.md#block-qtcraft-yellow_terracotta), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)

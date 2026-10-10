@@ -1,0 +1,15 @@
+{
+    "name": "packed_ice",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "ice"
+    },
+    "result": {
+        "item": "packed_ice"
+    }
+}

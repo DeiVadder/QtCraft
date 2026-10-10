@@ -1,0 +1,17 @@
+{
+    "name": "white_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "white_dye"
+    },
+    "result": {
+        "item": "white_terracotta",
+        "count": 8
+    }
+}

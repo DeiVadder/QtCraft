@@ -1,0 +1,10 @@
+{
+    "name": "diamond_block",
+    "sound": "stone",
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "textures": {
+        "all": "diamond_block"
+    }
+}

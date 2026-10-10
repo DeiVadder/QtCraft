@@ -1,0 +1,11 @@
+{
+    "name": "gold_nugget",
+    "type": "shapeless",
+    "ingredients": [
+        "gold_ingot"
+    ],
+    "result": {
+        "item": "gold_nugget",
+        "count": 9
+    }
+}

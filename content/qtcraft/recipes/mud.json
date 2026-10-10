@@ -1,0 +1,11 @@
+{
+    "name": "mud",
+    "type": "shapeless",
+    "ingredients": [
+        "dirt",
+        "water_bottle"
+    ],
+    "result": {
+        "item": "mud"
+    }
+}

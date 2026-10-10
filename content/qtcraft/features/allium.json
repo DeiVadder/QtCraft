@@ -1,0 +1,10 @@
+{
+    "name": "allium",
+    "type": "plant",
+    "block": "allium",
+    "patchSize": 12,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ]
+}

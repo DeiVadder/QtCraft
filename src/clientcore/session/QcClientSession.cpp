@@ -474,7 +474,8 @@ void QcClientSession::refreshTarget()
     const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
     const QcItemStack &held = m_inventory.selectedStack();
-    const bool scoops = !held.isEmpty() && m_content->isValidItem(held.item) && m_content->item(held.item).scoops;
+    const bool scoops = !held.isEmpty() && m_content->isValidItem(held.item)
+                        && (m_content->item(held.item).scoops || m_content->item(held.item).bottles);
     m_target = QcRaycast::cast(*m_world, eye, direction, QcRaycast::playerReach,
                                scoops ? QcRaycast::Targets::VisibleAndLiquids : QcRaycast::Targets::Visible);
 

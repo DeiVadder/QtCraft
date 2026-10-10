@@ -60,10 +60,14 @@ protected:
         }
     }
 
-    void join(QcServerConfig config = {})
+    // Joins a server on the test terrain, or on the world of `generator` if given.
+    void join(QcServerConfig config = {}, std::unique_ptr<QcWorldGenerator> generator = nullptr)
     {
         config.viewDistance = 1;
-        m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        if (!generator) {
+            generator = std::make_unique<QcTestTerrainGenerator>(m_content);
+        }
+        m_server = std::make_unique<QcServer>(config, m_content, std::move(generator));
         QVERIFY(m_server->openWorld().has_value());
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();

@@ -28,6 +28,10 @@
         {
             "feature": "brown_mushroom",
             "density": 0.004
+        },
+        {
+            "feature": "fern",
+            "density": 0.1
         }
     ]
 }

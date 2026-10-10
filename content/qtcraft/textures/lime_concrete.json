@@ -1,0 +1,8 @@
+{
+    "name": "lime_concrete",
+    "pattern": "noise",
+    "primary": "#5ea818",
+    "secondary": "#5ea818",
+    "variation": 0.025,
+    "seed": 924
+}

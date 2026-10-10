@@ -1,0 +1,30 @@
+{
+    "name": "birch_trapdoor",
+    "sound": "wood",
+    "shape": "trapdoor",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 3.0,
+    "tool": "axe",
+    "toggles": true,
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "half": [
+            "bottom",
+            "top"
+        ],
+        "open": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "birch_trapdoor"
+    },
+    "fuelSeconds": 10
+}

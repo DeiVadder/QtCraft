@@ -1,0 +1,10 @@
+{
+    "name": "smooth_sandstone",
+    "sound": "stone",
+    "hardness": 1.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "textures": {
+        "all": "smooth_sandstone"
+    }
+}

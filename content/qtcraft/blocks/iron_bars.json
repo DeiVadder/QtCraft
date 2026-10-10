@@ -1,0 +1,35 @@
+{
+    "name": "iron_bars",
+    "sound": "stone",
+    "shape": "pane",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "connects": {
+        "group": "pane"
+    },
+    "states": {
+        "north": [
+            false,
+            true
+        ],
+        "east": [
+            false,
+            true
+        ],
+        "south": [
+            false,
+            true
+        ],
+        "west": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "iron_bars",
+    "textures": {
+        "all": "iron_bars"
+    }
+}

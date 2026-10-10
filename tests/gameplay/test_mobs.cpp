@@ -60,6 +60,60 @@ private:
         return *index;
     }
 
+    // Puts `block` on (dy 0) or above (dy 1) the top block of every column in reach of the spawning
+    // around the origin.
+    void coverSurface(QcServerWorld &world, const QcContentRegistry &content, const char *block, int dy) const
+    {
+        const QcBlockId id = *content.blockId(u"qtcraft:"_s + QString::fromLatin1(block));
+        const int reach = int(QcMobManager::spawnRadiusMax) + 2;
+        for (int x = -reach; x <= reach; ++x) {
+            for (int z = -reach; z <= reach; ++z) {
+                const QcBlockPos column{x, 0, z};
+                const int top = world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
+                world.setBlock({x, top + dy, z}, id);
+            }
+        }
+    }
+
+    // Zombies that appear within 30 s of a night, with the surface covered by `block` if given.
+    int spawnedZombies(const std::shared_ptr<const QcContentRegistry> &content, const char *block, int dy = 0)
+    {
+        auto world = std::make_unique<QcServerWorld>(content, std::make_unique<QcTestTerrainGenerator>(content));
+        for (int x = -4; x <= 4; ++x) {
+            for (int z = -4; z <= 4; ++z) {
+                world->loadChunk({x, z});
+            }
+        }
+        const QcVec3 player = surface(*world, 0, 0);
+        if (block) {
+            coverSurface(*world, *content, block, dy);
+        }
+
+        QcMobManager mobs(content, 41);
+        const int zombie = *content->mobIndex(u"qtcraft:zombie"_s);
+        for (int tick = 0; tick < 20 * 30; ++tick) {
+            mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
+        }
+        return int(std::ranges::count(mobs.mobs(), zombie, &QcMobManager::Mob::type));
+    }
+
+    // Animals the chunks around the origin get, with `block` over the surface if given.
+    int populatedAnimals(const char *block)
+    {
+        auto world = makeWorld(4);
+        if (block) {
+            coverSurface(*world, *m_content, block, 1);
+        }
+
+        QcMobManager mobs(m_content, 21);
+        for (int x = -2; x <= 2; ++x) {
+            for (int z = -2; z <= 2; ++z) {
+                mobs.populateChunk(*world, {x, z}, [this] { return m_nextId++; });
+            }
+        }
+        return int(mobs.mobs().size());
+    }
+
 private slots:
     void dayCycleFollowsTheSun()
     {
@@ -455,6 +509,24 @@ private slots:
         mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(!mobs.find(surfaceZombie));
         QVERIFY(mobs.find(caveZombie));
+    }
+
+    void noSpawnsOnHurtingOrInHoldingBlocks()
+    {
+        // Zombies that may stand on any solid block: the block fields keep them off magma
+        // (contactDamage) and out of cobwebs (slowsInside), whatever the rule lists.
+        auto anywhere = std::make_shared<QcContentRegistry>(*m_content);
+        QcMobDefinition zombie = anywhere->mobs()[type("zombie")];
+        zombie.spawnBlocks.clear();
+        anywhere->registerMob(zombie);
+
+        QVERIFY(spawnedZombies(anywhere, nullptr) > 0);
+        QCOMPARE(spawnedZombies(anywhere, "magma_block", 0), 0);
+        QCOMPARE(spawnedZombies(anywhere, "cobweb", 1), 0);
+
+        // Animals do not appear in cobwebs over their grass either.
+        QVERIFY(populatedAnimals(nullptr) > 0);
+        QCOMPARE(populatedAnimals("cobweb"), 0);
     }
 };
 

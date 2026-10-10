@@ -1,0 +1,19 @@
+{
+    "name": "light_blue_concrete_powder",
+    "type": "shapeless",
+    "ingredients": [
+        "sand",
+        "sand",
+        "sand",
+        "sand",
+        "gravel",
+        "gravel",
+        "gravel",
+        "gravel",
+        "light_blue_dye"
+    ],
+    "result": {
+        "item": "light_blue_concrete_powder",
+        "count": 8
+    }
+}

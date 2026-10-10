@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QString>
+
 #include <QtGlobal>
 
 #include <array>
@@ -25,5 +27,8 @@ private:
 
 // Stateless 64-bit mixing used to derive sub-seeds and per-position random values.
 quint64 qcMixSeed(quint64 seed, quint64 salt);
+// Stable salt from a definition name ("qtcraft:oak_tree"; FNV-1a of the UTF-8 bytes), so the seeds of
+// features and ores do not shift when content is added or removed.
+quint64 qcNameSalt(const QString &name);
 // Uniform value in [0, 1) for an integer position.
 double qcPositionRandom(quint64 seed, int x, int y, int z);

@@ -1,0 +1,14 @@
+{
+    "name": "bricks",
+    "type": "shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": "brick"
+    },
+    "result": {
+        "item": "bricks"
+    }
+}

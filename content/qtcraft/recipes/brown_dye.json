@@ -1,0 +1,10 @@
+{
+    "name": "brown_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "brown_mushroom"
+    ],
+    "result": {
+        "item": "brown_dye"
+    }
+}

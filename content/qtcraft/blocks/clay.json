@@ -5,5 +5,11 @@
     "tool": "shovel",
     "textures": {
         "all": "clay"
-    }
+    },
+    "drops": [
+        {
+            "item": "clay_ball",
+            "count": 4
+        }
+    ]
 }

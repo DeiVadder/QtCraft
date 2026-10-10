@@ -1,0 +1,10 @@
+{
+    "name": "white_dye",
+    "type": "shapeless",
+    "ingredients": [
+        "lily_of_the_valley"
+    ],
+    "result": {
+        "item": "white_dye"
+    }
+}

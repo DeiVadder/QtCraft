@@ -1,0 +1,8 @@
+{
+    "name": "spruce_door_lower",
+    "pattern": "door_lower",
+    "primary": "#7a5a35",
+    "secondary": "#55401f",
+    "variation": 0.08,
+    "seed": 924
+}

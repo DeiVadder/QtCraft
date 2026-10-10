@@ -1,0 +1,11 @@
+{
+    "name": "lime_wool",
+    "type": "shapeless",
+    "ingredients": [
+        "#wool",
+        "lime_dye"
+    ],
+    "result": {
+        "item": "lime_wool"
+    }
+}

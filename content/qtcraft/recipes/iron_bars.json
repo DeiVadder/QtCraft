@@ -1,0 +1,15 @@
+{
+    "name": "iron_bars",
+    "type": "shaped",
+    "pattern": [
+        "III",
+        "III"
+    ],
+    "key": {
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_bars",
+        "count": 16
+    }
+}

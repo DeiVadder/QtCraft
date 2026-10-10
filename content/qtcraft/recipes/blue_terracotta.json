@@ -1,0 +1,17 @@
+{
+    "name": "blue_terracotta",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "#d#",
+        "###"
+    ],
+    "key": {
+        "#": "terracotta",
+        "d": "blue_dye"
+    },
+    "result": {
+        "item": "blue_terracotta",
+        "count": 8
+    }
+}

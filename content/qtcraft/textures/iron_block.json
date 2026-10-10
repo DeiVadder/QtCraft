@@ -1,0 +1,8 @@
+{
+    "name": "iron_block",
+    "pattern": "metal_block",
+    "primary": "#d4d4d4",
+    "secondary": "#f6f6f6",
+    "variation": 0.05,
+    "seed": 904
+}

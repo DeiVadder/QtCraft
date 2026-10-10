@@ -1,0 +1,6 @@
+{
+    "name": "mushroom_stew",
+    "maxStack": 1,
+    "food": 6,
+    "emptiesTo": "bowl"
+}

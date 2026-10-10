@@ -1,0 +1,11 @@
+{
+    "name": "slimeball_from_slime_block",
+    "type": "shapeless",
+    "ingredients": [
+        "slime_block"
+    ],
+    "result": {
+        "item": "slimeball",
+        "count": 9
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "water_bottle",
+    "pattern": "bottle",
+    "primary": "#c8e6f0",
+    "secondary": "#3a64d0",
+    "variation": 0.06,
+    "seed": 904
+}
