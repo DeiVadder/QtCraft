@@ -1,0 +1,24 @@
+{
+    "name": "green_cape",
+    "kind": "cape",
+    "shape": {
+        "width": 0.6,
+        "length": 0.95,
+        "thickness": 0.04,
+        "offset": 0.02
+    },
+    "layers": {
+        "emblem": {
+            "texture": "cape_green_emblem"
+        },
+        "outside": {
+            "texture": "cape_green_outside"
+        },
+        "inside": {
+            "texture": "cape_green_inside"
+        },
+        "edge": {
+            "texture": "cape_green_edge"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "name": "diamond_helmet",
+    "texture": "diamond_helmet",
+    "maxStack": 1,
+    "durability": 363,
+    "armour": {
+        "slot": "head",
+        "points": 3,
+        "set": "diamond",
+        "layers": [
+            {
+                "covers": [
+                    "head"
+                ],
+                "texture": "diamond_armour",
+                "front": "diamond_helmet_front",
+                "inflate": 0.04
+            }
+        ],
+        "parts": [
+            {
+                "bone": "head",
+                "from": [
+                    -0.245,
+                    1.44,
+                    -0.3
+                ],
+                "to": [
+                    0.245,
+                    1.7,
+                    -0.27
+                ],
+                "texture": "diamond_visor"
+            },
+            {
+                "bone": "head",
+                "from": [
+                    -0.035,
+                    1.84,
+                    -0.23
+                ],
+                "to": [
+                    0.035,
+                    1.96,
+                    0.24
+                ],
+                "texture": "diamond_armour_trim"
+            }
+        ]
+    }
+}

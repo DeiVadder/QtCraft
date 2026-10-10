@@ -46,7 +46,7 @@ QList<int> intoOpenBlock(Situation situation)
 QList<int> targets(int from, Situation situation)
 {
     if (from >= gridSlot) {
-        // From the crafting grid or the open block into the inventory.
+        // From the crafting grid, the open block or an armour slot into the inventory.
         return wholeInventory();
     }
     if (from < 0 || from >= QcInventory::slotCount) {
@@ -54,6 +54,9 @@ QList<int> targets(int from, Situation situation)
     }
     if (situation.containerSlots > 0 || situation.machineOpen) {
         return intoOpenBlock(situation);
+    }
+    if (situation.freeArmourSlot >= 0) {
+        return {situation.freeArmourSlot};
     }
     // Between the hotbar and the storage rows.
     return from < QcInventory::hotbarSize ? range(QcInventory::hotbarSize, QcInventory::slotCount - QcInventory::hotbarSize)

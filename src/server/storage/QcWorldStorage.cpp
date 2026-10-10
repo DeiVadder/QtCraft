@@ -19,8 +19,8 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 2 adds food and exhaustion.
-constexpr quint16 playerVersion = 2;
+// Version 2 adds food and exhaustion, version 3 the armour slots.
+constexpr quint16 playerVersion = 3;
 constexpr QByteArrayView playerMagic("QCPL");
 constexpr QByteArrayView blockUpdatesMagic("QCBU");
 
@@ -41,6 +41,7 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
     , m_regions(m_directory, m_content)
     , m_entities(m_directory, m_content)
     , m_blockEntities(m_directory, m_content)
+    , m_stands(m_directory, m_content)
 {
 }
 
@@ -181,7 +182,10 @@ QcStatus QcWorldStorage::writePlayer(const QString &playerName, const QcPlayerDa
         QcSaveFile::writeStack(stream, player.inventory.slot(i), *m_content);
     }
 
-    stream << qint32(player.food) << player.exhaustion;
+    stream << qint32(player.food) << player.exhaustion << quint32(QcEquipment::slotCount);
+    for (const QcItemStack &stack : player.equipment.stacks) {
+        QcSaveFile::writeStack(stream, stack, *m_content);
+    }
     return QcSaveFile::write(playerPath(playerName), playerMagic, payload, playerVersion);
 }
 
@@ -238,6 +242,9 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
         stream >> food >> player.exhaustion;
         player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
     }
+    if (version >= 3 && !readEquipment(stream, path, player, warnings)) {
+        return qcError(u"%1 is damaged (armour)"_s.arg(path));
+    }
 
     const auto finite = [](const QcVec3 &v) { return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z); };
     constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
@@ -254,6 +261,40 @@ QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &
     player.exhaustion = std::max(0.0, player.exhaustion);
     player.yaw = std::fmod(player.yaw, 360.0f);
     return std::optional<QcPlayerData>(player);
+}
+
+bool QcWorldStorage::readEquipment(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const
+{
+    quint32 count = 0;
+    if (!QcStreamLimits::readCount(stream, QcEquipment::slotCount, count)) {
+        return false;
+    }
+
+    for (quint32 i = 0; i < count; ++i) {
+        QString name;
+        qint32 stackCount = 0;
+        qint32 damage = 0;
+        stream >> name >> stackCount >> damage;
+        if (name.isEmpty() || stackCount <= 0) {
+            continue;
+        }
+
+        const std::optional<QcItemId> item = m_content->itemId(name);
+        if (!item) {
+            warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
+            continue;
+        }
+
+        const QcItemDefinition &definition = m_content->item(*item);
+        const QcItemStack stack{*item, 1, std::clamp(damage, 0, std::max(0, definition.durability - 1))};
+        // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
+        if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
+            player.equipment.stacks[i] = stack;
+        } else if (player.inventory.add(stack.item, 1, *m_content, stack.damage) > 0) {
+            warnings.append(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(path, name));
+        }
+    }
+    return stream.status() == QDataStream::Ok;
 }
 
 QcStatus QcWorldStorage::writeBlockUpdates(const QList<QcBlockPos> &positions) const

@@ -1,5 +1,6 @@
 #include "QcPlayerController.h"
 
+#include "QcArmour.h"
 #include "QcClientSession.h"
 #include "QcCrafting.h"
 #include "QcSessionParts.h"
@@ -111,9 +112,39 @@ void QcPlayerController::respawn() const
     }
 }
 
+int QcPlayerController::armour() const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    return content ? QcArmour::points(*content, m_parts.session->equipment()) : 0;
+}
+
+int QcPlayerController::maxArmour()
+{
+    return QcArmour::maxEffectivePoints;
+}
+
+QStringList QcPlayerController::armourPlaceholders() const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    QStringList names;
+    for (const QcEquipmentSlot slot : {QcEquipmentSlot::Head, QcEquipmentSlot::Chest, QcEquipmentSlot::Legs, QcEquipmentSlot::Feet}) {
+        const std::optional<QcItemId> item = content ? QcArmour::placeholder(*content, slot) : std::nullopt;
+        names.append(item ? content->item(*item).name : QString());
+    }
+    return names;
+}
+
+QString QcPlayerController::armourIcon() const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    const std::optional<QcItemId> item = content ? QcArmour::pointsIcon(*content) : std::nullopt;
+    return item ? content->item(*item).name : QString();
+}
+
 void QcPlayerController::useContent()
 {
     m_inventory->setContent(m_parts.session->content(), m_settings.contentLanguage());
+    emit contentChanged();
     updateInventory();
 }
 
@@ -121,7 +152,7 @@ void QcPlayerController::updateInventory()
 {
     const QcClientSession &session = *m_parts.session;
     m_inventory->setInventory(session.inventory(), session.craftingGrid(), session.craftingResult(),
-                              session.machineOpen() ? session.machineSlots() : QList<QcItemStack>());
+                              session.machineOpen() ? session.machineSlots() : QList<QcItemStack>(), session.equipment());
     updateCraftableRecipes();
     emit craftingChanged();
 }

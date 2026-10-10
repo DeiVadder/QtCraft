@@ -1,9 +1,11 @@
 #pragma once
 
 #include "QcBlockPos.h"
+#include "QcCapeTracker.h"
 #include "QcEntityMesher.h"
 #include "QcViewCamera.h"
 
+#include <QElapsedTimer>
 #include <QString>
 
 #include <memory>
@@ -25,8 +27,8 @@ public:
 
     // Texture atlas of the running world's content; without one no entities are drawn.
     void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_atlas = std::move(atlas); }
-    // Test hook: freezes the local player's pose ("walk", "swing" or "swing:<progress>", "swim", "jump", "sneak", "death")
-    // for screenshots.
+    // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
+    // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
     void placeCamera(const QcVec3 &eye, QcCameraMode mode);
@@ -48,8 +50,14 @@ private:
         double seconds = 0.0;
     };
 
-    void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const;
-    void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame) const;
+    void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
+    void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
+    // An armour stand in its pose with what it wears and holds (decision E-238).
+    void appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement, const EntityFrame &frame) const;
+    // How the local player moves for the cape: its velocity, or the forced pose's movement.
+    QcCapeDrive localCapeDrive(const QcEntityPose &pose) const;
+    // Seconds since the previous frame's capes (at most QcCapeSwing::maxAdvance).
+    double capeFrameSeconds();
     void updateHandMesh(double alpha, const QcVec3 &eye);
     // Share of sky light at a position (0.35 under a roof, 1 in the open); a cheap stand-in for
     // sampling the meshes' sky light.
@@ -66,6 +74,9 @@ private:
     const QcSettingsController &m_settings;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     QString m_forcedPose;
+    // Cape swings of the drawn figures and the clock that advances them (decision E-240).
+    QcCapeTracker m_capes;
+    QElapsedTimer m_capeClock;
     // Vertex and index count of the last entity mesh.
     std::pair<qsizetype, qsizetype> m_entityMeshSize;
 };

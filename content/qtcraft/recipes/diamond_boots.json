@@ -1,0 +1,14 @@
+{
+    "name": "diamond_boots",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "X X"
+    ],
+    "key": {
+        "X": "diamond"
+    },
+    "result": {
+        "item": "diamond_boots"
+    }
+}

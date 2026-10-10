@@ -1,0 +1,102 @@
+{
+    "name": "armour_stand_poses",
+    "showcase": {
+        "order": 75
+    },
+    "palette": {
+        "P": "polished_stone"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP",
+            "PPPPPPPPPPP"
+        ]
+    ],
+    "stands": [
+        {
+            "at": [
+                1.5,
+                1.0,
+                1.5
+            ],
+            "yaw": 180,
+            "properties": [
+                "equip iron",
+                "pose right_arm 0 0 150",
+                "pose head 10 0 -10",
+                "name Hello",
+                "showname true"
+            ]
+        },
+        {
+            "at": [
+                3.5,
+                1.0,
+                1.5
+            ],
+            "yaw": 180,
+            "properties": [
+                "equip diamond",
+                "equip iron_sword",
+                "pose right_arm 90 0 0",
+                "pose left_arm 20 0 -20"
+            ]
+        },
+        {
+            "at": [
+                5.5,
+                1.0,
+                1.5
+            ],
+            "yaw": 180,
+            "properties": [
+                "equip golden",
+                "pose left_leg 30 0 0",
+                "pose right_leg -30 0 0",
+                "pose left_arm -35 0 0",
+                "pose right_arm 35 0 0",
+                "pose head 0 25 0"
+            ]
+        },
+        {
+            "at": [
+                7.5,
+                1.0,
+                1.5
+            ],
+            "yaw": 180,
+            "properties": [
+                "equip leather",
+                "small true",
+                "plate false",
+                "pose head -15 0 12"
+            ]
+        },
+        {
+            "at": [
+                9.5,
+                1.0,
+                1.5
+            ],
+            "yaw": 180,
+            "properties": [
+                "equip iron_chestplate",
+                "equip iron_helmet",
+                "arms false"
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                4.5,
+                3.0
+            ],
+            "text": "structure.qtcraft.armour_stand_poses",
+            "detail": ""
+        }
+    ]
+}

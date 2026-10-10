@@ -1,9 +1,11 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcCapeSwing.h"
 #include "QcEntityMesh.h"
 #include "QcEntityMesher.h"
 #include "QcEntityPose.h"
+#include "QcEquipment.h"
 
 class QcContentRegistry;
 
@@ -22,6 +24,10 @@ struct Figure
     double yaw = 0.0;
     // Free-running clock for the idle motion (QcAnimator::animateBody).
     double seconds = 0.0;
+    // Worn armour, drawn like on other players.
+    QcEquipment equipment{};
+    // The cape's swing (QcCapeSwing, kept by the preview from frame to frame).
+    QcCapeSwing::Angles cape = {};
 };
 
 // Empty when the content has no humanoid model or no outfit to draw.

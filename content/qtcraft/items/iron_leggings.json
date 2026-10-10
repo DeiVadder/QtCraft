@@ -1,0 +1,20 @@
+{
+    "name": "iron_leggings",
+    "texture": "iron_leggings",
+    "maxStack": 1,
+    "durability": 225,
+    "armour": {
+        "slot": "legs",
+        "points": 5,
+        "set": "iron",
+        "layers": [
+            {
+                "covers": [
+                    "legs"
+                ],
+                "texture": "iron_armour",
+                "inflate": 0.028
+            }
+        ]
+    }
+}

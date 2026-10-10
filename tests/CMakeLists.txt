@@ -102,6 +102,18 @@ add_test(NAME app_offscreen_character_preview_qml
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_character_preview_qml PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-preview;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-preview.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+# Armour (decisions E-234, E-238): the inventory with the armour slots, the HUD's armour bar and an
+# armour stand with a name load without QML errors, and the inventory's preview draws the armour.
+add_test(NAME app_offscreen_armour_qml
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--chat;@200 /equip diamond;--chat;@300 /summon armor_stand equip=iron name=Tin showname;--overlay;@1500 inventory;--no-audio"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=inventoryPreview: first figure with [1-9][0-9]+ vertices"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-armour.png
+        "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_armour_qml PROPERTIES TIMEOUT 120
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-armour;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-armour.png;QTCRAFT_SCREENSHOT_FRAMES=90")
 add_test(NAME app_preview_hook_refused
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--preview;animation=dance;--screen;builtin;--background;--no-audio"
@@ -157,12 +169,15 @@ qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LI
 qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_server_validation SOURCES gameplay/test_server_validation.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_crafting SOURCES gameplay/test_server_crafting.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_armour_server SOURCES gameplay/test_armour_server.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_armour_stands SOURCES gameplay/test_armour_stands.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_quick_move SOURCES gameplay/test_quick_move.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_items_and_saves SOURCES gameplay/test_server_items_and_saves.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_limits SOURCES gameplay/test_server_limits.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_survival_scenario SOURCES gameplay/test_survival_scenario.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_crafting SOURCES content/test_crafting.cpp LIBRARIES qc_common)
+qc_add_test(test_armour SOURCES content/test_armour.cpp LIBRARIES qc_server)
 qc_add_test(test_mods SOURCES content/test_mods.cpp LIBRARIES qc_server)
 target_compile_definitions(test_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_bundled_mods SOURCES content/test_bundled_mods.cpp LIBRARIES qc_server)
@@ -170,7 +185,10 @@ target_compile_definitions(test_bundled_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_items SOURCES gameplay/test_items.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
@@ -203,3 +221,10 @@ target_include_directories(test_graph_item PRIVATE ${PROJECT_SOURCE_DIR}/src/app
 qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcPreviewAtlasCache.cpp
             LIBRARIES Qt::Gui Qt::GuiPrivate)
 target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+
+# QML load test of the character screen in the real game, offscreen (decision E-240). Not under
+# sanitizers: the whole game with its render thread is too slow there for the time limit.
+if(NOT QC_SANITIZERS)
+    add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
+    set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 120)
+endif()

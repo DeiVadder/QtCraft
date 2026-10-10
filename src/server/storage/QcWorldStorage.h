@@ -7,9 +7,11 @@
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
 #include "QcEntityStorage.h"
+#include "QcEquipment.h"
 #include "QcInventory.h"
 #include "QcRegionStorage.h"
 #include "QcResult.h"
+#include "QcStandStorage.h"
 
 #include <QDateTime>
 #include <QHash>
@@ -57,6 +59,8 @@ struct QcPlayerData
     // Players saved before hunger existed come back full.
     int food = QcItemDefinition::maxFood;
     double exhaustion = 0.0;
+    // Since format 3 of the player file (decision E-234).
+    QcEquipment equipment;
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
@@ -117,6 +121,11 @@ public:
         return m_blockEntities.writeContainers(containers);
     }
 
+    // Armour stands (stands.qce, decision E-238). Empty when nothing was saved yet; a damaged file
+    // is kept aside and only warned about.
+    QList<QcArmourStandManager::Stand> readStands(QStringList &warnings) const { return m_stands.read(warnings); }
+    QcStatus writeStands(const QList<QcArmourStandManager::Stand> &stands) const { return m_stands.write(stands); }
+
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
     // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
     static constexpr quint32 maxStoredBlockUpdates = 4 * 1024 * 1024;
@@ -126,6 +135,8 @@ public:
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionStorage::regionOf(chunk); }
 
 private:
+    // The armour slots of a player file of format 3 or later; false when they are damaged.
+    bool readEquipment(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const;
     QString playerPath(const QString &playerName) const;
     // playerPath(), after renaming a file of an older version (players/<name>.qcp) to it.
     QString migratedPlayerPath(const QString &playerName, QStringList &warnings) const;
@@ -135,4 +146,5 @@ private:
     QcRegionStorage m_regions;
     QcEntityStorage m_entities;
     QcBlockEntityStorage m_blockEntities;
+    QcStandStorage m_stands;
 };

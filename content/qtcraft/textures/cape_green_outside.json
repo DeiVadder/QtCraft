@@ -1,0 +1,17 @@
+{
+    "name": "cape_green_outside",
+    "pattern": "emblem",
+    "primary": "#41cd52",
+    "variation": 0.03,
+    "seed": 242,
+    "palette": {
+        "s": "#2f9e3c",
+        "h": "#237a2e"
+    },
+    "bitmap": [
+        "", "", "", "", "", "", "", "", "", "", "", "", "",
+        "s.s.s.s.s.s.s.s.",
+        "hhhhhhhhhhhhhhhh",
+        "hhhhhhhhhhhhhhhh"
+    ]
+}

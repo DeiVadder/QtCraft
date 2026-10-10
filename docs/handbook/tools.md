@@ -1,8 +1,8 @@
-# Tools and weapons
+# Tools and armour
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Diamond axe](#item-qtcraft-diamond_axe) · [Diamond pickaxe](#item-qtcraft-diamond_pickaxe) · [Diamond shovel](#item-qtcraft-diamond_shovel) · [Diamond sword](#item-qtcraft-diamond_sword) · [Golden axe](#item-qtcraft-golden_axe) · [Golden pickaxe](#item-qtcraft-golden_pickaxe) · [Golden shovel](#item-qtcraft-golden_shovel) · [Golden sword](#item-qtcraft-golden_sword) · [Iron axe](#item-qtcraft-iron_axe) · [Iron pickaxe](#item-qtcraft-iron_pickaxe) · [Iron shovel](#item-qtcraft-iron_shovel) · [Iron sword](#item-qtcraft-iron_sword) · [Stone axe](#item-qtcraft-stone_axe) · [Stone pickaxe](#item-qtcraft-stone_pickaxe) · [Stone shovel](#item-qtcraft-stone_shovel) · [Stone sword](#item-qtcraft-stone_sword) · [Wooden axe](#item-qtcraft-wooden_axe) · [Wooden pickaxe](#item-qtcraft-wooden_pickaxe) · [Wooden shovel](#item-qtcraft-wooden_shovel) · [Wooden sword](#item-qtcraft-wooden_sword)
+**QtCraft:** [Diamond axe](#item-qtcraft-diamond_axe) · [Diamond boots](#item-qtcraft-diamond_boots) · [Diamond chestplate](#item-qtcraft-diamond_chestplate) · [Diamond helmet](#item-qtcraft-diamond_helmet) · [Diamond leggings](#item-qtcraft-diamond_leggings) · [Diamond pickaxe](#item-qtcraft-diamond_pickaxe) · [Diamond shovel](#item-qtcraft-diamond_shovel) · [Diamond sword](#item-qtcraft-diamond_sword) · [Golden axe](#item-qtcraft-golden_axe) · [Golden boots](#item-qtcraft-golden_boots) · [Golden chestplate](#item-qtcraft-golden_chestplate) · [Golden helmet](#item-qtcraft-golden_helmet) · [Golden leggings](#item-qtcraft-golden_leggings) · [Golden pickaxe](#item-qtcraft-golden_pickaxe) · [Golden shovel](#item-qtcraft-golden_shovel) · [Golden sword](#item-qtcraft-golden_sword) · [Iron axe](#item-qtcraft-iron_axe) · [Iron boots](#item-qtcraft-iron_boots) · [Iron chestplate](#item-qtcraft-iron_chestplate) · [Iron helmet](#item-qtcraft-iron_helmet) · [Iron leggings](#item-qtcraft-iron_leggings) · [Iron pickaxe](#item-qtcraft-iron_pickaxe) · [Iron shovel](#item-qtcraft-iron_shovel) · [Iron sword](#item-qtcraft-iron_sword) · [Leather boots](#item-qtcraft-leather_boots) · [Leather cap](#item-qtcraft-leather_helmet) · [Leather trousers](#item-qtcraft-leather_leggings) · [Leather tunic](#item-qtcraft-leather_chestplate) · [Stone axe](#item-qtcraft-stone_axe) · [Stone pickaxe](#item-qtcraft-stone_pickaxe) · [Stone shovel](#item-qtcraft-stone_shovel) · [Stone sword](#item-qtcraft-stone_sword) · [Wooden axe](#item-qtcraft-wooden_axe) · [Wooden pickaxe](#item-qtcraft-wooden_pickaxe) · [Wooden shovel](#item-qtcraft-wooden_shovel) · [Wooden sword](#item-qtcraft-wooden_sword)
 
 ## QtCraft
 
@@ -28,6 +28,96 @@ Chops wood faster.
 | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond axe](#item-qtcraft-diamond_axe) |
 | [Diamond](items.md#item-qtcraft-diamond) | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-diamond_boots"></a>Diamond boots
+
+The strongest armour; it lasts the longest.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_boots` |
+| Stack size | 1 |
+| Worn on | Feet |
+| Armour points | +3: [Armour](tables.md#table-armour) |
+| Set | Diamond armour |
+| Durability | 429 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) | [Diamond boots](#item-qtcraft-diamond_boots) |
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_chestplate"></a>Diamond chestplate
+
+The strongest armour; it lasts the longest.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_chestplate` |
+| Stack size | 1 |
+| Worn on | Chest |
+| Armour points | +8: [Armour](tables.md#table-armour) |
+| Set | Diamond armour |
+| Durability | 528 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) | [Diamond chestplate](#item-qtcraft-diamond_chestplate) |
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) |  |
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_helmet"></a>Diamond helmet
+
+The strongest armour; it lasts the longest.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_helmet` |
+| Stack size | 1 |
+| Worn on | Head |
+| Armour points | +3: [Armour](tables.md#table-armour) |
+| Set | Diamond armour |
+| Durability | 363 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond helmet](#item-qtcraft-diamond_helmet) |
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_leggings"></a>Diamond leggings
+
+The strongest armour; it lasts the longest.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_leggings` |
+| Stack size | 1 |
+| Worn on | Legs |
+| Armour points | +6: [Armour](tables.md#table-armour) |
+| Set | Diamond armour |
+| Durability | 495 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond leggings](#item-qtcraft-diamond_leggings) |
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) |  |
+| [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) |  |
 
 ### <a id="item-qtcraft-diamond_pickaxe"></a>Diamond pickaxe
 
@@ -123,6 +213,96 @@ Very fast but soft: it wears out after a few uses and only mines what wood can.
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
 
+### <a id="item-qtcraft-golden_boots"></a>Golden boots
+
+Shiny armour of gold: a little better than leather, but soft.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_boots` |
+| Stack size | 1 |
+| Worn on | Feet |
+| Armour points | +1: [Armour](tables.md#table-armour) |
+| Set | Golden armour |
+| Durability | 91 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden boots](#item-qtcraft-golden_boots) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
+### <a id="item-qtcraft-golden_chestplate"></a>Golden chestplate
+
+Shiny armour of gold: a little better than leather, but soft.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_chestplate` |
+| Stack size | 1 |
+| Worn on | Chest |
+| Armour points | +5: [Armour](tables.md#table-armour) |
+| Set | Golden armour |
+| Durability | 112 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden chestplate](#item-qtcraft-golden_chestplate) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
+### <a id="item-qtcraft-golden_helmet"></a>Golden helmet
+
+Shiny armour of gold: a little better than leather, but soft.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_helmet` |
+| Stack size | 1 |
+| Worn on | Head |
+| Armour points | +2: [Armour](tables.md#table-armour) |
+| Set | Golden armour |
+| Durability | 77 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden helmet](#item-qtcraft-golden_helmet) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
+### <a id="item-qtcraft-golden_leggings"></a>Golden leggings
+
+Shiny armour of gold: a little better than leather, but soft.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_leggings` |
+| Stack size | 1 |
+| Worn on | Legs |
+| Armour points | +3: [Armour](tables.md#table-armour) |
+| Set | Golden armour |
+| Durability | 105 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden leggings](#item-qtcraft-golden_leggings) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
 ### <a id="item-qtcraft-golden_pickaxe"></a>Golden pickaxe
 
 Very fast but soft: it wears out after a few uses and only mines what wood can.
@@ -217,6 +397,96 @@ Chops wood faster.
 | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
 
+### <a id="item-qtcraft-iron_boots"></a>Iron boots
+
+Solid armour of iron plates, the usual choice.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_boots` |
+| Stack size | 1 |
+| Worn on | Feet |
+| Armour points | +2: [Armour](tables.md#table-armour) |
+| Set | Iron armour |
+| Durability | 195 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron boots](#item-qtcraft-iron_boots) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_chestplate"></a>Iron chestplate
+
+Solid armour of iron plates, the usual choice.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_chestplate` |
+| Stack size | 1 |
+| Worn on | Chest |
+| Armour points | +6: [Armour](tables.md#table-armour) |
+| Set | Iron armour |
+| Durability | 240 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron chestplate](#item-qtcraft-iron_chestplate) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_helmet"></a>Iron helmet
+
+Solid armour of iron plates, the usual choice.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_helmet` |
+| Stack size | 1 |
+| Worn on | Head |
+| Armour points | +2: [Armour](tables.md#table-armour) |
+| Set | Iron armour |
+| Durability | 165 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron helmet](#item-qtcraft-iron_helmet) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_leggings"></a>Iron leggings
+
+Solid armour of iron plates, the usual choice.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_leggings` |
+| Stack size | 1 |
+| Worn on | Legs |
+| Armour points | +5: [Armour](tables.md#table-armour) |
+| Set | Iron armour |
+| Durability | 225 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron leggings](#item-qtcraft-iron_leggings) |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
 ### <a id="item-qtcraft-iron_pickaxe"></a>Iron pickaxe
 
 Mines stone and ores.
@@ -287,6 +557,96 @@ A weapon: deals more damage to creatures.
 | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron sword](#item-qtcraft-iron_sword) |
 | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
 | [Stick](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-leather_boots"></a>Leather boots
+
+Light armour stitched from leather; wears out quickly.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_boots` |
+| Stack size | 1 |
+| Worn on | Feet |
+| Armour points | +1: [Armour](tables.md#table-armour) |
+| Set | Leather armour |
+| Durability | 65 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) | [Leather boots](#item-qtcraft-leather_boots) |
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_helmet"></a>Leather cap
+
+Light armour stitched from leather; wears out quickly.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_helmet` |
+| Stack size | 1 |
+| Worn on | Head |
+| Armour points | +1: [Armour](tables.md#table-armour) |
+| Set | Leather armour |
+| Durability | 55 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather cap](#item-qtcraft-leather_helmet) |
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_leggings"></a>Leather trousers
+
+Light armour stitched from leather; wears out quickly.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_leggings` |
+| Stack size | 1 |
+| Worn on | Legs |
+| Armour points | +2: [Armour](tables.md#table-armour) |
+| Set | Leather armour |
+| Durability | 75 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather trousers](#item-qtcraft-leather_leggings) |
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) |  |
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_chestplate"></a>Leather tunic
+
+Light armour stitched from leather; wears out quickly.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_chestplate` |
+| Stack size | 1 |
+| Worn on | Chest |
+| Armour points | +3: [Armour](tables.md#table-armour) |
+| Set | Leather armour |
+| Durability | 80 hits |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leather](items.md#item-qtcraft-leather) | · | [Leather](items.md#item-qtcraft-leather) | [Leather tunic](#item-qtcraft-leather_chestplate) |
+| [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) |  |
+| [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) | [Leather](items.md#item-qtcraft-leather) |  |
 
 ### <a id="item-qtcraft-stone_axe"></a>Stone axe
 

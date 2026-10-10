@@ -7,6 +7,9 @@
 
 using namespace Qt::StringLiterals;
 
+static_assert(QcMsg::MoveInventoryItem::equipmentSlot >= QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots,
+              "armour slots follow every block slot");
+
 namespace QcProtocolCodec {
 
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
@@ -121,8 +124,9 @@ QcResult<QcMessage> decode(Tag<QcMsg::QuickMoveItem>, QDataStream &stream)
 {
     QcMsg::QuickMoveItem m;
     stream >> m.slot;
-    if (m.slot < QcMsg::QuickMoveItem::craftingResultSlot
-        || m.slot >= QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots) {
+    if ((m.slot < QcMsg::QuickMoveItem::craftingResultSlot
+         || m.slot >= QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots)
+        && !QcMsg::MoveInventoryItem::isEquipmentSlot(m.slot)) {
         return qcError(u"Quick move slot %1 out of range"_s.arg(m.slot));
     }
     return m;

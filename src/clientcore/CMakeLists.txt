@@ -1,6 +1,8 @@
 qt_add_library(qc_clientcore STATIC
     sound/QcAmbience.h sound/QcAmbience.cpp
     meshing/QcAnimator.h meshing/QcAnimator.cpp
+    meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
+    meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
     textures/QcAppIcon.h textures/QcAppIcon.cpp
     sound/QcAudioMixer.h sound/QcAudioMixer.cpp
     textures/QcBlockIcon.h textures/QcBlockIcon.cpp
@@ -28,6 +30,7 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcEntityMesh.h
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
     meshing/QcEntityPose.h
+    meshing/QcArmourLook.h meshing/QcArmourLook.cpp
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
     light/QcEntityLight.h
     light/QcSky.h light/QcSky.cpp
@@ -65,8 +68,10 @@ qt_add_library(qc_clientcore STATIC
     sound/QcSoundCue.h
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
+    textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
     textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
+    textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTexturePaint.h
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp

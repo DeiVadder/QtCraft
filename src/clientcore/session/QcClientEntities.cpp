@@ -12,16 +12,23 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
 {
     const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
     const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType;
-    return !((spawn.mobType < QcMsg::EntitySpawn::playerType && !item && !fallingBlock)
+    const bool stand = spawn.mobType == QcMsg::EntitySpawn::armourStandType;
+    return !((spawn.mobType < QcMsg::EntitySpawn::playerType && !item && !fallingBlock && !stand)
              || (fallingBlock && (!content || !content->isValidBlock(spawn.block) || spawn.block == qcAirBlockId))
              || (spawn.mobType >= 0 && (!content || spawn.mobType >= content->mobs().size()))
              || (item && (!content || spawn.item.isEmpty() || !content->isValidItem(spawn.item.item))));
 }
 
-// Armour only for players and only of items the content knows (decision E-232).
+// Armour only for players and armour stands and only of items the content knows (decisions E-232, E-238).
 QcEquipment equipmentOf(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    return spawn.mobType == QcMsg::EntitySpawn::playerType && content ? spawn.equipment.knownTo(*content) : QcEquipment();
+    const bool wears = spawn.mobType == QcMsg::EntitySpawn::playerType || spawn.mobType == QcMsg::EntitySpawn::armourStandType;
+    return wears && content ? spawn.equipment.knownTo(*content) : QcEquipment();
+}
+
+QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
+{
+    return spawn.mobType == QcMsg::EntitySpawn::armourStandType ? spawn.stand : QcStandPose();
 }
 
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
@@ -33,6 +40,7 @@ QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentR
     entity.item = item ? spawn.item : QcItemStack();
     entity.appearance = spawn.appearance;
     entity.equipment = equipmentOf(spawn, content);
+    entity.stand = standOf(spawn);
     entity.pitch = entity.previousPitch = spawn.pitch;
     entity.flags = spawn.flags;
     entity.held = spawn.held;
@@ -60,6 +68,13 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         known->item = item ? spawn.item : QcItemStack();
         known->appearance = spawn.appearance;
         known->equipment = equipmentOf(spawn, content);
+        known->stand = standOf(spawn);
+        known->held = spawn.held;
+        known->name = spawn.name;
+        if (known->isArmourStand()) {
+            // A stand turned by a command; it never moves otherwise.
+            known->yaw = known->previousYaw = spawn.yaw;
+        }
         return true;
     }
 

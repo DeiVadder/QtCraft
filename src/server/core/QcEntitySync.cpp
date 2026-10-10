@@ -34,6 +34,7 @@ void QcEntitySync::sync(QcServerClient &client)
     considerPlayers(pass);
     considerFallingBlocks(pass);
     considerItems(pass);
+    considerStands(pass);
     removeUnseen(pass);
 
     if (!pass.moves.moves.isEmpty()) {
@@ -106,6 +107,29 @@ void QcEntitySync::considerItems(Pass &pass) const
             pass.moves.moves.append({item.id, item.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem});
             known->position = item.motion.position;
         }
+    }
+}
+
+void QcEntitySync::considerStands(Pass &pass) const
+{
+    QcServerClient &client = pass.client;
+    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
+        if ((stand.position - client.motion.position).length() > entityViewDistance) {
+            continue;
+        }
+
+        pass.visible.insert(stand.id);
+        if (client.knownEntities.contains(stand.id) && !client.staleEntities.remove(stand.id)) {
+            continue;
+        }
+
+        QcMsg::EntitySpawn spawn{stand.id, QcMsg::EntitySpawn::armourStandType, stand.name, stand.position, stand.yaw, 0.0,
+                                 {}, {}, 0.0f, 0, stand.held.isEmpty() ? qcNoItem : stand.held.item};
+        spawn.equipment = stand.equipment;
+        spawn.stand = stand.pose;
+        spawn.appearance.cape = stand.cape;
+        client.knownEntities.insert(stand.id);
+        client.connection->send(spawn);
     }
 }
 

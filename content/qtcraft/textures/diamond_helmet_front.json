@@ -1,0 +1,8 @@
+{
+    "name": "diamond_helmet_front",
+    "pattern": "helmet_front",
+    "primary": "#3fd0c6",
+    "secondary": "#b8fff6",
+    "variation": 0.05,
+    "seed": 7254
+}

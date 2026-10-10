@@ -1,0 +1,15 @@
+{
+    "name": "iron_leggings",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        "X X",
+        "X X"
+    ],
+    "key": {
+        "X": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_leggings"
+    }
+}

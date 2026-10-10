@@ -405,6 +405,15 @@ private slots:
         QCOMPARE(front.yaw, 180.0f);
         QCOMPARE(front.pitch, -20.0f);
 
+        // At the side: four metres to the right (east, +X), level, looking west at the player.
+        const QcViewCamera::Placement side = QcViewCamera::place(eye, 0.0f, -10.0f, QcCameraMode::Side, world);
+        QCOMPARE(side.position, (QcVec3{eye.x + QcViewCamera::thirdPersonDistance, eye.y, eye.z}));
+        QCOMPARE(side.yaw, 270.0f);
+        QCOMPARE(side.pitch, -10.0f);
+        const QcViewCamera::Placement turned = QcViewCamera::place(eye, 90.0f, 0.0f, QcCameraMode::Side, world);
+        QVERIFY(std::abs(turned.position.z - (eye.z + QcViewCamera::thirdPersonDistance)) < 1e-9);
+        QCOMPARE(turned.yaw, 0.0f);
+
         // Plants do not stop the camera; it stays at the full distance behind them.
         world.fillBox({-3, 69, 1}, {3, 71, 1}, *content.blockId(u"test:flower"_s));
         const QcViewCamera::Placement throughPlants = QcViewCamera::place(eye, 0.0f, 0.0f, QcCameraMode::Behind, world);
@@ -418,6 +427,9 @@ private slots:
 
         QCOMPARE(QcViewCamera::next(QcCameraMode::FirstPerson), QcCameraMode::Behind);
         QCOMPARE(QcViewCamera::next(QcCameraMode::Front), QcCameraMode::FirstPerson);
+        // The side view is a test hook: the key leaves it for the first person.
+        QCOMPARE(QcViewCamera::next(QcCameraMode::Side), QcCameraMode::FirstPerson);
+        QCOMPARE(QcViewCamera::fromName(u"side"_s), std::optional<QcCameraMode>(QcCameraMode::Side));
         QCOMPARE(QcViewCamera::fromName(u"front"_s), std::optional<QcCameraMode>(QcCameraMode::Front));
         QVERIFY(!QcViewCamera::fromName(u"sideways"_s));
     }

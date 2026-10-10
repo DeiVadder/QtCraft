@@ -86,6 +86,10 @@ QcEntityPose QcRenderBridge::localPose(double alpha) const
     if (m_forcedPose == u"walk"_s) {
         pose.speed = QcPhysics::walkSpeed;
         pose.walkDistance = 0.3;
+    } else if (m_forcedPose == u"sprint"_s) {
+        pose.speed = QcPhysics::sprintSpeed;
+        pose.sprinting = true;
+        pose.walkDistance = 0.3;
     } else if (m_forcedPose.startsWith(u"swing"_s)) {
         // "swing:0.3" freezes that moment of the swing (screenshot series).
         bool ok = false;
@@ -95,7 +99,7 @@ QcEntityPose QcRenderBridge::localPose(double alpha) const
         pose.onGround = false;
         pose.inWater = true;
         pose.speed = QcPhysics::swimSpeed;
-    } else if (m_forcedPose == u"jump"_s) {
+    } else if (m_forcedPose == u"jump"_s || m_forcedPose == u"fall"_s) {
         pose.onGround = false;
     } else if (m_forcedPose == u"sneak"_s) {
         pose.sneaking = true;
@@ -127,7 +131,35 @@ QcEntityLight QcRenderBridge::entityLight(const QcClientWorld &world, const QcVe
     return QcEntityLight(skyExposure(world, feet.offset(0, 1, 0)), blockLightAt(feet.offset(0, 1, 0)));
 }
 
-void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const
+QcCapeDrive QcRenderBridge::localCapeDrive(const QcEntityPose &pose) const
+{
+    const QcClientSession &session = *m_parts.session;
+    const double yaw = double(session.intent().yaw);
+    if (m_forcedPose.isEmpty()) {
+        return QcCapeDrive::from(session.playerMotion().velocity, yaw, pose);
+    }
+
+    // The forced pose's movement: forwards at its speed, rising after a jump, falling fast.
+    QcCapeDrive drive = QcCapeDrive::from({}, yaw, pose);
+    drive.forwardSpeed = pose.speed;
+    if (m_forcedPose == u"jump"_s) {
+        drive.verticalSpeed = QcPhysics::jumpVelocity / 2.0;
+    } else if (m_forcedPose == u"fall"_s) {
+        drive.verticalSpeed = -QcPhysics::jumpVelocity * 2.0;
+    }
+    return drive;
+}
+
+double QcRenderBridge::capeFrameSeconds()
+{
+    const double seconds = m_capeClock.isValid() ? double(m_capeClock.restart()) / 1000.0 : 0.0;
+    if (!m_capeClock.isValid()) {
+        m_capeClock.start();
+    }
+    return std::min(seconds, QcCapeSwing::maxAdvance);
+}
+
+void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
 {
     const QList<QcMobDefinition> &mobs = frame.content.mobs();
     const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
@@ -138,6 +170,11 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
         placement.light = glowingLight(placement.light, mobs[entity.mobType], double(entity.id % 97), frame.seconds);
     }
 
+    if (entity.isArmourStand()) {
+        appendStand(mesh, entity, placement, frame);
+        return;
+    }
+
     QcEntityPose pose = QcClientSession::poseOf(entity, frame.alpha);
     QcEntityMesher::ModelLook look;
     if (mob && !mobs[entity.mobType].skeleton.isEmpty()) {
@@ -145,6 +182,7 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
         look.model = frame.content.model(definition.skeleton);
         look.outfit = frame.content.appearance(definition.outfit);
         look.scale = definition.height / QcEntityMesher::modelHeight;
+        look.cape = QcFigureLook::cape(frame.content, definition.cape);
         pose.armsForward = definition.armsForward;
     } else if (!mob) {
         look = playerLook(entity.appearance);
@@ -156,18 +194,56 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
         return;
     }
 
+    QcAnimator::BodyPose body = QcAnimator::animateBody(pose, frame.seconds);
+    if (look.cape) {
+        // The last tick's move gives the velocity; between ticks the entity glides on.
+        const QcVec3 velocity = (entity.position - entity.previousPosition) * QcPhysics::tickRate;
+        const QcCapeSwing::Angles cape = m_capes.advance(entity.id, QcCapeDrive::from(velocity, placement.yaw, pose));
+        body.capeLift = cape.lift;
+        body.capeSway = cape.sway;
+    }
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
-    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr}, QcAnimator::animateBody(pose, frame.seconds), placement, frame.uv);
+    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(frame.content, entity.equipment, look);
+    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body, placement, frame.uv);
 }
 
-void QcRenderBridge::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame) const
+void QcRenderBridge::appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
+                                 const EntityFrame &frame) const
+{
+    QcEntityMesher::ModelLook look = QcFigureLook::stand(frame.content, entity.stand);
+    if (!look.isValid()) {
+        return;
+    }
+
+    look.cape = QcFigureLook::cape(frame.content, entity.appearance.cape);
+    const std::optional<QcEntityMesher::ItemLook> held = entity.stand.arms ? heldLook(entity.held) : std::nullopt;
+    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::standArmour(frame.content, entity.equipment, look);
+    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour, QcFigureLook::standHiddenBones(entity.stand)},
+                                QcFigureLook::standBody(entity.stand, frame.seconds), placement, frame.uv);
+}
+
+void QcRenderBridge::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     const QcClientSession &session = *m_parts.session;
     const QcVec3 feet = lerp(session.previousPlayerMotion().position, session.playerMotion().position, frame.alpha);
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    QcEntityMesher::appendModel(mesh, {playerLook(m_settings.character()->appearance()), held ? &*held : nullptr},
-                                QcAnimator::animateBody(localPose(frame.alpha), frame.seconds),
+    QcEntityMesher::ModelLook look = playerLook(m_settings.character()->appearance());
+    const QList<QcEntityMesher::Attachment> armour = QcFigureLook::armour(frame.content, session.equipment(), look);
+    const QcEntityPose pose = localPose(frame.alpha);
+
+    QcAnimator::BodyPose body = QcAnimator::animateBody(pose, frame.seconds);
+    if (look.cape) {
+        const QcCapeDrive drive = localCapeDrive(pose);
+        QcCapeSwing::Angles cape = m_capes.advance(QcCapeTracker::localPlayer, drive);
+        if (!m_forcedPose.isEmpty()) {
+            // Screenshots show the cape at rest on its target for the forced movement.
+            cape = QcCapeSwing::target(drive, frame.seconds);
+        }
+        body.capeLift = cape.lift;
+        body.capeSway = cape.sway;
+    }
+    QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body,
                                 {feet, double(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
 }
 
@@ -184,6 +260,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
     const QcClientSession &session = *m_parts.session;
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldTime() + alpha * QcPhysics::tickDuration};
+    m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
 
     for (const QcClientEntity &entity : session.entities()) {
         if (entity.isItem()) {
@@ -206,6 +283,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
     if (mode != QcCameraMode::FirstPerson && !session.isDead()) {
         appendLocalPlayer(*mesh, frame);
     }
+    m_capes.endFrame();
 
     m_entityMeshSize = {mesh->vertices.size(), mesh->indices.size()};
     m_parts.view->setEntityMesh(std::move(mesh));

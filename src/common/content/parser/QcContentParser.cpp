@@ -7,7 +7,32 @@
 #include <QJsonArray>
 #include <QRegularExpression>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// Emblem textures (decision E-241): at most 16 rows of 16 characters and 16 colours, so the
+// definition stays small; the client checks the colours when it paints.
+constexpr qsizetype maxBitmapSide = 16;
+
+bool isBitmap(const QJsonValue &value)
+{
+    const QJsonArray rows = value.toArray();
+    return value.isArray() && rows.size() <= maxBitmapSide
+           && std::ranges::all_of(rows, [](const QJsonValue &row) { return row.isString() && row.toString().size() <= maxBitmapSide; });
+}
+
+bool isPalette(const QJsonValue &value)
+{
+    const QJsonObject palette = value.toObject();
+    return value.isObject() && palette.size() <= maxBitmapSide && std::ranges::all_of(palette.keys(), [&palette](const QString &key) {
+               return key.size() == 1 && palette.value(key).isString() && palette.value(key).toString().size() <= 9;
+           });
+}
+
+} // namespace
 
 namespace QcContentParser {
 
@@ -41,6 +66,18 @@ QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, co
             texture.procedural.insert(key, value);
         } else if (!value.isUndefined()) {
             return qcError(u"texture '%1': '%2' must be a number"_s.arg(texture.name, key));
+        }
+    }
+
+    if (json.contains(u"bitmap"_s) && !isBitmap(json.value(u"bitmap"_s))) {
+        return qcError(u"texture '%1': 'bitmap' must be at most %2 strings of at most %2 characters"_s.arg(texture.name).arg(maxBitmapSide));
+    }
+    if (json.contains(u"palette"_s) && !isPalette(json.value(u"palette"_s))) {
+        return qcError(u"texture '%1': 'palette' must map at most %2 single characters to colour strings"_s.arg(texture.name).arg(maxBitmapSide));
+    }
+    for (const QString &key : {u"bitmap"_s, u"palette"_s}) {
+        if (json.contains(key)) {
+            texture.procedural.insert(key, json.value(key));
         }
     }
 

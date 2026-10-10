@@ -1,5 +1,6 @@
 #include "QcHandbookOverviewPages.h"
 
+#include "QcArmour.h"
 #include "QcHandbook.h"
 #include "QcHandbookContext.h"
 #include "QcHandbookLinks.h"
@@ -159,6 +160,36 @@ QcHandbookEntry toolTable(const QcHandbookContext &context)
     return tools;
 }
 
+// Every armour set with its pieces (head to feet: points and durability) and the rule.
+QcHandbookEntry armourTable(const QcHandbookContext &context)
+{
+    const QcHandbookText &text = context.text;
+    const std::optional<QcItemId> icon = QcArmour::pointsIcon(context.content);
+    QcHandbookEntry armour = tablePage(context, u"armour"_s, icon ? context.content.item(*icon).name : QString());
+
+    QMap<QString, QList<std::pair<int, Link>>> sets;
+    QStringList order;
+    for (const QcItemDefinition &item : context.content.items()) {
+        if (!item.armour) {
+            continue;
+        }
+        if (!sets.contains(item.armour->set)) {
+            order.append(item.armour->set);
+        }
+        const QString detail = text.label(u"value.armourPiece"_s)
+                                   .arg(text.label(u"slot."_s + qcEquipmentSlotName(item.armour->slot)))
+                                   .arg(item.armour->points)
+                                   .arg(item.durability);
+        sets[item.armour->set].append({int(item.armour->slot), context.links.itemLink(item.name, detail)});
+    }
+
+    for (const QString &set : std::as_const(order)) {
+        const QString title = context.content.translate(u"armour_set."_s + QString(set).replace(u':', u'.'), text.language());
+        armour.sections.append({title, {}, orderedLinks(sets.take(set)), {}});
+    }
+    return armour;
+}
+
 // All machine recipes by result.
 QcHandbookEntry smeltingTable(const QcHandbookContext &context)
 {
@@ -193,6 +224,7 @@ QList<QcHandbookEntry> build(const QcHandbookContext &context)
 
     entries.append(fuelTable(context));
     entries.append(toolTable(context));
+    entries.append(armourTable(context));
     entries.append(smeltingTable(context));
     return entries;
 }

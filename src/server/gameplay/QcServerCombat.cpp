@@ -1,5 +1,6 @@
 #include "QcServerCombat.h"
 
+#include "QcArmour.h"
 #include "QcChatText.h"
 #include "QcPhysics.h"
 #include "QcServerInventory.h"
@@ -32,6 +33,7 @@ void QcServerCombat::tick()
         players.append({client->entityId, client->motion.position, !client->dead});
     }
 
+    m_state.stands.tick(dt);
     const QList<QcMobManager::PlayerHit> hits =
         m_state.mobs.tick(m_state.world, players, m_state.info.worldTime, dt, [this] { return m_state.newEntityId(); });
     playMobSounds(dt);
@@ -39,7 +41,7 @@ void QcServerCombat::tick()
     for (const QcMobManager::PlayerHit &hit : hits) {
         for (const auto &client : m_state.clients) {
             if (client->entityId == hit.playerEntityId) {
-                damagePlayer(*client, hit.damage, hit.knockback);
+                damagePlayer(*client, hit.damage, hit.knockback, DamageKind::Armoured);
             }
         }
     }
@@ -113,7 +115,7 @@ void QcServerCombat::applyContactDamage()
 
         const double damage = contactDamageOf(m_state, client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
         if (damage > 0.0) {
-            damagePlayer(*client, damage, {});
+            damagePlayer(*client, damage, {}, DamageKind::Armoured);
         }
     }
 
@@ -148,12 +150,15 @@ void QcServerCombat::applyContactDamage()
     });
 }
 
-void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback)
+void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
 {
     if (client.dead || client.hurtTimer > 0.0 || amount <= 0.0) {
         return;
     }
 
+    if (kind == DamageKind::Armoured) {
+        amount = throughArmour(client, amount);
+    }
     client.health = std::max(0.0, client.health - amount);
     client.hurtTimer = QcMobManager::hurtInvulnerability;
     client.hurtThisTick = true;
@@ -179,6 +184,20 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
     }
 
     sendHealth(client);
+}
+
+double QcServerCombat::throughArmour(QcServerClient &client, double amount)
+{
+    const QcContentRegistry &content = *m_state.content;
+    const int points = QcArmour::points(content, client.equipment);
+    if (points <= 0) {
+        return amount;
+    }
+
+    QcEquipment worn = client.equipment;
+    const bool broke = !QcArmour::wear(content, worn, amount).isEmpty();
+    m_inventory.equipmentWorn(client, worn, broke);
+    return QcArmour::reducedDamage(amount, points);
 }
 
 void QcServerCombat::updateHealth(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
@@ -287,6 +306,12 @@ void QcServerCombat::respawn(QcServerClient &client)
 void QcServerCombat::consume(QcServerClient &client)
 {
     const QcItemDefinition *held = m_state.heldItem(client);
+    // Armour in the hand is put on (decision E-234).
+    if (held && held->armour) {
+        m_inventory.equipHeld(client);
+        return;
+    }
+
     // Full players do not eat (decision E-039).
     if (client.dead || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
         return;

@@ -1,0 +1,52 @@
+{
+    "name": "diamond_boots",
+    "texture": "diamond_boots",
+    "maxStack": 1,
+    "durability": 429,
+    "armour": {
+        "slot": "feet",
+        "points": 3,
+        "set": "diamond",
+        "layers": [
+            {
+                "covers": [
+                    "legs",
+                    "shoes"
+                ],
+                "texture": "diamond_armour",
+                "inflate": 0.045,
+                "toY": 0.32
+            }
+        ],
+        "parts": [
+            {
+                "bone": "right_leg",
+                "from": [
+                    -0.01,
+                    0.0,
+                    -0.21
+                ],
+                "to": [
+                    0.26,
+                    0.12,
+                    -0.17
+                ],
+                "texture": "diamond_armour_trim"
+            },
+            {
+                "bone": "left_leg",
+                "from": [
+                    -0.26,
+                    0.0,
+                    -0.21
+                ],
+                "to": [
+                    0.01,
+                    0.12,
+                    -0.17
+                ],
+                "texture": "diamond_armour_trim"
+            }
+        ]
+    }
+}

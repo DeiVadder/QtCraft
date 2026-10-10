@@ -1,0 +1,15 @@
+{
+    "name": "golden_chestplate",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "XXX",
+        "XXX"
+    ],
+    "key": {
+        "X": "gold_ingot"
+    },
+    "result": {
+        "item": "golden_chestplate"
+    }
+}

@@ -102,6 +102,11 @@ const QcAppearance &QcPreviewSource::appearance() const
     return m_character.appearance();
 }
 
+QcEquipment QcPreviewSource::equipment() const
+{
+    return m_parts.session ? m_parts.session->equipment() : QcEquipment();
+}
+
 QcItemId QcPreviewSource::heldItem(bool mining)
 {
     if (m_parts.session) {

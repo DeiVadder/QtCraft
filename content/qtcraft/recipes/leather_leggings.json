@@ -1,0 +1,15 @@
+{
+    "name": "leather_leggings",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        "X X",
+        "X X"
+    ],
+    "key": {
+        "X": "leather"
+    },
+    "result": {
+        "item": "leather_leggings"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "golden_helmet",
+    "pattern": "helmet",
+    "primary": "#e2b93a",
+    "secondary": "#fff2a8",
+    "variation": 0.06,
+    "seed": 7170
+}

@@ -25,15 +25,41 @@ SlotScreen {
         anchors.centerIn: parent
         spacing: screen.narrow ? 16 : 28
 
-        // The character as others see it; the armour slots of stage 23 take the column beside it.
+        // The character as others see it, the armour slots (head to feet) beside it and the armour
+        // points below them (decision E-234).
         RowLayout {
             Layout.alignment: Qt.AlignTop
             spacing: 8
 
-            Item {
+            ColumnLayout {
                 objectName: "equipmentColumn"
-                Layout.preferredWidth: 52
-                Layout.preferredHeight: 4 * 54
+                Layout.alignment: Qt.AlignTop
+                spacing: 2
+
+                Repeater {
+                    model: SlotRange {
+                        source: screen.game.player.inventory
+                        first: screen.game.player.equipmentFirstRow
+                        count: 4
+                    }
+
+                    InventorySlot {
+                        required property int index
+
+                        owner: screen
+                        // Icons exist once the content arrived.
+                        placeholderIcon: screen.game.phase === "playing" && screen.game.player.armourPlaceholders[index]
+                                         ? "image://items/" + screen.game.player.armourPlaceholders[index] : ""
+                    }
+                }
+
+                Label {
+                    objectName: "armourPoints"
+                    Layout.alignment: Qt.AlignHCenter
+                    text: qsTr("Armour: %1").arg(screen.game.player.armour)
+                    color: Theme.text
+                    font.pixelSize: 15
+                }
             }
 
             Rectangle {

@@ -695,6 +695,10 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 |---|---|---|---|
 | [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattstein](blocks.md#block-qtcraft-polished_stone) | [Glattstein](blocks.md#block-qtcraft-polished_stone) | 6 × [Glattsteinstufe](#block-qtcraft-polished_stone_slab) |
 
+**Wird verwendet für**
+
+[Rüstungsständer](items.md#item-qtcraft-armor_stand)
+
 **Abbaubar mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)

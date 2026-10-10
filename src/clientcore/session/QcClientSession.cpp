@@ -19,6 +19,20 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// The box the crosshair hits an entity in.
+QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entity)
+{
+    if (entity.isArmourStand()) {
+        const double scale = entity.stand.small ? 0.5 : 1.0;
+        return QcPhysics::boxAt(entity.position, QcStandPose::bodyWidth * scale, QcStandPose::bodyHeight * scale);
+    }
+
+    const bool mob = entity.mobType >= 0 && entity.mobType < content.mobs().size();
+    const double width = mob ? content.mobs()[entity.mobType].width : QcPhysics::playerWidth;
+    const double height = mob ? content.mobs()[entity.mobType].height : QcPhysics::playerHeight;
+    return QcPhysics::boxAt(entity.position, width, height);
+}
+
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
 
 // Unacknowledged inputs beyond this are dropped; the server would reject them anyway.
@@ -500,11 +514,8 @@ void QcClientSession::refreshTarget()
             continue;
         }
 
-        const bool mob = entity.mobType >= 0 && entity.mobType < m_content->mobs().size();
-        const double width = mob ? m_content->mobs()[entity.mobType].width : QcPhysics::playerWidth;
-        const double height = mob ? m_content->mobs()[entity.mobType].height : QcPhysics::playerHeight;
         const std::optional<double> distance =
-            QcRaycast::intersectBox(eye, direction, QcPhysics::boxAt(entity.position, width, height), std::min(nearest, attackReach));
+            QcRaycast::intersectBox(eye, direction, targetBoxOf(*m_content, entity), std::min(nearest, attackReach));
 
         if (distance && *distance < nearest) {
             nearest = *distance;
@@ -654,7 +665,15 @@ bool QcClientSession::useItem()
     const bool opensScreen = targetDefinition && !m_intent.sneak
                              && (targetDefinition->opensCrafting || targetDefinition->machine.isMachine()
                                  || targetDefinition->containerSlots > 0 || targetDefinition->toggles);
-    if (item && item->food > 0 && item->placesBlock.isEmpty() && !opensScreen) {
+    // An armour stand takes or gives armour and items, also with an empty hand.
+    if (m_targetEntity && m_entities.all().value(*m_targetEntity).isArmourStand()) {
+        m_connection->send(QcMsg::UseEntity{*m_targetEntity});
+        m_useTicks = 0;
+        return true;
+    }
+
+    // Food without a block to place is eaten, armour put on (both sent as ConsumeItem).
+    if (item && ((item->food > 0 && item->placesBlock.isEmpty()) || item->armour) && !opensScreen) {
         m_connection->send(QcMsg::ConsumeItem{});
         m_useTicks = 0;
         return true;

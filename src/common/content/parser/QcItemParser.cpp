@@ -1,5 +1,6 @@
 #include "QcItemParser.h"
 
+#include "QcArmourParser.h"
 #include "QcContentFields.h"
 #include "QcJsonFieldReader.h"
 
@@ -38,8 +39,16 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.scoops = reader.boolean(u"scoops"_s, false);
     item.bottles = reader.boolean(u"bottles"_s, false);
     item.emptiesTo = reader.name(u"emptiesTo"_s, packNamespace);
+    item.placesStand = reader.boolean(u"placesStand"_s, false);
+    reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
+        item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
+    });
 
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
+        item.maxStack = 1;
+    }
+    // An equipment slot holds one item.
+    if (item.armour) {
         item.maxStack = 1;
     }
     // Burnt fuel leaves its container in the fuel slot, which has room for it only after the last item.

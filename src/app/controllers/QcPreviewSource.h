@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearance.h"
+#include "QcEquipment.h"
 #include "QcItemDefinition.h"
 #include "QcPreviewHook.h"
 
@@ -50,6 +51,8 @@ public:
     // The item in the player's hand: the selected hotbar stack in a world; in the menu a pickaxe
     // while mining, so the swing reads as mining.
     QcItemId heldItem(bool mining);
+    // What the player wears in a world; nothing in the menu.
+    QcEquipment equipment() const;
 
     void setHook(const QcPreviewHook &hook)
     {

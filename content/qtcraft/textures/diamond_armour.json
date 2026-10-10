@@ -1,0 +1,8 @@
+{
+    "name": "diamond_armour",
+    "pattern": "armour_plate",
+    "primary": "#3fd0c6",
+    "secondary": "#b8fff6",
+    "variation": 0.05,
+    "seed": 7247
+}

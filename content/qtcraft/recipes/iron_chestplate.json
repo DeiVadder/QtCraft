@@ -1,0 +1,15 @@
+{
+    "name": "iron_chestplate",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "XXX",
+        "XXX"
+    ],
+    "key": {
+        "X": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_chestplate"
+    }
+}

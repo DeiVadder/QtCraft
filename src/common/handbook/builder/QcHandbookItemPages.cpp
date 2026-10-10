@@ -17,6 +17,16 @@ bool isTool(const QcItemDefinition &item)
     return !item.tool.isEmpty() || item.attackDamage > 1.0;
 }
 
+// Slot, points and set of armour (decision E-234); its durability counts hits.
+void addArmourFacts(const QcHandbookContext &context, const QcArmourDefinition &armour, QList<Fact> &facts)
+{
+    const QcHandbookText &text = context.text;
+    facts.append({text.label(u"fact.wornOn"_s), text.label(u"slot."_s + qcEquipmentSlotName(armour.slot)), {}});
+    facts.append({text.label(u"fact.armourPoints"_s), u"+"_s + QString::number(armour.points), {context.links.tableLink(u"armour"_s)}});
+    const QString setKey = u"armour_set."_s + QString(armour.set).replace(u':', u'.');
+    facts.append({text.label(u"fact.armourSet"_s), context.content.translate(setKey, text.language()), {}});
+}
+
 // Tool, durability, attack, food and fuel values.
 void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item, QList<Fact> &facts)
 {
@@ -26,8 +36,11 @@ void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item,
                       {context.links.tableLink(u"tools"_s)}});
         facts.append({text.label(u"fact.toolSpeed"_s), text.label(u"unit.factor"_s).arg(text.number(item.toolSpeed)), {}});
     }
+    if (item.armour) {
+        addArmourFacts(context, *item.armour, facts);
+    }
     if (item.durability > 0) {
-        facts.append({text.label(u"fact.durability"_s), text.label(u"unit.uses"_s).arg(item.durability), {}});
+        facts.append({text.label(u"fact.durability"_s), text.label(item.armour ? u"unit.hits"_s : u"unit.uses"_s).arg(item.durability), {}});
     }
     if (isTool(item)) {
         facts.append({text.label(u"fact.attackDamage"_s), text.healthPoints(item.attackDamage), {}});
@@ -103,7 +116,7 @@ QcHandbookEntry itemPage(const QcHandbookContext &context, const QcItemDefinitio
     QcHandbookEntry entry;
     entry.id = u"item:"_s + item.name;
     entry.name = item.name;
-    entry.category = isTool(item) ? u"tools"_s : (item.food > 0 ? u"food"_s : u"items"_s);
+    entry.category = isTool(item) || item.armour ? u"tools"_s : (item.food > 0 ? u"food"_s : u"items"_s);
     entry.pack = QcHandbookLinks::packOf(item.name);
     entry.title = context.content.translate(item.translationKey, text.language());
     entry.icon = item.name;

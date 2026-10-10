@@ -1,0 +1,8 @@
+{
+    "name": "golden_armour",
+    "pattern": "armour_plate",
+    "primary": "#e2b93a",
+    "secondary": "#fff2a8",
+    "variation": 0.05,
+    "seed": 7149
+}

@@ -4,6 +4,7 @@
 #include "QcBlockDefinition.h"
 #include "QcEquipment.h"
 #include "QcItemStack.h"
+#include "QcStandPose.h"
 #include "QcVec3.h"
 
 #include <QString>
@@ -12,8 +13,8 @@
 struct QcClientEntity
 {
     quint32 id = 0;
-    // Index into the content's mobs, -1 for a player, -2 for a dropped item, -3 for a falling block
-    // (see QcMsg::EntitySpawn).
+    // Index into the content's mobs, -1 for a player, -2 for a dropped item, -3 for a falling block,
+    // -4 for an armour stand (see QcMsg::EntitySpawn).
     int mobType = -1;
     // The block of a falling block; air otherwise.
     QcBlockId block = qcAirBlockId;
@@ -33,8 +34,10 @@ struct QcClientEntity
     float previousPitch = 0.0f;
     quint8 flags = 0;
     QcItemId held = qcNoItem;
-    // Players: their armour slots (drawn from stage 23 on).
+    // Players and armour stands: their armour slots.
     QcEquipment equipment;
+    // Armour stands: pose and what they show.
+    QcStandPose stand;
     // Distance walked (drives the stride) and the last step's length per tick.
     double walkDistance = 0.0;
     double lastStep = 0.0;
@@ -53,4 +56,5 @@ struct QcClientEntity
     bool isItem() const { return !item.isEmpty(); }
     bool isPlayer() const { return mobType == -1; }
     bool isFallingBlock() const { return mobType == -3; }
+    bool isArmourStand() const { return mobType == -4; }
 };

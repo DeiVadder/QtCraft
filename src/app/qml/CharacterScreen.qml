@@ -5,7 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// The player's look: outfit, hair style, four colours and presets, next to a live preview of the
+// The player's look: outfit, hair style, cape, four colours and presets, next to a live preview of the
 // character as other players see it (decision E-231). Changes apply at once (also in a running
 // game) and are stored when the screen closes.
 Popup {
@@ -24,6 +24,7 @@ Popup {
     function showStoredLook() {
         outfitBox.currentIndex = outfitBox.indexOfValue(character.look.outfit);
         hairBox.currentIndex = hairBox.indexOfValue(character.look.hair);
+        capeBox.currentIndex = capeBox.indexOfValue(character.look.cape);
     }
 
     x: 32
@@ -167,6 +168,19 @@ Popup {
                     valueRole: "name"
                     model: screen.character.hairStyles
                     onActivated: screen.setPart("hair", currentValue)
+                }
+
+                Label {
+                    text: qsTr("Cape")
+                }
+                ComboBox {
+                    id: capeBox
+
+                    Layout.fillWidth: true
+                    textRole: "label"
+                    valueRole: "name"
+                    model: screen.character.capes
+                    onActivated: screen.setPart("cape", currentValue)
                 }
             }
 

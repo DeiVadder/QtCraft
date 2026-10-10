@@ -18,6 +18,7 @@ class QcStructure
 {
 public:
     using Mob = QcStructureDefinition::Mob;
+    using Stand = QcStructureDefinition::Stand;
     using Contents = QcStructureDefinition::Contents;
     using Label = QcStructureDefinition::Label;
 
@@ -42,6 +43,7 @@ public:
     const QList<QcBlockId> &palette() const { return m_palette; }
 
     QList<Mob> mobs;
+    QList<Stand> stands;
     QList<Contents> contents;
     QList<Label> labels;
     QList<QcBlockPos> updates;

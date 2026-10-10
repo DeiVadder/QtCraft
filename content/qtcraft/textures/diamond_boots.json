@@ -1,0 +1,8 @@
+{
+    "name": "diamond_boots",
+    "pattern": "boots",
+    "primary": "#3fd0c6",
+    "secondary": "#b8fff6",
+    "variation": 0.06,
+    "seed": 7296
+}

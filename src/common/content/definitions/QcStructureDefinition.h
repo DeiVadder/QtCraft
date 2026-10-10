@@ -9,7 +9,7 @@
 
 // A building made of blocks, defined in data (structures/*.json, decision E-219): a palette of block
 // states and the palette key of every cell, plus what a placed copy brings along: creatures,
-// contents of chests and machines, labels, block updates to run (liquids start to flow, sand
+// contents of chests and machines, armour stands, labels, block updates to run (liquids start to flow, sand
 // falls) and saplings that grow. Coordinates are local: x east, y up, z south, origin at the north
 // west bottom corner. Placement turns a structure in quarter turns about the vertical axis. Server
 // side only; the showcase world (and later villages) place structures through the world generator.
@@ -27,6 +27,16 @@ struct QcStructureDefinition
     {
         QString mob;
         QcVec3 at;
+    };
+
+    // An armour stand (decision E-238): where it stands, turned by `yaw` degrees (0 faces north),
+    // and its properties as command lines ("equip qtcraft:iron", "pose right_arm -90 0 0"), which
+    // the server checks when it places the stand (QcStandProperties).
+    struct Stand
+    {
+        QcVec3 at;
+        float yaw = 0.0f;
+        QStringList properties;
     };
 
     struct Stack
@@ -62,6 +72,7 @@ struct QcStructureDefinition
     // Palette index per cell (x + sizeX * (z + sizeZ * y)), or `keep`.
     QList<qint16> cells;
     QList<Mob> mobs;
+    QList<Stand> stands;
     QList<Contents> contents;
     QList<Label> labels;
     QList<QcBlockPos> updates;

@@ -1,0 +1,8 @@
+{
+    "name": "leather_armour",
+    "pattern": "armour_leather",
+    "primary": "#9a5a32",
+    "secondary": "#c88a5a",
+    "variation": 0.05,
+    "seed": 7107
+}

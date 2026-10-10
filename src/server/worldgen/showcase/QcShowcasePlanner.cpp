@@ -1,5 +1,6 @@
 #include "QcShowcasePlanner.h"
 
+#include "QcShowcaseArmourArea.h"
 #include "QcShowcaseBlockArea.h"
 #include "QcShowcaseCategories.h"
 #include "QcShowcaseCreatureArea.h"
@@ -132,6 +133,9 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
     QList<QcShowcaseAreaBuilder> builders = demoBuilders();
     builders.append([context](QcBlockPos anchor) { return QcShowcaseTreeArea::build(context, anchor); });
     builders.append([context](QcBlockPos anchor) { return QcShowcaseCreatureArea::build(context, anchor); });
+    if (!QcShowcaseArmourArea::sets(m_content).isEmpty()) {
+        builders.append([context](QcBlockPos anchor) { return QcShowcaseArmourArea::build(context, anchor); });
+    }
 
     QList<QcShowcaseCategory> categories = m_content.showcase().categories;
     if (categories.isEmpty()) {
@@ -227,6 +231,9 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     }
     for (const QcStructure::Mob &mob : structure.mobs) {
         m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at)});
+    }
+    for (const QcStructure::Stand &stand : structure.stands) {
+        m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * float(placement.turns()), stand.properties});
     }
     for (const QcStructure::Contents &contents : structure.contents) {
         m_plan.setup.contents.append({placement.toWorld(contents.at), contents.items});

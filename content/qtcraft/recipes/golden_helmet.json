@@ -1,0 +1,14 @@
+{
+    "name": "golden_helmet",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        "X X"
+    ],
+    "key": {
+        "X": "gold_ingot"
+    },
+    "result": {
+        "item": "golden_helmet"
+    }
+}

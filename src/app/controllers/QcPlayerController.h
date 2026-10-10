@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QVariantList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
@@ -22,6 +23,14 @@ class QcPlayerController : public QObject
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
     Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
+    // Armour points of what the player wears (0..20 count, decision E-234).
+    Q_PROPERTY(int armour READ armour NOTIFY craftingChanged FINAL)
+    Q_PROPERTY(int maxArmour READ maxArmour CONSTANT FINAL)
+    Q_PROPERTY(int equipmentFirstRow READ equipmentFirstRow CONSTANT FINAL)
+    // Item names of the content for the pale icons of empty armour slots (head to feet, empty when
+    // the content has no armour for a slot) and the armour points in the HUD (QcArmour).
+    Q_PROPERTY(QStringList armourPlaceholders READ armourPlaceholders NOTIFY contentChanged FINAL)
+    Q_PROPERTY(QString armourIcon READ armourIcon NOTIFY contentChanged FINAL)
     // The open machine (furnace screen): its name, the share of fuel left and of the item done.
     Q_PROPERTY(QString machineLabel READ machineLabel NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
@@ -39,6 +48,11 @@ public:
     bool dead() const;
     int food() const;
     int maxFood() const;
+    int armour() const;
+    static int maxArmour();
+    static int equipmentFirstRow() { return QcInventoryModel::equipmentFirstRow; }
+    QStringList armourPlaceholders() const;
+    QString armourIcon() const;
     QString machineLabel() const { return m_machineLabel; }
     double machineBurn() const;
     // Slots of the open chest, 0 when none is open.
@@ -66,6 +80,7 @@ public:
     void updateMachine();
 
 signals:
+    void contentChanged();
     void healthChanged();
     void foodChanged();
     void machineChanged();

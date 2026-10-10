@@ -1,0 +1,31 @@
+{
+    "name": "cape_green_emblem",
+    "pattern": "emblem",
+    "primary": "#41cd52",
+    "variation": 0.03,
+    "seed": 241,
+    "palette": {
+        "o": "#164d1e",
+        "T": "#f2fff2",
+        "L": "#b8ecbe",
+        "R": "#6fc07a"
+    },
+    "bitmap": [
+        "................",
+        ".......oo.......",
+        ".....ooTToo.....",
+        "...ooTTTTTToo...",
+        "..oTTTTTTTTTTo..",
+        "..oLLTTTTTTRRo..",
+        "..oLLLLTTRRRRo..",
+        "..oLLLLLRRRRRo..",
+        "..oLLLLLRRRRRo..",
+        "..oLLLLLRRRRRo..",
+        "..oLLLLLRRRRRo..",
+        "..oLLLLLRRRRRo..",
+        "...ooLLLRRRoo...",
+        ".....ooLRoo.....",
+        ".......oo.......",
+        "................"
+    ]
+}

@@ -19,8 +19,13 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
     const double y = qDegreesToRadians(double(yaw));
     const double p = qDegreesToRadians(double(pitch));
     const QcVec3 forward{std::sin(y) * std::cos(p), std::sin(p), -std::cos(y) * std::cos(p)};
-    // Behind: back along the view direction; front: ahead of the player, looking back at them.
-    const QcVec3 direction = mode == QcCameraMode::Behind ? forward * -1.0 : forward;
+    // Behind: back along the view direction; front: ahead of the player, looking back at them;
+    // side: level to the right, looking at the player's right side (the player faces right on screen).
+    const QcVec3 right{std::cos(y), 0.0, std::sin(y)};
+    QcVec3 direction = mode == QcCameraMode::Behind ? forward * -1.0 : forward;
+    if (mode == QcCameraMode::Side) {
+        direction = right;
+    }
     double distance = thirdPersonDistance;
     if (const std::optional<QcRaycastHit> hit = QcRaycast::cast(world, eye, direction, thirdPersonDistance + wallMargin,
                                                                              QcRaycast::Targets::Solid)) {
@@ -30,6 +35,9 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
     const QcVec3 position = eye + direction * distance;
     if (mode == QcCameraMode::Behind) {
         return {position, yaw, pitch};
+    }
+    if (mode == QcCameraMode::Side) {
+        return {position, float(std::fmod(double(yaw) + 270.0, 360.0)), pitch};
     }
     return {position, float(std::fmod(double(yaw) + 180.0, 360.0)), -pitch};
 }
@@ -42,6 +50,7 @@ QcCameraMode next(QcCameraMode mode)
     case QcCameraMode::Behind:
         return QcCameraMode::Front;
     case QcCameraMode::Front:
+    case QcCameraMode::Side:
         break;
     }
     return QcCameraMode::FirstPerson;
@@ -54,6 +63,8 @@ const char *name(QcCameraMode mode)
         return "behind";
     case QcCameraMode::Front:
         return "front";
+    case QcCameraMode::Side:
+        return "side";
     case QcCameraMode::FirstPerson:
         break;
     }
@@ -62,7 +73,7 @@ const char *name(QcCameraMode mode)
 
 std::optional<QcCameraMode> fromName(const QString &text)
 {
-    for (const QcCameraMode mode : {QcCameraMode::FirstPerson, QcCameraMode::Behind, QcCameraMode::Front}) {
+    for (const QcCameraMode mode : {QcCameraMode::FirstPerson, QcCameraMode::Behind, QcCameraMode::Front, QcCameraMode::Side}) {
         if (text == QLatin1StringView(name(mode))) {
             return mode;
         }

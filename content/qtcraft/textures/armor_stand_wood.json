@@ -1,0 +1,8 @@
+{
+    "name": "armor_stand_wood",
+    "pattern": "planks",
+    "primary": "#b08a54",
+    "secondary": "#84653c",
+    "variation": 0.07,
+    "seed": 7310
+}

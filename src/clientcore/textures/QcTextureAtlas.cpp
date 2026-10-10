@@ -1,5 +1,6 @@
 #include "QcTextureAtlas.h"
 
+#include "QcTextureEmblem.h"
 #include "QcTextureSynthesizer.h"
 
 #include <QBuffer>
@@ -93,6 +94,11 @@ std::optional<QImage> renderTexture(const QcTextureDefinition &definition, QStri
     spec.secondary = *secondary;
     spec.variation = std::clamp(json.value(u"variation"_s).toDouble(0.1), 0.0, 1.0);
     spec.seed = quint32(json.value(u"seed"_s).toInteger(0));
+    QString emblemProblem;
+    if (spec.pattern == QcTextureSpec::Pattern::Emblem && !QcTextureEmblem::read(json, spec, emblemProblem)) {
+        problem = u"%1: %2"_s.arg(definition.name, emblemProblem);
+        return std::nullopt;
+    }
     return QcTextureSynthesizer::synthesize(spec);
 }
 

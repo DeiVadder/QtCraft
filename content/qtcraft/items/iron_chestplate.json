@@ -1,0 +1,51 @@
+{
+    "name": "iron_chestplate",
+    "texture": "iron_chestplate",
+    "maxStack": 1,
+    "durability": 240,
+    "armour": {
+        "slot": "chest",
+        "points": 6,
+        "set": "iron",
+        "layers": [
+            {
+                "covers": [
+                    "torso",
+                    "sleeve"
+                ],
+                "texture": "iron_armour",
+                "inflate": 0.035
+            }
+        ],
+        "parts": [
+            {
+                "bone": "right_arm",
+                "from": [
+                    0.21,
+                    1.24,
+                    -0.135
+                ],
+                "to": [
+                    0.48,
+                    1.4,
+                    0.135
+                ],
+                "texture": "iron_armour_trim"
+            },
+            {
+                "bone": "left_arm",
+                "from": [
+                    -0.48,
+                    1.24,
+                    -0.135
+                ],
+                "to": [
+                    -0.21,
+                    1.4,
+                    0.135
+                ],
+                "texture": "iron_armour_trim"
+            }
+        ]
+    }
+}

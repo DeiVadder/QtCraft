@@ -1,0 +1,8 @@
+{
+    "name": "iron_armour",
+    "pattern": "armour_plate",
+    "primary": "#c4c4c8",
+    "secondary": "#f2f2f4",
+    "variation": 0.05,
+    "seed": 7198
+}

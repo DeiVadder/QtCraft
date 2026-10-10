@@ -1,0 +1,8 @@
+{
+    "name": "leather_helmet_front",
+    "pattern": "helmet_front",
+    "primary": "#9a5a32",
+    "secondary": "#c88a5a",
+    "variation": 0.05,
+    "seed": 7114
+}

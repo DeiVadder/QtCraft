@@ -14,7 +14,10 @@ qt_add_library(qc_server STATIC
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
     gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
+    gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
     gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
+    gameplay/QcServerStands.h gameplay/QcServerStands.cpp
+    gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
     blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
@@ -26,6 +29,7 @@ qt_add_library(qc_server STATIC
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
+    storage/QcStandStorage.h storage/QcStandStorage.cpp
     core/QcProfileValidation.h core/QcProfileValidation.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcServer.h core/QcServer.cpp
@@ -43,6 +47,7 @@ qt_add_library(qc_server STATIC
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
+    core/QcStandCommands.h core/QcStandCommands.cpp
     core/QcServerDebug.h core/QcServerDebug.cpp
     core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
     core/QcTickScheduler.h core/QcTickScheduler.cpp
@@ -68,6 +73,7 @@ qt_add_library(qc_server STATIC
     worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
     worldgen/QcWorldSetup.h
     worldgen/showcase/QcShowcaseArea.h
+    worldgen/showcase/QcShowcaseArmourArea.h worldgen/showcase/QcShowcaseArmourArea.cpp
     worldgen/showcase/QcShowcaseBlockArea.h worldgen/showcase/QcShowcaseBlockArea.cpp
     worldgen/showcase/QcShowcaseCategories.h worldgen/showcase/QcShowcaseCategories.cpp
     worldgen/showcase/QcShowcaseCreatureArea.h worldgen/showcase/QcShowcaseCreatureArea.cpp

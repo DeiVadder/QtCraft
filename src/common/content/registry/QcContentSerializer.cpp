@@ -1,5 +1,6 @@
 #include "QcContentSerializer.h"
 
+#include "QcArmourSerializer.h"
 #include "QcBlockSerializer.h"
 #include "QcContentRegistry.h"
 #include "QcStreamLimits.h"
@@ -65,7 +66,8 @@ void writeItem(QDataStream &stream, const QcItemDefinition &item)
     for (const QString &tag : item.tags) {
         stream << tag;
     }
-    stream << item.scoops << item.emptiesTo << item.bottles;
+    stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand;
+    QcArmourSerializer::write(stream, item.armour);
 }
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -75,7 +77,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     for (const QcMobPart &part : mob.parts) {
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
     }
-    stream << mob.skeleton << mob.outfit << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound
+    stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound
            << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem;
 }
 
@@ -127,6 +129,7 @@ void writeAppearance(QDataStream &stream, const QcAppearanceDefinition &appearan
         stream << layer.slot << layer.texture << quint8(layer.tint);
     }
     writeBoxes(stream, appearance.boxes);
+    stream << appearance.cape.width << appearance.cape.length << appearance.cape.thickness << appearance.cape.offset;
 }
 
 void writeSound(QDataStream &stream, const QcSoundDefinition &sound)
@@ -178,7 +181,10 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         item.tags.append(tag);
     }
 
-    stream >> item.scoops >> item.emptiesTo >> item.bottles;
+    stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand;
+    if (!QcArmourSerializer::read(stream, item.armour)) {
+        return false;
+    }
     item.maxStack = maxStack;
     item.toolLevel = toolLevel;
     item.durability = durability;
@@ -222,7 +228,7 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
     }
 
     qint32 glow = 0;
-    stream >> mob.skeleton >> mob.outfit >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
+    stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
         >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
     mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
 
@@ -359,7 +365,7 @@ bool readAppearance(QDataStream &stream, QcAppearanceDefinition &appearance)
     quint8 kind = 0;
     quint32 layerCount = 0;
     stream >> appearance.name >> appearance.translationKey >> kind >> appearance.playable;
-    if (kind > quint8(QcAppearanceDefinition::Kind::Hair)
+    if (kind > quint8(QcAppearanceDefinition::Kind::Cape)
         || !QcStreamLimits::readCount(stream, QcAppearanceDefinition::maxLayers, layerCount)) {
         return false;
     }
@@ -376,7 +382,16 @@ bool readAppearance(QDataStream &stream, QcAppearanceDefinition &appearance)
         layer.tint = QcTint(tint);
         appearance.layers.append(std::move(layer));
     }
-    return readBoxes(stream, QcAppearanceDefinition::maxBoxes, appearance.boxes) && stream.status() == QDataStream::Ok;
+    if (!readBoxes(stream, QcAppearanceDefinition::maxBoxes, appearance.boxes)) {
+        return false;
+    }
+
+    QcCapeShape &cape = appearance.cape;
+    stream >> cape.width >> cape.length >> cape.thickness >> cape.offset;
+    const bool shapeValid = cape.width >= QcCapeShape::minSize && cape.width <= QcCapeShape::maxWidth && cape.length >= QcCapeShape::minSize
+                            && cape.length <= QcCapeShape::maxLength && cape.thickness > 0.0 && cape.thickness <= QcCapeShape::maxThickness
+                            && cape.offset >= 0.0 && cape.offset <= QcCapeShape::maxOffset;
+    return shapeValid && stream.status() == QDataStream::Ok;
 }
 
 bool readSmeltingRecipe(QDataStream &stream, QcSmeltingRecipe &recipe)

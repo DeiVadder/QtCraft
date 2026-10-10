@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcArmourStandManager.h"
 #include "QcContainerManager.h"
 #include "QcContentRegistry.h"
 #include "QcFallingBlockManager.h"
@@ -40,6 +41,8 @@ struct QcServerState
     // On the surface of the spawn column (or the configured one) as the world stores it; when that
     // is no natural ground (a tree, a building, water), on the nearest natural ground around it.
     QcVec3 spawnPosition();
+    // Clients that know the entity get its spawn again (a new look, armour or stand pose).
+    void markStale(quint32 entityId);
 
     QcServerConfig config;
     std::shared_ptr<const QcContentRegistry> content;
@@ -56,6 +59,7 @@ struct QcServerState
     QcContainerManager containers;
     QcLiquidFlow liquids;
     QcFallingBlockManager falling;
+    QcArmourStandManager stands;
     QRandomGenerator random;
     // Separate from random so that sounds never change drops or spawns.
     QRandomGenerator soundRandom;

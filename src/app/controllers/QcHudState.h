@@ -1,9 +1,13 @@
 #pragma once
 
+#include "QcChunkPos.h"
 #include "QcDebugHud.h"
 #include "QcVec3.h"
+#include "QcWorldLabel.h"
 #include "QcWorldLabelModel.h"
 
+#include <QHash>
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -51,6 +55,11 @@ signals:
     void chatLinesChanged();
 
 private:
+    // Names of armour stands that show them, as labels above their heads.
+    QList<QcWorldLabel> standLabels() const;
+    // The session's world labels (while shown) and the stand names; without stand names no copy.
+    const QHash<QcChunkPos, QList<QcWorldLabel>> &labelsToDraw();
+
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     double m_miningProgress = 0.0;
@@ -59,5 +68,9 @@ private:
     QString m_timeOfDay;
     QStringList m_chatLines;
     QcWorldLabelModel *m_labels = nullptr;
+    // The last merge of labelsToDraw and what it was made from.
+    QHash<QcChunkPos, QList<QcWorldLabel>> m_mergedFrom;
+    QList<QcWorldLabel> m_standLabels;
+    QHash<QcChunkPos, QList<QcWorldLabel>> m_mergedLabels;
     QcDebugHud *m_debug = nullptr;
 };

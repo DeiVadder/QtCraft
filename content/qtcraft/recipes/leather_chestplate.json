@@ -1,0 +1,15 @@
+{
+    "name": "leather_chestplate",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "XXX",
+        "XXX"
+    ],
+    "key": {
+        "X": "leather"
+    },
+    "result": {
+        "item": "leather_chestplate"
+    }
+}

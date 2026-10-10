@@ -1,0 +1,22 @@
+{
+    "name": "leather_boots",
+    "texture": "leather_boots",
+    "maxStack": 1,
+    "durability": 65,
+    "armour": {
+        "slot": "feet",
+        "points": 1,
+        "set": "leather",
+        "layers": [
+            {
+                "covers": [
+                    "legs",
+                    "shoes"
+                ],
+                "texture": "leather_armour",
+                "inflate": 0.045,
+                "toY": 0.32
+            }
+        ]
+    }
+}

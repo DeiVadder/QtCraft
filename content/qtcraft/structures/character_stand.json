@@ -13,7 +13,8 @@
     ],
     "mobs": [
         { "mob": "mannequin", "at": [2.5, 1.0, 2.5] },
-        { "mob": "mannequin", "at": [6.5, 0.2, 5.5] }
+        { "mob": "mannequin", "at": [6.5, 0.2, 5.5] },
+        { "mob": "caped_mannequin", "at": [4.5, 1.0, 2.5] }
     ],
     "labels": [
         { "at": [4.5, 4.0, 7.0], "text": "mob.qtcraft.mannequin", "detail": "" }

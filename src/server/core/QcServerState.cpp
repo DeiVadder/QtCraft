@@ -124,3 +124,12 @@ std::optional<QcBlockPos> QcServerState::naturalGroundAt(int x, int z)
     }
     return top;
 }
+
+void QcServerState::markStale(quint32 entityId)
+{
+    for (const auto &client : clients) {
+        if (client->knownEntities.contains(entityId)) {
+            client->staleEntities.insert(entityId);
+        }
+    }
+}

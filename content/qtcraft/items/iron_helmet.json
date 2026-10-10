@@ -1,0 +1,21 @@
+{
+    "name": "iron_helmet",
+    "texture": "iron_helmet",
+    "maxStack": 1,
+    "durability": 165,
+    "armour": {
+        "slot": "head",
+        "points": 2,
+        "set": "iron",
+        "layers": [
+            {
+                "covers": [
+                    "head"
+                ],
+                "texture": "iron_armour",
+                "front": "iron_helmet_front",
+                "inflate": 0.04
+            }
+        ]
+    }
+}

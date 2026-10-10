@@ -23,13 +23,17 @@ public:
     // While mining, the arm swings every this many ticks.
     static constexpr int miningSwingTicks = 6;
 
+    // Whether armour takes part of the damage and wears down (decision E-234): blows of creatures
+    // and contact with damaging blocks are armoured; falls and commands are not.
+    enum class DamageKind : quint8 { Unblockable, Armoured };
+
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
     // Hunger, regeneration and timers of the players, then the mobs with their attacks.
     void tick();
     // Players and mobs touching a damaging block (lava) get hurt; items in it burn.
     void applyContactDamage();
-    void damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback);
+    void damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
     // Fall damage after a movement step.
     void updateHealth(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY);
     void attack(QcServerClient &client, quint32 entityId);
@@ -40,6 +44,8 @@ public:
 
 private:
     void tickPlayer(QcServerClient &client, double dt);
+    // The part of a hit the player's armour lets through; the armour wears down.
+    double throughArmour(QcServerClient &client, double amount);
     void playMobSounds(double dt);
     void dropLoot(const QList<QcItemDrop> &drops, const QcVec3 &position);
 

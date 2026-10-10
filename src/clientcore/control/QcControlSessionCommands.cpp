@@ -42,7 +42,7 @@ void QcControlSessionCommands::view(const QJsonObject &request)
     if (request.contains(u"mode"_s)) {
         const std::optional<QcCameraMode> mode = QcViewCamera::fromName(request.value(u"mode"_s).toString());
         if (!mode) {
-            m_context.fail(request, u"'mode' must be first, behind or front"_s);
+            m_context.fail(request, u"'mode' must be first, behind, front or side"_s);
             return;
         }
 

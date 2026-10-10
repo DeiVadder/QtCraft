@@ -1,0 +1,14 @@
+{
+    "name": "golden_boots",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "X X"
+    ],
+    "key": {
+        "X": "gold_ingot"
+    },
+    "result": {
+        "item": "golden_boots"
+    }
+}

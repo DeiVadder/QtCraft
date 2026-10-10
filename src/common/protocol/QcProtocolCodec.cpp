@@ -2,6 +2,7 @@
 
 #include "QcStreamLimits.h"
 
+#include <array>
 #include <cmath>
 
 namespace QcProtocolCodec {
@@ -18,16 +19,17 @@ QDataStream &operator>>(QDataStream &stream, QcVec3 &value)
 
 QDataStream &operator<<(QDataStream &stream, const QcAppearance &value)
 {
-    return stream << value.outfit << value.hair << value.skinColor << value.hairColor << value.shirtColor << value.pantsColor;
+    return stream << value.outfit << value.hair << value.skinColor << value.hairColor << value.shirtColor << value.pantsColor << value.cape;
 }
 
 bool readAppearance(QDataStream &stream, QcAppearance &value)
 {
-    stream >> value.outfit >> value.hair >> value.skinColor >> value.hairColor >> value.shirtColor >> value.pantsColor;
+    stream >> value.outfit >> value.hair >> value.skinColor >> value.hairColor >> value.shirtColor >> value.pantsColor >> value.cape;
     for (quint32 *color : {&value.skinColor, &value.hairColor, &value.shirtColor, &value.pantsColor}) {
         *color &= 0xFFFFFFu;
     }
-    return value.outfit.size() <= QcAppearance::maxNameLength && value.hair.size() <= QcAppearance::maxNameLength;
+    return value.outfit.size() <= QcAppearance::maxNameLength && value.hair.size() <= QcAppearance::maxNameLength
+           && value.cape.size() <= QcAppearance::maxNameLength;
 }
 
 void writePos(QDataStream &stream, QcBlockPos pos)
@@ -94,6 +96,28 @@ QcEquipment readEquipment(QDataStream &stream)
         stack = readStack(stream);
     }
     return equipment;
+}
+
+void writeStandPose(QDataStream &stream, const QcStandPose &pose)
+{
+    for (const QcStandPose::Rotation &rotation : pose.parts) {
+        stream << rotation.x << rotation.y << rotation.z;
+    }
+    stream << pose.flags();
+}
+
+QcStandPose readStandPose(QDataStream &stream)
+{
+    std::array<QcStandPose::Rotation, QcStandPose::partCount> parts{};
+    for (QcStandPose::Rotation &rotation : parts) {
+        stream >> rotation.x >> rotation.y >> rotation.z;
+    }
+    quint8 flags = 0;
+    stream >> flags;
+
+    QcStandPose pose = QcStandPose::withFlags(flags);
+    pose.parts = parts;
+    return pose.normalized();
 }
 
 bool isFinite(const QcVec3 &value)

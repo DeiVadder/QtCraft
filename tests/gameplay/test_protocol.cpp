@@ -483,6 +483,31 @@ private slots:
         QCOMPARE(QcEquipment::slotCount, std::size_t(4));
     }
 
+    void armourStandsRoundTrip()
+    {
+        // Stands (protocol 23) carry their pose and flags; other entities do not.
+        QcMsg::EntitySpawn spawn;
+        spawn.id = 5;
+        spawn.mobType = QcMsg::EntitySpawn::armourStandType;
+        spawn.name = u"Tin"_s;
+        spawn.held = 12;
+        spawn.equipment.at(QcEquipmentSlot::Legs) = {6, 1, 2};
+        spawn.stand.at(QcStandPose::Part::RightArm) = {-90.0f, 5.0f, 370.0f};
+        spawn.stand.small = true;
+        spawn.stand.basePlate = false;
+        const QcMsg::EntitySpawn copy = roundTrip(spawn);
+        QCOMPARE(copy.equipment, spawn.equipment);
+        QCOMPARE(copy.held, QcItemId(12));
+        // Angles arrive normalised.
+        QCOMPARE(copy.stand.at(QcStandPose::Part::RightArm), (QcStandPose::Rotation{-90.0f, 5.0f, 10.0f}));
+        QVERIFY(copy.stand.small && !copy.stand.basePlate && copy.stand.arms);
+
+        QcMsg::EntitySpawn player = spawn;
+        player.mobType = QcMsg::EntitySpawn::playerType;
+        QCOMPARE(roundTrip(player).stand, QcStandPose());
+        QCOMPARE(QcProtocol::version, 23u);
+    }
+
     void machineAndFoodMessagesRoundTrip()
     {
         const QcMsg::OpenMachine open = roundTrip(QcMsg::OpenMachine{{-7, 64, 12}, u"smelting"_s});
@@ -578,6 +603,18 @@ private slots:
         QcMsg::EntitySpawn spawn;
         spawn.appearance = look;
         QCOMPARE(roundTrip(spawn).appearance.outfit, u"mod:robe"_s);
+
+        // The cape travels with the look (protocol 23, decision E-240); none stays none.
+        look.cape = u"mod:red_cape"_s;
+        look.pantsColor = 0xFFFFFF;
+        QCOMPARE(roundTrip(QcMsg::Hello{QcProtocol::version, u"Ann"_s, look}).appearance, look);
+        QCOMPARE(roundTrip(QcMsg::SetAppearance{look}).appearance.cape, u"mod:red_cape"_s);
+        spawn.appearance = look;
+        QCOMPARE(roundTrip(spawn).appearance.cape, u"mod:red_cape"_s);
+        QCOMPARE(roundTrip(QcMsg::SetAppearance{QcAppearance()}).appearance.cape, QString());
+        look.cape = QString(QcAppearance::maxNameLength + 1, u'x');
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SetAppearance{look}), QcProtocol::Peer::Client).has_value());
+        look.cape.clear();
 
         // Overlong names are refused.
         look.outfit = QString(QcAppearance::maxNameLength + 1, u'x');
@@ -817,6 +854,10 @@ private slots:
         QVERIFY(decodes(QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots - 1));
         QVERIFY(!decodes(QcMsg::MoveInventoryItem::machineInputSlot + QcMsg::MachineState::maxSlots));
         QVERIFY(!decodes(-2));
+        // The four armour slots (stage 23) and nothing beyond them.
+        QVERIFY(decodes(QcMsg::MoveInventoryItem::equipmentSlot));
+        QVERIFY(decodes(QcMsg::MoveInventoryItem::equipmentSlot + 3));
+        QVERIFY(!decodes(QcMsg::MoveInventoryItem::equipmentSlot + 4));
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::QuickMoveItem{3}), QcProtocol::Peer::Server).has_value());
     }
 

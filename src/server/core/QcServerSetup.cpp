@@ -2,6 +2,7 @@
 
 #include "QcBlockUpdateQueue.h"
 #include "QcServerState.h"
+#include "QcStandProperties.h"
 
 #include <QLoggingCategory>
 
@@ -57,6 +58,24 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
     qCWarning(lcSetup) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;
 }
 
+// An armour stand of a structure; properties that do not apply are reported and left out.
+void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
+{
+    QcArmourStandManager::Stand stand;
+    stand.id = state.newEntityId();
+    stand.position = setup.at;
+    stand.yaw = qcNormalizedAngle(setup.yaw);
+    stand.item = QcStandProperties::standItem(*state.content);
+    for (const QString &property : setup.properties) {
+        if (!QcStandProperties::applyLine(*state.content, stand, property)) {
+            qCWarning(lcSetup) << "World setup: armour stand property" << property << "does not apply";
+        }
+    }
+    if (!state.stands.add(stand)) {
+        qCWarning(lcSetup) << "World setup: too many armour stands";
+    }
+}
+
 } // namespace
 
 namespace QcServerSetup {
@@ -75,6 +94,10 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         } else {
             qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;
         }
+    }
+
+    for (const QcWorldSetup::Stand &stand : setup.stands) {
+        placeStand(state, stand);
     }
 
     for (const QcWorldSetup::Contents &contents : setup.contents) {

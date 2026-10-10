@@ -1,0 +1,20 @@
+{
+    "name": "diamond_leggings",
+    "texture": "diamond_leggings",
+    "maxStack": 1,
+    "durability": 495,
+    "armour": {
+        "slot": "legs",
+        "points": 6,
+        "set": "diamond",
+        "layers": [
+            {
+                "covers": [
+                    "legs"
+                ],
+                "texture": "diamond_armour",
+                "inflate": 0.028
+            }
+        ]
+    }
+}

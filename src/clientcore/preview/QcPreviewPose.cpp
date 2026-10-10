@@ -65,6 +65,13 @@ QcEntityPose pose(Animation animation, double seconds, Gaze gaze)
     return pose;
 }
 
+QcCapeDrive capeDrive(Animation animation)
+{
+    QcCapeDrive drive;
+    drive.forwardSpeed = animation == Animation::Walk ? QcPhysics::walkSpeed : 0.0;
+    return drive;
+}
+
 Gaze gazeAt(QcPreviewCamera camera, double pointerX, double pointerY, double aspect)
 {
     // The pointer's ray from the camera, taken where it crosses a plane a third of the way from

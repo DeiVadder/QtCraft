@@ -27,6 +27,8 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
         stack = m_inventory.slot(row);
     } else if (row < resultRow) {
         stack = m_craftingGrid.value(row - gridFirstRow);
+    } else if (row >= equipmentFirstRow) {
+        stack = m_equipment.stacks[std::size_t(row - equipmentFirstRow)];
     } else if (row >= machineFirstRow) {
         stack = m_machine.value(row - machineFirstRow);
     }
@@ -51,6 +53,8 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
         return QString(u"image://items/"_s + item.name);
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
+    case TooltipRole:
+        return tooltipOf(*m_content, stack, m_content->translate(item.translationKey, m_language));
     default:
         return {};
     }
@@ -59,7 +63,8 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> QcInventoryModel::roleNames() const
 {
     return {{ItemNameRole, "itemName"}, {LabelRole, "label"},           {CountRole, "count"},
-            {IconRole, "icon"},         {DurabilityRole, "durability"}, {EmptyRole, "empty"}};
+            {IconRole, "icon"},         {DurabilityRole, "durability"}, {EmptyRole, "empty"},
+            {TooltipRole, "tooltip"}};
 }
 
 void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> content, QString language)
@@ -72,22 +77,43 @@ void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> conte
 
 int QcInventoryModel::slotOfRow(int row)
 {
-    if (row >= machineFirstRow && row < rowCountTotal) {
+    if (row >= equipmentFirstRow && row < rowCountTotal) {
+        return QcMsg::MoveInventoryItem::equipmentSlot + (row - equipmentFirstRow);
+    }
+    if (row >= machineFirstRow && row < equipmentFirstRow) {
         return QcMsg::MoveInventoryItem::machineInputSlot + (row - machineFirstRow);
     }
     return row >= 0 && row < resultRow ? row : -1;
 }
 
 void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<QcItemStack> &craftingGrid,
-                                    QcItemStack craftingResult, const QList<QcItemStack> &machine)
+                                    QcItemStack craftingResult, const QList<QcItemStack> &machine, const QcEquipment &equipment)
 {
     const int previousSelection = m_inventory.selectedHotbarSlot();
     m_inventory = inventory;
     m_craftingGrid = craftingGrid.size() == 9 ? craftingGrid : QList<QcItemStack>(9);
     m_craftingResult = craftingResult;
     m_machine = machine.mid(0, QcMsg::MachineState::maxSlots);
+    m_equipment = equipment;
     emit dataChanged(index(0), index(rowCountTotal - 1));
     if (previousSelection != m_inventory.selectedHotbarSlot()) {
         emit selectedSlotChanged();
     }
+}
+
+QString QcInventoryModel::tooltipOf(const QcContentRegistry &content, QcItemStack stack, const QString &label)
+{
+    if (stack.isEmpty() || !content.isValidItem(stack.item)) {
+        return label;
+    }
+
+    const QcItemDefinition &item = content.item(stack.item);
+    QStringList lines{label};
+    if (item.armour) {
+        lines.append(tr("Armour: +%1").arg(item.armour->points));
+    }
+    if (item.durability > 0) {
+        lines.append(tr("Durability: %1 / %2").arg(item.durability - stack.damage).arg(item.durability));
+    }
+    return lines.join(u'\n');
 }

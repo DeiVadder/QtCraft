@@ -57,6 +57,8 @@ struct QcMobDefinition
     QList<QcMobPart> parts;
     QString skeleton;
     QString outfit;
+    // Skeleton mobs only: a cape on the back (an appearance of kind cape); empty for none.
+    QString cape;
     // Skeleton mobs that walk with their arms stretched forward (zombies).
     bool armsForward = false;
     QList<QcItemDrop> drops;

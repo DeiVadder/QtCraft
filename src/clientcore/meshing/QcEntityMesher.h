@@ -36,8 +36,8 @@ struct ItemLook
     float glow = 0.0f;
 };
 
-// What a skeleton model looks like: the model, an outfit, an optional hair style, the colours that
-// tinted layers use, and a uniform scale (models are built for 1.8 m).
+// What a skeleton model looks like: the model, an outfit, an optional hair style and cape, the
+// colours that tinted layers use, and a uniform scale (models are built for 1.8 m).
 struct ModelLook
 {
     const QcModelDefinition *model = nullptr;
@@ -45,15 +45,44 @@ struct ModelLook
     const QcAppearanceDefinition *hair = nullptr;
     QcAppearance colors;
     double scale = 1.0;
+    // Hangs from the top of the body bone's back, turned by BodyPose::capeLift/capeSway.
+    const QcAppearanceDefinition *cape = nullptr;
+    // Extra gap between the back and the cape in metres, on top of the cape's own offset: the
+    // thickness of whatever the torso wears over the outfit (armour layers), so the cape stays
+    // outside it.
+    double capeClearance = 0.0;
 
     bool isValid() const { return model && outfit; }
 };
 
-// A skeleton model as drawn: its look and the item in its right hand (optional, not owned).
+// An extra textured box worn on a bone of a skeleton model, in model space like the bone's own
+// boxes: it turns with the bone and takes the figure's light and hurt tint. Armour layers and
+// parts are attachments (QcArmourLook, decision E-235); anything else worn on the body can use
+// them too. `front`, when set, textures the face looking forward (-Z) instead of `texture`.
+// Attachments on a bone the model lacks follow the whole body.
+struct Attachment
+{
+    QcBoneRole bone = QcBoneRole::Body;
+    QcAabb box;
+    QString texture;
+    QString front;
+};
+
+// Bit of a bone role in Figure::hiddenBones.
+constexpr quint8 boneBit(QcBoneRole role)
+{
+    return quint8(1u << unsigned(role));
+}
+
+// A skeleton model as drawn: its look, the item in its right hand and what it wears (both optional,
+// not owned). Bones whose role bit is set in `hiddenBones` are left out with their attachments (an
+// armour stand without arms or base plate).
 struct Figure
 {
     ModelLook look;
     const ItemLook *held = nullptr;
+    const QList<Attachment> *attachments = nullptr;
+    quint8 hiddenBones = 0;
 };
 
 // Edge length of a dropped cube and of a sprite.
@@ -63,6 +92,9 @@ inline constexpr double itemSpriteSize = 0.45;
 inline constexpr double handSpriteScale = 0.36;
 // Height the humanoid models are built for.
 inline constexpr double modelHeight = 1.8;
+// A cape's lower part (below the square emblem part) bends further back than the upper part by
+// this share of the lift, so a flying cape curves.
+inline constexpr double capeBend = 0.2;
 
 // Where the entity stands and how it is lit. `light` is the sky light in [0, 1]; `hurt` tints it red.
 struct Placement

@@ -1,7 +1,12 @@
 #include "QcFigureLook.h"
 
+#include "QcArmour.h"
+#include "QcArmourLook.h"
+#include "QcCapeSwing.h"
 #include "QcContentRegistry.h"
 #include "QcLightVolume.h"
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -19,8 +24,88 @@ QcEntityMesher::ModelLook player(const QcContentRegistry &content, const QcAppea
     if (look.hair && look.hair->kind != QcAppearanceDefinition::Kind::Hair) {
         look.hair = nullptr;
     }
+    look.cape = cape(content, appearance.cape);
     look.colors = appearance;
     return look;
+}
+
+QList<QcEntityMesher::Attachment> armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look)
+{
+    const QcItemStack &head = equipment.at(QcEquipmentSlot::Head);
+    if (!head.isEmpty() && QcArmour::of(content, head.item)) {
+        look.hair = nullptr;
+    }
+    QList<QcEntityMesher::Attachment> attachments = QcArmourLook::attachments(content, equipment);
+    look.capeClearance = look.model ? QcArmourLook::capeClearance(*look.model, attachments) : 0.0;
+    return attachments;
+}
+
+QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandPose &pose)
+{
+    QcEntityMesher::ModelLook look;
+    look.model = content.model(u"qtcraft:armor_stand"_s);
+    look.outfit = content.appearance(u"qtcraft:armor_stand"_s);
+    look.scale = pose.small ? 0.5 : 1.0;
+    return look;
+}
+
+QList<QcEntityMesher::Attachment> standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look)
+{
+    QList<QcEntityMesher::Attachment> attachments = armour(content, equipment, look);
+    if (!look.model || !look.outfit) {
+        return attachments;
+    }
+
+    // The filler takes the texture the outfit gives the stand's own head.
+    const auto head = std::ranges::find(look.model->bones, QcBoneRole::Head, &QcModelBone::role);
+    const QcAppearanceLayer *wood = head == look.model->bones.end() || head->boxes.isEmpty() ? nullptr : look.outfit->layer(head->boxes.constFirst().slot);
+    if (wood) {
+        // Drawn before the helmet, which covers it everywhere but at the opening.
+        attachments = QcArmourLook::headFillers(content, equipment, wood->texture) + attachments;
+    }
+    return attachments;
+}
+
+quint8 standHiddenBones(const QcStandPose &pose)
+{
+    using QcEntityMesher::boneBit;
+    quint8 hidden = 0;
+    if (!pose.arms) {
+        hidden |= boneBit(QcBoneRole::LeftArm) | boneBit(QcBoneRole::RightArm);
+    }
+    if (!pose.basePlate) {
+        hidden |= boneBit(QcBoneRole::None);
+    }
+    return hidden;
+}
+
+QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds)
+{
+    using Part = QcStandPose::Part;
+    static constexpr std::array<std::pair<Part, QcBoneRole>, QcStandPose::partCount> roles{{
+        {Part::Head, QcBoneRole::Head},
+        {Part::Body, QcBoneRole::Body},
+        {Part::LeftArm, QcBoneRole::LeftArm},
+        {Part::RightArm, QcBoneRole::RightArm},
+        {Part::LeftLeg, QcBoneRole::LeftLeg},
+        {Part::RightLeg, QcBoneRole::RightLeg},
+    }};
+
+    QcAnimator::BodyPose body;
+    for (const auto &[part, role] : roles) {
+        const QcStandPose::Rotation &rotation = pose.at(part);
+        body.bones[std::size_t(role)] = {rotation.x, rotation.z, rotation.y};
+    }
+    const QcCapeSwing::Angles cape = QcCapeSwing::target(QcCapeDrive(), seconds);
+    body.capeLift = cape.lift;
+    body.capeSway = cape.sway;
+    return body;
+}
+
+const QcAppearanceDefinition *cape(const QcContentRegistry &content, const QString &name)
+{
+    const QcAppearanceDefinition *definition = name.isEmpty() ? nullptr : content.appearance(name);
+    return definition && definition->kind == QcAppearanceDefinition::Kind::Cape ? definition : nullptr;
 }
 
 QcBlockId itemState(const QcContentRegistry &content, QcBlockId block)

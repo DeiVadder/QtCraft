@@ -1,8 +1,8 @@
-# Werkzeuge und Waffen
+# Werkzeuge und Rüstung
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Diamantaxt](#item-qtcraft-diamond_axe) · [Diamantschaufel](#item-qtcraft-diamond_shovel) · [Diamantschwert](#item-qtcraft-diamond_sword) · [Diamantspitzhacke](#item-qtcraft-diamond_pickaxe) · [Eisenaxt](#item-qtcraft-iron_axe) · [Eisenschaufel](#item-qtcraft-iron_shovel) · [Eisenschwert](#item-qtcraft-iron_sword) · [Eisenspitzhacke](#item-qtcraft-iron_pickaxe) · [Goldaxt](#item-qtcraft-golden_axe) · [Goldschaufel](#item-qtcraft-golden_shovel) · [Goldschwert](#item-qtcraft-golden_sword) · [Goldspitzhacke](#item-qtcraft-golden_pickaxe) · [Holzaxt](#item-qtcraft-wooden_axe) · [Holzschaufel](#item-qtcraft-wooden_shovel) · [Holzschwert](#item-qtcraft-wooden_sword) · [Holzspitzhacke](#item-qtcraft-wooden_pickaxe) · [Steinaxt](#item-qtcraft-stone_axe) · [Steinschaufel](#item-qtcraft-stone_shovel) · [Steinschwert](#item-qtcraft-stone_sword) · [Steinspitzhacke](#item-qtcraft-stone_pickaxe)
+**QtCraft:** [Diamantaxt](#item-qtcraft-diamond_axe) · [Diamantbeinschutz](#item-qtcraft-diamond_leggings) · [Diamantbrustplatte](#item-qtcraft-diamond_chestplate) · [Diamanthelm](#item-qtcraft-diamond_helmet) · [Diamantschaufel](#item-qtcraft-diamond_shovel) · [Diamantschwert](#item-qtcraft-diamond_sword) · [Diamantspitzhacke](#item-qtcraft-diamond_pickaxe) · [Diamantstiefel](#item-qtcraft-diamond_boots) · [Eisenaxt](#item-qtcraft-iron_axe) · [Eisenbeinschutz](#item-qtcraft-iron_leggings) · [Eisenbrustplatte](#item-qtcraft-iron_chestplate) · [Eisenhelm](#item-qtcraft-iron_helmet) · [Eisenschaufel](#item-qtcraft-iron_shovel) · [Eisenschwert](#item-qtcraft-iron_sword) · [Eisenspitzhacke](#item-qtcraft-iron_pickaxe) · [Eisenstiefel](#item-qtcraft-iron_boots) · [Goldaxt](#item-qtcraft-golden_axe) · [Goldbeinschutz](#item-qtcraft-golden_leggings) · [Goldbrustplatte](#item-qtcraft-golden_chestplate) · [Goldhelm](#item-qtcraft-golden_helmet) · [Goldschaufel](#item-qtcraft-golden_shovel) · [Goldschwert](#item-qtcraft-golden_sword) · [Goldspitzhacke](#item-qtcraft-golden_pickaxe) · [Goldstiefel](#item-qtcraft-golden_boots) · [Holzaxt](#item-qtcraft-wooden_axe) · [Holzschaufel](#item-qtcraft-wooden_shovel) · [Holzschwert](#item-qtcraft-wooden_sword) · [Holzspitzhacke](#item-qtcraft-wooden_pickaxe) · [Lederhose](#item-qtcraft-leather_leggings) · [Lederkappe](#item-qtcraft-leather_helmet) · [Lederstiefel](#item-qtcraft-leather_boots) · [Lederwams](#item-qtcraft-leather_chestplate) · [Steinaxt](#item-qtcraft-stone_axe) · [Steinschaufel](#item-qtcraft-stone_shovel) · [Steinschwert](#item-qtcraft-stone_sword) · [Steinspitzhacke](#item-qtcraft-stone_pickaxe)
 
 ## QtCraft
 
@@ -28,6 +28,74 @@ Schlägt Holz schneller.
 | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamantaxt](#item-qtcraft-diamond_axe) |
 | [Diamant](items.md#item-qtcraft-diamond) | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-diamond_leggings"></a>Diamantbeinschutz
+
+Die stärkste Rüstung; sie hält am längsten.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_leggings` |
+| Stapelgröße | 1 |
+| Getragen am | Beine |
+| Rüstungspunkte | +6: [Rüstung](tables.md#table-armour) |
+| Satz | Diamantrüstung |
+| Haltbarkeit | 495 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamantbeinschutz](#item-qtcraft-diamond_leggings) |
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) |  |
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_chestplate"></a>Diamantbrustplatte
+
+Die stärkste Rüstung; sie hält am längsten.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_chestplate` |
+| Stapelgröße | 1 |
+| Getragen am | Brust |
+| Rüstungspunkte | +8: [Rüstung](tables.md#table-armour) |
+| Satz | Diamantrüstung |
+| Haltbarkeit | 528 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) | [Diamantbrustplatte](#item-qtcraft-diamond_chestplate) |
+| [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) |  |
+| [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_helmet"></a>Diamanthelm
+
+Die stärkste Rüstung; sie hält am längsten.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_helmet` |
+| Stapelgröße | 1 |
+| Getragen am | Kopf |
+| Rüstungspunkte | +3: [Rüstung](tables.md#table-armour) |
+| Satz | Diamantrüstung |
+| Haltbarkeit | 363 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamanthelm](#item-qtcraft-diamond_helmet) |
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) |  |
 
 ### <a id="item-qtcraft-diamond_shovel"></a>Diamantschaufel
 
@@ -100,6 +168,28 @@ Baut Stein und Erze ab.
 
 [Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta) (Stufe 1), [Blauer Beton](blocks.md#block-qtcraft-blue_concrete) (Stufe 1), [Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta) (Stufe 1), [Brauner Beton](blocks.md#block-qtcraft-brown_concrete) (Stufe 1), [Bruchstein](blocks.md#block-qtcraft-cobblestone) (Stufe 1), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall) (Stufe 1), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab) (Stufe 1), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs) (Stufe 1), [Diamantblock](blocks.md#block-qtcraft-diamond_block) (Stufe 3), [Diamanterz](blocks.md#block-qtcraft-diamond_ore) (Stufe 3), [Eisenblock](blocks.md#block-qtcraft-iron_block) (Stufe 2), [Eisenerz](blocks.md#block-qtcraft-iron_ore) (Stufe 2), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor) (Stufe 1), [Eisengitter](blocks.md#block-qtcraft-iron_bars) (Stufe 1), [Eisentür](blocks.md#block-qtcraft-iron_door) (Stufe 1), [Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta) (Stufe 1), [Gelber Beton](blocks.md#block-qtcraft-yellow_concrete) (Stufe 1), [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) (Stufe 1), [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) (Stufe 1), [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall) (Stufe 1), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab) (Stufe 1), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs) (Stufe 1), [Glattstein](blocks.md#block-qtcraft-polished_stone) (Stufe 1), [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) (Stufe 1), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs) (Stufe 1), [Goldblock](blocks.md#block-qtcraft-gold_block) (Stufe 3), [Golderz](blocks.md#block-qtcraft-gold_ore) (Stufe 3), [Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta) (Stufe 1), [Grauer Beton](blocks.md#block-qtcraft-gray_concrete) (Stufe 1), [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta) (Stufe 1), [Grüner Beton](blocks.md#block-qtcraft-green_concrete) (Stufe 1), [Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta) (Stufe 1), [Hellblauer Beton](blocks.md#block-qtcraft-light_blue_concrete) (Stufe 1), [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta) (Stufe 1), [Hellgrauer Beton](blocks.md#block-qtcraft-light_gray_concrete) (Stufe 1), [Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta) (Stufe 1), [Hellgrüner Beton](blocks.md#block-qtcraft-lime_concrete) (Stufe 1), [Kohleblock](blocks.md#block-qtcraft-coal_block) (Stufe 1), [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) (Stufe 1), [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall) (Stufe 1), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab) (Stufe 1), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs) (Stufe 1), [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta) (Stufe 1), [Magentafarbener Beton](blocks.md#block-qtcraft-magenta_concrete) (Stufe 1), [Magmablock](blocks.md#block-qtcraft-magma_block) (Stufe 1), [Obsidian](blocks.md#block-qtcraft-obsidian) (Stufe 3), [Ofen](blocks.md#block-qtcraft-furnace) (Stufe 1), [Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta) (Stufe 1), [Orangefarbener Beton](blocks.md#block-qtcraft-orange_concrete) (Stufe 1), [Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta) (Stufe 1), [Rosafarbener Beton](blocks.md#block-qtcraft-pink_concrete) (Stufe 1), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta) (Stufe 1), [Roter Beton](blocks.md#block-qtcraft-red_concrete) (Stufe 1), [Sandstein](blocks.md#block-qtcraft-sandstone) (Stufe 1), [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall) (Stufe 1), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab) (Stufe 1), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs) (Stufe 1), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta) (Stufe 1), [Schwarzer Beton](blocks.md#block-qtcraft-black_concrete) (Stufe 1), [Stein](blocks.md#block-qtcraft-stone) (Stufe 1), [Steinkohle](blocks.md#block-qtcraft-coal_ore) (Stufe 1), [Steinstufe](parts.md#block-qtcraft-stone_slab) (Stufe 1), [Steintreppe](parts.md#block-qtcraft-stone_stairs) (Stufe 1), [Steinziegel](blocks.md#block-qtcraft-stone_bricks) (Stufe 1), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) (Stufe 1), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) (Stufe 1), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) (Stufe 1), [Terrakotta](blocks.md#block-qtcraft-terracotta) (Stufe 1), [Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta) (Stufe 1), [Türkiser Beton](blocks.md#block-qtcraft-cyan_concrete) (Stufe 1), [Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta) (Stufe 1), [Violetter Beton](blocks.md#block-qtcraft-purple_concrete) (Stufe 1), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta) (Stufe 1), [Weißer Beton](blocks.md#block-qtcraft-white_concrete) (Stufe 1), [Ziegel](blocks.md#block-qtcraft-bricks) (Stufe 1), [Ziegelmauer](parts.md#block-qtcraft-brick_wall) (Stufe 1), [Ziegelstufe](parts.md#block-qtcraft-brick_slab) (Stufe 1), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs) (Stufe 1)
 
+### <a id="item-qtcraft-diamond_boots"></a>Diamantstiefel
+
+Die stärkste Rüstung; sie hält am längsten.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_boots` |
+| Stapelgröße | 1 |
+| Getragen am | Füße |
+| Rüstungspunkte | +3: [Rüstung](tables.md#table-armour) |
+| Satz | Diamantrüstung |
+| Haltbarkeit | 429 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) | [Diamantstiefel](#item-qtcraft-diamond_boots) |
+| [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) |  |
+
 ### <a id="item-qtcraft-iron_axe"></a>Eisenaxt
 
 Schlägt Holz schneller.
@@ -122,6 +212,74 @@ Schlägt Holz schneller.
 | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenaxt](#item-qtcraft-iron_axe) |
 | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-iron_leggings"></a>Eisenbeinschutz
+
+Solide Rüstung aus Eisenplatten, die übliche Wahl.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_leggings` |
+| Stapelgröße | 1 |
+| Getragen am | Beine |
+| Rüstungspunkte | +5: [Rüstung](tables.md#table-armour) |
+| Satz | Eisenrüstung |
+| Haltbarkeit | 225 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbeinschutz](#item-qtcraft-iron_leggings) |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_chestplate"></a>Eisenbrustplatte
+
+Solide Rüstung aus Eisenplatten, die übliche Wahl.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_chestplate` |
+| Stapelgröße | 1 |
+| Getragen am | Brust |
+| Rüstungspunkte | +6: [Rüstung](tables.md#table-armour) |
+| Satz | Eisenrüstung |
+| Haltbarkeit | 240 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbrustplatte](#item-qtcraft-iron_chestplate) |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_helmet"></a>Eisenhelm
+
+Solide Rüstung aus Eisenplatten, die übliche Wahl.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_helmet` |
+| Stapelgröße | 1 |
+| Getragen am | Kopf |
+| Rüstungspunkte | +2: [Rüstung](tables.md#table-armour) |
+| Satz | Eisenrüstung |
+| Haltbarkeit | 165 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenhelm](#item-qtcraft-iron_helmet) |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
 
 ### <a id="item-qtcraft-iron_shovel"></a>Eisenschaufel
 
@@ -194,6 +352,28 @@ Baut Stein und Erze ab.
 
 [Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta) (Stufe 1), [Blauer Beton](blocks.md#block-qtcraft-blue_concrete) (Stufe 1), [Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta) (Stufe 1), [Brauner Beton](blocks.md#block-qtcraft-brown_concrete) (Stufe 1), [Bruchstein](blocks.md#block-qtcraft-cobblestone) (Stufe 1), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall) (Stufe 1), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab) (Stufe 1), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs) (Stufe 1), [Diamantblock](blocks.md#block-qtcraft-diamond_block) (Stufe 3), [Diamanterz](blocks.md#block-qtcraft-diamond_ore) (Stufe 3), [Eisenblock](blocks.md#block-qtcraft-iron_block) (Stufe 2), [Eisenerz](blocks.md#block-qtcraft-iron_ore) (Stufe 2), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor) (Stufe 1), [Eisengitter](blocks.md#block-qtcraft-iron_bars) (Stufe 1), [Eisentür](blocks.md#block-qtcraft-iron_door) (Stufe 1), [Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta) (Stufe 1), [Gelber Beton](blocks.md#block-qtcraft-yellow_concrete) (Stufe 1), [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) (Stufe 1), [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) (Stufe 1), [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall) (Stufe 1), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab) (Stufe 1), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs) (Stufe 1), [Glattstein](blocks.md#block-qtcraft-polished_stone) (Stufe 1), [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) (Stufe 1), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs) (Stufe 1), [Goldblock](blocks.md#block-qtcraft-gold_block) (Stufe 3), [Golderz](blocks.md#block-qtcraft-gold_ore) (Stufe 3), [Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta) (Stufe 1), [Grauer Beton](blocks.md#block-qtcraft-gray_concrete) (Stufe 1), [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta) (Stufe 1), [Grüner Beton](blocks.md#block-qtcraft-green_concrete) (Stufe 1), [Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta) (Stufe 1), [Hellblauer Beton](blocks.md#block-qtcraft-light_blue_concrete) (Stufe 1), [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta) (Stufe 1), [Hellgrauer Beton](blocks.md#block-qtcraft-light_gray_concrete) (Stufe 1), [Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta) (Stufe 1), [Hellgrüner Beton](blocks.md#block-qtcraft-lime_concrete) (Stufe 1), [Kohleblock](blocks.md#block-qtcraft-coal_block) (Stufe 1), [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) (Stufe 1), [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall) (Stufe 1), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab) (Stufe 1), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs) (Stufe 1), [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta) (Stufe 1), [Magentafarbener Beton](blocks.md#block-qtcraft-magenta_concrete) (Stufe 1), [Magmablock](blocks.md#block-qtcraft-magma_block) (Stufe 1), [Obsidian](blocks.md#block-qtcraft-obsidian) (Stufe 3), [Ofen](blocks.md#block-qtcraft-furnace) (Stufe 1), [Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta) (Stufe 1), [Orangefarbener Beton](blocks.md#block-qtcraft-orange_concrete) (Stufe 1), [Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta) (Stufe 1), [Rosafarbener Beton](blocks.md#block-qtcraft-pink_concrete) (Stufe 1), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta) (Stufe 1), [Roter Beton](blocks.md#block-qtcraft-red_concrete) (Stufe 1), [Sandstein](blocks.md#block-qtcraft-sandstone) (Stufe 1), [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall) (Stufe 1), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab) (Stufe 1), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs) (Stufe 1), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta) (Stufe 1), [Schwarzer Beton](blocks.md#block-qtcraft-black_concrete) (Stufe 1), [Stein](blocks.md#block-qtcraft-stone) (Stufe 1), [Steinkohle](blocks.md#block-qtcraft-coal_ore) (Stufe 1), [Steinstufe](parts.md#block-qtcraft-stone_slab) (Stufe 1), [Steintreppe](parts.md#block-qtcraft-stone_stairs) (Stufe 1), [Steinziegel](blocks.md#block-qtcraft-stone_bricks) (Stufe 1), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) (Stufe 1), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) (Stufe 1), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) (Stufe 1), [Terrakotta](blocks.md#block-qtcraft-terracotta) (Stufe 1), [Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta) (Stufe 1), [Türkiser Beton](blocks.md#block-qtcraft-cyan_concrete) (Stufe 1), [Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta) (Stufe 1), [Violetter Beton](blocks.md#block-qtcraft-purple_concrete) (Stufe 1), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta) (Stufe 1), [Weißer Beton](blocks.md#block-qtcraft-white_concrete) (Stufe 1), [Ziegel](blocks.md#block-qtcraft-bricks) (Stufe 1), [Ziegelmauer](parts.md#block-qtcraft-brick_wall) (Stufe 1), [Ziegelstufe](parts.md#block-qtcraft-brick_slab) (Stufe 1), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs) (Stufe 1)
 
+### <a id="item-qtcraft-iron_boots"></a>Eisenstiefel
+
+Solide Rüstung aus Eisenplatten, die übliche Wahl.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_boots` |
+| Stapelgröße | 1 |
+| Getragen am | Füße |
+| Rüstungspunkte | +2: [Rüstung](tables.md#table-armour) |
+| Satz | Eisenrüstung |
+| Haltbarkeit | 195 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenstiefel](#item-qtcraft-iron_boots) |
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | · | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
+
 ### <a id="item-qtcraft-golden_axe"></a>Goldaxt
 
 Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wie Holz.
@@ -216,6 +396,74 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldaxt](#item-qtcraft-golden_axe) |
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-golden_leggings"></a>Goldbeinschutz
+
+Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_leggings` |
+| Stapelgröße | 1 |
+| Getragen am | Beine |
+| Rüstungspunkte | +3: [Rüstung](tables.md#table-armour) |
+| Satz | Goldrüstung |
+| Haltbarkeit | 105 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbeinschutz](#item-qtcraft-golden_leggings) |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+
+### <a id="item-qtcraft-golden_chestplate"></a>Goldbrustplatte
+
+Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_chestplate` |
+| Stapelgröße | 1 |
+| Getragen am | Brust |
+| Rüstungspunkte | +5: [Rüstung](tables.md#table-armour) |
+| Satz | Goldrüstung |
+| Haltbarkeit | 112 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbrustplatte](#item-qtcraft-golden_chestplate) |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+
+### <a id="item-qtcraft-golden_helmet"></a>Goldhelm
+
+Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_helmet` |
+| Stapelgröße | 1 |
+| Getragen am | Kopf |
+| Rüstungspunkte | +2: [Rüstung](tables.md#table-armour) |
+| Satz | Goldrüstung |
+| Haltbarkeit | 77 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldhelm](#item-qtcraft-golden_helmet) |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
 
 ### <a id="item-qtcraft-golden_shovel"></a>Goldschaufel
 
@@ -287,6 +535,28 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 **Kann abbauen**
 
 [Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta) (Stufe 1), [Blauer Beton](blocks.md#block-qtcraft-blue_concrete) (Stufe 1), [Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta) (Stufe 1), [Brauner Beton](blocks.md#block-qtcraft-brown_concrete) (Stufe 1), [Bruchstein](blocks.md#block-qtcraft-cobblestone) (Stufe 1), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall) (Stufe 1), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab) (Stufe 1), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs) (Stufe 1), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor) (Stufe 1), [Eisengitter](blocks.md#block-qtcraft-iron_bars) (Stufe 1), [Eisentür](blocks.md#block-qtcraft-iron_door) (Stufe 1), [Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta) (Stufe 1), [Gelber Beton](blocks.md#block-qtcraft-yellow_concrete) (Stufe 1), [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) (Stufe 1), [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) (Stufe 1), [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall) (Stufe 1), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab) (Stufe 1), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs) (Stufe 1), [Glattstein](blocks.md#block-qtcraft-polished_stone) (Stufe 1), [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) (Stufe 1), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs) (Stufe 1), [Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta) (Stufe 1), [Grauer Beton](blocks.md#block-qtcraft-gray_concrete) (Stufe 1), [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta) (Stufe 1), [Grüner Beton](blocks.md#block-qtcraft-green_concrete) (Stufe 1), [Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta) (Stufe 1), [Hellblauer Beton](blocks.md#block-qtcraft-light_blue_concrete) (Stufe 1), [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta) (Stufe 1), [Hellgrauer Beton](blocks.md#block-qtcraft-light_gray_concrete) (Stufe 1), [Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta) (Stufe 1), [Hellgrüner Beton](blocks.md#block-qtcraft-lime_concrete) (Stufe 1), [Kohleblock](blocks.md#block-qtcraft-coal_block) (Stufe 1), [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) (Stufe 1), [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall) (Stufe 1), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab) (Stufe 1), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs) (Stufe 1), [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta) (Stufe 1), [Magentafarbener Beton](blocks.md#block-qtcraft-magenta_concrete) (Stufe 1), [Magmablock](blocks.md#block-qtcraft-magma_block) (Stufe 1), [Ofen](blocks.md#block-qtcraft-furnace) (Stufe 1), [Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta) (Stufe 1), [Orangefarbener Beton](blocks.md#block-qtcraft-orange_concrete) (Stufe 1), [Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta) (Stufe 1), [Rosafarbener Beton](blocks.md#block-qtcraft-pink_concrete) (Stufe 1), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta) (Stufe 1), [Roter Beton](blocks.md#block-qtcraft-red_concrete) (Stufe 1), [Sandstein](blocks.md#block-qtcraft-sandstone) (Stufe 1), [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall) (Stufe 1), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab) (Stufe 1), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs) (Stufe 1), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta) (Stufe 1), [Schwarzer Beton](blocks.md#block-qtcraft-black_concrete) (Stufe 1), [Stein](blocks.md#block-qtcraft-stone) (Stufe 1), [Steinkohle](blocks.md#block-qtcraft-coal_ore) (Stufe 1), [Steinstufe](parts.md#block-qtcraft-stone_slab) (Stufe 1), [Steintreppe](parts.md#block-qtcraft-stone_stairs) (Stufe 1), [Steinziegel](blocks.md#block-qtcraft-stone_bricks) (Stufe 1), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) (Stufe 1), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) (Stufe 1), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) (Stufe 1), [Terrakotta](blocks.md#block-qtcraft-terracotta) (Stufe 1), [Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta) (Stufe 1), [Türkiser Beton](blocks.md#block-qtcraft-cyan_concrete) (Stufe 1), [Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta) (Stufe 1), [Violetter Beton](blocks.md#block-qtcraft-purple_concrete) (Stufe 1), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta) (Stufe 1), [Weißer Beton](blocks.md#block-qtcraft-white_concrete) (Stufe 1), [Ziegel](blocks.md#block-qtcraft-bricks) (Stufe 1), [Ziegelmauer](parts.md#block-qtcraft-brick_wall) (Stufe 1), [Ziegelstufe](parts.md#block-qtcraft-brick_slab) (Stufe 1), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs) (Stufe 1)
+
+### <a id="item-qtcraft-golden_boots"></a>Goldstiefel
+
+Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_boots` |
+| Stapelgröße | 1 |
+| Getragen am | Füße |
+| Rüstungspunkte | +1: [Rüstung](tables.md#table-armour) |
+| Satz | Goldrüstung |
+| Haltbarkeit | 91 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldstiefel](#item-qtcraft-golden_boots) |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
 
 ### <a id="item-qtcraft-wooden_axe"></a>Holzaxt
 
@@ -385,6 +655,96 @@ Baut Stein und Erze ab.
 **Kann abbauen**
 
 [Blaue Terrakotta](blocks.md#block-qtcraft-blue_terracotta) (Stufe 1), [Blauer Beton](blocks.md#block-qtcraft-blue_concrete) (Stufe 1), [Braune Terrakotta](blocks.md#block-qtcraft-brown_terracotta) (Stufe 1), [Brauner Beton](blocks.md#block-qtcraft-brown_concrete) (Stufe 1), [Bruchstein](blocks.md#block-qtcraft-cobblestone) (Stufe 1), [Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall) (Stufe 1), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab) (Stufe 1), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs) (Stufe 1), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor) (Stufe 1), [Eisengitter](blocks.md#block-qtcraft-iron_bars) (Stufe 1), [Eisentür](blocks.md#block-qtcraft-iron_door) (Stufe 1), [Gelbe Terrakotta](blocks.md#block-qtcraft-yellow_terracotta) (Stufe 1), [Gelber Beton](blocks.md#block-qtcraft-yellow_concrete) (Stufe 1), [Geschnittener Sandstein](blocks.md#block-qtcraft-cut_sandstone) (Stufe 1), [Glatter Sandstein](blocks.md#block-qtcraft-smooth_sandstone) (Stufe 1), [Glatter Sandsteinmauer](parts.md#block-qtcraft-smooth_sandstone_wall) (Stufe 1), [Glatter Sandsteinstufe](parts.md#block-qtcraft-smooth_sandstone_slab) (Stufe 1), [Glatter Sandsteintreppe](parts.md#block-qtcraft-smooth_sandstone_stairs) (Stufe 1), [Glattstein](blocks.md#block-qtcraft-polished_stone) (Stufe 1), [Glattsteinstufe](parts.md#block-qtcraft-polished_stone_slab) (Stufe 1), [Glattsteintreppe](parts.md#block-qtcraft-polished_stone_stairs) (Stufe 1), [Graue Terrakotta](blocks.md#block-qtcraft-gray_terracotta) (Stufe 1), [Grauer Beton](blocks.md#block-qtcraft-gray_concrete) (Stufe 1), [Grüne Terrakotta](blocks.md#block-qtcraft-green_terracotta) (Stufe 1), [Grüner Beton](blocks.md#block-qtcraft-green_concrete) (Stufe 1), [Hellblaue Terrakotta](blocks.md#block-qtcraft-light_blue_terracotta) (Stufe 1), [Hellblauer Beton](blocks.md#block-qtcraft-light_blue_concrete) (Stufe 1), [Hellgraue Terrakotta](blocks.md#block-qtcraft-light_gray_terracotta) (Stufe 1), [Hellgrauer Beton](blocks.md#block-qtcraft-light_gray_concrete) (Stufe 1), [Hellgrüne Terrakotta](blocks.md#block-qtcraft-lime_terracotta) (Stufe 1), [Hellgrüner Beton](blocks.md#block-qtcraft-lime_concrete) (Stufe 1), [Kohleblock](blocks.md#block-qtcraft-coal_block) (Stufe 1), [Lehmziegel](blocks.md#block-qtcraft-mud_bricks) (Stufe 1), [Lehmziegelmauer](parts.md#block-qtcraft-mud_bricks_wall) (Stufe 1), [Lehmziegelstufe](parts.md#block-qtcraft-mud_bricks_slab) (Stufe 1), [Lehmziegeltreppe](parts.md#block-qtcraft-mud_bricks_stairs) (Stufe 1), [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta) (Stufe 1), [Magentafarbener Beton](blocks.md#block-qtcraft-magenta_concrete) (Stufe 1), [Magmablock](blocks.md#block-qtcraft-magma_block) (Stufe 1), [Ofen](blocks.md#block-qtcraft-furnace) (Stufe 1), [Orangefarbene Terrakotta](blocks.md#block-qtcraft-orange_terracotta) (Stufe 1), [Orangefarbener Beton](blocks.md#block-qtcraft-orange_concrete) (Stufe 1), [Rosafarbene Terrakotta](blocks.md#block-qtcraft-pink_terracotta) (Stufe 1), [Rosafarbener Beton](blocks.md#block-qtcraft-pink_concrete) (Stufe 1), [Rote Terrakotta](blocks.md#block-qtcraft-red_terracotta) (Stufe 1), [Roter Beton](blocks.md#block-qtcraft-red_concrete) (Stufe 1), [Sandstein](blocks.md#block-qtcraft-sandstone) (Stufe 1), [Sandsteinmauer](parts.md#block-qtcraft-sandstone_wall) (Stufe 1), [Sandsteinstufe](parts.md#block-qtcraft-sandstone_slab) (Stufe 1), [Sandsteintreppe](parts.md#block-qtcraft-sandstone_stairs) (Stufe 1), [Schwarze Terrakotta](blocks.md#block-qtcraft-black_terracotta) (Stufe 1), [Schwarzer Beton](blocks.md#block-qtcraft-black_concrete) (Stufe 1), [Stein](blocks.md#block-qtcraft-stone) (Stufe 1), [Steinkohle](blocks.md#block-qtcraft-coal_ore) (Stufe 1), [Steinstufe](parts.md#block-qtcraft-stone_slab) (Stufe 1), [Steintreppe](parts.md#block-qtcraft-stone_stairs) (Stufe 1), [Steinziegel](blocks.md#block-qtcraft-stone_bricks) (Stufe 1), [Steinziegelmauer](parts.md#block-qtcraft-stone_bricks_wall) (Stufe 1), [Steinziegelstufe](parts.md#block-qtcraft-stone_bricks_slab) (Stufe 1), [Steinziegeltreppe](parts.md#block-qtcraft-stone_bricks_stairs) (Stufe 1), [Terrakotta](blocks.md#block-qtcraft-terracotta) (Stufe 1), [Türkise Terrakotta](blocks.md#block-qtcraft-cyan_terracotta) (Stufe 1), [Türkiser Beton](blocks.md#block-qtcraft-cyan_concrete) (Stufe 1), [Violette Terrakotta](blocks.md#block-qtcraft-purple_terracotta) (Stufe 1), [Violetter Beton](blocks.md#block-qtcraft-purple_concrete) (Stufe 1), [Weiße Terrakotta](blocks.md#block-qtcraft-white_terracotta) (Stufe 1), [Weißer Beton](blocks.md#block-qtcraft-white_concrete) (Stufe 1), [Ziegel](blocks.md#block-qtcraft-bricks) (Stufe 1), [Ziegelmauer](parts.md#block-qtcraft-brick_wall) (Stufe 1), [Ziegelstufe](parts.md#block-qtcraft-brick_slab) (Stufe 1), [Ziegeltreppe](parts.md#block-qtcraft-brick_stairs) (Stufe 1)
+
+### <a id="item-qtcraft-leather_leggings"></a>Lederhose
+
+Leichte Rüstung aus genähtem Leder; nutzt sich schnell ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_leggings` |
+| Stapelgröße | 1 |
+| Getragen am | Beine |
+| Rüstungspunkte | +2: [Rüstung](tables.md#table-armour) |
+| Satz | Lederrüstung |
+| Haltbarkeit | 75 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Lederhose](#item-qtcraft-leather_leggings) |
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) |  |
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_helmet"></a>Lederkappe
+
+Leichte Rüstung aus genähtem Leder; nutzt sich schnell ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_helmet` |
+| Stapelgröße | 1 |
+| Getragen am | Kopf |
+| Rüstungspunkte | +1: [Rüstung](tables.md#table-armour) |
+| Satz | Lederrüstung |
+| Haltbarkeit | 55 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Lederkappe](#item-qtcraft-leather_helmet) |
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_boots"></a>Lederstiefel
+
+Leichte Rüstung aus genähtem Leder; nutzt sich schnell ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_boots` |
+| Stapelgröße | 1 |
+| Getragen am | Füße |
+| Rüstungspunkte | +1: [Rüstung](tables.md#table-armour) |
+| Satz | Lederrüstung |
+| Haltbarkeit | 65 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) | [Lederstiefel](#item-qtcraft-leather_boots) |
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) |  |
+
+### <a id="item-qtcraft-leather_chestplate"></a>Lederwams
+
+Leichte Rüstung aus genähtem Leder; nutzt sich schnell ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:leather_chestplate` |
+| Stapelgröße | 1 |
+| Getragen am | Brust |
+| Rüstungspunkte | +3: [Rüstung](tables.md#table-armour) |
+| Satz | Lederrüstung |
+| Haltbarkeit | 80 Treffer |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Leder](items.md#item-qtcraft-leather) | · | [Leder](items.md#item-qtcraft-leather) | [Lederwams](#item-qtcraft-leather_chestplate) |
+| [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) |  |
+| [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) | [Leder](items.md#item-qtcraft-leather) |  |
 
 ### <a id="item-qtcraft-stone_axe"></a>Steinaxt
 

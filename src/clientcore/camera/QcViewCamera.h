@@ -7,8 +7,9 @@
 
 #include <optional>
 
-// Where the camera sits: in the player's eyes, behind the player or in front looking back.
-enum class QcCameraMode { FirstPerson, Behind, Front };
+// Where the camera sits: in the player's eyes, behind the player, in front looking back, or (a
+// test hook for screenshots, not in the key's cycle) to the player's right looking at their side.
+enum class QcCameraMode { FirstPerson, Behind, Front, Side };
 
 // Places the camera for a view mode. Third-person cameras pull in when a block lies between the
 // player's eyes and the wanted position, so they never look through walls.
@@ -29,7 +30,7 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
 
 QcCameraMode next(QcCameraMode mode);
 const char *name(QcCameraMode mode);
-// "first", "behind" or "front"; std::nullopt otherwise.
+// "first", "behind", "front" or "side"; std::nullopt otherwise.
 std::optional<QcCameraMode> fromName(const QString &text);
 
 } // namespace QcViewCamera

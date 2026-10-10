@@ -10,7 +10,7 @@
 namespace QcProtocol {
 
 // Bumped whenever a message layout changes.
-inline constexpr quint32 version = 21;
+inline constexpr quint32 version = 23;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

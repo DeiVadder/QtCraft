@@ -442,6 +442,21 @@ private slots:
         QCOMPARE(m_client->spawns.value(bobId).appearance.outfit, QcAppearance().outfit);
         QCOMPARE(m_client->spawns.value(bobId).appearance.hair, u"qtcraft:long_hair"_s);
 
+        // Capes (decision E-240): a known cape reaches the others; an unknown name or another kind
+        // of appearance becomes no cape.
+        look.cape = u"qtcraft:green_cape"_s;
+        bob.connection.send(QcMsg::SetAppearance{look});
+        pump();
+        ticks(2);
+        QCOMPARE(m_client->spawns.value(bobId).appearance.cape, u"qtcraft:green_cape"_s);
+        for (const QString &wrong : {u"nomod:cape"_s, u"qtcraft:long_hair"_s, u"qtcraft:tunic"_s}) {
+            look.cape = wrong;
+            bob.connection.send(QcMsg::SetAppearance{look});
+            pump();
+            ticks(2);
+            QVERIFY2(m_client->spawns.value(bobId).appearance.cape.isEmpty(), qPrintable(wrong));
+        }
+
         // Using an item swings Bob's arm for everyone else.
         bob.connection.send(QcMsg::UseItem{m_feet.offset(1, -1, 0), QcBlockFace::Up});
         pump();
@@ -491,6 +506,12 @@ private slots:
         QCOMPARE(checked.skinColor, 0x123456u);
         look = {u"qtcraft:tunic"_s, u"qtcraft:cap"_s, 1, 2, 3, 4};
         QCOMPARE(QcProfileValidation::appearance(*m_content, look), look);
+        // Capes: only capes of the content; a hair style or outfit given as cape becomes none.
+        look.cape = u"qtcraft:green_cape"_s;
+        QCOMPARE(QcProfileValidation::appearance(*m_content, look), look);
+        look.cape = u"qtcraft:cap"_s;
+        QVERIFY(QcProfileValidation::appearance(*m_content, look).cape.isEmpty());
+        look.cape.clear();
         // Content without the default outfit: any playable outfit; without any: none.
         QcContentRegistry bare;
         QVERIFY(QcProfileValidation::appearance(bare, look).outfit.isEmpty());

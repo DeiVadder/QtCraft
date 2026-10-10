@@ -13,6 +13,8 @@ Rectangle {
     property string infoItem
     property bool infoEnabled: true
     property string slotIcon
+    // Shown faintly while the slot is empty (what belongs into an armour slot).
+    property string placeholderIcon
     property int slotCount
     property real slotDurability: -1
     property bool slotEmpty: true
@@ -38,6 +40,19 @@ Rectangle {
         visible: !slot.slotEmpty && !slot.carried && !slot.picked
         radius: 6
         color: Theme.iconBackdrop
+    }
+
+    Image {
+        anchors.fill: parent
+        anchors.margins: 10
+        visible: slot.slotEmpty && slot.placeholderIcon.length > 0
+        opacity: 0.25
+        // Not cached: an icon asked for before the content arrived would stay empty for every other
+        // image of the same item and size (handbook recipes).
+        cache: false
+        source: slot.placeholderIcon
+        smooth: false
+        sourceSize: Qt.size(32, 32)
     }
 
     Image {

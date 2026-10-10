@@ -1,0 +1,21 @@
+{
+    "name": "golden_chestplate",
+    "texture": "golden_chestplate",
+    "maxStack": 1,
+    "durability": 112,
+    "armour": {
+        "slot": "chest",
+        "points": 5,
+        "set": "golden",
+        "layers": [
+            {
+                "covers": [
+                    "torso",
+                    "sleeve"
+                ],
+                "texture": "golden_armour",
+                "inflate": 0.035
+            }
+        ]
+    }
+}

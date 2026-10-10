@@ -16,19 +16,21 @@ class QcSettingsController;
 class QcWorldLibraryController;
 struct QcSessionParts;
 
-// The player's look (GameController.settings.character, stored with the settings), the outfits
-// and hair styles the content offers for it, the colours to choose from and the presets: built-in
+// The player's look (GameController.settings.character, stored with the settings), the outfits,
+// hair styles and capes the content offers for it, the colours to choose from and the presets: built-in
 // ones and those the player saved (decision E-231). Every change applies at once, also to the
 // player of a running world.
 class QcCharacterSettings : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
-    // {outfit, hair, skin, hairColor, shirt, pants} with "#rrggbb" colours.
+    // {outfit, hair, skin, hairColor, shirt, pants, cape} with "#rrggbb" colours.
     Q_PROPERTY(QVariantMap look READ look WRITE setLook NOTIFY lookChanged FINAL)
     // Outfits and hair styles of the content as [{name, label}].
     Q_PROPERTY(QVariantList outfits READ outfits NOTIFY appearancesChanged FINAL)
     Q_PROPERTY(QVariantList hairStyles READ hairStyles NOTIFY appearancesChanged FINAL)
+    // Capes of the content as [{name, label}], "No cape" (empty name) first.
+    Q_PROPERTY(QVariantList capes READ capes NOTIFY appearancesChanged FINAL)
     // Colours offered per part as "#rrggbb".
     Q_PROPERTY(QStringList skinColors READ skinColors CONSTANT FINAL)
     Q_PROPERTY(QStringList hairColors READ hairColors CONSTANT FINAL)
@@ -48,6 +50,7 @@ public:
     void setLook(const QVariantMap &look);
     QVariantList outfits() const;
     QVariantList hairStyles() const;
+    QVariantList capes() const;
     static QStringList skinColors();
     static QStringList hairColors();
     static QStringList clothColors();

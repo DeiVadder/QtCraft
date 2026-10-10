@@ -28,6 +28,7 @@ qt_add_library(qc_common STATIC
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
+    content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
     content/parser/QcItemParser.h content/parser/QcItemParser.cpp
     content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
@@ -43,11 +44,13 @@ qt_add_library(qc_common STATIC
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
+    content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp
     content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
     content/definitions/QcPackReference.h
     content/definitions/QcPartFamily.h
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
+    content/definitions/QcArmourDefinition.h
     content/definitions/QcMaterialDefinition.h
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     physics/QcEntityMotion.h
@@ -70,7 +73,10 @@ qt_add_library(qc_common STATIC
     handbook/builder/QcHandbookWorldPages.h handbook/builder/QcHandbookWorldPages.cpp
     protocol/QcInProcessTransport.h protocol/QcInProcessTransport.cpp
     core/QcIntMath.h
+    gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp
+    gameplay/QcRepair.h gameplay/QcRepair.cpp
+    gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcInventory.h gameplay/QcInventory.cpp
     gameplay/QcQuickMove.h gameplay/QcQuickMove.cpp
     content/definitions/QcItemDefinition.h

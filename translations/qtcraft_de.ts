@@ -84,57 +84,62 @@
 <context>
     <name>CharacterScreen</name>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="135"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="136"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="147"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="148"/>
         <source>Outfit</source>
         <translation>Kleidung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="160"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="161"/>
         <source>Hair</source>
         <translation>Frisur</translation>
     </message>
     <message>
         <location filename="../src/app/qml/CharacterScreen.qml" line="174"/>
+        <source>Cape</source>
+        <translation>Umhang</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="188"/>
         <source>Skin</source>
         <translation>Haut</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="179"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="193"/>
         <source>Hair colour</source>
         <translation>Haarfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="184"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="198"/>
         <source>Shirt</source>
         <translation>Oberteil</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="189"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="203"/>
         <source>Trousers</source>
         <translation>Hose</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="201"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="215"/>
         <source>Press %1 in the game to look at your character from behind or from the front.</source>
         <translation>Mit %1 im Spiel siehst du deinen Charakter von hinten oder von vorne.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="210"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="224"/>
         <source>Random</source>
         <translation>Zufall</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="214"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="228"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/CharacterScreen.qml" line="221"/>
+        <location filename="../src/app/qml/CharacterScreen.qml" line="235"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
@@ -357,12 +362,12 @@
 <context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="248"/>
+        <location filename="../src/app/qml/Hud.qml" line="299"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="250"/>
+        <location filename="../src/app/qml/Hud.qml" line="301"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
@@ -370,12 +375,12 @@
 <context>
     <name>InventoryScreen</name>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="63"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="89"/>
         <source>Crafting table</source>
         <translation>Werkbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="63"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="89"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
@@ -384,22 +389,27 @@
         <translation type="vanished">Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. %1 oder Esc schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="117"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="59"/>
+        <source>Armour: %1</source>
+        <translation>Rüstung: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="143"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across (on the result: craft as many as possible). %1 or Esc closes.</source>
         <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberlegen (auf dem Ergebnis: so oft wie möglich herstellen). %1 oder Esc schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="128"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="154"/>
         <source>Can craft now</source>
         <translation>Jetzt herstellbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="146"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="172"/>
         <source>Collect materials to see recipes here.</source>
         <translation>Sammle Material, um hier Rezepte zu sehen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/InventoryScreen.qml" line="158"/>
+        <location filename="../src/app/qml/InventoryScreen.qml" line="184"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
@@ -738,9 +748,14 @@
 <context>
     <name>QcCharacterSettings</name>
     <message>
-        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="120"/>
+        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="121"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="128"/>
+        <source>No cape</source>
+        <translation>Kein Umhang</translation>
     </message>
 </context>
 <context>
@@ -1095,6 +1110,19 @@
     </message>
 </context>
 <context>
+    <name>QcInventoryModel</name>
+    <message>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="113"/>
+        <source>Armour: +%1</source>
+        <translation>Rüstung: +%1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="116"/>
+        <source>Durability: %1 / %2</source>
+        <translation>Haltbarkeit: %1 / %2</translation>
+    </message>
+</context>
+<context>
     <name>QcKeyControls</name>
     <message>
         <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="62"/>
@@ -1317,14 +1345,14 @@
 <context>
     <name>QcServerMessages</name>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="99"/>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="143"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="102"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="147"/>
         <source>Cheats are disabled on this server</source>
         <translation>Cheats sind auf diesem Server abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="101"/>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="135"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="104"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="139"/>
         <source>Unknown command: %1</source>
         <translation>Unbekannter Befehl: %1</translation>
     </message>
@@ -1345,188 +1373,251 @@
         <translation type="vanished">Verwendung: /gamerule keepInventory [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="118"/>
         <source>Commands: /help, /give &lt;item&gt; [count], /save, /time set &lt;day|night|seconds&gt;, /time add &lt;seconds&gt;, /summon &lt;mob&gt; [count], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;item&gt; [count], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;block&gt; (~ for relative coordinates), /feed [food], /locatebiome &lt;biome&gt;</source>
-        <translation>Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;</translation>
+        <translation type="vanished">Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="141"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="121"/>
+        <source>Commands: /help, /give &lt;item&gt; [count], /save, /time set &lt;day|night|seconds&gt;, /time add &lt;seconds&gt;, /summon &lt;mob&gt; [count], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;item&gt; [count], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;[states], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;block&gt; (~ for relative coordinates), /feed [food], /locatebiome &lt;biome&gt;, /equip &lt;armour|set|clear&gt;, /armorstand &lt;nearest|looking|id&gt; &lt;property&gt; [values], /summon armor_stand [property=value …]</source>
+        <translation>Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;, /equip &lt;Rüstung|Satz|clear&gt;, /armorstand &lt;nearest|looking|Id&gt; &lt;Eigenschaft&gt; [Werte], /summon armor_stand [Eigenschaft=Wert …]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="145"/>
         <source>%1 is %2</source>
         <translation>%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="146"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="150"/>
         <source>%1 is now %2</source>
         <translation>%1 ist jetzt %2</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="151"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="155"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false]</source>
         <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="175"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="179"/>
         <source>Usage: /time set &lt;day|night|seconds&gt; or /time add &lt;seconds&gt;</source>
         <translation>Verwendung: /time set &lt;day|night|Sekunden&gt; oder /time add &lt;Sekunden&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="181"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="185"/>
         <source>Time is now %1 s (night)</source>
         <translation>Die Zeit ist jetzt %1 s (Nacht)</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="182"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="186"/>
         <source>Time is now %1 s (day)</source>
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="194"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="202"/>
         <source>Unknown mob or invalid count: %1</source>
         <translation>Unbekanntes Wesen oder ungültige Anzahl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="199"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="207"/>
         <source>Too many creatures in the world (at most %1)</source>
         <translation>Zu viele Wesen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="215"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="223"/>
         <source>Summoned %1 x %2</source>
         <translation>%1 × %2 gerufen</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="226"/>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="442"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="234"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="450"/>
         <source>Unknown item or invalid count: %1</source>
         <translation>Unbekanntes Item oder ungültige Anzahl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="234"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="242"/>
         <source>Dropped %1 x %2</source>
         <translation>%1 × %2 fallen gelassen</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="270"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="278"/>
         <source>Nothing set: the chunks are not loaded or there are too many machines</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen oder es gibt zu viele Maschinen</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="271"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="279"/>
         <source>Nothing set: the chunks are not loaded</source>
         <translation>Nichts gesetzt: Die Chunks sind nicht geladen</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="277"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="285"/>
         <source>Filled %1 blocks with %2</source>
         <translation>%1 Blöcke mit %2 gefüllt</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="279"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="287"/>
         <source>Set %1 at %2 %3 %4</source>
         <translation>%1 bei %2 %3 %4 gesetzt</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="326"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="334"/>
         <source>Usage: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;block&gt; (at most %1 blocks; block may carry states: name[property=value,...]) in loaded chunks</source>
         <translation>Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="368"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="376"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="375"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="383"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="397"/>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="416"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="405"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="424"/>
         <source>Respawn first</source>
         <translation>Erst wiederbeleben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="404"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="412"/>
         <source>Usage: /feed [0..%1]</source>
         <translation>Verwendung: /feed [0..%1]</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="410"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="418"/>
         <source>Food is now %1</source>
         <translation>Nahrung ist jetzt %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="422"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="430"/>
         <source>Healed</source>
         <translation>Geheilt</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="429"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="437"/>
         <source>World saved</source>
         <translation>Welt gespeichert</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="431"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="439"/>
         <source>Saving failed: %1</source>
         <translation>Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcChatCommands.cpp" line="448"/>
+        <location filename="../src/server/core/QcChatCommands.cpp" line="456"/>
         <source>Gave %1 x %2</source>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="368"/>
+        <location filename="../src/server/core/QcServer.cpp" line="374"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="516"/>
+        <location filename="../src/server/core/QcServer.cpp" line="522"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="175"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="180"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="152"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="156"/>
         <location filename="../src/server/machines/QcServerMachines.cpp" line="43"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="158"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="162"/>
         <location filename="../src/server/machines/QcServerMachines.cpp" line="61"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="270"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="319"/>
         <source>Not enough room in the inventory</source>
         <translation>Nicht genug Platz im Inventar</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="284"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="333"/>
         <source>Unknown recipe %1</source>
         <translation>Unbekanntes Rezept %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="291"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="340"/>
         <source>%1 needs a crafting table nearby</source>
         <translation>%1 braucht eine Werkbank in der Nähe</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="310"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="359"/>
         <source>Crafted %1 x %2</source>
         <translation>%1 × %2 hergestellt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="313"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="362"/>
         <source>Missing ingredients or room for %1</source>
         <translation>Zutaten oder Platz für %1 fehlen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/gameplay/QcServerStands.cpp" line="97"/>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="163"/>
+        <source>Too many armour stands in the world (at most %1)</source>
+        <translation>Zu viele Rüstungsständer in der Welt (höchstens %1)</translation>
+    </message>
+    <message>
+        <source>Usage: /armorstand &lt;nearest|looking|id&gt; &lt;pose &lt;part&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;degrees&gt;|arms|plate|small|showname &lt;true|false&gt;|name [text]|equip &lt;item|set&gt;|clear|reset|info&gt;</source>
+        <translation type="vanished">Aufruf: /armorstand &lt;nearest|looking|Id&gt; &lt;pose &lt;Teil&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;Grad&gt;|arms|plate|small|showname &lt;true|false&gt;|name [Text]|equip &lt;Item|Satz&gt;|clear|reset|info&gt;</translation>
+    </message>
+    <message>
+        <source>Usage: /armorstand &lt;nearest|looking|id&gt; &lt;pose &lt;part&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;degrees&gt;|arms|plate|small|showname &lt;true|false&gt;|name [text]|equip &lt;item|set&gt;|cape &lt;cape|none&gt;|clear|reset|info&gt;</source>
+        <translation type="vanished">Aufruf: /armorstand &lt;nearest|looking|Id&gt; &lt;pose &lt;Teil&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;Grad&gt;|arms|plate|small|showname &lt;true|false&gt;|name [Text]|equip &lt;Item|Satz&gt;|cape &lt;Umhang|none&gt;|clear|reset|info&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="30"/>
+        <source>Usage: /armorstand &lt;nearest|looking|id&gt; &lt;pose &lt;part&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;degrees&gt;|arms &lt;true|false&gt;|plate &lt;true|false&gt;|small &lt;true|false&gt;|showname &lt;true|false&gt;|name [text]|equip &lt;item|set&gt;|cape &lt;cape|none&gt;|clear|reset|info&gt;</source>
+        <translation>Aufruf: /armorstand &lt;nearest|looking|Id&gt; &lt;pose &lt;Teil&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;|rotation &lt;Grad&gt;|arms &lt;true|false&gt;|plate &lt;true|false&gt;|small &lt;true|false&gt;|showname &lt;true|false&gt;|name [Text]|equip &lt;Item|Satz&gt;|cape &lt;Umhang|none&gt;|clear|reset|info&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="93"/>
+        <source>No armour stand found: %1</source>
+        <translation>Kein Rüstungsständer gefunden: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="98"/>
+        <source>Armour stand %1: %2</source>
+        <translation>Rüstungsständer %1: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="110"/>
+        <source>Armour stand %1 changed</source>
+        <translation>Rüstungsständer %1 geändert</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="149"/>
+        <source>Invalid armour stand option: %1</source>
+        <translation>Ungültige Angabe für den Rüstungsständer: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="156"/>
+        <source>No ground for an armour stand in front of you</source>
+        <translation>Vor dir ist kein Boden für einen Rüstungsständer</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="167"/>
+        <source>Summoned armour stand %1</source>
+        <translation>Rüstungsständer %1 aufgestellt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="187"/>
+        <source>Unknown armour or armour set: %1</source>
+        <translation>Unbekannte Rüstung oder unbekannter Rüstungssatz: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcStandCommands.cpp" line="201"/>
+        <source>Armour: %1 points</source>
+        <translation>Rüstung: %1 Punkte</translation>
     </message>
 </context>
 <context>

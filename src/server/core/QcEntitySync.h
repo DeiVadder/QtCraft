@@ -7,7 +7,7 @@
 struct QcServerClient;
 struct QcServerState;
 
-// Tells each client about the mobs, other players, falling blocks and dropped items near it: spawns
+// Tells each client about the mobs, other players, falling blocks, dropped items and armour stands near it: spawns
 // for new ones, moves for known ones and removals for those out of sight or dead.
 class QcEntitySync
 {
@@ -36,6 +36,8 @@ private:
     void considerPlayers(Pass &pass);
     void considerFallingBlocks(Pass &pass);
     void considerItems(Pass &pass) const;
+    // Armour stands never move: a spawn when they come into view or change, no moves.
+    void considerStands(Pass &pass) const;
     void removeUnseen(Pass &pass) const;
 
     QcServerState &m_state;

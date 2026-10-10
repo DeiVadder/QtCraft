@@ -2,9 +2,23 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-caped_mannequin"></a>Caped mannequin
+
+A mannequin wearing the green cape. It walks about slowly, so the cape swings; it never appears by itself, the showcase world has one at the character stand.
+
+| | |
+|---|---|
+| ID | `qtcraft:caped_mannequin` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.8 m tall |
+| Speed | 1.4 m/s walking, 1.5 m/s fleeing |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | nothing |
 
 ### <a id="mob-qtcraft-firefly"></a>Firefly
 

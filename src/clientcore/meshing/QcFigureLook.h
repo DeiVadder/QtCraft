@@ -2,6 +2,8 @@
 
 #include "QcAppearance.h"
 #include "QcEntityMesher.h"
+#include "QcEquipment.h"
+#include "QcStandPose.h"
 
 #include <optional>
 
@@ -11,10 +13,29 @@ class QcContentRegistry;
 // character preview, so the preview shows exactly what other players see.
 namespace QcFigureLook {
 
-// The humanoid model with the appearance's outfit and hair; an outfit the content does not offer
-// falls back to the default outfit, a hair style of the wrong kind to none. Not valid when the
-// content has no humanoid model.
+// The humanoid model with the appearance's outfit, hair and cape; an outfit the content does not
+// offer falls back to the default outfit, a hair style or cape of the wrong kind to none. Not
+// valid when the content has no humanoid model.
 QcEntityMesher::ModelLook player(const QcContentRegistry &content, const QcAppearance &appearance);
+// The cape called `name`; none for an empty name, an unknown one or another kind of appearance.
+const QcAppearanceDefinition *cape(const QcContentRegistry &content, const QString &name);
+
+// What a figure wears: the attachments of its armour (QcArmourLook); under a helmet the hair of
+// `look` is left out, so it does not poke through, and a cape of `look` hangs outside a chest
+// layer (ModelLook::capeClearance).
+QList<QcEntityMesher::Attachment> armour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look);
+
+// An armour stand (decision E-238): the stand model with its wooden outfit, half size when small.
+// Not valid when the content has no stand model.
+QcEntityMesher::ModelLook stand(const QcContentRegistry &content, const QcStandPose &pose);
+// What a stand wears: armour() and, under a head piece, a filler in the stand's wood
+// (QcArmourLook::headFillers) that closes the helmet's face opening.
+QList<QcEntityMesher::Attachment> standArmour(const QcContentRegistry &content, const QcEquipment &equipment, QcEntityMesher::ModelLook &look);
+// The bones a stand leaves out: the arms and the base plate when switched off.
+quint8 standHiddenBones(const QcStandPose &pose);
+// The stand's pose as bone rotations (it does not animate); a cape sways gently as on a figure
+// standing still at `seconds`.
+QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds);
 
 // An item as drawn in a hand, on the ground or falling: placeable cube blocks as cubes (or their
 // shape), everything else as a sprite of the item texture. An item the content does not know looks

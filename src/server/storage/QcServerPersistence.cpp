@@ -79,7 +79,7 @@ QcStatus QcServerPersistence::readWorldState(const QcWorldStorage &storage)
     // creatures, contents or plants: it is left out, the setup runs again and nothing exists twice.
     // Setups of only rules (terrain, flat, void) keep what is stored.
     const QcWorldSetup setup = m_state.world.generator().setup();
-    const bool bringsState = !setup.mobs.isEmpty() || !setup.contents.isEmpty() || !setup.growing.isEmpty() || !setup.updates.isEmpty();
+    const bool bringsState = !setup.mobs.isEmpty() || !setup.stands.isEmpty() || !setup.contents.isEmpty() || !setup.growing.isEmpty() || !setup.updates.isEmpty();
     if (!m_state.info.setupDone && bringsState) {
         qCInfo(lcPersistence) << "The world's setup was not saved completely; it runs again";
         return {};
@@ -97,6 +97,7 @@ QcStatus QcServerPersistence::readWorldState(const QcWorldStorage &storage)
     if (const QcStatus read = readContainers(storage); !read) {
         return read;
     }
+    readStands(storage);
     return readBlockUpdates(storage);
 }
 
@@ -216,6 +217,20 @@ QcStatus QcServerPersistence::readContainers(const QcWorldStorage &storage)
     return {};
 }
 
+void QcServerPersistence::readStands(const QcWorldStorage &storage)
+{
+    QStringList warnings;
+    QList<QcArmourStandManager::Stand> stands = storage.readStands(warnings);
+    for (QcArmourStandManager::Stand &stand : stands) {
+        stand.id = m_state.newEntityId();
+    }
+
+    if (const qsizetype dropped = m_state.stands.restore(std::move(stands)); dropped > 0) {
+        warnings.append(u"%1 armour stands beyond the limit of %2 were left out"_s.arg(dropped).arg(QcArmourStandManager::maxStands));
+    }
+    noteWarnings(warnings);
+}
+
 QcStatus QcServerPersistence::readBlockUpdates(const QcWorldStorage &storage)
 {
     const QcResult<QList<QcBlockPos>> updates = storage.readBlockUpdates();
@@ -296,6 +311,7 @@ QcStatus QcServerPersistence::savePlayer(const QcServerClient &client)
     player.health = client.health;
     player.food = client.hunger.food();
     player.exhaustion = client.hunger.exhaustion();
+    player.equipment = client.equipment;
 
     const QcStatus saved = m_storage->writePlayer(client.name, player);
     if (!saved) {
@@ -336,6 +352,7 @@ QcStatus QcServerPersistence::save()
     keep(storage.writeMobs({m_state.mobs.persistentMobs(), m_state.mobs.populatedChunks()}));
     keep(storage.writeMachines(m_state.machines.machines()));
     keep(storage.writeContainers(m_state.containers.containers()));
+    keep(storage.writeStands(m_state.stands.stands()));
     keep(saveBlockUpdates(storage));
 
     // Last: the setup counts as done once everything it brought is stored (see readWorldState()).

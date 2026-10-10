@@ -1,0 +1,14 @@
+{
+    "name": "diamond_helmet",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        "X X"
+    ],
+    "key": {
+        "X": "diamond"
+    },
+    "result": {
+        "item": "diamond_helmet"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "armor_stand",
+    "type": "shaped",
+    "pattern": [
+        "|||",
+        " | ",
+        "|_|"
+    ],
+    "key": {
+        "|": "stick",
+        "_": "polished_stone_slab"
+    },
+    "result": {
+        "item": "armor_stand"
+    }
+}

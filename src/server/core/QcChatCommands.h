@@ -3,6 +3,7 @@
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
 #include "QcResult.h"
+#include "QcStandCommands.h"
 
 #include <QString>
 #include <QStringList>
@@ -14,6 +15,7 @@ class QcBlockUpdateQueue;
 class QcServerBlocks;
 class QcServerCombat;
 class QcServerInventory;
+class QcServerStands;
 struct QcServerClient;
 struct QcServerState;
 
@@ -33,6 +35,7 @@ public:
         QcBlockUpdateQueue &updates;
         QcServerInventory &inventory;
         QcServerCombat &combat;
+        QcServerStands &stands;
     };
     // Server functions the commands /save and /time use.
     struct Actions
@@ -73,6 +76,8 @@ private:
     void heal(const Command &command);
     void save(const Command &command) const;
     void give(const Command &command);
+    void armorStand(const Command &command);
+    void equip(const Command &command);
 
     // /setblock and /fill: parses the area and block (replying on errors) and changes the blocks.
     void placeBlocks(const Command &command, bool fill);
@@ -85,4 +90,5 @@ private:
     QcServerState &m_state;
     Parts m_parts;
     Actions m_actions;
+    QcStandCommands m_standCommands;
 };

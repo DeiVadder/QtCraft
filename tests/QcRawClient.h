@@ -20,11 +20,16 @@ public:
     {
         if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
+        } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
+            entityId = welcome->playerEntityId;
+        } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
+            sounds.append(sound->key);
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
             craftingGrid = inventory->craftingGrid;
             craftingSize = inventory->craftingSize;
             craftingResult = inventory->craftingResult;
+            equipment = inventory->equipment;
         } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
             blockUpdates.append(*update);
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
@@ -47,7 +52,15 @@ public:
         } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
             openMachine.reset();
             machineClosed = true;
-        } else if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
+        } else {
+            receivedWorld(message);
+        }
+    }
+
+    // Entities, labels and the world time.
+    void receivedWorld(const QcMessage &message)
+    {
+        if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
             entities.insert(spawn->id, spawn->mobType);
             if (spawn->mobType == QcMsg::EntitySpawn::itemType) {
                 items.insert(spawn->id, spawn->item);
@@ -77,11 +90,16 @@ public:
     }
 
     QcConnection connection;
+    // The player's own entity id (from Welcome).
+    quint32 entityId = 0;
     QcEntityMotion motion;
+    // Keys of all sounds heard, oldest first.
+    QStringList sounds;
     QList<QcItemStack> stacks;
     QList<QcItemStack> craftingGrid;
     qint32 craftingSize = 0;
     QcItemStack craftingResult;
+    QcEquipment equipment;
     qint32 openedCrafting = 0;
     QList<QcMsg::BlockUpdate> blockUpdates;
     QStringList chatLines;

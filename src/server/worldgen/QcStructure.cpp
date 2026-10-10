@@ -44,6 +44,7 @@ QcResult<QcStructure> QcStructure::fromDefinition(const QcStructureDefinition &d
     }
 
     structure.mobs = definition.mobs;
+    structure.stands = definition.stands;
     structure.contents = definition.contents;
     structure.labels = definition.labels;
     structure.updates = definition.updates;

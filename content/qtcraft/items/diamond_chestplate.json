@@ -1,0 +1,51 @@
+{
+    "name": "diamond_chestplate",
+    "texture": "diamond_chestplate",
+    "maxStack": 1,
+    "durability": 528,
+    "armour": {
+        "slot": "chest",
+        "points": 8,
+        "set": "diamond",
+        "layers": [
+            {
+                "covers": [
+                    "torso",
+                    "sleeve"
+                ],
+                "texture": "diamond_armour",
+                "inflate": 0.035
+            }
+        ],
+        "parts": [
+            {
+                "bone": "right_arm",
+                "from": [
+                    0.21,
+                    1.24,
+                    -0.135
+                ],
+                "to": [
+                    0.48,
+                    1.4,
+                    0.135
+                ],
+                "texture": "diamond_armour_trim"
+            },
+            {
+                "bone": "left_arm",
+                "from": [
+                    -0.48,
+                    1.24,
+                    -0.135
+                ],
+                "to": [
+                    -0.21,
+                    1.4,
+                    0.135
+                ],
+                "texture": "diamond_armour_trim"
+            }
+        ]
+    }
+}

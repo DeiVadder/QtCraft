@@ -27,6 +27,9 @@ inline constexpr auto liquidHiss = "qtcraft:liquid.hiss";
 inline constexpr auto bucketFill = "qtcraft:item.bucket.fill";
 inline constexpr auto bucketEmpty = "qtcraft:item.bucket.empty";
 inline constexpr auto bottleCatch = "qtcraft:item.bottle.catch";
+// Armour put on or taken off, and a worn piece or tool breaking.
+inline constexpr auto armourEquip = "qtcraft:item.armour.equip";
+inline constexpr auto itemBreak = "qtcraft:item.break";
 // Lava near the listener now and then.
 inline constexpr auto lavaPop = "qtcraft:liquid.lava.pop";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.

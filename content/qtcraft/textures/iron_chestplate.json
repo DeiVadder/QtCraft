@@ -1,0 +1,8 @@
+{
+    "name": "iron_chestplate",
+    "pattern": "chestplate",
+    "primary": "#c4c4c8",
+    "secondary": "#f2f2f4",
+    "variation": 0.06,
+    "seed": 7226
+}

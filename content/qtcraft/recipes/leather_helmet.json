@@ -1,0 +1,14 @@
+{
+    "name": "leather_helmet",
+    "type": "shaped",
+    "pattern": [
+        "XXX",
+        "X X"
+    ],
+    "key": {
+        "X": "leather"
+    },
+    "result": {
+        "item": "leather_helmet"
+    }
+}

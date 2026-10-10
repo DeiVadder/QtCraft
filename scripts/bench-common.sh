@@ -28,6 +28,13 @@
 #              does, so changes of the world generation (E-101, E-214) do not move the comparison.
 #              WORLD_TYPE=flat|void does the same for every scenario of a run. Crowd and sprint need
 #              ground: use flat, not void
+#   armour-crowd - flat-crowd plus 40 armour stands in a full diamond set with the green cape
+#              (/summon armor_stand, all on one cell 3 m ahead) and 8 caped mannequins: entity
+#              meshing of armour attachments and capes, the stand sync per client and tick. Runs in
+#              the flat world unless WORLD_TYPE or a prefix says otherwise (stage 23 and newer)
+#   armour-walk - walking like walk, the own player in a full diamond set with the green cape,
+#              seen from behind (--camera behind): third-person figure with attachments and the
+#              cape swing (stage 23 and newer)
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 #
@@ -142,6 +149,18 @@ run_game() {
         scenario=${scenario#*-}
         ;;
     esac
+    armour=
+    case "$scenario" in
+    armour-crowd)
+        armour=crowd
+        world=${world:-flat}
+        scenario=crowd
+        ;;
+    armour-walk)
+        armour=walk
+        scenario=walk
+        ;;
+    esac
     case "$scenario" in
     sprint | walk) walk=$scenario ;;
     light | liquids) walk=$scenario ;;
@@ -178,6 +197,14 @@ EOF
         for item in $CROWD_ITEMS; do
             set -- "$@" --chat "/spawnitem qtcraft:$item 1"
         done
+        if [ "$armour" = crowd ]; then
+            i=0
+            while [ "$i" -lt 40 ]; do
+                set -- "$@" --chat "/summon armor_stand equip=diamond cape=green_cape arms"
+                i=$((i + 1))
+            done
+            set -- "$@" --chat "/summon qtcraft:caped_mannequin 8"
+        fi
         ;;
     inventory)
         set -- "$@" --chat "/give iron_pickaxe 1" --chat "/give oak_planks 64" --chat "/give torch 32" --overlay inventory
@@ -198,6 +225,10 @@ EOF
     # game's default, compact; decision E-225).
     if [ -n "${DEBUG_DISPLAY:-}" ]; then
         printf '[debug]\nlevel=%s\n' "$DEBUG_DISPLAY" >>"$data/settings.ini"
+    fi
+    if [ "$armour" = walk ]; then
+        printf '[character]\ncape=qtcraft:green_cape\n' >>"$data/settings.ini"
+        set -- "$@" --camera behind --chat "/equip diamond"
     fi
     # Benchmarks measure the real window, never offscreen (E-229; the game refuses that anyway).
     # A run during which the screen was locked rendered no or too few frames: it is repeated (at most

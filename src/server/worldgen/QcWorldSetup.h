@@ -15,6 +15,7 @@
 struct QcWorldSetup
 {
     using Mob = QcStructureDefinition::Mob;
+    using Stand = QcStructureDefinition::Stand;
     using Contents = QcStructureDefinition::Contents;
 
     // Seconds into the day the world starts at (QcDayCycle), else the usual morning.
@@ -22,6 +23,7 @@ struct QcWorldSetup
     bool daylightCycle = true;
     bool mobSpawning = true;
     QList<Mob> mobs;
+    QList<Stand> stands;
     QList<Contents> contents;
     QList<QcBlockPos> updates;
     QList<QcBlockPos> growing;

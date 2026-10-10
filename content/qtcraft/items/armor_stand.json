@@ -1,0 +1,6 @@
+{
+    "name": "armor_stand",
+    "texture": "armor_stand",
+    "maxStack": 16,
+    "placesStand": true
+}

@@ -159,6 +159,28 @@ void parseMobs(const QJsonObject &json, Structure &structure, QcJsonFieldReader 
     }
 }
 
+void parseStands(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader)
+{
+    constexpr qsizetype maxProperties = 32;
+    const QJsonArray stands = extraArray(json, u"stands"_s, reader);
+    for (const auto &entry : stands) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), structure);
+        const double yaw = object.value(u"yaw"_s).toDouble(0.0);
+        const QJsonArray properties = object.value(u"properties"_s).toArray();
+        if (!at || !std::isfinite(yaw) || properties.size() > maxProperties) {
+            reader.fail(u"'stands' entries need 'at' inside the structure, a 'yaw' and at most %1 'properties'"_s.arg(maxProperties));
+            return;
+        }
+
+        Structure::Stand stand{*at, float(yaw), {}};
+        for (const auto &property : properties) {
+            stand.properties.append(property.toString().left(256));
+        }
+        structure.stands.append(stand);
+    }
+}
+
 std::optional<Structure::Stack> readStack(const QJsonValue &value, const QString &packNamespace)
 {
     const QJsonObject object = value.toObject();
@@ -261,6 +283,7 @@ QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QS
     }
     if (reader.ok()) {
         parseMobs(json, structure, reader, packNamespace);
+        parseStands(json, structure, reader);
         parseContents(json, structure, reader, packNamespace);
         parseLabels(json, structure, reader);
         parseCells(json, u"updates"_s, structure.updates, structure, reader);

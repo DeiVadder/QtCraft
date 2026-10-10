@@ -190,4 +190,6 @@ Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und 
 - `/summon <wesen> [anzahl]` (höchstens 64 Wesen), `/kill`, `/heal`, `/feed [punkte]`
 - `/setblock <x> <y> <z> <block>`, `/fill <x1> <y1> <z1> <x2> <y2> <z2> <block>` (höchstens 32768 Blöcke; `~` steht für deine Position)
 - `/locatebiome <biom>`
+- `/equip <Satz|Rüstung|clear>` legt Rüstung an (`/equip iron`)
+- `/summon armor_stand [Eigenschaft=Wert …]` und `/armorstand <nearest|looking|Id> <Eigenschaft> [Werte]` stellen Rüstungsständer auf und verändern sie. Eigenschaften: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (Grad), `rotation <Grad>`, `arms`, `plate`, `small`, `showname` mit `true|false`, `name [Text]`, `equip <Satz|Item>`, `cape <Umhang|none>`, `clear`, `reset`; `info` zeigt sie an. Ständer-Ids gelten nur, bis die Welt neu geladen wird; Skripte nutzen `nearest` oder `looking`. Rüstung und Items, die `equip` oder `clear` ersetzen, fallen auf den Boden, `/equip` legt ersetzte Teile in dein Inventar. Bei `/summon` folgen die Werte nach `=`, durch Kommas getrennt: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
 Alle außer `/help`, `/save` und dem Lesen einer Spielregel sind Cheats; Einzelspieler-Welten erlauben sie.

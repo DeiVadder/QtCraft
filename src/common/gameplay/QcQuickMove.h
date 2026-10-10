@@ -14,6 +14,9 @@ struct Situation
     bool machineOpen = false;
     bool smeltable = false;
     bool fuel = false;
+    // The moved item is armour whose slot is empty: the slot number (MoveInventoryItem::equipmentSlot
+    // onwards), else -1. With no block open, armour from the inventory goes there first.
+    int freeArmourSlot = -1;
 };
 
 // Target slots in the order they are filled; empty when the stack cannot go anywhere.

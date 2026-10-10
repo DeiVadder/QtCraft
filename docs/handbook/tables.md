@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Fuels](#table-fuels) · [Tool tiers](#table-tools) · [Furnace recipes](#table-smelting)
+**QtCraft:** [Fuels](#table-fuels) · [Tool tiers](#table-tools) · [Armour](#table-armour) · [Furnace recipes](#table-smelting)
 
 ## QtCraft
 
@@ -37,6 +37,26 @@ A block that needs a tool drops its items only when mined with that kind of tool
 **Shovel**
 
 [Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1, × 12, 32 uses), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1, × 2, 59 uses), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2, × 4, 131 uses), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3, × 6, 250 uses), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4, × 8, 1561 uses)
+
+### <a id="table-armour"></a>Armour
+
+Armour is worn in four slots next to the character in the inventory: drag it there, shift-click it or right-click with it in the hand. Every armour point takes 4 % off the blows of creatures and the burns of lava and magma, up to 20 points (80 %); falls and hunger go through. Each such hit wears every worn piece by a quarter of the damage (at least 1); a piece breaks when its durability is used up. Two worn pieces of the same kind in the crafting grid make one with both durabilities plus 5 %.
+
+**Diamond armour**
+
+[Diamond helmet](tools.md#item-qtcraft-diamond_helmet) (Head, +3, 363 hits), [Diamond chestplate](tools.md#item-qtcraft-diamond_chestplate) (Chest, +8, 528 hits), [Diamond leggings](tools.md#item-qtcraft-diamond_leggings) (Legs, +6, 495 hits), [Diamond boots](tools.md#item-qtcraft-diamond_boots) (Feet, +3, 429 hits)
+
+**Golden armour**
+
+[Golden helmet](tools.md#item-qtcraft-golden_helmet) (Head, +2, 77 hits), [Golden chestplate](tools.md#item-qtcraft-golden_chestplate) (Chest, +5, 112 hits), [Golden leggings](tools.md#item-qtcraft-golden_leggings) (Legs, +3, 105 hits), [Golden boots](tools.md#item-qtcraft-golden_boots) (Feet, +1, 91 hits)
+
+**Iron armour**
+
+[Iron helmet](tools.md#item-qtcraft-iron_helmet) (Head, +2, 165 hits), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate) (Chest, +6, 240 hits), [Iron leggings](tools.md#item-qtcraft-iron_leggings) (Legs, +5, 225 hits), [Iron boots](tools.md#item-qtcraft-iron_boots) (Feet, +2, 195 hits)
+
+**Leather armour**
+
+[Leather cap](tools.md#item-qtcraft-leather_helmet) (Head, +1, 55 hits), [Leather tunic](tools.md#item-qtcraft-leather_chestplate) (Chest, +3, 80 hits), [Leather trousers](tools.md#item-qtcraft-leather_leggings) (Legs, +2, 75 hits), [Leather boots](tools.md#item-qtcraft-leather_boots) (Feet, +1, 65 hits)
 
 ### <a id="table-smelting"></a>Furnace recipes
 

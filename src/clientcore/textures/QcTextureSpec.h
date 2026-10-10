@@ -1,7 +1,9 @@
 #pragma once
 
 #include <QColor>
+#include <QHash>
 #include <QString>
+#include <QStringList>
 
 #include <optional>
 
@@ -112,13 +114,40 @@ struct QcTextureSpec
         // Tinted glass: a frame (secondary) around a clearly coloured pane (primary); keeps partial
         // transparency.
         StainedGlass,
+        // Patterns of QcTextureArmourPatterns (decision E-235): item icons in the material
+        // (primary) with a light upper edge (secondary) ...
+        Helmet,
+        Chestplate,
+        Leggings,
+        Boots,
+        // ... and what armour looks like on a body: a riveted plate, stitched leather, a helmet
+        // front with an opening for the face, a visor with eye slits, polished trim with a ridge.
+        ArmourPlate,
+        ArmourLeather,
+        HelmetFront,
+        Visor,
+        ArmourTrim,
+        // Icon of an armour stand: a post with bars (primary) on a stone plate (secondary).
+        ArmourStand,
+        // Pixel art from `bitmap` (QcTextureEmblem): each character picks a colour of `palette`,
+        // any other character (and every pixel the bitmap leaves out) shows woven cloth in the
+        // primary colour. For cape emblems and hems (decision E-241).
+        Emblem,
     };
+
+    // Emblem only: up to 16 rows of up to 16 characters, top row first.
+    static constexpr int maxBitmapRows = 16;
+    static constexpr int maxPaletteEntries = 16;
 
     Pattern pattern = Pattern::Noise;
     QColor primary = QColor(128, 128, 128);
     QColor secondary = QColor(96, 96, 96);
     double variation = 0.15;
     quint32 seed = 0;
+    // The initialisers keep aggregate initialisations that leave these out free of
+    // -Wmissing-field-initializers.
+    QStringList bitmap = {};       // NOLINT(readability-redundant-member-init): see above
+    QHash<QChar, QColor> palette = {}; // NOLINT(readability-redundant-member-init): see above
 };
 
 std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name);

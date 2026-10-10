@@ -291,9 +291,17 @@ void QcCharacterPreview::buildFrame()
         m_atlas = atlas->image();
     }
 
+    // A fixed moment (test hook) shows the cape at rest on its target, like the pose.
+    const QcCapeDrive drive = QcPreviewPose::capeDrive(m_animation);
+    if (fixedTime) {
+        m_cape.settle(drive, m_seconds);
+    } else {
+        m_cape.advance(drive, seconds, m_seconds);
+    }
+
     const bool mining = m_animation == QcPreviewPose::Animation::Mine;
     const QcPreviewScene::Figure figure{m_source->appearance(), m_source->heldItem(mining), QcPreviewPose::pose(m_animation, m_seconds, m_gaze),
-                                        m_camera.modelYaw(), m_seconds};
+                                        m_camera.modelYaw(), m_seconds, m_source->equipment(), m_cape.angles()};
     m_mesh = std::make_shared<const QcEntityMesh>(QcPreviewScene::build(*content, figure, [&atlas](const QString &texture) { return atlas->uv(texture); }));
     m_viewCamera = m_camera.camera();
 }

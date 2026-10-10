@@ -54,6 +54,7 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
     appearance.hairColor = color(u"hairColor"_s, appearance.hairColor);
     appearance.shirtColor = color(u"shirt"_s, appearance.shirtColor);
     appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
+    appearance.cape = look.value(u"cape"_s, appearance.cape).toString().left(QcAppearance::maxNameLength);
     setAppearance(appearance);
 }
 
@@ -121,6 +122,13 @@ QVariantList QcCharacterSettings::hairStyles() const
     return list;
 }
 
+QVariantList QcCharacterSettings::capes() const
+{
+    QVariantList list = appearanceList(QcAppearanceDefinition::Kind::Cape);
+    list.prepend(QVariantMap{{u"name"_s, QString()}, {u"label"_s, tr("No cape")}});
+    return list;
+}
+
 QStringList QcCharacterSettings::skinColors()
 {
     return hexList(QcCharacterProfile::skinColors());
@@ -139,7 +147,8 @@ QStringList QcCharacterSettings::clothColors()
 void QcCharacterSettings::randomize()
 {
     setAppearance(QcCharacterProfile::random(playableNames(QcAppearanceDefinition::Kind::Outfit),
-                                             playableNames(QcAppearanceDefinition::Kind::Hair), QRandomGenerator::global()->generate()));
+                                             playableNames(QcAppearanceDefinition::Kind::Hair),
+                                             playableNames(QcAppearanceDefinition::Kind::Cape), QRandomGenerator::global()->generate()));
 }
 
 void QcCharacterSettings::reset()

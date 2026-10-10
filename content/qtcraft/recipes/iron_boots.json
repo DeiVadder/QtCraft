@@ -1,0 +1,14 @@
+{
+    "name": "iron_boots",
+    "type": "shaped",
+    "pattern": [
+        "X X",
+        "X X"
+    ],
+    "key": {
+        "X": "iron_ingot"
+    },
+    "result": {
+        "item": "iron_boots"
+    }
+}

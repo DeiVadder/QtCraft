@@ -886,6 +886,10 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 |---|---|---|---|
 | [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) | [Polished stone](blocks.md#block-qtcraft-polished_stone) | 6 × [Polished stone slab](#block-qtcraft-polished_stone_slab) |
 
+**Used in**
+
+[Armour stand](items.md#item-qtcraft-armor_stand)
+
 **Mined with**
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)

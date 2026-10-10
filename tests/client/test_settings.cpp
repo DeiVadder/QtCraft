@@ -74,12 +74,13 @@ private slots:
         settings.appearance.hairColor = 0xfffffe;
         settings.appearance.shirtColor = 0x00ff00;
         settings.appearance.pantsColor = 0x000000;
+        settings.appearance.cape = u"mod:red_cape"_s;
         settings.masterVolume = 0.25;
         settings.effectsVolume = 0.0;
         settings.musicVolume = 1.0;
         settings.ambientVolume = 0.4;
         settings.muted = true;
-        settings.characterPresets = {{u"Cave look"_s, {u"qtcraft:miner"_s, u"qtcraft:cap"_s, 0x111111, 0x222222, 0x333333, 0x444444}},
+        settings.characterPresets = {{u"Cave look"_s, {u"qtcraft:miner"_s, u"qtcraft:cap"_s, 0x111111, 0x222222, 0x333333, 0x444444, u"qtcraft:green_cape"_s}},
                                      {u"Bald"_s, {u"qtcraft:tunic"_s, QString(), 0xabcdef, 0, 0xffffff, 0x010101}}};
 
         const QcStatus saved = settings.save(path);
@@ -90,6 +91,38 @@ private slots:
         settings.characterPresets.removeFirst();
         QVERIFY(settings.save(path).has_value());
         QCOMPARE(QcGameSettings::load(path).characterPresets, settings.characterPresets);
+    }
+
+    void profilesWithoutCapeLoadWithoutCape()
+    {
+        // A settings file from before capes (stage 22) has no cape keys: the look and the presets
+        // load as before, without a cape (decision E-240).
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        {
+            QSettings file(path, QSettings::IniFormat);
+            file.setValue(u"character/outfit"_s, u"qtcraft:miner"_s);
+            file.setValue(u"character/hair"_s, u"qtcraft:cap"_s);
+            file.setValue(u"character/shirt"_s, u"#123456"_s);
+            file.setValue(u"characterPresets/size"_s, 1);
+            file.setValue(u"characterPresets/1/name"_s, u"Old look"_s);
+            file.setValue(u"characterPresets/1/outfit"_s, u"qtcraft:tunic"_s);
+        }
+
+        const QcGameSettings loaded = QcGameSettings::load(path);
+        QCOMPARE(loaded.appearance.outfit, u"qtcraft:miner"_s);
+        QCOMPARE(loaded.appearance.shirtColor, 0x123456u);
+        QCOMPARE(loaded.appearance.cape, QString());
+        QCOMPARE(loaded.characterPresets.size(), 1);
+        QCOMPARE(loaded.characterPresets.first().appearance.outfit, u"qtcraft:tunic"_s);
+        QCOMPARE(loaded.characterPresets.first().appearance.cape, QString());
+
+        // An overlong cape name falls back to none, like other names.
+        {
+            QSettings file(path, QSettings::IniFormat);
+            file.setValue(u"character/cape"_s, QString(QcAppearance::maxNameLength + 1, u'x'));
+        }
+        QCOMPARE(QcGameSettings::load(path).appearance.cape, QString());
     }
 
     void characterPresetsAreBounded()
@@ -186,14 +219,17 @@ private slots:
     {
         const QStringList outfits{u"a:one"_s, u"a:two"_s};
         const QStringList hair{u"a:short"_s};
+        const QStringList capes{u"a:green"_s, u"a:red"_s};
         // The same seed, the same look; every part from the offered choices.
-        QCOMPARE(QcCharacterProfile::random(outfits, hair, 7), QcCharacterProfile::random(outfits, hair, 7));
+        QCOMPARE(QcCharacterProfile::random(outfits, hair, capes, 7), QcCharacterProfile::random(outfits, hair, capes, 7));
         QSet<QString> seenOutfits;
         QSet<QString> seenHair;
+        QSet<QString> seenCapes;
         for (quint32 seed = 0; seed < 200; ++seed) {
-            const QcAppearance look = QcCharacterProfile::random(outfits, hair, seed);
+            const QcAppearance look = QcCharacterProfile::random(outfits, hair, capes, seed);
             seenOutfits.insert(look.outfit);
             seenHair.insert(look.hair);
+            seenCapes.insert(look.cape);
             QVERIFY(QcCharacterProfile::skinColors().contains(look.skinColor));
             QVERIFY(QcCharacterProfile::hairColors().contains(look.hairColor));
             QVERIFY(QcCharacterProfile::clothColors().contains(look.shirtColor));
@@ -202,12 +238,18 @@ private slots:
         QCOMPARE(seenOutfits, (QSet<QString>{u"a:one"_s, u"a:two"_s}));
         // Hair or none.
         QCOMPARE(seenHair, (QSet<QString>{u"a:short"_s, QString()}));
-        QCOMPARE(QcCharacterProfile::random({}, {}, 3).outfit, QcAppearance().outfit);
+        // Capes or none.
+        QCOMPARE(seenCapes, (QSet<QString>{u"a:green"_s, u"a:red"_s, QString()}));
+        QCOMPARE(QcCharacterProfile::random({}, {}, {}, 3).outfit, QcAppearance().outfit);
+        QCOMPARE(QcCharacterProfile::random({}, {}, {}, 3).cape, QString());
 
         // The first built-in preset is the default look; all have names.
         const QList<QcCharacterPreset> &builtIn = QcCharacterProfile::builtInPresets();
         QVERIFY(builtIn.size() >= 3);
         QCOMPARE(builtIn.first().appearance, QcAppearance());
+        // The default look has no cape; one built-in preset shows the green cape.
+        QCOMPARE(QcAppearance().cape, QString());
+        QVERIFY(std::ranges::any_of(builtIn, [](const QcCharacterPreset &preset) { return preset.appearance.cape == u"qtcraft:green_cape"_s; }));
         QVERIFY(std::ranges::none_of(builtIn, [](const QcCharacterPreset &preset) { return preset.name.isEmpty(); }));
     }
 

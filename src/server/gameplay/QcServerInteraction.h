@@ -8,6 +8,7 @@ class QcServerBlocks;
 class QcServerInventory;
 class QcServerMachines;
 class QcServerSounds;
+class QcServerStands;
 struct QcServerClient;
 struct QcServerState;
 
@@ -25,6 +26,7 @@ public:
         QcServerBlocks &blocks;
         QcServerInventory &inventory;
         QcServerMachines &machines;
+        QcServerStands &stands;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);

@@ -56,12 +56,13 @@ QcChatCommands::QcChatCommands(QcServerState &state, const Parts &parts, Actions
     : m_state(state)
     , m_parts(parts)
     , m_actions(std::move(actions))
+    , m_standCommands(state, parts.stands, parts.inventory)
 {
 }
 
 const QcChatCommands::Entry *QcChatCommands::find(const QString &name)
 {
-    static const std::array<Entry, 13> commands{{
+    static const std::array<Entry, 15> commands{{
         {u"help", 1, false, [](QcChatCommands &chat, const Command &command) { chat.help(command); }},
         {u"gamerule", 2, false, [](QcChatCommands &chat, const Command &command) { chat.gamerule(command); }},
         {u"time", 3, true, [](QcChatCommands &chat, const Command &command) { chat.time(command); }},
@@ -75,6 +76,8 @@ const QcChatCommands::Entry *QcChatCommands::find(const QString &name)
         {u"heal", 1, true, [](QcChatCommands &chat, const Command &command) { chat.heal(command); }},
         {u"save", 1, false, [](QcChatCommands &chat, const Command &command) { chat.save(command); }},
         {u"give", 2, true, [](QcChatCommands &chat, const Command &command) { chat.give(command); }},
+        {u"armorstand", 1, true, [](QcChatCommands &chat, const Command &command) { chat.armorStand(command); }},
+        {u"equip", 2, true, [](QcChatCommands &chat, const Command &command) { chat.equip(command); }},
     }};
 
     const auto found = std::ranges::find(commands, QStringView(name), &Entry::name);
@@ -120,7 +123,8 @@ void QcChatCommands::help(const Command &command)
                                     "/summon <mob> [count], /kill, /heal, /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false], "
                                     "/spawnitem <item> [count], "
                                     "/setblock <x> <y> <z> <block>[states], /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> (~ for relative "
-                                    "coordinates), /feed [food], /locatebiome <biome>"));
+                                    "coordinates), /feed [food], /locatebiome <biome>, /equip <armour|set|clear>, "
+                                    "/armorstand <nearest|looking|id> <property> [values], /summon armor_stand [property=value …]"));
 }
 
 void QcChatCommands::gamerule(const Command &command)
@@ -186,6 +190,10 @@ void QcChatCommands::time(const Command &command) const
 void QcChatCommands::summon(const Command &command)
 {
     const QStringList &words = command.words;
+    if (m_standCommands.summon(command.client, words)) {
+        return;
+    }
+
     const QString name = qualified(words[1]);
     const std::optional<int> type = m_state.content->mobIndex(name);
     bool countOk = true;
@@ -446,4 +454,14 @@ void QcChatCommands::give(const Command &command)
     const int leftover = command.client.inventory.add(*item, count, *m_state.content);
     m_parts.inventory.send(command.client);
     command.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Gave %1 x %2"), {QString::number(count - leftover), name});
+}
+
+void QcChatCommands::armorStand(const Command &command)
+{
+    m_standCommands.armorStand(command.client, command.words);
+}
+
+void QcChatCommands::equip(const Command &command)
+{
+    m_standCommands.equip(command.client, command.words);
 }

@@ -1,0 +1,15 @@
+{
+    "name": "armor_stand",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "pole": {
+            "texture": "armor_stand_wood",
+            "tint": "none"
+        },
+        "plate": {
+            "texture": "polished_stone",
+            "tint": "none"
+        }
+    }
+}

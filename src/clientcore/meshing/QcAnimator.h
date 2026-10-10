@@ -31,6 +31,11 @@ struct BodyPose
     double bodyRoll = 0.0;
     QcVec3 bodyPivot;
     double bodyLift = 0.0;
+    // Cape (decision E-240) against the back in degrees: its free end lifted backwards (0 hangs
+    // along the back, 90 points straight back) and swung to the entity's left. animateBody leaves
+    // them 0; QcCapeSwing gives them from the movement.
+    double capeLift = 0.0;
+    double capeSway = 0.0;
 
     const BoneRotation &bone(QcBoneRole role) const { return bones[std::size_t(role)]; }
 };

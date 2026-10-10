@@ -98,8 +98,59 @@ Item {
         }
     }
 
+    // Armour points above the hearts while something is worn: ten chestplates, two points each
+    // (decision E-234).
+    Row {
+        objectName: "armourBar"
+        anchors.left: hotbar.left
+        anchors.bottom: hearts.top
+        anchors.bottomMargin: 2
+        spacing: 2
+        visible: hud.game.player.armour > 0
+
+        Repeater {
+            model: Math.ceil(hud.game.player.maxArmour / 2)
+
+            Item {
+                id: plate
+
+                required property int index
+                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.armour - index * 2) / 2))
+
+                width: 20
+                height: 20
+
+                Image {
+                    anchors.fill: parent
+                    source: hud.game.phase === "playing" && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
+                    cache: false
+                    sourceSize: Qt.size(20, 20)
+                    smooth: false
+                    opacity: 0.3
+                }
+
+                Item {
+                    width: parent.width * plate.fill
+                    height: parent.height
+                    clip: true
+
+                    Image {
+                        width: plate.width
+                        height: plate.height
+                        source: hud.game.phase === "playing" && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
+                        cache: false
+                        sourceSize: Qt.size(20, 20)
+                        smooth: false
+                    }
+                }
+            }
+        }
+    }
+
     // Ten hearts, two health points each; a heart is half full for an odd remainder.
     Row {
+        id: hearts
+
         anchors.left: hotbar.left
         anchors.bottom: hotbar.top
         anchors.bottomMargin: 6

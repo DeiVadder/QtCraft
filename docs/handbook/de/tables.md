@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Brennstoffe](#table-fuels) · [Werkzeugstufen](#table-tools) · [Ofenrezepte](#table-smelting)
+**QtCraft:** [Brennstoffe](#table-fuels) · [Werkzeugstufen](#table-tools) · [Rüstung](#table-armour) · [Ofenrezepte](#table-smelting)
 
 ## QtCraft
 
@@ -37,6 +37,26 @@ Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit 
 **Schaufel**
 
 [Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1, × 12, 32 Benutzungen), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1, × 2, 59 Benutzungen), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2, × 4, 131 Benutzungen), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3, × 6, 250 Benutzungen), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4, × 8, 1561 Benutzungen)
+
+### <a id="table-armour"></a>Rüstung
+
+Rüstung trägt man in vier Feldern neben der Figur im Inventar: hineinziehen, mit Shift anklicken oder mit ihr in der Hand rechtsklicken. Jeder Rüstungspunkt nimmt 4 % von Schlägen der Wesen und vom Brennen in Lava und Magma, bis 20 Punkte (80 %); Stürze und Hunger gehen durch. Jeder solche Treffer nutzt jedes getragene Teil um ein Viertel des Schadens ab (mindestens 1); ein Teil bricht, wenn seine Haltbarkeit verbraucht ist. Zwei abgenutzte Teile derselben Art im Handwerksraster ergeben eines mit beiden Haltbarkeiten und 5 % dazu.
+
+**Diamantrüstung**
+
+[Diamanthelm](tools.md#item-qtcraft-diamond_helmet) (Kopf, +3, 363 Treffer), [Diamantbrustplatte](tools.md#item-qtcraft-diamond_chestplate) (Brust, +8, 528 Treffer), [Diamantbeinschutz](tools.md#item-qtcraft-diamond_leggings) (Beine, +6, 495 Treffer), [Diamantstiefel](tools.md#item-qtcraft-diamond_boots) (Füße, +3, 429 Treffer)
+
+**Goldrüstung**
+
+[Goldhelm](tools.md#item-qtcraft-golden_helmet) (Kopf, +2, 77 Treffer), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate) (Brust, +5, 112 Treffer), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings) (Beine, +3, 105 Treffer), [Goldstiefel](tools.md#item-qtcraft-golden_boots) (Füße, +1, 91 Treffer)
+
+**Eisenrüstung**
+
+[Eisenhelm](tools.md#item-qtcraft-iron_helmet) (Kopf, +2, 165 Treffer), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate) (Brust, +6, 240 Treffer), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings) (Beine, +5, 225 Treffer), [Eisenstiefel](tools.md#item-qtcraft-iron_boots) (Füße, +2, 195 Treffer)
+
+**Lederrüstung**
+
+[Lederkappe](tools.md#item-qtcraft-leather_helmet) (Kopf, +1, 55 Treffer), [Lederwams](tools.md#item-qtcraft-leather_chestplate) (Brust, +3, 80 Treffer), [Lederhose](tools.md#item-qtcraft-leather_leggings) (Beine, +2, 75 Treffer), [Lederstiefel](tools.md#item-qtcraft-leather_boots) (Füße, +1, 65 Treffer)
 
 ### <a id="table-smelting"></a>Ofenrezepte
 

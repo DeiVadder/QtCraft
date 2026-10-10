@@ -1,0 +1,21 @@
+{
+    "name": "leather_chestplate",
+    "texture": "leather_chestplate",
+    "maxStack": 1,
+    "durability": 80,
+    "armour": {
+        "slot": "chest",
+        "points": 3,
+        "set": "leather",
+        "layers": [
+            {
+                "covers": [
+                    "torso",
+                    "sleeve"
+                ],
+                "texture": "leather_armour",
+                "inflate": 0.035
+            }
+        ]
+    }
+}

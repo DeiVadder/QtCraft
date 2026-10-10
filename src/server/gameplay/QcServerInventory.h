@@ -12,6 +12,7 @@
 #include <optional>
 
 class QcServerMachines;
+class QcServerSounds;
 struct QcServerClient;
 struct QcServerState;
 
@@ -22,12 +23,13 @@ class QcServerInventory
 public:
     static constexpr int craftingGridSlot = QcMsg::MoveInventoryItem::craftingGridSlot;
     static constexpr int machineSlot = QcMsg::MoveInventoryItem::machineInputSlot;
+    static constexpr int equipmentSlot = QcMsg::MoveInventoryItem::equipmentSlot;
     // Crafting needs a crafting table within this distance for 3 x 3 recipes.
     static constexpr double craftingTableReach = 5.0;
     // Speed of items thrown by a player.
     static constexpr double throwSpeed = 6.0;
 
-    QcServerInventory(QcServerState &state, QcServerMachines &machines);
+    QcServerInventory(QcServerState &state, QcServerMachines &machines, QcServerSounds &sounds);
 
     void send(QcServerClient &client);
     // Shift-clicks on a crafting result take it as often as possible.
@@ -47,11 +49,20 @@ public:
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
     // Drops everything the player carries (death without keepInventory).
     void dropAll(QcServerClient &client);
+    // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
+    void giveOrThrow(QcServerClient &client, QcItemStack stack);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
     void throwFromPlayer(const QcServerClient &client, QcItemStack stack);
     // Turns one item of the selected stack into `item` (filled bucket, firefly in a bottle); what
     // does not fit into the inventory is thrown.
     void exchangeHeld(QcServerClient &client, const QString &item);
+    // Changes what the player wears (sending is left to the caller); others that see them get it
+    // with the next sync.
+    void setEquipment(QcServerClient &client, const QcEquipment &equipment);
+    // Right click with armour: puts the held piece on, the one worn there goes into the hand.
+    void equipHeld(QcServerClient &client);
+    // Takes over armour worn down by a hit (QcArmour::wear) and tells the player and those who see them.
+    void equipmentWorn(QcServerClient &client, const QcEquipment &equipment, bool broke);
 
 private:
     enum class CraftOutcome { Crafted, NoRecipe, NoRoom, TooFar };
@@ -69,6 +80,14 @@ private:
     bool applyOpenSlots(QcServerClient &client, const OpenSlots &open);
     // Takes the crafting result once.
     CraftOutcome craftOnce(QcServerClient &client);
+    // Takes the repair result (QcRepair) once.
+    CraftOutcome repairOnce(QcServerClient &client);
+    void takeOneOfEachCell(QcServerClient &client);
+    // Whether the armour slots of the slot list hold only armour made for them.
+    bool armourFits(const QList<QcItemStack> &combined) const;
+    // The armour slot a shift-clicked stack goes to, or -1.
+    int freeArmourSlotFor(const QcServerClient &client, QcItemStack stack) const;
+
     void finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore);
     // The grid of the current size as a size x size list, and the recipe it makes.
     QList<QcItemStack> craftingView(const QcServerClient &client) const;
@@ -81,4 +100,5 @@ private:
 
     QcServerState &m_state;
     QcServerMachines &m_machines;
+    QcServerSounds &m_sounds;
 };

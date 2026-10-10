@@ -50,6 +50,8 @@ private:
     QcStatus readMobs(const QcWorldStorage &storage);
     QcStatus readMachines(const QcWorldStorage &storage);
     QcStatus readContainers(const QcWorldStorage &storage);
+    // Never fails: stands of a damaged file and beyond the limit are left out with a warning.
+    void readStands(const QcWorldStorage &storage);
     QcStatus readBlockUpdates(const QcWorldStorage &storage);
     // Entities, creatures, machines, chests and block updates, if the world's setup was saved.
     QcStatus readWorldState(const QcWorldStorage &storage);

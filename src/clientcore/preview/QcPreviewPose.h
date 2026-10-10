@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcCapeSwing.h"
 #include "QcEntityPose.h"
 #include "QcPreviewCamera.h"
 
@@ -39,6 +40,9 @@ struct Gaze
 
 // The figure's pose `seconds` into an animation, with the head turned by `gaze`.
 QcEntityPose pose(Animation animation, double seconds, Gaze gaze);
+
+// How the figure moves for its cape: walking forwards on the spot, else standing.
+QcCapeDrive capeDrive(Animation animation);
 
 // Where the head looks to follow a pointer at `pointer` in the view (x and y in -1..1 from the
 // centre, y up; `aspect` is width / height). The pointer is taken a third of the way from the

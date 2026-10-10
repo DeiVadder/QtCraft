@@ -1,0 +1,8 @@
+{
+    "name": "leather_chestplate",
+    "pattern": "chestplate",
+    "primary": "#9a5a32",
+    "secondary": "#c88a5a",
+    "variation": 0.06,
+    "seed": 7128
+}

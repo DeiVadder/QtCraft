@@ -30,9 +30,9 @@ QString readName(const QSettings &file, const QString &key, const QString &fallb
     return value.isValid() && value.toString().size() <= QcAppearance::maxNameLength ? value.toString() : fallback;
 }
 
-QcAppearance look(const char *outfit, const char *hair, std::array<quint32, 4> colors)
+QcAppearance look(const char *outfit, const char *hair, std::array<quint32, 4> colors, const char *cape = "")
 {
-    return {QString::fromLatin1(outfit), QString::fromLatin1(hair), colors[0], colors[1], colors[2], colors[3]};
+    return {QString::fromLatin1(outfit), QString::fromLatin1(hair), colors[0], colors[1], colors[2], colors[3], QString::fromLatin1(cape)};
 }
 
 } // namespace
@@ -61,14 +61,14 @@ const QList<QcCharacterPreset> &builtInPresets()
         {QString::fromLatin1(QT_TRANSLATE_NOOP("QcCharacterProfile", "Explorer")), QcAppearance()},
         {QString::fromLatin1(QT_TRANSLATE_NOOP("QcCharacterProfile", "Miner")), look("qtcraft:miner", "qtcraft:cap", {0xe8b48f, 0x1e1a18, 0xd8a030, 0x3a3a3a})},
         {QString::fromLatin1(QT_TRANSLATE_NOOP("QcCharacterProfile", "Traveller")),
-         look("qtcraft:tunic", "qtcraft:long_hair", {0xb97b56, 0xb23a24, 0x2f8f4e, 0x8a5a2b})},
+         look("qtcraft:tunic", "qtcraft:long_hair", {0xb97b56, 0xb23a24, 0x2f8f4e, 0x8a5a2b}, "qtcraft:green_cape")},
         {QString::fromLatin1(QT_TRANSLATE_NOOP("QcCharacterProfile", "Night owl")),
          look("qtcraft:explorer", "qtcraft:long_hair", {0x5c3a24, 0x1e1a18, 0x7a4ab8, 0x3a3a3a})},
     };
     return presets;
 }
 
-QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, quint32 seed)
+QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, const QStringList &capes, quint32 seed)
 {
     QRandomGenerator generator(seed);
     const auto pick = [&generator](const QList<quint32> &colors) { return colors[qsizetype(generator.bounded(quint32(colors.size())))]; };
@@ -84,6 +84,9 @@ QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, q
     appearance.hairColor = pick(hairColors());
     appearance.shirtColor = pick(clothColors());
     appearance.pantsColor = pick(clothColors());
+    // As with hair: one more choice than there are capes, for none.
+    const auto cape = qsizetype(generator.bounded(quint32(capes.size() + 1)));
+    appearance.cape = cape < capes.size() ? capes[cape] : QString();
     return appearance;
 }
 
@@ -101,7 +104,8 @@ QVariantMap lookMap(const QcAppearance &appearance)
 {
     return {{u"outfit"_s, appearance.outfit},         {u"hair"_s, appearance.hair},
             {u"skin"_s, hex(appearance.skinColor)},   {u"hairColor"_s, hex(appearance.hairColor)},
-            {u"shirt"_s, hex(appearance.shirtColor)}, {u"pants"_s, hex(appearance.pantsColor)}};
+            {u"shirt"_s, hex(appearance.shirtColor)}, {u"pants"_s, hex(appearance.pantsColor)},
+            {u"cape"_s, appearance.cape}};
 }
 
 QcAppearance loadAppearance(const QSettings &file, const QString &group)
@@ -115,6 +119,8 @@ QcAppearance loadAppearance(const QSettings &file, const QString &group)
     appearance.hairColor = readColor(file, prefix + u"hairColor"_s, defaults.hairColor);
     appearance.shirtColor = readColor(file, prefix + u"shirt"_s, defaults.shirtColor);
     appearance.pantsColor = readColor(file, prefix + u"pants"_s, defaults.pantsColor);
+    // Profiles stored before capes existed have no key: no cape.
+    appearance.cape = readName(file, prefix + u"cape"_s, defaults.cape);
     return appearance;
 }
 
@@ -127,6 +133,7 @@ void saveAppearance(QSettings &file, const QString &group, const QcAppearance &a
     file.setValue(prefix + u"hairColor"_s, hex(appearance.hairColor));
     file.setValue(prefix + u"shirt"_s, hex(appearance.shirtColor));
     file.setValue(prefix + u"pants"_s, hex(appearance.pantsColor));
+    file.setValue(prefix + u"cape"_s, appearance.cape);
 }
 
 QList<QcCharacterPreset> loadPresets(const QSettings &file)

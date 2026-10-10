@@ -34,7 +34,8 @@ struct SelectHotbarSlot
 
 // Slots 0..35 are the inventory, 36..44 the crafting grid (row-major, 3 per row; a 2 x 2 grid uses
 // the top-left four), 45..47 the open machine (input, fuel, output; the output only gives), or 45
-// onwards the slots of the open storage block.
+// onwards the slots of the open storage block, and 100..103 the armour slots (head, chest, legs,
+// feet; only armour made for the slot goes in, decision E-234).
 // `count` 0 moves the whole stack.
 struct MoveInventoryItem
 {
@@ -42,6 +43,9 @@ struct MoveInventoryItem
     static constexpr qint32 machineInputSlot = 45;
     static constexpr qint32 machineFuelSlot = 46;
     static constexpr qint32 machineOutputSlot = 47;
+    static constexpr qint32 equipmentSlot = 100;
+
+    static constexpr bool isEquipmentSlot(qint32 slot) { return slot >= equipmentSlot && slot < equipmentSlot + 4; }
 
     qint32 from = 0;
     qint32 to = 0;
@@ -50,8 +54,9 @@ struct MoveInventoryItem
 
 // Client -> server: shift-click on a slot. The server moves the whole stack to where it belongs
 // (QcQuickMove): between hotbar and storage, from the grid or an open block into the inventory,
-// from the inventory into the open chest or the machine's input or fuel. On the crafting result it
-// crafts as often as the grid and the inventory allow.
+// from the inventory into the open chest or the machine's input or fuel, armour from the inventory
+// into its empty armour slot and from there back. On the crafting result it crafts as often as the
+// grid and the inventory allow.
 struct QuickMoveItem
 {
     static constexpr qint32 craftingResultSlot = -1;
@@ -60,8 +65,7 @@ struct QuickMoveItem
     qint32 slot = 0;
 };
 
-// Server -> client: the receiving player's complete inventory, crafting grid and armour slots
-// (empty until stage 23 adds armour).
+// Server -> client: the receiving player's complete inventory, crafting grid and armour slots.
 struct InventoryState
 {
     QList<QcItemStack> stacks;
@@ -89,7 +93,8 @@ struct CloseCrafting
 {
 };
 
-// Client -> server: eat the held item.
+// Client -> server: use the held item without a target: eat it, or put on held armour (swapping
+// with what is worn in its slot).
 struct ConsumeItem
 {
 };

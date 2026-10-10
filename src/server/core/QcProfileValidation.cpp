@@ -35,6 +35,9 @@ QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &re
     if (!isPlayable(content.appearance(requested.hair), QcAppearanceDefinition::Kind::Hair)) {
         result.hair.clear();
     }
+    if (!isPlayable(content.appearance(requested.cape), QcAppearanceDefinition::Kind::Cape)) {
+        result.cape.clear();
+    }
 
     for (quint32 *color : {&result.skinColor, &result.hairColor, &result.shirtColor, &result.pantsColor}) {
         *color &= 0xFFFFFFu;

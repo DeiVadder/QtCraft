@@ -109,6 +109,7 @@ private:
     QcPreviewCamera m_camera;
     QcPreviewPacer m_pacer;
     QcPreviewPose::Gaze m_gaze;
+    QcCapeSwing m_cape;
     bool m_interactive = true;
     bool m_paused = false;
     // A frame since the preview was last hidden showed the figure.

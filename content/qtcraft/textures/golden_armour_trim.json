@@ -1,0 +1,8 @@
+{
+    "name": "golden_armour_trim",
+    "pattern": "armour_trim",
+    "primary": "#fff2a8",
+    "secondary": "#fff8d0",
+    "variation": 0.04,
+    "seed": 7163
+}

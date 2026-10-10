@@ -28,6 +28,9 @@ void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
 bool readStacks(QDataStream &stream, QList<QcItemStack> &stacks);
 // The armour slots: always QcEquipment::slotCount stacks, without a count.
 void writeEquipment(QDataStream &stream, const QcEquipment &equipment);
+// Rotations are normalised on reading (QcStandPose::normalized).
+void writeStandPose(QDataStream &stream, const QcStandPose &pose);
+QcStandPose readStandPose(QDataStream &stream);
 QcEquipment readEquipment(QDataStream &stream);
 bool isFinite(const QcVec3 &value);
 

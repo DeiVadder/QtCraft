@@ -40,6 +40,12 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"fern"_s, Pattern::Fern},         {u"firefly_glass"_s, Pattern::FireflyGlass},
         {u"barrel_side"_s, Pattern::BarrelSide}, {u"barrel_top"_s, Pattern::BarrelTop},
         {u"stained_glass"_s, Pattern::StainedGlass},
+        {u"helmet"_s, Pattern::Helmet},     {u"chestplate"_s, Pattern::Chestplate},
+        {u"leggings"_s, Pattern::Leggings}, {u"boots"_s, Pattern::Boots},
+        {u"armour_plate"_s, Pattern::ArmourPlate}, {u"armour_leather"_s, Pattern::ArmourLeather},
+        {u"helmet_front"_s, Pattern::HelmetFront}, {u"visor"_s, Pattern::Visor},
+        {u"armour_trim"_s, Pattern::ArmourTrim}, {u"armor_stand"_s, Pattern::ArmourStand},
+        {u"emblem"_s, Pattern::Emblem},
     };
 
     const auto it = patterns.constFind(name);

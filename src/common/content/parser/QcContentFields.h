@@ -1,5 +1,8 @@
 #pragma once
 
+#include "QcModelDefinition.h"
+#include "QcVec3.h"
+
 #include <QJsonValue>
 #include <QString>
 #include <QStringList>
@@ -25,5 +28,9 @@ QString qualifyIngredient(const QString &text, const QString &packNamespace);
 QStringList parseTags(const QJsonValue &value, const QString &packNamespace, QcJsonFieldReader &reader);
 // A state value from JSON: strings as they are, booleans as "true"/"false".
 std::optional<QString> stateValue(const QJsonValue &value);
+// Three numbers, each within `limit` metres of 0 (model coordinates).
+std::optional<QcVec3> vectorField(const QJsonValue &value, double limit = 8.0);
+// Bone roles of skeleton models: "none", "head", "body", "right_arm", "left_arm", "right_leg", "left_leg".
+std::optional<QcBoneRole> boneRoleFromName(const QString &name);
 
 } // namespace QcContentFields

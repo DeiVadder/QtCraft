@@ -7,11 +7,9 @@
 
 class QcContentRegistry;
 
-// The four armour slots of a player (decision E-232). The protocol carries them from stage 22 on,
-// for the own player in InventoryState and for others in EntitySpawn, so stage 23 (armour) and
-// multiplayer only fill them; until then they stay empty.
-enum class QcEquipmentSlot : quint8 { Head, Chest, Legs, Feet };
-
+// What a player or an armour stand wears in the four armour slots (QcEquipmentSlot, decisions
+// E-232, E-234): one stack each. The protocol carries it for the own player in InventoryState and
+// for players and stands others see in EntitySpawn.
 struct QcEquipment
 {
     static constexpr std::size_t slotCount = 4;

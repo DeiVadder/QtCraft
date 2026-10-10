@@ -1,5 +1,7 @@
 #pragma once
 
+#include "QcArmourDefinition.h"
+
 #include <QString>
 #include <QStringList>
 
@@ -48,4 +50,8 @@ struct QcItemDefinition
     // What the item turns into once it placed its block (a filled bucket becomes empty) or was
     // eaten (soup leaves its bowl).
     QString emptiesTo;
+    // Worn in an equipment slot (decision E-234); items with armour stack to 1.
+    std::optional<QcArmourDefinition> armour;
+    // Used on the top of a block, places an armour stand that drops this item again (decision E-238).
+    bool placesStand = false;
 };

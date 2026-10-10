@@ -9,6 +9,7 @@
 #include "QcServerInventory.h"
 #include "QcServerMachines.h"
 #include "QcServerSounds.h"
+#include "QcServerStands.h"
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
 
@@ -89,6 +90,9 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
+    if (m_parts.stands.place(client, message)) {
+        return;
+    }
     placeHeld(client, message, held);
 }
 

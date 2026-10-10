@@ -1,0 +1,21 @@
+{
+    "name": "leather_helmet",
+    "texture": "leather_helmet",
+    "maxStack": 1,
+    "durability": 55,
+    "armour": {
+        "slot": "head",
+        "points": 1,
+        "set": "leather",
+        "layers": [
+            {
+                "covers": [
+                    "head"
+                ],
+                "texture": "leather_armour",
+                "front": "leather_helmet_front",
+                "inflate": 0.04
+            }
+        ]
+    }
+}

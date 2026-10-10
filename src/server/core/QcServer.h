@@ -11,6 +11,7 @@
 #include "QcServerCombat.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
+#include "QcServerStands.h"
 #include "QcServerItemsAndPlants.h"
 #include "QcServerMachines.h"
 #include "QcServerPersistence.h"
@@ -66,6 +67,7 @@ public:
     QcContainerManager &containers() { return m_state.containers; }
     QcLiquidFlow &liquids() { return m_state.liquids; }
     QcFallingBlockManager &fallingBlocks() { return m_state.falling; }
+    QcArmourStandManager &stands() { return m_state.stands; }
     bool keepInventory() const { return m_state.info.keepInventory; }
     void setKeepInventory(bool keep) { m_state.info.keepInventory = keep; }
     double worldTime() const { return m_state.info.worldTime; }
@@ -150,6 +152,7 @@ private:
     QcBlockSimulation m_blockSimulation;
     QcServerMachines m_machineScreens;
     QcServerInventory m_inventory;
+    QcServerStands m_stands;
     QcServerInteraction m_interaction;
     QcServerItemsAndPlants m_itemsAndPlants;
     QcServerCombat m_combat;

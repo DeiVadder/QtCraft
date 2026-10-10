@@ -15,6 +15,7 @@ ItemSlot {
     required property bool empty
     required property string label
     required property string itemName
+    required property string tooltip
 
     // Clicks on slots sound like buttons (QcGameInput).
     property bool clickSound: true
@@ -35,7 +36,7 @@ ItemSlot {
     highlighted: hover.hovered
 
     ToolTip.visible: hover.hovered && !empty && owner.pickedSlot < 0
-    ToolTip.text: label
+    ToolTip.text: tooltip
 
     HoverHandler {
         id: hover

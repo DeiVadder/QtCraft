@@ -1,9 +1,13 @@
 #include "QcEntityMesher.h"
 
+#include "QcBlockFace.h"
+
 #include <QtMath>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <optional>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -273,6 +277,29 @@ struct LayerPainter
     }
 };
 
+// The face index of north (-Z) in faceCorners, textured by an attachment's `front`.
+constexpr int northFace = 5;
+
+template<typename Place>
+void emitAttachment(const LayerPainter &paint, const Attachment &attachment, const Place &place)
+{
+    const Surface surface{paint.uv(attachment.texture), paint.overlay, paint.light};
+    if (attachment.front.isEmpty()) {
+        emitBox(paint.mesh, attachment.box, place, surface);
+        return;
+    }
+
+    for (int face = 0; face < 6; ++face) {
+        const bool front = face == northFace;
+        emitBox(paint.mesh, attachment.box, place, front ? Surface{paint.uv(attachment.front), paint.overlay, paint.light} : surface, face);
+    }
+}
+
+bool isHidden(const Figure &figure, QcBoneRole role)
+{
+    return (figure.hiddenBones & boneBit(role)) != 0;
+}
+
 // In the fist at the lower end of the arm, sticking out forward.
 QcVec3 gripOf(const QcModelBone &arm)
 {
@@ -318,6 +345,101 @@ double emitHandArm(const LayerPainter &paint, const QcAppearanceDefinition &outf
     return length;
 }
 
+// The faces of a cape's textures (QcCapeShape): the outer side shows the emblem on the upper part
+// and "outside" below; missing layers fall back to "outside" (emblem, inside) and inside (edge).
+struct CapeSurfaces
+{
+    Surface emblem;
+    Surface outside;
+    Surface inside;
+    Surface edge;
+};
+
+std::optional<CapeSurfaces> capeSurfaces(const LayerPainter &paint, const QcAppearanceDefinition &cape)
+{
+    const QcAppearanceLayer *outside = cape.layer(u"outside"_s);
+    if (!outside) {
+        return std::nullopt;
+    }
+
+    const QcAppearanceLayer *emblem = cape.layer(u"emblem"_s);
+    const QcAppearanceLayer *inside = cape.layer(u"inside"_s);
+    const QcAppearanceLayer *edge = cape.layer(u"edge"_s);
+    inside = inside ? inside : outside;
+    const auto surface = [&paint](const QcAppearanceLayer *layer) {
+        return Surface{paint.uv(layer->texture), multiply(tintFor(layer->tint, paint.colors), paint.overlay), paint.light};
+    };
+    return CapeSurfaces{surface(emblem ? emblem : outside), surface(outside), surface(inside), surface(edge ? edge : inside)};
+}
+
+// A straight part of a cape in its own frame: x across, y down from the hinge at 0, z from the
+// side towards the back (0) outwards. Only its outer ends get end faces.
+struct CapePiece
+{
+    QcAabb box;
+    const Surface *outer = nullptr;
+    bool top = false;
+    bool bottom = false;
+};
+
+template<typename Place>
+void emitCapePiece(QcEntityMesh &mesh, const CapePiece &piece, const Place &place, const CapeSurfaces &surfaces)
+{
+    emitBox(mesh, piece.box, place, *piece.outer, int(QcBlockFace::South));
+    emitBox(mesh, piece.box, place, surfaces.inside, int(QcBlockFace::North));
+    emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::East));
+    emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::West));
+    if (piece.top) {
+        emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::Up));
+    }
+    if (piece.bottom) {
+        emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::Down));
+    }
+}
+
+QcAabb boundsOf(const QList<QcModelBox> &boxes)
+{
+    QcAabb bounds{boxes.front().from, boxes.front().to};
+    for (const QcModelBox &box : boxes) {
+        bounds.min = {std::min(bounds.min.x, box.from.x), std::min(bounds.min.y, box.from.y), std::min(bounds.min.z, box.from.z)};
+        bounds.max = {std::max(bounds.max.x, box.to.x), std::max(bounds.max.y, box.to.y), std::max(bounds.max.z, box.to.z)};
+    }
+    return bounds;
+}
+
+// The cape of `look` on the back of the body bone (decision E-240): an upper square part with the
+// emblem hinged at the top of the back, and the rest hinged below it, bending a little further.
+void emitCape(const LayerPainter &paint, const ModelLook &look, const QcAnimator::BodyPose &pose, const BodyPlacer &toWorld)
+{
+    const QcModelBone *body = boneWithRole(*look.model, QcBoneRole::Body);
+    const std::optional<CapeSurfaces> surfaces = capeSurfaces(paint, *look.cape);
+    if (!body || body->boxes.isEmpty() || !surfaces) {
+        return;
+    }
+
+    const QcCapeShape &shape = look.cape->cape;
+    const QcAabb torso = boundsOf(body->boxes);
+    const QcVec3 hinge{(torso.min.x + torso.max.x) / 2.0, torso.max.y, torso.max.z + shape.offset + look.capeClearance};
+    const double half = shape.width / 2.0;
+    const double upperLength = std::min(shape.width, shape.length);
+    const double lowerLength = shape.length - upperLength;
+    const auto onBody = toWorld.bone(*body);
+
+    const Rotate upperTurn(-pose.capeLift, -pose.capeSway);
+    const auto upperPlace = [&](const QcVec3 &p) { return onBody(hinge + upperTurn(p)); };
+    emitCapePiece(paint.mesh, {{{-half, -upperLength, 0.0}, {half, 0.0, shape.thickness}}, &surfaces->emblem, true, lowerLength <= 0.0},
+                  upperPlace, *surfaces);
+    if (lowerLength <= 0.0) {
+        return;
+    }
+
+    const Rotate lowerTurn(-(pose.capeLift + capeBend * std::max(0.0, pose.capeLift)), -pose.capeSway);
+    const QcVec3 joint = hinge + upperTurn({0.0, -upperLength, 0.0});
+    const auto lowerPlace = [&](const QcVec3 &p) { return onBody(joint + lowerTurn(p)); };
+    emitCapePiece(paint.mesh, {{{-half, -lowerLength, 0.0}, {half, 0.0, shape.thickness}}, &surfaces->outside, false, true}, lowerPlace,
+                  *surfaces);
+}
+
 } // namespace
 
 const QList<QcMobPart> &playerParts()
@@ -352,11 +474,30 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
     const LayerPainter paint{mesh, uv, look.colors, placement.hurt ? hurtTint : white, placement.light};
 
     for (const QcModelBone &bone : look.model->bones) {
-        paint(*look.outfit, bone.boxes, toWorld.bone(bone));
+        if (!isHidden(figure, bone.role)) {
+            paint(*look.outfit, bone.boxes, toWorld.bone(bone));
+        }
     }
     const QcModelBone *head = boneWithRole(*look.model, QcBoneRole::Head);
     if (look.hair && head) {
         paint(*look.hair, look.hair->boxes, toWorld.bone(*head));
+    }
+    if (look.cape) {
+        emitCape(paint, look, pose, toWorld);
+    }
+
+    if (figure.attachments) {
+        for (const Attachment &attachment : *figure.attachments) {
+            const QcModelBone *bone = boneWithRole(*look.model, attachment.bone);
+            if (isHidden(figure, attachment.bone)) {
+                continue;
+            }
+            if (bone) {
+                emitAttachment(paint, attachment, toWorld.bone(*bone));
+            } else {
+                emitAttachment(paint, attachment, toWorld);
+            }
+        }
     }
 
     const QcModelBone *arm = boneWithRole(*look.model, QcBoneRole::RightArm);

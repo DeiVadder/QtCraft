@@ -1,0 +1,8 @@
+{
+    "name": "diamond_armour_trim",
+    "pattern": "armour_trim",
+    "primary": "#3fd0c6",
+    "secondary": "#ffffff",
+    "variation": 0.04,
+    "seed": 7261
+}

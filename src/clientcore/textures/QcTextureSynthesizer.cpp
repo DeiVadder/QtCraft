@@ -1,6 +1,8 @@
 #include "QcTextureSynthesizer.h"
 
+#include "QcTextureArmourPatterns.h"
 #include "QcTextureCraftPatterns.h"
+#include "QcTextureEmblem.h"
 #include "QcTexturePaint.h"
 
 #include <algorithm>
@@ -476,7 +478,7 @@ QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
     return scaled(spec.primary, shade);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 42> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 43> painters = {{
     {Pattern::Noise, paintNoise},
     {Pattern::Speckle, paintSpeckle},
     {Pattern::Planks, paintPlanks},
@@ -519,6 +521,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 42> painters = {{
     {Pattern::Lantern, paintLantern},
     {Pattern::Limb, paintLimb},
     {Pattern::Sleeve, paintSleeve},
+    {Pattern::Emblem, QcTextureEmblem::paint},
 }};
 
 Painter painterFor(Pattern pattern)
@@ -527,8 +530,11 @@ Painter painterFor(Pattern pattern)
     if (it != painters.end()) {
         return it->second;
     }
-    const Painter craft = qcCraftPatternPainter(pattern);
-    return craft ? craft : paintNoise;
+    if (const Painter craft = qcCraftPatternPainter(pattern)) {
+        return craft;
+    }
+    const Painter armour = qcArmourPatternPainter(pattern);
+    return armour ? armour : paintNoise;
 }
 
 void paint(QImage &image, const QcTextureSpec &spec)

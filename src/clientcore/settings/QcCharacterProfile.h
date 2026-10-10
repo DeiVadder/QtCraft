@@ -37,14 +37,15 @@ const QList<quint32> &clothColors();
 const QList<QcCharacterPreset> &builtInPresets();
 
 // A random look: an outfit of `outfits` (the default outfit when empty), a hair style of
-// `hairStyles` or none, and colours from the offered ones. The same seed gives the same look.
-QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, quint32 seed);
+// `hairStyles` or none, a cape of `capes` or none, and colours from the offered ones. The same seed
+// gives the same look.
+QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, const QStringList &capes, quint32 seed);
 
 // Without unpaired surrogates, control and format characters, trimmed, at most
 // maxPresetNameLength code points cut between graphemes (QcNameText::clean).
 QString cleanPresetName(const QString &name);
 
-// {outfit, hair, skin, hairColor, shirt, pants} with "#rrggbb" colours, as QML sees a look.
+// {outfit, hair, skin, hairColor, shirt, pants, cape} with "#rrggbb" colours, as QML sees a look.
 QVariantMap lookMap(const QcAppearance &appearance);
 // "#rrggbb".
 QString hex(quint32 rgb);

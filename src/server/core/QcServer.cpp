@@ -34,13 +34,14 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
     , m_machineScreens(m_state, m_sounds, m_blocks)
-    , m_inventory(m_state, m_machineScreens)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens})
+    , m_inventory(m_state, m_machineScreens, m_sounds)
+    , m_stands(m_state, m_sounds, m_inventory)
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands})
     , m_itemsAndPlants(m_state, m_sounds, m_blocks, m_inventory)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_entitySync(m_state)
     , m_chunkStreaming(m_state)
-    , m_chat(m_state, {m_blocks, m_blockUpdates, m_inventory, m_combat},
+    , m_chat(m_state, {m_blocks, m_blockUpdates, m_inventory, m_combat, m_stands},
              {[this] { return save(); }, [this](double seconds) { setWorldTime(seconds); }})
     , m_persistence(m_state, m_blocks, m_blockUpdates)
     , m_tickTimer(new QTimer(this))
@@ -215,9 +216,13 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
         m_interaction.useItem(client, *use);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
-        m_combat.attack(client, attack->id);
+        if (!m_stands.hit(client, attack->id)) {
+            m_combat.attack(client, attack->id);
+        }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        m_interaction.useEntity(client, useEntity->id);
+        if (!m_stands.use(client, useEntity->id)) {
+            m_interaction.useEntity(client, useEntity->id);
+        }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
         m_combat.respawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
@@ -325,6 +330,7 @@ bool QcServer::restorePlayer(Client &client)
     client.yaw = player.yaw;
     client.pitch = player.pitch;
     client.inventory = player.inventory;
+    client.equipment = player.equipment;
     client.health = std::clamp(player.health, 0.0, playerMaxHealth);
     client.hunger.restore(player.food, player.exhaustion);
 
@@ -583,9 +589,5 @@ void QcServer::handleSetAppearance(Client &client, const QcAppearance &appearanc
     client.appearance = QcProfileValidation::appearance(*m_state.content, appearance);
 
     // Others that know the player get the spawn again with the new look.
-    for (const auto &other : m_state.clients) {
-        if (other->knownEntities.contains(client.entityId)) {
-            other->staleEntities.insert(client.entityId);
-        }
-    }
+    m_state.markStale(client.entityId);
 }

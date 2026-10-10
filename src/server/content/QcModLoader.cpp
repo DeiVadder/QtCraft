@@ -100,6 +100,10 @@ void checkMobReferences(const QcContentRegistry &content, const QcMobDefinition 
     if (!mob.outfit.isEmpty() && (!outfit || outfit->kind != QcAppearanceDefinition::Kind::Outfit)) {
         warnings.append(u"mob %1: unknown outfit '%2'"_s.arg(mob.name, mob.outfit));
     }
+    const QcAppearanceDefinition *cape = mob.cape.isEmpty() ? nullptr : content.appearance(mob.cape);
+    if (!mob.cape.isEmpty() && (!cape || cape->kind != QcAppearanceDefinition::Kind::Cape)) {
+        warnings.append(u"mob %1: unknown cape '%2'"_s.arg(mob.name, mob.cape));
+    }
 
     for (const QString &name : {mob.ambientSound, mob.hurtSound, mob.deathSound}) {
         if (!knowsSound(content, name)) {

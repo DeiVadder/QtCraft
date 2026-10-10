@@ -3,7 +3,10 @@
 #include "QcContentNames.h"
 #include "QcJsonFieldReader.h"
 
+#include <QHash>
 #include <QJsonArray>
+
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -77,6 +80,32 @@ std::optional<QString> stateValue(const QJsonValue &value)
         return value.toBool() ? u"true"_s : u"false"_s;
     }
     return std::nullopt;
+}
+
+std::optional<QcVec3> vectorField(const QJsonValue &value, double limit)
+{
+    const QJsonArray array = value.toArray();
+    if (!value.isArray() || array.size() != 3 || !array.at(0).isDouble() || !array.at(1).isDouble() || !array.at(2).isDouble()) {
+        return std::nullopt;
+    }
+
+    const QcVec3 vector{array.at(0).toDouble(), array.at(1).toDouble(), array.at(2).toDouble()};
+    if (std::abs(vector.x) > limit || std::abs(vector.y) > limit || std::abs(vector.z) > limit) {
+        return std::nullopt;
+    }
+    return vector;
+}
+
+std::optional<QcBoneRole> boneRoleFromName(const QString &name)
+{
+    static const QHash<QString, QcBoneRole> roles = {
+        {u"none"_s, QcBoneRole::None},          {u"head"_s, QcBoneRole::Head},
+        {u"body"_s, QcBoneRole::Body},          {u"right_arm"_s, QcBoneRole::RightArm},
+        {u"left_arm"_s, QcBoneRole::LeftArm},   {u"right_leg"_s, QcBoneRole::RightLeg},
+        {u"left_leg"_s, QcBoneRole::LeftLeg},
+    };
+    const auto it = roles.constFind(name);
+    return it == roles.constEnd() ? std::nullopt : std::optional<QcBoneRole>(*it);
 }
 
 } // namespace QcContentFields

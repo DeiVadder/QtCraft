@@ -1,0 +1,37 @@
+{
+    "name": "golden_helmet",
+    "texture": "golden_helmet",
+    "maxStack": 1,
+    "durability": 77,
+    "armour": {
+        "slot": "head",
+        "points": 2,
+        "set": "golden",
+        "layers": [
+            {
+                "covers": [
+                    "head"
+                ],
+                "texture": "golden_armour",
+                "front": "golden_helmet_front",
+                "inflate": 0.04
+            }
+        ],
+        "parts": [
+            {
+                "bone": "head",
+                "from": [
+                    -0.035,
+                    1.84,
+                    -0.23
+                ],
+                "to": [
+                    0.035,
+                    1.96,
+                    0.24
+                ],
+                "texture": "golden_armour_trim"
+            }
+        ]
+    }
+}
