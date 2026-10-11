@@ -16,6 +16,9 @@ namespace QcMsg {
 // Client -> server: first message on every connection.
 struct Hello
 {
+    // Longer names are refused by the decoder before the server cleans them (32 code points).
+    static constexpr qsizetype maxNameLength = 256;
+
     quint32 protocolVersion = 0;
     QString playerName;
     QcAppearance appearance;
@@ -24,6 +27,8 @@ struct Hello
 // Server -> client: accepted connection.
 struct Welcome
 {
+    static constexpr qint32 maxViewDistance = 64;
+
     quint32 protocolVersion = 0;
     quint32 playerEntityId = 0;
     QString worldName;
@@ -32,6 +37,8 @@ struct Welcome
     float yaw = 0.0f;
     float pitch = 0.0f;
     bool restoredView = false;
+    // Chunks the server streams around this player (at most its limit).
+    qint32 viewDistance = 0;
 };
 
 // Server -> client: all content definitions; runtime block ids are the indices in this registry.
@@ -40,9 +47,15 @@ struct ContentSync
     std::shared_ptr<const QcContentRegistry> content;
 };
 
+// Both directions: the connection ends. `reason` is the English text; a non-empty `key` with its
+// `arguments` lets the client show it translated like a chat line (QcChatText, decision E-094).
 struct Disconnect
 {
+    static constexpr quint32 maxArguments = 16;
+
     QString reason;
+    QString key;
+    QStringList arguments;
 };
 
 // Client -> server: chat line or command starting with '/'.

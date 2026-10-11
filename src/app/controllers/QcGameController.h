@@ -5,6 +5,8 @@
 #include "QcHandbookController.h"
 #include "QcHudState.h"
 #include "QcItemIcons.h"
+#include "QcModStatus.h"
+#include "QcMultiplayerController.h"
 #include "QcPlayerController.h"
 #include "QcPreviewSource.h"
 #include "QcRenderBridge.h"
@@ -31,7 +33,8 @@ class QQuickWindow;
 struct QcWorldInfo;
 
 // The game for QML (GameController, `game` in Main.qml): runs a single-player session with its
-// in-process server and shows its phase, status and in-game screen. Settings, library, player,
+// in-process server, or a session of a network game, and shows its phase, status and in-game
+// screen. Settings, library, player,
 // HUD, handbook and input are sub-objects with their own QML properties; the render bridge hands
 // the world to the view every frame. Lives in the GUI thread and is created from QML.
 class QcGameController : public QObject
@@ -55,6 +58,7 @@ class QcGameController : public QObject
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
     // What the character previews draw (decision E-231).
     Q_PROPERTY(QcPreviewSource *preview READ preview CONSTANT FINAL)
+    Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
 
 public:
     explicit QcGameController(QObject *parent = nullptr);
@@ -62,7 +66,8 @@ public:
 
     QcWorldView *view() const { return m_parts.view; }
     void setView(QcWorldView *view);
-    // "menu", "loading", "playing" or "error".
+    // "menu", "loading", "playing", "error" or "disconnected" (the session ended, statusText says
+    // why).
     QString phase() const { return m_phase; }
     QString statusText() const { return m_statusText; }
     bool inputEnabled() const { return m_inputEnabled; }
@@ -86,6 +91,12 @@ public:
     QcPreviewSource *preview() const { return m_preview; }
     // Command line test hooks and the benchmark.
     QcStartupHooks *startup() const { return m_startup; }
+    // Joining and hosting network games (decision E-251).
+    QcMultiplayerController *multiplayer() const { return m_multiplayer; }
+    // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
+    void startRemoteSession(QcClientSession *session);
+    // The mods that went into the content of the running world.
+    const QList<QcModStatus> &loadedMods() const { return m_loadedMods; }
 
     // A world that is not saved (test hooks --play and --showcase), made by the generator type
     // `generator` (QcWorldGenerators).
@@ -132,7 +143,8 @@ private:
     // Base game plus enabled mods for a new world; null (and the error phase) when it cannot load.
     std::shared_ptr<const QcContentRegistry> loadContent();
     bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
-    void createSession();
+    // Wires the new session (m_parts.session) to meshes, HUD, sounds and screens.
+    void beginSession();
     void connectSessionWorld();
     void connectSessionPlayer();
     void onSessionState(QcClientSession::State state);
@@ -158,6 +170,7 @@ private:
     QcPreviewSource *m_preview = nullptr;
     QcBenchmarkRun *m_benchmark = nullptr;
     QcStartupHooks *m_startup = nullptr;
+    QcMultiplayerController *m_multiplayer = nullptr;
     QcRenderBridge m_render;
     QString m_phase = QStringLiteral("menu");
     QString m_statusText;
@@ -171,4 +184,5 @@ private:
     // The player's feet as drawn in the latest frame (interpolated between ticks).
     QcVec3 m_drawnFeet;
     QcStatsLog *m_statsLog = nullptr;
+    QList<QcModStatus> m_loadedMods;
 };

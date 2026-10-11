@@ -53,11 +53,16 @@ QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &re
     return result;
 }
 
+bool hasMarkup(const QString &name)
+{
+    return std::ranges::any_of(markupCharacters, [&name](QChar character) { return name.contains(character); });
+}
+
 std::optional<QString> validPlayerName(const QString &requested)
 {
     QString name = QcNameText::clean(requested, maxPlayerNameLength);
     const QList<uint> codePoints = name.toUcs4();
-    if (std::ranges::none_of(codePoints, [](uint codePoint) { return namesSomebody(char32_t(codePoint)); })) {
+    if (hasMarkup(name) || std::ranges::none_of(codePoints, [](uint codePoint) { return namesSomebody(char32_t(codePoint)); })) {
         return std::nullopt;
     }
     return name;

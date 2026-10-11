@@ -118,7 +118,7 @@ private slots:
             auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
             m_server->addClient(std::move(serverEnd));
             m_client = std::make_unique<RawClient>(std::move(clientEnd));
-            m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
+            m_client->hello(u"Raw"_s);
             pump();
             ticks(2);
         };

@@ -9,6 +9,7 @@
 #include "QcMessages.h"
 #include "QcRateLimiter.h"
 
+#include <QElapsedTimer>
 #include <QHash>
 #include <QList>
 #include <QSet>
@@ -20,7 +21,7 @@
 // Server-internal state of one connected client, shared by the parts of QcServer.
 struct QcServerClient
 {
-    enum class State { AwaitingHello, Playing, Closed };
+    enum class State { AwaitingHello, AwaitingLogin, Playing, Closed };
 
     // Inputs a client may queue before further inputs are dropped (anti speed-hack); at slow tick
     // rates a whole tick's share of inputs plus inputMargin (decision E-249).
@@ -43,8 +44,17 @@ struct QcServerClient
     // Budgets of the other spammable messages.
     QcRateLimiter rateLimiter;
     // Connected through the in-process host (the local single player): exempt from the chat limit,
-    // always an operator.
+    // always an operator, no login.
     bool local = false;
+    // Where the client connects from (address and port of a network client; empty in-process).
+    QString address;
+    // Since the connection was accepted; the login must finish within loginTimeoutMs.
+    QElapsedTimer connected;
+    // The nonce of the login challenge, and the fingerprint of the proven identity (remote clients).
+    QByteArray loginNonce;
+    QString fingerprint;
+    // Chunks streamed around this player.
+    int viewDistance = 0;
     // Positions whose true block was resent in tick `miningResendTick` after a dropped mining message.
     QList<QcBlockPos> miningResends;
     quint64 miningResendTick = 0;

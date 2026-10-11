@@ -1,10 +1,27 @@
 #pragma once
 
+#include "QcLoginMessages.h"
+
 #include <QString>
 #include <QStringList>
 
 #include <array>
 #include <optional>
+
+// The login settings of a server open to network players (decision E-252); a single-player world
+// opened to the LAN gets them when it starts listening.
+struct QcLoginSettings
+{
+    QString serverName = QStringLiteral("QtCraft server");
+    QString motd;
+    // Empty: no password.
+    QString password;
+    // Players on the server at most, the local player included.
+    int maxPlayers = 8;
+    // The content packs a client must have (QcContentFingerprint, with hashes); empty: id and
+    // version of the packs of the loaded content.
+    QList<QcPackFingerprint> contentPacks;
+};
 
 struct QcServerConfig
 {
@@ -13,7 +30,7 @@ struct QcServerConfig
     // Generator type of the world (QcWorldGenerators); a saved world must have been made with it.
     QString generator = QStringLiteral("terrain");
     QString generatorOptions;
-    // Radius in chunks streamed around each player.
+    // Radius in chunks streamed around each player; network clients may ask for less, never more.
     int viewDistance = 8;
     // Upper bound of chunks sent per client and tick, keeps ticks short while a client catches up.
     int chunksPerTick = 32;
@@ -32,4 +49,26 @@ struct QcServerConfig
     qsizetype maxCommandBlockUpdates = qsizetype(1024) * 1024;
     // Pending updates written to blockupdates.qce at most (those of player actions first).
     qsizetype maxSavedBlockUpdates = qsizetype(4) * 1024 * 1024;
+
+    // Login of remote clients (decision E-252). Shown in the login challenge.
+    QString serverName = QStringLiteral("QtCraft server");
+    QString motd;
+    // Empty: no password.
+    QString password;
+    // Players on the server at most, the local player included.
+    int maxPlayers = 8;
+    // A client that has not finished the login after this long is disconnected.
+    int loginTimeoutMs = 10'000;
+    // The content packs a client must have (QcContentFingerprint, with hashes); empty: id and
+    // version of the packs of the loaded content.
+    QList<QcPackFingerprint> contentPacks;
+
+    void apply(const QcLoginSettings &login)
+    {
+        serverName = login.serverName;
+        motd = login.motd;
+        password = login.password;
+        maxPlayers = login.maxPlayers;
+        contentPacks = login.contentPacks;
+    }
 };

@@ -6,6 +6,7 @@
 #include "QcLocalServerHost.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
+#include "QcRawClient.h"
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
 
@@ -272,6 +273,9 @@ private slots:
         server.send(QcMsg::EntityMoves{{{40, {0.5, 63.0, 0.5}, 0.0f, 0.0, false, 0.0f, 0, qcNoItem}}});
         server.send(QcMsg::EntitySpawn{40, type, QString(), {9.5, 64.0, 0.5}, 0.0f, 0.0, {item, 7, 0}, {}, 0.0f, 0, qcNoItem});
         QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(40).item.count, 7, timeoutMs);
+        // The newest snapshot without the interpolation delay (decision E-271): the move, not the spawn's place.
+        session.entityMirror().setBuffered(false);
+        session.entityMirror().tick();
         QCOMPARE(session.entities().value(40).position, (QcVec3{0.5, 63.0, 0.5}));
     }
 
@@ -295,27 +299,22 @@ private slots:
         config.viewDistance = 1;
         QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
-        QList<QcMsg::PlayerState> states;
-        QcConnection client(std::move(clientEnd), QcProtocol::Peer::Server, [&states](QcMessage &&message) {
-            if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
-                states.append(*state);
-            }
-        });
+        QcRawClient client(std::move(clientEnd));
         server.addClient(std::move(serverEnd));
-        client.send(QcMsg::Hello{QcProtocol::version, u"Fast"_s, {}});
-        QTest::qWait(50);
+        client.hello(u"Fast"_s);
+        QTRY_VERIFY_WITH_TIMEOUT(client.entityId != 0, timeoutMs);
 
         // A cheating client floods 100 inputs within one tick; only the budget is simulated.
         for (quint32 i = 1; i <= 100; ++i) {
             QcPlayerInput input;
             input.sequence = i;
             input.forward = 1.0f;
-            client.send(QcMsg::PlayerInput{input});
+            client.connection.send(QcMsg::PlayerInput{input});
         }
         QTest::qWait(50);
         server.tick();
-        QTRY_VERIFY_WITH_TIMEOUT(!states.isEmpty() && states.constLast().lastInputSequence > 0, timeoutMs);
-        QVERIFY2(states.constLast().lastInputSequence <= 11, qPrintable(QString::number(states.constLast().lastInputSequence)));
+        QTRY_VERIFY_WITH_TIMEOUT(client.acknowledged > 0, timeoutMs);
+        QVERIFY2(client.acknowledged <= 11, qPrintable(QString::number(client.acknowledged)));
     }
 };
 

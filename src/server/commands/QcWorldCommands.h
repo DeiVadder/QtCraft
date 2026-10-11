@@ -1,9 +1,11 @@
 #pragma once
 
+#include "QcBackupRunner.h"
 #include "QcCommandRegistry.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
 
+#include <QElapsedTimer>
 #include <QString>
 
 #include <functional>
@@ -38,6 +40,10 @@ public:
     QcWorldCommands(QcServerState &state, QcPendingCommands &pending, Parts parts);
 
     void addTo(QcCommandRegistry &registry);
+    // Reports a finished background backup (every tick) and waits for a running one (server stop).
+    void pollBackup() { m_backups.poll(); }
+    void waitForBackup() { m_backups.wait(); }
+    QcBackupRunner &backups() { return m_backups; }
 
 private:
     // What /remove takes away.
@@ -52,7 +58,9 @@ private:
     };
 
     void save(const QcCommandContext &context) const;
-    void backup(const QcCommandContext &context) const;
+    void backup(const QcCommandContext &context);
+    // Tells the player who asked (when still there) and the log how the copy ended.
+    void reportBackup(quint32 requester, const QcResult<QcWorldBackup::Summary> &result, qint64 startedMs) const;
     void worldInfo(const QcCommandContext &context) const;
     void remove(const QcCommandContext &context);
     // Counts (or with `apply` removes) what the removal matches.
@@ -65,4 +73,7 @@ private:
     QcServerState &m_state;
     QcPendingCommands &m_pending;
     Parts m_parts;
+    QcBackupRunner m_backups;
+    // Real time for the duration of a backup.
+    QElapsedTimer m_clock;
 };

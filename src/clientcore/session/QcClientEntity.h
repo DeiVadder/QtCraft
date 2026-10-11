@@ -21,6 +21,8 @@ struct QcClientEntity
     // The stack of a dropped item; empty otherwise.
     QcItemStack item;
     QString name;
+    // Where the entity is shown at the end of the current client tick and at its start; frames
+    // interpolate between them (decision E-271).
     QcVec3 position;
     QcVec3 previousPosition;
     float yaw = 0.0f;
@@ -38,20 +40,16 @@ struct QcClientEntity
     QcEquipment equipment;
     // Armour stands: pose and what they show.
     QcStandPose stand;
-    // Distance walked (drives the stride) and the last step's length per tick.
+    // Distance walked (drives the stride), the horizontal step of the latest client tick and the
+    // walking speed in m/s smoothed over a few ticks; all from the shown (interpolated) motion.
     double walkDistance = 0.0;
     double lastStep = 0.0;
-    // Horizontal distance of all moves since the last client tick, and the walking speed in m/s
-    // smoothed over a few ticks (server and client ticks are not in phase).
-    double stepThisTick = 0.0;
     double speed = 0.0;
     // Distance walked since the entity's last step sound.
     double sinceStep = 0.0;
     // Client ticks since the arm swing or the death started; negative when not running.
     int swingTicks = -1;
     int deathTicks = -1;
-    // A move arrived since the last client tick.
-    bool moved = false;
 
     bool isItem() const { return !item.isEmpty(); }
     bool isPlayer() const { return mobType == -1; }

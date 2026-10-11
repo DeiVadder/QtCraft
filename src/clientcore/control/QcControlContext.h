@@ -40,8 +40,14 @@ public:
     void setActiveError(const QString &error) { m_activeError = error; }
     QString takeActiveError() { return std::exchange(m_activeError, {}); }
 
-    void appendChat(const QString &text) { m_chatLog.append(text); }
+    // Lines kept for the chatLog command.
+    static constexpr qsizetype chatHistoryLimit = 200;
+
+    void appendChat(const QString &text);
     void clearChatLog() { m_chatLog.clear(); }
+    // Every chat line received, oldest first, also while no request ran (at most chatHistoryLimit).
+    const QStringList &chatHistory() const { return m_chatHistory; }
+    void clearChatHistory() { m_chatHistory.clear(); }
 
 private:
     void write(const QJsonObject &response);
@@ -53,4 +59,5 @@ private:
     int m_failedRequests = 0;
     // Chat lines received while the current request runs; reported in its response.
     QStringList m_chatLog;
+    QStringList m_chatHistory;
 };

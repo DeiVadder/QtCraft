@@ -8,6 +8,7 @@ Rectangle {
 
     property alias text: message.text
     property bool showBackButton
+    property string backText: qsTr("Back to menu")
 
     signal backRequested
 
@@ -29,6 +30,8 @@ Rectangle {
             id: message
 
             Layout.fillWidth: true
+            // The text may hold a server's reason.
+            textFormat: Text.PlainText
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap
             color: Theme.text
@@ -38,7 +41,7 @@ Rectangle {
         Button {
             Layout.alignment: Qt.AlignHCenter
             visible: screen.showBackButton
-            text: qsTr("Back to menu")
+            text: screen.backText
             onClicked: screen.backRequested()
         }
     }

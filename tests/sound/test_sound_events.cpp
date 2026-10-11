@@ -5,6 +5,8 @@
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
 
+#include "QcTestLogin.h"
+
 #include <QCoreApplication>
 #include <QTest>
 
@@ -23,9 +25,18 @@ public:
     {
     }
 
+    // Hello, and the login answered with a key made from the name (QcTestLogin).
+    void hello(const QString &name)
+    {
+        key = QcTestLogin::keyFor(name);
+        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
+    }
+
     void received(QcMessage &&message)
     {
-        if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
+        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
+            connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));
+        } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
             sounds.append(*sound);
         } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
@@ -46,6 +57,7 @@ public:
     }
 
     QcConnection connection;
+    QByteArray key;
     QList<QcMsg::SoundEvent> sounds;
     QcEntityMotion motion;
     QList<QcItemStack> stacks;
@@ -121,7 +133,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<SoundClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Ears"_s, {}});
+        m_client->hello(u"Ears"_s);
         pump();
         ticks(2);
 

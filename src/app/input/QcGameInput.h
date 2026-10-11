@@ -25,6 +25,8 @@ class QcGameInput : public QObject
     Q_OBJECT
     QML_ANONYMOUS
     Q_PROPERTY(bool mouseCaptured READ mouseCaptured NOTIFY mouseCapturedChanged FINAL)
+    // The player list key is held down (decision E-259); --overlay players holds it for screenshots.
+    Q_PROPERTY(bool playerListHeld READ playerListHeld NOTIFY playerListHeldChanged FINAL)
 
 public:
     static constexpr float keyboardLookSpeed = 120.0f;
@@ -43,7 +45,9 @@ public:
     void setBackgroundRun(bool background) { m_backgroundRun = background; }
 
     // Forgets the keys held down.
-    void clearKeys() { m_keysDown.clear(); }
+    void clearKeys();
+    bool playerListHeld() const { return m_playerListHeld; }
+    void setPlayerListHeld(bool held);
     // Keys held as if pressed (benchmark walk).
     void holdKeys(QSet<int> keys) { m_keysDown = std::move(keys); }
     // Mouse motion since the last frame; taken every frame, so motion from a frame without a world
@@ -56,6 +60,7 @@ public:
 
 signals:
     void mouseCapturedChanged();
+    void playerListHeldChanged();
 
 private:
     // The world takes keyboard and mouse: playing, no screen open, alive.
@@ -84,4 +89,5 @@ private:
     QSet<int> m_keysDown;
     QcMouseCapture m_capture;
     bool m_backgroundRun = false;
+    bool m_playerListHeld = false;
 };

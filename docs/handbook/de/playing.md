@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -232,3 +232,25 @@ Rate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.
 **Befehle aus Mods**
 
 Mods ergänzen Befehle als Makros (`commands/*.json`): ein Name und Befehlszeilen, die nacheinander mit deinen Rechten laufen; ein Makro erlaubt also nie mehr, als du ohnehin darfst. `/help` listet sie mit den anderen.
+
+### <a id="chapter-qtcraft-multiplayer"></a>Mehrspieler
+
+**Einem Server beitreten**
+
+Wähle im Hauptmenü **Mehrspieler**, gib die Adresse des Servers und deinen Spielernamen ein und klicke auf **Beitreten**. Eine Adresse ist `Host`, `Host:Port`, `192.168.1.20:25601` oder `[IPv6-Adresse]:Port`; ohne Port nimmt das Spiel 25600. Ein Passwort brauchst du nur, wenn der Server eines hat. Während das Spiel verbindet und anmeldet, kannst du abbrechen; lehnt der Server dich ab, steht dort der Grund (falsches Passwort, voller Server, andere Mods, ein Name, der jemand anderem gehört, eine Sperre). Server, denen du beigetreten bist, erscheinen unter **Zuletzt genutzte Server**: Ein Klick übernimmt die Adresse, **Beitreten** tritt sofort bei, **×** entfernt den Eintrag. Passwörter werden nie gespeichert.
+
+**Die eigene Welt im LAN öffnen**
+
+Öffne in einer Einzelspielerwelt das Menü (Esc) und wähle **Im LAN öffnen**. Wähle einen Port (0 nimmt einen beliebigen freien), optional ein Passwort und wie viele Spieler beitreten dürfen, dann **Für andere Spieler öffnen**. Der Bildschirm zeigt den Port und die Adressen deines Computers; Freunde im selben Netzwerk treten mit einer davon bei. Du spielst weiter wie bisher und bleibst Operator der Welt; **Hosten beenden** oder das Verlassen der Welt schließt sie wieder. Die Firewall fragt eventuell einmal, ob QtCraft eingehende Verbindungen annehmen darf.
+
+**Eigener Server und Internet**
+
+Ein Server ohne Fenster läuft mit `qtcraft-headless --server`; seine Einstellungen (Name, Nachricht des Tages, Port, Passwort, Spielerzahl, Welt, Sichtweite, Operatoren) stehen in `server.json` in seinem Datenordner, die beim ersten Start angelegt wird. Spieler über das Internet brauchen eine Portweiterleitung im Router zum Server-Computer oder einen Server mit öffentlicher Adresse; QtCraft nutzt keine Vermittlungsserver.
+
+**Andere Spieler**
+
+Halte **Tab**, um zu sehen, wer online ist: Name und Nachricht des Tages des Servers, alle Spieler mit markierten Operatoren und dein eigener Name hervorgehoben. Der Chat meldet, wenn jemand beitritt oder geht. Endet die Verbindung, nennt das Spiel den Grund; **Erneut beitreten** verbindet mit demselben Server, **Zurück zum Menü** verlässt ihn. Im Menü (Esc) eines Netzwerkspiels verlässt **Verbindung trennen** den Server; der Server behält dein Inventar und deine Position.
+
+**Grenzen der Sicherheit**
+
+Es gibt keine Konten: Jede Installation hat einen zufälligen Schlüssel, der auf jedem Server deinen Namen beweist (wer einen Namen auf einem Server zuerst nutzt, behält ihn). Passwörter gehen nie im Klartext über das Netz, alles andere ist aber unverschlüsselt, Chat und Spiel sind unterwegs lesbar. Öffne einen Server für das Internet nur mit Passwort und nur für Leute, die du kennst.

@@ -96,7 +96,7 @@ void QcClientSession::disconnectFromServer()
         return;
     }
 
-    m_connection->send(QcMsg::Disconnect{u"Client left"_s});
+    m_connection->send(QcMsg::Disconnect{u"Client left"_s, {}, {}});
     m_connection->close();
 }
 
@@ -146,7 +146,13 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
     } else if (const auto *sync = std::get_if<QcMsg::ContentSync>(&message)) {
         onContentSync(*sync);
     } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
-        closeWithError(disconnect->reason);
+        m_disconnectMessage = *disconnect;
+        closeWithError(QcChatText::display(*disconnect));
+    } else if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
+        m_connection->send(m_login.answer(*challenge));
+    } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
+        m_players = players->players;
+        emit playersChanged();
     } else {
         return false;
     }
@@ -226,9 +232,7 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
             closeWithError(u"Server sent an unknown entity type"_s);
         }
     } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
-        for (const QcMsg::EntityMove &move : std::as_const(moves->moves)) {
-            m_entities.move(move);
-        }
+        m_entities.moves(*moves);
     } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
         m_entities.remove(*removed);
     } else {
@@ -277,6 +281,7 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
 
     m_worldName = welcome.worldName;
     m_seed = welcome.seed;
+    m_viewDistance = welcome.viewDistance;
     setState(State::Loading);
 
     if (m_appearancePending) {
@@ -353,6 +358,8 @@ void QcClientSession::reconcile(const QcMsg::PlayerState &state)
             QcPhysics::stepPlayer(replayed, input, *m_world, QcPhysics::tickDuration);
         }
     }
+    m_lastCorrection = (replayed.position - m_motion.position).length();
+    m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
     m_motion = replayed;
 }
 

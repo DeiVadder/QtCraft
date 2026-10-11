@@ -12,6 +12,7 @@ Rectangle {
 
     signal quitRequested
 
+    objectName: "mainMenu"
     gradient: Gradient {
         GradientStop { position: 0.0; color: Theme.menuTop }
         GradientStop { position: 1.0; color: Theme.menuBottom }
@@ -27,6 +28,7 @@ Rectangle {
             settingsScreen.close();
             modsScreen.close();
             characterScreen.close();
+            multiplayerScreen.close();
             deleteDialog.close();
         }
     }
@@ -35,6 +37,13 @@ Rectangle {
         if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen)
             menu.game.handbook.open("");
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
+    }
+
+    // Opens the multiplayer screen; with an address it joins from there (--overlay multiplayer).
+    function openMultiplayer(address: string, name: string, password: string) {
+        multiplayerScreen.open();
+        if (address.length > 0)
+            multiplayerScreen.joinServer(address, name, password);
     }
 
     function subScreenClosed() {
@@ -110,6 +119,7 @@ Rectangle {
                                 spacing: 2
 
                                 Label {
+                                    textFormat: Text.PlainText
                                     text: worldRow.modelData.name
                                     color: Theme.text
                                     font.pixelSize: 17
@@ -157,7 +167,7 @@ Rectangle {
                     Layout.fillWidth: true
                     game: menu.game
                     covered: settingsScreen.visible || modsScreen.visible || characterScreen.visible || deleteDialog.visible
-                             || menu.game.handbook.isOpen
+                             || multiplayerScreen.visible || menu.game.handbook.isOpen
                     onCustomizeRequested: characterScreen.open()
                 }
             }
@@ -272,6 +282,12 @@ Rectangle {
 
                 Button {
                     Layout.fillWidth: true
+                    text: qsTr("Multiplayer")
+                    onClicked: multiplayerScreen.open()
+                }
+
+                Button {
+                    Layout.fillWidth: true
                     text: qsTr("Settings")
                     onClicked: settingsScreen.open()
                 }
@@ -316,6 +332,23 @@ Rectangle {
 
         game: menu.game
         onClosed: menu.subScreenClosed()
+    }
+
+    MultiplayerScreen {
+        id: multiplayerScreen
+
+        game: menu.game
+        onClosed: menu.subScreenClosed()
+    }
+
+    // A join started elsewhere ("join again", --join) shows its progress here.
+    Connections {
+        target: menu.game.multiplayer
+
+        function onJoiningChanged() {
+            if (menu.visible && menu.game.multiplayer.joining && !multiplayerScreen.visible)
+                multiplayerScreen.open();
+        }
     }
 
     Dialog {

@@ -24,6 +24,18 @@ QJsonArray QcControlReports::vectorJson(const QcVec3 &v)
     return {v.x, v.y, v.z};
 }
 
+QJsonObject QcControlReports::appearanceJson(const QcAppearance &look)
+{
+    const auto colour = [](quint32 rgb) -> QString { return u"#"_s + QString::number(rgb & 0xffffffu, 16).rightJustified(6, u'0'); };
+    return {{u"outfit"_s, look.outfit},
+            {u"hair"_s, look.hair},
+            {u"cape"_s, look.cape},
+            {u"skinColor"_s, colour(look.skinColor)},
+            {u"hairColor"_s, colour(look.hairColor)},
+            {u"shirtColor"_s, colour(look.shirtColor)},
+            {u"pantsColor"_s, colour(look.pantsColor)}};
+}
+
 QJsonObject QcControlReports::playerStatus() const
 {
     QJsonObject status;

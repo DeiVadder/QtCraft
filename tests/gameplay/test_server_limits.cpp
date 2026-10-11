@@ -257,7 +257,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         RawClient owner(std::move(clientEnd));
-        owner.connection.send(QcMsg::Hello{QcProtocol::version, u"Owner"_s, {}});
+        owner.hello(u"Owner"_s);
         pump();
         ticks(2);
         QCOMPARE(m_server->clientCount(), 2);

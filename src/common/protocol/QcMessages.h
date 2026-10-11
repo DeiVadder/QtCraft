@@ -5,6 +5,7 @@
 
 #include "QcDebugMessages.h"
 #include "QcEntityMessages.h"
+#include "QcLoginMessages.h"
 #include "QcMachineMessages.h"
 #include "QcPlayerMessages.h"
 #include "QcSessionMessages.h"
@@ -22,4 +23,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::ConsumeItem, QcMsg::OpenCrafting, QcMsg::DropItem, QcMsg::SetAppearance,
                                QcMsg::OpenMachine, QcMsg::MachineState, QcMsg::CloseMachine, QcMsg::PlayerFood,
                                QcMsg::SoundEvent, QcMsg::UseEntity, QcMsg::QuickMoveItem, QcMsg::ChunkLabels,
-                               QcMsg::DebugSubscribe, QcMsg::ServerDebug>;
+                               QcMsg::DebugSubscribe, QcMsg::ServerDebug, QcMsg::LoginChallenge,
+                               QcMsg::LoginResponse, QcMsg::PlayerList>;

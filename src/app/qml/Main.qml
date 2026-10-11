@@ -57,7 +57,14 @@ ApplicationWindow {
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === "playing"
-                 && ["pause", "settings", "controls", "debug", "character"].includes(game.overlay)
+                 && ["pause", "settings", "controls", "debug", "character", "lan"].includes(game.overlay)
+        game: game
+    }
+
+    // While the player list key is held; over the world and the HUD, under the screens.
+    PlayerListOverlay {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "" && game.input.playerListHeld
         game: game
     }
 
@@ -84,8 +91,16 @@ ApplicationWindow {
         anchors.fill: parent
         visible: game.phase === "loading" || game.phase === "error"
         text: game.statusText
-        showBackButton: game.phase === "error"
+        // Loading a network server's world can be cancelled.
+        showBackButton: game.phase === "error" || game.multiplayer.networkGame
+        backText: game.phase === "error" ? qsTr("Back to menu") : qsTr("Cancel")
         onBackRequested: game.leaveGame()
+    }
+
+    DisconnectScreen {
+        anchors.fill: parent
+        visible: game.phase === "disconnected"
+        game: game
     }
 
     // Over everything else, so it opens from the menu, the world and every in-game screen.

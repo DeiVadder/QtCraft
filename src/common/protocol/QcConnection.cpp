@@ -38,6 +38,16 @@ bool QcConnection::isOpen() const
     return m_transport->isOpen();
 }
 
+QString QcConnection::lastError() const
+{
+    return m_lastError.isEmpty() ? m_transport->closeReason() : m_lastError;
+}
+
+qint64 QcConnection::pendingBytes() const
+{
+    return m_transport->pendingBytes();
+}
+
 void QcConnection::onFrame(const QByteArray &frame)
 {
     QcResult<QcMessage> message = QcProtocol::decode(frame, m_remote);

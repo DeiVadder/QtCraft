@@ -1,8 +1,9 @@
 #include "QcWorldLibrary.h"
 
+#include "QcDataRoot.h"
+
 #include <QDir>
 #include <QFileInfo>
-#include <QStandardPaths>
 
 #include <algorithm>
 
@@ -35,8 +36,7 @@ QcWorldLibrary::QcWorldLibrary(QString root)
 
 QString QcWorldLibrary::dataRoot()
 {
-    const QString overridden = qEnvironmentVariable("QTCRAFT_DATA_DIR");
-    return overridden.isEmpty() ? QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) : overridden;
+    return QcDataRoot::path();
 }
 
 QString QcWorldLibrary::defaultRoot()

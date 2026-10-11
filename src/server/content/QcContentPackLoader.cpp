@@ -69,7 +69,10 @@ QStringList filesIn(const QString &directory, const QString &filter)
     const QDir dir(directory);
     const QStringList entries = dir.entryList({filter}, QDir::Files | QDir::NoSymLinks, QDir::Name);
     for (const QString &entry : entries) {
-        files.append(dir.filePath(entry));
+        // Hidden files are no content: macOS leaves "._name.json" beside files copied to other disks.
+        if (!entry.startsWith(u'.')) {
+            files.append(dir.filePath(entry));
+        }
     }
     return files;
 }
@@ -166,7 +169,7 @@ QcResult<QcContentPackInfo> QcContentPackLoader::readManifest(const QString &dir
     return info;
 }
 
-qint64 QcContentPackLoader::measure(const QString &directory)
+QStringList QcContentPackLoader::contentFiles(const QString &directory)
 {
     const QDir root(directory);
     QStringList files;
@@ -177,18 +180,26 @@ qint64 QcContentPackLoader::measure(const QString &directory)
 
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
     if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink()) {
-        files.append(root.filePath(u"worldgen/terrain.json"_s));
-        files.append(root.filePath(u"worldgen/showcase.json"_s));
-        files.append(root.filePath(u"worldgen/flat.json"_s));
-        files.append(root.filePath(u"worldgen/void.json"_s));
+        for (const char *name : {"terrain.json", "showcase.json", "flat.json", "void.json"}) {
+            files.append(root.filePath(u"worldgen/"_s + QString::fromLatin1(name)));
+        }
     }
 
-    qint64 total = 0;
-    for (const QString &path : std::as_const(files)) {
+    // Only what exists as a regular file is read.
+    files.removeIf([](const QString &path) {
         const QFileInfo info(path);
-        if (info.isFile() && !info.isSymLink()) {
-            total += std::max<qint64>(256, std::min(info.size(), maxContentFileBytes + 1));
-        }
+        return !info.isFile() || info.isSymLink();
+    });
+    files.sort();
+    return files;
+}
+
+qint64 QcContentPackLoader::measure(const QString &directory)
+{
+    qint64 total = 0;
+    const QStringList files = contentFiles(directory);
+    for (const QString &path : files) {
+        total += std::max<qint64>(256, std::min(QFileInfo(path).size(), maxContentFileBytes + 1));
     }
     return total;
 }

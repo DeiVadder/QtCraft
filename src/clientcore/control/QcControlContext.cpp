@@ -37,6 +37,15 @@ void QcControlContext::fail(const QJsonObject &request, const QString &message)
     write(response);
 }
 
+void QcControlContext::appendChat(const QString &text)
+{
+    m_chatLog.append(text);
+    if (m_chatHistory.size() >= chatHistoryLimit) {
+        m_chatHistory.removeFirst();
+    }
+    m_chatHistory.append(text);
+}
+
 void QcControlContext::write(const QJsonObject &response)
 {
     if (m_output) {

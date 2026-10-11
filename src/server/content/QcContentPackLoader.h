@@ -42,6 +42,9 @@ public:
     // maxContentFileBytes.
     static QcResult<QByteArray> readPackFile(const QString &path);
 
+    // The content files load() reads from the pack besides pack.json (the content folders' *.json,
+    // textures/*.png, worldgen/*.json), sorted; hidden files and symbolic links are not among them.
+    static QStringList contentFiles(const QString &directory);
     // Bytes that load() would read from the pack, counting every file as at least 256 bytes, so a
     // pack can be rejected before anything is read (hard links make small packs read large).
     static qint64 measure(const QString &directory);

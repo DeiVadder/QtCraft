@@ -2,7 +2,7 @@
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
-// QcMachineCodec.cpp and QcDebugCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// QcMachineCodec.cpp, QcDebugCodec.cpp and QcLoginCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "QcMessages.h"
 #include "QcResult.h"
@@ -132,5 +132,13 @@ void encode(QDataStream &stream, QcMsg::DebugSubscribe m);
 void encode(QDataStream &stream, const QcMsg::ServerDebug &m);
 QcResult<QcMessage> decode(Tag<QcMsg::DebugSubscribe>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::ServerDebug>, QDataStream &stream);
+
+// Login and the player list (QcLoginCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::LoginChallenge &m);
+void encode(QDataStream &stream, const QcMsg::LoginResponse &m);
+void encode(QDataStream &stream, const QcMsg::PlayerList &m);
+QcResult<QcMessage> decode(Tag<QcMsg::LoginChallenge>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::LoginResponse>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream);
 
 } // namespace QcProtocolCodec

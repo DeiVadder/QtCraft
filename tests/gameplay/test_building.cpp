@@ -8,6 +8,7 @@
 #include "QcPhysics.h"
 #include "QcPartGenerator.h"
 #include "QcServer.h"
+#include "QcTestLogin.h"
 #include "QcTestTerrainGenerator.h"
 
 #include <QCoreApplication>
@@ -62,9 +63,18 @@ public:
     {
     }
 
+    // Hello, and the login answered with a key made from the name (QcTestLogin).
+    void hello(const QString &name)
+    {
+        key = QcTestLogin::keyFor(name);
+        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
+    }
+
     void received(QcMessage &&message)
     {
-        if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
+        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
+            connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));
+        } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
@@ -81,6 +91,7 @@ public:
     }
 
     QcConnection connection;
+    QByteArray key;
     QcEntityMotion motion;
     QList<QcItemStack> stacks;
     QStringList chatLines;
@@ -141,7 +152,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Builder"_s, {}});
+        m_client->hello(u"Builder"_s);
         pump();
         ticks(2);
 

@@ -80,7 +80,7 @@ protected:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd), m_origin);
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, QStringLiteral("Raw"), {}});
+        m_client->hello(QStringLiteral("Raw"));
         pump();
         ticks(2);
 

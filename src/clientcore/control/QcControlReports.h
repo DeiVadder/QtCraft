@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcAppearance.h"
 #include "QcItemStack.h"
 #include "QcVec3.h"
 
@@ -18,6 +19,8 @@ public:
     QcControlReports(const QcClientSession &session, const QStringList &chatLog);
 
     static QJsonArray vectorJson(const QcVec3 &v);
+    // A player's look with the colours as "#rrggbb".
+    static QJsonObject appearanceJson(const QcAppearance &look);
 
     QJsonObject playerStatus() const;
     QJsonValue stackJson(QcItemStack stack) const;

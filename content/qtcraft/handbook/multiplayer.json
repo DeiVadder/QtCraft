@@ -1,0 +1,12 @@
+{
+    "name": "multiplayer",
+    "order": 130,
+    "icon": "book",
+    "sections": [
+        "joining",
+        "hosting",
+        "server",
+        "players",
+        "safety"
+    ]
+}

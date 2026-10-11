@@ -18,6 +18,16 @@ class TestWorldMaintenance : public QcServerTestFixture
 private:
     QString lastLine() const { return m_client->chatLines.isEmpty() ? QString() : m_client->chatLines.constLast(); }
 
+    // /backup copies in the background (decision E-256): ticks until the copy reported back.
+    void backup(const QString &command)
+    {
+        chat(command);
+        for (int i = 0; i < 400 && lastLine().startsWith(u"Backup of "_s); ++i) {
+            QTest::qWait(5);
+            ticks(1);
+        }
+    }
+
     // Whether the loaded chunk holds exactly what `generator` makes of it.
     bool asGenerated(QcChunkPos pos, const QcWorldGenerator &generator) const
     {
@@ -225,7 +235,7 @@ private slots:
         chat(u"/setblock ~5 ~ ~ glass"_s);
         chat(u"/op Friend"_s);
 
-        chat(u"/backup before-update"_s);
+        backup(u"/backup before-update"_s);
         QVERIFY2(lastLine().startsWith(u"Backup with "_s), qPrintable(lastLine()));
         const QStringList backups = QDir(QDir(data.path()).filePath(u"backups"_s)).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
         QCOMPARE(backups.size(), 1);
@@ -235,7 +245,7 @@ private slots:
         QVERIFY(QFile::exists(QDir(copy).filePath(u"access.json"_s)));
 
         // A second backup in the same second gets its own folder.
-        chat(u"/backup before-update"_s);
+        backup(u"/backup before-update"_s);
         QCOMPARE(QDir(QDir(data.path()).filePath(u"backups"_s)).entryList(QDir::Dirs | QDir::NoDotAndDotDot).size(), 2);
 
         // The copy opens like the world, with the change of this session.
@@ -295,12 +305,12 @@ private slots:
             file.write("private");
         }
         QVERIFY(QFile::setPermissions(unreadable, QFileDevice::WriteOwner));
-        chat(u"/backup"_s);
+        backup(u"/backup"_s);
         QFile::setPermissions(unreadable, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
         QCOMPARE(lastLine(), u"Backup failed: Cannot copy notes.txt, the incomplete backup was removed"_s);
-        QCOMPARE(QDir(config.backupDirectory).entryList(QDir::Dirs | QDir::NoDotAndDotDot), QStringList());
+        QCOMPARE(QDir(config.backupDirectory).entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden), QStringList());
 
-        chat(u"/backup"_s);
+        backup(u"/backup"_s);
         QVERIFY2(lastLine().startsWith(u"Backup with "_s), qPrintable(lastLine()));
         QCOMPARE(QDir(config.backupDirectory).entryList(QDir::Dirs | QDir::NoDotAndDotDot).size(), 1);
     }

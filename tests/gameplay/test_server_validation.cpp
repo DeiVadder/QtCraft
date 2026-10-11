@@ -400,7 +400,7 @@ private slots:
         look.outfit = u"qtcraft:miner"_s;
         look.hair = u"qtcraft:explorer"_s; // an outfit, not a hair style
         look.shirtColor = 0x112233;
-        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, look});
+        bob.hello(u"Bob"_s, look);
         pump();
         ticks(2);
 
@@ -514,7 +514,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         RawClient bob(std::move(clientEnd));
-        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"\x01 Bob\t"_s, {}});
+        bob.hello(u"\x01 Bob\t"_s);
         pump();
         ticks(2);
         const auto seen = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) { return spawn.name == u"Bob"_s; });
@@ -533,7 +533,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient bob(std::move(clientEnd));
 
-        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, {}});
+        bob.hello(u"Bob"_s);
         pump();
         ticks(2);
         const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {
@@ -557,7 +557,7 @@ private slots:
         m_server->addClient(std::move(serverEnd));
         RawClient bob(std::move(clientEnd));
 
-        bob.connection.send(QcMsg::Hello{QcProtocol::version, u"Bob"_s, {}});
+        bob.hello(u"Bob"_s);
         pump();
         ticks(2);
         const quint32 bobId = std::ranges::find_if(m_client->spawns, [](const QcMsg::EntitySpawn &spawn) {

@@ -55,6 +55,7 @@ Item {
                     width: Math.min(implicitWidth, worldLabel.lineLimit)
                     elide: Text.ElideRight
                     horizontalAlignment: Text.AlignHCenter
+                    textFormat: Text.PlainText
                     text: worldLabel.title
                     color: Theme.text
                     font.pixelSize: worldLabel.heading ? 24 : 14
@@ -67,6 +68,7 @@ Item {
                     width: Math.min(implicitWidth, worldLabel.lineLimit)
                     elide: Text.ElideRight
                     horizontalAlignment: Text.AlignHCenter
+                    textFormat: Text.PlainText
                     text: worldLabel.detail
                     color: Theme.text
                     font.pixelSize: 11

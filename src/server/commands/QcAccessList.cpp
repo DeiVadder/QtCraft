@@ -1,5 +1,6 @@
 #include "QcAccessList.h"
 
+#include "QcChatText.h"
 #include "QcProfileValidation.h"
 #include "QcStandStorage.h"
 
@@ -9,7 +10,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLoggingCategory>
+#include <QRegularExpression>
 #include <QSaveFile>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -17,13 +21,20 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcAccess, "qtcraft.server")
 
-QJsonArray namesToJson(const QMap<QString, QString> &names)
+QJsonArray entriesToJson(const QMap<QString, QcAccessList::Entry> &entries)
 {
     QJsonArray array;
-    for (const QString &name : names) {
-        array.append(name);
+    for (const QcAccessList::Entry &entry : entries) {
+        array.append(QJsonObject{{u"name"_s, entry.name}, {u"fingerprint"_s, entry.fingerprint}});
     }
     return array;
+}
+
+// A fingerprint as QcLoginCrypto makes it, or empty.
+bool validFingerprint(const QString &fingerprint)
+{
+    static const QRegularExpression hex(u"^[0-9a-f]{32}$"_s);
+    return fingerprint.isEmpty() || hex.matchView(fingerprint).hasMatch();
 }
 
 } // namespace
@@ -41,7 +52,11 @@ void QcAccessList::open(const QString &directory, const QStringList &initialOper
     }
 
     for (const QString &name : initialOperators) {
-        m_configOperators.insert(key(name), QcProfileValidation::playerName(name));
+        if (const std::optional<QString> valid = QcProfileValidation::validPlayerName(name)) {
+            m_configOperators.insert(key(*valid), *valid);
+        } else {
+            warnings.append(u"Invalid operator name '%1' in the server configuration left out"_s.arg(name));
+        }
     }
 }
 
@@ -59,11 +74,44 @@ bool QcAccessList::isFullFor(List list, const QString &name) const
     return true;
 }
 
+bool QcAccessList::matches(const QString &entryFingerprint, const QString &fingerprint)
+{
+    return entryFingerprint.isEmpty() || entryFingerprint == fingerprint;
+}
+
+bool QcAccessList::isOperator(const QString &name, const QString &fingerprint) const
+{
+    const QString nameKey = key(name);
+    const auto found = m_operators.constFind(nameKey);
+    if (found != m_operators.constEnd() && matches(found->fingerprint, fingerprint)) {
+        return true;
+    }
+    // An operator of the configuration counts for the identity his first login bound.
+    return m_configOperators.contains(nameKey) && matches(m_configBindings.value(nameKey).fingerprint, fingerprint);
+}
+
 QStringList QcAccessList::operators() const
 {
     QMap<QString, QString> all = m_configOperators;
-    all.insert(m_operators);
+    for (auto it = m_operators.constBegin(); it != m_operators.constEnd(); ++it) {
+        all.insert(it.key(), it->name);
+    }
     return all.values();
+}
+
+bool QcAccessList::isWhitelisted(const QString &name, const QString &fingerprint) const
+{
+    const auto found = m_whitelist.constFind(key(name));
+    return found != m_whitelist.constEnd() && matches(found->fingerprint, fingerprint);
+}
+
+QStringList QcAccessList::whitelist() const
+{
+    QStringList names;
+    for (const Entry &entry : m_whitelist) {
+        names.append(entry.name);
+    }
+    return names;
 }
 
 void QcAccessList::read(const QString &path, QStringList &warnings)
@@ -77,12 +125,13 @@ void QcAccessList::read(const QString &path, QStringList &warnings)
     file.close();
 
     const QJsonObject root = document.object();
-    if (!document.isObject() || error.error != QJsonParseError::NoError || root.value(u"format"_s).toInt() != formatVersion) {
+    if (!document.isObject() || error.error != QJsonParseError::NoError || (root.value(u"format"_s).toInt() != 1 && root.value(u"format"_s).toInt() != formatVersion)) {
         openDamaged(path);
         return;
     }
 
     readNames(root.value(u"operators"_s), m_operators, u"operators"_s, warnings);
+    readNames(root.value(u"configOperators"_s), m_configBindings, u"configOperators"_s, warnings);
     readBans(root.value(u"bans"_s), warnings);
     const QJsonObject whitelist = root.value(u"whitelist"_s).toObject();
     m_whitelistEnabled = whitelist.value(u"enabled"_s).toBool(false);
@@ -105,18 +154,21 @@ void QcAccessList::openDamaged(const QString &path)
     }
 }
 
-void QcAccessList::readNames(const QJsonValue &value, QMap<QString, QString> &names, const QString &list, QStringList &warnings)
+void QcAccessList::readNames(const QJsonValue &value, QMap<QString, Entry> &names, const QString &list, QStringList &warnings)
 {
     const QJsonArray array = value.toArray();
-    for (const auto &entry : array) {
-        const QString name = entry.toString();
-        if (name.isEmpty() || QcProfileValidation::playerName(name) != name) {
+    for (const auto &item : array) {
+        // Format 1 has plain names, format 2 objects with name and fingerprint.
+        const QJsonObject object = item.toObject();
+        const Entry entry = item.isString() ? Entry{item.toString(), {}}
+                                            : Entry{object.value(u"name"_s).toString(), object.value(u"fingerprint"_s).toString()};
+        if (entry.name.isEmpty() || QcProfileValidation::playerName(entry.name) != entry.name || !validFingerprint(entry.fingerprint)) {
             warnings.append(u"access.json: invalid name in %1 left out"_s.arg(list));
         } else if (names.size() >= maxEntries) {
             warnings.append(u"access.json: more than %1 entries in %2, the rest is left out"_s.arg(maxEntries).arg(list));
             return;
         } else {
-            names.insert(key(name), name);
+            names.insert(key(entry.name), entry);
         }
     }
 }
@@ -128,8 +180,8 @@ void QcAccessList::readBans(const QJsonValue &value, QStringList &warnings)
         const QJsonObject object = entry.toObject();
         const Ban ban{object.value(u"name"_s).toString(), object.value(u"reason"_s).toString().left(maxReasonLength),
                 object.value(u"by"_s).toString().left(maxReasonLength),
-                QDateTime::fromString(object.value(u"since"_s).toString(), Qt::ISODate)};
-        if (ban.name.isEmpty() || QcProfileValidation::playerName(ban.name) != ban.name) {
+                QDateTime::fromString(object.value(u"since"_s).toString(), Qt::ISODate), object.value(u"fingerprint"_s).toString()};
+        if (ban.name.isEmpty() || QcProfileValidation::playerName(ban.name) != ban.name || !validFingerprint(ban.fingerprint)) {
             warnings.append(u"access.json: invalid name in bans left out"_s);
         } else if (m_bans.size() >= maxEntries) {
             warnings.append(u"access.json: more than %1 bans, the rest is left out"_s.arg(maxEntries));
@@ -153,12 +205,13 @@ QcStatus QcAccessList::write() const
     QJsonArray bans;
     for (const Ban &ban : m_bans) {
         bans.append(QJsonObject{{u"name"_s, ban.name}, {u"reason"_s, ban.reason}, {u"by"_s, ban.by},
-                                {u"since"_s, ban.since.toString(Qt::ISODate)}});
+                                {u"since"_s, ban.since.toString(Qt::ISODate)}, {u"fingerprint"_s, ban.fingerprint}});
     }
     const QJsonObject root{{u"format"_s, formatVersion},
-                           {u"operators"_s, namesToJson(m_operators)},
+                           {u"operators"_s, entriesToJson(m_operators)},
+                           {u"configOperators"_s, entriesToJson(m_configBindings)},
                            {u"bans"_s, bans},
-                           {u"whitelist"_s, QJsonObject{{u"enabled"_s, m_whitelistEnabled}, {u"names"_s, namesToJson(m_whitelist)}}}};
+                           {u"whitelist"_s, QJsonObject{{u"enabled"_s, m_whitelistEnabled}, {u"names"_s, entriesToJson(m_whitelist)}}}};
 
     QSaveFile file(m_path);
     if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(root).toJson()) < 0 || !file.commit()) {
@@ -178,15 +231,11 @@ QcResult<bool> QcAccessList::written(bool changed) const
     return true;
 }
 
-QcResult<bool> QcAccessList::setOperator(const QString &name, bool isOperator)
+QcResult<bool> QcAccessList::setOperator(const QString &name, bool isOperator, const QString &fingerprint)
 {
     const QString cleaned = QcProfileValidation::playerName(name);
     if (isOperator) {
-        const bool changed = !m_operators.contains(key(cleaned)) && m_operators.size() < maxEntries;
-        if (changed) {
-            m_operators.insert(key(cleaned), cleaned);
-        }
-        return written(changed);
+        return written(insertEntry(m_operators, {cleaned, fingerprint}));
     }
     const bool configured = m_configOperators.remove(key(cleaned)) > 0;
     const QcResult<bool> changed = written(m_operators.remove(key(cleaned)) > 0);
@@ -209,9 +258,13 @@ QcResult<bool> QcAccessList::addBan(const Ban &ban)
         return false;
     }
 
-    // A new ban of a banned name replaces its reason.
+    // A new ban of a banned name replaces its reason and keeps a known fingerprint.
     const Ban *existing = this->ban(cleaned.name);
-    const bool changed = !existing || existing->reason != cleaned.reason || existing->by != cleaned.by;
+    if (existing && cleaned.fingerprint.isEmpty()) {
+        cleaned.fingerprint = existing->fingerprint;
+    }
+    const bool changed = !existing || existing->reason != cleaned.reason || existing->by != cleaned.by
+                         || existing->fingerprint != cleaned.fingerprint;
     if (changed) {
         m_bans.insert(key(cleaned.name), cleaned);
     }
@@ -230,29 +283,92 @@ QcResult<bool> QcAccessList::setWhitelistEnabled(bool enabled)
     return written(changed);
 }
 
-QcResult<bool> QcAccessList::setWhitelisted(const QString &name, bool listed)
+QcResult<bool> QcAccessList::setWhitelisted(const QString &name, bool listed, const QString &fingerprint)
 {
     const QString cleaned = QcProfileValidation::playerName(name);
     if (listed) {
-        const bool changed = !m_whitelist.contains(key(cleaned)) && m_whitelist.size() < maxEntries;
-        if (changed) {
-            m_whitelist.insert(key(cleaned), cleaned);
-        }
-        return written(changed);
+        return written(insertEntry(m_whitelist, {cleaned, fingerprint}));
     }
     return written(m_whitelist.remove(key(cleaned)) > 0);
 }
 
-std::optional<QString> QcAccessList::refusal(const QString &name, bool local) const
+bool QcAccessList::insertEntry(QMap<QString, Entry> &entries, const Entry &entry)
+{
+    // A listed name keeps its entry; a newly known fingerprint binds it.
+    const auto found = entries.find(key(entry.name));
+    if (found != entries.end()) {
+        const bool binds = found->fingerprint.isEmpty() && !entry.fingerprint.isEmpty();
+        if (binds) {
+            found->fingerprint = entry.fingerprint;
+        }
+        return binds;
+    }
+
+    if (entries.size() >= maxEntries) {
+        return false;
+    }
+    entries.insert(key(entry.name), entry);
+    return true;
+}
+
+QcResult<bool> QcAccessList::bind(const QString &name, const QString &fingerprint)
+{
+    if (fingerprint.isEmpty()) {
+        return false;
+    }
+
+    bool changed = false;
+    const QString nameKey = key(name);
+    for (QMap<QString, Entry> *entries : {&m_operators, &m_whitelist}) {
+        const auto found = entries->find(nameKey);
+        if (found != entries->end() && found->fingerprint.isEmpty()) {
+            found->fingerprint = fingerprint;
+            changed = true;
+        }
+    }
+
+    // An operator of the configuration keeps the identity of his first login across restarts.
+    const auto configured = m_configOperators.constFind(nameKey);
+    if (configured != m_configOperators.constEnd() && m_configBindings.value(nameKey).fingerprint.isEmpty()
+        && m_configBindings.size() < maxEntries) {
+        m_configBindings.insert(nameKey, {*configured, fingerprint});
+        changed = true;
+    }
+
+    const auto ban = m_bans.find(nameKey);
+    if (ban != m_bans.end() && ban->fingerprint.isEmpty()) {
+        ban->fingerprint = fingerprint;
+        changed = true;
+    }
+    return written(changed);
+}
+
+const QcAccessList::Ban *QcAccessList::banOf(const QString &name, const QString &fingerprint) const
+{
+    // A name ban holds whatever the identity; a ban with a fingerprint also under other names.
+    if (const Ban *byName = ban(name)) {
+        return byName;
+    }
+    if (fingerprint.isEmpty()) {
+        return nullptr;
+    }
+
+    const auto found = std::ranges::find(m_bans, fingerprint, &Ban::fingerprint);
+    return found != m_bans.end() ? &*found : nullptr;
+}
+
+std::optional<QcMsg::Disconnect> QcAccessList::refusal(const QString &name, const QString &fingerprint, bool local) const
 {
     if (local) {
         return std::nullopt;
     }
-    if (const Ban *banned = ban(name)) {
-        return banned->reason.isEmpty() ? u"You are banned from this world"_s : u"You are banned from this world: %1"_s.arg(banned->reason);
+    if (const Ban *banned = banOf(name, fingerprint)) {
+        return banned->reason.isEmpty()
+                   ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "You are banned from this world"))
+                   : QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "You are banned from this world: %1"), {banned->reason});
     }
-    if (m_whitelistEnabled && !isOperator(name) && !isWhitelisted(name)) {
-        return u"You are not on the whitelist of this world"_s;
+    if (m_whitelistEnabled && !isOperator(name, fingerprint) && !isWhitelisted(name, fingerprint)) {
+        return QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "You are not on the whitelist of this world"));
     }
     return std::nullopt;
 }

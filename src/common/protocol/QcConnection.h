@@ -27,7 +27,9 @@ public:
     void send(const QcMessage &message);
     void close();
     bool isOpen() const;
-    QString lastError() const { return m_lastError; }
+    // The protocol error that closed the connection, else the transport's reason.
+    QString lastError() const;
+    qint64 pendingBytes() const;
 
 signals:
     void closed();

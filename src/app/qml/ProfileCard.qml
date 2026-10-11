@@ -10,8 +10,8 @@ Rectangle {
     id: card
 
     required property GameController game
-    // The name the game joins with (multiplayer, stage 25, makes it a setting).
-    property string playerName: "Player"
+    // The name the game joins network games with (set in the multiplayer screen, decision E-258).
+    readonly property string playerName: game.multiplayer.settings.playerName.length > 0 ? game.multiplayer.settings.playerName : qsTr("Player")
     // Another screen covers the card: its preview stops moving.
     property bool covered: false
 
@@ -56,6 +56,7 @@ Rectangle {
             }
             Label {
                 Layout.fillWidth: true
+                textFormat: Text.PlainText
                 text: card.playerName
                 color: Theme.textSecondary
                 elide: Text.ElideRight

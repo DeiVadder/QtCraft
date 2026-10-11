@@ -38,6 +38,7 @@ void QcEntitySync::sync(QcServerClient &client)
     removeUnseen(pass);
 
     if (!pass.moves.moves.isEmpty()) {
+        pass.moves.timeMs = m_state.playerTimeNs / 1'000'000;
         client.connection->send(pass.moves);
     }
 }

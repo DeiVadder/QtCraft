@@ -1,8 +1,10 @@
 #pragma once
 
+#include "QcModLoader.h"
 #include "QcResult.h"
 #include "QcServerConfig.h"
 
+#include <QCommandLineParser>
 #include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -13,6 +15,7 @@
 #include <optional>
 
 class QcClientSession;
+class QcDedicatedServer;
 class QcHandbook;
 class QcContentRegistry;
 class QcWorldLibrary;
@@ -36,8 +39,17 @@ public:
 
 private:
     // Connects the control interface to the bot and feeds it from `scriptFile` or, without one,
-    // from standard input; exits with failure after `timeLimit` seconds.
-    bool startControl(const std::optional<QString> &scriptFile, int timeLimit);
+    // from standard input.
+    bool startControl(const std::optional<QString> &scriptFile);
+    // Exits with code 2 after `seconds`.
+    void startTimeLimit(int seconds);
+    // --join: the bot joins a server over TCP (decision E-270); the control interface starts once
+    // the server let it in.
+    bool startJoin(const QCommandLineParser &parser, const QcModLoader::Result &content, int viewDistance, int timeLimit);
+    // The world in this process with the bot (or the console) on it.
+    bool startLocal(const QCommandLineParser &parser, const QcServerConfig &config, int timeLimit,
+                    const std::shared_ptr<const QcContentRegistry> &content);
+    void onJoined(QcClientSession *session, const std::optional<QString> &scriptFile);
     void readStandardInput();
     // --console: standard input runs server commands (decision E-247); `timeLimit` 0 for none.
     // Without `stopAtEndOfInput` (--no-eof-stop) the server outlives its input.
@@ -45,11 +57,15 @@ private:
     // --stats / QTCRAFT_STATS: the debug data as a JSON line in the log every `intervalMs` (0: off).
     void startStatsLog(int intervalMs);
     void finishScript();
+    // --server: a dedicated server without bot (decision E-255).
+    bool startDedicated(const QCommandLineParser &parser, const QcModLoader::Result &content);
     // Starts (or restarts) server and bot session for a world; the control interface follows.
     QcStatus startWorld(const QcServerConfig &config);
     // Opens a world and switches the bot to it, replacing the running one only on success.
     QcStatus openWorld(const QcServerConfig &config);
     bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
+    // --join: the handbook; world commands are refused.
+    bool handleRemoteCommand(const QJsonObject &request, QJsonObject &response);
     QJsonArray worldList() const;
     // The configuration of a new world (`worldCreate`) or a listed one (`worldLoad`); sets the
     // response's folder.
@@ -59,6 +75,7 @@ private:
     void handleHandbookCommand(const QJsonObject &request, QJsonObject &response);
     const QcHandbook &handbook(const QString &language);
 
+    std::unique_ptr<QcDedicatedServer> m_dedicated;
     std::unique_ptr<QcLocalServerHost> m_server;
     std::shared_ptr<const QcContentRegistry> m_content;
     QcServerConfig m_baseConfig;
@@ -71,6 +88,8 @@ private:
     bool m_scriptMode = false;
     // --console: no bot and no control interface, standard input is the server console.
     bool m_consoleMode = false;
+    // --join: the bot plays on a server of another process; no world commands.
+    bool m_remote = false;
     // Built on first use per language.
     QHash<QString, std::shared_ptr<const QcHandbook>> m_handbooks;
 };

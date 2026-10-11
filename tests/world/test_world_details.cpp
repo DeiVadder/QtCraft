@@ -11,6 +11,8 @@
 #include "QcTestWorld.h"
 #include "QcTerrainGenerator.h"
 
+#include "QcTestLogin.h"
+
 #include <QCoreApplication>
 #include <QRandomGenerator>
 #include <QTemporaryDir>
@@ -57,9 +59,18 @@ public:
     {
     }
 
+    // Hello, and the login answered with a key made from the name (QcTestLogin).
+    void hello(const QString &name)
+    {
+        key = QcTestLogin::keyFor(name);
+        connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
+    }
+
     void received(QcMessage &&message)
     {
-        if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
+        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
+            connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));
+        } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
@@ -76,6 +87,7 @@ public:
     }
 
     QcConnection connection;
+    QByteArray key;
     QcEntityMotion motion;
     QList<QcItemStack> stacks;
     int selected = 0;
@@ -158,7 +170,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Tester"_s, {}});
+        m_client->hello(u"Tester"_s);
         pump();
         ticks(2);
 
@@ -411,7 +423,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd));
         m_client = std::make_unique<RawClient>(std::move(clientEnd));
-        m_client->connection.send(QcMsg::Hello{QcProtocol::version, u"Tester"_s, {}});
+        m_client->hello(u"Tester"_s);
         pump();
 
         for (int dx = -1; dx <= 1; ++dx) {

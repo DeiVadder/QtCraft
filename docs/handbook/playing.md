@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -232,3 +232,25 @@ Rate and freezing are not saved; a world always opens normally.
 **Commands from mods**
 
 Mods add commands as macros (`commands/*.json`): a name and command lines that run one after another with your rights, so a macro never lets you do more than you may do anyway. `/help` lists them with the others.
+
+### <a id="chapter-qtcraft-multiplayer"></a>Multiplayer
+
+**Joining a server**
+
+Choose **Multiplayer** in the main menu, type the server's address and your player name and click **Join**. An address is `host`, `host:port`, `192.168.1.20:25601` or `[IPv6 address]:port`; without a port the game uses 25600. Give the password only if the server has one. While the game connects and logs in you can cancel; if the server refuses you, the screen says why (wrong password, full server, other mods, a name that belongs to someone else, a ban). Servers you joined appear under **Recent servers**: a click puts the address into the field, **Join** joins at once, **×** removes the entry. Passwords are never saved.
+
+**Opening your world to the LAN**
+
+In a single-player world, open the menu (Esc) and choose **Open to LAN**. Pick a port (0 takes any free one), an optional password and how many players may join, then **Open to other players**. The screen shows the port and the addresses of your computer; friends in the same network join with one of them. You keep playing as before and stay the world's operator; **Stop hosting** or leaving the world closes it again. The firewall may ask once whether QtCraft may accept incoming connections.
+
+**Dedicated server and the internet**
+
+A server without a window runs with `qtcraft-headless --server`; its settings (name, message of the day, port, password, player limit, world, view distance, operators) are in `server.json` in its data folder, written at the first start. Players over the internet need the server's port forwarded in the router to the server computer, or a server with a public address; QtCraft uses no relay servers.
+
+**Other players**
+
+Hold **Tab** to see who is online: the server's name and message of the day, every player with operators marked and your own name highlighted. The chat tells when somebody joins or leaves. If the connection ends, the game says why; **Join again** connects to the same server, **Back to menu** leaves. In the menu (Esc) of a network game, **Disconnect** leaves the server; the server keeps your inventory and position.
+
+**Limits of the security**
+
+There are no accounts: every installation has a random key that proves your name on each server (the first player to use a name on a server keeps it). Passwords are never sent in plain text, but nothing else is encrypted, so chat and play can be read on the way. Open a server to the internet only with a password and to people you know.

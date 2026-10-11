@@ -4,11 +4,46 @@
 #include "QcContentRegistry.h"
 #include "QcControlCommandTable.h"
 #include "QcControlContext.h"
+#include "QcControlReports.h"
 #include "QcDebugJson.h"
 
 #include <QJsonArray>
 
+#include <optional>
+#include <utility>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// Overwrites the fields the request names: content names as strings, colours as "#rrggbb".
+std::optional<QString> readAppearance(const QJsonObject &request, QcAppearance &look)
+{
+    for (const auto &[key, value] : {std::pair{u"outfit"_s, &look.outfit}, std::pair{u"hair"_s, &look.hair}, std::pair{u"cape"_s, &look.cape}}) {
+        if (request.contains(key)) {
+            if (!request.value(key).isString() || request.value(key).toString().size() > QcAppearance::maxNameLength) {
+                return u"'%1' must be a content name"_s.arg(key);
+            }
+            *value = request.value(key).toString();
+        }
+    }
+
+    for (const auto &[key, value] : {std::pair{u"skinColor"_s, &look.skinColor}, std::pair{u"hairColor"_s, &look.hairColor},
+                                     std::pair{u"shirtColor"_s, &look.shirtColor}, std::pair{u"pantsColor"_s, &look.pantsColor}}) {
+        if (request.contains(key)) {
+            const QString text = request.value(key).toString();
+            bool ok = false;
+            const uint rgb = text.startsWith(u'#') && text.size() == 7 ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
+            if (!ok) {
+                return u"'%1' must be a colour like \"#3a7bc8\""_s.arg(key);
+            }
+            *value = rgb;
+        }
+    }
+    return std::nullopt;
+}
+
+} // namespace
 
 QcControlSessionCommands::QcControlSessionCommands(QcControlContext &context)
     : m_context(context)
@@ -21,6 +56,9 @@ void QcControlSessionCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"view"_s, [this](const QJsonObject &request) { view(request); });
     table.add(u"respawn"_s, [this](const QJsonObject &request) { respawn(request); });
     table.add(u"chat"_s, [this](const QJsonObject &request) { chat(request); });
+    table.add(u"chatLog"_s, [this](const QJsonObject &request) { chatLog(request); });
+    table.add(u"players"_s, [this](const QJsonObject &request) { players(request); });
+    table.add(u"appearance"_s, [this](const QJsonObject &request) { appearance(request); });
     table.add(u"sounds"_s, [this](const QJsonObject &request) { sounds(request); });
     table.add(u"mods"_s, [this](const QJsonObject &request) { mods(request); });
     table.add(u"debug"_s, [this](const QJsonObject &request) { debug(request); });
@@ -64,6 +102,36 @@ void QcControlSessionCommands::chat(const QJsonObject &request)
     m_context.clearChatLog();
     session().sendChat(request.value(u"text"_s).toString());
     m_context.waitTicks(request, startTick, 3);
+}
+
+void QcControlSessionCommands::chatLog(const QJsonObject &request)
+{
+    m_context.finish(request, {{u"lines"_s, QJsonArray::fromStringList(m_context.chatHistory())}});
+    if (request.value(u"clear"_s).toBool(false)) {
+        m_context.clearChatHistory();
+    }
+}
+
+void QcControlSessionCommands::players(const QJsonObject &request)
+{
+    QJsonArray list;
+    for (const QcMsg::PlayerList::Entry &player : session().players()) {
+        list.append(QJsonObject{{u"name"_s, player.name}, {u"entity"_s, qint64(player.entityId)}, {u"operator"_s, player.operatorRights}});
+    }
+    m_context.finish(request, {{u"players"_s, list}});
+}
+
+void QcControlSessionCommands::appearance(const QJsonObject &request)
+{
+    QcAppearance look = session().appearance();
+    if (const std::optional<QString> error = readAppearance(request, look)) {
+        m_context.fail(request, *error);
+        return;
+    }
+
+    // The server checks the look and shows it to the others with a new spawn of this player.
+    session().setAppearance(look);
+    m_context.finish(request, QcControlReports::appearanceJson(look));
 }
 
 void QcControlSessionCommands::sounds(const QJsonObject &request)

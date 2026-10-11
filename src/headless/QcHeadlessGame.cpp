@@ -1,6 +1,8 @@
 #include "QcHeadlessGame.h"
 
 #include "QcAppIcon.h"
+#include "QcContentFingerprint.h"
+#include "QcDedicatedServer.h"
 #include "QcBaseContent.h"
 #include "QcModLoader.h"
 #include "QcClientSession.h"
@@ -10,12 +12,15 @@
 #include "QcHandbookJson.h"
 #include "QcHandbookMarkdown.h"
 #include "QcHandbookRules.h"
+#include "QcHeadlessJoin.h"
+#include "QcHeadlessOptions.h"
 #include "QcKeyBindings.h"
 #include "QcLocalServerHost.h"
 #include "QcMapRenderer.h"
 #include "QcServerConsole.h"
 #include "QcShowcaseGenerator.h"
 #include "QcShowcaseTour.h"
+#include "QcSignalWatcher.h"
 #include "QcSoundExporter.h"
 #include "QcStatsLog.h"
 #include "QcStdinReader.h"
@@ -43,19 +48,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr int defaultTimeLimitSeconds = 120;
-
-void printError(const QString &message)
-{
-    std::println(stderr, "{}", message.toStdString());
-}
-
-void printLines(const QStringList &lines)
-{
-    for (const QString &line : lines) {
-        std::println("{}", line.toStdString());
-    }
-}
+using QcHeadlessOptions::Options;
+using QcHeadlessOptions::printError;
+using QcHeadlessOptions::printLines;
 
 // Ends the application with `code` once the event loop runs.
 void exitSoon(int code)
@@ -68,64 +63,6 @@ bool fail(QJsonObject &response, const QString &error)
     response = {{u"ok"_s, false}, {u"error"_s, error}};
     return true;
 }
-
-// The command line options of qtcraft-headless.
-struct Options
-{
-    QCommandLineOption seed{u"seed"_s, u"World seed."_s, u"number"_s, u"0"_s};
-    QCommandLineOption world{u"world"_s, u"World name."_s, u"name"_s, u"Headless"_s};
-    QCommandLineOption view{u"view-distance"_s, u"Chunk radius streamed to the client."_s, u"chunks"_s, u"4"_s};
-    QCommandLineOption script{u"script"_s, u"Run JSON-lines commands from a file, then exit."_s, u"file"_s};
-    QCommandLineOption time{u"time-limit"_s, u"Exit with failure after this many seconds."_s, u"seconds"_s,
-                            QString::number(defaultTimeLimitSeconds)};
-    QCommandLineOption map{u"map"_s, u"Write a top-down terrain map PNG and exit."_s, u"file"_s};
-    QCommandLineOption mapRadius{u"map-radius"_s, u"Map radius in blocks."_s, u"blocks"_s, u"1024"_s};
-    QCommandLineOption biomeMap{u"biome-map"_s, u"Write a top-down map with one colour per biome and exit."_s, u"file"_s};
-    QCommandLineOption spawn{u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s};
-    QCommandLineOption slice{u"slice-map"_s,
-                             u"Write a vertical cut through the world along x at z = 0 (--map-radius blocks to each side) and exit."_s,
-                             u"file"_s};
-    QCommandLineOption stats{u"world-stats"_s, u"Print numbers about the generated world (ores, surface, biomes, slopes) and exit."_s};
-    QCommandLineOption statsRadius{u"stats-radius"_s, u"Chunk radius generated for --world-stats."_s, u"chunks"_s, u"16"_s};
-    QCommandLineOption data{u"data-dir"_s, u"Data directory: worlds in <dir>/worlds, mods in <dir>/mods."_s, u"dir"_s};
-    QCommandLineOption mods{u"mods-dir"_s, u"Directory with mods (default: the game's mods directory)."_s, u"dir"_s};
-    QCommandLineOption noMods{u"no-mods"_s, u"Load only the base game."_s};
-    QCommandLineOption sounds{u"export-sounds"_s,
-                              u"Write every sound and a music piece (seeded by --seed) as WAV files into a directory and exit."_s,
-                              u"dir"_s};
-    QCommandLineOption handbook{u"export-handbook"_s,
-                                u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
-                                u"dir"_s};
-    QCommandLineOption language{u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s, u"locale"_s, u"en"_s};
-    QCommandLineOption generator{u"generator"_s, u"World type of the world started at once: terrain, flat, void or showcase."_s, u"type"_s,
-                                 u"terrain"_s};
-    QCommandLineOption generatorOptions{u"generator-options"_s,
-                                        u"Options of --generator: the layers of a flat world ('bedrock,3*dirt,grass_block') or the platform of a void world ('platform=glass,radius=4,y=40')."_s,
-                                        u"options"_s};
-    QCommandLineOption tour{u"showcase-tour"_s,
-                            u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
-    QCommandLineOption statsLog{u"stats"_s,
-                                u"Log the debug data as a JSON line 'STATS {...}' every this many milliseconds (also QTCRAFT_STATS)."_s,
-                                u"ms"_s};
-    QCommandLineOption console{u"console"_s,
-                               u"Run a server console on standard input instead of the control interface (no bot joins; "
-                               u"the time limit applies only when given)."_s};
-    QCommandLineOption noEofStop{u"no-eof-stop"_s,
-                                 u"With --console: the end of standard input does not stop the server (a service without input); "
-                                 u"it runs until the time limit or until the process is ended."_s};
-    QCommandLineOption icon{u"export-icon"_s,
-                            u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
-                            u"dir"_s};
-
-    // In the order of the help text.
-    void addTo(QCommandLineParser &parser) const
-    {
-        parser.addOptions({sounds, icon});
-        parser.addOptions({handbook, language});
-        parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, view, script, console, noEofStop, time, map, mapRadius, data, mods, noMods, statsLog});
-    }
-};
 
 // Base game only: the icon must not depend on the mods of whoever builds the game.
 bool exportIcon(const QString &directory)
@@ -143,56 +80,6 @@ bool exportIcon(const QString &directory)
     }
     exitSoon(written ? 0 : 1);
     return true;
-}
-
-// Seed, world name, view distance, spawn column and the time limit; false on a bad number.
-bool readConfig(const QCommandLineParser &parser, const Options &options, QcServerConfig &config, int &timeLimit)
-{
-    bool seedOk = false;
-    config.seed = parser.value(options.seed).toLongLong(&seedOk);
-    config.worldName = parser.value(options.world);
-    config.generator = parser.value(options.generator);
-    config.generatorOptions = parser.value(options.generatorOptions);
-    bool viewOk = false;
-    config.viewDistance = std::clamp(parser.value(options.view).toInt(&viewOk), 1, 32);
-    bool timeOk = false;
-    timeLimit = parser.value(options.time).toInt(&timeOk);
-
-    bool spawnOk = true;
-    if (parser.isSet(options.spawn)) {
-        const QStringList parts = parser.value(options.spawn).split(u',');
-        bool xOk = false;
-        bool zOk = false;
-        if (parts.size() == 2) {
-            config.spawnColumn = std::array<int, 2>{parts[0].toInt(&xOk), parts[1].toInt(&zOk)};
-        }
-        spawnOk = xOk && zOk;
-    }
-    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk && QcWorldGenerators::isKnown(config.generator);
-}
-
-// The base game with the mods of --mods-dir, else of the data directory's mods folder; nullptr
-// (after printing the reason) when it cannot be loaded.
-std::shared_ptr<const QcContentRegistry> loadContent(const QCommandLineParser &parser, const Options &options)
-{
-    QStringList warnings;
-    QString modsDirectory = parser.value(options.mods);
-    if (modsDirectory.isEmpty()) {
-        modsDirectory = parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"mods"_s) : QcModLoader::defaultDirectory();
-    }
-    if (parser.isSet(options.noMods)) {
-        modsDirectory.clear();
-    }
-
-    QcResult<QcModLoader::Result> content = QcModLoader::load(modsDirectory, warnings);
-    for (const QString &warning : std::as_const(warnings)) {
-        printError(u"content warning: "_s + warning);
-    }
-    if (!content) {
-        printError(u"Cannot load content: "_s + content.error());
-        return nullptr;
-    }
-    return std::move(content->content);
 }
 
 void exportSounds(const QcContentRegistry &content, const QString &directory, quint64 seed)
@@ -332,6 +219,11 @@ QcHeadlessGame::QcHeadlessGame(QObject *parent)
 
 QcHeadlessGame::~QcHeadlessGame()
 {
+    m_dedicated.reset();
+    if (m_remote && m_session) {
+        // Says goodbye so the server saves the player at once rather than when the link drops.
+        m_session->disconnectFromServer();
+    }
     delete m_control;
     delete m_session;
     if (m_server) {
@@ -363,14 +255,22 @@ bool QcHeadlessGame::start(const QStringList &arguments)
 
     QcServerConfig config;
     int timeLimit = 0;
-    if (!readConfig(parser, options, config, timeLimit)) {
+    if (!QcHeadlessOptions::readConfig(parser, options, config, timeLimit)) {
         printError(u"Invalid numeric option or world type"_s);
         return false;
     }
-    const std::shared_ptr<const QcContentRegistry> shared = loadContent(parser, options);
-    if (!shared) {
+    const std::optional<QcModLoader::Result> loaded = QcHeadlessOptions::loadContent(parser, options);
+    if (!loaded) {
         return false;
     }
+    const std::shared_ptr<const QcContentRegistry> shared = loaded->content;
+    if (parser.isSet(options.server)) {
+        return startDedicated(parser, *loaded);
+    }
+    if (parser.isSet(options.join)) {
+        return startJoin(parser, *loaded, config.viewDistance, timeLimit);
+    }
+
     if (const QcStatus checked = QcWorldGenerators::checkOptions(config.generator, config.generatorOptions, *shared); !checked) {
         printError(u"Invalid --generator-options: "_s + checked.error());
         return false;
@@ -397,8 +297,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     if (runWorldTool(parser, options, generator, *shared)) {
         return true;
     }
+    return startLocal(parser, config, timeLimit, shared);
+}
 
-    m_content = shared;
+bool QcHeadlessGame::startLocal(const QCommandLineParser &parser, const QcServerConfig &config, int timeLimit,
+                                const std::shared_ptr<const QcContentRegistry> &content)
+{
+    const Options options;
+    m_content = content;
     m_baseConfig = config;
     m_library = std::make_unique<QcWorldLibrary>(parser.isSet(options.data) ? QDir(parser.value(options.data)).filePath(u"worlds"_s)
                                                                             : QcWorldLibrary::defaultRoot());
@@ -412,7 +318,74 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         startConsole(parser.isSet(options.time) ? timeLimit : 0, !parser.isSet(options.noEofStop));
         return true;
     }
-    return startControl(parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt, timeLimit);
+    startTimeLimit(timeLimit);
+    return startControl(parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt);
+}
+
+bool QcHeadlessGame::startJoin(const QCommandLineParser &parser, const QcModLoader::Result &content, int viewDistance, int timeLimit)
+{
+    const Options options;
+    m_content = content.content;
+    m_remote = true;
+    startStatsLog(QcStatsLog::interval(parser.value(options.statsLog)));
+    const QString password = parser.isSet(options.password) ? parser.value(options.password) : qEnvironmentVariable("QTCRAFT_SERVER_PASSWORD");
+    const QcHeadlessJoin::Options join{parser.value(options.join), parser.value(options.playerName), password,
+                                       QcHeadlessOptions::dataDirectory(parser, options), viewDistance};
+    const std::optional<QString> script = parser.isSet(options.script) ? std::optional<QString>(parser.value(options.script)) : std::nullopt;
+
+    auto *joining = new QcHeadlessJoin(this);
+    connect(joining, &QcHeadlessJoin::failed, this, [](const QString &reason) {
+        printError(u"join failed: "_s + reason);
+        QCoreApplication::exit(QcHeadlessJoin::exitJoinFailed);
+    });
+    connect(joining, &QcHeadlessJoin::joined, this, [this, script](QcClientSession *session) { onJoined(session, script); });
+    if (const QcStatus started = joining->start(join, content); !started) {
+        printError(started.error());
+        return false;
+    }
+
+    startTimeLimit(timeLimit);
+    return true;
+}
+
+void QcHeadlessGame::onJoined(QcClientSession *session, const std::optional<QString> &scriptFile)
+{
+    m_session = session;
+    session->setParent(this);
+    printError(u"joined '%1'"_s.arg(session->login().serverName()));
+
+    // Only the server ends the connection while the process runs; quitting deletes the session.
+    connect(session, &QcClientSession::disconnected, this, [](const QString &reason) {
+        printError(u"disconnected: "_s + reason);
+        QCoreApplication::exit(QcHeadlessJoin::exitConnectionLost);
+    });
+    if (m_statsLog) {
+        session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+    }
+
+    if (!startControl(scriptFile)) {
+        QCoreApplication::exit(1);
+    }
+}
+
+bool QcHeadlessGame::startDedicated(const QCommandLineParser &parser, const QcModLoader::Result &content)
+{
+    const Options options;
+    const std::optional<QcServerSettings> settings = QcHeadlessOptions::serverSettings(parser, options);
+    if (!settings) {
+        return false;
+    }
+
+    const QcDedicatedServer::Options run{*settings, QcHeadlessOptions::dataDirectory(parser, options), parser.value(options.generatorOptions),
+                                   parser.isSet(options.console), !parser.isSet(options.noEofStop),
+                                   parser.isSet(options.time) ? parser.value(options.time).toInt() : 0};
+    m_dedicated = std::make_unique<QcDedicatedServer>(content.content, QcContentFingerprint::of(*content.content, content.mods));
+    if (const QcStatus started = m_dedicated->start(run); !started) {
+        printError(started.error());
+        m_dedicated.reset();
+        return false;
+    }
+    return true;
 }
 
 void QcHeadlessGame::startStatsLog(int intervalMs)
@@ -429,7 +402,7 @@ void QcHeadlessGame::startStatsLog(int intervalMs)
     }, this);
 }
 
-bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int timeLimit)
+bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile)
 {
     m_output = new QFile(this);
     // Opened by descriptor: a FILE*-based QFile would sit in stdio's buffer when stdout is a pipe.
@@ -440,7 +413,7 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int 
 
     m_control = new QcControlInterface(m_session, nullptr, m_output);
     m_control->setExtensionHandler([this](const QJsonObject &request, QJsonObject &response) {
-        return handleWorldCommand(request, response);
+        return m_remote ? handleRemoteCommand(request, response) : handleWorldCommand(request, response);
     });
     m_scriptMode = scriptFile.has_value();
     // A script's exit code reports whether every request succeeded, also when it ends with quit.
@@ -469,18 +442,24 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile, int 
     } else {
         readStandardInput();
     }
+    return true;
+}
 
-    QTimer::singleShot(timeLimit * 1000, this, [] {
+void QcHeadlessGame::startTimeLimit(int seconds)
+{
+    QTimer::singleShot(seconds * 1000, this, [] {
         printError(u"time limit reached"_s);
         QCoreApplication::exit(2);
     });
-    return true;
 }
 
 void QcHeadlessGame::startConsole(int timeLimit, bool stopAtEndOfInput)
 {
     auto *console = new QcServerConsole([this](const QString &line) { return m_server->runConsoleCommand(line); }, stopAtEndOfInput, this);
     connect(console, &QcServerConsole::finished, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    // SIGTERM and Ctrl+C end the process through the event loop: the world is saved (E-255).
+    auto *watcher = new QcSignalWatcher(this);
+    connect(watcher, &QcSignalWatcher::stopRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
     console->start();
     if (timeLimit > 0) {
         QTimer::singleShot(timeLimit * 1000, this, [] {
@@ -637,6 +616,21 @@ bool QcHeadlessGame::handleWorldCommand(const QJsonObject &request, QJsonObject 
         return true;
     }
 
+    return false;
+}
+
+bool QcHeadlessGame::handleRemoteCommand(const QJsonObject &request, QJsonObject &response)
+{
+    const QString command = request.value(u"cmd"_s).toString();
+    if (command == u"handbook"_s) {
+        handleHandbookCommand(request, response);
+        return true;
+    }
+
+    // A bot on another process's server has no world of its own to manage.
+    if (command.startsWith(u"world"_s) || command == u"console"_s) {
+        return fail(response, u"'%1' is not available for a bot that joined a server"_s.arg(command));
+    }
     return false;
 }
 

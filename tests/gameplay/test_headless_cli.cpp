@@ -234,11 +234,14 @@ private slots:
         QCOMPARE(ask(R"({"cmd":"console","text":"op Friend"})").value(u"lines"_s).toArray(), QJsonArray{u"Friend is an operator"_s});
         QCOMPARE(ask(R"({"cmd":"console","text":"/list"})").value(u"lines"_s).toArray(), QJsonArray{u"1 players online: Bot"_s});
         const QJsonArray backup = ask(R"({"cmd":"console","text":"backup first"})").value(u"lines"_s).toArray();
-        QVERIFY2(backup.first().toString().startsWith(u"Backup with "_s), qPrintable(backup.first().toString()));
+        // Copied in the background (decision E-256): the folder appears when it is complete.
+        QVERIFY2(backup.first().toString().startsWith(u"Backup of "_s), qPrintable(backup.first().toString()));
         QCOMPARE(ask(R"({"cmd":"console","text":5})").value(u"ok"_s).toBool(true), false);
 
-        const QStringList backups = QDir(QDir(data.path()).filePath(u"backups"_s)).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-        QCOMPARE(backups.size(), 1);
+        const QDir backupRoot(QDir(data.path()).filePath(u"backups"_s));
+        QTRY_COMPARE_WITH_TIMEOUT(backupRoot.entryList(QDir::Dirs | QDir::NoDotAndDotDot).size(), 1, timeoutMs);
+        QTRY_COMPARE_WITH_TIMEOUT(backupRoot.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden).size(), 1, timeoutMs);
+        const QStringList backups = backupRoot.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
         const QString copy = QDir(data.path()).filePath(u"backups/"_s + backups.first());
         QVERIFY(QFile::exists(copy + u"/world.json"_s));
         QVERIFY(QFile::exists(copy + u"/access.json"_s));
@@ -366,7 +369,7 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 25);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 27);
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
         QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
         const QJsonObject server = debug.value(u"server"_s).toObject();
@@ -390,7 +393,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 25);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 27);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

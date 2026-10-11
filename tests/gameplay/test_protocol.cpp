@@ -82,7 +82,10 @@ private slots:
         const QcMsg::BlockUpdate update = roundTrip(QcMsg::BlockUpdate{{-1, 200, 33}, 17});
         QCOMPARE(update.pos, (QcBlockPos{-1, 200, 33}));
         QCOMPARE(update.block, 17u);
-        QCOMPARE(roundTrip(QcMsg::Disconnect{u"bye"_s}).reason, u"bye"_s);
+        const QcMsg::Disconnect bye = roundTrip(QcMsg::Disconnect{u"Kicked by Ann"_s, u"Kicked by %1"_s, {u"Ann"_s}});
+        QCOMPARE(bye.reason, u"Kicked by Ann"_s);
+        QCOMPARE(bye.key, u"Kicked by %1"_s);
+        QCOMPARE(bye.arguments, QStringList{u"Ann"_s});
     }
 
     void movementMessagesRoundTripExactly()
@@ -505,7 +508,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.mobType = QcMsg::EntitySpawn::playerType;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 25u);
+        QCOMPARE(QcProtocol::version, 27u);
     }
 
     void machineAndFoodMessagesRoundTrip()
@@ -659,7 +662,7 @@ private slots:
         const QByteArray input = QcProtocol::encode(QcMsg::PlayerInput{});
         QVERIFY(QcProtocol::decode(input, QcProtocol::Peer::Client).has_value());
         QVERIFY(!QcProtocol::decode(input, QcProtocol::Peer::Server).has_value());
-        const QByteArray bye = QcProtocol::encode(QcMsg::Disconnect{u"x"_s});
+        const QByteArray bye = QcProtocol::encode(QcMsg::Disconnect{u"x"_s, {}, {}});
         QVERIFY(QcProtocol::decode(bye, QcProtocol::Peer::Client).has_value());
         QVERIFY(QcProtocol::decode(bye, QcProtocol::Peer::Server).has_value());
     }
@@ -805,7 +808,9 @@ private slots:
 
         QcMsg::EntityMoves moves;
         moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true, -30.0f, QcMsg::InWater, 3}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false, 0.0f, 0, qcNoItem}};
+        moves.timeMs = 123'456'789;
         const QcMsg::EntityMoves copy = roundTrip(moves);
+        QCOMPARE(copy.timeMs, 123'456'789);
         QCOMPARE(copy.moves.size(), 2);
         QCOMPARE(copy.moves.at(0).hurt, true);
         QCOMPARE(copy.moves.at(1).position, (QcVec3{3.0, 65.0, 4.0}));

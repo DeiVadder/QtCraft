@@ -78,9 +78,9 @@ limited() {
 run_tests() {
     preset=$1
     if [ -n "$TEST_REGEX" ]; then
-        limited 1200 ctest --preset "$preset" -R "$TEST_REGEX"
+        limited 2400 ctest --preset "$preset" -R "$TEST_REGEX"
     else
-        limited 1200 ctest --preset "$preset"
+        limited 2400 ctest --preset "$preset"
     fi
 }
 

@@ -5,7 +5,7 @@
 #include <QString>
 #include <QStringList>
 
-// Translatable chat lines of the server (decision E-094). The server sends a key, which is the
+// Translatable chat lines and disconnect reasons of the server (decision E-094). The server sends a key, which is the
 // English text with %1.. placeholders marked with QT_TRANSLATE_NOOP in `context`, and its
 // arguments; the client translates the key and fills in the arguments. The message also carries
 // the filled-in English text for lines without a key (player chat, free-form warnings).
@@ -22,5 +22,9 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments = {});
 QcMsg::ChatMessage plain(const QString &text);
 // The text to show: the translated key with its arguments, or the plain text.
 QString display(const QcMsg::ChatMessage &message);
+
+// The same for the reason of a Disconnect.
+QcMsg::Disconnect disconnect(const char *key, const QStringList &arguments = {});
+QString display(const QcMsg::Disconnect &message);
 
 } // namespace QcChatText

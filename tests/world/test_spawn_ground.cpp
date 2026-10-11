@@ -52,7 +52,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd));
         QcRawClient client(std::move(clientEnd));
-        client.connection.send(QcMsg::Hello{QcProtocol::version, u"Raw"_s, {}});
+        client.hello(u"Raw"_s);
         pump();
         server.tick();
         pump();

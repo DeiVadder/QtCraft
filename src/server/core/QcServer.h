@@ -7,6 +7,7 @@
 #include "QcMessages.h"
 #include "QcServerBlocks.h"
 #include "QcServerDebug.h"
+#include "QcServerLogin.h"
 #include "QcServerCombat.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
@@ -52,8 +53,9 @@ public:
     // Saves, then disconnects every client; returns the result of saving.
     QcStatus stop();
     // Where a client connects from. Local clients are those of the in-process host (single player:
-    // the one who opened the world, who is the operator anyway); their chat lines and commands are
-    // not rate limited (decision E-091, supplement). Everything else is Remote and fully limited.
+    // the one who opened the world, who is the operator anyway); they join without a login and their
+    // chat lines and commands are not rate limited (decision E-091, supplement). Everything else is
+    // Remote: it logs in (decision E-252) and is fully limited.
     enum class ClientOrigin { Remote, Local };
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
@@ -115,6 +117,11 @@ public:
     QcTickScheduler &tickScheduler() { return m_ticks; }
     const QcTickControl &tickControl() const { return m_tickControl; }
 
+    // Changes the login settings for network players (a world opened to the LAN, decision E-252).
+    void setLoginSettings(const QcLoginSettings &login);
+    // Ends the connections of all network clients with a reason (the host stopped sharing the
+    // world); the local player stays. They are saved with the next tick like any who leave.
+    void disconnectRemoteClients();
     // Runs a line of the server console (decision E-247); the replies go to `output`.
     void runConsoleCommand(const QString &line, const QcCommandSource::Output &output);
     QcServerCommands &commands() { return m_commands; }
@@ -137,10 +144,17 @@ private:
     bool handlePlayerMessage(Client &client, const QcMessage &message);
     // Messages about the inventory, crafting, machine screens and the look; false for other types.
     bool handleInventoryMessage(Client &client, const QcMessage &message);
-    void handleHello(Client &client, const QcMsg::Hello &hello);
+    // Messages before the client plays: Hello, the login response and leaving; anything else ends
+    // the connection.
+    void handleLoginMessage(Client &client, const QcMessage &message);
+    // The admitted client becomes a player: restored from his save or spawned (QcServerLogin::Join).
+    void join(Client &client);
     // Restores a saved player; false when there is none (or no storage). Closes the connection
     // when the saved data cannot be read.
     bool restorePlayer(Client &client);
+    // Everyone on the server to every player (QcMsg::PlayerList), after joins, leaves and changes
+    // of operator rights.
+    void sendPlayerList();
     void sendWelcome(Client &client, bool rejoined);
     void handleInput(Client &client, const QcMsg::PlayerInput &message);
     // Replaces unknown outfits and hair styles with defaults; names come from the content.
@@ -150,9 +164,10 @@ private:
     void sendAccessWarning(Client &client);
     void sendTime(Client &client);
     void sendTimeToAll();
-    // Who may join: a refusal disconnects the client with the reason (decision E-244).
-    bool admitted(Client &client) const;
     void autosave();
+    // Writes identities.json when players registered since the last write (decision E-273).
+    void flushIdentities();
+    void flushIdentitiesWhenDue();
     // Block updates, liquids, creatures, items, plants, falling blocks and machines of one tick.
     void simulate();
     // What the clients get after this tick besides their own state: the world around them
@@ -192,11 +207,15 @@ private:
     QcChunkStreaming m_chunkStreaming;
     QcServerPersistence m_persistence;
     QcServerCommands m_commands;
+    QcServerLogin m_login;
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
     // Players' time (QcServerState::playerTimeNs) of the latest autosave and sprint sync.
     qint64 m_lastAutosaveNs = 0;
+    static constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
+    // The first registration is written with the next tick.
+    qint64 m_lastIdentityFlushNs = -identityFlushIntervalNs;
     qint64 m_lastSprintSyncNs = 0;
     quint64 m_autosaves = 0;
     QcServerDebug m_debug;

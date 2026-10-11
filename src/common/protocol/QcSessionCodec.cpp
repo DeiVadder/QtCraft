@@ -20,7 +20,7 @@ void encode(QDataStream &stream, const QcMsg::Hello &m)
 
 void encode(QDataStream &stream, const QcMsg::Welcome &m)
 {
-    stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView;
+    stream << m.protocolVersion << m.playerEntityId << m.worldName << m.seed << m.yaw << m.pitch << m.restoredView << m.viewDistance;
 }
 
 void encode(QDataStream &stream, const QcMsg::ContentSync &m)
@@ -31,7 +31,10 @@ void encode(QDataStream &stream, const QcMsg::ContentSync &m)
 
 void encode(QDataStream &stream, const QcMsg::Disconnect &m)
 {
-    stream << m.reason;
+    stream << m.reason << m.key << quint32(m.arguments.size());
+    for (const QString &argument : m.arguments) {
+        stream << argument;
+    }
 }
 
 void encode(QDataStream &stream, const QcMsg::ChatInput &m)
@@ -56,6 +59,9 @@ QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
 {
     QcMsg::Hello m;
     stream >> m.protocolVersion >> m.playerName;
+    if (m.playerName.size() > QcMsg::Hello::maxNameLength) {
+        return qcError(u"Player name too long"_s);
+    }
 
     // Other versions may lay out the rest differently: skip it so the server can report the version
     // mismatch instead of a decode error.
@@ -73,9 +79,12 @@ QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
 QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
 {
     QcMsg::Welcome m;
-    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView;
+    stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView >> m.viewDistance;
     if (!std::isfinite(m.yaw) || !std::isfinite(m.pitch)) {
         return qcError(u"Non-finite view direction"_s);
+    }
+    if (m.viewDistance < 0 || m.viewDistance > QcMsg::Welcome::maxViewDistance) {
+        return qcError(u"Invalid view distance"_s);
     }
     return m;
 }
@@ -92,7 +101,17 @@ QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream)
 QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
 {
     QcMsg::Disconnect m;
-    stream >> m.reason;
+    quint32 count = 0;
+    stream >> m.reason >> m.key;
+    if (!QcStreamLimits::readCount(stream, QcMsg::Disconnect::maxArguments, count)) {
+        return qcError(u"Too many disconnect arguments"_s);
+    }
+
+    for (quint32 i = 0; i < count; ++i) {
+        QString argument;
+        stream >> argument;
+        m.arguments.append(argument);
+    }
     return m;
 }
 

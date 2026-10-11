@@ -128,6 +128,9 @@ void QcStartupHooks::openStartupOverlay()
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
         m_game.handbook()->open(m_startupHandbook);
+    } else if (m_startupOverlay == u"players"_s) {
+        // As if the player list key were held.
+        m_game.input()->setPlayerListHeld(true);
     } else if (!m_startupOverlay.isEmpty()) {
         m_game.setOverlay(m_startupOverlay);
     }
@@ -179,6 +182,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         pickInOpenScreen(QStringView(step).mid(5).toInt());
     } else if (step == u"handbook"_s) {
         m_game.handbook()->open({});
+    } else if (step == u"players"_s) {
+        m_game.input()->setPlayerListHeld(true);
     } else {
         // "@<ms> " closes the screen and the handbook.
         m_game.setOverlay(step);
@@ -228,7 +233,10 @@ void QcStartupHooks::machineOpened()
 
 void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
 {
-    const int ring = 2 * (viewDistance + 1) + 1;
+    // The server streams the view distance (plus a ring) it granted in Welcome; a network server
+    // may grant less than the settings ask for.
+    const int streamed = m_parts.session->viewDistance() > 0 ? m_parts.session->viewDistance() : viewDistance + 1;
+    const int ring = 2 * streamed + 1;
     const bool allChunksArrived = m_parts.session->world()->chunkCount() >= qsizetype(ring) * ring;
     if (m_screenshotHook && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
         && m_parts.meshes->jobsInFlight() == 0) {

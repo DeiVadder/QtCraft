@@ -6,12 +6,14 @@
 #include "QcControlArguments.h"
 #include "QcControlCommandTable.h"
 #include "QcControlContext.h"
+#include "QcControlReports.h"
 #include "QcPhysics.h"
 
 #include <QJsonArray>
 #include <QtMath>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -21,6 +23,33 @@ namespace {
 qint64 entityArgument(const QJsonObject &request)
 {
     return request.value(u"entity"_s).toInteger(-1);
+}
+
+// The worn pieces by slot; empty slots are null.
+QJsonObject armourJson(const QcContentRegistry *content, const QcEquipment &equipment)
+{
+    static constexpr std::array slotNames{"head", "chest", "legs", "feet"};
+    QJsonObject armour;
+    for (std::size_t slot = 0; slot < QcEquipment::slotCount; ++slot) {
+        const QcItemStack &stack = equipment.stacks[slot];
+        const bool known = !stack.isEmpty() && content && content->isValidItem(stack.item);
+        armour.insert(QLatin1StringView(slotNames[slot]), known ? QJsonValue(content->item(stack.item).name) : QJsonValue());
+    }
+    return armour;
+}
+
+// What the character model animates (QcEntityPose at the start of the current tick).
+QJsonObject animationJson(const QcClientEntity &entity)
+{
+    const QcEntityPose pose = QcClientSession::poseOf(entity, 0.0);
+    return {{u"speed"_s, pose.speed},
+            {u"walkDistance"_s, pose.walkDistance},
+            {u"onGround"_s, pose.onGround},
+            {u"inWater"_s, pose.inWater},
+            {u"sneaking"_s, pose.sneaking},
+            {u"sprinting"_s, pose.sprinting},
+            {u"swinging"_s, pose.swingProgress >= 0.0},
+            {u"hurt"_s, pose.hurtProgress >= 0.0}};
 }
 
 QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
@@ -44,13 +73,22 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
     }
 
     const bool mob = content && entity.mobType >= 0 && entity.mobType < content->mobs().size();
-    return {{u"id"_s, qint64(entity.id)},
-            {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
-            {u"name"_s, entity.name},
-            {u"hostile"_s, mob && content->mobs()[entity.mobType].hostile},
-            {u"position"_s, QcControlReports::vectorJson(entity.position)},
-            {u"distance"_s, distance},
-            {u"health"_s, entity.health}};
+    QJsonObject json{{u"id"_s, qint64(entity.id)},
+                     {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
+                     {u"name"_s, entity.name},
+                     {u"hostile"_s, mob && content->mobs()[entity.mobType].hostile},
+                     {u"position"_s, QcControlReports::vectorJson(entity.position)},
+                     {u"distance"_s, distance},
+                     {u"health"_s, entity.health},
+                     {u"yaw"_s, entity.yaw},
+                     {u"animation"_s, animationJson(entity)}};
+    if (entity.isPlayer()) {
+        json.insert(u"appearance"_s, QcControlReports::appearanceJson(entity.appearance));
+        json.insert(u"armour"_s, armourJson(content, entity.equipment));
+        json.insert(u"held"_s, entity.held != qcNoItem && content && content->isValidItem(entity.held) ? QJsonValue(content->item(entity.held).name)
+                                                                                                         : QJsonValue());
+    }
+    return json;
 }
 
 } // namespace

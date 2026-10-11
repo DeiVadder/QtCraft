@@ -80,29 +80,33 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
 
     const QcClientEntity entity = entityFromSpawn(spawn, content);
     m_entities.insert(entity.id, entity);
+    // The motion starts where it appeared, at about the time it appeared.
+    m_tracks.remove(entity.id);
+    if (m_clock.latestServerMs() >= 0) {
+        m_tracks[entity.id].push({double(m_clock.latestServerMs()), spawn.position, spawn.yaw, spawn.pitch}, m_clock.intervalMs());
+    }
     return true;
 }
 
-void QcClientEntities::move(const QcMsg::EntityMove &move)
+void QcClientEntities::moves(const QcMsg::EntityMoves &moves, qint64 localMs)
+{
+    m_clock.observe(moves.timeMs, localMs);
+    for (const QcMsg::EntityMove &move : moves.moves) {
+        applyMove(move, double(moves.timeMs));
+    }
+}
+
+void QcClientEntities::applyMove(const QcMsg::EntityMove &move, double serverMs)
 {
     const auto it = m_entities.find(move.id);
     if (it == m_entities.end()) {
         return;
     }
 
-    it->previousPosition = it->position;
-    it->previousYaw = it->yaw;
-    it->previousPitch = it->pitch;
-    it->lastStep = std::hypot(move.position.x - it->position.x, move.position.z - it->position.z);
-    it->walkDistance += it->lastStep;
-    it->stepThisTick += it->lastStep;
-    it->position = move.position;
-    it->yaw = move.yaw;
-    it->pitch = move.pitch;
+    m_tracks[move.id].push({serverMs, move.position, move.yaw, move.pitch}, m_clock.intervalMs());
     it->health = move.health;
     it->flags = move.flags;
     it->held = move.held;
-    it->moved = true;
 
     if ((move.flags & QcMsg::Swing) != 0) {
         it->swingTicks = 0;
@@ -114,6 +118,7 @@ void QcClientEntities::move(const QcMsg::EntityMove &move)
 
 void QcClientEntities::remove(QcMsg::EntityRemove removed)
 {
+    m_tracks.remove(removed.id);
     QcClientEntity gone = m_entities.take(removed.id);
     if (removed.died && gone.id == removed.id && !gone.isItem()) {
         gone.deathTicks = 0;
@@ -122,23 +127,12 @@ void QcClientEntities::remove(QcMsg::EntityRemove removed)
     }
 }
 
-void QcClientEntities::tick()
+void QcClientEntities::tick(qint64 localMs)
 {
+    const std::optional<double> shown = m_clock.advance(localMs);
     for (QcClientEntity &entity : m_entities) {
+        advancePose(entity, shown);
         entity.hurtTicks = std::max(0, entity.hurtTicks - 1);
-        entity.speed += (entity.stepThisTick * QcPhysics::tickRate - entity.speed) * speedSmoothing;
-        entity.stepThisTick = 0.0;
-
-        // Items move only on change, and a tick may pass without a mob or player move: then the
-        // entity stays where it is (no interpolation towards an old position).
-        if (!entity.moved) {
-            entity.lastStep = 0.0;
-            entity.previousPosition = entity.position;
-            entity.previousYaw = entity.yaw;
-            entity.previousPitch = entity.pitch;
-        }
-        entity.moved = false;
-
         if (entity.swingTicks >= 0) {
             ++entity.swingTicks;
             if (entity.swingTicks >= swingTicks) {
@@ -151,4 +145,36 @@ void QcClientEntities::tick()
         ++dying.deathTicks;
     }
     m_dying.removeIf([](const auto &entry) { return entry.value().deathTicks >= deathTicks; });
+}
+
+void QcClientEntities::advancePose(QcClientEntity &entity, std::optional<double> shown)
+{
+    entity.previousPosition = entity.position;
+    entity.previousYaw = entity.yaw;
+    entity.previousPitch = entity.pitch;
+
+    // Frames interpolate from the start of the tick to its end, so the tick's end shows the pose
+    // one tick after the shown moment.
+    const auto track = m_tracks.find(entity.id);
+    if (track != m_tracks.end() && !track->isEmpty()) {
+        const bool buffered = m_buffered && shown;
+        const QcSnapshotBuffer::Snapshot pose = buffered ? track->at(*shown + QcPhysics::tickDuration * 1000.0) : track->newest();
+        if (buffered) {
+            track->dropBefore(*shown);
+        }
+        entity.position = pose.position;
+        entity.yaw = pose.yaw;
+        entity.pitch = pose.pitch;
+    }
+
+    // A teleport shows at once instead of sweeping through everything in between.
+    if ((entity.position - entity.previousPosition).length() > QcSnapshotBuffer::teleportMetres) {
+        entity.previousPosition = entity.position;
+        entity.previousYaw = entity.yaw;
+        entity.previousPitch = entity.pitch;
+    }
+
+    entity.lastStep = std::hypot(entity.position.x - entity.previousPosition.x, entity.position.z - entity.previousPosition.z);
+    entity.walkDistance += entity.lastStep;
+    entity.speed += (entity.lastStep * QcPhysics::tickRate - entity.speed) * speedSmoothing;
 }

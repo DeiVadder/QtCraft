@@ -102,6 +102,56 @@ QcStatus QcLocalServerHost::save()
     return result;
 }
 
+QcResult<quint16> QcLocalServerHost::listen(const QcNetworkConfig &config, const std::optional<QcLoginSettings> &login)
+{
+    if (!m_server) {
+        return qcError(u"No world is open"_s);
+    }
+
+    // Made and used only in the server thread; the result comes back under a mutex (E-010).
+    std::mutex mutex;
+    QcResult<quint16> result = qcError(QString());
+    { const std::scoped_lock lock(mutex); }
+    QcServer *server = m_server;
+    QMetaObject::invokeMethod(
+        server,
+        [this, server, &config, &login, &result, &mutex] {
+            const std::scoped_lock lock(mutex);
+            if (login) {
+                server->setLoginSettings(*login);
+            }
+            delete m_network;
+            m_network = new QcNetworkServer(*server, config, server);
+            result = m_network->listen();
+            if (!result) {
+                delete m_network;
+                m_network = nullptr;
+            }
+        },
+        Qt::BlockingQueuedConnection);
+
+    const std::scoped_lock lock(mutex);
+    m_listeningPort = result ? *result : 0;
+    return result;
+}
+
+void QcLocalServerHost::stopListening()
+{
+    if (!m_server) {
+        return;
+    }
+
+    QMetaObject::invokeMethod(
+        m_server,
+        [this] {
+            m_server->disconnectRemoteClients();
+            delete m_network;
+            m_network = nullptr;
+        },
+        Qt::BlockingQueuedConnection);
+    m_listeningPort = 0;
+}
+
 QStringList QcLocalServerHost::runConsoleCommand(const QString &line)
 {
     if (!m_server) {
@@ -111,6 +161,8 @@ QStringList QcLocalServerHost::runConsoleCommand(const QString &line)
     // The replies come back under a std::mutex like the result of save() (decision E-010).
     std::mutex mutex;
     QStringList replies;
+    // Publishes the empty list to the server thread (ThreadSanitizer does not see Qt's handover).
+    { const std::scoped_lock lock(mutex); }
     QcServer *server = m_server;
     QMetaObject::invokeMethod(
         server,
@@ -139,15 +191,18 @@ QcStatus QcLocalServerHost::shutdown()
 
     QMetaObject::invokeMethod(
         server,
-        [server, &result, &mutex] {
+        [this, server, &result, &mutex] {
             const std::scoped_lock lock(mutex);
             result = server->stop();
+            // The listener is a child of the server and goes with it.
             delete server;
+            m_network = nullptr;
         },
         Qt::BlockingQueuedConnection);
 
     m_thread->quit();
     m_thread->wait();
+    m_listeningPort = 0;
 
     const std::scoped_lock lock(mutex);
     return result;

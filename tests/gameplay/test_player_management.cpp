@@ -26,7 +26,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         m_server->addClient(std::move(serverEnd), origin);
         auto client = std::make_unique<RawClient>(std::move(clientEnd));
-        client->connection.send(QcMsg::Hello{QcProtocol::version, name, {}});
+        client->hello(name);
         pump();
         ticks(2);
         return client;
@@ -39,6 +39,16 @@ private:
         QcServerConfig config;
         config.worldDirectory = directory.path();
         return config;
+    }
+
+    // The names of a list in access.json (format 2: objects with name and fingerprint).
+    static QStringList namesIn(const QJsonArray &entries)
+    {
+        QStringList names;
+        for (const auto &entry : entries) {
+            names.append(entry.toObject().value(u"name"_s).toString());
+        }
+        return names;
     }
 
     QJsonObject accessFile(const QTemporaryDir &directory) const
@@ -122,7 +132,7 @@ private slots:
         QCOMPARE(lastLine(), u"The whitelist is on: Friend"_s);
         const QJsonObject whitelist = accessFile(directory).value(u"whitelist"_s).toObject();
         QCOMPARE(whitelist.value(u"enabled"_s).toBool(), true);
-        QCOMPARE(whitelist.value(u"names"_s).toArray(), QJsonArray{u"Friend"_s});
+        QCOMPARE(namesIn(whitelist.value(u"names"_s).toArray()), QStringList{u"Friend"_s});
 
         chat(u"/whitelist remove friend"_s);
         chat(u"/whitelist off"_s);
@@ -179,7 +189,7 @@ private slots:
         host->connection.send(QcMsg::ChatInput{u"/op Helper"_s});
         pump();
         QCOMPARE(host->chatLines.constLast(), u"Helper is an operator"_s);
-        QCOMPARE(accessFile(directory).value(u"operators"_s).toArray(), QJsonArray{u"Helper"_s});
+        QCOMPARE(namesIn(accessFile(directory).value(u"operators"_s).toArray()), QStringList{u"Helper"_s});
         QFile kept(copy);
         QVERIFY(kept.open(QIODevice::ReadOnly));
         QCOMPARE(kept.readAll(), damaged);
@@ -222,12 +232,18 @@ private slots:
             QVERIFY2(lastLine().startsWith(u"Not a valid player name: "_s), qPrintable(command + u" -> "_s + lastLine()));
         }
         QCOMPARE(m_client->chatKeys.constLast().key, u"Not a valid player name: %1"_s);
-        QVERIFY(!QFile::exists(directory.filePath(u"access.json"_s)));
+        // The file holds only the binding of the configured operator Raw, no entry of the commands.
+        const QJsonObject access = accessFile(directory);
+        QVERIFY(access.value(u"operators"_s).toArray().isEmpty() && access.value(u"bans"_s).toArray().isEmpty());
+        QVERIFY(access.value(u"whitelist"_s).toObject().value(u"names"_s).toArray().isEmpty());
 
         // A joining player of such a name is "Player", like one without a name.
         QCOMPARE(QcProfileValidation::playerName(u"..."_s), u"Player"_s);
         QCOMPARE(QcProfileValidation::validPlayerName(u" ?! "_s), std::nullopt);
         QCOMPARE(QcProfileValidation::validPlayerName(u"R2"_s), std::optional<QString>(u"R2"_s));
+        // Markup characters: such a name is no player's (the login refuses it).
+        QCOMPARE(QcProfileValidation::validPlayerName(u"<b>Bo</b>"_s), std::nullopt);
+        QCOMPARE(QcProfileValidation::validPlayerName(u"Tom & Jerry"_s), std::nullopt);
         QCOMPARE(QcProfileValidation::validPlayerName(u"\u2603"_s), std::optional<QString>(u"\u2603"_s));
     }
 

@@ -22,9 +22,14 @@ inline constexpr qsizetype maxPlayerNameLength = 32;
 // colours keep their RGB bits.
 QcAppearance appearance(const QcContentRegistry &content, const QcAppearance &requested);
 
+// Characters a player name may not hold: shown on other clients, a name must never read as markup.
+inline constexpr QStringView markupCharacters = u"<>&";
+bool hasMarkup(const QString &name);
+
 // Without unpaired surrogates, control and format characters, trimmed, at most
 // maxPlayerNameLength code points cut between graphemes (QcNameText::clean); std::nullopt when no
-// letter, digit or symbol is left (empty, only spaces or punctuation). Commands refuse such names.
+// letter, digit or symbol is left (empty, only spaces or punctuation) or when it holds one of
+// markupCharacters. Commands refuse such names, the login refuses names with markup characters.
 std::optional<QString> validPlayerName(const QString &requested);
 // The same with "Player" for a name that names nobody (Hello).
 QString playerName(const QString &requested);

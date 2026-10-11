@@ -8,6 +8,7 @@
 #include "QcFallingBlockManager.h"
 #include "QcLiquidFlow.h"
 #include "QcModLoader.h"
+#include "QcRawClient.h"
 #include "QcServer.h"
 #include "QcShowcaseGenerator.h"
 #include "QcStreamLimits.h"
@@ -856,16 +857,11 @@ private slots:
 
         // A joining player is told as well.
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
-        QStringList chat;
-        QcConnection player(std::move(clientEnd), QcProtocol::Peer::Server, [&chat](QcMessage &&message) {
-            if (const auto *line = std::get_if<QcMsg::ChatMessage>(&message)) {
-                chat.append(line->text);
-            }
-        });
+        QcRawClient player(std::move(clientEnd));
         server.addClient(std::move(serverEnd));
-        player.send(QcMsg::Hello{QcProtocol::version, u"Visitor"_s, {}});
+        player.hello(u"Visitor"_s);
 
-        QTRY_VERIFY(std::ranges::any_of(chat, [](const QString &line) { return line.contains(u"Rubies"_s); }));
+        QTRY_VERIFY(std::ranges::any_of(player.chatLines, [](const QString &line) { return line.contains(u"Rubies"_s); }));
         QCOMPARE(server.world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
         QCOMPARE(server.world().blockAt(pos.offset(1, 0, 0)), without->blockId(u"qtcraft:glass"_s));
     }

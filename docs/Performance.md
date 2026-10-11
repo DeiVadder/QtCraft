@@ -210,3 +210,14 @@ Rate und Einfrieren werden nicht gespeichert; die Benchmark-Szenarien laufen wei
 
 - **Sprint:** Der Server schafft im Gedränge rund 6 800 Ticks pro Sekunde (340-fache Geschwindigkeit; `Sprint ended: 2000 ticks in 281–301 ms` im Log), in der flachen Welt rund 13 700. Ein langer Sprint räumt die Szene selbst ab (Items verfallen nach 6000 Ticks, Zombies verbrennen am Tag, Wesen verschwinden): nach wenigen Sekunden laufen 11 000 bzw. 31 000 Ticks pro Sekunde mit 12 bzw. 2 Wesen. Der Client bekommt Welt, Entities und Zeit höchstens alle 50 ms (je ≈ 20 pro Sekunde, E-249), dazu aber jeden Klang einzeln: im kurzen Sprint mit vollem Gedränge rund 400 Klänge in 0,3 s, im langen 105 pro Sekunde (normal 4,5). GUI- und Render-CPU sinken im Sprint (weniger Wesen), der Server-Thread ist voll ausgelastet; Frame p99 bleibt bei 9,3–10,3 ms.
 - **Rate 100:** Der Tick kostet so viel wie bei Rate 20 (0,45 statt 0,49 ms, 4,5 % des 10-ms-Intervalls), der Client-Abgleich 0,033 ms pro Tick, also 3,3 statt 0,9 ms pro Sekunde; der Client bekommt rund 120 statt 27 Nachrichten pro Sekunde (vor allem Entity-Bewegungen mit jedem Tick, E-249). GUI-CPU, Render-CPU, GPU und Frame p99 bleiben gleich (GUI-CPU −7 %, Streuung): Der Client interpoliert weiter mit seinem 20-Hz-Takt, die zusätzlichen Bewegungen kosten im GUI-Thread nichts Messbares.
+
+## Mehrspieler-Last (Etappe 25)
+
+Referenzwerte für den Server-Tick mit Spielern über TCP (Release, `qtcraft-headless --server` in der flachen Welt, Seed 42, 8 Chunks, nur auf 127.0.0.1; Bots mit `qtcraft-headless --join`, die geradeaus sprinten und springen, alle 4 s einen Block abbauen und eine Chatzeile schreiben; ein Bot als Operator liest alle 4 s die Server-Debugdaten über den Steuerbefehl `debug`). Je 3 Läufe, Mittel über rund 45 s nach dem Beitritt; Einzelwerte und Methode in `docs/Performance-Verlauf.md` (Etappe 25).
+
+| Bots | Tick Ø ms | Tick max ms (Autosave) | Nachrichten Ø ms | Streaming Ø ms | Client-Abgleich Ø ms | Server-CPU | Server-Speicher MB |
+|-----:|----------:|-----------------------:|-----------------:|---------------:|---------------------:|-----------:|-------------------:|
+| 1 | 0,25 | 6,8 | 0,017 | 0,14 | 0,038 | ≈ 1,2 % eines Kerns | 42 |
+| 4 | 0,45 | 9,8 | 0,042 | 0,31 | 0,051 | ≈ 2,4 % eines Kerns | 72 |
+
+Der Mehraufwand pro zusätzlichem laufenden Spieler liegt bei rund 0,07 ms Tick, vor allem Streaming in neue Gebiete und die Eingaben mit 20 Hz. Der schlechteste Tick ist in beiden Fällen der Autosave, nicht das Netz. Für eine spätere Messung mit mehr Spielern lässt sich derselbe Aufbau mit mehr Bots wiederholen; eine Steigerung über diese Werte hinaus ist mit der Phase Nachrichten und Streaming einzugrenzen.

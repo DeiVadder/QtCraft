@@ -169,6 +169,16 @@ private slots:
         QCOMPARE(pose().swingProgress, -1.0);
         QCOMPARE(pose().hurtProgress, -1.0);
 
+        // Animation from the server state, each tick showing the newest snapshot; the interpolation
+        // buffer has its own test (test_interpolation, decision E-271).
+        session.entityMirror().setBuffered(false);
+        qint64 serverMs = 0;
+        const auto arrive = [&](QList<QcMsg::EntityMove> moves) {
+            serverMs += 50;
+            server.send(QcMsg::EntityMoves{std::move(moves), serverMs});
+            QTRY_COMPARE_WITH_TIMEOUT(session.entityMirror().clock().latestServerMs(), serverMs, timeoutMs);
+        };
+
         // Walking at 4 m/s while the moves arrive unevenly: two in one client tick, none in the next.
         double x = 0.5;
         const auto step = [&](quint8 flags, bool hurt) {
@@ -177,18 +187,17 @@ private slots:
         };
         for (int i = 0; i < 20; ++i) {
             if (i % 2 == 0) {
-                server.send(QcMsg::EntityMoves{{step(QcMsg::OnGround, false), step(QcMsg::OnGround, false)}});
-                QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(bob).position.x, x, timeoutMs);
+                arrive({step(QcMsg::OnGround, false), step(QcMsg::OnGround, false)});
             }
             session.tick();
+            QCOMPARE(session.entities().value(bob).position.x, x);
             if (i >= 10) {
                 QVERIFY2(pose().speed > 2.0 && pose().speed < 6.0, qPrintable(QString::number(pose().speed)));
             }
         }
 
         // A swing flag starts the arm swing, which ends after its length; a hurt move flashes.
-        server.send(QcMsg::EntityMoves{{step(QcMsg::OnGround | QcMsg::Swing, true)}});
-        QTRY_COMPARE_WITH_TIMEOUT(session.entities().value(bob).position.x, x, timeoutMs);
+        arrive({step(QcMsg::OnGround | QcMsg::Swing, true)});
         QCOMPARE(pose().swingProgress, 0.0);
         QVERIFY(pose().hurtProgress >= 0.0);
         for (int i = 0; i < QcClientSession::swingTicks; ++i) {

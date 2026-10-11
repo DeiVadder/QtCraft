@@ -74,10 +74,13 @@ struct EntityMove
     QcItemId held = qcNoItem;
 };
 
-// Server -> client: positions of all visible entities that changed this tick.
+// Server -> client: positions of all visible entities that changed this tick, with the server's
+// time of the tick (players' time, QcServerState::playerTimeNs, in ms) for the client's
+// interpolation buffer (decision E-271).
 struct EntityMoves
 {
     QList<EntityMove> moves;
+    qint64 timeMs = 0;
 };
 
 struct EntityRemove

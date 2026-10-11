@@ -54,6 +54,35 @@ QStringList ownColours(const QString &path)
     return found;
 }
 
+// The element a line belongs to: the nearest line above it that opens a block and is indented less.
+std::pair<QString, qsizetype> enclosingElement(const QStringList &lines, qsizetype line)
+{
+    static const QRegularExpression opening(uR"(^(\s*)([A-Z]\w*)\s*\{\s*$)"_s);
+    const qsizetype indent = lines[line].size() - lines[line].trimmed().size();
+    for (qsizetype i = line - 1; i >= 0; --i) {
+        const QRegularExpressionMatch match = opening.match(lines[i]);
+        if (match.hasMatch() && match.capturedLength(1) < indent) {
+            return {match.captured(2), i};
+        }
+    }
+    return {};
+}
+
+// Whether the element opened at `start` sets textFormat: Text.PlainText on its own level.
+bool setsPlainText(const QStringList &lines, qsizetype start, qsizetype indent)
+{
+    for (qsizetype i = start + 1; i < lines.size(); ++i) {
+        const qsizetype own = lines[i].size() - lines[i].trimmed().size();
+        if (!lines[i].trimmed().isEmpty() && own < indent) {
+            return false;
+        }
+        if (own == indent && lines[i].trimmed() == u"textFormat: Text.PlainText"_s) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } // namespace
 
 class TestUiPalette : public QObject
@@ -133,6 +162,46 @@ private slots:
             QVERIFY2(text.contains(u"Q_PROPERTY(QColor %1 MEMBER m_%1 CONSTANT FINAL)"_s.arg(name)), qPrintable(name));
             QVERIFY2(text.contains(u"QColor m_%1 = QcUiPalette::color(QcUiPalette::Role::"_s.arg(name)), qPrintable(name));
         }
+    }
+
+    // Text from the network (chat, player and server names, reasons, labels in the world) is shown
+    // as plain text: Qt's automatic format would render a name like <img src=http://...> as HTML
+    // and load the image on every other client.
+    void networkTextIsPlain()
+    {
+        static const QRegularExpression networkText(
+            uR"(^\s*text:.*\b(statusText|serverName|motd|machineLabel|targetLabel|lastAddress|screen\.failure|worldLabel\.(title|detail)|modelData\.name|playerName)\b)"_s);
+        const QDir directory(QStringLiteral(QTCRAFT_QML_DIR));
+        const auto plainFile = [&directory](const QString &type) {
+            QFile file(directory.filePath(type + u".qml"_s));
+            return file.open(QIODevice::ReadOnly | QIODevice::Text) && QString::fromUtf8(file.readAll()).contains(u"textFormat: Text.PlainText"_s);
+        };
+        // HudLabel carries the chat lines.
+        QVERIFY(plainFile(u"HudLabel"_s));
+
+        QStringList problems;
+        int checked = 0;
+        const QStringList files = qmlFiles();
+        for (const QString &path : files) {
+            QFile file(path);
+            QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+            const QStringList lines = QString::fromUtf8(file.readAll()).split(u'\n');
+            for (qsizetype i = 0; i < lines.size(); ++i) {
+                if (!networkText.match(lines[i]).hasMatch()) {
+                    continue;
+                }
+                const auto [type, start] = enclosingElement(lines, i);
+                const qsizetype indent = lines[i].size() - lines[i].trimmed().size();
+                const bool plain = type == u"Label"_s || type == u"Text"_s ? setsPlainText(lines, start, indent) : plainFile(type);
+                const bool textInput = type == u"TextField"_s || type == u"TextArea"_s;
+                ++checked;
+                if (!plain && !textInput) {
+                    problems.append(u"%1:%2: %3 shows network text without Text.PlainText"_s.arg(QFileInfo(path).fileName()).arg(i + 1).arg(type));
+                }
+            }
+        }
+        QVERIFY(checked >= 10);
+        QVERIFY2(problems.isEmpty(), qPrintable(problems.join(u'\n')));
     }
 
     // Screens take all colours from the palette, and only names it has.

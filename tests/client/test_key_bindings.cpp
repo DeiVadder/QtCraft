@@ -127,6 +127,9 @@ private slots:
         QCOMPARE(defaults.key(A::DebugOptions, 0), int(Qt::Key_O));
         QCOMPARE(defaults.key(A::DebugOptions, 1), int(Qt::Key_F4));
         QCOMPARE(defaults.actionFor(Qt::Key_O), std::optional<A>(A::DebugOptions));
+        // E-259: the player list while Tab is held, as in other games; no other default uses Tab.
+        QCOMPARE(defaults.keys(A::PlayerList), QList<int>{Qt::Key_Tab});
+        QCOMPARE(defaults.actionFor(Qt::Key_Tab), std::optional<A>(A::PlayerList));
         QVERIFY(defaults.conflicts().isEmpty());
         QCOMPARE(defaults.key(A::Forward, 0), int(Qt::Key_W));
         QCOMPARE(defaults.key(A::Chat, 1), int(Qt::Key_Return));

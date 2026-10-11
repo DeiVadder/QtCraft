@@ -24,7 +24,7 @@ void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
 
 void encode(QDataStream &stream, const QcMsg::EntityMoves &m)
 {
-    stream << quint32(m.moves.size());
+    stream << m.timeMs << quint32(m.moves.size());
     for (const QcMsg::EntityMove &move : m.moves) {
         stream << move.id << move.position << move.yaw << move.health << move.hurt << move.pitch << move.flags << move.held;
     }
@@ -72,7 +72,8 @@ QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream)
 {
     QcMsg::EntityMoves m;
     quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, count)) {
+    stream >> m.timeMs;
+    if (m.timeMs < 0 || !QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, count)) {
         return qcError(u"Corrupt entity moves"_s);
     }
 

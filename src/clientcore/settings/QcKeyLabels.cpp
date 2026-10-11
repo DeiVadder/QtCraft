@@ -111,6 +111,8 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Debug options");
     case A::Labels:
         return tr("Labels in the world");
+    case A::PlayerList:
+        return tr("Player list (hold)");
     case A::Pause:
         return tr("Menu");
     case A::Hotbar1:

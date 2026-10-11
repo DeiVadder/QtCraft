@@ -5,6 +5,7 @@
 #include "QcContainerManager.h"
 #include "QcContentRegistry.h"
 #include "QcFallingBlockManager.h"
+#include "QcIdentityStore.h"
 #include "QcItemEntityManager.h"
 #include "QcLiquidFlow.h"
 #include "QcMachineManager.h"
@@ -55,6 +56,10 @@ struct QcServerState
     std::vector<std::unique_ptr<QcServerClient>> clients;
     QcWorldInfo info;
     QcAccessList access;
+    // Identities of remote players per name (decision E-252).
+    QcIdentityStore identities;
+    // Someone joined or left, or operator rights changed: the clients get the player list again.
+    bool playerListDirty = false;
     quint64 tickCount = 0;
     // Real time as the players live it (decision E-249): each tick adds the real time it stands for
     // (QcTickScheduler::tickRealNs). Input budgets, rate limits, autosaves, confirmations and the

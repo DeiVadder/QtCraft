@@ -192,7 +192,24 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
     if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::Mine, key.key())) {
         m_parts.session->setMining(false);
     }
+    if (m_settings.keys()->bindings().matches(QcKeyBindings::Action::PlayerList, key.key())) {
+        setPlayerListHeld(false);
+    }
     m_keysDown.remove(key.key());
+}
+
+void QcGameInput::clearKeys()
+{
+    m_keysDown.clear();
+    setPlayerListHeld(false);
+}
+
+void QcGameInput::setPlayerListHeld(bool held)
+{
+    if (m_playerListHeld != held) {
+        m_playerListHeld = held;
+        emit playerListHeldChanged();
+    }
 }
 
 void QcGameInput::handleMousePress(const QMouseEvent &mouse)
@@ -321,6 +338,9 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());
         m_settings.saveSettings();
+        return;
+    case A::PlayerList:
+        setPlayerListHeld(true);
         return;
     case A::Drop:
         // With Ctrl (on a Mac Control) the whole stack.

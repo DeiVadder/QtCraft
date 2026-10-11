@@ -1,5 +1,6 @@
 #include "QcWorldCommands.h"
 
+#include "QcChatText.h"
 #include "QcCommandArguments.h"
 #include "QcPendingCommands.h"
 #include "QcProcessMemory.h"
@@ -81,12 +82,16 @@ void QcWorldCommands::save(const QcCommandContext &context) const
     }
 }
 
-void QcWorldCommands::backup(const QcCommandContext &context) const
+void QcWorldCommands::backup(const QcCommandContext &context)
 {
     const QString label = context.args.value(0);
     if (m_state.config.worldDirectory.isEmpty() || !QcWorldBackup::isValidLabel(label) || context.args.size() > 1) {
         context.reply(m_state.config.worldDirectory.isEmpty() ? QT_TRANSLATE_NOOP("QcServerMessages", "This world is not saved, there is nothing to back up")
                                                               : QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /backup [label]"));
+        return;
+    }
+    if (m_backups.running()) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "A backup is still being copied, try again when it is done"));
         return;
     }
 
@@ -96,20 +101,52 @@ void QcWorldCommands::backup(const QcCommandContext &context) const
         return;
     }
 
-    QElapsedTimer timer;
-    timer.start();
+    // The snapshot freezes the saved files at once; the copy runs in the background (E-256).
+    if (!m_clock.isValid()) {
+        m_clock.start();
+    }
+    const qint64 started = m_clock.elapsed();
     const QString root = m_state.config.backupDirectory.isEmpty() ? QcWorldBackup::defaultRoot(m_state.config.worldDirectory)
                                                                   : m_state.config.backupDirectory;
-    const QcResult<QcWorldBackup::Summary> copied = QcWorldBackup::copy(m_state.config.worldDirectory, root, label, QDateTime::currentDateTime());
-    if (!copied) {
-        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(copied.error());
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {copied.error()});
+    QcResult<QcWorldBackup::Snapshot> snapshot = QcWorldBackup::snapshot(m_state.config.worldDirectory, root, label, QDateTime::currentDateTime());
+    if (!snapshot) {
+        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(snapshot.error());
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {snapshot.error()});
         return;
     }
 
-    qCInfo(lcWorldCommands).noquote() << u"Backup of %1 files (%2 bytes) in %3 ms: %4"_s.arg(copied->files).arg(copied->bytes).arg(timer.elapsed()).arg(copied->directory);
-    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup with %1 files (%2 MB) in %3"),
-                  {QString::number(copied->files), megabytes(double(copied->bytes) / (1024.0 * 1024.0)), copied->directory});
+    qCInfo(lcWorldCommands).noquote() << u"Backup snapshot of %1 files %2 in %3 ms, copying to %4"_s.arg(snapshot->files.size())
+                                             .arg(snapshot->linked ? u"linked"_s : u"copied"_s)
+                                             .arg(m_clock.elapsed() - started)
+                                             .arg(snapshot->target);
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup of %1 files started, it is copied to %2"),
+                  {QString::number(snapshot->files.size()), snapshot->target});
+    const quint32 requester = context.source.id();
+    m_backups.start(std::move(*snapshot), [this, requester, started](const QcResult<QcWorldBackup::Summary> &result) {
+        reportBackup(requester, result, started);
+    });
+}
+
+void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBackup::Summary> &result, qint64 startedMs) const
+{
+    QcMsg::ChatMessage line;
+    if (result) {
+        qCInfo(lcWorldCommands).noquote() << u"Backup of %1 files (%2 bytes) in %3 ms: %4"_s.arg(result->files).arg(result->bytes)
+                                                 .arg(m_clock.elapsed() - startedMs)
+                                                 .arg(result->directory);
+        line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup with %1 files (%2 MB) in %3"),
+                                   {QString::number(result->files), megabytes(double(result->bytes) / (1024.0 * 1024.0)), result->directory});
+    } else {
+        qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(result.error());
+        line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {result.error()});
+    }
+
+    // The player who asked hears of it if he is still there; the console reads the log.
+    for (const auto &client : m_state.clients) {
+        if (requester != 0 && client->entityId == requester && client->state == QcServerClient::State::Playing) {
+            client->connection->send(line);
+        }
+    }
 }
 
 void QcWorldCommands::worldInfo(const QcCommandContext &context) const

@@ -8,6 +8,7 @@
 #include "QcMeshScheduler.h"
 #include "QcModLoader.h"
 #include "QcPhysics.h"
+#include "QcPlayerList.h"
 #include "QcStatsLog.h"
 #include "QcWorldGenerators.h"
 #include "QcTextureAtlas.h"
@@ -60,6 +61,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_preview(new QcPreviewSource(m_parts, *m_library, *m_settings->character(), this))
     , m_benchmark(new QcBenchmarkRun(*this, m_parts, *m_input, *m_settings, this))
     , m_startup(new QcStartupHooks(*this, m_parts, m_benchmark, this))
+    , m_multiplayer(new QcMultiplayerController(*this, m_parts, *m_settings, *m_library, this))
     , m_render(m_parts, *m_settings)
 {
     m_frameClock.start();
@@ -73,6 +75,8 @@ QcGameController::QcGameController(QObject *parent)
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook, &QcHandbookController::openChanged, m_input, &QcGameInput::syncCapture);
     connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
+    // Players joining and leaving appear in the chat (decision E-259).
+    connect(m_multiplayer->players(), &QcPlayerList::announced, m_hud, &QcHudState::addChatLine);
 }
 
 QcGameController::~QcGameController()
@@ -293,7 +297,37 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
         return;
     }
 
-    createSession();
+    m_parts.session = new QcClientSession(m_parts.server->connectClient(), u"Player"_s, this);
+    m_parts.session->setAppearance(m_settings->character()->appearance());
+    beginSession();
+    m_parts.session->start();
+    setPhase(u"loading"_s, tr("Generating world..."));
+    emit sessionStarted(m_parts.session);
+}
+
+void QcGameController::startRemoteSession(QcClientSession *session)
+{
+    if (const QcStatus saved = stopSession(); !saved) {
+        qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
+    }
+    // A network game: the server keeps the world, nothing is saved here.
+    m_worldDirectory.clear();
+    setOverlay({});
+
+    session->setParent(this);
+    m_parts.session = session;
+    beginSession();
+    setPhase(u"loading"_s, tr("Loading the world..."));
+    emit sessionStarted(m_parts.session);
+}
+
+void QcGameController::beginSession()
+{
+    m_parts.session->setCameraMode(m_settings->cameraModeValue());
+    m_parts.meshes = new QcMeshScheduler(this);
+    m_parts.session->setIntent(m_startup->initialIntent());
+    m_render.setForcedPose(m_startup->forcedPose());
+    m_hud->debug()->syncSubscription();
     connectSessionWorld();
     connectSessionPlayer();
     if (m_parts.view) {
@@ -301,11 +335,7 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
         const int viewDistance = m_settings->viewDistance();
         m_parts.view->setFogRange(float(viewDistance * QcWorld::chunkSize) * 0.6f, float(viewDistance * QcWorld::chunkSize));
     }
-
     m_sinceTick.start();
-    m_parts.session->start();
-    setPhase(u"loading"_s, tr("Generating world..."));
-    emit sessionStarted(m_parts.session);
 }
 
 std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
@@ -321,6 +351,7 @@ std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
     }
 
     m_library->recordLoadedMods(content->mods);
+    m_loadedMods = content->mods;
     const std::shared_ptr<const QcContentRegistry> shared = std::move(content->content);
     m_library->useContent(shared);
     m_settings->character()->refreshLists();
@@ -368,17 +399,6 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
         return false;
     }
     return true;
-}
-
-void QcGameController::createSession()
-{
-    m_parts.session = new QcClientSession(m_parts.server->connectClient(), u"Player"_s, this);
-    m_parts.session->setAppearance(m_settings->character()->appearance());
-    m_parts.session->setCameraMode(m_settings->cameraModeValue());
-    m_parts.meshes = new QcMeshScheduler(this);
-    m_parts.session->setIntent(m_startup->initialIntent());
-    m_render.setForcedPose(m_startup->forcedPose());
-    m_hud->debug()->syncSubscription();
 }
 
 void QcGameController::connectSessionWorld()
@@ -436,8 +456,9 @@ void QcGameController::onSessionState(QcClientSession::State state)
         setPhase(u"playing"_s);
         m_startup->worldPlaying();
     } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
+        // The disconnect screen shows the reason (translated, E-094) and leads back to the menu.
         m_input->releaseMouse();
-        setPhase(u"error"_s, tr("Disconnected: %1").arg(m_parts.session->disconnectReason()));
+        setPhase(u"disconnected"_s, m_parts.session->disconnectReason());
     }
 }
 

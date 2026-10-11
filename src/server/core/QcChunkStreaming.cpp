@@ -11,6 +11,8 @@ namespace {
 
 // Bounded so that turning around re-prioritises quickly instead of finishing a long old queue.
 constexpr qsizetype maxPendingGeneration = 48;
+// Bytes a network client may have waiting before it gets further chunks.
+constexpr qint64 maxPendingChunkBytes = qint64(4) * 1024 * 1024;
 
 } // namespace
 
@@ -27,7 +29,7 @@ QcChunkPos QcChunkStreaming::chunkOf(const QcVec3 &position)
 void QcChunkStreaming::stream(QcServerClient &client)
 {
     const QcChunkPos centre = chunkOf(client.motion.position);
-    const int radius = m_state.config.viewDistance;
+    const int radius = client.viewDistance > 0 ? client.viewDistance : m_state.config.viewDistance;
 
     // Unload with one chunk of hysteresis so walking along a border does not thrash.
     for (auto it = client.sentChunks.begin(); it != client.sentChunks.end();) {
@@ -56,10 +58,12 @@ void QcChunkStreaming::stream(QcServerClient &client)
         return distance(a) < distance(b);
     });
 
+    // A slow network client gets new chunks only once most of the sent ones have left (E-251).
     int sent = 0;
+    const bool backlog = client.connection->pendingBytes() > maxPendingChunkBytes;
     for (const QcChunkPos &pos : std::as_const(missing)) {
         if (const std::shared_ptr<const QcChunk> chunk = m_state.world.chunk(pos)) {
-            if (sent < m_state.config.chunksPerTick) {
+            if (sent < m_state.config.chunksPerTick && !backlog) {
                 client.connection->send(QcMsg::ChunkData{chunk});
                 sendLabels(client, pos);
                 client.sentChunks.insert(pos);
@@ -97,8 +101,9 @@ void QcChunkStreaming::unloadUnneeded()
     for (const auto &client : m_state.clients) {
         needed.unite(client->sentChunks);
         const QcChunkPos centre = chunkOf(client->motion.position);
-        for (int dx = -m_state.config.viewDistance; dx <= m_state.config.viewDistance; ++dx) {
-            for (int dz = -m_state.config.viewDistance; dz <= m_state.config.viewDistance; ++dz) {
+        const int radius = client->viewDistance > 0 ? client->viewDistance : m_state.config.viewDistance;
+        for (int dx = -radius; dx <= radius; ++dx) {
+            for (int dz = -radius; dz <= radius; ++dz) {
                 needed.insert({centre.x + dx, centre.z + dz});
             }
         }

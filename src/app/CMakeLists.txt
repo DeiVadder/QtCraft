@@ -3,6 +3,11 @@ qt_add_executable(qtcraft
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
+    multiplayer/QcMultiplayerSettings.h multiplayer/QcMultiplayerSettings.cpp
+    multiplayer/QcServerHistory.h multiplayer/QcServerHistory.cpp
+    multiplayer/QcPlayerList.h multiplayer/QcPlayerList.cpp
+    multiplayer/QcLanAddresses.h multiplayer/QcLanAddresses.cpp
     controllers/QcSessionParts.h
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
@@ -57,7 +62,8 @@ target_include_directories(qtcraft PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/models
     ${CMAKE_CURRENT_SOURCE_DIR}/rendering
     ${CMAKE_CURRENT_SOURCE_DIR}/hooks
-    ${CMAKE_CURRENT_SOURCE_DIR}/input)
+    ${CMAKE_CURRENT_SOURCE_DIR}/input
+    ${CMAKE_CURRENT_SOURCE_DIR}/multiplayer)
 target_compile_definitions(qtcraft PRIVATE QTCRAFT_VERSION="${PROJECT_VERSION}")
 if(QC_QML_DEBUG)
     target_compile_definitions(qtcraft PRIVATE QT_QML_DEBUG)
@@ -128,6 +134,11 @@ qt_add_qml_module(qtcraft
         qml/WorldLabels.qml
         qml/DebugOverlay.qml
         qml/DebugOptionsPage.qml
+        qml/MultiplayerScreen.qml
+        qml/RecentServerRow.qml
+        qml/LanScreen.qml
+        qml/PlayerListOverlay.qml
+        qml/DisconnectScreen.qml
 )
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
@@ -148,7 +159,7 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
 )
 
 qt_add_translations(qtcraft
-    SOURCE_TARGETS qtcraft qc_clientcore qc_server
+    SOURCE_TARGETS qtcraft qc_clientcore qc_server qc_network
     TS_FILE_DIR ${PROJECT_SOURCE_DIR}/translations
     TS_FILE_BASE qtcraft
     RESOURCE_PREFIX /i18n)

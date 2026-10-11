@@ -43,7 +43,7 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
 {
     return std::holds_alternative<QcMsg::Hello>(message) || std::holds_alternative<QcMsg::PlayerInput>(message)
            || std::holds_alternative<QcMsg::Respawn>(message) || std::holds_alternative<QcMsg::Disconnect>(message)
-           || std::holds_alternative<QcMsg::DebugSubscribe>(message);
+           || std::holds_alternative<QcMsg::DebugSubscribe>(message) || std::holds_alternative<QcMsg::LoginResponse>(message);
 }
 
 const char *QcRateLimiter::name(Kind kind)

@@ -2,5 +2,9 @@
     "%n chunk(s)": [
         "%n chunk",
         "%n chunks"
+    ],
+    "%n player(s) online": [
+        "%n player online",
+        "%n players online"
     ]
 }

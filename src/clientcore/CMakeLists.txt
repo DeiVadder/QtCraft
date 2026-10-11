@@ -17,7 +17,12 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h
+    session/QcHandTimers.h
+    session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
+    session/QcSnapshotClock.h session/QcSnapshotClock.cpp
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
+    session/QcClientLogin.h session/QcClientLogin.cpp
+    network/QcNetworkClient.h network/QcNetworkClient.cpp
     session/QcClientSession.h session/QcClientSession.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
@@ -97,5 +102,6 @@ target_include_directories(qc_clientcore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/preview
     ${CMAKE_CURRENT_SOURCE_DIR}/sound
     ${CMAKE_CURRENT_SOURCE_DIR}/session
+    ${CMAKE_CURRENT_SOURCE_DIR}/network
     ${CMAKE_CURRENT_SOURCE_DIR}/settings)
-target_link_libraries(qc_clientcore PUBLIC qc_common Qt::Core Qt::Gui)
+target_link_libraries(qc_clientcore PUBLIC qc_common qc_network Qt::Core Qt::Gui)

@@ -1,11 +1,13 @@
 #pragma once
 
 #include "QcClientEntities.h"
+#include "QcClientLogin.h"
 #include "QcClientMachineScreen.h"
 #include "QcClientSounds.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
 #include "QcEntityPose.h"
+#include "QcHandTimers.h"
 #include "QcViewCamera.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
@@ -40,13 +42,20 @@ public:
 
     enum class TickMode { Timer, Manual };
 
-    // Sends Hello. With TickMode::Timer a 20 Hz timer drives tick(); Manual leaves it to the caller
-    // (deterministic tests).
+    // Sends Hello. TickMode::Timer drives tick() at 20 Hz; Manual leaves it to the caller (tests).
     void start(TickMode mode = TickMode::Timer);
     void disconnectFromServer();
 
     State state() const { return m_state; }
+    // Why the session ended (translated, E-094) and the server's Disconnect (empty if the link broke).
     QString disconnectReason() const { return m_disconnectReason; }
+    const QcMsg::Disconnect &disconnectMessage() const { return m_disconnectMessage; }
+    // Login data for a network server (E-252), set before start(); server name and MOTD after it.
+    void setCredentials(QcClientLogin::Credentials credentials) { m_login.setCredentials(std::move(credentials)); }
+    const QcClientLogin &login() const { return m_login; }
+    // Everyone on the server (QcMsg::PlayerList) and the view distance streamed to us (Welcome).
+    const QList<QcMsg::PlayerList::Entry> &players() const { return m_players; }
+    int viewDistance() const { return m_viewDistance; }
     QString worldName() const { return m_worldName; }
     qint64 seed() const { return m_seed; }
     quint32 entityId() const { return m_entityId; }
@@ -65,6 +74,10 @@ public:
     const QcEntityMotion &playerMotion() const { return m_motion; }
     const QcEntityMotion &previousPlayerMotion() const { return m_previousMotion; }
     qsizetype pendingInputCount() const { return m_pendingInputs.size(); }
+    // Metres the server moved the predicted player: latest reconcile, most since reset (E-257).
+    double lastCorrection() const { return m_lastCorrection; }
+    double largestCorrection() const { return m_largestCorrection; }
+    void resetCorrections() { m_largestCorrection = 0.0; }
     bool hasServerState() const { return m_hasServerState; }
 
     // Advances the client by one tick; normally driven by the internal timer.
@@ -86,8 +99,7 @@ public:
     void takeCraftingResult();
     void craftRecipe(const QString &recipe, int count = 1);
     void closeCrafting();
-    // The machine screen the server opened (position, category), its slots (input, fuel, output)
-    // and progress; machineOpen() is false when none is open.
+    // The machine screen the server opened (position, category, slots, progress); see machineOpen().
     bool machineOpen() const { return m_machine.isOpen(); }
     std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
     QString machineCategory() const { return m_machine.category(); }
@@ -105,6 +117,8 @@ public:
     const QcEquipment &equipment() const { return m_equipment; }
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
+    // The mirror itself: its snapshot clock and buffering (decision E-271).
+    QcClientEntities &entityMirror() { return m_entities; }
     // Entity under the crosshair when it is closer than any targeted block.
     std::optional<quint32> targetEntity() const { return m_targetEntity; }
     // Hits the targeted entity; returns false without one.
@@ -121,12 +135,7 @@ public:
 
     // Animation of the local player. `alpha` interpolates within the current tick.
     QcEntityPose localPose(double alpha) const;
-    struct HandTimers
-    {
-        double switchProgress = -1.0;
-        double landing = -1.0;
-        double use = -1.0;
-    };
+    using HandTimers = QcHandTimers;
     HandTimers handTimers(double alpha) const;
     // Pose of a mirrored entity from its server state and client timers.
     static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
@@ -148,8 +157,7 @@ public:
     // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
     double worldTime() const { return m_worldTime; }
     double timeSpeed() const { return m_timeSpeed; }
-    // Labels floating in the loaded chunks (decision E-222) and a number that changes whenever a
-    // chunk's labels arrived.
+    // Labels in the loaded chunks (E-222) and a number that changes whenever a chunk's labels arrived.
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
     quint64 labelGeneration() const { return m_labelGeneration; }
 
@@ -163,8 +171,8 @@ public:
     quint8 debugSubscription() const { return m_debugFlags | m_debugBaseFlags; }
     const QcServerDebugMirror &serverDebug() const { return m_serverDebug; }
 
-    // Sounds of the last moments (server events and the client's own), oldest first; at most
-    // QcClientSounds::recentLimit. clearRecentSounds() empties the list (control interface).
+    // Recent sounds (server and own), oldest first, at most QcClientSounds::recentLimit; cleared by
+    // clearRecentSounds() (control interface).
     const QList<QcSoundCue> &recentSounds() const { return m_sounds.recent(); }
     void clearRecentSounds() { m_sounds.clearRecent(); }
     // Ambience loop levels around the player, faded towards the surroundings every tick.
@@ -192,6 +200,7 @@ signals:
     // The server opened a crafting table's grid.
     void craftingOpened(int size);
     void chatReceived(const QString &text);
+    void playersChanged();
     // A sound to play now (see QcSoundCue).
     void soundCue(const QcSoundCue &cue);
 
@@ -224,6 +233,10 @@ private:
     QString m_playerName;
     State m_state = State::Connecting;
     QString m_disconnectReason;
+    QcMsg::Disconnect m_disconnectMessage;
+    QcClientLogin m_login;
+    QList<QcMsg::PlayerList::Entry> m_players;
+    int m_viewDistance = 0;
     QString m_worldName;
     qint64 m_seed = 0;
     quint32 m_entityId = 0;
@@ -238,6 +251,8 @@ private:
     QcEntityMotion m_motion;
     QcEntityMotion m_previousMotion;
     bool m_hasServerState = false;
+    double m_lastCorrection = 0.0;
+    double m_largestCorrection = 0.0;
     quint32 m_lastAcknowledged = 0;
     QcInventory m_inventory;
     QcEquipment m_equipment;

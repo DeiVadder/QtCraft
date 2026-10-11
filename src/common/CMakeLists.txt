@@ -20,6 +20,9 @@ qt_add_library(qc_common STATIC
     protocol/QcDebugMessages.h protocol/QcDebugCodec.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     core/QcCrc32.h core/QcCrc32.cpp
+    core/QcDataRoot.h core/QcDataRoot.cpp
+    auth/QcLoginCrypto.h auth/QcLoginCrypto.cpp
+    auth/QcPlayerKey.h auth/QcPlayerKey.cpp
     core/QcNameText.h core/QcNameText.cpp
     core/QcPhaseWindow.h core/QcPhaseWindow.cpp
     core/QcProcessMemory.h core/QcProcessMemory.cpp
@@ -110,6 +113,10 @@ qt_add_library(qc_common STATIC
     protocol/QcPlayerCodec.cpp
     protocol/QcEntityCodec.cpp
     protocol/QcMachineCodec.cpp
+    protocol/QcLoginMessages.h
+    protocol/QcLoginCodec.cpp
+    protocol/QcFrameReader.h protocol/QcFrameReader.cpp
+    protocol/QcPackComparison.h protocol/QcPackComparison.cpp
     physics/QcRaycast.h physics/QcRaycast.cpp
     content/definitions/QcRecipeDefinition.h content/definitions/QcRecipeDefinition.cpp
     core/QcResult.h
@@ -129,6 +136,7 @@ qc_configure_target(qc_common)
 # stay "QcName.h" without a path.
 target_include_directories(qc_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/auth
     ${CMAKE_CURRENT_SOURCE_DIR}/world
     ${CMAKE_CURRENT_SOURCE_DIR}/physics
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay

@@ -280,7 +280,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
-        client.connection.send(QcMsg::Hello{QcProtocol::version, u"Viewer"_s, {}});
+        client.hello(u"Viewer"_s);
         pump();
         for (int i = 0; i < 30; ++i) {
             server.tick();
@@ -342,7 +342,7 @@ private slots:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
         QcRawClient client(std::move(clientEnd));
-        client.connection.send(QcMsg::Hello{QcProtocol::version, u"Viewer"_s, {}});
+        client.hello(u"Viewer"_s);
         pump();
         for (int i = 0; i < 30; ++i) {
             server.tick();

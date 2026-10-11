@@ -146,6 +146,7 @@ target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TA
                                                     QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_headless_cli qtcraft-headless)
 qc_add_test(test_reconciliation SOURCES client/test_reconciliation.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
 add_test(NAME scenario_headless_failure_then_quit
     COMMAND ${CMAKE_COMMAND}
@@ -234,3 +235,55 @@ if(NOT QC_SANITIZERS)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 120)
 endif()
+
+# Multiplayer (stage 25, decisions E-251 to E-256).
+qc_add_test(test_login_protocol SOURCES network/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)
+qc_add_test(test_server_login SOURCES network/test_server_login.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_tcp_transport SOURCES network/test_tcp_transport.cpp LIBRARIES qc_network Qt::Network)
+qc_add_test(test_network_game SOURCES network/test_network_game.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 240)
+target_compile_definitions(test_dedicated_server PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
+                                                         QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+add_dependencies(test_dedicated_server qtcraft-headless)
+qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server)
+qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 240)
+
+# The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
+# lines and the settings, without a window.
+qc_add_test(test_multiplayer_ui SOURCES client/test_multiplayer_ui.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/multiplayer/QcServerHistory.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/multiplayer/QcMultiplayerSettings.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/multiplayer/QcLanAddresses.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/multiplayer/QcPlayerList.cpp
+            LIBRARIES qc_clientcore qc_network Qt::Qml)
+target_include_directories(test_multiplayer_ui PRIVATE ${PROJECT_SOURCE_DIR}/src/app/multiplayer)
+# The menu's multiplayer screen with a refused join (nobody listens on port 1), and a world opened
+# to the network on this computer only with the open-to-LAN screen and the player list, load
+# without QML errors or binding loops.
+if(NOT QC_SANITIZERS)
+    add_test(NAME app_offscreen_multiplayer_menu_qml
+        COMMAND ${CMAKE_COMMAND}
+            "-DCOMMAND=$<TARGET_FILE:qtcraft>;--overlay;multiplayer;--join;127.0.0.1:1;--player-name;Alex;--no-mods;--no-audio"
+            -DEXPECTED_EXIT_CODE=0
+            "-DEXPECTED_ERROR=Joining failed: Nobody accepts connections"
+            -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png
+            "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+    set_tests_properties(app_offscreen_multiplayer_menu_qml PROPERTIES TIMEOUT 120
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-multiplayer;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+    add_test(NAME app_offscreen_open_to_lan_qml
+        COMMAND ${CMAKE_COMMAND}
+            "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--host-lan;0;--overlay;@1000 lan;--overlay;@2000 ;--overlay;@2500 players;--no-mods;--no-audio"
+            -DEXPECTED_EXIT_CODE=0
+            "-DEXPECTED_ERROR=Listening on 127.0.0.1 port"
+            -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lan.png
+            "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+    set_tests_properties(app_offscreen_open_to_lan_qml PROPERTIES TIMEOUT 120
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LAN_BIND=127.0.0.1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-lan;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lan.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+endif()
+# Bot clients in their own processes on a dedicated server process (stage 25b, decision E-270).
+qc_add_test(test_multiplayer_bots SOURCES network/test_multiplayer_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 600)
+target_compile_definitions(test_multiplayer_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
+add_dependencies(test_multiplayer_bots qtcraft-headless)

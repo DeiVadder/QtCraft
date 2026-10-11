@@ -4,8 +4,11 @@
 #include "QcClientWorld.h"
 #include "QcLocalSounds.h"
 #include "QcMessages.h"
+#include "QcSnapshotBuffer.h"
+#include "QcSnapshotClock.h"
 #include "QcSoundCue.h"
 
+#include <QElapsedTimer>
 #include <QHash>
 
 #include <cmath>
@@ -13,10 +16,14 @@
 class QcContentRegistry;
 
 // Client mirror of the entities the server reports, with their animation timers and the ones that
-// play their death animation.
+// play their death animation. Motion is shown a little in the past from buffered snapshots so that
+// late or bunched messages do not make others stutter (decision E-271); health, flags, swings and
+// hurt flashes show when they arrive.
 class QcClientEntities
 {
 public:
+    QcClientEntities() { m_localClock.start(); }
+
     // Animation lengths in ticks.
     static constexpr int swingTicks = 6;
     static constexpr int deathTicks = 20;
@@ -32,17 +39,34 @@ public:
 
     // False when the server sent an unknown entity type.
     bool spawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content);
-    void move(const QcMsg::EntityMove &move);
+    // `localMs`: when the message arrived, on the clock of tick() (default: an internal steady clock).
+    void moves(const QcMsg::EntityMoves &moves) { this->moves(moves, m_localClock.elapsed()); }
+    void moves(const QcMsg::EntityMoves &moves, qint64 localMs);
     void remove(QcMsg::EntityRemove removed);
-    // Advances the animation timers by one tick and drops finished death animations.
-    void tick();
+    // Moves every entity to its pose one tick after the shown moment, advances the animation timers
+    // and drops finished death animations.
+    void tick() { tick(m_localClock.elapsed()); }
+    void tick(qint64 localMs);
+
+    // Without the buffer each tick shows the newest snapshot (for comparisons in tests).
+    void setBuffered(bool buffered) { m_buffered = buffered; }
+    bool isBuffered() const { return m_buffered; }
+    const QcSnapshotClock &clock() const { return m_clock; }
     // Passes a step sound to `cue` for every creature that walked a stride.
     template<typename Cue>
     void stepSounds(const QcClientWorld &world, Cue &&cue);
 
 private:
+    void applyMove(const QcMsg::EntityMove &move, double serverMs);
+    // The entity's pose for the tick ending at `shown` plus one tick (shown: none before any snapshot).
+    void advancePose(QcClientEntity &entity, std::optional<double> shown);
+
     QHash<quint32, QcClientEntity> m_entities;
     QHash<quint32, QcClientEntity> m_dying;
+    QHash<quint32, QcSnapshotBuffer> m_tracks;
+    QcSnapshotClock m_clock;
+    QElapsedTimer m_localClock;
+    bool m_buffered = true;
 };
 
 template<typename Cue>

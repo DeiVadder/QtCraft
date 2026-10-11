@@ -46,6 +46,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
                            {m_inventory, m_combat, m_stands, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
                            {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
+    , m_login(m_state, [this](Client &client) { join(client); })
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_phases, m_ticks)
 {
@@ -55,7 +56,11 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
 }
 
-QcServer::~QcServer() = default;
+QcServer::~QcServer()
+{
+    // A server destroyed without stop() (tests, a failed start) keeps its registrations too.
+    flushIdentities();
+}
 
 void QcServer::start()
 {
@@ -71,6 +76,7 @@ QcStatus QcServer::openWorld()
 
     QStringList accessWarnings;
     m_state.access.open(m_state.config.worldDirectory, m_state.config.operators, accessWarnings);
+    m_state.identities.open(m_state.config.worldDirectory, accessWarnings);
     m_persistence.noteWarnings(accessWarnings);
 
     // A new world gets what its generator sets up once (decision E-221).
@@ -82,7 +88,23 @@ QcStatus QcServer::openWorld()
 
 QcStatus QcServer::save()
 {
+    flushIdentities();
     return m_persistence.save();
+}
+
+void QcServer::flushIdentitiesWhenDue()
+{
+    // New identities are written at most once a second, not with every login (decision E-273).
+    if (m_state.identities.hasUnsavedChanges() && m_state.playerTimeNs - m_lastIdentityFlushNs >= identityFlushIntervalNs) {
+        flushIdentities();
+    }
+}
+
+void QcServer::flushIdentities()
+{
+    m_lastIdentityFlushNs = m_state.playerTimeNs;
+    // Failures are logged by the store; the registrations count until the restart.
+    [[maybe_unused]] const QcStatus flushed = m_state.identities.flush();
 }
 
 QcStatus QcServer::stop()
@@ -101,9 +123,11 @@ QcStatus QcServer::stop()
     if (!saved) {
         qCCritical(lcServer) << "Saving failed:" << saved.error();
     }
+    // A backup being copied finishes first; it reads only its snapshot, not the world.
+    m_commands.waitForBackups();
 
     for (const auto &client : m_state.clients) {
-        client->connection->send(QcMsg::Disconnect{u"Server stopped"_s});
+        client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The server stopped")));
         client->connection->close();
     }
     return saved;
@@ -113,6 +137,8 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
 {
     auto client = std::make_unique<Client>();
     client->local = origin == ClientOrigin::Local;
+    client->address = transport->peerAddress();
+    client->connected.start();
     Client *raw = client.get();
     client->connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Client,
                                                         [this, raw](QcMessage &&message) { handleMessage(*raw, std::move(message)); });
@@ -129,14 +155,14 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         return;
     }
 
-    if (const auto *hello = std::get_if<QcMsg::Hello>(&message)) {
-        handleHello(client, *hello);
+    if (client.state != Client::State::Playing) {
+        handleLoginMessage(client, message);
         return;
     }
 
-    if (client.state != Client::State::Playing) {
-        client.connection->send(QcMsg::Disconnect{u"Expected Hello"_s});
-        client.connection->close();
+    // Login messages are exempt from the rate limit: once is all a player may send them (E-254).
+    if (std::holds_alternative<QcMsg::Hello>(message) || std::holds_alternative<QcMsg::LoginResponse>(message)) {
+        QcServerLogin::refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Unexpected login message")));
         return;
     }
 
@@ -278,23 +304,23 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
     return true;
 }
 
-void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
+void QcServer::handleLoginMessage(Client &client, const QcMessage &message)
 {
-    if (client.state != Client::State::AwaitingHello) {
-        return;
-    }
-
-    if (hello.protocolVersion != QcProtocol::version) {
-        client.connection->send(QcMsg::Disconnect{
-            u"Protocol version mismatch: server %1, client %2"_s.arg(QcProtocol::version).arg(hello.protocolVersion)});
+    if (const auto *hello = std::get_if<QcMsg::Hello>(&message)) {
+        m_login.hello(client, *hello);
+    } else if (const auto *response = std::get_if<QcMsg::LoginResponse>(&message)) {
+        m_login.response(client, *response);
+    } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
         client.connection->close();
-        return;
+    } else {
+        // Unauthenticated clients may only log in.
+        QcServerLogin::refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Expected Hello")));
     }
+}
 
-    client.entityId = m_state.newEntityId();
-    client.name = QcProfileValidation::playerName(hello.playerName);
-    client.appearance = QcProfileValidation::appearance(*m_state.content, hello.appearance);
-    if (!admitted(client) || restorePlayer(client)) {
+void QcServer::join(Client &client)
+{
+    if (restorePlayer(client)) {
         return;
     }
 
@@ -303,23 +329,44 @@ void QcServer::handleHello(Client &client, const QcMsg::Hello &hello)
     client.motion.position = m_state.spawnPosition();
     client.fallPeak = client.motion.position.y;
     client.stateDirty = true;
+    m_state.playerListDirty = true;
 
     qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
     sendWelcome(client, false);
     m_chunkStreaming.stream(client);
 }
 
-bool QcServer::admitted(Client &client) const
+void QcServer::sendPlayerList()
 {
-    const std::optional<QString> refusal = m_state.access.refusal(client.name, client.local);
-    if (!refusal) {
-        return true;
+    QcMsg::PlayerList list;
+    for (const auto &client : m_state.clients) {
+        if (client->state == Client::State::Playing) {
+            list.players.append({client->entityId, client->name, m_state.permissionOf(*client) == QcPermission::Operator});
+        }
     }
 
-    qCInfo(lcServer).noquote() << u"Player %1 refused: %2"_s.arg(client.name, *refusal);
-    client.connection->send(QcMsg::Disconnect{*refusal});
-    client.connection->close();
-    return false;
+    for (const auto &client : m_state.clients) {
+        if (client->state == Client::State::Playing) {
+            client->connection->send(list);
+        }
+    }
+    m_state.playerListDirty = false;
+}
+
+void QcServer::setLoginSettings(const QcLoginSettings &login)
+{
+    m_state.config.apply(login);
+    m_login.forgetPasswordKey();
+}
+
+void QcServer::disconnectRemoteClients()
+{
+    for (const auto &client : m_state.clients) {
+        if (!client->local && client->state != Client::State::Closed) {
+            client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The host stopped sharing the world")));
+            client->connection->close();
+        }
+    }
 }
 
 void QcServer::runConsoleCommand(const QString &line, const QcCommandSource::Output &output)
@@ -340,8 +387,7 @@ bool QcServer::restorePlayer(Client &client)
     }
 
     if (!stored) {
-        client.connection->send(QcMsg::Disconnect{u"Cannot load player data: %1"_s.arg(stored.error())});
-        client.connection->close();
+        QcServerLogin::refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Cannot load player data: %1"), {stored.error()}));
         return true;
     }
 
@@ -364,6 +410,7 @@ bool QcServer::restorePlayer(Client &client)
     client.state = Client::State::Playing;
     client.joined = true;
     client.stateDirty = true;
+    m_state.playerListDirty = true;
 
     qCInfo(lcServer) << "Player" << client.name << "rejoined as entity" << client.entityId;
     sendWelcome(client, true);
@@ -376,7 +423,8 @@ bool QcServer::restorePlayer(Client &client)
 void QcServer::sendWelcome(Client &client, bool rejoined)
 {
     client.connection->send(QcMsg::Welcome{QcProtocol::version, client.entityId, m_state.config.worldName, m_state.config.seed,
-                                           rejoined ? client.yaw : 0.0f, rejoined ? client.pitch : 0.0f, rejoined});
+                                           rejoined ? client.yaw : 0.0f, rejoined ? client.pitch : 0.0f, rejoined,
+                                           std::clamp(client.viewDistance, 0, QcMsg::Welcome::maxViewDistance)});
     client.connection->send(QcMsg::ContentSync{m_state.content});
     m_inventory.send(client);
     m_combat.sendHealth(client);
@@ -508,7 +556,13 @@ void QcServer::tick()
     }
     m_state.mobs.setNaturalSpawning(m_state.info.mobSpawning);
 
+    m_login.expire();
+    flushIdentitiesWhenDue();
     removeClosedClients();
+    m_commands.pollBackups();
+    if (m_state.playerListDirty) {
+        sendPlayerList();
+    }
     m_phases.lap(Phase::Players);
     autosave();
     m_phases.lap(Phase::Saving);
@@ -639,6 +693,8 @@ void QcServer::removeClosedClients()
 {
     for (const auto &client : m_state.clients) {
         if (client->state == Client::State::Closed && client->joined) {
+            // Only a player who was on the list changes it; refused logins do not.
+            m_state.playerListDirty = true;
             m_inventory.returnCraftingGrid(*client);
             m_commands.playerLeft(client->entityId);
             // Failures are logged by savePlayer; the client is gone and cannot be told.

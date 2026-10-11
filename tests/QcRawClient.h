@@ -1,6 +1,8 @@
 #pragma once
 
 #include "QcConnection.h"
+#include "QcTestLogin.h"
+#include "QcTransport.h"
 
 #include <QHash>
 #include <QSet>
@@ -8,6 +10,8 @@
 #include <optional>
 
 // A raw protocol client: sends exactly what a test wants and records everything the server says.
+// It answers a login challenge like the real client (decision E-252) with `key`, `password` and
+// `packs` (by default a key made from the name, no password and the server's own packs).
 class QcRawClient
 {
 public:
@@ -16,14 +20,38 @@ public:
     {
     }
 
+    // Sends Hello; without a key of its own the client uses one made from the name, so the same
+    // name logs in with the same identity in every test client.
+    void hello(const QString &name, const QcAppearance &look = {}, quint32 version = QcProtocol::version)
+    {
+        if (key.isEmpty()) {
+            key = QcTestLogin::keyFor(name);
+        }
+        connection.send(QcMsg::Hello{version, name, look});
+    }
+
+    QcMsg::LoginResponse answer(const QcMsg::LoginChallenge &challenge) const
+    {
+        return QcTestLogin::answer(challenge, {key, password, packs, viewDistance});
+    }
+
     void received(QcMessage &&message)
     {
         ++messageCount;
-        if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
+        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
+            this->challenge = *challenge;
+            if (answerChallenge) {
+                connection.send(answer(*challenge));
+            }
+        } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
+            playerList = players->players;
+            ++playerListMessages;
+        } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
             acknowledged = state->lastInputSequence;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
+            viewDistanceGranted = welcome->viewDistance;
         } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
             sounds.append(sound->key);
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
@@ -56,6 +84,7 @@ public:
             machineClosed = true;
         } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
             disconnectReason = disconnect->reason;
+            disconnectKey = disconnect->key;
         } else {
             receivedWorld(message);
         }
@@ -99,8 +128,19 @@ public:
     }
 
     QcConnection connection;
-    // The player's own entity id (from Welcome).
+    // The login: the installation key (set by hello() when empty), the server password, the packs
+    // to report (none: the server's), the wanted view distance, and whether to answer at all.
+    QByteArray key;
+    QString password;
+    std::optional<QList<QcPackFingerprint>> packs;
+    qint32 viewDistance = 0;
+    bool answerChallenge = true;
+    std::optional<QcMsg::LoginChallenge> challenge;
+    QList<QcMsg::PlayerList::Entry> playerList;
+    int playerListMessages = 0;
+    // The player's own entity id and view distance (from Welcome).
     quint32 entityId = 0;
+    qint32 viewDistanceGranted = -1;
     QcEntityMotion motion;
     // The latest input the server acknowledged (PlayerState).
     quint32 acknowledged = 0;
@@ -120,8 +160,9 @@ public:
     // Positions of the chunks received, in order.
     QList<QcChunkPos> chunks;
     QStringList chatLines;
-    // Why the server closed the connection; empty while connected.
+    // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;
+    QString disconnectKey;
     // The same lines with their translation keys and arguments.
     QList<QcMsg::ChatMessage> chatKeys;
     double health = 0.0;

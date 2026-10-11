@@ -100,6 +100,7 @@ Item {
         Label {
             x: 6
             y: 2
+            textFormat: Text.PlainText
             text: panel.title
             color: Theme.text
             font.pixelSize: 11

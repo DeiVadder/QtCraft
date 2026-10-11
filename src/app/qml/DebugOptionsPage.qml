@@ -69,6 +69,7 @@ ColumnLayout {
 
     Label {
         Layout.fillWidth: true
+        textFormat: Text.PlainText
         text: qsTr("%1 opens these options in the world. Measured values also go to the log with --stats <ms>.")
                   .arg(page.game.settings.keys.labels.debugOptions)
         wrapMode: Text.Wrap

@@ -63,6 +63,11 @@ struct AppOptions
     std::optional<QString> debugShow;
     // --preview: what every character preview shows (decision E-231).
     QcPreviewHook preview;
+    // --join, --player-name, --password (or QTCRAFT_SERVER_PASSWORD) and --host-lan (decision E-251).
+    std::optional<QString> join;
+    QString playerName;
+    QString password;
+    std::optional<int> hostLan;
     // What is wrong with the command line beyond what QCommandLineParser checks.
     QString error;
 };
@@ -83,7 +88,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},
-        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen)."_s,
+        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Without --play: multiplayer opens the main menu's multiplayer screen (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen)."_s,
          u"name"_s},
         {u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
          u"entry"_s},
@@ -102,6 +107,10 @@ QList<QCommandLineOption> commandLineOptions()
          u"list"_s},
         {u"preview"_s, u"Fix what the character previews show (test hook), comma-separated: animation=stand|walk|mine, side=front|back, turn=<degrees>, zoom=<0..1>, gaze=<x>:<y>, time=<seconds>."_s,
          u"settings"_s},
+        {u"join"_s, u"Join the network game at 'host[:port]' at once ([v6]:port for IPv6)."_s, u"address"_s},
+        {u"player-name"_s, u"Player name for --join."_s, u"name"_s, u"Player"_s},
+        {u"password"_s, u"Server password for --join (also QTCRAFT_SERVER_PASSWORD)."_s, u"password"_s},
+        {u"host-lan"_s, u"With --play: open the world to network players on this port once it runs (0: any free port)."_s, u"port"_s},
     };
 }
 
@@ -167,6 +176,12 @@ AppOptions parseOptions(const QGuiApplication &app)
     options.stats = parser.value(u"stats"_s);
     options.debugDisplay = optional(u"debug-display"_s);
     options.debugShow = optional(u"debug-show"_s);
+    options.join = optional(u"join"_s);
+    options.playerName = parser.value(u"player-name"_s);
+    options.password = parser.isSet(u"password"_s) ? parser.value(u"password"_s) : qEnvironmentVariable("QTCRAFT_SERVER_PASSWORD");
+    if (parser.isSet(u"host-lan"_s)) {
+        options.hostLan = parser.value(u"host-lan"_s).toInt();
+    }
     options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
     if (options.error.isEmpty()) {
         options.error = debugOptionsError(options);
@@ -212,6 +227,24 @@ void preselectWorldType(const QQuickWindow &window)
     if (index >= 0 && choice) {
         choice->setProperty("currentIndex", int(index));
     }
+}
+
+// --overlay multiplayer without --play (test hook): opens the main menu's multiplayer screen; with
+// --join it joins from there, so a refusal is shown like after a click.
+void openMenuScreen(const QQuickWindow &window, const AppOptions &options)
+{
+    if (options.play || !options.overlays.contains(u"multiplayer"_s)) {
+        return;
+    }
+    // Popups are no QObject children of the window; the menu opens its own screen.
+    QObject *menu = window.findChild<QObject *>(u"mainMenu"_s);
+    if (!menu) {
+        qWarning("--overlay multiplayer: no main menu");
+        return;
+    }
+
+    QMetaObject::invokeMethod(menu, "openMultiplayer", Q_ARG(QString, options.join.value_or(QString())), Q_ARG(QString, options.playerName),
+                              Q_ARG(QString, options.password));
 }
 
 // Installs the UI translation for `name` ("" = system); returns the language for content names.
@@ -314,6 +347,37 @@ void applySceneOptions(QcGameController &game, const AppOptions &options)
     }
 }
 
+// --join: plays a network game at once; a failure ends the run like a bad option. --host-lan:
+// opens the --play world to the network once it runs and prints the port.
+void startNetworkRun(QcGameController &game, const AppOptions &options)
+{
+    QcMultiplayerController *multiplayer = game.multiplayer();
+    if (options.join) {
+        QObject::connect(
+            multiplayer, &QcMultiplayerController::joinFailed, qApp,
+            [](const QString &reason) {
+                std::println(stderr, "qtcraft: cannot join: {}", reason.toStdString());
+                QCoreApplication::exit(1);
+            },
+            Qt::QueuedConnection);
+        multiplayer->join(*options.join, options.playerName, options.password);
+        return;
+    }
+
+    if (options.hostLan) {
+        auto opened = std::make_shared<bool>(false);
+        QObject::connect(&game, &QcGameController::phaseChanged, multiplayer, [&game, multiplayer, port = *options.hostLan, opened] {
+            if (*opened || game.phase() != u"playing"_s) {
+                return;
+            }
+            *opened = true;
+            const int listening = multiplayer->openToLan(port);
+            std::println("Open to the network on port {}", listening);
+            std::fflush(stdout);
+        });
+    }
+}
+
 // Audio, the startup script, the benchmark and the world or handbook to open at once.
 void startScriptedRun(QcGameController &game, const AppOptions &options, QcScreenshotHook *screenshot)
 {
@@ -341,7 +405,13 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
             },
             Qt::QueuedConnection);
         game.startup()->setScreenshotHook(screenshot);
+        startNetworkRun(game, options);
         game.startSingleplayer(options.world, options.seed, options.worldType.isEmpty() ? u"terrain"_s : options.worldType, options.flatLayers);
+    } else if (options.join && options.overlays.contains(u"multiplayer"_s)) {
+        // The menu's screen joins (openMenuScreen); the screenshot shows its state, a refusal included.
+    } else if (options.join) {
+        game.startup()->setScreenshotHook(screenshot);
+        startNetworkRun(game, options);
     } else if (options.handbook || options.overlays.contains(u"handbook"_s)) {
         game.handbook()->open(options.handbook.value_or(QString()));
     }
@@ -432,6 +502,7 @@ void startGame(const UiParts &ui, QcGameController &game, const AppOptions &opti
         screenshot->setGrabber([offscreenRender] { return offscreenRender->grab(); });
     }
     startScriptedRun(game, options, screenshot);
+    openMenuScreen(offscreenRender ? *offscreenRender->window() : window, options);
 }
 
 } // namespace

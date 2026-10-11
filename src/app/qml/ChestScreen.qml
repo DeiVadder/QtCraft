@@ -20,6 +20,7 @@ SlotScreen {
         spacing: 12
 
         Label {
+            textFormat: Text.PlainText
             text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Chest")
             color: Theme.text
             font.pixelSize: 24

@@ -41,6 +41,17 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments)
     return {format(keyText, arguments), keyText, arguments};
 }
 
+QcMsg::Disconnect disconnect(const char *key, const QStringList &arguments)
+{
+    const QcMsg::ChatMessage line = message(key, arguments);
+    return {line.text, line.key, line.arguments};
+}
+
+QString display(const QcMsg::Disconnect &message)
+{
+    return display(QcMsg::ChatMessage{message.reason, message.key, message.arguments});
+}
+
 QcMsg::ChatMessage plain(const QString &text)
 {
     return {text, {}, {}};

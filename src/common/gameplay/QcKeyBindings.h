@@ -43,6 +43,8 @@ public:
         // The debug options: visualisations switched one by one (decision E-225).
         DebugOptions,
         Labels,
+        // Held down: the list of the players on the server (decision E-259).
+        PlayerList,
         Hotbar1,
         Hotbar2,
         Hotbar3,

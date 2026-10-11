@@ -17,6 +17,7 @@ Rectangle {
             // Its sub-screens belong to the menu: they close (and store the settings) with it.
             settingsScreen.close();
             characterScreen.close();
+            lanScreen.close();
         }
     }
     Keys.onPressed: event => {
@@ -73,13 +74,21 @@ Rectangle {
 
         Button {
             Layout.fillWidth: true
+            visible: !menu.game.multiplayer.networkGame
+            text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
+            onClicked: menu.game.overlay = "lan"
+        }
+
+        Button {
+            Layout.fillWidth: true
             text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
             onClicked: menu.game.handbook.open("")
         }
 
         Button {
             Layout.fillWidth: true
-            text: menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
+            text: menu.game.multiplayer.networkGame ? qsTr("Disconnect")
+                  : menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
             onClicked: menu.game.leaveGame()
         }
     }
@@ -110,6 +119,13 @@ Rectangle {
         onClosed: menu.subScreenClosed(["character"])
     }
 
+    LanScreen {
+        id: lanScreen
+
+        game: menu.game
+        onClosed: menu.subScreenClosed(["lan"])
+    }
+
     // One sub-screen at a time, the one the overlay names; any other overlay closes them.
     Connections {
         target: menu.game
@@ -121,11 +137,15 @@ Rectangle {
                 settingsScreen.close();
             if (overlay !== "character")
                 characterScreen.close();
+            if (overlay !== "lan")
+                lanScreen.close();
             if (settingsPages.includes(overlay)) {
                 settingsScreen.startPage = settingsPages.indexOf(overlay);
                 settingsScreen.open();
             } else if (overlay === "character") {
                 characterScreen.open();
+            } else if (overlay === "lan") {
+                lanScreen.open();
             }
         }
     }

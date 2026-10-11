@@ -41,6 +41,11 @@ public:
     void console(const QString &line, const QcCommandSource::Output &output);
     // After the server's due ticks: reports a sprint that ended.
     void afterTicks() { m_ticks.reportSprintEnd(); }
+    // Every tick: reports a backup copied in the background (decision E-256).
+    void pollBackups() { m_world.pollBackup(); }
+    // Server stop: waits for a backup still being copied.
+    void waitForBackups() { m_world.waitForBackup(); }
+    QcBackupRunner &backups() { return m_world.backups(); }
     // A player left: his pending confirmation goes.
     void playerLeft(quint32 entityId) { m_pending.forget(entityId); }
 

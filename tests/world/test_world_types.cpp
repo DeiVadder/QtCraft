@@ -80,7 +80,7 @@ private:
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd));
         QcRawClient client(std::move(clientEnd));
-        client.connection.send(QcMsg::Hello{QcProtocol::version, u"Tester"_s, {}});
+        client.hello(u"Tester"_s);
         pump();
         for (int i = 0; i < 40; ++i) {
             client.connection.send(QcMsg::PlayerInput{QcPlayerInput{quint32(i + 1), 0.0f, 0.0f, false, false, false, 0.0f, 0.0f}});

@@ -1,4 +1,10 @@
 qt_add_library(qc_server STATIC
+    network/QcServerSettings.h network/QcServerSettings.cpp
+    content/QcContentFingerprint.h content/QcContentFingerprint.cpp
+    network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp
+    network/QcNetworkServer.h network/QcNetworkServer.cpp
+    login/QcIdentityStore.h login/QcIdentityStore.cpp
+    login/QcServerLogin.h login/QcServerLogin.cpp
     commands/QcAccessList.h commands/QcAccessList.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
@@ -13,6 +19,7 @@ qt_add_library(qc_server STATIC
     commands/QcStandCommands.h commands/QcStandCommands.cpp
     commands/QcTickCommands.h commands/QcTickCommands.cpp
     commands/QcWorldBackup.h commands/QcWorldBackup.cpp
+    commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
     content/QcBaseContent.h content/QcBaseContent.cpp
     storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
@@ -112,6 +119,8 @@ endif()
 target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/commands
+    ${CMAKE_CURRENT_SOURCE_DIR}/login
+    ${CMAKE_CURRENT_SOURCE_DIR}/network
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
@@ -119,4 +128,4 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/content
     ${CMAKE_CURRENT_SOURCE_DIR}/worldgen
     ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/showcase)
-target_link_libraries(qc_server PUBLIC qc_common qc_base_content Qt::Core Qt::Concurrent)
+target_link_libraries(qc_server PUBLIC qc_common qc_network qc_base_content Qt::Core Qt::Concurrent)

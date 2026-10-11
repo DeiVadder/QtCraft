@@ -9,8 +9,9 @@ class QcPendingCommands;
 struct QcServerState;
 
 // Player management (decision E-244): the player list, kick, ban and unban, the whitelist,
-// operators and teleporting. The lists are QcAccessList; the local player (the host of a single
-// player world) cannot be kicked, banned or lose his operator rights.
+// operators and teleporting. The lists are QcAccessList, bound to the identity of a player when it
+// is known (decision E-253); the local player (the host of a single player world) cannot be
+// kicked, banned or lose his operator rights.
 class QcPlayerCommands
 {
 public:
@@ -32,7 +33,9 @@ private:
 
     // Disconnects every online player of that name with `reason`; returns how many. Local players
     // are never removed (false in `hostRefused`).
-    int disconnect(const QString &name, const QString &reason, bool &hostRefused);
+    int disconnect(const QString &name, const QcMsg::Disconnect &reason, bool &hostRefused);
+    // The fingerprint of the player's identity: of him online, else the registered one, else empty.
+    QString fingerprintOf(const QString &name) const;
     // Replies when `name` does not fit into the full list.
     bool refusedAsFull(const QcCommandContext &context, QcAccessList::List list, const QString &name) const;
     // Replies when a list change could not be written.

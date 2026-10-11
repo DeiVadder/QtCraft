@@ -10,6 +10,12 @@
 
 #include <algorithm>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 using namespace Qt::StringLiterals;
 
 namespace QcWorldBackup {
@@ -60,13 +66,53 @@ QString resolved(const QString &path)
     return missing.isEmpty() ? existing : QDir::cleanPath(existing + u'/' + missing.join(u'/'));
 }
 
+// The staging folder and the incomplete copy of a target, both hidden in the backup root.
+QString stagingOf(const QString &target)
+{
+    const QFileInfo info(target);
+    return QDir(info.absolutePath()).filePath(u".%1.staging"_s.arg(info.fileName()));
+}
+
+QString incompleteOf(const QString &target)
+{
+    const QFileInfo info(target);
+    return QDir(info.absolutePath()).filePath(u".%1.incomplete"_s.arg(info.fileName()));
+}
+
 QString freeTarget(const QDir &root, const QString &base)
 {
     QString name = base;
-    for (int attempt = 2; root.exists(name); ++attempt) {
+    for (int attempt = 2; root.exists(name) || QFile::exists(stagingOf(root.filePath(name))); ++attempt) {
         name = u"%1-%2"_s.arg(base).arg(attempt);
     }
     return root.filePath(name);
+}
+
+// A second name for the same file contents; false where the file system cannot do it.
+bool hardLink(const QString &from, const QString &to)
+{
+#ifdef Q_OS_WIN
+    return CreateHardLinkW(reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(to).utf16()),
+                           reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(from).utf16()), nullptr) != 0;
+#else
+    return ::link(QFile::encodeName(from).constData(), QFile::encodeName(to).constData()) == 0;
+#endif
+}
+
+// Copies every listed file below `from` into `to` (made first), with hard links where `link`.
+bool copyFiles(const QString &from, const QString &to, const QStringList &files, bool link, QString &failed)
+{
+    const QDir source(from);
+    for (const QString &file : files) {
+        const QString destination = QDir(to).filePath(file);
+        const bool made = QDir().mkpath(QFileInfo(destination).absolutePath())
+                          && ((link && hardLink(source.filePath(file), destination)) || QFile::copy(source.filePath(file), destination));
+        if (!made) {
+            failed = file;
+            return false;
+        }
+    }
+    return true;
 }
 
 } // namespace
@@ -83,7 +129,7 @@ bool isValidLabel(const QString &label)
     });
 }
 
-QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
+QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
 {
     if (!isValidLabel(label)) {
         return qcError(u"A label may only have up to %1 letters, digits, '_' and '-'"_s.arg(maxLabelLength));
@@ -113,17 +159,48 @@ QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const
     if (!label.isEmpty()) {
         base += u'-' + label;
     }
-    const QString folder = freeTarget(QDir(root), base);
-    const QDir source(worldDirectory);
-    for (const QString &file : listing->files) {
-        const QString destination = QDir(folder).filePath(file);
-        if (!QDir().mkpath(QFileInfo(destination).absolutePath()) || !QFile::copy(source.filePath(file), destination)) {
-            // The folder is new (freeTarget): an incomplete copy must not pass for a backup.
-            QDir(folder).removeRecursively();
-            return qcError(u"Cannot copy %1, the incomplete backup was removed"_s.arg(file));
-        }
+    Snapshot snapshot{{}, freeTarget(QDir(root), base), listing->files, listing->bytes, true};
+    snapshot.staging = stagingOf(snapshot.target);
+
+    // Hard links where the file system has them (the first file tells), copies otherwise.
+    QString failed;
+    snapshot.linked = !listing->files.isEmpty() && QDir().mkpath(QFileInfo(QDir(snapshot.staging).filePath(listing->files.first())).absolutePath())
+                      && hardLink(QDir(worldDirectory).filePath(listing->files.first()), QDir(snapshot.staging).filePath(listing->files.first()));
+    QStringList rest = listing->files;
+    if (snapshot.linked) {
+        rest.removeFirst();
     }
-    return Summary{folder, int(listing->files.size()), listing->bytes};
+    if (!copyFiles(worldDirectory, snapshot.staging, rest, snapshot.linked, failed)) {
+        QDir(snapshot.staging).removeRecursively();
+        return qcError(u"Cannot copy %1, the incomplete backup was removed"_s.arg(failed));
+    }
+    return snapshot;
+}
+
+QcResult<Summary> complete(const Snapshot &snapshot)
+{
+    // Written under a hidden name: an interrupted copy never looks like a backup. A snapshot of
+    // copies already is the backup.
+    const QString incomplete = incompleteOf(snapshot.target);
+    QString failed;
+    const bool copied = snapshot.linked ? copyFiles(snapshot.staging, incomplete, snapshot.files, false, failed)
+                                        : QDir().rename(snapshot.staging, incomplete);
+    QDir(snapshot.staging).removeRecursively();
+    if (!copied || !QDir().rename(incomplete, snapshot.target)) {
+        QDir(incomplete).removeRecursively();
+        return qcError(copied ? u"Cannot rename the backup to %1"_s.arg(snapshot.target)
+                              : u"Cannot copy %1, the incomplete backup was removed"_s.arg(failed));
+    }
+    return Summary{snapshot.target, int(snapshot.files.size()), snapshot.bytes};
+}
+
+QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
+{
+    const QcResult<Snapshot> frozen = snapshot(worldDirectory, root, label, now);
+    if (!frozen) {
+        return qcError(frozen.error());
+    }
+    return complete(*frozen);
 }
 
 } // namespace QcWorldBackup
