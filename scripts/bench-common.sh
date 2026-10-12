@@ -42,6 +42,16 @@
 #              loaded chunks collapses layer by layer into the void (falling blocks at the manager's
 #              limit of 2048, deferred falls, the per-tick budget of block updates; decision E-288).
 #              Measures the server tick under many falling entities. Always flat (stage 26b and newer)
+#   farm     - standing by day in a flat world in the middle of a 63 x 63 field of wet farmland
+#              (water rows every 9 m) with young wheat and, in one strip, pumpkin and melon stems
+#              beside free farmland for their fruit; random ticks on. From three seconds in, a /tick sprint
+#              of 600 ticks (30 s of game time, a few milliseconds) every second: crops grow, stems
+#              bear fruit, the client remeshes the field (phase plants, block changes). Tick values
+#              include the sprint ticks. Stage 27 and newer
+#   farm-seeds - the same field, but all wheat ripe and no sprint, with seed stacks lying on the
+#              wheat (the player teleports over the field and drops them): every resting stack
+#              looks for free soil once a second and finds none (cost of self-planting, phase
+#              items; decision E-294). Stage 27 and newer
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 #
@@ -139,6 +149,59 @@ glass_chat() {
     done
 }
 
+# Prints the chat lines of a farm scenario, one per line. Usage: farm_chat sprint|seeds <seconds>
+# The field covers x -31..31 and z -30..32 around the player on the layer below his feet: wet
+# farmland with water rows at z -26, -17, -8, 1, 10, 19 and 28 (no cell is further than 4 m from
+# water, so the soil stays wet), wheat on the strips between them and pumpkin and melon stems on
+# every other row of the strip z 20..27 (the rows between stay free for the fruit). The water rows
+# lie in trenches of farmland: the sources have nowhere to flow. 63 x 63 = 3969 cells: 441 water,
+# 3528 farmland under 3024 wheat, 252 stems and 252 free cells.
+farm_chat() {
+    if [ "$1" = seeds ]; then
+        wheat="wheat_crop[age=7]"
+    else
+        wheat=wheat_crop
+    fi
+    echo "/time set day"
+    # The flat world is empty above the grass, so nothing needs clearing (a clearing /fill of
+    # 63 x 4 x 63 blocks would exceed the 4096 a /fill may cover without /confirm and wait for it).
+    echo "/fill ~-31 ~-1 ~-30 ~31 ~-1 ~32 farmland[moist=true]"
+    for z in -26 -17 -8 1 10 19 28; do
+        echo "/fill ~-31 ~-1 ~$z ~31 ~-1 ~$z water"
+    done
+    for strip in "-30 -27" "-25 -18" "-16 -9" "-7 0" "2 9" "11 18" "29 32"; do
+        echo "/fill ~-31 ~ ~${strip% *} ~31 ~ ~${strip#* } $wheat"
+    done
+    for row in "20 pumpkin_stem" "22 pumpkin_stem" "24 melon_stem" "26 melon_stem"; do
+        echo "/fill ~-31 ~ ~${row% *} ~31 ~ ~${row% *} ${row#* }"
+    done
+    if [ "$1" = sprint ]; then
+        at=3000
+        while [ "$at" -lt $((3000 + $2 * 1000)) ]; do
+            echo "@$at /tick sprint 600"
+            at=$((at + 1000))
+        done
+        return
+    fi
+    # 150 seed stacks on a grid over the wheat strips (15 in x, 4 m apart, on 10 rows, two per
+    # strip): teleport there (relative steps) and drop them up to 2 m ahead, still on the strip and
+    # off the water (items in water drift and never rest); the stacks lie more than 1 m apart, so
+    # they do not merge. Back to the start at the end.
+    x=0
+    z=0
+    for gz in -23 -20 -14 -11 -5 -2 4 7 13 16; do
+        gx=-28
+        while [ "$gx" -le 28 ]; do
+            echo "/tp ~$((gx - x)) ~ ~$((gz - z))"
+            echo "/spawnitem wheat_seeds 3"
+            x=$gx
+            z=$gz
+            gx=$((gx + 4))
+        done
+    done
+    echo "/tp ~$((-x)) ~ ~$((-z))"
+}
+
 # Runs one benchmark of the game.
 # Usage: run_game <app> <scenario> <seconds> <view distance> <data dir> <log> [wrapper command...]
 # The wrapper (e.g. a profiler) is put in front of the app. Prints the BENCH line. The run is killed
@@ -173,7 +236,7 @@ run_game() {
         armour=walk
         scenario=walk
         ;;
-    gravel-collapse)
+    gravel-collapse | farm | farm-seeds)
         world=flat
         ;;
     esac
@@ -204,6 +267,18 @@ run_game() {
         # The second fill is larger than a /fill without /confirm may be (stage 24, decision E-245);
         # builds before stage 24 answer /confirm as an unknown command.
         set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air" --chat "/confirm"
+        ;;
+    farm | farm-seeds)
+        if [ "$scenario" = farm ]; then
+            chat=$(farm_chat sprint "$seconds")
+        else
+            chat=$(farm_chat seeds "$seconds")
+        fi
+        while IFS= read -r line; do
+            set -- "$@" --chat "$line"
+        done <<EOF
+$chat
+EOF
         ;;
     glass | glass-full)
         if [ "$scenario" = glass ]; then

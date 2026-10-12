@@ -1,6 +1,7 @@
 #include "QcBaseContent.h"
 #include "QcContentParser.h"
 #include "QcPlantGrowth.h"
+#include "QcSectionMarks.h"
 #include "QcServer.h"
 #include "QcServerWorld.h"
 #include "QcTestTerrainGenerator.h"
@@ -25,6 +26,38 @@ constexpr int plantCount = 64;
 // count as supporting).
 constexpr int firstX = 16;
 constexpr int plantZ = 8;
+
+// The test terrain with a sugar cane on sand beside water in the middle of every chunk (local 8, 8
+// at groundY), as long as `withCane` is set: chunks that enter the world with growing plants.
+class CaneTerrainGenerator : public QcTestTerrainGenerator
+{
+public:
+    explicit CaneTerrainGenerator(const std::shared_ptr<const QcContentRegistry> &content, std::shared_ptr<bool> withCane = {})
+        : QcTestTerrainGenerator(content)
+        , m_withCane(withCane ? std::move(withCane) : std::make_shared<bool>(true))
+        , m_sand(*content->blockId(u"qtcraft:sand"_s))
+        , m_water(*content->blockId(u"qtcraft:water"_s))
+        , m_cane(*content->blockId(u"qtcraft:sugar_cane"_s))
+    {
+    }
+
+    std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override
+    {
+        std::shared_ptr<QcChunk> chunk = QcTestTerrainGenerator::generate(pos);
+        if (*m_withCane) {
+            chunk->setBlock(8, groundY, 8, m_sand);
+            chunk->setBlock(8, groundY, 9, m_water);
+            chunk->setBlock(8, groundY + 1, 8, m_cane);
+        }
+        return chunk;
+    }
+
+private:
+    std::shared_ptr<bool> m_withCane;
+    QcBlockId m_sand;
+    QcBlockId m_water;
+    QcBlockId m_cane;
+};
 
 } // namespace
 
@@ -124,6 +157,108 @@ private slots:
                  (1u << ((groundY + 1) / QcWorld::sectionHeight)) | (1u << ((groundY + 20) / QcWorld::sectionHeight)));
         QVERIFY(!world->growingSections().isMarked(id("stone")));
         QVERIFY(world->growingSections().isMarked(id("sugar_cane")));
+    }
+
+    void markedChunksComeInAFixedOrderThatFollowsChanges()
+    {
+        // The random cells are drawn chunk by chunk in this order, so it must not depend on the
+        // hash; it is sorted again only when chunks come or go.
+        const QcBlockId marked = 1;
+        std::vector<bool> kinds(2, false);
+        kinds[marked] = true;
+        QcSectionMarks marks(kinds);
+        marks.noteBlock({40, 3, -20}, marked);
+        marks.noteBlock({-5, 70, 7}, marked);
+        marks.noteBlock({-5, 3, -40}, marked);
+        marks.noteBlock({0, 0, 0}, 0);
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
+
+        // Another block in a known chunk, a new chunk, then one forgotten.
+        marks.noteBlock({-6, 20, 8}, marked);
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
+        marks.noteBlock({1, 1, 1}, marked);
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {0, 0}, {2, -2}}));
+        marks.forgetChunk({-1, 0});
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {0, 0}, {2, -2}}));
+
+        // A chunk noted without marked blocks leaves the order.
+        marks.noteChunk({0, 0}, QcChunk());
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {2, -2}}));
+    }
+
+    void worldsLoadingChunksInAnotherOrderTickTheSameCells()
+    {
+        // Decision E-331: the random cells are drawn in the sorted order of the marked chunks, not
+        // in the order of the hash. Two worlds that load the same 6 x 6 chunks in opposite orders
+        // (the second also loads and unloads other chunks first, so its hash is built differently)
+        // grow the same canes in the same ticks with the same seed.
+        QStringList warnings;
+        const std::shared_ptr<QcContentRegistry> content = *QcBaseContent::load(warnings);
+        QcBlockDefinition cane = content->block(id("sugar_cane"));
+        cane.growth.averageSeconds = 1.0;
+        QVERIFY(content->registerBlock(cane).has_value());
+
+        QcServerWorld first(content, std::make_unique<CaneTerrainGenerator>(content));
+        QcServerWorld second(content, std::make_unique<CaneTerrainGenerator>(content));
+        constexpr int side = 6;
+        for (int i = 0; i < side * side; ++i) {
+            first.loadChunk({i % side, i / side});
+        }
+        for (int i = 0; i < 20; ++i) {
+            second.loadChunk({-10 - i, 40 + i});
+        }
+        for (int i = side * side - 1; i >= 0; --i) {
+            second.loadChunk({i % side, i / side});
+        }
+        for (int i = 0; i < 20; ++i) {
+            second.unloadChunk({-10 - i, 40 + i});
+        }
+        QCOMPARE(second.loadedChunkCount(), side * side);
+        QCOMPARE(first.growingSections().orderedChunks(), second.growingSections().orderedChunks());
+
+        // Every grown block with its tick, in the order it grew.
+        const auto growAll = [&](QcServerWorld &world) {
+            QcPlantGrowth growth(content, 5);
+            QList<std::pair<int, QcBlockPos>> grown;
+            for (int tick = 0; tick < 3000; ++tick) {
+                growth.tick(world, [&](QcBlockPos pos, QcBlockId block) {
+                    grown.append({tick, pos});
+                    return world.setBlock(pos, block);
+                });
+            }
+            return grown;
+        };
+        const QList<std::pair<int, QcBlockPos>> grownFirst = growAll(first);
+        // About 80 random ticks hit a cane (36 chunks, 3 cells of 4096 per tick); each grows.
+        QVERIFY2(grownFirst.size() >= 20, qPrintable(QString::number(grownFirst.size())));
+        QCOMPARE(growAll(second), grownFirst);
+    }
+
+    void unloadingAndRegeneratingChunksUpdatesTheOrder()
+    {
+        // The cached order follows the chunks the world loads, unloads and regenerates.
+        const auto withCane = std::make_shared<bool>(true);
+        QcServerWorld world(m_content, std::make_unique<CaneTerrainGenerator>(m_content, withCane));
+        world.loadChunk({2, 0});
+        world.loadChunk({0, 1});
+        world.loadChunk({0, 0});
+        const QcSectionMarks &marks = world.growingSections();
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
+
+        // A chunk generated without plants is not in the order; regenerated with a cane it is.
+        *withCane = false;
+        world.loadChunk({1, 0});
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
+        *withCane = true;
+        QVERIFY(world.regenerateChunk({1, 0}));
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {1, 0}, {2, 0}}));
+
+        // An unloaded chunk leaves it; one regenerated without plants too.
+        world.unloadChunk({0, 1});
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {1, 0}, {2, 0}}));
+        *withCane = false;
+        QVERIFY(world.regenerateChunk({2, 0}));
+        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {1, 0}}));
     }
 
     void onlyTheTopOfARootedShortColumnGrows()

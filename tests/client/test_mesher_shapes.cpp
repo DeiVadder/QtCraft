@@ -275,6 +275,43 @@ private slots:
         QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(doubled, 1)).opaqueVertices).size(), 10);
     }
 
+    void onlyBoundaryFacesTowardsTheVoidGoToTheUnderside()
+    {
+        // Decision E-330: a face goes to the underside lists when the cell it looks into lies
+        // below the world. A bottom slab at y = 0 covers the bottom of its cell: its down face is
+        // a boundary face looking into y = -1.
+        auto bottom = std::make_shared<QcChunk>();
+        bottom->setBlock(5, 0, 5, m_f.id(u"t:slab[type=bottom]"_s));
+        const QcChunkMesh bottomMesh = QcChunkMesher::mesh(m_f.input(bottom, 0));
+        const QList<Quad> bottomUnderside = quads(bottomMesh.undersideVertices);
+        QCOMPARE(bottomUnderside.size(), 1);
+        QCOMPARE(bottomUnderside[0].normal(), (std::array<int, 3>{0, -1, 0}));
+        QCOMPARE(bottomUnderside[0].area(), 1.0);
+        for (const QcBlockVertex &v : bottomUnderside[0].corners) {
+            QCOMPARE(v.y, 0.0f);
+        }
+        // The other five faces stay opaque; none of them faces down.
+        const QList<Quad> bottomOpaque = quads(bottomMesh.opaqueVertices);
+        QCOMPARE(bottomOpaque.size(), 5);
+        QCOMPARE(areaFacing(bottomOpaque, {0, -1, 0}), 0.0);
+
+        // A top slab at y = 0 leaves the lower half of its cell open: its down face at y = 0.5 is
+        // an inner face, looks into its own cell and is seen from above the world (standing under
+        // it), so it stays opaque. Nothing goes to the underside.
+        auto top = std::make_shared<QcChunk>();
+        top->setBlock(5, 0, 5, m_f.id(u"t:slab[type=top]"_s));
+        const QcChunkMesh topMesh = QcChunkMesher::mesh(m_f.input(top, 0));
+        QVERIFY(topMesh.undersideIndices.isEmpty());
+        const QList<Quad> topOpaque = quads(topMesh.opaqueVertices);
+        QCOMPARE(topOpaque.size(), 6);
+        QCOMPARE(areaFacing(topOpaque, {0, -1, 0}), 1.0);
+        for (const Quad &quad : topOpaque) {
+            if (quad.normal() == std::array<int, 3>{0, -1, 0}) {
+                QCOMPARE(quad.corners[0].y, 0.5f);
+            }
+        }
+    }
+
     void stairsAreClosedWithoutInnerFaces()
     {
         auto chunk = std::make_shared<QcChunk>();

@@ -3,6 +3,7 @@
 #include "QcChunk.h"
 
 #include <QHash>
+#include <QList>
 
 #include <vector>
 
@@ -24,15 +25,23 @@ public:
     void noteChunk(QcChunkPos pos, const QcChunk &chunk);
     // Sets the bit of the section `block` was placed in, if it is marked.
     void noteBlock(QcBlockPos pos, QcBlockId block);
-    void forgetChunk(QcChunkPos pos) { m_sections.remove(pos); }
+    void forgetChunk(QcChunkPos pos);
 
     bool isEmpty() const { return m_sections.isEmpty(); }
     // The bits of a chunk (bit n: section n), 0 for a chunk without marked sections.
     quint32 sectionsOf(QcChunkPos pos) const { return m_sections.value(pos, 0); }
     // Every chunk with at least one marked section and its bits.
     const QHash<QcChunkPos, quint32> &chunks() const { return m_sections; }
+    // The same chunks sorted by x, then z: an order that does not depend on the hash of the
+    // process (QcPlantGrowth draws its random cells in it). Sorted again only after chunks were
+    // added or removed, not on every call. The returned reference is only valid until the next
+    // noteChunk, noteBlock or forgetChunk: a change of the chunk set re-sorts the list in place on
+    // the next call, so callers must not hold it across changes (copy it if they do).
+    const QList<QcChunkPos> &orderedChunks() const;
 
 private:
     std::vector<bool> m_marked;
     QHash<QcChunkPos, quint32> m_sections;
+    mutable QList<QcChunkPos> m_order;
+    mutable bool m_orderStale = false;
 };

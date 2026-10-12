@@ -360,7 +360,7 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
 
     const auto release = [this](quint64 key) {
         if (const auto found = m_meshes.find(key); found != m_meshes.end()) {
-            m_sectionBytes -= found->second.opaque.bytes() + found->second.translucent.bytes();
+            m_sectionBytes -= found->second.bytes();
             m_meshes.erase(found);
         }
     };
@@ -374,11 +374,12 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
         GpuMesh gpuMesh;
         gpuMesh.opaque = createBuffers(updates, mesh->opaqueVertices, mesh->opaqueIndices);
         gpuMesh.translucent = createBuffers(updates, mesh->translucentVertices, mesh->translucentIndices);
+        gpuMesh.underside = createBuffers(updates, mesh->undersideVertices, mesh->undersideIndices);
 
         QVector3D low(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
                       std::numeric_limits<float>::max());
         QVector3D high = -low;
-        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices}) {
+        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices, &mesh->undersideVertices}) {
             for (const QcBlockVertex &vertex : *list) {
                 low = QVector3D(std::min(low.x(), vertex.x), std::min(low.y(), vertex.y), std::min(low.z(), vertex.z));
                 high = QVector3D(std::max(high.x(), vertex.x), std::max(high.y(), vertex.y), std::max(high.z(), vertex.z));
@@ -387,7 +388,7 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
 
         gpuMesh.boundsMin = low;
         gpuMesh.boundsMax = high;
-        const quint64 bytes = gpuMesh.opaque.bytes() + gpuMesh.translucent.bytes();
+        const quint64 bytes = gpuMesh.bytes();
         m_sectionBytes += bytes;
         m_sample.uploadBytes += bytes;
         m_meshes.insert_or_assign(key, std::move(gpuMesh));
@@ -512,10 +513,13 @@ void QcWorldRenderer::drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4
     m_skyRenderer.draw(commandBuffer);
 
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
+    // The underside of the world faces down from y = 0: from above it is always turned away.
+    const bool belowWorld = m_camera.position.y() < 0.0f;
     QList<const GpuMesh *> visible;
     visible.reserve(m_meshes.size());
     for (const auto &[key, mesh] : m_meshes) {
-        if (QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
+        const bool drawable = mesh.opaque.indexCount > 0 || mesh.translucent.indexCount > 0 || belowWorld;
+        if (drawable && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
             visible.append(&mesh);
         }
     }
@@ -525,6 +529,9 @@ void QcWorldRenderer::drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4
     commandBuffer->setShaderResources();
     for (const GpuMesh *mesh : std::as_const(visible)) {
         drawBuffers(commandBuffer, mesh->opaque);
+        if (belowWorld) {
+            drawBuffers(commandBuffer, mesh->underside);
+        }
     }
     if (m_entityBuffers.indexCount > 0 && m_entityPipeline) {
         commandBuffer->setGraphicsPipeline(m_entityPipeline.get());

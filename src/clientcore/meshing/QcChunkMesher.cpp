@@ -372,10 +372,15 @@ public:
 private:
     static constexpr float maxLevel = float(Lighting::maxLevel);
 
-    Output outputFor(const Entry &entry)
+    // `open` is the cell the face looks into; an opaque face looking below the world goes to the
+    // underside lists.
+    Output outputFor(const Entry &entry, Cell open)
     {
         if (entry.layer == QcRenderLayer::Translucent) {
             return {m_mesh.translucentVertices, m_mesh.translucentIndices};
+        }
+        if (open.y < 0) {
+            return {m_mesh.undersideVertices, m_mesh.undersideIndices};
         }
         return {m_mesh.opaqueVertices, m_mesh.opaqueIndices};
     }
@@ -430,7 +435,7 @@ private:
         const float ownSky = float(m_light.sky(x, y, z));
         const float ownBlock = float(m_light.block(x, y, z));
         for (const QcBlockRenderTable::Cross &cross : block.entry.crosses) {
-            appendCross(outputFor(block.entry), cross, block.world, {0.9f, ownSky / maxLevel, ownBlock / maxLevel});
+            appendCross(outputFor(block.entry, block.cell), cross, block.world, {0.9f, ownSky / maxLevel, ownBlock / maxLevel});
         }
         for (const QcBlockRenderTable::Quad &quad : block.entry.quads) {
             appendShapeQuad(block, quad, ownSky, ownBlock);
@@ -467,7 +472,7 @@ private:
             vertex.u = quad.uvs[corner][0];
             vertex.v = quad.uvs[corner][1];
         }
-        appendQuad(outputFor(block.entry), corners, false);
+        appendQuad(outputFor(block.entry, quad.boundary ? open : block.cell), corners, false);
     }
 
     // Values of the full face, interpolated at the corners of the part `quad`.
@@ -567,7 +572,7 @@ private:
         }
 
         // Split along the brighter diagonal so occlusion gradients stay symmetric.
-        appendQuad(outputFor(block.entry), corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3]);
+        appendQuad(outputFor(block.entry, open), corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3]);
     }
 
     const QcBlockRenderTable &m_table;

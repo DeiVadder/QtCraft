@@ -20,6 +20,8 @@
 #   sg         scene graph timing log (QSG_RENDER_TIMING, qt.scenegraph.time.*)
 #   visualize  screenshots with QSG_VISUALIZE=overdraw, batches, clip and changes
 # Scenarios: see scripts/bench-common.sh (default stand). Seconds: 15. View distance: 8.
+# PROFILE_APP=<qtcraft executable> profiles that build instead (e.g. a release build of an older
+# commit, to compare two states with the same tool); nothing is built then.
 
 set -u
 
@@ -31,7 +33,7 @@ TOOL=${1:-}
 SCENARIO=${2:-stand}
 SECONDS_PER_RUN=${3:-15}
 VIEW=${4:-8}
-APP="$PROJECT_DIR/build/profile/src/app/qtcraft.app/Contents/MacOS/qtcraft"
+APP=${PROFILE_APP:-"$PROJECT_DIR/build/profile/src/app/qtcraft.app/Contents/MacOS/qtcraft"}
 QT_BIN="$HOME/Qt/6.8.3/macos/bin"
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-profile.XXXXXX") || exit 2
 # Recording ends with the run; the limit only guards against a run that does not quit.
@@ -40,13 +42,15 @@ RECORD_LIMIT=$((SECONDS_PER_RUN + 60))
 case "$TOOL" in
 breakdown | time | alloc | leaks | metal | sample | qml | sg | visualize) ;;
 *)
-    sed -n '2,24p' "$0"
+    sed -n '2,26p' "$0"
     exit 2
     ;;
 esac
 
-limited 300 cmake --preset profile >/dev/null 2>&1 || exit 1
-limited 1200 cmake --build --preset profile >/dev/null 2>&1 || exit 1
+if [ -z "${PROFILE_APP:-}" ]; then
+    limited 300 cmake --preset profile >/dev/null 2>&1 || exit 1
+    limited 1200 cmake --build --preset profile >/dev/null 2>&1 || exit 1
+fi
 
 # Writes a wrapper script that run_game puts in front of the game and prints its path.
 # Usage: guarded_wrapper <name> <command prefix> <body>

@@ -97,6 +97,7 @@ scripts/verify.sh [--full] [--sanitizers asan|tsan]                    # once be
 
 ```sh
 scripts/bench.sh [runs] [seconds]        # median per scenario, release build, view distance 8 (VIEW=12 for others)
+scripts/bench-ab.sh <file> <rounds> <seconds> <label>=<app>...  # interleaved A/B of several builds, order rotated per round, holds the bench lock
 scripts/perf-check.sh                    # fixed generous limits for stand, sprint and crowd; exit code 1 on a regression
 scripts/profile.sh <tool> [scenario] [seconds] [view distance]
 ```

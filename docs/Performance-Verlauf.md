@@ -401,6 +401,200 @@ Wiederholung (light, liquids, glass, 3 Runden direkt danach, Last 2,3–4,9, kei
 - **Tick max** light +45 % (Wiederholung −12 %), flat-crowd +19 %, liquids +17 % in der Wiederholung (dritte Reihe −4 %): einzelne schlechteste Ticks wie in E-250; dafür glass −29 %/−24 %.
 - **Keine Code-Änderung nötig**, begründet in E-278. Mehrspieler-Referenzwerte auch in `docs/Performance.md`.
 
+## Nachgeholte Messungen: `9075fec`, Etappe 26, Leere-Zone, Etappe 27 (2026-10-12)
+
+Die vier Squash-Merges vom 2026-10-12 wurden ohne Benchmark nach `dev` übernommen (der Mensch arbeitete am Rechner) und hier nachgemessen, jeder Stand verschränkt gegen seinen Vorgänger. Neu dafür ist `scripts/bench-ab.sh`: Es misst beliebig viele Builds verschränkt (pro Runde und Szenario jeder Build einmal, in der angegebenen Reihenfolge), wartet zu Beginn bis zu 3 min auf einen ruhigen Rechner (1-min-Last ≤ 6, kein fremder Prozess ≥ 80 % CPU außer WindowServer) und schreibt pro Lauf Last und belastende Prozesse mit. Alle Stände als Release-Build (`RelWithDebInfo`, nur das Ziel `qtcraft`) aus `git archive` außerhalb des Repos, 8 Chunks, 20 s pro Lauf, Ton stumm, eingebautes Display im Hintergrund, Mittel [Spanne]. Während der Messreihen hielt diese Sitzung die Sperre `~/.cache/qtcraft/bench.lock` (Absprache mit der parallelen Etappe-28-Sitzung). Nachtrag nach dem Review: `bench-ab.sh` legt die Sperre inzwischen selbst an (Verzeichnis mit Besitzerdatei, entfernt am Ende auch bei Abbruch, wartet, solange ein anderer sie hält), rotiert die Reihenfolge der Builds pro Runde (Runde r beginnt mit Build (r − 1) mod n; Position und Reihenfolge stehen in jeder Ergebniszeile), wartet vor jedem Lauf bis zu 3 min auf Ruhe und schreibt Last und fremde Prozesse vor und nach jedem Lauf mit (fremd: ≥ 80 % CPU außer WindowServer und kernel_task, dazu jedes `qtcraft` einer anderen Sitzung); die Reihen 1 bis 5 unten entstanden noch mit fester Reihenfolge.
+
+**Reihen:**
+
+1. Hauptreihe: `d28dd89` → `9075fec` → `48249aa` → `9666133` → `7c7c924` in einer Runde nacheinander, 11 Szenarien (stand, sprint, crowd, light, liquids, glass, showcase, flat-crowd, flat-liquids, void-light, armour-crowd), 3 Runden, 165 Läufe. Last 2,3–5,6; in 10 Läufen lief Safari mit rund 100 % CPU (über alle Stände verteilt).
+2. Korrektur der Unterseite (`556e71c`, E-330) gegen `7c7c924` und `48249aa`, 7 Szenarien, 3 Runden. Last 3,0–8,6; Runde 1 teils belastet (Builds und ein Test der anderen Sitzung).
+3. Wiederholung der auffälligen Werte: alle fünf Stände plus `fd70a0b` (beide Korrekturen), 7 Szenarien, 3 Runden. Runde 1 stark belastet (Last bis 13,4, Builds der anderen Sitzung); bewertet wurden die Runden 2 und 3 (Last 2,6–4,2).
+4. Neue Szenarien: `gravel-collapse` (`48249aa`, `9666133`, `7c7c924`, `fd70a0b`), `farm` und `farm-seeds` (`7c7c924`, `fd70a0b`), je 3 Runden. Last 2,7–4,8.
+5. Gegenprobe zur Reihenfolge: `fd70a0b` → `7c7c924` → `48249aa` (umgekehrt), stand, sprint, crowd, glass, 4 Runden. Last 2,6–4,8.
+
+Frame p99 war in allen Reihen wie bekannt zweigeteilt (je Lauf ≈ 9,5–10,5 oder ≈ 14–16 ms, bei allen Ständen); einzelne p99-Unterschiede bis ±39 % in einer Reihe wechseln das Vorzeichen zwischen Paaren und Reihen und werden nicht als Regression gewertet.
+
+### `9075fec` gegen `d28dd89` (Tooltips und Steuerpalette, Sprint-Sichtfeld, dedizierter Server im Bundle)
+
+Reihe 1, Basis → neu:
+
+| Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
+|----------|---:|---:|---:|---:|---:|---:|---:|
+| stand | 10,45 → 11,52 (+10 %) | 0,433 → 0,429 (−1 %) | 1,50 → 1,49 (−1 %) | 1,72 → 1,66 (−4 %) | 0,678 → 0,675 (+0 %) | 2,95 → 2,75 (−7 %) | 396 → 397 (+0 %) |
+| sprint | 9,97 → 9,80 (−2 %) | 0,417 → 0,399 (−4 %) | 1,58 → 1,46 (−8 %) | 2,12 → 2,04 (−3 %) | 0,658 → 0,644 (−2 %) | 4,00 → 3,54 (−11 %) | 557 → 560 (+0 %) |
+| crowd | 9,52 → 10,24 (+8 %) | 0,677 → 0,705 (+4 %) | 1,17 → 1,18 (+1 %) | 2,00 → 2,05 (+3 %) | 0,674 → 0,791 (+17 %) | 1,74 → 1,91 (+10 %) | 401 → 399 (+0 %) |
+| light | 11,30 → 11,01 (−3 %) | 0,472 → 0,490 (+4 %) | 1,43 → 1,42 (−1 %) | 1,41 → 1,43 (+1 %) | 0,650 → 0,612 (−6 %) | 4,04 → 2,95 (−27 %) | 404 → 407 (+1 %) |
+| liquids | 10,94 → 11,01 (+1 %) | 0,405 → 0,424 (+5 %) | 1,38 → 1,36 (−2 %) | 1,36 → 1,34 (−2 %) | 0,609 → 0,620 (+2 %) | 2,97 → 2,22 (−25 %) | 410 → 409 (+0 %) |
+| glass | 11,73 → 10,47 (−11 %) | 0,464 → 0,465 (+0 %) | 1,32 → 1,41 (+7 %) | 1,79 → 1,81 (+1 %) | 0,626 → 0,596 (−5 %) | 3,35 → 3,49 (+4 %) | 409 → 408 (+0 %) |
+| showcase | 15,39 → 11,73 (−24 %) | 0,396 → 0,409 (+3 %) | 1,06 → 1,05 (−1 %) | 0,666 → 0,679 (+2 %) | 0,247 → 0,254 (+3 %) | 1,13 → 1,34 (+19 %) | 268 → 270 (+1 %) |
+| flat-crowd | 11,87 → 10,06 (−15 %) | 0,581 → 0,586 (+1 %) | 0,637 → 0,624 (−2 %) | 0,860 → 0,856 (+0 %) | 0,386 → 0,359 (−7 %) | 1,80 → 1,08 (−40 %) | 263 → 262 (+0 %) |
+| flat-liquids | 13,96 → 11,88 (−15 %) | 0,272 → 0,278 (+2 %) | 0,911 → 0,916 (+0 %) | 0,612 → 0,636 (+4 %) | 0,141 → 0,159 (+13 %) | 0,719 → 0,733 (+2 %) | 264 → 267 (+1 %) |
+| void-light | 12,59 → 11,84 (−6 %) | 0,293 → 0,339 (+16 %) | 0,758 → 0,762 (+1 %) | 0,588 → 0,575 (−2 %) | 0,129 → 0,157 (+22 %) | 0,367 → 0,933 (+154 %) | 220 → 222 (+1 %) |
+| armour-crowd | 12,10 → 11,86 (−2 %) | 1,45 → 1,59 (+10 %) | 0,776 → 0,804 (+4 %) | 1,08 → 1,14 (+6 %) | 0,361 → 0,343 (−5 %) | 1,67 → 1,76 (+5 %) | 283 → 276 (−3 %) |
+
+Der Server-Code ist unverändert (`git diff d28dd89 9075fec -- src/server src/common` leer). Neu pro Frame ist nur die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect::advance`, eine Exponentialfunktion). **Bewertung:** keine Regression. Tick Ø crowd +17 % und flat-liquids +13 % in Reihe 1, crowd in Reihe 3 −4 %, über beide Reihen +5 %. void-light Tick Ø liegt in beiden Reihen höher (+22 %, +16 %; 0,13 → 0,16 ms, gleichmäßig über die Phasen Streaming, Wesen und Pflanzen verteilt) bei identischem Server-Code: Kern- und Taktstreuung wie in E-250. GUI-CPU void-light +16 %/+13 % (+0,04 ms), in den übrigen zehn Szenarien −7 bis +5 % (über beide Reihen); das Sichtfeld kostet nichts Messbares.
+
+### `48249aa` gegen `9075fec` (Etappe 26: Kreativmodus, Flug, Katalog-Inventar, Pick Block)
+
+Reihe 1, Basis → neu:
+
+| Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
+|----------|---:|---:|---:|---:|---:|---:|---:|
+| stand | 11,52 → 9,98 (−13 %) | 0,429 → 0,416 (−3 %) | 1,49 → 1,41 (−6 %) | 1,66 → 1,62 (−3 %) | 0,675 → 0,590 (−13 %) | 2,75 → 2,53 (−8 %) | 397 → 417 (+5 %) |
+| sprint | 9,80 → 10,07 (+3 %) | 0,399 → 0,400 (+0 %) | 1,46 → 1,49 (+2 %) | 2,04 → 2,05 (+1 %) | 0,644 → 0,755 (+17 %) | 3,54 → 3,19 (−10 %) | 560 → 580 (+4 %) |
+| crowd | 10,24 → 10,05 (−2 %) | 0,705 → 0,660 (−6 %) | 1,18 → 1,20 (+1 %) | 2,05 → 1,98 (−3 %) | 0,791 → 0,786 (−1 %) | 1,91 → 2,34 (+22 %) | 399 → 420 (+5 %) |
+| light | 11,01 → 11,45 (+4 %) | 0,490 → 0,507 (+4 %) | 1,42 → 1,42 (+0 %) | 1,43 → 1,41 (−1 %) | 0,612 → 0,583 (−5 %) | 2,95 → 3,11 (+6 %) | 407 → 425 (+4 %) |
+| liquids | 11,01 → 10,89 (−1 %) | 0,424 → 0,429 (+1 %) | 1,36 → 1,32 (−3 %) | 1,34 → 1,32 (−1 %) | 0,620 → 0,576 (−7 %) | 2,22 → 2,23 (+1 %) | 409 → 431 (+5 %) |
+| glass | 10,47 → 11,11 (+6 %) | 0,465 → 0,452 (−3 %) | 1,41 → 1,42 (+1 %) | 1,81 → 1,85 (+2 %) | 0,596 → 0,545 (−9 %) | 3,49 → 2,85 (−18 %) | 408 → 428 (+5 %) |
+| showcase | 11,73 → 13,69 (+17 %) | 0,409 → 0,384 (−6 %) | 1,05 → 1,04 (−1 %) | 0,679 → 0,641 (−6 %) | 0,254 → 0,225 (−12 %) | 1,34 → 0,605 (−55 %) | 270 → 289 (+7 %) |
+| flat-crowd | 10,06 → 14,03 (+39 %) | 0,586 → 0,648 (+10 %) | 0,624 → 0,669 (+7 %) | 0,856 → 0,822 (−4 %) | 0,359 → 0,408 (+14 %) | 1,08 → 2,58 (+139 %) | 262 → 284 (+8 %) |
+| flat-liquids | 11,88 → 15,13 (+27 %) | 0,278 → 0,275 (−1 %) | 0,916 → 0,915 (+0 %) | 0,636 → 0,601 (−6 %) | 0,159 → 0,155 (−3 %) | 0,733 → 1,26 (+71 %) | 267 → 283 (+6 %) |
+| void-light | 11,84 → 13,65 (+15 %) | 0,339 → 0,335 (−1 %) | 0,762 → 0,767 (+1 %) | 0,575 → 0,582 (+1 %) | 0,157 → 0,153 (−3 %) | 0,933 → 0,775 (−17 %) | 222 → 239 (+8 %) |
+| armour-crowd | 11,86 → 13,93 (+17 %) | 1,59 → 1,48 (−7 %) | 0,804 → 0,738 (−8 %) | 1,14 → 1,07 (−6 %) | 0,343 → 0,325 (−5 %) | 1,76 → 0,841 (−52 %) | 276 → 306 (+11 %) |
+
+**Bewertung:** keine Regression über der Schwelle. **Spitzenspeicher** in allen Szenarien wiederholbar +18 bis +23 MB (über beide Reihen +3 bis +9 %; armour-crowd in Reihe 1 +11 %, über beide Reihen +8 %): fester Mehrbedarf des Katalog-Inventars und der Kreativ-Oberfläche, unabhängig vom Szenario; unter der Schwelle, keine Änderung (falls spätere Etappen den Speicher weiter treiben, zuerst mit `profile.sh alloc` hier ansetzen). Tick Ø sprint +17 % in Reihe 1 und +12 % in Reihe 3, dabei steigen alle Phasen gemeinsam (Reihe 3: Wesen +12 %, Pflanzen +19 %, Streaming und Client-Abgleich ebenso), wie bei einem anderen Takt des Kerns (E-250); in den übrigen Szenarien liegt Tick Ø zwischen −13 und +14 % (flat-crowd +14 % in Reihe 1, −10 % in Reihe 3; stand −13 %/−11 %, crowd −1 %/−8 %). Tick max einzelner Szenarien +22 bis +139 % in einer Reihe (flat-crowd, flat-liquids), in anderen −52 bis −55 %: Ausreißer wie in E-224/E-230.
+
+### `9666133` gegen `48249aa` (Leere-Zone, E-288)
+
+Reihe 1, Basis → neu:
+
+| Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
+|----------|---:|---:|---:|---:|---:|---:|---:|
+| stand | 9,98 → 10,46 (+5 %) | 0,416 → 0,458 (+10 %) | 1,41 → 1,60 (+13 %) | 1,62 → 1,71 (+5 %) | 0,590 → 0,625 (+6 %) | 2,53 → 3,15 (+24 %) | 417 → 429 (+3 %) |
+| sprint | 10,07 → 10,34 (+3 %) | 0,400 → 0,437 (+9 %) | 1,49 → 1,64 (+10 %) | 2,05 → 2,20 (+7 %) | 0,755 → 0,765 (+1 %) | 3,19 → 3,39 (+6 %) | 580 → 608 (+5 %) |
+| crowd | 10,05 → 10,89 (+8 %) | 0,660 → 0,645 (−2 %) | 1,20 → 1,23 (+3 %) | 1,98 → 1,99 (+0 %) | 0,786 → 0,778 (−1 %) | 2,34 → 2,14 (−8 %) | 420 → 433 (+3 %) |
+| light | 11,45 → 11,17 (−2 %) | 0,507 → 0,507 (+0 %) | 1,42 → 1,49 (+5 %) | 1,41 → 1,49 (+5 %) | 0,583 → 0,617 (+6 %) | 3,11 → 2,56 (−18 %) | 425 → 435 (+2 %) |
+| liquids | 10,89 → 10,88 (+0 %) | 0,429 → 0,432 (+1 %) | 1,32 → 1,46 (+10 %) | 1,32 → 1,43 (+8 %) | 0,576 → 0,597 (+4 %) | 2,23 → 2,42 (+8 %) | 431 → 441 (+2 %) |
+| glass | 11,11 → 10,31 (−7 %) | 0,452 → 0,474 (+5 %) | 1,42 → 1,41 (−1 %) | 1,85 → 1,88 (+2 %) | 0,545 → 0,590 (+8 %) | 2,85 → 2,62 (−8 %) | 428 → 437 (+2 %) |
+| showcase | 13,69 → 12,08 (−12 %) | 0,384 → 0,392 (+2 %) | 1,04 → 1,20 (+15 %) | 0,641 → 0,747 (+17 %) | 0,225 → 0,252 (+12 %) | 0,605 → 1,01 (+67 %) | 289 → 307 (+6 %) |
+| flat-crowd | 14,03 → 10,47 (−25 %) | 0,648 → 0,616 (−5 %) | 0,669 → 0,795 (+19 %) | 0,822 → 0,924 (+12 %) | 0,408 → 0,353 (−14 %) | 2,58 → 1,44 (−44 %) | 284 → 298 (+5 %) |
+| flat-liquids | 15,13 → 12,12 (−20 %) | 0,275 → 0,282 (+3 %) | 0,915 → 1,03 (+12 %) | 0,601 → 0,597 (−1 %) | 0,155 → 0,155 (+0 %) | 1,26 → 0,622 (−50 %) | 283 → 297 (+5 %) |
+| void-light | 13,65 → 11,74 (−14 %) | 0,335 → 0,342 (+2 %) | 0,767 → 0,740 (−4 %) | 0,582 → 0,573 (−2 %) | 0,153 → 0,139 (−9 %) | 0,775 → 0,944 (+22 %) | 239 → 239 (+0 %) |
+| armour-crowd | 13,93 → 9,71 (−30 %) | 1,48 → 1,47 (−1 %) | 0,738 → 0,891 (+21 %) | 1,07 → 1,21 (+13 %) | 0,325 → 0,320 (−1 %) | 0,841 → 1,39 (+65 %) | 306 → 316 (+3 %) |
+
+Wie in E-288 angekündigt zeichnet der Mesher seit der Leere-Zone die Unterseite der untersten Schicht. Dadurch bekam jede Chunk-Säule eine zusätzlich gezeichnete Sektion (die bis dahin vollständig verdeckte Sektion 0 mit einer Fläche je Säule):
+
+| Szenario | Sektionen (Basis → Leere) | sichtbare Sektionen / Draw-Calls | Dreiecke | Sektionspuffer MB |
+|----------|---------------------------|----------------------------------|----------|-------------------|
+| stand | 1228 → 1328 | 340 → 366 / 343 → 369 | 479 900 → 514 300 (+7 %) | 87,9 → 95,9 |
+| sprint | 1483 → 1598 | 391 → 420 / 395 → 424 | 561 400 → 603 900 (+8 %) | 102 → 111 |
+| showcase | 354 → 643 | 144 → 221 / 146 → 223 | 74 500 → 113 900 (+53 %) | 9,7 → 17,7 |
+| flat-crowd | 289 → 578 | 88 → 159 / 89 → 160 | 49 800 → 86 300 (+73 %) | 8,0 → 16,0 |
+| flat-liquids | 289 → 578 | 88 → 159 / 89 → 160 | 45 100 → 81 400 (+81 %) | 8,0 → 16,0 |
+| armour-crowd | 289 → 578 | 88 → 159 / 89 → 160 | 64 400 → 100 800 (+56 %) | 8,0 → 16,0 |
+
+Das Frustum verwirft diese Sektionen nicht (sie liegen im Blickfeld unter dem Gelände), und eine Verdeckungsprüfung gibt es nicht. Folge: Render-CPU in der flachen Welt und im Showcase +12 bis +21 %, GPU +12 bis +17 %, in den normalen Welten Render-CPU +5 bis +13 %; das liegt über der Schwelle. **Behoben** in `556e71c` (E-330): Flächen zur Leere hin kommen in eigene Listen des Sektions-Netzes, der Renderer zeichnet sie nur bei einer Kamera unter y = 0 und lässt Sektionen ohne andere Flächen ganz aus. Nachmessung siehe unten. Tick Ø showcase +12 % (Reihe 1) betrifft keine Server-Änderung des Szenarios (Showcase hat keinen Kies und keine Leere-Zone im Tick); in Reihe 2 lag `9666133` nicht vor, die Stände danach liegen auf `48249aa` (−8 %).
+
+### `7c7c924` gegen `9666133` (Etappe 27: Landwirtschaft, Zufallsticks, Items in Strömung, Zucht)
+
+Reihe 1, Basis → neu:
+
+| Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
+|----------|---:|---:|---:|---:|---:|---:|---:|
+| stand | 10,46 → 10,47 (+0 %) | 0,458 → 0,421 (−8 %) | 1,60 → 1,47 (−8 %) | 1,71 → 1,70 (−1 %) | 0,625 → 0,673 (+8 %) | 3,15 → 2,76 (−13 %) | 429 → 430 (+0 %) |
+| sprint | 10,34 → 10,04 (−3 %) | 0,437 → 0,433 (−1 %) | 1,64 → 1,46 (−11 %) | 2,20 → 2,14 (−2 %) | 0,765 → 0,662 (−14 %) | 3,39 → 3,58 (+6 %) | 608 → 607 (+0 %) |
+| crowd | 10,89 → 10,64 (−2 %) | 0,645 → 0,616 (−5 %) | 1,23 → 1,22 (+0 %) | 1,99 → 1,93 (−3 %) | 0,778 → 0,766 (−1 %) | 2,14 → 2,12 (−1 %) | 433 → 434 (+0 %) |
+| light | 11,17 → 11,72 (+5 %) | 0,507 → 0,478 (−6 %) | 1,49 → 1,42 (−5 %) | 1,49 → 1,40 (−6 %) | 0,617 → 0,602 (−2 %) | 2,56 → 2,54 (−1 %) | 435 → 440 (+1 %) |
+| liquids | 10,88 → 11,19 (+3 %) | 0,432 → 0,435 (+1 %) | 1,46 → 1,36 (−7 %) | 1,43 → 1,35 (−6 %) | 0,597 → 0,556 (−7 %) | 2,42 → 2,15 (−11 %) | 441 → 440 (+0 %) |
+| glass | 10,31 → 13,58 (+32 %) | 0,474 → 0,446 (−6 %) | 1,41 → 1,38 (−2 %) | 1,88 → 1,85 (−1 %) | 0,590 → 0,630 (+7 %) | 2,62 → 3,01 (+15 %) | 437 → 443 (+1 %) |
+| showcase | 12,08 → 10,18 (−16 %) | 0,392 → 0,333 (−15 %) | 1,20 → 1,13 (−6 %) | 0,747 → 0,653 (−13 %) | 0,252 → 0,260 (+3 %) | 1,01 → 1,69 (+67 %) | 307 → 305 (−1 %) |
+| flat-crowd | 10,47 → 10,78 (+3 %) | 0,616 → 0,619 (+0 %) | 0,795 → 0,752 (−5 %) | 0,924 → 0,878 (−5 %) | 0,353 → 0,344 (−3 %) | 1,44 → 1,55 (+8 %) | 298 → 298 (+0 %) |
+| flat-liquids | 12,12 → 12,26 (+1 %) | 0,282 → 0,277 (−2 %) | 1,03 → 1,01 (−2 %) | 0,597 → 0,613 (+3 %) | 0,155 → 0,152 (−2 %) | 0,622 → 0,770 (+24 %) | 297 → 298 (+0 %) |
+| void-light | 11,74 → 13,13 (+12 %) | 0,342 → 0,348 (+2 %) | 0,740 → 0,729 (−1 %) | 0,573 → 0,582 (+2 %) | 0,139 → 0,139 (+0 %) | 0,944 → 0,769 (−19 %) | 239 → 241 (+1 %) |
+| armour-crowd | 9,71 → 10,46 (+8 %) | 1,47 → 1,56 (+6 %) | 0,891 → 0,887 (+0 %) | 1,21 → 1,21 (+0 %) | 0,320 → 0,342 (+7 %) | 1,39 → 1,05 (−25 %) | 316 → 318 (+0 %) |
+
+**Bewertung:** keine Regression über der Schwelle im ganzen Tick, in Frame-Werten und Speicher. Wiederholbar ist nur die Phase **Pflanzen** (+13 bis +65 %, absolut +1 bis +5 µs pro Tick, unter 1 % des Ticks): Seit Etappe 27 sortiert `QcPlantGrowth::tick` jeden Tick die Chunks mit wachsenden Sektionen (feste Reihenfolge für reproduzierbare Zufallsticks) und läuft `QcMobBreeding::tick` (in derselben Phase) dreimal über alle Wesen. Die Sortierung wird seit `fd70a0b` zwischengespeichert und nur nach Änderungen der Chunk-Menge neu gebildet (E-331); in Reihe 5 liegt die Phase damit −16 bis +10 % um `7c7c924` (Streuung der µs-Werte ±20 %), ein Gewinn ist nicht messbar, der Aufwand pro Tick aber weg. Die Zuchtschleife bleibt (einige Nanosekunden pro Wesen). glass Frame p99 +32 % in Reihe 1 ist die Zweiteilung (Reihe 3: −4 %, Reihe 5 gegen `fd70a0b`: −4 %).
+
+### Nach den Korrekturen
+
+`556e71c` (Unterseite) gegen `7c7c924`, Reihe 2:
+
+| Szenario | Dreiecke | Draw-Calls | Render-CPU ms | GPU Ø ms | Bemerkung |
+|----------|----------|-----------:|---------------|----------|-----------|
+| stand | 514 567 → 480 775 (−7 %) | 369 → 347 | 1,51 → 1,59 (+6 %) | 1,63 → 1,67 (+2 %) | Reihe 5: Render-CPU +5 %, GPU +4 % |
+| sprint | 604 561 → 563 361 (−7 %) | 424 → 399 | 1,65 → 1,68 (+1 %) | 2,06 → 2,07 | Reihe 5: −8 % / +3 % |
+| glass | 514 624 → 480 825 (−7 %) | 371 → 349 | 1,64 → 1,63 (−1 %) | 1,85 → 1,82 (−2 %) | |
+| showcase | 113 073 → 73 650 (−35 %) | 219 → 142 | 1,37 → 1,24 (−9 %) | 0,722 → 0,646 (−10 %) | |
+| flat-crowd | 86 113 → 49 761 (−42 %) | 160 → 89 | 0,911 → 0,788 (−14 %) | 0,908 → 0,828 (−9 %) | |
+| flat-liquids | 81 436 → 45 084 (−45 %) | 160 → 89 | 1,22 → 1,12 (−8 %) | 0,640 → 0,595 (−7 %) | |
+| armour-crowd | 100 950 → 64 257 (−36 %) | 161 → 89 | 1,03 → 1,00 (−3 %) | 1,18 → 1,13 (−4 %) | |
+
+**Bedeutung der Zähler seit `556e71c`:** `visible_sections` zählt nur noch Sektionen, die gezeichnet werden: Eine Sektion, die nur Unterseite hat, kommt bei einer Kamera über y = 0 nicht in die Liste, auch wenn ihre Grenzen im Frustum liegen. Bis `7c7c924` zählten solche Sektionen mit (Leere-Zone: eine je Säule). `sections` (alle hochgeladenen Netze) und `section_mb` schließen die Sektionen mit nur Unterseite weiter ein. Vergleiche von `visible_sections` über `556e71c` hinweg mit `9666133` oder `7c7c924` messen also auch diese Umstellung; gegen `48249aa` und ältere Stände ist die Bedeutung wieder dieselbe.
+
+Dreiecke und Draw-Calls liegen damit wieder auf dem Stand vor der Leere-Zone (`48249aa`: flat 49 761 / 89, Showcase 74 484 / 146; normal +0,2 %, die Unterseite in Sektionen mit sichtbarem Gelände kostet keine eigenen Aufrufe mehr). Gegen `48249aa` über die Reihen 2, 3 und 5: Render-CPU −11 bis +10 %, GPU −8 bis +7 %, ohne gleichgerichtete Abweichung. Geblieben ist der Sektionspuffer (normal +8 MB, flach +8 MB): Die Unterseiten liegen weiter auf der GPU, damit der Blick aus der Leere sofort stimmt; Spitzenspeicher +2 bis +3 % gegenüber `48249aa`, unter der Schwelle. Sichtprüfung (Offscreen-Bild aus y = −10 nach oben, flache Welt, Kreativflug): `fd70a0b` und `7c7c924` pixelgleich (größte Abweichung 1/255), die Unterseite wird von unten also weiter gezeichnet.
+
+**Reihenfolge-Effekt (Reihe 3 und 4):** Dort lag `fd70a0b` als letzter Build jeder Runde in allen Werten über `7c7c924`, auch in GUI-CPU, Wesen- und Items-Phase, deren Code die Korrekturen nicht berühren (crowd GUI-CPU +33 %, farm-seeds alle Tick-Phasen +21 bis +48 %). In Reihe 5 mit umgekehrter Reihenfolge liegen beide gleichauf (stand Render-CPU +5 %, sprint −8 %, crowd +6 %, glass −3 %; Tick Ø −8 / +14 / −7 / −4 %). Folgerung für künftige Reihen: Bei mehr als zwei Ständen die Reihenfolge in jeder Runde wechseln oder eine Gegenreihe mit umgekehrter Reihenfolge messen, bevor eine Abweichung des letzten Stands als Regression gilt.
+
+### Neue Szenarien (erste Referenzwerte, Release, 8 Chunks, Mittel [Spanne])
+
+**gravel-collapse** (flache Welt auf drei Schichten Kies, nach 2 s ein Schacht bis in die Leere, E-288), 3 Runden je Stand:
+
+| Stand | Tick Ø ms | Tick max ms | fallende Blöcke Ø / max ms | Block-Updates Ø / max ms | neu vernetzte Sektionen | Rückstau max | Änderung bis Bild Ø / max ms | GUI-CPU ms | Speicher MB |
+|-------|----------:|------------:|---------------------------:|-------------------------:|------------------------:|-------------:|-----------------------------:|-----------:|------------:|
+| `48249aa` (vor der Leere-Zone: kein Einsturz) | 0,163 | 1,06 | 0,0001 / 0,0007 | 0,0009 / 0,052 | 0 | 0 | – | 0,259 | 256 |
+| `9666133` | 1,46 [1,41–1,51] | 5,29 | 0,682 / 3,23 | 0,082 / 2,28 | 5261 | 486 | 15,7 / 73 | 2,29 | 313 |
+| `7c7c924` | 1,32 [1,08–1,47] | 5,00 | 0,614 / 2,63 | 0,066 / 1,60 | 5229 | 424 | 16,5 / 160 | 2,38 | 311 |
+| `fd70a0b` | 1,35 [1,19–1,48] | 5,34 | 0,625 / 2,37 | 0,068 / 2,16 | 5272 | 438 | 17,2 / 117 | 2,32 | 316 |
+
+Der Einsturz kostet im Mittel rund 1,2 ms pro Tick (davon fallende Blöcke 0,6–0,7 ms) und höchstens gut 5 ms, ein Zehntel des Tick-Budgets; die Grenzen aus E-288 (1024 Updates pro Tick, 2048 fallende Blöcke) halten den schlechtesten Tick klein. Auf dem Client steigt die GUI-CPU auf 2,3 ms (Entity-Vernetzung der fallenden Blöcke), der Rückstau auf über 400 Sektionen, eine Änderung braucht im schlechtesten Fall bis 0,3 s bis zum Bild; Frame p99 bleibt bei 10 ms. Etappe 27 und die Korrekturen ändern daran nichts (Tick −10 %/+2 %, Spannen überlappen).
+
+**farm** (63 × 63 nasser Ackerboden mit Wasserrinnen alle 9 m, junger Weizen, Kürbis- und Melonenstängel, Zufallsticks an, ab 3 s jede Sekunde `/tick sprint 600`) und **farm-seeds** (dasselbe Feld mit reifem Weizen ohne Sprint, Saat-Stapel auf belegten Feldern: das Skript legt 15 × 10 = 150 ab, die BENCH-Zeile zählt in jedem Lauf 140 Items, zehn Stapel vereinigen sich also mit einem anderen oder fehlen; nicht weiter untersucht, für alle Stände gleich), je 3 Runden:
+
+| Szenario / Stand | Ticks | Tick Ø ms | Phase Pflanzen Ø / max ms | Phase Items Ø ms | neu vernetzte Sektionen | Änderung bis Bild Ø / max ms | Rückstau max | Frame p99 ms |
+|------------------|------:|----------:|--------------------------:|-----------------:|------------------------:|-----------------------------:|-------------:|-------------:|
+| farm / `7c7c924` | 11 780 | 0,036 | 0,012 / 0,53 | 0,0003 | 1939 | 20,3 / 57 | 100 | 11,5 |
+| farm / `fd70a0b` | 11 782 | 0,038 | 0,012 / 0,42 | 0,0003 | 1950 | 21,2 / 63 | 108 | 11,7 |
+| farm-seeds / `7c7c924` | 401 | 0,275 | 0,051 / 0,47 | 0,061 | 102 | 9,2 / 20 | 4 | 9,8 |
+| farm-seeds / `fd70a0b` | 401 | 0,334 | 0,066 / 0,58 | 0,078 | 102 | 9,6 / 18 | 4 | 10,5 |
+
+Im Sprint laufen rund 11 400 zusätzliche Ticks in 20 s (600 pro Sekunde in wenigen Millisekunden), die Tick-Werte sind daher Mittel über Sprint-Ticks: Ein Tick mit wachsendem Feld kostet in der Phase Pflanzen 12 µs, der teuerste 0,4–0,5 ms. Der Client vernetzt dabei rund 2000 Sektionen neu, eine Änderung erscheint im Mittel nach 20 ms, im schlechtesten Fall nach 60 ms, bei unverändertem Frame p99. Ruhende Saat (farm-seeds) kostet in der Phase Items rund 0,4–0,6 µs pro Stapel und Tick (Ruheprüfung jeden Tick, Suche nach freiem Boden in neun Zellen einmal pro Sekunde); die Zufallsticks auf dem Feld (63 × 63 = 3969 Zellen, davon 441 Wasserrinne und 3528 Ackerboden unter 3024 Weizen, 252 Stängeln und 252 freien Zellen) kosten 0,05–0,07 ms. Die Unterschiede `7c7c924` → `fd70a0b` in farm-seeds sind der Reihenfolge-Effekt oben (alle Phasen gemeinsam, auch unveränderte). Ein Probelauf mit Saat, die auch in die Wasserrinnen fiel, kam auf 0,17 ms in der Phase Items: Items im Wasser ruhen nie und werden jeden Tick bewegt (E-296); das Szenario legt die Saat deshalb neben die Rinnen.
+
+**Fazit (überarbeitet nach dem Review):** Einzige Regression über der Schwelle war die Unterseite der Welt aus der Leere-Zone (Render-CPU und GPU in flachen Welten und im Showcase +12 bis +21 %); behoben (E-330). Über 10 % lagen in den Reihen mit fester Reihenfolge außerdem void-light (`9075fec`: Tick Ø +22 %/+16 %, GUI-CPU +16 %/+13 %), sprint (`48249aa`: Tick Ø +17 %/+12 %) und farm-seeds (`fd70a0b`: Pflanzen +29 %); diese Werte waren zunächst nur mit Kern- und Taktstreuung bzw. dem Reihenfolge-Effekt begründet, ohne Gegenprobe. Die Nachprüfung mit rotierender Reihenfolge und Tick-Phasen (unten) zeigt sie nicht wieder (+5 %, +4 %, +1 %); sie kamen aus der festen Reihenfolge. Wiederholbar sind: Spitzenspeicher +18 bis +23 MB durch Etappe 26 (unter der Schwelle), Phase Pflanzen +15 % (+2,5 µs) durch Etappe 27, mit `fd70a0b` behoben (E-331), und GPU sprint +15 % durch die Sichtfeld-Verbreiterung von `9075fec` (mehr Sektionen im Frustum, gewollt, E-331). 60 FPS bei 8 Chunks halten alle Stände in allen Szenarien (Frame Ø 8,3–8,8 ms).
+
+### Nachprüfung nach dem Review (2026-10-12, rotierende Reihenfolge)
+
+Alle Reihen mit dem überarbeiteten `bench-ab.sh` (Reihenfolge rotiert pro Runde, Last und fremde Prozesse vor und nach jedem Lauf, Sperre vom Skript gehalten), Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`) aus `git archive`, 8 Chunks, 20 s pro Lauf, Mittel [Spanne]. Last vor und nach den Läufen 2,2–5,1; als belastet markiert (Safari, Teams, Mail oder ein Claude-Fenster ≥ 80 % CPU vor oder nach dem Lauf) sind 1 von 36, 5 von 54 und 2 von 24 Läufen, über die Stände verteilt; sie sind in den Mitteln enthalten, ohne sie ändert sich keine Aussage.
+
+**Reihe 6: `d28dd89`, `9075fec`, `48249aa`, void-light und sprint, 6 Runden (jeder Stand zweimal an jeder Stelle):**
+
+| Szenario | Wert | `d28dd89` | `9075fec` | `48249aa` |
+|----------|------|----------:|----------:|----------:|
+| void-light | Tick Ø ms | 0,155 [0,119–0,230] | 0,163 [0,133–0,211] (+5 %) | 0,178 [0,136–0,213] (+9 %) |
+| void-light | GUI-CPU ms | 0,380 | 0,360 (−5 %) | 0,350 (−3 %) |
+| void-light | Phasen Streaming / Nachrichten / Wesen ms | 0,091 / 0,051 / 0,0084 | 0,098 / 0,044 / 0,0085 | 0,112 / 0,049 / 0,0100 |
+| sprint | Tick Ø ms | 0,536 [0,474–0,657] | 0,584 [0,461–0,700] (+9 %) | 0,610 [0,497–0,791] (+4 %) |
+| sprint | Phasen Wesen / Streaming / Client-Abgleich / Pflanzen ms | 0,386 / 0,079 / 0,042 / 0,016 | 0,430 / 0,083 / 0,039 / 0,017 | 0,444 / 0,086 / 0,045 / 0,020 |
+| sprint | GPU Ø ms | 2,00 | 2,31 (+15 %) | 2,29 (−1 %) |
+| sprint | sichtbare Sektionen / Dreiecke | 372 / 541 500 | 391 / 562 800 | 391 / 563 500 |
+| sprint | Render-CPU / GUI-CPU ms | 1,32 / 0,419 | 1,37 / 0,382 | 1,37 / 0,411 |
+| beide | Frame p99 ms | 10,4 / 10,2 | 10,5 / 10,0 | 11,1 / 10,1 |
+
+Prozente gegen die Spalte links. Die Abstände der Reihen 1 und 3 (void-light Tick +22/+16 %, GUI-CPU +16/+13 %; sprint Tick +17/+12 %) wiederholen sich nicht: void-light Tick +5 % bei völlig überlappenden Spannen (Server-Code identisch), GUI-CPU −5 %; sprint Tick `9075fec` → `48249aa` +4 %, alle Phasen innerhalb von 9 µs. Tick-Phasen statt `profile.sh time`: Ohne wiederholbare Abweichung gibt es nichts einzugrenzen (Arbeitsauftrag §3: ohne Verschlechterung kein tiefes Profiling); die Phasen zeigen keinen Teil, der allein wächst. Neu sichtbar ist sprint GPU +15 % von `d28dd89` zu `9075fec` mit 19 sichtbaren Sektionen und 4 % Dreiecken mehr in jeder Runde: die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect`), gewollt; Begründung in E-331. In Reihe 1 lag `d28dd89` vorn und `9075fec` an zweiter Stelle, dort war der GPU-Abstand −3 %; die Sektionen wurden damals nicht verglichen.
+
+**Reihe 7: `9666133`, `7c7c924`, `fd70a0b`, farm-seeds, farm und stand, 6 Runden, `fd70a0b` in Runde 1 vorn:**
+
+| Szenario | Wert | `9666133` | `7c7c924` | `fd70a0b` |
+|----------|------|----------:|----------:|----------:|
+| farm-seeds | Tick Ø ms | – (kein Ackerbau) | 0,255 [0,195–0,391] | 0,257 [0,175–0,378] (+1 %) |
+| farm-seeds | Pflanzen / Items ms | – | 0,0477 / 0,0567 | 0,0481 / 0,0572 (+1 % / +1 %) |
+| farm | Tick Ø ms | – | 0,0327 | 0,0332 (+2 %) |
+| farm | Pflanzen Ø ms | – | 0,0108 | 0,0110 (+2 %) |
+| stand | Tick Ø ms | 0,516 [0,375–0,764] | 0,476 [0,386–0,599] | 0,481 [0,369–0,542] |
+| stand | Pflanzen Ø ms | 0,0165 [0,0130–0,0231] | 0,0190 [0,0149–0,0254] (+15 %) | 0,0167 [0,0138–0,0188] (−12 %) |
+
+Die Abweichung `7c7c924` → `fd70a0b` in farm-seeds aus Reihe 4 (Pflanzen +29 %, Tick +21 %, `fd70a0b` immer zuletzt) war der Reihenfolge-Effekt: rotiert +1 %. Der Anstieg der Phase Pflanzen mit Etappe 27, auf dem E-331 aufbaut, ist dagegen echt: `7c7c924` liegt in stand in 5 von 6 Runden über `9666133` (+15 %, +2,5 µs); `fd70a0b` bringt die Phase auf den Stand vor Etappe 27 zurück (+1 % gegenüber `9666133`). `9666133` kennt Ackerboden und Weizen noch nicht; seine farm-Läufe sind keine Vergleichswerte.
+
+**Reihe 8: zusammengeführter Stand gegen `dev` (Etappe 28, `91e78b6`), stand, flat-crowd, showcase, 4 Runden:** prüft, ob E-330 auf dem Renderer von Etappe 28 (Texturpakete, Mip-Stufen) hält. Der Zweig unterscheidet sich von `dev` nur in Renderer (Unterseiten-Puffer), Mesher (Listen) und `QcSectionMarks`/`QcPlantGrowth`.
+
+| Szenario | Dreiecke | Draw-Calls | sichtbare Sektionen | Render-CPU ms | GPU Ø ms | GUI-CPU ms | Tick Ø ms | Frame p99 ms | Speicher MB |
+|----------|---------:|-----------:|--------------------:|--------------:|---------:|-----------:|----------:|-------------:|------------:|
+| stand | 514 575 → 480 783 (−7 %) | 369 → 347 | 366 → 344 | 1,38 → 1,37 (−1 %) | 1,79 → 1,74 (−3 %) | 0,424 → 0,441 (+4 %) | 0,556 → 0,501 (−10 %) | 9,87 → 9,87 | 436 → 434 |
+| flat-crowd | 86 240 → 49 888 (−42 %) | 160 → 89 | 159 → 88 | 0,838 → 0,772 (−8 %) | 0,844 → 0,810 (−4 %) | 0,659 → 0,706 (+7 %) | 0,358 → 0,407 (+14 %) | 9,84 → 9,84 | 305 → 301 |
+| showcase | 113 075 → 73 651 (−35 %) | 219 → 142 | 216 → 139 | 1,18 → 1,12 (−5 %) | 0,658 → 0,587 (−11 %) | 0,407 → 0,450 (+11 %) | 0,215 → 0,209 (−3 %) | 10,12 → 9,87 | 310 → 307 |
+
+Dreiecke und Draw-Calls fallen auf `dev` genau wie vor dem Zusammenführen (flat 49 761 / 89, Showcase 73 650 / 142, stand −7 %); Render-CPU −1 bis −8 %, GPU −3 bis −11 %. `sections` (578, 641, 1328) und `section_mb` (16,0, 17,7, 95,9) sind gleich: Die Unterseiten liegen weiter auf der GPU (E-330). Über 10 % auf der ungünstigen Seite liegen nur Werte, die der Zweig nicht berührt: GUI-CPU showcase +11 % (der Haupt-Thread hat keine Änderung; ohne den niedrigsten `dev`-Lauf, 0,335 ms, +3 %) und Tick flat-crowd +14 % (ein Lauf mit 0,604 ms, die übrigen drei 0,339–0,344 gegen 0,318–0,441 ms). Keine Regression.
+
 ## Etappe 28: Texturpakete (Atlas gemessen, Benchmark offen)
 
 Kein Benchmark (Anweisung des Menschen 2026-10-12); gemessen nur der Atlas mit `qtcraft-headless --atlas-stats` im Release-Build (Basis ohne Mods, 346 Texturen + Platzhalter; Bestwert aus drei Läufen, Kacheln parallel auf dem Entwicklungsrechner):

@@ -6,7 +6,6 @@
 #include <QList>
 
 #include <algorithm>
-#include <utility>
 
 QcPlantGrowth::QcPlantGrowth(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
@@ -24,15 +23,15 @@ void QcPlantGrowth::tick(const QcServerWorld &world, const SetBlock &setBlock)
 {
     // Only sections that may hold a growing plant: a scan of every loaded section per tick cost
     // more than the rest of the tick.
-    const QHash<QcChunkPos, quint32> &sections = world.growingSections().chunks();
+    const QcSectionMarks &marks = world.growingSections();
+    const QHash<QcChunkPos, quint32> &sections = marks.chunks();
     if (m_growing.isEmpty() || sections.isEmpty()) {
         return;
     }
 
     // In a fixed order of chunks, so the same seed draws the same random cells in every run (the
     // hash order differs between processes).
-    QList<QcChunkPos> order = sections.keys();
-    std::ranges::sort(order, [](QcChunkPos a, QcChunkPos b) { return std::pair{a.x, a.z} < std::pair{b.x, b.z}; });
+    const QList<QcChunkPos> &order = marks.orderedChunks();
 
     // Collected first: setting blocks while holding a chunk snapshot would copy the chunk.
     QList<QcBlockPos> ticked;

@@ -8,7 +8,8 @@ Auswertung der Etappe 16 (Profiling und Optimierung). Messrechner: MacBook Pro M
 |----------|--------|---------|
 | Benchmark-Pfad | `QTCRAFT_BENCHMARK=<s>`, `QTCRAFT_BENCHMARK_SCENARIO=…` | `BENCH`-Zeile: Frame-Abstand Ø/p99, Server-Tick Ø/max, Spitzenspeicher, **Frame-Kosten unabhängig von VSync** (E-068): CPU-Zeit pro Frame von GUI- und Render-Thread (Thread-CPU-Uhr), Welt-Renderer, Upload (Zeit, MB), Entity-Vernetzung, GPU-Zeit (RHI-Zeitstempel, `QSG_RHI_PROFILE=1`), Meshing pro Sektion (Worker), Draw-Calls, sichtbare Sektionen, Dreiecke, Sektionen und ihre Pufferbytes |
 | `scripts/bench.sh` | `[runs] [seconds]`, `SCENARIOS=…`, `VIEW=…`, `KEYS=…` | Median über mehrere Läufe (Etappen-Check) |
-| `scripts/profile.sh` | `<tool> [scenario] [seconds] [view]` | Preset `profile` (`build/profile`, RelWithDebInfo, QML-Debugging); Rohdaten in einem Temp-Verzeichnis außerhalb des Repos |
+| `scripts/bench-ab.sh` | `<Ergebnisdatei> <Runden> <Sekunden> <Name>=<App> …`, `SCENARIOS=…`, `VIEW=…` | Verschränkte A/B-Messung beliebig vieler Builds (pro Runde und Szenario jeder Build einmal, Reihenfolge rotiert pro Runde, E-331), hält die Sperre `~/.cache/qtcraft/bench.lock`, wartet vor jedem Lauf bis zu 3 min auf einen ruhigen Rechner, schreibt Kopfzeile pro Reihe sowie Position, Reihenfolge, Last und fremde Prozesse vor und nach jedem Lauf mit |
+| `scripts/profile.sh` | `<tool> [scenario] [seconds] [view]`, `PROFILE_APP=…` | Preset `profile` (`build/profile`, RelWithDebInfo, QML-Debugging) oder ein vorhandener Build (`PROFILE_APP`, z. B. ein älterer Stand zum Vergleich); Rohdaten in einem Temp-Verzeichnis außerhalb des Repos |
 | `profile.sh breakdown` | alle Szenarien | Frame-Kosten-Tabelle wie unten |
 | `profile.sh time` | `xctrace` Time Profiler (angehängt) | `scripts/profile-report.py time`: heißeste Funktionen pro Thread, selbst und inklusive |
 | `profile.sh metal` | `xctrace` Metal System Trace | GPU-Intervalle pro Frame (Instruments) |

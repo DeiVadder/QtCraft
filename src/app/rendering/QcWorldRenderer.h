@@ -46,8 +46,12 @@ private:
     {
         GpuBuffers opaque;
         GpuBuffers translucent;
+        // Faces towards the void below the world, drawn only from below y = 0 (QcChunkMesh).
+        GpuBuffers underside;
         QVector3D boundsMin;
         QVector3D boundsMax;
+        // GPU bytes of all three lists (section buffer statistics).
+        quint64 bytes() const { return opaque.bytes() + translucent.bytes() + underside.bytes(); }
     };
 
     void createPipelines();

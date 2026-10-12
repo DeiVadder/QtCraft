@@ -30,6 +30,7 @@ struct Fixture
     QcBlockId stone = 0;
     QcBlockId water = 0;
     QcBlockId leaves = 0;
+    QcBlockId glass = 0;
     QcBlockId sapling = 0;
     std::shared_ptr<const QcBlockRenderTable> table;
 
@@ -38,6 +39,7 @@ struct Fixture
         stone = *content.registerBlock(makeBlock(u"t:stone"_s, QcRenderLayer::Opaque, true));
         water = *content.registerBlock(makeBlock(u"t:water"_s, QcRenderLayer::Translucent, false, true));
         leaves = *content.registerBlock(makeBlock(u"t:leaves"_s, QcRenderLayer::Cutout, false));
+        glass = *content.registerBlock(makeBlock(u"t:glass"_s, QcRenderLayer::Translucent, false));
         QcBlockDefinition cross = makeBlock(u"t:sapling"_s, QcRenderLayer::Cutout, false, true);
         cross.liquid = false;
         cross.shape.parts = {[] {
@@ -214,19 +216,90 @@ private slots:
     void bottomLayerHasItsUndersideForAViewFromTheVoid()
     {
         // Decision E-288: below the world is air, so a block at y = 0 shows all six faces,
-        // including the one facing down at y = 0.
+        // including the one facing down at y = 0. That one is kept in the underside lists, which
+        // the renderer draws only for a camera below the world.
         const Fixture f;
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(3, 0, 5, f.stone);
         const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
-        QCOMPARE(quadCount(mesh.opaqueIndices), 6);
+        QCOMPARE(quadCount(mesh.opaqueIndices), 5);
+        QCOMPARE(quadCount(mesh.undersideIndices), 1);
+        QVERIFY(!mesh.isEmpty());
 
         int bottomCorners = 0;
         for (const QcBlockVertex &v : mesh.opaqueVertices) {
             bottomCorners += v.y == 0.0f ? 1 : 0;
         }
-        // Four side faces with two bottom corners each, and the bottom face with four.
-        QCOMPARE(bottomCorners, 4 * 2 + 4);
+        // Four side faces with two bottom corners each.
+        QCOMPARE(bottomCorners, 4 * 2);
+        QCOMPARE(mesh.undersideVertices.size(), 4);
+        for (const QcBlockVertex &v : mesh.undersideVertices) {
+            QCOMPARE(v.y, 0.0f);
+        }
+    }
+
+    void buriedBottomSectionHasOnlyItsUnderside()
+    {
+        // A section filled up completely (bedrock and stone of a normal world, the lower layers of a
+        // flat world) shows no face from above the world: only the underside towards the void.
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        for (int y = 0; y < QcWorld::sectionHeight + 1; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    chunk->setBlock(x, y, z, f.stone);
+                }
+            }
+        }
+        // The same full chunk all around: no border faces either.
+        QcMeshInput in = f.input(chunk);
+        for (auto &neighbour : in.chunks) {
+            neighbour = chunk;
+        }
+        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        QVERIFY(mesh.opaqueIndices.isEmpty());
+        QVERIFY(mesh.translucentIndices.isEmpty());
+        QCOMPARE(quadCount(mesh.undersideIndices), QcWorld::chunkSize * QcWorld::chunkSize);
+    }
+
+    void undersideHoldsOnlyNonTranslucentFacesLookingIntoTheVoid()
+    {
+        // Decision E-330, per render layer at y = 0. Downward-facing quads of a list.
+        const auto facesDown = [](const QList<QcBlockVertex> &vertices) {
+            int count = 0;
+            for (qsizetype i = 0; i + 3 < vertices.size(); i += 4) {
+                const QVector3D normal = QVector3D::crossProduct(position(vertices[i + 1]) - position(vertices[i]),
+                                                                 position(vertices[i + 2]) - position(vertices[i]));
+                count += normal.y() < -0.5f && vertices[i].y == 0.0f ? 1 : 0;
+            }
+            return count;
+        };
+
+        // A cross plant has no down face: nothing goes to the underside, its four quads stay.
+        const Fixture f;
+        auto plant = std::make_shared<QcChunk>();
+        plant->setBlock(3, 0, 5, f.sapling);
+        const QcChunkMesh plantMesh = QcChunkMesher::mesh(f.input(plant));
+        QVERIFY(plantMesh.undersideIndices.isEmpty());
+        QCOMPARE(quadCount(plantMesh.opaqueIndices), 4);
+
+        // Leaves (cutout) are drawn in the opaque pass: their down face goes to the underside.
+        auto leaves = std::make_shared<QcChunk>();
+        leaves->setBlock(3, 0, 5, f.leaves);
+        const QcChunkMesh leavesMesh = QcChunkMesher::mesh(f.input(leaves));
+        QCOMPARE(quadCount(leavesMesh.undersideIndices), 1);
+        QCOMPARE(facesDown(leavesMesh.undersideVertices), 1);
+        QCOMPARE(quadCount(leavesMesh.opaqueIndices), 5);
+        QCOMPARE(facesDown(leavesMesh.opaqueVertices), 0);
+
+        // Glass (translucent) keeps its down face in the translucent list, sorted with the rest.
+        auto glass = std::make_shared<QcChunk>();
+        glass->setBlock(3, 0, 5, f.glass);
+        const QcChunkMesh glassMesh = QcChunkMesher::mesh(f.input(glass));
+        QVERIFY(glassMesh.undersideIndices.isEmpty());
+        QVERIFY(glassMesh.opaqueIndices.isEmpty());
+        QCOMPARE(quadCount(glassMesh.translucentIndices), 6);
+        QCOMPARE(facesDown(glassMesh.translucentVertices), 1);
     }
 
     void missingNeighbourChunkHidesBorderFaces()
