@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -318,3 +318,21 @@ Hold **Tab** to see who is online: the server's name and message of the day, eve
 **Limits of the security**
 
 There are no accounts: every installation has a random key that proves your name on each server (the first player to use a name on a server keeps it). Passwords are never sent in plain text, but nothing else is encrypted, so chat and play can be read on the way. Open a server to the internet only with a password and to people you know.
+
+### <a id="chapter-qtcraft-texture_packs"></a>Texture packs
+
+**Choosing a look**
+
+**Settings → Texture packs** changes how blocks, items, creatures, your character and the icons look. **QtCraft HD** paints the game's own textures at 32, 64 or 128 pixels with finer detail; **Storybook** is a small pack of drawn images with outlines and warm colours. Changes apply at once, also in a running world, and only on your computer: other players keep their own choice.
+
+**Several packs at once**
+
+Switch on up to 16 packs. A pack you switch on goes to the top; the arrows change the order. For every texture the highest pack that has it wins, then the next one, and finally the game's own texture, so a small pack can change just a few blocks.
+
+**Your own packs**
+
+A pack is a folder with a **texturepack.json** and PNG images (or texture descriptions) in **textures/qtcraft/**, one per texture, all of the same size from 16 to 512 pixels. **Open texture pack folder** in the settings shows where they go; **Reload** reads them again after a change. Mods can bring packs of their own.
+
+**When something is wrong**
+
+A damaged image or one of the wrong size is skipped and listed under its pack; that texture then comes from the next pack. Very large packs are shown at a lower resolution when the graphics card or the memory would not take them, and the settings say so.

@@ -1,5 +1,7 @@
 #include "QcWorldRenderer.h"
 
+#include "QcAtlasTexture.h"
+
 #include "QcFrustum.h"
 #include "QcIndexPacking.h"
 #include "QcRenderPipelines.h"
@@ -79,15 +81,14 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_skyRenderer.reset();
         m_debugLineRenderer.reset();
         m_uploadedAtlasVersion = 0;
+        m_atlasTried = false;
         m_rhi = rhi();
     }
 
     if (!m_frameUniforms) {
         m_frameUniforms.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(FrameUniforms)));
         m_frameUniforms->create();
-        m_atlasSampler.reset(m_rhi->newSampler(QRhiSampler::Nearest, QRhiSampler::Nearest, QRhiSampler::None,
-                                               QRhiSampler::ClampToEdge, QRhiSampler::ClampToEdge));
-        m_atlasSampler->create();
+        m_atlasSampler = QcAtlasTexture::createSampler(m_rhi);
     }
 
     if (!m_pipelineRenderPass || !m_pipelineRenderPass->isCompatible(renderTarget()->renderPassDescriptor())) {
@@ -115,7 +116,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
 
     if (view->m_atlasVersion != m_atlasVersion) {
         m_atlasVersion = view->m_atlasVersion;
-        m_atlasImage = view->m_atlas;
+        m_atlasLevels = view->m_atlas;
     }
     if (view->m_clearAllMeshes) {
         view->m_clearAllMeshes = false;
@@ -137,25 +138,26 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
 
 void QcWorldRenderer::ensureAtlasTexture(QRhiResourceUpdateBatch *updates)
 {
-    if (m_atlasTexture && m_uploadedAtlasVersion == m_atlasVersion) {
+    // Tried once per atlas: a texture the GPU refused is not asked for again every frame.
+    if (m_atlasTried && m_uploadedAtlasVersion == m_atlasVersion) {
         return;
     }
-    QImage image = m_atlasImage.isNull() ? QImage(16, 16, QImage::Format_RGBA8888) : m_atlasImage;
-    if (m_atlasImage.isNull()) {
-        image.fill(Qt::magenta);
+    m_atlasTried = true;
+    QList<QImage> levels = m_atlasLevels;
+    if (levels.isEmpty() || levels.front().isNull()) {
+        QImage placeholder(16, 16, QImage::Format_RGBA8888);
+        placeholder.fill(Qt::magenta);
+        levels = {placeholder};
     }
-    image = image.convertToFormat(QImage::Format_RGBA8888);
 
-    if (!m_atlasTexture || m_atlasTexture->pixelSize() != image.size()) {
-        m_atlasTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, image.size()));
-        m_atlasTexture->create();
-        m_bindings.reset();
-        m_opaquePipeline.reset();
-        m_translucentPipeline.reset();
-        m_entityPipeline.reset();
-        m_handPipeline.reset();
-    }
-    updates->uploadTexture(m_atlasTexture.get(), image);
+    // A new texture for every atlas (a pack switch changes its size and levels); the bindings and
+    // pipelines refer to it.
+    m_atlasTexture = QcAtlasTexture::create(m_rhi, levels, updates);
+    m_bindings.reset();
+    m_opaquePipeline.reset();
+    m_translucentPipeline.reset();
+    m_entityPipeline.reset();
+    m_handPipeline.reset();
     m_uploadedAtlasVersion = m_atlasVersion;
 }
 
@@ -413,7 +415,8 @@ void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
 void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
 {
     ensureAtlasTexture(updates);
-    if (!m_opaquePipeline || !m_translucentPipeline) {
+    // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn.
+    if (m_atlasTexture && (!m_opaquePipeline || !m_translucentPipeline)) {
         createPipelines();
     }
     if (!m_outlinePipeline) {

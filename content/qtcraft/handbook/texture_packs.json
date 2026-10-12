@@ -1,0 +1,11 @@
+{
+    "name": "texture_packs",
+    "order": 135,
+    "icon": "oak_planks",
+    "sections": [
+        "choosing",
+        "order",
+        "own",
+        "problems"
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "format": 1,
+    "name": "Storybook",
+    "description": "Example of a texture pack made of plain PNG files: warm colours, drawn outlines on blocks and a few hand-placed details. Textures it does not have come from the next pack or the game.",
+    "resolution": 32,
+    "license": "GPL-3.0-or-later",
+    "credits": [
+        {
+            "author": "QtCraft",
+            "note": "Exported from the procedural textures at 32 x 32 and hand-tuned with scripts/texturepack-style.py"
+        }
+    ],
+    "preview": "preview.png"
+}

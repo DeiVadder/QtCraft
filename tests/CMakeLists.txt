@@ -3,6 +3,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 qc_add_test(test_coordinates SOURCES world/test_coordinates.cpp LIBRARIES qc_common)
 qc_add_test(test_texture_synthesizer SOURCES client/test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_server qc_clientcore Qt::Concurrent)
+# The settings' texture pack controller at model level (decision E-301), built from the app's sources.
+qc_add_test(test_texture_pack_controller SOURCES client/test_texture_pack_controller.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/controllers/QcTexturePackController.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/models/QcTexturePackPreviewProvider.cpp
+            LIBRARIES qc_clientcore Qt::Concurrent Qt::Quick)
+target_include_directories(test_texture_pack_controller PRIVATE ${PROJECT_SOURCE_DIR}/src/app/controllers ${PROJECT_SOURCE_DIR}/src/app/models)
 qc_add_test(test_camera SOURCES client/test_camera.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES client/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_sky SOURCES client/test_sky.cpp LIBRARIES qc_clientcore)
@@ -239,7 +247,7 @@ qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_
 target_include_directories(test_graph_item PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
 # The shared atlas texture of the character previews, on the Null backend of QRhi.
 qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcPreviewAtlasCache.cpp
-            LIBRARIES Qt::Gui Qt::GuiPrivate)
+            ${PROJECT_SOURCE_DIR}/src/app/rendering/QcAtlasTexture.cpp LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate)
 target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
 
 # QML load test of the character screen in the real game, offscreen (decision E-240). Not under

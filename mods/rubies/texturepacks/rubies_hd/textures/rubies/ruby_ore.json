@@ -1,0 +1,12 @@
+{
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#e0284a",
+    "variation": 0.1,
+    "seed": 901,
+    "detail": {
+        "grain": 0.1,
+        "bevel": 0.3,
+        "smooth": true
+    }
+}

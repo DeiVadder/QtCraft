@@ -1,0 +1,12 @@
+{
+    "pattern": "gem",
+    "primary": "#e0284a",
+    "secondary": "#ff8098",
+    "variation": 0.12,
+    "seed": 903,
+    "detail": {
+        "grain": 0.05,
+        "bevel": 0.35,
+        "smooth": true
+    }
+}

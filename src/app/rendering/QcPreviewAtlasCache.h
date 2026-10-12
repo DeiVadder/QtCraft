@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QImage>
+#include <QList>
 #include <rhi/qrhi.h>
 
 #include <memory>
@@ -11,9 +12,10 @@
 // preview renderer holds it. Used from the render threads.
 namespace QcPreviewAtlasCache {
 
-// The atlas `image` as a texture of `rhi`: the one a preview already uploaded, else a new one
-// uploaded with `updates`. Null when the texture cannot be created.
-std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QImage &image, QRhiResourceUpdateBatch *updates);
+// The atlas (its mip levels, level 0 first) as a texture of `rhi`: the one a preview already
+// uploaded, else a new one uploaded with `updates` (QcAtlasTexture). Null when the texture cannot
+// be created.
+std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QList<QImage> &levels, QRhiResourceUpdateBatch *updates);
 
 // Atlas textures held by previews right now (log, test).
 int liveTextures();

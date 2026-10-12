@@ -1,6 +1,8 @@
 #include "QcHandbookController.h"
 
+#include "QcBlockIcon.h"
 #include "QcBlockRenderTable.h"
+#include "QcGpuLimits.h"
 #include "QcHandbookBuilder.h"
 #include "QcHandbookRules.h"
 #include "QcItemIcons.h"
@@ -51,7 +53,12 @@ void QcHandbookController::ensureHandbook()
 
     // In the menu nothing has drawn icons yet; draw them from the same content.
     if (!m_icons.isReady()) {
-        const QcTextureAtlas atlas = QcTextureAtlas::build(content);
+        // Icons only: tiles of at most 32 pixels keep this quick on the GUI thread whatever the
+        // packs' resolution (decision E-300).
+        QcTextureAtlas::Options options;
+        options.maxExtent = QcGpuLimits::maxTextureSize();
+        options.maxTileSize = QcBlockIcon::sourceTileSize;
+        const QcTextureAtlas atlas = QcTextureAtlas::build(content, m_settings.texturePacks()->stack(), options);
         const QcBlockRenderTable table(content, atlas);
         m_icons.draw(content, atlas, &table);
     }

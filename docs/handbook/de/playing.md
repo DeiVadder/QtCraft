@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -318,3 +318,21 @@ Halte **Tab**, um zu sehen, wer online ist: Name und Nachricht des Tages des Ser
 **Grenzen der Sicherheit**
 
 Es gibt keine Konten: Jede Installation hat einen zufälligen Schlüssel, der auf jedem Server deinen Namen beweist (wer einen Namen auf einem Server zuerst nutzt, behält ihn). Passwörter gehen nie im Klartext über das Netz, alles andere ist aber unverschlüsselt, Chat und Spiel sind unterwegs lesbar. Öffne einen Server für das Internet nur mit Passwort und nur für Leute, die du kennst.
+
+### <a id="chapter-qtcraft-texture_packs"></a>Texturpakete
+
+**Ein Aussehen wählen**
+
+**Einstellungen → Texturpakete** ändert, wie Blöcke, Gegenstände, Wesen, deine Figur und die Symbole aussehen. **QtCraft HD** malt die eigenen Texturen des Spiels mit 32, 64 oder 128 Pixeln und feineren Details; **Storybook** ist ein kleines Paket gezeichneter Bilder mit Umrissen und warmen Farben. Änderungen gelten sofort, auch in einer laufenden Welt, und nur auf deinem Rechner: Andere Spieler behalten ihre eigene Wahl.
+
+**Mehrere Pakete zugleich**
+
+Schalte bis zu 16 Pakete ein. Ein eingeschaltetes Paket kommt nach oben; die Pfeile ändern die Reihenfolge. Für jede Textur gilt das oberste Paket, das sie hat, dann das nächste und zuletzt die Textur des Spiels. So kann ein kleines Paket auch nur einige Blöcke ändern.
+
+**Eigene Pakete**
+
+Ein Paket ist ein Ordner mit einer **texturepack.json** und PNG-Bildern (oder Texturbeschreibungen) in **textures/qtcraft/**, eines je Textur, alle gleich groß von 16 bis 512 Pixeln. **Texturpaket-Ordner öffnen** in den Einstellungen zeigt, wohin sie gehören; **Neu laden** liest sie nach einer Änderung neu. Mods können eigene Pakete mitbringen.
+
+**Wenn etwas nicht stimmt**
+
+Ein beschädigtes Bild oder eines mit falscher Größe wird übersprungen und unter seinem Paket aufgeführt; die Textur kommt dann aus dem nächsten Paket. Sehr große Pakete werden mit geringerer Auflösung gezeigt, wenn Grafikkarte oder Speicher sie nicht fassen, und die Einstellungen sagen das.

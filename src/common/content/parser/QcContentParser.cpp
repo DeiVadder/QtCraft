@@ -32,6 +32,17 @@ bool isPalette(const QJsonValue &value)
            });
 }
 
+// Detail of a procedural texture above 16 x 16 (decision E-299): only the known fields, in range.
+bool isDetail(const QJsonValue &value)
+{
+    const QJsonObject detail = value.toObject();
+    const auto isShare = [](const QJsonValue &share) { return share.isDouble() && share.toDouble() >= 0.0 && share.toDouble() <= 1.0; };
+    return value.isObject() && std::ranges::all_of(detail.keys(), [&detail, &isShare](const QString &key) {
+               const QJsonValue field = detail.value(key);
+               return ((key == u"grain"_s || key == u"bevel"_s) && isShare(field)) || (key == u"smooth"_s && field.isBool());
+           });
+}
+
 } // namespace
 
 namespace QcContentParser {
@@ -75,7 +86,10 @@ QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, co
     if (json.contains(u"palette"_s) && !isPalette(json.value(u"palette"_s))) {
         return qcError(u"texture '%1': 'palette' must map at most %2 single characters to colour strings"_s.arg(texture.name).arg(maxBitmapSide));
     }
-    for (const QString &key : {u"bitmap"_s, u"palette"_s}) {
+    if (json.contains(u"detail"_s) && !isDetail(json.value(u"detail"_s))) {
+        return qcError(u"texture '%1': 'detail' may only hold 'grain' and 'bevel' (0 to 1) and 'smooth' (true or false)"_s.arg(texture.name));
+    }
+    for (const QString &key : {u"bitmap"_s, u"palette"_s, u"detail"_s}) {
         if (json.contains(key)) {
             texture.procedural.insert(key, json.value(key));
         }

@@ -126,6 +126,6 @@ private:
     // Handed to the renderer in synchronize().
     std::shared_ptr<const QcEntityMesh> m_mesh;
     QcCamera m_viewCamera;
-    QImage m_atlas;
+    QList<QImage> m_atlas;
     quint64 m_atlasVersion = 0;
 };

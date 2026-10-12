@@ -14,6 +14,8 @@ qt_add_executable(qtcraft
     controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcPreviewSource.h controllers/QcPreviewSource.cpp
+    controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
+    models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
@@ -40,6 +42,7 @@ qt_add_executable(qtcraft
     rendering/QcCharacterPreview.h rendering/QcCharacterPreview.cpp
     rendering/QcCharacterPreviewRenderer.h rendering/QcCharacterPreviewRenderer.cpp
     rendering/QcPreviewAtlasCache.h rendering/QcPreviewAtlasCache.cpp
+    rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcGraphItem.h rendering/QcGraphItem.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
@@ -138,6 +141,7 @@ qt_add_qml_module(qtcraft
         qml/WorldLabels.qml
         qml/DebugOverlay.qml
         qml/DebugOptionsPage.qml
+        qml/TexturePacksPage.qml
         qml/MultiplayerScreen.qml
         qml/RecentServerRow.qml
         qml/LanScreen.qml

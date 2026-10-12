@@ -58,7 +58,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_hud(new QcHudState(m_parts, *m_settings, this))
     , m_handbook(new QcHandbookController(m_parts, *m_settings, *m_library, m_icons, this))
     , m_input(new QcGameInput(*this, m_parts, *m_settings, m_audio, this))
-    , m_preview(new QcPreviewSource(m_parts, *m_library, *m_settings->character(), this))
+    , m_preview(new QcPreviewSource(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks(), this))
     , m_benchmark(new QcBenchmarkRun(*this, m_parts, *m_input, *m_settings, this))
     , m_startup(new QcStartupHooks(*this, m_parts, m_benchmark, this))
     , m_multiplayer(new QcMultiplayerController(*this, m_parts, *m_settings, *m_library, this))
@@ -75,6 +75,15 @@ QcGameController::QcGameController(QObject *parent)
     // Closing the handbook gives the world its mouse back without a click.
     connect(m_handbook, &QcHandbookController::openChanged, m_input, &QcGameInput::syncCapture);
     connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
+    // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
+    // menu draws its icons and previews again.
+    connect(m_settings->texturePacks(), &QcTexturePackController::atlasBuilt, this, &QcGameController::applyAtlas);
+    connect(m_settings->texturePacks(), &QcTexturePackController::stackChanged, this, [this] {
+        if (!m_parts.session) {
+            m_icons.invalidate();
+            m_preview->useMenu();
+        }
+    });
     // Players joining and leaving appear in the chat (decision E-259).
     connect(m_multiplayer->players(), &QcPlayerList::announced, m_hud, &QcHudState::addChatLine);
 }
@@ -513,25 +522,39 @@ void QcGameController::onHealthChanged()
 
 void QcGameController::onContentReady()
 {
-    const QcContentRegistry &content = *m_parts.session->content();
-    const QcTextureAtlas atlas = QcTextureAtlas::build(content);
-    const QStringList problems = atlas.problems();
+    const std::shared_ptr<const QcTextureAtlas> atlas = m_settings->texturePacks()->enterWorld(m_parts.session->content());
+    const QStringList problems = atlas->problems();
     for (const QString &problem : problems) {
         qCWarning(lcGame) << "Texture:" << problem;
     }
 
-    m_renderTable = std::make_shared<const QcBlockRenderTable>(content, atlas);
-    const auto sharedAtlas = std::make_shared<const QcTextureAtlas>(atlas);
-    m_render.setAtlas(sharedAtlas);
-    m_preview->useWorld(m_parts.session->content(), sharedAtlas);
-    m_icons.draw(content, atlas, m_renderTable.get());
+    m_atlas.reset();
+    applyAtlas(atlas);
     m_player->useContent();
-    m_parts.meshes->setRenderTable(m_renderTable);
-    if (m_parts.view) {
-        m_parts.view->setAtlas(atlas.image());
-    }
     m_audio->setContent(m_parts.session->content());
     m_audio->setMusicEnabled(true);
+}
+
+void QcGameController::applyAtlas(const std::shared_ptr<const QcTextureAtlas> &atlas)
+{
+    if (!m_parts.session || !m_parts.session->content() || !atlas) {
+        return;
+    }
+
+    // The UVs depend only on the list of textures (E-300): a new pack only needs the new image, the
+    // meshes stay; a different layout (other content) needs a new render table and new meshes.
+    const QcContentRegistry &content = *m_parts.session->content();
+    if (!m_atlas || !m_renderTable || !atlas->sameLayout(*m_atlas)) {
+        m_renderTable = std::make_shared<const QcBlockRenderTable>(content, *atlas);
+        m_parts.meshes->setRenderTable(m_renderTable);
+    }
+    m_atlas = atlas;
+    m_render.setAtlas(atlas);
+    m_preview->useWorld(m_parts.session->content(), atlas);
+    m_icons.draw(content, *atlas, m_renderTable.get());
+    if (m_parts.view) {
+        m_parts.view->setAtlas(atlas->levels());
+    }
 }
 
 void QcGameController::onContentReset()
@@ -565,9 +588,15 @@ QcStatus QcGameController::stopSession()
     }
     if (m_parts.view) {
         m_parts.view->clearMeshes();
+        m_parts.view->setAtlas({});
     }
     m_hud->debug()->clearWorld();
     m_preview->useMenu();
+    // The world's atlas and content go (decision E-301); a build for it still running is dropped.
+    m_settings->texturePacks()->leaveWorld();
+    m_atlas.reset();
+    m_renderTable.reset();
+    m_render.setAtlas(nullptr);
 
     // Back in the menu: the menu's own content instead of the last world's sounds.
     if (m_audio->isActive() && m_library->loadedContent()) {

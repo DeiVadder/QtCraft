@@ -1,146 +1,150 @@
 #include "QcTextureAtlas.h"
 
-#include "QcTextureEmblem.h"
+#include "QcAlphaCoverage.h"
+#include "QcTexturePackLoader.h"
+#include "QcTextureSources.h"
 #include "QcTextureSynthesizer.h"
 
-#include <QBuffer>
-#include <QImageReader>
-#include <QPainter>
+#include <QThread>
+#include <QtGlobal>
 
+#include <algorithm>
 #include <cmath>
+#include <atomic>
+#include <memory>
+#include <vector>
 
 using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr int tileSize = QcTextureSynthesizer::tileSize;
-// Larger PNGs are refused before decoding; they would be scaled down to one tile anyway.
-constexpr int maxPngSide = 128;
+constexpr int baseTileSize = QcTextureSynthesizer::tileSize;
 
-// Accepts #RRGGBB and #RRGGBBAA.
-std::optional<QColor> parseColor(const QJsonValue &value)
+struct Tile
 {
-    const QString text = value.toString();
-    if (!text.startsWith(u'#') || (text.size() != 7 && text.size() != 9)) {
-        return std::nullopt;
-    }
+    std::optional<QcTextureSources::Resolved> resolved;
+    QString problem;
+};
 
-    bool ok = false;
-    const uint rgb = QStringView(text).mid(1, 6).toUInt(&ok, 16);
-    if (!ok) {
-        return std::nullopt;
-    }
-
-    int alpha = 255;
-    if (text.size() == 9) {
-        alpha = int(QStringView(text).mid(7, 2).toUInt(&ok, 16));
-        if (!ok) {
-            return std::nullopt;
-        }
-    }
-    return QColor(int((rgb >> 16) & 0xFF), int((rgb >> 8) & 0xFF), int(rgb & 0xFF), alpha);
-}
-
-QImage missingTile()
+QImage missingTile(int size)
 {
-    QImage image(tileSize, tileSize, QImage::Format_RGBA8888);
-    for (int y = 0; y < tileSize; ++y) {
-        for (int x = 0; x < tileSize; ++x) {
-            image.setPixelColor(x, y, ((x / 8) + (y / 8)) % 2 == 0 ? QColor(255, 0, 255) : QColor(0, 0, 0));
+    QImage image(size, size, QImage::Format_RGBA8888);
+    const int square = size / 2;
+    for (int y = 0; y < size; ++y) {
+        for (int x = 0; x < size; ++x) {
+            image.setPixelColor(x, y, ((x / square) + (y / square)) % 2 == 0 ? QColor(255, 0, 255) : QColor(0, 0, 0));
         }
     }
     return image;
 }
 
-std::optional<QImage> renderTexture(const QcTextureDefinition &definition, QString &problem)
+// How many threads draw the tiles: half the cores, at most maxDrawThreads (the build may itself run
+// in a worker thread next to the game).
+qsizetype drawThreads(int requested, qsizetype tiles)
 {
-    if (!definition.png.isEmpty()) {
-        // Read the size from the header first: a tiny file can describe a huge image.
-        QBuffer buffer;
-        buffer.setData(definition.png);
-        QImageReader reader(&buffer, "PNG");
-        const QSize size = reader.size();
-        if (!size.isValid()) {
-            problem = u"%1: PNG cannot be decoded"_s.arg(definition.name);
-            return std::nullopt;
-        }
-        if (size.width() > maxPngSide || size.height() > maxPngSide) {
-            problem = u"%1: PNG must be at most %2 x %2 pixels"_s.arg(definition.name).arg(maxPngSide);
-            return std::nullopt;
-        }
+    constexpr int maxDrawThreads = 8;
+    const int automatic = std::clamp(QThread::idealThreadCount() / 2, 1, maxDrawThreads);
+    return std::clamp<qsizetype>(requested > 0 ? requested : automatic, 1, std::max<qsizetype>(1, tiles));
+}
 
-        QImage image;
-        if (!reader.read(&image)) {
-            problem = u"%1: PNG cannot be decoded"_s.arg(definition.name);
-            return std::nullopt;
+// Every tile is drawn on its own from immutable input, so the tiles are drawn in parallel: one
+// short-lived QThread per share of the tiles, each writing only its own elements of the
+// preallocated result. A thread that cannot be started leaves its share to the calling thread.
+// Each share ends with a release store that the caller reads with acquire after QThread::wait(),
+// so ThreadSanitizer sees the hand-over (it does not see Qt's own waiting on macOS, nor QtConcurrent's).
+std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const QcTexturePackStack &packs, int tileSize, int threads)
+{
+    std::vector<Tile> tiles(std::size_t(definitions.size()));
+    const qsizetype jobs = drawThreads(threads, definitions.size());
+    std::vector<std::atomic<bool>> done(static_cast<std::size_t>(jobs));
+    const auto draw = [&definitions, &packs, &tiles, &done, tileSize, jobs](qsizetype first) {
+        for (qsizetype i = first; i < definitions.size(); i += jobs) {
+            Tile &tile = tiles[std::size_t(i)];
+            tile.resolved = QcTextureSources::resolve(definitions[i], packs, tileSize, tile.problem);
         }
-        return image.scaled(tileSize, tileSize, Qt::IgnoreAspectRatio, Qt::FastTransformation)
-            .convertToFormat(QImage::Format_RGBA8888);
-    }
+        done[std::size_t(first)].store(true, std::memory_order_release);
+    };
 
-    const QJsonObject &json = definition.procedural;
-    const std::optional<QcTextureSpec::Pattern> pattern = qcTexturePatternFromName(json.value(u"pattern"_s).toString());
-    const std::optional<QColor> primary = parseColor(json.value(u"primary"_s));
-    const std::optional<QColor> secondary =
-        json.contains(u"secondary"_s) ? parseColor(json.value(u"secondary"_s)) : primary;
-    if (!pattern || !primary || !secondary) {
-        problem = u"%1: needs a known 'pattern' and colours '#RRGGBB[AA]'"_s.arg(definition.name);
-        return std::nullopt;
+    std::vector<std::unique_ptr<QThread>> helpers;
+    for (qsizetype job = 1; job < jobs; ++job) {
+        std::unique_ptr<QThread> helper(QThread::create(draw, job));
+        helper->start();
+        if (!helper->isRunning() && !helper->isFinished()) {
+            draw(job);
+            continue;
+        }
+        helpers.push_back(std::move(helper));
     }
-
-    QcTextureSpec spec;
-    spec.pattern = *pattern;
-    spec.primary = *primary;
-    spec.secondary = *secondary;
-    spec.variation = std::clamp(json.value(u"variation"_s).toDouble(0.1), 0.0, 1.0);
-    spec.seed = quint32(json.value(u"seed"_s).toInteger(0));
-    QString emblemProblem;
-    if (spec.pattern == QcTextureSpec::Pattern::Emblem && !QcTextureEmblem::read(json, spec, emblemProblem)) {
-        problem = u"%1: %2"_s.arg(definition.name, emblemProblem);
-        return std::nullopt;
+    draw(0);
+    for (const std::unique_ptr<QThread> &helper : helpers) {
+        helper->wait();
     }
-    return QcTextureSynthesizer::synthesize(spec);
+    for (const std::atomic<bool> &finished : done) {
+        Q_ASSERT(finished.load(std::memory_order_acquire));
+    }
+    return tiles;
 }
 
 } // namespace
 
-QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content)
+int QcTextureAtlas::tileSizeFor(QcAtlasLayout layout, const Options &options)
+{
+    int size = std::min(m_requestedTileSize, std::max(baseTileSize, options.maxTileSize));
+    while (size > baseTileSize) {
+        const QSize extent = layout.extent(size);
+        if (std::max(extent.width(), extent.height()) <= options.maxExtent && layout.bytes(size) <= options.memoryBudget) {
+            break;
+        }
+        size /= 2;
+    }
+
+    if (size != m_requestedTileSize && options.maxTileSize >= QcTexturePackLoader::Limits{}.maxStoredResolution) {
+        m_notices.append({{},
+                          QT_TRANSLATE_NOOP("QcTexturePack",
+                                            "Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit "
+                                            "the GPU texture size and the memory budget"),
+                          {QString::number(size), QString::number(m_requestedTileSize)}});
+    }
+    return size;
+}
+
+QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcTexturePackStack &packs, const Options &options)
 {
     QcTextureAtlas atlas;
-    QList<std::pair<QString, QImage>> tiles;
-    tiles.append({QString::fromLatin1(missingTextureName), missingTile()});
+    const QList<QcTextureDefinition> &definitions = content.textures();
+    const QcAtlasLayout layout(definitions.size() + 1);
+    atlas.m_requestedTileSize = QcTextureSources::resolutionOf(packs, QcTexturePackManifest::maxResolution);
+    atlas.m_tileSize = atlas.tileSizeFor(layout, options);
 
-    for (const QcTextureDefinition &definition : content.textures()) {
-        QString problem;
-        const std::optional<QImage> image = renderTexture(definition, problem);
-        if (!image) {
-            atlas.m_problems.append(problem);
+    const QSize extent = layout.extent(atlas.m_tileSize);
+    QImage level(extent, QImage::Format_RGBA8888);
+    level.fill(Qt::transparent);
+    layout.place(level, 0, missingTile(atlas.m_tileSize));
+    atlas.m_uvs.insert(QString::fromLatin1(missingTextureName), layout.uv(0));
+
+    const std::vector<Tile> tiles = drawTiles(definitions, packs, atlas.m_tileSize, options.threads);
+
+    qsizetype index = 1;
+    for (qsizetype i = 0; i < definitions.size(); ++i) {
+        const QcTextureDefinition &definition = definitions[i];
+        const std::optional<QcTextureSources::Resolved> &resolved = tiles[std::size_t(i)].resolved;
+        if (!resolved) {
+            atlas.m_problems.append(tiles[std::size_t(i)].problem);
             continue;
         }
-        tiles.append({definition.name, *image});
+        layout.place(level, index, resolved->image);
+        atlas.m_uvs.insert(definition.name, layout.uv(index));
+        ++atlas.m_sources[resolved->pack];
+        ++index;
     }
 
-    int tilesPerRow = 1;
-    while (qsizetype(tilesPerRow) * tilesPerRow < tiles.size()) {
-        tilesPerRow *= 2;
+    const QList<double> coverage = QcAlphaCoverage::measure(level, layout, index, atlas.m_tileSize);
+    atlas.m_levels = {level};
+    for (int next = 1; next < QcAtlasLayout::levelCount(atlas.m_tileSize); ++next) {
+        QImage smaller = QcAtlasLayout::halve(atlas.m_levels.back());
+        QcAlphaCoverage::keep(smaller, layout, coverage, atlas.m_tileSize >> next);
+        atlas.m_levels.append(std::move(smaller));
     }
-
-    const int extent = tilesPerRow * tileSize;
-    atlas.m_image = QImage(extent, extent, QImage::Format_RGBA8888);
-    atlas.m_image.fill(Qt::transparent);
-    QPainter painter(&atlas.m_image);
-    painter.setCompositionMode(QPainter::CompositionMode_Source);
-    // A tiny inset keeps nearest sampling at tile borders from picking the neighbouring tile.
-    const double inset = 0.01 / extent;
-    for (qsizetype i = 0; i < tiles.size(); ++i) {
-        const int column = int(i % tilesPerRow);
-        const int row = int(i / tilesPerRow);
-        painter.drawImage(column * tileSize, row * tileSize, tiles[i].second);
-        const double span = 1.0 / tilesPerRow;
-        atlas.m_uvs.insert(tiles[i].first,
-                           QRectF(column * span + inset, row * span + inset, span - 2 * inset, span - 2 * inset));
-    }
-    painter.end();
 
     for (const QcBlockDefinition &block : content.blocks()) {
         for (const QString &texture : block.faceTextures) {
@@ -153,16 +157,38 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content)
     return atlas;
 }
 
+qint64 QcTextureAtlas::bytes() const
+{
+    qint64 total = 0;
+    for (const QImage &level : m_levels) {
+        total += level.sizeInBytes();
+    }
+    return total;
+}
+
 QRectF QcTextureAtlas::uv(const QString &textureName) const
 {
     const auto it = m_uvs.constFind(textureName);
     return it != m_uvs.constEnd() ? *it : m_uvs.value(QString::fromLatin1(missingTextureName));
 }
 
-QImage QcTextureAtlas::tile(const QString &textureName) const
+const QImage &QcTextureAtlas::levelForTile(int maxSide) const
 {
+    qsizetype level = 0;
+    int size = m_tileSize;
+    while (maxSide > 0 && size > maxSide && level + 1 < m_levels.size()) {
+        size /= 2;
+        ++level;
+    }
+    return m_levels[level];
+}
+
+QImage QcTextureAtlas::tile(const QString &textureName, int maxSide) const
+{
+    const QImage &level = levelForTile(maxSide);
+    const int size = m_tileSize * level.width() / std::max(1, image().width());
     const QRectF rect = uv(textureName);
-    const int x = int(std::floor(rect.x() * m_image.width()));
-    const int y = int(std::floor(rect.y() * m_image.height()));
-    return m_image.copy(x, y, tileSize, tileSize);
+    const int x = int(std::lround(rect.x() * level.width()));
+    const int y = int(std::lround(rect.y() * level.height()));
+    return level.copy(x, y, size, size);
 }

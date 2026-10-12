@@ -400,3 +400,17 @@ Wiederholung (light, liquids, glass, 3 Runden direkt danach, Last 2,3–4,9, kei
 - **Frame p99 glass +14 % und liquids +13 % (je eine Reihe):** die Zweiteilung des p99 je Lauf (≈ 10–12 ms oder ≈ 15,5–16 ms), in der Wiederholung bzw. dritten Reihe −3 % und +2 %; GUI-, Render-CPU und GPU unverändert.
 - **Tick max** light +45 % (Wiederholung −12 %), flat-crowd +19 %, liquids +17 % in der Wiederholung (dritte Reihe −4 %): einzelne schlechteste Ticks wie in E-250; dafür glass −29 %/−24 %.
 - **Keine Code-Änderung nötig**, begründet in E-278. Mehrspieler-Referenzwerte auch in `docs/Performance.md`.
+
+## Etappe 28: Texturpakete (Atlas gemessen, Benchmark offen)
+
+Kein Benchmark (Anweisung des Menschen 2026-10-12); gemessen nur der Atlas mit `qtcraft-headless --atlas-stats` im Release-Build (Basis ohne Mods, 346 Texturen + Platzhalter; Bestwert aus drei Läufen, Kacheln parallel auf dem Entwicklungsrechner):
+
+| Pakete | Kachel | Atlas (Stufe 0) | Mip-Stufen | Speicher alle Stufen | Pakete laden | Atlas bauen |
+|--------|-------:|-----------------|-----------:|---------------------:|-------------:|------------:|
+| keine (16×) | 16 | 380 × 380 | 2 | 0,7 MiB | 0 ms | 0–2 ms |
+| QtCraft HD 32× | 32 | 760 × 760 | 3 | 2,9 MiB | 0 ms | 2 ms |
+| QtCraft HD 64× | 64 | 1520 × 1520 | 4 | 11,7 MiB | 0 ms | 8 ms |
+| QtCraft HD 128× | 128 | 3040 × 3040 | 5 | 47,0 MiB | 13 ms | 52 ms |
+| Storybook 32× (62 PNG) | 32 | 760 × 760 | 3 | 2,9 MiB | 1 ms | 1 ms |
+
+Vorher (Etappe 27): 16× ohne Mip-Stufen in einem quadratischen Zweierpotenz-Raster (32 × 32 Kacheln, 512 × 512 Pixel, 1,0 MiB). Ohne Parallelisierung dauerte 128× 470 ms. Auf der GPU kommt dieselbe Menge hinzu (plus die kleinen Stufen bis 1 × 1). Erwartung für den Benchmark: Frame-Zeiten unverändert bis leicht besser in der Ferne (Mip-Stufen statt Flimmern, weniger Texturbandbreite), Speicher +2 MiB (32×) bis +46 MiB (128×) CPU und GPU, Ladezeit des Atlas beim Weltstart wie oben. Messplan für die Hauptsitzung: siehe Bericht der Etappe (Szenarien `stand`, `sprint`, `showcase`, `crowd` mit `TEXTURE_PACKS=none`, `builtin:qtcraft_hd_32`, `builtin:qtcraft_hd_64`, `builtin:qtcraft_hd_128`).

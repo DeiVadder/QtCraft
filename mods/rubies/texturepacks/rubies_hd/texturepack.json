@@ -1,0 +1,12 @@
+{
+    "format": 1,
+    "name": "Rubies HD",
+    "description": "Example of a texture pack inside a mod: the mod's ruby textures at 64 x 64 with stronger facets. Turn it on in the settings under Texture packs.",
+    "resolution": 64,
+    "license": "GPL-3.0-or-later",
+    "credits": [
+        {
+            "author": "QtCraft"
+        }
+    ]
+}

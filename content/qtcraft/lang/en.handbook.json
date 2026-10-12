@@ -769,5 +769,14 @@
     "chapter.qtcraft.farming.animals.title": "Breeding animals",
     "chapter.qtcraft.farming.animals.text": "Feed pigs with carrots or potatoes and sheep with wheat: a fed adult falls in love for a while and walks towards another one of its kind in love; two that see each other get a young one. Parents rest five minutes before they breed again; a young one grows up in twenty minutes, each feeding takes {farming.youngFeedShare} % of that time off. Young animals leave nothing behind. Crowded places get no more young ones.",
     "chapter.qtcraft.farming.food.title": "Food from the farm",
-    "chapter.qtcraft.farming.food.text": "Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pumpkin, sugar and wheat, melon slices and carrots to eat on the way. Carrots and potatoes are planted when used on farmland and eaten elsewhere."
+    "chapter.qtcraft.farming.food.text": "Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pumpkin, sugar and wheat, melon slices and carrots to eat on the way. Carrots and potatoes are planted when used on farmland and eaten elsewhere.",
+    "chapter.qtcraft.texture_packs": "Texture packs",
+    "chapter.qtcraft.texture_packs.choosing.title": "Choosing a look",
+    "chapter.qtcraft.texture_packs.choosing.text": "**Settings → Texture packs** changes how blocks, items, creatures, your character and the icons look. **QtCraft HD** paints the game's own textures at 32, 64 or 128 pixels with finer detail; **Storybook** is a small pack of drawn images with outlines and warm colours. Changes apply at once, also in a running world, and only on your computer: other players keep their own choice.",
+    "chapter.qtcraft.texture_packs.order.title": "Several packs at once",
+    "chapter.qtcraft.texture_packs.order.text": "Switch on up to 16 packs. A pack you switch on goes to the top; the arrows change the order. For every texture the highest pack that has it wins, then the next one, and finally the game's own texture, so a small pack can change just a few blocks.",
+    "chapter.qtcraft.texture_packs.own.title": "Your own packs",
+    "chapter.qtcraft.texture_packs.own.text": "A pack is a folder with a **texturepack.json** and PNG images (or texture descriptions) in **textures/qtcraft/**, one per texture, all of the same size from 16 to 512 pixels. **Open texture pack folder** in the settings shows where they go; **Reload** reads them again after a change. Mods can bring packs of their own.",
+    "chapter.qtcraft.texture_packs.problems.title": "When something is wrong",
+    "chapter.qtcraft.texture_packs.problems.text": "A damaged image or one of the wrong size is skipped and listed under its pack; that texture then comes from the next pack. Very large packs are shown at a lower resolution when the graphics card or the memory would not take them, and the settings say so."
 }

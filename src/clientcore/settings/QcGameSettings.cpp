@@ -20,6 +20,30 @@ QString keySetting(QcKeyBindings::Action action, int slot)
     return u"keys/"_s + QcKeyBindings::id(action) + (slot == 0 ? QString() : u".%1"_s.arg(slot + 1));
 }
 
+// Active texture packs as an INI array ("texturePacks/<n>/id"), so ids may contain commas.
+QStringList loadTexturePacks(QSettings &file)
+{
+    QStringList ids;
+    const int count = std::min(file.beginReadArray(u"texturePacks"_s), 4 * QcGameSettings::maxTexturePacks);
+    for (int i = 0; i < count; ++i) {
+        file.setArrayIndex(i);
+        ids.append(file.value(u"id"_s).toString());
+    }
+    file.endArray();
+    return QcGameSettings::cleanTexturePacks(ids);
+}
+
+void saveTexturePacks(QSettings &file, const QStringList &ids)
+{
+    file.remove(u"texturePacks"_s);
+    file.beginWriteArray(u"texturePacks"_s, int(ids.size()));
+    for (int i = 0; i < ids.size(); ++i) {
+        file.setArrayIndex(i);
+        file.setValue(u"id"_s, ids[i]);
+    }
+    file.endArray();
+}
+
 QcKeyBindings loadKeys(const QSettings &file)
 {
     // setKey() ignores keys the platform cannot bind; those slots keep their default.
@@ -87,6 +111,18 @@ QString QcGameSettings::cleanLanguage(const QString &language)
     return code.match(language).hasMatch() ? language : QString();
 }
 
+QStringList QcGameSettings::cleanTexturePacks(const QStringList &ids)
+{
+    QStringList clean;
+    for (const QString &id : ids) {
+        const QString trimmed = id.trimmed();
+        if (!trimmed.isEmpty() && !clean.contains(trimmed) && clean.size() < maxTexturePacks) {
+            clean.append(trimmed);
+        }
+    }
+    return clean;
+}
+
 QcGameSettings QcGameSettings::load(const QString &path)
 {
     QcGameSettings settings;
@@ -94,7 +130,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
         return settings;
     }
 
-    const QSettings file(path, QSettings::IniFormat);
+    QSettings file(path, QSettings::IniFormat);
     bool ok = false;
     const int view = file.value(u"viewDistance"_s).toInt(&ok);
     settings.viewDistance = ok ? clampViewDistance(view) : defaultViewDistance;
@@ -125,6 +161,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.ambientVolume = volume(u"audio/ambient"_s, defaultAmbientVolume);
     settings.muted = file.value(u"audio/muted"_s, false).toBool();
     settings.keys = loadKeys(file);
+    settings.texturePacks = loadTexturePacks(file);
     return settings;
 }
 
@@ -162,6 +199,8 @@ QcStatus QcGameSettings::save(const QString &path) const
             file.setValue(keySetting(action, slot), QcKeyBindings::keyName(keys.key(action, slot)));
         }
     }
+
+    saveTexturePacks(file, texturePacks);
 
     file.sync();
     if (file.status() != QSettings::NoError) {

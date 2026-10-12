@@ -40,7 +40,8 @@ public:
     void setCamera(const QcCamera &camera);
     const QcCamera &camera() const { return m_camera; }
 
-    void setAtlas(const QImage &atlas);
+    // The atlas's mip levels, level 0 first (QcTextureAtlas::levels()).
+    void setAtlas(const QList<QImage> &levels);
     void submitMesh(quint64 key, std::shared_ptr<const QcChunkMesh> mesh);
     void removeMesh(quint64 key);
     void clearMeshes();
@@ -71,7 +72,7 @@ private:
     friend class QcWorldRenderer;
 
     QcCamera m_camera;
-    QImage m_atlas;
+    QList<QImage> m_atlas;
     quint64 m_atlasVersion = 0;
     QList<MeshUpdate> m_pendingMeshUpdates;
     bool m_clearAllMeshes = false;

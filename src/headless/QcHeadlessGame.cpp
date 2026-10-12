@@ -26,6 +26,7 @@
 #include "QcStdinReader.h"
 #include "QcTerrainGenerator.h"
 #include "QcTextureAtlas.h"
+#include "QcTextureTools.h"
 #include "QcTransport.h"
 #include "QcWorldGenerators.h"
 #include "QcWorldLibrary.h"
@@ -80,6 +81,18 @@ bool exportIcon(const QString &directory)
     }
     exitSoon(written ? 0 : 1);
     return true;
+}
+
+int runTextureTool(const QCommandLineParser &parser, const Options &options, const QcContentRegistry &content)
+{
+    const QString mods = parser.isSet(options.noMods) ? QString() : parser.value(options.mods);
+    if (parser.isSet(options.atlasStats)) {
+        return QcTextureTools::printAtlasStats(content, mods);
+    }
+
+    const auto list = [&parser](const QCommandLineOption &option) { return parser.value(option).split(u',', Qt::SkipEmptyParts); };
+    return QcTextureTools::exportPack(content, {parser.value(options.exportTextures), parser.value(options.textureResolution).toInt(),
+                                                list(options.texturePacks), list(options.textureKeys), parser.value(options.textureName), mods});
 }
 
 void exportSounds(const QcContentRegistry &content, const QString &directory, quint64 seed)
@@ -281,6 +294,10 @@ bool QcHeadlessGame::start(const QStringList &arguments)
     }
     if (parser.isSet(options.handbook)) {
         return exportHandbook(parser, options, shared);
+    }
+    if (parser.isSet(options.exportTextures) || parser.isSet(options.atlasStats)) {
+        exitSoon(runTextureTool(parser, options, *shared));
+        return true;
     }
 
     if (parser.isSet(options.tour)) {

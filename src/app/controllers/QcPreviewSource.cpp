@@ -4,7 +4,9 @@
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
 #include "QcSessionParts.h"
+#include "QcGpuLimits.h"
 #include "QcTextureAtlas.h"
+#include "QcTexturePackController.h"
 #include "QcWorldLibraryController.h"
 
 #include <QLoggingCategory>
@@ -19,11 +21,12 @@ Q_LOGGING_CATEGORY(lcPreview, "qtcraft.preview")
 } // namespace
 
 QcPreviewSource::QcPreviewSource(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcCharacterSettings &character,
-                                 QObject *parent)
+                                 const QcTexturePackController &texturePacks, QObject *parent)
     : QObject(parent)
     , m_parts(parts)
     , m_library(library)
     , m_character(character)
+    , m_texturePacks(texturePacks)
 {
     connect(&m_atlasBuild, &AtlasWatcher::finished, this, &QcPreviewSource::onMenuAtlasBuilt);
 }
@@ -65,10 +68,13 @@ void QcPreviewSource::ensureMenuAtlas()
         return;
     }
 
-    // The atlas only reads the content, which nobody changes (shared and const).
+    // The atlas only reads the content and the loaded texture packs, which nobody changes (shared
+    // and const).
     m_atlasTimer.start();
-    m_atlasBuild.setFuture(QtConcurrent::run([content = m_pendingContent] {
-        return std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*content));
+    QcTextureAtlas::Options options;
+    options.maxExtent = QcGpuLimits::maxTextureSize();
+    m_atlasBuild.setFuture(QtConcurrent::run([content = m_pendingContent, packs = m_texturePacks.stack(), options] {
+        return std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*content, packs, options));
     }));
 }
 

@@ -1,5 +1,7 @@
 #include "QcPreviewAtlasCache.h"
 
+#include "QcAtlasTexture.h"
+
 #include <QMutex>
 
 #include <algorithm>
@@ -27,8 +29,9 @@ void dropExpired()
 
 } // namespace
 
-std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QImage &image, QRhiResourceUpdateBatch *updates)
+std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QList<QImage> &levels, QRhiResourceUpdateBatch *updates)
 {
+    const QImage &image = levels.front();
     const QMutexLocker locker(&mutex);
     dropExpired();
     const auto known = std::ranges::find_if(entries, [rhi, &image](const Entry &entry) { return entry.rhi == rhi && entry.imageKey == image.cacheKey(); });
@@ -40,12 +43,10 @@ std::shared_ptr<QRhiTexture> texture(QRhi *rhi, const QImage &image, QRhiResourc
         entries.erase(known);
     }
 
-    const QImage pixels = image.convertToFormat(QImage::Format_RGBA8888);
-    std::shared_ptr<QRhiTexture> created(rhi->newTexture(QRhiTexture::RGBA8, pixels.size()));
-    if (!created->create()) {
+    std::shared_ptr<QRhiTexture> created = QcAtlasTexture::create(rhi, levels, updates);
+    if (!created) {
         return nullptr;
     }
-    updates->uploadTexture(created.get(), pixels);
     entries.push_back({rhi, image.cacheKey(), created});
     return created;
 }

@@ -29,13 +29,13 @@ bool visible(QcBlockFace face)
     return face == QcBlockFace::Up || face == QcBlockFace::East || face == QcBlockFace::South;
 }
 
-QPointF project(std::array<float, 3> p)
+QPointF project(std::array<float, 3> p, int size)
 {
     // Seen from above the south-east corner: +x goes right and down, +z left and down.
-    constexpr double scale = iconSize * 0.42;
+    const double scale = size * 0.42;
     const double sx = (double(p[0]) - double(p[2])) * 0.866;
     const double sy = (double(p[0]) + double(p[2])) * 0.5 - double(p[1]);
-    return {iconSize * 0.5 + sx * scale, iconSize * 0.5 + sy * scale};
+    return {size * 0.5 + sx * scale, size * 0.5 + sy * scale};
 }
 
 // Multiplies the colour channels of an RGBA8888 image by `shade`.
@@ -66,9 +66,9 @@ std::array<QImage, 6> shadedAtlases(const QImage &atlas)
     return shaded;
 }
 
-QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6> &shadedAtlas)
+QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6> &shadedAtlas, int size)
 {
-    QImage icon(iconSize, iconSize, QImage::Format_RGBA8888);
+    QImage icon(size, size, QImage::Format_RGBA8888);
     icon.fill(Qt::transparent);
 
     QList<Quad> quads;
@@ -107,9 +107,9 @@ QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6
         }
 
         const QImage &atlas = shadedAtlas[std::size_t(quad.face)];
-        const QPointF s0 = project(quad.corners[0]);
-        const QPointF s1 = project(quad.corners[1]);
-        const QPointF s3 = project(quad.corners[3]);
+        const QPointF s0 = project(quad.corners[0], size);
+        const QPointF s1 = project(quad.corners[1], size);
+        const QPointF s3 = project(quad.corners[3], size);
         const QPointF t0(quad.uvs[0][0] * atlas.width(), quad.uvs[0][1] * atlas.height());
         const QPointF t1(quad.uvs[1][0] * atlas.width(), quad.uvs[1][1] * atlas.height());
         const QPointF t3(quad.uvs[3][0] * atlas.width(), quad.uvs[3][1] * atlas.height());

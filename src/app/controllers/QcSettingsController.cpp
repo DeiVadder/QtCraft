@@ -3,6 +3,7 @@
 #include "QcClientSession.h"
 #include "QcSessionParts.h"
 #include "QcWorldLibrary.h"
+#include "QcWorldLibraryController.h"
 
 #include <QDir>
 #include <QLoggingCategory>
@@ -23,8 +24,10 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     , m_audio(new QcAudioSettings(audio, this))
     , m_character(new QcCharacterSettings(parts, library, *this, this))
     , m_debug(new QcDebugSettings(this))
+    , m_texturePacks(new QcTexturePackController([&library] { return library.modsDirectory(); }, this))
 {
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
+    connect(m_texturePacks, &QcTexturePackController::selectionChanged, this, &QcSettingsController::saveSettings);
 }
 
 QcSettingsController::~QcSettingsController() = default;
@@ -54,6 +57,7 @@ void QcSettingsController::loadSettings()
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings);
+    m_texturePacks->loadSelection(m_storedSettings.texturePacks);
     emit settingsChanged();
 }
 
@@ -80,6 +84,7 @@ void QcSettingsController::saveSettings()
     settings.characterPresets = m_character->savedPresets();
     m_audio->store(settings);
     settings.keys = m_keyControls->bindings();
+    settings.texturePacks = m_texturePacks->storedSelection();
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {
         qCWarning(lcGame) << saved.error();
         return;

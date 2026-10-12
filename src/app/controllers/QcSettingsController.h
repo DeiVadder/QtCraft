@@ -6,6 +6,7 @@
 #include "QcDebugSettings.h"
 #include "QcGameSettings.h"
 #include "QcKeyControlsForeign.h"
+#include "QcTexturePackController.h"
 
 #include <QObject>
 #include <QString>
@@ -39,6 +40,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QcCharacterSettings *character READ character CONSTANT FINAL)
     // Debug display level and visualisations (decision E-225).
     Q_PROPERTY(QcDebugSettings *debug READ debug CONSTANT FINAL)
+    // Texture packs and their order (decision E-297).
+    Q_PROPERTY(QcTexturePackController *texturePacks READ texturePacks CONSTANT FINAL)
 
 public:
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
@@ -77,6 +80,7 @@ public:
     QcAudioSettings *audio() const { return m_audio; }
     QcCharacterSettings *character() const { return m_character; }
     QcDebugSettings *debug() const { return m_debug; }
+    QcTexturePackController *texturePacks() const { return m_texturePacks; }
 
     // Language used for content names (block and item labels).
     QString contentLanguage() const { return m_contentLanguage; }
@@ -94,6 +98,7 @@ private:
     QcAudioSettings *m_audio = nullptr;
     QcCharacterSettings *m_character = nullptr;
     QcDebugSettings *m_debug = nullptr;
+    QcTexturePackController *m_texturePacks = nullptr;
     int m_viewDistance = QcGameSettings::defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
     double m_fovEffects = QcGameSettings::defaultFovEffects;

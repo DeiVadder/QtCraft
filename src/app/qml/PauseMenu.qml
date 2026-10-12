@@ -109,7 +109,7 @@ Rectangle {
         id: settingsScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed(["settings", "controls", "debug"])
+        onClosed: menu.subScreenClosed(["settings", "controls", "debug", "texturepacks"])
     }
 
     CharacterScreen {
@@ -132,7 +132,7 @@ Rectangle {
 
         function onOverlayChanged() {
             const overlay = menu.game.overlay;
-            const settingsPages = ["settings", "controls", "debug"];
+            const settingsPages = ["settings", "controls", "debug", "texturepacks"];
             if (!settingsPages.includes(overlay))
                 settingsScreen.close();
             if (overlay !== "character")

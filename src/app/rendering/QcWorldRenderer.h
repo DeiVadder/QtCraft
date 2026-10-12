@@ -99,9 +99,10 @@ private:
     bool m_clearAllMeshes = false;
 
     QcCamera m_camera;
-    QImage m_atlasImage;
+    QList<QImage> m_atlasLevels;
     quint64 m_atlasVersion = 0;
     quint64 m_uploadedAtlasVersion = 0;
+    bool m_atlasTried = false;
     QcSkyState m_sky;
     QcSkyRenderer m_skyRenderer;
     QcDebugLineRenderer m_debugLineRenderer;

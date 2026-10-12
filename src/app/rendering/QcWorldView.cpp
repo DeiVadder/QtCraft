@@ -18,9 +18,9 @@ void QcWorldView::setCamera(const QcCamera &camera)
     update();
 }
 
-void QcWorldView::setAtlas(const QImage &atlas)
+void QcWorldView::setAtlas(const QList<QImage> &levels)
 {
-    m_atlas = atlas;
+    m_atlas = levels;
     ++m_atlasVersion;
     update();
 }

@@ -50,7 +50,7 @@ private:
     std::shared_ptr<const QcEntityMesh> m_mesh;
     std::shared_ptr<const QcEntityMesh> m_uploadedMesh;
     QcCamera m_camera;
-    QImage m_atlasImage;
+    QList<QImage> m_atlasLevels;
     quint64 m_atlasVersion = 0;
     quint64 m_uploadedAtlasVersion = 0;
 };

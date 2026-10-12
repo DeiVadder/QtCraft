@@ -769,5 +769,14 @@
     "chapter.qtcraft.farming.animals.title": "Tiere züchten",
     "chapter.qtcraft.farming.animals.text": "Schweine mit Karotten oder Kartoffeln, Schafe mit Weizen füttern: ein gefüttertes erwachsenes Tier verliebt sich für eine Weile und läuft zu einem anderen verliebten Tier seiner Art; zwei, die sich sehen, bekommen ein Junges. Eltern ruhen fünf Minuten, bevor sie wieder Junge bekommen; ein Junges wächst in zwanzig Minuten heran, jedes Füttern nimmt {farming.youngFeedShare} % dieser Zeit weg. Junge Tiere lassen nichts fallen. Wo schon zu viele Tiere leben, kommen keine Jungen mehr.",
     "chapter.qtcraft.farming.food.title": "Essen vom Hof",
-    "chapter.qtcraft.farming.food.text": "Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zucker und Weizen, Melonenscheiben und Karotten für unterwegs. Karotten und Kartoffeln werden auf Ackerboden gepflanzt und anderswo gegessen."
+    "chapter.qtcraft.farming.food.text": "Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zucker und Weizen, Melonenscheiben und Karotten für unterwegs. Karotten und Kartoffeln werden auf Ackerboden gepflanzt und anderswo gegessen.",
+    "chapter.qtcraft.texture_packs": "Texturpakete",
+    "chapter.qtcraft.texture_packs.choosing.title": "Ein Aussehen wählen",
+    "chapter.qtcraft.texture_packs.choosing.text": "**Einstellungen → Texturpakete** ändert, wie Blöcke, Gegenstände, Wesen, deine Figur und die Symbole aussehen. **QtCraft HD** malt die eigenen Texturen des Spiels mit 32, 64 oder 128 Pixeln und feineren Details; **Storybook** ist ein kleines Paket gezeichneter Bilder mit Umrissen und warmen Farben. Änderungen gelten sofort, auch in einer laufenden Welt, und nur auf deinem Rechner: Andere Spieler behalten ihre eigene Wahl.",
+    "chapter.qtcraft.texture_packs.order.title": "Mehrere Pakete zugleich",
+    "chapter.qtcraft.texture_packs.order.text": "Schalte bis zu 16 Pakete ein. Ein eingeschaltetes Paket kommt nach oben; die Pfeile ändern die Reihenfolge. Für jede Textur gilt das oberste Paket, das sie hat, dann das nächste und zuletzt die Textur des Spiels. So kann ein kleines Paket auch nur einige Blöcke ändern.",
+    "chapter.qtcraft.texture_packs.own.title": "Eigene Pakete",
+    "chapter.qtcraft.texture_packs.own.text": "Ein Paket ist ein Ordner mit einer **texturepack.json** und PNG-Bildern (oder Texturbeschreibungen) in **textures/qtcraft/**, eines je Textur, alle gleich groß von 16 bis 512 Pixeln. **Texturpaket-Ordner öffnen** in den Einstellungen zeigt, wohin sie gehören; **Neu laden** liest sie nach einer Änderung neu. Mods können eigene Pakete mitbringen.",
+    "chapter.qtcraft.texture_packs.problems.title": "Wenn etwas nicht stimmt",
+    "chapter.qtcraft.texture_packs.problems.text": "Ein beschädigtes Bild oder eines mit falscher Größe wird übersprungen und unter seinem Paket aufgeführt; die Textur kommt dann aus dem nächsten Paket. Sehr große Pakete werden mit geringerer Auflösung gezeigt, wenn Grafikkarte oder Speicher sie nicht fassen, und die Einstellungen sagen das."
 }

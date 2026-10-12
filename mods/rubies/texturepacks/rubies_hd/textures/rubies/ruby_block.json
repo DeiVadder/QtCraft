@@ -1,0 +1,11 @@
+{
+    "pattern": "metal_block",
+    "primary": "#b3122c",
+    "secondary": "#f0506a",
+    "variation": 0.08,
+    "seed": 902,
+    "detail": {
+        "grain": 0.04,
+        "bevel": 0.3
+    }
+}

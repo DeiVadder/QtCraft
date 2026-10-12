@@ -30,6 +30,7 @@ class QcBlockRenderTable;
 class QcContentRegistry;
 class QcItemIconProvider;
 class QcStatsLog;
+class QcTextureAtlas;
 class QQuickWindow;
 struct QcWorldInfo;
 
@@ -75,7 +76,7 @@ public:
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
     // "chest", "pause", "settings", "controls" (settings at the key table), "debug" (settings at the
-    // debug options), "character" or "chat".
+    // debug options), "texturepacks" (settings at the texture packs), "character" or "chat".
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QString chatStart() const { return m_chatStart; }
@@ -151,6 +152,8 @@ private:
     void connectSessionPlayer();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
+    // Draws the world, the item icons and the character previews with `atlas`.
+    void applyAtlas(const std::shared_ptr<const QcTextureAtlas> &atlas);
     void onMachineOpened();
     void onMachineClosed();
     void onHealthChanged();
@@ -162,6 +165,8 @@ private:
 
     QcSessionParts m_parts;
     QcItemIcons m_icons;
+    // The atlas the world is drawn with (decision E-301).
+    std::shared_ptr<const QcTextureAtlas> m_atlas;
     QcAudioEngine *m_audio = nullptr;
     QcWorldLibraryController *m_library = nullptr;
     QcSettingsController *m_settings = nullptr;

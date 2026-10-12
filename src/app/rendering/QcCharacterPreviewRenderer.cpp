@@ -1,6 +1,7 @@
 #include "QcCharacterPreviewRenderer.h"
 
 #include "QcCharacterPreview.h"
+#include "QcAtlasTexture.h"
 #include "QcPreviewAtlasCache.h"
 #include "QcRenderPipelines.h"
 
@@ -66,9 +67,7 @@ void QcCharacterPreviewRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     if (!m_uniforms) {
         m_uniforms.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(QcRenderPipelines::FrameUniforms)));
         m_uniforms->create();
-        m_sampler.reset(m_rhi->newSampler(QRhiSampler::Nearest, QRhiSampler::Nearest, QRhiSampler::None, QRhiSampler::ClampToEdge,
-                                          QRhiSampler::ClampToEdge));
-        m_sampler->create();
+        m_sampler = QcAtlasTexture::createSampler(m_rhi);
     }
 }
 
@@ -79,14 +78,14 @@ void QcCharacterPreviewRenderer::synchronize(QQuickRhiItem *item)
     m_camera = preview->m_viewCamera;
     if (preview->m_atlasVersion != m_atlasVersion) {
         m_atlasVersion = preview->m_atlasVersion;
-        m_atlasImage = preview->m_atlas;
+        m_atlasLevels = preview->m_atlas;
     }
 }
 
 void QcCharacterPreviewRenderer::prepare(QRhiResourceUpdateBatch *updates)
 {
     if (!m_atlasTexture || m_uploadedAtlasVersion != m_atlasVersion) {
-        std::shared_ptr<QRhiTexture> texture = QcPreviewAtlasCache::texture(m_rhi, m_atlasImage, updates);
+        std::shared_ptr<QRhiTexture> texture = QcPreviewAtlasCache::texture(m_rhi, m_atlasLevels, updates);
         if (texture != m_atlasTexture) {
             const bool first = !m_atlasTexture;
             m_atlasTexture = std::move(texture);
@@ -174,7 +173,7 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
 void QcCharacterPreviewRenderer::render(QRhiCommandBuffer *commandBuffer)
 {
     QRhiResourceUpdateBatch *updates = m_rhi->nextResourceUpdateBatch();
-    if (!m_atlasImage.isNull()) {
+    if (!m_atlasLevels.isEmpty() && !m_atlasLevels.front().isNull()) {
         prepare(updates);
         uploadMesh(updates);
         uploadUniforms(updates);

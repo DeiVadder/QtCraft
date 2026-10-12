@@ -15,6 +15,7 @@
 
 class QcCharacterSettings;
 class QcContentRegistry;
+class QcTexturePackController;
 class QcTextureAtlas;
 class QcWorldLibraryController;
 struct QcSessionParts;
@@ -31,7 +32,7 @@ class QcPreviewSource : public QObject
 
 public:
     QcPreviewSource(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcCharacterSettings &character,
-                    QObject *parent = nullptr);
+                    const QcTexturePackController &texturePacks, QObject *parent = nullptr);
     ~QcPreviewSource() override;
 
     // The running world's content and atlas (QcGameController once the content arrived).
@@ -84,6 +85,7 @@ private:
     const QcSessionParts &m_parts;
     const QcWorldLibraryController &m_library;
     const QcCharacterSettings &m_character;
+    const QcTexturePackController &m_texturePacks;
     std::shared_ptr<const QcContentRegistry> m_content;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     // Library content generation the menu atlas was built (or is being built) for; -1 for none

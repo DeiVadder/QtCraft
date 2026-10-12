@@ -85,6 +85,7 @@ Popup {
                         spacing: 2
 
                         Label {
+                            textFormat: Text.PlainText
                             text: modRow.modelData.version.length > 0
                                   ? qsTr("%1 %2").arg(modRow.modelData.name).arg(modRow.modelData.version)
                                   : modRow.modelData.name
@@ -93,11 +94,14 @@ Popup {
                         Label {
                             Layout.fillWidth: true
                             visible: text.length > 0
+                            // Written by the mod's author: never rich text (E-272).
+                            textFormat: Text.PlainText
                             text: modRow.modelData.description
                             wrapMode: Text.Wrap
                         }
                         Label {
                             Layout.fillWidth: true
+                            textFormat: Text.PlainText
                             text: modRow.modelData.state === "loaded" ? qsTr("Active")
                                 : modRow.modelData.state === "disabled" ? qsTr("Disabled")
                                 : qsTr("Not loaded: %1").arg(modRow.modelData.reason)

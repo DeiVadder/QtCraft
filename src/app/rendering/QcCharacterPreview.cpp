@@ -288,7 +288,7 @@ void QcCharacterPreview::buildFrame()
     }
     if (m_atlasVersion != m_source->version()) {
         m_atlasVersion = m_source->version();
-        m_atlas = atlas->image();
+        m_atlas = atlas->levels();
     }
 
     // A fixed moment (test hook) shows the cape at rest on its target, like the pose.

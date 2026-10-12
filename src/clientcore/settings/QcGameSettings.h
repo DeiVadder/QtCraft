@@ -8,6 +8,7 @@
 #include "QcViewCamera.h"
 
 #include <QString>
+#include <QStringList>
 
 // Player settings of the graphical game, stored as an INI file in the data directory. Values read
 // from the file are clamped to their ranges; anything unusable falls back to the default.
@@ -55,6 +56,10 @@ struct QcGameSettings
     // "" for no key. A missing or unknown name gives that slot's default; keys an earlier action
     // already uses are dropped. The pause key (Esc) is fixed.
     QcKeyBindings keys = QcKeyBindings::defaults();
+    // Active texture packs by id, the highest priority first (decision E-297); empty: the game's own
+    // textures. Stored as the INI array "texturePacks/<n>/id"; at most maxTexturePacks, duplicates dropped.
+    QStringList texturePacks;
+    static constexpr int maxTexturePacks = 16;
 
     static int clampViewDistance(int chunks);
     static double clampFieldOfView(double degrees);
@@ -64,6 +69,8 @@ struct QcGameSettings
     static QString cleanLanguage(const QString &language);
     // Clamps to 0..1; non-finite values give `fallback`.
     static double clampVolume(double volume, double fallback);
+    // Drops empty and repeated ids and keeps at most maxTexturePacks.
+    static QStringList cleanTexturePacks(const QStringList &ids);
 
     // A missing or unreadable file gives the defaults.
     static QcGameSettings load(const QString &path);

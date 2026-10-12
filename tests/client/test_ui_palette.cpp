@@ -171,7 +171,7 @@ private slots:
     void networkTextIsPlain()
     {
         static const QRegularExpression networkText(
-            uR"(^\s*text:.*\b(statusText|serverName|motd|machineLabel|targetLabel|lastAddress|screen\.failure|worldLabel\.(title|detail)|modelData\.name|playerName)\b)"_s);
+            uR"(^\s*text:.*\b(statusText|serverName|motd|machineLabel|targetLabel|lastAddress|screen\.failure|worldLabel\.(title|detail)|modelData\.(name|description|license|credits|error|problems)|packs\.(notices|userDirectory)|playerName)\b)"_s);
         const QDir directory(QStringLiteral(QTCRAFT_QML_DIR));
         const auto plainFile = [&directory](const QString &type) {
             QFile file(directory.filePath(type + u".qml"_s));
@@ -201,7 +201,7 @@ private slots:
                 }
             }
         }
-        QVERIFY(checked >= 10);
+        QVERIFY(checked >= 17);
         QVERIFY2(problems.isEmpty(), qPrintable(problems.join(u'\n')));
     }
 

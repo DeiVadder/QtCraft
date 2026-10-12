@@ -90,10 +90,26 @@ struct Options
                             u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
                             u"dir"_s};
 
+    QCommandLineOption exportTextures{u"export-textures"_s,
+                                      u"Write the content's textures as an image texture pack (texturepack.json, textures/<namespace>/<name>.png, "
+                                      u"preview.png) into a directory and exit."_s,
+                                      u"dir"_s};
+    QCommandLineOption textureResolution{u"texture-resolution"_s, u"Resolution of --export-textures (16 to 512)."_s, u"pixels"_s, u"32"_s};
+    QCommandLineOption texturePacks{u"texture-packs"_s,
+                                    u"Texture packs drawn over the content for --export-textures, highest priority first "
+                                    u"(e.g. builtin:qtcraft_hd_32)."_s,
+                                    u"ids"_s};
+    QCommandLineOption textureKeys{u"texture-keys"_s, u"Only these textures for --export-textures (comma-separated names)."_s, u"names"_s};
+    QCommandLineOption textureName{u"texture-pack-name"_s, u"Name in the manifest written by --export-textures."_s, u"name"_s};
+    QCommandLineOption atlasStats{u"atlas-stats"_s,
+                                  u"Build the texture atlas without packs and with every built-in texture pack, print size, memory and "
+                                  u"build time, and exit."_s};
+
     // In the order of the help text.
     void addTo(QCommandLineParser &parser) const
     {
         parser.addOptions({sounds, icon});
+        parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
         parser.addOptions({handbook, language});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
         parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, data, mods,

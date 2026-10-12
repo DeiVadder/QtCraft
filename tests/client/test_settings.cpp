@@ -94,6 +94,29 @@ private slots:
         QCOMPARE(QcGameSettings::load(path).characterPresets, settings.characterPresets);
     }
 
+    // Active texture packs keep their order; one pack, none, repeats and too many survive the INI file.
+    void texturePacksRoundTrip()
+    {
+        QTemporaryDir dir;
+        const QString path = dir.filePath(u"settings.ini"_s);
+        QcGameSettings settings;
+        for (const QStringList &packs : {QStringList{u"builtin:storybook_32"_s, u"user:My Pack"_s}, QStringList{u"builtin:qtcraft_hd_64"_s},
+                                         QStringList{u"user:a, b"_s, u"user:c"_s},
+                                         QStringList{}}) {
+            settings.texturePacks = packs;
+            QVERIFY(settings.save(path).has_value());
+            QCOMPARE(QcGameSettings::load(path).texturePacks, packs);
+        }
+
+        QStringList many{u"a"_s, u" a "_s, u""_s};
+        for (int i = 0; i < 20; ++i) {
+            many.append(u"p%1"_s.arg(i));
+        }
+        const QStringList clean = QcGameSettings::cleanTexturePacks(many);
+        QCOMPARE(clean.size(), QcGameSettings::maxTexturePacks);
+        QCOMPARE(clean.mid(0, 2), (QStringList{u"a"_s, u"p0"_s}));
+    }
+
     void profilesWithoutCapeLoadWithoutCape()
     {
         // A settings file from before capes (stage 22) has no cape keys: the look and the presets

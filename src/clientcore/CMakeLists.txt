@@ -79,7 +79,19 @@ qt_add_library(qc_clientcore STATIC
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
+    textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
+    textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
+    textures/QcGpuLimits.h textures/QcGpuLimits.cpp
+    textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
+    textures/QcTextureDetail.h textures/QcTextureDetail.cpp
+    textures/QcTexturePack.h
+    textures/QcTexturePackLibrary.h textures/QcTexturePackLibrary.cpp
+    textures/QcTexturePackLoader.h textures/QcTexturePackLoader.cpp
+    textures/QcTexturePackManifest.h textures/QcTexturePackManifest.cpp
+    textures/QcTexturePackProblem.h textures/QcTexturePackProblem.cpp
+    textures/QcTextureSources.h textures/QcTextureSources.cpp
+    textures/QcTextureStackBuild.h textures/QcTextureStackBuild.cpp
     textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
@@ -109,4 +121,12 @@ target_include_directories(qc_clientcore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/session
     ${CMAKE_CURRENT_SOURCE_DIR}/network
     ${CMAKE_CURRENT_SOURCE_DIR}/settings)
-target_link_libraries(qc_clientcore PUBLIC qc_common qc_network Qt::Core Qt::Gui)
+target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)
+
+# Procedural textures must be bit-identical on every architecture (decision E-300): no fused
+# multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).
+set_source_files_properties(
+    textures/QcTextureSynthesizer.cpp textures/QcTextureCraftPatterns.cpp textures/QcTextureFarmPatterns.cpp
+    textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
+    textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
+    PROPERTIES COMPILE_OPTIONS "$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-ffp-contract=off>")

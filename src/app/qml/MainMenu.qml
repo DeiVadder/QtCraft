@@ -129,6 +129,7 @@ Rectangle {
                                 }
 
                                 Label {
+                                    textFormat: Text.PlainText
                                     text: worldRow.modelData.error.length > 0
                                           ? worldRow.modelData.error
                                           : worldRow.modelData.generator === "showcase"

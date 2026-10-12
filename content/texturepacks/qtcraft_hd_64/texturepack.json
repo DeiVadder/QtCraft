@@ -1,0 +1,15 @@
+{
+    "format": 1,
+    "name": "QtCraft HD",
+    "description": "The game's own procedural textures painted at 64 x 64 pixels with finer detail: smoother outlines, grain and bevelled edges. Works for mods with procedural textures too.",
+    "resolution": 64,
+    "procedural": true,
+    "license": "GPL-3.0-or-later",
+    "credits": [
+        {
+            "author": "QtCraft",
+            "note": "Rendered at run time from content/*/textures/*.json"
+        }
+    ],
+    "preview": "preview.png"
+}

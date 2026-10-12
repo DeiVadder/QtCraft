@@ -11,11 +11,12 @@ Popup {
     id: screen
 
     required property GameController game
-    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 debug (overlay "debug").
+    // The page to open on: 0 general, 1 controls (overlay "controls"), 2 debug (overlay "debug"),
+    // 3 texture packs (overlay "texturepacks").
     property int startPage
 
     anchors.centerIn: parent
-    width: Math.min(parent.width - 64, 600)
+    width: Math.min(parent.width - 64, 720)
     height: Math.min(implicitHeight, parent.height - 32)
     modal: true
     focus: true
@@ -61,6 +62,10 @@ Popup {
             }
             TabButton {
                 text: qsTr("Debug")
+            }
+            TabButton {
+                objectName: "texturePacksTab"
+                text: qsTr("Texture packs")
             }
         }
 
@@ -287,6 +292,10 @@ Popup {
             }
 
             DebugOptionsPage {
+                game: screen.game
+            }
+
+            TexturePacksPage {
                 game: screen.game
             }
         }

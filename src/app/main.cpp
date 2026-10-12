@@ -6,6 +6,7 @@
 #include "QcModLoader.h"
 #include "QcOffscreenRender.h"
 #include "QcItemIconProvider.h"
+#include "QcTexturePackPreviewProvider.h"
 #include "QcScreenChoice.h"
 #include "QcScreenshotHook.h"
 #include "QcScriptedRun.h"
@@ -516,6 +517,7 @@ struct UiParts
     QTranslator &translator;
     QString contentLanguage;
     QcItemIconProvider *icons = nullptr;
+    QcTexturePackPreviewProvider *texturePackPreviews = nullptr;
 };
 
 // Settings, language, worlds, mods and the scripted parts of the run; screenshots come from the
@@ -523,6 +525,12 @@ struct UiParts
 void startGame(const UiParts &ui, QcGameController &game, const AppOptions &options, QQuickWindow &window, QcOffscreenRender *offscreenRender)
 {
     game.setIconProvider(ui.icons);
+    game.settings()->texturePacks()->setPreviewProvider(ui.texturePackPreviews);
+    // Texture packs for this run only, e.g. for screenshots and benchmarks: comma-separated pack
+    // ids, highest priority first, or "none" (decision E-304); set before the settings load them.
+    if (const QString packs = qEnvironmentVariable("QTCRAFT_TEXTURE_PACKS"); !packs.isEmpty()) {
+        game.settings()->texturePacks()->overrideSelection(packs == u"none"_s ? QStringList() : packs.split(u',', Qt::SkipEmptyParts));
+    }
     game.settings()->loadSettings();
     game.setLanguage(ui.contentLanguage);
     QObject::connect(game.settings(), &QcSettingsController::languageChangeRequested, &ui.engine,
@@ -570,6 +578,8 @@ int main(int argc, char *argv[])
     // The engine owns and deletes the provider.
     auto *icons = new QcItemIconProvider;
     engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), icons);
+    auto *texturePackPreviews = new QcTexturePackPreviewProvider;
+    engine.addImageProvider(QString::fromLatin1(QcTexturePackPreviewProvider::providerId), texturePackPreviews);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
     engine.loadFromModule("QtCraft", "Main");
@@ -589,6 +599,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    startGame({engine, translator, contentLanguage, icons}, *game, options, *window, offscreenRender->get());
+    startGame({engine, translator, contentLanguage, icons, texturePackPreviews}, *game, options, *window, offscreenRender->get());
     return QGuiApplication::exec();
 }

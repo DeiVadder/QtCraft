@@ -10,6 +10,7 @@ qt_add_executable(qtcraft-headless
     QcSoundExporter.h QcSoundExporter.cpp
     QcServerConsole.h QcServerConsole.cpp
     QcStdinReader.h QcStdinReader.cpp
+    QcTextureTools.h QcTextureTools.cpp
     QcWorldStats.h QcWorldStats.cpp
 )
 qc_configure_target(qtcraft-headless)
