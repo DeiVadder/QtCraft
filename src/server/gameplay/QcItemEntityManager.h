@@ -16,6 +16,8 @@ class QcBlockAccess;
 // nearby, are picked up by players walking into them and despawn after a while. Only items in
 // loaded chunks move and age; the others wait unchanged until their chunk loads again.
 //
+// Items below QcWorld::voidLimitY are removed, and drops there never appear (decision E-288).
+//
 // The number of items is bounded: above `activeLimit` awake items in loaded chunks new drops wait
 // in a queue and appear as soon as older items are picked up or despawn. A chunk that loads with
 // too many items keeps the surplus as dormant items (frozen, invisible) that wake up oldest first.
@@ -72,8 +74,8 @@ public:
 
     QcItemEntityManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
 
-    // Adds a drop, or queues it when too many items are active. Returns the new id, 0 when queued
-    // or empty.
+    // Adds a drop, or queues it when too many items are active. Returns the new id, 0 when queued,
+    // empty or in the void.
     quint32 spawn(const Drop &drop, quint32 id);
     // Drops a stack at `position` with a small random upward velocity (mined blocks, loot).
     quint32 spawnScattered(QcItemStack stack, const QcVec3 &position, quint32 id);
@@ -105,7 +107,7 @@ public:
 private:
     void step(Item &item, const QcBlockAccess &world, double dt);
     void pickUp(Item &item, const QList<PlayerView> &players, const GiveFunction &give);
-    // Drops emptied items, collects the ones that despawned of old age and recounts the awake ones.
+    // Drops emptied items and items in the void, collects the ones that despawned of old age and recounts the awake ones.
     QList<Item> removeFinished(const QList<bool> &awake);
     void spawnQueued(const TickCallbacks &callbacks);
     void merge(const QList<bool> &active);

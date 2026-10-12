@@ -1,5 +1,6 @@
 #include "QcPhysics.h"
 #include "QcTestWorld.h"
+#include "QcWorldConstants.h"
 
 #include <QTest>
 
@@ -36,6 +37,39 @@ private slots:
         QCOMPARE(motion.position.y, 64.0);
         QVERIFY(motion.onGround);
         QCOMPARE(motion.velocity.y, 0.0);
+    }
+
+    void nothingHoldsABodyBelowTheWorld()
+    {
+        // No invisible floor at the bottom (decision E-288): a body falls through y = 0 at the
+        // speed of an ordinary fall, also where its column is not loaded.
+        QcTestWorld world(m_content);
+        world.loadedRadius = 0;
+        QcEntityMotion motion;
+        motion.position = {0.5, 3.0, 0.5};
+        run(motion, {}, world, 40);
+
+        QVERIFY2(motion.position.y < -20.0, qPrintable(QString::number(motion.position.y)));
+        QVERIFY(!motion.onGround);
+        QVERIFY(!QcPhysics::isSolidAt(world, {0, -1, 0}));
+        QVERIFY(!QcPhysics::isSolidAt(world, {5, -1, 5}));
+        QVERIFY(QcPhysics::collisionBoxesAt(world, {5, -1, 5}).isEmpty());
+
+        // Unloaded chunks inside the world's height stay walls (decision E-284).
+        QVERIFY(QcPhysics::isSolidAt(world, {5, 0, 5}));
+        QCOMPARE(QcPhysics::collisionBoxesAt(world, {5, 0, 5}).size(), 1);
+
+        // Far below, a body stops sinking without standing on anything (a world whose time stands
+        // still would otherwise let a player fall for ever); it can still rise from there.
+        run(motion, {}, world, 400);
+        QCOMPARE(motion.position.y, QcWorld::voidFloorY);
+        QCOMPARE(motion.velocity.y, 0.0);
+        QVERIFY(!motion.onGround);
+        QcPlayerInput up;
+        up.flying = true;
+        up.jump = true;
+        QcPhysics::stepPlayer(motion, up, world, dt, true);
+        QVERIFY(motion.position.y > QcWorld::voidFloorY);
     }
 
     void jumpApexMatchesHandComputedHeight()

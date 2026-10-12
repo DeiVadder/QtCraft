@@ -3,6 +3,8 @@
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
 
+#include <QSet>
+
 class QcBlockUpdateQueue;
 class QcServerBlocks;
 class QcServerSounds;
@@ -31,7 +33,10 @@ private:
     void processUpdate(QcBlockPos pos, QcBlockId block);
     void applyFlowStep(QcBlockPos pos, QcBlockId block);
     // Lets the block at `pos` fall: as an entity, or straight to its resting cell when too many fall.
+    // A block that would fall into the void or an unloaded chunk while too many fall waits.
     void startFalling(QcBlockPos pos, QcBlockId block);
+    // Queues the waiting falls again once the falling-block manager has room.
+    void retryDeferredFalls();
     // Puts a block that came to rest into its cell, or drops it as items.
     void landBlock(QcBlockId block, QcBlockPos cell, bool placed);
 
@@ -41,4 +46,7 @@ private:
     QcServerBlocks &m_blocks;
     // Spreading liquids make at most one sound per tick.
     bool m_liquidSoundPlayed = false;
+    // Blocks that should fall while the falling-block manager is full and have no resting cell
+    // (decision E-288): they stay in place until it has room again.
+    QSet<QcBlockPos> m_deferredFalls;
 };

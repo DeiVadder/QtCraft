@@ -27,13 +27,11 @@ public:
     }
 
     // Block at chunk-local coordinates; x and z may lie in [-16, 32).
-    // Returns nullopt where the neighbour chunk is missing or y is below the world.
+    // Returns nullopt where the neighbour chunk is missing. Below and above the world is air, so
+    // the underside of the bottom layer is drawn for a view from the void (decision E-288).
     std::optional<QcBlockId> block(int x, int y, int z) const
     {
-        if (y < 0) {
-            return std::nullopt;
-        }
-        if (y >= QcWorld::worldHeight) {
+        if (y < 0 || y >= QcWorld::worldHeight) {
             return qcAirBlockId;
         }
         const int cx = x < 0 ? -1 : (x >= QcWorld::chunkSize ? 1 : 0);

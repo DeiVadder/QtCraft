@@ -1,6 +1,7 @@
 #include "QcPhysics.h"
 
 #include "QcContentRegistry.h"
+#include "QcWorldConstants.h"
 
 #include <QVarLengthArray>
 #include <QtMath>
@@ -26,7 +27,6 @@ template<typename Boxes>
 void appendCollisionBoxes(const QcBlockAccess &world, QcBlockPos pos, Boxes &boxes)
 {
     if (pos.y < 0) {
-        boxes.append(cellBox(pos));
         return;
     }
     const std::optional<QcBlockId> block = world.blockAt(pos);
@@ -82,7 +82,7 @@ QcAabb boxAt(const QcVec3 &feet, double width, double height)
 bool isSolidAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     if (pos.y < 0) {
-        return true;
+        return false;
     }
     const std::optional<QcBlockId> block = world.blockAt(pos);
     if (!block) {
@@ -283,6 +283,12 @@ void applyMove(QcEntityMotion &motion, const MoveResult &move)
 {
     motion.position += move.applied;
     motion.onGround = move.blockedY && motion.velocity.y < 0.0;
+
+    // Deep in the void a body stops sinking, without standing on anything (decision E-288).
+    if (motion.position.y < QcWorld::voidFloorY) {
+        motion.position.y = QcWorld::voidFloorY;
+        motion.velocity.y = std::max(0.0, motion.velocity.y);
+    }
 
     if (move.blockedY) {
         motion.velocity.y = 0.0;

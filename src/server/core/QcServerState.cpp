@@ -3,6 +3,9 @@
 #include "QcLineOfSight.h"
 #include "QcPhysics.h"
 #include "QcRaycast.h"
+#include "QcWorldConstants.h"
+
+#include <algorithm>
 
 #include <utility>
 
@@ -92,7 +95,34 @@ QcVec3 QcServerState::spawnPosition()
     // Stand on whatever the stored column contains (the test hook's column, or no ground nearby).
     const std::shared_ptr<const QcChunk> spawnChunk = world.loadChunk(spawn.chunk());
     spawn.y = spawnChunk->highestNonAir(spawn.localX(), spawn.localZ()) + 1;
+
+    // An empty column (a void world without platform, a cleared spawn) would drop the player into
+    // the void again and again.
+    if (spawn.y == 0) {
+        const int spawnHeight = generatorSpawn.value_or(QcBlockPos{}).y;
+        const QcBlockPos ground{spawn.x, std::clamp(spawnHeight - 1, 0, QcWorld::worldHeight - 3), spawn.z};
+        if (placeSpawnGround(ground)) {
+            spawn.y = ground.y + 1;
+        }
+    }
     return {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
+}
+
+bool QcServerState::placeSpawnGround(QcBlockPos pos)
+{
+    const std::optional<QcBlockId> block = world.generator().platformBlock().or_else([this] {
+        return content->blockId(QStringLiteral("qtcraft:stone"));
+    });
+    if (!block || !world.setBlock(pos, *block)) {
+        return false;
+    }
+
+    for (const auto &client : clients) {
+        if (client->state == QcServerClient::State::Playing && client->sentChunks.contains(pos.chunk())) {
+            client->connection->send(QcMsg::BlockUpdate{pos, *block});
+        }
+    }
+    return true;
 }
 
 std::optional<QcBlockPos> QcServerState::naturalGroundNear(QcBlockPos column)

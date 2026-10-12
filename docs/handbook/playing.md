@@ -144,6 +144,10 @@ Left-click a creature within 4 m to hit it, at most every 0.4 s. Swords and axes
 
 At zero health you die. Respawn takes you back to the spawn point with full health and food. With the game rule keepInventory (on by default) you keep your items; otherwise they scatter where you died.
 
+**The void**
+
+Nothing holds you below the bottom of the world: through a hole in the bedrock or off the edge of an empty world you fall into the void. From 64 blocks below the bottom the void hurts you by 4 points every 0.5 s, whatever armour you wear, and in creative mode too, even while flying. Dying there is “fell out of the world”; items, creatures and anything else that falls that deep are gone for good.
+
 **Dropped items**
 
 Items on the ground vanish after 300 s while their area is loaded. Items you throw can be picked up again after 2 s.

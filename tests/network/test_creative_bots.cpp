@@ -42,7 +42,8 @@ int countOf(const QJsonObject &inventory, const QString &item)
 // process, two bot clients in theirs. The server refuses catalogue items and flight in survival,
 // lets only the operator change her mode, and in creative mode the operator's bot flies, takes
 // items from the catalogue, breaks blocks at once and picks blocks; the other bot sees the broken
-// block. The slots run in order on one server.
+// block. Bob, a survival player, falls out of the world (decision E-288). The slots run in order
+// on one server.
 class TestCreativeBots : public QObject
 {
     Q_OBJECT
@@ -191,6 +192,30 @@ private slots:
         const QJsonObject inventory = m_alice.request(command(u"inventory"_s));
         QCOMPARE(countOf(inventory, u"qtcraft:oak_planks"_s), 0);
         QVERIFY(!m_alice.request(command(u"fly"_s)).value(u"ok"_s).toBool());
+    }
+
+    void theVoidKillsOverTcp()
+    {
+        // Teleported into the void by the console, Bob keeps falling and dies of void damage
+        // within 41 ticks (five hits of 4, decision E-288), then respawns at the spawn.
+        const QJsonArray position = status(m_bob).value(u"position"_s).toArray();
+        const QString destination = u"%1 -70 %2"_s.arg(position.at(0).toDouble()).arg(position.at(2).toDouble());
+        QVERIFY(console(u"tp Bob "_s + destination, u"Teleported Bob"_s));
+
+        const QJsonObject fallen = m_bob.poll(command(u"status"_s), [](const QJsonObject &answer) { return answer.value(u"dead"_s).toBool(); },
+                                              timeoutMs);
+        QVERIFY2(!fallen.contains(u"pollTimedOut"_s), qPrintable(describe(fallen)));
+        QVERIFY2(fallen.value(u"position"_s).toArray().at(1).toDouble() < -70.0, qPrintable(describe(fallen)));
+        const QJsonArray lines = m_bob.request(command(u"chatLog"_s)).value(u"lines"_s).toArray();
+        QVERIFY2(lines.contains(u"Bob fell out of the world"_s), QJsonDocument(lines).toJson(QJsonDocument::Compact).constData());
+
+        const QJsonObject respawned = m_bob.request(command(u"respawn"_s), timeoutMs);
+        QVERIFY2(respawned.value(u"ok"_s).toBool(), qPrintable(describe(respawned)));
+        // The new position follows the health message with the next player state.
+        const QJsonObject back = m_bob.poll(command(u"status"_s), [](const QJsonObject &answer) {
+            return answer.value(u"position"_s).toArray().at(1).toDouble() > 0.0;
+        }, timeoutMs);
+        QVERIFY2(!back.contains(u"pollTimedOut"_s), qPrintable(describe(back)));
     }
 };
 

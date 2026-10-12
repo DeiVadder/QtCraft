@@ -227,6 +227,8 @@
     "chapter.qtcraft.death.death.title": "When you die",
     "chapter.qtcraft.death.items.text": "Items on the ground vanish after {items.despawnSeconds} s while their area is loaded. Items you throw can be picked up again after {items.thrownPickupDelay} s.",
     "chapter.qtcraft.death.items.title": "Dropped items",
+    "chapter.qtcraft.death.void.text": "Nothing holds you below the bottom of the world: through a hole in the bedrock or off the edge of an empty world you fall into the void. From {void.depth} blocks below the bottom the void hurts you by {void.damage} points every {void.interval} s, whatever armour you wear, and in creative mode too, even while flying. Dying there is “fell out of the world”; items, creatures and anything else that falls that deep are gone for good.",
+    "chapter.qtcraft.death.void.title": "The void",
     "chapter.qtcraft.health": "Health and damage",
     "chapter.qtcraft.health.fighting.text": "Left-click a creature within {player.attackReach} m to hit it, at most every {player.attackCooldown} s. Swords and axes deal more damage than the hand; every hit knocks the target back.",
     "chapter.qtcraft.health.fighting.title": "Fighting",

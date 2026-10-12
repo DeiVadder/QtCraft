@@ -7,6 +7,7 @@
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
+#include "QcWorldConstants.h"
 
 #include <algorithm>
 #include <cmath>
@@ -65,10 +66,26 @@ void QcServerCombat::tickPlayer(QcServerClient &client, double dt)
         }
     }
 
+    applyVoidDamage(client);
+
     // Mining swings the arm again and again.
     if (client.miningPos && (m_state.tickCount - client.miningStartTick) % miningSwingTicks == 0) {
         client.swung = true;
     }
+}
+
+void QcServerCombat::applyVoidDamage(QcServerClient &client)
+{
+    if (client.dead || !QcWorld::isInVoid(client.motion.position.y)) {
+        client.voidTicks = 0;
+        return;
+    }
+
+    // The first hit comes at once, then one every interval for as long as the player stays down.
+    if (client.voidTicks % voidDamageIntervalTicks == 0) {
+        damagePlayer(client, voidDamage, {}, DamageKind::Void);
+    }
+    ++client.voidTicks;
 }
 
 void QcServerCombat::playMobSounds(double dt)
@@ -152,10 +169,11 @@ void QcServerCombat::applyContactDamage()
 
 void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
 {
-    if (client.dead || client.hurtTimer > 0.0 || amount <= 0.0) {
+    const bool fromVoid = kind == DamageKind::Void;
+    if (client.dead || (client.hurtTimer > 0.0 && !fromVoid) || amount <= 0.0) {
         return;
     }
-    if (client.rules().invulnerable && kind != DamageKind::Command) {
+    if (client.rules().invulnerable && kind != DamageKind::Command && !fromVoid) {
         return;
     }
 
@@ -177,17 +195,27 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
     }
 
     if (client.health <= 0.0) {
-        client.dead = true;
-        client.miningPos.reset();
-        m_state.died.insert(client.entityId);
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 died"), {client.name}));
-        // Catalogue items never fall into the world by themselves (decision E-283).
-        if (!m_state.info.keepInventory && !QcGameModes::rules(client.gameMode).itemCatalogue) {
-            m_inventory.dropAll(client);
-        }
+        die(client, kind);
     }
 
     sendHealth(client);
+}
+
+void QcServerCombat::die(QcServerClient &client, DamageKind kind)
+{
+    client.dead = true;
+    client.miningPos.reset();
+    m_state.died.insert(client.entityId);
+
+    const char *message = kind == DamageKind::Void ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world")
+                                                   : QT_TRANSLATE_NOOP("QcServerMessages", "%1 died");
+    client.connection->send(QcChatText::message(message, {client.name}));
+
+    // Catalogue items never fall into the world by themselves (decision E-283). Drops in the void
+    // are removed at once by the item manager (decision E-288).
+    if (!m_state.info.keepInventory && !QcGameModes::rules(client.gameMode).itemCatalogue) {
+        m_inventory.dropAll(client);
+    }
 }
 
 double QcServerCombat::throughArmour(QcServerClient &client, double amount)

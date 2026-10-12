@@ -4,6 +4,7 @@
     "icon": "rotten_flesh",
     "sections": [
         "death",
+        "void",
         "items"
     ]
 }

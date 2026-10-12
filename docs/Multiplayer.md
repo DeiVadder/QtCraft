@@ -224,6 +224,13 @@ against a determined attacker.
   server generates stops at the edge on both sides without a correction; only a chunk the server
   has but the client has not received yet makes the server correct the prediction once it arrives
   (nearest chunks are sent first, up to 32 per tick, so this needs a very slow link) (E-284).
+- Below the bottom of the world (y < 0) there is no wall, loaded or not: both sides let a player fall
+  (or a creative player fly freely, also under unloaded columns) into the void with the same shared
+  physics, which stops a body sinking at y = −256, so falling or flying down there needs no correction
+  (`test_void_client`, round trips of 50 to 300 ms). The movement check is otherwise unchanged; the
+  server alone deals the void damage below y = −64 (counted in ticks, so it follows `/tick rate`) and
+  removes everything else there; a spawn column without any block gets one under the spawn height; a bot dies in
+  the void over TCP in `test_creative_bots` (E-288).
 - Catalogue items reach the world only when a player puts them there on purpose (E-283): throwing
   them (`Q`) and putting them into a chest work as in survival, but a creative player's death drops
   nothing (whatever `keepInventory` says), and when a player leaves creative mode the items of the

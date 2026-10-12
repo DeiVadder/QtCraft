@@ -18,6 +18,8 @@ namespace QcCommandArguments {
 
 // Horizontal limit of positions a command accepts (teleport, block areas, chunks).
 inline constexpr int worldLimit = 30'000'000;
+// Lowest height a teleport accepts: down into the void, where a player dies (decision E-288).
+inline constexpr double lowestTeleportY = -128.0;
 
 // Names without a namespace mean the base game's.
 QString qualified(const QString &name);
@@ -29,7 +31,7 @@ std::optional<int> blockCoordinate(const QString &word, std::optional<int> origi
 // std::nullopt when one is invalid, missing or outside ±worldLimit (the caller checks the height).
 std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype first, std::optional<QcBlockPos> origin);
 // A point for teleporting: finite numbers, "~" relative to `origin`, inside the world limit and
-// the world height.
+// from lowestTeleportY to the top of the world.
 std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::optional<QcVec3> origin);
 // A whole number within [low, high], or `fallback` when the word is missing.
 std::optional<int> count(const QStringList &words, qsizetype index, int fallback, int low, int high);

@@ -200,6 +200,7 @@ qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clie
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
 qc_add_test(test_creative_mode SOURCES gameplay/test_creative_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_void_zone SOURCES gameplay/test_void_zone.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_server)
@@ -259,6 +260,7 @@ qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTes
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 240)
 qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+qc_add_test(test_void_client SOURCES network/test_void_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.

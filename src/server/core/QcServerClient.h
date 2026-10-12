@@ -80,6 +80,8 @@ struct QcServerClient
     int sentFood = -1;
     double hurtTimer = 0.0;
     double attackCooldown = 0.0;
+    // Ticks spent below the void limit in a row (QcServerCombat::applyVoidDamage).
+    int voidTicks = 0;
     // Entities this client has been told about.
     QSet<quint32> knownEntities;
     // Known entities whose spawn data changed and must be sent again.

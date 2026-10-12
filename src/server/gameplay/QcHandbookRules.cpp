@@ -12,7 +12,9 @@
 #include "QcPhysics.h"
 #include "QcRaycast.h"
 #include "QcServer.h"
+#include "QcServerCombat.h"
 #include "QcWorldCommands.h"
+#include "QcWorldConstants.h"
 
 #include <cmath>
 
@@ -55,6 +57,9 @@ QMap<QString, double> values()
          std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
         {u"hunger.sprintMinutesForFullBar"_s,
          std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
+        {u"void.depth"_s, -QcWorld::voidLimitY},
+        {u"void.damage"_s, QcServerCombat::voidDamage},
+        {u"void.interval"_s, QcServerCombat::voidDamageIntervalTicks * QcPhysics::tickDuration},
         {u"items.despawnSeconds"_s, QcItemEntityManager::despawnSeconds},
         {u"items.thrownPickupDelay"_s, QcItemEntityManager::thrownPickupDelay},
         {u"mobs.hostileCap"_s, QcMobManager::hostileCapPerPlayer},

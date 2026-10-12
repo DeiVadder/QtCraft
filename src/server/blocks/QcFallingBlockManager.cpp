@@ -1,6 +1,7 @@
 #include "QcFallingBlockManager.h"
 
 #include "QcPhysics.h"
+#include "QcWorldConstants.h"
 
 QcFallingBlockManager::QcFallingBlockManager(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
@@ -28,7 +29,7 @@ bool QcFallingBlockManager::shouldFall(const QcBlockAccess &world, QcBlockPos po
     const std::optional<QcBlockId> block = world.blockAt(pos);
     const QcContentRegistry &content = world.content();
     const QcBlockPos below = pos.offset(0, -1, 0);
-    return block && content.isValidBlock(*block) && content.block(*block).falls && below.y >= 0 && isPassable(world, below);
+    return block && content.isValidBlock(*block) && content.block(*block).falls && isPassable(world, below);
 }
 
 std::optional<QcBlockPos> QcFallingBlockManager::restingCell(const QcBlockAccess &world, QcBlockPos from)
@@ -66,6 +67,10 @@ QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockA
     still.reserve(m_falling.size());
 
     for (Falling falling : std::as_const(m_falling)) {
+        // Also those resting in unloaded chunks (from a save).
+        if (QcWorld::isInVoid(falling.motion.position.y)) {
+            continue;
+        }
         if (!isLoaded(falling.motion.position)) {
             still.append(falling);
             continue;
@@ -76,7 +81,7 @@ QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockA
         motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(motion.position + QcVec3{0.0, size * 0.5, 0.0}));
         QcPhysics::stepEntity(motion, QcPhysics::Steering{}, QcPhysics::BodySize{size, size}, world, dt);
 
-        if (motion.position.y < -16.0) {
+        if (QcWorld::isInVoid(motion.position.y)) {
             continue;
         }
 

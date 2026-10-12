@@ -19,6 +19,8 @@ QcBlockSimulation::QcBlockSimulation(QcServerState &state, QcServerSounds &sound
 
 void QcBlockSimulation::processBlockUpdates()
 {
+    retryDeferredFalls();
+
     for (int budget = maxBlockUpdatesPerTick; budget > 0; --budget) {
         const std::optional<QcBlockUpdateQueue::Update> update = m_updates.takeNext();
         if (!update) {
@@ -121,12 +123,33 @@ void QcBlockSimulation::startFalling(QcBlockPos pos, QcBlockId block)
         return;
     }
 
+    // Too many fall already. Without a resting cell (the void below, an unloaded chunk) the block
+    // waits for room instead of vanishing, so a collapse of a whole bottom layer goes on entity by
+    // entity within the manager's limit.
     const std::optional<QcBlockPos> rest = QcFallingBlockManager::restingCell(m_state.world, pos);
+    if (!rest) {
+        m_deferredFalls.insert(pos);
+        return;
+    }
+
     m_blocks.setAndBroadcast(pos, qcAirBlockId);
 
-    if (rest) {
-        landBlock(block, *rest, true);
+    landBlock(block, *rest, true);
+}
+
+void QcBlockSimulation::retryDeferredFalls()
+{
+    if (m_deferredFalls.isEmpty() || m_state.falling.isFull()) {
+        return;
     }
+
+    // As a cascade: behind the updates of player actions.
+    m_updates.setCommandMode(true);
+    for (const QcBlockPos pos : std::as_const(m_deferredFalls)) {
+        m_updates.queue(pos);
+    }
+    m_updates.setCommandMode(false);
+    m_deferredFalls.clear();
 }
 
 void QcBlockSimulation::landBlock(QcBlockId block, QcBlockPos cell, bool placed)

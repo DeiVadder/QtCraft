@@ -165,8 +165,10 @@ bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
     const QcEntityMotion &m = player.motion;
     constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
     constexpr double verticalMargin = 64.0;
+    // A player saved while falling through the void may be far below it, down to where bodies stop
+    // sinking (decision E-288).
     const bool inWorld = finite(m.position) && std::abs(m.position.x) <= horizontalLimit && std::abs(m.position.z) <= horizontalLimit
-                         && m.position.y >= -verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
+                         && m.position.y >= QcWorld::voidFloorY - verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
     const bool directionOk = std::isfinite(player.yaw) && std::isfinite(player.pitch) && std::abs(player.pitch) <= 90.0f;
     return inWorld && finite(m.velocity) && directionOk && std::isfinite(player.health) && std::isfinite(player.exhaustion);
 }

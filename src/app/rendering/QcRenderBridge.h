@@ -39,6 +39,7 @@ public:
     void updateEntities(double alpha, QcCameraMode mode);
     // The first-person arm with the held item; hidden in the other camera modes.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
+    // After placeCamera: below the world the sky darkens with the camera height.
     void updateSky(double alpha);
     void updateSelection();
 

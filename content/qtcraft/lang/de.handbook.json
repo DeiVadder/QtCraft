@@ -227,6 +227,8 @@
     "chapter.qtcraft.death.death.title": "Wenn du stirbst",
     "chapter.qtcraft.death.items.text": "Items am Boden verschwinden nach {items.despawnSeconds} s, solange ihre Gegend geladen ist. Geworfene Items kannst du nach {items.thrownPickupDelay} s wieder aufheben.",
     "chapter.qtcraft.death.items.title": "Fallengelassene Items",
+    "chapter.qtcraft.death.void.text": "Unter dem Boden der Welt hält dich nichts: Durch ein Loch im Grundgestein oder über den Rand einer leeren Welt fällst du in die Leere. Ab {void.depth} Blöcken unter dem Boden kostet sie dich alle {void.interval} s {void.damage} Lebenspunkte, gleich welche Rüstung du trägst, auch im Kreativmodus und im Flug. Wer dort stirbt, „fiel aus der Welt“; Items, Wesen und alles andere, das so tief fällt, sind für immer verloren.",
+    "chapter.qtcraft.death.void.title": "Die Leere",
     "chapter.qtcraft.health": "Gesundheit und Schaden",
     "chapter.qtcraft.health.fighting.text": "Klicke mit links auf ein Wesen in bis zu {player.attackReach} m, um es zu treffen, höchstens alle {player.attackCooldown} s. Schwerter und Äxte richten mehr Schaden an als die Hand; jeder Treffer stößt das Ziel zurück.",
     "chapter.qtcraft.health.fighting.title": "Kämpfen",

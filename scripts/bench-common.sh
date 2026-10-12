@@ -26,8 +26,10 @@
 #              grass on top at y 63, no trees, caves or creatures of their own accord) or in the void
 #              world (a 5 x 5 platform at y 63, noon): the same scene whatever the terrain generator
 #              does, so changes of the world generation (E-101, E-214) do not move the comparison.
-#              WORLD_TYPE=flat|void does the same for every scenario of a run. Crowd and sprint need
-#              ground: use flat, not void
+#              WORLD_TYPE=flat|void does the same for every scenario of a run. Walk, sprint,
+#              armour-walk and crowd need ground: off the platform the player and the summoned
+#              creatures fall into the void and die or vanish (decision E-288), so they run in the
+#              flat world instead (with a note on stderr)
 #   armour-crowd - flat-crowd plus 40 armour stands in a full diamond set with the green cape
 #              (/summon armor_stand, all on one cell 3 m ahead) and 8 caped mannequins: entity
 #              meshing of armour attachments and capes, the stand sync per client and tick. Runs in
@@ -35,6 +37,11 @@
 #   armour-walk - walking like walk, the own player in a full diamond set with the green cape,
 #              seen from behind (--camera behind): third-person figure with attachments and the
 #              cape swing (stage 23 and newer)
+#   gravel-collapse - standing in a flat world on three layers of gravel under the grass while,
+#              two seconds in, a shaft beside the player opens down to the void: the gravel of the
+#              loaded chunks collapses layer by layer into the void (falling blocks at the manager's
+#              limit of 2048, deferred falls, the per-tick budget of block updates; decision E-288).
+#              Measures the server tick under many falling entities. Always flat (stage 26b and newer)
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
 #
@@ -134,6 +141,7 @@ glass_chat() {
 run_game() {
     app=$1
     scenario=$2
+    requested=$2
     seconds=$3
     view=$4
     data=$5
@@ -160,7 +168,18 @@ run_game() {
         armour=walk
         scenario=walk
         ;;
+    gravel-collapse)
+        world=flat
+        ;;
     esac
+    if [ "$world" = void ]; then
+        case "$scenario" in
+        sprint | walk | crowd)
+            echo "Scenario $requested needs ground; running it in the flat world instead of the void world" >&2
+            world=flat
+            ;;
+        esac
+    fi
     case "$scenario" in
     sprint | walk) walk=$scenario ;;
     light | liquids) walk=$scenario ;;
@@ -216,6 +235,9 @@ EOF
         ;;
     handbook)
         set -- "$@" --handbook block:qtcraft:stone
+        ;;
+    gravel-collapse)
+        set -- "$@" --flat-layers "3*gravel,grass_block" --chat "@2000 /fill ~2 ~-4 ~ ~2 ~-1 ~ air"
         ;;
     esac
     # Sound is mixed as in a normal game but muted, so runs stay quiet. GPU timestamps

@@ -1,5 +1,6 @@
 #include "QcDayCycle.h"
 #include "QcSky.h"
+#include "QcWorldConstants.h"
 
 #include <QTest>
 
@@ -34,6 +35,26 @@ private slots:
         QVERIFY(QcSky::at(day * 0.02).sunDirection.x() > 0.9f);
         QVERIFY(QcSky::at(sunset - 1.0).sunDirection.x() < -0.9f);
         QVERIFY(std::abs(QcSky::at(noon).sunDirection.length() - 1.0f) < 1e-4f);
+    }
+
+    void skyFadesToBlackBelowTheWorld()
+    {
+        // Decision E-288: unchanged down to the bottom of the world, half as bright half-way to
+        // the void limit, black from there on; sun and moon keep their places.
+        const QcSkyState noonSky = QcSky::at(noon);
+        const QcSkyState surface = QcSky::seenFrom(noonSky, 0.0);
+        QCOMPARE(surface.horizon, noonSky.horizon);
+        QCOMPARE(surface.zenith, noonSky.zenith);
+
+        const QcSkyState halfway = QcSky::seenFrom(noonSky, QcWorld::voidLimitY / 2.0);
+        QVERIFY(std::abs(brightness(halfway.fogColor()) - brightness(noonSky.fogColor()) * 0.5f) < 1e-5f);
+        QCOMPARE(halfway.sunDirection, noonSky.sunDirection);
+
+        const QcSkyState night = QcSky::seenFrom(QcSky::at(midnight), QcWorld::voidLimitY - 100.0);
+        for (const QVector3D colour : {night.zenith, night.horizon, night.glow, night.cloudColor}) {
+            QCOMPARE(brightness(colour), 0.0f);
+        }
+        QCOMPARE(night.stars, 0.0);
     }
 
     void dayIsBlueAndBrighterThanTheNight()

@@ -39,5 +39,8 @@ inline constexpr double cloudHeight = 160.0;
 inline constexpr double cloudSpeed = 1.2;
 
 QcSkyState at(double worldTime);
+// The sky seen from `eyeY`: below the world it fades to black, which it reaches at
+// QcWorld::voidLimitY; fog, clouds, glow and stars fade with it (decision E-288).
+QcSkyState seenFrom(QcSkyState sky, double eyeY);
 
 } // namespace QcSky

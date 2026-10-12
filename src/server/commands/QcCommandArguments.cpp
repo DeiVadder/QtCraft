@@ -81,7 +81,7 @@ std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::opti
     const std::optional<double> x = pointCoordinate(words[first], origin ? std::optional<double>(origin->x) : std::nullopt);
     const std::optional<double> y = pointCoordinate(words[first + 1], origin ? std::optional<double>(origin->y) : std::nullopt);
     const std::optional<double> z = pointCoordinate(words[first + 2], origin ? std::optional<double>(origin->z) : std::nullopt);
-    if (!x || !y || !z || std::abs(*x) > worldLimit || std::abs(*z) > worldLimit || *y < 0.0 || *y > QcWorld::worldHeight) {
+    if (!x || !y || !z || std::abs(*x) > worldLimit || std::abs(*z) > worldLimit || *y < lowestTeleportY || *y > QcWorld::worldHeight) {
         return std::nullopt;
     }
     return QcVec3{*x, *y, *z};

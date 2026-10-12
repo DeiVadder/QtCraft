@@ -211,6 +211,24 @@ private slots:
         }
     }
 
+    void bottomLayerHasItsUndersideForAViewFromTheVoid()
+    {
+        // Decision E-288: below the world is air, so a block at y = 0 shows all six faces,
+        // including the one facing down at y = 0.
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(3, 0, 5, f.stone);
+        const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
+        QCOMPARE(quadCount(mesh.opaqueIndices), 6);
+
+        int bottomCorners = 0;
+        for (const QcBlockVertex &v : mesh.opaqueVertices) {
+            bottomCorners += v.y == 0.0f ? 1 : 0;
+        }
+        // Four side faces with two bottom corners each, and the bottom face with four.
+        QCOMPARE(bottomCorners, 4 * 2 + 4);
+    }
+
     void missingNeighbourChunkHidesBorderFaces()
     {
         const Fixture f;

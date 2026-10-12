@@ -339,7 +339,8 @@ void QcRenderBridge::updateHandMesh(double alpha, const QcVec3 &eye)
 
 void QcRenderBridge::updateSky(double alpha)
 {
-    m_parts.view->setSky(QcSky::at(m_parts.session->worldTime() + alpha * QcPhysics::tickDuration));
+    const QcSkyState sky = QcSky::at(m_parts.session->worldTime() + alpha * QcPhysics::tickDuration);
+    m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
 }
 
 void QcRenderBridge::updateSelection()

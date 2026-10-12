@@ -1,5 +1,7 @@
 #include "QcArmourStandManager.h"
 
+#include "QcWorldConstants.h"
+
 #include <algorithm>
 
 QcAabb QcArmourStandManager::bodyOf(const Stand &stand)
@@ -45,6 +47,10 @@ std::optional<QcArmourStandManager::Stand> QcArmourStandManager::remove(quint32 
 
 void QcArmourStandManager::tick(double dt)
 {
+    // Stands do not move; one that is in the void anyway (a save edited by hand) goes, without
+    // dropping its armour (decision E-288).
+    m_stands.removeIf([](const Stand &stand) { return QcWorld::isInVoid(stand.position.y); });
+
     for (Stand &stand : m_stands) {
         stand.sinceHit = std::min(breakWindow, stand.sinceHit + dt);
     }

@@ -47,7 +47,8 @@ public:
 
     // Whether a falling block may move into the cell (air, liquid, replaceable blocks).
     static bool isPassable(const QcBlockAccess &world, QcBlockPos pos);
-    // Whether the block at `pos` would start falling now (it falls and the cell below is passable).
+    // Whether the block at `pos` would start falling now (it falls and the cell below is passable;
+    // below the lowest layer is the void, decision E-288).
     static bool shouldFall(const QcBlockAccess &world, QcBlockPos pos);
     // The cell a block let go at `from` comes to rest in, scanning down; std::nullopt below the world
     // or in unloaded chunks.
@@ -56,8 +57,8 @@ public:
     bool isFull() const { return m_falling.size() >= maxFalling; }
     // Starts a falling block in the cell `from` (the caller removes the block there).
     void start(QcBlockPos from, QcBlockId block, quint32 id);
-    // One tick of physics; returns the blocks that came to rest. Blocks that fall out of the world
-    // disappear.
+    // One tick of physics; returns the blocks that came to rest. Blocks that fall below
+    // QcWorld::voidLimitY disappear (decision E-288).
     QList<Landing> tick(const QcBlockAccess &world, double dt, const LoadedFunction &isLoaded);
 
     const QList<Falling> &all() const { return m_falling; }

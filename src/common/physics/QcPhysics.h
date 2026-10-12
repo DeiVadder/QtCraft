@@ -56,10 +56,11 @@ struct MoveResult
 
 QcAabb boxAt(const QcVec3 &feet, double width, double height);
 
-// True when the block blocks movement. Unloaded chunks and the space below the world are solid so
-// nothing falls through missing data.
+// True when the block blocks movement. Unloaded chunks inside the world's height are solid so
+// nothing falls through missing data; the void below the world is open (decision E-288).
 bool isSolidAt(const QcBlockAccess &world, QcBlockPos pos);
-// World-space collision boxes of the block at `pos` (a unit box where data is missing).
+// World-space collision boxes of the block at `pos` (a unit box where data is missing, none below
+// the world).
 QList<QcAabb> collisionBoxesAt(const QcBlockAccess &world, QcBlockPos pos);
 // Whether a box overlaps a climbable block.
 bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box);

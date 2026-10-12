@@ -1,5 +1,7 @@
 #include "QcDebugText.h"
 
+#include "QcIntMath.h"
+
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -97,7 +99,8 @@ QStringList QcDebugText::placeLines(const QcDebugSnapshot &snapshot)
             .arg(chunk.z)
             .arg(block.localX())
             .arg(block.localZ())
-            .arg(block.y / QcWorld::sectionHeight),
+            // Below the world (the void) the section counts on downwards.
+            .arg(qcFloorDiv(block.y, QcWorld::sectionHeight)),
         tr("Facing: %1 (yaw %2°, pitch %3°)")
             .arg(tr(facingNames[std::size_t(QcDebugSnapshot::facingIndex(snapshot.yaw))]))
             .arg(snapshot.yaw, 0, 'f', 1)

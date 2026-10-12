@@ -157,6 +157,7 @@
     "... and %1 more warnings in the log": "... und %1 weitere Warnungen im Log",
     "Autosave failed: %1": "Automatisches Speichern fehlgeschlagen: %1",
     "%1 died": "%1 ist gestorben",
+    "%1 fell out of the world": "%1 fiel aus der Welt",
     "Too many chests in the world (at most %1)": "Zu viele Truhen in der Welt (höchstens %1)",
     "Too many machines in the world (at most %1)": "Zu viele Maschinen in der Welt (höchstens %1)",
     "Not enough room in the inventory": "Nicht genug Platz im Inventar",

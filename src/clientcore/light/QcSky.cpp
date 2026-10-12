@@ -1,6 +1,7 @@
 #include "QcSky.h"
 
 #include "QcDayCycle.h"
+#include "QcWorldConstants.h"
 
 #include <algorithm>
 #include <cmath>
@@ -67,6 +68,21 @@ QcSkyState at(double worldTime)
 
     sky.cloudOffsetX = worldTime * cloudSpeed;
     sky.cloudOffsetZ = worldTime * cloudSpeed * 0.35;
+    return sky;
+}
+
+QcSkyState seenFrom(QcSkyState sky, double eyeY)
+{
+    if (eyeY >= 0.0) {
+        return sky;
+    }
+
+    const float light = float(std::clamp(1.0 - eyeY / QcWorld::voidLimitY, 0.0, 1.0));
+    sky.zenith *= light;
+    sky.horizon *= light;
+    sky.glow *= light;
+    sky.cloudColor *= light;
+    sky.stars *= light;
     return sky;
 }
 

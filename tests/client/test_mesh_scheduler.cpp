@@ -104,9 +104,11 @@ private slots:
                 [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
         loadSquare(world, scheduler, 20);
         pumpUntilIdle(scheduler, world);
-        // Only the centre chunk has all four side neighbours. Of its two non-empty sections only
-        // section 1 has visible faces (the surface at y = 20); section 0 is buried completely.
-        QCOMPARE(meshes.size(), 1);
+        // Only the centre chunk has all four side neighbours. Both of its non-empty sections have
+        // visible faces: section 1 the surface at y = 20, section 0 the underside of the bottom
+        // layer, seen from the void (decision E-288).
+        QCOMPARE(meshes.size(), 2);
+        QVERIFY(meshes.contains(qcSectionKey({0, 0}, 0)));
         QVERIFY(meshes.contains(qcSectionKey({0, 0}, 1)));
     }
 
@@ -426,7 +428,7 @@ private slots:
         // Nothing of the old world is stuck: the same chunks mesh again from scratch.
         loadSquare(world, scheduler, 20);
         pumpUntilIdle(scheduler, world);
-        QCOMPARE(meshes.size(), 1);
+        QCOMPARE(meshes.size(), 2);
         QVERIFY(meshes.contains(qcSectionKey({0, 0}, 1)));
     }
 

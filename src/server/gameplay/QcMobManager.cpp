@@ -5,6 +5,7 @@
 #include "QcNoise.h"
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
+#include "QcWorldConstants.h"
 
 #include <QHash>
 #include <QtMath>
@@ -248,6 +249,10 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
     m_mobs.removeIf([&](const Mob &mob) {
+        // The void takes every creature, without loot (decision E-288).
+        if (QcWorld::isInVoid(mob.motion.position.y)) {
+            return true;
+        }
         if (mob.persistent) {
             return false;
         }

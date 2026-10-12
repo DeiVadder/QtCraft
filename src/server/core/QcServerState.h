@@ -43,6 +43,8 @@ struct QcServerState
     bool canSee(const QcServerClient &client, const QcAabb &body) const;
     // On the surface of the spawn column (or the configured one) as the world stores it; when that
     // is no natural ground (a tree, a building, water), on the nearest natural ground around it.
+    // A column without any block gets one under the generator's spawn height, so a respawn never
+    // drops into the void (decision E-288).
     QcVec3 spawnPosition();
     // Clients that know the entity get its spawn again (a new look, armour or stand pose).
     void markStale(quint32 entityId);
@@ -96,4 +98,7 @@ private:
     std::optional<QcBlockPos> naturalGroundOnRing(QcBlockPos column, int radius);
     // The top block of a stored column if it is natural ground, else nullopt.
     std::optional<QcBlockPos> naturalGroundAt(int x, int z);
+    // Puts the platform block (or stone) at `pos` and tells the clients that have the chunk; false
+    // when there is no such block.
+    bool placeSpawnGround(QcBlockPos pos);
 };

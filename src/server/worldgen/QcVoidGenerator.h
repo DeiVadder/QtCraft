@@ -27,6 +27,10 @@ public:
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override { return {0, m_platformY + 1, 0}; }
     bool isNaturalGround(QcBlockId block) const override { return block == m_platform && block != qcAirBlockId; }
+    std::optional<QcBlockId> platformBlock() const override
+    {
+        return m_platform != qcAirBlockId ? std::optional<QcBlockId>(m_platform) : std::nullopt;
+    }
     QcWorldSetup setup() const override;
 
 private:

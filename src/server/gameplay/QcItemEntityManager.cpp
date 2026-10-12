@@ -1,6 +1,7 @@
 #include "QcItemEntityManager.h"
 
 #include "QcPhysics.h"
+#include "QcWorldConstants.h"
 
 #include <QLoggingCategory>
 
@@ -34,7 +35,7 @@ QcItemEntityManager::QcItemEntityManager(std::shared_ptr<const QcContentRegistry
 
 quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
 {
-    if (drop.stack.isEmpty() || !m_content->isValidItem(drop.stack.item)) {
+    if (drop.stack.isEmpty() || !m_content->isValidItem(drop.stack.item) || QcWorld::isInVoid(drop.position.y)) {
         return 0;
     }
 
@@ -196,7 +197,7 @@ QList<QcItemEntityManager::Item> QcItemEntityManager::removeFinished(const QList
 
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         const Item &item = m_items[i];
-        if (item.stack.isEmpty()) {
+        if (item.stack.isEmpty() || QcWorld::isInVoid(item.motion.position.y)) {
             continue;
         }
 

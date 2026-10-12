@@ -53,7 +53,7 @@ public:
     // Removes the stand and returns it (to drop what it carried).
     std::optional<Stand> remove(quint32 id);
     bool isFull() const { return m_stands.size() >= maxStands; }
-    // Advances the hit timers.
+    // Advances the hit timers and removes stands in the void.
     void tick(double dt);
     // Replaces all stands, e.g. from a save; entries beyond the limit are left out and counted.
     qsizetype restore(QList<Stand> stands);

@@ -144,6 +144,10 @@ Klicke mit links auf ein Wesen in bis zu 4 m, um es zu treffen, höchstens alle 
 
 Bei null Lebenspunkten stirbst du. Beim Wiederbeleben kehrst du mit voller Gesundheit und Nahrung zum Startpunkt zurück. Mit der Spielregel keepInventory (standardmäßig an) behältst du deine Items; sonst verstreuen sie sich, wo du gestorben bist.
 
+**Die Leere**
+
+Unter dem Boden der Welt hält dich nichts: Durch ein Loch im Grundgestein oder über den Rand einer leeren Welt fällst du in die Leere. Ab 64 Blöcken unter dem Boden kostet sie dich alle 0,5 s 4 Lebenspunkte, gleich welche Rüstung du trägst, auch im Kreativmodus und im Flug. Wer dort stirbt, „fiel aus der Welt“; Items, Wesen und alles andere, das so tief fällt, sind für immer verloren.
+
 **Fallengelassene Items**
 
 Items am Boden verschwinden nach 300 s, solange ihre Gegend geladen ist. Geworfene Items kannst du nach 2 s wieder aufheben.

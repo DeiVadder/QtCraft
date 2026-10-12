@@ -1,6 +1,8 @@
 #include "QcCrc32.h"
+#include "QcPhysics.h"
 #include "QcProtocol.h"
 #include "QcTestUtil.h"
+#include "QcWorldConstants.h"
 #include "QcWorldStorage.h"
 
 #include <QDir>
@@ -431,7 +433,7 @@ private slots:
         QTest::addColumn<float>("pitch");
         QTest::newRow("far away") << 1e300 << 70.0 << 0.0f << 0.0f;
         QTest::newRow("beyond the world edge") << 40'000'000.0 << 70.0 << 0.0f << 0.0f;
-        QTest::newRow("deep below") << 0.0 << -500.0 << 0.0f << 0.0f;
+        QTest::newRow("below the void floor") << 0.0 << -1000.0 << 0.0f << 0.0f;
         QTest::newRow("nan yaw") << 0.0 << 70.0 << std::numeric_limits<float>::quiet_NaN() << 0.0f;
         QTest::newRow("pitch over 90") << 0.0 << 70.0 << 0.0f << 120.0f;
     }
@@ -453,6 +455,23 @@ private slots:
 
         QStringList warnings;
         QVERIFY(!QcWorldStorage(dir.path(), content).readPlayer(u"Odd"_s, warnings).has_value());
+    }
+
+    void playerFallingThroughTheVoidLoads()
+    {
+        // Saved while falling far below the void limit (decision E-288): still the same player.
+        QTemporaryDir dir;
+        const auto content = registryWith({});
+        QcPlayerData player;
+        player.motion.position = {0.5, QcWorld::voidFloorY, 0.5};
+        player.motion.velocity = {0.0, -QcPhysics::terminalVelocity, 0.0};
+        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Faller"_s, player).has_value());
+
+        QStringList warnings;
+        const auto read = QcWorldStorage(dir.path(), content).readPlayer(u"Faller"_s, warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QVERIFY(read->has_value());
+        QCOMPARE((*read)->motion.position.y, QcWorld::voidFloorY);
     }
 
     void negativeHealthIsClamped()

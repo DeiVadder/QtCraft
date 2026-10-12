@@ -1,5 +1,7 @@
 #include "QcDebugJson.h"
 
+#include "QcIntMath.h"
+
 #include <QJsonArray>
 
 #include <cmath>
@@ -65,7 +67,7 @@ QJsonObject clientJson(const QcDebugSnapshot &snapshot)
         {u"position"_s, QJsonArray{rounded(snapshot.position.x), rounded(snapshot.position.y), rounded(snapshot.position.z)}},
         {u"block"_s, QJsonArray{block.x, block.y, block.z}},
         {u"chunk"_s, QJsonArray{block.chunk().x, block.chunk().z}},
-        {u"section"_s, block.y / QcWorld::sectionHeight},
+        {u"section"_s, qcFloorDiv(block.y, QcWorld::sectionHeight)},
         {u"yaw"_s, rounded(snapshot.yaw)},
         {u"pitch"_s, rounded(snapshot.pitch)},
         {u"facing"_s, QString::fromLatin1(QcDebugSnapshot::facing(snapshot.yaw))},
