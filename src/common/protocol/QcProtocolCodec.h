@@ -90,6 +90,9 @@ void encode(QDataStream &stream, QcMsg::Respawn m);
 void encode(QDataStream &stream, const QcMsg::SetAppearance &m);
 void encode(QDataStream &stream, QcMsg::DropItem m);
 void encode(QDataStream &stream, QcMsg::PlayerFood m);
+void encode(QDataStream &stream, QcMsg::GameMode m);
+void encode(QDataStream &stream, QcMsg::CreativeItem m);
+void encode(QDataStream &stream, QcMsg::PickBlock m);
 QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::SelectHotbarSlot>, QDataStream &stream);
@@ -106,6 +109,9 @@ QcResult<QcMessage> decode(Tag<QcMsg::Respawn>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream);
 QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream);
+QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream);
 
 // Entities (QcEntityCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::EntitySpawn &m);

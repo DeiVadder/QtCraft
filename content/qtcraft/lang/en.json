@@ -346,5 +346,7 @@
     "armour_set.qtcraft.golden": "Golden armour",
     "armour_set.qtcraft.iron": "Iron armour",
     "armour_set.qtcraft.diamond": "Diamond armour",
-    "structure.qtcraft.armour_stand_poses": "Armour stand poses"
+    "structure.qtcraft.armour_stand_poses": "Armour stand poses",
+    "structure.qtcraft.creative_sky_platform": "Sky platform: in creative mode double-tap jump to fly up",
+    "structure.qtcraft.creative_sky_platform.top": "Reached by flying"
 }

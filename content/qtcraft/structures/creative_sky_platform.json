@@ -1,0 +1,150 @@
+{
+    "name": "creative_sky_platform",
+    "showcase": {
+        "order": 80
+    },
+    "palette": {
+        "P": "polished_stone",
+        "G": "glass",
+        "L": "yellow_wool"
+    },
+    "layers": [
+        [
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP",
+            "PPPPPPP"
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       ",
+            "       "
+        ],
+        [
+            "       ",
+            " GGGGG ",
+            " GLGLG ",
+            " GGGGG ",
+            " GLGLG ",
+            " GGGGG ",
+            "       "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                2.5,
+                3.5
+            ],
+            "text": "structure.qtcraft.creative_sky_platform",
+            "detail": ""
+        },
+        {
+            "at": [
+                3.5,
+                13.8,
+                3.5
+            ],
+            "text": "structure.qtcraft.creative_sky_platform.top",
+            "detail": ""
+        }
+    ]
+}

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -36,6 +36,7 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 - **W A S D**: gehen, **Leertaste**: springen oder aufwärts schwimmen, **Umschalt**: schleichen, **Strg**: rennen
 - **Linke Maustaste** oder **F**: abbauen, Wesen angreifen
 - **Rechte Maustaste** oder **R**: setzen, benutzen, essen
+- **Mittlere Maustaste** oder **B**: den anvisierten Block wählen
 - **Q**: ein Item werfen, **Strg+Q**: den ganzen Stapel
 - **1–9**, Mausrad: Feld der Schnellleiste wählen
 - **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Debug-Anzeige (aus, kompakt, voll), **O / F4**: Debug-Optionen, **Esc**: Menü
@@ -175,6 +176,35 @@ Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und 
 
 [Wasser](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Eimer](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
 
+### <a id="chapter-qtcraft-creative"></a>Kreativmodus
+
+**Überleben und Kreativ**
+
+Jeder Spieler hat einen Spielmodus. Im **Überleben** sammelst, stellst her, isst und kannst sterben. Im **Kreativmodus** baust du frei: alle Blöcke und Gegenstände ohne Grenze, Fliegen, Blöcke brechen beim ersten Schlag, nichts verletzt dich und du wirst nie hungrig. Eine neue Welt fragt im Hauptmenü nach dem Modus ihrer Spieler (**Spielmodus**); Operatoren ändern ihn mit `/gamemode creative` oder `/gamemode survival` (auch für andere: `/gamemode creative Alice`), `/defaultgamemode` setzt den Modus von Spielern, die zum ersten Mal beitreten.
+
+**Fliegen**
+
+Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. Im Flug steigt **Leertaste**, **Umschalt** sinkt und **Strg** verdoppelt das Tempo (10,9 m/s, mit Sprint 21,6 m/s); das Sichtfeld weitet sich etwas. Sinkst du auf den Boden, landest du und der Flug endet. Die Showcase-Welt hat eine Plattform hoch über dem Boden, die nur Fliegende erreichen.
+
+**Kreativ-Inventar**
+
+**E** öffnet das Kreativ-Inventar: alle Blöcke und Gegenstände des Spiels und der geladenen Mods, in Reitern (Blöcke, Bauteile, Werkzeug und Rüstung, Nahrung, Sonstiges) und mit einer Suche, die Namen in deiner Sprache, englische Namen und IDs wie `oak_planks` findet. Linksklick nimmt einen vollen Stapel, Rechtsklick einen Gegenstand, Umschalt-Klick legt einen vollen Stapel direkt ins Inventar; ein Klick auf ein Feld legt ihn dort ab. Der Mülleimer löscht einen Stapel. **Herstellen und Rüstung** führt zum gewohnten Inventar mit Werkbankraster und Rüstungsfeldern.
+
+**Regeln im Kreativmodus**
+
+- Blöcke brechen sofort (auch Grundgestein) und lassen nichts fallen; Truhen und Öfen verlieren ihren Inhalt trotzdem.
+- Setzen behält deinen Stapel, ein ausgegossener Eimer bleibt voll.
+- Kein Schaden außer `/kill`; Wesen lassen dich in Ruhe; die Nahrung bleibt, wie sie ist.
+- **Mittlere Maustaste** oder **B** legt den anvisierten Block in die Hand; im Überleben wählt sie ihn, wenn er im Inventar ist.
+
+**Zwischen den Modi wechseln**
+
+Überleben und Kreativ haben je ein eigenes Inventar und eigene Rüstung. Ein Wechsel legt die aktuellen beiseite und holt die des anderen Modus zurück, Kreativ-Gegenstände landen also nie im Überlebensinventar. Gesundheit und Nahrung bleiben, wie sie waren. Truhen gehören zur Welt: Was du im Kreativmodus in eine Truhe legst, liegt im Überleben auch dort.
+
+**Siehe auch**
+
+[Werkbank](blocks.md#block-qtcraft-crafting_table)
+
 ### <a id="chapter-qtcraft-rules"></a>Spielregeln
 
 **Spielregeln**
@@ -215,7 +245,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
 - `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
-- `/gamemode [survival] [Spieler]`: bisher gibt es nur Überleben
+- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft
 - `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)

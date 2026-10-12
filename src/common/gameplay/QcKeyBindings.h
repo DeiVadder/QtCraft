@@ -33,6 +33,8 @@ public:
         LookRight,
         Mine,
         Use,
+        // The targeted block's item into the hand (also the middle mouse button, decision E-285).
+        PickBlock,
         Drop,
         Inventory,
         Chat,

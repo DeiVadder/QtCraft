@@ -331,7 +331,36 @@ MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize
     return move;
 }
 
-void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt)
+namespace {
+
+// One tick of creative flight (decision E-284): the velocity eases towards the wished one in all
+// three directions, without gravity, ladders or stepping up; landing ends the flight. Liquids and
+// cobwebs slow it like walking.
+void stepFlying(QcEntityMotion &motion, const QcPlayerInput &input, const QcVec3 &wish, const QcBlockAccess &world, double dt)
+{
+    const QcAabb body = boxAt(motion.position, playerWidth, playerHeight);
+    const double inside = slowdownInside(world, body);
+    motion.climbing = false;
+    motion.slowed = inside < 1.0;
+
+    const double liquid = motion.inWater ? liquidFactorAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
+    const double factor = liquid * inside;
+    const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
+    const double vertical = double(int(input.jump) - int(input.sneak)) * flyVerticalSpeed * factor;
+    const double blend = std::min(1.0, flyAcceleration * dt);
+    motion.velocity.x += (wish.x * speed - motion.velocity.x) * blend;
+    motion.velocity.z += (wish.z * speed - motion.velocity.z) * blend;
+    motion.velocity.y += (vertical - motion.velocity.y) * blend;
+
+    applyMove(motion, moveBox(body, motion.velocity * dt, world));
+    if (motion.onGround) {
+        motion.flying = false;
+    }
+}
+
+} // namespace
+
+void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly)
 {
     motion.inWater = isLiquidAt(world, blockContaining(motion.position + QcVec3{0.0, 0.4, 0.0}));
 
@@ -341,6 +370,12 @@ void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBloc
     QcVec3 wish = forward * std::clamp(double(input.forward), -1.0, 1.0) + right * std::clamp(double(input.strafe), -1.0, 1.0);
     if (wish.length() > 1.0) {
         wish = wish.normalized();
+    }
+
+    motion.flying = input.flying && mayFly;
+    if (motion.flying) {
+        stepFlying(motion, input, wish, world, dt);
+        return;
     }
 
     double speed = walkSpeed;

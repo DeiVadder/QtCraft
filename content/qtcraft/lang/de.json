@@ -346,5 +346,7 @@
     "armour_set.qtcraft.golden": "Goldrüstung",
     "armour_set.qtcraft.iron": "Eisenrüstung",
     "armour_set.qtcraft.diamond": "Diamantrüstung",
-    "structure.qtcraft.armour_stand_poses": "Posen der Rüstungsständer"
+    "structure.qtcraft.armour_stand_poses": "Posen der Rüstungsständer",
+    "structure.qtcraft.creative_sky_platform": "Himmelsplattform: im Kreativmodus zweimal Springen tippen und hochfliegen",
+    "structure.qtcraft.creative_sky_platform.top": "Nur fliegend erreichbar"
 }

@@ -19,6 +19,7 @@
 #include <QElapsedTimer>
 #include <QObject>
 #include <QString>
+#include <QVariantMap>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 #include <memory>
@@ -100,12 +101,13 @@ public:
 
     // A world that is not saved (test hooks --play and --showcase), made by the generator type
     // `generator` (QcWorldGenerators).
+    // `gameMode` is that of the player ("survival", "creative").
     Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
-                                       const QString &options = {});
-    // Creates a saved world of a world type (terrain, flat, void, showcase; E-221, E-223) in the
-    // library and starts it; `options` are the layers of a flat world (empty: the default).
-    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, bool keepInventory = true,
-                                 const QString &generator = QStringLiteral("terrain"), const QString &options = {});
+                                       const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
+    // Creates a saved world in the library and starts it. `setup` holds "worldType" (terrain, flat,
+    // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory"
+    // and "gameMode" ("survival", "creative"; decision E-282); missing keys keep the defaults.
+    Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // The layers a flat world gets by default (shown in the menu).
     Q_INVOKABLE QString defaultFlatLayers();
     Q_INVOKABLE void playWorld(const QString &folder);

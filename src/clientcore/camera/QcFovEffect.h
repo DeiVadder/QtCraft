@@ -2,8 +2,8 @@
 
 // The field of view widens while the player sprints and narrows again when the sprint ends, eased
 // over a fraction of a second, like the model's "FOV effects" (decision E-280). The widening is a
-// factor on the field of view the player chose; the setting scales it from none to full. Flying
-// widens it a little as well; nothing passes `flying` yet (creative mode, stage 26, will).
+// factor on the field of view the player chose; the setting scales it from none to full. Flying in
+// creative mode widens it a little as well (decision E-284).
 class QcFovEffect
 {
 public:

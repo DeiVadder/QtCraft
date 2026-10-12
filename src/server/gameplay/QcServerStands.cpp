@@ -100,7 +100,9 @@ bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message
         return true;
     }
 
-    client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    if (!client.rules().infiniteItems) {
+        client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
+    }
     m_sounds.play(placeSound, stand.position);
     m_inventory.send(client);
     return true;

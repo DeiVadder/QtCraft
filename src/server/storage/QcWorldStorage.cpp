@@ -4,7 +4,6 @@
 #include "QcStreamLimits.h"
 #include "QcWorldGenerators.h"
 
-#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
@@ -19,19 +18,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 2 adds food and exhaustion, version 3 the armour slots.
-constexpr quint16 playerVersion = 3;
-constexpr QByteArrayView playerMagic("QCPL");
 constexpr QByteArrayView blockUpdatesMagic("QCBU");
-
-QString sanitizedPlayerName(const QString &name)
-{
-    QString result;
-    for (const QChar c : name) {
-        result.append(c.isLetterOrNumber() || c == u'_' || c == u'-' ? c : u'_');
-    }
-    return result.isEmpty() ? u"player"_s : result.left(32);
-}
 
 } // namespace
 
@@ -42,43 +29,8 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
     , m_entities(m_directory, m_content)
     , m_blockEntities(m_directory, m_content)
     , m_stands(m_directory, m_content)
+    , m_players(m_directory, m_content)
 {
-}
-
-QString QcWorldStorage::playerFileName(const QString &playerName)
-{
-    // Readable part in lower case plus a hash of the exact name (decision E-093): names differing
-    // only in case or in replaced characters get files that differ on case-insensitive file systems.
-    const QByteArray hash = QCryptographicHash::hash(playerName.toUtf8(), QCryptographicHash::Sha256).toHex().left(12);
-    return u"%1-%2.qcp"_s.arg(sanitizedPlayerName(playerName).toLower(), QString::fromLatin1(hash));
-}
-
-QString QcWorldStorage::playerPath(const QString &playerName) const
-{
-    return QDir(m_directory).filePath(u"players/"_s + playerFileName(playerName));
-}
-
-QString QcWorldStorage::migratedPlayerPath(const QString &playerName, QStringList &warnings) const
-{
-    QString path = playerPath(playerName);
-    if (QFile::exists(path)) {
-        return path;
-    }
-
-    // Files of older versions are named after the sanitized name as typed. They belong to the
-    // player whose name gives exactly that file name (also in case), which the directory listing
-    // tells even where the file system ignores case.
-    const QDir players(QDir(m_directory).filePath(u"players"_s));
-    const QString legacyName = sanitizedPlayerName(playerName) + u".qcp"_s;
-    if (!players.entryList(QDir::Files).contains(legacyName)) {
-        return path;
-    }
-
-    if (!QFile::rename(players.filePath(legacyName), path)) {
-        warnings.append(u"Cannot rename the player file %1; reading it under its old name"_s.arg(players.filePath(legacyName)));
-        return players.filePath(legacyName);
-    }
-    return path;
 }
 
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
@@ -118,6 +70,11 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.generator = generator.value(u"type"_s).toString(QString::fromLatin1(QcWorldInfo::defaultGenerator));
     info.setupDone = generator.value(u"setupDone"_s).toBool(true);
     info.generatorOptions = generator.value(u"options"_s).toString();
+    // A mode this version does not know (a newer one) plays as survival and keeps its name.
+    const QString gameMode = json.value(u"defaultGameMode"_s).toString();
+    const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
+    info.defaultGameMode = knownMode.value_or(QcGameMode::Survival);
+    info.unknownGameMode = knownMode || gameMode.isEmpty() ? QString() : gameMode.left(64);
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
@@ -152,6 +109,7 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
                            {u"created"_s, info.created.toString(Qt::ISODate)},
                            {u"lastPlayed"_s, info.lastPlayed.toString(Qt::ISODate)},
                            {u"worldTime"_s, info.worldTime},
+                           {u"defaultGameMode"_s, info.unknownGameMode.isEmpty() ? QString(QcGameModes::name(info.defaultGameMode)) : info.unknownGameMode},
                            {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
                            {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},
                                                         {u"daylightCycle"_s, info.daylightCycle},
@@ -162,139 +120,6 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
         return qcError(u"Cannot write world info: %1"_s.arg(file.errorString()));
     }
     return {};
-}
-
-QcStatus QcWorldStorage::writePlayer(const QString &playerName, const QcPlayerData &player) const
-{
-    if (!QDir().mkpath(QDir(m_directory).filePath(u"players"_s))) {
-        return qcError(u"Cannot create the players directory in %1"_s.arg(m_directory));
-    }
-
-    QByteArray payload;
-    QDataStream stream(&payload, QIODevice::WriteOnly);
-    stream.setVersion(QcSaveFile::streamVersion);
-    const QcEntityMotion &m = player.motion;
-    stream << m.position.x << m.position.y << m.position.z << m.velocity.x << m.velocity.y << m.velocity.z << m.onGround
-           << player.yaw << player.pitch << player.health << qint32(player.inventory.selectedHotbarSlot())
-           << quint32(QcInventory::slotCount);
-
-    for (int i = 0; i < QcInventory::slotCount; ++i) {
-        QcSaveFile::writeStack(stream, player.inventory.slot(i), *m_content);
-    }
-
-    stream << qint32(player.food) << player.exhaustion << quint32(QcEquipment::slotCount);
-    for (const QcItemStack &stack : player.equipment.stacks) {
-        QcSaveFile::writeStack(stream, stack, *m_content);
-    }
-    return QcSaveFile::write(playerPath(playerName), playerMagic, payload, playerVersion);
-}
-
-QcResult<std::optional<QcPlayerData>> QcWorldStorage::readPlayer(const QString &playerName, QStringList &warnings) const
-{
-    const QString path = migratedPlayerPath(playerName, warnings);
-    if (!QFile::exists(path)) {
-        return std::optional<QcPlayerData>();
-    }
-
-    quint16 version = 0;
-    const QcResult<QByteArray> payload = QcSaveFile::read(path, playerMagic, playerVersion, &version);
-    if (!payload) {
-        return qcError(payload.error());
-    }
-
-    QDataStream stream(*payload);
-    stream.setVersion(QcSaveFile::streamVersion);
-
-    QcPlayerData player;
-    QcEntityMotion &m = player.motion;
-    qint32 selected = 0;
-    quint32 slotCount = 0;
-    stream >> m.position.x >> m.position.y >> m.position.z >> m.velocity.x >> m.velocity.y >> m.velocity.z >> m.onGround
-        >> player.yaw >> player.pitch >> player.health >> selected;
-
-    if (!QcStreamLimits::readCount(stream, QcInventory::slotCount, slotCount)) {
-        return qcError(u"%1 is damaged (inventory)"_s.arg(path));
-    }
-
-    for (quint32 i = 0; i < slotCount; ++i) {
-        QString name;
-        qint32 count = 0;
-        qint32 damage = 0;
-        stream >> name >> count >> damage;
-        if (name.isEmpty() || count <= 0) {
-            continue;
-        }
-
-        const std::optional<QcItemId> item = m_content->itemId(name);
-        if (!item) {
-            warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
-            continue;
-        }
-
-        const QcItemDefinition &definition = m_content->item(*item);
-        player.inventory.setSlot(int(i), {*item, std::clamp(count, 1, definition.maxStack),
-                                          std::clamp(damage, 0, std::max(0, definition.durability - 1))});
-    }
-
-    player.inventory.setSelectedHotbarSlot(selected);
-    if (version >= 2) {
-        qint32 food = 0;
-        stream >> food >> player.exhaustion;
-        player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
-    }
-    if (version >= 3 && !readEquipment(stream, path, player, warnings)) {
-        return qcError(u"%1 is damaged (armour)"_s.arg(path));
-    }
-
-    const auto finite = [](const QcVec3 &v) { return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z); };
-    constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
-    constexpr double verticalMargin = 64.0;
-    const bool inWorld = finite(m.position) && std::abs(m.position.x) <= horizontalLimit && std::abs(m.position.z) <= horizontalLimit
-                         && m.position.y >= -verticalMargin && m.position.y <= QcWorld::worldHeight + verticalMargin;
-    const bool directionOk = std::isfinite(player.yaw) && std::isfinite(player.pitch) && std::abs(player.pitch) <= 90.0f;
-    if (stream.status() != QDataStream::Ok || !stream.atEnd() || !inWorld || !finite(m.velocity) || !directionOk
-        || !std::isfinite(player.health) || !std::isfinite(player.exhaustion)) {
-        return qcError(u"%1 is damaged"_s.arg(path));
-    }
-
-    player.health = std::clamp(player.health, 0.0, 1000.0);
-    player.exhaustion = std::max(0.0, player.exhaustion);
-    player.yaw = std::fmod(player.yaw, 360.0f);
-    return std::optional<QcPlayerData>(player);
-}
-
-bool QcWorldStorage::readEquipment(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const
-{
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcEquipment::slotCount, count)) {
-        return false;
-    }
-
-    for (quint32 i = 0; i < count; ++i) {
-        QString name;
-        qint32 stackCount = 0;
-        qint32 damage = 0;
-        stream >> name >> stackCount >> damage;
-        if (name.isEmpty() || stackCount <= 0) {
-            continue;
-        }
-
-        const std::optional<QcItemId> item = m_content->itemId(name);
-        if (!item) {
-            warnings.append(u"%1: unknown item '%2' dropped"_s.arg(path, name));
-            continue;
-        }
-
-        const QcItemDefinition &definition = m_content->item(*item);
-        const QcItemStack stack{*item, 1, std::clamp(damage, 0, std::max(0, definition.durability - 1))};
-        // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
-        if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
-            player.equipment.stacks[i] = stack;
-        } else if (player.inventory.add(stack.item, 1, *m_content, stack.damage) > 0) {
-            warnings.append(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(path, name));
-        }
-    }
-    return stream.status() == QDataStream::Ok;
 }
 
 QcStatus QcWorldStorage::writeBlockUpdates(const QList<QcBlockPos> &positions) const

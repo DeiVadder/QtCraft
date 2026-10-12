@@ -32,6 +32,8 @@ QMap<QString, double> values()
         {u"player.fallDamageThreshold"_s, QcServer::fallDamageThreshold},
         {u"player.walkSpeed"_s, QcPhysics::walkSpeed},
         {u"player.sprintSpeed"_s, QcPhysics::sprintSpeed},
+        {u"player.flySpeed"_s, QcPhysics::flySpeed},
+        {u"player.flySprintSpeed"_s, QcPhysics::flySprintSpeed},
         {u"player.sneakSpeed"_s, QcPhysics::sneakSpeed},
         {u"player.swimSpeed"_s, QcPhysics::swimSpeed},
         {u"player.climbSpeed"_s, QcPhysics::climbSpeed},

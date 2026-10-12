@@ -6,8 +6,10 @@ namespace {
 
 quint8 flagsOf(const QcEntityMotion &motion, bool swung, bool sneaking, bool sprinting)
 {
+    // Sneaking in flight is descending: the figure does not crouch (decision E-284).
+    const bool crouching = sneaking && !motion.flying;
     return quint8((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
-                  | (sneaking ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0));
+                  | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0));
 }
 
 } // namespace

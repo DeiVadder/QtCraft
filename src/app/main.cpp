@@ -2,6 +2,7 @@
 #include "QcBundledMods.h"
 #include "QcControlPalette.h"
 #include "QcGameController.h"
+#include "QcGameMode.h"
 #include "QcModLoader.h"
 #include "QcOffscreenRender.h"
 #include "QcItemIconProvider.h"
@@ -40,6 +41,8 @@ struct AppOptions
     // --world-type (or --showcase) and --flat-layers: the type of the world --play starts.
     QString worldType;
     QString flatLayers;
+    // --game-mode: the player's mode in the world --play starts.
+    QString gameMode;
     QString world;
     QString seed;
     std::optional<QString> camera;
@@ -80,6 +83,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"world-type"_s, u"World type for --play: terrain (default), flat, void or showcase (implies --play)."_s, u"type"_s},
         {u"flat-layers"_s, u"Layers of a flat world for --play, bottom up, e.g. 'bedrock,59*stone,3*dirt,grass_block' (with --world-type flat)."_s,
          u"layers"_s},
+        {u"game-mode"_s, u"Game mode for --play: survival (default) or creative."_s, u"mode"_s, u"survival"_s},
         {u"showcase"_s, u"Start an unsaved showcase world immediately: every block, creature and item on show (same as --world-type showcase)."_s},
         {u"world"_s, u"World name for --play."_s, u"name"_s, u"Test World"_s},
         {u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s},
@@ -89,7 +93,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},
-        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Without --play: multiplayer opens the main menu's multiplayer screen (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen, '@<ms> hover:<x>,<y>' moves the pointer there, e.g. for a tooltip, '@<ms> open:<objectName>' opens that combo box's list, popup or dialog)."_s,
+        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Without --play: multiplayer opens the main menu's multiplayer screen (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen, '@<ms> hover:<x>,<y>' moves the pointer there, e.g. for a tooltip, '@<ms> open:<objectName>' opens that combo box's list, popup or dialog, '@<ms> text:<objectName>=<text>' types into a field, '@<ms> fly' starts flying in creative mode)."_s,
          u"name"_s},
         {u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
          u"entry"_s},
@@ -157,6 +161,7 @@ AppOptions parseOptions(const QGuiApplication &app)
     AppOptions options;
     options.worldType = parser.isSet(u"showcase"_s) ? u"showcase"_s : parser.value(u"world-type"_s);
     options.flatLayers = parser.value(u"flat-layers"_s);
+    options.gameMode = parser.value(u"game-mode"_s);
     options.play = parser.isSet(u"play"_s) || !options.worldType.isEmpty();
     options.world = parser.value(u"world"_s);
     options.seed = parser.value(u"seed"_s);
@@ -184,6 +189,9 @@ AppOptions parseOptions(const QGuiApplication &app)
         options.hostLan = parser.value(u"host-lan"_s).toInt();
     }
     options.error = worldTypeError(options, parser.isSet(u"flat-layers"_s));
+    if (options.error.isEmpty() && !QcGameModes::parse(options.gameMode)) {
+        options.error = u"Unknown game mode '%1' (survival or creative)"_s.arg(options.gameMode);
+    }
     if (options.error.isEmpty()) {
         options.error = debugOptionsError(options);
     }
@@ -241,6 +249,12 @@ void preselectWorldType(const QQuickWindow &window)
     QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
     if (index >= 0 && choice) {
         choice->setProperty("currentIndex", int(index));
+    }
+
+    // QTCRAFT_MENU_GAME_MODE=creative preselects the game mode the same way.
+    QObject *mode = window.findChild<QObject *>(u"gameModeChoice"_s);
+    if (mode && QcGameModes::parse(qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE")) == QcGameMode::Creative) {
+        mode->setProperty("currentIndex", 1);
     }
 }
 
@@ -426,7 +440,8 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
             Qt::QueuedConnection);
         game.startup()->setScreenshotHook(screenshot);
         startNetworkRun(game, options);
-        game.startSingleplayer(options.world, options.seed, options.worldType.isEmpty() ? u"terrain"_s : options.worldType, options.flatLayers);
+        game.startSingleplayer(options.world, options.seed, options.worldType.isEmpty() ? u"terrain"_s : options.worldType, options.flatLayers,
+                               options.gameMode);
     } else if (options.join && options.overlays.contains(u"multiplayer"_s)) {
         // The menu's screen joins (openMenuScreen); the screenshot shows its state, a refusal included.
     } else if (options.join) {

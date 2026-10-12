@@ -16,6 +16,8 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
+    session/QcClientGameMode.h session/QcClientGameMode.cpp
+    session/QcFlightLatch.h session/QcFlightLatch.cpp
     session/QcSprintLatch.h session/QcSprintLatch.cpp
     session/QcClientEntity.h
     session/QcHandTimers.h

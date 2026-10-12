@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcCommandRegistry.h"
+#include "QcGameMode.h"
 #include "QcStandCommands.h"
 
 #include <QString>
@@ -9,8 +10,10 @@
 #include <optional>
 
 class QcServerCombat;
+class QcServerGameModes;
 class QcServerInventory;
 class QcServerStands;
+struct QcServerClient;
 struct QcServerState;
 
 // Commands that bend the rules for operators (decision E-243): items, creatures, health and food,
@@ -26,6 +29,7 @@ public:
         QcServerInventory &inventory;
         QcServerCombat &combat;
         QcServerStands &stands;
+        QcServerGameModes &gameModes;
         std::function<void(double seconds)> setWorldTime;
     };
 
@@ -47,6 +51,8 @@ private:
     void time(const QcCommandContext &context) const;
     void gamerule(const QcCommandContext &context);
     void gamemode(const QcCommandContext &context);
+    void setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode);
+    void defaultGamemode(const QcCommandContext &context);
     void locateBiome(const QcCommandContext &context);
     // Offset along z of the first column of `name` on the line at `dx` of the square ring `radius`.
     std::optional<int> findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const;

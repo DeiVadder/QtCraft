@@ -1,0 +1,15 @@
+{
+    "name": "creative",
+    "order": 115,
+    "icon": "grass_block",
+    "sections": [
+        "modes",
+        "flying",
+        "inventory",
+        "rules",
+        "switching"
+    ],
+    "related": [
+        "crafting_table"
+    ]
+}

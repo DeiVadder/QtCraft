@@ -1,0 +1,91 @@
+#include "QcProtocol.h"
+
+#include <QDataStream>
+#include <QIODevice>
+#include <QTest>
+
+// The messages of the creative mode (decisions E-282 to E-285): the game mode, creative items and
+// pick block, their round trips, their senders and the checks of their values.
+namespace {
+
+template<typename T>
+QcResult<QcMessage> decodeFrom(const T &message, QcProtocol::Peer sender)
+{
+    return QcProtocol::decode(QcProtocol::encode(QcMessage(message)), sender);
+}
+
+QByteArray gameModeFrame(quint8 value)
+{
+    QByteArray frame;
+    QDataStream stream(&frame, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_6_8);
+    stream << quint16(QcMessage(QcMsg::GameMode{}).index()) << value;
+    return frame;
+}
+
+} // namespace
+
+class TestGameModeProtocol : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void gameModeRoundTripsFromTheServerOnly()
+    {
+        const QcResult<QcMessage> decoded = decodeFrom(QcMsg::GameMode{QcGameMode::Creative}, QcProtocol::Peer::Server);
+        QVERIFY(decoded);
+        QCOMPARE(std::get<QcMsg::GameMode>(*decoded).mode, QcGameMode::Creative);
+
+        QVERIFY(!decodeFrom(QcMsg::GameMode{QcGameMode::Creative}, QcProtocol::Peer::Client));
+    }
+
+    void unknownGameModesAreRejected()
+    {
+        QVERIFY(QcProtocol::decode(gameModeFrame(1), QcProtocol::Peer::Server));
+        QVERIFY(!QcProtocol::decode(gameModeFrame(2), QcProtocol::Peer::Server));
+        QVERIFY(!QcProtocol::decode(gameModeFrame(255), QcProtocol::Peer::Server));
+    }
+
+    void creativeItemsRoundTripFromTheClientOnly()
+    {
+        const QcMsg::CreativeItem sent{7, {12, 64, 0}};
+        const QcResult<QcMessage> decoded = decodeFrom(sent, QcProtocol::Peer::Client);
+        QVERIFY(decoded);
+        const auto &item = std::get<QcMsg::CreativeItem>(*decoded);
+        QCOMPARE(item.slot, 7);
+        QCOMPARE(item.stack, (QcItemStack{12, 64, 0}));
+
+        QVERIFY(!decodeFrom(sent, QcProtocol::Peer::Server));
+    }
+
+    void creativeItemSlotsAndStacksAreChecked()
+    {
+        const auto accepted = [](qint32 slot, QcItemStack stack) {
+            return decodeFrom(QcMsg::CreativeItem{slot, stack}, QcProtocol::Peer::Client).has_value();
+        };
+        QVERIFY(accepted(QcMsg::CreativeItem::addSlot, {3, 1, 0}));
+        QVERIFY(accepted(0, {}));
+        QVERIFY(accepted(35, {3, 1, 0}));
+        QVERIFY(accepted(100, {3, 1, 0}));
+        QVERIFY(accepted(103, {3, 1, 0}));
+
+        QVERIFY(!accepted(-2, {3, 1, 0}));
+        QVERIFY(!accepted(36, {3, 1, 0}));
+        QVERIFY(!accepted(99, {3, 1, 0}));
+        QVERIFY(!accepted(104, {3, 1, 0}));
+        QVERIFY(!accepted(0, {3, -1, 0}));
+        QVERIFY(!accepted(0, {3, 1000, 0}));
+        QVERIFY(!accepted(0, {3, 1, -5}));
+    }
+
+    void pickBlockRoundTripsFromTheClientOnly()
+    {
+        const QcResult<QcMessage> decoded = decodeFrom(QcMsg::PickBlock{{-4, 70, 123}}, QcProtocol::Peer::Client);
+        QVERIFY(decoded);
+        QCOMPARE(std::get<QcMsg::PickBlock>(*decoded).pos, (QcBlockPos{-4, 70, 123}));
+        QVERIFY(!decodeFrom(QcMsg::PickBlock{}, QcProtocol::Peer::Server));
+    }
+};
+
+QTEST_GUILESS_MAIN(TestGameModeProtocol)
+#include "test_game_mode_protocol.moc"

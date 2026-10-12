@@ -197,6 +197,11 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         m_game.handbook()->open({});
     } else if (step == u"players"_s) {
         m_game.input()->setPlayerListHeld(true);
+    } else if (step == u"fly"_s) {
+        // Creative flight as after a double tap of jump (decision E-284).
+        m_parts.session->gameMode().setFlightWanted(true);
+    } else if (step.startsWith(u"text:"_s)) {
+        setText(step.mid(5));
     } else {
         // "@<ms> " closes the screen and the handbook.
         m_game.setOverlay(step);
@@ -237,6 +242,18 @@ void QcStartupHooks::hoverAt(QStringView position) const
     // A mouse move like the real pointer's: hover handlers, tooltips and the hovered item follow.
     QMouseEvent move(QEvent::MouseMove, point, window->mapToGlobal(point), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
     QCoreApplication::sendEvent(window, &move);
+}
+
+void QcStartupHooks::setText(const QString &assignment) const
+{
+    const qsizetype equals = assignment.indexOf(u'=');
+    const QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    QObject *control = window && equals > 0 ? window->contentItem()->findChild<QObject *>(assignment.left(equals)) : nullptr;
+    if (!control) {
+        qCWarning(lcGame) << "--overlay text:" << assignment << ": expected 'text:<objectName>=<text>' of a shown field";
+        return;
+    }
+    control->setProperty("text", assignment.mid(equals + 1));
 }
 
 void QcStartupHooks::openPopup(const QString &objectName) const

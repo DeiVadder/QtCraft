@@ -43,6 +43,10 @@ public:
     void restore(int food, double exhaustion);
     void reset();
 
+    // While frozen (creative mode) neither exhaustion nor the timers change anything.
+    void setFrozen(bool frozen) { m_frozen = frozen; }
+    bool frozen() const { return m_frozen; }
+
     void exhaust(double amount);
     // Exhaustion of one movement step: `distance` metres moved horizontally.
     static double movementExhaustion(double distance, bool sprinting, bool inWater, bool jumped);
@@ -60,4 +64,5 @@ private:
     double m_exhaustion = 0.0;
     double m_regenerationTimer = 0.0;
     double m_starvationTimer = 0.0;
+    bool m_frozen = false;
 };

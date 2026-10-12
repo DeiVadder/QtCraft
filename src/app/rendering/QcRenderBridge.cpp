@@ -56,7 +56,7 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     const QcEntityPose pose = localPose(1.0);
     const bool sprinting = pose.sprinting && !pose.inWater && pose.speed > QcPhysics::walkSpeed + 0.5;
     m_fov.setShare(m_settings.fovEffects());
-    const double widening = m_fov.advance({.sprinting = sprinting, .flying = false}, frameSeconds);
+    const double widening = m_fov.advance({.sprinting = sprinting, .flying = pose.flying}, frameSeconds);
 
     const QcClientSession &session = *m_parts.session;
     const QcViewCamera::Placement placed = QcViewCamera::place(eye, session.intent().yaw, session.intent().pitch, mode, *session.world());
@@ -105,6 +105,12 @@ QcEntityPose QcRenderBridge::localPose(double alpha) const
         bool ok = false;
         const double progress = m_forcedPose.section(u':', 1).toDouble(&ok);
         pose.swingProgress = ok ? std::clamp(progress, 0.0, 1.0) : 0.45;
+    } else if (m_forcedPose == u"fly"_s || m_forcedPose == u"flysprint"_s) {
+        // Creative flight (decision E-284), with sprint the widest view.
+        pose.onGround = false;
+        pose.flying = true;
+        pose.sprinting = m_forcedPose == u"flysprint"_s;
+        pose.speed = pose.sprinting ? QcPhysics::flySprintSpeed : QcPhysics::flySpeed;
     } else if (m_forcedPose == u"swim"_s) {
         pose.onGround = false;
         pose.inWater = true;
@@ -320,7 +326,7 @@ void QcRenderBridge::updateHandMesh(double alpha, const QcVec3 &eye)
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcClientSession::HandTimers timers = session.handTimers(alpha);
+    const QcHandTimers timers = session.handTimers(alpha);
     const double seconds = session.worldTime() + alpha * QcPhysics::tickDuration;
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.

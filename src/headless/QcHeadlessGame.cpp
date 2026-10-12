@@ -661,7 +661,12 @@ QcResult<QcServerConfig> QcHeadlessGame::createdWorld(const QJsonObject &request
     if (!options) {
         return qcError(options.error());
     }
-    const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, true, generator, *options);
+    const std::optional<QcGameMode> mode = QcGameModes::parse(request.value(u"gameMode"_s).toString(u"survival"_s));
+    if (!mode) {
+        return qcError(u"'gameMode' must be survival or creative"_s);
+    }
+    const QcWorldLibrary::NewWorld setup{.generator = generator, .options = *options, .gameMode = *mode};
+    const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, setup);
     if (!entry) {
         return qcError(entry.error());
     }

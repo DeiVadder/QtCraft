@@ -31,6 +31,9 @@ public:
     // Writes everything; the first error is returned (see QcServer::save). No-op without storage.
     QcStatus save();
     QcStatus savePlayer(const QcServerClient &client);
+    // The saved state of a player who rejoins (the reverse of savePlayer), with the rules of the
+    // saved game mode applied.
+    static void restorePlayer(QcServerClient &client, const QcPlayerData &player);
     bool hasStorage() const { return m_storage.has_value(); }
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.

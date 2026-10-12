@@ -24,6 +24,11 @@ private:
     void recipes(const QJsonObject &request);
     void craft(const QJsonObject &request);
     void takeResult(const QJsonObject &request);
+    // {"cmd":"creativeItem","item":"stone","slot":n,"count":n}: a stack from the creative catalogue
+    // (decision E-283); without a slot into the inventory, without an item the slot is cleared.
+    void creativeItem(const QJsonObject &request);
+    // {"cmd":"pickBlock"} on the targeted block, or with x, y, z after looking at it (decision E-285).
+    void pickBlock(const QJsonObject &request);
     void closeCrafting(const QJsonObject &request);
 
     QcControlContext &m_context;

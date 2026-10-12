@@ -116,7 +116,10 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
             return qcError(stored.error());
         }
         const qint64 seed = settings.seed.value_or(qint64(QRandomGenerator::global()->generate64() >> 1));
-        const QcResult<QcWorldLibrary::Entry> created = library.create(settings.world, seed, true, settings.worldType, *stored);
+        const QcWorldLibrary::NewWorld setup{.generator = settings.worldType,
+                                             .options = *stored,
+                                             .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival)};
+        const QcResult<QcWorldLibrary::Entry> created = library.create(settings.world, seed, setup);
         if (!created) {
             return qcError(created.error());
         }

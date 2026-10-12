@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcClientEntities.h"
+#include "QcClientGameMode.h"
 #include "QcClientLogin.h"
 #include "QcClientMachineScreen.h"
 #include "QcClientSounds.h"
@@ -70,6 +71,10 @@ public:
     void setIntent(const QcPlayerInput &intent);
     const QcPlayerInput &intent() const { return m_intent; }
 
+    // The game mode the server reported, its rules and the wish to fly (decisions E-282, E-284).
+    QcClientGameMode &gameMode() { return m_gameMode; }
+    const QcClientGameMode &gameMode() const { return m_gameMode; }
+
     // Predicted state after the latest tick and the state one tick earlier, for interpolation.
     const QcEntityMotion &playerMotion() const { return m_motion; }
     const QcEntityMotion &previousPlayerMotion() const { return m_previousMotion; }
@@ -135,8 +140,7 @@ public:
 
     // Animation of the local player. `alpha` interpolates within the current tick.
     QcEntityPose localPose(double alpha) const;
-    using HandTimers = QcHandTimers;
-    HandTimers handTimers(double alpha) const;
+    QcHandTimers handTimers(double alpha) const;
     // Pose of a mirrored entity from its server state and client timers.
     static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
 
@@ -148,15 +152,15 @@ public:
     static constexpr int deathTicks = QcClientEntities::deathTicks;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
-    int food() const { return m_food; }
-    int maxFood() const { return m_maxFood; }
-    double health() const { return m_health; }
-    double maxHealth() const { return m_maxHealth; }
-    bool isDead() const { return m_dead; }
+    int food() const { return m_food.food; }
+    int maxFood() const { return m_food.maxFood; }
+    double health() const { return m_health.health; }
+    double maxHealth() const { return m_health.maxHealth; }
+    bool isDead() const { return m_health.dead; }
     // Seconds of world time, advanced locally between server updates while the time of day runs, by
     // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
-    double worldTime() const { return m_worldTime; }
-    double timeSpeed() const { return m_timeSpeed; }
+    double worldTime() const { return m_worldTime.time; }
+    double timeSpeed() const { return m_worldTime.speed; }
     // Labels in the loaded chunks (E-222) and a number that changes whenever a chunk's labels arrived.
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
     quint64 labelGeneration() const { return m_labelGeneration; }
@@ -201,6 +205,7 @@ signals:
     void craftingOpened(int size);
     void chatReceived(const QString &text);
     void playersChanged();
+    void gameModeChanged();
     // A sound to play now (see QcSoundCue).
     void soundCue(const QcSoundCue &cue);
 
@@ -279,15 +284,10 @@ private:
     QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
     QcClientMachineScreen m_machine;
-    int m_food = QcItemDefinition::maxFood;
-    int m_maxFood = QcItemDefinition::maxFood;
-    double m_health = 20.0;
-    double m_maxHealth = 20.0;
-    bool m_dead = false;
-    double m_worldTime = 0.0;
-    double m_dayLength = 600.0;
-    bool m_timeRunning = true;
-    double m_timeSpeed = 1.0;
+    // The latest food, health and world time from the server.
+    QcMsg::PlayerFood m_food{QcItemDefinition::maxFood, QcItemDefinition::maxFood};
+    QcMsg::PlayerHealth m_health{20.0, 20.0, false};
+    QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
     quint8 m_debugFlags = 0;
@@ -295,4 +295,5 @@ private:
     QcServerDebugMirror m_serverDebug;
     QcClientSounds m_sounds;
     int m_miningTicks = 0;
+    QcClientGameMode m_gameMode;
 };

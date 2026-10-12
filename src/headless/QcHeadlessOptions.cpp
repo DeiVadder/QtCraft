@@ -38,6 +38,12 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
     bool timeOk = false;
     timeLimit = parser.value(options.time).toInt(&timeOk);
 
+    bool modeOk = true;
+    if (parser.isSet(options.gameMode)) {
+        config.defaultGameMode = QcGameModes::parse(parser.value(options.gameMode));
+        modeOk = config.defaultGameMode.has_value();
+    }
+
     bool spawnOk = true;
     if (parser.isSet(options.spawn)) {
         const QStringList parts = parser.value(options.spawn).split(u',');
@@ -48,7 +54,7 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
         }
         spawnOk = xOk && zOk;
     }
-    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk && QcWorldGenerators::isKnown(config.generator);
+    return seedOk && viewOk && timeOk && timeLimit > 0 && spawnOk && modeOk && QcWorldGenerators::isKnown(config.generator);
 }
 
 QString dataDirectory(const QCommandLineParser &parser, const Options &options)
@@ -107,6 +113,10 @@ bool applyServerOptions(const QCommandLineParser &parser, const Options &options
     text(options.motd, settings.motd);
     text(options.world, settings.world);
     text(options.generator, settings.worldType);
+    if (parser.isSet(options.gameMode)) {
+        settings.defaultGameMode = QcGameModes::parse(parser.value(options.gameMode));
+        ok = ok && settings.defaultGameMode.has_value();
+    }
     // Its own flag: an earlier invalid number must not be overwritten by a valid seed.
     bool seedValid = true;
     if (parser.isSet(options.seed)) {

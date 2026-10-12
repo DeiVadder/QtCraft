@@ -32,6 +32,13 @@ inline constexpr double waterSinkSpeed = 2.0;
 inline constexpr double swimUpSpeed = 3.0;
 inline constexpr double swimUpAcceleration = 18.0;
 
+// Creative flight (decision E-284): horizontal speed, with sprint, and the speed up and down with
+// jump and sneak; the velocity eases towards them like on the ground, without gravity.
+inline constexpr double flySpeed = 10.9;
+inline constexpr double flySprintSpeed = 21.6;
+inline constexpr double flyVerticalSpeed = 7.5;
+inline constexpr double flyAcceleration = 10.0;
+
 // Bodies on the ground walk up steps this high without jumping (slabs, stairs).
 inline constexpr double stepHeight = 0.5;
 
@@ -95,7 +102,8 @@ struct BodySize
 // Advances any entity by one tick. The caller updates motion.inWater before the call.
 MoveResult stepEntity(QcEntityMotion &motion, const Steering &steering, BodySize size, const QcBlockAccess &world, double dt);
 
-// Advances a player by one tick of `dt` seconds.
-void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt);
+// Advances a player by one tick of `dt` seconds. `mayFly` comes from the player's game mode
+// (QcGameModes::Rules); without it a wish to fly is ignored and a flight ends.
+void stepPlayer(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess &world, double dt, bool mayFly);
 
 } // namespace QcPhysics

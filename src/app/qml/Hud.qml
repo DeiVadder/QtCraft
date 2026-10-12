@@ -106,7 +106,7 @@ Item {
         anchors.bottom: hearts.top
         anchors.bottomMargin: 2
         spacing: 2
-        visible: hud.game.player.armour > 0
+        visible: hud.game.player.armour > 0 && !hud.game.player.creative
 
         Repeater {
             model: Math.ceil(hud.game.player.maxArmour / 2)
@@ -147,7 +147,8 @@ Item {
         }
     }
 
-    // Ten hearts, two health points each; a heart is half full for an odd remainder.
+    // Ten hearts, two health points each; a heart is half full for an odd remainder. Creative
+    // players neither lose health nor get hungry: no hearts, no food.
     Row {
         id: hearts
 
@@ -155,6 +156,7 @@ Item {
         anchors.bottom: hotbar.top
         anchors.bottomMargin: 6
         spacing: 2
+        visible: !hud.game.player.creative
 
         Repeater {
             model: Math.ceil(hud.game.player.maxHealth / 2)
@@ -203,6 +205,7 @@ Item {
         anchors.bottom: hotbar.top
         anchors.bottomMargin: 6
         spacing: 2
+        visible: !hud.game.player.creative
         layoutDirection: Qt.RightToLeft
 
         Repeater {

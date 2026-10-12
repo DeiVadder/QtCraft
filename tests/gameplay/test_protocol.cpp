@@ -96,6 +96,7 @@ private slots:
         input.strafe = -0.5f;
         input.jump = true;
         input.sprint = true;
+        input.flying = true;
         input.yaw = 123.25f;
         input.pitch = -12.5f;
         QCOMPARE(roundTrip(QcMsg::PlayerInput{input}).input, input);
@@ -105,6 +106,7 @@ private slots:
         state.motion.position = {1.5, 64.0, -3.25};
         state.motion.velocity = {0.1, -9.5, 0.0};
         state.motion.onGround = true;
+        state.motion.flying = true;
         const QcMsg::PlayerState copy = roundTrip(state);
         QCOMPARE(copy.lastInputSequence, 99u);
         QCOMPARE(copy.motion, state.motion);
@@ -508,7 +510,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.mobType = QcMsg::EntitySpawn::playerType;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 27u);
+        QCOMPARE(QcProtocol::version, 28u);
     }
 
     void machineAndFoodMessagesRoundTrip()

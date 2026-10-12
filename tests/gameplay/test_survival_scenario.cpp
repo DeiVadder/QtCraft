@@ -435,10 +435,12 @@ private slots:
                 if (!request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}}).value(u"ok"_s).toBool()) {
                     continue;
                 }
+                // The hit pig is knocked back and flees; in slow builds (TSan) it may already be out of
+                // reach when the second attack turns towards it. Either way the second hit must not land.
                 const QJsonObject second = request({{u"cmd"_s, u"attack"_s}, {u"entity"_s, pig}});
+                const QString error = second.value(u"error"_s).toString();
                 QVERIFY(!second.value(u"ok"_s).toBool());
-                QVERIFY2(second.value(u"error"_s).toString().contains(u"did not land"_s),
-                         qPrintable(second.value(u"error"_s).toString()));
+                QVERIFY2(error.contains(u"did not land"_s) || error.contains(u"not in reach"_s), qPrintable(error));
                 tested = true;
                 break;
             }

@@ -42,6 +42,12 @@ ApplicationWindow {
         game: game
     }
 
+    CreativeScreen {
+        anchors.fill: parent
+        visible: game.phase === "playing" && game.overlay === "creative"
+        game: game
+    }
+
     FurnaceScreen {
         anchors.fill: parent
         visible: game.phase === "playing" && game.overlay === "furnace"

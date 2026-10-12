@@ -257,6 +257,33 @@ Rectangle {
                     placeholderText: visible ? menu.game.defaultFlatLayers() : ""
                 }
 
+                Label {
+                    text: qsTr("Game mode")
+                    color: Theme.text
+                }
+
+                ComboBox {
+                    id: gameMode
+
+                    objectName: "gameModeChoice"
+                    Layout.fillWidth: true
+                    textRole: "text"
+                    valueRole: "value"
+                    model: [
+                        { value: "survival", text: qsTr("Survival") },
+                        { value: "creative", text: qsTr("Creative") }
+                    ]
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    color: Theme.textSecondary
+                    text: gameMode.currentValue === "creative"
+                          ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
+                          : qsTr("Gather, craft and survive: health, hunger and creatures count.")
+                }
+
                 CheckBox {
                     id: keepInventory
 
@@ -271,9 +298,12 @@ Rectangle {
                     text: qsTr("Create and play")
                     highlighted: true
                     onClicked: menu.game.createWorld(worldName.text,
-                                                     seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)),
-                                                     keepInventory.checked, worldType.currentValue,
-                                                     worldType.currentValue === "flat" ? flatLayers.text : "")
+                                                     seed.text.length > 0 ? seed.text : String(Math.floor(Math.random() * 2147483647)), {
+                                                         keepInventory: keepInventory.checked,
+                                                         worldType: worldType.currentValue,
+                                                         layers: worldType.currentValue === "flat" ? flatLayers.text : "",
+                                                         gameMode: gameMode.currentValue
+                                                     })
                 }
 
                 Item {

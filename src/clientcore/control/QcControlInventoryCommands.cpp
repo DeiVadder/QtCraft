@@ -2,6 +2,7 @@
 
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcControlAim.h"
 #include "QcControlArguments.h"
 #include "QcControlCommandTable.h"
 #include "QcControlContext.h"
@@ -36,6 +37,8 @@ void QcControlInventoryCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"recipes"_s, [this](const QJsonObject &request) { recipes(request); });
     table.add(u"craft"_s, [this](const QJsonObject &request) { craft(request); });
     table.add(u"takeResult"_s, [this](const QJsonObject &request) { takeResult(request); });
+    table.add(u"creativeItem"_s, [this](const QJsonObject &request) { creativeItem(request); });
+    table.add(u"pickBlock"_s, [this](const QJsonObject &request) { pickBlock(request); });
 }
 
 QcClientSession &QcControlInventoryCommands::session() const
@@ -111,6 +114,40 @@ void QcControlInventoryCommands::takeResult(const QJsonObject &request)
     const quint64 startTick = session().tickCount();
     session().takeCraftingResult();
     m_context.waitTicks(request, startTick, inventoryTicks);
+}
+
+void QcControlInventoryCommands::creativeItem(const QJsonObject &request)
+{
+    const auto content = session().content();
+    const QString name = request.value(u"item"_s).toString();
+    const QString qualified = name.contains(u':') ? name : u"qtcraft:"_s + name;
+    const std::optional<QcItemId> item = content && !name.isEmpty() ? content->itemId(qualified) : std::nullopt;
+    if (!name.isEmpty() && !item) {
+        m_context.fail(request, u"Unknown item '%1'"_s.arg(name));
+        return;
+    }
+
+    const int maxStack = item ? content->item(*item).maxStack : 0;
+    const int count = item ? std::clamp(QcControlArguments::intField(request, u"count"_s, maxStack), 1, maxStack) : 0;
+    const quint64 startTick = session().tickCount();
+    session().gameMode().creativeItem(QcControlArguments::intField(request, u"slot"_s, QcMsg::CreativeItem::addSlot), {item.value_or(qcNoItem), count, 0});
+    m_context.waitTicks(request, startTick, inventoryTicks, [this] { return m_context.reports().inventoryJson(); });
+}
+
+void QcControlInventoryCommands::pickBlock(const QJsonObject &request)
+{
+    if (request.contains(u"x"_s)) {
+        QcControlAim::lookAt(session(), QcControlArguments::block(request), std::nullopt);
+    }
+
+    const quint64 startTick = session().tickCount();
+    const std::optional<QcRaycastHit> &target = session().target();
+    if (!target || session().isDead()) {
+        m_context.fail(request, u"No block in view"_s);
+        return;
+    }
+    session().gameMode().pickBlock(target->block);
+    m_context.waitTicks(request, startTick, inventoryTicks, [this] { return m_context.reports().inventoryJson(); });
 }
 
 void QcControlInventoryCommands::closeCrafting(const QJsonObject &request)

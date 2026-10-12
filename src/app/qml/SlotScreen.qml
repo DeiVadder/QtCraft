@@ -10,7 +10,9 @@ import QtCraft
 //
 // Left click picks a stack up and puts it down elsewhere (merging or swapping); right click puts
 // down a single item and keeps the rest picked up; shift-click moves the whole stack to where it
-// belongs (decided by the server). A click outside the slots drops the picked-up stack back.
+// belongs (decided by the server). A click outside the slots drops the picked-up stack back. In
+// creative mode (CreativeScreen) an item taken from the catalogue is carried instead: a click on a
+// slot puts it there (right click: one item), a click outside drops it.
 Rectangle {
     id: screen
 
@@ -27,11 +29,15 @@ Rectangle {
     property Item panelContent
     // Where the picked-up stack is drawn while the mouse is outside the window: next to its slot.
     property point pickedFrom
+    // The catalogue item carried in creative mode (its name, empty for none) and how many.
+    property string carriedItem
+    property int carriedCount
 
     color: Theme.scrim
     focus: visible
     onVisibleChanged: {
         pickedSlot = -1;
+        carriedItem = "";
         if (visible)
             forceActiveFocus();
     }
@@ -46,6 +52,14 @@ Rectangle {
     }
 
     function clicked(slot, empty, button, quick) {
+        if (carriedItem.length > 0) {
+            if (slot !== resultSlot && slot !== outputSlot)
+                game.player.putCreativeItem(slot, carriedItem, button === Qt.RightButton ? 1 : carriedCount);
+            if (button !== Qt.RightButton)
+                carriedItem = "";
+            return;
+        }
+
         if (slot === resultSlot) {
             if (empty)
                 return;
@@ -75,7 +89,10 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: screen.pickedSlot = -1
+        onClicked: {
+            screen.pickedSlot = -1;
+            screen.carriedItem = "";
+        }
     }
 
     // Opaque panel so the crosshair and the world do not show through the slots.
@@ -90,6 +107,20 @@ Rectangle {
 
     HoverHandler {
         id: pointer
+    }
+
+    // The catalogue item carried in creative mode, at the mouse pointer.
+    ItemSlot {
+        objectName: "carriedCatalogueItem"
+        z: 100
+        x: (pointer.hovered ? pointer.point.position.x : screen.width / 2) - width / 2
+        y: (pointer.hovered ? pointer.point.position.y : screen.height / 2) - height / 2
+        visible: screen.carriedItem.length > 0
+        enabled: false
+        carried: true
+        slotIcon: visible ? "image://items/" + screen.carriedItem : ""
+        slotCount: screen.carriedCount
+        slotEmpty: !visible
     }
 
     // The picked-up stack at the mouse pointer, over everything else of the screen.

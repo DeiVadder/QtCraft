@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -36,6 +36,7 @@ Press H / F1 at any time. Every block, item, creature and biome has a page with 
 - **W A S D**: walk, **Space**: jump or swim up, **Shift**: sneak, **Ctrl**: sprint
 - **Left mouse** or **F**: mine, attack a creature
 - **Right mouse** or **R**: place, use, eat
+- **Middle mouse** or **B**: pick the block you look at
 - **Q**: throw one item, **Ctrl+Q**: the whole stack
 - **1–9**, mouse wheel: choose the hotbar slot
 - **E**: inventory, **T / Enter**: chat, **/**: command, **V / F5**: camera view, **H / F1**: handbook, **I / F3**: debug display (off, compact, full), **O / F4**: debug options, **Esc**: menu
@@ -175,6 +176,35 @@ Water and lava flow from their sources; a bucket takes a source and pours it els
 
 [Water](liquids.md#block-qtcraft-water), [Lava](liquids.md#block-qtcraft-lava), [Bucket](items.md#item-qtcraft-bucket), [Obsidian](blocks.md#block-qtcraft-obsidian)
 
+### <a id="chapter-qtcraft-creative"></a>Creative mode
+
+**Survival and creative**
+
+Every player has a game mode. In **survival** you gather, craft, eat and can die. In **creative** you build freely: every block and item without limit, flying, blocks break at the first strike, nothing hurts you and you never get hungry. A new world asks for the mode of its players in the main menu (**Game mode**); operators change it with `/gamemode creative` or `/gamemode survival` (also for another player: `/gamemode creative Alice`), and `/defaultgamemode` sets the mode of players who join for the first time.
+
+**Flying**
+
+Tap **Space** twice quickly to take off or to stop flying. While flying, **Space** rises, **Shift** sinks and **Ctrl** doubles the speed (10.9 m/s, sprinting 21.6 m/s); the view widens a little. Sinking onto the ground lands you and ends the flight. The showcase world has a platform high above the ground that only flyers reach.
+
+**Creative inventory**
+
+**E** opens the creative inventory: every block and item of the game and of the loaded mods, sorted into tabs (blocks, building parts, tools and armour, food, other items) with a search that finds names in your language, English names and ids like `oak_planks`. A left click takes a full stack, a right click one item, a shift-click puts a full stack straight into the inventory; click a slot to put it there. The bin deletes a stack. **Crafting and armour** leads to the usual inventory with the crafting grid and the armour slots.
+
+**Rules in creative mode**
+
+- Blocks break at once (even bedrock) and drop nothing; chests and furnaces still lose their contents.
+- Placing a block keeps your stack, a poured bucket stays full.
+- No damage except `/kill`; creatures leave you alone; food stays as it is.
+- **Middle mouse** or **B** puts the block you look at into your hand; in survival this selects it when it is in your inventory.
+
+**Changing between the modes**
+
+Survival and creative each have their own inventory and armour. Changing the mode puts the current ones aside and brings back those of the other mode, so creative items never end up in your survival inventory. Health and food stay as they were. Chests belong to the world: what you put into a chest in creative mode is there in survival too.
+
+**See also**
+
+[Crafting table](blocks.md#block-qtcraft-crafting_table)
+
 ### <a id="chapter-qtcraft-rules"></a>Game rules
 
 **Game rules**
@@ -215,7 +245,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
 - `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
-- `/gamemode [survival] [player]`: so far there is only survival
+- `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs
 - `/tick sprint <ticks|seconds s|minutes min|hours h|days d>`: run that much game time as fast as possible (`/tick sprint stop` ends it)

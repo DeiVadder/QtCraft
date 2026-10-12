@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcCreativeItemModel.h"
 #include "QcInventoryModel.h"
 
 #include <QObject>
@@ -38,6 +39,9 @@ class QcPlayerController : public QObject
     Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
+    // The creative mode (decision E-282) and its item catalogue (decision E-286).
+    Q_PROPERTY(bool creative READ creative NOTIFY gameModeChanged FINAL)
+    Q_PROPERTY(QcCreativeItemModel *creativeItems READ creativeItems CONSTANT FINAL)
 
 public:
     QcPlayerController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
@@ -60,6 +64,8 @@ public:
     double machineProgress() const;
     int craftingSize() const;
     QVariantList craftableRecipes() const { return m_craftableRecipes; }
+    bool creative() const;
+    QcCreativeItemModel *creativeItems() const { return m_creativeItems; }
 
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
     // Rows of QcInventoryModel; count 0 moves the whole stack.
@@ -70,6 +76,12 @@ public:
     Q_INVOKABLE void takeCraftingResult() const;
     Q_INVOKABLE void craftRecipe(const QString &recipe) const;
     Q_INVOKABLE void respawn() const;
+    // Creative mode: puts `count` items from the catalogue into the slot of a row of the inventory
+    // model (onto the same item up to its stack size, else replacing it); row -1 adds them to the
+    // inventory. The server refuses it in other modes.
+    Q_INVOKABLE void putCreativeItem(int row, const QString &itemName, int count) const;
+    // Creative mode: empties the slot of a row (the bin).
+    Q_INVOKABLE void clearSlot(int row) const;
 
     // Item and recipe names of the session's content in the current language.
     void useContent();
@@ -85,6 +97,7 @@ signals:
     void foodChanged();
     void machineChanged();
     void craftingChanged();
+    void gameModeChanged();
 
 private:
     void updateCraftableRecipes();
@@ -92,6 +105,7 @@ private:
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     QcInventoryModel *m_inventory = nullptr;
+    QcCreativeItemModel *m_creativeItems = nullptr;
     QString m_machineLabel;
     QVariantList m_craftableRecipes;
 };

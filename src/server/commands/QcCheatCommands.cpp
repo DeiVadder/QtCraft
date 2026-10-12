@@ -1,9 +1,11 @@
 #include "QcCheatCommands.h"
 
+#include "QcChatText.h"
 #include "QcCommandArguments.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
 #include "QcServerCombat.h"
+#include "QcServerGameModes.h"
 #include "QcServerInventory.h"
 #include "QcServerState.h"
 
@@ -17,6 +19,25 @@ using namespace Qt::StringLiterals;
 using QcCommandArguments::qualified;
 
 namespace {
+
+// One message key per mode (decision E-094): the client translates the whole sentence, mode name
+// included, as with day and night in /time.
+struct ModeKeys
+{
+    const char *survival;
+    const char *creative;
+
+    const char *operator()(QcGameMode mode) const { return mode == QcGameMode::Creative ? creative : survival; }
+};
+
+constexpr ModeKeys modeOfPlayer{QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: survival"),
+                                QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: creative")};
+constexpr ModeKeys modeSet{QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to survival"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to creative")};
+constexpr ModeKeys modeNow{QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now survival"),
+                           QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now creative")};
+constexpr ModeKeys newPlayersStart{QT_TRANSLATE_NOOP("QcServerMessages", "New players start in survival"),
+                                   QT_TRANSLATE_NOOP("QcServerMessages", "New players start in creative")};
 
 // The words as QcStandCommands reads them: the command first.
 QStringList withName(const QString &name, const QStringList &args)
@@ -82,10 +103,15 @@ void QcCheatCommands::addPlayerCommands(QcCommandRegistry &registry)
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /feed [food points]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Sets your food points (full without a number)."),
                          .run = [this](const QcCommandContext &context) { feed(context); }});
-    registry.addBuiltIn({.name = u"gamemode"_s,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival] [player]"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or sets the game mode; so far there is only survival."),
+    // Everyone may ask for their own mode; changing it checks for an operator.
+    registry.addBuiltIn({.name = u"gamemode"_s, .permission = QcPermission::Player,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative] [player]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows your game mode or sets it for you or another player."),
                          .run = [this](const QcCommandContext &context) { gamemode(context); }});
+    registry.addBuiltIn({.name = u"defaultgamemode"_s,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /defaultgamemode [survival|creative]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or sets the game mode of players who join for the first time."),
+                         .run = [this](const QcCommandContext &context) { defaultGamemode(context); }});
 }
 
 void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
@@ -177,7 +203,7 @@ void QcCheatCommands::kill(const QcCommandContext &context)
 {
     QcServerClient &player = context.player();
     player.hurtTimer = 0.0;
-    m_parts.combat.damagePlayer(player, player.health, {});
+    m_parts.combat.damagePlayer(player, player.health, {}, QcServerCombat::DamageKind::Command);
 }
 
 void QcCheatCommands::feed(const QcCommandContext &context)
@@ -287,19 +313,74 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
 
 void QcCheatCommands::gamemode(const QcCommandContext &context)
 {
-    // Only survival exists until the creative mode (stage 26) adds a mode per player.
     const QStringList &args = context.args;
-    const QString target = args.size() >= 2 ? args[1] : context.source.name();
-    if (args.size() >= 2 && QcCommandArguments::players(m_state, target).isEmpty()) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No player named %1 is online"), {target});
+    QcServerClient *self = context.source.player();
+    if (args.isEmpty()) {
+        if (!self) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative] [player]"));
+            return;
+        }
+        context.reply(modeOfPlayer(self->gameMode), {self->name});
         return;
     }
 
-    if (!args.isEmpty() && args[0] != u"survival"_s) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Only the survival game mode exists so far; %1 comes with a later version"), {args[0]});
+    if (!context.source.may(QcPermission::Operator)) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Only operators can use /%1"), {u"gamemode"_s});
         return;
     }
-    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Game mode of %1: survival"), {target});
+
+    const std::optional<QcGameMode> mode = QcGameModes::parse(args[0]);
+    if (!mode) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival or creative"), {args[0]});
+        return;
+    }
+
+    QList<QcServerClient *> targets;
+    if (args.size() >= 2) {
+        targets = QcCommandArguments::players(m_state, args[1]);
+        if (targets.isEmpty()) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No player named %1 is online"), {args[1]});
+            return;
+        }
+    } else if (self) {
+        targets.append(self);
+    } else {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "The console must name a player: /gamemode <mode> <player>"));
+        return;
+    }
+
+    for (QcServerClient *target : std::as_const(targets)) {
+        setGamemode(context, *target, *mode);
+    }
+}
+
+void QcCheatCommands::setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode)
+{
+    m_parts.gameModes.setMode(target, mode);
+    context.reply(modeSet(mode), {target.name});
+    if (&target != context.source.player()) {
+        target.connection->send(QcChatText::message(modeNow(mode)));
+    }
+}
+
+void QcCheatCommands::defaultGamemode(const QcCommandContext &context)
+{
+    if (context.args.isEmpty()) {
+        context.reply(newPlayersStart(m_parts.gameModes.defaultMode()));
+        return;
+    }
+
+    const std::optional<QcGameMode> mode = QcGameModes::parse(context.args[0]);
+    if (!mode) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown game mode %1; use survival or creative"), {context.args[0]});
+        return;
+    }
+
+    // Saved with the world; a server.json setting no longer overrides it until the server restarts.
+    m_state.info.defaultGameMode = *mode;
+    m_state.info.unknownGameMode.clear();
+    m_state.config.defaultGameMode.reset();
+    context.reply(newPlayersStart(*mode));
 }
 
 void QcCheatCommands::locateBiome(const QcCommandContext &context)

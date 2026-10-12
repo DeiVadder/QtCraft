@@ -4,6 +4,7 @@
 #include "QcEntityMotion.h"
 #include "QcAppearance.h"
 #include "QcEquipment.h"
+#include "QcGameMode.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
@@ -103,6 +104,12 @@ struct QcServerClient
     QcAppearance appearance;
     // Armour slots (stage 23 fills them); sent to the player and to everyone who sees them.
     QcEquipment equipment;
+    // Game mode (decision E-282) and the inventory and armour of the other inventory set, kept
+    // aside until the player changes back (decision E-283).
+    QcGameMode gameMode = QcGameMode::Survival;
+    QcInventory keptInventory;
+    QcEquipment keptEquipment;
+    QcGameModes::Rules rules() const { return QcGameModes::rules(gameMode); }
     // The machine whose screen the player has open, and what the client was last told about it.
     std::optional<QcBlockPos> machine;
     std::optional<QcMsg::MachineState> sentMachine;

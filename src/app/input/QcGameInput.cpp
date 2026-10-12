@@ -202,6 +202,7 @@ void QcGameInput::clearKeys()
 {
     m_keysDown.clear();
     m_sprint.reset();
+    m_flight.reset();
     setPlayerListHeld(false);
 }
 
@@ -233,6 +234,8 @@ void QcGameInput::handleMouseButton(Qt::MouseButton button, bool pressed) const
         m_parts.session->setMining(pressed);
     } else if (button == Qt::RightButton && pressed) {
         m_parts.session->useItem();
+    } else if (button == Qt::MiddleButton && pressed) {
+        pickBlock();
     }
 }
 
@@ -297,24 +300,22 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
         m_parts.session->selectHotbarSlot(int(*action) - int(A::Hotbar1));
         return;
     }
+    if (handlePlayerAction(*action, key)) {
+        return;
+    }
     switch (*action) {
     case A::Pause:
         m_game.setOverlay(u"pause"_s);
         return;
     case A::Inventory:
-        m_game.setOverlay(u"inventory"_s);
+        // Creative mode opens the item catalogue; its tab leads on to crafting and armour.
+        m_game.setOverlay(m_parts.session->gameMode().rules().itemCatalogue ? u"creative"_s : u"inventory"_s);
         return;
     case A::Chat:
         m_game.setOverlay(u"chat"_s);
         return;
     case A::Command:
         m_game.openChat(u"/"_s);
-        return;
-    case A::Use:
-        m_parts.session->useItem();
-        return;
-    case A::Mine:
-        m_parts.session->setMining(true);
         return;
     case A::Handbook:
         // The page of what the crosshair points at, else the page shown last.
@@ -343,18 +344,50 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     case A::PlayerList:
         setPlayerListHeld(true);
         return;
-    case A::Drop:
-        // With Ctrl (on a Mac Control) the whole stack.
-        m_parts.session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_settings.keys()->bindings().platform())));
-        return;
-    case A::Forward:
-        m_sprint.forwardPressed(qint64(key.timestamp()));
-        m_keysDown.insert(key.key());
-        return;
     default:
         // Movement and look keys count while held (updateIntentFromKeys()).
         m_keysDown.insert(key.key());
         return;
+    }
+}
+
+void QcGameInput::pickBlock() const
+{
+    const std::optional<QcRaycastHit> &target = m_parts.session->target();
+    if (target && !m_parts.session->isDead()) {
+        m_parts.session->gameMode().pickBlock(target->block);
+    }
+}
+
+bool QcGameInput::handlePlayerAction(QcKeyBindings::Action action, const QKeyEvent &key)
+{
+    using A = QcKeyBindings::Action;
+    switch (action) {
+    case A::Use:
+        m_parts.session->useItem();
+        return true;
+    case A::PickBlock:
+        pickBlock();
+        return true;
+    case A::Mine:
+        m_parts.session->setMining(true);
+        return true;
+    case A::Drop:
+        // With Ctrl (on a Mac Control) the whole stack.
+        m_parts.session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_settings.keys()->bindings().platform())));
+        return true;
+    case A::Forward:
+        m_sprint.forwardPressed(qint64(key.timestamp()));
+        m_keysDown.insert(key.key());
+        return true;
+    case A::Jump:
+        if (m_flight.jumpPressed(qint64(key.timestamp()))) {
+            m_parts.session->gameMode().toggleFlight();
+        }
+        m_keysDown.insert(key.key());
+        return true;
+    default:
+        return false;
     }
 }
 

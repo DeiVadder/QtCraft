@@ -28,6 +28,7 @@ qt_add_executable(qtcraft
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
     hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
     models/QcInventoryModel.h models/QcInventoryModel.cpp
+    models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     input/QcKeyControlsForeign.h
     models/QcHandbookModel.h models/QcHandbookModel.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
@@ -120,6 +121,7 @@ qt_add_qml_module(qtcraft
         qml/HandbookRecipe.qml
         qml/HandbookLink.qml
         qml/ChestScreen.qml
+        qml/CreativeScreen.qml
         qml/Hud.qml
         qml/InventoryScreen.qml
         qml/ItemSlot.qml

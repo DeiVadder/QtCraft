@@ -59,7 +59,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::TakeCraftingResult>() || is.template operator()<QcMsg::CraftRecipe>()
                                || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
                                || is.template operator()<QcMsg::DropItem>() || is.template operator()<QcMsg::SetAppearance>()
-                               || is.template operator()<QcMsg::DebugSubscribe>() || is.template operator()<QcMsg::LoginResponse>();
+                               || is.template operator()<QcMsg::DebugSubscribe>() || is.template operator()<QcMsg::LoginResponse>()
+                               || is.template operator()<QcMsg::CreativeItem>() || is.template operator()<QcMsg::PickBlock>();
     return clientMessage == (sender == Peer::Client);
 }
 

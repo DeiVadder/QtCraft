@@ -6,6 +6,17 @@
 #include <QList>
 #include <QString>
 
+// What a new world starts with besides its name and seed (QcWorldLibrary::create).
+struct QcNewWorld
+{
+    bool keepInventory = true;
+    // World generator type (QcWorldGenerators) and its options (the layers of a flat world).
+    QString generator = QString::fromLatin1(QcWorldInfo::defaultGenerator);
+    QString options;
+    // Game mode of players who join for the first time (decision E-282).
+    QcGameMode gameMode = QcGameMode::Survival;
+};
+
 // The saved worlds of this installation: one sub-directory per world below `root`.
 class QcWorldLibrary
 {
@@ -19,6 +30,8 @@ public:
         QString error;
     };
 
+    using NewWorld = QcNewWorld;
+
     explicit QcWorldLibrary(QString root);
 
     // Base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's application data
@@ -30,11 +43,9 @@ public:
     const QString &root() const { return m_root; }
     // Newest first by last played time.
     QList<Entry> list() const;
-    // Creates the directory and world.json for a world of the generator type `generator`
-    // (QcWorldGenerators); returns the new entry. The generator's setup runs when the world first opens.
-    // `options` are those of the generator (the layers of a flat world).
-    QcResult<Entry> create(const QString &name, qint64 seed, bool keepInventory = true,
-                           const QString &generator = QString::fromLatin1(QcWorldInfo::defaultGenerator), const QString &options = {}) const;
+    // Creates the directory and world.json for a new world; returns the new entry. The generator's
+    // setup runs when the world first opens.
+    QcResult<Entry> create(const QString &name, qint64 seed, const NewWorld &setup = {}) const;
     // Deletes a world directory. Only plain folder names directly below the root are accepted.
     QcStatus remove(const QString &folder) const;
     QString directoryOf(const QString &folder) const;

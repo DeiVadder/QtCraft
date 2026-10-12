@@ -72,7 +72,7 @@ const QcMobManager::PlayerView *nearestTarget(const QcMobManager::Mob &mob, cons
     double targetDistance = definition.sightRange;
     for (const QcMobManager::PlayerView &player : players) {
         const double distance = (player.position - mob.motion.position).length();
-        if (player.alive && distance < targetDistance) {
+        if (player.alive && player.targetable && distance < targetDistance) {
             target = &player;
             targetDistance = distance;
         }

@@ -52,6 +52,10 @@ struct Options
     QCommandLineOption generatorOptions{u"generator-options"_s,
                                         u"Options of --generator: the layers of a flat world ('bedrock,3*dirt,grass_block') or the platform of a void world ('platform=glass,radius=4,y=40')."_s,
                                         u"options"_s};
+    QCommandLineOption gameMode{u"game-mode"_s,
+                                u"Game mode of players who join for the first time: survival or creative (with --server it overrides "
+                                u"server.json and is the default of a world it creates)."_s,
+                                u"mode"_s};
     QCommandLineOption tour{u"showcase-tour"_s,
                             u"Print the camera stops of the showcase tour ('name x z yaw pitch' per line) and exit."_s};
     QCommandLineOption statsLog{u"stats"_s,
@@ -92,7 +96,8 @@ struct Options
         parser.addOptions({sounds, icon});
         parser.addOptions({handbook, language});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, view, script, console, noEofStop, time, map, mapRadius, data, mods, noMods, statsLog});
+        parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, data, mods,
+                           noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
     }
@@ -101,7 +106,7 @@ struct Options
 void printError(const QString &message);
 void printLines(const QStringList &lines);
 
-// Seed, world name, view distance, spawn column and the time limit; false on a bad number.
+// Seed, world name, view distance, spawn column, game mode and the time limit; false on a bad value.
 bool readConfig(const QCommandLineParser &parser, const Options &options, QcServerConfig &config, int &timeLimit);
 // The data directory: --data-dir, else QcDataRoot.
 QString dataDirectory(const QCommandLineParser &parser, const Options &options);

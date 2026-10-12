@@ -318,7 +318,7 @@ private slots:
         QcPlayerInput input;
         input.forward = 1.0f;
         for (int i = 0; i < 40; ++i) {
-            QcPhysics::stepPlayer(player, input, world, dt);
+            QcPhysics::stepPlayer(player, input, world, dt, false);
         }
         QCOMPARE(player.position.y, 65.0);
     }

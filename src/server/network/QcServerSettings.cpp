@@ -134,6 +134,14 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
             return qcError(invalid(u"connectionsPerSecond"_s));
         }
     }
+    if (const QString mode = json.value(u"defaultGameMode"_s).toString(); !mode.isEmpty()) {
+        settings.defaultGameMode = QcGameModes::parse(mode);
+        if (!settings.defaultGameMode) {
+            return qcError(u"server.json: \"defaultGameMode\" must be survival, creative or empty"_s);
+        }
+    } else if (json.contains(u"defaultGameMode"_s) && !json.value(u"defaultGameMode"_s).isString()) {
+        return qcError(invalid(u"defaultGameMode"_s));
+    }
     if (const QcStatus operators = readOperators(json, settings.operators); !operators) {
         return qcError(operators.error());
     }
@@ -161,7 +169,8 @@ QJsonObject QcServerSettings::toJson() const
             {u"connectionsPerSecond"_s, connectionsPerSecond},
             {u"connectionBurst"_s, connectionBurst},
             {u"maxConnectionsPerAddress"_s, maxConnectionsPerAddress},
-            {u"operators"_s, QJsonArray::fromStringList(operators)}};
+            {u"operators"_s, QJsonArray::fromStringList(operators)},
+            {u"defaultGameMode"_s, defaultGameMode ? QString(QcGameModes::name(*defaultGameMode)) : QString()}};
 }
 
 QcStatus QcServerSettings::write(const QString &path) const
@@ -199,6 +208,7 @@ void QcServerSettings::applyTo(QcServerConfig &config) const
     config.viewDistance = viewDistance;
     config.loginTimeoutMs = loginTimeoutSeconds * 1000;
     config.operators = operators;
+    config.defaultGameMode = defaultGameMode;
 }
 
 QcNetworkConfig QcServerSettings::networkConfig() const

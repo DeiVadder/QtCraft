@@ -15,7 +15,33 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_parts(parts)
     , m_settings(settings)
     , m_inventory(new QcInventoryModel(this))
+    , m_creativeItems(new QcCreativeItemModel(this))
 {
+}
+
+bool QcPlayerController::creative() const
+{
+    return m_parts.session && m_parts.session->gameMode().rules().itemCatalogue;
+}
+
+void QcPlayerController::putCreativeItem(int row, const QString &itemName, int count) const
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    const std::optional<QcItemId> item = content ? content->itemId(itemName) : std::nullopt;
+    const int slot = row < 0 ? QcMsg::CreativeItem::addSlot : QcInventoryModel::slotOfRow(row);
+    const bool inventoryOrArmour = slot == QcMsg::CreativeItem::addSlot || QcInventory::isValidSlot(slot)
+                                   || QcMsg::MoveInventoryItem::isEquipmentSlot(slot);
+    if (item && count > 0 && inventoryOrArmour) {
+        m_parts.session->gameMode().creativeItem(slot, {*item, count, 0});
+    }
+}
+
+void QcPlayerController::clearSlot(int row) const
+{
+    const int slot = QcInventoryModel::slotOfRow(row);
+    if (m_parts.session && (QcInventory::isValidSlot(slot) || QcMsg::MoveInventoryItem::isEquipmentSlot(slot))) {
+        m_parts.session->gameMode().creativeItem(slot, {});
+    }
 }
 
 double QcPlayerController::health() const
@@ -144,6 +170,7 @@ QString QcPlayerController::armourIcon() const
 void QcPlayerController::useContent()
 {
     m_inventory->setContent(m_parts.session->content(), m_settings.contentLanguage());
+    m_creativeItems->setContent(m_parts.session->content(), m_settings.contentLanguage());
     emit contentChanged();
     updateInventory();
 }

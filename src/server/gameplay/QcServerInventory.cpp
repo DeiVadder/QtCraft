@@ -382,11 +382,19 @@ void QcServerInventory::closeCrafting(QcServerClient &client)
 
 void QcServerInventory::returnCraftingGrid(QcServerClient &client)
 {
+    // Catalogue items that do not fit go into the bin rather than into the world (decision E-283).
+    const bool catalogue = QcGameModes::rules(client.gameMode).itemCatalogue;
     for (QcItemStack &cell : client.craftingGrid) {
-        if (!cell.isEmpty()) {
-            giveOrThrow(client, cell);
-            cell = {};
+        if (cell.isEmpty()) {
+            continue;
         }
+
+        if (catalogue) {
+            client.inventory.add(cell.item, cell.count, *m_state.content, cell.damage);
+        } else {
+            giveOrThrow(client, cell);
+        }
+        cell = {};
     }
 }
 
@@ -459,6 +467,14 @@ void QcServerInventory::exchangeHeld(QcServerClient &client, const QString &item
     const std::optional<QcItemId> result = m_state.content->itemId(item);
     const int slot = client.inventory.selectedHotbarSlot();
     if (!result || client.inventory.slot(slot).isEmpty()) {
+        return;
+    }
+
+    // Creative mode: the held item stays, the result joins the inventory once (decision E-282).
+    if (client.rules().infiniteItems) {
+        if (client.inventory.countOf(*result) == 0) {
+            client.inventory.add(*result, 1, *m_state.content);
+        }
         return;
     }
 

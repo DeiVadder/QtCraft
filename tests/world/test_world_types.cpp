@@ -83,7 +83,7 @@ private:
         client.hello(u"Tester"_s);
         pump();
         for (int i = 0; i < 40; ++i) {
-            client.connection.send(QcMsg::PlayerInput{QcPlayerInput{quint32(i + 1), 0.0f, 0.0f, false, false, false, 0.0f, 0.0f}});
+            client.connection.send(QcMsg::PlayerInput{QcPlayerInput{.sequence = quint32(i + 1)}});
             server.tick();
             pump();
         }
@@ -245,8 +245,8 @@ private slots:
 
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        QVERIFY(library.create(u"Flat"_s, 1, true, u"flat"_s, *flatOptions));
-        QVERIFY(library.create(u"Void"_s, 1, true, u"void"_s, *voidOptions));
+        QVERIFY(library.create(u"Flat"_s, 1, {.generator = u"flat"_s, .options = *flatOptions, .gameMode = QcGameMode::Survival}));
+        QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .gameMode = QcGameMode::Survival}));
 
         // Then an update or a mod changes those defaults.
         QStringList warnings;
@@ -278,7 +278,7 @@ private slots:
     {
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, true, u"flat"_s, u"bedrock,grass_block"_s);
+        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, {.generator = u"flat"_s, .options = u"bedrock,grass_block"_s, .gameMode = QcGameMode::Survival});
         QVERIFY(entry);
         const QcWorldLibrary::Entry listed = library.list().constFirst();
         QCOMPARE(listed.info.generator, u"flat"_s);

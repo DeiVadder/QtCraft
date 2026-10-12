@@ -17,10 +17,13 @@ qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_server q
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
 qc_add_test(test_protocol SOURCES gameplay/test_protocol.cpp LIBRARIES qc_common)
+qc_add_test(test_game_mode_protocol SOURCES gameplay/test_game_mode_protocol.cpp LIBRARIES qc_common)
 qc_add_test(test_physics SOURCES world/test_physics.cpp QcTestWorld.h LIBRARIES qc_common)
+qc_add_test(test_flight SOURCES world/test_flight.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_server)
 qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 
 add_test(NAME scenario_headless_walk_and_jump
@@ -196,6 +199,7 @@ qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_server qc_client
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_machines SOURCES gameplay/test_machines.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
+qc_add_test(test_creative_mode SOURCES gameplay/test_creative_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_server)
@@ -254,6 +258,7 @@ add_dependencies(test_dedicated_server qtcraft-headless)
 qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server)
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 240)
+qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.
@@ -293,3 +298,6 @@ endif()
 qc_add_test(test_multiplayer_bots SOURCES network/test_multiplayer_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_multiplayer_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_multiplayer_bots qtcraft-headless)
+qc_add_test(test_creative_bots SOURCES network/test_creative_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 300)
+target_compile_definitions(test_creative_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
+add_dependencies(test_creative_bots qtcraft-headless)

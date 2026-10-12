@@ -92,6 +92,8 @@ QString QcKeyLabels::action(QcKeyBindings::Action action)
         return tr("Mine, attack");
     case A::Use:
         return tr("Place, use, eat");
+    case A::PickBlock:
+        return tr("Pick block (also middle mouse button)");
     case A::Drop:
         return tr("Throw item (with %1: stack)")
             .arg(key(QcKeyBindings::stackModifier(QcKeyBindings::currentPlatform()) == Qt::MetaModifier ? Qt::Key_Meta : Qt::Key_Control));

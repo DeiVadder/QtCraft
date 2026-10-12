@@ -4,8 +4,10 @@
 // Part of the QcMessage variant (QcMessages.h).
 
 #include "QcAppearance.h"
+#include "QcBlockPos.h"
 #include "QcEntityMotion.h"
 #include "QcEquipment.h"
+#include "QcGameMode.h"
 #include "QcItemStack.h"
 #include "QcPlayerInput.h"
 
@@ -135,6 +137,33 @@ struct PlayerFood
 {
     qint32 food = 0;
     qint32 maxFood = 0;
+};
+
+// Server -> client: the receiving player's game mode (decision E-282), after the welcome and with
+// every change. The client derives the rules from it (QcGameModes::rules).
+struct GameMode
+{
+    QcGameMode mode = QcGameMode::Survival;
+};
+
+// Client -> server, creative mode only (decision E-283): puts `stack` into the inventory slot `slot`
+// (0..35, or an armour slot 100..103 for armour made for it), onto the same item up to its stack
+// size, else in place of what is there; an empty stack clears the slot (the bin). `addSlot` adds
+// the stack to the inventory like picking it up. The server refuses it in other modes.
+struct CreativeItem
+{
+    static constexpr qint32 addSlot = -1;
+
+    qint32 slot = addSlot;
+    QcItemStack stack;
+};
+
+// Client -> server: the middle mouse button on a block (decision E-285). The server puts the item of
+// the block into the hand: selects it in the hotbar, swaps it in from the storage rows, or in
+// creative mode takes it from the catalogue.
+struct PickBlock
+{
+    QcBlockPos pos;
 };
 
 } // namespace QcMsg

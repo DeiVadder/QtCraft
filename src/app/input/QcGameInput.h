@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcFlightLatch.h"
 #include "QcKeyBindings.h"
 #include "QcMouseCapture.h"
 #include "QcRelativeMouse.h"
@@ -69,6 +70,11 @@ private:
     bool filterWorldEvent(QEvent *event);
     // World keys while no screen is open; every key event is taken, so nothing else reacts to it.
     void handleWorldKey(const QKeyEvent &key);
+    // Keys that act on the player: use, pick block, mine, drop, walking forward (sprint) and
+    // jumping (flight); false for other actions.
+    bool handlePlayerAction(QcKeyBindings::Action action, const QKeyEvent &key);
+    // The targeted block's item into the hand (decision E-285).
+    void pickBlock() const;
     void handleKeyRelease(const QKeyEvent &key);
     void handleMousePress(const QMouseEvent &mouse);
     void handleMouseButton(Qt::MouseButton button, bool pressed) const;
@@ -91,6 +97,8 @@ private:
     QcMouseCapture m_capture;
     // Sprint by a press of the sprint key or a double tap of forward (decision E-280).
     QcSprintLatch m_sprint;
+    // Flying by a double tap of jump in creative mode (decision E-284).
+    QcFlightLatch m_flight;
     bool m_backgroundRun = false;
     bool m_playerListHeld = false;
 };

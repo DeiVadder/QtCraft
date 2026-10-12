@@ -187,22 +187,28 @@ void QcGameController::setLanguage(const QString &language)
 }
 
 void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator,
-                                         const QString &options)
+                                         const QString &options, const QString &gameMode)
 {
     QcWorldInfo world;
     world.name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
     world.seed = seedFromText(seedText);
     world.generator = generator;
     world.generatorOptions = options.trimmed();
+    world.defaultGameMode = QcGameModes::parse(gameMode).value_or(QcGameMode::Survival);
     startWorld({}, world);
 }
 
-void QcGameController::createWorld(const QString &worldName, const QString &seedText, bool keepInventory, const QString &generator,
-                                   const QString &options)
+void QcGameController::createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup)
 {
+    QcWorldLibrary::NewWorld world;
+    world.keepInventory = setup.value(u"keepInventory"_s, true).toBool();
+    world.generator = setup.value(u"worldType"_s, world.generator).toString();
+    world.gameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+
     // Wrong layers of a flat world are refused before anything is created; the world keeps the
     // defaults of its type as they are now.
-    const QcResult<QString> stored = QcWorldGenerators::optionsToStore(generator, options.trimmed(), m_library->content());
+    const QcResult<QString> stored =
+        QcWorldGenerators::optionsToStore(world.generator, setup.value(u"layers"_s).toString().trimmed(), m_library->content());
     if (!stored) {
         setPhase(u"error"_s, tr("Cannot create the world: %1").arg(stored.error()));
         return;
@@ -210,7 +216,8 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
 
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
     const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
-    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), keepInventory, generator, *stored);
+    world.options = *stored;
+    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), world);
     if (!entry) {
         setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
         return;
@@ -369,6 +376,10 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
     // One extra ring: sections are meshed only once their neighbours are known.
     config.viewDistance = m_settings->viewDistance() + 1;
     config.spawnColumn = m_startup->spawnColumn();
+    // An unsaved world (test hooks) has no world.json to keep its default game mode.
+    if (m_worldDirectory.isEmpty()) {
+        config.defaultGameMode = world.defaultGameMode;
+    }
     // Options given for an unsaved world (--flat-layers) must fit; a saved world with damaged ones
     // falls back to the defaults with a warning.
     if (const QcStatus checked = QcWorldGenerators::checkOptions(world.generator, world.generatorOptions, *content);
@@ -442,6 +453,13 @@ void QcGameController::connectSessionPlayer()
     connect(session, &QcClientSession::inventoryChanged, m_player, &QcPlayerController::updateInventory);
     connect(session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
     connect(session, &QcClientSession::foodChanged, m_player, &QcPlayerController::foodChanged);
+    connect(session, &QcClientSession::gameModeChanged, m_player, &QcPlayerController::gameModeChanged);
+    // An operator changed the mode while the creative inventory was open: the usual one instead.
+    connect(session, &QcClientSession::gameModeChanged, this, [this] {
+        if (m_overlay == u"creative"_s && !m_player->creative()) {
+            setOverlay(u"inventory"_s);
+        }
+    });
     connect(session, &QcClientSession::machineOpened, this, &QcGameController::onMachineOpened);
     connect(session, &QcClientSession::machineChanged, m_player, &QcPlayerController::updateMachine);
     connect(session, &QcClientSession::machineClosed, this, &QcGameController::onMachineClosed);

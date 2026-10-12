@@ -4,6 +4,7 @@
 #include "QcContentPackLoader.h"
 #include "QcDayCycle.h"
 #include "QcServerBlocks.h"
+#include "QcServerGameModes.h"
 #include "QcServerState.h"
 
 #include <QDir>
@@ -35,6 +36,7 @@ QcStatus QcServerPersistence::open()
     // New worlds, saved or not, start in the morning; their generator's setup is still to run.
     m_state.info.worldTime = QcDayCycle::startTime;
     m_state.info.keepInventory = m_state.config.keepInventory;
+    m_state.info.defaultGameMode = m_state.config.defaultGameMode.value_or(QcGameMode::Survival);
     m_state.info.generator = m_state.config.generator;
     m_state.info.generatorOptions = m_state.config.generatorOptions;
     m_state.info.setupDone = false;
@@ -130,6 +132,9 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
 
     m_state.info = *info;
     m_state.config.worldName = m_state.info.name;
+    if (!m_state.info.unknownGameMode.isEmpty()) {
+        warnings.append(u"The world names the unknown game mode '%1' for new players; they start in survival"_s.arg(m_state.info.unknownGameMode));
+    }
 
     // Content of packs that are gone turns into air or disappears when chunks and players load.
     for (const QcPackReference &pack : std::as_const(m_state.info.packs)) {
@@ -312,12 +317,31 @@ QcStatus QcServerPersistence::savePlayer(const QcServerClient &client)
     player.food = client.hunger.food();
     player.exhaustion = client.hunger.exhaustion();
     player.equipment = client.equipment;
+    player.gameMode = client.gameMode;
+    player.keptInventory = client.keptInventory;
+    player.keptEquipment = client.keptEquipment;
 
     const QcStatus saved = m_storage->writePlayer(client.name, player);
     if (!saved) {
         qCWarning(lcPersistence) << saved.error();
     }
     return saved;
+}
+
+void QcServerPersistence::restorePlayer(QcServerClient &client, const QcPlayerData &player)
+{
+    client.motion = player.motion;
+    client.fallPeak = client.motion.position.y;
+    client.yaw = player.yaw;
+    client.pitch = player.pitch;
+    client.inventory = player.inventory;
+    client.equipment = player.equipment;
+    client.health = std::clamp(player.health, 0.0, QcServerClient::maxHealth);
+    client.hunger.restore(player.food, player.exhaustion);
+    client.gameMode = player.gameMode;
+    client.keptInventory = player.keptInventory;
+    client.keptEquipment = player.keptEquipment;
+    QcServerGameModes::applyRules(client);
 }
 
 QcStatus QcServerPersistence::save()

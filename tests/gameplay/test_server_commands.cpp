@@ -403,11 +403,28 @@ private slots:
         chat(u"/gamemode"_s);
         QCOMPARE(lastLine(), u"Game mode of Raw: survival"_s);
         chat(u"/gamemode creative"_s);
-        QCOMPARE(lastLine(), u"Only the survival game mode exists so far; creative comes with a later version"_s);
+        QCOMPARE(lastLine(), u"Set the game mode of Raw to creative"_s);
+        // The mode is part of the key, so the client translates it with the line (E-094).
+        QCOMPARE(m_client->chatKeys.constLast().key, u"Set the game mode of %1 to creative"_s);
+        chat(u"/gamemode"_s);
+        QCOMPARE(lastLine(), u"Game mode of Raw: creative"_s);
+        QCOMPARE(m_client->chatKeys.constLast().key, u"Game mode of %1: creative"_s);
+        chat(u"/gamemode adventure"_s);
+        QCOMPARE(lastLine(), u"Unknown game mode adventure; use survival or creative"_s);
         chat(u"/gamemode survival Nobody"_s);
         QCOMPARE(lastLine(), u"No player named Nobody is online"_s);
         chat(u"/time"_s);
         QVERIFY(lastLine().startsWith(u"Time is now"_s));
+    }
+
+    void everyoneMayAskForTheirOwnGameMode()
+    {
+        join(notOperator());
+        chat(u"/gamemode"_s);
+        QCOMPARE(lastLine(), u"Game mode of Raw: survival"_s);
+        chat(u"/gamemode creative"_s);
+        QCOMPARE(m_client->chatKeys.constLast().key, u"Only operators can use /%1"_s);
+        QCOMPARE(m_client->gameMode, QcGameMode::Survival);
     }
 
     void macrosRunTheirLinesWithTheCallersRights()

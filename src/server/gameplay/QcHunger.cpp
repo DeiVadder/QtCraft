@@ -25,7 +25,7 @@ void QcHunger::reset()
 
 void QcHunger::exhaust(double amount)
 {
-    if (!std::isfinite(amount) || amount <= 0.0) {
+    if (m_frozen || !std::isfinite(amount) || amount <= 0.0) {
         return;
     }
     m_exhaustion += amount;
@@ -53,6 +53,10 @@ bool QcHunger::eat(int points)
 
 double QcHunger::tick(double dt, double health, double maxHealth)
 {
+    if (m_frozen) {
+        return 0.0;
+    }
+
     if (m_food >= regenerationFood && health < maxHealth) {
         m_starvationTimer = 0.0;
         m_regenerationTimer += dt;

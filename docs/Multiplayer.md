@@ -33,6 +33,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `loginTimeoutSeconds` | – | 10 | A login must be done within this time |
 | `connectionsPerSecond`, `connectionBurst`, `maxConnectionsPerAddress` | – | 1, 8, 8 | Limits for new connections per address |
 | `operators` | – | empty | Operators by name (bound to their identity at their login) |
+| `defaultGameMode` | `--game-mode` | empty (the world's own default) | `survival` or `creative`: the mode of players who join for the first time; a new world is created with it as its default (E-282) |
 
 - Without `--console` the server reads no standard input and runs as a service until it is
   stopped. **SIGTERM** (service managers, `kill`) and **SIGINT** (Ctrl+C) save the world and every
@@ -212,6 +213,23 @@ against a determined attacker.
 - The own player is predicted by the client and corrected by the server; with round trips of 50 to
   300 ms walking, jumping and turning needed no correction in the tests (E-257). Mining shows the
   break once the server confirms it (one round trip), placing likewise.
+- Game modes are per player and kept in the player file (E-282). Everyone can ask for their own
+  with `/gamemode`; operators change them with `/gamemode <survival|creative> [player]`; the server checks every creative action itself: it
+  accepts flight only for players in creative mode (the shared physics runs with the mode's rules,
+  so a client that sends the wish to fly in survival just jumps), refuses catalogue items outside
+  creative mode and breaks instantly only for creative players. Flying, instant breaking and the
+  catalogue were tested over a lagging link (round trips of 50 to 300 ms) without any correction
+  (`test_creative_client`), the refusals over TCP (`test_network_game`, `test_creative_bots`).
+- Server and client treat a chunk that is not there yet as a wall. A player flying faster than the
+  server generates stops at the edge on both sides without a correction; only a chunk the server
+  has but the client has not received yet makes the server correct the prediction once it arrives
+  (nearest chunks are sent first, up to 32 per tick, so this needs a very slow link) (E-284).
+- Catalogue items reach the world only when a player puts them there on purpose (E-283): throwing
+  them (`Q`) and putting them into a chest work as in survival, but a creative player's death drops
+  nothing (whatever `keepInventory` says), and when a player leaves creative mode the items of the
+  crafting grid that no longer fit into the creative inventory are deleted instead of thrown.
+  Creative players do not eat: the food stays in the hand and the frozen survival hunger unchanged,
+  also through death and respawn.
 
 ## Other players and creatures on screen
 
@@ -265,6 +283,12 @@ for all, water flows and a torch lights its surroundings on every client, a play
 disappears for the others and is saved, rejoining restores position and inventory, a second
 installation cannot take a name in use, and stopping the server ends the bots with code 4. It polls
 for each condition (60 s at most) instead of waiting fixed times; a run takes about 16 s.
+
+`test_creative_bots` runs the creative mode the same way with a survival server and two bots: in
+survival the catalogue and flight are refused, only the operator may change her mode, in creative
+mode she flies (the other bot sees her up in the air), lands without damage, takes items from the
+catalogue, picks a block and breaks it at once (the other bot's world loses it too), and changing
+back to survival brings back her survival inventory; about 6 s.
 
 ## Backups
 

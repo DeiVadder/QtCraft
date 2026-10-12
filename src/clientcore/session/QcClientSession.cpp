@@ -60,6 +60,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     m_connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Server,
                                                   [this](QcMessage &&message) { handleMessage(std::move(message)); });
     connect(m_connection.get(), &QcConnection::closed, this, &QcClientSession::onClosed);
+    m_gameMode.setSender([this](const QcMessage &message) { m_connection->send(message); });
 
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(int(QcPhysics::tickDuration * 1000.0));
@@ -182,10 +183,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     } else if (const auto *sound = std::get_if<QcMsg::SoundEvent>(&message)) {
         cue({sound->key, sound->position, sound->volume, sound->pitch, QcSoundCue::Origin::Server, m_tickCount});
     } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
-        m_worldTime = time->time;
-        m_dayLength = time->dayLength;
-        m_timeRunning = time->running;
-        m_timeSpeed = time->speed;
+        m_worldTime = *time;
     } else {
         return false;
     }
@@ -207,17 +205,19 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
     } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
         emit chatReceived(QcChatText::display(*chat));
     } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
-        m_health = health->health;
-        m_maxHealth = health->maxHealth;
-        m_dead = health->dead;
-        if (m_dead) {
+        m_health = *health;
+        if (m_health.dead) {
+            // A player comes back from death on the ground.
             m_miningRequested = false;
+            m_gameMode.setFlightWanted(false);
         }
         emit healthChanged();
     } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
-        m_food = food->food;
-        m_maxFood = food->maxFood;
+        m_food = *food;
         emit foodChanged();
+    } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
+        m_gameMode.setMode(mode->mode);
+        emit gameModeChanged();
     } else {
         return false;
     }
@@ -348,6 +348,10 @@ void QcClientSession::reconcile(const QcMsg::PlayerState &state)
         return;
     }
 
+    // A player saved while flying flies on after joining (decision E-284).
+    if (!m_hasServerState) {
+        m_gameMode.setFlightWanted(state.motion.flying);
+    }
     m_lastAcknowledged = state.lastInputSequence;
     m_hasServerState = true;
     m_pendingInputs.removeIf([&state](const QcPlayerInput &input) { return input.sequence <= state.lastInputSequence; });
@@ -355,7 +359,7 @@ void QcClientSession::reconcile(const QcMsg::PlayerState &state)
     QcEntityMotion replayed = state.motion;
     if (m_world) {
         for (const QcPlayerInput &input : std::as_const(m_pendingInputs)) {
-            QcPhysics::stepPlayer(replayed, input, *m_world, QcPhysics::tickDuration);
+            QcPhysics::stepPlayer(replayed, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
         }
     }
     m_lastCorrection = (replayed.position - m_motion.position).length();
@@ -370,9 +374,9 @@ void QcClientSession::tick()
     }
 
     ++m_tickCount;
-    if (m_timeRunning) {
+    if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).
-        m_worldTime += QcPhysics::tickDuration * m_timeSpeed;
+        m_worldTime.time += QcPhysics::tickDuration * m_worldTime.speed;
     }
     m_entities.tick();
 
@@ -405,7 +409,7 @@ void QcClientSession::tick()
 
     updateSounds();
 
-    if (m_dead) {
+    if (m_health.dead) {
         // Nothing to simulate until the server respawns the player.
         emit ticked();
         return;
@@ -413,8 +417,10 @@ void QcClientSession::tick()
 
     QcPlayerInput input = m_intent;
     input.sequence = m_nextSequence++;
+    input.flying = m_gameMode.flightWanted();
     m_previousMotion = m_motion;
-    QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration);
+    QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
+    m_gameMode.stepped(m_motion.flying);
     m_lastStep = std::hypot(m_motion.position.x - m_previousMotion.position.x, m_motion.position.z - m_previousMotion.position.z);
     m_walkDistance += m_lastStep;
 
@@ -488,7 +494,7 @@ void QcClientSession::refreshTarget()
 
 bool QcClientSession::attack()
 {
-    if (m_state != State::Playing || m_dead || !m_targetEntity) {
+    if (m_state != State::Playing || m_health.dead || !m_targetEntity) {
         return false;
     }
 
@@ -515,14 +521,16 @@ QcEntityPose QcClientSession::localPose(double alpha) const
     pose.walkDistance = m_walkDistance - m_lastStep * (1.0 - alpha);
     pose.onGround = m_motion.onGround;
     pose.inWater = m_motion.inWater;
-    pose.sneaking = m_intent.sneak;
+    // Sneaking in flight is descending, not crouching (decision E-284).
+    pose.sneaking = m_intent.sneak && !m_motion.flying;
     pose.sprinting = m_intent.sprint && m_intent.forward > 0.0f && !m_intent.sneak;
+    pose.flying = m_motion.flying;
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
     pose.headPitch = m_intent.pitch;
     return pose;
 }
 
-QcClientSession::HandTimers QcClientSession::handTimers(double alpha) const
+QcHandTimers QcClientSession::handTimers(double alpha) const
 {
     const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
     return {progress(m_switchTicks, switchTicks), progress(m_landingTicks, landingTicks), progress(m_useTicks, useTicks)};
@@ -546,7 +554,7 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
 
 bool QcClientSession::dropItem(bool wholeStack)
 {
-    if (m_state != State::Playing || m_dead || m_inventory.selectedStack().isEmpty()) {
+    if (m_state != State::Playing || m_health.dead || m_inventory.selectedStack().isEmpty()) {
         return false;
     }
     m_connection->send(QcMsg::DropItem{wholeStack});
@@ -555,7 +563,7 @@ bool QcClientSession::dropItem(bool wholeStack)
 
 void QcClientSession::respawn()
 {
-    if (m_dead) {
+    if (m_health.dead) {
         m_connection->send(QcMsg::Respawn{});
     }
 }
@@ -564,8 +572,17 @@ void QcClientSession::updateTargetAndMining()
 {
     refreshTarget();
 
-    const std::optional<QcBlockPos> wanted =
-        m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    const std::optional<QcBlockPos> aimed = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    // Creative mode: strikes break at once, a held button again every few ticks (decision E-282);
+    // a survival mining that still runs is cancelled below.
+    const bool instant = m_gameMode.rules().instantBreak;
+    if (const std::optional<QcBlockPos> broken = instant ? m_gameMode.nextInstantBreak(aimed) : std::nullopt) {
+        m_connection->send(QcMsg::StartMining{*broken});
+        m_connection->send(QcMsg::FinishMining{*broken});
+        m_swingTicks = 0;
+    }
+
+    const std::optional<QcBlockPos> wanted = instant ? std::nullopt : aimed;
     if (wanted != m_miningPos) {
         if (m_miningPos) {
             m_connection->send(QcMsg::CancelMining{});
@@ -613,7 +630,7 @@ void QcClientSession::updateTargetAndMining()
 
 bool QcClientSession::useItem()
 {
-    if (m_state != State::Playing || m_dead) {
+    if (m_state != State::Playing || m_health.dead) {
         return false;
     }
 

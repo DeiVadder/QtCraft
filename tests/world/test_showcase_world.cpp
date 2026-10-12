@@ -209,7 +209,7 @@ private slots:
     {
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        const QcResult<QcWorldLibrary::Entry> showcase = library.create(u"Show"_s, 0, true, u"showcase"_s);
+        const QcResult<QcWorldLibrary::Entry> showcase = library.create(u"Show"_s, 0, {.generator = u"showcase"_s, .options = {}, .gameMode = QcGameMode::Survival});
         const QcResult<QcWorldLibrary::Entry> terrain = library.create(u"Plain"_s, 5);
         QVERIFY(showcase && terrain);
         QCOMPARE(showcase->info.generator, u"showcase"_s);

@@ -35,6 +35,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
     , m_machineScreens(m_state, m_sounds, m_blocks)
     , m_inventory(m_state, m_machineScreens, m_sounds)
+    , m_gameModes(m_state, m_inventory)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands})
     , m_itemsAndPlants(m_state, m_sounds, m_blocks, m_inventory)
@@ -43,7 +44,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_chunkStreaming(m_state)
     , m_persistence(m_state, m_blocks, m_blockUpdates)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
-                           {m_inventory, m_combat, m_stands, [this](double seconds) { setWorldTime(seconds); }},
+                           {m_inventory, m_combat, m_stands, m_gameModes, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
                            {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
     , m_login(m_state, [this](Client &client) { join(client); })
@@ -297,6 +298,10 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_inventory.dropItem(client, *drop);
     } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
         handleSetAppearance(client, look->appearance);
+    } else if (const auto *creative = std::get_if<QcMsg::CreativeItem>(&message)) {
+        m_gameModes.creativeItem(client, *creative);
+    } else if (const auto *pick = std::get_if<QcMsg::PickBlock>(&message)) {
+        m_gameModes.pickBlock(client, pick->pos);
     } else {
         return false;
     }
@@ -328,6 +333,8 @@ void QcServer::join(Client &client)
     client.joined = true;
     client.motion.position = m_state.spawnPosition();
     client.fallPeak = client.motion.position.y;
+    client.gameMode = m_gameModes.defaultMode();
+    QcServerGameModes::applyRules(client);
     client.stateDirty = true;
     m_state.playerListDirty = true;
 
@@ -395,15 +402,7 @@ bool QcServer::restorePlayer(Client &client)
         return false;
     }
 
-    const QcPlayerData &player = **stored;
-    client.motion = player.motion;
-    client.fallPeak = client.motion.position.y;
-    client.yaw = player.yaw;
-    client.pitch = player.pitch;
-    client.inventory = player.inventory;
-    client.equipment = player.equipment;
-    client.health = std::clamp(player.health, 0.0, playerMaxHealth);
-    client.hunger.restore(player.food, player.exhaustion);
+    QcServerPersistence::restorePlayer(client, **stored);
 
     // Who left while dead comes back to the death screen and respawns from there.
     client.dead = client.health <= 0.0;
@@ -426,6 +425,7 @@ void QcServer::sendWelcome(Client &client, bool rejoined)
                                            rejoined ? client.yaw : 0.0f, rejoined ? client.pitch : 0.0f, rejoined,
                                            std::clamp(client.viewDistance, 0, QcMsg::Welcome::maxViewDistance)});
     client.connection->send(QcMsg::ContentSync{m_state.content});
+    QcServerGameModes::send(client);
     m_inventory.send(client);
     m_combat.sendHealth(client);
     m_combat.sendFood(client);
@@ -495,11 +495,13 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
     client.previousPosition = previous;
-    QcPhysics::stepPlayer(client.motion, input, m_state.world, QcPhysics::tickDuration);
+    QcPhysics::stepPlayer(client.motion, input, m_state.world, QcPhysics::tickDuration, client.rules().mayFly);
     m_combat.updateHealth(client, wasOnGround, wasInWater, previous.y);
 
     client.yaw = input.yaw;
     client.pitch = input.pitch;
+    // Sneak also moves a flying player down; it still counts for using blocks (placing against a
+    // chest), only the figure does not crouch for it (QcEntitySync).
     client.sneaking = input.sneak;
     client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
 

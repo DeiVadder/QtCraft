@@ -64,6 +64,8 @@ private:
     void runOverlayStep(const QString &step);
     void pickInOpenScreen(int row) const;
     void hoverAt(QStringView position) const;
+    // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
+    void setText(const QString &assignment) const;
     void openPopup(const QString &objectName) const;
     // Holds the screenshot until the matching releaseScreenshot().
     void holdScreenshot() const;

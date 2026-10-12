@@ -56,6 +56,7 @@ public:
             sounds.append(sound->key);
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
+            selected = inventory->selected;
             craftingGrid = inventory->craftingGrid;
             craftingSize = inventory->craftingSize;
             craftingResult = inventory->craftingResult;
@@ -72,6 +73,8 @@ public:
             openedCrafting = open->size;
         } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
             this->food = food->food;
+        } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
+            gameMode = mode->mode;
         } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
             openMachine = machine->pos;
             machineCategory = machine->category;
@@ -151,6 +154,7 @@ public:
     // Keys of all sounds heard, oldest first.
     QStringList sounds;
     QList<QcItemStack> stacks;
+    qint32 selected = 0;
     QList<QcItemStack> craftingGrid;
     qint32 craftingSize = 0;
     QcItemStack craftingResult;
@@ -168,6 +172,8 @@ public:
     double health = 0.0;
     bool dead = false;
     int food = -1;
+    // The game mode the server reported last (decision E-282); empty before the first.
+    std::optional<QcGameMode> gameMode;
     std::optional<QcBlockPos> openMachine;
     QString machineCategory;
     QList<QcItemStack> machineStacks;

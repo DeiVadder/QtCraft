@@ -24,8 +24,9 @@ public:
     static constexpr int miningSwingTicks = 6;
 
     // Whether armour takes part of the damage and wears down (decision E-234): blows of creatures
-    // and contact with damaging blocks are armoured; falls and commands are not.
-    enum class DamageKind : quint8 { Unblockable, Armoured };
+    // and contact with damaging blocks are armoured; falls are not. Command damage (/kill) also
+    // reaches invulnerable players (creative mode, decision E-282).
+    enum class DamageKind : quint8 { Unblockable, Armoured, Command };
 
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 

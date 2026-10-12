@@ -30,7 +30,7 @@ void QcServerCombat::tick()
         }
 
         tickPlayer(*client, dt);
-        players.append({client->entityId, client->motion.position, !client->dead});
+        players.append({client->entityId, client->motion.position, !client->dead, !client->rules().invulnerable});
     }
 
     m_state.stands.tick(dt);
@@ -155,6 +155,9 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
     if (client.dead || client.hurtTimer > 0.0 || amount <= 0.0) {
         return;
     }
+    if (client.rules().invulnerable && kind != DamageKind::Command) {
+        return;
+    }
 
     if (kind == DamageKind::Armoured) {
         amount = throughArmour(client, amount);
@@ -178,7 +181,8 @@ void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const Q
         client.miningPos.reset();
         m_state.died.insert(client.entityId);
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 died"), {client.name}));
-        if (!m_state.info.keepInventory) {
+        // Catalogue items never fall into the world by themselves (decision E-283).
+        if (!m_state.info.keepInventory && !QcGameModes::rules(client.gameMode).itemCatalogue) {
             m_inventory.dropAll(client);
         }
     }
@@ -203,8 +207,8 @@ double QcServerCombat::throughArmour(QcServerClient &client, double amount)
 void QcServerCombat::updateHealth(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
 {
     // Falls are measured from their highest point, including the position before the first
-    // airborne tick; water, ladders and cobwebs break a fall.
-    if (client.motion.inWater || wasInWater || client.motion.climbing || client.motion.slowed) {
+    // airborne tick; water, ladders, cobwebs and flying break a fall.
+    if (client.motion.inWater || wasInWater || client.motion.climbing || client.motion.slowed || client.motion.flying) {
         client.fallPeak = client.motion.position.y;
     } else if (!client.motion.onGround) {
         client.fallPeak = wasOnGround ? std::max(previousY, client.motion.position.y)
@@ -257,7 +261,8 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
         m_sounds.play(definition.hurtSound, lootPosition);
     }
 
-    if (held && held->durability > 0) {
+    // Weapons wear like tools, except in creative mode (decision E-282).
+    if (held && held->durability > 0 && !client.rules().infiniteItems) {
         const int slot = client.inventory.selectedHotbarSlot();
         QcItemStack tool = client.inventory.slot(slot);
         if (++tool.damage >= held->durability) {
@@ -293,7 +298,10 @@ void QcServerCombat::respawn(QcServerClient &client)
 
     client.dead = false;
     client.health = QcServerClient::maxHealth;
-    client.hunger.reset();
+    // Frozen hunger keeps the survival values for the return to survival (decision E-282).
+    if (!client.hunger.frozen()) {
+        client.hunger.reset();
+    }
     client.motion = {};
     client.motion.position = m_state.spawnPosition();
     client.previousPosition.reset();
@@ -312,8 +320,9 @@ void QcServerCombat::consume(QcServerClient &client)
         return;
     }
 
-    // Full players do not eat (decision E-039).
-    if (client.dead || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
+    // Full players do not eat (decision E-039), nor do players with frozen hunger (creative mode,
+    // decision E-282): the survival values stay as they are and the food is not used up.
+    if (client.dead || client.hunger.frozen() || !held || held->food <= 0 || !client.hunger.eat(held->food)) {
         return;
     }
 

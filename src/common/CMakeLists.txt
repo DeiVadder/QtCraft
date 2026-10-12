@@ -59,6 +59,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcArmourDefinition.h
     content/definitions/QcMaterialDefinition.h
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
+    gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
     physics/QcEntityMotion.h
     handbook/QcHandbook.h handbook/QcHandbook.cpp
     handbook/builder/QcHandbookBlockPages.h handbook/builder/QcHandbookBlockPages.cpp
@@ -81,6 +82,7 @@ qt_add_library(qc_common STATIC
     core/QcIntMath.h
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp
+    gameplay/QcGameMode.h gameplay/QcGameMode.cpp
     gameplay/QcRepair.h gameplay/QcRepair.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcInventory.h gameplay/QcInventory.cpp

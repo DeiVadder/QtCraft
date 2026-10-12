@@ -15,6 +15,8 @@
 # (stage 23, E-234, E-238) has its stops at the armour sets: the player in iron armour from the
 # front and the inventory with the armour slots, the preview and the HUD's armour bar; with the caped
 # look the diamond set and the cape from behind, standing and walking (the cape over the chest plate).
+# The creative mode (stage 26) has its stops at the sky platform: flying with the widened view and
+# the creative inventory.
 # Renders offscreen (no window, independent of the display, decision E-229), silent, with its
 # settings and world in a temporary directory that is removed at the end.
 # Usage: scripts/showcase-tour.sh [out-dir] [build-dir]
@@ -113,6 +115,16 @@ while read -r name x z yaw pitch; do
         shoot "armour-cape-walk" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,-20" --camera behind --pose walk \
             --chat "@300 /equip diamond"
         unset SHOT_DATA
+        ;;
+    demo-creative_sky_platform-near)
+        # Creative mode (stage 26, E-282 to E-286): flying up to the platform with the widened view
+        # (hovering, then sprint-flying) and the creative inventory with its tabs and a search.
+        shoot "creative-fly-hover" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$((z - 6))" --look "$yaw,-20" --game-mode creative \
+            --overlay "@1500 fly" --chat "@2500 /tp ~ ~14 ~" --pose fly
+        shoot "creative-fly-sprint" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$((z - 6))" --look "$yaw,-20" --game-mode creative \
+            --overlay "@1500 fly" --chat "@2500 /tp ~ ~14 ~" --pose flysprint
+        shoot "creative-inventory" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --game-mode creative \
+            --overlay "@1500 creative" --overlay "@2500 text:creativeSearch=planks"
         ;;
     creatures-near)
         shoot "debug-visuals" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display compact \

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcGameMode.h"
 #include "QcLoginMessages.h"
 
 #include <QString>
@@ -45,6 +46,10 @@ struct QcServerConfig
     QString backupDirectory;
     // Game rule for new and unsaved worlds; saved worlds keep the value in world.json.
     bool keepInventory = true;
+    // Game mode of players who join for the first time (decision E-282): unset, the world's default
+    // (world.json) counts; set (server.json "defaultGameMode", an unsaved world) it wins, and a new
+    // world is created with it.
+    std::optional<QcGameMode> defaultGameMode;
     // Neighbour updates of commands (/fill) queued at most; further ones are dropped with a warning.
     qsizetype maxCommandBlockUpdates = qsizetype(1024) * 1024;
     // Pending updates written to blockupdates.qce at most (those of player actions first).

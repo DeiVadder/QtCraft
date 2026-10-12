@@ -30,6 +30,8 @@ void QcControlMovementCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"lookAt"_s, [this](const QJsonObject &request) { lookAt(request); });
     table.add(u"wait"_s, [this](const QJsonObject &request) { wait(request); });
     table.add(u"waitUntilReady"_s, [this](const QJsonObject &request) { waitUntilReady(request); });
+    table.add(u"fly"_s, [this](const QJsonObject &request) { fly(request); });
+    table.add(u"gamemode"_s, [this](const QJsonObject &request) { gamemode(request); });
 }
 
 QcClientSession &QcControlMovementCommands::session() const
@@ -46,6 +48,38 @@ void QcControlMovementCommands::look(const QJsonObject &request)
     session().setIntent(intent);
 
     m_context.finish(request, m_context.reports().playerStatus());
+}
+
+void QcControlMovementCommands::fly(const QJsonObject &request)
+{
+    const bool on = request.value(u"on"_s).toBool(true);
+    if (on && !session().gameMode().rules().mayFly) {
+        m_context.fail(request, u"The game mode does not allow flying"_s);
+        return;
+    }
+
+    // The wish goes with the next input; two ticks later the state shows it.
+    session().gameMode().setFlightWanted(on);
+    m_context.waitTicks(request, session().tickCount(), 2);
+}
+
+void QcControlMovementCommands::gamemode(const QJsonObject &request)
+{
+    const QString wanted = request.value(u"mode"_s).toString();
+    if (wanted.isEmpty()) {
+        m_context.finish(request, m_context.reports().playerStatus());
+        return;
+    }
+
+    const std::optional<QcGameMode> mode = QcGameModes::parse(wanted);
+    if (!mode) {
+        m_context.fail(request, u"Unknown game mode '%1'"_s.arg(wanted));
+        return;
+    }
+
+    session().sendChat(u"/gamemode "_s + QcGameModes::name(*mode));
+    // A refusal (no operator) ends in the timeout, with the server's answer in the messages.
+    m_context.begin({request, QcControlActiveCommand::timeoutPolls(20), [this, mode] { return session().gameMode().mode() == *mode; }});
 }
 
 void QcControlMovementCommands::lookAt(const QJsonObject &request)

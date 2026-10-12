@@ -1,6 +1,7 @@
 // Payloads of the player messages (QcPlayerMessages.h): input and state, inventory, crafting,
 // health, food and appearance.
 
+#include "QcInventory.h"
 #include "QcProtocolCodec.h"
 
 #include <cmath>
@@ -15,12 +16,12 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 {
     const QcPlayerInput &in = m.input;
-    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.yaw << in.pitch;
+    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.yaw << in.pitch;
 }
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
 {
-    stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater;
+    stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying;
 }
 
 void encode(QDataStream &stream, QcMsg::SelectHotbarSlot m)
@@ -86,10 +87,26 @@ void encode(QDataStream &stream, QcMsg::PlayerFood m)
     stream << m.food << m.maxFood;
 }
 
+void encode(QDataStream &stream, QcMsg::GameMode m)
+{
+    stream << quint8(m.mode);
+}
+
+void encode(QDataStream &stream, QcMsg::CreativeItem m)
+{
+    stream << m.slot;
+    writeStack(stream, m.stack);
+}
+
+void encode(QDataStream &stream, QcMsg::PickBlock m)
+{
+    writePos(stream, m.pos);
+}
+
 QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
-    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.yaw >> in.pitch;
+    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.yaw >> in.pitch;
     if (!std::isfinite(in.forward) || !std::isfinite(in.strafe) || !std::isfinite(in.yaw) || !std::isfinite(in.pitch)) {
         return qcError(u"Non-finite player input"_s);
     }
@@ -99,7 +116,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
 {
     QcMsg::PlayerState m;
-    stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater;
+    stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying;
     if (!isFinite(m.motion.position) || !isFinite(m.motion.velocity)) {
         return qcError(u"Non-finite player state"_s);
     }
@@ -216,6 +233,37 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream)
         return qcError(u"Invalid food value"_s);
     }
     return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream)
+{
+    quint8 value = 0;
+    stream >> value;
+    const std::optional<QcGameMode> mode = QcGameModes::fromValue(value);
+    if (!mode) {
+        return qcError(u"Unknown game mode %1"_s.arg(value));
+    }
+    return QcMsg::GameMode{*mode};
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream)
+{
+    QcMsg::CreativeItem m;
+    stream >> m.slot;
+    m.stack = readStack(stream);
+    const bool inventorySlot = m.slot >= QcMsg::CreativeItem::addSlot && m.slot < QcInventory::slotCount;
+    if (!inventorySlot && !QcMsg::MoveInventoryItem::isEquipmentSlot(m.slot)) {
+        return qcError(u"Creative slot %1 out of range"_s.arg(m.slot));
+    }
+    if (m.stack.count < 0 || m.stack.count > QcItemDefinition::maxStackLimit || m.stack.damage < 0) {
+        return qcError(u"Invalid creative stack"_s);
+    }
+    return m;
+}
+
+QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream)
+{
+    return QcMsg::PickBlock{readPos(stream)};
 }
 
 } // namespace QcProtocolCodec

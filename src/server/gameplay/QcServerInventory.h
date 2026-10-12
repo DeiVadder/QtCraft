@@ -44,7 +44,8 @@ public:
     // Opens the 3 x 3 grid of the crafting table at `pos`.
     void openCraftingTable(QcServerClient &client, QcBlockPos pos);
     void closeCrafting(QcServerClient &client);
-    // Moves the crafting grid into the inventory; what does not fit is thrown on the ground.
+    // Moves the crafting grid into the inventory; what does not fit is thrown on the ground, or
+    // deleted in a mode with the item catalogue.
     void returnCraftingGrid(QcServerClient &client);
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
     // Drops everything the player carries (death without keepInventory).

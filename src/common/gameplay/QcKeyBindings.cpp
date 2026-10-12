@@ -36,6 +36,7 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::LookRight, u"lookRight", Qt::Key_Right, 0},
     {A::Mine, u"mine", Qt::Key_F, 0},
     {A::Use, u"use", Qt::Key_R, 0},
+    {A::PickBlock, u"pickBlock", Qt::Key_B, 0},
     {A::Drop, u"drop", Qt::Key_Q, 0},
     {A::Inventory, u"inventory", Qt::Key_E, 0},
     {A::Chat, u"chat", Qt::Key_T, Qt::Key_Return},

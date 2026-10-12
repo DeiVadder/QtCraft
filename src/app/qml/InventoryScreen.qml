@@ -84,6 +84,14 @@ SlotScreen {
             RowLayout {
                 spacing: 16
 
+                // Creative mode: back to the item catalogue.
+                Button {
+                    objectName: "creativeItemsTab"
+                    visible: screen.game.player.creative
+                    text: qsTr("Creative items")
+                    onClicked: screen.game.overlay = "creative"
+                }
+
                 Label {
                     Layout.fillWidth: true
                     text: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Inventory")

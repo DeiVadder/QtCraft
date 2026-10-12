@@ -38,6 +38,12 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
+    if (client.rules().instantBreak) {
+        // Creative mode: every block breaks at once, without drops or wear (decision E-282).
+        m_parts.blocks.breakBlock(pos, false);
+        return;
+    }
+
     const QcBlockDefinition &definition = m_state.content->block(*block);
     const QcItemDefinition *held = m_state.heldItem(client);
     const double seconds = QcMining::breakSeconds(definition, held);
@@ -201,11 +207,15 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
         m_state.containers.add(target, placedDefinition.containerSlots);
     }
 
-    if (!held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo)) {
-        // A poured bucket stays in the hand, empty.
+    const bool pours = !held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo);
+    if (pours) {
         m_parts.sounds.play(QString::fromLatin1(QcSoundKeys::bucketEmpty), {target.x + 0.5, target.y + 0.5, target.z + 0.5});
+    }
+    // In creative mode the held stack (a full bucket too) stays as it is (decision E-282).
+    if (pours && !client.rules().infiniteItems) {
+        // A poured bucket stays in the hand, empty.
         m_parts.inventory.exchangeHeld(client, held.emptiesTo);
-    } else {
+    } else if (!client.rules().infiniteItems) {
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     }
     m_parts.inventory.send(client);

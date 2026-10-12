@@ -40,6 +40,9 @@ struct QcServerSettings
     int maxConnectionsPerAddress = 8;
     // Operators besides the world's access.json (by name; bound to the identity at their login).
     QStringList operators;
+    // Game mode of players who join for the first time ("survival", "creative"; empty in the file:
+    // the world's default). A world the server creates gets it as its default (decision E-282).
+    std::optional<QcGameMode> defaultGameMode;
 
     // Reads a settings file; a missing file gives the defaults.
     static QcResult<QcServerSettings> read(const QString &path);

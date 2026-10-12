@@ -21,7 +21,7 @@ constexpr int timeoutMs = 10'000;
 
 // Several clients over TCP on the loopback interface (decisions E-251 to E-254): they see each
 // other, chat and see each other's block changes; lost connections remove and save the player;
-// connection floods are refused. Server, listener and clients share the test's thread, the ticks
+// only creative players fly whatever a client asks for (E-284); connection floods are refused. Server, listener and clients share the test's thread, the ticks
 // come from the test; one case runs the server in its own thread like the game does.
 class TestNetworkGame : public QcServerTestFixture
 {
@@ -165,6 +165,44 @@ private slots:
         QVERIFY(tickUntil([&] { return m_server->clientCount() == 0; }, 2'000));
         QVERIFY(silent->connection.isOpen() || !silent->connection.lastError().isEmpty());
         QVERIFY(QFile::exists(QDir(directory.path()).filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Bob"_s))));
+    }
+
+    void theServerDecidesWhoFlies()
+    {
+        startServer({});
+        std::unique_ptr<RawClient> ann = join(u"Ann"_s);
+        QVERIFY(ann && ann->entityId != 0);
+        quint32 sequence = 0;
+        // Sends `count` inputs (asking to fly upwards or standing still) and waits for the server's
+        // answer to each; the server moves players only on input.
+        const auto send = [&](int count, bool flyUp) {
+            for (int i = 0; i < count; ++i) {
+                QcPlayerInput input;
+                input.sequence = ++sequence;
+                input.flying = flyUp;
+                input.jump = flyUp;
+                ann->connection.send(QcMsg::PlayerInput{input});
+                if (!tickUntil([&] { return ann->acknowledged == sequence; })) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        const auto flyUp = [&](int count) { return send(count, true); };
+        QVERIFY(send(20, false));
+        QVERIFY(ann->motion.onGround);
+        const double ground = ann->motion.position.y;
+
+        // A client in survival that sends the wish to fly only jumps.
+        QVERIFY(flyUp(20));
+        QVERIFY(!ann->motion.flying);
+        QVERIFY(ann->motion.position.y < ground + 1.3);
+
+        ann->connection.send(QcMsg::ChatInput{u"/gamemode creative"_s});
+        QVERIFY(tickUntil([&] { return ann->gameMode == QcGameMode::Creative; }));
+        QVERIFY(flyUp(20));
+        QVERIFY(ann->motion.flying);
+        QVERIFY(ann->motion.position.y > ground + 3.0);
     }
 
     void connectionFloodsAreRefused()

@@ -89,6 +89,8 @@ public:
         quint32 entityId = 0;
         QcVec3 position;
         bool alive = true;
+        // Creatures leave invulnerable players (creative mode) alone.
+        bool targetable = true;
     };
 
     struct PlayerHit

@@ -5,10 +5,9 @@
 #include "QcBlockEntityStorage.h"
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
-#include "QcEntityMotion.h"
 #include "QcEntityStorage.h"
-#include "QcEquipment.h"
-#include "QcInventory.h"
+#include "QcGameMode.h"
+#include "QcPlayerStorage.h"
 #include "QcRegionStorage.h"
 #include "QcResult.h"
 #include "QcStandStorage.h"
@@ -47,20 +46,12 @@ struct QcWorldInfo
     QString generator = QString::fromLatin1(defaultGenerator);
     QString generatorOptions;
     bool setupDone = true;
-};
-
-struct QcPlayerData
-{
-    QcEntityMotion motion;
-    float yaw = 0.0f;
-    float pitch = 0.0f;
-    QcInventory inventory;
-    double health = 20.0;
-    // Players saved before hunger existed come back full.
-    int food = QcItemDefinition::maxFood;
-    double exhaustion = 0.0;
-    // Since format 3 of the player file (decision E-234).
-    QcEquipment equipment;
+    // Game mode of players who join the world for the first time (decision E-282), chosen when the
+    // world is created; worlds without the key are survival worlds.
+    QcGameMode defaultGameMode = QcGameMode::Survival;
+    // A mode name this version does not know (from a newer game): the world plays as survival but
+    // keeps the name when saved, until /defaultgamemode sets another mode.
+    QString unknownGameMode;
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
@@ -87,13 +78,13 @@ public:
     // Rewrites the region files that contain any of the given chunks with all chunks of those regions.
     QcStatus writeChunks(const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> &chunks) const { return m_regions.write(chunks); }
 
-    // File of a player in players/: the name in lower case (other characters than letters, digits,
-    // '_' and '-' replaced) and a hash of the exact name, "<name>-<hash>.qcp".
-    static QString playerFileName(const QString &playerName);
-    // std::nullopt without error when the player has never been saved. A file of an older version
-    // (players/<name>.qcp, exactly as written then) is renamed to the current name first.
-    QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const;
-    QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const;
+    // Player files (QcPlayerStorage).
+    static QString playerFileName(const QString &playerName) { return QcPlayerStorage::fileName(playerName); }
+    QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const
+    {
+        return m_players.read(playerName, warnings);
+    }
+    QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
 
     // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
     QcResult<QcWorldEntities> readEntities(QStringList &warnings) const { return m_entities.readEntities(warnings); }
@@ -135,16 +126,11 @@ public:
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionStorage::regionOf(chunk); }
 
 private:
-    // The armour slots of a player file of format 3 or later; false when they are damaged.
-    bool readEquipment(QDataStream &stream, const QString &path, QcPlayerData &player, QStringList &warnings) const;
-    QString playerPath(const QString &playerName) const;
-    // playerPath(), after renaming a file of an older version (players/<name>.qcp) to it.
-    QString migratedPlayerPath(const QString &playerName, QStringList &warnings) const;
-
     QString m_directory;
     std::shared_ptr<const QcContentRegistry> m_content;
     QcRegionStorage m_regions;
     QcEntityStorage m_entities;
     QcBlockEntityStorage m_blockEntities;
     QcStandStorage m_stands;
+    QcPlayerStorage m_players;
 };
