@@ -38,6 +38,9 @@ QcEntityLight glowingLight(QcEntityLight light, const QcMobDefinition &mob, doub
     return QcEntityLight(light.sky, std::max(light.block, glow));
 }
 
+// The widened view stays below a fish-eye even from the widest setting (110°).
+constexpr double maxWidenedFieldOfView = 130.0;
+
 } // namespace
 
 QcRenderBridge::QcRenderBridge(const QcSessionParts &parts, const QcSettingsController &settings)
@@ -46,15 +49,22 @@ QcRenderBridge::QcRenderBridge(const QcSessionParts &parts, const QcSettingsCont
 {
 }
 
-void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode)
+void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds)
 {
+    // Sprinting widens the view only while the player is faster than walking: not at a wall, not
+    // swimming (where a sprint does nothing).
+    const QcEntityPose pose = localPose(1.0);
+    const bool sprinting = pose.sprinting && !pose.inWater && pose.speed > QcPhysics::walkSpeed + 0.5;
+    m_fov.setShare(m_settings.fovEffects());
+    const double widening = m_fov.advance({.sprinting = sprinting, .flying = false}, frameSeconds);
+
     const QcClientSession &session = *m_parts.session;
     const QcViewCamera::Placement placed = QcViewCamera::place(eye, session.intent().yaw, session.intent().pitch, mode, *session.world());
     QcCamera camera = m_parts.view->camera();
     camera.position = QVector3D(float(placed.position.x), float(placed.position.y), float(placed.position.z));
     camera.yaw = placed.yaw;
     camera.pitch = placed.pitch;
-    camera.fieldOfView = float(m_settings.fieldOfView());
+    camera.fieldOfView = float(std::min(m_settings.fieldOfView() * widening, maxWidenedFieldOfView));
     m_parts.view->setCamera(camera);
 }
 

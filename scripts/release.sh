@@ -2,13 +2,18 @@
 # Release pipeline (macOS): builds the game in its own Release build directory (preset "deploy",
 # build/deploy), assembles a standalone deploy/QtCraft.app with macdeployqt (Qt frameworks, QML
 # modules, platform, image format and multimedia plugins with the FFmpeg libraries), adds the
-# example mods, signs it ad hoc, checks the result and packs it as .zip and .dmg next to it.
+# dedicated server (Contents/MacOS/qtcraft-headless, on the same frameworks) and the example mods,
+# signs it ad hoc, checks the result and packs it as .zip and .dmg next to it.
 #
 # Checks (any failure makes the script exit with 1):
 #   - every Mach-O file links only to the bundle (@rpath, @executable_path, @loader_path) or to the
 #     system, and has no rpath or install name pointing at the build or Qt directory (otool)
 #   - required parts are present (Info.plist keys, icon, qt.conf, frameworks, plugins, QML modules,
 #     FFmpeg libraries, example mod) and the signature verifies (codesign --verify --strict)
+#   - the game and the dedicated server are universal (arm64 and x86_64)
+#   - the dedicated server of a copy starts (--server --port 0 --bind 127.0.0.1, temporary data
+#     directory), reports "Listening on port", loads only libraries from the copy or the system
+#     (DYLD_PRINT_LIBRARIES) and stops with exit code 0 on SIGTERM
 #   - a copy of the bundle in a temporary directory starts a world and saves a screenshot, loads
 #     only libraries from inside the copy or the system (DYLD_PRINT_LIBRARIES), opens the audio
 #     output (muted through settings.ini), installs the example mod switched off on the first start;
@@ -77,13 +82,17 @@ echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 
 echo "== build (preset deploy, $BUILD_DIR)"
 limited 300 cmake --preset deploy -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
-limited 1800 cmake --build --preset deploy --target qtcraft >"$WORK/build.log" 2>&1 || abort "build failed, see $WORK/build.log"
+limited 1800 cmake --build --preset deploy --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
+    abort "build failed, see $WORK/build.log"
 
 echo "== assemble $APP"
 mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"
 # Only the results of earlier runs of this script are replaced.
 rm -rf "$APP" "$PACKAGE.zip" "$PACKAGE.dmg"
 ditto "$BUILD_DIR/src/app/qtcraft.app" "$APP" || abort "cannot copy the app bundle"
+# The dedicated server runs from the bundle on the game's frameworks (docs/Multiplayer.md).
+SERVER="$APP/Contents/MacOS/qtcraft-headless"
+ditto "$BUILD_DIR/src/headless/qtcraft-headless" "$SERVER" || abort "cannot copy the dedicated server"
 mkdir -p "$APP/Contents/Resources/mods" || abort "cannot create the mods folder"
 for mod in "$PROJECT_DIR"/mods/*/; do
     [ -f "$mod/pack.json" ] || continue
@@ -91,7 +100,7 @@ for mod in "$PROJECT_DIR"/mods/*/; do
 done
 
 echo "== macdeployqt"
-limited 600 "$QT_DIR/bin/macdeployqt" "$APP" -qmldir="$PROJECT_DIR/src/app/qml" -verbose=1 >"$WORK/macdeployqt.log" 2>&1 ||
+limited 600 "$QT_DIR/bin/macdeployqt" "$APP" -qmldir="$PROJECT_DIR/src/app/qml" -executable="$SERVER" -verbose=1 >"$WORK/macdeployqt.log" 2>&1 ||
     abort "macdeployqt failed, see $WORK/macdeployqt.log"
 # SQL drivers come with QtSql (pulled in by QtQuick.LocalStorage); the game keeps no data in SQL.
 # The Mimer, ODBC and PostgreSQL drivers need client libraries that are not part of Qt (macdeployqt
@@ -151,19 +160,23 @@ while IFS= read -r binary; do
         esac
     done <"$WORK/rpaths.txt"
 done <"$WORK/binaries.txt"
-if strings -a "$APP/Contents/MacOS/qtcraft" | grep -q -e "$BUILD_DIR" -e "$QT_DIR/lib"; then
-    problem "the executable contains a path into the build or Qt directory"
-    bad_links=$((bad_links + 1))
-fi
+for executable in "$APP/Contents/MacOS/qtcraft" "$SERVER"; do
+    if strings -a "$executable" | grep -q -e "$BUILD_DIR" -e "$QT_DIR/lib"; then
+        problem "$(basename "$executable") contains a path into the build or Qt directory"
+        bad_links=$((bad_links + 1))
+    fi
+done
 [ "$bad_links" -eq 0 ] && ok "otool: $binaries Mach-O files link only into the bundle and the system"
 
-# Universal executable: Apple silicon and Intel Macs (Qt and FFmpeg come universal as well).
-architectures=$(lipo -archs "$APP/Contents/MacOS/qtcraft" 2>/dev/null)
-if echo " $architectures " | grep -q ' arm64 ' && echo " $architectures " | grep -q ' x86_64 '; then
-    ok "executable for $architectures"
-else
-    problem "executable is not universal ($architectures)"
-fi
+# Universal executables: Apple silicon and Intel Macs (Qt and FFmpeg come universal as well).
+for executable in "$APP/Contents/MacOS/qtcraft" "$SERVER"; do
+    architectures=$(lipo -archs "$executable" 2>/dev/null)
+    if echo " $architectures " | grep -q ' arm64 ' && echo " $architectures " | grep -q ' x86_64 '; then
+        ok "$(basename "$executable") for $architectures"
+    else
+        problem "$(basename "$executable") is not universal ($architectures)"
+    fi
+done
 
 plist="$APP/Contents/Info.plist"
 for key in CFBundleIdentifier CFBundleShortVersionString CFBundleVersion CFBundleIconFile LSMinimumSystemVersion \
@@ -178,7 +191,7 @@ done
 [ "$(plutil -extract CFBundleShortVersionString raw -o - "$plist" 2>/dev/null)" = "$VERSION" ] || problem "CFBundleShortVersionString is not $VERSION"
 [ "$(plutil -extract CFBundleVersion raw -o - "$plist" 2>/dev/null)" = "$BUILD_NUMBER" ] || problem "CFBundleVersion is not $BUILD_NUMBER"
 
-for part in Contents/Resources/QtCraft.icns Contents/Resources/qt.conf \
+for part in Contents/MacOS/qtcraft-headless Contents/Resources/QtCraft.icns Contents/Resources/qt.conf \
     Contents/Frameworks/QtCore.framework Contents/Frameworks/QtGui.framework Contents/Frameworks/QtQuick.framework \
     Contents/Frameworks/QtQml.framework Contents/Frameworks/QtQuickControls2.framework Contents/Frameworks/QtMultimedia.framework \
     Contents/PlugIns/platforms/libqcocoa.dylib Contents/PlugIns/imageformats/libqjpeg.dylib \
@@ -239,8 +252,8 @@ check_screenshot() {
     fi
 }
 
-# Every image dyld loaded comes from the copy or the system.
-check_loaded_libraries() {
+# Every image dyld loaded (log of a run with DYLD_PRINT_LIBRARIES) comes from the copy or the system.
+check_bundle_libraries() {
     log=$1
     real_app=$(cd "$RUN_APP" && pwd -P)
     sed -n 's/^dyld\[[0-9]*\]: \(<[^>]*> \)\{0,1\}//p' "$log" | grep '^/' | sort -u >"$log.libraries"
@@ -251,8 +264,14 @@ check_loaded_libraries() {
     elif [ -n "$outside" ]; then
         problem "libraries loaded from outside the bundle: $(echo "$outside" | tr '\n' ' ')"
     else
-        ok "$loaded loaded images, all from the bundle copy or the system"
+        ok "$(basename "$log" .log): $loaded loaded images, all from the bundle copy or the system"
     fi
+}
+
+# The game's libraries, and its multimedia backend from the bundle.
+check_loaded_libraries() {
+    log=$1
+    check_bundle_libraries "$log"
     if grep -q -e "^$real_app/Contents/PlugIns/multimedia/libffmpegmediaplugin.dylib" -e "^$RUN_APP/Contents/PlugIns/multimedia/libffmpegmediaplugin.dylib" "$log.libraries" &&
         grep -q "/Contents/Frameworks/libavcodec" "$log.libraries"; then
         ok "FFmpeg multimedia backend loaded from the bundle"
@@ -316,12 +335,66 @@ if limited 120 open -g -n -W --stdout "$WORK/open.log" --stderr "$WORK/open.log"
 else
     problem "start through Launch Services failed (log: $WORK/open.log)"
     # open itself was stopped by the time limit; end the copy it started.
-    for pid in $(pgrep -f "$RUN_APP/Contents/MacOS/qtcraft"); do
+    # Anchored: the dedicated server qtcraft-headless next to it is no match.
+    for pid in $(pgrep -f "^$RUN_APP/Contents/MacOS/qtcraft( |\$)"); do
         kill "$pid"
     done
 fi
 check_screenshot "$WORK/open.png"
 check_audio open
+
+# The dedicated server of the copy: starts on a free port of the loopback interface, says so,
+# loads only libraries from the copy or the system, and saves and stops on SIGTERM with exit code 0.
+# Perl sets DYLD_PRINT_LIBRARIES (see run_copy) and execs the server, which keeps perl's pid.
+SERVER_DATA="$WORK/data-server"
+mkdir -p "$SERVER_DATA"
+env -i HOME="$HOME" USER="${USER:-}" PATH=/usr/bin:/bin TMPDIR="${TMPDIR:-/tmp}" \
+    perl -e '$ENV{DYLD_PRINT_LIBRARIES} = 1; exec @ARGV or die' \
+    "$RUN_APP/Contents/MacOS/qtcraft-headless" --server --port 0 --bind 127.0.0.1 --data-dir "$SERVER_DATA" \
+    >"$WORK/server.log" 2>&1 &
+server_pid=$!
+# An interrupted or failing script does not leave the server running.
+trap 'kill -KILL "$server_pid" 2>/dev/null' EXIT
+trap 'kill -KILL "$server_pid" 2>/dev/null; exit 1' INT TERM HUP
+
+# Whether the server process still runs: an ended child stays a zombie until it is waited for, and
+# kill -0 succeeds on a zombie.
+server_running() {
+    state=$(ps -o stat= -p "$server_pid" 2>/dev/null | tr -d ' ')
+    [ -n "$state" ] && [ "${state#Z}" = "$state" ]
+}
+
+# Waits up to $1 half-seconds while the server runs and `$2` (a command) fails.
+wait_for_server() {
+    waited=0
+    while [ "$waited" -lt "$1" ] && server_running && ! eval "$2"; do
+        perl -e 'select(undef, undef, undef, 0.5)'
+        waited=$((waited + 1))
+    done
+}
+
+wait_for_server 120 'grep -q "Listening on port" "$WORK/server.log"'
+if grep -q "Listening on port" "$WORK/server.log"; then
+    ok "dedicated server: $(grep -o 'Listening on port [0-9]*' "$WORK/server.log" | head -1)"
+else
+    problem "dedicated server did not start listening (log: $WORK/server.log)"
+fi
+kill -TERM "$server_pid" 2>/dev/null
+# The server saves the world before it ends; give it at most 60 s.
+wait_for_server 120 false
+if server_running; then
+    kill -KILL "$server_pid"
+    problem "dedicated server did not stop on SIGTERM (log: $WORK/server.log)"
+fi
+wait "$server_pid"
+server_status=$?
+trap - EXIT INT TERM HUP
+if [ "$server_status" -eq 0 ] && grep -q "server stopped" "$WORK/server.log"; then
+    ok "dedicated server stopped on SIGTERM with exit code 0"
+else
+    problem "dedicated server ended with exit code $server_status (log: $WORK/server.log)"
+fi
+check_bundle_libraries "$WORK/server.log"
 
 # Fourth start: the Intel half of the universal app under Rosetta, when it is installed.
 if arch -x86_64 /usr/bin/true 2>/dev/null; then

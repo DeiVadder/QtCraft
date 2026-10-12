@@ -62,8 +62,10 @@ ColumnLayout {
             font.bold: true
         }
 
-        ToolTip.visible: hover.hovered && cell.link !== null
-        ToolTip.text: cell.link ? cell.link.text : ""
+        ThemedToolTip {
+            shown: hover.hovered && cell.link !== null
+            text: cell.link ? cell.link.text : ""
+        }
 
         HoverHandler {
             id: hover

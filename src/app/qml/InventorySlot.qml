@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import QtCraft
 
 // A slot of a SlotScreen, filled from the inventory model's roles: clicks, shift-clicks, hover for
@@ -35,8 +34,10 @@ ItemSlot {
     }
     highlighted: hover.hovered
 
-    ToolTip.visible: hover.hovered && !empty && owner.pickedSlot < 0
-    ToolTip.text: tooltip
+    ThemedToolTip {
+        shown: hover.hovered && !slotItem.empty && slotItem.owner.pickedSlot < 0
+        text: slotItem.tooltip
+    }
 
     HoverHandler {
         id: hover

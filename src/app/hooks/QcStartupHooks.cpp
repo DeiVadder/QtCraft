@@ -6,8 +6,11 @@
 #include "QcMeshScheduler.h"
 #include "QcScreenshotHook.h"
 #include "QcSessionParts.h"
+#include "QcWorldView.h"
 
+#include <QCoreApplication>
 #include <QLoggingCategory>
+#include <QMouseEvent>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
@@ -92,6 +95,11 @@ void QcStartupHooks::releaseScreenshot() const
     }
 }
 
+void QcStartupHooks::menuShown()
+{
+    scheduleOverlaySteps();
+}
+
 void QcStartupHooks::worldPlaying()
 {
     sendStartupChat();
@@ -168,7 +176,8 @@ void QcStartupHooks::scheduleOverlaySteps()
 
         holdScreenshot();
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
-            if (m_parts.session) {
+            // Pointer and popup steps work in the main menu as well, the others need a world.
+            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"hover:"_s)) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -180,6 +189,10 @@ void QcStartupHooks::runOverlayStep(const QString &step)
 {
     if (step.startsWith(u"pick:"_s)) {
         pickInOpenScreen(QStringView(step).mid(5).toInt());
+    } else if (step.startsWith(u"open:"_s)) {
+        openPopup(step.mid(5));
+    } else if (step.startsWith(u"hover:"_s)) {
+        hoverAt(QStringView(step).mid(6));
     } else if (step == u"handbook"_s) {
         m_game.handbook()->open({});
     } else if (step == u"players"_s) {
@@ -206,6 +219,38 @@ void QcStartupHooks::pickInOpenScreen(int row) const
         }
     }
     qCWarning(lcGame) << "--overlay pick:" << row << ": no slot screen is open";
+}
+
+void QcStartupHooks::hoverAt(QStringView position) const
+{
+    const qsizetype comma = position.indexOf(u',');
+    bool validX = false;
+    bool validY = false;
+    const QPointF point(position.left(comma).toDouble(&validX), position.mid(comma + 1).toDouble(&validY));
+    // The window that renders the view: the offscreen window when the content moved there.
+    QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    if (comma < 0 || !validX || !validY || !window) {
+        qCWarning(lcGame) << "--overlay hover:" << position << ": expected 'hover:<x>,<y>' in window coordinates";
+        return;
+    }
+
+    // A mouse move like the real pointer's: hover handlers, tooltips and the hovered item follow.
+    QMouseEvent move(QEvent::MouseMove, point, window->mapToGlobal(point), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(window, &move);
+}
+
+void QcStartupHooks::openPopup(const QString &objectName) const
+{
+    const QQuickWindow *window = m_game.view() ? m_game.view()->window() : nullptr;
+    // An empty name would find the first unnamed object.
+    QObject *control = window && !objectName.isEmpty() ? window->contentItem()->findChild<QObject *>(objectName) : nullptr;
+    if (!control) {
+        qCWarning(lcGame) << "--overlay open:" << objectName << ": no such control";
+        return;
+    }
+    // A combo box opens its list; a popup or dialog opens itself.
+    QObject *popup = control->property("popup").value<QObject *>();
+    QMetaObject::invokeMethod(popup ? popup : control, "open");
 }
 
 void QcStartupHooks::machineOpened()

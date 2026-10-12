@@ -65,6 +65,11 @@ double QcGameSettings::clampFieldOfView(double degrees)
     return std::isfinite(degrees) ? std::clamp(degrees, minFieldOfView, maxFieldOfView) : defaultFieldOfView;
 }
 
+double QcGameSettings::clampFovEffects(double share)
+{
+    return std::isfinite(share) ? std::clamp(share, 0.0, 1.0) : defaultFovEffects;
+}
+
 double QcGameSettings::clampMouseSensitivity(double sensitivity)
 {
     return std::isfinite(sensitivity) ? std::clamp(sensitivity, minMouseSensitivity, maxMouseSensitivity)
@@ -95,6 +100,8 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.viewDistance = ok ? clampViewDistance(view) : defaultViewDistance;
     const double fov = file.value(u"fieldOfView"_s).toDouble(&ok);
     settings.fieldOfView = ok ? clampFieldOfView(fov) : defaultFieldOfView;
+    const double fovEffects = file.value(u"fovEffects"_s).toDouble(&ok);
+    settings.fovEffects = ok ? clampFovEffects(fovEffects) : defaultFovEffects;
     const double sensitivity = file.value(u"mouseSensitivity"_s).toDouble(&ok);
     settings.mouseSensitivity = ok ? clampMouseSensitivity(sensitivity) : defaultMouseSensitivity;
     settings.invertMouse = file.value(u"invertMouse"_s, false).toBool();
@@ -130,6 +137,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     QSettings file(path, QSettings::IniFormat);
     file.setValue(u"viewDistance"_s, viewDistance);
     file.setValue(u"fieldOfView"_s, fieldOfView);
+    file.setValue(u"fovEffects"_s, fovEffects);
     file.setValue(u"mouseSensitivity"_s, mouseSensitivity);
     file.setValue(u"invertMouse"_s, invertMouse);
     debug.save(file);

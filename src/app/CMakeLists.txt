@@ -22,6 +22,7 @@ qt_add_executable(qtcraft
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcUiTheme.h
+    models/QcControlPalette.h models/QcControlPalette.cpp
     input/QcGameInput.h input/QcGameInput.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
@@ -126,6 +127,7 @@ qt_add_qml_module(qtcraft
         qml/PlayerSlots.qml
         qml/SlotScreen.qml
         qml/HudLabel.qml
+        qml/ThemedToolTip.qml
         qml/PauseMenu.qml
         qml/MainMenu.qml
         qml/MessageScreen.qml

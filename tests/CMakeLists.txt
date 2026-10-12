@@ -220,6 +220,12 @@ target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJ
 qc_add_test(test_server_messages SOURCES content/test_server_messages.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
+# Field of view while sprinting and the sprint latch (decision E-280).
+qc_add_test(test_sprint_feel SOURCES client/test_sprint_feel.cpp LIBRARIES qc_clientcore)
+# The control palette of the windows (decision E-279).
+qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp ${PROJECT_SOURCE_DIR}/src/app/models/QcControlPalette.cpp
+            LIBRARIES qc_clientcore Qt::Quick Qt::Qml)
+target_include_directories(test_control_palette PRIVATE ${PROJECT_SOURCE_DIR}/src/app/models)
 # The graph of the debug display lives in the app; its scene graph nodes need no window.
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcGraphItem.cpp
             LIBRARIES Qt::Quick)

@@ -16,7 +16,7 @@ class QcWorldLibraryController;
 struct QcSessionParts;
 
 // The player's settings (GameController.settings), stored in a file below the data root
-// (QTCRAFT_DATA_DIR in tests): view distance, field of view, mouse, labels, language, camera mode
+// (QTCRAFT_DATA_DIR in tests): view distance, field of view and its effects, mouse, labels, language, camera mode
 // and keys, with the volumes, the character's look and the debug display as their own objects. The accessors
 // are the QML properties of this one responsibility.
 class QcSettingsController : public QObject
@@ -25,6 +25,8 @@ class QcSettingsController : public QObject
     QML_ANONYMOUS
     Q_PROPERTY(int viewDistance READ viewDistance WRITE setViewDistance NOTIFY viewDistanceChanged FINAL)
     Q_PROPERTY(double fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY settingsChanged FINAL)
+    // Share (0..1) of the field-of-view widening while sprinting (decision E-280).
+    Q_PROPERTY(double fovEffects READ fovEffects WRITE setFovEffects NOTIFY settingsChanged FINAL)
     Q_PROPERTY(double mouseSensitivity READ mouseSensitivity WRITE setMouseSensitivity NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool invertMouse READ invertMouse WRITE setInvertMouse NOTIFY settingsChanged FINAL)
     Q_PROPERTY(bool showLabels READ showLabels WRITE setShowLabels NOTIFY settingsChanged FINAL)
@@ -55,6 +57,8 @@ public:
     void setViewDistance(int chunks);
     double fieldOfView() const { return m_fieldOfView; }
     void setFieldOfView(double degrees);
+    double fovEffects() const { return m_fovEffects; }
+    void setFovEffects(double share);
     double mouseSensitivity() const { return m_mouseSensitivity; }
     void setMouseSensitivity(double sensitivity);
     bool invertMouse() const { return m_invertMouse; }
@@ -92,6 +96,7 @@ private:
     QcDebugSettings *m_debug = nullptr;
     int m_viewDistance = QcGameSettings::defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
+    double m_fovEffects = QcGameSettings::defaultFovEffects;
     double m_mouseSensitivity = QcGameSettings::defaultMouseSensitivity;
     bool m_invertMouse = false;
     bool m_showLabels = true;

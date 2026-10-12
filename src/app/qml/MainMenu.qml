@@ -323,6 +323,7 @@ Rectangle {
     ModsScreen {
         id: modsScreen
 
+        objectName: "modsScreen"
         game: menu.game
         onClosed: menu.subScreenClosed()
     }
@@ -354,6 +355,7 @@ Rectangle {
     Dialog {
         id: deleteDialog
 
+        objectName: "deleteWorldDialog"
         property string folder
         property string worldName
 

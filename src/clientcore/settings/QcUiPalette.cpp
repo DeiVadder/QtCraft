@@ -51,6 +51,7 @@ constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
     {R::RowHighlight, "rowHighlight", 0x20ffffff},
     {R::LinkBackground, "linkBackground", 0x26ffffff},
     {R::LinkHover, "linkHover", 0x60507aa8},
+    {R::TooltipBackground, "tooltipBackground", 0xf21c1c1c},
     {R::GraphFrame, "graphFrame", 0xff8ee68e},
     {R::GraphTick, "graphTick", 0xff8ecaff},
     {R::GraphLimit, "graphLimit", 0xffffb060},
@@ -107,6 +108,9 @@ QList<TextPair> textPairs()
         {"Main menu text, lower half", R::Text, {R::MenuBottom}},
         {"Main menu world details", R::TextSecondary, {R::MenuTop, R::Scrim}},
         {"Main menu errors", R::Error, {R::MenuTop, R::Scrim}},
+        // Tooltips appear anywhere: over the world as well as over panels.
+        {"Tooltips", R::Text, {R::TooltipBackground}},
+        {"Tooltips over a panel", R::Text, {R::Scrim, R::Panel, R::TooltipBackground}},
         {"Loading and error message", R::Text, {R::ScrimStrong}, true},
         // Lines are graphics, not text: 3:1 like large text (WCAG 1.4.11).
         {"Debug frame graph", R::GraphFrame, {R::HudBackdrop}, true},
@@ -125,6 +129,60 @@ QList<QColor> worldBackgrounds()
         QColor(98, 160, 64),   // grass
         QColor(5, 7, 15),      // night sky
         QColor(0, 0, 0),       // cave
+    };
+}
+
+QPalette controlPalette()
+{
+    using P = QPalette;
+    const QColor tooltip = color(R::TooltipBackground);
+    const QList<std::pair<P::ColorRole, QColor>> roles = {
+        {P::Window, QColor(0x26, 0x26, 0x26)},
+        {P::WindowText, color(R::Text)},
+        {P::Base, QColor(0x1a, 0x1a, 0x1a)},
+        {P::AlternateBase, QColor(0x30, 0x30, 0x30)},
+        {P::Text, color(R::Text)},
+        {P::PlaceholderText, color(R::TextMuted)},
+        {P::Button, QColor(0x32, 0x32, 0x32)},
+        {P::ButtonText, color(R::Text)},
+        {P::BrightText, color(R::Text)},
+        {P::Highlight, color(R::MenuTop)},
+        {P::HighlightedText, color(R::Text)},
+        {P::ToolTipBase, QColor(tooltip.red(), tooltip.green(), tooltip.blue())},
+        {P::ToolTipText, color(R::Text)},
+        {P::Light, QColor(0x3c, 0x3c, 0x3c)},
+        {P::Midlight, QColor(0x36, 0x36, 0x36)},
+        {P::Mid, QColor(0x8a, 0x8a, 0x8a)},
+        {P::Dark, QColor(0x1a, 0x1a, 0x1a)},
+        {P::Shadow, QColor(0, 0, 0)},
+        {P::Link, color(R::Link)},
+        {P::LinkVisited, color(R::Link)},
+        {P::Accent, color(R::MenuTop)},
+    };
+
+    QPalette palette;
+    for (const auto &[role, value] : roles) {
+        palette.setColor(role, value);
+    }
+    // Disabled texts are dimmed but stay legible.
+    for (const P::ColorRole role : {P::WindowText, P::Text, P::ButtonText, P::HighlightedText}) {
+        palette.setColor(P::Disabled, role, color(R::TextMuted).darker(130));
+    }
+    return palette;
+}
+
+QList<ControlPair> controlPairs()
+{
+    using P = QPalette;
+    return {
+        {P::WindowText, P::Window},
+        {P::Text, P::Base},
+        {P::Text, P::AlternateBase},
+        {P::ButtonText, P::Button},
+        {P::HighlightedText, P::Highlight},
+        {P::ToolTipText, P::ToolTipBase},
+        {P::PlaceholderText, P::Base},
+        {P::Link, P::Window},
     };
 }
 

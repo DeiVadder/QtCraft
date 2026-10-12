@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QMetaEnum>
 #include <QRegularExpression>
 #include <QSet>
 #include <QTest>
@@ -202,6 +203,64 @@ private slots:
         }
         QVERIFY(checked >= 10);
         QVERIFY2(problems.isEmpty(), qPrintable(problems.join(u'\n')));
+    }
+
+    // The palette of the controls (E-279) sets every role, and the texts the controls draw on it
+    // stay readable; disabled texts are dimmer but legible (3:1).
+    void controlPaletteIsReadable()
+    {
+        const QPalette palette = QcUiPalette::controlPalette();
+        const QMetaEnum roles = QMetaEnum::fromType<QPalette::ColorRole>();
+        for (int role = 0; role < QPalette::NColorRoles; ++role) {
+            if (role != QPalette::NoRole) {
+                QVERIFY2(palette.isBrushSet(QPalette::Active, QPalette::ColorRole(role)), roles.valueToKey(role));
+            }
+        }
+
+        const QList<QcUiPalette::ControlPair> pairs = QcUiPalette::controlPairs();
+        QVERIFY(pairs.size() >= 8);
+        for (const QcUiPalette::ControlPair &pair : pairs) {
+            const QColor background = palette.color(pair.background);
+            QCOMPARE(background.alpha(), 255);
+            const double ratio = QcUiPalette::contrast(QcUiPalette::composite(palette.color(pair.text), background), background);
+            QVERIFY2(ratio >= QcUiPalette::normalTextMinimum,
+                     qPrintable(u"%1 on %2: %3"_s.arg(QLatin1StringView(roles.valueToKey(pair.text)), QLatin1StringView(roles.valueToKey(pair.background))).arg(ratio, 0, 'f', 2)));
+        }
+        const QColor button = palette.color(QPalette::Button);
+        QVERIFY(QcUiPalette::contrast(palette.color(QPalette::Disabled, QPalette::ButtonText), button) >= 3.0);
+
+        // The macOS system palette in the dark scheme (black tooltip text on 25 % white over the
+        // panel) fails the same check: it is what made the tooltips unreadable.
+        const QColor panel = QcUiPalette::composite(QcUiPalette::color(QcUiPalette::Role::Panel), Qt::black);
+        const QColor systemTooltip = QcUiPalette::composite(QColor::fromRgba(0x3fffffff), panel);
+        QVERIFY(QcUiPalette::contrast(Qt::black, systemTooltip) < QcUiPalette::normalTextMinimum);
+    }
+
+    // Tooltips are ThemedToolTip (E-279): the attached ToolTip and a bare ToolTip take the style's
+    // colours. Only ThemedToolTip.qml itself builds on ToolTip.
+    void tooltipsAreThemed()
+    {
+        static const QRegularExpression styleToolTip(uR"(\bToolTip\s*(\.|\{))"_s);
+        static const QRegularExpression themed(uR"(\bThemedToolTip\s*\{)"_s);
+        QStringList problems;
+        int themedUses = 0;
+        const QStringList files = qmlFiles();
+        for (const QString &path : files) {
+            QFile file(path);
+            QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+            const QStringList lines = QString::fromUtf8(file.readAll()).split(u'\n');
+            const bool component = QFileInfo(path).fileName() == u"ThemedToolTip.qml"_s;
+            for (qsizetype i = 0; i < lines.size(); ++i) {
+                const QString code = lines[i].section(u"//"_s, 0, 0);
+                if (!component && styleToolTip.match(code).hasMatch()) {
+                    problems.append(u"%1:%2: %3"_s.arg(QFileInfo(path).fileName()).arg(i + 1).arg(lines[i].trimmed()));
+                }
+                themedUses += themed.match(code).hasMatch() ? 1 : 0;
+            }
+        }
+        QVERIFY2(problems.isEmpty(), qPrintable(u"use ThemedToolTip instead:\n"_s + problems.join(u'\n')));
+        // Handbook recipes, inventory slots and the recent-server rows.
+        QVERIFY(themedUses >= 3);
     }
 
     // Screens take all colours from the palette, and only names it has.

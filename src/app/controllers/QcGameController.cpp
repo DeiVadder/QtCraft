@@ -611,7 +611,7 @@ void QcGameController::onFrame()
     const QcVec3 eye = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     // The control interface may switch the view too; the session holds the current mode.
     const QcCameraMode mode = m_parts.session->isDead() ? QcCameraMode::FirstPerson : m_parts.session->cameraMode();
-    m_render.placeCamera(eye, mode);
+    m_render.placeCamera(eye, mode, frameSeconds);
 
     QElapsedTimer entityTime;
     entityTime.start();

@@ -60,6 +60,7 @@ private slots:
         QcGameSettings settings;
         settings.viewDistance = 12;
         settings.fieldOfView = 90.0;
+        settings.fovEffects = 0.35;
         settings.mouseSensitivity = 0.3;
         settings.invertMouse = true;
         settings.debug.level = QcDebugOptions::Level::Full;
@@ -305,13 +306,14 @@ private slots:
         const QString path = dir.filePath(u"settings.ini"_s);
         QFile file(path);
         QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("[General]\nviewDistance=99\nfieldOfView=500\nmouseSensitivity=nan\ninvertMouse=true\n"
+        file.write("[General]\nviewDistance=99\nfieldOfView=500\nfovEffects=-2\nmouseSensitivity=nan\ninvertMouse=true\n"
                    "showDebug=false\nlanguage=../../evil\n");
         file.close();
 
         const QcGameSettings settings = QcGameSettings::load(path);
         QCOMPARE(settings.viewDistance, QcGameSettings::maxViewDistance);
         QCOMPARE(settings.fieldOfView, QcGameSettings::maxFieldOfView);
+        QCOMPARE(settings.fovEffects, 0.0);
         QCOMPARE(settings.mouseSensitivity, QcGameSettings::defaultMouseSensitivity);
         QVERIFY(settings.invertMouse);
         // An older file with only showDebug=false has the debug display off.

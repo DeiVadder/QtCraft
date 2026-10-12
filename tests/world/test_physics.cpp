@@ -96,6 +96,36 @@ private slots:
         QVERIFY(std::abs((0.5 - motion.position.z) - 4.3) < 1e-9);
     }
 
+    // Sprinting is 30 % faster than walking, as in the model (4.317 and 5.612 m/s), on the ground
+    // and while jumping along (decision E-280). Measured over 4 s after a second to reach speed.
+    void sprintIsThirtyPercentFasterThanWalking()
+    {
+        QcTestWorld world(m_content);
+        world.fillBox({-2, 63, -120}, {2, 63, 2}, stone);
+        const auto speedOf = [&world](bool sprint, bool jump) {
+            QcEntityMotion motion;
+            motion.position = {0.5, 64.0, 0.5};
+            run(motion, {}, world, 1);
+            QcPlayerInput input;
+            input.forward = 1.0f;
+            input.sprint = sprint;
+            input.jump = jump;
+            run(motion, input, world, 20);
+            const double start = motion.position.z;
+            run(motion, input, world, 80);
+            return (start - motion.position.z) / 4.0;
+        };
+
+        const double walk = speedOf(false, false);
+        const double sprint = speedOf(true, false);
+        const double sprintJump = speedOf(true, true);
+        QVERIFY2(std::abs(walk - QcPhysics::walkSpeed) < 1e-6, qPrintable(QString::number(walk)));
+        QVERIFY2(std::abs(sprint - QcPhysics::sprintSpeed) < 1e-6, qPrintable(QString::number(sprint)));
+        QVERIFY2(std::abs(sprint / walk - 1.3) < 0.01, qPrintable(QString::number(sprint / walk)));
+        // Jumping does not slow a sprint down.
+        QVERIFY2(sprintJump >= sprint - 1e-6, qPrintable(QString::number(sprintJump)));
+    }
+
     void cannotWalkUpOneBlockButCanJumpOnIt()
     {
         QcTestWorld world(m_content);

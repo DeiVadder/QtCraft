@@ -3,6 +3,7 @@
 #include "QcKeyBindings.h"
 #include "QcMouseCapture.h"
 #include "QcRelativeMouse.h"
+#include "QcSprintLatch.h"
 
 #include <QObject>
 #include <QPointF>
@@ -77,7 +78,7 @@ private:
     bool handleWheel(const QWheelEvent &wheel) const;
     bool handleMouseMove(const QMouseEvent &mouse) const;
     bool keyDown(QcKeyBindings::Action action) const;
-    void updateIntentFromKeys(float frameSeconds) const;
+    void updateIntentFromKeys(float frameSeconds);
     // Plays the click sound when the mouse is released over a button or an inventory slot.
     void clickIfButton(QPointF scenePosition) const;
 
@@ -88,6 +89,8 @@ private:
     QcRelativeMouse m_relativeMouse;
     QSet<int> m_keysDown;
     QcMouseCapture m_capture;
+    // Sprint by a press of the sprint key or a double tap of forward (decision E-280).
+    QcSprintLatch m_sprint;
     bool m_backgroundRun = false;
     bool m_playerListHeld = false;
 };

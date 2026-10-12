@@ -3,6 +3,7 @@
 #include "QcBlockPos.h"
 #include "QcCapeTracker.h"
 #include "QcEntityMesher.h"
+#include "QcFovEffect.h"
 #include "QcViewCamera.h"
 
 #include <QElapsedTimer>
@@ -31,7 +32,9 @@ public:
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
-    void placeCamera(const QcVec3 &eye, QcCameraMode mode);
+    // The camera at the eye, with the field of view widened while sprinting (decision E-280);
+    // `frameSeconds` advances the widening's easing.
+    void placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds);
     // Creatures, dropped items, falling blocks and, seen from outside, the player.
     void updateEntities(double alpha, QcCameraMode mode);
     // The first-person arm with the held item; hidden in the other camera modes.
@@ -76,6 +79,7 @@ private:
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
+    QcFovEffect m_fov;
     QElapsedTimer m_capeClock;
     // Vertex and index count of the last entity mesh.
     std::pair<qsizetype, qsizetype> m_entityMeshSize;

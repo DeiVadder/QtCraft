@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QList>
+#include <QPalette>
 #include <QString>
 
 #include <span>
@@ -61,6 +62,8 @@ enum class Role {
     RowHighlight,
     LinkBackground,
     LinkHover,
+    // Tooltips: nearly opaque, so the text reads the same over panels, headings and the world.
+    TooltipBackground,
     // Debug display: the frame and tick graphs and their budget line (16.7 ms, 50 ms).
     GraphFrame,
     GraphTick,
@@ -86,8 +89,8 @@ QString name(Role role);
 // on the world). Large texts (at least 18 pt, or 14 pt bold) need 3:1 instead of 4.5:1.
 struct TextPair
 {
-    const char *where;
-    Role text;
+    const char *where = nullptr;
+    Role text = Role::Text;
     QList<Role> layers;
     bool large = false;
 };
@@ -103,7 +106,24 @@ QColor composite(const QColor &over, const QColor &under);
 // The lowest contrast of a pair over all world backgrounds.
 double worstContrast(const TextPair &pair);
 
+// The palette of the Qt Quick Controls (decision E-279), set for the whole application: popups,
+// dialogs, fields, combo boxes and their lists, labels and the attached tooltip take their colours
+// from it instead of the system palette. The macOS system palette in the dark scheme pairs a
+// translucent light tooltip background with black tooltip text and has light "alternate base"
+// and "dark" colours, which are unreadable under white text.
+QPalette controlPalette();
+
+// Text and background roles of controlPalette() that controls draw together.
+struct ControlPair
+{
+    QPalette::ColorRole text = QPalette::Text;
+    QPalette::ColorRole background = QPalette::Base;
+};
+QList<ControlPair> controlPairs();
+
 inline constexpr double normalTextMinimum = 4.5;
 inline constexpr double largeTextMinimum = 3.0;
 
 } // namespace QcUiPalette
+
+Q_DECLARE_TYPEINFO(QcUiPalette::ControlPair, Q_PRIMITIVE_TYPE);

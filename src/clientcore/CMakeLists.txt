@@ -16,6 +16,7 @@ qt_add_library(qc_clientcore STATIC
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
+    session/QcSprintLatch.h session/QcSprintLatch.cpp
     session/QcClientEntity.h
     session/QcHandTimers.h
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
@@ -42,6 +43,7 @@ qt_add_library(qc_clientcore STATIC
     light/QcSky.h light/QcSky.cpp
     meshing/QcEntityVertex.h
     camera/QcFrustum.h camera/QcFrustum.cpp
+    camera/QcFovEffect.h camera/QcFovEffect.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp

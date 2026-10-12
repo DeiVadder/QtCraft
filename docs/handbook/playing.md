@@ -47,7 +47,7 @@ On a Mac the keys F1–F12 control the brightness, Mission Control, the search a
 
 **Moving**
 
-You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you from falling off edges. Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.
+You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you from falling off edges. To sprint, press **Ctrl** while walking forward or tap **W** twice; the sprint lasts as long as you keep walking forward. The view widens a little while you sprint (Settings → FOV effects). Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.
 
 **Screens**
 

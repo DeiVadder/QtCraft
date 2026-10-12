@@ -52,6 +52,27 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
   installation has the rights under that name. To hand the name to another installation, remove its
   entry from `configOperators` while the server is stopped.
 
+### From the app bundle (macOS release)
+
+The release bundle carries the dedicated server next to the game, on the same Qt frameworks
+(`QtCraft.app/Contents/MacOS/qtcraft-headless`, universal for Apple silicon and Intel). Start it from
+Terminal; it needs no window and no other installation:
+
+```sh
+/Applications/QtCraft.app/Contents/MacOS/qtcraft-headless --server --port 25600
+/Applications/QtCraft.app/Contents/MacOS/qtcraft-headless --server --console --data-dir ~/qtcraft-server
+```
+
+- Without `--data-dir` the server keeps its worlds in `~/Library/Application Support/QtCraft/qtcraft-headless`,
+  apart from the game's own worlds (`~/Library/Application Support/QtCraft/QtCraft`). To serve a
+  world made in the game, pass `--data-dir "$HOME/Library/Application Support/QtCraft/QtCraft" --world <folder>`
+  while the game does not have that world open (the world lock refuses a second user).
+- The bundle is signed ad hoc only: if macOS refuses to start the game the first time (see the
+  README), it refuses the server too; once the game has been allowed, the server runs as well.
+- `scripts/release.sh` checks that the server of the bundle starts (`--server --port 0 --bind
+  127.0.0.1`, temporary data folder), prints `Listening on port N` and stops with exit code 0 on
+  SIGTERM.
+
 ## Hosting from the game
 
 A single-player world can be opened to other players while its owner keeps playing: the local

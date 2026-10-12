@@ -1595,12 +1595,12 @@
         <translation>Ungültige Adresse: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="121"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="120"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="158"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="177"/>
         <source>Only a running single-player world can be opened to the network</source>
         <translation>Nur eine laufende Einzelspielerwelt kann für das Netzwerk geöffnet werden</translation>
     </message>
@@ -2816,12 +2816,12 @@
         <translation>Beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="69"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="71"/>
         <source>Remove %1 from the list</source>
         <translation>%1 aus der Liste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/RecentServerRow.qml" line="71"/>
+        <location filename="../src/app/qml/RecentServerRow.qml" line="76"/>
         <source>Remove from the list</source>
         <translation>Aus der Liste entfernen</translation>
     </message>
@@ -2872,12 +2872,12 @@
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="118"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="137"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="135"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="154"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
@@ -2886,80 +2886,86 @@
         <translation type="vanished">Bildrate und Position anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="142"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="161"/>
         <source>Show labels in the world (%1)</source>
         <translation>Beschriftungen in der Welt anzeigen (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="148"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="167"/>
         <source>Master volume</source>
         <translation>Gesamtlautstärke</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="160"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="176"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="192"/>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="208"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="133"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="179"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="195"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="211"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="227"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="164"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="119"/>
+        <source>FOV effects</source>
+        <translation>Sichtfeld-Effekte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="183"/>
         <source>Effects</source>
         <translation>Effekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="180"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="199"/>
         <source>Music</source>
         <translation>Musik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="196"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="215"/>
         <source>Ambience</source>
         <translation>Umgebung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="213"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="232"/>
         <source>Mute all sounds</source>
         <translation>Alle Töne stumm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="219"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="238"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="229"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="248"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="230"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="249"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="231"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="250"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="237"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="256"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="248"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="267"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="258"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="277"/>
         <source>The view distance applies when a world is started.</source>
         <translation>Die Sichtweite gilt ab dem nächsten Weltstart.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/SettingsScreen.qml" line="277"/>
+        <location filename="../src/app/qml/SettingsScreen.qml" line="296"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>

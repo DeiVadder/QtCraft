@@ -44,6 +44,7 @@ void QcSettingsController::loadSettings()
     m_storedSettings = QcGameSettings::load(settingsPath());
     setViewDistance(m_storedSettings.viewDistance);
     setFieldOfView(m_storedSettings.fieldOfView);
+    setFovEffects(m_storedSettings.fovEffects);
     setMouseSensitivity(m_storedSettings.mouseSensitivity);
     setInvertMouse(m_storedSettings.invertMouse);
     m_debug->load(m_storedSettings.debug);
@@ -68,6 +69,7 @@ void QcSettingsController::saveSettings()
     // A view distance given on the command line is not stored unless the player changed it since.
     settings.viewDistance = m_commandLineViewDistance == m_viewDistance ? m_storedSettings.viewDistance : m_viewDistance;
     settings.fieldOfView = m_fieldOfView;
+    settings.fovEffects = m_fovEffects;
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
     settings.debug = m_debug->options();
@@ -102,6 +104,15 @@ void QcSettingsController::setFieldOfView(double degrees)
     degrees = QcGameSettings::clampFieldOfView(degrees);
     if (m_fieldOfView != degrees) {
         m_fieldOfView = degrees;
+        emit settingsChanged();
+    }
+}
+
+void QcSettingsController::setFovEffects(double share)
+{
+    share = QcGameSettings::clampFovEffects(share);
+    if (m_fovEffects != share) {
+        m_fovEffects = share;
         emit settingsChanged();
     }
 }

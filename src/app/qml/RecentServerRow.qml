@@ -65,11 +65,16 @@ Rectangle {
         }
 
         Button {
+            id: removeButton
+
             text: "×"
             Accessible.name: qsTr("Remove %1 from the list").arg(row.modelData.address)
-            ToolTip.visible: hovered
-            ToolTip.text: qsTr("Remove from the list")
             onClicked: row.removeRequested(row.modelData.address)
+
+            ThemedToolTip {
+                shown: removeButton.hovered
+                text: qsTr("Remove from the list")
+            }
         }
     }
 }

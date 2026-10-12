@@ -201,6 +201,7 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
 void QcGameInput::clearKeys()
 {
     m_keysDown.clear();
+    m_sprint.reset();
     setPlayerListHeld(false);
 }
 
@@ -346,6 +347,10 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
         // With Ctrl (on a Mac Control) the whole stack.
         m_parts.session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_settings.keys()->bindings().platform())));
         return;
+    case A::Forward:
+        m_sprint.forwardPressed(qint64(key.timestamp()));
+        m_keysDown.insert(key.key());
+        return;
     default:
         // Movement and look keys count while held (updateIntentFromKeys()).
         m_keysDown.insert(key.key());
@@ -353,7 +358,7 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     }
 }
 
-void QcGameInput::updateIntentFromKeys(float frameSeconds) const
+void QcGameInput::updateIntentFromKeys(float frameSeconds)
 {
     using A = QcKeyBindings::Action;
     QcPlayerInput intent = m_parts.session->intent();
@@ -361,7 +366,7 @@ void QcGameInput::updateIntentFromKeys(float frameSeconds) const
     intent.strafe = float(int(keyDown(A::Right)) - int(keyDown(A::Left)));
     intent.jump = keyDown(A::Jump);
     intent.sneak = keyDown(A::Sneak);
-    intent.sprint = keyDown(A::Sprint);
+    intent.sprint = m_sprint.update(keyDown(A::Forward), keyDown(A::Sprint), intent.sneak);
     const float look = keyboardLookSpeed * frameSeconds;
     intent.yaw += look * float(int(keyDown(A::LookRight)) - int(keyDown(A::LookLeft)));
     intent.pitch = std::clamp(intent.pitch + look * float(int(keyDown(A::LookUp)) - int(keyDown(A::LookDown))), -89.9f, 89.9f);

@@ -35,7 +35,9 @@ public:
     QString forcedPose() const { return m_forcedPose; }
     // Chat lines sent and overlays opened once the world is playable. Like chat lines, an overlay
     // "@<ms> <name>" opens that many milliseconds later ("@<ms> " closes the overlay and the
-    // handbook, "@<ms> pick:<row>" picks up the stack of an inventory model row in the open screen).
+    // handbook, "@<ms> pick:<row>" picks up the stack of an inventory model row in the open screen,
+    // "@<ms> hover:<x>,<y>" moves the pointer there, e.g. to show a tooltip, "@<ms> open:<objectName>"
+    // opens the list of that combo box or that popup or dialog).
     void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }
@@ -43,6 +45,8 @@ public:
     void setScreenshotHook(QcScreenshotHook *hook);
     QcBenchmarkRun *benchmark() const { return m_benchmark; }
 
+    // Without --play: runs the "@<ms> open:" and "@<ms> hover:" steps in the main menu.
+    void menuShown();
     // Runs the script: the world has just become playable.
     void worldPlaying();
     // --overlay furnace|chest: fills the machine that just opened from the hotbar.
@@ -59,6 +63,8 @@ private:
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
     void runOverlayStep(const QString &step);
     void pickInOpenScreen(int row) const;
+    void hoverAt(QStringView position) const;
+    void openPopup(const QString &objectName) const;
     // Holds the screenshot until the matching releaseScreenshot().
     void holdScreenshot() const;
     void releaseScreenshot() const;

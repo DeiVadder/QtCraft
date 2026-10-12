@@ -1,5 +1,6 @@
 #include "QcBenchmarkRun.h"
 #include "QcBundledMods.h"
+#include "QcControlPalette.h"
 #include "QcGameController.h"
 #include "QcModLoader.h"
 #include "QcOffscreenRender.h"
@@ -88,7 +89,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},
-        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Without --play: multiplayer opens the main menu's multiplayer screen (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen)."_s,
+        {u"overlay"_s, u"Screen opened once the world is loaded: inventory, pause, settings, controls, debug (the debug options), character, lan (open to LAN), players (the player list as if its key were held), chat, handbook, furnace (uses the block in view and fills it from hotbar slots 1 and 2) or chest (uses the block in view and moves the hotbar into it). Without --play: multiplayer opens the main menu's multiplayer screen (with --join the join runs there and a refusal stays on screen). Repeatable: '@<ms> <screen>' switches that many milliseconds later ('@<ms> ' closes the screen and the handbook, '@<ms> pick:<row>' picks up a stack in the open slot screen, '@<ms> hover:<x>,<y>' moves the pointer there, e.g. for a tooltip, '@<ms> open:<objectName>' opens that combo box's list, popup or dialog)."_s,
          u"name"_s},
         {u"handbook"_s, u"Open the handbook at an entry ('block:qtcraft:stone', 'zombie') or with a search, once the world is loaded (at once without --play)."_s,
          u"entry"_s},
@@ -209,12 +210,26 @@ QString uiLanguage(const AppOptions &options)
 }
 
 // The game screens are drawn dark over the world (E-079), so the controls are dark too, whatever
-// the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison.
+// the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison;
+// =system also keeps the system's control palette instead of the game's (E-279).
+bool systemColorScheme()
+{
+    return qEnvironmentVariable("QTCRAFT_COLOR_SCHEME") == u"system"_s;
+}
+
 void applyColorScheme()
 {
-    const QString scheme = qEnvironmentVariable("QTCRAFT_COLOR_SCHEME");
-    if (scheme != u"system"_s) {
-        QGuiApplication::styleHints()->setColorScheme(scheme == u"light"_s ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+    if (!systemColorScheme()) {
+        const bool light = qEnvironmentVariable("QTCRAFT_COLOR_SCHEME") == u"light"_s;
+        QGuiApplication::styleHints()->setColorScheme(light ? Qt::ColorScheme::Light : Qt::ColorScheme::Dark);
+    }
+}
+
+// Popups, dialogs and tooltips take their colours from their window (E-279).
+void applyControlPalette(QQuickWindow &window)
+{
+    if (!systemColorScheme() && !QcControlPalette::applyTo(window)) {
+        qWarning("The window offers no control palette; controls keep the system colours");
     }
 }
 
@@ -229,11 +244,16 @@ void preselectWorldType(const QQuickWindow &window)
     }
 }
 
-// --overlay multiplayer without --play (test hook): opens the main menu's multiplayer screen; with
-// --join it joins from there, so a refusal is shown like after a click.
-void openMenuScreen(const QQuickWindow &window, const AppOptions &options)
+// Without --play (test hooks): --overlay multiplayer opens the main menu's multiplayer screen; with
+// --join it joins from there, so a refusal is shown like after a click. Runs the menu steps of the
+// script ("@<ms> open:<objectName>", "@<ms> hover:<x>,<y>").
+void openMenuScreen(const QQuickWindow &window, QcGameController &game, const AppOptions &options)
 {
-    if (options.play || !options.overlays.contains(u"multiplayer"_s)) {
+    if (options.play) {
+        return;
+    }
+    game.startup()->menuShown();
+    if (!options.overlays.contains(u"multiplayer"_s)) {
         return;
     }
     // Popups are no QObject children of the window; the menu opens its own screen.
@@ -455,6 +475,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow
         game.input()->setBackgroundRun(true);
     }
     applyWindowSize(window);
+    applyControlPalette(window);
     placeWindow(&window, options.screen);
     preselectWorldType(window);
 
@@ -465,6 +486,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow
     game.preview()->setOffscreen(true);
     // Created after placing: it takes the window's size and screen.
     auto render = std::make_unique<QcOffscreenRender>(window);
+    applyControlPalette(*render->window());
     if (!render->start()) {
         return std::unexpected(u"Cannot render offscreen"_s);
     }
@@ -502,7 +524,7 @@ void startGame(const UiParts &ui, QcGameController &game, const AppOptions &opti
         screenshot->setGrabber([offscreenRender] { return offscreenRender->grab(); });
     }
     startScriptedRun(game, options, screenshot);
-    openMenuScreen(offscreenRender ? *offscreenRender->window() : window, options);
+    openMenuScreen(offscreenRender ? *offscreenRender->window() : window, game, options);
 }
 
 } // namespace

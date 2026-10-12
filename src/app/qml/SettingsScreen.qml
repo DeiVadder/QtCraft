@@ -114,6 +114,25 @@ Popup {
                     text: qsTr("%1°").arg(Math.round(fieldOfView.value))
                 }
 
+                // How much the view widens while sprinting (0 % keeps it still).
+                Label {
+                    text: qsTr("FOV effects")
+                }
+                Slider {
+                    id: fovEffects
+
+                    objectName: "fovEffects"
+                    Layout.fillWidth: true
+                    from: 0
+                    to: 1
+                    stepSize: 0.05
+                    value: screen.game.settings.fovEffects
+                    onMoved: screen.game.settings.fovEffects = value
+                }
+                Label {
+                    text: qsTr("%1 %").arg(Math.round(fovEffects.value * 100))
+                }
+
                 Label {
                     text: qsTr("Mouse sensitivity")
                 }

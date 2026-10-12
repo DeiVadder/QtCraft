@@ -19,6 +19,8 @@ struct QcGameSettings
     static constexpr double defaultFieldOfView = 70.0;
     static constexpr double minFieldOfView = 50.0;
     static constexpr double maxFieldOfView = 110.0;
+    // Share of the field-of-view widening while sprinting (QcFovEffect, decision E-280), 0..1.
+    static constexpr double defaultFovEffects = 1.0;
     static constexpr double defaultMouseSensitivity = 0.15;
     static constexpr double minMouseSensitivity = 0.02;
     static constexpr double maxMouseSensitivity = 1.0;
@@ -30,6 +32,7 @@ struct QcGameSettings
 
     int viewDistance = defaultViewDistance;
     double fieldOfView = defaultFieldOfView;
+    double fovEffects = defaultFovEffects;
     double mouseSensitivity = defaultMouseSensitivity;
     bool invertMouse = false;
     // Debug display level and visualisations (decision E-225).
@@ -55,6 +58,8 @@ struct QcGameSettings
 
     static int clampViewDistance(int chunks);
     static double clampFieldOfView(double degrees);
+    // Clamps to 0..1; NaN and infinities give the default (full effects), like the other clamps.
+    static double clampFovEffects(double share);
     static double clampMouseSensitivity(double sensitivity);
     static QString cleanLanguage(const QString &language);
     // Clamps to 0..1; non-finite values give `fallback`.
