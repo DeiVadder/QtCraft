@@ -1,0 +1,84 @@
+{
+    "name": "wheat_crop",
+    "sound": "grass",
+    "shape": "crop",
+    "render": "cutout",
+    "solid": false,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "ground": [
+        "farmland"
+    ],
+    "washable": true,
+    "states": {
+        "age": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+        ]
+    },
+    "crop": {
+        "property": "age",
+        "averageSeconds": 1200,
+        "dryFactor": 0.5,
+        "minLight": 9,
+        "plantChance": 0.9
+    },
+    "drops": [
+        {
+            "item": "wheat_seeds",
+            "when": {
+                "age": [
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
+                ]
+            }
+        },
+        {
+            "item": "wheat",
+            "when": {
+                "age": "7"
+            }
+        },
+        {
+            "item": "wheat_seeds",
+            "when": {
+                "age": "7"
+            }
+        },
+        {
+            "item": "wheat_seeds",
+            "chance": 0.5,
+            "when": {
+                "age": "7"
+            }
+        },
+        {
+            "item": "wheat_seeds",
+            "chance": 0.5,
+            "when": {
+                "age": "7"
+            }
+        }
+    ],
+    "textures": {
+        "all": "wheat_crop_ripe",
+        "slots": {
+            "young": "wheat_crop_young",
+            "growing": "wheat_crop_growing",
+            "ripe": "wheat_crop_ripe"
+        }
+    }
+}

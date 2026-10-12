@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Melonen](#feature-qtcraft-melon_patch) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -205,6 +205,20 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (1,4 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (1,2 % der Säulen), [Gebirge](biomes.md#biome-qtcraft-mountains) (0,6 % der Säulen)
 
+### <a id="feature-qtcraft-pumpkin_patch"></a>Kürbisse
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_patch` |
+| Art | Pflanze |
+| Blöcke | [Kürbis](blocks.md#block-qtcraft-pumpkin) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**In Biomen**
+
+[Ebene](biomes.md#biome-qtcraft-plains) (0,15 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (0,15 % der Säulen)
+
 ### <a id="feature-qtcraft-lava_pool"></a>Lavabecken
 
 | | |
@@ -273,6 +287,20 @@ In jedem Chunk dieser Biome versucht.
 **In Biomen**
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,8 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,8 % der Säulen)
+
+### <a id="feature-qtcraft-melon_patch"></a>Melonen
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_patch` |
+| Art | Pflanze |
+| Blöcke | [Melone](blocks.md#block-qtcraft-melon) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**In Biomen**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp) (0,15 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,12 % der Säulen)
 
 ### <a id="feature-qtcraft-poppy"></a>Mohn
 
@@ -359,6 +387,34 @@ In jedem Chunk dieser Biome versucht.
 **In Biomen**
 
 [Wüste](biomes.md#biome-qtcraft-desert) (2 % der Säulen)
+
+### <a id="feature-qtcraft-wild_carrots"></a>Wilde Karotten
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_carrots` |
+| Art | Pflanze |
+| Blöcke | [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**In Biomen**
+
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,3 % der Säulen)
+
+### <a id="feature-qtcraft-wild_potatoes"></a>Wilde Kartoffeln
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_potatoes` |
+| Art | Pflanze |
+| Blöcke | [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) |
+| Größe | 4–4 Blöcke |
+| Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**In Biomen**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (0,3 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,2 % der Säulen)
 
 ### <a id="feature-qtcraft-allium"></a>Zierlauch
 

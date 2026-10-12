@@ -3,6 +3,7 @@
 #include "QcBlockStateTable.h"
 #include "QcContentFields.h"
 #include "QcContentNames.h"
+#include "QcFarmingParser.h"
 #include "QcJsonFieldReader.h"
 #include "QcShapeParser.h"
 #include "QcSmeltingRecipe.h"
@@ -214,10 +215,20 @@ void parseDrops(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldRe
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
         const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
-                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0)};
+                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0), QcShapeParser::parseConditions(dropJson, dropReader)};
         if (!dropReader.ok() || drop.item.isEmpty()) {
             reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
             break;
+        }
+        // Conditions name states of the block itself (decision E-289).
+        for (const QcShapeCondition &condition : drop.when) {
+            const QcBlockProperty *property = block.property(condition.property);
+            const bool known = property && std::ranges::all_of(condition.values, [property](const QString &value) {
+                                   return property->values.contains(value);
+                               });
+            if (!known) {
+                reader.fail(u"drop 'when' names an unknown state '%1'"_s.arg(condition.property));
+            }
         }
         block.drops.append(drop);
     }
@@ -396,6 +407,20 @@ void parseGrowth(QcBlockDefinition &block, QcJsonFieldReader &growthReader)
     }
 }
 
+void parseFarming(QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    reader.nestedObject(u"crop"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcFarmingParser::parseCrop(block, nested, packNamespace);
+    });
+    reader.nestedObject(u"soil"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcFarmingParser::parseSoil(block, nested, packNamespace);
+    });
+    block.tillsInto = reader.name(u"tillsInto"_s, packNamespace);
+    if (block.crop.isCrop() && block.growth.grows()) {
+        reader.fail(u"a block grows either upwards ('growth') or in stages ('crop')"_s);
+    }
+}
+
 void parseSounds(QcBlockDefinition &block, QcJsonFieldReader &soundReader, const QString &packNamespace)
 {
     for (int action = 0; action < qcBlockSoundActionCount; ++action) {
@@ -507,6 +532,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     parseMovementFields(block, reader, packNamespace);
     parseGround(json, block, reader, packNamespace);
     reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
+    parseFarming(block, reader, packNamespace);
     block.soundMaterial = reader.name(u"sound"_s, packNamespace, QcSoundKeys::defaultMaterialFor(block));
     reader.nestedObject(u"sounds"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseSounds(block, nested, packNamespace);

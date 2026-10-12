@@ -1900,8 +1900,8 @@
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="124"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="290"/>
-        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false]</translation>
+        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="67"/>

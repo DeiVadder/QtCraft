@@ -10,7 +10,12 @@
         "mud"
     ],
     "replaceable": true,
-    "drops": [],
+    "drops": [
+        {
+            "item": "wheat_seeds",
+            "chance": 0.125
+        }
+    ],
     "textures": {
         "all": "tall_grass"
     }

@@ -1,0 +1,16 @@
+{
+    "name": "wooden_hoe",
+    "type": "shaped",
+    "pattern": [
+        "XX",
+        " |",
+        " |"
+    ],
+    "key": {
+        "X": "#planks",
+        "|": "stick"
+    },
+    "result": {
+        "item": "wooden_hoe"
+    }
+}

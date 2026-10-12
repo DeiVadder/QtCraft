@@ -1,0 +1,8 @@
+{
+    "name": "farmland_wet",
+    "pattern": "farmland",
+    "primary": "#4a3220",
+    "secondary": "#33221a",
+    "variation": 0.1,
+    "seed": 1715
+}

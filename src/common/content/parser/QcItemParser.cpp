@@ -40,6 +40,7 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     item.bottles = reader.boolean(u"bottles"_s, false);
     item.emptiesTo = reader.name(u"emptiesTo"_s, packNamespace);
     item.placesStand = reader.boolean(u"placesStand"_s, false);
+    item.tills = reader.boolean(u"tills"_s, false);
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
     });

@@ -1,0 +1,8 @@
+{
+    "name": "bread",
+    "pattern": "bread",
+    "primary": "#b8783a",
+    "secondary": "#e0b070",
+    "variation": 0.1,
+    "seed": 1703
+}

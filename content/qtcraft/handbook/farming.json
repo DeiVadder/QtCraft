@@ -1,0 +1,26 @@
+{
+    "name": "farming",
+    "order": 75,
+    "icon": "wheat",
+    "sections": [
+        "soil",
+        "crops",
+        "stems",
+        "seeds",
+        "animals",
+        "food"
+    ],
+    "related": [
+        "wooden_hoe",
+        "farmland",
+        "wheat_seeds",
+        "wheat_crop",
+        "carrot",
+        "potato",
+        "pumpkin_stem",
+        "melon_stem",
+        "bread",
+        "pig",
+        "sheep"
+    ]
+}

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Apple](#item-qtcraft-apple) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apple](#item-qtcraft-apple) · [Baked potato](#item-qtcraft-baked_potato) · [Bread](#item-qtcraft-bread) · [Carrot](#item-qtcraft-carrot) · [Cooked mutton](#item-qtcraft-cooked_mutton) · [Cooked porkchop](#item-qtcraft-cooked_porkchop) · [Melon slice](#item-qtcraft-melon_slice) · [Mushroom stew](#item-qtcraft-mushroom_stew) · [Potato](#item-qtcraft-potato) · [Pumpkin pie](#item-qtcraft-pumpkin_pie) · [Raw mutton](#item-qtcraft-raw_mutton) · [Raw porkchop](#item-qtcraft-raw_porkchop) · [Rotten flesh](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -19,6 +19,83 @@ Now and then an oak leaf block drops one.
 **Dropped by**
 
 [Oak leaves](blocks.md#block-qtcraft-oak_leaves) (2 %)
+
+### <a id="item-qtcraft-baked_potato"></a>Baked potato
+
+A potato baked in a furnace; as filling as bread.
+
+| | |
+|---|---|
+| ID | `qtcraft:baked_potato` |
+| Stack size | 64 |
+| Food | 5 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Potato](#item-qtcraft-potato) | [Baked potato](#item-qtcraft-baked_potato) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+### <a id="item-qtcraft-bread"></a>Bread
+
+Baked from three wheat; a good meal.
+
+| | |
+|---|---|
+| ID | `qtcraft:bread` |
+| Stack size | 64 |
+| Food | 5 food points |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Bread](#item-qtcraft-bread) |
+
+### <a id="item-qtcraft-carrot"></a>Carrot
+
+A snack and the seed of carrot plants. Pigs follow their love for it.
+
+| | |
+|---|---|
+| ID | `qtcraft:carrot` |
+| Stack size | 64 |
+| Food | 3 food points |
+| Places | [Carrot crop](blocks.md#block-qtcraft-carrot_crop) |
+
+**Dropped by**
+
+[Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="item-qtcraft-cooked_mutton"></a>Cooked mutton
+
+Mutton cooked in a furnace; good food.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_mutton` |
+| Stack size | 64 |
+| Food | 6 food points |
+
+**Made in a furnace**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw mutton](#item-qtcraft-raw_mutton) | [Cooked mutton](#item-qtcraft-cooked_mutton) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-cooked_porkchop"></a>Cooked porkchop
 
@@ -42,6 +119,24 @@ Good food that fills a lot of the food bar.
 
 [Fuels](tables.md#table-fuels)
 
+### <a id="item-qtcraft-melon_slice"></a>Melon slice
+
+A juicy bite; nine make a whole melon again.
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_slice` |
+| Stack size | 64 |
+| Food | 2 food points |
+
+**Used in**
+
+[Melon](blocks.md#block-qtcraft-melon), [Melon seeds](items.md#item-qtcraft-melon_seeds)
+
+**Dropped by**
+
+[Melon](blocks.md#block-qtcraft-melon) (3×, 50 %)
+
 ### <a id="item-qtcraft-mushroom_stew"></a>Mushroom stew
 
 A filling soup of both mushrooms; the bowl stays.
@@ -61,6 +156,78 @@ A filling soup of both mushrooms; the bowl stays.
 |---|---|---|
 | [Brown mushroom](blocks.md#block-qtcraft-brown_mushroom) | [Red mushroom](blocks.md#block-qtcraft-red_mushroom) | [Mushroom stew](#item-qtcraft-mushroom_stew) |
 | [Bowl](items.md#item-qtcraft-bowl) | · |  |
+
+### <a id="item-qtcraft-potato"></a>Potato
+
+Barely filling raw; plant it on farmland or bake it in a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:potato` |
+| Stack size | 64 |
+| Food | 1 food point |
+| Places | [Potato crop](blocks.md#block-qtcraft-potato_crop) |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Potato](#item-qtcraft-potato) | [Baked potato](#item-qtcraft-baked_potato) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Potato crop](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="item-qtcraft-pumpkin_pie"></a>Pumpkin pie
+
+Pumpkin, sugar and wheat baked into the most filling food of the farm.
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_pie` |
+| Stack size | 64 |
+| Food | 8 food points |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Pumpkin](blocks.md#block-qtcraft-pumpkin) | [Sugar](items.md#item-qtcraft-sugar) | [Pumpkin pie](#item-qtcraft-pumpkin_pie) |
+| [Wheat](items.md#item-qtcraft-wheat) | · |  |
+
+### <a id="item-qtcraft-raw_mutton"></a>Raw mutton
+
+Meat of a sheep; better cooked in a furnace.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_mutton` |
+| Stack size | 64 |
+| Food | 2 food points |
+
+**Smelts into**
+
+*Furnace: 10 s per item, needs fuel*
+
+| 1 | → |
+|---|---|
+| [Raw mutton](#item-qtcraft-raw_mutton) | [Cooked mutton](#item-qtcraft-cooked_mutton) |
+
+[Furnace](blocks.md#block-qtcraft-furnace)
+
+[Fuels](tables.md#table-fuels)
+
+**Dropped by**
+
+[Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="item-qtcraft-raw_porkchop"></a>Raw porkchop
 

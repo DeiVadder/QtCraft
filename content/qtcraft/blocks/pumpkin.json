@@ -1,0 +1,11 @@
+{
+    "name": "pumpkin",
+    "sound": "wood",
+    "hardness": 1.0,
+    "tool": "axe",
+    "textures": {
+        "top": "pumpkin_top",
+        "bottom": "pumpkin_top",
+        "side": "pumpkin_side"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "name": "stone_hoe",
+    "texture": "stone_hoe",
+    "maxStack": 1,
+    "durability": 131,
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 2,
+    "toolSpeed": 4.0,
+    "tills": true
+}

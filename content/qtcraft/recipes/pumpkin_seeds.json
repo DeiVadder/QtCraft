@@ -1,0 +1,11 @@
+{
+    "name": "pumpkin_seeds",
+    "type": "shapeless",
+    "ingredients": [
+        "pumpkin"
+    ],
+    "result": {
+        "item": "pumpkin_seeds",
+        "count": 4
+    }
+}

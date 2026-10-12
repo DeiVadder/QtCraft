@@ -101,6 +101,17 @@ void addTraitFacts(const QcHandbookContext &context, const QcMobDefinition &mob,
     if (!mob.catchWith.isEmpty()) {
         facts.append({text.label(u"fact.catch"_s), {}, {links.itemLink(mob.catchWith), links.itemLink(mob.catchItem)}});
     }
+    if (mob.breeding.breeds()) {
+        QList<QcHandbookEntry::Link> food;
+        for (const QString &item : mob.breeding.food) {
+            food.append(links.itemLink(item));
+        }
+        facts.append({text.label(u"fact.breedsWith"_s), {}, food});
+        facts.append({text.label(u"fact.breeding"_s),
+                      text.label(u"unit.breeding"_s)
+                          .arg(text.number(mob.breeding.cooldownSeconds / 60.0), text.number(mob.breeding.growUpSeconds / 60.0)),
+                      {}});
+    }
 
     Fact drops{text.label(u"fact.drops"_s), {}, {}};
     for (const QcItemDrop &drop : mob.drops) {

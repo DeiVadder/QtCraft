@@ -1,0 +1,33 @@
+{
+    "name": "melon",
+    "sound": "wood",
+    "hardness": 1.0,
+    "tool": "axe",
+    "drops": [
+        {
+            "item": "melon_slice",
+            "count": 3
+        },
+        {
+            "item": "melon_slice",
+            "chance": 0.5
+        },
+        {
+            "item": "melon_slice",
+            "chance": 0.5
+        },
+        {
+            "item": "melon_slice",
+            "chance": 0.5
+        },
+        {
+            "item": "melon_slice",
+            "chance": 0.5
+        }
+    ],
+    "textures": {
+        "top": "melon_top",
+        "bottom": "melon_top",
+        "side": "melon_side"
+    }
+}

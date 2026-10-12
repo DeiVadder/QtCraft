@@ -1,0 +1,8 @@
+{
+    "name": "farmland",
+    "pattern": "farmland",
+    "primary": "#6a4a2c",
+    "secondary": "#4e3420",
+    "variation": 0.1,
+    "seed": 1714
+}

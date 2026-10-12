@@ -1,0 +1,216 @@
+{
+    "name": "farm_station",
+    "showcase": {
+        "order": 65
+    },
+    "palette": {
+        "P": "polished_stone",
+        "W": "farmland[moist=true]",
+        "D": "farmland[moist=false]",
+        "~": "water",
+        "g": "wheat_crop[age=6]",
+        "H": "chest[facing=south]",
+        "a": "wheat_crop[age=0]",
+        "b": "wheat_crop[age=1]",
+        "c": "wheat_crop[age=2]",
+        "d": "wheat_crop[age=3]",
+        "e": "wheat_crop[age=4]",
+        "f": "wheat_crop[age=5]",
+        "h": "wheat_crop[age=7]",
+        "i": "carrot_crop[age=0]",
+        "j": "carrot_crop[age=1]",
+        "k": "carrot_crop[age=2]",
+        "l": "carrot_crop[age=3]",
+        "m": "potato_crop[age=0]",
+        "n": "potato_crop[age=1]",
+        "o": "potato_crop[age=2]",
+        "p": "potato_crop[age=3]",
+        "q": "pumpkin_stem[age=7]",
+        "r": "melon_stem[age=7]",
+        "s": "pumpkin_stem[age=3]",
+        "t": "melon_stem[age=5]",
+        "U": "pumpkin",
+        "V": "melon",
+        "x": "wheat_crop[age=2]",
+        "G": "grass_block"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPP",
+            "PWWWWWWWWWWWP",
+            "P~~~~~~~~~~~P",
+            "PWWWWWWWWWWWP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PPPPPPPPPPPPP",
+            "PDDDDDDDDDDDP",
+            "PPPPPPPPPPPPP",
+            "PGWGPGWGPWPWP",
+            "PPPPPPPPPPPPP"
+        ],
+        [
+            "             ",
+            " abcdefgh    ",
+            "             ",
+            " ijkl mnop   ",
+            "             ",
+            "  H  H  H    ",
+            "             ",
+            "    xxx      ",
+            "             ",
+            "  qU  rV s t ",
+            "             "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                2,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "bread",
+                    "count": 16
+                },
+                {
+                    "item": "baked_potato",
+                    "count": 16
+                },
+                {
+                    "item": "pumpkin_pie",
+                    "count": 8
+                },
+                {
+                    "item": "melon_slice",
+                    "count": 32
+                },
+                {
+                    "item": "carrot",
+                    "count": 16
+                },
+                {
+                    "item": "potato",
+                    "count": 16
+                },
+                {
+                    "item": "cooked_mutton",
+                    "count": 8
+                },
+                {
+                    "item": "raw_mutton",
+                    "count": 8
+                }
+            ]
+        },
+        {
+            "at": [
+                5,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "wooden_hoe",
+                    "count": 1
+                },
+                {
+                    "item": "stone_hoe",
+                    "count": 1
+                },
+                {
+                    "item": "iron_hoe",
+                    "count": 1
+                },
+                {
+                    "item": "golden_hoe",
+                    "count": 1
+                },
+                {
+                    "item": "diamond_hoe",
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "at": [
+                8,
+                1,
+                5
+            ],
+            "items": [
+                {
+                    "item": "wheat_seeds",
+                    "count": 32
+                },
+                {
+                    "item": "wheat",
+                    "count": 32
+                },
+                {
+                    "item": "pumpkin_seeds",
+                    "count": 16
+                },
+                {
+                    "item": "melon_seeds",
+                    "count": 16
+                },
+                {
+                    "item": "sugar",
+                    "count": 16
+                },
+                {
+                    "item": "pumpkin",
+                    "count": 4
+                },
+                {
+                    "item": "melon",
+                    "count": 4
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                6.5,
+                2.8,
+                0.0
+            ],
+            "text": "structure.qtcraft.farm_station"
+        },
+        {
+            "at": [
+                5.0,
+                2.6,
+                2.5
+            ],
+            "text": "structure.qtcraft.farm_station.wet"
+        },
+        {
+            "at": [
+                8.5,
+                1.8,
+                7.5
+            ],
+            "text": "structure.qtcraft.farm_station.dry"
+        },
+        {
+            "at": [
+                3.5,
+                2.2,
+                9.5
+            ],
+            "text": "structure.qtcraft.farm_station.stems"
+        },
+        {
+            "at": [
+                5.5,
+                2.6,
+                5.5
+            ],
+            "text": "structure.qtcraft.farm_station.pantry"
+        }
+    ]
+}

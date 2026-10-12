@@ -7,12 +7,15 @@
 #include "QcInventory.h"
 #include "QcItemEntityManager.h"
 #include "QcMining.h"
+#include "QcMobBreeding.h"
 #include "QcMobManager.h"
 #include "QcPendingCommands.h"
 #include "QcPhysics.h"
+#include "QcPlantGrowth.h"
 #include "QcRaycast.h"
 #include "QcServer.h"
 #include "QcServerCombat.h"
+#include "QcServerItemsAndPlants.h"
 #include "QcWorldCommands.h"
 #include "QcWorldConstants.h"
 
@@ -57,6 +60,9 @@ QMap<QString, double> values()
          std::round(QcHunger::minutesForFullBar(QcHunger::walkPerMetre, QcPhysics::walkSpeed))},
         {u"hunger.sprintMinutesForFullBar"_s,
          std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
+        {u"farming.randomTickSeconds"_s, std::round(QcPlantGrowth::randomTickSeconds)},
+        {u"farming.seedCheckSeconds"_s, QcServerItemsAndPlants::seedCheckTicks * QcPhysics::tickDuration},
+        {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcServerCombat::voidDamage},
         {u"void.interval"_s, QcServerCombat::voidDamageIntervalTicks * QcPhysics::tickDuration},

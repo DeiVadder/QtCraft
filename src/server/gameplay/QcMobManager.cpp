@@ -167,6 +167,12 @@ const QcMobManager::Mob *QcMobManager::find(quint32 id) const
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
+QcMobManager::Mob *QcMobManager::find(quint32 id)
+{
+    const auto it = std::ranges::find(m_mobs, id, &Mob::id);
+    return it == m_mobs.end() ? nullptr : &*it;
+}
+
 quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
 {
     Mob mob;
@@ -206,7 +212,8 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
         return std::nullopt;
     }
 
-    QList<QcItemDrop> drops = definition.drops;
+    // Young animals leave nothing behind (decision E-293).
+    QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
     m_mobs.erase(it);
     return drops;
 }
@@ -739,7 +746,7 @@ QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
     QList<Stored> stored;
     for (const Mob &mob : m_mobs) {
         if (mob.persistent) {
-            stored.append({mob.type, mob.motion.position, mob.yaw, mob.health});
+            stored.append({mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred});
         }
     }
     return stored;
@@ -761,6 +768,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.health = std::clamp(stored.health, 0.1, m_content->mobs()[stored.type].maxHealth);
         mob.persistent = true;
         mob.dormant = true;
+        mob.breedCooldown = std::max(0.0, stored.breedCooldown);
+        mob.growUp = std::max(0.0, stored.growUp);
+        mob.bred = stored.bred;
         m_mobs.append(mob);
     }
 }

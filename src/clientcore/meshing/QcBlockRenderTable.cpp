@@ -149,9 +149,11 @@ void addShape(Entry &entry, const QcBlockState &state, const QcBlockDefinition &
         }
     }
 
-    for (const QcAabb &box : state.crosses) {
-        entry.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)},
-                              entry.faceUv[std::size_t(QcBlockFace::North)]});
+    for (qsizetype c = 0; c < state.crosses.size(); ++c) {
+        const QcAabb &box = state.crosses[c];
+        const QString slot = state.crossTextures.value(c);
+        const QRectF uv = slot.isEmpty() ? entry.faceUv[std::size_t(QcBlockFace::North)] : atlas.uv(block.slotTexture(slot));
+        entry.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)}, uv});
     }
 }
 

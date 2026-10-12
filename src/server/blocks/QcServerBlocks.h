@@ -32,7 +32,9 @@ public:
     // Removes chests whose block is no longer a storage block (removed mods) and fits the others to
     // their block's size; spilled contents drop as items.
     void reconcileContainer(QcBlockPos pos);
-    void dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos);
+    // Drops the items of block state `block` as if it broke at `pos` (each drop by its chance, only
+    // from the states its `when` allows).
+    void dropBlockItems(QcBlockId block, QcBlockPos pos);
     void dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos);
     void dropMachineContents(const QcMachineManager::Machine &machine);
 

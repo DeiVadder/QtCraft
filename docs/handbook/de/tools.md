@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Diamantaxt](#item-qtcraft-diamond_axe) · [Diamantbeinschutz](#item-qtcraft-diamond_leggings) · [Diamantbrustplatte](#item-qtcraft-diamond_chestplate) · [Diamanthelm](#item-qtcraft-diamond_helmet) · [Diamantschaufel](#item-qtcraft-diamond_shovel) · [Diamantschwert](#item-qtcraft-diamond_sword) · [Diamantspitzhacke](#item-qtcraft-diamond_pickaxe) · [Diamantstiefel](#item-qtcraft-diamond_boots) · [Eisenaxt](#item-qtcraft-iron_axe) · [Eisenbeinschutz](#item-qtcraft-iron_leggings) · [Eisenbrustplatte](#item-qtcraft-iron_chestplate) · [Eisenhelm](#item-qtcraft-iron_helmet) · [Eisenschaufel](#item-qtcraft-iron_shovel) · [Eisenschwert](#item-qtcraft-iron_sword) · [Eisenspitzhacke](#item-qtcraft-iron_pickaxe) · [Eisenstiefel](#item-qtcraft-iron_boots) · [Goldaxt](#item-qtcraft-golden_axe) · [Goldbeinschutz](#item-qtcraft-golden_leggings) · [Goldbrustplatte](#item-qtcraft-golden_chestplate) · [Goldhelm](#item-qtcraft-golden_helmet) · [Goldschaufel](#item-qtcraft-golden_shovel) · [Goldschwert](#item-qtcraft-golden_sword) · [Goldspitzhacke](#item-qtcraft-golden_pickaxe) · [Goldstiefel](#item-qtcraft-golden_boots) · [Holzaxt](#item-qtcraft-wooden_axe) · [Holzschaufel](#item-qtcraft-wooden_shovel) · [Holzschwert](#item-qtcraft-wooden_sword) · [Holzspitzhacke](#item-qtcraft-wooden_pickaxe) · [Lederhose](#item-qtcraft-leather_leggings) · [Lederkappe](#item-qtcraft-leather_helmet) · [Lederstiefel](#item-qtcraft-leather_boots) · [Lederwams](#item-qtcraft-leather_chestplate) · [Steinaxt](#item-qtcraft-stone_axe) · [Steinschaufel](#item-qtcraft-stone_shovel) · [Steinschwert](#item-qtcraft-stone_sword) · [Steinspitzhacke](#item-qtcraft-stone_pickaxe)
+**QtCraft:** [Diamantaxt](#item-qtcraft-diamond_axe) · [Diamantbeinschutz](#item-qtcraft-diamond_leggings) · [Diamantbrustplatte](#item-qtcraft-diamond_chestplate) · [Diamanthacke](#item-qtcraft-diamond_hoe) · [Diamanthelm](#item-qtcraft-diamond_helmet) · [Diamantschaufel](#item-qtcraft-diamond_shovel) · [Diamantschwert](#item-qtcraft-diamond_sword) · [Diamantspitzhacke](#item-qtcraft-diamond_pickaxe) · [Diamantstiefel](#item-qtcraft-diamond_boots) · [Eisenaxt](#item-qtcraft-iron_axe) · [Eisenbeinschutz](#item-qtcraft-iron_leggings) · [Eisenbrustplatte](#item-qtcraft-iron_chestplate) · [Eisenhacke](#item-qtcraft-iron_hoe) · [Eisenhelm](#item-qtcraft-iron_helmet) · [Eisenschaufel](#item-qtcraft-iron_shovel) · [Eisenschwert](#item-qtcraft-iron_sword) · [Eisenspitzhacke](#item-qtcraft-iron_pickaxe) · [Eisenstiefel](#item-qtcraft-iron_boots) · [Goldaxt](#item-qtcraft-golden_axe) · [Goldbeinschutz](#item-qtcraft-golden_leggings) · [Goldbrustplatte](#item-qtcraft-golden_chestplate) · [Goldhacke](#item-qtcraft-golden_hoe) · [Goldhelm](#item-qtcraft-golden_helmet) · [Goldschaufel](#item-qtcraft-golden_shovel) · [Goldschwert](#item-qtcraft-golden_sword) · [Goldspitzhacke](#item-qtcraft-golden_pickaxe) · [Goldstiefel](#item-qtcraft-golden_boots) · [Holzaxt](#item-qtcraft-wooden_axe) · [Holzhacke](#item-qtcraft-wooden_hoe) · [Holzschaufel](#item-qtcraft-wooden_shovel) · [Holzschwert](#item-qtcraft-wooden_sword) · [Holzspitzhacke](#item-qtcraft-wooden_pickaxe) · [Lederhose](#item-qtcraft-leather_leggings) · [Lederkappe](#item-qtcraft-leather_helmet) · [Lederstiefel](#item-qtcraft-leather_boots) · [Lederwams](#item-qtcraft-leather_chestplate) · [Steinaxt](#item-qtcraft-stone_axe) · [Steinhacke](#item-qtcraft-stone_hoe) · [Steinschaufel](#item-qtcraft-stone_shovel) · [Steinschwert](#item-qtcraft-stone_sword) · [Steinspitzhacke](#item-qtcraft-stone_pickaxe)
 
 ## QtCraft
 
@@ -74,6 +74,30 @@ Die stärkste Rüstung; sie hält am längsten.
 | [Diamant](items.md#item-qtcraft-diamond) | · | [Diamant](items.md#item-qtcraft-diamond) | [Diamantbrustplatte](#item-qtcraft-diamond_chestplate) |
 | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) |  |
 | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_hoe"></a>Diamanthacke
+
+Macht Gras und Erde zu Ackerboden und hält sehr lange.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_hoe` |
+| Stapelgröße | 1 |
+| Werkzeug | hoe, Stufe 4: [Werkzeugstufen](tables.md#table-tools) |
+| Abbaugeschwindigkeit | × 8 |
+| Haltbarkeit | 1561 Benutzungen |
+| Angriffsschaden | 1 Lebenspunkt |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Diamant](items.md#item-qtcraft-diamond) | [Diamant](items.md#item-qtcraft-diamond) | [Diamanthacke](#item-qtcraft-diamond_hoe) |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-diamond_helmet"></a>Diamanthelm
 
@@ -259,6 +283,30 @@ Solide Rüstung aus Eisenplatten, die übliche Wahl.
 | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
 | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) |  |
 
+### <a id="item-qtcraft-iron_hoe"></a>Eisenhacke
+
+Macht Gras und Erde zu Ackerboden; hält lange.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_hoe` |
+| Stapelgröße | 1 |
+| Werkzeug | hoe, Stufe 3: [Werkzeugstufen](tables.md#table-tools) |
+| Abbaugeschwindigkeit | × 6 |
+| Haltbarkeit | 250 Benutzungen |
+| Angriffsschaden | 1 Lebenspunkt |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenbarren](items.md#item-qtcraft-iron_ingot) | [Eisenhacke](#item-qtcraft-iron_hoe) |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+
 ### <a id="item-qtcraft-iron_helmet"></a>Eisenhelm
 
 Solide Rüstung aus Eisenplatten, die übliche Wahl.
@@ -443,6 +491,30 @@ Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
 | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
 
+### <a id="item-qtcraft-golden_hoe"></a>Goldhacke
+
+Macht Gras und Erde zu Ackerboden, nutzt sich aber schnell ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_hoe` |
+| Stapelgröße | 1 |
+| Werkzeug | hoe, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
+| Abbaugeschwindigkeit | × 12 |
+| Haltbarkeit | 32 Benutzungen |
+| Angriffsschaden | 1 Lebenspunkt |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldhacke](#item-qtcraft-golden_hoe) |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+
 ### <a id="item-qtcraft-golden_helmet"></a>Goldhelm
 
 Glänzende Rüstung aus Gold: etwas besser als Leder, aber weich.
@@ -580,6 +652,31 @@ Schlägt Holz schneller.
 |---|---|---|
 | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Holzaxt](#item-qtcraft-wooden_axe) |
 | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Stock](items.md#item-qtcraft-stick) |  |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-wooden_hoe"></a>Holzhacke
+
+Macht Gras und Erde zu Ackerboden. Jeder bestellte Block nutzt sie etwas ab.
+
+| | |
+|---|---|
+| ID | `qtcraft:wooden_hoe` |
+| Stapelgröße | 1 |
+| Werkzeug | hoe, Stufe 1: [Werkzeugstufen](tables.md#table-tools) |
+| Abbaugeschwindigkeit | × 2 |
+| Haltbarkeit | 59 Benutzungen |
+| Angriffsschaden | 1 Lebenspunkt |
+| Brennt als Brennstoff | 10 s: [Brennstoffe](tables.md#table-fuels) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Holzhacke](#item-qtcraft-wooden_hoe) |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-wooden_shovel"></a>Holzschaufel
@@ -767,6 +864,30 @@ Schlägt Holz schneller.
 |---|---|---|
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Steinaxt](#item-qtcraft-stone_axe) |
 | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Stock](items.md#item-qtcraft-stick) |  |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-stone_hoe"></a>Steinhacke
+
+Macht Gras und Erde zu Ackerboden; hält länger als Holz.
+
+| | |
+|---|---|
+| ID | `qtcraft:stone_hoe` |
+| Stapelgröße | 1 |
+| Werkzeug | hoe, Stufe 2: [Werkzeugstufen](tables.md#table-tools) |
+| Abbaugeschwindigkeit | × 4 |
+| Haltbarkeit | 131 Benutzungen |
+| Angriffsschaden | 1 Lebenspunkt |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Bruchstein](blocks.md#block-qtcraft-cobblestone) | [Steinhacke](#item-qtcraft-stone_hoe) |
+| · | [Stock](items.md#item-qtcraft-stick) |  |
 | · | [Stock](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-stone_shovel"></a>Steinschaufel

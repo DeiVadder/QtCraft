@@ -16,6 +16,11 @@ namespace {
 constexpr QByteArrayView entitiesMagic("QCEN");
 // Version 2 adds falling blocks after the saplings.
 constexpr quint16 entitiesVersion = 2;
+// Version 2 adds each creature's breeding cooldown, time until it grows up and whether it was bred
+// (decision E-293).
+constexpr quint16 mobsVersion = 2;
+// Longer timers than a day of seconds are damaged data.
+constexpr double maxBreedingSeconds = 86400.0;
 constexpr QByteArrayView mobsMagic("QCMB");
 constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
 
@@ -232,7 +237,8 @@ QcStatus QcEntityStorage::writeMobs(const QcWorldMobs &mobs) const
     stream << quint32(mobCount);
     const QList<QcMobManager::Stored> kept = mobs.mobs.first(mobCount);
     for (const QcMobManager::Stored &mob : kept) {
-        stream << m_content->mobs()[mob.type].name << mob.position.x << mob.position.y << mob.position.z << mob.yaw << mob.health;
+        stream << m_content->mobs()[mob.type].name << mob.position.x << mob.position.y << mob.position.z << mob.yaw << mob.health
+               << mob.breedCooldown << mob.growUp << mob.bred;
     }
 
     const qsizetype chunkCount = std::min(mobs.populatedChunks.size(), qsizetype(maxStoredPopulatedChunks));
@@ -241,7 +247,7 @@ QcStatus QcEntityStorage::writeMobs(const QcWorldMobs &mobs) const
     for (auto it = mobs.populatedChunks.cbegin(); it != mobs.populatedChunks.cend() && written < chunkCount; ++it, ++written) {
         stream << qint32(it->x) << qint32(it->z);
     }
-    return QcSaveFile::write(QDir(m_directory).filePath(u"mobs.qce"_s), mobsMagic, payload);
+    return QcSaveFile::write(QDir(m_directory).filePath(u"mobs.qce"_s), mobsMagic, payload, mobsVersion);
 }
 
 QcResult<QcWorldMobs> QcEntityStorage::readMobs(QStringList &warnings) const
@@ -250,7 +256,8 @@ QcResult<QcWorldMobs> QcEntityStorage::readMobs(QStringList &warnings) const
     if (!QFile::exists(path)) {
         return QcWorldMobs();
     }
-    const QcResult<QByteArray> payload = QcSaveFile::read(path, mobsMagic, QcSaveFile::baseVersion);
+    quint16 version = 0;
+    const QcResult<QByteArray> payload = QcSaveFile::read(path, mobsMagic, mobsVersion, &version);
     if (!payload) {
         return qcError(payload.error());
     }
@@ -268,8 +275,12 @@ QcResult<QcWorldMobs> QcEntityStorage::readMobs(QStringList &warnings) const
         QString name;
         QcMobManager::Stored mob;
         stream >> name >> mob.position.x >> mob.position.y >> mob.position.z >> mob.yaw >> mob.health;
+        if (version >= 2) {
+            stream >> mob.breedCooldown >> mob.growUp >> mob.bred;
+        }
         const bool finite = std::isfinite(mob.position.x) && std::isfinite(mob.position.y) && std::isfinite(mob.position.z)
-                            && std::isfinite(mob.yaw) && std::isfinite(mob.health);
+                            && std::isfinite(mob.yaw) && std::isfinite(mob.health) && std::isfinite(mob.breedCooldown)
+                            && std::isfinite(mob.growUp) && mob.breedCooldown <= maxBreedingSeconds && mob.growUp <= maxBreedingSeconds;
         if (stream.status() != QDataStream::Ok || !finite || std::abs(mob.position.x) > QcWorld::maxHorizontalBlock
             || std::abs(mob.position.z) > QcWorld::maxHorizontalBlock || std::abs(mob.position.y) > 4.0 * QcWorld::worldHeight) {
             return qcError(u"%1 is damaged (creature %2)"_s.arg(path).arg(i));

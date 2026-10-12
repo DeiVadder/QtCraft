@@ -169,7 +169,7 @@
     "%1 is false": "%1 ist falsch",
     "%1 is now true": "%1 ist jetzt wahr",
     "%1 is now false": "%1 ist jetzt falsch",
-    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]",
+    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]",
     "Last played %1 · Showcase": "Zuletzt gespielt %1 · Showcase",
     "Showcase": "Showcase",
     "Cannot load the world: it was made by the unknown world type '%1'": "Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“",

@@ -1,0 +1,8 @@
+{
+    "name": "melon_top",
+    "pattern": "melon_side",
+    "primary": "#62a838",
+    "secondary": "#2e6a20",
+    "variation": 0.1,
+    "seed": 1729
+}

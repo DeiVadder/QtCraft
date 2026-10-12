@@ -176,7 +176,7 @@ void QcBlockSimulation::landBlock(QcBlockId block, QcBlockPos cell, bool placed)
         }
     }
 
-    m_blocks.dropBlockItems(definition, cell);
+    m_blocks.dropBlockItems(block, cell);
 }
 
 void QcBlockSimulation::tickFallingBlocks()

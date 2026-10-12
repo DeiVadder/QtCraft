@@ -1,0 +1,10 @@
+{
+    "name": "sugar",
+    "type": "shapeless",
+    "ingredients": [
+        "sugar_cane"
+    ],
+    "result": {
+        "item": "sugar"
+    }
+}

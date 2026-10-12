@@ -82,6 +82,10 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                      {u"health"_s, entity.health},
                      {u"yaw"_s, entity.yaw},
                      {u"animation"_s, animationJson(entity)}};
+    if (mob) {
+        json.insert(u"young"_s, (entity.flags & QcMsg::Young) != 0);
+        json.insert(u"inLove"_s, (entity.flags & QcMsg::InLove) != 0);
+    }
     if (entity.isPlayer()) {
         json.insert(u"appearance"_s, QcControlReports::appearanceJson(entity.appearance));
         json.insert(u"armour"_s, armourJson(content, entity.equipment));
@@ -185,16 +189,18 @@ void QcControlEntityCommands::attack(const QJsonObject &request)
 
 void QcControlEntityCommands::useEntity(const QJsonObject &request)
 {
-    // Turn towards the creature, then use the held item on it (catch a firefly in a bottle).
+    // Turn towards the creature, then use the held item on it (catch a firefly in a bottle, feed an
+    // animal).
     const quint64 startTick = session().tickCount();
     if (!turnToEntity(request)) {
         return;
     }
 
     const qint64 wanted = entityArgument(request);
+    const UseBefore before{session().inventory().selectedStack(), session().entities().value(quint32(wanted)).flags};
     bool sent = false;
 
-    m_context.begin({request, QcControlActiveCommand::timeoutPolls(6), [this, startTick, sent, wanted]() mutable {
+    m_context.begin({request, QcControlActiveCommand::timeoutPolls(6), [this, startTick, sent, wanted, before]() mutable {
                          if (!sent) {
                              if (session().tickCount() <= startTick) {
                                  return false;
@@ -210,12 +216,35 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                          if (session().tickCount() < startTick + 4) {
                              return false;
                          }
-
-                         if (session().entities().contains(quint32(wanted))) {
-                             m_context.setActiveError(u"Nothing happened (the held item does not catch this creature)"_s);
+                         if (const QString error = useEntityError(quint32(wanted), before); !error.isEmpty()) {
+                             m_context.setActiveError(error);
                          }
                          return true;
                      }});
+}
+
+QString QcControlEntityCommands::useEntityError(quint32 entityId, UseBefore before) const
+{
+    // Caught creatures vanish; fed adults fall in love; fed young ones take the item (also from a
+    // creative hand, which keeps it).
+    const auto entity = session().entities().constFind(entityId);
+    if (entity == session().entities().constEnd()) {
+        return {};
+    }
+
+    const QcContentRegistry *content = session().content().get();
+    const QcItemStack &held = session().inventory().selectedStack();
+    const bool mob = content && entity->mobType >= 0 && entity->mobType < content->mobs().size();
+    const bool food = mob && content->isValidItem(before.held.item)
+                      && content->mobs()[entity->mobType].breeding.food.contains(content->item(before.held.item).name);
+    const bool used = held.item != before.held.item || held.count != before.held.count;
+    const bool fellInLove = (entity->flags & QcMsg::InLove) != 0 && (before.flags & QcMsg::InLove) == 0;
+    const bool youngFed = food && (before.flags & QcMsg::Young) != 0 && (used || session().gameMode().rules().infiniteItems);
+    if (fellInLove || youngFed) {
+        return {};
+    }
+    return used ? u"The creature did not take it (the item was eaten or put on)"_s
+                : u"Nothing happened (the held item does not catch or feed this creature now)"_s;
 }
 
 void QcControlEntityCommands::collect(const QJsonObject &request)

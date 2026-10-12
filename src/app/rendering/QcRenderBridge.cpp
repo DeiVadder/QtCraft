@@ -182,6 +182,9 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
     QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, frame.alpha), entityLight(frame.world, position),
                                         entity.hurtTicks > 0};
+    if ((entity.flags & QcMsg::Young) != 0) {
+        placement.scale = QcMsg::youngScale;
+    }
     if (mob && mobs[entity.mobType].glow > 0) {
         placement.light = glowingLight(placement.light, mobs[entity.mobType], double(entity.id % 97), frame.seconds);
     }
@@ -197,7 +200,7 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
         const QcMobDefinition &definition = mobs[entity.mobType];
         look.model = frame.content.model(definition.skeleton);
         look.outfit = frame.content.appearance(definition.outfit);
-        look.scale = definition.height / QcEntityMesher::modelHeight;
+        look.scale = definition.height / QcEntityMesher::modelHeight * placement.scale;
         look.cape = QcFigureLook::cape(frame.content, definition.cape);
         pose.armsForward = definition.armsForward;
     } else if (!mob) {

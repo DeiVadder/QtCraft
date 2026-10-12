@@ -87,6 +87,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     }
     state.info.daylightCycle = setup.daylightCycle;
     state.info.mobSpawning = setup.mobSpawning;
+    state.info.randomTicks = setup.randomTicks;
 
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
         if (const std::optional<int> type = state.content->mobIndex(mob.mob)) {

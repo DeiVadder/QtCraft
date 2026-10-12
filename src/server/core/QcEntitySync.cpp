@@ -27,9 +27,10 @@ void QcEntitySync::sync(QcServerClient &client)
             continue;
         }
 
+        const quint8 breeding = quint8((mob.isYoung() ? QcMsg::Young : 0) | (mob.love > 0.0 ? QcMsg::InLove : 0));
         consider(pass,
                  {mob.id, mob.type, QString(), mob.motion.position, mob.yaw, mob.health, {}, {}, 0.0f,
-                  flagsOf(mob.motion, mob.attackedThisTick, false, false), qcNoItem},
+                  quint8(flagsOf(mob.motion, mob.attackedThisTick, false, false) | breeding), qcNoItem},
                  mob.hurtThisTick);
     }
 

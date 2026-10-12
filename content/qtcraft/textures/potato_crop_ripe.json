@@ -1,0 +1,8 @@
+{
+    "name": "potato_crop_ripe",
+    "pattern": "root_crop",
+    "primary": "#4a8a3a",
+    "secondary": "#d8d0a0",
+    "variation": 0.1,
+    "seed": 1723
+}

@@ -2,8 +2,10 @@
 
 #include "QcBlockFace.h"
 #include "QcBlockProperty.h"
+#include "QcFarmingDefinitions.h"
 #include "QcLiquidDefinition.h"
 #include "QcMachineDefinition.h"
+#include "QcShapeCondition.h"
 #include "QcShapeDefinition.h"
 
 #include <QList>
@@ -60,6 +62,9 @@ struct QcItemDrop
     int count = 1;
     // Probability in [0, 1] that this drop appears at all.
     double chance = 1.0;
+    // Block drops only: states that drop it (every condition holds); empty for all states. Server side
+    // only (crops drop their harvest only when ripe, decision E-289).
+    QList<QcShapeCondition> when = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
 };
 
 // A block that grows into a tree feature after a random time (saplings).
@@ -178,10 +183,17 @@ struct QcBlockDefinition
     // this block itself. Server side only.
     QString groundLiquid;
     QcGrowthDefinition growth;
+    // Ripening in stages (crops, stems) and being soil for them (farmland); server side only.
+    QcCropDefinition crop;
+    QcSoilDefinition soil;
+    // Block it turns into when an item that `tills` (a hoe) is used on it, empty for none. Server side only.
+    QString tillsInto;
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;
 
+    // Whether the server gives the block random ticks (growing plants, crops, soil).
+    bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }
     const QString &texture(QcBlockFace face) const { return faceTextures[std::size_t(face)]; }
     // Texture of a named slot, or empty.
     QString slotTexture(const QString &slot) const

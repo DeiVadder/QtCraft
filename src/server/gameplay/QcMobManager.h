@@ -72,6 +72,15 @@ public:
         bool nightRule = false;
         // Entity id of the player it chases this tick; 0 for none (debug display of goals).
         quint32 chasing = 0;
+        // Breeding (decision E-293): seconds left in love, until it may breed again and until a
+        // young one grows up (> 0: young).
+        double love = 0.0;
+        double breedCooldown = 0.0;
+        double growUp = 0.0;
+        // Born from breeding (counted against QcMobBreeding::maxBredPerKind).
+        bool bred = false;
+
+        bool isYoung() const { return growUp > 0.0; }
     };
 
     // A persistent mob as saved with the world.
@@ -81,6 +90,9 @@ public:
         QcVec3 position;
         float yaw = 0.0f;
         double health = 0.0;
+        double breedCooldown = 0.0;
+        double growUp = 0.0;
+        bool bred = false;
     };
 
     // What the mob logic needs to know about a player.
@@ -137,7 +149,10 @@ public:
     bool spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const;
 
     const QList<Mob> &mobs() const { return m_mobs; }
+    // For the breeding timers (QcMobBreeding); never add or remove mobs through it.
+    QList<Mob> &editableMobs() { return m_mobs; }
     const Mob *find(quint32 id) const;
+    Mob *find(quint32 id);
 
 private:
     using SpawnRule = QcMobDefinition::SpawnRule;

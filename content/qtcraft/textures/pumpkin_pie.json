@@ -1,0 +1,8 @@
+{
+    "name": "pumpkin_pie",
+    "pattern": "pie",
+    "primary": "#d88a3a",
+    "secondary": "#f0c890",
+    "variation": 0.1,
+    "seed": 1710
+}

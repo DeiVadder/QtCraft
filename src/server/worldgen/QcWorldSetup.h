@@ -22,6 +22,7 @@ struct QcWorldSetup
     std::optional<double> timeOfDay;
     bool daylightCycle = true;
     bool mobSpawning = true;
+    bool randomTicks = true;
     QList<Mob> mobs;
     QList<Stand> stands;
     QList<Contents> contents;

@@ -1,0 +1,11 @@
+{
+    "name": "golden_hoe",
+    "texture": "golden_hoe",
+    "maxStack": 1,
+    "durability": 32,
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 1,
+    "toolSpeed": 12.0,
+    "tills": true
+}

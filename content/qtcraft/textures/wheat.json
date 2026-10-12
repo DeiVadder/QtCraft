@@ -1,0 +1,8 @@
+{
+    "name": "wheat",
+    "pattern": "wheat",
+    "primary": "#d8b450",
+    "secondary": "#a88430",
+    "variation": 0.1,
+    "seed": 1702
+}

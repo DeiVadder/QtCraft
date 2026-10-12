@@ -41,6 +41,8 @@ struct QcWorldInfo
     // Game rules: the time of day runs, creatures spawn by themselves.
     bool daylightCycle = true;
     bool mobSpawning = true;
+    // Game rule: blocks get random ticks (growing plants, crops, soil; decision E-295).
+    bool randomTicks = true;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether
     // its one-time setup has run.
     QString generator = QString::fromLatin1(defaultGenerator);

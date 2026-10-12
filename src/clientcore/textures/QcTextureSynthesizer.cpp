@@ -3,6 +3,7 @@
 #include "QcTextureArmourPatterns.h"
 #include "QcTextureCraftPatterns.h"
 #include "QcTextureEmblem.h"
+#include "QcTextureFarmPatterns.h"
 #include "QcTexturePaint.h"
 
 #include <algorithm>
@@ -127,6 +128,8 @@ bool toolHead(Pattern pattern, int x, int y)
         return x >= 10 && x <= 14 && y >= 1 && y <= 5 && x + y >= 12 && x + y <= 18;
     case Pattern::Sword:
         return (x + y == size - 1 || x + y == size) && x >= 6 && x <= 14;
+    case Pattern::Hoe:
+        return (y >= 1 && y <= 2 && x >= 8 && x <= 13) || (x >= 12 && x <= 13 && y >= 3 && y <= 4);
     default:
         return false;
     }
@@ -478,7 +481,7 @@ QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
     return scaled(spec.primary, shade);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 43> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 44> painters = {{
     {Pattern::Noise, paintNoise},
     {Pattern::Speckle, paintSpeckle},
     {Pattern::Planks, paintPlanks},
@@ -497,6 +500,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 43> painters = {{
     {Pattern::Shovel, paintToolWithHead},
     {Pattern::Sword, paintToolWithHead},
     {Pattern::Stick, paintToolWithHead},
+    {Pattern::Hoe, paintToolWithHead},
     {Pattern::Ingot, paintIngot},
     {Pattern::Gem, paintGem},
     {Pattern::Sapling, paintSapling},
@@ -532,6 +536,9 @@ Painter painterFor(Pattern pattern)
     }
     if (const Painter craft = qcCraftPatternPainter(pattern)) {
         return craft;
+    }
+    if (const Painter farm = qcFarmPatternPainter(pattern)) {
+        return farm;
     }
     const Painter armour = qcArmourPatternPainter(pattern);
     return armour ? armour : paintNoise;

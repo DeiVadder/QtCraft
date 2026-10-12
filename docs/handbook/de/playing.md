@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -124,6 +124,36 @@ Mit mindestens 18 Nahrungspunkten heilst du alle 4 s einen Lebenspunkt. Mit leer
 
 [Gebratenes Schweinefleisch](food.md#item-qtcraft-cooked_porkchop), [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop), [Schwein](creatures.md#mob-qtcraft-pig)
 
+### <a id="chapter-qtcraft-farming"></a>Landwirtschaft
+
+**Ackerboden**
+
+Eine Hacke macht aus Gras oder Erde mit Luft darüber Ackerboden; jeder bestellte Block nutzt sie einmal ab (nicht im Kreativmodus). Wasser in bis zu vier Blöcken Umkreis, auf gleicher Höhe oder einen Block höher, hält Ackerboden nass. Ohne Wasser trocknet er aus; trockener Ackerboden ohne Pflanze darauf wird wieder zu Erde, ebenso Ackerboden unter einem vollen Block. Laufen und Springen zertrampeln ihn nicht.
+
+**Feldfrüchte**
+
+Weizenkörner, Karotten oder Kartoffeln auf Ackerboden pflanzen. Feldfrüchte wachsen in Stufen auf Zufallsticks (jeder Block bekommt etwa alle 68 s einen), solange ihr Chunk geladen ist; Zeit, in der die Welt geschlossen ist, zählt nicht. Auf nassem Ackerboden wachsen sie doppelt so schnell und brauchen Licht von mindestens 9, vom Himmel oder von Lampen. Reife Pflanzen geben beim Abbauen die Ernte, unreife nur die Saat zurück. Körner kommen aus hohem Gras, Karotten und Kartoffeln von wilden Pflanzen in Ebenen, Wäldern und Taiga und ab und zu von Zombies.
+
+**Kürbisse und Melonen**
+
+Kürbis- und Melonenkerne wachsen zu Stängeln. Ein reifer Stängel legt seine Frucht auf einen freien Nachbarblock aus Ackerboden, Erde oder Gras, immer eine zur Zeit; nach der Ernte wächst eine neue. Neben jedem Stängel eine Seite freilassen. Ein Kürbis gibt vier Kerne, eine Melonenscheibe einen; Kürbisse und Melonen wachsen auch wild.
+
+**Saat pflanzt sich selbst**
+
+Körner, Karotten und Kartoffeln, die auf freiem Ackerboden liegen, pflanzen eines aus ihrem Stapel selbst (geprüft alle 1 s, mit hoher Wahrscheinlichkeit). Ein Stapel, dessen eigener Block belegt ist oder der mehr enthält, bepflanzt den freien Ackerboden direkt um ihn herum, ein Korn pro Prüfung; so bepflanzen auch zu einem Stapel verschmolzene Drops das ganze Feld. Fließendes Wasser trägt liegende Items mit seiner Strömung, stehendes nicht. Ein von hinten mit Wasser abgespültes Feld bepflanzt sich dort neu, wo die Drops liegen bleiben; den Rest der Ernte einsammeln.
+
+**Tiere züchten**
+
+Schweine mit Karotten oder Kartoffeln, Schafe mit Weizen füttern: ein gefüttertes erwachsenes Tier verliebt sich für eine Weile und läuft zu einem anderen verliebten Tier seiner Art; zwei, die sich sehen, bekommen ein Junges. Eltern ruhen fünf Minuten, bevor sie wieder Junge bekommen; ein Junges wächst in zwanzig Minuten heran, jedes Füttern nimmt 10 % dieser Zeit weg. Junge Tiere lassen nichts fallen. Wo schon zu viele Tiere leben, kommen keine Jungen mehr.
+
+**Essen vom Hof**
+
+Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zucker und Weizen, Melonenscheiben und Karotten für unterwegs. Karotten und Kartoffeln werden auf Ackerboden gepflanzt und anderswo gegessen.
+
+**Siehe auch**
+
+[Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato), [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem), [Melonenstängel](blocks.md#block-qtcraft-melon_stem), [Brot](food.md#item-qtcraft-bread), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep)
+
 ### <a id="chapter-qtcraft-health"></a>Gesundheit und Schaden
 
 **Gesundheit**
@@ -213,7 +243,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -248,7 +278,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]`
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft

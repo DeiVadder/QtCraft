@@ -178,7 +178,7 @@ private slots:
             QVERIFY2(entry && entry->sections.size() >= chapter.sections.size(), qPrintable(chapter.name));
         }
 
-        QCOMPARE(content.handbookChapters().size(), 15);
+        QCOMPARE(content.handbookChapters().size(), 16);
         QVERIFY(book.entry(u"tag:qtcraft:planks"_s));
         QVERIFY(book.entry(u"world:terrain"_s));
 
@@ -606,7 +606,9 @@ private slots:
         QCOMPARE(fact(*zombie, u"Spawn light"_s)->value, u"block light up to 7"_s);
         QCOMPARE(fact(*zombie, u"Limit"_s)->value, u"all hostile creatures together: 8 per player"_s);
         QCOMPARE(fact(*zombie, u"Attack"_s)->value, u"3 damage within 1.6 m, every 1 s"_s);
-        QCOMPARE(targets(fact(*zombie, u"Drops"_s)->links), QStringList{u"item:qtcraft:rotten_flesh"_s});
+        // Rarely a carrot or a potato as well (decision E-294).
+        QCOMPARE(targets(fact(*zombie, u"Drops"_s)->links),
+                 (QStringList{u"item:qtcraft:rotten_flesh"_s, u"item:qtcraft:carrot"_s, u"item:qtcraft:potato"_s}));
         QVERIFY(targets(section(*zombie, u"Appears on"_s)->links).contains(u"block:qtcraft:stone"_s));
 
         const QcHandbookEntry *firefly = m_english.entry(u"mob:qtcraft:firefly"_s);

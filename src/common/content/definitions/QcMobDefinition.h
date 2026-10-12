@@ -108,6 +108,8 @@ struct QcMobDefinition
     // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it.
     QString catchWith;
     QString catchItem;
+    // Feeding and young ones (decision E-293); only `breeding.food` reaches the client.
+    QcBreedingDefinition breeding;
 
     static constexpr int maxGlow = 15;
 };

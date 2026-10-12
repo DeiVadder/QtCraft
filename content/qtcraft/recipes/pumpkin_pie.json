@@ -1,0 +1,12 @@
+{
+    "name": "pumpkin_pie",
+    "type": "shapeless",
+    "ingredients": [
+        "pumpkin",
+        "sugar",
+        "wheat"
+    ],
+    "result": {
+        "item": "pumpkin_pie"
+    }
+}

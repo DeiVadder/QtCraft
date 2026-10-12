@@ -1,5 +1,6 @@
 #include "QcItemEntityManager.h"
 
+#include "QcLiquidFlow.h"
 #include "QcPhysics.h"
 #include "QcWorldConstants.h"
 
@@ -115,9 +116,10 @@ void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt
     }
 
     item.resting = false;
-    item.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(item.motion.position + QcVec3{0.0, 0.1, 0.0}));
+    const QcBlockPos cell = QcPhysics::blockContaining(item.motion.position + QcVec3{0.0, 0.1, 0.0});
+    item.motion.inWater = QcPhysics::isLiquidAt(world, cell);
 
-    // Items float up in water and stop on the ground. In the air they keep most of their speed:
+    // Items float up in water and drift with its current (decision E-296), and stop on the ground. In the air they keep most of their speed:
     // steering towards a slightly slower velocity in the flight direction makes stepEntity's air
     // control act as weak drag (about two percent per tick) instead of the strong player control.
     QcVec3 wish;
@@ -127,6 +129,10 @@ void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt
         const double blend = std::min(1.0, QcPhysics::airAcceleration * dt);
         wish = {item.motion.velocity.x / horizontal, 0.0, item.motion.velocity.z / horizontal};
         speed = horizontal * std::max(0.0, 1.0 - airDrag / blend);
+    }
+    if (item.motion.inWater) {
+        wish = QcLiquidFlow::current(world, cell);
+        speed = wish.length() > 0.0 ? driftSpeed : 0.0;
     }
 
     QcPhysics::stepEntity(item.motion, QcPhysics::Steering{wish, speed, item.motion.inWater, false}, QcPhysics::BodySize{itemSize, itemSize},
@@ -384,4 +390,17 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
 qsizetype QcItemEntityManager::removeWhere(const std::function<bool(const Item &)> &match)
 {
     return m_items.removeIf([&match](const Item &item) { return !item.dormant && match(item); });
+}
+
+bool QcItemEntityManager::takeOne(quint32 id)
+{
+    const auto it = std::ranges::find(m_items, id, &Item::id);
+    if (it == m_items.end() || it->dormant || it->stack.isEmpty()) {
+        return false;
+    }
+
+    if (--it->stack.count <= 0) {
+        m_items.erase(it);
+    }
+    return true;
 }

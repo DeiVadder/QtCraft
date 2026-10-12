@@ -207,8 +207,10 @@ private slots:
         QcWorldInfo info;
         info.name = u"Rules"_s;
         info.keepInventory = false;
+        info.randomTicks = false;
         QVERIFY(storage.writeInfo(info).has_value());
         QCOMPARE(storage.readInfo()->keepInventory, false);
+        QCOMPARE(storage.readInfo()->randomTicks, false);
 
         // Worlds saved before game rules existed keep the inventory on death, as they always did.
         QFile file(dir.filePath(u"world.json"_s));
@@ -220,6 +222,7 @@ private slots:
         file.write(text);
         file.close();
         QCOMPARE(storage.readInfo()->keepInventory, true);
+        QCOMPARE(storage.readInfo()->randomTicks, true);
     }
 
     void entitiesRoundTripAndUnknownItems()
@@ -310,6 +313,52 @@ private slots:
         file.write("\x7f");
         file.close();
         QVERIFY(!storage.readMobs(warnings).has_value());
+    }
+
+    void breedingTimersRoundTripAndOldMobFilesLoad()
+    {
+        QTemporaryDir dir;
+        auto content = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
+        QcMobDefinition pig;
+        pig.name = u"a:pig"_s;
+        pig.maxHealth = 10.0;
+        content->registerMob(pig);
+        const QcWorldStorage storage(dir.path(), content);
+        QStringList warnings;
+
+        // Version 2 keeps the breeding cooldown and the time until a young one grows up (E-293).
+        QcWorldMobs mobs;
+        mobs.mobs.append({0, {1.5, 70.0, 2.5}, 0.0f, 10.0, 120.0, 900.0});
+        QVERIFY(storage.writeMobs(mobs).has_value());
+        const auto read = storage.readMobs(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->mobs.first().breedCooldown, 120.0);
+        QCOMPARE(read->mobs.first().growUp, 900.0);
+
+        // Timers longer than a day are damage.
+        mobs.mobs.first().growUp = 1e9;
+        QVERIFY(storage.writeMobs(mobs).has_value());
+        QVERIFY(!storage.readMobs(warnings).has_value());
+
+        // A version 1 file (no timers) loads with adult animals.
+        QByteArray payload;
+        QDataStream stream(&payload, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_6_8);
+        stream << quint32(1) << u"a:pig"_s << 1.5 << 70.0 << 2.5 << 0.0f << 10.0 << quint32(0);
+        QByteArray file("QCMB");
+        QDataStream header(&file, QIODevice::Append);
+        header.setVersion(QDataStream::Qt_6_8);
+        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
+        file.append(payload);
+        QFile old(dir.filePath(u"mobs.qce"_s));
+        QVERIFY(old.open(QIODevice::WriteOnly));
+        old.write(file);
+        old.close();
+        const auto oldRead = storage.readMobs(warnings);
+        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
+        QCOMPARE(oldRead->mobs.size(), qsizetype(1));
+        QCOMPARE(oldRead->mobs.first().growUp, 0.0);
+        QCOMPARE(oldRead->mobs.first().breedCooldown, 0.0);
     }
 
     void fallingBlocksRoundTripAndOldEntityFilesLoad()

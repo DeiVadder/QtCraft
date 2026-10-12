@@ -35,6 +35,14 @@
         {
             "item": "rotten_flesh",
             "count": 1
+        },
+        {
+            "item": "carrot",
+            "chance": 0.025
+        },
+        {
+            "item": "potato",
+            "chance": 0.025
         }
     ]
 }

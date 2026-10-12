@@ -1,0 +1,33 @@
+{
+    "name": "farmland",
+    "sound": "dirt",
+    "shape": "farmland",
+    "opaque": false,
+    "hardness": 0.6,
+    "tool": "shovel",
+    "states": {
+        "moist": [
+            false,
+            true
+        ]
+    },
+    "soil": {
+        "property": "moist",
+        "water": "water",
+        "reach": 4,
+        "revertsTo": "dirt"
+    },
+    "drops": [
+        {
+            "item": "dirt"
+        }
+    ],
+    "textures": {
+        "top": "farmland",
+        "bottom": "dirt",
+        "side": "dirt",
+        "slots": {
+            "wet": "farmland_wet"
+        }
+    }
+}

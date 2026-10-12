@@ -71,6 +71,31 @@ QStringList parseTags(const QJsonValue &value, const QString &packNamespace, QcJ
     return tags;
 }
 
+QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = reader.json.value(key);
+    if (value.isUndefined()) {
+        return {};
+    }
+
+    const QJsonArray list = value.toArray();
+    if (!value.isArray() || list.size() > 64) {
+        reader.fail(u"'%1' must be an array of at most 64 names"_s.arg(key));
+        return {};
+    }
+
+    QStringList names;
+    for (const auto &entry : list) {
+        const QString name = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        if (name.isEmpty()) {
+            reader.fail(u"invalid '%1' entry"_s.arg(key));
+            return {};
+        }
+        names.append(name);
+    }
+    return names;
+}
+
 std::optional<QString> stateValue(const QJsonValue &value)
 {
     if (value.isString()) {

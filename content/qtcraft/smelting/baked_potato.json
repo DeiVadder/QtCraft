@@ -1,0 +1,8 @@
+{
+    "name": "baked_potato",
+    "input": "potato",
+    "result": {
+        "item": "baked_potato"
+    },
+    "seconds": 10
+}

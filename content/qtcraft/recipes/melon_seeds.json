@@ -1,0 +1,10 @@
+{
+    "name": "melon_seeds",
+    "type": "shapeless",
+    "ingredients": [
+        "melon_slice"
+    ],
+    "result": {
+        "item": "melon_seeds"
+    }
+}

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Diamond axe](#item-qtcraft-diamond_axe) · [Diamond boots](#item-qtcraft-diamond_boots) · [Diamond chestplate](#item-qtcraft-diamond_chestplate) · [Diamond helmet](#item-qtcraft-diamond_helmet) · [Diamond leggings](#item-qtcraft-diamond_leggings) · [Diamond pickaxe](#item-qtcraft-diamond_pickaxe) · [Diamond shovel](#item-qtcraft-diamond_shovel) · [Diamond sword](#item-qtcraft-diamond_sword) · [Golden axe](#item-qtcraft-golden_axe) · [Golden boots](#item-qtcraft-golden_boots) · [Golden chestplate](#item-qtcraft-golden_chestplate) · [Golden helmet](#item-qtcraft-golden_helmet) · [Golden leggings](#item-qtcraft-golden_leggings) · [Golden pickaxe](#item-qtcraft-golden_pickaxe) · [Golden shovel](#item-qtcraft-golden_shovel) · [Golden sword](#item-qtcraft-golden_sword) · [Iron axe](#item-qtcraft-iron_axe) · [Iron boots](#item-qtcraft-iron_boots) · [Iron chestplate](#item-qtcraft-iron_chestplate) · [Iron helmet](#item-qtcraft-iron_helmet) · [Iron leggings](#item-qtcraft-iron_leggings) · [Iron pickaxe](#item-qtcraft-iron_pickaxe) · [Iron shovel](#item-qtcraft-iron_shovel) · [Iron sword](#item-qtcraft-iron_sword) · [Leather boots](#item-qtcraft-leather_boots) · [Leather cap](#item-qtcraft-leather_helmet) · [Leather trousers](#item-qtcraft-leather_leggings) · [Leather tunic](#item-qtcraft-leather_chestplate) · [Stone axe](#item-qtcraft-stone_axe) · [Stone pickaxe](#item-qtcraft-stone_pickaxe) · [Stone shovel](#item-qtcraft-stone_shovel) · [Stone sword](#item-qtcraft-stone_sword) · [Wooden axe](#item-qtcraft-wooden_axe) · [Wooden pickaxe](#item-qtcraft-wooden_pickaxe) · [Wooden shovel](#item-qtcraft-wooden_shovel) · [Wooden sword](#item-qtcraft-wooden_sword)
+**QtCraft:** [Diamond axe](#item-qtcraft-diamond_axe) · [Diamond boots](#item-qtcraft-diamond_boots) · [Diamond chestplate](#item-qtcraft-diamond_chestplate) · [Diamond helmet](#item-qtcraft-diamond_helmet) · [Diamond hoe](#item-qtcraft-diamond_hoe) · [Diamond leggings](#item-qtcraft-diamond_leggings) · [Diamond pickaxe](#item-qtcraft-diamond_pickaxe) · [Diamond shovel](#item-qtcraft-diamond_shovel) · [Diamond sword](#item-qtcraft-diamond_sword) · [Golden axe](#item-qtcraft-golden_axe) · [Golden boots](#item-qtcraft-golden_boots) · [Golden chestplate](#item-qtcraft-golden_chestplate) · [Golden helmet](#item-qtcraft-golden_helmet) · [Golden hoe](#item-qtcraft-golden_hoe) · [Golden leggings](#item-qtcraft-golden_leggings) · [Golden pickaxe](#item-qtcraft-golden_pickaxe) · [Golden shovel](#item-qtcraft-golden_shovel) · [Golden sword](#item-qtcraft-golden_sword) · [Iron axe](#item-qtcraft-iron_axe) · [Iron boots](#item-qtcraft-iron_boots) · [Iron chestplate](#item-qtcraft-iron_chestplate) · [Iron helmet](#item-qtcraft-iron_helmet) · [Iron hoe](#item-qtcraft-iron_hoe) · [Iron leggings](#item-qtcraft-iron_leggings) · [Iron pickaxe](#item-qtcraft-iron_pickaxe) · [Iron shovel](#item-qtcraft-iron_shovel) · [Iron sword](#item-qtcraft-iron_sword) · [Leather boots](#item-qtcraft-leather_boots) · [Leather cap](#item-qtcraft-leather_helmet) · [Leather trousers](#item-qtcraft-leather_leggings) · [Leather tunic](#item-qtcraft-leather_chestplate) · [Stone axe](#item-qtcraft-stone_axe) · [Stone hoe](#item-qtcraft-stone_hoe) · [Stone pickaxe](#item-qtcraft-stone_pickaxe) · [Stone shovel](#item-qtcraft-stone_shovel) · [Stone sword](#item-qtcraft-stone_sword) · [Wooden axe](#item-qtcraft-wooden_axe) · [Wooden hoe](#item-qtcraft-wooden_hoe) · [Wooden pickaxe](#item-qtcraft-wooden_pickaxe) · [Wooden shovel](#item-qtcraft-wooden_shovel) · [Wooden sword](#item-qtcraft-wooden_sword)
 
 ## QtCraft
 
@@ -95,6 +95,30 @@ The strongest armour; it lasts the longest.
 |---|---|---|---|
 | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond helmet](#item-qtcraft-diamond_helmet) |
 | [Diamond](items.md#item-qtcraft-diamond) | · | [Diamond](items.md#item-qtcraft-diamond) |  |
+
+### <a id="item-qtcraft-diamond_hoe"></a>Diamond hoe
+
+Tills grass and dirt into farmland and lasts very long.
+
+| | |
+|---|---|
+| ID | `qtcraft:diamond_hoe` |
+| Stack size | 1 |
+| Tool | hoe, level 4: [Tool tiers](tables.md#table-tools) |
+| Mining speed | × 8 |
+| Durability | 1561 uses |
+| Attack damage | 1 health point |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Diamond](items.md#item-qtcraft-diamond) | [Diamond](items.md#item-qtcraft-diamond) | [Diamond hoe](#item-qtcraft-diamond_hoe) |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-diamond_leggings"></a>Diamond leggings
 
@@ -280,6 +304,30 @@ Shiny armour of gold: a little better than leather, but soft.
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden helmet](#item-qtcraft-golden_helmet) |
 | [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
 
+### <a id="item-qtcraft-golden_hoe"></a>Golden hoe
+
+Tills grass and dirt into farmland, but wears out quickly.
+
+| | |
+|---|---|
+| ID | `qtcraft:golden_hoe` |
+| Stack size | 1 |
+| Tool | hoe, level 1: [Tool tiers](tables.md#table-tools) |
+| Mining speed | × 12 |
+| Durability | 32 uses |
+| Attack damage | 1 health point |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Golden hoe](#item-qtcraft-golden_hoe) |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+
 ### <a id="item-qtcraft-golden_leggings"></a>Golden leggings
 
 Shiny armour of gold: a little better than leather, but soft.
@@ -463,6 +511,30 @@ Solid armour of iron plates, the usual choice.
 |---|---|---|---|
 | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron helmet](#item-qtcraft-iron_helmet) |
 | [Iron ingot](items.md#item-qtcraft-iron_ingot) | · | [Iron ingot](items.md#item-qtcraft-iron_ingot) |  |
+
+### <a id="item-qtcraft-iron_hoe"></a>Iron hoe
+
+Tills grass and dirt into farmland; lasts long.
+
+| | |
+|---|---|
+| ID | `qtcraft:iron_hoe` |
+| Stack size | 1 |
+| Tool | hoe, level 3: [Tool tiers](tables.md#table-tools) |
+| Mining speed | × 6 |
+| Durability | 250 uses |
+| Attack damage | 1 health point |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron ingot](items.md#item-qtcraft-iron_ingot) | [Iron hoe](#item-qtcraft-iron_hoe) |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-iron_leggings"></a>Iron leggings
 
@@ -671,6 +743,30 @@ Chops wood faster.
 | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
 
+### <a id="item-qtcraft-stone_hoe"></a>Stone hoe
+
+Tills grass and dirt into farmland; lasts longer than wood.
+
+| | |
+|---|---|
+| ID | `qtcraft:stone_hoe` |
+| Stack size | 1 |
+| Tool | hoe, level 2: [Tool tiers](tables.md#table-tools) |
+| Mining speed | × 4 |
+| Durability | 131 uses |
+| Attack damage | 1 health point |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Cobblestone](blocks.md#block-qtcraft-cobblestone) | [Stone hoe](#item-qtcraft-stone_hoe) |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+
 ### <a id="item-qtcraft-stone_pickaxe"></a>Stone pickaxe
 
 Mines stone and ores.
@@ -764,6 +860,31 @@ Chops wood faster.
 |---|---|---|
 | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Wooden axe](#item-qtcraft-wooden_axe) |
 | [Any planks](tags.md#tag-qtcraft-planks) | [Stick](items.md#item-qtcraft-stick) |  |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
+
+### <a id="item-qtcraft-wooden_hoe"></a>Wooden hoe
+
+Tills grass and dirt into farmland. Each tilled block wears it a little.
+
+| | |
+|---|---|
+| ID | `qtcraft:wooden_hoe` |
+| Stack size | 1 |
+| Tool | hoe, level 1: [Tool tiers](tables.md#table-tools) |
+| Mining speed | × 2 |
+| Durability | 59 uses |
+| Attack damage | 1 health point |
+| Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Wooden hoe](#item-qtcraft-wooden_hoe) |
+| · | [Stick](items.md#item-qtcraft-stick) |  |
 | · | [Stick](items.md#item-qtcraft-stick) |  |
 
 ### <a id="item-qtcraft-wooden_pickaxe"></a>Wooden pickaxe

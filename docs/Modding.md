@@ -96,6 +96,30 @@ Blocks can also define plants: `"shape": "cross"` draws two crossed quads (non-s
 
 A plant that grows upwards by itself (like sugar cane) gets a `"growth"` object: `maxHeight` (2–64, default 3) is the tallest column it reaches, `averageSeconds` (1–86400, default 600) the average time between two growth steps of one column. It needs `"support": "below"`. Growth runs on random ticks of loaded sections (three random blocks per section and tick, so each block is ticked about every 68 s); a ticked top block adds a block of its kind above when the block above is air, the column is shorter than `maxHeight` and the column's base still has its `ground` and `groundLiquid`. Example: `"growth": { "maxHeight": 4, "averageSeconds": 300 }`. Server side only (not sent to clients); the handbook shows it on the block page.
 
+Farming (stage 27, decisions E-289 to E-294; all server side only):
+
+- `"crop"` makes a block ripen in stages on the same random ticks: `property` (default `age`; a state property with at least two values, the last one is ripe), `averageSeconds` (1–86400, default 1200, from the first to the ripe stage on wet soil), `dryFactor` (0–1, default 0.5, pace on dry soil or other ground), `minLight` (0–15, default 9), `plantChance` (0–1, default 0: a dropped item placing this crop that rests on free soil plants one of its stack with this chance once a second). With `fruit` (a block), `fruitSeconds` (default 300) and `fruitGround` (block names) a ripe crop is a stem that puts its fruit onto a free neighbour with that ground, one at a time. Crops need `"support": "below"` (usually `"ground": ["farmland"]`), must not be solid and cannot also have `growth`. Draw the stages with a shape whose parts are conditioned on the stage; a part's `texture` slot also applies to its `crosses`.
+- `"soil"` makes a block farmland: `property` (default `moist`, last value wet, first dry), `water` (default `qtcraft:water`), `reach` (0–8, default 4), `revertsTo` (required, another block).
+- `"tillsInto": "farmland"` on a block and `"tills": true` on an item (the hoes) turn the block into that soil when the item is used on it.
+- A drop may carry `"when": {"age": "7"}` (like shape conditions): it only drops from those states.
+- A peaceful creature may carry `"breeding": {"food": ["carrot"], "loveSeconds": 30, "cooldownSeconds": 300, "growUpSeconds": 1200, "partnerDistance": 8}` (the food list also reaches clients).
+
+```json
+{
+    "name": "ruby_berries",
+    "shape": "qtcraft:crop",
+    "states": { "age": ["0", "1", "2", "3", "4", "5", "6", "7"] },
+    "support": "below",
+    "ground": ["farmland"],
+    "crop": { "averageSeconds": 900, "plantChance": 0.9 },
+    "drops": [{ "item": "ruby_seeds", "when": { "age": ["0", "1", "2", "3", "4", "5", "6"] } },
+              { "item": "ruby", "when": { "age": "7" } }],
+    "textures": { "all": "ruby_ripe", "slots": { "young": "ruby_young", "growing": "ruby_young", "ripe": "ruby_ripe" } }
+}
+```
+
+Texture patterns for farms: `crop`, `root_crop`, `stem`, `farmland`, `pumpkin_side`, `pumpkin_top`, `melon_side`, `hoe`, `wheat`, `bread`, `carrot`, `melon_slice`, `pie`.
+
 Furnaces and other machines come from data too. A block with a `machine` object opens a screen with an input, a fuel and an output slot; `smelting/*.json` says what a machine of that category makes, and `fuelSeconds` on items or blocks says how long they burn (an item created for a block inherits the block's value):
 
 ```json

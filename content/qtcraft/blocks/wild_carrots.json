@@ -1,0 +1,24 @@
+{
+    "name": "wild_carrots",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "washable": true,
+    "drops": [
+        {
+            "item": "carrot"
+        },
+        {
+            "item": "carrot",
+            "chance": 0.5
+        }
+    ],
+    "textures": {
+        "all": "carrot_crop_ripe"
+    }
+}

@@ -114,6 +114,26 @@ struct QcTextureSpec
         // Tinted glass: a frame (secondary) around a clearly coloured pane (primary); keeps partial
         // transparency.
         StainedGlass,
+        // Patterns of QcTextureFarmPatterns (decision E-289): a hoe (tool head like the others) ...
+        Hoe,
+        // ... crop plants on a transparent background: stalks (primary) with ears (secondary),
+        // leafy tufts (primary) showing roots or tubers (secondary) at the bottom, a thin stem with
+        // leaves ...
+        Crop,
+        RootCrop,
+        Stem,
+        // ... tilled soil with furrows (primary, furrows secondary) ...
+        Farmland,
+        // ... fruit blocks: a ribbed pumpkin side and its top with the stalk, a striped melon ...
+        PumpkinSide,
+        PumpkinTop,
+        MelonSide,
+        // ... and food icons: a sheaf of wheat, a loaf, a carrot, a melon slice, a pie.
+        Wheat,
+        Bread,
+        Carrot,
+        MelonSlice,
+        Pie,
         // Patterns of QcTextureArmourPatterns (decision E-235): item icons in the material
         // (primary) with a light upper edge (secondary) ...
         Helmet,

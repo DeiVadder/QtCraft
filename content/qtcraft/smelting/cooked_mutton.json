@@ -1,0 +1,8 @@
+{
+    "name": "cooked_mutton",
+    "input": "raw_mutton",
+    "result": {
+        "item": "cooked_mutton"
+    },
+    "seconds": 10
+}

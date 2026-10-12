@@ -33,6 +33,7 @@ qt_add_library(qc_server STATIC
     storage/QcEntityStorage.h storage/QcEntityStorage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
+    gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
     gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
     gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
@@ -46,6 +47,7 @@ qt_add_library(qc_server STATIC
     machines/QcMachineManager.h machines/QcMachineManager.cpp
     content/QcModLoader.h content/QcModLoader.cpp
     content/QcModStatus.h
+    gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
     gameplay/QcMobManager.h gameplay/QcMobManager.cpp
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
@@ -58,6 +60,7 @@ qt_add_library(qc_server STATIC
     blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
     core/QcServerClient.h
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
+    gameplay/QcServerFarming.h gameplay/QcServerFarming.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
     core/QcServerConfig.h
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp

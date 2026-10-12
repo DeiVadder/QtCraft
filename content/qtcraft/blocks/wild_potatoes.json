@@ -1,0 +1,24 @@
+{
+    "name": "wild_potatoes",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt"
+    ],
+    "washable": true,
+    "drops": [
+        {
+            "item": "potato"
+        },
+        {
+            "item": "potato",
+            "chance": 0.5
+        }
+    ],
+    "textures": {
+        "all": "potato_crop_ripe"
+    }
+}

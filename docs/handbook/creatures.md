@@ -78,6 +78,8 @@ Peaceful farm animal of grassy land; drops porkchops.
 | Group size | up to 4 |
 | Spawn weight | 2 |
 | Limit | all peaceful creatures together: 6 per player |
+| Breeds when fed | [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato) |
+| Breeding | again after 5 min, young grow up in 20 min |
 | Drops | [Raw porkchop](food.md#item-qtcraft-raw_porkchop) (2×) |
 
 **Appears on**
@@ -104,7 +106,9 @@ Peaceful animal of grassy land; drops wool.
 | Group size | up to 4 |
 | Spawn weight | 2 |
 | Limit | all peaceful creatures together: 6 per player |
-| Drops | [White wool](blocks.md#block-qtcraft-white_wool), [White wool](blocks.md#block-qtcraft-white_wool) |
+| Breeds when fed | [Wheat](items.md#item-qtcraft-wheat) |
+| Breeding | again after 5 min, young grow up in 20 min |
+| Drops | [White wool](blocks.md#block-qtcraft-white_wool), [White wool](blocks.md#block-qtcraft-white_wool), [Raw mutton](food.md#item-qtcraft-raw_mutton), [Raw mutton](food.md#item-qtcraft-raw_mutton) |
 
 **Appears on**
 
@@ -170,7 +174,7 @@ Comes out at night and lives in caves. Chases players it sees and hits hard.
 | Group size | up to 3 |
 | Spawn weight | 3 |
 | Limit | all hostile creatures together: 8 per player |
-| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh) |
+| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato) |
 
 **Appears on**
 

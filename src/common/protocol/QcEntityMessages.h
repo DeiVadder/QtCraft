@@ -24,7 +24,13 @@ enum EntityFlag : quint8 {
     InWater = 4,
     Sneaking = 8,
     Sprinting = 16,
+    // A young animal (decision E-293): drawn at QcMsg::youngScale of its size.
+    Young = 32,
+    // An animal in love after feeding: hearts above it.
+    InLove = 64,
 };
+
+inline constexpr double youngScale = 0.5;
 
 // Server -> client: an entity came into view. mobType is an index into the content's mobs, or
 // playerType for another player, itemType for a dropped item stack, fallingBlockType or

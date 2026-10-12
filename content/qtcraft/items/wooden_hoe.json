@@ -1,0 +1,12 @@
+{
+    "name": "wooden_hoe",
+    "texture": "wooden_hoe",
+    "maxStack": 1,
+    "durability": 59,
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 1,
+    "toolSpeed": 2.0,
+    "tills": true,
+    "fuelSeconds": 10
+}

@@ -5,6 +5,8 @@
 #include "QcMessages.h"
 
 class QcServerBlocks;
+class QcServerCombat;
+class QcServerFarming;
 class QcServerInventory;
 class QcServerMachines;
 class QcServerSounds;
@@ -13,7 +15,7 @@ struct QcServerClient;
 struct QcServerState;
 
 // What players do to the world: mining blocks, using blocks and items (opening machines, toggling
-// doors, placing blocks, scooping liquids) and catching creatures.
+// doors, tilling, placing blocks, scooping liquids) and using creatures (feeding, catching).
 class QcServerInteraction
 {
 public:
@@ -29,6 +31,8 @@ public:
         QcServerInventory &inventory;
         QcServerMachines &machines;
         QcServerStands &stands;
+        QcServerFarming &farming;
+        QcServerCombat &combat;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);

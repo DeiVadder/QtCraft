@@ -54,4 +54,7 @@ struct QcItemDefinition
     std::optional<QcArmourDefinition> armour;
     // Used on the top of a block, places an armour stand that drops this item again (decision E-238).
     bool placesStand = false;
+    // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
+    // decision E-290). Server side only.
+    bool tills = false;
 };

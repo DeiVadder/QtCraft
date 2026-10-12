@@ -234,6 +234,8 @@ private slots:
         QCOMPARE(setup.timeOfDay, std::optional(150.0));
         QVERIFY(!setup.daylightCycle);
         QVERIFY(!setup.mobSpawning);
+        // Every crop stage and soil state on show stays (decision E-295).
+        QVERIFY(!setup.randomTicks);
 
         QSet<QString> mobs;
         for (const QcWorldSetup::Mob &mob : setup.mobs) {

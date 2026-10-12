@@ -787,6 +787,15 @@ private slots:
         writeJson(tweak + u"/items/ruby.json"_s, {{u"name"_s, u"rubies:ruby"_s}, {u"maxStack"_s, 16}});
         writeJson(tweak + u"/lang/en.json"_s, {{u"item.qtcraft.stick"_s, u"Twig"_s}});
         writeText(tweak + u"/recipes/broken.json"_s, "{ not json");
+        writeJson(tweak + u"/blocks/odd_stem.json"_s,
+                  {{u"name"_s, u"tweak:odd_stem"_s}, {u"shape"_s, u"cross"_s}, {u"tillsInto"_s, u"tweak:no_soil"_s},
+                   {u"states"_s, QJsonObject{{u"age"_s, QJsonArray{u"0"_s, u"1"_s}}}},
+                   {u"crop"_s, QJsonObject{{u"fruit"_s, u"tweak:no_fruit"_s}, {u"fruitGround"_s, QJsonArray{u"qtcraft:dirt"_s}}}},
+                   {u"textures"_s, QJsonObject{{u"all"_s, u"qtcraft:dirt"_s}}}});
+        const QJsonObject boarPart{{u"from"_s, QJsonArray{-0.3, 0.0, -0.3}}, {u"to"_s, QJsonArray{0.3, 0.6, 0.3}}, {u"texture"_s, u"qtcraft:pig_skin"_s}};
+        writeJson(tweak + u"/mobs/boar.json"_s, {{u"name"_s, u"tweak:boar"_s},
+                                                 {u"model"_s, QJsonArray{boarPart}},
+                                                 {u"breeding"_s, QJsonObject{{u"food"_s, QJsonArray{u"tweak:acorn"_s}}}}});
         writeJson(tweak + u"/recipes/ghost.json"_s,
                   {{u"name"_s, u"ghost"_s}, {u"type"_s, u"shapeless"_s}, {u"ingredients"_s, QJsonArray{u"nothing"_s}},
                    {u"result"_s, QJsonObject{{u"item"_s, u"qtcraft:stick"_s}}}});
@@ -803,6 +812,10 @@ private slots:
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"broken.json"_s); }));
         QVERIFY(std::ranges::none_of(warnings, [](const QString &w) { return w.contains(u"glass"_s); }));
         QVERIFY(std::ranges::any_of(warnings, [](const QString &w) { return w.contains(u"unknown item 'tweak:nothing'"_s); }));
+        for (const QString &expected : {u"unknown fruit 'tweak:no_fruit'"_s, u"unknown tillsInto 'tweak:no_soil'"_s,
+                                        u"unknown breeding food 'tweak:acorn'"_s}) {
+            QVERIFY2(std::ranges::any_of(warnings, [&expected](const QString &w) { return w.contains(expected); }), qPrintable(warnings.join(u'\n')));
+        }
     }
 
     void disabledModsAreRemembered()

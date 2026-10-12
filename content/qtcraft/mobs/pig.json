@@ -104,5 +104,11 @@
             "item": "raw_porkchop",
             "count": 2
         }
-    ]
+    ],
+    "breeding": {
+        "food": [
+            "carrot",
+            "potato"
+        ]
+    }
 }

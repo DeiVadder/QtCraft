@@ -1,0 +1,71 @@
+{
+    "name": "carrot_crop",
+    "sound": "grass",
+    "shape": "root_crop",
+    "render": "cutout",
+    "solid": false,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "ground": [
+        "farmland"
+    ],
+    "washable": true,
+    "states": {
+        "age": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "crop": {
+        "property": "age",
+        "averageSeconds": 1200,
+        "dryFactor": 0.5,
+        "minLight": 9,
+        "plantChance": 0.9
+    },
+    "drops": [
+        {
+            "item": "carrot",
+            "when": {
+                "age": [
+                    "0",
+                    "1",
+                    "2"
+                ]
+            }
+        },
+        {
+            "item": "carrot",
+            "count": 2,
+            "when": {
+                "age": "3"
+            }
+        },
+        {
+            "item": "carrot",
+            "chance": 0.5,
+            "when": {
+                "age": "3"
+            }
+        },
+        {
+            "item": "carrot",
+            "chance": 0.5,
+            "when": {
+                "age": "3"
+            }
+        }
+    ],
+    "textures": {
+        "all": "carrot_crop_ripe",
+        "slots": {
+            "young": "root_crop_young",
+            "growing": "carrot_crop_growing",
+            "ripe": "carrot_crop_ripe"
+        }
+    }
+}

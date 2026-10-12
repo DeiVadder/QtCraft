@@ -9,6 +9,7 @@
 #include "QcServerDebug.h"
 #include "QcServerLogin.h"
 #include "QcServerCombat.h"
+#include "QcServerFarming.h"
 #include "QcServerGameModes.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
@@ -202,6 +203,7 @@ private:
     QcServerInventory m_inventory;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
+    QcServerFarming m_farming;
     QcServerInteraction m_interaction;
     QcServerItemsAndPlants m_itemsAndPlants;
     QcServerCombat m_combat;

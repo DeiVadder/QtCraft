@@ -5,6 +5,7 @@
 #include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcServerCombat.h"
+#include "QcServerFarming.h"
 #include "QcServerBlocks.h"
 #include "QcServerInventory.h"
 #include "QcServerMachines.h"
@@ -100,7 +101,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
-    if (m_parts.stands.place(client, message)) {
+    if (m_parts.farming.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)) {
         return;
     }
     placeHeld(client, message, held);
@@ -146,6 +147,10 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     const std::optional<QcBlockId> existing = m_state.world.blockAt(target);
     if (!placement || !existing || !m_state.isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)) {
         rejectPlacement(client, target);
+        // Food that plants (carrots, potatoes) is eaten where it cannot be planted (decision E-292).
+        if (held && held->food > 0) {
+            m_parts.combat.consume(client);
+        }
         return;
     }
 
@@ -272,6 +277,11 @@ bool QcServerInteraction::fillBottle(QcServerClient &client, QcBlockPos pos)
 void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
 {
     client.swung = true;
+    // Food the animal eats is never eaten by the player instead, even when the animal refuses it now.
+    if (m_parts.farming.feed(client, entityId) != QcServerFarming::Feeding::NotItsFood) {
+        return;
+    }
+
     const QcMobManager::Mob *mob = m_state.mobs.find(entityId);
     const QcItemDefinition *held = m_state.heldItem(client);
     if (!mob || !held) {
@@ -283,7 +293,9 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
     if (definition.catchWith != held->name || !m_state.content->itemId(definition.catchItem)
         || (centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0
-        || !m_state.canSee(client, QcPhysics::boxAt(mob->motion.position, definition.width, definition.height))) {
+        || !m_state.canSee(client, QcServerFarming::shownBox(definition, *mob))) {
+        // Food and armour aimed at a creature that does not take them are eaten or put on.
+        m_parts.combat.consume(client);
         return;
     }
 

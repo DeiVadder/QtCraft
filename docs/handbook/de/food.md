@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Apfel](#item-qtcraft-apple) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
+**QtCraft:** [Apfel](#item-qtcraft-apple) · [Brot](#item-qtcraft-bread) · [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) · [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) · [Karotte](#item-qtcraft-carrot) · [Kartoffel](#item-qtcraft-potato) · [Kürbiskuchen](#item-qtcraft-pumpkin_pie) · [Melonenscheibe](#item-qtcraft-melon_slice) · [Ofenkartoffel](#item-qtcraft-baked_potato) · [Pilzsuppe](#item-qtcraft-mushroom_stew) · [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) · [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) · [Verrottetes Fleisch](#item-qtcraft-rotten_flesh)
 
 ## QtCraft
 
@@ -19,6 +19,46 @@ Eichenlaub lässt hin und wieder einen fallen.
 **Droppt aus**
 
 [Eichenlaub](blocks.md#block-qtcraft-oak_leaves) (2 %)
+
+### <a id="item-qtcraft-bread"></a>Brot
+
+Aus drei Weizen gebacken; eine gute Mahlzeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:bread` |
+| Stapelgröße | 64 |
+| Nahrung | 5 Nahrungspunkte |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Brot](#item-qtcraft-bread) |
+
+### <a id="item-qtcraft-cooked_mutton"></a>Gebratenes Hammelfleisch
+
+Im Ofen gebratenes Hammelfleisch; gutes Essen.
+
+| | |
+|---|---|
+| ID | `qtcraft:cooked_mutton` |
+| Stapelgröße | 64 |
+| Nahrung | 6 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
 
 ### <a id="item-qtcraft-cooked_porkchop"></a>Gebratenes Schweinefleisch
 
@@ -37,6 +77,107 @@ Gutes Essen, das die Nahrungsleiste weit füllt.
 | 1 | → |
 |---|---|
 | [Rohes Schweinefleisch](#item-qtcraft-raw_porkchop) | [Gebratenes Schweinefleisch](#item-qtcraft-cooked_porkchop) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+### <a id="item-qtcraft-carrot"></a>Karotte
+
+Ein Happen und die Saat von Karottenpflanzen. Schweine lieben sie.
+
+| | |
+|---|---|
+| ID | `qtcraft:carrot` |
+| Stapelgröße | 64 |
+| Nahrung | 3 Nahrungspunkte |
+| Setzt | [Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) |
+
+**Droppt aus**
+
+[Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="item-qtcraft-potato"></a>Kartoffel
+
+Roh kaum sättigend; auf Ackerboden pflanzen oder im Ofen backen.
+
+| | |
+|---|---|
+| ID | `qtcraft:potato` |
+| Stapelgröße | 64 |
+| Nahrung | 1 Nahrungspunkt |
+| Setzt | [Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Kartoffel](#item-qtcraft-potato) | [Ofenkartoffel](#item-qtcraft-baked_potato) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Droppt aus**
+
+[Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="item-qtcraft-pumpkin_pie"></a>Kürbiskuchen
+
+Kürbis, Zucker und Weizen zum sättigendsten Essen vom Hof gebacken.
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_pie` |
+| Stapelgröße | 64 |
+| Nahrung | 8 Nahrungspunkte |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Kürbis](blocks.md#block-qtcraft-pumpkin) | [Zucker](items.md#item-qtcraft-sugar) | [Kürbiskuchen](#item-qtcraft-pumpkin_pie) |
+| [Weizen](items.md#item-qtcraft-wheat) | · |  |
+
+### <a id="item-qtcraft-melon_slice"></a>Melonenscheibe
+
+Ein saftiger Bissen; neun ergeben wieder eine ganze Melone.
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_slice` |
+| Stapelgröße | 64 |
+| Nahrung | 2 Nahrungspunkte |
+
+**Wird verwendet für**
+
+[Melone](blocks.md#block-qtcraft-melon), [Melonenkerne](items.md#item-qtcraft-melon_seeds)
+
+**Droppt aus**
+
+[Melone](blocks.md#block-qtcraft-melon) (3×, 50 %)
+
+### <a id="item-qtcraft-baked_potato"></a>Ofenkartoffel
+
+Eine im Ofen gebackene Kartoffel; so sättigend wie Brot.
+
+| | |
+|---|---|
+| ID | `qtcraft:baked_potato` |
+| Stapelgröße | 64 |
+| Nahrung | 5 Nahrungspunkte |
+
+**Im Ofen hergestellt**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Kartoffel](#item-qtcraft-potato) | [Ofenkartoffel](#item-qtcraft-baked_potato) |
 
 [Ofen](blocks.md#block-qtcraft-furnace)
 
@@ -61,6 +202,32 @@ Eine sättigende Suppe aus beiden Pilzen; die Schüssel bleibt.
 |---|---|---|
 | [Brauner Pilz](blocks.md#block-qtcraft-brown_mushroom) | [Roter Pilz](blocks.md#block-qtcraft-red_mushroom) | [Pilzsuppe](#item-qtcraft-mushroom_stew) |
 | [Schüssel](items.md#item-qtcraft-bowl) | · |  |
+
+### <a id="item-qtcraft-raw_mutton"></a>Rohes Hammelfleisch
+
+Fleisch eines Schafs; im Ofen gebraten besser.
+
+| | |
+|---|---|
+| ID | `qtcraft:raw_mutton` |
+| Stapelgröße | 64 |
+| Nahrung | 2 Nahrungspunkte |
+
+**Wird im Ofen zu**
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Hammelfleisch](#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](#item-qtcraft-cooked_mutton) |
+
+[Ofen](blocks.md#block-qtcraft-furnace)
+
+[Brennstoffe](tables.md#table-fuels)
+
+**Droppt aus**
+
+[Schaf](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="item-qtcraft-raw_porkchop"></a>Rohes Schweinefleisch
 

@@ -1,6 +1,6 @@
 # QtCraft
 
-A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, smelting in furnaces, hunger, creatures, day and night, flowing water and lava, falling sand, plants, fireflies and mine lamps, synthesized sound and music, an in-game handbook generated from the content, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
+A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generated worlds, mining and building, crafting, smelting in furnaces, hunger, farming with crops, pumpkins, melons and animal breeding, creatures, day and night, flowing water and lava, falling sand, plants, fireflies and mine lamps, synthesized sound and music, an in-game handbook generated from the content, saved worlds, data-only mods and a JSON control interface for agents and tests. Everything runs through a local server and a versioned binary protocol, so a network transport can be added later without touching the game logic.
 
 ![Day view at view distance 8](docs/screenshots/08-day-view-distance-8.png)
 
@@ -42,7 +42,7 @@ The main menu lists saved worlds, creates new ones (name, world type, optional s
 | Mouse, arrow keys | Look around (click into the window to capture the mouse) |
 | W A S D, Space, Shift, Ctrl (Option on a Mac) | Move, jump, sneak, sprint (press once while walking forward, or tap W twice; lasts while W is held) |
 | Left mouse / F | Mine; left click on a creature attacks it |
-| Right mouse / R | Place the held block (stairs, slabs, torches, doors … turn and attach by where you look and click), eat held food when hungry, open a crafting table, furnace or chest, open and close doors, trapdoors and gates (sneak to place against them); with an empty bucket take water or lava, with a full one pour it; with an empty glass bottle catch a firefly |
+| Right mouse / R | Place the held block (stairs, slabs, torches, doors … turn and attach by where you look and click), eat held food when hungry, till grass or dirt with a hoe, plant seeds, carrots and potatoes on farmland, feed animals (pigs: carrots or potatoes, sheep: wheat) so they get young ones, open a crafting table, furnace or chest, open and close doors, trapdoors and gates (sneak to place against them); with an empty bucket take water or lava, with a full one pour it; with an empty glass bottle catch a firefly |
 | Middle mouse / B | Pick block: put the item of the block in view into your hand (selects it in the hotbar or swaps it in; in creative mode taken from the catalogue) |
 | Q, Ctrl+Q (Control+Q on a Mac) | Throw one item or the whole stack of the selected slot (walk over items to pick them up) |
 | V or F5 | Switch the view: first person, third person behind, third person in front |

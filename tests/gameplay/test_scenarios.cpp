@@ -261,6 +261,148 @@ private slots:
         QCOMPARE(countOf(u"qtcraft:glass_bottle"_s), 0);
     }
 
+    // Farming as a bot plays it (decisions E-289 to E-293): till, plant, let a sped-up day ripen the
+    // wheat, harvest, eat, and feed two pigs until a young one appears.
+    void farmingThroughTheInterface()
+    {
+        const auto chat = [&](const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}); };
+        chat(u"/fill ~-6 ~-1 ~-6 ~6 ~-1 ~6 grass_block"_s);
+        chat(u"/fill ~-6 ~ ~-6 ~6 ~6 ~6 air"_s);
+        chat(u"/setblock ~2 ~-1 ~1 water"_s);
+        chat(u"/give wooden_hoe"_s);
+        chat(u"/give wheat_seeds 1"_s);
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const int x = int(std::floor(feet.x)) + 2;
+        const int y = int(std::floor(feet.y)) - 1;
+        const int z = int(std::floor(feet.z));
+        const auto blockAt = [&](int dy) { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + dy}, {u"z"_s, z}}); };
+        const auto useOn = [&](const QString &item) {
+            QVERIFY(select(item));
+            const QJsonObject used = request({{u"cmd"_s, u"use"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+            QVERIFY2(used.value(u"ok"_s).toBool(), QJsonDocument(used).toJson().constData());
+            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        };
+
+        useOn(u"qtcraft:wooden_hoe"_s);
+        QCOMPARE(blockAt(0).value(u"block"_s).toString(), u"qtcraft:farmland"_s);
+        QCOMPARE(blockAt(0).value(u"state"_s).toObject().value(u"moist"_s).toString(), u"true"_s);
+        useOn(u"qtcraft:wheat_seeds"_s);
+        QCOMPARE(blockAt(1).value(u"state"_s).toObject().value(u"age"_s).toString(), u"0"_s);
+
+        // Six game days (3600 s, three times the average) as fast as the server can, without nights
+        // full of zombies.
+        chat(u"/gamerule mobSpawning false"_s);
+        chat(u"/gamerule daylightCycle false"_s);
+        // The sprint reports its end with the ticks it ran; the wait only bounds a hanging server.
+        chat(u"/tick sprint 6d"_s);
+        const auto sprintEnded = [&] {
+            const QJsonArray lines = request({{u"cmd"_s, u"chatLog"_s}}).value(u"lines"_s).toArray();
+            return std::ranges::any_of(lines, [](const QJsonValue &line) { return line.toString().contains(u"Sprint ended: 72000 ticks"_s); });
+        };
+        QVERIFY(QTest::qWaitFor(sprintEnded, 10 * timeoutMs));
+        QCOMPARE(blockAt(1).value(u"state"_s).toObject().value(u"age"_s).toString(), u"7"_s);
+        const QJsonObject mined = request({{u"cmd"_s, u"mine"_s}, {u"x"_s, x}, {u"y"_s, y + 1}, {u"z"_s, z}});
+        QVERIFY2(mined.value(u"ok"_s).toBool(), QJsonDocument(mined).toJson().constData());
+        request({{u"cmd"_s, u"collect"_s}, {u"radius"_s, 4}, {u"maxTicks"_s, 100}});
+        QCOMPARE(countOf(u"qtcraft:wheat"_s), 1);
+
+        // Hungry players eat with "use".
+        chat(u"/feed 10"_s);
+        chat(u"/give bread 1"_s);
+        QVERIFY(select(u"qtcraft:bread"_s));
+        request({{u"cmd"_s, u"use"_s}});
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QCOMPARE(request({{u"cmd"_s, u"status"_s}}).value(u"food"_s).toInt(), 15);
+
+    }
+
+    // Feeding animals as a bot: two pigs fed with carrots get a young one, a sheep takes wheat.
+    void breedingThroughTheInterface()
+    {
+        const auto chat = [&](const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}); };
+        chat(u"/fill ~-6 ~-1 ~-6 ~6 ~-1 ~6 grass_block"_s);
+        chat(u"/fill ~-6 ~ ~-6 ~6 ~6 ~6 air"_s);
+        chat(u"/gamerule mobSpawning false"_s);
+
+        // Two pigs fed with carrots get a young one.
+        chat(u"/give carrot 2"_s);
+        // One pig west and one south of the player, each three metres away.
+        for (const int yaw : {270, 180}) {
+            request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, yaw}, {u"pitch"_s, 0}});
+            request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+            chat(u"/summon pig"_s);
+        }
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QVERIFY(select(u"qtcraft:carrot"_s));
+        const auto pigs = [&] {
+            QJsonArray found;
+            const QJsonArray entities = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 6}}).value(u"entities"_s).toArray();
+            for (const auto &value : entities) {
+                if (value.toObject().value(u"type"_s).toString() == u"qtcraft:pig"_s) {
+                    found.append(value);
+                }
+            }
+            return found;
+        };
+        const QJsonArray parents = pigs();
+        for (const auto &pig : parents) {
+            const QJsonObject fed = request({{u"cmd"_s, u"useEntity"_s}, {u"entity"_s, pig.toObject().value(u"id"_s).toInteger()}});
+            QVERIFY2(fed.value(u"ok"_s).toBool(), QJsonDocument(fed).toJson().constData());
+        }
+        // They court for a second before the young one comes.
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 30}});
+        const QJsonArray family = pigs();
+        QCOMPARE(family.size(), 3);
+        QCOMPARE(std::ranges::count_if(family, [](const QJsonValue &pig) { return pig.toObject().value(u"young"_s).toBool(); }), 1);
+
+        // Wheat is no food for players, but the client knows sheep eat it (content sync).
+        chat(u"/give wheat 1"_s);
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 0}, {u"pitch"_s, 0}});
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        chat(u"/summon sheep"_s);
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QVERIFY(select(u"qtcraft:wheat"_s));
+        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 6}}).value(u"entities"_s).toArray();
+        const auto sheep = std::ranges::find_if(around, [](const QJsonValue &e) { return e.toObject().value(u"type"_s).toString() == u"qtcraft:sheep"_s; });
+        QVERIFY(sheep != around.end());
+        const QJsonObject fedSheep = request({{u"cmd"_s, u"useEntity"_s}, {u"entity"_s, (*sheep).toObject().value(u"id"_s).toInteger()}});
+        QVERIFY2(fedSheep.value(u"ok"_s).toBool(), QJsonDocument(fedSheep).toJson().constData());
+    }
+
+    // Items that are no use on a creature act on the block behind it (decision E-293).
+    void blocksArePlacedBehindACreature()
+    {
+        const auto chat = [&](const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}); };
+        chat(u"/fill ~-6 ~-1 ~-6 ~6 ~-1 ~6 grass_block"_s);
+        chat(u"/fill ~-6 ~ ~-6 ~6 ~6 ~6 air"_s);
+        chat(u"/gamerule mobSpawning false"_s);
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 270}, {u"pitch"_s, 0}});
+        chat(u"/summon pig"_s);
+        chat(u"/give dirt 1"_s);
+        QVERIFY(select(u"qtcraft:dirt"_s));
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 6}});
+        // The pig (landed after the summon) stands still in a frozen world, between the player and
+        // the aimed block.
+        chat(u"/tick freeze"_s);
+
+        // Aim at the ground block one metre beyond the pig, as seen from the player.
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        QCOMPARE(around.size(), 1);
+        const QJsonArray at = around.first().toObject().value(u"position"_s).toArray();
+        const QcVec3 pig{at.at(0).toDouble(), at.at(1).toDouble(), at.at(2).toDouble()};
+        const QcVec3 beyond = pig + QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized();
+        const int x = int(std::floor(beyond.x));
+        const int y = int(std::floor(feet.y)) - 1;
+        const int z = int(std::floor(beyond.z));
+        const QJsonObject used = request({{u"cmd"_s, u"use"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+        QVERIFY2(used.value(u"ok"_s).toBool(), QJsonDocument(used).toJson().constData());
+        QCOMPARE(used.value(u"targetEntity"_s).toInteger(), around.first().toObject().value(u"id"_s).toInteger());
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QCOMPARE(request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + 1}, {u"z"_s, z}}).value(u"block"_s).toString(), u"qtcraft:dirt"_s);
+        chat(u"/tick unfreeze"_s);
+    }
+
     void viewModeCanBeSwitched()
     {
         QCOMPARE(request({{u"cmd"_s, u"view"_s}}).value(u"mode"_s).toString(), u"first"_s);

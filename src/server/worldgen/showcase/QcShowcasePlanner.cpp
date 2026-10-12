@@ -178,6 +178,8 @@ QcShowcasePlan QcShowcasePlanner::build()
     m_plan.spawn = {0, areaContext.groundTop + 1, 0};
     m_plan.setup.timeOfDay = m_content.showcase().timeOfDay;
     m_plan.setup.daylightCycle = false;
+    // Every crop stage and soil state on show stays as it is (decision E-295).
+    m_plan.setup.randomTicks = false;
     m_plan.setup.mobSpawning = false;
 
     Cursor cursor;

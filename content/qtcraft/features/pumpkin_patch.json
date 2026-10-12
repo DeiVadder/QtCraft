@@ -1,0 +1,9 @@
+{
+    "name": "pumpkin_patch",
+    "type": "plant",
+    "block": "pumpkin",
+    "patchSize": 6,
+    "ground": [
+        "grass_block"
+    ]
+}

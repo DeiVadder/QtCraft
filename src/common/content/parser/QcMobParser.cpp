@@ -209,6 +209,22 @@ void parseCatch(QcMobDefinition &mob, QcJsonFieldReader &catchReader, const QStr
     }
 }
 
+void parseBreeding(QcMobDefinition &mob, QcJsonFieldReader &breedingReader, const QString &packNamespace)
+{
+    QcBreedingDefinition &breeding = mob.breeding;
+    breeding.food = QcContentFields::parseNames(u"food"_s, packNamespace, breedingReader);
+    breeding.loveSeconds = breedingReader.number(u"loveSeconds"_s, 30.0, 1.0, 3600.0);
+    breeding.cooldownSeconds = breedingReader.number(u"cooldownSeconds"_s, 300.0, 0.0, 86400.0);
+    breeding.growUpSeconds = breedingReader.number(u"growUpSeconds"_s, 1200.0, 1.0, 86400.0);
+    breeding.partnerDistance = breedingReader.number(u"partnerDistance"_s, 8.0, 0.5, 32.0);
+    if (breedingReader.ok() && breeding.food.isEmpty()) {
+        breedingReader.fail(u"needs 'food'"_s);
+    }
+    if (breedingReader.ok() && (mob.hostile || mob.ambient || mob.flying)) {
+        breedingReader.fail(u"only peaceful animals on the ground breed"_s);
+    }
+}
+
 void parseMobModel(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldReader &reader, const QString &packNamespace)
 {
     mob.skeleton = reader.name(u"skeleton"_s, packNamespace);
@@ -360,6 +376,9 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
     mob.glow = reader.integer(u"glow"_s, 0, 0, QcMobDefinition::maxGlow);
     reader.nestedObject(u"catch"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseCatch(mob, nested, packNamespace);
+    });
+    reader.nestedObject(u"breeding"_s, [&mob, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        parseBreeding(mob, nested, packNamespace);
     });
     parseMobModel(json, mob, reader, packNamespace);
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);

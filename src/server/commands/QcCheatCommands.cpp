@@ -121,7 +121,7 @@ void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or changes the time of day (a day lasts 600 s)."),
                          .run = [this](const QcCommandContext &context) { time(context); }});
     registry.addBuiltIn({.name = u"gamerule"_s, .permission = QcPermission::Player, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows a game rule; operators change it."),
                          .run = [this](const QcCommandContext &context) { gamerule(context); }});
     registry.addBuiltIn({.name = u"locatebiome"_s, .permission = QcPermission::Player, .needsPlayer = true, .minArguments = 1,
@@ -278,16 +278,18 @@ void QcCheatCommands::time(const QcCommandContext &context) const
 
 void QcCheatCommands::gamerule(const QcCommandContext &context)
 {
-    // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221).
+    // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221;
+    // randomTicks, decision E-295).
     using Rule = std::pair<QStringView, bool QcWorldInfo::*>;
-    const std::array<Rule, 3> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
+    const std::array<Rule, 4> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
                                      {u"daylightCycle", &QcWorldInfo::daylightCycle},
-                                     {u"mobSpawning", &QcWorldInfo::mobSpawning}}};
+                                     {u"mobSpawning", &QcWorldInfo::mobSpawning},
+                                     {u"randomTicks", &QcWorldInfo::randomTicks}}};
     const QStringList &args = context.args;
     const auto rule = std::ranges::find(rules, QStringView(args[0]), &Rule::first);
     const std::optional<bool> wanted = args.size() >= 2 ? QcCommandArguments::toggle(args[1]) : std::nullopt;
     if (rule == rules.end() || (args.size() >= 2 && !wanted)) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]"));
         return;
     }
 

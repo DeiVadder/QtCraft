@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schleimball](#item-qtcraft-slimeball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick)
+**QtCraft:** [Blauer Farbstoff](#item-qtcraft-blue_dye) · [Brauner Farbstoff](#item-qtcraft-brown_dye) · [Buch](#item-qtcraft-book) · [Diamant](#item-qtcraft-diamond) · [Eimer](#item-qtcraft-bucket) · [Eisenbarren](#item-qtcraft-iron_ingot) · [Eisennugget](#item-qtcraft-iron_nugget) · [Faden](#item-qtcraft-string) · [Gebranntes Lampengehäuse](#item-qtcraft-fired_lamp_shell) · [Gelber Farbstoff](#item-qtcraft-yellow_dye) · [Glasflasche](#item-qtcraft-glass_bottle) · [Glühwürmchen in der Flasche](#item-qtcraft-firefly_bottle) · [Goldbarren](#item-qtcraft-gold_ingot) · [Goldnugget](#item-qtcraft-gold_nugget) · [Grauer Farbstoff](#item-qtcraft-gray_dye) · [Grüner Farbstoff](#item-qtcraft-green_dye) · [Hellblauer Farbstoff](#item-qtcraft-light_blue_dye) · [Hellgrauer Farbstoff](#item-qtcraft-light_gray_dye) · [Hellgrüner Farbstoff](#item-qtcraft-lime_dye) · [Holzkohle](#item-qtcraft-charcoal) · [Kohle](#item-qtcraft-coal) · [Kohlestück](#item-qtcraft-coal_chunk) · [Kürbiskerne](#item-qtcraft-pumpkin_seeds) · [Lavaeimer](#item-qtcraft-lava_bucket) · [Leder](#item-qtcraft-leather) · [Lederfetzen](#item-qtcraft-leather_scrap) · [Magentafarbener Farbstoff](#item-qtcraft-magenta_dye) · [Melonenkerne](#item-qtcraft-melon_seeds) · [Orangefarbener Farbstoff](#item-qtcraft-orange_dye) · [Papier](#item-qtcraft-paper) · [Rosafarbener Farbstoff](#item-qtcraft-pink_dye) · [Roter Farbstoff](#item-qtcraft-red_dye) · [Rüstungsständer](#item-qtcraft-armor_stand) · [Schleimball](#item-qtcraft-slimeball) · [Schüssel](#item-qtcraft-bowl) · [Schwarzer Farbstoff](#item-qtcraft-black_dye) · [Stock](#item-qtcraft-stick) · [Tonklumpen](#item-qtcraft-clay_ball) · [Türkiser Farbstoff](#item-qtcraft-cyan_dye) · [Ungebranntes Lampengehäuse](#item-qtcraft-unfired_lamp_shell) · [Violetter Farbstoff](#item-qtcraft-purple_dye) · [Wassereimer](#item-qtcraft-water_bucket) · [Wasserflasche](#item-qtcraft-water_bottle) · [Weizen](#item-qtcraft-wheat) · [Weizenkörner](#item-qtcraft-wheat_seeds) · [Weißer Farbstoff](#item-qtcraft-white_dye) · [Ziegelstein](#item-qtcraft-brick) · [Zucker](#item-qtcraft-sugar)
 
 ## QtCraft
 
@@ -95,7 +95,7 @@ Das härteste Material, für die besten Werkzeuge.
 
 **Wird verwendet für**
 
-[Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamantbeinschutz](tools.md#item-qtcraft-diamond_leggings), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Diamantbrustplatte](tools.md#item-qtcraft-diamond_chestplate), [Diamanthelm](tools.md#item-qtcraft-diamond_helmet), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Diamantstiefel](tools.md#item-qtcraft-diamond_boots)
+[Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamantbeinschutz](tools.md#item-qtcraft-diamond_leggings), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Diamantbrustplatte](tools.md#item-qtcraft-diamond_chestplate), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamanthelm](tools.md#item-qtcraft-diamond_helmet), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Diamantstiefel](tools.md#item-qtcraft-diamond_boots)
 
 **Droppt aus**
 
@@ -159,7 +159,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 **Wird verwendet für**
 
-[Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door)
+[Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door)
 
 ### <a id="item-qtcraft-iron_nugget"></a>Eisennugget
 
@@ -325,7 +325,7 @@ Geschmolzenes Gold.
 
 **Wird verwendet für**
 
-[Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings), [Goldblock](blocks.md#block-qtcraft-gold_block), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate), [Goldhelm](tools.md#item-qtcraft-golden_helmet), [Goldnugget](#item-qtcraft-gold_nugget), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Goldstiefel](tools.md#item-qtcraft-golden_boots)
+[Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings), [Goldblock](blocks.md#block-qtcraft-gold_block), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldhelm](tools.md#item-qtcraft-golden_helmet), [Goldnugget](#item-qtcraft-gold_nugget), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Goldstiefel](tools.md#item-qtcraft-golden_boots)
 
 ### <a id="item-qtcraft-gold_nugget"></a>Goldnugget
 
@@ -562,6 +562,28 @@ Ein Neuntel Kohle: etwas Brennstoff, schwarzer Farbstoff und kleine Fackeln.
 
 [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Kohle](#item-qtcraft-coal), [Schwarzer Farbstoff](#item-qtcraft-black_dye)
 
+### <a id="item-qtcraft-pumpkin_seeds"></a>Kürbiskerne
+
+Vier aus einem Kürbis. Auf Ackerboden gepflanzt wachsen sie zu einem Kürbisstängel.
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_seeds` |
+| Stapelgröße | 64 |
+| Setzt | [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem) |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Kürbis](blocks.md#block-qtcraft-pumpkin) | 4 × [Kürbiskerne](#item-qtcraft-pumpkin_seeds) |
+
+**Droppt aus**
+
+[Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem)
+
 ### <a id="item-qtcraft-lava_bucket"></a>Lavaeimer
 
 Gießt eine Lavaquelle aus. Brennt als Brennstoff sehr lange; der Eimer bleibt.
@@ -643,6 +665,28 @@ Färbt Wolle, Glas, Terrakotta und Beton magentafarben.
 **Wird verwendet für**
 
 [Magentafarbene Terrakotta](blocks.md#block-qtcraft-magenta_terracotta), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Magentafarbenes Betonpulver](blocks.md#block-qtcraft-magenta_concrete_powder), [Magentafarbenes Glas](blocks.md#block-qtcraft-magenta_stained_glass)
+
+### <a id="item-qtcraft-melon_seeds"></a>Melonenkerne
+
+Einer aus einer Melonenscheibe. Auf Ackerboden gepflanzt wachsen sie zu einem Melonenstängel.
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_seeds` |
+| Stapelgröße | 64 |
+| Setzt | [Melonenstängel](blocks.md#block-qtcraft-melon_stem) |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenkerne](#item-qtcraft-melon_seeds) |
+
+**Droppt aus**
+
+[Melonenstängel](blocks.md#block-qtcraft-melon_stem)
 
 ### <a id="item-qtcraft-orange_dye"></a>Orangefarbener Farbstoff
 
@@ -841,7 +885,7 @@ Griff für Werkzeuge und Fackeln.
 
 **Wird verwendet für**
 
-[Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Leiter](blocks.md#block-qtcraft-ladder), [Rüstungsständer](#item-qtcraft-armor_stand), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+[Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Fackel](blocks.md#block-qtcraft-torch), [Fass](blocks.md#block-qtcraft-barrel), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Kleine Fackel](blocks.md#block-qtcraft-small_torch), [Leiter](blocks.md#block-qtcraft-ladder), [Rüstungsständer](#item-qtcraft-armor_stand), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
 
 **Droppt aus**
 
@@ -975,6 +1019,37 @@ Eine an beliebigem Wasser gefüllte Glasflasche; das Wasser bleibt, wo es ist.
 
 [Schlamm](blocks.md#block-qtcraft-mud)
 
+### <a id="item-qtcraft-wheat"></a>Weizen
+
+Ernte von reifem Weizen. Drei ergeben ein Brot; Schafe lieben ihn.
+
+| | |
+|---|---|
+| ID | `qtcraft:wheat` |
+| Stapelgröße | 64 |
+
+**Wird verwendet für**
+
+[Brot](food.md#item-qtcraft-bread), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
+
+**Droppt aus**
+
+[Weizenpflanze](blocks.md#block-qtcraft-wheat_crop)
+
+### <a id="item-qtcraft-wheat_seeds"></a>Weizenkörner
+
+Findet sich in hohem Gras. Auf Ackerboden gepflanzt wachsen sie zu Weizen; auf freien Ackerboden fallend pflanzen sie sich selbst.
+
+| | |
+|---|---|
+| ID | `qtcraft:wheat_seeds` |
+| Stapelgröße | 64 |
+| Setzt | [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop) |
+
+**Droppt aus**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (12,5 %), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop) (50 %)
+
 ### <a id="item-qtcraft-white_dye"></a>Weißer Farbstoff
 
 Färbt Wolle, Glas, Terrakotta und Beton weiß.
@@ -1021,3 +1096,24 @@ Ein gebrannter Tonklumpen; vier ergeben einen Ziegelblock.
 **Wird verwendet für**
 
 [Ziegel](blocks.md#block-qtcraft-bricks)
+
+### <a id="item-qtcraft-sugar"></a>Zucker
+
+Aus Zuckerrohr gemacht; süßt einen Kürbiskuchen.
+
+| | |
+|---|---|
+| ID | `qtcraft:sugar` |
+| Stapelgröße | 64 |
+
+**Herstellung**
+
+*Handwerksraster, beliebige Anordnung*
+
+| 1 | → |
+|---|---|
+| [Zuckerrohr](blocks.md#block-qtcraft-sugar_cane) | [Zucker](#item-qtcraft-sugar) |
+
+**Wird verwendet für**
+
+[Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)

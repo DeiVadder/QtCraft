@@ -81,6 +81,7 @@ qt_add_library(qc_clientcore STATIC
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
     textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
+    textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTexturePaint.h
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp

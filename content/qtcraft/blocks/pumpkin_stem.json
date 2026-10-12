@@ -1,0 +1,53 @@
+{
+    "name": "pumpkin_stem",
+    "sound": "grass",
+    "shape": "stem",
+    "render": "cutout",
+    "solid": false,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "ground": [
+        "farmland"
+    ],
+    "washable": true,
+    "states": {
+        "age": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+        ]
+    },
+    "crop": {
+        "property": "age",
+        "averageSeconds": 900,
+        "dryFactor": 0.5,
+        "minLight": 9,
+        "fruit": "pumpkin",
+        "fruitSeconds": 300,
+        "fruitGround": [
+            "farmland",
+            "dirt",
+            "grass_block"
+        ],
+        "plantChance": 0.9
+    },
+    "drops": [
+        {
+            "item": "pumpkin_seeds"
+        }
+    ],
+    "textures": {
+        "all": "stem_ripe",
+        "slots": {
+            "young": "stem_young",
+            "ripe": "stem_ripe"
+        }
+    }
+}

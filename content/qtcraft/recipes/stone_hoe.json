@@ -1,0 +1,16 @@
+{
+    "name": "stone_hoe",
+    "type": "shaped",
+    "pattern": [
+        "XX",
+        " |",
+        " |"
+    ],
+    "key": {
+        "X": "cobblestone",
+        "|": "stick"
+    },
+    "result": {
+        "item": "stone_hoe"
+    }
+}

@@ -37,7 +37,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_inventory(m_state, m_machineScreens, m_sounds)
     , m_gameModes(m_state, m_inventory)
     , m_stands(m_state, m_sounds, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands})
+    , m_farming(m_state, m_sounds, m_blocks, m_inventory)
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands, m_farming, m_combat})
     , m_itemsAndPlants(m_state, m_sounds, m_blocks, m_inventory)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_entitySync(m_state)
@@ -615,6 +616,7 @@ void QcServer::simulate()
     m_itemsAndPlants.tickItems();
     m_phases.lap(Phase::Items);
     m_itemsAndPlants.tickPlants();
+    m_farming.tick();
     m_phases.lap(Phase::Plants);
     m_blockSimulation.tickFallingBlocks();
     m_phases.lap(Phase::FallingBlocks);

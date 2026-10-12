@@ -1,0 +1,15 @@
+{
+    "name": "melon",
+    "type": "shaped",
+    "pattern": [
+        "SSS",
+        "SSS",
+        "SSS"
+    ],
+    "key": {
+        "S": "melon_slice"
+    },
+    "result": {
+        "item": "melon"
+    }
+}

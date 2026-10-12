@@ -1,0 +1,11 @@
+{
+    "name": "iron_hoe",
+    "texture": "iron_hoe",
+    "maxStack": 1,
+    "durability": 250,
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 3,
+    "toolSpeed": 6.0,
+    "tills": true
+}

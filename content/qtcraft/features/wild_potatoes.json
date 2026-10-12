@@ -1,0 +1,9 @@
+{
+    "name": "wild_potatoes",
+    "type": "plant",
+    "block": "wild_potatoes",
+    "patchSize": 10,
+    "ground": [
+        "grass_block"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "carrot_crop_ripe",
+    "pattern": "root_crop",
+    "primary": "#5aa040",
+    "secondary": "#e8822a",
+    "variation": 0.1,
+    "seed": 1721
+}

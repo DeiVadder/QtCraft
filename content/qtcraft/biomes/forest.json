@@ -44,6 +44,14 @@
         {
             "feature": "lily_of_the_valley",
             "density": 0.008
+        },
+        {
+            "feature": "melon_patch",
+            "density": 0.0012
+        },
+        {
+            "feature": "wild_potatoes",
+            "density": 0.002
         }
     ]
 }

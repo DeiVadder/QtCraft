@@ -171,6 +171,37 @@ bool QcLiquidFlow::isSource(const QcContentRegistry &content, QcBlockId id)
     return level(content, id) == 0 && !isFalling(content, id);
 }
 
+QcVec3 QcLiquidFlow::current(const QcBlockAccess &world, QcBlockPos pos)
+{
+    const QcContentRegistry &content = world.content();
+    const std::optional<QcBlockId> here = world.blockAt(pos);
+    if (!here || !content.isValidBlock(*here) || !content.block(*here).liquid) {
+        return {};
+    }
+
+    // Depth of the surface: 8 for sources and falling liquid, less the further the flow ran.
+    const auto depthOf = [&content](QcBlockId id) { return isFalling(content, id) ? 8 : 8 - level(content, id); };
+    const int depth = depthOf(*here);
+    QcVec3 push;
+    for (const QcBlockFace side : sideways) {
+        const QcBlockPos next = qcNeighbour(pos, side);
+        const std::optional<QcBlockId> block = world.blockAt(next);
+        if (!block || !content.isValidBlock(*block)) {
+            continue;
+        }
+
+        const bool sameLiquid = content.isSameBlock(*block, *here);
+        const bool open = !sameLiquid && !content.block(*block).liquid && content.state(*block).collision.isEmpty();
+        if (!sameLiquid && !open) {
+            continue;
+        }
+
+        const QcBlockPos step = qcNeighbour({0, 0, 0}, side);
+        push = push + QcVec3{double(step.x), 0.0, double(step.z)} * double(depth - (sameLiquid ? depthOf(*block) : 0));
+    }
+    return push.length() > 1e-9 ? push.normalized() : QcVec3{};
+}
+
 QcBlockId QcLiquidFlow::stateWith(const QcContentRegistry &content, QcBlockId id, int level, bool falling)
 {
     QcBlockId state = content.stateTable().firstState(content.state(id).type);

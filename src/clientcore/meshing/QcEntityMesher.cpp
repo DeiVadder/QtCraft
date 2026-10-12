@@ -458,7 +458,7 @@ const QList<QcMobPart> &playerParts()
 void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv)
 {
     const Turn turn(placement.yaw);
-    const auto place = [&placement, &turn](const QcVec3 &p) { return placement.position + turn(p); };
+    const auto place = [&placement, &turn](const QcVec3 &p) { return placement.position + turn(p * placement.scale); };
     for (const QcMobPart &part : parts) {
         emitBox(mesh, {part.from, part.to}, place, {uv(part.texture), placement.hurt ? hurtTint : white, placement.light});
     }

@@ -1,0 +1,8 @@
+{
+    "name": "wheat_crop_growing",
+    "pattern": "crop",
+    "primary": "#6aa83a",
+    "secondary": "#a8c060",
+    "variation": 0.1,
+    "seed": 1717
+}

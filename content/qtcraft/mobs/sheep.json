@@ -108,6 +108,18 @@
             "item": "white_wool",
             "count": 1,
             "chance": 0.5
+        },
+        {
+            "item": "raw_mutton"
+        },
+        {
+            "item": "raw_mutton",
+            "chance": 0.5
         }
-    ]
+    ],
+    "breeding": {
+        "food": [
+            "wheat"
+        ]
+    }
 }

@@ -1,0 +1,51 @@
+{
+    "name": "farmland",
+    "parts": [
+        {
+            "when": {
+                "moist": false
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.9375,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "moist": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0.875,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "moist": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0.875,
+                    0,
+                    1,
+                    0.9375,
+                    1
+                ]
+            ],
+            "texture": "wet"
+        }
+    ]
+}

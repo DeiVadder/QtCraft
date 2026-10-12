@@ -256,6 +256,10 @@ therefore shows them a little in the past (E-271):
   most 10 % faster or slower. A change of the tick rate by a factor of two or more is taken at once
   (one jump instead of ten seconds of stopping or rushing figures), once the clock has seen it: at
   once when the rate goes up, after up to two seconds when it goes down.
+- Farming (E-289 to E-296, protocol 29): crop stages, farmland moisture and fruit are block states in
+  the usual `BlockUpdate`s, young or enamoured animals are two bits of the existing entity flags
+  (`Young`, `InLove`), and the content sync carries each animal's breeding food so the client knows
+  when a click on a creature is a use of the creature.
 - Health, swings, hurt flashes, sneaking and the held item show when they arrive, up to 100 ms
   before the matching movement; the own player is not delayed (prediction, see above).
 - Measured (`test_interpolation`): a walker reported every tick and received 50 to 150 ms late

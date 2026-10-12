@@ -145,6 +145,7 @@ private slots:
         QVERIFY(info.value(u"generator"_s).toObject().value(u"setupDone"_s).toBool());
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"daylightCycle"_s).toBool(true), false);
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"mobSpawning"_s).toBool(true), false);
+        QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"randomTicks"_s).toBool(true), false);
 
         // Opened again, nothing is set up twice.
         std::unique_ptr<QcServer> again = makeServer(directory.path());

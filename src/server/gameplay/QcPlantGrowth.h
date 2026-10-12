@@ -2,6 +2,7 @@
 
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
+#include "QcCropGrowth.h"
 #include "QcPhysics.h"
 
 #include <QRandomGenerator>
@@ -15,11 +16,13 @@ class QcChunk;
 class QcChunkSection;
 class QcServerWorld;
 
-// Plants that grow upwards by themselves (blocks with `growth`, e.g. sugar cane), driven by random
-// ticks: every server tick picks `randomTicksPerSection` random blocks in each loaded section that
-// may hold such a plant (QcServerWorld::growingSections). A ticked top block of a plant column grows one block of its kind with the
-// chance that gives its `averageSeconds` per step, while the column is below `maxHeight`, the block
-// above is air and the column's base still has its ground (cane: water next to it).
+// Blocks with random ticks: plants that grow upwards by themselves (blocks with `growth`, e.g. sugar
+// cane), crops and soil (QcCropGrowth). Every server tick picks `randomTicksPerSection` random blocks
+// in each loaded section that may hold such a block (QcServerWorld::growingSections). A ticked top
+// block of a plant column grows one block of its kind with the chance that gives its
+// `averageSeconds` per step, while the column is below `maxHeight`, the block above is air and the
+// column's base still has its ground (cane: water next to it). Random ticks run only in loaded
+// chunks; time a chunk spent unloaded is not made up (decision E-289).
 class QcPlantGrowth
 {
 public:
@@ -33,12 +36,13 @@ public:
     QcPlantGrowth(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
 
     void tick(const QcServerWorld &world, const SetBlock &setBlock);
-    // One random tick of the block at `pos`; returns true when the plant grew.
-    bool randomTick(const QcBlockAccess &world, QcBlockPos pos, const SetBlock &setBlock);
+    // One random tick of the block at `pos`; returns true when it changed the world.
+    bool randomTick(const QcServerWorld &world, QcBlockPos pos, const SetBlock &setBlock);
     // The air block a plant at `pos` would grow into, if its column may grow now.
     std::optional<QcBlockPos> growthTarget(const QcBlockAccess &world, QcBlockPos pos) const;
     // Chance that a random tick of `block` grows it.
     double growthChance(QcBlockId block) const;
+    const QcCropGrowth &crops() const { return m_crops; }
 
 private:
     bool mayHoldPlants(const QcChunkSection &section) const;
@@ -48,6 +52,7 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QRandomGenerator m_random;
-    // Every state id of every growing block.
+    QcCropGrowth m_crops;
+    // Every state id of every block with random ticks.
     QSet<QcBlockId> m_growing;
 };

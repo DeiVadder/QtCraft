@@ -1,0 +1,9 @@
+{
+    "name": "wild_carrots",
+    "type": "plant",
+    "block": "wild_carrots",
+    "patchSize": 10,
+    "ground": [
+        "grass_block"
+    ]
+}

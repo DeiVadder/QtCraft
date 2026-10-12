@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Alliums](#feature-qtcraft-allium) · [Birch tree](#feature-qtcraft-birch_tree) · [Blue orchids](#feature-qtcraft-blue_orchid) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Ferns](#feature-qtcraft-fern) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lilies of the valley](#feature-qtcraft-lily_of_the_valley) · [Magma block veins](#ore-qtcraft-magma) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain)
+**QtCraft:** [Alliums](#feature-qtcraft-allium) · [Birch tree](#feature-qtcraft-birch_tree) · [Blue orchids](#feature-qtcraft-blue_orchid) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Ferns](#feature-qtcraft-fern) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lilies of the valley](#feature-qtcraft-lily_of_the_valley) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
 
 ## QtCraft
 
@@ -268,6 +268,20 @@ Tried in every chunk, whatever the biome.
 | Heights | y 5–24 |
 | Veins | 1 per chunk, up to 10 blocks each |
 
+### <a id="feature-qtcraft-melon_patch"></a>Melons
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_patch` |
+| Kind | plant |
+| Blocks | [Melon](blocks.md#block-qtcraft-melon) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**In biomes**
+
+[Forest](biomes.md#biome-qtcraft-forest) (0.12 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.15 % of columns)
+
 ### <a id="feature-qtcraft-oak_tree"></a>Oak tree
 
 | | |
@@ -296,6 +310,20 @@ Tried in every chunk, whatever the biome.
 **In biomes**
 
 [Forest](biomes.md#biome-qtcraft-forest) (0.8 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (2.2 % of columns)
+
+### <a id="feature-qtcraft-pumpkin_patch"></a>Pumpkins
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_patch` |
+| Kind | plant |
+| Blocks | [Pumpkin](blocks.md#block-qtcraft-pumpkin) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**In biomes**
+
+[Plains](biomes.md#biome-qtcraft-plains) (0.15 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (0.15 % of columns)
 
 ### <a id="feature-qtcraft-red_mushroom"></a>Red mushrooms
 
@@ -388,3 +416,31 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 **Biomes**
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest), [Desert](biomes.md#biome-qtcraft-desert), [Forest](biomes.md#biome-qtcraft-forest), [Mountains](biomes.md#biome-qtcraft-mountains), [Plains](biomes.md#biome-qtcraft-plains), [Swamp](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+
+### <a id="feature-qtcraft-wild_carrots"></a>Wild carrots
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_carrots` |
+| Kind | plant |
+| Blocks | [Wild carrots](blocks.md#block-qtcraft-wild_carrots) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**In biomes**
+
+[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (0.2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.3 % of columns)
+
+### <a id="feature-qtcraft-wild_potatoes"></a>Wild potatoes
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_potatoes` |
+| Kind | plant |
+| Blocks | [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) |
+| Size | 4–4 blocks |
+| Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
+
+**In biomes**
+
+[Forest](biomes.md#biome-qtcraft-forest) (0.2 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (0.3 % of columns)

@@ -2,9 +2,31 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Kies](#block-qtcraft-gravel) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kornblume](#block-qtcraft-cornflower) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
+
+### <a id="block-qtcraft-farmland"></a>Ackerboden
+
+Bestellte Erde für Feldfrüchte. Wasser in bis zu vier Blöcken Entfernung hält ihn nass, und auf nassem Ackerboden wachsen Pflanzen doppelt so schnell. Ohne Wasser und Pflanzen trocknet er aus und wird wieder zu Erde.
+
+| | |
+|---|---|
+| ID | `qtcraft:farmland` |
+| Härte | 0,6 |
+| Abbauen mit der Hand | 0,9 s |
+| Werkzeug | Schaufel (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,08 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
+| Beute | [Erde](#block-qtcraft-dirt) |
+| Lichtdämpfung | 0 von 15 |
+| Nass nahe | innerhalb von 4 Blöcken: [Wasser](liquids.md#block-qtcraft-water) |
+| Trocken und leer wird zu | [Erde](#block-qtcraft-dirt) |
+| Klang | Erde |
+| Zustände | moist (false, true) |
+
+**Schneller mit**
+
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
 
 ### <a id="block-qtcraft-birch_planks"></a>Birkenbretter
 
@@ -36,7 +58,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -615,7 +637,7 @@ Daraus wird Stein beim Abbauen. Material für Steinwerkzeuge und den Ofen.
 
 **Wird verwendet für**
 
-[Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs), [Ofen](#block-qtcraft-furnace), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
+[Bruchsteinmauer](parts.md#block-qtcraft-cobblestone_wall), [Bruchsteinstufe](parts.md#block-qtcraft-cobblestone_slab), [Bruchsteintreppe](parts.md#block-qtcraft-cobblestone_stairs), [Ofen](#block-qtcraft-furnace), [Steinaxt](tools.md#item-qtcraft-stone_axe), [Steinhacke](tools.md#item-qtcraft-stone_hoe), [Steinschaufel](tools.md#item-qtcraft-stone_shovel), [Steinschwert](tools.md#item-qtcraft-stone_sword), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe)
 
 **Droppt aus**
 
@@ -740,7 +762,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1120,6 +1142,7 @@ Einfache Erde unter dem Gras.
 | Werkzeug | Schaufel (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,06 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
 | Beute | [Erde](#block-qtcraft-dirt) |
+| Hacke macht daraus | [Ackerboden](#block-qtcraft-farmland) |
 | Klang | Erde |
 
 **Wird verwendet für**
@@ -1128,7 +1151,7 @@ Einfache Erde unter dem Gras.
 
 **Droppt aus**
 
-[Grasblock](#block-qtcraft-grass_block)
+[Ackerboden](#block-qtcraft-farmland), [Grasblock](#block-qtcraft-grass_block)
 
 **Schneller mit**
 
@@ -1255,7 +1278,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1890,6 +1913,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 | Werkzeug | Schaufel (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,08 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
 | Beute | [Erde](#block-qtcraft-dirt) |
+| Hacke macht daraus | [Ackerboden](#block-qtcraft-farmland) |
 | Klang | Gras und Pflanzen |
 
 **Schneller mit**
@@ -2723,7 +2747,7 @@ Bedeckt Wiesen; man kann direkt hineinbauen.
 | ID | `qtcraft:tall_grass` |
 | Härte | 0 |
 | Abbauen mit der Hand | 0,05 s |
-| Beute | nichts |
+| Beute | [Weizenkörner](items.md#item-qtcraft-wheat_seeds) (12,5 %) |
 | Lichtdämpfung | 0 von 15 |
 | Fest | nein |
 | Wird beim Bauen ersetzt | ja |
@@ -2763,6 +2787,46 @@ Wächst in Wüsten. Im Ofen ergibt er grünen Farbstoff.
 **Kommt vor in**
 
 [Wüste](biomes.md#biome-qtcraft-desert) (Kaktus)
+
+### <a id="block-qtcraft-carrot_crop"></a>Karottenpflanze
+
+Wächst aus einer Karotte auf Ackerboden in vier Stufen. Reife Pflanzen geben zwei bis vier Karotten.
+
+| | |
+|---|---|
+| ID | `qtcraft:carrot_crop` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Karotte](food.md#item-qtcraft-carrot) (solange unreif), [Karotte](food.md#item-qtcraft-carrot) (2×, wenn reif), [Karotte](food.md#item-qtcraft-carrot) (50 %, wenn reif), [Karotte](food.md#item-qtcraft-carrot) (50 %, wenn reif) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Ackerboden](#block-qtcraft-farmland) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Reift | 4 Stufen, reif nach etwa 20 min auf nassem Ackerboden, 40 min auf trockenem |
+| Braucht Licht | 9 von 15 |
+| Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
+| Klang | Gras und Pflanzen |
+| Zustände | age (0, 1, 2, 3) |
+
+### <a id="block-qtcraft-potato_crop"></a>Kartoffelpflanze
+
+Wächst aus einer Kartoffel auf Ackerboden in vier Stufen. Reife Pflanzen geben zwei bis vier Kartoffeln.
+
+| | |
+|---|---|
+| ID | `qtcraft:potato_crop` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Kartoffel](food.md#item-qtcraft-potato) (solange unreif), [Kartoffel](food.md#item-qtcraft-potato) (2×, wenn reif), [Kartoffel](food.md#item-qtcraft-potato) (50 %, wenn reif), [Kartoffel](food.md#item-qtcraft-potato) (50 %, wenn reif) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Ackerboden](#block-qtcraft-farmland) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Reift | 4 Stufen, reif nach etwa 20 min auf nassem Ackerboden, 40 min auf trockenem |
+| Braucht Licht | 9 von 15 |
+| Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
+| Klang | Gras und Pflanzen |
+| Zustände | age (0, 1, 2, 3) |
 
 ### <a id="block-qtcraft-gravel"></a>Kies
 
@@ -2879,6 +2943,54 @@ Eine blaue Blume der Ebenen; ergibt blauen Farbstoff.
 **Kommt vor in**
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Kornblumen), [Ebene](biomes.md#biome-qtcraft-plains) (Kornblumen), [Gebirge](biomes.md#biome-qtcraft-mountains) (Kornblumen)
+
+### <a id="block-qtcraft-pumpkin"></a>Kürbis
+
+Wächst neben einem Kürbisstängel und wild in Ebenen und Taiga. Gibt Kürbiskerne und Kürbiskuchen.
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin` |
+| Härte | 1 |
+| Abbauen mit der Hand | 1,5 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,13 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Kürbis](#block-qtcraft-pumpkin) |
+| Klang | Holz |
+
+**Wird verwendet für**
+
+[Kürbiskerne](items.md#item-qtcraft-pumpkin_seeds), [Kürbiskuchen](food.md#item-qtcraft-pumpkin_pie)
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+**Kommt vor in**
+
+[Ebene](biomes.md#biome-qtcraft-plains) (Kürbisse), [Taiga](biomes.md#biome-qtcraft-taiga) (Kürbisse)
+
+### <a id="block-qtcraft-pumpkin_stem"></a>Kürbisstängel
+
+Wächst aus Kürbiskernen auf Ackerboden. Reif legt er einen Kürbis auf einen freien Nachbarblock aus Ackerboden, Erde oder Gras, immer einen zur Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:pumpkin_stem` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Kürbiskerne](items.md#item-qtcraft-pumpkin_seeds) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Ackerboden](#block-qtcraft-farmland) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Reift | 8 Stufen, reif nach etwa 15 min auf nassem Ackerboden, 30 min auf trockenem |
+| Braucht Licht | 9 von 15 |
+| Frucht, wenn reif | etwa alle 5 min, eine zur Zeit: [Kürbis](#block-qtcraft-pumpkin) |
+| Frucht wächst auf | [Ackerboden](#block-qtcraft-farmland), [Erde](#block-qtcraft-dirt), [Grasblock](#block-qtcraft-grass_block) |
+| Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
+| Klang | Gras und Pflanzen |
+| Zustände | age (0, 1, 2, 3, 4, 5, 6, 7) |
 
 ### <a id="block-qtcraft-lantern"></a>Laterne
 
@@ -3215,6 +3327,60 @@ Eine kleine weiße Waldblume; ergibt weißen Farbstoff.
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Maiglöckchen), [Wald](biomes.md#biome-qtcraft-forest) (Maiglöckchen)
 
+### <a id="block-qtcraft-melon"></a>Melone
+
+Wächst neben einem Melonenstängel und wild in Wäldern und Sümpfen. Zerfällt in drei bis sieben Scheiben.
+
+| | |
+|---|---|
+| ID | `qtcraft:melon` |
+| Härte | 1 |
+| Abbauen mit der Hand | 1,5 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,13 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Melonenscheibe](food.md#item-qtcraft-melon_slice) (3×), [Melonenscheibe](food.md#item-qtcraft-melon_slice) (50 %), [Melonenscheibe](food.md#item-qtcraft-melon_slice) (50 %), [Melonenscheibe](food.md#item-qtcraft-melon_slice) (50 %), [Melonenscheibe](food.md#item-qtcraft-melon_slice) (50 %) |
+| Klang | Holz |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melone](#block-qtcraft-melon) |
+| [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) |  |
+| [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) | [Melonenscheibe](food.md#item-qtcraft-melon_slice) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
+**Kommt vor in**
+
+[Sumpf](biomes.md#biome-qtcraft-swamp) (Melonen), [Wald](biomes.md#biome-qtcraft-forest) (Melonen)
+
+### <a id="block-qtcraft-melon_stem"></a>Melonenstängel
+
+Wächst aus Melonenkernen auf Ackerboden. Reif legt er eine Melone auf einen freien Nachbarblock aus Ackerboden, Erde oder Gras, immer eine zur Zeit.
+
+| | |
+|---|---|
+| ID | `qtcraft:melon_stem` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Melonenkerne](items.md#item-qtcraft-melon_seeds) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Ackerboden](#block-qtcraft-farmland) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Reift | 8 Stufen, reif nach etwa 15 min auf nassem Ackerboden, 30 min auf trockenem |
+| Braucht Licht | 9 von 15 |
+| Frucht, wenn reif | etwa alle 5 min, eine zur Zeit: [Melone](#block-qtcraft-melon) |
+| Frucht wächst auf | [Ackerboden](#block-qtcraft-farmland), [Erde](#block-qtcraft-dirt), [Grasblock](#block-qtcraft-grass_block) |
+| Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
+| Klang | Gras und Pflanzen |
+| Zustände | age (0, 1, 2, 3, 4, 5, 6, 7) |
+
 ### <a id="block-qtcraft-mine_lamp"></a>Minenlampe
 
 Eine Lampe mit einem Glühwürmchen: hängt an Decken, Wänden oder Böden und leuchtet ohne Brennstoff.
@@ -3320,6 +3486,14 @@ Schmilzt Erze, Sand, Ton und Essen, solange Brennstoff brennt: oben das Material
 
 | 1 | → |
 |---|---|
+| [Kartoffel](food.md#item-qtcraft-potato) | [Ofenkartoffel](food.md#item-qtcraft-baked_potato) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
 | [Tonklumpen](items.md#item-qtcraft-clay_ball) | [Ziegelstein](items.md#item-qtcraft-brick) |
 
 [Ofen](#block-qtcraft-furnace)
@@ -3345,6 +3519,14 @@ Schmilzt Erze, Sand, Ton und Essen, solange Brennstoff brennt: oben das Material
 | 1 | → |
 |---|---|
 | [Fichtenstamm](#block-qtcraft-spruce_log) | [Holzkohle](items.md#item-qtcraft-charcoal) |
+
+[Ofen](#block-qtcraft-furnace)
+
+*Ofen: 10 s pro Stück, braucht Brennstoff*
+
+| 1 | → |
+|---|---|
+| [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) | [Gebratenes Hammelfleisch](food.md#item-qtcraft-cooked_mutton) |
 
 [Ofen](#block-qtcraft-furnace)
 
@@ -4955,6 +5137,26 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane)
 
+### <a id="block-qtcraft-wheat_crop"></a>Weizenpflanze
+
+Wächst aus Weizenkörnern auf Ackerboden in acht Stufen. Reifer Weizen gibt Weizen und Körner, unreife Pflanzen nur ein Korn zurück.
+
+| | |
+|---|---|
+| ID | `qtcraft:wheat_crop` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Weizenkörner](items.md#item-qtcraft-wheat_seeds) (solange unreif), [Weizen](items.md#item-qtcraft-wheat) (wenn reif), [Weizenkörner](items.md#item-qtcraft-wheat_seeds) (wenn reif), [Weizenkörner](items.md#item-qtcraft-wheat_seeds) (50 %, wenn reif), [Weizenkörner](items.md#item-qtcraft-wheat_seeds) (50 %, wenn reif) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Ackerboden](#block-qtcraft-farmland) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Reift | 8 Stufen, reif nach etwa 20 min auf nassem Ackerboden, 40 min auf trockenem |
+| Braucht Licht | 9 von 15 |
+| Fallengelassene Saat pflanzt sich auf Ackerboden | 90 % |
+| Klang | Gras und Pflanzen |
+| Zustände | age (0, 1, 2, 3, 4, 5, 6, 7) |
+
 ### <a id="block-qtcraft-white_stained_glass_pane"></a>Weiße Glasscheibe
 
 Eine dünne Wand aus gefärbtem Glas, die sich mit ihren Nachbarn verbindet.
@@ -5149,6 +5351,46 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
+### <a id="block-qtcraft-wild_carrots"></a>Wilde Karotten
+
+Wilde Pflanzen in Ebenen und Birkenwäldern; die ersten Karotten für ein Feld.
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_carrots` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Karotte](food.md#item-qtcraft-carrot), [Karotte](food.md#item-qtcraft-carrot) (50 %) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Klang | Gras und Pflanzen |
+
+**Kommt vor in**
+
+[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Wilde Karotten), [Ebene](biomes.md#biome-qtcraft-plains) (Wilde Karotten)
+
+### <a id="block-qtcraft-wild_potatoes"></a>Wilde Kartoffeln
+
+Wilde Pflanzen in Taiga und Wäldern; die ersten Kartoffeln für ein Feld.
+
+| | |
+|---|---|
+| ID | `qtcraft:wild_potatoes` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | [Kartoffel](food.md#item-qtcraft-potato), [Kartoffel](food.md#item-qtcraft-potato) (50 %) |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
+| Wird von Flüssigkeiten weggespült | ja |
+| Klang | Gras und Pflanzen |
+
+**Kommt vor in**
+
+[Taiga](biomes.md#biome-qtcraft-taiga) (Wilde Kartoffeln), [Wald](biomes.md#biome-qtcraft-forest) (Wilde Kartoffeln)
+
 ### <a id="block-qtcraft-bricks"></a>Ziegel
 
 Gebrannter Ton, ein fester Baustein.
@@ -5229,7 +5471,7 @@ Wächst auf Sand oder Erde direkt neben Wasser.
 
 **Wird verwendet für**
 
-[Papier](items.md#item-qtcraft-paper)
+[Papier](items.md#item-qtcraft-paper), [Zucker](items.md#item-qtcraft-sugar)
 
 **Kommt vor in**
 

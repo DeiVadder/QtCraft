@@ -78,7 +78,10 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
     }
     stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound
-           << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem;
+           << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem << quint32(mob.breeding.food.size());
+    for (const QString &food : mob.breeding.food) {
+        stream << food;
+    }
 }
 
 void writeRecipe(QDataStream &stream, const QcRecipeDefinition &recipe)
@@ -231,6 +234,16 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
     stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
         >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
     mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
+    // What it eats for breeding, so the client knows to use it on the creature (decision E-293).
+    quint32 foodCount = 0;
+    if (!QcStreamLimits::readCount(stream, 64, foodCount)) {
+        return false;
+    }
+    for (quint32 f = 0; f < foodCount; ++f) {
+        QString food;
+        stream >> food;
+        mob.breeding.food.append(food);
+    }
 
     // Sizes feed physics and the mesher: reject anything outside what the parser allows.
     const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };

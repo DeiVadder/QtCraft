@@ -2,6 +2,7 @@
 
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
+#include "QcVec3.h"
 
 #include <QHash>
 #include <QList>
@@ -60,6 +61,10 @@ public:
     static int level(const QcContentRegistry &content, QcBlockId id);
     static bool isFalling(const QcContentRegistry &content, QcBlockId id);
     static bool isSource(const QcContentRegistry &content, QcBlockId id);
+    // Horizontal direction (unit length, or zero) the liquid at `pos` pushes floating things: down
+    // the slope of its surface towards shallower parts of the same liquid and open cells, like the
+    // reference game (decision E-296). Zero for still liquid and cells that hold no liquid.
+    static QcVec3 current(const QcBlockAccess &world, QcBlockPos pos);
     // The state of the liquid of `id` with the given level and falling flag.
     static QcBlockId stateWith(const QcContentRegistry &content, QcBlockId id, int level, bool falling);
     // What the liquid at `pos` turns into because it touches a liquid it reacts with.

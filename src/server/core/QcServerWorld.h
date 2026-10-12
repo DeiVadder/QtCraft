@@ -31,7 +31,7 @@ public:
     double contactDamageIn(const QcAabb &box) const;
     // False when no loaded chunk holds a block with contact damage, so nothing can burn.
     bool mayHaveContactDamage() const { return !m_damagingSections.isEmpty(); }
-    // Sections of the loaded chunks that may hold a growing plant (blocks with `growth`).
+    // Sections of the loaded chunks that may hold a block with random ticks (growing plants, crops, soil).
     const QcSectionMarks &growingSections() const { return m_growingSections; }
 
     std::shared_ptr<const QcChunk> chunk(QcChunkPos pos) const;

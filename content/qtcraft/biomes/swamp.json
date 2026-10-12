@@ -32,6 +32,10 @@
         {
             "feature": "blue_orchid",
             "density": 0.02
+        },
+        {
+            "feature": "melon_patch",
+            "density": 0.0015
         }
     ]
 }

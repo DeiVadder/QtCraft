@@ -178,6 +178,7 @@ void addShapeBoxes(QcBlockState &state, const QcBlockDefinition &block, const Qc
         }
         for (const QcAabb &box : part.crosses) {
             state.crosses.append(place(box));
+            state.crossTextures.append(part.texture);
         }
         for (const QcAabb &box : part.customCollision ? part.collision : part.boxes) {
             state.collision.append(place(box));

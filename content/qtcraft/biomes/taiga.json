@@ -32,6 +32,14 @@
         {
             "feature": "fern",
             "density": 0.1
+        },
+        {
+            "feature": "pumpkin_patch",
+            "density": 0.0015
+        },
+        {
+            "feature": "wild_potatoes",
+            "density": 0.003
         }
     ]
 }

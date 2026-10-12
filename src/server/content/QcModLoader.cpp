@@ -110,6 +110,12 @@ void checkMobReferences(const QcContentRegistry &content, const QcMobDefinition 
             warnings.append(u"mob %1: unknown sound '%2'"_s.arg(mob.name, name));
         }
     }
+
+    for (const QString &food : mob.breeding.food) {
+        if (!content.itemId(food)) {
+            warnings.append(u"mob %1: unknown breeding food '%2'"_s.arg(mob.name, food));
+        }
+    }
 }
 
 void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinition &block, QStringList &warnings)
@@ -130,6 +136,14 @@ void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinit
 
     if (!knowsSound(content, block.machine.sound)) {
         warnings.append(u"block %1: unknown machine sound '%2'"_s.arg(block.name, block.machine.sound));
+    }
+
+    // Farming (decisions E-289 to E-291): such blocks never bear fruit, revert or get tilled.
+    for (const auto &[field, name] : {std::pair{u"fruit"_s, block.crop.fruit}, std::pair{u"soil revertsTo"_s, block.soil.revertsTo},
+                                      std::pair{u"tillsInto"_s, block.tillsInto}}) {
+        if (!name.isEmpty() && !content.blockId(name)) {
+            warnings.append(u"block %1: unknown %2 '%3'"_s.arg(block.name, field, name));
+        }
     }
 }
 

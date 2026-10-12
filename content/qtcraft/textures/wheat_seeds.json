@@ -1,0 +1,8 @@
+{
+    "name": "wheat_seeds",
+    "pattern": "nugget",
+    "primary": "#6e8a3a",
+    "secondary": "#a8c060",
+    "variation": 0.1,
+    "seed": 1701
+}

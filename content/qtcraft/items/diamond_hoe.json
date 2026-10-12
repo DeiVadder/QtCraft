@@ -1,0 +1,11 @@
+{
+    "name": "diamond_hoe",
+    "texture": "diamond_hoe",
+    "maxStack": 1,
+    "durability": 1561,
+    "attackDamage": 1.0,
+    "tool": "hoe",
+    "toolLevel": 4,
+    "toolSpeed": 8.0,
+    "tills": true
+}

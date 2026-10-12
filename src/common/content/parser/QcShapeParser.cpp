@@ -47,36 +47,12 @@ QList<QcAabb> parseShapeBoxes(const QJsonValue &value, double maxY, const QStrin
     return boxes;
 }
 
-void parseShapeConditions(const QJsonObject &json, QcShapePart &part, QcJsonFieldReader &partReader)
-{
-    const QJsonValue when = json.value(u"when"_s);
-    if (!when.isUndefined() && (!when.isObject() || when.toObject().size() > QcShapeDefinition::maxConditions)) {
-        partReader.fail(u"'when' must be an object of at most %1 conditions"_s.arg(QcShapeDefinition::maxConditions));
-    }
-
-    const QJsonObject conditions = when.toObject();
-    for (auto it = conditions.constBegin(); it != conditions.constEnd(); ++it) {
-        QcShapeCondition condition;
-        condition.property = it.key();
-        const QJsonArray alternatives = it.value().isArray() ? it.value().toArray() : QJsonArray{it.value()};
-        for (const auto &alternative : alternatives) {
-            const std::optional<QString> value = QcContentFields::stateValue(alternative);
-            if (!value || condition.values.size() >= QcBlockProperty::maxValues) {
-                partReader.fail(u"'when' values must be strings or booleans"_s);
-                break;
-            }
-            condition.values.append(*value);
-        }
-        part.when.append(std::move(condition));
-    }
-}
-
 QcShapePart parseShapePart(const QJsonObject &json, QcJsonFieldReader &reader)
 {
     QcShapePart part;
     QcJsonFieldReader partReader{json, reader.context, {}};
 
-    parseShapeConditions(json, part, partReader);
+    part.when = QcShapeParser::parseConditions(json, partReader);
     part.boxes = parseShapeBoxes(json.value(u"boxes"_s), 1.0, u"boxes"_s, partReader);
     part.crosses = parseShapeBoxes(json.value(u"crosses"_s), 1.0, u"crosses"_s, partReader);
     part.customCollision = json.contains(u"collision"_s);
@@ -98,6 +74,33 @@ QcShapePart parseShapePart(const QJsonObject &json, QcJsonFieldReader &reader)
 } // namespace
 
 namespace QcShapeParser {
+
+QList<QcShapeCondition> parseConditions(const QJsonObject &json, QcJsonFieldReader &reader)
+{
+    const QJsonValue when = json.value(u"when"_s);
+    if (!when.isUndefined() && (!when.isObject() || when.toObject().size() > QcShapeDefinition::maxConditions)) {
+        reader.fail(u"'when' must be an object of at most %1 conditions"_s.arg(QcShapeDefinition::maxConditions));
+    }
+
+    QList<QcShapeCondition> result;
+    const QJsonObject conditions = when.toObject();
+    for (auto it = conditions.constBegin(); it != conditions.constEnd(); ++it) {
+        QcShapeCondition condition;
+        condition.property = it.key();
+        const QJsonArray alternatives = it.value().isArray() ? it.value().toArray() : QJsonArray{it.value()};
+        for (const auto &alternative : alternatives) {
+            const std::optional<QString> value = QcContentFields::stateValue(alternative);
+            if (!value || condition.values.size() >= QcBlockProperty::maxValues) {
+                reader.fail(u"'when' values must be strings or booleans"_s);
+                break;
+            }
+            condition.values.append(*value);
+        }
+        result.append(std::move(condition));
+    }
+    return result;
+}
+
 
 void parseShapeBody(const QJsonObject &json, QcShapeDefinition &shape, QcJsonFieldReader &reader)
 {

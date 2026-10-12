@@ -103,6 +103,8 @@ struct Placement
     double yaw = 0.0;
     QcEntityLight light = 1.0f;
     bool hurt = false;
+    // Uniform size factor of static box models around the feet (young animals).
+    double scale = 1.0;
 };
 
 // What a dropped item looks like this frame: `alpha` interpolates between the last two ticks,

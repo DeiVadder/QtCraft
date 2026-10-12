@@ -20,7 +20,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Bücherregal](blocks.md#block-qtcraft-bookshelf), [Fass](blocks.md#block-qtcraft-barrel), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Schüssel](items.md#item-qtcraft-bowl), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
+[Bücherregal](blocks.md#block-qtcraft-bookshelf), [Fass](blocks.md#block-qtcraft-barrel), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Schüssel](items.md#item-qtcraft-bowl), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
 
 ### <a id="tag-qtcraft-terracotta"></a>Beliebige Terrakotta
 

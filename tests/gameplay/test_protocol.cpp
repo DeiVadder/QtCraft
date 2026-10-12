@@ -510,7 +510,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.mobType = QcMsg::EntitySpawn::playerType;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 28u);
+        QCOMPARE(QcProtocol::version, 29u);
     }
 
     void machineAndFoodMessagesRoundTrip()

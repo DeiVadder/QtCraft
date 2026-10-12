@@ -65,6 +65,15 @@ void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item
     if (!item.emptiesTo.isEmpty()) {
         facts.append({text.label(u"fact.emptiesTo"_s), {}, {links.itemLink(item.emptiesTo)}});
     }
+    if (item.tills) {
+        Fact tills{text.label(u"fact.tills"_s), {}, {}};
+        for (const QcBlockDefinition &block : context.content.blocks()) {
+            if (!block.tillsInto.isEmpty()) {
+                tills.links.append(links.blockLink(block.name));
+            }
+        }
+        facts.append(std::move(tills));
+    }
 
     if (item.scoops) {
         Fact scoops{text.label(u"fact.scoops"_s), {}, {}};

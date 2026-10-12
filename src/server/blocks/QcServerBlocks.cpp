@@ -140,20 +140,25 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     // The upper half of a door drops nothing: the lower half carries the door item.
     const bool doorTop = definition.door && content.property(*previous, u"half"_s) == u"top"_s;
     if (drops && !doorTop) {
-        dropBlockItems(definition, pos);
+        dropBlockItems(*previous, pos);
         if (doubleSlab) {
-            dropBlockItems(definition, pos);
+            dropBlockItems(*previous, pos);
         }
     }
 
     m_state.plants.blockRemoved(pos, *previous, m_state.world);
 }
 
-void QcServerBlocks::dropBlockItems(const QcBlockDefinition &definition, QcBlockPos pos)
+void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos)
 {
+    const QcContentRegistry &content = *m_state.content;
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
-    for (const QcItemDrop &drop : definition.drops) {
-        if (drop.chance < 1.0 && m_state.random.generateDouble() >= drop.chance) {
+    for (const QcItemDrop &drop : content.block(block).drops) {
+        // Crops give their harvest only when ripe (decision E-289).
+        const bool applies = std::ranges::all_of(drop.when, [&](const QcShapeCondition &condition) {
+            return condition.values.contains(content.property(block, condition.property));
+        });
+        if (!applies || (drop.chance < 1.0 && m_state.random.generateDouble() >= drop.chance)) {
             continue;
         }
         if (const std::optional<QcItemId> item = m_state.content->itemId(drop.item)) {

@@ -78,7 +78,9 @@ Friedliches Tier des Graslands; lässt Wolle fallen.
 | Gruppengröße | bis 4 |
 | Erscheinungsgewicht | 2 |
 | Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
-| Beute | [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool) |
+| Vermehrt sich mit | [Weizen](items.md#item-qtcraft-wheat) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
+| Beute | [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton), [Rohes Hammelfleisch](food.md#item-qtcraft-raw_mutton) |
 
 **Erscheint auf**
 
@@ -141,6 +143,8 @@ Friedliches Tier des Graslands; lässt Schweinefleisch fallen.
 | Gruppengröße | bis 4 |
 | Erscheinungsgewicht | 2 |
 | Obergrenze | alle friedlichen Wesen zusammen: 6 pro Spieler |
+| Vermehrt sich mit | [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato) |
+| Nachwuchs | wieder nach 5 min, Junge wachsen in 20 min heran |
 | Beute | [Rohes Schweinefleisch](food.md#item-qtcraft-raw_porkchop) (2×) |
 
 **Erscheint auf**
@@ -170,7 +174,7 @@ Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und sch
 | Gruppengröße | bis 3 |
 | Erscheinungsgewicht | 3 |
 | Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
-| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh) |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato) |
 
 **Erscheint auf**
 

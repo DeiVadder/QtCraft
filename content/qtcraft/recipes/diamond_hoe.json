@@ -1,0 +1,16 @@
+{
+    "name": "diamond_hoe",
+    "type": "shaped",
+    "pattern": [
+        "XX",
+        " |",
+        " |"
+    ],
+    "key": {
+        "X": "diamond",
+        "|": "stick"
+    },
+    "result": {
+        "item": "diamond_hoe"
+    }
+}

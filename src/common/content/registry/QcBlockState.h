@@ -21,6 +21,8 @@ struct QcBlockState
     // Whether a box's faces stretch the whole texture over themselves (parallel to `boxes`).
     QList<bool> boxStretch;
     QList<QcAabb> crosses;
+    // Texture slot per cross (parallel to `crosses`); empty means the north face texture.
+    QList<QString> crossTextures;
     QList<QcAabb> collision;
     // The shape is exactly the unit cube.
     bool fullCube = true;

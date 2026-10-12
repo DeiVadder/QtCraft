@@ -34,6 +34,8 @@ public:
     // Items touch a player when they are within the player's box grown by this much.
     static constexpr double pickupReach = 0.5;
     static constexpr double mergeRadius = 1.0;
+    // Speed in m/s that items in flowing liquid drift with along its current (decision E-296).
+    static constexpr double driftSpeed = 1.2;
     static constexpr int mergeIntervalTicks = 10;
     static constexpr int activeLimit = 512;
     static constexpr int queueLimit = 1024;
@@ -99,6 +101,9 @@ public:
     // Items removed because a limit was exceeded since the start.
     qint64 discardedCount() const { return m_discarded; }
     void clear();
+    // Takes one item off the stack of item entity `id` (a seed planting itself); the entity goes when
+    // its stack is empty. False when there is no such awake item.
+    bool takeOne(quint32 id);
     // Removes the awake items that match (burning in lava); returns how many.
     qsizetype removeWhere(const std::function<bool(const Item &)> &match);
     // Replaces all items, e.g. from a save; ids are assigned by `nextEntityId`.

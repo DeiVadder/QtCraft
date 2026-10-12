@@ -60,6 +60,11 @@ private:
     void addUseFacts();
     void addMachineFacts();
     void addSaplingFacts();
+    // Stages, pace, light and fruit of crops, moisture of soil, tilling (decisions E-289 to E-291).
+    void addFarmingFacts();
+    void addSoilFacts();
+    // "when ripe", "while growing" or the plain states a drop needs.
+    QString dropCondition(const QcItemDrop &drop) const;
     void addPartFacts();
     void addDescriptiveFacts();
     void addSections();
@@ -98,6 +103,7 @@ QcHandbookEntry BlockPage::build()
     addPhysicalFacts();
     addUseFacts();
     addSaplingFacts();
+    addFarmingFacts();
     addPartFacts();
     addDescriptiveFacts();
     addSections();
@@ -187,7 +193,9 @@ void BlockPage::addDropFacts()
 {
     Fact drops{label(u"fact.drops"_s), {}, {}};
     for (const QcItemDrop &drop : m_block.drops) {
-        drops.links.append(m_links.itemLink(drop.item, m_text.dropNote(drop)));
+        QStringList notes{m_text.dropNote(drop), dropCondition(drop)};
+        notes.removeAll(QString());
+        drops.links.append(m_links.itemLink(drop.item, notes.join(u", "_s)));
     }
 
     const bool needsTool = !drops.links.isEmpty() && m_block.toolLevel > 0;
@@ -198,6 +206,62 @@ void BlockPage::addDropFacts()
     if (needsTool) {
         addFact(u"withoutTool"_s, label(u"value.nothing"_s));
     }
+}
+
+QString BlockPage::dropCondition(const QcItemDrop &drop) const
+{
+    QStringList parts;
+    for (const QcShapeCondition &condition : drop.when) {
+        const QcBlockProperty *property = m_block.property(condition.property);
+        const bool stage = property && condition.property == m_block.crop.property && !property->values.isEmpty();
+        if (stage && condition.values == QStringList{property->values.constLast()}) {
+            parts.append(label(u"value.whenRipe"_s));
+        } else if (stage && !condition.values.contains(property->values.constLast())) {
+            parts.append(label(u"value.whenGrowing"_s));
+        } else {
+            parts.append(condition.property + u": "_s + condition.values.join(u'/'));
+        }
+    }
+    return parts.join(u", "_s);
+}
+
+void BlockPage::addFarmingFacts()
+{
+    const QcCropDefinition &crop = m_block.crop;
+    if (crop.isCrop()) {
+        const QcBlockProperty *stages = m_block.property(crop.property);
+        const qsizetype count = stages ? stages->values.size() : 0;
+        const QString wet = m_text.number(crop.averageSeconds / 60.0);
+        const QString dry = m_text.number(crop.averageSeconds / std::max(crop.dryFactor, 0.01) / 60.0);
+        addFact(u"crop"_s, label(u"unit.crop"_s).arg(count).arg(wet, dry));
+        addFact(u"minLight"_s, label(u"unit.lightLevel"_s).arg(crop.minLight));
+    }
+    if (crop.bearsFruit()) {
+        addFact(u"fruit"_s, label(u"unit.fruit"_s).arg(m_text.number(crop.fruitSeconds / 60.0)), {m_links.blockLink(crop.fruit)});
+        QList<Link> grounds;
+        for (const QString &ground : crop.fruitGround) {
+            grounds.append(m_links.blockLink(ground));
+        }
+        addFact(u"fruitGround"_s, {}, grounds);
+    }
+    if (crop.plantChance > 0.0) {
+        addFact(u"plantsItself"_s, m_text.percent(crop.plantChance));
+    }
+
+    addSoilFacts();
+    if (!m_block.tillsInto.isEmpty()) {
+        addFact(u"tillsInto"_s, {}, {m_links.blockLink(m_block.tillsInto)});
+    }
+}
+
+void BlockPage::addSoilFacts()
+{
+    const QcSoilDefinition &soil = m_block.soil;
+    if (!soil.isSoil()) {
+        return;
+    }
+    addFact(u"soil"_s, label(u"unit.soil"_s).arg(soil.reach), {m_links.blockLink(soil.water)});
+    addFact(u"revertsTo"_s, {}, {m_links.blockLink(soil.revertsTo)});
 }
 
 void BlockPage::addPhysicalFacts()

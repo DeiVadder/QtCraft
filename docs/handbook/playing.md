@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer)
 
 ## QtCraft
 
@@ -124,6 +124,36 @@ With at least 18 food points you heal one health point every 4 s. With an empty 
 
 [Cooked porkchop](food.md#item-qtcraft-cooked_porkchop), [Raw porkchop](food.md#item-qtcraft-raw_porkchop), [Pig](creatures.md#mob-qtcraft-pig)
 
+### <a id="chapter-qtcraft-farming"></a>Farming
+
+**Farmland**
+
+Use a hoe on grass or dirt with air above it to make farmland; every tilled block wears the hoe once (not in creative mode). Water within four blocks around it, at the same height or one above, keeps farmland wet. Without water it dries out; dry farmland without a crop on it turns back into dirt, and so does farmland under a full block. Walking and jumping on farmland do not trample it.
+
+**Crops**
+
+Plant wheat seeds, carrots or potatoes on farmland. Crops grow in stages on random ticks (each block gets one about every 68 s) while their chunk is loaded; time while the world is closed does not count. They grow twice as fast on wet farmland and need light of at least 9, from the sky or from lamps. Break a ripe crop for the harvest; an unripe one only gives back what was planted. Seeds come from tall grass, carrots and potatoes from wild plants in plains, forests and taiga, and now and then from zombies.
+
+**Pumpkins and melons**
+
+Pumpkin and melon seeds grow into stems. A ripe stem puts its fruit onto a free neighbouring block of farmland, dirt or grass, one at a time; harvest the fruit and the stem grows another. Leave a free side next to every stem. A pumpkin gives four seeds, a melon slice one; pumpkins and melons also grow wild.
+
+**Seeds plant themselves**
+
+Seeds, carrots and potatoes lying on free farmland plant one of their stack by themselves (checked every 1 s, with a high chance). A stack whose own block is taken, or that holds more, plants into the free farmland right around it, one seed per check, so drops that merged into one stack still plant the whole patch. Flowing water carries dropped items along its current; still water does not. A field washed off with water from behind replants itself where the drops come to rest; collect the rest of the harvest.
+
+**Breeding animals**
+
+Feed pigs with carrots or potatoes and sheep with wheat: a fed adult falls in love for a while and walks towards another one of its kind in love; two that see each other get a young one. Parents rest five minutes before they breed again; a young one grows up in twenty minutes, each feeding takes 10 % of that time off. Young animals leave nothing behind. Crowded places get no more young ones.
+
+**Food from the farm**
+
+Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pumpkin, sugar and wheat, melon slices and carrots to eat on the way. Carrots and potatoes are planted when used on farmland and eaten elsewhere.
+
+**See also**
+
+[Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat seeds](items.md#item-qtcraft-wheat_seeds), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato), [Pumpkin stem](blocks.md#block-qtcraft-pumpkin_stem), [Melon stem](blocks.md#block-qtcraft-melon_stem), [Bread](food.md#item-qtcraft-bread), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+
 ### <a id="chapter-qtcraft-health"></a>Health and damage
 
 **Health**
@@ -213,7 +243,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -248,7 +278,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning> [true|false]`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]`
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs

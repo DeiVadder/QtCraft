@@ -1,6 +1,9 @@
 #pragma once
 
+#include "QcItemStack.h"
+
 #include <QJsonObject>
+#include <QString>
 
 class QcClientSession;
 class QcControlCommandTable;
@@ -20,7 +23,16 @@ private:
 
     void entities(const QJsonObject &request);
     void attack(const QJsonObject &request);
+    // The held stack and entity flags when a use started.
+    struct UseBefore
+    {
+        QcItemStack held;
+        quint8 flags = 0;
+    };
+
     void useEntity(const QJsonObject &request);
+    // Why the use of the held item on the entity did not catch or feed it; empty when it did.
+    QString useEntityError(quint32 entityId, UseBefore before) const;
     void collect(const QJsonObject &request);
     // Turns towards the centre of the entity `request` names; fails the request and returns false
     // when there is no such entity nearby.

@@ -6,13 +6,15 @@
 #include <QList>
 
 #include <algorithm>
+#include <utility>
 
 QcPlantGrowth::QcPlantGrowth(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
     , m_random(quint32(seed ^ 0x6A0Fu))
+    , m_crops(m_content, randomTickSeconds)
 {
     for (QcBlockId id = 0; qsizetype(id) < m_content->stateCount(); ++id) {
-        if (m_content->block(id).growth.grows()) {
+        if (m_content->block(id).hasRandomTicks()) {
             m_growing.insert(id);
         }
     }
@@ -27,11 +29,16 @@ void QcPlantGrowth::tick(const QcServerWorld &world, const SetBlock &setBlock)
         return;
     }
 
+    // In a fixed order of chunks, so the same seed draws the same random cells in every run (the
+    // hash order differs between processes).
+    QList<QcChunkPos> order = sections.keys();
+    std::ranges::sort(order, [](QcChunkPos a, QcChunkPos b) { return std::pair{a.x, a.z} < std::pair{b.x, b.z}; });
+
     // Collected first: setting blocks while holding a chunk snapshot would copy the chunk.
     QList<QcBlockPos> ticked;
-    for (auto it = sections.constBegin(); it != sections.constEnd(); ++it) {
-        if (const std::shared_ptr<const QcChunk> chunk = world.chunk(it.key())) {
-            pickRandomPlants(*chunk, it.value(), ticked);
+    for (const QcChunkPos pos : std::as_const(order)) {
+        if (const std::shared_ptr<const QcChunk> chunk = world.chunk(pos)) {
+            pickRandomPlants(*chunk, sections.value(pos), ticked);
         }
     }
 
@@ -61,10 +68,16 @@ void QcPlantGrowth::pickRandomPlants(const QcChunk &chunk, quint32 sections, QLi
     }
 }
 
-bool QcPlantGrowth::randomTick(const QcBlockAccess &world, QcBlockPos pos, const SetBlock &setBlock)
+bool QcPlantGrowth::randomTick(const QcServerWorld &world, QcBlockPos pos, const SetBlock &setBlock)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
-    if (!block || !m_growing.contains(*block) || m_random.generateDouble() >= growthChance(*block)) {
+    if (!block || !m_growing.contains(*block)) {
+        return false;
+    }
+    if (!m_content->block(*block).growth.grows()) {
+        return m_crops.randomTick(world, pos, *block, m_random, setBlock);
+    }
+    if (m_random.generateDouble() >= growthChance(*block)) {
         return false;
     }
 
@@ -76,7 +89,7 @@ bool QcPlantGrowth::randomTick(const QcBlockAccess &world, QcBlockPos pos, const
 std::optional<QcBlockPos> QcPlantGrowth::growthTarget(const QcBlockAccess &world, QcBlockPos pos) const
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
-    if (!block || !m_growing.contains(*block)) {
+    if (!block || !m_growing.contains(*block) || !m_content->block(*block).growth.grows()) {
         return std::nullopt;
     }
 

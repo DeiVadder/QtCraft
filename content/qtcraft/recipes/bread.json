@@ -1,0 +1,13 @@
+{
+    "name": "bread",
+    "type": "shaped",
+    "pattern": [
+        "WWW"
+    ],
+    "key": {
+        "W": "wheat"
+    },
+    "result": {
+        "item": "bread"
+    }
+}

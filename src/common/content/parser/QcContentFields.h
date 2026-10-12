@@ -26,6 +26,8 @@ QString translationKey(const QString &prefix, const QString &qualifiedName);
 // Recipe ingredients are item names or, with a leading '#', item tags.
 QString qualifyIngredient(const QString &text, const QString &packNamespace);
 QStringList parseTags(const QJsonValue &value, const QString &packNamespace, QcJsonFieldReader &reader);
+// The array of content names at `key` (at most 64; missing: empty).
+QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonFieldReader &reader);
 // A state value from JSON: strings as they are, booleans as "true"/"false".
 std::optional<QString> stateValue(const QJsonValue &value);
 // Three numbers, each within `limit` metres of 0 (model coordinates).

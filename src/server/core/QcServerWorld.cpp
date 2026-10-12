@@ -22,7 +22,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
         const QcBlockDefinition &block = m_content->block(QcBlockId(id));
         m_contactDamage[id] = block.contactDamage;
         damaging[id] = block.contactDamage > 0.0;
-        growing[id] = block.growth.grows();
+        growing[id] = block.hasRandomTicks();
     }
 
     m_damagingSections = QcSectionMarks(std::move(damaging));

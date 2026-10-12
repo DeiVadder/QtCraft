@@ -40,6 +40,7 @@ qt_add_library(qc_common STATIC
     content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
     content/parser/QcMobParser.h content/parser/QcMobParser.cpp
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
+    content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
     content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
     content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
@@ -90,6 +91,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcItemDefinition.h
     gameplay/QcItemStack.h
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp
+    content/definitions/QcFarmingDefinitions.h
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
     content/definitions/QcMachineDefinition.h

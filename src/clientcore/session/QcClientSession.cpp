@@ -27,10 +27,24 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
         return QcPhysics::boxAt(entity.position, QcStandPose::bodyWidth * scale, QcStandPose::bodyHeight * scale);
     }
 
+    // Young animals are drawn and aimed at half size (decision E-293).
     const bool mob = entity.mobType >= 0 && entity.mobType < content.mobs().size();
+    const double scale = (entity.flags & QcMsg::Young) != 0 ? QcMsg::youngScale : 1.0;
     const double width = mob ? content.mobs()[entity.mobType].width : QcPhysics::playerWidth;
     const double height = mob ? content.mobs()[entity.mobType].height : QcPhysics::playerHeight;
-    return QcPhysics::boxAt(entity.position, width, height);
+    return QcPhysics::boxAt(entity.position, width * scale, height * scale);
+}
+
+// Whether using `item` on the entity is a use of the creature (UseEntity): food, armour, its
+// catching item or its breeding food (decision E-293).
+bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &entity, const QcItemDefinition &item)
+{
+    if (entity.mobType < 0 || entity.mobType >= content.mobs().size()) {
+        return false;
+    }
+
+    const QcMobDefinition &mob = content.mobs()[entity.mobType];
+    return item.food > 0 || item.armour || mob.catchWith == item.name || mob.breeding.food.contains(item.name);
 }
 
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")
@@ -651,22 +665,23 @@ bool QcClientSession::useItem()
         return true;
     }
 
-    // Food without a block to place is eaten, armour put on (both sent as ConsumeItem).
-    if (item && ((item->food > 0 && item->placesBlock.isEmpty()) || item->armour) && !opensScreen) {
-        m_connection->send(QcMsg::ConsumeItem{});
+    // Food, armour and what a creature takes (its catching item, its breeding food) used on a creature
+    // go to the server, which feeds or catches it or else eats the food or puts on the armour
+    // (decisions E-057, E-293); other items act on the block behind it.
+    const auto creature = m_targetEntity ? m_entities.all().constFind(*m_targetEntity) : m_entities.all().constEnd();
+    if (item && creature != m_entities.all().constEnd() && usesOnCreature(*m_content, *creature, *item)) {
+        m_connection->send(QcMsg::UseEntity{creature.key()});
         m_useTicks = 0;
         return true;
     }
 
-    // A creature caught with the held item (a firefly with an empty bottle).
-    if (item && m_targetEntity) {
-        const auto entity = m_entities.all().constFind(*m_targetEntity);
-        if (entity != m_entities.all().constEnd() && entity->mobType >= 0 && entity->mobType < m_content->mobs().size()
-            && m_content->mobs()[entity->mobType].catchWith == item->name) {
-            m_connection->send(QcMsg::UseEntity{*m_targetEntity});
-            m_useTicks = 0;
-            return true;
-        }
+    // Food is eaten and armour put on (both sent as ConsumeItem) unless the food plants a block and
+    // a block is aimed at: then the server plants it or, where it cannot, eats it (decision E-292).
+    const bool eats = item && item->food > 0 && (item->placesBlock.isEmpty() || !m_target);
+    if (item && (eats || item->armour) && !opensScreen) {
+        m_connection->send(QcMsg::ConsumeItem{});
+        m_useTicks = 0;
+        return true;
     }
 
     if (!m_target) {
