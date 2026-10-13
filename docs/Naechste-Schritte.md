@@ -1,6 +1,6 @@
 # QtCraft – nächste Schritte (Sammelliste)
 
-Stand: 2026-10-09. **Beauftragt als Etappen 20 bis 30** in `QtCraft-Agent-Auftrag.md` (Abschnitt 4); diese Datei enthält die ausführlichen Beschreibungen, Entscheidungen und Begründungen dazu. Die Reihenfolge und Nummern stehen im Abschnitt „C. Reihenfolge und Etappen-Zuordnung". Ob und wann eine Etappe startet, entscheidet der Mensch (siehe `docs/FORTSCHRITT.md`).
+Stand: 2026-10-09. **Beauftragt als Etappen 20 bis 30** in `QtCraft-Agent-Auftrag.md` (Abschnitt 4; inzwischen bis Etappe 41, Nummern seit 2026-10-13 nach E-350); diese Datei enthält die ausführlichen Beschreibungen, Entscheidungen und Begründungen dazu. Die Reihenfolge und Nummern stehen im Abschnitt „C. Reihenfolge und Etappen-Zuordnung". Ob und wann eine Etappe startet, entscheidet der Mensch (siehe `docs/FORTSCHRITT.md`).
 
 ## A. Feinschliff und offene Kleinigkeiten
 
@@ -48,13 +48,13 @@ Aus `docs/FORTSCHRITT.md`. Der Mensch entscheidet, was davon in einen Auftrag ko
   - Kleinigkeiten mit geringem Aufwand: Spawn nicht auf Baumkronen, Shift-Klick zum schnellen Verschieben in UI-Bildschirmen, UI-Klicks auch für Inventarfelder, Zuckerrohr-Wachstum, Flüssigkeiten bevorzugen den Weg zum nächsten Abgrund, Treppen/Stufen lassen Himmelslicht durch.
   - Biomverteilung: Gebirge häufiger, Biome weniger „rundlich" (Klimaverteilung anpassen, Determinismus der Generierung dabei bewusst ändern und dokumentieren).
 - **Später (eigene Etappe oder bei passender Gelegenheit):**
-  - Mob-Wegfindung (Abgründe/Wasser meiden, Mob-Mob-Ausweichen). Wird für Dorfbewohner ohnehin nötig und gehört in B4.
+  - Mob-Wegfindung (Abgründe/Wasser meiden, Mob-Mob-Ausweichen). Wird für Dorfbewohner ohnehin nötig und gehört in B4 (heute Teil-Etappe 37.1).
   - Bewegtes Licht (gehaltene Fackel, leuchtende Items, Glühwürmchen), Treppen mit Innen-/Außenecken, weitere Türen/Falltüren-Holzarten, Doppeltruhen, Zauntor-Verbindungslogik.
-  - Speicherverbrauch der Übersetzungsdateien, Steuerschnittstelle am grafischen Spiel (lokaler Socket, Screenshots), Mods: Teil-Patches, pro Welt, mehr als 64.
+  - Speicherverbrauch der Übersetzungsdateien (heute Vorschlag Etappe 43, Abschnitt F), Steuerschnittstelle am grafischen Spiel (lokaler Socket, Screenshots), Mods: Teil-Patches, pro Welt (Vorschlag „Mods global statt pro Welt“, Abschnitt F), mehr als 64.
   - Disconnect-Gründe (`QcMsg::Disconnect`) noch nicht übersetzbar (nur der Chat hat Meldungsschlüssel, E-094).
   - `QcProtocol.cpp` steht bei 795 von 800 Zeilen: Encoder und Decoder vor der nächsten Nachricht nach Themen aufteilen (z. B. Etappe 22/23).
-  - Showcase-Welt: Hinzufügen eines Mods verschiebt das Layout unveränderter Chunks einer bestehenden Showcase-Welt; Wesen in den Gehegen jagen den Spieler weiter durch das Glas (kein Schaden; gemessen unkritisch, 6 Wesen, Tick 0,23 ms).
-  - Nahkampf der Mobs ohne Sichtlinie: Ein Zombie trifft den Spieler über eine Kante oder Stufe (bis 2 m Höhenunterschied), während Angriffe des Spielers seit E-092 eine Sichtlinie brauchen. Mob-Angriffe ebenfalls über `QcLineOfSight` prüfen (gefunden bei der Stabilisierung von `test_survival_scenario`, Etappe 20).
+  - Showcase-Welt: Hinzufügen eines Mods verschiebt das Layout unveränderter Chunks einer bestehenden Showcase-Welt (Vorschlag „feste Plätze pro Name“, Abschnitt F); Wesen in den Gehegen jagen den Spieler weiter durch das Glas (kein Schaden; gemessen unkritisch, 6 Wesen, Tick 0,23 ms).
+  - Nahkampf der Mobs ohne Sichtlinie: Ein Zombie trifft den Spieler über eine Kante oder Stufe (bis 2 m Höhenunterschied), während Angriffe des Spielers seit E-092 eine Sichtlinie brauchen. Mob-Angriffe ebenfalls über `QcLineOfSight` prüfen (gefunden bei der Stabilisierung von `test_survival_scenario`, Etappe 20; heute Teil-Etappe 37.1).
 - **Backlog / nur auf Wunsch:** Klang-Verdeckung, Doppler und Hall; Klänge von einem Menschen anhören und nachbessern.
 
 ## B. Neue Features
@@ -111,11 +111,11 @@ Für jedes Feature: Ziel, Abhängigkeiten, offene Fragen. Die Aufwandseinschätz
 - **Ziel:** Dörfer als Generator-Strukturen (Häuser, Wege, Brunnen, Felder, Beleuchtung), aus Daten definierbar (Mods können Bauteile/Strukturen ergänzen). Dorfbewohner (NPC) mit Berufen (Landwirt, Schmied, Bibliothekar u. a.), Tagesablauf (arbeiten, schlafen), Handel (Smaragd/Währungs-Item gegen Waren), eigene Modelle und Sounds.
 - **Abhängigkeiten:** Strukturgenerator mit Platzierungsregeln (Biome, Gelände-Anpassung), Betten (fehlt bisher), Türen, Pfadfindung (bisher einfach, muss für NPC besser werden), Farming (B8), Handels-UI, Erkundung/Speichern von Strukturen über Chunkgrenzen.
 - **Entschieden (2026-10-09):** **Keine Raids** und keine Plünderer. Umfang: **automatisch generierte Dörfer** mit Häusern (mehrere Varianten), **Kirche**, **Farmen** und **Dorfbewohnern**, die **handeln** (Trading-UI mit Angebotsliste, Preis in einem Währungs-Item). Zombie-Dörfer entfallen. Strukturen sind aus Daten definiert (Mods können Häuser, Berufe und Angebote ergänzen).
-- **Dem Agenten überlassen (2026-10-09):** Berufsvielfalt am Anfang (Vorschlag: Landwirt, Schmied, Bibliothekar/Priester; weitere per Daten nachrüstbar), Wegfindung im Dorf (ggf. als eigene Teiletappe, siehe A2) und Handelsmodell (feste Angebote oder Preisanpassung nach Nachfrage). Der Agent entscheidet und dokumentiert in `docs/Entscheidungen.md`.
+- **Dem Agenten überlassen (2026-10-09):** Berufsvielfalt am Anfang (Vorschlag: Landwirt, Schmied, Bibliothekar/Priester; weitere per Daten nachrüstbar), Wegfindung im Dorf (ggf. als eigene Teiletappe, siehe A2; heute Teil-Etappe 37.1, Wegfindung allgemein für alle Mobs) und Handelsmodell (feste Angebote oder Preisanpassung nach Nachfrage). Der Agent entscheidet und dokumentiert in `docs/Entscheidungen.md`.
 - **Aufwand:** groß (Struktur + NPC-KI + Handel).
 
 ### B5. Signal Dust (Schaltungen)
-- **Entschieden (2026-10-09):** Umfang = der **erste Redstone-Release** (der frühe Alpha-/Beta-Stand der Schaltmechanik) **plus Trichter und Komparator**. Konkret: Signalleitung (Staub), Fackel als Inverter, Hebel, Knopf, Druckplatte, Repeater, Kolben (normal und klebrig), Lampe sowie schaltbare Türen, Falltüren und Zauntore, soweit sie in diesem frühen Stand schon schaltbar waren. Dazu **Trichter** (Items bewegen, Behälter) und **Komparator** (Signalstärke aus Behältern/Brennofen messen und vergleichen). **Erweitert (2026-10-12):** auch **Beobachter, Spender/Werfer und Schienen mit Loren** (normale, angetriebene, Detektor- und Aktivierungsschienen); Anlass: automatische Farmen (Saat pflanzt sich auf Ackerboden selbst, Etappe 27; Spender düngen und setzen Wasser; Saat werfen Spender und Werfer nur aus, gepflanzt wird ausschließlich über das Selbstpflanzen gedroppter Saat, bewusst so entschieden). Teilung in 29.1/29.2/29.3 erlaubt (Teil-Etappen von Signal Dust; 29b/29c sind Feuer und Wetter). **Kolben schieben auch Kisten und andere Entities (vom Menschen 2026-10-12 gewünscht):** Blöcke mit Inhalt (Truhen, Öfen, Trichter, Spender/Werfer, Fässer) werden samt Inhalt geschoben und gezogen (wie in der Bedrock-Edition, anders als in Java), ohne Item-Verlust oder Duplikation, auch über Chunk-Grenzen und beim Speichern mitten in der Bewegung; Wesen, Spieler, Items, Rüstungsständer und Loren werden vom ausfahrenden Kolbenkopf und vom geschobenen Block mitgeschoben (Server-autoritativ, ohne Vorhersage-Korrekturen beim Client). Unbewegliche Blöcke (Grundgestein, Obsidian u. a.) bleiben in Daten festgelegt. **BUD/Quasi-Konnektivität abschaltbar (vom Menschen 2026-10-12 gewünscht, Ideen für später):** Die Eigenheit wird nicht fest verdrahtet, sondern als eigene, klar abgegrenzte Regel umgesetzt, die sich abschalten lässt – als Spielregel pro Welt (z. B. `quasiConnectivity`, Standard an) und zusätzlich pro Block in den Daten (Kolben, Spender/Werfer usw. können sie einzeln an- oder abwählen, Mods ebenso); beide Zustände sind getestet und dokumentiert, damit später weitere Varianten (z. B. eigene Blöcke ohne BUD) leicht dazukommen.
+- **Entschieden (2026-10-09):** Umfang = der **erste Redstone-Release** (der frühe Alpha-/Beta-Stand der Schaltmechanik) **plus Trichter und Komparator**. Konkret: Signalleitung (Staub), Fackel als Inverter, Hebel, Knopf, Druckplatte, Repeater, Kolben (normal und klebrig), Lampe sowie schaltbare Türen, Falltüren und Zauntore, soweit sie in diesem frühen Stand schon schaltbar waren. Dazu **Trichter** (Items bewegen, Behälter) und **Komparator** (Signalstärke aus Behältern/Brennofen messen und vergleichen). **Erweitert (2026-10-12):** auch **Beobachter, Spender/Werfer und Schienen mit Loren** (normale, angetriebene, Detektor- und Aktivierungsschienen); Anlass: automatische Farmen (Saat pflanzt sich auf Ackerboden selbst, Etappe 27; Spender düngen und setzen Wasser; Saat werfen Spender und Werfer nur aus, gepflanzt wird ausschließlich über das Selbstpflanzen gedroppter Saat, bewusst so entschieden). Geteilt in 29.1 und 29.2 (abgeschlossen); Schienen und Loren (früher Teil 29.3) sind heute Etappe 32 (E-350). **Kolben schieben auch Kisten und andere Entities (vom Menschen 2026-10-12 gewünscht):** Blöcke mit Inhalt (Truhen, Öfen, Trichter, Spender/Werfer, Fässer) werden samt Inhalt geschoben und gezogen (wie in der Bedrock-Edition, anders als in Java), ohne Item-Verlust oder Duplikation, auch über Chunk-Grenzen und beim Speichern mitten in der Bewegung; Wesen, Spieler, Items, Rüstungsständer und Loren werden vom ausfahrenden Kolbenkopf und vom geschobenen Block mitgeschoben (Server-autoritativ, ohne Vorhersage-Korrekturen beim Client). Unbewegliche Blöcke (Grundgestein, Obsidian u. a.) bleiben in Daten festgelegt. **BUD/Quasi-Konnektivität abschaltbar (vom Menschen 2026-10-12 gewünscht, Ideen für später):** Die Eigenheit wird nicht fest verdrahtet, sondern als eigene, klar abgegrenzte Regel umgesetzt, die sich abschalten lässt – als Spielregel pro Welt (z. B. `quasiConnectivity`, Standard an) und zusätzlich pro Block in den Daten (Kolben, Spender/Werfer usw. können sie einzeln an- oder abwählen, Mods ebenso); beide Zustände sind getestet und dokumentiert, damit später weitere Varianten (z. B. eigene Blöcke ohne BUD) leicht dazukommen.
 - **Ziel:** Signalstärke 0–15, Updates mit Tick-Reihenfolge und Verzögerungen, deterministisch.
 - **Entschieden (2026-10-12): Performance und bekannte Eigenheiten.** Die Signalleitung wird **performanter als im Vorbild** umgesetzt, vor allem beim Aktualisieren langer Staublinien: keine kaskadierenden Einzel-Updates je Staubblock, sondern eine Neuberechnung des betroffenen Leitungsnetzes in einem Durchgang (z. B. Breitensuche von den Quellen aus, Stärke fällt je Block um 1), die nur die Blöcke meldet, deren Stärke sich wirklich geändert hat. Das Ergebnis (Signalstärken, wer wann schaltet) ist deterministisch und hängt nicht von der Lage in der Welt ab. **Die bekannten Eigenheiten, auf denen Spieler-Schaltungen beruhen, bleiben erhalten** und bekommen je einen Test und eine Showcase-Demo: **BUD / Quasi-Konnektivität** (Kolben werden auch von Signal an dem Block über ihnen versorgt, schalten aber erst beim nächsten Block-Update in der Nähe; ein so „indirekt versorgter“ Kolben wartet auf ein Update), **0-Tick-Kolben** (ein Puls von 0 Ticks fährt den Kolben sofort aus und ein; Klebkolben lassen bei zu kurzem Puls ihren Block los, „Block spitting“), das Durchbrennen der Signal Torch bei zu schnellem Takt und die feste Verzögerung der Repeater-Stufen. Welche weiteren Eigenheiten erhalten bleiben, recherchiert und entscheidet der Agent beim Start der Etappe; was bewusst wegfällt, wird als Entscheidung dokumentiert. **Entschieden (2026-10-12): weder lage- noch richtungsabhängig.** Eine Schaltung verhält sich überall in der Welt und in jeder Drehung gleich (anders als im Vorbild, wo die Hash-Reihenfolge der Updates und die feste Himmelsrichtungs-Reihenfolge der Nachbar-Updates das Ergebnis ändern). Verbraucher reagieren in der Reihenfolge, in der das Signal sie erreicht (Abstand zur Quelle, Verzögerungen); was im selben Schritt gleichzeitig geschaltet wird, wirkt gleichzeitig. Konflikte (z. B. zwei Kolben wollen im selben Tick in denselben Block) löst eine drehungsunabhängige Regel, die der Agent festlegt, testet (dieselbe Schaltung in allen vier Drehungen und an verschiedenen Koordinaten) und dokumentiert.
 - **Abhängigkeiten:** Block-Zustandssystem (vorhanden), Block-Entity-Ticks, Nachbar-Update-Kaskade mit Begrenzung, Kolben brauchen bewegte Blöcke (neue Entity-Art), Netzwerk-Synchronisierung (B1).
@@ -157,29 +157,35 @@ Wichtig für Multiplayer: Spieler sehen sich gegenseitig, also muss die Anpassun
 ## C. Reihenfolge und Etappen-Zuordnung
 
 
-**Zuordnung zu den Etappen im Auftrag** (Reihenfolge bestätigt; Etappe 19 „Aufteilen zu großer Dateien" läuft **vor** den neuen Features (vom Menschen vorgezogen), weil sie die großen Dateien entlastet):
+**Zuordnung zu den Etappen im Auftrag** (Reihenfolge bestätigt; Etappe 19 „Aufteilen zu großer Dateien" läuft **vor** den neuen Features (vom Menschen vorgezogen), weil sie die großen Dateien entlastet). Seit 2026-10-13 gelten feste ganze Etappen-Nummern (E-350): Die Reihenfolge der Arbeit ist die Reihenfolge der Zeilen, nicht die der Nummern; ein späterer Einschub bekommt die nächste freie Nummer und wird hier einsortiert. Die Spalte „Früher“ nennt die alte geplante Nummer (vollständige Liste in `docs/FORTSCHRITT.md`, „Alte und neue Etappen-Nummern“).
 
-| Etappe | Inhalt | Abschnitt hier |
-|---|---|---|
-| 20 | Feinschliff und Multiplayer-Voraussetzungen | A1, A2 „Jetzt" |
-| 21 | Showcase-Welt | B0 |
-| 22 | Charakter-Vorschau im UI | B7a |
-| 23 | Rüstung | B7b |
-| 24 | Server-Befehle und Wartungswerkzeuge (auch im Einzelspieler) | B1 (Admin-Befehle) |
-| 25 | Multiplayer | B1 |
-| 26 | Creative-Modus | B3 |
-| 27 | Landwirtschaft, Nahrung, Kürbisse und Melonen | B6 |
-| 28 | HD-Texturpaket | B2 |
-| 29 | Signal Dust (Schaltungen) | B5 |
-| 29b | Feuer | Auftrag Punkt 29b |
-| 29c | Wetter | Auftrag Punkt 29c |
-| 29d | Erfahrung und Lapislazuli | Auftrag Punkt 29d |
-| 30 | Dörfer und Dorfbewohner | B4 |
-| 30b | Monster-Spawner und Minenschächte | Auftrag Punkt 30b |
-| 31 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3) | Auftrag Punkt 31 |
-| 32 | Chunks auf dem Server entladen | Auftrag Punkt 32 |
-| 33 | Gamepad-Unterstützung | Auftrag Punkt 33 |
-| 34 | Verzauberung (34.1) und Amboss (34.2) | Auftrag Punkt 34 |
+| Etappe | Inhalt | Abschnitt hier | Früher |
+|---|---|---|---|
+| 20 | Feinschliff und Multiplayer-Voraussetzungen | A1, A2 „Jetzt" | |
+| 21 | Showcase-Welt | B0 | |
+| 22 | Charakter-Vorschau im UI | B7a | |
+| 23 | Rüstung | B7b | |
+| 24 | Server-Befehle und Wartungswerkzeuge (auch im Einzelspieler) | B1 (Admin-Befehle) | |
+| 25 | Multiplayer | B1 | |
+| 26 | Creative-Modus | B3 | |
+| 27 | Landwirtschaft, Nahrung, Kürbisse und Melonen | B6 | |
+| 28 | HD-Texturpaket | B2 | |
+| 29 | Signal Dust (Schaltungen), 29.1 und 29.2 (abgeschlossen) | B5 | |
+| 30 | Fehler im Benchmark `crowd` (und fehlende Saat in `farm-seeds`) | Auftrag Punkt 30 | neu |
+| 31 | Umbau: 31.1 Block-Entities, 31.2 Entities, 31.3 Chunks auf dem Server entladen (inkl. Grenzwerte in `QcServerLimits` abschließen) | Auftrag Punkt 31 | neu; 31.3 = 32 |
+| 32 | Schienen und Loren | B5, Auftrag Punkt 32 | 29.3 |
+| 33 | Licht auf dem Server | Auftrag Punkt 33 | neu |
+| 34 | Feuer | Auftrag Punkt 34 | 29b |
+| 35 | Wetter | Auftrag Punkt 35 | 29c |
+| 36 | Erfahrung und Lapislazuli | Auftrag Punkt 36 | 29d |
+| 37 | Wegfindung (37.1), Dörfer und Dorfbewohner (37.2) | B4, A2 „Später“ | 30 |
+| 38 | Monster-Spawner und Minenschächte | Auftrag Punkt 38 | 30b |
+| 39 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3) | Auftrag Punkt 39 | 31 |
+| 44 | Client-Tick auf eigenem Session-Thread (Vorschlag, vor 40 entscheiden) | F | neu |
+| 40 | Gamepad-Unterstützung | Auftrag Punkt 40 | 33 |
+| 41 | Verzauberung (41.1) und Amboss (41.2) | Auftrag Punkt 41 | 34 |
+| 42 | Zustandsbudget (Vorschlag) | F | neu |
+| 43 | Speicher der Übersetzungen (Vorschlag) | F | neu |
 
 Die Aufzählung unten ist die ursprüngliche Begründung der Reihenfolge (ältere Nummerierung, maßgeblich ist die Tabelle oben).
 
@@ -212,3 +218,13 @@ Entschieden (2026-10-09): HD-Quellen frei oder selbst erstellt, Auflösung nach 
 Ebenfalls entschieden: Reihenfolge aus Abschnitt C ist bestätigt; A2-Einteilung (Jetzt/Später/Backlog) bestätigt; Schaltmaterial heißt „Signal Dust"; Admin-Befehle und Wartungswerkzeuge kommen mit dem Multiplayer (B1) und gelten auch im Einzelspieler; Dorf-Handel und Berufe entscheidet der Agent.
 
 Es sind keine Fragen mehr offen. Die Liste ist als Etappen 20 bis 30 beauftragt.
+
+## F. Vorschläge aus dem Umbau-Auftrag (Teil 3, vom Menschen 2026-10-13)
+
+Prüfen und entscheiden; umsetzen nur bei geringem Aufwand, sonst als Vorschlag mit eigener Nummer (ab 42) in der Etappentabelle (Abschnitt C). Keiner dieser Punkte ist beauftragt; ob und wann, entscheidet der Mensch.
+
+- **Zustandsbudget (Vorschlag Etappe 42):** Zustands-Ids sind `uint16` (65 536 Zustände gesamt, `QcBlockStateTable::maxStatesPerBlock = 2048`). Signal Dust allein hat 1296 Zustände; Zäune, Mauern und Scheiben je Material zahlen für ihre Verbindungen ebenso. Prüfen, ob Verbindungen, die nur der Darstellung dienen (Staubseiten, Zäune, Mauern, Scheiben), beim Meshen aus den Nachbarn abgeleitet statt gespeichert werden können (Folgen für Kollision, Raycast, Speicherformat und Protokoll klären; Migration alter Welten). **Mindestens** (klein, kann in jeder Etappe mitgehen): Budget-Meldung beim Laden mit der Zahl der verbrauchten Zustände (Log, Debug-Anzeige, Handbuch-Übersicht), Warnung ab einem Schwellwert. Die Angabe „höchstens 1024 je Block“ in `docs/Architektur.md` ist auf 2048 korrigiert.
+- **Speicher der Übersetzungen (Vorschlag Etappe 43):** Rund 3 Mio. Einträge belegen beim Laden 700 bis 870 MB. Namen der Teile-Familien (Bauteile je Material) zur Laufzeit aus den `%1`-Vorlagen zusammensetzen statt jede Kombination auszuschreiben; Handbuch-Suche und Creative-Suche müssen dieselben Namen finden. Messung vorher/nachher (Speicher, Ladezeit) headless.
+- **Client-Tick auf dem GUI-Thread (Vorschlag Etappe 44, vor Etappe 40 entscheiden):** `QcClientSession` tickt mit einem 20-Hz-`QTimer` auf dem GUI-Thread; ein langer Frame verzögert damit Vorhersage und Netz. Aufwand und Nutzen eines eigenen Session-Threads abschätzen (Übergaben an QML und Renderer, Sperren, TSan); Kandidat für vor dem Gamepad (Etappe 40), weil analoge Eingabe einen gleichmäßigen Takt braucht.
+- **Showcase-Layout (ohne eigene Etappe):** Ein neuer Mod verschiebt Chunks einer bestehenden Showcase-Welt, weil die Plätze nach Register-Reihenfolge vergeben werden. Feste Plätze pro Name (z. B. stabile Zuordnung Name → Platz, in der Weltinfo gespeichert, neue Einträge hinten). Gering genug, um in der nächsten Etappe mitzugehen, die die Showcase-Welt ohnehin anfasst; sonst als eigene Nummer einsortieren.
+- **Mods global statt pro Welt (nur Vorschlag, nicht umsetzen):** Mods gelten heute global für alle Welten. Vorschlag: Mod-Auswahl pro Welt (in `world.json`, beim Öffnen fehlende Mods melden, Server gibt die Liste vor). Keine Nummer, bis der Mensch es beauftragt.

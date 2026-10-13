@@ -23,7 +23,7 @@ Stufe 1 (reine Daten) und Stufe 2 (wenig Code) aus der Analyse umsetzen, mit die
 6. **Ton wie Vanilla:** Tonblock droppt Tonklumpen, Klumpen → Ofen → Ziegel-Item, 4 Ziegel → Ziegelblock; Tonblock → Ofen → Terrakotta.
 7. Rest der Analyse wie vorgeschlagen.
 
-Ausgeklammert, weil eigene spätere Etappen: Rüstung (23), Landwirtschaft/Nahrung im großen Stil (27), Signal Dust (29), Dörfer (30), Nether/Glowstone. Stufe 3 (Schere, Bett, Schild, Gerüst, Effekte) ist **nicht** beauftragt.
+Ausgeklammert, weil eigene spätere Etappen: Rüstung (23), Landwirtschaft/Nahrung im großen Stil (27), Signal Dust (29), Dörfer (30) (alte Planung; heute Etappe 37), Nether/Glowstone. Stufe 3 (Schere, Bett, Schild, Gerüst, Effekte) ist **nicht** beauftragt.
 
 ## Stand für die Wiederaufnahme
 
