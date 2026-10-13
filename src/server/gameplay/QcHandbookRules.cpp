@@ -81,7 +81,7 @@ QMap<QString, double> values()
         {u"mobs.despawnDistance"_s, QcMobManager::despawnDistance},
         {u"mobs.caveDepth"_s, QcMobManager::caveDepth},
         {u"commands.maxFill"_s, double(QcServer::maxFillBlocks)},
-        {u"commands.summonLimit"_s, QcMobManager::summonLimit},
+        {u"commands.summonLimit"_s, double(QcServerLimits{}.summonLimit)},
         {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},
         {u"commands.confirmFill"_s, double(QcBlockCommands::confirmFillBlocks)},
         {u"commands.confirmRemove"_s, QcWorldCommands::confirmRemoveCount},

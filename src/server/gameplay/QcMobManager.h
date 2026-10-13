@@ -39,8 +39,6 @@ public:
     // Flying creatures keep between these heights above the ground below them.
     static constexpr double flyMinHeight = 1.2;
     static constexpr double flyMaxHeight = 3.0;
-    // /summon refuses to raise the total number of mobs above this.
-    static constexpr int summonLimit = 64;
     // Blocks of rock above a cave floor for it to count as dark enough for cave spawns.
     static constexpr int caveDepth = 8;
     static constexpr double hurtInvulnerability = 0.5;
@@ -79,6 +77,8 @@ public:
         double growUp = 0.0;
         // Born from breeding (counted against QcMobBreeding::maxBredPerKind).
         bool bred = false;
+        // Came by /summon (counted against QcServerLimits::summonLimit); not saved.
+        bool summoned = false;
 
         bool isYoung() const { return growUp > 0.0; }
     };
@@ -140,8 +140,9 @@ public:
     // Persistent mobs to save, and loading them back (as dormant until the next tick sees their chunk).
     QList<Stored> persistentMobs() const;
     void restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &populated, const std::function<quint32()> &nextEntityId);
-    // Mobs that are not dormant.
+    // Mobs that are not dormant, all of them and those that came by /summon.
     qsizetype awakeCount() const;
+    qsizetype awakeSummonedCount() const;
     // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks);
     // the second form takes the share and index of any spawn rule (0: main rule), each rule has its
     // own set of chunks.

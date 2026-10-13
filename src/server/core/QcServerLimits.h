@@ -36,6 +36,9 @@ struct QcServerLimits
     qint64 hopperBudget = 4096;
     // Ticks a hopper rests after moving an item (the reference's 8).
     qint64 hopperCooldownTicks = 8;
+    // Creatures summoned by /summon awake at once at most (E-351); natural ones do not count, 0
+    // switches summoning creatures off (armour stands are no creatures and stay possible).
+    qint64 summonLimit = 64;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

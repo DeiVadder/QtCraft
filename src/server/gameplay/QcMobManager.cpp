@@ -2,6 +2,8 @@
 
 #include "QcDayCycle.h"
 #include "QcLightVolume.h"
+#include "QcMobSteering.h"
+#include "QcMobUpkeep.h"
 #include "QcNoise.h"
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
@@ -19,21 +21,7 @@ namespace {
 
 constexpr double spawnInterval = 1.0;
 constexpr int spawnAttemptsPerPlayer = 4;
-// Mobs only notice and attack within this vertical distance.
-constexpr double verticalReach = 2.0;
 constexpr double fleeSeconds = 4.0;
-
-double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
-{
-    const double dx = a.x - b.x;
-    const double dz = a.z - b.z;
-    return std::sqrt(dx * dx + dz * dz);
-}
-
-float yawTowards(const QcVec3 &direction)
-{
-    return float(qRadiansToDegrees(std::atan2(direction.x, -direction.z)));
-}
 
 // Mobs never spawn on or in a block that hurts on contact (magma) or holds bodies inside (cobwebs);
 // the block fields decide, so mod blocks follow the same rule.
@@ -64,46 +52,6 @@ bool nearAnyPlayer(const QcVec3 &position, const QList<QcMobManager::PlayerView>
         tooClose = tooClose || (player.position - position).length() < QcMobManager::spawnRadiusMin;
     }
     return tooClose;
-}
-
-const QcMobManager::PlayerView *nearestTarget(const QcMobManager::Mob &mob, const QcMobDefinition &definition,
-                                              const QList<QcMobManager::PlayerView> &players)
-{
-    const QcMobManager::PlayerView *target = nullptr;
-    double targetDistance = definition.sightRange;
-    for (const QcMobManager::PlayerView &player : players) {
-        const double distance = (player.position - mob.motion.position).length();
-        if (player.alive && player.targetable && distance < targetDistance) {
-            target = &player;
-            targetDistance = distance;
-        }
-    }
-    return target;
-}
-
-// Steering towards the target; strikes it when it is in reach.
-QcPhysics::Steering chase(QcMobManager::Mob &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
-                          QList<QcMobManager::PlayerHit> &hits)
-{
-    const QcVec3 towards{target.position.x - mob.motion.position.x, 0.0, target.position.z - mob.motion.position.z};
-    QcPhysics::Steering steering{towards.normalized(), definition.chaseSpeed};
-    const bool inReach = horizontalDistance(target.position, mob.motion.position) <= definition.attackRange
-                         && std::abs(target.position.y - mob.motion.position.y) <= verticalReach;
-
-    if (inReach) {
-        steering.wish = {};
-        if (mob.attackCooldown <= 0.0) {
-            mob.attackCooldown = definition.attackCooldown;
-            hits.append({target.entityId, definition.attackDamage, towards.normalized()});
-            mob.attackedThisTick = true;
-        }
-    }
-
-    if (towards.length() > 0.0) {
-        mob.yaw = yawTowards(towards);
-    }
-
-    return steering;
 }
 
 // Blocks animals of the chunk groups may stand on; `any` when one of them may stand on anything
@@ -255,24 +203,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
 
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
-    m_mobs.removeIf([&](const Mob &mob) {
-        // The void takes every creature, without loot (decision E-288).
-        if (QcWorld::isInVoid(mob.motion.position.y)) {
-            return true;
-        }
-        if (mob.persistent) {
-            return false;
-        }
-        double nearest = std::numeric_limits<double>::max();
-        for (const PlayerView &player : players) {
-            nearest = std::min(nearest, (player.position - mob.motion.position).length());
-        }
-        const QcMobDefinition &definition = m_content->mobs()[mob.type];
-        // Ambient night creatures go out with the daylight even next to a player.
-        const bool nightCreature = definition.spawnTime == QcMobDefinition::SpawnTime::Night || mob.nightRule;
-        const bool outOfTime = !night && !mob.underground && nightCreature && (nearest > 24.0 || definition.ambient);
-        return nearest > despawnDistance || outOfTime;
-    });
+    m_mobs.removeIf([&](const Mob &mob) { return QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night); });
 
     m_spawnTimer += dt;
     if (m_naturalSpawning && m_spawnTimer >= spawnInterval) {
@@ -297,10 +228,11 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
         return;
     }
 
+    QcMobUpkeep::leaveBlocks(mob, definition, world);
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
-    const PlayerView *target = definition.hostile ? nearestTarget(mob, definition, players) : nullptr;
+    const PlayerView *target = definition.hostile ? QcMobSteering::nearestTarget(mob, definition, players) : nullptr;
     mob.chasing = target ? target->entityId : 0;
-    QcPhysics::Steering steering = target ? chase(mob, definition, *target, hits) : wander(mob, definition, dt);
+    QcPhysics::Steering steering = target ? QcMobSteering::chase(mob, definition, *target, hits) : wander(mob, definition, dt);
 
     // While knocked back the mob does not steer.
     if (mob.hurtTimer > hurtInvulnerability * 0.5) {
@@ -335,7 +267,7 @@ QcPhysics::Steering QcMobManager::wander(Mob &mob, const QcMobDefinition &defini
         steering.wish = mob.wanderDirection;
     }
     if (steering.wish.length() > 0.0) {
-        mob.yaw = yawTowards(steering.wish);
+        mob.yaw = QcMobSteering::yawTowards(steering.wish);
     }
     return steering;
 }
@@ -386,7 +318,7 @@ void QcMobManager::fly(Mob &mob, const QcMobDefinition &definition, QcServerWorl
     mob.blockedLastTick = move.blockedX || move.blockedY || move.blockedZ;
 
     if (QcVec3{mob.motion.velocity.x, 0.0, mob.motion.velocity.z}.length() > 0.05) {
-        mob.yaw = yawTowards({mob.motion.velocity.x, 0.0, mob.motion.velocity.z});
+        mob.yaw = QcMobSteering::yawTowards({mob.motion.velocity.x, 0.0, mob.motion.velocity.z});
     }
 }
 
@@ -778,4 +710,9 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
 qsizetype QcMobManager::awakeCount() const
 {
     return std::ranges::count_if(m_mobs, [](const Mob &mob) { return !mob.dormant; });
+}
+
+qsizetype QcMobManager::awakeSummonedCount() const
+{
+    return std::ranges::count_if(m_mobs, [](const Mob &mob) { return mob.summoned && !mob.dormant; });
 }

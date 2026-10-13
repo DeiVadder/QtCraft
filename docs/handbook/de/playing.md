@@ -343,7 +343,7 @@ Rate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.
 **Items, Wesen und Rüstung**
 
 - `/give <item> [anzahl]`, `/spawnitem <item> [anzahl]`
-- `/summon <wesen> [anzahl]` (höchstens 64 Wesen), `/kill`, `/heal`, `/feed [punkte]`
+- `/summon <wesen> [anzahl]` (höchstens 64 wache gerufene Wesen, Server-Grenze `summonLimit`; Wesen der Welt zählen nicht), `/kill`, `/heal`, `/feed [punkte]`
 - `/equip <satz|rüstung|clear>` legt Rüstung an (`/equip iron`)
 - `/summon armor_stand [eigenschaft=wert …]` und `/armorstand <nearest|looking|id> <eigenschaft> [werte]` stellen und ändern Rüstungsständer. Eigenschaften: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (Grad), `rotation <grad>`, `arms`, `plate`, `small`, `showname` mit `true|false`, `name [text]`, `equip <satz|item>`, `cape <umhang|none>`, `clear`, `reset`; `info` listet sie. Ständer-Ids gelten nur bis zum nächsten Laden der Welt; Skripte nutzen `nearest` oder `looking`. In `/summon` folgen Werte auf `=`, durch Kommas getrennt: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
 

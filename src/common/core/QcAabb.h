@@ -27,46 +27,58 @@ struct QcAabb
                && min.z < other.max.z && max.z > other.min.z;
     }
 
+    // Overlaps up to this depth are rounding from earlier clipped moves: they count as touching.
+    static constexpr double touchTolerance = 1e-7;
+
     // Limits a movement along one axis so this box does not enter `obstacle`. Only boxes that overlap
-    // on the two other axes can block; a box that already overlaps along the axis does not.
+    // on the two other axes can block; a box that already overlaps along the axis does not. Within
+    // touchTolerance a box counts as touching: a body that ended a clipped move a rounding error
+    // inside a fence post is still stopped by it, and one that slides along a wall a rounding error
+    // inside it is not stopped by the seam to the next block.
     constexpr double clipX(const QcAabb &obstacle, double delta) const
     {
-        if (max.y <= obstacle.min.y || min.y >= obstacle.max.y || max.z <= obstacle.min.z || min.z >= obstacle.max.z) {
+        constexpr double t = touchTolerance;
+        if (max.y <= obstacle.min.y + t || min.y >= obstacle.max.y - t || max.z <= obstacle.min.z + t
+            || min.z >= obstacle.max.z - t) {
             return delta;
         }
 
-        if (delta > 0.0 && max.x <= obstacle.min.x) {
+        if (delta > 0.0 && max.x <= obstacle.min.x + t) {
             return std::min(delta, obstacle.min.x - max.x);
         }
-        if (delta < 0.0 && min.x >= obstacle.max.x) {
+        if (delta < 0.0 && min.x >= obstacle.max.x - t) {
             return std::max(delta, obstacle.max.x - min.x);
         }
         return delta;
     }
     constexpr double clipY(const QcAabb &obstacle, double delta) const
     {
-        if (max.x <= obstacle.min.x || min.x >= obstacle.max.x || max.z <= obstacle.min.z || min.z >= obstacle.max.z) {
+        constexpr double t = touchTolerance;
+        if (max.x <= obstacle.min.x + t || min.x >= obstacle.max.x - t || max.z <= obstacle.min.z + t
+            || min.z >= obstacle.max.z - t) {
             return delta;
         }
 
-        if (delta > 0.0 && max.y <= obstacle.min.y) {
+        if (delta > 0.0 && max.y <= obstacle.min.y + t) {
             return std::min(delta, obstacle.min.y - max.y);
         }
-        if (delta < 0.0 && min.y >= obstacle.max.y) {
+        if (delta < 0.0 && min.y >= obstacle.max.y - t) {
             return std::max(delta, obstacle.max.y - min.y);
         }
         return delta;
     }
     constexpr double clipZ(const QcAabb &obstacle, double delta) const
     {
-        if (max.x <= obstacle.min.x || min.x >= obstacle.max.x || max.y <= obstacle.min.y || min.y >= obstacle.max.y) {
+        constexpr double t = touchTolerance;
+        if (max.x <= obstacle.min.x + t || min.x >= obstacle.max.x - t || max.y <= obstacle.min.y + t
+            || min.y >= obstacle.max.y - t) {
             return delta;
         }
 
-        if (delta > 0.0 && max.z <= obstacle.min.z) {
+        if (delta > 0.0 && max.z <= obstacle.min.z + t) {
             return std::min(delta, obstacle.min.z - max.z);
         }
-        if (delta < 0.0 && min.z >= obstacle.max.z) {
+        if (delta < 0.0 && min.z >= obstacle.max.z - t) {
             return std::max(delta, obstacle.max.z - min.z);
         }
         return delta;

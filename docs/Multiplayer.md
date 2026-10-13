@@ -47,6 +47,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `signalMaxPendingChanges` | 1048576 | 1024 – 16777216 | Block changes near circuits waiting at most; further ones are dropped with a warning |
 | `hopperBudget` | 4096 | 1 – 1048576 | Signal Hoppers acting per tick; the rest follow in the next ticks, round-robin (E-344) |
 | `hopperCooldownTicks` | 8 | 1 – 1200 | Ticks a hopper rests after moving an item |
+| `summonLimit` | 64 | 0 – 4096 | Awake creatures summoned by `/summon` at most; natural ones (animals of the chunks, night spawns, bred young) do not count; 0 switches summoning creatures off, armour stands stay possible (E-351) |
 
 Observers and dispensers have no bounds of their own: their pulses and shots are scheduled ticks inside the signal budget.
 

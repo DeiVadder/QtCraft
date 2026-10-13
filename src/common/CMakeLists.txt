@@ -110,6 +110,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcAppearanceDefinition.h
     content/definitions/QcMobDefinition.h
     content/definitions/QcModelDefinition.h
+    physics/QcBodyFit.h physics/QcBodyFit.cpp
     physics/QcPhysics.h physics/QcPhysics.cpp
     physics/QcPlayerInput.h
     protocol/QcProtocol.h protocol/QcProtocol.cpp

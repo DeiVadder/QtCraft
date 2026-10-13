@@ -137,7 +137,7 @@
     "Time is now %1 s (night)": "Die Zeit ist jetzt %1 s (Nacht)",
     "Time is now %1 s (day)": "Die Zeit ist jetzt %1 s (Tag)",
     "Unknown mob or invalid count: %1": "Unbekanntes Wesen oder ungültige Anzahl: %1",
-    "Too many creatures in the world (at most %1)": "Zu viele Wesen in der Welt (höchstens %1)",
+    "Too many summoned creatures in the world (at most %1)": "Zu viele gerufene Wesen in der Welt (höchstens %1)",
     "Summoned %1 x %2": "%1 × %2 gerufen",
     "Unknown item or invalid count: %1": "Unbekanntes Item oder ungültige Anzahl: %1",
     "Dropped %1 x %2": "%1 × %2 fallen gelassen",

@@ -2,6 +2,7 @@
 
 #include "QcCommandRegistry.h"
 #include "QcGameMode.h"
+#include "QcVec3.h"
 #include "QcStandCommands.h"
 
 #include <QString>
@@ -13,6 +14,7 @@ class QcServerCombat;
 class QcServerGameModes;
 class QcServerInventory;
 class QcServerStands;
+struct QcMobDefinition;
 struct QcServerClient;
 struct QcServerState;
 
@@ -45,6 +47,8 @@ private:
     void give(const QcCommandContext &context);
     void spawnItem(const QcCommandContext &context);
     void summon(const QcCommandContext &context);
+    // Where a creature summoned for `wanted` appears.
+    QcVec3 summonPlace(const QcServerClient &player, const QcMobDefinition &definition, const QcVec3 &wanted) const;
     void kill(const QcCommandContext &context);
     void feed(const QcCommandContext &context);
     void heal(const QcCommandContext &context);

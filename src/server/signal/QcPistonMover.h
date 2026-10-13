@@ -50,8 +50,6 @@ private:
     // How far a body moves for a push: clipped by solid blocks, then out of any block it is in.
     QcVec3 moveBody(const QcAabb &box, const QcVec3 &push) const;
     bool overlapsSolid(const QcAabb &box) const;
-    // Whether a row of cells along z from `start` to `lastZ` has a solid box overlapping `box`.
-    bool columnOverlaps(QcBlockPos start, int lastZ, const QcAabb &box) const;
     // Where a body stuck in a block may go, in the order tried.
     static QList<QcVec3> escapes(const QcAabb &box, const QcVec3 &push);
     void applyPushesToThings();

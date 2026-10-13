@@ -114,6 +114,23 @@ private slots:
         QCOMPARE(motion.position.z, 0.5);
     }
 
+    void roundingInsideAnObstacleStillCountsAsTouching()
+    {
+        // A body that ended a clipped move a rounding error inside a post (feet minus half width
+        // does not give the face back exactly) is still stopped by it ...
+        const QcAabb post{{0.375, 0.0, 0.375}, {0.625, 1.5, 0.625}};
+        const QcAabb body{{0.625 - 1e-12, 0.0, 0.1}, {1.425, 0.8, 0.9}};
+        const double intoPost = body.clipX(post, -0.04);
+        QVERIFY2(intoPost >= 0.0, qPrintable(QString::number(intoPost)));
+
+        // ... and one sliding along a wall a rounding error inside it is not stopped by the seam to
+        // the next block of the wall.
+        const QcAabb nextBlock{{1.0, 0.0, -1.0}, {2.0, 1.0, 0.0}};
+        const QcAabb sliding{{0.2, 0.0, -1e-12}, {0.8, 1.8, 0.6}};
+        const double alongWall = sliding.clipX(nextBlock, 0.5);
+        QCOMPARE(alongWall, 0.5);
+    }
+
     void walkingSpeedIsReachedOnGround()
     {
         QcTestWorld world(m_content);

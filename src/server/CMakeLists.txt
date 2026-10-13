@@ -49,6 +49,8 @@ qt_add_library(qc_server STATIC
     content/QcModStatus.h
     gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
     gameplay/QcMobManager.h gameplay/QcMobManager.cpp
+    gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
+    gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp

@@ -1901,8 +1901,8 @@
         <translation type="vanished">%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="305"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="331"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="322"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="348"/>
         <location filename="../src/server/commands/QcServerCommands.cpp" line="116"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
@@ -1916,128 +1916,128 @@
         <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="67"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="68"/>
         <source>Usage: /give &lt;item&gt; [count]</source>
         <translation>Verwendung: /give &lt;Item&gt; [Anzahl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="34"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="35"/>
         <source>Game mode of %1: creative</source>
         <translation>Spielmodus von %1: Kreativ</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="35"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="36"/>
         <source>Set the game mode of %1 to survival</source>
         <translation>Spielmodus von %1 auf Überleben gesetzt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="36"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="37"/>
         <source>Set the game mode of %1 to creative</source>
         <translation>Spielmodus von %1 auf Kreativ gesetzt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="37"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="38"/>
         <source>Your game mode is now survival</source>
         <translation>Dein Spielmodus ist jetzt Überleben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="38"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="39"/>
         <source>Your game mode is now creative</source>
         <translation>Dein Spielmodus ist jetzt Kreativ</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="39"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="40"/>
         <source>New players start in survival</source>
         <translation>Neue Spieler beginnen im Überlebensmodus</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="40"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="41"/>
         <source>New players start in creative</source>
         <translation>Neue Spieler beginnen im Kreativmodus</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="68"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="69"/>
         <source>Puts items into your inventory.</source>
         <translation>Legt Items in dein Inventar.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="71"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="72"/>
         <source>Usage: /spawnitem &lt;item&gt; [count]</source>
         <translation>Verwendung: /spawnitem &lt;Item&gt; [Anzahl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="72"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="73"/>
         <source>Drops up to 64 items two metres ahead of you.</source>
         <translation>Wirft bis zu 64 Items zwei Meter vor dir ab.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="75"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="76"/>
         <source>Usage: /summon &lt;creature&gt; [count] or /summon armor_stand [property=value …]</source>
         <translation>Verwendung: /summon &lt;Wesen&gt; [Anzahl] oder /summon armor_stand [Eigenschaft=Wert …]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="76"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="77"/>
         <source>Summons creatures or an armour stand in front of you.</source>
         <translation>Ruft Wesen oder einen Rüstungsständer vor dir herbei.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="79"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="80"/>
         <source>Usage: /equip &lt;armour|set|clear&gt;</source>
         <translation>Verwendung: /equip &lt;Rüstung|Satz|clear&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="80"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="81"/>
         <source>Puts on armour; replaced pieces go into your inventory.</source>
         <translation>Legt Rüstung an; ersetzte Teile kommen ins Inventar.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="85"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="86"/>
         <source>Usage: /armorstand &lt;nearest|looking|id&gt; &lt;property&gt; [values]</source>
         <translation>Verwendung: /armorstand &lt;nearest|looking|Id&gt; &lt;Eigenschaft&gt; [Werte]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="86"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="87"/>
         <source>Poses and dresses an armour stand; &apos;info&apos; lists its properties.</source>
         <translation>Stellt und kleidet einen Rüstungsständer; „info“ listet seine Eigenschaften.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="95"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="96"/>
         <source>Usage: /kill</source>
         <translation>Verwendung: /kill</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="96"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="97"/>
         <source>Kills you.</source>
         <translation>Tötet dich.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="99"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="100"/>
         <source>Usage: /heal</source>
         <translation>Verwendung: /heal</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="100"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="101"/>
         <source>Restores your health.</source>
         <translation>Stellt deine Gesundheit wieder her.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="103"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="104"/>
         <source>Usage: /feed [food points]</source>
         <translation>Verwendung: /feed [Nahrungspunkte]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="104"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="105"/>
         <source>Sets your food points (full without a number).</source>
         <translation>Setzt deine Nahrungspunkte (ohne Zahl voll).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="124"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="293"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="125"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</source>
         <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="351"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="368"/>
         <source>The console must name a player: /gamemode &lt;mode&gt; &lt;player&gt;</source>
         <translation>Die Konsole muss einen Spieler nennen: /gamemode &lt;Modus&gt; &lt;Spieler&gt;</translation>
     </message>
@@ -2062,60 +2062,60 @@
         <translation type="vanished">Zeigt oder setzt den Spielmodus; bisher gibt es nur Überleben.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="120"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="269"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="121"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="286"/>
         <source>Usage: /time set &lt;day|night|seconds&gt; or /time add &lt;seconds&gt;</source>
         <translation>Verwendung: /time set &lt;day|night|Sekunden&gt; oder /time add &lt;Sekunden&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="121"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="122"/>
         <source>Shows or changes the time of day (a day lasts 600 s).</source>
         <translation>Zeigt oder ändert die Tageszeit (ein Tag dauert 600 s).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="125"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
         <source>Shows a game rule; operators change it.</source>
         <translation>Zeigt eine Spielregel; Operatoren ändern sie.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="128"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="129"/>
         <source>Usage: /locatebiome &lt;biome&gt;</source>
         <translation>Verwendung: /locatebiome &lt;Biom&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="129"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="130"/>
         <source>Finds the nearest place of a biome.</source>
         <translation>Findet die nächste Stelle eines Bioms.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="246"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="274"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="263"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="291"/>
         <source>Time is now %1 s (night)</source>
         <translation>Die Zeit ist jetzt %1 s (Nacht)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="247"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="275"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="264"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="292"/>
         <source>Time is now %1 s (day)</source>
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="300"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="317"/>
         <source>%1 is true</source>
         <translation>%1 ist wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="300"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="317"/>
         <source>%1 is false</source>
         <translation>%1 ist falsch</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="327"/>
         <source>%1 is now true</source>
         <translation>%1 ist jetzt wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="327"/>
         <source>%1 is now false</source>
         <translation>%1 ist jetzt falsch</translation>
     </message>
@@ -2124,13 +2124,13 @@
         <translation type="vanished">Spielmodus von %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="337"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="378"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="354"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="395"/>
         <source>Unknown game mode %1; use survival or creative</source>
         <translation>Unbekannter Spielmodus %1; möglich sind survival und creative</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="345"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="362"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
@@ -2140,33 +2140,33 @@
         <translation type="vanished">Bisher gibt es nur den Spielmodus Überleben; %1 kommt mit einer späteren Version</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="33"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="34"/>
         <source>Game mode of %1: survival</source>
         <translation>Spielmodus von %1: Überleben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="178"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="179"/>
         <source>Unknown mob or invalid count: %1</source>
         <translation>Unbekanntes Wesen oder ungültige Anzahl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="183"/>
-        <source>Too many creatures in the world (at most %1)</source>
-        <translation>Zu viele Wesen in der Welt (höchstens %1)</translation>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="187"/>
+        <source>Too many summoned creatures in the world (at most %1)</source>
+        <translation>Zu viele gerufene Wesen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="199"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="204"/>
         <source>Summoned %1 x %2</source>
         <translation>%1 × %2 gerufen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="139"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="155"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="140"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="156"/>
         <source>Unknown item or invalid count: %1</source>
         <translation>Unbekanntes Item oder ungültige Anzahl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="164"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="165"/>
         <source>Dropped %1 x %2</source>
         <translation>%1 × %2 fallen gelassen</translation>
     </message>
@@ -2268,54 +2268,54 @@
         <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="402"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="419"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="408"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="425"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="213"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="232"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="230"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="249"/>
         <source>Respawn first</source>
         <translation>Erst wiederbeleben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="108"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="323"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="109"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="340"/>
         <source>Usage: /gamemode [survival|creative] [player]</source>
         <translation>Verwendung: /gamemode [survival|creative] [Spieler]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="109"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="110"/>
         <source>Shows your game mode or sets it for you or another player.</source>
         <translation>Zeigt deinen Spielmodus oder setzt ihn für dich oder einen anderen Spieler.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="112"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="113"/>
         <source>Usage: /defaultgamemode [survival|creative]</source>
         <translation>Verwendung: /defaultgamemode [survival|creative]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="113"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="114"/>
         <source>Shows or sets the game mode of players who join for the first time.</source>
         <translation>Zeigt oder setzt den Spielmodus von Spielern, die zum ersten Mal beitreten.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="219"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="236"/>
         <source>Usage: /feed [0..%1]</source>
         <translation>Verwendung: /feed [0..%1]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="225"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="242"/>
         <source>Food is now %1</source>
         <translation>Nahrung ist jetzt %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="238"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="255"/>
         <source>Healed</source>
         <translation>Geheilt</translation>
     </message>
@@ -2357,7 +2357,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="61"/>
-        <source>Shows the simulation limits of the server (server.json or world.json, "limits").</source>
+        <source>Shows the simulation limits of the server (server.json or world.json, &quot;limits&quot;).</source>
         <translation>Zeigt die Simulationsgrenzen des Servers (server.json oder world.json, „limits“).</translation>
     </message>
     <message>
@@ -2469,7 +2469,7 @@
         <translation>Das entfernt %1 Wesen, %2 Item-Stapel und %3 Rüstungsständer.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="146"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="147"/>
         <source>Gave %1 x %2</source>
         <translation>%1 × %2 gegeben</translation>
     </message>

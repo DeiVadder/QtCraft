@@ -1,10 +1,12 @@
 #include "QcBaseContent.h"
 #include "QcDayCycle.h"
 #include "QcMobManager.h"
+#include "QcMobUpkeep.h"
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
 #include "QcTestTerrainGenerator.h"
 
+#include <QElapsedTimer>
 #include <QTest>
 
 #include <cmath>
@@ -413,6 +415,142 @@ private slots:
         mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(!mobs.find(1));
         QVERIFY(mobs.find(2));
+    }
+
+    void noDespawnWhileNoPlayerIsInTheWorld()
+    {
+        // Without anybody playing (before the join, after the last player left) the distance and
+        // the daylight decide nothing: nobody is far away. The void still takes every creature.
+        auto world = makeWorld(5);
+        QcMobManager mobs(m_content, 4);
+        const quint32 zombie = mobs.spawn(type("zombie"), surface(*world, 10, 0), m_nextId++);
+        const quint32 slime = mobs.spawn(type("slime"), surface(*world, -10, 0), m_nextId++);
+        const quint32 fallen = mobs.spawn(type("zombie"), {0.5, QcWorld::voidLimitY - 10.0, 0.5}, m_nextId++);
+        for (int i = 0; i < 20; ++i) {
+            mobs.tick(*world, {}, noon, dt, [this] { return m_nextId++; });
+        }
+
+        const bool zombieStays = mobs.find(zombie) != nullptr;
+        const bool slimeStays = mobs.find(slime) != nullptr;
+        const bool fallenGone = mobs.find(fallen) == nullptr;
+        QVERIFY(zombieStays);
+        QVERIFY(slimeStays);
+        QVERIFY(fallenGone);
+
+        // With a player in the world again the rules apply: 200 m away from it both go.
+        mobs.tick(*world, {{7, surface(*world, 0, 0) + QcVec3{200.0, 0.0, 0.0}, true}}, noon, dt, [this] { return m_nextId++; });
+        const bool zombieGone = mobs.find(zombie) == nullptr;
+        const bool slimeGone = mobs.find(slime) == nullptr;
+        QVERIFY(zombieGone);
+        QVERIFY(slimeGone);
+    }
+
+    void creaturesInsideBlocksArePushedOut()
+    {
+        // A pig and a zombie with their feet one block deep in the ground (summoned into a hill,
+        // a block placed on them): out on top within one tick, so they do not suffocate.
+        auto world = makeWorld(5);
+        QcMobManager mobs(m_content, 4);
+        const QcVec3 pigGround = surface(*world, 2, 0);
+        const QcVec3 zombieGround = surface(*world, -2, 3);
+        const quint32 pig = mobs.spawn(type("pig"), pigGround - QcVec3{0.0, 1.0, 0.0}, m_nextId++, false, true);
+        const quint32 zombie = mobs.spawn(type("zombie"), zombieGround - QcVec3{0.0, 1.0, 0.0}, m_nextId++);
+        mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
+
+        const double pigFeet = mobs.find(pig)->motion.position.y;
+        const double zombieFeet = mobs.find(zombie)->motion.position.y;
+        // On top of the block they were in, the nearest clear place, not higher (they walk on in
+        // the same tick, so only the height is fixed here).
+        QCOMPARE(pigFeet, pigGround.y);
+        QCOMPARE(zombieFeet, zombieGround.y);
+
+        // The whole place, without the walk: straight up onto the block.
+        QcMobManager::Mob sunk;
+        sunk.type = type("pig");
+        sunk.motion.position = pigGround - QcVec3{0.0, 0.6, 0.0};
+        QcMobUpkeep::leaveBlocks(sunk, m_content->mobs()[sunk.type], *world);
+        const QcVec3 placed = sunk.motion.position;
+        QCOMPARE(placed.x, pigGround.x);
+        QCOMPARE(placed.y, pigGround.y);
+        QCOMPARE(placed.z, pigGround.z);
+
+        // Deep in solid rock there is nowhere to go: the creature stays where it is.
+        const QcVec3 buried{8.5, 10.0, 8.5};
+        const quint32 stuck = mobs.spawn(type("pig"), buried, m_nextId++, false, true);
+        mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
+        const double stuckFeet = mobs.find(stuck)->motion.position.y;
+        QCOMPARE(stuckFeet, buried.y);
+    }
+
+    void creaturesBesidePartialShapesStayPut()
+    {
+        // Creatures wandering for 30 s among fence posts, walls, slabs and pistons: they bump into
+        // them but are never moved out of a block (no jump of a metre or more in one tick).
+        auto world = makeWorld(5);
+        const QcVec3 centre = surface(*world, 0, 0);
+        const QcBlockPos base = QcPhysics::blockContaining(centre);
+        const QList<const char *> shapes{"oak_fence", "cobblestone_wall", "oak_slab", "signal_piston"};
+        for (int dx = -4; dx <= 4; ++dx) {
+            for (int dz = -4; dz <= 4; ++dz) {
+                world->setBlock(base.offset(dx, -1, dz), *m_content->blockId(u"qtcraft:stone"_s));
+                for (int dy = 0; dy <= 3; ++dy) {
+                    world->setBlock(base.offset(dx, dy, dz), qcAirBlockId);
+                }
+                // A stone border, inside it a shape on every second cell, the middle free.
+                const bool border = std::abs(dx) == 4 || std::abs(dz) == 4;
+                const bool shapeCell = (dx + dz) % 2 == 0 && (dx != 0 || dz != 0);
+                const char *shape = border ? "stone" : shapes[std::size_t(dx + 4) % shapes.size()];
+                if (border || shapeCell) {
+                    world->setBlock(base.offset(dx, 0, dz), *m_content->blockId(u"qtcraft:"_s + QString::fromLatin1(shape)));
+                }
+            }
+        }
+
+        QcMobManager mobs(m_content, 9);
+        QList<quint32> ids;
+        for (const char *kind : {"pig", "zombie", "slime", "sheep"}) {
+            ids.append(mobs.spawn(type(kind), centre, m_nextId++, false, true));
+        }
+        QHash<quint32, QcVec3> last;
+        int jumps = 0;
+        for (int tick = 0; tick < 600; ++tick) {
+            mobs.tick(*world, {{7, centre + QcVec3{0.0, 0.0, 40.0}, true}}, noon, dt, [this] { return m_nextId++; });
+            for (const quint32 mobId : std::as_const(ids)) {
+                const QcVec3 now = mobs.find(mobId)->motion.position;
+                jumps += last.contains(mobId) && (now - last.value(mobId)).length() >= 1.0 ? 1 : 0;
+                last.insert(mobId, now);
+            }
+        }
+        QCOMPARE(jumps, 0);
+    }
+
+    void measureWalkingCreatures()
+    {
+        // Cost of the creature tick with 1000 wandering pigs (QTCRAFT_MOB_MEASURE=1, Release build);
+        // a measurement, not a check.
+        if (qEnvironmentVariableIntValue("QTCRAFT_MOB_MEASURE") != 1) {
+            QSKIP("measurement: set QTCRAFT_MOB_MEASURE=1");
+        }
+
+        auto world = makeWorld(3);
+        const QcVec3 centre = surface(*world, 0, 0);
+        QcMobManager mobs(m_content, 3);
+        for (int i = 0; i < 1000; ++i) {
+            mobs.spawn(type("pig"), surface(*world, i % 40 - 20, i / 40 - 12), m_nextId++, false, true);
+        }
+        const QList<QcMobManager::PlayerView> players{{7, centre, true}};
+        for (int tick = 0; tick < 100; ++tick) {
+            mobs.tick(*world, players, noon, dt, [this] { return m_nextId++; });
+        }
+
+        QElapsedTimer timer;
+        timer.start();
+        constexpr int ticks = 400;
+        for (int tick = 0; tick < ticks; ++tick) {
+            mobs.tick(*world, players, noon, dt, [this] { return m_nextId++; });
+        }
+        const double msPerTick = double(timer.nsecsElapsed()) / 1e6 / ticks;
+        qInfo("MEASURE 1000 walking pigs: %.4f ms per tick (%lld creatures)", msPerTick, qlonglong(mobs.mobs().size()));
     }
 
     void spawningDependsOnTimeOfDay()

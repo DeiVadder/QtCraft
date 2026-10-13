@@ -343,7 +343,7 @@ Rate and freezing are not saved; a world always opens normally.
 **Items, creatures and armour**
 
 - `/give <item> [count]`, `/spawnitem <item> [count]`
-- `/summon <creature> [count]` (at most 64 creatures), `/kill`, `/heal`, `/feed [points]`
+- `/summon <creature> [count]` (at most 64 awake summoned creatures, server limit `summonLimit`; creatures of the world do not count), `/kill`, `/heal`, `/feed [points]`
 - `/equip <set|armour|clear>` puts on armour (`/equip iron`)
 - `/summon armor_stand [property=value …]` and `/armorstand <nearest|looking|id> <property> [values]` place and change armour stands. Properties: `pose <head|body|left_arm|right_arm|left_leg|right_leg> <x> <y> <z>` (degrees), `rotation <degrees>`, `arms`, `plate`, `small`, `showname` with `true|false`, `name [text]`, `equip <set|item>`, `cape <cape|none>`, `clear`, `reset`; `info` lists them. Stand ids are only valid until the world is loaded again; scripts use `nearest` or `looking`. In `/summon` values follow `=` separated by commas: `/summon armor_stand equip=iron pose=right_arm,90,0,0 small`.
 

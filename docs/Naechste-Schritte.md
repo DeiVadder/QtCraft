@@ -181,6 +181,8 @@ Wichtig für Multiplayer: Spieler sehen sich gegenseitig, also muss die Anpassun
 | 37 | Wegfindung (37.1), Dörfer und Dorfbewohner (37.2) | B4, A2 „Später“ | 30 |
 | 38 | Monster-Spawner und Minenschächte | Auftrag Punkt 38 | 30b |
 | 39 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3) | Auftrag Punkt 39 | 31 |
+| 45 | Realistischer Render-Modus (Wasser und Licht), 45.1–45.4 | Auftrag Punkt 45 | neu |
+| 46 | Client-Code nach Zuständigkeit neu gliedern | Auftrag Punkt 46 | neu |
 | 44 | Client-Tick auf eigenem Session-Thread (Vorschlag, vor 40 entscheiden) | F | neu |
 | 40 | Gamepad-Unterstützung | Auftrag Punkt 40 | 33 |
 | 41 | Verzauberung (41.1) und Amboss (41.2) | Auftrag Punkt 41 | 34 |

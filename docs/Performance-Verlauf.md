@@ -539,7 +539,7 @@ Dreiecke und Draw-Calls liegen damit wieder auf dem Stand vor der Leere-Zone (`4
 
 Der Einsturz kostet im Mittel rund 1,2 ms pro Tick (davon fallende Blöcke 0,6–0,7 ms) und höchstens gut 5 ms, ein Zehntel des Tick-Budgets; die Grenzen aus E-288 (1024 Updates pro Tick, 2048 fallende Blöcke) halten den schlechtesten Tick klein. Auf dem Client steigt die GUI-CPU auf 2,3 ms (Entity-Vernetzung der fallenden Blöcke), der Rückstau auf über 400 Sektionen, eine Änderung braucht im schlechtesten Fall bis 0,3 s bis zum Bild; Frame p99 bleibt bei 10 ms. Etappe 27 und die Korrekturen ändern daran nichts (Tick −10 %/+2 %, Spannen überlappen).
 
-**farm** (63 × 63 nasser Ackerboden mit Wasserrinnen alle 9 m, junger Weizen, Kürbis- und Melonenstängel, Zufallsticks an, ab 3 s jede Sekunde `/tick sprint 600`) und **farm-seeds** (dasselbe Feld mit reifem Weizen ohne Sprint, Saat-Stapel auf belegten Feldern: das Skript legt 15 × 10 = 150 ab, die BENCH-Zeile zählt in jedem Lauf 140 Items, zehn Stapel vereinigen sich also mit einem anderen oder fehlen; nicht weiter untersucht, für alle Stände gleich), je 3 Runden:
+**farm** (63 × 63 nasser Ackerboden mit Wasserrinnen alle 9 m, junger Weizen, Kürbis- und Melonenstängel, Zufallsticks an, ab 3 s jede Sekunde `/tick sprint 600`) und **farm-seeds** (dasselbe Feld mit reifem Weizen ohne Sprint, Saat-Stapel auf belegten Feldern: das Skript legt 15 × 10 = 150 ab, die BENCH-Zeile zählt in jedem Lauf 140 Items, zehn Stapel vereinigen sich also mit einem anderen oder fehlen; nicht weiter untersucht, für alle Stände gleich; Nachtrag Etappe 30, E-354: nichts fehlt, der Server hat alle 150, der Client bekommt Items nur bis 32 m und `entities` zählt die gesendeten, genau 10 Stapel liegen weiter vom Endpunkt entfernt), je 3 Runden:
 
 | Szenario / Stand | Ticks | Tick Ø ms | Phase Pflanzen Ø / max ms | Phase Items Ø ms | neu vernetzte Sektionen | Änderung bis Bild Ø / max ms | Rückstau max | Frame p99 ms |
 |------------------|------:|----------:|--------------------------:|-----------------:|------------------------:|-----------------------------:|-------------:|-------------:|
@@ -703,6 +703,8 @@ Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `d0c905c`: G
 
 Die BENCH-Zeile meldet seit diesem Branch zusätzlich `server_mobs` und `server_items` (Kreaturen und Item-Stapel auf dem Server am Ende, im Server-Thread gezählt) und `inventory_items` (Items im Inventar des Spielers). Gegenprobe (crowd, je 4 Läufe 16× und 128×, Release): Der Server hat am Ende immer alle 24 Item-Stapel, das Inventar ist leer; die Vermutung des Reviews (ein Zombie stößt den Spieler in die Items, er sammelt alle 24 ein, 84 − 24 = 60) trifft nicht zu. Es fehlen Kreaturen: in den 84er-Läufen hat der Server 127 Kreaturen (mit den Tieren der Umgebung), in den 60er-Läufen 103, also 24 weniger. Eine einmalige Aufschlüsselung nach Art (Diagnose, nicht eingecheckt) zeigt, dass je nach Lauf alle 16 Zombies oder alle 8 Schleime fehlen, dazu bis 32 Schweine: 16× 75 Schweine, 36 Schafe, 16 Zombies, 0 Schleime (84 sichtbar); 128× 43 bzw. 59 Schweine, 36 Schafe, 0 Zombies, 8 Schleime (45 bzw. 60 sichtbar). Welche Kreaturen bis zum Ende des Laufs sterben oder verschwinden (Zombies in der Sonne, Kämpfe, Entladen), hängt vom Zeitpunkt des Starts ab, den der Atlasbau verschiebt; das Szenario bleibt wegen der Vergleichbarkeit mit der Historie unverändert. Werte von crowd sind nur zwischen Läufen mit gleicher Zahl `entities` und `server_mobs` vergleichbar.
 
+**Nachtrag Etappe 30 (Ursache, E-351):** Die Wesen verschwanden nicht, sie wurden nie gerufen. `/summon` zählte für seine Grenze von 64 alle wachen Wesen, auch die Tiere der geladenen Chunks (E-086); je nach Ladestand beim Rufen lehnte der Server `zombie 16`, `slime 8` oder eine oder beide Schweinegruppen ab (alle Zählungen oben passen dazu). Seit Etappe 30 zählen nur gerufene Wesen, in `crowd` gelingen immer alle 56 Rufe. `crowd`-Werte ab Etappe 30 sind daher mit früheren nicht vergleichbar (mehr Wesen als in den meisten früheren Läufen); A/B-Vergleiche mit Ständen vor Etappe 30 laufen über `flat-crowd` (flache Welt ohne eigene Tiere, dort gelangen alle Rufe schon vorher). Das Szenario selbst ist unverändert.
+
 ## Etappe 29a: Signal Dust (nur headless, keine GUI-Messung)
 
 GUI-Benchmarks sind auf Anweisung des Menschen ausgesetzt. Gemessen wurde nur die Signal-Phase im Server-Tick, headless mit `test_signal_measure` im Release-Build (`QTCRAFT_SIGNAL_MEASURE=full build/release/tests/test_signal_measure`, Apple M4 Max, sonst ruhiges System, je Szenario nach dem Aufbau, bis alle Bau-Änderungen abgearbeitet waren). Ganze Server-Ticks (alle Phasen, ein Spieler fern der Schaltungen), Arbeit = `QcServerCircuits::lastTickWork` (Budget 8192, E-335).
@@ -756,3 +758,15 @@ Je drei Läufe `QTCRAFT_SIGNAL_MEASURE=full build/release/tests/test_signal_meas
 | Sortierer (4 Einheiten ohne Fackel), 200 Items | 0,013 | 0,014 | 0,065 | 0,069 | 24 | 22 |
 
 Ohne lesenden Komparator kostet bewegter Inhalt die Signal-Phase nichts mehr; das Raster für die Suche nur über die Zellen suchender Trichter spart 7–11 % der Tickzeit, wenn viele Items in der Welt liegen. Die Szenarien aus 29a liegen im Rauschen (Leitung 0,057, Feld 0,308, Takte 2,00, Kolben 1,12, Beobachter 0,85 ms).
+
+## Etappe 30: Wesen aus Blöcken schieben (nur headless)
+
+Seit Etappe 30 prüft jeder Tick für jedes wache laufende Wesen, ob sein Körper Blöcke überlappt (E-352). Gemessen mit `QTCRAFT_MOB_MEASURE=1 build/release/tests/test_mobs measureWalkingCreatures` (Release, Apple M4 Max, sonst ruhiges System): 1000 Schweine laufen auf der Testwelt umher, ein Spieler in der Mitte, Mittel über 400 Ticks nach 100 Ticks Anlauf, je 3 Läufe.
+
+| Stand | ms pro Tick (Phase Wesen) |
+|-------|--------------------------:|
+| ohne Prüfung | 0,825 / 0,875 / 0,819 |
+| Prüfung mit `QcPhysics::collisionBoxesAt` (Liste je Zelle, wie zuerst umgesetzt) | 0,935 / 0,931 / 0,942 |
+| Prüfung ohne Liste, Boxen direkt aus dem Zustand (Stand nach dem Review) | 0,844 / 0,844 / 0,819 |
+
+Die Prüfung ohne Liste kostet im Rauschen der Messung (höchstens rund 20 ns je Wesen und Tick); mit Liste waren es rund +0,1 ms (+13 %) je 1000 Wesen. Die mittlere Zeile enthält schon die zusätzliche Zellebene darunter (Zäune), ist also etwas teurer als die erste Fassung.

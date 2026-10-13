@@ -1,5 +1,6 @@
 #include "QcCheatCommands.h"
 
+#include "QcBodyFit.h"
 #include "QcChatText.h"
 #include "QcCommandArguments.h"
 #include "QcDayCycle.h"
@@ -179,24 +180,40 @@ void QcCheatCommands::summon(const QcCommandContext &context)
         return;
     }
 
-    if (m_state.mobs.awakeCount() + *count > QcMobManager::summonLimit) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many creatures in the world (at most %1)"),
-                      {QString::number(QcMobManager::summonLimit)});
+    // Only creatures that came by /summon count: the animals of the loaded chunks would make the
+    // limit depend on the view distance and on how far the world has loaded (decision E-351).
+    const qint64 limit = m_state.config.limits.summonLimit;
+    if (m_state.mobs.awakeSummonedCount() + *count > limit) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many summoned creatures in the world (at most %1)"), {QString::number(limit)});
         return;
     }
 
     // Three metres in front of the player.
     const double yaw = qDegreesToRadians(double(player.yaw));
     const QcVec3 position = player.motion.position + QcVec3{std::sin(yaw) * 3.0, 0.5, -std::cos(yaw) * 3.0};
+    const QcMobDefinition &definition = m_state.content->mobs()[*type];
     for (int i = 0; i < *count; ++i) {
         const int row = i / 3; // NOLINT(bugprone-integer-division): grid row
+        const QcVec3 at = summonPlace(player, definition, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8});
         // Summoned animals stay like natural ones.
-        const QcMobDefinition &summoned = m_state.content->mobs()[*type];
-        m_state.mobs.spawn(*type, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8}, m_state.newEntityId(), false,
-                           !summoned.hostile && !summoned.ambient && !summoned.flying);
+        const quint32 id = m_state.mobs.spawn(*type, at, m_state.newEntityId(), false,
+                                              !definition.hostile && !definition.ambient && !definition.flying);
+        m_state.mobs.find(id)->summoned = true;
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(*count), name});
+}
+
+QcVec3 QcCheatCommands::summonPlace(const QcServerClient &player, const QcMobDefinition &definition, const QcVec3 &wanted) const
+{
+    // The nearest place where the body is clear of blocks (over a step or a hill, decision E-352),
+    // else the player's feet; also there instead of in lava, magma or fire.
+    const QcPhysics::BodySize body{definition.width, definition.height};
+    const std::optional<QcVec3> clear = QcBodyFit::clearFeet(m_state.world, wanted, body);
+    if (!clear || m_state.world.contactDamageIn(QcPhysics::boxAt(*clear, body.width, body.height)) > 0.0) {
+        return player.motion.position;
+    }
+    return *clear;
 }
 
 void QcCheatCommands::kill(const QcCommandContext &context)

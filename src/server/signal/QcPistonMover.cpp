@@ -1,6 +1,7 @@
 #include "QcPistonMover.h"
 
 #include "QcBlockRules.h"
+#include "QcBodyFit.h"
 #include "QcPhysics.h"
 #include "QcServerBlocks.h"
 #include "QcServerSounds.h"
@@ -257,28 +258,8 @@ QList<QcVec3> QcPistonMover::escapes(const QcAabb &box, const QcVec3 &push)
 
 bool QcPistonMover::overlapsSolid(const QcAabb &box) const
 {
-    constexpr double inset = 1e-6;
-    const QcBlockPos low{int(std::floor(box.min.x + inset)), int(std::floor(box.min.y + inset)), int(std::floor(box.min.z + inset))};
-    const QcBlockPos high{int(std::floor(box.max.x - inset)), int(std::floor(box.max.y - inset)), int(std::floor(box.max.z - inset))};
-    for (int x = low.x; x <= high.x; ++x) {
-        for (int y = low.y; y <= high.y; ++y) {
-            if (columnOverlaps({x, y, low.z}, high.z, box)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool QcPistonMover::columnOverlaps(QcBlockPos start, int lastZ, const QcAabb &box) const
-{
-    for (QcBlockPos cell = start; cell.z <= lastZ; ++cell.z) {
-        const QList<QcAabb> solids = QcPhysics::collisionBoxesAt(m_state.world, cell);
-        if (std::ranges::any_of(solids, [&box](const QcAabb &solid) { return solid.intersects(box); })) {
-            return true;
-        }
-    }
-    return false;
+    // Cells not loaded block: a body is never pushed into them.
+    return QcBodyFit::overlapsBlocks(m_state.world, box, QcBodyFit::Unloaded::Blocked);
 }
 
 void QcPistonMover::applyPushes()
