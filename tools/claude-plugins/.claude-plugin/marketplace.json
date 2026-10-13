@@ -1,0 +1,12 @@
+{
+    "name": "qtcraft-tools",
+    "owner": { "name": "Jonas Hilk" },
+    "description": "Project plugins of QtCraft for Claude Code",
+    "plugins": [
+        {
+            "name": "qtcraft-clangd",
+            "source": "./plugins/qtcraft-clangd",
+            "description": "clangd as the LSP tool: definitions, references, callers and symbols of the C++ code"
+        }
+    ]
+}

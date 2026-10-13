@@ -1,0 +1,4 @@
+# clangd (editors and the LSP tool of Claude Code, tools/claude-plugins): the compilation database
+# of the debug build. Configure it once with `cmake --preset debug`; build once for the moc files.
+CompileFlags:
+  CompilationDatabase: build/debug

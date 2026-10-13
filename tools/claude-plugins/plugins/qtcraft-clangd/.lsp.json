@@ -1,0 +1,13 @@
+{
+    "clangd": {
+        "command": "clangd",
+        "args": ["--background-index", "--background-index-priority=low", "-j=4", "--header-insertion=never", "--log=error"],
+        "extensionToLanguage": {
+            ".cpp": "cpp",
+            ".h": "cpp",
+            ".hpp": "cpp",
+            ".mm": "objective-cpp"
+        },
+        "startupTimeout": 30000
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "extraKnownMarketplaces": {
+        "qtcraft-tools": {
+            "source": {
+                "source": "directory",
+                "path": "./tools/claude-plugins"
+            }
+        }
+    },
+    "enabledPlugins": {
+        "qtcraft-clangd@qtcraft-tools": true
+    },
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/code-map.py\" >/dev/null 2>&1 || true",
+                        "timeout": 30
+                    }
+                ]
+            }
+        ]
+    }
+}
