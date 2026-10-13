@@ -80,19 +80,23 @@ void QcAtlasLayout::place(QImage &atlas, qsizetype index, const QImage &tile) co
 
 namespace {
 
-// One pixel of the next level from a 2 x 2 block, colours weighted by alpha.
+// One pixel of the next level from a 2 x 2 block, colours weighted by alpha. A fully transparent
+// block keeps the plain mean of its colours (decision E-332: the colours given to transparent
+// texels carry on into the smaller levels instead of turning black).
 void average(const std::array<const uchar *, 4> &block, uchar *target)
 {
     int alpha = 0;
     std::array<int, 3> colour = {0, 0, 0};
+    std::array<int, 3> plain = {0, 0, 0};
     for (const uchar *pixel : block) {
         alpha += pixel[3];
         for (std::size_t c = 0; c < 3; ++c) {
             colour[c] += pixel[c] * pixel[3];
+            plain[c] += pixel[c];
         }
     }
     for (std::size_t c = 0; c < 3; ++c) {
-        target[c] = alpha > 0 ? uchar((colour[c] + alpha / 2) / alpha) : 0;
+        target[c] = alpha > 0 ? uchar((colour[c] + alpha / 2) / alpha) : uchar((plain[c] + 2) / 4);
     }
     target[3] = uchar((alpha + 2) / 4);
 }

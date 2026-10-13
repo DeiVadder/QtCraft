@@ -54,6 +54,14 @@ public:
     // Server tick durations, lateness and skipped ticks so far (benchmark); zero when no world is open.
     QcTickStats::Summary tickStats() const;
     void resetTickTimes();
+    // Creatures and dropped item stacks on the server now (benchmark; blocks until the server
+    // thread counted them). Both -1 when no world is open.
+    struct EntityCounts
+    {
+        qsizetype mobs = -1;
+        qsizetype items = -1;
+    };
+    EntityCounts entityCounts();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
     // calls report success.
     QcStatus shutdown();

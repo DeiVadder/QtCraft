@@ -5,12 +5,17 @@ qc_add_test(test_coordinates SOURCES world/test_coordinates.cpp LIBRARIES qc_com
 qc_add_test(test_texture_synthesizer SOURCES client/test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_server qc_clientcore Qt::Concurrent)
+qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_server qc_clientcore)
 # The settings' texture pack controller at model level (decision E-301), built from the app's sources.
 qc_add_test(test_texture_pack_controller SOURCES client/test_texture_pack_controller.cpp
             ${PROJECT_SOURCE_DIR}/src/app/controllers/QcTexturePackController.cpp
             ${PROJECT_SOURCE_DIR}/src/app/models/QcTexturePackPreviewProvider.cpp
             LIBRARIES qc_clientcore Qt::Concurrent Qt::Quick)
 target_include_directories(test_texture_pack_controller PRIVATE ${PROJECT_SOURCE_DIR}/src/app/controllers ${PROJECT_SOURCE_DIR}/src/app/models)
+# The hitch window of a texture pack switch in a benchmark run (decision E-332), from the app's sources.
+qc_add_test(test_pack_switch_hitch SOURCES client/test_pack_switch_hitch.cpp ${PROJECT_SOURCE_DIR}/src/app/hooks/QcPackSwitchHitch.cpp
+            LIBRARIES Qt::Core)
+target_include_directories(test_pack_switch_hitch PRIVATE ${PROJECT_SOURCE_DIR}/src/app/hooks)
 qc_add_test(test_camera SOURCES client/test_camera.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES client/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_sky SOURCES client/test_sky.cpp LIBRARIES qc_clientcore)
@@ -33,6 +38,11 @@ qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_server)
 qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+
+# Argument checks of the A/B benchmark script (settings per label, decision E-332); runs no game.
+add_test(NAME script_bench_ab_args
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_bench_ab_args.sh ${PROJECT_SOURCE_DIR}/scripts/bench-ab.sh)
+set_tests_properties(script_bench_ab_args PROPERTIES TIMEOUT 60)
 
 add_test(NAME scenario_headless_walk_and_jump
     COMMAND qtcraft-headless --script ${CMAKE_CURRENT_SOURCE_DIR}/scenarios/walk-and-jump.jsonl --time-limit 60)
@@ -85,6 +95,7 @@ add_test(NAME app_offscreen_world_screenshot
         -DEXPECTED_EXIT_CODE=0
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png
         -DEXPECTED_MIN_SIZE=200000
+        "-DFORBIDDEN_ERROR=Cannot open shader|Cannot create graphics pipeline|Cannot create entity pipeline"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_world_screenshot PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png;QTCRAFT_SCREENSHOT_FRAMES=30")
@@ -245,6 +256,10 @@ target_include_directories(test_control_palette PRIVATE ${PROJECT_SOURCE_DIR}/sr
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcGraphItem.cpp
             LIBRARIES Qt::Quick)
 target_include_directories(test_graph_item PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+# The baked shader variants of the game (decision E-332): read from the game's build tree.
+qc_add_test(test_shader_variants SOURCES client/test_shader_variants.cpp LIBRARIES Qt::Gui Qt::GuiPrivate)
+target_compile_definitions(test_shader_variants PRIVATE QTCRAFT_QSB_DIR="${PROJECT_BINARY_DIR}/src/app/.qsb/shaders")
+add_dependencies(test_shader_variants qtcraft)
 # The shared atlas texture of the character previews, on the Null backend of QRhi.
 qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcPreviewAtlasCache.cpp
             ${PROJECT_SOURCE_DIR}/src/app/rendering/QcAtlasTexture.cpp LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate)

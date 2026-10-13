@@ -60,6 +60,10 @@
 # builtin:storybook_32 or "none" (default: none, the game's 16 x 16 textures). The resolution follows
 # from the packs; the log line "Texture atlas:" gives the atlas size, mip levels, memory and build time.
 #
+# PACK_SWITCH=<ids> switches these texture packs on a third into the run and off again at two
+# thirds (QTCRAFT_BENCHMARK_PACK_SWITCH, decision E-332); the log gets a PACKSWITCH line per switch.
+# The player's stored pack selection is not changed. Older builds ignore it.
+#
 # PREVIEW_ACTIVE=1 animates the character previews (inventory, main menu) although the window of a
 # scripted run is inactive (QTCRAFT_PREVIEW_ACTIVE, decision E-231); otherwise they draw one still
 # picture, as in a game whose window lost the focus.
@@ -341,7 +345,7 @@ EOF
     while :; do
         wait_for_screen || return 1
         # shellcheck disable=SC2086
-        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_BENCHMARK_PACK_SWITCH="${PACK_SWITCH:-}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
             perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
         if ! screen_locked || [ "$attempt" -ge 3 ]; then
             break

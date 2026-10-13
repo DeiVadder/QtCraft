@@ -8,6 +8,7 @@
 #include "QcProcessMemory.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
+#include "QcTexturePackController.h"
 
 #include <QCoreApplication>
 #include <QLoggingCategory>
@@ -49,9 +50,19 @@ QcBenchmarkRun::QcBenchmarkRun(QcGameController &game, const QcSessionParts &par
 {
 }
 
-void QcBenchmarkRun::configure(int seconds, const QString &scenario)
+void QcBenchmarkRun::configure(int seconds, const QString &scenario, const QStringList &packSwitch)
 {
     m_seconds = seconds;
+    m_packSwitch = packSwitch;
+
+    if (!m_packSwitch.isEmpty()) {
+        connect(m_settings.texturePacks(), &QcTexturePackController::atlasBuilt, this, [this] {
+            if (m_switch >= 0) {
+                m_switches[std::size_t(m_switch)].atlasReady(m_clock.nsecsElapsed());
+            }
+        });
+    }
+
     m_walk = scenario != u"stand" && scenario != u"light" && scenario != u"liquids";
     m_sprint = scenario != u"walk";
     m_light = scenario == u"light";
@@ -73,6 +84,9 @@ void QcBenchmarkRun::recordFrame()
 
     const qint64 ns = m_frame.nsecsElapsed();
     m_frameNs.append(ns);
+    if (m_switch >= 0) {
+        m_switches[std::size_t(m_switch)].addFrame(m_clock.nsecsElapsed(), ns);
+    }
     if (ns > 100'000'000) {
         // A hidden or covered window may stall frames for reasons outside the game.
         const QQuickWindow *window = m_parts.window;
@@ -91,6 +105,14 @@ void QcBenchmarkRun::recordGuiFrame(double guiCpuMs, qint64 entityNs, qint64 pre
 
     m_frameProfile.addGuiFrame(guiCpuMs, double(entityNs) / 1e6, double(previewNs) / 1e6);
     m_frameProfile.addRenderSamples(samples);
+    if (m_switch >= 0) {
+        QcPackSwitchHitch &hitch = m_switches[std::size_t(m_switch)];
+        const qint64 now = m_clock.nsecsElapsed();
+        hitch.addGuiCpu(now, guiCpuMs);
+        for (const QcRenderSample &sample : samples) {
+            hitch.addRender(now, sample.renderThreadCpuMs, sample.worldRenderMs);
+        }
+    }
 }
 
 void QcBenchmarkRun::start()
@@ -100,6 +122,11 @@ void QcBenchmarkRun::start()
     }
 
     resetMeasurement();
+    m_clock.start();
+    if (!m_packSwitch.isEmpty()) {
+        QTimer::singleShot(m_seconds * 1000 / 3, this, [this] { switchPacks(0); });
+        QTimer::singleShot(m_seconds * 2000 / 3, this, [this] { switchPacks(1); });
+    }
     if (m_walk) {
         startWalking();
     } else {
@@ -212,6 +239,25 @@ void QcBenchmarkRun::steer(QTimer *timer)
     m_checkpoint = position;
 }
 
+void QcBenchmarkRun::switchPacks(int index)
+{
+    if (!m_running) {
+        return;
+    }
+
+    m_switch = index;
+    m_switches[std::size_t(index)].start(m_clock.nsecsElapsed());
+    // The whole selection at once (one atlas build) and only for this run: the player's stored
+    // selection stays as it was (decision E-332).
+    QcTexturePackController *packs = m_settings.texturePacks();
+    if (index == 0) {
+        m_packsBefore = packs->activeSelection();
+        packs->selectForRun(QcPackSwitchHitch::selectionWith(m_packsBefore, m_packSwitch));
+    } else {
+        packs->selectForRun(m_packsBefore);
+    }
+}
+
 void QcBenchmarkRun::finish()
 {
     m_running = false;
@@ -227,6 +273,10 @@ void QcBenchmarkRun::finish()
     const double p99Ms = double(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
     logBenchLine(sorted, p99Ms);
     logReport(sorted, p99Ms);
+    for (int i = 0; i <= m_switch; ++i) {
+        qCInfo(lcGame).noquote() << u"PACKSWITCH %1 packs=%2 %3"_s.arg(i == 0 ? u"on"_s : u"off"_s, m_packSwitch.join(u','),
+                                                                    m_switches[std::size_t(i)].summary());
+    }
     QCoreApplication::quit();
 }
 
@@ -272,7 +322,22 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(ticks.lateMaxMs, 0, 'f', 3)
                                     .arg(ticks.ticks)
                                     .arg(ticks.skipped)
-                                    .arg(m_frameProfile.summary(), tickPhasePairs(ticks));
+                                    .arg(m_frameProfile.summary(), tickPhasePairs(ticks))
+                                    + u' ' + entityPairs();
+}
+
+QString QcBenchmarkRun::entityPairs() const
+{
+    // What the server has at the end beside what the client shows (`entities`), and what the
+    // player carries: tells items picked up from items not sent (crowd, decision E-332).
+    const QcLocalServerHost::EntityCounts server = m_parts.server ? m_parts.server->entityCounts() : QcLocalServerHost::EntityCounts();
+    int carried = 0;
+    if (m_parts.session) {
+        for (const QcItemStack &stack : m_parts.session->inventory().allSlots()) {
+            carried += stack.isEmpty() ? 0 : stack.count;
+        }
+    }
+    return u"server_mobs=%1 server_items=%2 inventory_items=%3"_s.arg(server.mobs).arg(server.items).arg(carried);
 }
 
 void QcBenchmarkRun::logReport(const QList<qint64> &sorted, double p99Ms) const

@@ -427,8 +427,11 @@ void startScriptedRun(QcGameController &game, const AppOptions &options, QcScree
     // QTCRAFT_BENCHMARK_SCENARIO=sprint|walk|stand|light|liquids: sprint ahead (default), walk ahead,
     // stand still, or stand while torches or liquid sources come and go around the player.
     game.startStatsLog(QcStatsLog::interval(options.stats));
+    // QTCRAFT_BENCHMARK_PACK_SWITCH=<ids>: switch these texture packs on and off during the run and
+    // log the hitch (decision E-332).
     game.startup()->benchmark()->configure(std::clamp(qEnvironmentVariableIntValue("QTCRAFT_BENCHMARK"), 0, 600),
-                                           qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"));
+                                           qEnvironmentVariable("QTCRAFT_BENCHMARK_SCENARIO"),
+                                           qEnvironmentVariable("QTCRAFT_BENCHMARK_PACK_SWITCH").split(u',', Qt::SkipEmptyParts));
 
     if (options.play) {
         // Layers that do not fit the content end a run from the command line like a bad option.

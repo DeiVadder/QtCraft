@@ -49,6 +49,12 @@ public:
     void loadSelection(const QStringList &ids);
     // What the settings store.
     QStringList storedSelection() const { return m_overridden ? m_stored : m_active; }
+    // The active pack ids, the highest priority first (stored or for this run).
+    const QStringList &activeSelection() const { return m_active; }
+    // For this run only (benchmark pack switch, decision E-332): makes `ids` the whole active
+    // selection at once, one build for it, and stores nothing: storedSelection() keeps what the
+    // settings had and selectionChanged() is not emitted, so the settings are not saved over.
+    void selectForRun(const QStringList &ids);
 
     // The loaded active packs, the highest priority first.
     const QcTexturePackStack &stack() const { return m_stack; }
@@ -83,6 +89,8 @@ signals:
 
 private:
     void select(const QStringList &ids);
+    // Makes `ids` (cleaned) the active packs and starts their build; false when nothing changed.
+    bool activate(const QStringList &ids);
     void startBuild();
     void onBuilt();
     void apply(const QcTextureStackBuild::Result &result);

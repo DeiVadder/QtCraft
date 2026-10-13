@@ -84,6 +84,38 @@ private slots:
         QCOMPARE(controller.storedSelection(), (QStringList{u"user:cold"_s, u"user:warm"_s}));
     }
 
+    // The benchmark's pack switch (decision E-332): a whole selection at once is one build (one
+    // generation step, one atlas), and nothing is stored, so the player's selection survives.
+    void aSelectionForTheRunIsOneBuildAndNotStored()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        controller.enterWorld(content());
+
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        QSignalSpy stored(&controller, &QcTexturePackController::selectionChanged);
+        const quint64 generation = controller.generation();
+        controller.selectForRun({u"user:cold"_s, u"user:warm"_s});
+        QCOMPARE(controller.generation(), generation + 1);
+        QCOMPARE(controller.activeSelection(), (QStringList{u"user:cold"_s, u"user:warm"_s}));
+        QTRY_COMPARE(built.size(), 1);
+        QTest::qWait(20);
+        QCOMPARE(built.size(), 1);
+        QCOMPARE(built.front().front().value<std::shared_ptr<const QcTextureAtlas>>()->tileSize(), 64);
+        QCOMPARE(stored.size(), 0);
+        QCOMPARE(controller.storedSelection(), QStringList{u"user:warm"_s});
+
+        // Back to the start: again one build, still nothing stored.
+        controller.selectForRun({u"user:warm"_s});
+        QTRY_COMPARE(built.size(), 2);
+        QCOMPARE(stored.size(), 0);
+        QCOMPARE(controller.storedSelection(), QStringList{u"user:warm"_s});
+        // The same selection again changes nothing.
+        controller.selectForRun({u"user:warm"_s});
+        QCOMPARE(controller.generation(), generation + 2);
+    }
+
     // A build that was still running when the world ended never hands out its atlas.
     void leavingTheWorldDropsARunningBuild()
     {

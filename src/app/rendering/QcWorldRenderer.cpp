@@ -222,7 +222,11 @@ void QcWorldRenderer::createPipelines()
         {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcBlockVertex, u))},
         {0, 2, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcBlockVertex, light))},
     });
-    m_opaquePipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, false);
+    // The opaque pass writes alpha 1 (decision E-332): mip levels give cut-out texels an alpha
+    // between 0 and 1, which a screenshot or a transparent target would read as half transparent. A
+    // colour write mask without alpha did the same but cost up to a third more GPU time.
+    const QShader opaqueFragmentShader = loadShader(u":/shaders/block_opaque.frag.qsb"_s, lcRenderer());
+    m_opaquePipeline = createBlockPipeline(vertexShader, opaqueFragmentShader, inputLayout, false);
     m_translucentPipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, true);
 
     const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s, lcRenderer());

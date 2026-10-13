@@ -4,9 +4,17 @@
 # rotates per round: round r starts with build (r - 1) mod n of the given list, so with n rounds
 # every build is first and last once (a fixed order put the last build of a round consistently
 # higher, decision E-331). Not part of ctest; never run it in parallel with builds or tests.
-# Usage: scripts/bench-ab.sh <result file> <rounds> <seconds> <label>=<app> [<label>=<app> ...]
+# Usage: scripts/bench-ab.sh [--check] <result file> <rounds> <seconds> <label>=<app>[:<VAR>=<value>...] ...
 #   <label> is a short name without "/" or blanks (e.g. a commit), <app> the qtcraft executable of a
 #   release build (build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft of each checkout).
+#   Each ":<VAR>=<value>" after the app sets a variable of scripts/bench-common.sh for the runs of
+#   that label only, e.g. hd64=<app>:TEXTURE_PACKS=builtin:qtcraft_hd_64 (one build under several
+#   labels, each with other texture packs). <VAR> is one of TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE,
+#   DEBUG_DISPLAY and PREVIEW_ACTIVE (anything else, also in lower case, is refused); a new variable
+#   starts at ":" followed by its name and "=", so values may contain ":" (pack ids) but no blanks
+#   and no ";".
+#   --check only validates the arguments and prints "<label> <app> settings=<...>" per build
+#   (no lock, no runs; tests/scripts/test_bench_ab_args.sh).
 #   SCENARIOS="..." picks the scenarios (default below), VIEW the view distance (default 8).
 #
 # The script holds the benchmark lock ~/.cache/qtcraft/bench.lock (a directory with an owner file)
@@ -17,7 +25,7 @@
 # The result file gets a header line per series ("# series ...": date, rounds, seconds, view,
 # scenarios, builds) and one line per run:
 #   <round> <scenario> <label> pos=<k>/<n> order=<labels of the round> load=<before>/<after>
-#   busy=<before>/<after> loaded=<0|1> BENCH ...
+#   busy=<before>/<after> loaded=<0|1> settings=<VAR=value;...|-> BENCH ...
 # load is the 1-minute load average before and after the run. busy lists foreign processes as
 # "name:percent" pairs (or "-"): any process of 80 % CPU or more except the window server and
 # kernel_task (UI and system), and every qtcraft process whatever its CPU (the game measured is
@@ -31,9 +39,14 @@ set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 usage() {
-    echo "usage: $0 <result file> <rounds> <seconds> <label>=<app> [<label>=<app> ...]" >&2
+    echo "usage: $0 [--check] <result file> <rounds> <seconds> <label>=<app>[:<VAR>=<value>...] ..." >&2
     exit 2
 }
+CHECK_ONLY=0
+if [ "${1:-}" = --check ]; then
+    CHECK_ONLY=1
+    shift
+fi
 [ $# -ge 4 ] || usage
 RESULT=$1
 ROUNDS=$2
@@ -47,14 +60,44 @@ case "$SECONDS_PER_RUN" in
 '' | *[!0-9]*) echo "seconds must be a positive number: $SECONDS_PER_RUN" >&2 && usage ;;
 esac
 [ "$ROUNDS" -ge 1 ] && [ "$SECONDS_PER_RUN" -ge 1 ] || usage
+# Splits a build argument ($1): sets label, app and settings (the ":<VAR>=<value>" parts without
+# the ":", one per line).
+split_build() {
+    label=${1%%=*}
+    rest=${1#*=}
+    app=$(printf '%s\n' "$rest" | sed 's/:[A-Z_][A-Z0-9_]*=.*//')
+    settings=$(printf '%s\n' "${rest#"$app"}" | sed 's/:\([A-Z_][A-Z0-9_]*=\)/\
+\1/g' | sed '/^$/d')
+}
+
+# The settings of the current build in one word for the result line: "VAR=value;..." or "-".
+settings_word() {
+    word=$(printf '%s\n' "$settings" | sed '/^$/d' | paste -sd ';' -)
+    echo "${word:--}"
+}
+
 LABELS=
 for build in "$@"; do
     case "$build" in
     *=*) ;;
     *) echo "not <label>=<app>: $build" >&2 && usage ;;
     esac
-    label=${build%%=*}
-    app=${build#*=}
+    split_build "$build"
+    case "$app" in
+    *:[A-Za-z_]*=*) echo "unknown variable for label $label in '${app#*:}' (TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE, DEBUG_DISPLAY or PREVIEW_ACTIVE)" >&2 && usage ;;
+    esac
+    while IFS= read -r setting; do
+        [ -n "$setting" ] || continue
+        case "${setting%%=*}" in
+        TEXTURE_PACKS | PACK_SWITCH | WORLD_TYPE | DEBUG_DISPLAY | PREVIEW_ACTIVE) ;;
+        *) echo "unknown variable for label $label: '${setting%%=*}' (TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE, DEBUG_DISPLAY or PREVIEW_ACTIVE)" >&2 && usage ;;
+        esac
+        case "${setting#*=}" in
+        '' | *[[:space:]]* | *\;*) echo "value of ${setting%%=*} for label $label must be non-empty, without blanks or \";\"" >&2 && usage ;;
+        esac
+    done <<EOF
+$settings
+EOF
     case "$label" in
     '' | */* | *[[:space:]]* | *,*) echo "label must be non-empty, without \"/\", \",\" or blanks: '$label'" >&2 && usage ;;
     esac
@@ -63,8 +106,10 @@ for build in "$@"; do
     esac
     [ -f "$app" ] && [ -x "$app" ] || { echo "not an executable file: $app" >&2 && exit 2; }
     LABELS="$LABELS $label"
+    [ "$CHECK_ONLY" -eq 1 ] && echo "$label $app settings=$(settings_word)"
 done
 BUILD_COUNT=$#
+[ "$CHECK_ONLY" -eq 1 ] && exit 0
 
 LOCK_DIR="$HOME/.cache/qtcraft/bench.lock"
 LOCK_OWNER="bench-ab.sh pid=$$ dir=$PROJECT_DIR result=$RESULT"
@@ -141,11 +186,20 @@ wait_quiet() {
     quiet "$(load_now)" "$(busy_now)" || echo "machine not quiet after 3 min (load $(load_now), busy $(busy_now)); measuring anyway" >&2
 }
 
-# Build number $1 (counted from 0) of the builds that follow it: sets label and app.
+# Build number $1 (counted from 0) of the builds that follow it: sets label, app and settings.
 pick_build() {
     eval "build=\${$(($1 + 2))}"
-    label=${build%%=*}
-    app=${build#*=}
+    split_build "$build"
+}
+
+# Exports the settings of the current build (called in the subshell of a run).
+apply_settings() {
+    while IFS= read -r setting; do
+        [ -n "$setting" ] && export "${setting?}"
+    done <<EOF
+$settings
+EOF
+    return 0
 }
 
 take_lock
@@ -173,7 +227,7 @@ while [ "$round" -le "$ROUNDS" ]; do
             load=$(load_now)
             busy=$(busy_now)
             log="$WORK/$round-$scenario-$label.log"
-            line=$(run_game "$app" "$scenario" "$SECONDS_PER_RUN" "${VIEW:-8}" "$WORK/$round-$scenario-$label" "$log")
+            line=$(apply_settings && run_game "$app" "$scenario" "$SECONDS_PER_RUN" "${VIEW:-8}" "$WORK/$round-$scenario-$label" "$log")
             status=$?
             load_after=$(load_now)
             busy_after=$(busy_now)
@@ -191,7 +245,7 @@ while [ "$round" -le "$ROUNDS" ]; do
             if ! quiet "$load" "$busy" || ! quiet "$load_after" "$busy_after"; then
                 loaded=1
             fi
-            echo "$round $scenario $label pos=$k/$BUILD_COUNT order=$order load=$load/$load_after busy=$busy/$busy_after loaded=$loaded $line" >>"$RESULT"
+            echo "$round $scenario $label pos=$k/$BUILD_COUNT order=$order load=$load/$load_after busy=$busy/$busy_after loaded=$loaded settings=$(settings_word) $line" >>"$RESULT"
         done
     done
     round=$((round + 1))

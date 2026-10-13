@@ -595,9 +595,11 @@ Die Abweichung `7c7c924` → `fd70a0b` in farm-seeds aus Reihe 4 (Pflanzen +29 %
 
 Dreiecke und Draw-Calls fallen auf `dev` genau wie vor dem Zusammenführen (flat 49 761 / 89, Showcase 73 650 / 142, stand −7 %); Render-CPU −1 bis −8 %, GPU −3 bis −11 %. `sections` (578, 641, 1328) und `section_mb` (16,0, 17,7, 95,9) sind gleich: Die Unterseiten liegen weiter auf der GPU (E-330). Über 10 % auf der ungünstigen Seite liegen nur Werte, die der Zweig nicht berührt: GUI-CPU showcase +11 % (der Haupt-Thread hat keine Änderung; ohne den niedrigsten `dev`-Lauf, 0,335 ms, +3 %) und Tick flat-crowd +14 % (ein Lauf mit 0,604 ms, die übrigen drei 0,339–0,344 gegen 0,318–0,441 ms). Keine Regression.
 
-## Etappe 28: Texturpakete (Atlas gemessen, Benchmark offen)
+## Etappe 28: Texturpakete
 
-Kein Benchmark (Anweisung des Menschen 2026-10-12); gemessen nur der Atlas mit `qtcraft-headless --atlas-stats` im Release-Build (Basis ohne Mods, 346 Texturen + Platzhalter; Bestwert aus drei Läufen, Kacheln parallel auf dem Entwicklungsrechner):
+### Atlas allein (Etappe 28, vor dem Benchmark)
+
+Bei der Etappe kein Benchmark (Anweisung des Menschen 2026-10-12); gemessen nur der Atlas mit `qtcraft-headless --atlas-stats` im Release-Build (Basis ohne Mods, 346 Texturen + Platzhalter; Bestwert aus drei Läufen, Kacheln parallel auf dem Entwicklungsrechner):
 
 | Pakete | Kachel | Atlas (Stufe 0) | Mip-Stufen | Speicher alle Stufen | Pakete laden | Atlas bauen |
 |--------|-------:|-----------------|-----------:|---------------------:|-------------:|------------:|
@@ -608,3 +610,95 @@ Kein Benchmark (Anweisung des Menschen 2026-10-12); gemessen nur der Atlas mit `
 | Storybook 32× (62 PNG) | 32 | 760 × 760 | 3 | 2,9 MiB | 1 ms | 1 ms |
 
 Vorher (Etappe 27): 16× ohne Mip-Stufen in einem quadratischen Zweierpotenz-Raster (32 × 32 Kacheln, 512 × 512 Pixel, 1,0 MiB). Ohne Parallelisierung dauerte 128× 470 ms. Auf der GPU kommt dieselbe Menge hinzu (plus die kleinen Stufen bis 1 × 1). Erwartung für den Benchmark: Frame-Zeiten unverändert bis leicht besser in der Ferne (Mip-Stufen statt Flimmern, weniger Texturbandbreite), Speicher +2 MiB (32×) bis +46 MiB (128×) CPU und GPU, Ladezeit des Atlas beim Weltstart wie oben. Messplan für die Hauptsitzung: siehe Bericht der Etappe (Szenarien `stand`, `sprint`, `showcase`, `crowd` mit `TEXTURE_PACKS=none`, `builtin:qtcraft_hd_32`, `builtin:qtcraft_hd_64`, `builtin:qtcraft_hd_128`).
+
+### Benchmark (2026-10-13, Branch `feature/bench-28`)
+
+Alle Reihen mit `scripts/bench-ab.sh` (Reihenfolge rotiert pro Runde), Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`) aus `git archive`, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s pro Lauf, Mittel [Spanne]. Last vor und nach den Läufen 2,2–4,7; als belastet markiert (ein Claude- oder Browser-Prozess ≥ 80 % CPU vor oder nach dem Lauf) sind 1 von 32, 0 von 8, 6 von 64, 2 von 16 Läufen (Reihen A8, A16, B8, B16), über die Stände verteilt; ohne sie ändert sich keine Aussage. Für die Reihen B (gleicher Build, verschiedene Pakete) kann `bench-ab.sh` jetzt Variablen je Name setzen (`x64=<App>:TEXTURE_PACKS=builtin:qtcraft_hd_64`). FPS = 1000 / Frame Ø (VSync, 120-Hz-Display).
+
+**Frame p99 ist in diesen Reihen zweigeteilt:** Ein Lauf liegt entweder bei 9,1–10,9 ms oder bei 14,7–16,6 ms (einzelne verpasste VSyncs über die ganze Laufzeit), je nach Zeitfenster und für alle Stände gleich; die Mittel hängen davon ab, wie viele Läufe eines Stands in die zweite Gruppe fallen. Ebenso wechseln GUI- und Render-CPU zwischen zwei Lagen (etwa 0,22–0,30 und 0,38–0,50 ms GUI-CPU im Showcase), Kern- und Taktwechsel des Systems; Abstände bis rund 20 % in diesen Werten sind daher nur mit mehreren Runden und Gegenprobe zu bewerten.
+
+#### Reihe A: Etappe 28 bei 16× gegen Etappe 27 (`7c7c924` → `91e78b6`, 4 Runden)
+
+16× hat seit Etappe 28 Mip-Stufen und einen Atlas von 380² Pixeln mit Rand (NPOT) statt 512² ohne Mip-Stufen.
+
+| Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Spitzenspeicher MB |
+|----------|----:|-------------:|---------:|--------------:|-----------:|-------------------:|
+| stand (8) | 118,2 → 118,6 | 13,27 → 13,07 (−1 %) | 1,796 → 1,799 (+0 %) | 1,351 → 1,343 (−1 %) | 0,364 → 0,360 (−1 %) | 430 → 437 (+2 %) |
+| sprint (8) | 118,3 → 118,8 | 14,42 → 12,76 (−11 %) | 2,216 → 2,225 (+0 %) | 1,519 → 1,444 (−5 %) | 0,388 → 0,367 (−5 %) | 604 → 608 (+1 %) |
+| showcase (8) | 117,1 → 117,1 | 16,12 → 16,14 (+0 %) | 0,742 → 0,746 (+1 %) | 1,187 → 1,202 (+1 %) | 0,365 → 0,366 (+0 %) | 307 → 315 (+2 %) |
+| crowd (8) | 118,5 → 118,4 | 12,98 → 14,20 (+9 %) | 2,141 → 2,136 (−0 %) | 1,103 → 1,169 (+6 %) | 0,623 → 0,658 (+6 %) | 435 → 442 (+2 %) |
+| sprint (16) | 119,6 → 119,8 | 9,61 → 9,60 (−0 %) | 3,659 → 3,657 (−0 %) | 2,076 → 2,164 (+4 %) | 0,265 → 0,277 (+5 %) | 1423 → 1423 (+0 %) |
+
+Dreiecke, Draw-Calls und sichtbare Sektionen sind in jedem Szenario gleich. **Bewertung:** keine Regression. GPU-Zeit unverändert (die Mip-Stufen sparen auf diesem Rechner keine messbare Bandbreite, kosten aber auch nichts), Speicher +4 bis +8 MB (+1 bis +2 %: Mip-Stufen, Pakete-Controller und Einstellungsseite), crowd p99 +9 % und Render-/GUI-CPU +6 % in den Spannen der Zweiteilung (p99 je Runde: 10,2/10,0, 15,9/16,0, 16,2/15,8, 9,6/15,2). 60 FPS weit gehalten.
+
+#### Reihe B: Auflösungen auf `dev` d0c905c (4 Runden, `TEXTURE_PACKS` je Name)
+
+| Szenario | Wert | keine (16×) | HD 32× | HD 64× | HD 128× |
+|----------|------|------------:|-------:|-------:|--------:|
+| stand (8) | FPS / p99 ms | 119,0 / 11,46 | 119,2 / 11,58 | 119,1 / 11,50 | 118,9 / 13,23 |
+| stand (8) | GPU / Render-CPU / GUI-CPU ms | 1,649 / 0,875 / 0,234 | 1,687 / 0,885 / 0,235 | 1,683 / 0,884 / 0,235 | 1,681 / 0,881 / 0,238 |
+| stand (8) | Spitzenspeicher MB | 433 | 447 (+14) | 456 (+23) | 501 (+68) |
+| sprint (8) | FPS / p99 ms | 119,4 / 10,30 | 119,2 / 11,42 | 119,1 / 12,04 | 119,2 / 10,82 |
+| sprint (8) | GPU / Render-CPU / GUI-CPU ms | 2,133 / 1,004 / 0,263 | 2,182 / 0,985 / 0,249 | 2,188 / 0,991 / 0,248 | 2,170 / 0,937 / 0,231 |
+| sprint (8) | Spitzenspeicher MB | 598 | 608 (+10) | 619 (+21) | 664 (+66) |
+| showcase (8) | FPS / p99 ms | 118,0 / 15,00 | 118,1 / 13,25 | 117,6 / 13,35 | 117,8 / 13,35 |
+| showcase (8) | GPU / Render-CPU / GUI-CPU ms | 0,608 / 0,732 / 0,253 | 0,599 / 0,696 / 0,231 | 0,610 / 0,743 / 0,263 | 0,611 / 0,723 / 0,260 |
+| showcase (8) | Spitzenspeicher MB | 307 | 321 (+14) | 329 (+21) | 377 (+70) |
+| crowd (8) | FPS / p99 ms | 119,3 / 10,25 | 119,4 / 11,66 | 119,4 / 10,20 | 119,1 / 11,72 |
+| crowd (8) | GPU / Render-CPU / GUI-CPU ms | 2,050 / 0,768 / 0,453 | 2,109 / 0,846 / 0,494 | 2,064 / 0,824 / 0,440 | 1,876 / 0,773 / 0,333 * |
+| crowd (8) | Spitzenspeicher MB | 441 | 452 (+11) | 460 (+19) | 500 (+59) |
+| sprint (16) | FPS / p99 ms | 119,8 / 9,73 | 119,9 / 9,84 | 120,0 / 9,60 | 119,8 / 9,52 |
+| sprint (16) | GPU / Render-CPU / GUI-CPU ms | 3,532 / 2,122 / 0,282 | 3,600 / 2,154 / 0,288 | 3,497 / 2,139 / 0,278 | 3,574 / 2,109 / 0,283 |
+| sprint (16) | Spitzenspeicher MB | 1379 | 1387 (+8) | 1400 (+21) | 1432 (+53) |
+
+\* crowd mit 128×: am Ende 60 statt 84 Wesen und Items in 3 von 4 Läufen (einmal 76; mit 64× in Reihe C ebenfalls 76): weniger zu zeichnen, daher weniger GPU- und GUI-Zeit. Die Werte von crowd mit 128× sind nicht vergleichbar; Ursache siehe „Zahl der Wesen in crowd“ unten.
+
+Füllfarbe der durchsichtigen Texel (E-332) beim Atlasbau, `qtcraft-headless --atlas-stats` mit und ohne Füllung im selben Build: 128× 91–92 → 99–100 ms, ein prozedurales Testpaket mit 256× (6080² Pixel, 6 Stufen, 188 MiB) 362–367 → 393–394 ms (+8 %).
+
+Atlas beim Betreten der Welt (Logzeile `Texture atlas:`, 16 Läufe je Paket, Laden der Pakete und Bauen zusammen, im GUI-Thread): 16× 380² Pixel, 2 Stufen, 0,7 MiB, 1–3 ms; 32× 760², 3 Stufen, 2,9 MiB, 5–6 ms; 64× 1520², 4 Stufen, 11,7 MiB, 18 ms; 128× 3040², 5 Stufen, 47,0 MiB, 95–99 ms (einmal 188 ms). Mit `qtcraft-headless --atlas-stats` (Release, ohne Spiel daneben) 0–2 / 3 / 15 / 90 ms; das sind mehr als in der Tabelle oben (52 ms für 128×), die Kacheln laufen auf dem gleichen Rechner zu anderer Zeit parallel (Last, Takt).
+
+**Bewertung:** Die höheren Auflösungen kosten keine messbare Frame-Zeit: rund 118 FPS bei 8 Chunks mit 64× (117,6–119,4; Ziel 60 weit gehalten, auch mit 128× und bei 16 Chunks), GPU Ø −1 bis +3 % gegen 16×, Render- und GUI-CPU innerhalb der Zweiteilung. p99-Abstände über 10 % (sprint 32×/64× +11/+17 %, crowd 32×/128× +14 %, stand 128× +15 %) kommen je aus einem oder zwei Läufen in der 16-ms-Gruppe und wiederholen sich nicht in Reihe C. Erwartet und wiederholbar ist der Speicher: +8 bis +14 MB mit 32×, +19 bis +23 MB mit 64×, +53 bis +70 MB mit 128× (Atlas mit Stufen auf CPU und GPU, geladene Paketbilder; bei 8 Chunks +16 bis +23 % mit 128×). Einziger spürbarer Preis von 128× ist der Atlasbau beim Betreten der Welt (rund 0,1 s im GUI-Thread, einmal).
+
+#### Paketwechsel zur Laufzeit
+
+Neuer Messhaken `QTCRAFT_BENCHMARK_PACK_SWITCH=<ids>` (E-332, in den Skripten `PACK_SWITCH=<ids>`): Im Benchmark-Lauf werden die Pakete nach 10 s eingeschaltet und nach 20 s wieder aus; gemessen wird ab dem Wechsel bis 1 s nach dem neuen Atlas. „Atlas fertig nach“ (`atlas_ms`) reicht bis nach dem Slot `applyAtlas` im GUI-Thread, enthält also dessen Zeit (eigene Spalte). Gemessen wurde mit der ersten Fassung des Hakens, die jedes Paket einzeln mit `setActive` schaltete (bei einem Paket je Wechsel dasselbe wie die heutige Fassung, die die ganze Auswahl auf einmal setzt und nichts speichert). Release-Build von `feature/bench-28`, je Paket stand und sprint, 4 Runden à 30 s, manuelle Reihe mit Sperre.
+
+| Wechsel | Atlas fertig nach ms | GUI-Thread in `applyAtlas` ms (davon Item-Icons) | längster Frame ms | Frames ≥ 50 ms | GUI-CPU max ms | Render-CPU max ms |
+|---------|---------------------:|-------------------------------------------------:|------------------:|---------------:|---------------:|------------------:|
+| keine → 128× | 130–137 | 5,3–5,8 (5,3–5,6) | 18,8–24,1 | 0 | 11,1–16,1 | 3,4–4,0 |
+| 128× → keine | 25–30 | 2,9–4,4 | 17,9–25,2 | 0 | 9,7–16,0 | 1,8–2,6 |
+| keine → 64× | 52–64 | 6,6–7,3 (6,5–7,3) | 18,4–23,4 | 0 | 13,1–14,6 | 2,1–4,2 |
+| 64× → keine | 26–29 | 3,9–4,3 | 19,4–28,1 | 0 | 12,8–14,3 | 1,8–2,6 |
+
+Zum Vergleich der längste Frame ganzer 20-s-Läufe ohne Wechsel (Reihe B, stand und sprint): 12,4–25,4 ms. **Bewertung:** Ein Wechsel kostet zwei bis drei verpasste VSyncs (längster Frame 18–28 ms bei 8,3 ms pro VSync) (GUI-Thread bis 16 ms im Frame der Übergabe: `applyAtlas` mit Icons 3–7 ms, dazu die Aktualisierung der Einstellungsdaten), keinen Hänger; der Atlas wird im Hintergrund gebaut, die Welt zeichnet so lange mit dem alten. Der Upload von 47 MiB auf dem Render-Thread fällt nicht auf (Render-CPU max 4 ms).
+
+#### Sichtprüfung der Alpha-Abdeckung (E-300) und Korrektur (E-332)
+
+Offscreen-Bilder derselben Szene (flache Welt, von einem Pfeiler in 16 m Höhe nach Norden: Reihen aus Eichenlaub, Fackeln, Mohn, Löwenzahn und hohem Gras in 12–112 m) und eines Waldrands (Seed 42, Spawn), `docs/screenshots/28-bench-*.png`:
+
+- `28-bench-far-27-16.png` (`7c7c924`, ohne Mip-Stufen): Ferne in Ordnung, Gras und Laub körnig.
+- `28-bench-far-28-16.png` (`d0c905c`): **Fehler.** Am Horizont bunte Streifen (Magenta, Gelb, Cyan), entferntes Laub und Pflanzen mit Magenta- und schwarzen Sprenkeln, hohes Gras ab etwa 20 m mit schwarzen Rändern; im Waldbild (`28-bench-forest-28-16.png`) rosa Pünktchen im fernen Gras. Dasselbe zeigten die Etappe-28-Bilder `28-landscape-*.png` (bunter Horizont).
+- `28-bench-far-fix-16.png`, `28-bench-far-fix-64.png`, `28-bench-forest-fix-16.png`, `28-bench-forest-fix-64.png` (`feature/bench-28`): Horizont ruhig, keine Sprenkel, keine dunklen Ränder. Laub wirkt in der Ferne nicht zu dicht (geschlossene Flächen wie ohne Mip-Stufen), Fackeln, Blumen und hohes Gras verschwinden auch in 112 m nicht; Blumen und Gras werden ab etwa 30 m etwas voller (Abdeckungserhalt hebt Alpha nur an, E-300), gewollt.
+
+Ursache und Korrektur siehe E-332: Die Block-Pipeline schrieb das Teil-Alpha der Mip-Stufen ins Bild, durchsichtige Texel waren schwarz. Jetzt schreiben undurchsichtige Blöcke und Wesen Alpha 1 (eigene Shader-Variante), durchsichtige Texel tragen die Farbe des nächsten gezeichneten. Ob das Fenster selbst die Streifen zeigte (macOS stellt die Ebene vermutlich undurchsichtig dar), ist nicht geprüft; Screenshots und durchsichtige Ziele zeigten sie sicher, die dunklen Ränder auch das Fenster. `28-*.png` sind mit dem korrigierten Stand neu erzeugt (`scripts/texturepack-shots.sh docs/screenshots build/release`).
+
+#### Reihe C: Korrektur gegen `dev` (4 Runden, 16× und 64×)
+
+Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `d0c905c`: GPU Ø showcase 0,579 → 0,788 ms (+36 %, in jeder Runde, mit 64× ebenso), stand +16 bis +22 % – eine Regression, daher ersetzt durch die Shader-Variante (`5c5a4d4`). Mit ihr:
+
+| Szenario | Wert | `d0c905c` 16× | Korrektur 16× | `d0c905c` 64× | Korrektur 64× |
+|----------|------|-------------:|--------------:|--------------:|--------------:|
+| stand | FPS / p99 ms | 119,9 / 9,81 | 119,8 / 9,99 | 119,9 / 10,10 | 120,0 / 10,06 |
+| stand | GPU Ø ms | 1,421 | 1,520 (+7 %) | 1,352 | 1,477 (+9 %) |
+| sprint | GPU Ø ms | 1,774 | 1,781 (+0 %) | 2,000 | 1,779 (−11 %) |
+| showcase | GPU Ø ms | 0,569 | 0,569 (+0 %) | 0,574 | 0,575 (+0 %) |
+| crowd | GPU Ø ms | 1,970 | 1,959 (−1 %) | 1,544 | 1,788 (+16 %) * |
+| alle | Spitzenspeicher MB | 437 / 600 / 308 / 442 | 431 / 596 / 308 / 439 | 457 / 619 / 334 / 458 | 453 / 622 / 330 / 460 |
+
+\* crowd 64×: in allen acht Läufen 76 Wesen statt 84 (wie oben), GPU-Spannen 1,35–1,84 und 1,72–1,85 ms; die Korrektur lag in allen vier Runden darüber. Gegenprobe (Reihe D, 6 Runden, nur 64×, crowd und stand, `d0c905c` gegen `5c5a4d4` frisch aus `git archive`): crowd GPU Ø 1,870 → 1,830 ms (−2 %), GPU p99 2,41 → 2,41, Wesen am Ende in beiden Ständen 75–84 (die GPU-Zeit folgt der Zahl); stand GPU Ø 1,583 → 1,564 ms (−1 %), Render-CPU +3 %, GUI-CPU ±0. Keine Regression; die Zahl der Wesen am Ende von crowd schwankt auch mit 64× und auf beiden Ständen. GPU-Zeiten in stand und sprint streuen in dieser Reihe stark (stand 1,21–1,73 ms je Stand); die Abstände wechseln das Vorzeichen zwischen den Szenarien. Render- und GUI-CPU im Showcase lagen in Reihe C und der Reihe mit Schreibmaske für die Korrektur 13–25 % höher, in allen Thread-Werten gemeinsam (auch Weltrenderer und Uploads, deren Code unverändert ist). Gegenprobe mit 6 Runden (`d0c905c`, Build der Korrektur aus dem Worktree, derselbe Stand frisch aus `git archive`), showcase und stand: GUI-CPU +3 % / +9 % und +4 % / +6 %, Render-CPU +1 % / +3 % und +6 % / +7 %, GPU +0 bis +3 %, Runden mit wechselndem Vorzeichen: die zwei Lagen der CPU-Werte, keine Regression.
+
+**Fazit Etappe 28:** Gegen Etappe 27 keine Regression in Frame-Zeit, GPU, CPU-Zeiten oder Speicher über der Schwelle (Speicher +1 bis +2 %). Höhere Auflösungen kosten nur Speicher (64× +19 bis +23 MB, 128× +53 bis +70 MB) und beim Betreten der Welt Zeit für den Atlas (128× rund 0,1 s); 60 FPS bei 8 Chunks halten alle Auflösungen, 64× ohne Einschränkung. Ein Paketwechsel kostet zwei bis drei verpasste VSyncs, keinen Hänger. Der eigentliche Befund war optisch: Mip-Stufen mit Teil-Alpha und schwarzen durchsichtigen Texeln erzeugten Streifen am Horizont und dunkle Ränder an Pflanzen; behoben (E-332), die Korrektur kostet keine Frame-Zeit und beim Atlasbau 1–8 ms bis 128× (256× rund 30 ms). Offen: welche Wesen in crowd verschwinden, hängt vom Startzeitpunkt ab (unten); ob die Streifen auch im Fenster sichtbar waren.
+
+#### Zahl der Wesen in crowd
+
+Die BENCH-Zeile meldet seit diesem Branch zusätzlich `server_mobs` und `server_items` (Kreaturen und Item-Stapel auf dem Server am Ende, im Server-Thread gezählt) und `inventory_items` (Items im Inventar des Spielers). Gegenprobe (crowd, je 4 Läufe 16× und 128×, Release): Der Server hat am Ende immer alle 24 Item-Stapel, das Inventar ist leer; die Vermutung des Reviews (ein Zombie stößt den Spieler in die Items, er sammelt alle 24 ein, 84 − 24 = 60) trifft nicht zu. Es fehlen Kreaturen: in den 84er-Läufen hat der Server 127 Kreaturen (mit den Tieren der Umgebung), in den 60er-Läufen 103, also 24 weniger. Eine einmalige Aufschlüsselung nach Art (Diagnose, nicht eingecheckt) zeigt, dass je nach Lauf alle 16 Zombies oder alle 8 Schleime fehlen, dazu bis 32 Schweine: 16× 75 Schweine, 36 Schafe, 16 Zombies, 0 Schleime (84 sichtbar); 128× 43 bzw. 59 Schweine, 36 Schafe, 0 Zombies, 8 Schleime (45 bzw. 60 sichtbar). Welche Kreaturen bis zum Ende des Laufs sterben oder verschwinden (Zombies in der Sonne, Kämpfe, Entladen), hängt vom Zeitpunkt des Starts ab, den der Atlasbau verschiebt; das Szenario bleibt wegen der Vergleichbarkeit mit der Historie unverändert. Werte von crowd sind nur zwischen Läufen mit gleicher Zahl `entities` und `server_mobs` vergleichbar.

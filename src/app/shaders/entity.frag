@@ -24,5 +24,7 @@ void main()
         discard;
     vec3 lit = texel.rgb * vLight;
     float fog = clamp((vDistance - frame.params.x) / max(frame.params.y - frame.params.x, 0.001), 0.0, 1.0);
-    fragColor = vec4(mix(lit, frame.fogColor.rgb, fog), texel.a);
+    // Drawn without blending: a drawn texel is opaque, whatever alpha its mip level gives it
+    // (decision E-332; a screenshot or the transparent target of a preview reads the alpha).
+    fragColor = vec4(mix(lit, frame.fogColor.rgb, fog), 1.0);
 }

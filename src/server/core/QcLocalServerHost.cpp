@@ -70,6 +70,29 @@ QcTickStats::Summary QcLocalServerHost::tickStats() const
     return m_server ? m_server->tickTimes() : QcTickStats::Summary();
 }
 
+QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()
+{
+    if (!m_server) {
+        return {};
+    }
+
+    // Counted in the server thread; the result comes back under a mutex (E-010).
+    std::mutex mutex;
+    EntityCounts result;
+    { const std::scoped_lock lock(mutex); }
+    QcServer *server = m_server;
+    QMetaObject::invokeMethod(
+        server,
+        [server, &result, &mutex] {
+            const std::scoped_lock lock(mutex);
+            result = {server->mobs().mobs().size(), server->items().items().size()};
+        },
+        Qt::BlockingQueuedConnection);
+
+    const std::scoped_lock lock(mutex);
+    return result;
+}
+
 void QcLocalServerHost::resetTickTimes()
 {
     if (m_server) {

@@ -61,6 +61,9 @@ std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const
         for (qsizetype i = first; i < definitions.size(); i += jobs) {
             Tile &tile = tiles[std::size_t(i)];
             tile.resolved = QcTextureSources::resolve(definitions[i], packs, tileSize, tile.problem);
+            if (tile.resolved) {
+                QcAlphaCoverage::fillTransparentColour(tile.resolved->image);
+            }
         }
         done[std::size_t(first)].store(true, std::memory_order_release);
     };

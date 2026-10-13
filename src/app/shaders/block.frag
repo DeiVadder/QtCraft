@@ -22,5 +22,11 @@ void main()
         discard;
     vec3 lit = texel.rgb * vLight;
     float fog = clamp((vDistance - frame.params.x) / max(frame.params.y - frame.params.x, 0.001), 0.0, 1.0);
+#ifdef QC_OPAQUE
+    // Opaque and cut-out blocks (block_opaque.frag.qsb, no blending): a drawn texel is opaque,
+    // whatever alpha its mip level gives it (decision E-332).
+    fragColor = vec4(mix(lit, frame.fogColor.rgb, fog), 1.0);
+#else
     fragColor = vec4(mix(lit, frame.fogColor.rgb, fog), texel.a);
+#endif
 }

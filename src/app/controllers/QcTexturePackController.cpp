@@ -127,9 +127,26 @@ void QcTexturePackController::openFolder() const
 
 void QcTexturePackController::select(const QStringList &ids)
 {
+    if (activate(ids)) {
+        m_overridden = false;
+        emit selectionChanged();
+    }
+}
+
+void QcTexturePackController::selectForRun(const QStringList &ids)
+{
+    if (!m_overridden) {
+        m_stored = m_active;
+        m_overridden = true;
+    }
+    activate(ids);
+}
+
+bool QcTexturePackController::activate(const QStringList &ids)
+{
     const QStringList clean = QcGameSettings::cleanTexturePacks(ids);
     if (clean == m_active) {
-        return;
+        return false;
     }
 
     m_selectionNotices.clear();
@@ -140,10 +157,9 @@ void QcTexturePackController::select(const QStringList &ids)
     }
     ++m_generation;
     m_active = clean;
-    m_overridden = false;
-    emit selectionChanged();
     emit packsChanged();
     startBuild();
+    return true;
 }
 
 QcTextureStackBuild::Request QcTexturePackController::request() const

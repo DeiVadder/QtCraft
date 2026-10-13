@@ -48,6 +48,7 @@ qt_add_executable(qtcraft
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcRenderSample.h
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
+    hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
     hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
     input/QcRelativeMouse.h
@@ -164,6 +165,16 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.frag
+)
+# The block fragment shader of the opaque pass writes alpha 1 (decision E-332).
+qt_add_shaders(qtcraft "qtcraft_opaque_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_OPAQUE=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+    OUTPUTS
+        shaders/block_opaque.frag.qsb
 )
 
 qt_add_translations(qtcraft

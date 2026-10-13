@@ -1,3 +1,4 @@
+#include "QcAlphaCoverage.h"
 #include "QcBaseContent.h"
 #include "QcContentRegistry.h"
 #include "QcProceduralTexture.h"
@@ -385,7 +386,8 @@ private slots:
 
     // Without packs every tile of the game is exactly the 16 x 16 picture of before the stage
     // (pattern code and content definitions are unchanged since dev 7c7c924; the old atlas drew
-    // QcTextureSynthesizer::synthesize of the same spec).
+    // QcTextureSynthesizer::synthesize of the same spec). Only the colour of fully transparent
+    // texels differs: since E-332 they take the nearest drawn colour (invisible at level 0).
     void baseTilesAreThePlainSynthesizedTextures()
     {
         QStringList warnings;
@@ -396,7 +398,9 @@ private slots:
         for (const QcTextureDefinition &definition : (*content)->textures()) {
             const QcResult<QcTextureSpec> spec = QcProceduralTexture::spec(definition.procedural);
             QVERIFY2(spec.has_value(), qPrintable(definition.name));
-            QVERIFY2(atlas.tile(definition.name) == QcTextureSynthesizer::synthesize(*spec), qPrintable(definition.name));
+            QImage synthesized = QcTextureSynthesizer::synthesize(*spec).convertToFormat(QImage::Format_RGBA8888);
+            QcAlphaCoverage::fillTransparentColour(synthesized);
+            QVERIFY2(atlas.tile(definition.name) == synthesized, qPrintable(definition.name));
         }
     }
 

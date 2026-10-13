@@ -541,9 +541,13 @@ void QcGameController::applyAtlas(const std::shared_ptr<const QcTextureAtlas> &a
         return;
     }
 
+    // The time on the GUI thread is logged for the pack switch benchmark (decision E-332); the
+    // upload follows on the render thread.
+    QElapsedTimer timer;
+    timer.start();
+    const QcContentRegistry &content = *m_parts.session->content();
     // The UVs depend only on the list of textures (E-300): a new pack only needs the new image, the
     // meshes stay; a different layout (other content) needs a new render table and new meshes.
-    const QcContentRegistry &content = *m_parts.session->content();
     if (!m_atlas || !m_renderTable || !atlas->sameLayout(*m_atlas)) {
         m_renderTable = std::make_shared<const QcBlockRenderTable>(content, *atlas);
         m_parts.meshes->setRenderTable(m_renderTable);
@@ -551,10 +555,15 @@ void QcGameController::applyAtlas(const std::shared_ptr<const QcTextureAtlas> &a
     m_atlas = atlas;
     m_render.setAtlas(atlas);
     m_preview->useWorld(m_parts.session->content(), atlas);
+    const qint64 iconsStart = timer.nsecsElapsed();
     m_icons.draw(content, *atlas, m_renderTable.get());
+    const qint64 iconsNs = timer.nsecsElapsed() - iconsStart;
     if (m_parts.view) {
         m_parts.view->setAtlas(atlas->levels());
     }
+    const qint64 totalNs = timer.nsecsElapsed();
+    qCInfo(lcGame).noquote() << u"Texture atlas applied in %1 ms (item icons %2 ms)"_s.arg(double(totalNs) / 1e6, 0, 'f', 1)
+                                    .arg(double(iconsNs) / 1e6, 0, 'f', 1);
 }
 
 void QcGameController::onContentReset()
