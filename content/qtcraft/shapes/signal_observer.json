@@ -1,0 +1,52 @@
+{
+    "name": "signal_observer",
+    "rotate": "facing",
+    "parts": [
+        {
+            "when": {
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "when": {
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0.9375
+                ]
+            ]
+        },
+        {
+            "when": {
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0.9375,
+                    1,
+                    1,
+                    1
+                ]
+            ],
+            "texture": "lit"
+        }
+    ]
+}

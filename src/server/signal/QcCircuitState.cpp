@@ -8,6 +8,9 @@
 
 #include <algorithm>
 #include <array>
+#include <tuple>
+
+using namespace Qt::StringLiterals;
 
 namespace {
 
@@ -60,6 +63,46 @@ void QcCircuitState::noteChange(const QcServerWorld &world, QcBlockPos pos, QcBl
     changes.append({pos, before, after});
 }
 
+void QcCircuitState::noteContents(const QcServerWorld &world, QcBlockPos pos)
+{
+    hoppers.touched.insert(pos);
+    if (!isNearCircuit(world, pos)) {
+        return;
+    }
+    const QList<QcBlockPos> found = readersOf(world, pos);
+    for (const QcBlockPos &reader : found) {
+        readers.insert(reader);
+    }
+}
+
+QList<QcBlockPos> QcCircuitState::readersOf(const QcServerWorld &world, QcBlockPos pos)
+{
+    const QcContentRegistry &content = world.content();
+    QList<QcBlockPos> found;
+    for (const QcBlockFace face : {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West}) {
+        const QcBlockPos next = qcNeighbour(pos, face);
+        for (const QcBlockPos candidate : {next, qcNeighbour(next, face)}) {
+            const std::optional<QcBlockId> block = world.blockAt(candidate);
+            const bool comparator = block && content.block(*block).signal.kind == QcSignalKind::Comparator;
+            if (comparator && content.property(*block, u"facing"_s) == QcBlockRules::faceName(face)) {
+                found.append(candidate);
+            }
+        }
+    }
+    return found;
+}
+
+void QcCircuitState::takeReaders(const QcServerWorld &world)
+{
+    QList<QcBlockPos> pending(readers.begin(), readers.end());
+    readers.clear();
+    std::ranges::sort(pending, [](QcBlockPos a, QcBlockPos b) { return std::tuple{a.y, a.z, a.x} < std::tuple{b.y, b.z, b.x}; });
+    for (const QcBlockPos &pos : std::as_const(pending)) {
+        const QcBlockId block = world.blockAt(pos).value_or(qcAirBlockId);
+        changes.append({pos, block, block, true});
+    }
+}
+
 bool QcCircuitState::isSurroundedByLoaded(const QcServerWorld &world, QcChunkPos chunk)
 {
     for (int dx = -1; dx <= 1; ++dx) {
@@ -84,6 +127,9 @@ void QcCircuitState::forgetMemory(QcBlockPos pos, QcSignalKind now)
     if (now != QcSignalKind::Piston) {
         extending.remove(pos);
     }
+    if (now != QcSignalKind::Hopper) {
+        hoppers.readyAt.remove(pos);
+    }
 }
 
 void QcCircuitState::prune(quint64 now, quint64 window)
@@ -91,6 +137,7 @@ void QcCircuitState::prune(quint64 now, quint64 window)
     torchOffTicks.removeIf([now, window](const auto &it) { return it.value().isEmpty() || it.value().constLast() + window <= now; });
     burntOutUntil.removeIf([now](const auto &it) { return it.value() <= now; });
     extending.removeIf([now](const auto &it) { return it.value() + QcMovingBlocks::moveTicks <= now; });
+    hoppers.prune(now);
 }
 
 void QcCircuitState::wake(const QcServerWorld &world, QcBlockPos pos)
@@ -185,6 +232,7 @@ void QcCircuitState::forgetChunk(QcChunkPos chunk)
     burntOutUntil.removeIf([&inChunk](const auto &it) { return inChunk(it.key()); });
     poweredOpeners.removeIf(inChunk);
     extending.removeIf([&inChunk](const auto &it) { return inChunk(it.key()); });
+    hoppers.forgetChunk(chunk);
 }
 
 void QcCircuitState::clear()
@@ -197,4 +245,6 @@ void QcCircuitState::clear()
     burntOutUntil.clear();
     poweredOpeners.clear();
     extending.clear();
+    hoppers.clear();
+    readers.clear();
 }

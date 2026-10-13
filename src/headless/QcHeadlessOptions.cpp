@@ -136,6 +136,9 @@ std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser,
         printError(settings.error());
         return std::nullopt;
     }
+    for (const QString &warning : std::as_const(settings->limitWarnings)) {
+        printError(warning);
+    }
 
     // A first start leaves a file with every setting for the operator to edit.
     if (path == defaultPath && !QFile::exists(path)) {

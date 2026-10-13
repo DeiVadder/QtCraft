@@ -138,10 +138,17 @@ QcBlockFace opposite(QcBlockFace face)
 
 namespace {
 
-// The facing value a block placed while looking along `yaw` and `pitch` takes.
-QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch)
+// The facing value a block placed while looking along `yaw` and `pitch` against the clicked `face`
+// takes.
+QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, QcBlockFace face)
 {
     const QcBlockProperty *facing = definition.property(u"facing"_s);
+    if (definition.facingRule == QcFacingRule::Into) {
+        // Into the clicked block; where that is not allowed (a hopper under a ceiling), down.
+        const QString into = faceName(opposite(face));
+        return facing && facing->values.contains(into) ? into : u"down"_s;
+    }
+
     const bool vertical = facing && facing->values.contains(u"up"_s) && facing->values.contains(u"down"_s);
     if (vertical && std::abs(pitch) > verticalFacingPitch) {
         const bool up = (pitch > 0.0F) == (definition.facingRule == QcFacingRule::Away);
@@ -267,7 +274,7 @@ std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, 
         return std::nullopt;
     }
 
-    const QString facing = facingFor(definition, aim.yaw, aim.pitch);
+    const QString facing = facingFor(definition, aim.yaw, aim.pitch, face);
     std::optional<QcBlockId> oriented = orientedState(content, state, facing, face, upper);
     if (oriented && definition.door) {
         oriented = doorState(world, *oriented, target, aim.hit, facing);

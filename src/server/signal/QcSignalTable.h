@@ -20,16 +20,20 @@ enum class QcDustSide : quint8 { None, Side, Up };
 struct QcSignalState
 {
     QcSignalKind kind = QcSignalKind::None;
-    // Dust: its strength. Sources: what they emit while on (0 while off).
+    // Dust and comparators: their strength. Sources: what they emit while on (0 while off).
     quint8 power = 0;
-    // Levers, buttons, plates and repeaters: `powered`; torches and lamps: the lit block; pistons:
-    // `extended`; openers: `open`; piston heads: `sticky`.
+    // Levers, buttons, plates, repeaters, comparators and observers: `powered`; torches and lamps:
+    // the lit block; pistons: `extended`; openers: `open`; piston heads: `sticky`; dispensers:
+    // `triggered`.
     bool on = false;
     // Repeaters and pistons: where they point; torches, levers and buttons: towards the block they
     // hang on (down on the floor, up at the ceiling).
     std::optional<QcBlockFace> facing;
     quint8 delay = 1;
+    // Repeaters: locked by a side; hoppers: not `enabled` (powered).
     bool locked = false;
+    // Comparators in subtract mode.
+    bool subtract = false;
     // Dust connections towards north, east, south and west.
     std::array<QcDustSide, 4> sides{};
     // A full solid opaque block that passes power (stone, lamps), whatever its kind.

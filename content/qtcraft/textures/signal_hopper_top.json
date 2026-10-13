@@ -1,0 +1,8 @@
+{
+    "name": "signal_hopper_top",
+    "pattern": "hopper_top",
+    "primary": "#4a4a4e",
+    "secondary": "#1c1c20",
+    "variation": 0.08,
+    "seed": 2921
+}

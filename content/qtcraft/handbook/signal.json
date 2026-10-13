@@ -8,6 +8,10 @@
         "sources",
         "slots",
         "pistons",
+        "hoppers",
+        "comparators",
+        "observers",
+        "dispensers",
         "quirks",
         "rotation",
         "multiplayer"
@@ -22,6 +26,11 @@
         "signal_repeater",
         "signal_lamp",
         "signal_piston",
-        "sticky_signal_piston"
+        "sticky_signal_piston",
+        "signal_hopper",
+        "signal_comparator",
+        "signal_observer",
+        "signal_dispenser",
+        "signal_dropper"
     ]
 }

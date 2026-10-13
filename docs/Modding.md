@@ -251,7 +251,7 @@ A block joins circuits with a `signal` object (decision E-333). `type` picks a b
 
 | Field | Meaning |
 |-------|---------|
-| `type` | `dust`, `lever`, `button`, `plate`, `torch`, `repeater`, `lamp`, `opener`, `piston`, `piston_head` |
+| `type` | `dust`, `lever`, `button`, `plate`, `torch`, `repeater`, `lamp`, `opener`, `piston`, `piston_head`; since stage 29.2 also `comparator`, `observer`, `hopper`, `dispenser` (below) |
 | `power` | Strength a source emits, 1–15 (default 15) |
 | `pulseTicks` | Buttons: ticks until they spring back (stone 20, oak 30) |
 | `offDelayTicks` | Lamps: ticks until they go dark after losing power (default 4, 0 at once) |
@@ -265,6 +265,29 @@ A block joins circuits with a `signal` object (decision E-333). `type` picks a b
 A piston's `head` must be a `piston_head` block with the piston's `facing` values and `sticky`; a torch's or lamp's `counterpart` must be the same kind with the opposite `active` and the same states. A block whose link is broken takes no part in circuits (a warning when the content loads). Internal variants like a lit lamp set the block field `"item": false`: they get no item of their own.
 
 Each kind needs certain states, which the parser checks: dust `power` (`"0"`–`"15"`) and `north`, `east`, `south`, `west` (`none`, `side`, `up`); levers, buttons and plates `powered`; torches `attach`; repeaters `facing` (four sides), `delay` (`"1"`–`"4"`), `powered`, `locked`; openers `open`; pistons `facing` (six sides, a `rotate` of the shape turns up and down too) and `extended`; heads `facing` and `sticky`. Chests, barrels and furnaces move with their contents; mods' storage blocks and machines do too.
+
+### Signal machines and comparator readings (stage 29.2)
+
+Four more `type`s (decisions E-342 to E-346): `comparator`, `observer`, `hopper`, `dispenser`. A mod's block of such a kind behaves like the base block of that kind; its states are checked like the others: comparators `facing` (four sides), `mode` (`compare`, `subtract`), `powered`, `power` (`"0"`–`"15"`); observers `facing` (six sides, the direction it watches) and `powered`; hoppers `facing` (`down` and four sides) and `enabled`, plus a `container`; dispensers `facing` (six sides) and `triggered`, plus a `container`, and `"uses": false` for a dropper (only throws). Dispensers take `quasiConnectivity` like pistons. A block's `container` may set `"columns"` (slots per row of its screen, 1–9, default 9), and `"facing": "into"` makes a block face into the clicked block (down when placed on top).
+
+```json
+{ "name": "ruby_hopper", "shape": "qtcraft:signal_hopper", "facing": "into", "render": "cutout", "hardness": 3,
+  "container": { "slots": 5, "columns": 5 },
+  "states": { "facing": ["down", "north", "east", "south", "west"], "enabled": [true, false] },
+  "textures": { "all": "ruby_block", "slots": { "inside": "ruby_block" } },
+  "signal": { "type": "hopper", "comparator": "contents" } }
+```
+
+**What a comparator reads** is set per block with `signal.comparator`, also on blocks that are no component (then `signal` holds only this field):
+
+| Value | Reading |
+|-------|---------|
+| `"contents"` | Fullness of the block's container or machine: 0 when empty, else ⌊1 + 14 · mean of count/maxStack over the slots⌋ (needs `container` or `machine`) |
+| `{"property": "<name>"}` | The index of the value of that state property, scaled to 0–15 (the property needs at least two values; the base game uses it for crop stages) |
+
+**What a dispenser does with an item** is set per item with `dispense`: `throw` (default; also seeds, carrots and potatoes — they are thrown and plant themselves on farmland, never planted by the dispenser, E-294, E-345), `place_liquid` (pours the liquid block of `places` and becomes `emptiesTo`; needs both, and only liquids are poured), `scoop` (needs `scoops`: takes a liquid source and becomes that liquid's bucket), `equip` (needs `armour`: puts it on a player or armour stand in front). A failed action throws the item out, also in front of a container (as in the reference). A dropper ignores `dispense`; facing a container, it puts the item into it.
+
+Hoppers reach a mod's containers and machines like the base ones: machines take items from above into their input and from the sides and below into their fuel slot (fuel only) and give their output downwards. A hopper collects items lying on any block above it whose collision does not fill its cell; a mod's slab or path block keeps working as a hidden collector.
 
 ### Armour and armour stands (stage 23)
 

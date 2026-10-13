@@ -67,8 +67,11 @@ qt_add_library(qc_server STATIC
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
     gameplay/QcServerItemsAndPlants.h gameplay/QcServerItemsAndPlants.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
+    machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
     core/QcSectionMarks.h core/QcSectionMarks.cpp
+    core/QcBlockIndex.h core/QcBlockIndex.cpp
+    core/QcServerLimits.h core/QcServerLimits.cpp
     core/QcServerSetup.h core/QcServerSetup.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
     core/QcServerState.h core/QcServerState.cpp
@@ -109,6 +112,11 @@ qt_add_library(qc_server STATIC
     worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
     worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
     signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
+    signal/QcCircuitMachines.h signal/QcCircuitMachines.cpp
+    signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
+    signal/QcDispenserActions.h signal/QcDispenserActions.cpp
+    signal/QcHopperState.h signal/QcHopperState.cpp
+    signal/QcServerHoppers.h signal/QcServerHoppers.cpp
     signal/QcCircuitPlan.h
     signal/QcCircuitState.h signal/QcCircuitState.cpp
     signal/QcDustNetwork.h signal/QcDustNetwork.cpp

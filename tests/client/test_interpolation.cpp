@@ -352,11 +352,11 @@ private slots:
     void anotherPlayerWalksSmoothlyOverAJitteryLink()
     {
 #if defined(__has_feature)
-#if __has_feature(thread_sanitizer)
-        // Real-time smoothness under ThreadSanitizer (5-15 times slower, full suite in parallel)
-        // measures the sanitizer, not the interpolation; the debug and ASan runs keep this check and
-        // the simulated walks above cover the logic deterministically.
-        QSKIP("Real-time smoothness is not meaningful under ThreadSanitizer");
+#if __has_feature(thread_sanitizer) || __has_feature(address_sanitizer)
+        // Real-time smoothness under a sanitizer (several times slower, full suite in parallel)
+        // measures the sanitizer, not the interpolation; the debug run keeps this check and the
+        // simulated walks above cover the logic deterministically.
+        QSKIP("Real-time smoothness is not meaningful under a sanitizer");
 #endif
 #endif
         // A real server and two sessions: the walker in-process, the watcher behind 40-100 ms of

@@ -159,7 +159,7 @@ Geschmolzenes Eisen für Werkzeuge, Eimer und mehr.
 
 **Wird verwendet für**
 
-[Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Signalkolben](blocks.md#block-qtcraft-signal_piston)
+[Eimer](#item-qtcraft-bucket), [Eisenaxt](tools.md#item-qtcraft-iron_axe), [Eisenbeinschutz](tools.md#item-qtcraft-iron_leggings), [Eisenblock](blocks.md#block-qtcraft-iron_block), [Eisenbrustplatte](tools.md#item-qtcraft-iron_chestplate), [Eisenfalltür](blocks.md#block-qtcraft-iron_trapdoor), [Eisengitter](blocks.md#block-qtcraft-iron_bars), [Eisenhacke](tools.md#item-qtcraft-iron_hoe), [Eisenhelm](tools.md#item-qtcraft-iron_helmet), [Eisennugget](#item-qtcraft-iron_nugget), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel), [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe), [Eisenstiefel](tools.md#item-qtcraft-iron_boots), [Eisentür](blocks.md#block-qtcraft-iron_door), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper)
 
 ### <a id="item-qtcraft-iron_nugget"></a>Eisennugget
 
@@ -180,7 +180,7 @@ Ein Neuntel eines Eisenbarrens, für kleine Metallteile wie Laternen.
 
 **Wird verwendet für**
 
-[Eisenbarren](#item-qtcraft-iron_ingot), [Laterne](blocks.md#block-qtcraft-lantern)
+[Eisenbarren](#item-qtcraft-iron_ingot), [Laterne](blocks.md#block-qtcraft-lantern), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator)
 
 ### <a id="item-qtcraft-string"></a>Faden
 
@@ -193,7 +193,7 @@ Faden aus einem Spinnennetz; vier ergeben weiße Wolle.
 
 **Wird verwendet für**
 
-[Weiße Wolle](blocks.md#block-qtcraft-white_wool)
+[Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Weiße Wolle](blocks.md#block-qtcraft-white_wool)
 
 **Droppt aus**
 

@@ -23,5 +23,6 @@
         "bottom": "furnace_top",
         "side": "furnace_side",
         "north": "furnace_front"
-    }
+    },
+    "signal": { "comparator": "contents" }
 }

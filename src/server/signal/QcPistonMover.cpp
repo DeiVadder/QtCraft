@@ -124,6 +124,11 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
     // Contents first: setting the block at `to` keeps a container that is already there.
     m_state.containers.relocate(from, to);
     m_state.machines.relocate(from, to);
+    m_state.circuits.hoppers.relocate(from, to);
+    // A dispenser waiting to fire fires where it is now; other components look again anyway.
+    if (m_table.at(block).kind == QcSignalKind::Dispenser) {
+        m_state.circuits.schedule.relocate(from, to);
+    }
     m_blocks.setQuietly(to, block);
 
     // The clients see the source empty at once and the block sliding into its new cell.

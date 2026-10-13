@@ -9,6 +9,34 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// "dispense": throw (default), place_liquid, scoop or equip, checked against what the item is.
+void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
+{
+    const QString action = reader.string(u"dispense"_s, u"throw"_s);
+    if (action == u"place_liquid"_s) {
+        item.dispense = QcDispenseAction::PlaceLiquid;
+        if (item.placesBlock.isEmpty() || item.emptiesTo.isEmpty()) {
+            reader.fail(u"'dispense': place_liquid needs 'places' and 'emptiesTo'"_s);
+        }
+    } else if (action == u"scoop"_s) {
+        item.dispense = QcDispenseAction::Scoop;
+        if (!item.scoops) {
+            reader.fail(u"'dispense': scoop needs 'scoops'"_s);
+        }
+    } else if (action == u"equip"_s) {
+        item.dispense = QcDispenseAction::Equip;
+        if (!item.armour) {
+            reader.fail(u"'dispense': equip needs 'armour'"_s);
+        }
+    } else if (action != u"throw"_s) {
+        reader.fail(u"'dispense' must be throw, place_liquid, scoop or equip"_s);
+    }
+}
+
+} // namespace
+
 namespace QcItemParser {
 
 QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)
@@ -44,6 +72,8 @@ QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &pac
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
     });
+
+    parseDispense(item, reader);
 
     if (!item.tool.isEmpty() && item.maxStack != 1 && !json.contains(u"maxStack"_s)) {
         item.maxStack = 1;

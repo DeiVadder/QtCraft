@@ -1,0 +1,8 @@
+{
+    "name": "signal_comparator_item",
+    "pattern": "comparator",
+    "primary": "#a8a8a8",
+    "secondary": "#ff3a2a",
+    "variation": 0.06,
+    "seed": 2925
+}

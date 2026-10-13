@@ -20,6 +20,10 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Opener, "opener"},
     {QcSignalKind::Piston, "piston"},
     {QcSignalKind::PistonHead, "piston_head"},
+    {QcSignalKind::Comparator, "comparator"},
+    {QcSignalKind::Observer, "observer"},
+    {QcSignalKind::Hopper, "hopper"},
+    {QcSignalKind::Dispenser, "dispenser"},
 }};
 
 std::optional<QcSignalKind> kindFromName(const QString &name)
@@ -84,6 +88,14 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
         return {{u"facing"_s, allSides}, {u"extended"_s, booleans}};
     case QcSignalKind::PistonHead:
         return {{u"facing"_s, allSides}, {u"sticky"_s, booleans}};
+    case QcSignalKind::Comparator:
+        return {{u"facing"_s, horizontal}, {u"mode"_s, {u"compare"_s, u"subtract"_s}}, {u"powered"_s, booleans}, {u"power"_s, powerValues()}};
+    case QcSignalKind::Observer:
+        return {{u"facing"_s, allSides}, {u"powered"_s, booleans}};
+    case QcSignalKind::Hopper:
+        return {{u"facing"_s, {u"down"_s, u"north"_s, u"east"_s, u"south"_s, u"west"_s}}, {u"enabled"_s, booleans}};
+    case QcSignalKind::Dispenser:
+        return {{u"facing"_s, allSides}, {u"triggered"_s, booleans}};
     case QcSignalKind::Lamp:
     case QcSignalKind::None:
         return {};
@@ -123,6 +135,37 @@ void parseKindFields(QcSignalDefinition &signal, QcJsonFieldReader &reader, cons
     signal.active = reader.boolean(u"active"_s, true);
     signal.counterpart = reader.name(u"counterpart"_s, packNamespace);
     signal.head = reader.name(u"head"_s, packNamespace);
+    signal.usesItems = reader.boolean(u"uses"_s, true);
+}
+
+// "comparator": "contents" or {"property": "<name>"} (decision E-343).
+void parseReading(QcBlockDefinition &block, QcJsonFieldReader &reader)
+{
+    const QJsonValue value = reader.json.value(u"comparator"_s);
+    QcSignalDefinition &signal = block.signal;
+    if (value.isUndefined()) {
+        return;
+    }
+    if (value.isString() && value.toString() == u"contents"_s) {
+        if (block.containerSlots == 0 && !block.machine.isMachine()) {
+            reader.fail(u"'comparator': \"contents\" needs a container or a machine"_s);
+            return;
+        }
+        signal.reading = QcComparatorReading::Contents;
+        return;
+    }
+    if (value.isObject()) {
+        const QString property = value.toObject().value(u"property"_s).toString();
+        const QcBlockProperty *found = block.property(property);
+        if (!found || found->values.size() < 2) {
+            reader.fail(u"'comparator' names '%1', which is no state property with at least two values"_s.arg(property));
+            return;
+        }
+        signal.reading = QcComparatorReading::Property;
+        signal.readProperty = property;
+        return;
+    }
+    reader.fail(u"'comparator' must be \"contents\" or an object with 'property'"_s);
 }
 
 void checkKind(const QcBlockDefinition &block, QcJsonFieldReader &reader)
@@ -173,7 +216,10 @@ void parseSignal(QcBlockDefinition &block, QcJsonFieldReader &signalReader, cons
 
     parseKindFields(signal, signalReader, packNamespace);
     parseMobility(signal, signalReader);
-    signal.conducts = signalReader.boolean(u"conducts"_s, signal.kind != QcSignalKind::Piston && signal.kind != QcSignalKind::PistonHead);
+    parseReading(block, signalReader);
+    // Pistons and observers pass no power through (as in the reference).
+    const bool conducts = signal.kind != QcSignalKind::Piston && signal.kind != QcSignalKind::PistonHead && signal.kind != QcSignalKind::Observer;
+    signal.conducts = signalReader.boolean(u"conducts"_s, conducts);
     checkKind(block, signalReader);
 }
 

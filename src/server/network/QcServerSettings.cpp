@@ -142,6 +142,10 @@ QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
     } else if (json.contains(u"defaultGameMode"_s) && !json.value(u"defaultGameMode"_s).isString()) {
         return qcError(invalid(u"defaultGameMode"_s));
     }
+    if (json.contains(u"limits"_s) && !json.value(u"limits"_s).isObject()) {
+        return qcError(invalid(u"limits"_s));
+    }
+    settings.limits = QcServerLimits::fromJson(json.value(u"limits"_s).toObject(), u"server.json"_s, &settings.limitWarnings);
     if (const QcStatus operators = readOperators(json, settings.operators); !operators) {
         return qcError(operators.error());
     }
@@ -170,7 +174,8 @@ QJsonObject QcServerSettings::toJson() const
             {u"connectionBurst"_s, connectionBurst},
             {u"maxConnectionsPerAddress"_s, maxConnectionsPerAddress},
             {u"operators"_s, QJsonArray::fromStringList(operators)},
-            {u"defaultGameMode"_s, defaultGameMode ? QString(QcGameModes::name(*defaultGameMode)) : QString()}};
+            {u"defaultGameMode"_s, defaultGameMode ? QString(QcGameModes::name(*defaultGameMode)) : QString()},
+            {u"limits"_s, limits.toJson()}};
 }
 
 QcStatus QcServerSettings::write(const QString &path) const
@@ -209,6 +214,8 @@ void QcServerSettings::applyTo(QcServerConfig &config) const
     config.loginTimeoutMs = loginTimeoutSeconds * 1000;
     config.operators = operators;
     config.defaultGameMode = defaultGameMode;
+    config.limits = limits;
+    config.limitsFromServer = true;
 }
 
 QcNetworkConfig QcServerSettings::networkConfig() const

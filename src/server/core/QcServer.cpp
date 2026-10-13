@@ -57,6 +57,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setSingleShot(true);
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
+    m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 }
 
 QcServer::~QcServer()

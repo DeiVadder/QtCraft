@@ -574,7 +574,7 @@ Smelted iron for tools, buckets and more.
 
 **Used in**
 
-[Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
+[Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="item-qtcraft-iron_nugget"></a>Iron nugget
 
@@ -595,7 +595,7 @@ A ninth of an iron ingot, for small metal parts like lanterns.
 
 **Used in**
 
-[Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern)
+[Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer)
 
 ### <a id="item-qtcraft-lava_bucket"></a>Lava bucket
 
@@ -961,7 +961,7 @@ Thread from a cobweb; four make white wool.
 
 **Used in**
 
-[White wool](blocks.md#block-qtcraft-white_wool)
+[Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [White wool](blocks.md#block-qtcraft-white_wool)
 
 **Dropped by**
 

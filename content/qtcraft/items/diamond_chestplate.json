@@ -47,5 +47,6 @@
                 "texture": "diamond_armour_trim"
             }
         ]
-    }
+    },
+    "dispense": "equip"
 }

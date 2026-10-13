@@ -232,7 +232,8 @@ bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definit
     return changed;
 }
 
-QList<QcMachineManager::Machine> QcMachineManager::tick(const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed)
+QList<QcMachineManager::Machine> QcMachineManager::tick(const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed,
+                                                       QList<QcBlockPos> *slotsChanged)
 {
     QList<Machine> removed;
     for (auto it = m_machines.begin(); it != m_machines.end();) {
@@ -249,8 +250,12 @@ QList<QcMachineManager::Machine> QcMachineManager::tick(const QcBlockAccess &wor
             continue;
         }
 
+        const std::array<QcItemStack, slotCount> before = it->stacks;
         if (step(*it, *definition, dt) && changed) {
             changed->append(it.key());
+        }
+        if (slotsChanged && it->stacks != before) {
+            slotsChanged->append(it.key());
         }
 
         ++it;

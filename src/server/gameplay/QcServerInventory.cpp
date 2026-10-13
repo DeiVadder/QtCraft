@@ -140,6 +140,10 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
         return false;
     }
 
+    // Only an inventory whose slots really change tells comparators and hoppers.
+    const QList<QcItemStack> before = open.container ? open.container->stacks
+                                      : open.machine ? QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end())
+                                                     : QList<QcItemStack>();
     if (open.machine) {
         if (!machineAccepts(*open.machine, open.combined)) {
             send(client);
@@ -163,12 +167,18 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     setEquipment(client, equipment);
 
     send(client);
-    // Everyone looking into this machine or chest sees the change.
+    // Everyone looking into this machine or chest sees the change; comparators and hoppers too.
     if (open.container) {
         m_machines.sendToViewers(open.container->pos);
+        if (open.container->stacks != before) {
+            m_state.noteContents(open.container->pos);
+        }
     }
     if (open.machine) {
         m_machines.sendToViewers(open.machine->pos);
+        if (QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()) != before) {
+            m_state.noteContents(open.machine->pos);
+        }
     }
     return true;
 }

@@ -44,6 +44,8 @@ enum class QcFacingRule : quint8 {
     Away,
     // Facing back at the player (furnace and chest fronts).
     Toward,
+    // Facing into the clicked block (a hopper's spout); placed on top, down (decision E-342).
+    Into,
 };
 
 // What happens to a block when it makes a sound.
@@ -160,6 +162,8 @@ struct QcBlockDefinition
     QStringList connectsTo;
     // Item slots of a storage block (chest); 0 for blocks without storage.
     int containerSlots = 0;
+    // Slots per row of its screen (a dispenser's 3 x 3, a hopper's row of 5).
+    int containerColumns = 9;
     // Tags of the item that places this block (server side only).
     QStringList itemTags;
     // "<material>/<family>" for building parts made by QcPartGenerator, empty otherwise (server side only).

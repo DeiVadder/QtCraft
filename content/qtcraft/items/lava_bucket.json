@@ -3,5 +3,6 @@
     "maxStack": 1,
     "places": "lava",
     "emptiesTo": "bucket",
-    "fuelSeconds": 1000
+    "fuelSeconds": 1000,
+    "dispense": "place_liquid"
 }

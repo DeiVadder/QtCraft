@@ -161,6 +161,21 @@ struct QcTextureSpec
         Lever,
         Repeater,
         PistonSide,
+        // Signal machines (decision E-342): a hopper's riveted iron side (primary, rivets and seams
+        // secondary), its rim seen from above around a dark bowl (secondary), its item icon (a funnel),
+        // a comparator's slab (primary) with three torch spots and a wire (secondary), an observer's
+        // face (primary) with a slit of eyes (secondary), its back with the output spot (secondary),
+        // its side with an arrow, and the fronts of dispenser and dropper: a stone face (primary)
+        // with a round mouth or a narrow slot (secondary).
+        Hopper,
+        HopperTop,
+        HopperItem,
+        Comparator,
+        ObserverFace,
+        ObserverBack,
+        ObserverSide,
+        Dispenser,
+        Dropper,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

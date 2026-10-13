@@ -77,6 +77,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
     info.defaultGameMode = knownMode.value_or(QcGameMode::Survival);
     info.unknownGameMode = knownMode || gameMode.isEmpty() ? QString() : gameMode.left(64);
+    info.limits = json.value(u"limits"_s).toObject();
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
@@ -103,7 +104,7 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
         packs.append(QJsonObject{{u"id"_s, pack.id}, {u"name"_s, pack.name}, {u"version"_s, pack.version}});
     }
 
-    const QJsonObject json{{u"formatVersion"_s, QcWorldInfo::formatVersion},
+    QJsonObject json{{u"formatVersion"_s, QcWorldInfo::formatVersion},
                            {u"packs"_s, packs},
                            {u"name"_s, info.name},
                            // As a string: JSON numbers cannot hold every 64-bit seed exactly.
@@ -118,6 +119,9 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
                                                         {u"mobSpawning"_s, info.mobSpawning},
                                                         {u"randomTicks"_s, info.randomTicks},
                                                         {u"quasiConnectivity"_s, info.quasiConnectivity}}}};
+    if (!info.limits.isEmpty()) {
+        json.insert(u"limits"_s, info.limits);
+    }
 
     QSaveFile file(QDir(m_directory).filePath(u"world.json"_s));
     if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(json).toJson()) < 0 || !file.commit()) {

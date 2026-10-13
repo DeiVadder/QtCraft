@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAabb.h"
+#include "QcBlockIndex.h"
 #include "QcBlockAccess.h"
 #include "QcChunk.h"
 #include "QcContentRegistry.h"
@@ -38,6 +39,9 @@ public:
     const QcSectionMarks &signalSections() const { return m_signalSections; }
     // Sections that may hold a pressure plate: only bodies there are checked for pressing one.
     const QcSectionMarks &plateSections() const { return m_plateSections; }
+    // The loaded Signal Hoppers and the cells changed next to them (decision E-344).
+    QcBlockIndex &hoppers() { return m_hoppers; }
+    const QcBlockIndex &hoppers() const { return m_hoppers; }
     // Removes a loaded chunk whatever its state and returns it (tests of circuits at the edge of the
     // loaded area; nothing is saved).
     std::shared_ptr<QcChunk> takeChunk(QcChunkPos pos);
@@ -93,6 +97,7 @@ private:
     QcSectionMarks m_growingSections;
     QcSectionMarks m_signalSections;
     QcSectionMarks m_plateSections;
+    QcBlockIndex m_hoppers;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;

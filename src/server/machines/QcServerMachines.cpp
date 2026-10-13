@@ -136,7 +136,11 @@ void QcServerMachines::sendToViewers(QcBlockPos pos)
 
 void QcServerMachines::tick()
 {
-    const QList<QcMachineManager::Machine> removed = m_state.machines.tick(m_state.world, QcPhysics::tickDuration);
+    QList<QcBlockPos> slotsChanged;
+    const QList<QcMachineManager::Machine> removed = m_state.machines.tick(m_state.world, QcPhysics::tickDuration, nullptr, &slotsChanged);
+    for (const QcBlockPos &pos : std::as_const(slotsChanged)) {
+        m_state.noteContents(pos);
+    }
     for (const QcMachineManager::Machine &machine : removed) {
         m_blocks.dropMachineContents(machine);
     }

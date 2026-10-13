@@ -1,0 +1,17 @@
+{
+    "name": "signal_comparator",
+    "type": "shaped",
+    "pattern": [
+        " t ",
+        "tnt",
+        "sss"
+    ],
+    "key": {
+        "t": "signal_torch",
+        "n": "iron_nugget",
+        "s": "stone"
+    },
+    "result": {
+        "item": "signal_comparator"
+    }
+}

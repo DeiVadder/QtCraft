@@ -54,20 +54,24 @@ QcServerCircuits::QcServerCircuits(QcServerState &state, QcServerSounds &sounds,
     , m_blocks(blocks)
     , m_table(*state.content)
     , m_mover(state, blocks, sounds, m_table)
+    , m_dispensers(state, blocks, sounds, m_table)
+    , m_hoppers(state, m_table)
 {
 }
 
 void QcServerCircuits::tick()
 {
-    m_budget = maxUpdatesPerTick;
+    const QcServerLimits &limits = m_state.config.limits;
+    m_budget = qsizetype(limits.signalBudget);
     m_pistonActs.clear();
     if (m_state.tickCount % pruneIntervalTicks == 0) {
         m_state.circuits.prune(m_state.tickCount, QcCircuitComponents::burnoutWindowTicks);
     }
     finishMoves();
+    m_state.circuits.takeReaders(m_state.world);
     pressPlates();
     // Changes may not take the whole budget: due scheduled ticks always get their share.
-    settle(scheduleReserve);
+    settle(qsizetype(limits.scheduleReserve()));
 
     while (m_budget > 0) {
         const auto group = m_state.circuits.schedule.nextGroup(m_state.tickCount);
@@ -77,7 +81,9 @@ void QcServerCircuits::tick()
         runScheduled(group->first, group->second);
         settle(0);
     }
-    m_lastWork = maxUpdatesPerTick - m_budget;
+    m_lastWork = qsizetype(limits.signalBudget) - m_budget;
+    // Hoppers have their own bound (QcServerLimits::hopperBudget).
+    m_hoppers.tick();
 }
 
 void QcServerCircuits::finishMoves()
@@ -122,6 +128,9 @@ bool QcServerCircuits::use(QcBlockPos pos)
         m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"delay"_s, delay));
         break;
     }
+    case QcSignalKind::Comparator:
+        m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"mode"_s, state.subtract ? u"compare"_s : u"subtract"_s));
+        break;
     default:
         return false;
     }
@@ -188,20 +197,44 @@ void QcServerCircuits::settle(qsizetype reserve)
     }
 }
 
-void QcServerCircuits::collect(const QList<QcCircuitState::Change> &changes, std::vector<QcBlockPos> &components,
-                               std::vector<QcBlockPos> &dust) const
+void QcServerCircuits::collect(const QList<QcCircuitState::Change> &changes, Collected &collected) const
 {
     for (const QcCircuitState::Change &change : changes) {
-        components.push_back(change.pos);
+        collected.components.push_back(change.pos);
         if (change.selfOnly) {
-            dust.push_back(change.pos);
+            collected.dust.push_back(change.pos);
             continue;
         }
-        collectAround(change, components, dust);
+        collectAround(change, collected.components, collected.dust);
+        if (change.before != change.after) {
+            collectObservers(change.pos, collected.observers);
+            // A block placed or broken two behind a comparator, behind a conductor.
+            collectReaders(change.pos, collected.readers);
+        }
     }
 
-    sortUnique(components);
-    sortUnique(dust);
+    sortUnique(collected.components);
+    sortUnique(collected.dust);
+    sortUnique(collected.readers);
+    sortUnique(collected.observers);
+}
+
+void QcServerCircuits::collectReaders(QcBlockPos pos, std::vector<QcBlockPos> &readers) const
+{
+    // A comparator reads the block behind it, or two behind it through a conductor.
+    const QList<QcBlockPos> found = QcCircuitState::readersOf(m_state.world, pos);
+    readers.insert(readers.end(), found.begin(), found.end());
+}
+
+void QcServerCircuits::collectObservers(QcBlockPos pos, std::vector<QcBlockPos> &observers) const
+{
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        const QcBlockPos next = qcNeighbour(pos, face);
+        const QcSignalState &state = m_table.at(m_state.world.blockAt(next).value_or(qcAirBlockId));
+        if (state.kind == QcSignalKind::Observer && state.facing == QcBlockRules::opposite(face)) {
+            observers.push_back(next);
+        }
+    }
 }
 
 void QcServerCircuits::collectAround(const QcCircuitState::Change &change, std::vector<QcBlockPos> &components,
@@ -236,7 +269,8 @@ void QcServerCircuits::collectAround(const QcCircuitState::Change &change, std::
 QList<QcCircuitState::Change> QcServerCircuits::takeChanges(qsizetype limit)
 {
     QList<QcCircuitState::Change> changes = std::exchange(m_state.circuits.changes, {});
-    const qsizetype room = std::max(limit / workPerChange, minimumStep);
+    const QcServerLimits &limits = m_state.config.limits;
+    const qsizetype room = std::max(limit / qsizetype(limits.signalWorkPerChange), qsizetype(limits.signalMinimumStep));
     if (changes.size() > room) {
         // Too many for one step: the first ones in a fixed order of positions now, the rest in the
         // next step. Such a split step is no longer simultaneous (decision E-335).
@@ -260,9 +294,10 @@ QList<QcCircuitState::Change> QcServerCircuits::takeChanges(qsizetype limit)
 void QcServerCircuits::runWave(qsizetype limit)
 {
     const QList<QcCircuitState::Change> changes = takeChanges(limit);
-    std::vector<QcBlockPos> components;
-    std::vector<QcBlockPos> dust;
-    collect(changes, components, dust);
+    Collected collected;
+    collect(changes, collected);
+    const std::vector<QcBlockPos> &components = collected.components;
+    const std::vector<QcBlockPos> &dust = collected.dust;
 
     const QcSignalPower power(m_state.world, m_table);
     const QcDustNetwork network(power);
@@ -271,20 +306,19 @@ void QcServerCircuits::runWave(qsizetype limit)
 
     QcCircuitPlan plan;
     plan.work = changes.size() + wired.visited;
-    if (wired.blockedBy) {
-        // The wire reaches a chunk that is not loaded: it is recomputed once that chunk is.
-        for (const QcBlockPos &pos : dust) {
-            if (m_table.at(m_state.world.blockAt(pos).value_or(qcAirBlockId)).kind == QcSignalKind::Dust) {
-                m_state.circuits.waitOn(*wired.blockedBy, pos);
-            }
+    // A wire that reaches a chunk that is not loaded is recomputed once that chunk is.
+    for (const QcDustNetwork::Result::Blocked &blocked : std::as_const(wired.blocked)) {
+        for (const QcBlockPos &pos : blocked.seeds) {
+            m_state.circuits.waitOn(blocked.chunk, pos);
         }
     }
     for (const QcDustNetwork::Change &change : std::as_const(wired.changes)) {
         plan.writes.insert(change.pos, change.state);
     }
 
+    const QcComparatorReadings readings(m_state.world, m_state.containers, m_state.machines);
     QcCircuitComponents reactions({power, m_state.circuits, m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving});
+                                   m_pressedByAnything, m_pressedByLiving, readings});
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
             if (m_table.at(m_state.world.blockAt(pos).value_or(qcAirBlockId)).kind != QcSignalKind::None) {
@@ -294,14 +328,32 @@ void QcServerCircuits::runWave(qsizetype limit)
         }
         reactions.react(pos, plan);
     }
+    reactReadersAndObservers(collected, reactions, plan);
     apply(plan);
+}
+
+void QcServerCircuits::reactReadersAndObservers(const Collected &collected, QcCircuitComponents &reactions, QcCircuitPlan &plan) const
+{
+    const QcSignalPower power(m_state.world, m_table);
+    for (const QcBlockPos &pos : collected.readers) {
+        // Already looked at for a block change in this step.
+        if (!std::ranges::binary_search(collected.components, pos, before) && !power.unloadedNear(pos)) {
+            reactions.react(pos, plan);
+        }
+    }
+    for (const QcBlockPos &pos : collected.observers) {
+        if (!power.unloadedNear(pos)) {
+            reactions.observed(pos, plan);
+        }
+    }
 }
 
 void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority priority)
 {
     QList<QcBlockPos> positions = m_state.circuits.schedule.takeGroup(due, priority);
     std::ranges::sort(positions, before);
-    const qsizetype room = std::max(m_budget / workPerChange, minimumStep);
+    const QcServerLimits &limits = m_state.config.limits;
+    const qsizetype room = std::max(m_budget / qsizetype(limits.signalWorkPerChange), qsizetype(limits.signalMinimumStep));
     // A group larger than the budget: the rest stays due with its tick and priority for the next
     // tick (not simultaneous with the first part any more).
     for (qsizetype i = room; i < positions.size(); ++i) {
@@ -310,8 +362,9 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
     positions.resize(std::min(positions.size(), room));
 
     const QcSignalPower power(m_state.world, m_table);
+    const QcComparatorReadings readings(m_state.world, m_state.containers, m_state.machines);
     QcCircuitComponents reactions({power, m_state.circuits, m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving});
+                                   m_pressedByAnything, m_pressedByLiving, readings});
     QcCircuitPlan plan;
     for (const QcBlockPos &pos : std::as_const(positions)) {
         // Next to an unloaded chunk the component waits for it and then looks again.
@@ -335,6 +388,7 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
     applyWrites(plan);
     applyOpenings(plan);
     m_budget -= applyPistons(plan);
+    m_budget -= m_dispensers.fire(plan.fires);
 
     for (const QcBlockPos &pos : std::as_const(plan.burntOut)) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::torchFizz), centreOf(pos));

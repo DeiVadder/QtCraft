@@ -742,6 +742,47 @@ private slots:
         QVERIFY(QcContentParser::parseTranslations(json(R"({"a":"b"})")).has_value());
         QVERIFY(!QcContentParser::parseTranslations(json(R"({"a":1})")).has_value());
     }
+
+    void signalMachineFields()
+    {
+        // A comparator reads contents of containers and machines, or a state property.
+        const auto box = QcContentParser::parseBlock(
+            json(R"({"name":"box","textures":{"all":"box"},"container":{"slots":9,"columns":3},"facing":"into",
+                     "states":{"facing":["down","north"]},"signal":{"comparator":"contents"}})"),
+            u"a"_s);
+        QVERIFY2(box.has_value(), qcErrorText(box));
+        QCOMPARE(box->containerColumns, 3);
+        QCOMPARE(box->facingRule, QcFacingRule::Into);
+        QCOMPARE(box->signal.reading, QcComparatorReading::Contents);
+        QVERIFY(!box->signal.isComponent());
+
+        const auto gauge = QcContentParser::parseBlock(
+            json(R"({"name":"gauge","textures":{"all":"g"},"states":{"level":["0","1","2"]},"signal":{"comparator":{"property":"level"}}})"),
+            u"a"_s);
+        QVERIFY2(gauge.has_value(), qcErrorText(gauge));
+        QCOMPARE(gauge->signal.reading, QcComparatorReading::Property);
+        QCOMPARE(gauge->signal.readProperty, u"level"_s);
+
+        QVERIFY(!QcContentParser::parseBlock(json(R"({"name":"x","textures":{"all":"x"},"signal":{"comparator":"contents"}})"), u"a"_s));
+        QVERIFY(!QcContentParser::parseBlock(json(R"({"name":"x","textures":{"all":"x"},"signal":{"comparator":{"property":"none"}}})"), u"a"_s));
+        QVERIFY(!QcContentParser::parseBlock(json(R"({"name":"x","textures":{"all":"x"},"container":{"columns":10}})"), u"a"_s));
+        // A dispenser needs its states.
+        QVERIFY(!QcContentParser::parseBlock(json(R"({"name":"x","textures":{"all":"x"},"signal":{"type":"dispenser"}})"), u"a"_s));
+    }
+
+    void dispenseActionsMatchTheItem()
+    {
+        const auto bucket = QcContentParser::parseItem(json(R"({"name":"b","places":"water","emptiesTo":"e","maxStack":1,"dispense":"place_liquid"})"), u"a"_s);
+        QVERIFY2(bucket.has_value(), qcErrorText(bucket));
+        QCOMPARE(bucket->dispense, QcDispenseAction::PlaceLiquid);
+        QCOMPARE(QcContentParser::parseItem(json(R"({"name":"s","places":"wheat"})"), u"a"_s)->dispense, QcDispenseAction::Throw);
+
+        // Seeds cannot be given an action that places them: only liquids are poured.
+        QVERIFY(!QcContentParser::parseItem(json(R"({"name":"s","places":"wheat","dispense":"place_liquid"})"), u"a"_s));
+        QVERIFY(!QcContentParser::parseItem(json(R"({"name":"s","places":"wheat","dispense":"plant"})"), u"a"_s));
+        QVERIFY(!QcContentParser::parseItem(json(R"({"name":"s","dispense":"scoop"})"), u"a"_s));
+        QVERIFY(!QcContentParser::parseItem(json(R"({"name":"s","dispense":"equip"})"), u"a"_s));
+    }
 };
 
 QTEST_GUILESS_MAIN(TestContent)

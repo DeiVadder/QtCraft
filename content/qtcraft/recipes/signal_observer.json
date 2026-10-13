@@ -1,0 +1,17 @@
+{
+    "name": "signal_observer",
+    "type": "shaped",
+    "pattern": [
+        "ccc",
+        "ddn",
+        "ccc"
+    ],
+    "key": {
+        "c": "cobblestone",
+        "d": "signal_dust",
+        "n": "iron_nugget"
+    },
+    "result": {
+        "item": "signal_observer"
+    }
+}

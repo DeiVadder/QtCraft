@@ -70,6 +70,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
     item.pickupDelay = drop.pickupDelay;
     item.age = drop.age;
     m_items.append(item);
+    m_stirred.append(item.motion.position);
     ++m_activeCount;
     return id;
 }
@@ -139,6 +140,7 @@ void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt
                           world, dt);
 
     item.resting = item.motion.onGround && !item.motion.inWater && item.motion.velocity.length() < restSpeed;
+    m_stirred.append(item.motion.position);
 }
 
 void QcItemEntityManager::merge(const QList<bool> &active)
@@ -172,6 +174,7 @@ void QcItemEntityManager::merge(const QList<bool> &active)
             // The merged stack keeps the younger age so it does not vanish right after a fresh drop.
             target.age = std::min(target.age, other.age);
             target.pickupDelay = std::max(target.pickupDelay, other.pickupDelay);
+            m_stirred.append(target.motion.position);
         }
     }
 }
@@ -307,6 +310,8 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
         std::ranges::sort(sleeping, [&byAge](qsizetype a, qsizetype b) { return byAge(b, a); });
         for (qsizetype i = 0; i < sleeping.size() && i < activeLimit - awake.size(); ++i) {
             m_items[sleeping[i]].dormant = false;
+            // A hopper below may be asleep; it takes note of the item now.
+            m_stirred.append(m_items[sleeping[i]].motion.position);
         }
     }
 }
@@ -355,6 +360,7 @@ void QcItemEntityManager::clear()
 {
     m_items.clear();
     m_queue.clear();
+    m_stirred.clear();
     m_activeCount = 0;
 }
 
@@ -392,14 +398,15 @@ qsizetype QcItemEntityManager::removeWhere(const std::function<bool(const Item &
     return m_items.removeIf([&match](const Item &item) { return !item.dormant && match(item); });
 }
 
-bool QcItemEntityManager::takeOne(quint32 id)
+bool QcItemEntityManager::take(quint32 id, int count)
 {
     const auto it = std::ranges::find(m_items, id, &Item::id);
-    if (it == m_items.end() || it->dormant || it->stack.isEmpty()) {
+    if (it == m_items.end() || it->dormant || it->stack.isEmpty() || count <= 0 || it->stack.count < count) {
         return false;
     }
 
-    if (--it->stack.count <= 0) {
+    it->stack.count -= count;
+    if (it->stack.count <= 0) {
         m_items.erase(it);
     }
     return true;

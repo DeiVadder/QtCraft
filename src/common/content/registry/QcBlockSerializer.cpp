@@ -235,8 +235,9 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     }
 
     qint32 containerSlots = 0;
+    qint32 containerColumns = 0;
     qint32 flowDistance = 0;
-    stream >> containerSlots >> flowDistance >> block.flow.movementFactor;
+    stream >> containerSlots >> containerColumns >> flowDistance >> block.flow.movementFactor;
     quint8 signalKind = 0;
     stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> signalKind;
     if (signalKind >= quint8(qcSignalKindCount)) {
@@ -253,7 +254,8 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
 
     block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
-        || facingRule > quint8(QcFacingRule::Toward) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
+        || facingRule > quint8(QcFacingRule::Into) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
+        || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || !QcBlockStateTable::problem(block).isEmpty()) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
@@ -263,6 +265,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     block.facingRule = QcFacingRule(facingRule);
     block.support = QcBlockSupport(support);
     block.containerSlots = containerSlots;
+    block.containerColumns = containerColumns;
     return true;
 }
 
@@ -320,7 +323,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     for (const QString &group : block.connectsTo) {
         stream << group;
     }
-    stream << qint32(block.containerSlots) << qint32(block.flow.distance) << block.flow.movementFactor;
+    stream << qint32(block.containerSlots) << qint32(block.containerColumns) << qint32(block.flow.distance) << block.flow.movementFactor;
     stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << quint8(block.signal.kind);
 }
 

@@ -1,0 +1,8 @@
+{
+    "name": "signal_hopper_outside",
+    "pattern": "hopper",
+    "primary": "#4a4a4e",
+    "secondary": "#2c2c30",
+    "variation": 0.08,
+    "seed": 2920
+}

@@ -77,10 +77,11 @@ limited() {
 
 run_tests() {
     preset=$1
+    # The TSan suite alone takes about 40 minutes by now (stage 29.2); allow an hour per step.
     if [ -n "$TEST_REGEX" ]; then
-        limited 2400 ctest --preset "$preset" -R "$TEST_REGEX"
+        limited 3600 ctest --preset "$preset" -R "$TEST_REGEX"
     else
-        limited 2400 ctest --preset "$preset"
+        limited 3600 ctest --preset "$preset"
     fi
 }
 

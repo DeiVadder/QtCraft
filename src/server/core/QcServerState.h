@@ -53,6 +53,11 @@ struct QcServerState
     // The local player (host of a single player world) and listed operators are operators
     // (decision E-243).
     QcPermission permissionOf(const QcServerClient &client) const;
+    // The contents of the container or machine at `pos` changed (a screen, a hopper, a furnace):
+    // comparators reading it and hoppers next to it look again (decisions E-343, E-344).
+    void noteContents(QcBlockPos pos) { circuits.noteContents(world, pos); }
+    // Hands the limits of the config to the parts that keep their own copy (decision E-349).
+    void applyLimits();
 
     QcServerConfig config;
     std::shared_ptr<const QcContentRegistry> content;

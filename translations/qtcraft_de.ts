@@ -155,14 +155,18 @@
 <context>
     <name>ChestScreen</name>
     <message>
-        <location filename="../src/app/qml/ChestScreen.qml" line="24"/>
+        <location filename="../src/app/qml/ChestScreen.qml" line="25"/>
         <source>Chest</source>
         <translation>Truhe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/ChestScreen.qml" line="60"/>
+        <location filename="../src/app/qml/ChestScreen.qml" line="61"/>
+        <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.</source>
+        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen diesem Block und dem Inventar verschieben. %1 oder Esc schließt. Wer den Block abbaut, verstreut seinen Inhalt.</translation>
+    </message>
+    <message>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between chest and inventory. %1 or Esc closes. Breaking the chest drops its contents.</source>
-        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen Truhe und Inventar verschieben. %1 oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt.</translation>
+        <translation type="vanished">Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen Truhe und Inventar verschieben. %1 oder Esc schließt. Wer die Truhe abbaut, verstreut ihren Inhalt.</translation>
     </message>
     <message>
         <source>Left click: pick up and put down. Right click: put down one. %1 or Esc closes. Breaking the chest drops its contents.</source>
@@ -2327,7 +2331,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="51"/>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="90"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="95"/>
         <source>Usage: /backup [label]</source>
         <translation>Verwendung: /backup [Bezeichnung]</translation>
     </message>
@@ -2348,99 +2352,119 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="60"/>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="252"/>
+        <source>Usage: /limits</source>
+        <translation>Verwendung: /limits</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="61"/>
+        <source>Shows the simulation limits of the server (server.json or world.json, "limits").</source>
+        <translation>Zeigt die Simulationsgrenzen des Servers (server.json oder world.json, „limits“).</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="65"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="267"/>
         <source>Usage: /remove &lt;mobs|hostile|animals|ambient|items|stands|all|&lt;creature&gt;|item:&lt;item&gt;&gt; [radius|world]</source>
         <translation>Verwendung: /remove &lt;mobs|hostile|animals|ambient|items|stands|all|&lt;Wesen&gt;|item:&lt;Item&gt;&gt; [Radius|world]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="62"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="67"/>
         <source>Removes entities around you (32 m unless given, at most 256 m) or in the whole loaded world; &apos;all&apos; means creatures and items.</source>
         <translation>Entfernt Entities um dich (32 m, wenn nicht angegeben, höchstens 256 m) oder in der ganzen geladenen Welt; „all“ meint Wesen und Items.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="67"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="72"/>
         <source>Usage: /stop</source>
         <translation>Verwendung: /stop</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="68"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="73"/>
         <source>Saves the world and stops the server.</source>
         <translation>Speichert die Welt und beendet den Server.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="70"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="75"/>
         <source>Stopping the server</source>
         <translation>Der Server wird beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="79"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="84"/>
         <source>World saved</source>
         <translation>Welt gespeichert</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="81"/>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="100"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="86"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="105"/>
         <source>Saving failed: %1</source>
         <translation>Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="89"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="94"/>
         <source>This world is not saved, there is nothing to back up</source>
         <translation>Diese Welt wird nicht gespeichert, es gibt nichts zu sichern</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="94"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="99"/>
         <source>A backup is still being copied, try again when it is done</source>
         <translation>Eine Sicherung wird noch kopiert, versuche es danach erneut</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="114"/>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="141"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="119"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="146"/>
         <source>Backup failed: %1</source>
         <translation>Backup fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="122"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="127"/>
         <source>Backup of %1 files started, it is copied to %2</source>
         <translation>Sicherung von %1 Dateien gestartet, sie wird nach %2 kopiert</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="137"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="142"/>
         <source>Backup with %1 files (%2 MB) in %3</source>
         <translation>Backup mit %1 Dateien (%2 MB) in %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="161"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="159"/>
+        <source>Limits from %1:</source>
+        <translation>Grenzen aus %1:</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="163"/>
+        <source>  %1</source>
+        <translation>  %1</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="176"/>
         <source>World %1 (%2, seed %3), tick %4</source>
         <translation>Welt %1 (%2, Seed %3), Tick %4</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="163"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="178"/>
         <source>Chunks: %1 loaded, %2 changed; players: %3</source>
         <translation>Chunks: %1 geladen, %2 geändert; Spieler: %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="166"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="181"/>
         <source>Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands; %5 machines, %6 chests</source>
         <translation>Entities: %1 Wesen, %2 Items, %3 fallende Blöcke, %4 Rüstungsständer; %5 Maschinen, %6 Truhen</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="170"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="185"/>
         <source>Tick: %1 ms mean, %2 ms max, %3 ms late on average, %4 skipped; slowest phase %5 (%6 ms)</source>
         <translation>Tick: %1 ms im Mittel, %2 ms höchstens, %3 ms Verspätung im Mittel, %4 übersprungen; langsamste Phase %5 (%6 ms)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="174"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="189"/>
         <source>Memory: %1 MB now, %2 MB at most</source>
         <translation>Speicher: %1 MB jetzt, %2 MB höchstens</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="265"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="280"/>
         <source>Removed %1 creatures, %2 item stacks and %3 armour stands</source>
         <translation>%1 Wesen, %2 Item-Stapel und %3 Rüstungsständer entfernt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcWorldCommands.cpp" line="273"/>
+        <location filename="../src/server/commands/QcWorldCommands.cpp" line="288"/>
         <source>This removes %1 creatures, %2 item stacks and %3 armour stands.</source>
         <translation>Das entfernt %1 Wesen, %2 Item-Stapel und %3 Rüstungsständer.</translation>
     </message>
@@ -2450,52 +2474,52 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="133"/>
+        <location filename="../src/server/core/QcServer.cpp" line="134"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="324"/>
+        <location filename="../src/server/core/QcServer.cpp" line="325"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="375"/>
+        <location filename="../src/server/core/QcServer.cpp" line="376"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="399"/>
+        <location filename="../src/server/core/QcServer.cpp" line="400"/>
         <source>Cannot load player data: %1</source>
         <translation>Die Spielerdaten lassen sich nicht laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="447"/>
+        <location filename="../src/server/core/QcServer.cpp" line="448"/>
         <source>access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty with the whitelist on, and changes are not saved until the file is repaired</source>
         <translation>access.json ist beschädigt und konnte nicht beiseitegelegt werden: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet, und Änderungen werden nicht gespeichert, bis die Datei repariert ist</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="452"/>
+        <location filename="../src/server/core/QcServer.cpp" line="453"/>
         <source>access.json was damaged: operators, bans and the whitelist start empty with the whitelist on; the damaged file was kept as %1</source>
         <translation>access.json war beschädigt: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet; die beschädigte Datei liegt als %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="469"/>
+        <location filename="../src/server/core/QcServer.cpp" line="470"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="643"/>
+        <location filename="../src/server/core/QcServer.cpp" line="645"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="210"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="248"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="211"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="249"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
@@ -2512,27 +2536,27 @@
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="319"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="329"/>
         <source>Not enough room in the inventory</source>
         <translation>Nicht genug Platz im Inventar</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="333"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="343"/>
         <source>Unknown recipe %1</source>
         <translation>Unbekanntes Rezept %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="340"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="350"/>
         <source>%1 needs a crafting table nearby</source>
         <translation>%1 braucht eine Werkbank in der Nähe</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="359"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="369"/>
         <source>Crafted %1 x %2</source>
         <translation>%1 × %2 hergestellt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="362"/>
+        <location filename="../src/server/gameplay/QcServerInventory.cpp" line="372"/>
         <source>Missing ingredients or room for %1</source>
         <translation>Zutaten oder Platz für %1 fehlen</translation>
     </message>
@@ -2950,7 +2974,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="168"/>
+        <location filename="../src/server/core/QcServer.cpp" line="169"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>

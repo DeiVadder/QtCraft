@@ -38,6 +38,9 @@ inline constexpr auto signalClick = "qtcraft:block.signal.click";
 inline constexpr auto pistonOut = "qtcraft:block.piston.out";
 inline constexpr auto pistonIn = "qtcraft:block.piston.in";
 inline constexpr auto torchFizz = "qtcraft:block.torch.fizz";
+// A dispenser or dropper ejecting an item, and one with nothing to eject or no room (decision E-345).
+inline constexpr auto dispenserDispense = "qtcraft:block.dispenser.dispense";
+inline constexpr auto dispenserFail = "qtcraft:block.dispenser.fail";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

@@ -1,0 +1,39 @@
+{
+    "name": "signal_hopper",
+    "sound": "stone",
+    "shape": "signal_hopper",
+    "render": "cutout",
+    "facing": "into",
+    "lightOpacity": 0,
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "container": {
+        "slots": 5,
+        "columns": 5
+    },
+    "states": {
+        "facing": [
+            "down",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "enabled": [
+            true,
+            false
+        ]
+    },
+    "itemTexture": "signal_hopper_item",
+    "textures": {
+        "all": "signal_hopper_outside",
+        "top": "signal_hopper_top",
+        "slots": {
+            "inside": "signal_hopper_inside"
+        }
+    },
+    "signal": {
+        "type": "hopper",
+        "comparator": "contents"
+    }
+}

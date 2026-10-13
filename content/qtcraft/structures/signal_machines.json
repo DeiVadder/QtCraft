@@ -1,0 +1,468 @@
+{
+    "name": "signal_machines",
+    "showcase": {
+        "order": 83
+    },
+    "palette": {
+        ".": "air",
+        "a": "polished_stone",
+        "b": "chest[facing=south]",
+        "c": "signal_hopper[facing=north]",
+        "d": "stone",
+        "e": "stone_bricks",
+        "f": "signal_comparator[facing=east]",
+        "g": "signal_dust",
+        "h": "signal_lamp",
+        "i": "signal_observer[facing=east,powered=true]",
+        "j": "signal_observer[facing=west]",
+        "k": "white_wool_carpet",
+        "l": "farmland",
+        "m": "stone_slab[type=bottom]",
+        "n": "glass",
+        "o": "signal_torch[attach=west]",
+        "p": "signal_dispenser[facing=east]",
+        "q": "signal_repeater[facing=north,delay=4]",
+        "r": "lever[attach=floor,powered=true]",
+        "s": "signal_comparator[facing=south,mode=subtract,powered=true,power=15]",
+        "t": "signal_repeater[facing=west,delay=1]",
+        "u": "signal_hopper[facing=down,enabled=false]",
+        "v": "signal_dropper[facing=north]",
+        "w": "signal_hopper[facing=south]",
+        "x": "signal_hopper[facing=east]"
+    },
+    "layers": [
+        [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaabaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaacaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaacaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaacaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..d.dd.d.dd...................",
+            "..ddd..ddd....................",
+            ".eb...eb...e..bfgggggggh......",
+            "..............................",
+            "..............................",
+            "..............................",
+            "...............hijh...........",
+            "....k.........................",
+            "....l.........................",
+            "....m.n.......................",
+            "...dop.n......................",
+            "...qg.n.......................",
+            "...gg.........................",
+            ".............................."
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..r.gg.r.gg...................",
+            "..stgn.stgn...................",
+            ".eudnneudnne..................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "....v.........................",
+            "..............................",
+            "..............................",
+            ".............................."
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..............................",
+            "....dg...dg...................",
+            ".ewfggewfgge..................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".............................."
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".xxxxxxxxxxb..................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".............................."
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".b............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".............................."
+        ],
+        [
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            "..............................",
+            ".............................."
+        ]
+    ],
+    "updates": [
+        [
+            3,
+            3,
+            4
+        ],
+        [
+            2,
+            2,
+            3
+        ],
+        [
+            2,
+            2,
+            4
+        ],
+        [
+            8,
+            3,
+            4
+        ],
+        [
+            7,
+            2,
+            3
+        ],
+        [
+            7,
+            2,
+            4
+        ],
+        [
+            15,
+            1,
+            4
+        ],
+        [
+            16,
+            1,
+            8
+        ],
+        [
+            17,
+            1,
+            8
+        ],
+        [
+            4,
+            1,
+            12
+        ],
+        [
+            3,
+            1,
+            13
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                2.5,
+                1.6,
+                5.5
+            ],
+            "text": "structure.qtcraft.signal_machines.sorted_wheat"
+        },
+        {
+            "at": [
+                7.5,
+                1.6,
+                5.5
+            ],
+            "text": "structure.qtcraft.signal_machines.sorted_cobblestone"
+        },
+        {
+            "at": [
+                1.5,
+                6.8,
+                4.5
+            ],
+            "text": "structure.qtcraft.signal_machines.sorter"
+        },
+        {
+            "at": [
+                11.5,
+                5.6,
+                4.5
+            ],
+            "text": "structure.qtcraft.signal_machines.overflow"
+        },
+        {
+            "at": [
+                15.5,
+                2.6,
+                4.5
+            ],
+            "text": "structure.qtcraft.signal_machines.comparator"
+        },
+        {
+            "at": [
+                16.5,
+                2.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_machines.observer_clock"
+        },
+        {
+            "at": [
+                6.5,
+                2.6,
+                12.5
+            ],
+            "text": "structure.qtcraft.signal_machines.dispenser"
+        },
+        {
+            "at": [
+                4.5,
+                3.6,
+                12.5
+            ],
+            "text": "structure.qtcraft.signal_machines.dropper"
+        },
+        {
+            "at": [
+                4.5,
+                1.8,
+                9.5
+            ],
+            "text": "structure.qtcraft.signal_machines.collectors"
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                2,
+                3,
+                4
+            ],
+            "items": [
+                {
+                    "item": "wheat",
+                    "count": 18
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                }
+            ]
+        },
+        {
+            "at": [
+                7,
+                3,
+                4
+            ],
+            "items": [
+                {
+                    "item": "cobblestone",
+                    "count": 18
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                },
+                {
+                    "item": "string",
+                    "count": 24
+                }
+            ]
+        },
+        {
+            "at": [
+                1,
+                5,
+                4
+            ],
+            "items": [
+                {
+                    "item": "wheat",
+                    "count": 20
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 20
+                },
+                {
+                    "item": "stick",
+                    "count": 8
+                }
+            ]
+        },
+        {
+            "at": [
+                14,
+                1,
+                4
+            ],
+            "items": [
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                }
+            ]
+        },
+        {
+            "at": [
+                5,
+                1,
+                12
+            ],
+            "items": [
+                {
+                    "item": "water_bucket",
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "at": [
+                4,
+                2,
+                12
+            ],
+            "items": [
+                {
+                    "item": "stick",
+                    "count": 64
+                },
+                {
+                    "item": "stick",
+                    "count": 64
+                }
+            ]
+        }
+    ]
+}

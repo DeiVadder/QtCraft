@@ -1,0 +1,26 @@
+{
+    "name": "block.dispenser.dispense",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.05,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.04,
+            "frequency": 1500,
+            "endFrequency": 1000,
+            "attack": 0.001,
+            "curve": 4,
+            "lowpass": 2800,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 3,
+            "lowpass": 1800,
+            "gain": 0.35
+        }
+    ]
+}

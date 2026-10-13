@@ -80,5 +80,10 @@
             "growing": "wheat_crop_growing",
             "ripe": "wheat_crop_ripe"
         }
+    },
+    "signal": {
+        "comparator": {
+            "property": "age"
+        }
     }
 }

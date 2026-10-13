@@ -43,6 +43,10 @@ struct QcServerSettings
     // Game mode of players who join for the first time ("survival", "creative"; empty in the file:
     // the world's default). A world the server creates gets it as its default (decision E-282).
     std::optional<QcGameMode> defaultGameMode;
+    // Budgets of the simulation ("limits", decision E-349), clamped into their ranges; what was
+    // clamped or unknown is in `limitWarnings` for the log.
+    QcServerLimits limits;
+    QStringList limitWarnings;
 
     // Reads a settings file; a missing file gives the defaults.
     static QcResult<QcServerSettings> read(const QString &path);

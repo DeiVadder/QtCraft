@@ -38,6 +38,13 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     , random(quint32(quint64(config.seed) ^ 0xD2095u))
     , soundRandom(quint32(quint64(config.seed) ^ 0x50D5u))
 {
+    applyLimits();
+}
+
+void QcServerState::applyLimits()
+{
+    circuits.maxPendingChanges = qsizetype(config.limits.signalMaxPendingChanges);
+    circuits.hoppers.cooldownTicks = int(config.limits.hopperCooldownTicks);
 }
 
 QcPermission QcServerState::permissionOf(const QcServerClient &client) const

@@ -56,6 +56,11 @@ void QcWorldCommands::addTo(QcCommandRegistry &registry)
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /worldinfo"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows chunks, entities, tick times and memory of the server."),
                          .run = [this](const QcCommandContext &context) { worldInfo(context); }});
+    registry.addBuiltIn({.name = u"limits"_s,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /limits"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                          "Shows the simulation limits of the server (server.json or world.json, \"limits\")."),
+                         .run = [this](const QcCommandContext &context) { limits(context); }});
     registry.addBuiltIn({.name = u"remove"_s, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages",
                                                     "Usage: /remove <mobs|hostile|animals|ambient|items|stands|all|<creature>|item:<item>> [radius|world]"),
@@ -146,6 +151,16 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
         if (requester != 0 && client->entityId == requester && client->state == QcServerClient::State::Playing) {
             client->connection->send(line);
         }
+    }
+}
+
+void QcWorldCommands::limits(const QcCommandContext &context) const
+{
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Limits from %1:"),
+                  {m_state.config.limitsFromServer ? u"server.json"_s : u"world.json"_s});
+    const QStringList lines = m_state.config.limits.lines();
+    for (const QString &line : lines) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "  %1"), {line});
     }
 }
 

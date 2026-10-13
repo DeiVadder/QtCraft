@@ -1,0 +1,35 @@
+{
+    "name": "signal_observer",
+    "sound": "stone",
+    "shape": "signal_observer",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west",
+            "up",
+            "down"
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "signal_observer_side",
+        "top": "signal_observer_top",
+        "bottom": "signal_observer_top",
+        "north": "signal_observer_front",
+        "south": "signal_observer_back",
+        "slots": {
+            "lit": "signal_observer_back_lit"
+        }
+    },
+    "signal": {
+        "type": "observer",
+        "conducts": false
+    }
+}

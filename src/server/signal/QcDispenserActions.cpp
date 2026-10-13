@@ -1,0 +1,317 @@
+#include "QcDispenserActions.h"
+
+#include "QcArmour.h"
+#include "QcBlockRules.h"
+#include "QcLiquidFlow.h"
+#include "QcPhysics.h"
+#include "QcServerBlocks.h"
+#include "QcServerSounds.h"
+#include "QcServerState.h"
+#include "QcSignalTable.h"
+#include "QcSoundKeys.h"
+
+#include <QRandomGenerator>
+
+#include <algorithm>
+#include <limits>
+#include <numeric>
+
+namespace {
+
+QcVec3 centreOf(QcBlockPos pos)
+{
+    return {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+}
+
+QcAabb cellBox(QcBlockPos pos)
+{
+    const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
+    return {corner, corner + QcVec3{1.0, 1.0, 1.0}};
+}
+
+} // namespace
+
+QcDispenserActions::QcDispenserActions(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds, const QcSignalTable &table)
+    : m_state(state)
+    , m_blocks(blocks)
+    , m_sounds(sounds)
+    , m_table(table)
+{
+}
+
+std::optional<QcDispenserActions::Shot> QcDispenserActions::aim(QcBlockPos pos) const
+{
+    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const QcSignalState &state = m_table.at(block.value_or(qcAirBlockId));
+    if (state.kind != QcSignalKind::Dispenser || !state.facing) {
+        return std::nullopt;
+    }
+
+    const QcInventoryAccess access(m_state);
+    const QList<QcItemStack> stacks = access.slotsAt(pos);
+    QList<int> filled;
+    for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
+        if (!stacks[slot].isEmpty()) {
+            filled.append(int(slot));
+        }
+    }
+    if (filled.isEmpty()) {
+        return std::nullopt;
+    }
+
+    // Seeded with the world, the tick and the contents: the same world picks the same at any place
+    // and in any rotation, and dispensers with other contents do not all pick alike.
+    quint64 contents = 0;
+    for (const QcItemStack &stack : stacks) {
+        contents = contents * 0x100000001B3ULL ^ (quint64(stack.item) << 20 ^ quint64(stack.count));
+    }
+    const quint64 seed = quint64(m_state.config.seed) * 0x9E3779B97F4A7C15ULL ^ m_state.tickCount * 0xBF58476D1CE4E5B9ULL ^ contents;
+    QRandomGenerator random(quint32(seed ^ (seed >> 32)));
+    const int slot = filled[qsizetype(random.bounded(quint32(filled.size())))];
+    return Shot{pos, *state.facing, slot, {stacks[slot].item, 1, stacks[slot].damage}};
+}
+
+qsizetype QcDispenserActions::fire(const QList<QcBlockPos> &positions)
+{
+    QcInventoryAccess access(m_state);
+    QList<Shot> shots;
+    for (const QcBlockPos &pos : positions) {
+        if (std::optional<Shot> shot = aim(pos)) {
+            shots.append(*shot);
+        } else if (m_table.at(m_state.world.blockAt(pos).value_or(qcAirBlockId)).kind == QcSignalKind::Dispenser) {
+            m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(pos));
+        }
+    }
+
+    const QList<Shot> others = insertDropped(shots, access);
+    const QList<Shot> thrown = use(others, access);
+    for (const Shot &shot : thrown) {
+        throwItem(shot, access);
+    }
+    access.finish();
+    return positions.size();
+}
+
+QList<QcDispenserActions::Shot> QcDispenserActions::insertDropped(const QList<Shot> &shots, QcInventoryAccess &access)
+{
+    // Droppers put the item into a container in front, all of a step together; dispensers use or
+    // throw it whatever stands in front (as in the reference).
+    QList<QcInventoryAccess::Insertion> insertions;
+    QList<Shot> others;
+    for (qsizetype i = 0; i < shots.size(); ++i) {
+        const QcBlockPos front = qcNeighbour(shots[i].dispenser, shots[i].facing);
+        const bool dropper = !m_state.content->block(m_state.world.blockAt(shots[i].dispenser).value_or(qcAirBlockId)).signal.usesItems;
+        if (dropper && access.hasInventory(front) && access.ensure(front)) {
+            insertions.append({front, QcBlockRules::opposite(shots[i].facing), shots[i].unit, int(i), -1});
+        } else {
+            others.append(shots[i]);
+        }
+    }
+
+    QSet<int> done;
+    const QList<QcInventoryAccess::Insertion> kept = access.resolve(insertions);
+    for (const QcInventoryAccess::Insertion &insertion : kept) {
+        const Shot &shot = shots[insertion.giver];
+        if (access.put(insertion.target, insertion.slot, insertion.stack) && access.take(shot.dispenser, shot.slot, 1)) {
+            done.insert(insertion.giver);
+            m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserDispense), centreOf(shot.dispenser));
+        }
+    }
+    // A full container (or a conflict): nothing happens, as for a dropper in the reference.
+    for (const QcInventoryAccess::Insertion &insertion : std::as_const(insertions)) {
+        if (!done.contains(insertion.giver)) {
+            m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(shots[insertion.giver].dispenser));
+        }
+    }
+    return others;
+}
+
+QList<QcDispenserActions::Shot> QcDispenserActions::use(const QList<Shot> &shots, QcInventoryAccess &access)
+{
+    const QcContentRegistry &content = *m_state.content;
+    QList<bool> acts;
+    QHash<QcBlockPos, int> actionsOn;
+    for (const Shot &shot : shots) {
+        const bool uses = content.block(m_state.world.blockAt(shot.dispenser).value_or(qcAirBlockId)).signal.usesItems;
+        acts.append(uses && content.item(shot.unit.item).dispense != QcDispenseAction::Throw);
+        if (acts.constLast()) {
+            ++actionsOn[qcNeighbour(shot.dispenser, shot.facing)];
+        }
+    }
+
+    QList<Shot> thrown;
+    for (qsizetype i = 0; i < shots.size(); ++i) {
+        const Shot &shot = shots[i];
+        // Two actions on the same cell in one step: neither happens (no order decides).
+        if (acts[i] && actionsOn.value(qcNeighbour(shot.dispenser, shot.facing)) > 1) {
+            m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(shot.dispenser));
+            continue;
+        }
+        if (!acts[i] || !useOne(shot, access)) {
+            thrown.append(shot);
+        }
+    }
+    return thrown;
+}
+
+bool QcDispenserActions::useOne(const Shot &shot, QcInventoryAccess &access)
+{
+    switch (m_state.content->item(shot.unit.item).dispense) {
+    case QcDispenseAction::PlaceLiquid:
+        return placeLiquid(shot, access);
+    case QcDispenseAction::Scoop:
+        return scoopLiquid(shot, access);
+    case QcDispenseAction::Equip:
+        return equip(shot, access);
+    case QcDispenseAction::Throw:
+        break;
+    }
+    return false;
+}
+
+bool QcDispenserActions::placeLiquid(const Shot &shot, QcInventoryAccess &access)
+{
+    const QcContentRegistry &content = *m_state.content;
+    const QcItemDefinition &item = content.item(shot.unit.item);
+    const QcBlockPos front = qcNeighbour(shot.dispenser, shot.facing);
+    const std::optional<QcBlockId> liquid = content.blockId(item.placesBlock);
+    const std::optional<QcBlockId> there = front.isInsideWorldHeight() ? m_state.world.blockAt(front) : std::nullopt;
+    // Only liquids, only into a cell inside the world that gives way (air, flowing liquid, tall
+    // grass), and only when the bucket has an empty one to become.
+    const bool source = there && content.block(*there).liquid && QcLiquidFlow::isSource(content, *there);
+    const bool replaceable = there && content.block(*there).replaceable && !source;
+    if (!liquid || !content.block(*liquid).liquid || !replaceable || !content.itemId(item.emptiesTo)) {
+        return false;
+    }
+
+    if (!m_blocks.setQuietly(front, *liquid)) {
+        return false;
+    }
+    m_blocks.sendBlock(front, *liquid);
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::bucketEmpty), centreOf(front));
+    exchange(shot, item.emptiesTo, access);
+    return true;
+}
+
+bool QcDispenserActions::scoopLiquid(const Shot &shot, QcInventoryAccess &access)
+{
+    const QcContentRegistry &content = *m_state.content;
+    const QcBlockPos front = qcNeighbour(shot.dispenser, shot.facing);
+    const std::optional<QcBlockId> there = m_state.world.blockAt(front);
+    if (!there || !content.block(*there).liquid || !QcLiquidFlow::isSource(content, *there)) {
+        return false;
+    }
+
+    const QString bucket = filledBucket(shot.unit.item, *there);
+    if (bucket.isEmpty() || !m_blocks.setQuietly(front, qcAirBlockId)) {
+        return false;
+    }
+    m_blocks.sendBlock(front, qcAirBlockId);
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::bucketFill), centreOf(front));
+    exchange(shot, bucket, access);
+    return true;
+}
+
+QString QcDispenserActions::filledBucket(QcItemId empty, QcBlockId liquid) const
+{
+    // The filled item that empties into this one and pours this liquid; else the liquid's bucket.
+    const QcContentRegistry &content = *m_state.content;
+    const QString &emptyName = content.item(empty).name;
+    for (const QcItemDefinition &item : content.items()) {
+        const std::optional<QcBlockId> places = content.blockId(item.placesBlock);
+        if (item.emptiesTo == emptyName && places && content.isSameBlock(*places, liquid)) {
+            return item.name;
+        }
+    }
+    const QString &bucket = content.block(liquid).flow.bucket;
+    return content.itemId(bucket) ? bucket : QString();
+}
+
+bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
+{
+    const QcArmourDefinition *armour = QcArmour::of(*m_state.content, shot.unit.item);
+    if (!armour) {
+        return false;
+    }
+
+    // The body in front with that slot free and the lowest entity id: players and stands alike.
+    const QcAabb cell = cellBox(qcNeighbour(shot.dispenser, shot.facing));
+    QcServerClient *player = nullptr;
+    QcArmourStandManager::Stand *stand = nullptr;
+    quint32 lowest = std::numeric_limits<quint32>::max();
+    for (const auto &client : m_state.clients) {
+        const QcAabb body = QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
+        if (client->state == QcServerClient::State::Playing && !client->dead && body.intersects(cell)
+            && client->equipment.at(armour->slot).isEmpty() && client->entityId < lowest) {
+            lowest = client->entityId;
+            player = client.get();
+        }
+    }
+    for (const QcArmourStandManager::Stand &candidate : m_state.stands.stands()) {
+        if (QcArmourStandManager::bodyOf(candidate).intersects(cell) && candidate.equipment.at(armour->slot).isEmpty() && candidate.id < lowest) {
+            lowest = candidate.id;
+            player = nullptr;
+            stand = m_state.stands.find(candidate.id);
+        }
+    }
+    if (!player && !stand) {
+        return false;
+    }
+
+    access.take(shot.dispenser, shot.slot, 1);
+    if (stand) {
+        stand->equipment.at(armour->slot) = shot.unit;
+        m_state.markStale(stand->id);
+    } else if (m_equipPlayer) {
+        QcEquipment equipment = player->equipment;
+        equipment.at(armour->slot) = shot.unit;
+        m_equipPlayer(*player, equipment);
+    }
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::armourEquip), centreOf(shot.dispenser));
+    return true;
+}
+
+void QcDispenserActions::exchange(const Shot &shot, const QString &name, QcInventoryAccess &access)
+{
+    access.take(shot.dispenser, shot.slot, 1);
+    const std::optional<QcItemId> item = m_state.content->itemId(name);
+    if (!item) {
+        return;
+    }
+
+    const QcItemStack result{*item, 1, 0};
+    QList<QcItemStack> stacks = access.slotsAt(shot.dispenser);
+    if (stacks[shot.slot].count <= 0) {
+        // The emptied slot takes it.
+        access.put(shot.dispenser, shot.slot, result);
+        return;
+    }
+    QList<int> cells(stacks.size());
+    std::ranges::iota(cells, 0);
+    const int slot = access.slotFor(shot.dispenser, stacks, cells, result);
+    if (slot >= 0) {
+        access.put(shot.dispenser, slot, result);
+    } else {
+        Shot rest = shot;
+        rest.unit = result;
+        rest.slot = -1;
+        throwItem(rest, access);
+    }
+}
+
+void QcDispenserActions::throwItem(const Shot &shot, QcInventoryAccess &access)
+{
+    if (shot.slot >= 0) {
+        access.take(shot.dispenser, shot.slot, 1);
+    }
+
+    const QcFaceOffset offset = qcFaceOffset(shot.facing);
+    const QcVec3 along{double(offset.dx), double(offset.dy), double(offset.dz)};
+    QcItemEntityManager::Drop drop;
+    drop.stack = shot.unit;
+    // At the front face, just outside it (also in front of a block, as in the reference).
+    drop.position = centreOf(shot.dispenser) + along * 0.6 - QcVec3{0.0, QcItemEntityManager::itemSize * 0.5, 0.0};
+    drop.velocity = along * throwSpeed + QcVec3{0.0, offset.dy == 0 ? throwLift : 0.0, 0.0};
+    m_state.items.spawn(drop, m_state.newEntityId());
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserDispense), centreOf(shot.dispenser));
+}

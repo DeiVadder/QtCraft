@@ -127,8 +127,10 @@ void parsePlacementFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     const QString facing = reader.string(u"facing"_s, u"away"_s);
     if (facing == u"toward"_s) {
         block.facingRule = QcFacingRule::Toward;
+    } else if (facing == u"into"_s) {
+        block.facingRule = QcFacingRule::Into;
     } else if (facing != u"away"_s) {
-        reader.fail(u"'facing' must be away or toward"_s);
+        reader.fail(u"'facing' must be away, toward or into"_s);
     }
 
     const QString support = reader.string(u"support"_s, isCross(block) ? u"below"_s : u"none"_s);
@@ -165,6 +167,7 @@ void parseConnects(const QJsonObject &connectJson, QcBlockDefinition &block, QcJ
 void parseContainer(const QJsonObject &blockJson, QcBlockDefinition &block, QcJsonFieldReader &containerReader)
 {
     block.containerSlots = containerReader.integer(u"slots"_s, 27, 1, QcBlockDefinition::maxContainerSlots);
+    block.containerColumns = containerReader.integer(u"columns"_s, 9, 1, 9);
     if (containerReader.ok() && (block.opensCrafting || blockJson.contains(u"machine"_s))) {
         containerReader.fail(u"a block cannot store items and also be a crafting table or machine"_s);
     }

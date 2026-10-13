@@ -14,5 +14,6 @@
         "top": "chest_top",
         "bottom": "chest_top"
     },
-    "fuelSeconds": 15
+    "fuelSeconds": 15,
+    "signal": { "comparator": "contents" }
 }

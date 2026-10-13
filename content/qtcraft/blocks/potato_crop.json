@@ -67,5 +67,10 @@
             "growing": "potato_crop_growing",
             "ripe": "potato_crop_ripe"
         }
+    },
+    "signal": {
+        "comparator": {
+            "property": "age"
+        }
     }
 }

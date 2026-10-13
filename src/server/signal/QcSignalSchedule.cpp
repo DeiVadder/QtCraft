@@ -12,6 +12,18 @@ bool QcSignalSchedule::add(QcBlockPos pos, quint64 due, Priority priority)
     return true;
 }
 
+void QcSignalSchedule::relocate(QcBlockPos from, QcBlockPos to)
+{
+    const auto it = m_byPos.constFind(from);
+    if (it == m_byPos.constEnd() || m_byPos.contains(to)) {
+        return;
+    }
+    const Key key = *it;
+    m_byPos.erase(it);
+    m_entries[key] = to;
+    m_byPos.insert(to, key);
+}
+
 void QcSignalSchedule::remove(QcBlockPos pos)
 {
     const auto it = m_byPos.constFind(pos);

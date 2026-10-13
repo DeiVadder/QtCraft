@@ -7,8 +7,8 @@
 
 // The circuits of a world in signals.qce (decision E-335): scheduled ticks with the ticks they still
 // wait, block changes not yet looked at, burnt-out torches, openers last seen powered and pistons in
-// the middle of extending. Ticks are stored relative to the save, so a clock goes on where it
-// stopped. No file means quiet circuits. Every list is written with at most maxEntries entries, the
+// the middle of extending, last the cooldowns of hoppers (a file that ends before them reads with
+// none). Ticks are stored relative to the save, so a clock goes on where it stopped. No file means quiet circuits. Every list is written with at most maxEntries entries, the
 // limit the reader accepts, so a world always reads its own save.
 namespace QcSignalStorage {
 

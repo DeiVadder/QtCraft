@@ -34,6 +34,21 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `connectionsPerSecond`, `connectionBurst`, `maxConnectionsPerAddress` | – | 1, 8, 8 | Limits for new connections per address |
 | `operators` | – | empty | Operators by name (bound to their identity at their login) |
 | `defaultGameMode` | `--game-mode` | empty (the world's own default) | `survival` or `creative`: the mode of players who join for the first time; a new world is created with it as its default (E-282) |
+| `limits` | – | the defaults below | Budgets of the simulation (E-349), an object with the keys below |
+
+**Limits** (`limits` in `server.json`; in a single-player world the object `limits` in its `world.json`, which a dedicated server ignores). A value out of its range is clamped and an unknown key ignored, each with a warning in the log; `/limits` (operators) shows the active values and where they come from.
+
+| Key | Default | Range | Bounds |
+|---|---:|---|---|
+| `signalBudget` | 8192 | 256 – 4194304 | Signal Dust work per tick: dust looked at, components evaluated, blocks pushed, bodies looked at (E-335) |
+| `signalScheduleReservePercent` | 25 | 0 – 90 | Share of the signal budget that block changes leave for due scheduled ticks |
+| `signalWorkPerChange` | 4 | 1 – 64 | Work one block change counts for when a step is split (a step takes at most the budget left divided by it) |
+| `signalMinimumStep` | 64 | 1 – 65536 | Changes or scheduled ticks a step takes at least |
+| `signalMaxPendingChanges` | 1048576 | 1024 – 16777216 | Block changes near circuits waiting at most; further ones are dropped with a warning |
+| `hopperBudget` | 4096 | 1 – 1048576 | Signal Hoppers acting per tick; the rest follow in the next ticks, round-robin (E-344) |
+| `hopperCooldownTicks` | 8 | 1 – 1200 | Ticks a hopper rests after moving an item |
+
+Observers and dispensers have no bounds of their own: their pulses and shots are scheduled ticks inside the signal budget.
 
 - Without `--console` the server reads no standard input and runs as a service until it is
   stopped. **SIGTERM** (service managers, `kill`) and **SIGINT** (Ctrl+C) save the world and every
@@ -269,7 +284,7 @@ therefore shows them a little in the past (E-271):
   new cells. Bodies in the way are pushed by the server: the pushed player gets the new position with
   the next `PlayerState`, like knockback; the client predicts nothing of pistons. Levers, buttons and
   repeaters switch at most 5 times per second per player (burst 10; bucket `switch`, beyond it a click
-  does nothing). The work of all circuits per tick is bounded (`QcServerCircuits::maxUpdatesPerTick`):
+  does nothing). The work of all circuits per tick is bounded (`signalBudget`, see Limits):
   every step takes only part of what is left, only a single dust region or piston push can still
   cross it; the rest waits for the next tick. Pushed players stop at walls and are moved out of blocks
   by the server (a correction like knockback); for two ticks the client sees a moved block's new cell
@@ -277,6 +292,19 @@ therefore shows them a little in the past (E-271):
   their block.
   The `debug` data has the tick phase `signal`. Tests: `test_signal_bots` (dedicated server and two
   bots over TCP: lever, dust, repeater and lamp; a piston door closes and opens).
+- Signal machines (E-342 to E-348, protocol 31): hoppers, comparators, observers, dispensers and
+  droppers run only on the server. Their states (a hopper locked, a comparator's mode and strength,
+  an observer's pulse, a dispenser triggered) are block states in `BlockUpdate`s; the content sync
+  carries each block's container columns, the placement rule `into` (a hopper's spout) and the new
+  signal kinds, so a comparator is used (mode) instead of placed against. Their contents are those of
+  a chest: the screen (`OpenMachine`, `MachineState` with the slots, the layout from the block's
+  columns) shows what hoppers and dispensers move as they move it, and every player looking into one
+  sees the same. Hoppers do their work in the signal phase under their own bound (4096 acting
+  hoppers per tick); idle hoppers sleep and cost nothing. A piston that moves a hopper, dispenser or
+  dropper moves its contents and cooldown and closes the screens open on it. Tests:
+  `test_machine_bots` (dedicated server and two bots over TCP: a hopper sorter filled through the
+  screens sends wheat to its chest and dirt on, an observer clock ticks for both bots, a dispenser
+  pours water both see, a piston moves an open hopper: the screen closes and the items moved along).
 - Health, swings, hurt flashes, sneaking and the held item show when they arrive, up to 100 ms
   before the matching movement; the own player is not delayed (prediction, see above).
 - Measured (`test_interpolation`): a walker reported every tick and received 50 to 150 ms late

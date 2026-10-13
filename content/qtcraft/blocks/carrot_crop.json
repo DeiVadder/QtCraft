@@ -67,5 +67,10 @@
             "growing": "carrot_crop_growing",
             "ripe": "carrot_crop_ripe"
         }
+    },
+    "signal": {
+        "comparator": {
+            "property": "age"
+        }
     }
 }

@@ -173,12 +173,13 @@ Wichtig für Multiplayer: Spieler sehen sich gegenseitig, also muss die Anpassun
 | 29 | Signal Dust (Schaltungen) | B5 |
 | 29b | Feuer | Auftrag Punkt 29b |
 | 29c | Wetter | Auftrag Punkt 29c |
+| 29d | Erfahrung und Lapislazuli | Auftrag Punkt 29d |
 | 30 | Dörfer und Dorfbewohner | B4 |
 | 30b | Monster-Spawner und Minenschächte | Auftrag Punkt 30b |
 | 31 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3) | Auftrag Punkt 31 |
 | 32 | Chunks auf dem Server entladen | Auftrag Punkt 32 |
 | 33 | Gamepad-Unterstützung | Auftrag Punkt 33 |
-| 34 | Verzauberung und Amboss | Auftrag Punkt 34 |
+| 34 | Verzauberung (34.1) und Amboss (34.2) | Auftrag Punkt 34 |
 
 Die Aufzählung unten ist die ursprüngliche Begründung der Reihenfolge (ältere Nummerierung, maßgeblich ist die Tabelle oben).
 

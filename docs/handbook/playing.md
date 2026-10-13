@@ -176,6 +176,22 @@ What reacts to a signal is called a slot. A Signal Lamp lights at once and goes 
 
 A powered Signal Piston pushes up to 12 blocks in front of it by one. Chests, barrels and furnaces move with everything in them. Plants, torches, dust and liquids in the way break; bedrock, obsidian and extended pistons stop it. Players, creatures, items and armour stands in the way are pushed along. A Sticky Signal Piston pulls the block in front of its head back when it retracts. A piston is not powered through its front.
 
+**Hoppers**
+
+A Signal Hopper moves 2.5 items a second: it passes one item from its first slot that fits into the container its spout points at, then takes one from the container above it. Without a container above it collects items lying in its bowl or on the block above it, also through a slab, a carpet, farmland or any block that does not fill its cell; under a full block it collects nothing. Into a furnace it puts items from above into the input and from the side into the fuel slot (fuel only); from below it takes the furnace's output. Any signal locks it. A hopper with nothing to do rests until something around it changes, so idle hoppers cost nothing. Several hoppers that put items into one full container at the same time: the one from above first, then the others by item, equal items all or none.
+
+**Comparators**
+
+A Signal Comparator passes on the strength from its back, two ticks later. A chest, barrel, hopper, dispenser or furnace behind it (also behind one full block) gives its fullness instead: nothing in it is 0, otherwise 1 plus 14 times how full its slots are on average. Ripe wheat, carrots and potatoes are read too (0 to 15 by their stage). In compare mode a stronger side input (dust, a repeater or comparator pointing at it) switches it off; in subtract mode the side input is taken off. Use it to switch the mode. A hopper sorter whose filter is read by a comparator needs an inverter to lock the hopper below the filter: a Signal Torch burns out when one kind of item comes at full hopper speed (eight times off within three seconds) and the filter then drains; a comparator in subtract mode with a lever behind it does not burn out (the showcase's sorter).
+
+**Observers**
+
+A Signal Observer watches the block in front of its face. When that block changes its state (placed, broken, a crop grows, dust changes its strength, a door opens), it sends a pulse of two ticks out of its back, two ticks later. Changes of what is inside a container do not count. Two observers looking at each other make a fast clock.
+
+**Dispensers and droppers**
+
+When their power comes, a Signal Dispenser and a Signal Dropper eject one item from a random slot four ticks later (powered like a piston, also through the block above). A dropper facing a container puts the item into it, otherwise it throws it out. A dispenser pours water and lava buckets, takes a liquid with an empty bucket, puts armour on a player or armour stand in front and throws everything else out, also in front of a container. Seeds, carrots and potatoes are thrown, never planted: they plant themselves when they land on free farmland.
+
 **Known quirks**
 
 Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a piston can refuse it in its data. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.
@@ -190,7 +206,7 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 
 **See also**
 
-[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston)
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-health"></a>Health and damage
 

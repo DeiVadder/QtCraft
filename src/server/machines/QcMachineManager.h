@@ -69,7 +69,8 @@ public:
     // Advances all machines in loaded chunks. Machines whose block is no machine any more are
     // removed and returned so that their contents can be dropped. `changed` collects the positions
     // whose slots or timers changed.
-    QList<Machine> tick(const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed = nullptr);
+    // `slotsChanged` collects those whose slots changed (comparators and hoppers look again).
+    QList<Machine> tick(const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed = nullptr, QList<QcBlockPos> *slotsChanged = nullptr);
 
 private:
     // Whether the machine's input has a recipe whose result fits into the output.

@@ -17,5 +17,6 @@
                 "inflate": 0.04
             }
         ]
-    }
+    },
+    "dispense": "equip"
 }

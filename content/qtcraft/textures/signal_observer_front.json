@@ -1,0 +1,8 @@
+{
+    "name": "signal_observer_front",
+    "pattern": "observer_face",
+    "primary": "#6e6e6e",
+    "secondary": "#3a3a3a",
+    "variation": 0.08,
+    "seed": 2926
+}

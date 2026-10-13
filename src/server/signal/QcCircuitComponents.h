@@ -2,6 +2,7 @@
 
 #include "QcCircuitPlan.h"
 #include "QcCircuitState.h"
+#include "QcComparatorReadings.h"
 #include "QcSignalPower.h"
 
 #include <QSet>
@@ -40,6 +41,8 @@ public:
         // Plates something lies on in this tick, and those a player or creature stands on.
         const QSet<QcBlockPos> &pressedByAnything;
         const QSet<QcBlockPos> &pressedByLiving;
+        // What comparators read from containers and readable blocks.
+        const QcComparatorReadings &readings;
     };
 
     static constexpr quint8 extendedThisTick = 1;
@@ -53,6 +56,11 @@ public:
     void scheduled(QcBlockPos pos, QcCircuitPlan &plan);
     // Whether the piston at `pos` is powered now.
     bool pistonPowered(QcBlockPos pos, QcSignalState state) const;
+    // Powered through any face but those in `ignoredFaces`, or (with quasi-connectivity, the world's
+    // rule and the block's) through what would power the block above it.
+    bool poweredOrQuasi(QcBlockPos pos, quint8 ignoredFaces) const;
+    // An observer at `pos` saw the block in front of it change.
+    void observed(QcBlockPos pos, QcCircuitPlan &plan) const;
 
 private:
     void reactTorch(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;
@@ -66,6 +74,8 @@ private:
     void reactPiston(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactHead(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;
     void releasePlate(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    // Scheduled ticks of comparators, observers and dispensers (QcCircuitMachines).
+    void scheduledMachine(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
 
     const QcSignalTable &table() const { return m_context.power.table(); }
     const QcSignalDefinition &definition(QcBlockId block) const;

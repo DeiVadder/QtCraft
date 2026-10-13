@@ -2,6 +2,7 @@
 
 #include "QcGameMode.h"
 #include "QcLoginMessages.h"
+#include "QcServerLimits.h"
 
 #include <QString>
 #include <QStringList>
@@ -54,6 +55,10 @@ struct QcServerConfig
     qsizetype maxCommandBlockUpdates = qsizetype(1024) * 1024;
     // Pending updates written to blockupdates.qce at most (those of player actions first).
     qsizetype maxSavedBlockUpdates = qsizetype(4) * 1024 * 1024;
+    // Budgets of the simulation (decision E-349); `limitsFromServer` is set when server.json gave
+    // them, then the world's own limits (world.json) are ignored.
+    QcServerLimits limits;
+    bool limitsFromServer = false;
 
     // Login of remote clients (decision E-252). Shown in the login challenge.
     QString serverName = QStringLiteral("QtCraft server");

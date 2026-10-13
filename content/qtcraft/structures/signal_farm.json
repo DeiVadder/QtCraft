@@ -1,0 +1,101 @@
+{
+    "name": "signal_farm",
+    "showcase": {
+        "order": 84
+    },
+    "palette": {
+        ".": "air",
+        "a": "polished_stone",
+        "b": "stone",
+        "c": "farmland[moist=true]",
+        "d": "signal_hopper[facing=east]",
+        "e": "chest[facing=south]",
+        "f": "signal_dust",
+        "g": "signal_repeater[facing=west,delay=1]",
+        "h": "glass",
+        "i": "signal_repeater[facing=north,delay=1]",
+        "j": "signal_dispenser[facing=east]",
+        "k": "wheat_crop[age=7]",
+        "l": "signal_comparator[facing=south]",
+        "m": "signal_repeater[facing=east,delay=4]"
+    },
+    "layers": [
+        [
+            "aaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaa"
+        ],
+        [
+            ".bbbbbbbbbbbb...",
+            ".bbbbbbbbbb.b...",
+            ".bbcccccdde.b...",
+            ".bbbbbbbbbb.b...",
+            ".bbbbbbbbbbbb...",
+            "................"
+        ],
+        [
+            ".fffgfffgffff...",
+            ".fhhhhhhhhh.i...",
+            ".j.kkkkk....f...",
+            ".fhhhhhlhhh.i...",
+            ".fffffffmmmmf...",
+            "................"
+        ],
+        [
+            "................",
+            "................",
+            "................",
+            "................",
+            "................",
+            "................"
+        ]
+    ],
+    "updates": [
+        [
+            7,
+            2,
+            3
+        ],
+        [
+            1,
+            2,
+            2
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                5.5,
+                3.6,
+                2.5
+            ],
+            "text": "structure.qtcraft.signal_farm.field"
+        },
+        {
+            "at": [
+                9.5,
+                2.8,
+                2.5
+            ],
+            "text": "structure.qtcraft.signal_farm.collector"
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                1,
+                2,
+                2
+            ],
+            "items": [
+                {
+                    "item": "water_bucket",
+                    "count": 1
+                }
+            ]
+        }
+    ]
+}

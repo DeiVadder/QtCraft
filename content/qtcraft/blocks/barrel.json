@@ -22,5 +22,6 @@
         "top": "barrel_top",
         "bottom": "barrel_top"
     },
-    "fuelSeconds": 15
+    "fuelSeconds": 15,
+    "signal": { "comparator": "contents" }
 }

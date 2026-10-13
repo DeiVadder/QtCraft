@@ -137,6 +137,11 @@ QcStatus QcServerPersistence::readInfo(const QcWorldStorage &storage, QStringLis
 
     m_state.info = *info;
     m_state.config.worldName = m_state.info.name;
+    // A single-player world plays with its own limits; a dedicated server's server.json decides there.
+    if (!m_state.config.limitsFromServer) {
+        m_state.config.limits = QcServerLimits::fromJson(m_state.info.limits, u"world.json"_s, &warnings);
+        m_state.applyLimits();
+    }
     if (!m_state.info.unknownGameMode.isEmpty()) {
         warnings.append(u"The world names the unknown game mode '%1' for new players; they start in survival"_s.arg(m_state.info.unknownGameMode));
     }

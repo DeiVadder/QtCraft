@@ -48,5 +48,6 @@
                 "texture": "golden_armour_trim"
             }
         ]
-    }
+    },
+    "dispense": "equip"
 }

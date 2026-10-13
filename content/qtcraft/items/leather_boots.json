@@ -18,5 +18,6 @@
                 "toY": 0.32
             }
         ]
-    }
+    },
+    "dispense": "equip"
 }

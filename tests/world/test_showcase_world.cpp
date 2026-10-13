@@ -274,7 +274,9 @@ private slots:
         config.viewDistance = 2;
         const auto generator = std::make_shared<QcShowcaseGenerator>(m_content);
         const QcShowcaseAreaInfo creatures = *std::ranges::find(generator->plan().areas, u"creatures"_s, &QcShowcaseAreaInfo::name);
-        config.spawnColumn = std::array<int, 2>{creatures.origin.x + 2, creatures.origin.z + creatures.sizeZ + 2};
+        // In the middle of the area: the whole row of enclosures lies within the view distance, wherever
+        // the area falls on the chunk grid.
+        config.spawnColumn = std::array<int, 2>{creatures.origin.x + creatures.sizeX / 2, creatures.origin.z + creatures.sizeZ + 2};
         QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
         QVERIFY(server.openWorld());
 

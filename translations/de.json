@@ -569,5 +569,10 @@
     "At most %1 texture packs can be active; %2 was switched off": "Höchstens %1 Texturpakete können aktiv sein; %2 wurde ausgeschaltet",
     "The texture pack %1 was left out: the active packs together need more memory than allowed": "Das Texturpaket %1 wurde weggelassen: Die aktiven Pakete brauchen zusammen mehr Speicher als erlaubt",
     "(%1x)": "(%1x)",
-    "Signal Dust": "Signalstaub"
+    "Signal Dust": "Signalstaub",
+    "Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.": "Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen diesem Block und dem Inventar verschieben. %1 oder Esc schließt. Wer den Block abbaut, verstreut seinen Inhalt.",
+    "Usage: /limits": "Verwendung: /limits",
+    "Shows the simulation limits of the server (server.json or world.json, \"limits\").": "Zeigt die Simulationsgrenzen des Servers (server.json oder world.json, „limits“).",
+    "Limits from %1:": "Grenzen aus %1:",
+    "  %1": "  %1"
 }

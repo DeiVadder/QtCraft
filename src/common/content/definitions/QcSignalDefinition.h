@@ -26,9 +26,28 @@ enum class QcSignalKind : quint8 {
     Piston,
     // The head of an extended piston; it belongs to the piston behind it.
     PistonHead,
+    // Stage 29.2 (decision E-342 ff.). A diode that reads the block behind it (container fullness,
+    // readable blocks) and compares or subtracts its side inputs.
+    Comparator,
+    // Sends a pulse out of its back when the block state in front of it changes.
+    Observer,
+    // Moves items between containers; any power locks it.
+    Hopper,
+    // On rising power ejects one item after a short delay: uses it (`usesItems`, dispenser) or
+    // throws it (dropper); both put it into a container in front.
+    Dispenser,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::PistonHead) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Dispenser) + 1;
+
+// What a Signal Comparator reads from a block behind it (decision E-343).
+enum class QcComparatorReading : quint8 {
+    None,
+    // Fullness of the block's container or machine slots (the reference formula).
+    Contents,
+    // The index of the value of a state property, scaled to 0..15.
+    Property,
+};
 
 // How a block reacts to being pushed by a piston.
 enum class QcPistonMobility : quint8 {
@@ -73,10 +92,20 @@ struct QcSignalDefinition
     QString counterpart;
     // Pistons: the block of the extended head (`facing` like the piston, `sticky` from the piston).
     QString head;
+    // Dispensers: use items with a dispense action (else every item is thrown, a dropper).
+    bool usesItems = true;
+    // What a comparator reads from this block (any block, also one without a kind) and the property
+    // it reads for QcComparatorReading::Property.
+    QcComparatorReading reading = QcComparatorReading::None;
+    QString readProperty;
 
     bool isComponent() const { return kind != QcSignalKind::None; }
     // A block that exists for circuits (all but openers, which are doors and gates first).
     bool isCircuitPart() const { return isComponent() && kind != QcSignalKind::Opener; }
     // Using the block does something (switching, setting the delay) instead of placing against it.
-    bool isUsable() const { return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Repeater; }
+    // Comparators switch between comparing and subtracting.
+    bool isUsable() const
+    {
+        return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator;
+    }
 };

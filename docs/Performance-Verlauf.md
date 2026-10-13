@@ -715,3 +715,44 @@ GUI-Benchmarks sind auf Anweisung des Menschen ausgesetzt. Gemessen wurde nur di
 | Klebkolben mit Block, alle 5 Ticks gemeinsam geschaltet | 500 | 40 | 1,061 | 2,840 | 3604 | 10000 |
 
 Die Linie kostet unabhängig von ihrer Länge dasselbe (Region von 15 Verbindungen, E-335); das Feld kostet die Fläche, die ein Signal erreicht. Takte und Kolben überschreiten im Spitzentick das Budget um höchstens einen Schritt (geteilte Schritte, E-335 nach dem Review); alle Werte bleiben weit unter dem Tick von 50 ms. Die GUI-Messung (Szenario `showcase` an der Station) steht aus.
+
+## Etappe 29.2: Signalmaschinen (nur headless, keine GUI-Messung)
+
+GUI-Benchmarks bleiben ausgesetzt. Gemessen wie in Etappe 29a: `QTCRAFT_SIGNAL_MEASURE=full build/release/tests/test_signal_measure` (Release, Apple M4 Max, ganze Server-Ticks mit allen Phasen; die Trichter laufen am Ende der Phase `signal`, E-344). Arbeit = `QcServerCircuits::lastTickWork` (Signal-Budget 8192); Trichter haben ein eigenes Budget (4096 handelnde je Tick) und stehen in der zweiten Tabelle.
+
+| Szenario | Größe | Ticks | Tick Ø ms | Tick max ms | Arbeit Ø | Arbeit max |
+|----------|-------|------:|----------:|------------:|---------:|-----------:|
+| Staublinie, Hebel jeden Tick umgeschaltet | 4096 Staub | 40 | 0,058 | 0,123 | 176 | 176 |
+| Staubfeld, Hebel jeden Tick umgeschaltet | 64 × 64 | 40 | 0,359 | 0,504 | 895 | 895 |
+| Repeater-Takte | 1000 | 100 | 2,061 | 3,468 | 6822 | 10963 |
+| Klebkolben, alle 5 Ticks gemeinsam | 500 | 40 | 1,222 | 3,402 | 3604 | 10000 |
+| Trichter in Zehnerketten, leer | 1000 | 100 | 0,007 | 0,018 | 0 | 0 |
+| Trichter in Zehnerketten, voller Block darüber | 1000 | 100 | 0,006 | 0,018 | 0 | 0 |
+| Trichter in Zehnerketten, 10 Items fallen je Tick hinein | 1000 | 200 | 0,141 | 0,218 | 95 | 116 |
+| Sortierer (4 Einheiten), 200 gemischte Items | 200 Items | 2200 | 0,014 | 0,057 | 20 | 87 |
+| Beobachter-Takte (je zwei gegenüber) | 500 | 100 | 0,894 | 1,927 | 2798 | 5596 |
+
+| Trichter-Szenario | handelnd Ø/Tick | suchend Ø/Tick | geweckt Ø/Tick |
+|-------------------|----------------:|---------------:|---------------:|
+| leer | 0 | 0 | 0 |
+| voller Block darüber | 0 | 0 | 0 |
+| Items fallen hinein | 104 | 104 | 246 |
+| Sortierer | 2,1 | 1,3 | 4,3 |
+
+Untätige Trichter kosten nichts (sie schlafen, E-344): 1000 leere oder abgedeckte Trichter liegen im Rauschen des leeren Ticks. Unter vollen Blöcken wird nie gesucht. Fallende Items wecken nur die Trichter darunter; die Suche nutzt ein Zellenraster statt aller Items. Die vier Szenarien aus 29a liegen im Rahmen der damaligen Messung (Kolben Ø +0,16 ms bei gleicher Arbeit, Einzellauf ohne Wiederholung). Die GUI-Messung (Szenario `showcase` an den Stationen) steht aus.
+
+### Nach dem Review (Etappe 29.2, B2 und S7)
+
+Je drei Läufe `QTCRAFT_SIGNAL_MEASURE=full build/release/tests/test_signal_measure`, vorher = Stand vor dem Review (`674de90`), nachher = mit den Korrekturen. Tick Ø = Mittel der drei Läufe, max = größter Einzeltick aller Läufe; Arbeit = Signal-Arbeit je Tick (Mittel).
+
+| Szenario (1000 Trichter) | Tick Ø ms vorher | nachher | Tick max ms vorher | nachher | Signal-Arbeit Ø vorher | nachher |
+|---|---:|---:|---:|---:|---:|---:|
+| beschäftigt, kein Komparator | 0,129 | 0,127 | 1,047 | 1,064 | 116 | 0 |
+| beschäftigt, jeder von einem Komparator gelesen | 0,175 | 0,194 | 1,056 | 1,245 | 304 | 287 |
+| 10 Items je Tick fallen hinein | 0,132 | 0,130 | 0,184 | 0,182 | 95 | 0 |
+| voll, darüber bewegte Items (Wecken jeden Tick, Suche ohne Platz) | 0,313 | 0,278 | 0,613 | 0,590 | 251 | 0 |
+| 4096 Items in der Welt (512 wach), fallende Items | 0,229 | 0,211 | 0,552 | 0,539 | 95 | 0 |
+| untätig / voller Block darüber | 0,006 / 0,005 | 0,006 / 0,006 | 0,013 / 0,014 | 0,011 / 0,013 | 0 | 0 |
+| Sortierer (4 Einheiten ohne Fackel), 200 Items | 0,013 | 0,014 | 0,065 | 0,069 | 24 | 22 |
+
+Ohne lesenden Komparator kostet bewegter Inhalt die Signal-Phase nichts mehr; das Raster für die Suche nur über die Zellen suchender Trichter spart 7–11 % der Tickzeit, wenn viele Items in der Welt liegen. Die Szenarien aus 29a liegen im Rauschen (Leitung 0,057, Feld 0,308, Takte 2,00, Kolben 1,12, Beobachter 0,85 ms).

@@ -5,7 +5,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Screen of an open storage block (chest, SlotScreen): its slots above the inventory.
+// Screen of an open storage block (chest, barrel, hopper, dispenser; SlotScreen): its slots above
+// the inventory, in rows as long as the block's data says.
 SlotScreen {
     id: screen
 
@@ -29,7 +30,7 @@ SlotScreen {
 
         GridLayout {
             objectName: "storage"
-            columns: 9
+            columns: screen.game.player.containerColumns
             rowSpacing: 2
             columnSpacing: 2
 
@@ -44,8 +45,8 @@ SlotScreen {
                     readonly property int storageIndex: slot - screen.firstStorageRow
 
                     owner: screen
-                    Layout.row: Math.floor(storageIndex / 9)
-                    Layout.column: storageIndex % 9
+                    Layout.row: Math.floor(storageIndex / screen.game.player.containerColumns)
+                    Layout.column: storageIndex % screen.game.player.containerColumns
                 }
             }
         }
@@ -57,7 +58,7 @@ SlotScreen {
         Label {
             Layout.maximumWidth: 9 * 54
             wrapMode: Text.Wrap
-            text: qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between chest and inventory. %1 or Esc closes. Breaking the chest drops its contents.").arg(screen.game.settings.keys.labels.inventory)
+            text: qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.").arg(screen.game.settings.keys.labels.inventory)
             color: Theme.textSecondary
         }
     }

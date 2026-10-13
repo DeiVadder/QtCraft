@@ -176,6 +176,22 @@ Was auf ein Signal reagiert, heißt Slot. Eine Signallampe leuchtet sofort und e
 
 Ein versorgter Signalkolben schiebt bis zu 12 Blöcke vor sich um einen weiter. Truhen, Fässer und Öfen wandern samt Inhalt mit. Pflanzen, Fackeln, Staub und Flüssigkeiten im Weg gehen kaputt; Grundgestein, Obsidian und ausgefahrene Kolben halten ihn auf. Spieler, Wesen, Gegenstände und Rüstungsständer im Weg werden mitgeschoben. Ein klebriger Signalkolben zieht den Block vor seinem Kopf beim Einfahren zurück. Durch seine Vorderseite wird ein Kolben nicht versorgt.
 
+**Trichter**
+
+Ein Signaltrichter bewegt 2,5 Items pro Sekunde: Er gibt ein Item aus seinem ersten passenden Feld in den Behälter, auf den sein Auslauf zeigt, und nimmt dann eines aus dem Behälter über sich. Ohne Behälter darüber sammelt er Items ein, die in seiner Schale oder auf dem Block über ihm liegen, auch durch eine Stufe, einen Teppich, Ackerboden oder jeden Block, der seine Zelle nicht füllt; unter einem vollen Block sammelt er nichts. In einen Ofen legt er Items von oben in den Eingang und von der Seite in das Brennstofffeld (nur Brennstoff); von unten nimmt er das Ergebnis heraus. Jedes Signal sperrt ihn. Ein Trichter ohne Arbeit ruht, bis sich um ihn herum etwas ändert, untätige Trichter kosten also nichts. Legen mehrere Trichter gleichzeitig Items in einen vollen Behälter, kommt der von oben zuerst, dann die übrigen nach Item, gleiche Items alle oder keines.
+
+**Komparatoren**
+
+Ein Signalkomparator gibt die Stärke von hinten zwei Ticks später weiter. Eine Truhe, ein Fass, Trichter, Spender oder Ofen dahinter (auch hinter einem vollen Block) gibt stattdessen ihren Füllstand: leer ist 0, sonst 1 plus 14 mal, wie voll die Felder im Mittel sind. Auch Weizen, Karotten und Kartoffeln werden gelesen (0 bis 15 nach ihrer Stufe). Im Vergleichsmodus schaltet ihn ein stärkerer Seiteneingang (Staub, ein Repeater oder Komparator, der auf ihn zeigt) ab, im Subtraktionsmodus wird der Seiteneingang abgezogen. Benutzen wechselt den Modus. Ein Trichter-Sortierer, dessen Filter ein Komparator liest, braucht einen Inverter, der den Trichter unter dem Filter sperrt: Eine Signalfackel brennt durch, wenn eine Item-Sorte in voller Trichter-Geschwindigkeit kommt (achtmal aus in drei Sekunden), und der Filter leert sich; ein Komparator im Subtraktionsmodus mit einem Hebel dahinter brennt nicht durch (der Sortierer der Showcase).
+
+**Beobachter**
+
+Ein Signalbeobachter beobachtet den Block vor seinem Gesicht. Ändert sich dessen Zustand (gesetzt, abgebaut, eine Pflanze wächst, Staub ändert seine Stärke, eine Tür geht auf), schickt er zwei Ticks später einen Puls von zwei Ticks aus seiner Rückseite. Änderungen des Inhalts eines Behälters zählen nicht. Zwei Beobachter, die sich ansehen, ergeben einen schnellen Takt.
+
+**Spender und Werfer**
+
+Kommt ihre Versorgung, werfen ein Signalspender und ein Signalwerfer vier Ticks später ein Item aus einem zufälligen Feld aus (versorgt wie ein Kolben, auch über den Block darüber). Ein Werfer vor einem Behälter legt das Item hinein, sonst wirft er es aus. Ein Spender gießt Wasser- und Lavaeimer aus, schöpft mit einem leeren Eimer eine Flüssigkeit, legt Rüstung einem Spieler oder Rüstungsständer davor an und wirft alles andere aus, auch vor einem Behälter. Saat, Karotten und Kartoffeln werden ausgeworfen, nie gepflanzt: Sie pflanzen sich selbst, wenn sie auf freiem Ackerboden landen.
+
 **Bekannte Eigenheiten**
 
 Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert: Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Kolben kann es in seinen Daten ablehnen. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.
@@ -190,7 +206,7 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 
 **Siehe auch**
 
-[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston)
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
 
 ### <a id="chapter-qtcraft-health"></a>Gesundheit und Schaden
 

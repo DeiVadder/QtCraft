@@ -72,6 +72,22 @@ QcPistonMobility mobilityOf(const QcBlockDefinition &block)
     return QcPistonMobility::Push;
 }
 
+// Sources whose strength comes from their definition while they are on.
+bool emitsWhileOn(QcSignalKind kind)
+{
+    switch (kind) {
+    case QcSignalKind::Lever:
+    case QcSignalKind::Button:
+    case QcSignalKind::Plate:
+    case QcSignalKind::Torch:
+    case QcSignalKind::Repeater:
+    case QcSignalKind::Observer:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool isFlag(const QcContentRegistry &content, QcBlockId id, const QString &property)
 {
     return content.property(id, property) == u"true"_s;
@@ -157,19 +173,21 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
     state.mobility = mobilityOf(block);
 
     const bool flag = isFlag(content, id, u"powered"_s) || isFlag(content, id, u"extended"_s) || isFlag(content, id, u"open"_s)
-                      || isFlag(content, id, u"sticky"_s);
+                      || isFlag(content, id, u"sticky"_s) || isFlag(content, id, u"triggered"_s);
     state.on = signal.kind == QcSignalKind::Torch || signal.kind == QcSignalKind::Lamp ? signal.active : flag;
     state.facing = faceNamed(content.property(id, block.property(u"attach"_s) ? u"attach"_s : u"facing"_s));
     state.delay = quint8(std::clamp(content.property(id, u"delay"_s).toInt(), 1, 4));
-    state.locked = isFlag(content, id, u"locked"_s);
+    state.locked = isFlag(content, id, u"locked"_s) || content.property(id, u"enabled"_s) == u"false"_s;
+    state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
 
-    if (signal.kind == QcSignalKind::Dust) {
+    if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator) {
         state.power = quint8(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
+    }
+    if (signal.kind == QcSignalKind::Dust) {
         for (std::size_t i = 0; i < horizontal.size(); ++i) {
             state.sides[i] = sideNamed(content.property(id, sideNames()[i]));
         }
-    } else if (state.on && signal.kind != QcSignalKind::Lamp && signal.kind != QcSignalKind::Opener
-               && signal.kind != QcSignalKind::Piston && signal.kind != QcSignalKind::PistonHead) {
+    } else if (state.on && emitsWhileOn(signal.kind)) {
         state.power = quint8(signal.power);
     }
     return state;

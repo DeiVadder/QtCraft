@@ -220,6 +220,7 @@ void QcPlayerController::nameOpenMachine()
     const std::optional<QcBlockPos> pos = session.machinePos();
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
     m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
+    m_containerColumns = block ? content->block(*block).containerColumns : 9;
 }
 
 void QcPlayerController::updateMachine()

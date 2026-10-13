@@ -45,6 +45,7 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
         for (qsizetype i = 0; i < stacks.size() && i < container->stacks.size(); ++i) {
             container->stacks[i] = stacks[i];
         }
+        state.noteContents(contents.at);
         return;
     }
 
@@ -53,6 +54,7 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
         for (qsizetype i = 0; i < stacks.size() && i < QcMachineManager::slotCount; ++i) {
             machine->stacks[std::size_t(i)] = stacks[i];
         }
+        state.noteContents(contents.at);
         return;
     }
     qCWarning(lcSetup) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;

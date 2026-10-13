@@ -1,0 +1,56 @@
+{
+    "name": "signal_comparator",
+    "sound": "stone",
+    "shape": "signal_comparator",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "mode": [
+            "compare",
+            "subtract"
+        ],
+        "powered": [
+            false,
+            true
+        ],
+        "power": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ]
+    },
+    "itemTexture": "signal_comparator_item",
+    "textures": {
+        "all": "polished_stone",
+        "top": "signal_comparator_top",
+        "slots": {
+            "slab": "signal_comparator_top",
+            "on": "signal_torch",
+            "off": "signal_torch_off"
+        }
+    },
+    "signal": {
+        "type": "comparator"
+    }
+}

@@ -1,0 +1,75 @@
+#pragma once
+
+#include "QcBlockDefinition.h"
+#include "QcBlockFace.h"
+#include "QcEquipment.h"
+#include "QcInventoryAccess.h"
+#include "QcItemStack.h"
+
+#include <QList>
+
+#include <functional>
+
+class QcServerBlocks;
+class QcServerSounds;
+class QcSignalTable;
+struct QcServerClient;
+struct QcServerState;
+
+// What Signal Dispensers and droppers do when their delay ends (decision E-345). Each picks one of
+// its non-empty slots at random, from a generator seeded with the world's seed, the tick and its
+// contents (so the same world plays the same, wherever and however the dispenser stands). A dropper
+// facing a container puts the item into it like a hopper (all droppers of a step together,
+// QcInventoryAccess::resolve), otherwise it throws it. A dispenser uses the item by its `dispense`
+// action from the data (pour or take a liquid, put armour on a player or armour stand in front) and
+// throws it out when the action fails or the item has none, also in front of a container. Seeds are thrown, never planted: they plant themselves
+// on farmland (decision E-294). Actions of one step that need the same cell all fail (no order
+// decides).
+class QcDispenserActions
+{
+public:
+    // Speed of a thrown item along the facing and, sideways, upwards (m/s).
+    static constexpr double throwSpeed = 4.0;
+    static constexpr double throwLift = 2.0;
+
+    using EquipPlayer = std::function<void(QcServerClient &, const QcEquipment &)>;
+
+    QcDispenserActions(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds, const QcSignalTable &table);
+
+    // Called with the player and the new equipment when a dispenser puts armour on a player.
+    void setEquipPlayer(EquipPlayer equip) { m_equipPlayer = std::move(equip); }
+    // Fires the dispensers at `positions` together; returns the work done.
+    qsizetype fire(const QList<QcBlockPos> &positions);
+
+private:
+    struct Shot
+    {
+        QcBlockPos dispenser;
+        QcBlockFace facing = QcBlockFace::North;
+        int slot = -1;
+        QcItemStack unit;
+    };
+
+    // The shot of one dispenser, or nothing when it is empty or no dispenser.
+    std::optional<Shot> aim(QcBlockPos pos) const;
+    // Droppers put their items into containers in front; returns the other shots.
+    QList<Shot> insertDropped(const QList<Shot> &shots, QcInventoryAccess &access);
+    // The filled item an empty one becomes when it takes `liquid`, or empty.
+    QString filledBucket(QcItemId empty, QcBlockId liquid) const;
+    // Applies the shots whose action needs a cell; returns those that fall back to throwing.
+    QList<Shot> use(const QList<Shot> &shots, QcInventoryAccess &access);
+    bool useOne(const Shot &shot, QcInventoryAccess &access);
+    bool placeLiquid(const Shot &shot, QcInventoryAccess &access);
+    bool scoopLiquid(const Shot &shot, QcInventoryAccess &access);
+    bool equip(const Shot &shot, QcInventoryAccess &access);
+    void throwItem(const Shot &shot, QcInventoryAccess &access);
+    // The empty or filled item `name` takes the place of one unit in the dispenser's slot; what does
+    // not fit is thrown out.
+    void exchange(const Shot &shot, const QString &name, QcInventoryAccess &access);
+
+    QcServerState &m_state;
+    QcServerBlocks &m_blocks;
+    QcServerSounds &m_sounds;
+    const QcSignalTable &m_table;
+    EquipPlayer m_equipPlayer;
+};

@@ -117,7 +117,23 @@ QByteArray payloadOf(const QcCircuitState &circuits, quint64 now)
     writeTimed(stream, circuits.burntOutUntil, now, true);
     writePositions(stream, QList<QcBlockPos>(circuits.poweredOpeners.begin(), circuits.poweredOpeners.end()));
     writeTimed(stream, circuits.extending, now, false);
+    // Last: files that end before it read with no cooldowns.
+    writeTimed(stream, circuits.hoppers.readyAt, now, true);
     return payload;
+}
+
+// Hopper cooldowns; a hopper looks again when its cooldown ends.
+bool readCooldowns(QDataStream &stream, QcCircuitState &circuits, quint64 now)
+{
+    QcBlockPos pos;
+    return readList(stream, [&] {
+        quint32 left = 0;
+        const bool ok = readPos(stream, pos);
+        stream >> left;
+        circuits.hoppers.readyAt.insert(pos, now + std::min(left, maxDelay));
+        circuits.hoppers.wakeAt(pos, now + std::min(left, maxDelay));
+        return ok && stream.status() == QDataStream::Ok;
+    });
 }
 
 bool readPayload(QDataStream &stream, QcCircuitState &circuits, quint64 now)
@@ -152,13 +168,14 @@ bool readPayload(QDataStream &stream, QcCircuitState &circuits, quint64 now)
         circuits.poweredOpeners.insert(pos);
         return ok;
     });
-    return openers && readList(stream, [&] {
+    const bool extending = openers && readList(stream, [&] {
         quint32 since = 0;
         const bool ok = readPos(stream, pos);
         stream >> since;
         circuits.extending.insert(pos, now - std::min<quint64>({now, since, maxDelay}));
         return ok && stream.status() == QDataStream::Ok;
     });
+    return extending && (stream.atEnd() || readCooldowns(stream, circuits, now));
 }
 
 } // namespace
@@ -169,7 +186,8 @@ QcStatus write(const QString &directory, const QcCircuitState &circuits, quint64
 {
     const QString path = pathIn(directory);
     const bool quiet = circuits.schedule.size() == 0 && circuits.changes.isEmpty() && circuits.waiting.isEmpty() && circuits.waitingOn.isEmpty()
-                       && circuits.burntOutUntil.isEmpty() && circuits.poweredOpeners.isEmpty() && circuits.extending.isEmpty();
+                       && circuits.burntOutUntil.isEmpty() && circuits.poweredOpeners.isEmpty() && circuits.extending.isEmpty()
+                       && circuits.hoppers.readyAt.isEmpty();
     if (quiet) {
         if (QFile::exists(path) && !QFile::remove(path)) {
             return qcError(u"Cannot remove %1"_s.arg(path));

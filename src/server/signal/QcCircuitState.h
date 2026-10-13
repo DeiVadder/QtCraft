@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockDefinition.h"
+#include "QcHopperState.h"
 #include "QcSignalSchedule.h"
 
 #include <QHash>
@@ -15,8 +16,8 @@ class QcServerWorld;
 struct QcCircuitState
 {
     // Pending changes beyond this many are dropped; the circuits around them are looked at again with
-    // the next change nearby.
-    static constexpr qsizetype maxPendingChanges = 1 << 20;
+    // the next change nearby (QcServerLimits::signalMaxPendingChanges, set by QcServerState).
+    qsizetype maxPendingChanges = qsizetype(1) << 20;
     // Dropped changes are logged with the first one and then every this many.
     static constexpr quint64 droppedReportInterval = 1 << 12;
 
@@ -34,6 +35,14 @@ struct QcCircuitState
     // is one); changes far from any circuit cost nothing.
     void noteChange(const QcServerWorld &world, QcBlockPos pos, QcBlockId before, QcBlockId after);
     bool isNearCircuit(const QcServerWorld &world, QcBlockPos pos) const;
+    // The contents of the container or machine at `pos` changed: hoppers next to it wake, and the
+    // comparators that read it (behind them, or two behind through a block) look again in the next
+    // tick, each once (decision E-343). Without such a comparator it costs the circuits nothing.
+    void noteContents(const QcServerWorld &world, QcBlockPos pos);
+    // The comparators whose readings may have changed, as changes of themselves; clears them.
+    void takeReaders(const QcServerWorld &world);
+    // Comparators at `pos + face` or `pos + 2 face` that look away from `pos` (it lies behind them).
+    static QList<QcBlockPos> readersOf(const QcServerWorld &world, QcBlockPos pos);
     // Makes the circuits look at `pos` as if its block had just been placed (a demo of the world's
     // setup, a change from a save), now or once its chunk and the eight around it are loaded, so a
     // circuit across a chunk border starts whole.
@@ -70,6 +79,9 @@ struct QcCircuitState
     // Pistons whose extension started at a tick and lasts QcPistonMover::moveTicks: retracting before
     // it ends lets a sticky piston drop its block (block spitting).
     QHash<QcBlockPos, quint64> extending;
+    QcHopperState hoppers;
+    // Comparators to look at again because what they read changed its contents.
+    QSet<QcBlockPos> readers;
     quint64 droppedChanges = 0;
 
 private:

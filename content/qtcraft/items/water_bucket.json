@@ -2,5 +2,6 @@
     "name": "water_bucket",
     "maxStack": 1,
     "places": "water",
-    "emptiesTo": "bucket"
+    "emptiesTo": "bucket",
+    "dispense": "place_liquid"
 }

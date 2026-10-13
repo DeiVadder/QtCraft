@@ -9,7 +9,7 @@ namespace {
 bool isSource(QcSignalKind kind)
 {
     return kind == QcSignalKind::Lever || kind == QcSignalKind::Button || kind == QcSignalKind::Plate || kind == QcSignalKind::Torch
-           || kind == QcSignalKind::Repeater;
+           || kind == QcSignalKind::Repeater || kind == QcSignalKind::Comparator || kind == QcSignalKind::Observer;
 }
 
 // Whether dust points at the horizontal side `towards`: a line or arm on that side, or a lone dot,
@@ -48,7 +48,10 @@ int QcSignalPower::directPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Torch:
         return state.on && state.facing != towards ? state.power : 0;
     case QcSignalKind::Repeater:
-        return state.on && state.facing == towards ? state.power : 0;
+    case QcSignalKind::Comparator:
+        return state.facing == towards ? state.power : 0;
+    case QcSignalKind::Observer:
+        return state.facing && QcBlockRules::opposite(*state.facing) == towards ? state.power : 0;
     case QcSignalKind::Dust:
         if (towards == QcBlockFace::Down) {
             return state.power;
@@ -65,7 +68,10 @@ int QcSignalPower::strongPower(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Lever:
     case QcSignalKind::Button:
     case QcSignalKind::Repeater:
-        return state.on && state.facing == towards ? state.power : 0;
+    case QcSignalKind::Comparator:
+        return state.facing == towards ? state.power : 0;
+    case QcSignalKind::Observer:
+        return state.facing && QcBlockRules::opposite(*state.facing) == towards ? state.power : 0;
     case QcSignalKind::Plate:
         return towards == QcBlockFace::Down ? state.power : 0;
     case QcSignalKind::Torch:
@@ -159,8 +165,14 @@ QcSignalPower::Positions QcSignalPower::targets(QcBlockPos pos, QcSignalState st
     case QcSignalKind::Lever:
     case QcSignalKind::Button:
     case QcSignalKind::Repeater:
+    case QcSignalKind::Comparator:
         if (state.facing) {
             cells.append(qcNeighbour(pos, *state.facing));
+        }
+        break;
+    case QcSignalKind::Observer:
+        if (state.facing) {
+            cells.append(qcNeighbour(pos, QcBlockRules::opposite(*state.facing)));
         }
         break;
     case QcSignalKind::Plate:

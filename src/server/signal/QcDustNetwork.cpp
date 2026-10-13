@@ -6,7 +6,8 @@
 
 namespace {
 
-// Sources, plates and torches take dust from every side, repeaters only along their axis.
+// Sources, plates, torches and comparators (side inputs) take dust from every side, repeaters only
+// along their axis, observers only at their back, where their pulse leaves.
 bool connectsSideways(QcSignalState state, QcBlockFace towards)
 {
     switch (state.kind) {
@@ -14,9 +15,12 @@ bool connectsSideways(QcSignalState state, QcBlockFace towards)
     case QcSignalKind::Button:
     case QcSignalKind::Plate:
     case QcSignalKind::Torch:
+    case QcSignalKind::Comparator:
         return true;
     case QcSignalKind::Repeater:
         return state.facing == towards || state.facing == QcBlockRules::opposite(towards);
+    case QcSignalKind::Observer:
+        return state.facing && QcBlockRules::opposite(*state.facing) == towards;
     default:
         return false;
     }
@@ -31,7 +35,10 @@ struct QcDustNetwork::Region
     QList<QList<int>> links;
     // What the dust linked to each node from outside the region gives it (its strength minus one).
     QList<int> outside;
-    std::optional<QcChunkPos> blockedBy;
+    // Per node: an unloaded chunk it reads, if any.
+    QList<std::optional<QcChunkPos>> unloaded;
+    // The number of seeds: the first nodes.
+    qsizetype seeds = 0;
 };
 
 QcDustNetwork::QcDustNetwork(const QcSignalPower &power)
@@ -101,13 +108,12 @@ QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seed
             depth.append(0);
         }
     }
+    region.seeds = region.nodes.size();
 
     // Breadth first up to the reach of a signal: farther dust cannot change.
     QList<QList<QcBlockPos>> linkedPositions;
     for (qsizetype next = 0; next < region.nodes.size(); ++next) {
-        if (!region.blockedBy) {
-            region.blockedBy = m_power.unloadedNear(region.nodes[next]);
-        }
+        region.unloaded.append(m_power.unloadedNear(region.nodes[next]));
         const QList<QcBlockPos> linked = links(region.nodes[next]);
         for (const QcBlockPos &pos : linked) {
             if (depth[next] < QcSignalDefinition::maxPower && !index.contains(pos) && region.nodes.size() < maxNodes) {
@@ -131,6 +137,57 @@ QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seed
         }
     }
     return region;
+}
+
+QList<int> QcDustNetwork::parts(const Region &region, int &count)
+{
+    QList<int> part(region.nodes.size(), -1);
+    count = 0;
+    for (qsizetype start = 0; start < region.nodes.size(); ++start) {
+        if (part[start] < 0) {
+            markPart(region, start, count++, part);
+        }
+    }
+    return part;
+}
+
+void QcDustNetwork::markPart(const Region &region, qsizetype start, int number, QList<int> &part)
+{
+    QList<qsizetype> queue{start};
+    part[start] = number;
+    for (qsizetype next = 0; next < queue.size(); ++next) {
+        for (const int linked : region.links[queue[next]]) {
+            if (part[linked] < 0) {
+                part[linked] = number;
+                queue.append(linked);
+            }
+        }
+    }
+}
+
+QList<std::optional<QcChunkPos>> QcDustNetwork::blockedParts(const Region &region, const QList<int> &part, int count, Result &result)
+{
+    QList<std::optional<QcChunkPos>> blocked(count);
+    for (qsizetype i = 0; i < region.nodes.size(); ++i) {
+        if (region.unloaded[i] && !blocked[part[i]]) {
+            blocked[part[i]] = region.unloaded[i];
+        }
+    }
+
+    for (int p = 0; p < count; ++p) {
+        const std::optional<QcChunkPos> chunk = blocked[p];
+        if (!chunk) {
+            continue;
+        }
+        Result::Blocked waiting{*chunk, {}};
+        for (qsizetype i = 0; i < region.seeds; ++i) {
+            if (part[i] == p) {
+                waiting.seeds.append(region.nodes[i]);
+            }
+        }
+        result.blocked.append(waiting);
+    }
+    return blocked;
 }
 
 void QcDustNetwork::spread(const QList<int> &linked, int level, QList<int> &inputs, QList<int> &bucket)
@@ -169,10 +226,11 @@ void QcDustNetwork::recompute(const std::vector<QcBlockPos> &seeds, Result &resu
     if (region.nodes.isEmpty()) {
         return;
     }
-    if (region.blockedBy) {
-        result.blockedBy = region.blockedBy;
-        return;
-    }
+
+    // A part that reads a chunk that is not loaded waits as a whole; the others go on.
+    int count = 0;
+    const QList<int> part = parts(region, count);
+    const QList<std::optional<QcChunkPos>> partBlocked = blockedParts(region, part, count, result);
 
     QList<int> inputs;
     inputs.reserve(region.nodes.size());
@@ -184,7 +242,7 @@ void QcDustNetwork::recompute(const std::vector<QcBlockPos> &seeds, Result &resu
     for (qsizetype i = 0; i < region.nodes.size(); ++i) {
         const QcBlockPos pos = region.nodes[i];
         const std::optional<QcBlockId> current = m_power.blockAt(pos);
-        if (!current) {
+        if (!current || partBlocked[part[i]]) {
             continue;
         }
         const QcBlockId wanted = m_power.table().dustState(*current, levels[i], sidesOf(pos));

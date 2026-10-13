@@ -3,6 +3,7 @@
 #include "QcBlockCommands.h"
 #include "QcChunkRegeneration.h"
 #include "QcDayCycle.h"
+#include "QcServerLimits.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcItemEntityManager.h"
@@ -66,6 +67,7 @@ QMap<QString, double> values()
         {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
         {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
+        {u"signal.hopperItemsPerSecond"_s, 1.0 / (double(QcServerLimits{}.hopperCooldownTicks) * QcPhysics::tickDuration)},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcServerCombat::voidDamage},
         {u"void.interval"_s, QcServerCombat::voidDamageIntervalTicks * QcPhysics::tickDuration},

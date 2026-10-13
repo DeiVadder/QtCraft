@@ -391,7 +391,7 @@ private slots:
             m_server->circuitState().changes.append({at(i % 12, 0, 2), qcAirBlockId, qcAirBlockId});
         }
         ticks(1);
-        QVERIFY2(m_server->circuits().lastTickWork() <= 2 * QcServerCircuits::maxUpdatesPerTick,
+        QVERIFY2(m_server->circuits().lastTickWork() <= 2 * QcServerLimits{}.signalBudget,
                  qPrintable(QString::number(m_server->circuits().lastTickWork())));
         QVERIFY(!m_server->circuitState().changes.isEmpty());
         QVERIFY(isBlock(6, 0, 8, "signal_torch"));
@@ -439,6 +439,32 @@ private slots:
         QVERIFY(isBlock(border + 1, 0, 5, "signal_lamp_lit"));
     }
 
+    void wireFarFromAnUnloadedChunkDoesNotWait()
+    {
+        buildArea();
+        // The chunk border 12 blocks east of the area's origin.
+        const QcBlockPos far = m_origin.offset(4000, 0, 4000);
+        clearArea(far.offset(((4 - far.x) % 16 + 16) % 16, 0, 0));
+        const int border = 12;
+        QVERIFY(at(border, 0, 5).chunk() != at(border - 1, 0, 5).chunk());
+        // A wire at the border and another one far from it, switched in the same step.
+        put(border - 3, 0, 5, u"lever[attach=floor]"_s);
+        dustLine(border - 2, 0, 5, 3);
+        put(border - 12, 0, 9, u"lever[attach=floor]"_s);
+        dustLine(border - 11, 0, 9, 3);
+        ticks(2);
+        std::shared_ptr<QcChunk> taken = m_server->world().takeChunk(at(border, 0, 5).chunk());
+        QVERIFY(taken);
+        flip(border - 3, 0, 5);
+        flip(border - 12, 0, 9);
+        ticks(3);
+        QCOMPARE(power(border - 1, 0, 5), 0);
+        QCOMPARE(power(border - 9, 0, 9), 13);
+        m_server->world().adoptStoredChunks({{at(border, 0, 5).chunk(), taken}});
+        ticks(3);
+        QCOMPARE(power(border - 1, 0, 5), 14);
+    }
+
     void leverSpamIsBounded()
     {
         buildArea();
@@ -468,6 +494,7 @@ private slots:
         saved.burntOutUntil.insert({5, 66, 5}, 200);
         saved.poweredOpeners.insert({6, 64, 6});
         saved.extending.insert({7, 64, 7}, 99);
+        saved.hoppers.startCooldown({8, 64, 8}, 95);
         QVERIFY(QcSignalStorage::write(directory.path(), saved, 100).has_value());
 
         // Read at another tick count: what waits keeps the ticks it still had.
@@ -484,6 +511,9 @@ private slots:
         QCOMPARE(loaded.burntOutUntil.value({5, 66, 5}), quint64(1100));
         QVERIFY(loaded.poweredOpeners.contains({6, 64, 6}));
         QCOMPARE(loaded.extending.value({7, 64, 7}), quint64(999));
+        // A hopper's cooldown goes on: 3 ticks were left.
+        QCOMPARE(loaded.hoppers.readyAt.value({8, 64, 8}), quint64(1003));
+        QCOMPARE(loaded.hoppers.timers.begin()->first, quint64(1003));
 
         // Quiet circuits leave no file behind.
         QVERIFY(QcSignalStorage::write(directory.path(), QcCircuitState(), 0).has_value());

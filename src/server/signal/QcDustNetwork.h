@@ -33,8 +33,15 @@ public:
         QList<Change> changes;
         // Dust looked at (the work done).
         qsizetype visited = 0;
-        // A chunk the region reaches that is not loaded: nothing was recomputed, the region waits.
-        std::optional<QcChunkPos> blockedBy;
+        // Parts of the region (dust linked to each other) that reach a chunk that is not loaded: they
+        // were not recomputed and wait for that chunk, with the seeds among them. Parts not linked to
+        // them are recomputed as usual (they could not change each other).
+        struct Blocked
+        {
+            QcChunkPos chunk;
+            QList<QcBlockPos> seeds;
+        };
+        QList<Blocked> blocked;
     };
 
     explicit QcDustNetwork(const QcSignalPower &power);
@@ -57,6 +64,11 @@ private:
     // The dust within reach of the seeds, with links inside the region as indices and the strength
     // that dust just outside the region gives each node.
     Region collect(const std::vector<QcBlockPos> &seeds) const;
+    // The linked parts of the region: a part number per node.
+    static QList<int> parts(const Region &region, int &count);
+    static void markPart(const Region &region, qsizetype start, int number, QList<int> &part);
+    // Per part the unloaded chunk it reads, if any; adds the waiting parts with their seeds to `result`.
+    static QList<std::optional<QcChunkPos>> blockedParts(const Region &region, const QList<int> &part, int count, Result &result);
     // Strength of every dust of the region, strongest first.
     static QList<int> strengths(const Region &region, QList<int> inputs);
     // Gives `level` to the linked dust that has less and puts it into that level's bucket.

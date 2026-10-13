@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <memory>
+#include <utility>
 
 class QcBlockAccess;
 
@@ -105,7 +106,12 @@ public:
     void clear();
     // Takes one item off the stack of item entity `id` (a seed planting itself); the entity goes when
     // its stack is empty. False when there is no such awake item.
-    bool takeOne(quint32 id);
+    bool takeOne(quint32 id) { return take(id, 1); }
+    // The same for `count` items (a hopper collecting a stack); false when it has fewer.
+    bool take(quint32 id, int count);
+    // Where items moved, appeared, grew by merging or woke from dormancy since the last call:
+    // sleeping hoppers below them wake (decision E-344); resting items cost nothing.
+    QList<QcVec3> takeStirred() { return std::exchange(m_stirred, {}); }
     // Removes the awake items that match (burning in lava); returns how many.
     qsizetype removeWhere(const std::function<bool(const Item &)> &match);
     // Replaces all items, e.g. from a save; ids are assigned by `nextEntityId`.
@@ -126,6 +132,7 @@ private:
     QRandomGenerator m_random;
     QList<Item> m_items;
     QList<Drop> m_queue;
+    QList<QcVec3> m_stirred;
     int m_activeCount = 0;
     quint64 m_ticks = 0;
     qint64 m_discarded = 0;

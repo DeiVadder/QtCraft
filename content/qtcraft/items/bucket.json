@@ -1,5 +1,6 @@
 {
     "name": "bucket",
     "maxStack": 16,
-    "scoops": true
+    "scoops": true,
+    "dispense": "scoop"
 }

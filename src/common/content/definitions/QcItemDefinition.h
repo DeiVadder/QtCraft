@@ -10,6 +10,18 @@ using QcItemId = quint32;
 
 inline constexpr QcItemId qcNoItem = 0;
 
+// What a Signal Dispenser does with the item (decision E-345). Anything else is thrown out like a
+// dropper does; seeds are thrown and plant themselves on farmland (decision E-294), never planted.
+enum class QcDispenseAction : quint8 {
+    Throw,
+    // A filled bucket pours its liquid (`places`) into the cell in front and becomes `emptiesTo`.
+    PlaceLiquid,
+    // An empty bucket (`scoops`) takes a liquid source in front.
+    Scoop,
+    // Armour goes onto a player or armour stand in front with that slot free.
+    Equip,
+};
+
 struct QcItemDefinition
 {
     // Largest allowed maxStack.
@@ -57,4 +69,6 @@ struct QcItemDefinition
     // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
     // decision E-290). Server side only.
     bool tills = false;
+    // Server side only.
+    QcDispenseAction dispense = QcDispenseAction::Throw;
 };

@@ -15,6 +15,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QSet>
+#include <QJsonObject>
 #include <QString>
 
 #include <memory>
@@ -57,6 +58,9 @@ struct QcWorldInfo
     // A mode name this version does not know (from a newer game): the world plays as survival but
     // keeps the name when saved, until /defaultgamemode sets another mode.
     QString unknownGameMode;
+    // The world's simulation limits (decision E-349) as written in world.json ("limits"), only the
+    // keys an operator set; a single-player world plays with them, a dedicated server ignores them.
+    QJsonObject limits;
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files

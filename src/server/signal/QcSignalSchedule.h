@@ -38,6 +38,8 @@ public:
     bool add(QcBlockPos pos, quint64 due, Priority priority);
     bool contains(QcBlockPos pos) const { return m_byPos.contains(pos); }
     void remove(QcBlockPos pos);
+    // The entry of `from` (a dispenser a piston moved) now belongs to `to`, unless `to` has one.
+    void relocate(QcBlockPos from, QcBlockPos to);
     // The tick and priority of the first group of entries due at `now` or before (overdue ones
     // first), if any.
     std::optional<std::pair<quint64, Priority>> nextGroup(quint64 now) const;

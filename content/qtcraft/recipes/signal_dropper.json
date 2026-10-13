@@ -1,0 +1,16 @@
+{
+    "name": "signal_dropper",
+    "type": "shaped",
+    "pattern": [
+        "ccc",
+        "c c",
+        "cdc"
+    ],
+    "key": {
+        "c": "cobblestone",
+        "d": "signal_dust"
+    },
+    "result": {
+        "item": "signal_dropper"
+    }
+}

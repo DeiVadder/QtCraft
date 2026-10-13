@@ -1,6 +1,7 @@
 #include "QcCircuitComponents.h"
 
 #include "QcBlockRules.h"
+#include "QcCircuitMachines.h"
 #include "QcContentRegistry.h"
 #include "QcMovingBlocks.h"
 
@@ -62,6 +63,18 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::PistonHead:
         reactHead(pos, state, plan);
         break;
+    case QcSignalKind::Comparator:
+        QcCircuitMachines(*this, m_context).reactComparator(pos, state, plan);
+        break;
+    case QcSignalKind::Observer:
+        QcCircuitMachines(*this, m_context).reactObserver(pos, state, plan);
+        break;
+    case QcSignalKind::Hopper:
+        QcCircuitMachines(*this, m_context).reactHopper(pos, *block, state, plan);
+        break;
+    case QcSignalKind::Dispenser:
+        QcCircuitMachines(*this, m_context).reactDispenser(pos, *block, state, plan);
+        break;
     default:
         break;
     }
@@ -103,8 +116,33 @@ void QcCircuitComponents::scheduled(QcBlockPos pos, QcCircuitPlan &plan)
         reactOpener(pos, *block, state, plan);
         break;
     default:
+        scheduledMachine(pos, *block, state, plan);
         break;
     }
+}
+
+void QcCircuitComponents::scheduledMachine(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
+{
+    const QcCircuitMachines machines(*this, m_context);
+    switch (state.kind) {
+    case QcSignalKind::Comparator:
+        machines.switchComparator(pos, block, state, plan);
+        break;
+    case QcSignalKind::Observer:
+        machines.switchObserver(pos, block, state, plan);
+        break;
+    case QcSignalKind::Dispenser:
+        plan.fires.append(pos);
+        break;
+    default:
+        break;
+    }
+}
+
+void QcCircuitComponents::observed(QcBlockPos pos, QcCircuitPlan &plan) const
+{
+    ++plan.work;
+    QcCircuitMachines(*this, m_context).observed(pos, plan);
 }
 
 bool QcCircuitComponents::torchShouldLight(QcBlockPos pos, QcSignalState state) const
@@ -157,7 +195,9 @@ bool QcCircuitComponents::repeaterLocked(QcBlockPos pos, QcSignalState state) co
 
     for (const QcBlockFace side : {leftOf(*state.facing), QcBlockRules::opposite(leftOf(*state.facing))}) {
         const QcSignalState &neighbour = m_context.power.at(qcNeighbour(pos, side));
-        if (neighbour.kind == QcSignalKind::Repeater && neighbour.on && neighbour.facing == QcBlockRules::opposite(side)) {
+        // Powered repeaters and comparators pointing at the side lock it (as in the reference).
+        const bool diode = neighbour.kind == QcSignalKind::Repeater || neighbour.kind == QcSignalKind::Comparator;
+        if (diode && neighbour.power > 0 && neighbour.facing == QcBlockRules::opposite(side)) {
             return true;
         }
     }
@@ -238,8 +278,12 @@ void QcCircuitComponents::reactOpener(QcBlockPos pos, QcBlockId block, QcSignalS
 bool QcCircuitComponents::pistonPowered(QcBlockPos pos, QcSignalState state) const
 {
     // Not through its front, where the head goes.
-    const quint8 front = state.facing ? faceBit(*state.facing) : 0;
-    if (m_context.power.input(pos, front) > 0) {
+    return poweredOrQuasi(pos, state.facing ? faceBit(*state.facing) : 0);
+}
+
+bool QcCircuitComponents::poweredOrQuasi(QcBlockPos pos, quint8 ignoredFaces) const
+{
+    if (m_context.power.input(pos, ignoredFaces) > 0) {
         return true;
     }
 

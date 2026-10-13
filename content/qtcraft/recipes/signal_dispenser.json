@@ -1,0 +1,17 @@
+{
+    "name": "signal_dispenser",
+    "type": "shaped",
+    "pattern": [
+        "ccc",
+        "csc",
+        "cdc"
+    ],
+    "key": {
+        "c": "cobblestone",
+        "s": "string",
+        "d": "signal_dust"
+    },
+    "result": {
+        "item": "signal_dispenser"
+    }
+}
