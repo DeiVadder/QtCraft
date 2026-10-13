@@ -52,7 +52,8 @@ bool matches(const QcShowcaseMatch &match, const QcBlockDefinition &block)
 {
     const bool flags = holds(match.liquid, block.liquid) && holds(match.part, !block.partOf.isEmpty())
                        && holds(match.light, block.lightLevel > 0) && holds(match.plant, isPlant(block))
-                       && holds(match.functional, isFunctional(block)) && holds(match.falls, block.falls);
+                       && holds(match.functional, isFunctional(block)) && holds(match.falls, block.falls)
+                       && holds(match.signal, block.signal.isCircuitPart());
     if (!flags) {
         return false;
     }

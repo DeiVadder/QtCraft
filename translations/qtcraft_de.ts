@@ -1089,6 +1089,11 @@
         <translation>Sonstiges</translation>
     </message>
     <message>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="89"/>
+        <source>Signal Dust</source>
+        <translation>Signalstaub</translation>
+    </message>
+    <message>
         <source>Items</source>
         <translation type="vanished">Items</translation>
     </message>
@@ -1125,238 +1130,243 @@
     </message>
     <message>
         <location filename="../src/clientcore/debug/QcDebugText.cpp" line="30"/>
+        <source>Signal Dust</source>
+        <translation>Signalstaub</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="31"/>
         <source>Liquids</source>
         <translation>Flüssigkeiten</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="30"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="31"/>
         <source>Creatures</source>
         <translation>Wesen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="31"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
         <source>Items</source>
         <translation>Items</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="31"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
         <source>Plant growth</source>
         <translation>Wachstum</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
         <source>Falling blocks</source>
         <translation>Fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
         <source>Machines</source>
         <translation>Maschinen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="34"/>
         <source>Chunk streaming</source>
         <translation>Chunk-Streaming</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="34"/>
         <source>Client sync</source>
         <translation>Client-Abgleich</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="34"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="35"/>
         <source>Messages</source>
         <translation>Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="38"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="39"/>
         <source>Frame interval</source>
         <translation>Frame-Abstand</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="38"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="39"/>
         <source>GUI thread</source>
         <translation>GUI-Thread</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="39"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="40"/>
         <source>Entity meshing</source>
         <translation>Entity-Vernetzung</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="39"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="40"/>
         <source>Character preview</source>
         <translation>Charakter-Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="40"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="41"/>
         <source>Render thread</source>
         <translation>Render-Thread</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="41"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="42"/>
         <source>World renderer</source>
         <translation>Welt-Renderer</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="41"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="42"/>
         <source>Uploads</source>
         <translation>Uploads</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="42"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="43"/>
         <source>GPU</source>
         <translation>GPU</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="46"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="47"/>
         <source>north</source>
         <translation>Norden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="47"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="48"/>
         <source>east</source>
         <translation>Osten</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="48"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="49"/>
         <source>south</source>
         <translation>Süden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="49"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="50"/>
         <source>west</source>
         <translation>Westen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="67"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="68"/>
         <source>No frame statistics</source>
         <translation>Keine Frame-Statistik</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="71"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="72"/>
         <source>%1 FPS · %2 ms (max %3 ms)</source>
         <translation>%1 FPS · %2 ms (max. %3 ms)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="92"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="93"/>
         <source>Protocol %1 · world type %2 · seed %3</source>
         <translation>Protokoll %1 · Welttyp %2 · Seed %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="93"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="94"/>
         <source>XYZ: %1 / %2 / %3</source>
         <translation>XYZ: %1 / %2 / %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="94"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="95"/>
         <source>Block: %1 %2 %3 · chunk %4 %5 (at %6 %7) · section %8</source>
         <translation>Block: %1 %2 %3 · Chunk %4 %5 (bei %6 %7) · Sektion %8</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="104"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="105"/>
         <source>Facing: %1 (yaw %2°, pitch %3°)</source>
         <translation>Blick: %1 (Gier %2°, Neigung %3°)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="108"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="109"/>
         <source>Light at the feet: sky %1, block %2</source>
         <translation>Licht an den Füßen: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="111"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="112"/>
         <source>Biome: %1</source>
         <translation>Biom: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="120"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="121"/>
         <source>Target: %1 at %2 %3 %4</source>
         <translation>Ziel: %1 bei %2 %3 %4</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="126"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="127"/>
         <source>  State: %1</source>
         <translation>  Zustand: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="129"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="130"/>
         <source>  Tags: %1</source>
         <translation>  Tags: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="131"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="132"/>
         <source>  Light in front: sky %1, block %2</source>
         <translation>  Licht davor: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="134"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="135"/>
         <source>Creature: %1</source>
         <translation>Wesen: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="143"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="144"/>
         <source>Entities: %1 creatures, %2 players, %3 items, %4 falling blocks</source>
         <translation>Entities: %1 Wesen, %2 Spieler, %3 Items, %4 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="151"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="152"/>
         <source>Chunks: %1 loaded · sections: %2 meshed, %3 visible · %4 draw calls</source>
         <translation>Chunks: %1 geladen · Sektionen: %2 vernetzt, %3 sichtbar · %4 Draw-Calls</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="156"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="157"/>
         <source>Meshing: %1 waiting (%2 ms each) · light jobs: %3 waiting (%4 ms each)</source>
         <translation>Vernetzung: %1 wartend (je %2 ms) · Licht-Jobs: %3 wartend (je %4 ms)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="162"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="163"/>
         <source>Chunks: %1 loaded</source>
         <translation>Chunks: %1 geladen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="165"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="166"/>
         <source>Memory: %1 MB (peak %2 MB)</source>
         <translation>Speicher: %1 MB (Spitze %2 MB)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="172"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="173"/>
         <source>Server: %1 chunks · %2 players · %3 creatures · %4 items · %5 falling blocks</source>
         <translation>Server: %1 Chunks · %2 Spieler · %3 Wesen · %4 Items · %5 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="178"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="179"/>
         <source>Server tick %1: %2 ms (max %3 ms) · late %4 ms (max %5 ms) · %6 skipped</source>
         <translation>Server-Tick %1: %2 ms (max. %3 ms) · verspätet %4 ms (max. %5 ms) · %6 übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="182"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="183"/>
         <source>Block updates: %1 queued, %2 waiting for chunks</source>
         <translation>Block-Updates: %1 in der Warteschlange, %2 warten auf Chunks</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="199"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
         <source>Client frame</source>
         <translation>Client-Frame</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="199"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="208"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
         <source>mean</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="199"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="208"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
         <source>max</source>
         <translation>max.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="208"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
         <source>Server tick</source>
         <translation>Server-Tick</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="213"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="214"/>
         <source>Whole tick</source>
         <translation>Ganzer Tick</translation>
     </message>
@@ -1430,7 +1440,7 @@
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="612"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="621"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -1887,8 +1897,8 @@
         <translation type="vanished">%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="304"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="330"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="305"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="331"/>
         <location filename="../src/server/commands/QcServerCommands.cpp" line="116"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
@@ -1898,10 +1908,8 @@
         <translation type="vanished">%1 ist jetzt %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="124"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="292"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</translation>
+        <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="67"/>
@@ -2019,7 +2027,13 @@
         <translation>Setzt deine Nahrungspunkte (ohne Zahl voll).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="350"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="124"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="293"/>
+        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="351"/>
         <source>The console must name a player: /gamemode &lt;mode&gt; &lt;player&gt;</source>
         <translation>Die Konsole muss einen Spieler nennen: /gamemode &lt;Modus&gt; &lt;Spieler&gt;</translation>
     </message>
@@ -2082,22 +2096,22 @@
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="299"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="300"/>
         <source>%1 is true</source>
         <translation>%1 ist wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="299"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="300"/>
         <source>%1 is false</source>
         <translation>%1 ist falsch</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="309"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
         <source>%1 is now true</source>
         <translation>%1 ist jetzt wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="309"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
         <source>%1 is now false</source>
         <translation>%1 ist jetzt falsch</translation>
     </message>
@@ -2106,13 +2120,13 @@
         <translation type="vanished">Spielmodus von %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="336"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="377"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="337"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="378"/>
         <source>Unknown game mode %1; use survival or creative</source>
         <translation>Unbekannter Spielmodus %1; möglich sind survival und creative</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="344"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="345"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
@@ -2250,12 +2264,12 @@
         <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="401"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="402"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="407"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="408"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
@@ -2267,7 +2281,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="108"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="322"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="323"/>
         <source>Usage: /gamemode [survival|creative] [player]</source>
         <translation>Verwendung: /gamemode [survival|creative] [Spieler]</translation>
     </message>
@@ -2436,42 +2450,42 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="132"/>
+        <location filename="../src/server/core/QcServer.cpp" line="133"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="323"/>
+        <location filename="../src/server/core/QcServer.cpp" line="324"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="374"/>
+        <location filename="../src/server/core/QcServer.cpp" line="375"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="398"/>
+        <location filename="../src/server/core/QcServer.cpp" line="399"/>
         <source>Cannot load player data: %1</source>
         <translation>Die Spielerdaten lassen sich nicht laden: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="446"/>
+        <location filename="../src/server/core/QcServer.cpp" line="447"/>
         <source>access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty with the whitelist on, and changes are not saved until the file is repaired</source>
         <translation>access.json ist beschädigt und konnte nicht beiseitegelegt werden: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet, und Änderungen werden nicht gespeichert, bis die Datei repariert ist</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="451"/>
+        <location filename="../src/server/core/QcServer.cpp" line="452"/>
         <source>access.json was damaged: operators, bans and the whitelist start empty with the whitelist on; the damaged file was kept as %1</source>
         <translation>access.json war beschädigt: Operatoren, Sperren und Whitelist beginnen leer, die Whitelist ist eingeschaltet; die beschädigte Datei liegt als %1</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="468"/>
+        <location filename="../src/server/core/QcServer.cpp" line="469"/>
         <source>... and %1 more warnings in the log</source>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="640"/>
+        <location filename="../src/server/core/QcServer.cpp" line="643"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -2486,13 +2500,13 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="171"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="180"/>
         <location filename="../src/server/machines/QcServerMachines.cpp" line="43"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="177"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="186"/>
         <location filename="../src/server/machines/QcServerMachines.cpp" line="61"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -2936,7 +2950,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="167"/>
+        <location filename="../src/server/core/QcServer.cpp" line="168"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
@@ -3144,7 +3158,7 @@
         <translation>Das Manifest braucht einen „name“</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="103"/>
+        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="106"/>
         <source>Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit the GPU texture size and the memory budget</source>
         <translation>Texturen werden mit %1x statt %2x gezeigt: Das Spiel nutzt höchstens 256x, und der Atlas muss in die Texturgrenze der GPU und das Speicherbudget passen</translation>
     </message>
@@ -3152,22 +3166,22 @@
 <context>
     <name>QcTexturePackController</name>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="138"/>
+        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="155"/>
         <source>At most %1 texture packs can be active; %2 was switched off</source>
         <translation>Höchstens %1 Texturpakete können aktiv sein; %2 wurde ausgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="212"/>
+        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="228"/>
         <source>The texture pack %1 is not available or its manifest is invalid</source>
         <translation>Das Texturpaket %1 ist nicht vorhanden oder sein Manifest ist ungültig</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="215"/>
+        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="231"/>
         <source>The texture pack %1 was left out: the active packs together need more memory than allowed</source>
         <translation>Das Texturpaket %1 wurde weggelassen: Die aktiven Pakete brauchen zusammen mehr Speicher als erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="226"/>
+        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="242"/>
         <source>%1x textures: atlas %2 x %3 pixels with %4 mip levels, %5 MiB, ready in %6 ms</source>
         <translation>Texturen %1x: Atlas %2 × %3 Pixel mit %4 Mip-Stufen, %5 MiB, fertig in %6 ms</translation>
     </message>

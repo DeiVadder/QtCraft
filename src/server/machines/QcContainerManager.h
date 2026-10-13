@@ -36,6 +36,9 @@ public:
     QList<QcItemStack> resize(QcBlockPos pos, int slotCount);
     // Removes the container and returns it with its contents (to be dropped).
     Container remove(QcBlockPos pos);
+    // Moves the container at `from` with its contents to `to` (a piston pushed its block, decision
+    // E-337); false when there is none at `from` or one at `to` already.
+    bool relocate(QcBlockPos from, QcBlockPos to);
     bool isFull() const { return m_containers.size() >= maxContainers; }
     qsizetype count() const { return m_containers.size(); }
     QList<Container> containers() const { return m_containers.values(); }

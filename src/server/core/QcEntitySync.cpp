@@ -36,6 +36,7 @@ void QcEntitySync::sync(QcServerClient &client)
 
     considerPlayers(pass);
     considerFallingBlocks(pass);
+    considerMovingBlocks(pass);
     considerItems(pass);
     considerStands(pass);
     removeUnseen(pass);
@@ -86,6 +87,16 @@ void QcEntitySync::considerFallingBlocks(Pass &pass)
         QcMsg::EntitySpawn spawn{falling.id, QcMsg::EntitySpawn::fallingBlockType, QString(), falling.motion.position, 0.0f, 0.0,
                                  {}, {}, 0.0f, 0, qcNoItem};
         spawn.block = falling.block;
+        consider(pass, spawn, false);
+    }
+}
+
+void QcEntitySync::considerMovingBlocks(Pass &pass)
+{
+    for (const QcMovingBlocks::Moving &moving : m_state.movingBlocks.all()) {
+        QcMsg::EntitySpawn spawn{moving.id, QcMsg::EntitySpawn::movingBlockType, QString(), QcMovingBlocks::positionAt(moving, m_state.tickCount),
+                                 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
+        spawn.block = moving.block;
         consider(pass, spawn, false);
     }
 }

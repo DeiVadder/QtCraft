@@ -1,0 +1,24 @@
+{
+    "name": "oak_pressure_plate",
+    "sound": "wood",
+    "shape": "pressure_plate",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.5,
+    "tool": "axe",
+    "support": "below",
+    "states": {
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "oak_planks"
+    },
+    "signal": {
+        "type": "plate",
+        "detects": "all"
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "name": "signal_piston_head",
+    "sound": "stone",
+    "shape": "signal_piston_head",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "drops": [],
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west",
+            "up",
+            "down"
+        ],
+        "sticky": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "signal_piston_top",
+        "slots": {
+            "arm": "oak_planks",
+            "sticky": "signal_piston_top_sticky"
+        }
+    },
+    "signal": {
+        "type": "piston_head",
+        "movable": "immovable"
+    },
+    "item": false
+}

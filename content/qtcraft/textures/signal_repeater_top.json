@@ -1,0 +1,8 @@
+{
+    "name": "signal_repeater_top",
+    "pattern": "repeater",
+    "primary": "#a8a8a8",
+    "secondary": "#c81e1e",
+    "variation": 0.06,
+    "seed": 2911
+}

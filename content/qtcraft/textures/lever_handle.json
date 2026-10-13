@@ -1,0 +1,8 @@
+{
+    "name": "lever_handle",
+    "pattern": "planks",
+    "primary": "#8a6a3a",
+    "secondary": "#5d4526",
+    "variation": 0.08,
+    "seed": 2909
+}

@@ -262,7 +262,8 @@ private slots:
         for (const char *name : {QcSoundKeys::playerHurt, QcSoundKeys::playerDeath, QcSoundKeys::playerEat, QcSoundKeys::itemPickup,
                                  QcSoundKeys::waterSplash, QcSoundKeys::waterSwim, QcSoundKeys::uiClick, QcSoundKeys::mobHurt,
                                  QcSoundKeys::mobDeath, QcSoundKeys::machineActive, QcSoundKeys::liquidHiss, QcSoundKeys::bucketFill,
-                                 QcSoundKeys::bucketEmpty, QcSoundKeys::bottleCatch}) {
+                                 QcSoundKeys::bucketEmpty, QcSoundKeys::bottleCatch, QcSoundKeys::signalClick, QcSoundKeys::pistonOut,
+                                 QcSoundKeys::pistonIn, QcSoundKeys::torchFizz}) {
             const QcSoundDefinition *sound = content.sound(QString::fromLatin1(name));
             QVERIFY2(sound, name);
             QCOMPARE(sound->bus, QcSoundBus::Effects);

@@ -1,0 +1,8 @@
+{
+    "name": "signal_piston_top_sticky",
+    "pattern": "lump",
+    "primary": "#6ec86a",
+    "secondary": "#4a9a46",
+    "variation": 0.12,
+    "seed": 2917
+}

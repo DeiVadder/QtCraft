@@ -1,0 +1,87 @@
+#pragma once
+
+#include "QcCircuitPlan.h"
+#include "QcCircuitState.h"
+#include "QcPistonMover.h"
+#include "QcSignalTable.h"
+
+#include <QHash>
+#include <QSet>
+
+#include <vector>
+
+class QcServerBlocks;
+class QcServerSounds;
+struct QcServerState;
+
+// The Signal Dust circuits of the server: the tick phase "signal" (decision E-335). Each tick it
+// presses plates, then looks at the block changes near circuits since the last step and at the
+// scheduled ticks that are due, in steps: a step decides everything on the world as it is
+// (dust networks in one pass, components, pistons) and applies it together; the changes it makes
+// are the next step. Steps run until the circuits are quiet or the tick's budget is used up; what
+// is left waits for the next tick, so a runaway circuit never stalls the server.
+class QcServerCircuits
+{
+public:
+    // Work per tick: dust looked at, components evaluated, blocks pushed, bodies looked at for
+    // plates and pushes. A step takes at most what is left (split in a fixed order of positions);
+    // a dust region or a piston's push in it can still cross it, nothing starts after that.
+    static constexpr qsizetype maxUpdatesPerTick = 8192;
+    // Part of the budget changes leave for the scheduled ticks that are due.
+    static constexpr qsizetype scheduleReserve = maxUpdatesPerTick / 4;
+    // A step takes at least this many changes or scheduled ticks, so a tick always gets on.
+    static constexpr qsizetype minimumStep = 64;
+    // Work a change or scheduled tick costs about (its neighbours and the dust around it): a step
+    // takes at most the budget left divided by this.
+    static constexpr qsizetype workPerChange = 4;
+    // A signal door that a body kept from moving tries again after this many ticks.
+    static constexpr int openerRetryTicks = 10;
+    // Memories of torches, burnouts and extensions that ran out are dropped this often.
+    static constexpr int pruneIntervalTicks = 100;
+
+    QcServerCircuits(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks);
+
+    void tick();
+    // A player uses the block at `pos`: a lever switches, a button is pressed, a repeater takes its
+    // next delay. False when it is no such block.
+    bool use(QcBlockPos pos);
+    // Makes the circuits around `pos` look at it in the next step, as if it had just been placed
+    // (world setup, chunks generated again).
+    void noteBlock(QcBlockPos pos);
+
+    const QcSignalTable &table() const { return m_table; }
+    // Work done in the latest tick (debug display).
+    qsizetype lastTickWork() const { return m_lastWork; }
+
+private:
+    void finishMoves();
+    void pressPlates();
+    // Runs steps of changes while more than `reserve` of the budget is left.
+    void settle(qsizetype reserve);
+    // The changes of the next step, at most `limit` (at least minimumStep), without those next to
+    // an unloaded chunk (they wait for it).
+    QList<QcCircuitState::Change> takeChanges(qsizetype limit);
+    void runWave(qsizetype limit);
+    void runScheduled(quint64 due, QcSignalSchedule::Priority priority);
+    // Components and dust a set of changes may concern, sorted, each once.
+    void collect(const QList<QcCircuitState::Change> &changes, std::vector<QcBlockPos> &components,
+                 std::vector<QcBlockPos> &dust) const;
+    void collectAround(const QcCircuitState::Change &change, std::vector<QcBlockPos> &components, std::vector<QcBlockPos> &dust) const;
+    void apply(QcCircuitPlan &plan);
+    void applyWrites(const QcCircuitPlan &plan);
+    void applyOpenings(const QcCircuitPlan &plan);
+    // Returns the work done (blocks moved, bodies looked at).
+    qsizetype applyPistons(const QcCircuitPlan &plan);
+
+    QcServerState &m_state;
+    QcServerSounds &m_sounds;
+    QcServerBlocks &m_blocks;
+    QcSignalTable m_table;
+    QcPistonMover m_mover;
+    qsizetype m_budget = 0;
+    qsizetype m_lastWork = 0;
+    // Pistons that extended (bit 1) or retracted (bit 2) in this tick: each does both at most once.
+    QHash<QcBlockPos, quint8> m_pistonActs;
+    QSet<QcBlockPos> m_pressedByAnything;
+    QSet<QcBlockPos> m_pressedByLiving;
+};

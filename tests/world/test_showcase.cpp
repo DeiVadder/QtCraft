@@ -127,10 +127,18 @@ private slots:
                 continue;
             }
 
-            // Every state, doors with both halves (the upper halves stand on the lower ones).
+            // Every state, doors with both halves (the upper halves stand on the lower ones); of blocks
+            // with more than 32 states those that differ from the default in one property.
             const QcBlockStateTable &table = content.stateTable();
+            const QcBlockId first = table.firstState(quint32(type));
             for (int index = 0; index < table.stateCount(quint32(type)); ++index) {
-                const QcBlockId state = table.firstState(quint32(type)) + quint32(index);
+                const QcBlockId state = first + quint32(index);
+                const auto differs = [&](const QcBlockProperty &property) {
+                    return content.property(state, property.name) != content.property(first, property.name);
+                };
+                if (table.stateCount(quint32(type)) > 32 && std::ranges::count_if(block.properties, differs) > 1) {
+                    continue;
+                }
                 ++expectedStates;
                 QVERIFY2(shown.contains(state), qPrintable(content.stateName(state)));
             }

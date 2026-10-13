@@ -3,6 +3,7 @@
 #include "QcContentNames.h"
 #include "QcContentSerializer.h"
 #include "QcPartGenerator.h"
+#include "QcSignalLinks.h"
 
 #include <algorithm>
 
@@ -224,7 +225,7 @@ QcResult<QcItemId> QcContentRegistry::registerItem(QcItemDefinition definition)
 void QcContentRegistry::createBlockItems()
 {
     for (const QcBlockDefinition &block : std::as_const(m_blocks)) {
-        if (block.renderLayer == QcRenderLayer::Invisible || block.liquid || m_itemIds.contains(block.name)) {
+        if (block.renderLayer == QcRenderLayer::Invisible || block.liquid || !block.hasItem || m_itemIds.contains(block.name)) {
             continue;
         }
 
@@ -311,6 +312,17 @@ void QcContentRegistry::registerMaterial(QcMaterialDefinition material)
 QStringList QcContentRegistry::finish()
 {
     QStringList warnings = QcPartGenerator::generate(*this);
+    // A circuit block with a broken link (a mod's piston without a valid head) takes no part in
+    // circuits rather than misbehave (decision E-333).
+    const auto problems = QcSignalLinks::problems(*this);
+    for (const auto &[name, problem] : std::as_const(problems)) {
+        const std::optional<QcBlockId> id = blockId(name);
+        if (!id) {
+            continue;
+        }
+        m_blocks[qsizetype(m_states.state(*id).type)].signal.kind = QcSignalKind::None;
+        warnings.append(u"block '%1': %2; it takes no part in circuits"_s.arg(name, problem));
+    }
     createBlockItems();
     return warnings;
 }

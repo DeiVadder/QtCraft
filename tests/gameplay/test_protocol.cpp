@@ -510,7 +510,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.mobType = QcMsg::EntitySpawn::playerType;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 29u);
+        QCOMPARE(QcProtocol::version, 30u);
     }
 
     void machineAndFoodMessagesRoundTrip()
@@ -854,6 +854,14 @@ private slots:
         const QcMsg::EntitySpawn fallingCopy = roundTrip(falling);
         QCOMPARE(fallingCopy.mobType, QcMsg::EntitySpawn::fallingBlockType);
         QCOMPARE(fallingCopy.block, 37u);
+        // So do blocks a piston moves (decision E-337).
+        QcMsg::EntitySpawn moving = falling;
+        moving.mobType = QcMsg::EntitySpawn::movingBlockType;
+        moving.block = 4242;
+        const QcMsg::EntitySpawn movingCopy = roundTrip(moving);
+        QCOMPARE(movingCopy.mobType, QcMsg::EntitySpawn::movingBlockType);
+        QCOMPARE(movingCopy.block, 4242u);
+        QCOMPARE(movingCopy.position, moving.position);
         QCOMPARE(roundTrip(QcMsg::UseEntity{21}).id, 21u);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseEntity{21}), QcProtocol::Peer::Server).has_value());
 

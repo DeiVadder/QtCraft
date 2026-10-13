@@ -1,0 +1,186 @@
+{
+    "name": "lever",
+    "rotate": "attach",
+    "parts": [
+        {
+            "when": {
+                "attach": "floor"
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0,
+                    0.25,
+                    0.6875,
+                    0.1875,
+                    0.75
+                ]
+            ],
+            "collision": [],
+            "texture": "base"
+        },
+        {
+            "when": {
+                "attach": "ceiling"
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.8125,
+                    0.25,
+                    0.6875,
+                    1,
+                    0.75
+                ]
+            ],
+            "collision": [],
+            "texture": "base"
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ]
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.25,
+                    0,
+                    0.6875,
+                    0.75,
+                    0.1875
+                ]
+            ],
+            "collision": [],
+            "texture": "base"
+        },
+        {
+            "when": {
+                "attach": "floor",
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.1875,
+                    0.25,
+                    0.5625,
+                    0.6875,
+                    0.375
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": "floor",
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.1875,
+                    0.625,
+                    0.5625,
+                    0.6875,
+                    0.75
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": "ceiling",
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.3125,
+                    0.25,
+                    0.5625,
+                    0.8125,
+                    0.375
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": "ceiling",
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.3125,
+                    0.625,
+                    0.5625,
+                    0.8125,
+                    0.75
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ],
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.625,
+                    0.1875,
+                    0.5625,
+                    0.75,
+                    0.6875
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ],
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.4375,
+                    0.25,
+                    0.1875,
+                    0.5625,
+                    0.375,
+                    0.6875
+                ]
+            ],
+            "collision": [],
+            "texture": "handle",
+            "uv": "box"
+        }
+    ]
+}

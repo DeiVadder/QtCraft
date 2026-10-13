@@ -79,6 +79,7 @@ qt_add_library(qc_clientcore STATIC
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
+    textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
     textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
     textures/QcGpuLimits.h textures/QcGpuLimits.cpp

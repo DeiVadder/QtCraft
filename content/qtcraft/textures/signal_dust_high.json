@@ -1,0 +1,8 @@
+{
+    "name": "signal_dust_high",
+    "pattern": "dust",
+    "primary": "#ff3a2a",
+    "secondary": "#d01c14",
+    "variation": 0.12,
+    "seed": 2901
+}

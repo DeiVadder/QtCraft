@@ -54,5 +54,8 @@ struct QcClientEntity
     bool isItem() const { return !item.isEmpty(); }
     bool isPlayer() const { return mobType == -1; }
     bool isFallingBlock() const { return mobType == -3; }
+    bool isMovingBlock() const { return mobType == -5; }
+    // Falling and moving blocks: drawn as a block, never targeted, no steps.
+    bool isBlockEntity() const { return isFallingBlock() || isMovingBlock(); }
     bool isArmourStand() const { return mobType == -4; }
 };

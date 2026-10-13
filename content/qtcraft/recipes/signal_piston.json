@@ -1,0 +1,18 @@
+{
+    "name": "signal_piston",
+    "type": "shaped",
+    "pattern": [
+        "ppp",
+        "cic",
+        "cdc"
+    ],
+    "key": {
+        "p": "#planks",
+        "c": "cobblestone",
+        "i": "iron_ingot",
+        "d": "signal_dust"
+    },
+    "result": {
+        "item": "signal_piston"
+    }
+}

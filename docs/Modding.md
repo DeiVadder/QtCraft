@@ -240,6 +240,32 @@ Capes are appearances of `"kind": "cape"` (decision E-240) and appear in the cha
 }
 ```
 
+### Signal Dust components (stage 29a)
+
+A block joins circuits with a `signal` object (decision E-333). `type` picks a behaviour the server implements; the other fields tune it, so a mod adds its own sources (levers, buttons, plates, torches, repeaters), wires and consumers ("slots": lamps, openers, pistons) in data. A block without `type` can still set how pistons treat it (`movable`) and whether it carries power (`conducts`).
+
+```json
+{ "name": "ruby_lamp", "sound": "glass", "hardness": 0.5, "textures": { "all": "ruby_lamp" },
+  "signal": { "type": "lamp", "active": false, "counterpart": "ruby_lamp_lit", "offDelayTicks": 4 } }
+```
+
+| Field | Meaning |
+|-------|---------|
+| `type` | `dust`, `lever`, `button`, `plate`, `torch`, `repeater`, `lamp`, `opener`, `piston`, `piston_head` |
+| `power` | Strength a source emits, 1–15 (default 15) |
+| `pulseTicks` | Buttons: ticks until they spring back (stone 20, oak 30) |
+| `offDelayTicks` | Lamps: ticks until they go dark after losing power (default 4, 0 at once) |
+| `detects` | Plates: `all` (any entity, default) or `living` (players and creatures) |
+| `sticky`, `pushLimit`, `head` | Pistons: pull back the block in front, blocks pushed at most (default 12), the block of the extended head |
+| `quasiConnectivity` | Pistons: also powered through the block above them, noticed only on a block update next to them (default `true`; the world's game rule `quasiConnectivity` can switch it off for all) |
+| `active`, `counterpart` | Torches and lamps come as two blocks (light belongs to a block): `active` marks the lit one, `counterpart` names the other one with the same properties |
+| `movable` | How pistons treat the block: `default` (unbreakable blocks stay, blocks that hang, wash away, flow or give way break, the rest moves), `push`, `immovable`, `breaks` |
+| `conducts` | Whether a full solid opaque block passes power (default `true`; pistons and heads `false`) |
+
+A piston's `head` must be a `piston_head` block with the piston's `facing` values and `sticky`; a torch's or lamp's `counterpart` must be the same kind with the opposite `active` and the same states. A block whose link is broken takes no part in circuits (a warning when the content loads). Internal variants like a lit lamp set the block field `"item": false`: they get no item of their own.
+
+Each kind needs certain states, which the parser checks: dust `power` (`"0"`–`"15"`) and `north`, `east`, `south`, `west` (`none`, `side`, `up`); levers, buttons and plates `powered`; torches `attach`; repeaters `facing` (four sides), `delay` (`"1"`–`"4"`), `powered`, `locked`; openers `open`; pistons `facing` (six sides, a `rotate` of the shape turns up and down too) and `extended`; heads `facing` and `sticky`. Chests, barrels and furnaces move with their contents; mods' storage blocks and machines do too.
+
 ### Armour and armour stands (stage 23)
 
 An item becomes armour with an `armour` object (decisions E-234, E-235): `slot` (`head`, `chest`, `legs`, `feet`), `points` (0–20; 4 % less damage per point, at most 20 count), `set` (name of the set it belongs to; the showcase puts every set on a stand and the handbook groups by it; its title is the translation `armour_set.<namespace>.<name>`; default: the item itself) and how it looks: `layers` (at most 8) – `covers` (slots of the boxes of the humanoid model, e.g. `["torso", "sleeve"]`), `texture`, optional `front` (the face looking forward, e.g. a helmet with a transparent opening), `inflate` (metres added on every side, 0–0.2, default 0.03), `fromY`/`toY` (cut, model metres) – and `parts` (at most 16 extra boxes): `bone` (`head`, `body`, `right_arm`, `left_arm`, `right_leg`, `left_leg`), `from`, `to` (model metres like the model's boxes), `texture`, optional `front`. `durability` counts hits. Armour never stacks. Layers and parts turn with the body parts in every animation. Recipes are ordinary crafting recipes. New texture patterns for icons and armour faces: `helmet`, `chestplate`, `leggings`, `boots`, `armour_plate`, `armour_leather`, `helmet_front`, `visor`, `armour_trim`, `armor_stand`.

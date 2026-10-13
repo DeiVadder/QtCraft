@@ -1,0 +1,146 @@
+{
+    "name": "signal_quirks",
+    "showcase": {
+        "order": 81
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "d": "signal_dust",
+        "S": "stone",
+        "B": "stone_bricks",
+        "T": "signal_torch[attach=floor]",
+        "L": "lever[attach=floor,powered=true]",
+        "E": "lever[attach=east,powered=true]",
+        "N": "signal_piston[facing=north]",
+        "A": "signal_piston[facing=up]",
+        "K": "sticky_signal_piston[facing=east]",
+        "G": "gold_block"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPAPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "............................",
+            "............................",
+            "..SSd.......................",
+            "..d.d.......................",
+            "..ddd...N...N....LddS.......",
+            "....................KG......",
+            "............................",
+            "............................",
+            "...................LKG......",
+            "............................"
+        ],
+        [
+            "............................",
+            "............................",
+            "..Td........................",
+            "............................",
+            ".........ES..ES.............",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................"
+        ],
+        [
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................"
+        ],
+        [
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................",
+            "............................"
+        ]
+    ],
+    "updates": [
+        [
+            2,
+            2,
+            2
+        ],
+        [
+            12,
+            1,
+            4
+        ],
+        [
+            17,
+            1,
+            4
+        ],
+        [
+            19,
+            1,
+            8
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                3.8,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_quirks.clock"
+        },
+        {
+            "at": [
+                8.5,
+                3.4,
+                4.5
+            ],
+            "text": "structure.qtcraft.signal_quirks.bud_waiting"
+        },
+        {
+            "at": [
+                12.5,
+                3.4,
+                4.5
+            ],
+            "text": "structure.qtcraft.signal_quirks.bud_updated"
+        },
+        {
+            "at": [
+                21.5,
+                3.0,
+                5.5
+            ],
+            "text": "structure.qtcraft.signal_quirks.spitter"
+        },
+        {
+            "at": [
+                21.5,
+                2.8,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_quirks.sticky_holds"
+        }
+    ]
+}

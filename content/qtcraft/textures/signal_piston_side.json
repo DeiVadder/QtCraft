@@ -1,0 +1,8 @@
+{
+    "name": "signal_piston_side",
+    "pattern": "piston_side",
+    "primary": "#7a7a7a",
+    "secondary": "#a8844e",
+    "variation": 0.1,
+    "seed": 2915
+}

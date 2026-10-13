@@ -31,8 +31,11 @@ public:
         Inventory,
         // A new look is sent again to every player who sees the player.
         Appearance,
+        // Levers, buttons and repeaters switched by hand (paid inside a Use, decision E-339): every
+        // switch starts work in the circuits, so spamming a lever is bounded separately.
+        Switch,
     };
-    static constexpr int kindCount = 7;
+    static constexpr int kindCount = 8;
 
     struct Limit
     {
@@ -47,6 +50,7 @@ public:
         {10.0, 20.0},
         {40.0, 80.0},
         {2.0, 10.0},
+        {5.0, 10.0},
     }};
     // Drops are logged at most this often per player and kind (the first one at once).
     static constexpr qint64 reportIntervalNs = 1'000'000'000;

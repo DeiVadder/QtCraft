@@ -1,0 +1,16 @@
+{
+    "name": "signal_torch",
+    "type": "shaped",
+    "pattern": [
+        "d",
+        "|"
+    ],
+    "key": {
+        "d": "signal_dust",
+        "|": "stick"
+    },
+    "result": {
+        "item": "signal_torch",
+        "count": 1
+    }
+}

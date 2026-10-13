@@ -15,5 +15,6 @@
     "textures": {
         "all": "oak_trapdoor"
     },
-    "fuelSeconds": 10
+    "fuelSeconds": 10,
+    "signal": { "type": "opener" }
 }

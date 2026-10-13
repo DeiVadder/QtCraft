@@ -285,7 +285,7 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
         if (entity.isItem()) {
             QcEntityMesher::appendItem(*mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
                                        {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
-        } else if (entity.isFallingBlock()) {
+        } else if (entity.isBlockEntity()) {
             QcEntityMesher::ItemLook look;
             look.cube = true;
             look.faces = frame.content.block(entity.block).faceTextures;

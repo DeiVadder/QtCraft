@@ -8,6 +8,7 @@
 #include "QcItemEntityManager.h"
 #include "QcMining.h"
 #include "QcMobBreeding.h"
+#include "QcRateLimiter.h"
 #include "QcMobManager.h"
 #include "QcPendingCommands.h"
 #include "QcPhysics.h"
@@ -63,6 +64,8 @@ QMap<QString, double> values()
         {u"farming.randomTickSeconds"_s, std::round(QcPlantGrowth::randomTickSeconds)},
         {u"farming.seedCheckSeconds"_s, QcServerItemsAndPlants::seedCheckTicks * QcPhysics::tickDuration},
         {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
+        {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
+        {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcServerCombat::voidDamage},
         {u"void.interval"_s, QcServerCombat::voidDamageIntervalTicks * QcPhysics::tickDuration},

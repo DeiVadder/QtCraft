@@ -2,6 +2,7 @@
 
 #include "QcAccessList.h"
 #include "QcArmourStandManager.h"
+#include "QcCircuitState.h"
 #include "QcContainerManager.h"
 #include "QcContentRegistry.h"
 #include "QcFallingBlockManager.h"
@@ -10,6 +11,7 @@
 #include "QcLiquidFlow.h"
 #include "QcMachineManager.h"
 #include "QcMobManager.h"
+#include "QcMovingBlocks.h"
 #include "QcPermission.h"
 #include "QcPlantGrowth.h"
 #include "QcPlantManager.h"
@@ -80,6 +82,9 @@ struct QcServerState
     QcLiquidFlow liquids;
     QcFallingBlockManager falling;
     QcArmourStandManager stands;
+    // Signal Dust circuits (decision E-335) and the blocks pistons move as the clients see them.
+    QcCircuitState circuits;
+    QcMovingBlocks movingBlocks;
     QRandomGenerator random;
     // Separate from random so that sounds never change drops or spawns.
     QRandomGenerator soundRandom;

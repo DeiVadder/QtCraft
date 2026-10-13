@@ -43,6 +43,9 @@ struct QcWorldInfo
     bool mobSpawning = true;
     // Game rule: blocks get random ticks (growing plants, crops, soil; decision E-295).
     bool randomTicks = true;
+    // Game rule: pistons that allow it are also powered through the block above them, noticed only
+    // with a block update next to them (quasi-connectivity, decision E-338).
+    bool quasiConnectivity = true;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether
     // its one-time setup has run.
     QString generator = QString::fromLatin1(defaultGenerator);

@@ -7,7 +7,7 @@
     "hardness": 5.0,
     "tool": "pickaxe",
     "door": true,
-    "toggles": true,
+    "toggles": false,
     "states": {
         "facing": [
             "north",
@@ -36,5 +36,8 @@
             "upper": "iron_door_upper"
         }
     },
-    "toolLevel": 1
+    "toolLevel": 1,
+    "signal": {
+        "type": "opener"
+    }
 }

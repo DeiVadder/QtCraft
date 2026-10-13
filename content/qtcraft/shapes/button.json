@@ -1,0 +1,118 @@
+{
+    "name": "button",
+    "rotate": "attach",
+    "parts": [
+        {
+            "when": {
+                "attach": "floor",
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0,
+                    0.375,
+                    0.6875,
+                    0.125,
+                    0.625
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": "floor",
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0,
+                    0.375,
+                    0.6875,
+                    0.0625,
+                    0.625
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": "ceiling",
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.875,
+                    0.375,
+                    0.6875,
+                    1,
+                    0.625
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": "ceiling",
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.9375,
+                    0.375,
+                    0.6875,
+                    1,
+                    0.625
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ],
+                "powered": false
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.375,
+                    0,
+                    0.6875,
+                    0.625,
+                    0.125
+                ]
+            ],
+            "collision": []
+        },
+        {
+            "when": {
+                "attach": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                ],
+                "powered": true
+            },
+            "boxes": [
+                [
+                    0.3125,
+                    0.375,
+                    0,
+                    0.6875,
+                    0.625,
+                    0.0625
+                ]
+            ],
+            "collision": []
+        }
+    ]
+}

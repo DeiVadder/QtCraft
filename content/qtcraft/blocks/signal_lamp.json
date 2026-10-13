@@ -1,0 +1,13 @@
+{
+    "name": "signal_lamp",
+    "sound": "glass",
+    "hardness": 0.5,
+    "textures": {
+        "all": "signal_lamp"
+    },
+    "signal": {
+        "type": "lamp",
+        "active": false,
+        "counterpart": "signal_lamp_lit"
+    }
+}

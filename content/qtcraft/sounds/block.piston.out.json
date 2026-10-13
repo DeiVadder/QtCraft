@@ -1,0 +1,26 @@
+{
+    "name": "block.piston.out",
+    "volume": 0.6,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 700,
+            "gain": 0.8
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.14,
+            "frequency": 140,
+            "endFrequency": 220,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 900,
+            "gain": 0.6
+        }
+    ]
+}

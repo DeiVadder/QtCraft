@@ -1,0 +1,32 @@
+{
+    "name": "signal_torch",
+    "sound": "wood",
+    "shape": "torch",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "light": 7,
+    "hardness": 0.0,
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "north",
+            "east",
+            "south",
+            "west"
+        ]
+    },
+    "itemTexture": "signal_torch_item",
+    "textures": {
+        "all": "signal_torch",
+        "top": "signal_torch_top",
+        "bottom": "signal_torch"
+    },
+    "signal": {
+        "type": "torch",
+        "active": true,
+        "counterpart": "signal_torch_off"
+    }
+}

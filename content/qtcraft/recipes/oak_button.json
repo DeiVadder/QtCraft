@@ -1,0 +1,10 @@
+{
+    "name": "oak_button",
+    "type": "shapeless",
+    "ingredients": [
+        "oak_planks"
+    ],
+    "result": {
+        "item": "oak_button"
+    }
+}

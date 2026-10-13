@@ -5,6 +5,7 @@
         "shape": "fence_gate",
         "lightOpacity": 0,
         "toggles": true,
+        "signal": { "type": "opener" },
         "connects": { "group": "fence", "to": [] },
         "states": { "facing": ["north", "east", "south", "west"], "open": [false, true] }
     },

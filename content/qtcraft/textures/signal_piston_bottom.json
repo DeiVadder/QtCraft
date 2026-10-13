@@ -1,0 +1,8 @@
+{
+    "name": "signal_piston_bottom",
+    "pattern": "bricks",
+    "primary": "#6e6e6e",
+    "secondary": "#4e4e4e",
+    "variation": 0.15,
+    "seed": 2918
+}

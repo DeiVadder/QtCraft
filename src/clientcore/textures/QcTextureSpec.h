@@ -153,6 +153,14 @@ struct QcTextureSpec
         // any other character (and every pixel the bitmap leaves out) shows woven cloth in the
         // primary colour. For cape emblems and hems (decision E-241).
         Emblem,
+        // Patterns of QcTextureSignalPatterns (decision E-333): loose grains of the wire (primary,
+        // some secondary) on a transparent background, a lever icon (stick primary, base
+        // secondary), a repeater's slab (primary) with a wire and arrow (secondary), a piston's
+        // stone side (primary) in a wooden frame (secondary).
+        Dust,
+        Lever,
+        Repeater,
+        PistonSide,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

@@ -4,6 +4,7 @@
 #include "QcTextureCraftPatterns.h"
 #include "QcTextureEmblem.h"
 #include "QcTextureFarmPatterns.h"
+#include "QcTextureSignalPatterns.h"
 #include "QcTexturePaint.h"
 
 #include <algorithm>
@@ -539,6 +540,9 @@ Painter painterFor(Pattern pattern)
     }
     if (const Painter farm = qcFarmPatternPainter(pattern)) {
         return farm;
+    }
+    if (const Painter signal = qcSignalPatternPainter(pattern)) {
+        return signal;
     }
     const Painter armour = qcArmourPatternPainter(pattern);
     return armour ? armour : paintNoise;

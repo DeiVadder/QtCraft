@@ -20,6 +20,8 @@ struct QcShowcaseMatch
     // Can be used: crafting, machine, storage, doors and other toggles.
     std::optional<bool> functional;
     std::optional<bool> falls;
+    // A Signal Dust circuit part (decision E-340): wire, switches, torches, repeaters, lamps, pistons.
+    std::optional<bool> signal;
     // Render layers ("opaque", "cutout", "translucent"), tools and parts of the block name.
     QStringList render;
     QStringList tools;

@@ -1,4 +1,5 @@
 #include "QcBaseContent.h"
+#include "QcClientEntities.h"
 #include "QcClientSession.h"
 #include "QcConnection.h"
 #include "QcDebugSnapshot.h"
@@ -55,6 +56,23 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
 
 private slots:
+    void movingBlocksNeedAKnownBlock()
+    {
+        // A sliding block (decision E-337) is accepted only with a block the content knows; air or an
+        // unknown id is an invalid message.
+        QcClientEntities entities;
+        QcMsg::EntitySpawn moving{9, QcMsg::EntitySpawn::movingBlockType, QString(), {0.5, 70.0, 0.5}, 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
+        moving.block = *m_content->blockId(u"qtcraft:stone"_s);
+        QVERIFY(entities.spawn(moving, m_content.get()));
+        QVERIFY(entities.all().value(9).isMovingBlock());
+        QVERIFY(entities.all().value(9).isBlockEntity());
+        moving.id = 10;
+        moving.block = qcAirBlockId;
+        QVERIFY(!entities.spawn(moving, m_content.get()));
+        moving.block = QcBlockId(m_content->stateCount());
+        QVERIFY(!entities.spawn(moving, m_content.get()));
+    }
+
     void sessionReceivesWorldAndStandsOnGround()
     {
         auto host = makeHost(m_content, 2);

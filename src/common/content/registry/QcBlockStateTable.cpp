@@ -14,7 +14,12 @@ namespace {
 
 constexpr QcAabb unitBox{{0.0, 0.0, 0.0}, {1.0, 1.0, 1.0}};
 
-// Quarter turns clockwise seen from above for a facing value; north is the authored direction.
+// Turns of an authored shape (facing north) for a facing value: quarter turns clockwise seen from
+// above for east, south and west, a tilt that points north at the sky (up) or the ground (down) for
+// pistons (decision E-334).
+constexpr int turnUp = 4;
+constexpr int turnDown = 5;
+
 int quarterTurns(const QString &value)
 {
     if (value == u"east"_s) {
@@ -26,11 +31,26 @@ int quarterTurns(const QString &value)
     if (value == u"west"_s) {
         return 3;
     }
+    if (value == u"up"_s) {
+        return turnUp;
+    }
+    if (value == u"down"_s) {
+        return turnDown;
+    }
     return 0;
 }
 
 QcAabb turned(const QcAabb &box, int turns)
 {
+    if (turns == turnUp) {
+        // (y, z) -> (1 - z, y): north (-z) becomes up (+y).
+        return {{box.min.x, 1.0 - box.max.z, box.min.y}, {box.max.x, 1.0 - box.min.z, box.max.y}};
+    }
+    if (turns == turnDown) {
+        // (y, z) -> (z, 1 - y): north (-z) becomes down (-y).
+        return {{box.min.x, box.min.z, 1.0 - box.max.y}, {box.max.x, box.max.z, 1.0 - box.min.y}};
+    }
+
     QcAabb result = box;
     for (int i = 0; i < turns; ++i) {
         // (x, z) -> (1 - z, x): north (-z) becomes east (+x).
@@ -46,6 +66,14 @@ QcAabb flipped(const QcAabb &box)
 
 QcBlockFace turnedFace(QcBlockFace face, int turns)
 {
+    if (turns == turnUp || turns == turnDown) {
+        // Tilting about the x axis: north, up, south and down follow each other.
+        constexpr std::array<QcBlockFace, 4> tilt = {QcBlockFace::North, QcBlockFace::Up, QcBlockFace::South, QcBlockFace::Down};
+        const auto it = std::ranges::find(tilt, face);
+        const std::size_t step = turns == turnUp ? 1 : 3;
+        return it == tilt.end() ? face : tilt[(std::size_t(it - tilt.begin()) + step) % tilt.size()];
+    }
+
     constexpr std::array<QcBlockFace, 4> ring = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
     for (std::size_t i = 0; i < ring.size(); ++i) {
         if (ring[i] == face) {
@@ -137,8 +165,8 @@ bool coversSide(const QList<QcAabb> &boxes, QcBlockFace face)
     return true;
 }
 
-// Identifies the variant of a state: quarter turns (bits 32-33), flip (bit 34) and the parts that
-// apply (bits 0-31). States of one block with the same key derive the same data.
+// Identifies the variant of a state: turns (bits 32-34), flip (bit 35) and the parts that apply
+// (bits 0-31). States of one block with the same key derive the same data.
 quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shape, quint32 index)
 {
     const int turns = shape.rotate.isEmpty() ? 0 : quarterTurns(QcBlockStateTable::value(block, index, shape.rotate));
@@ -153,7 +181,7 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
         }
     }
 
-    return quint64(mask) | (quint64(turns) << 32) | (quint64(flip ? 1 : 0) << 34);
+    return quint64(mask) | (quint64(turns) << 32) | (quint64(flip ? 1 : 0) << 35);
 }
 
 // Places the boxes of the parts that apply to state `index`, turned and flipped as its properties say.

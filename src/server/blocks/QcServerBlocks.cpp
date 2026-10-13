@@ -19,8 +19,16 @@ QcServerBlocks::QcServerBlocks(QcServerState &state, QcServerSounds &sounds, QcB
 
 void QcServerBlocks::setAndBroadcast(QcBlockPos pos, QcBlockId block)
 {
+    if (setQuietly(pos, block)) {
+        sendBlock(pos, block);
+    }
+}
+
+bool QcServerBlocks::setQuietly(QcBlockPos pos, QcBlockId block)
+{
+    const QcBlockId before = m_state.world.blockAt(pos).value_or(qcAirBlockId);
     if (!m_state.world.setBlock(pos, block)) {
-        return;
+        return false;
     }
 
     // A machine that is replaced by anything but another machine spills its contents.
@@ -32,13 +40,19 @@ void QcServerBlocks::setAndBroadcast(QcBlockPos pos, QcBlockId block)
     // size keeps what fits and spills the rest.
     reconcileContainer(pos);
 
+    m_updates.queueNeighbours(pos, block != qcAirBlockId);
+    // Circuits nearby look at the change in the next signal step (decision E-335).
+    m_state.circuits.noteChange(m_state.world, pos, before, block);
+    return true;
+}
+
+void QcServerBlocks::sendBlock(QcBlockPos pos, QcBlockId block) const
+{
     for (const auto &client : m_state.clients) {
         if (client->state == QcServerClient::State::Playing && client->sentChunks.contains(pos.chunk())) {
             client->connection->send(QcMsg::BlockUpdate{pos, block});
         }
     }
-
-    m_updates.queueNeighbours(pos, block != qcAirBlockId);
 }
 
 void QcServerBlocks::reconcileContainer(QcBlockPos pos)

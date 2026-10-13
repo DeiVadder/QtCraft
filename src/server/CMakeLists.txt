@@ -108,6 +108,18 @@ qt_add_library(qc_server STATIC
     worldgen/showcase/QcShowcasePlan.h
     worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
     worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
+    signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
+    signal/QcCircuitPlan.h
+    signal/QcCircuitState.h signal/QcCircuitState.cpp
+    signal/QcDustNetwork.h signal/QcDustNetwork.cpp
+    signal/QcMovingBlocks.h signal/QcMovingBlocks.cpp
+    signal/QcPistonMover.h signal/QcPistonMover.cpp
+    signal/QcPistonPlanner.h signal/QcPistonPlanner.cpp
+    signal/QcServerCircuits.h signal/QcServerCircuits.cpp
+    signal/QcSignalPower.h signal/QcSignalPower.cpp
+    signal/QcSignalSchedule.h signal/QcSignalSchedule.cpp
+    signal/QcSignalTable.h signal/QcSignalTable.cpp
+    storage/QcSignalStorage.h storage/QcSignalStorage.cpp
 )
 qc_configure_target(qc_server)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
@@ -129,6 +141,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
+    ${CMAKE_CURRENT_SOURCE_DIR}/signal
     ${CMAKE_CURRENT_SOURCE_DIR}/storage
     ${CMAKE_CURRENT_SOURCE_DIR}/content
     ${CMAKE_CURRENT_SOURCE_DIR}/worldgen

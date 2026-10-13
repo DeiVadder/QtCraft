@@ -7,11 +7,11 @@
 
 namespace {
 
-// Whether the server sent a player, a known mob, a valid item or a valid falling block.
+// Whether the server sent a player, a known mob, a valid item or a valid falling or moving block.
 bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
     const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
-    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType;
+    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType || spawn.mobType == QcMsg::EntitySpawn::movingBlockType;
     const bool stand = spawn.mobType == QcMsg::EntitySpawn::armourStandType;
     return !((spawn.mobType < QcMsg::EntitySpawn::playerType && !item && !fallingBlock && !stand)
              || (fallingBlock && (!content || !content->isValidBlock(spawn.block) || spawn.block == qcAirBlockId))
@@ -34,7 +34,7 @@ QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
     const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
-    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType;
+    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType || spawn.mobType == QcMsg::EntitySpawn::movingBlockType;
 
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();

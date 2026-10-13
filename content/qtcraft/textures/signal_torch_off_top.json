@@ -1,0 +1,8 @@
+{
+    "name": "signal_torch_off_top",
+    "pattern": "noise",
+    "primary": "#5a1414",
+    "secondary": "#3a0a0a",
+    "variation": 0.1,
+    "seed": 2907
+}

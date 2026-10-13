@@ -14,6 +14,8 @@ enum class QcTickPhase : quint8 {
     // Generated chunks taken over, waiting block updates of newly loaded chunks queued.
     ChunkLoading,
     BlockUpdates,
+    // Signal Dust circuits: plates, dust networks, components, pistons (decision E-335).
+    Signal,
     Liquids,
     // Players' health and hunger, creature behaviour, spawning and despawning, contact damage.
     Mobs,
@@ -35,8 +37,9 @@ inline constexpr int count = int(QcTickPhase::Messages) + 1;
 // Phases inside a tick: all but Messages; their sum is the tick's duration.
 inline constexpr int inTick = count - 1;
 
-inline constexpr std::array<const char *, count> ids{"players", "saving", "chunkLoading", "blockUpdates", "liquids", "mobs", "items",
-                                                     "plants", "fallingBlocks", "machines", "streaming", "clientSync", "messages"};
+inline constexpr std::array<const char *, count> ids{"players", "saving",   "chunkLoading",  "blockUpdates", "signal",
+                                                     "liquids", "mobs",     "items",         "plants",       "fallingBlocks",
+                                                     "machines", "streaming", "clientSync",  "messages"};
 
 constexpr const char *id(QcTickPhase phase)
 {

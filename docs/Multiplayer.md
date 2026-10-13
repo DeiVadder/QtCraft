@@ -260,6 +260,23 @@ therefore shows them a little in the past (E-271):
   the usual `BlockUpdate`s, young or enamoured animals are two bits of the existing entity flags
   (`Young`, `InLove`), and the content sync carries each animal's breeding food so the client knows
   when a click on a creature is a use of the creature.
+- Signal Dust (E-333 to E-339, protocol 30): circuits run only on the server. Dust strengths and
+  connections, lit torches and lamps, repeater delays, levers, buttons, plates, open doors and piston
+  states are block states in the usual `BlockUpdate`s; the content sync carries each block's signal
+  kind, so the client uses levers, buttons and repeaters instead of placing against them. Blocks a
+  piston moves are at their new cells in the server's world at once; the clients see the source cells
+  empty, the block as a sliding entity (`EntitySpawn` with `mobType` −5) for two ticks and then the
+  new cells. Bodies in the way are pushed by the server: the pushed player gets the new position with
+  the next `PlayerState`, like knockback; the client predicts nothing of pistons. Levers, buttons and
+  repeaters switch at most 5 times per second per player (burst 10; bucket `switch`, beyond it a click
+  does nothing). The work of all circuits per tick is bounded (`QcServerCircuits::maxUpdatesPerTick`):
+  every step takes only part of what is left, only a single dust region or piston push can still
+  cross it; the rest waits for the next tick. Pushed players stop at walls and are moved out of blocks
+  by the server (a correction like knockback); for two ticks the client sees a moved block's new cell
+  empty, so walking into it there is corrected too. Chest and furnace screens close when a piston moves
+  their block.
+  The `debug` data has the tick phase `signal`. Tests: `test_signal_bots` (dedicated server and two
+  bots over TCP: lever, dust, repeater and lamp; a piston door closes and opens).
 - Health, swings, hurt flashes, sneaking and the held item show when they arrive, up to 100 ms
   before the matching movement; the own player is not delayed (prediction, see above).
 - Measured (`test_interpolation`): a walker reported every tick and received 50 to 150 ms late

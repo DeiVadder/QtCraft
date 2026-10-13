@@ -33,12 +33,13 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
+    , m_circuits(m_state, m_sounds, m_blocks)
     , m_machineScreens(m_state, m_sounds, m_blocks)
     , m_inventory(m_state, m_machineScreens, m_sounds)
     , m_gameModes(m_state, m_inventory)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_farming(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands, m_farming, m_combat})
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands, m_farming, m_combat, m_circuits})
     , m_itemsAndPlants(m_state, m_sounds, m_blocks, m_inventory)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_entitySync(m_state)
@@ -608,10 +609,13 @@ void QcServer::simulate()
     using Phase = QcTickPhase;
     m_blockSimulation.processBlockUpdates();
     m_phases.lap(Phase::BlockUpdates);
+    m_circuits.tick();
+    m_phases.lap(Phase::Signal);
     m_blockSimulation.processLiquids();
     m_phases.lap(Phase::Liquids);
     m_combat.tick();
     m_combat.applyContactDamage();
+    m_combat.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_itemsAndPlants.tickItems();
     m_phases.lap(Phase::Items);

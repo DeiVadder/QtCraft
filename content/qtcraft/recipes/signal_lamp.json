@@ -1,0 +1,16 @@
+{
+    "name": "signal_lamp",
+    "type": "shaped",
+    "pattern": [
+        " d ",
+        "dLd",
+        " d "
+    ],
+    "key": {
+        "d": "signal_dust",
+        "L": "lantern"
+    },
+    "result": {
+        "item": "signal_lamp"
+    }
+}

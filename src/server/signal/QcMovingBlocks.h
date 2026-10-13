@@ -1,0 +1,42 @@
+#pragma once
+
+#include "QcBlockDefinition.h"
+#include "QcBlockPos.h"
+#include "QcVec3.h"
+
+#include <QList>
+
+// Blocks a piston moves, as the clients see them (decision E-337): the world holds every moved block
+// at its new cell at once (saves, chunk borders and other players see one consistent world), while
+// the clients get the new cells only after the move and meanwhile see the block as an entity that
+// slides there. Only the look of the move lasts; nothing waits for it.
+class QcMovingBlocks
+{
+public:
+    static constexpr int moveTicks = 2;
+    // Moves shown at once at most; beyond, blocks jump without the slide.
+    static constexpr qsizetype maxMoving = 4096;
+
+    struct Moving
+    {
+        quint32 id = 0;
+        QcBlockId block = qcAirBlockId;
+        QcBlockPos from;
+        QcBlockPos to;
+        quint64 start = 0;
+    };
+
+    // False (and nothing shown) when too many move already.
+    bool add(const Moving &moving);
+    // The cells whose move ends at `now` (the clients get their block now); moves are forgotten one
+    // tick later, after the clients had the block, so nothing flickers.
+    QList<QcBlockPos> tick(quint64 now);
+    // Where the sliding block is at `now`: its feet, as for falling blocks.
+    static QcVec3 positionAt(const Moving &moving, quint64 now);
+    // Whether the clients still wait for the block of `cell`.
+    bool isMovingTo(QcBlockPos cell) const;
+    const QList<Moving> &all() const { return m_moving; }
+
+private:
+    QList<Moving> m_moving;
+};

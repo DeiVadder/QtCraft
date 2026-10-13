@@ -64,9 +64,9 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                 {u"distance"_s, distance}};
     }
 
-    if (entity.isFallingBlock()) {
+    if (entity.isBlockEntity()) {
         return {{u"id"_s, qint64(entity.id)},
-                {u"type"_s, u"fallingBlock"_s},
+                {u"type"_s, entity.isMovingBlock() ? u"movingBlock"_s : u"fallingBlock"_s},
                 {u"block"_s, content ? content->stateName(entity.block) : QString()},
                 {u"position"_s, QcControlReports::vectorJson(entity.position)},
                 {u"distance"_s, distance}};

@@ -41,6 +41,7 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     // blocks with the next entity sync).
     m_updates.forgetChunk(chunk);
     m_state.liquids.forgetChunk(chunk);
+    m_state.circuits.forgetChunk(chunk);
     m_state.falling.removeInChunk(chunk);
 }
 

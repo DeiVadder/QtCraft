@@ -74,7 +74,7 @@ void QcClientEntities::stepSounds(const QcClientWorld &world, Cue &&cue)
 {
     // Other creatures' steps, from how far they moved; items do not step.
     for (QcClientEntity &entity : m_entities) {
-        if (entity.isItem() || entity.isFallingBlock() || (entity.flags & QcMsg::OnGround) == 0) {
+        if (entity.isItem() || entity.isBlockEntity() || (entity.flags & QcMsg::OnGround) == 0) {
             entity.sinceStep = 0.0;
             continue;
         }

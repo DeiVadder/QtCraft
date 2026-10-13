@@ -53,6 +53,8 @@ std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &na
         {u"wheat"_s, Pattern::Wheat},       {u"bread"_s, Pattern::Bread},
         {u"carrot"_s, Pattern::Carrot},     {u"melon_slice"_s, Pattern::MelonSlice},
         {u"pie"_s, Pattern::Pie},
+        {u"dust"_s, Pattern::Dust},         {u"lever"_s, Pattern::Lever},
+        {u"repeater"_s, Pattern::Repeater}, {u"piston_side"_s, Pattern::PistonSide},
     };
 
     const auto it = patterns.constFind(name);

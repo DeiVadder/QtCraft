@@ -6,7 +6,7 @@
     "lightOpacity": 0,
     "hardness": 5.0,
     "tool": "pickaxe",
-    "toggles": true,
+    "toggles": false,
     "states": {
         "facing": [
             "north",
@@ -26,5 +26,8 @@
     "textures": {
         "all": "iron_trapdoor"
     },
-    "toolLevel": 1
+    "toolLevel": 1,
+    "signal": {
+        "type": "opener"
+    }
 }

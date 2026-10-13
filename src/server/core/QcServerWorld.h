@@ -33,6 +33,14 @@ public:
     bool mayHaveContactDamage() const { return !m_damagingSections.isEmpty(); }
     // Sections of the loaded chunks that may hold a block with random ticks (growing plants, crops, soil).
     const QcSectionMarks &growingSections() const { return m_growingSections; }
+    // Sections that may hold a Signal Dust component (decision E-335): block changes far from any
+    // circuit cost the signal engine nothing.
+    const QcSectionMarks &signalSections() const { return m_signalSections; }
+    // Sections that may hold a pressure plate: only bodies there are checked for pressing one.
+    const QcSectionMarks &plateSections() const { return m_plateSections; }
+    // Removes a loaded chunk whatever its state and returns it (tests of circuits at the edge of the
+    // loaded area; nothing is saved).
+    std::shared_ptr<QcChunk> takeChunk(QcChunkPos pos);
 
     std::shared_ptr<const QcChunk> chunk(QcChunkPos pos) const;
     // Returns the chunk, generating it synchronously when needed (spawn, tests).
@@ -73,8 +81,8 @@ public:
     void markDirty(const QList<QcChunkPos> &chunks);
 
 private:
-    // Records which sections of a chunk that entered the world hold blocks with contact damage or
-    // growing plants.
+    // Records which sections of a chunk that entered the world hold blocks with contact damage,
+    // growing plants or circuit components.
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
 
     std::shared_ptr<const QcContentRegistry> m_content;
@@ -83,6 +91,8 @@ private:
     std::vector<double> m_contactDamage;
     QcSectionMarks m_damagingSections;
     QcSectionMarks m_growingSections;
+    QcSectionMarks m_signalSections;
+    QcSectionMarks m_plateSections;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;

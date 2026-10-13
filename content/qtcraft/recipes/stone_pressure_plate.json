@@ -1,0 +1,13 @@
+{
+    "name": "stone_pressure_plate",
+    "type": "shaped",
+    "pattern": [
+        "ss"
+    ],
+    "key": {
+        "s": "stone"
+    },
+    "result": {
+        "item": "stone_pressure_plate"
+    }
+}

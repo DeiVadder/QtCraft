@@ -1,0 +1,21 @@
+{
+    "name": "signal_ore",
+    "sound": "stone",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "drops": [
+        {
+            "item": "signal_dust",
+            "count": 4
+        },
+        {
+            "item": "signal_dust",
+            "count": 1,
+            "chance": 0.5
+        }
+    ],
+    "textures": {
+        "all": "signal_ore"
+    }
+}

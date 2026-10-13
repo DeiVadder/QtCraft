@@ -1,0 +1,45 @@
+{
+    "name": "signal_repeater",
+    "sound": "stone",
+    "shape": "signal_repeater",
+    "render": "cutout",
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "delay": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "powered": [
+            false,
+            true
+        ],
+        "locked": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "signal_repeater_item",
+    "textures": {
+        "all": "polished_stone",
+        "top": "signal_repeater_top",
+        "slots": {
+            "slab": "signal_repeater_top",
+            "on": "signal_torch",
+            "off": "signal_torch_off",
+            "lock": "bedrock"
+        }
+    },
+    "signal": {
+        "type": "repeater"
+    }
+}

@@ -169,7 +169,7 @@
     "%1 is false": "%1 ist falsch",
     "%1 is now true": "%1 ist jetzt wahr",
     "%1 is now false": "%1 ist jetzt falsch",
-    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]",
+    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]",
     "Last played %1 · Showcase": "Zuletzt gespielt %1 · Showcase",
     "Showcase": "Showcase",
     "Cannot load the world: it was made by the unknown world type '%1'": "Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“",
@@ -568,5 +568,6 @@
     "Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit the GPU texture size and the memory budget": "Texturen werden mit %1x statt %2x gezeigt: Das Spiel nutzt höchstens 256x, und der Atlas muss in die Texturgrenze der GPU und das Speicherbudget passen",
     "At most %1 texture packs can be active; %2 was switched off": "Höchstens %1 Texturpakete können aktiv sein; %2 wurde ausgeschaltet",
     "The texture pack %1 was left out: the active packs together need more memory than allowed": "Das Texturpaket %1 wurde weggelassen: Die aktiven Pakete brauchen zusammen mehr Speicher als erlaubt",
-    "(%1x)": "(%1x)"
+    "(%1x)": "(%1x)",
+    "Signal Dust": "Signalstaub"
 }

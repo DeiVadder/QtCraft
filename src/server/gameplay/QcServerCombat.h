@@ -26,6 +26,10 @@ public:
     // (decision E-288).
     static constexpr double voidDamage = 4.0;
     static constexpr int voidDamageIntervalTicks = 10;
+    // A player or creature whose eyes are inside a full solid block (a piston pushed it into a wall)
+    // takes this much every interval, as in the reference (decision E-337).
+    static constexpr double suffocationDamage = 1.0;
+    static constexpr int suffocationIntervalTicks = 10;
 
     // Whether armour takes part of the damage and wears down (decision E-234): blows of creatures
     // and contact with damaging blocks are armoured; falls are not. Command damage (/kill) also
@@ -40,6 +44,8 @@ public:
     void tick();
     // Players and mobs touching a damaging block (lava) get hurt; items in it burn.
     void applyContactDamage();
+    // Players and creatures with their eyes inside a full solid block suffocate.
+    void applySuffocation();
     void damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
     // Fall damage after a movement step.
     void updateHealth(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY);

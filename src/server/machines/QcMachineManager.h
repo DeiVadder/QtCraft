@@ -52,6 +52,9 @@ public:
     bool add(QcBlockPos pos);
     // Removes the machine and returns it with its contents (to be dropped); empty slots when none.
     Machine remove(QcBlockPos pos);
+    // Moves the machine at `from` with its contents and progress to `to` (a piston pushed its block,
+    // decision E-337); false when there is none at `from` or one at `to` already.
+    bool relocate(QcBlockPos from, QcBlockPos to);
     bool isFull() const { return m_machines.size() >= maxMachines; }
     qsizetype count() const { return m_machines.size(); }
     QList<Machine> machines() const { return m_machines.values(); }

@@ -1,0 +1,9 @@
+{
+    "name": "signal",
+    "replaces": "stone",
+    "block": "signal_ore",
+    "minY": 2,
+    "maxY": 16,
+    "veinsPerChunk": 8,
+    "veinSize": 7
+}

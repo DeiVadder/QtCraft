@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -154,6 +154,44 @@ Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pump
 
 [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat seeds](items.md#item-qtcraft-wheat_seeds), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato), [Pumpkin stem](blocks.md#block-qtcraft-pumpkin_stem), [Melon stem](blocks.md#block-qtcraft-melon_stem), [Bread](food.md#item-qtcraft-bread), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
+### <a id="chapter-qtcraft-signal"></a>Signal Dust
+
+**The wire**
+
+Signal Dust comes from Signal ore deep below (an iron pickaxe or better). Laid on a block it becomes a wire: it connects to the dust next to it, climbs up the side of a block when nothing opaque lies on it, and runs down the side of a block that is not opaque. A lone dust is a dot that powers all four sides; one connection makes a straight line that points on; more make corners and crosses. A signal starts with strength 15 and loses one per block of wire, so after fifteen blocks it is gone; a Signal Repeater starts it at 15 again.
+
+**Powered blocks**
+
+Full solid blocks like stone carry power on. A lever or button powers the block it hangs on strongly, a plate the block below, a Signal Torch the block above, a repeater the block in front. A strongly powered block powers dust and slots around it. Dust powers the block it lies on and the blocks its lines point at only weakly: a weakly powered block still powers lamps, pistons, doors, torches and repeaters next to it, but never other dust. Glass, pistons and slabs carry nothing.
+
+**Sources**
+
+A lever stays on or off. A stone button gives a signal for one second, a wooden one for one and a half. A wooden pressure plate is pressed by anything lying or standing on it, a stone one only by players and creatures; it springs back about a second after it is free. A Signal Torch is on unless its block is powered, two ticks after the change: an inverter. Switched on and off more than eight times within three seconds it burns out for eight seconds. A Signal Repeater passes a signal from back to front after one to four steps of two ticks (use it to change the delay); a short pulse comes out as long as its delay, and a powered repeater pointing at its side locks it.
+
+**Slots**
+
+What reacts to a signal is called a slot. A Signal Lamp lights at once and goes dark a moment after it loses power. Doors, trapdoors and fence gates open when their power comes and close when it goes; in between players still open and close them by hand. Iron doors and iron trapdoors open only by signal, not by hand.
+
+**Pistons**
+
+A powered Signal Piston pushes up to 12 blocks in front of it by one. Chests, barrels and furnaces move with everything in them. Plants, torches, dust and liquids in the way break; bedrock, obsidian and extended pistons stop it. Players, creatures, items and armour stands in the way are pushed along. A Sticky Signal Piston pulls the block in front of its head back when it retracts. A piston is not powered through its front.
+
+**Known quirks**
+
+Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a piston can refuse it in its data. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.
+
+**Same in every place**
+
+A circuit behaves the same at every coordinate and in every rotation. Everything that switches in the same step decides on the world as it was before the step and switches together. When two pistons want the same block or cell in the same step, both stay where they are.
+
+**On a server**
+
+Circuits run on the server; everyone sees the same states. Levers, buttons and repeaters switch at most 5 times a second per player. The work of all circuits per tick is limited; a huge machine slows down instead of stopping the server.
+
+**See also**
+
+[Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston)
+
 ### <a id="chapter-qtcraft-health"></a>Health and damage
 
 **Health**
@@ -243,7 +281,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -278,7 +316,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs

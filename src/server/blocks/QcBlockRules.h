@@ -19,14 +19,19 @@ struct Placement
 };
 
 // What the player aims at when placing a block: `face` of the block at `clicked`, `hit` (0..1
-// inside that block), while looking along `yaw` (degrees).
+// inside that block), while looking along `yaw` and `pitch` (degrees, positive is up).
 struct Aim
 {
     QcBlockPos clicked;
     QcBlockFace face = QcBlockFace::Up;
     QcVec3 hit;
     float yaw = 0.0F;
+    float pitch = 0.0F;
 };
+
+// Looking further up or down than this, a block whose `facing` allows up and down (pistons) faces
+// vertically (decision E-334).
+inline constexpr float verticalFacingPitch = 45.0F;
 
 // Horizontal direction ("north", "east", "south", "west") a player with this yaw (degrees) looks.
 QString lookDirection(float yaw);

@@ -29,6 +29,9 @@ QcCreativeCatalog::Category QcCreativeCatalog::categoryOf(const QcContentRegistr
     if (!item.placesBlock.isEmpty() && item.placesBlock == item.name) {
         const std::optional<QcBlockId> block = content.blockId(item.placesBlock);
         if (block && !content.block(*block).liquid) {
+            if (content.block(*block).signal.isCircuitPart()) {
+                return Category::Signal;
+            }
             return content.block(*block).partOf.isEmpty() ? Category::Blocks : Category::Parts;
         }
     }

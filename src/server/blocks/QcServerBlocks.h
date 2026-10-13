@@ -20,6 +20,11 @@ public:
 
     // Sets the block, tells clients and queues its neighbours for an update.
     void setAndBroadcast(QcBlockPos pos, QcBlockId block);
+    // The same without telling the clients (a piston's block arrives later, decision E-337); false
+    // when the block could not be set.
+    bool setQuietly(QcBlockPos pos, QcBlockId block);
+    // Tells the clients that have the chunk that `pos` shows `block`.
+    void sendBlock(QcBlockPos pos, QcBlockId block) const;
     // Removes a block as if broken: drops its items (when `drops` is set) and lets dependent blocks
     // react (leaves decay, unsupported saplings break). The other half of a door breaks with it
     // under the same drop decision.

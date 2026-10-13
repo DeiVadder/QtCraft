@@ -64,6 +64,11 @@ private slots:
         QCOMPARE(categoryOf("qtcraft:apple"), C::Food);
         QCOMPARE(categoryOf("qtcraft:water_bucket"), C::Items);
         QCOMPARE(categoryOf("qtcraft:diamond"), C::Items);
+        // Circuit parts have their own tab (decision E-340); doors stay blocks.
+        QCOMPARE(categoryOf("qtcraft:signal_dust"), C::Signal);
+        QCOMPARE(categoryOf("qtcraft:sticky_signal_piston"), C::Signal);
+        QCOMPARE(categoryOf("qtcraft:lever"), C::Signal);
+        QCOMPARE(categoryOf("qtcraft:oak_door"), C::Blocks);
 
         const auto part = std::ranges::find_if(m_content->blocks(), [](const QcBlockDefinition &block) { return !block.partOf.isEmpty(); });
         QVERIFY(part != m_content->blocks().end());

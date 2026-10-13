@@ -1,0 +1,33 @@
+{
+    "name": "oak_button",
+    "sound": "wood",
+    "shape": "button",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.5,
+    "tool": "axe",
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "oak_planks"
+    },
+    "signal": {
+        "type": "button",
+        "pulseTicks": 30
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "block.torch.fizz",
+    "volume": 0.45,
+    "variants": 1,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.35,
+            "attack": 0.01,
+            "curve": 1.5,
+            "lowpass": 5000,
+            "gain": 0.7
+        }
+    ]
+}

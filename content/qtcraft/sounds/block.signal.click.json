@@ -1,0 +1,26 @@
+{
+    "name": "block.signal.click",
+    "volume": 0.5,
+    "variants": 2,
+    "pitchVariation": 0.05,
+    "layers": [
+        {
+            "wave": "square",
+            "duration": 0.03,
+            "frequency": 1800,
+            "endFrequency": 1200,
+            "attack": 0.001,
+            "curve": 4,
+            "lowpass": 3000,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.02,
+            "attack": 0.001,
+            "curve": 4,
+            "lowpass": 2500,
+            "gain": 0.4
+        }
+    ]
+}

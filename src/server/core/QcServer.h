@@ -6,6 +6,7 @@
 #include "QcEntitySync.h"
 #include "QcMessages.h"
 #include "QcServerBlocks.h"
+#include "QcServerCircuits.h"
 #include "QcServerDebug.h"
 #include "QcServerLogin.h"
 #include "QcServerCombat.h"
@@ -73,6 +74,10 @@ public:
     QcLiquidFlow &liquids() { return m_state.liquids; }
     QcFallingBlockManager &fallingBlocks() { return m_state.falling; }
     QcArmourStandManager &stands() { return m_state.stands; }
+    // Signal Dust circuits (decision E-335).
+    QcServerCircuits &circuits() { return m_circuits; }
+    QcCircuitState &circuitState() { return m_state.circuits; }
+    const QcMovingBlocks &movingBlocks() const { return m_state.movingBlocks; }
     bool keepInventory() const { return m_state.info.keepInventory; }
     void setKeepInventory(bool keep) { m_state.info.keepInventory = keep; }
     double worldTime() const { return m_state.info.worldTime; }
@@ -199,6 +204,7 @@ private:
     QcBlockUpdateQueue m_blockUpdates;
     QcServerBlocks m_blocks;
     QcBlockSimulation m_blockSimulation;
+    QcServerCircuits m_circuits;
     QcServerMachines m_machineScreens;
     QcServerInventory m_inventory;
     QcServerGameModes m_gameModes;

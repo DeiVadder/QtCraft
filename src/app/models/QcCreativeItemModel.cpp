@@ -86,5 +86,5 @@ void QcCreativeItemModel::refilter()
 QStringList QcCreativeItemModel::categoryNames()
 {
     // In the order of QcCreativeCatalog::Category.
-    return {tr("All"), tr("Blocks"), tr("Building parts"), tr("Tools and armour"), tr("Food"), tr("Other items")};
+    return {tr("All"), tr("Blocks"), tr("Building parts"), tr("Signal Dust"), tr("Tools and armour"), tr("Food"), tr("Other items")};
 }

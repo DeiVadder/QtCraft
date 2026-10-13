@@ -1,0 +1,8 @@
+{
+    "name": "signal_dust_item",
+    "pattern": "nugget",
+    "primary": "#c81e1e",
+    "secondary": "#ff6a5a",
+    "variation": 0.1,
+    "seed": 2902
+}

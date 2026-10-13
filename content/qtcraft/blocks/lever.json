@@ -1,0 +1,36 @@
+{
+    "name": "lever",
+    "sound": "stone",
+    "shape": "lever",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.5,
+    "support": "attached",
+    "washable": true,
+    "states": {
+        "attach": [
+            "floor",
+            "ceiling",
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "lever_item",
+    "textures": {
+        "all": "cobblestone",
+        "slots": {
+            "base": "cobblestone",
+            "handle": "lever_handle"
+        }
+    },
+    "signal": {
+        "type": "lever"
+    }
+}

@@ -17,16 +17,22 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     const auto stateCount = std::size_t(m_content->stateCount());
     std::vector<bool> damaging(stateCount);
     std::vector<bool> growing(stateCount);
+    std::vector<bool> circuits(stateCount);
+    std::vector<bool> plates(stateCount);
     m_contactDamage.resize(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcBlockDefinition &block = m_content->block(QcBlockId(id));
         m_contactDamage[id] = block.contactDamage;
         damaging[id] = block.contactDamage > 0.0;
         growing[id] = block.hasRandomTicks();
+        circuits[id] = block.signal.isComponent();
+        plates[id] = block.signal.kind == QcSignalKind::Plate;
     }
 
     m_damagingSections = QcSectionMarks(std::move(damaging));
     m_growingSections = QcSectionMarks(std::move(growing));
+    m_signalSections = QcSectionMarks(std::move(circuits));
+    m_plateSections = QcSectionMarks(std::move(plates));
 }
 
 void QcServerWorld::requestChunk(QcChunkPos pos)
@@ -165,6 +171,8 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
 {
     m_damagingSections.noteChunk(pos, chunk);
     m_growingSections.noteChunk(pos, chunk);
+    m_signalSections.noteChunk(pos, chunk);
+    m_plateSections.noteChunk(pos, chunk);
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
@@ -191,6 +199,19 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
     m_chunks.remove(pos);
     m_damagingSections.forgetChunk(pos);
     m_growingSections.forgetChunk(pos);
+    m_signalSections.forgetChunk(pos);
+    m_plateSections.forgetChunk(pos);
+}
+
+std::shared_ptr<QcChunk> QcServerWorld::takeChunk(QcChunkPos pos)
+{
+    std::shared_ptr<QcChunk> chunk = m_chunks.take(pos);
+    m_modified.remove(pos);
+    m_damagingSections.forgetChunk(pos);
+    m_growingSections.forgetChunk(pos);
+    m_signalSections.forgetChunk(pos);
+    m_plateSections.forgetChunk(pos);
+    return chunk;
 }
 
 bool QcServerWorld::regenerateChunk(QcChunkPos pos)
@@ -203,6 +224,8 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
     *it = m_generator->generate(pos);
     m_damagingSections.forgetChunk(pos);
     m_growingSections.forgetChunk(pos);
+    m_signalSections.forgetChunk(pos);
+    m_plateSections.forgetChunk(pos);
     noteSections(pos, **it);
     m_modified.insert(pos);
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos));
@@ -227,6 +250,8 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
     m_damagingSections.noteBlock(pos, block);
     m_growingSections.noteBlock(pos, block);
+    m_signalSections.noteBlock(pos, block);
+    m_plateSections.noteBlock(pos, block);
 
     m_modified.insert(pos.chunk());
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos.chunk()));

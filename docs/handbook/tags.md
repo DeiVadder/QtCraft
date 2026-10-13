@@ -32,7 +32,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Barrel](blocks.md#block-qtcraft-barrel), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Chest](blocks.md#block-qtcraft-chest), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Stick](items.md#item-qtcraft-stick), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Barrel](blocks.md#block-qtcraft-barrel), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Chest](blocks.md#block-qtcraft-chest), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Stick](items.md#item-qtcraft-stick), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
 
 ### <a id="tag-qtcraft-terracotta"></a>Any terracotta
 

@@ -1,0 +1,50 @@
+{
+    "name": "signal_piston_head",
+    "rotate": "facing",
+    "parts": [
+        {
+            "when": {
+                "sticky": false
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0.25
+                ]
+            ]
+        },
+        {
+            "when": {
+                "sticky": true
+            },
+            "boxes": [
+                [
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0.25
+                ]
+            ],
+            "texture": "sticky"
+        },
+        {
+            "boxes": [
+                [
+                    0.375,
+                    0.375,
+                    0.25,
+                    0.625,
+                    0.625,
+                    1
+                ]
+            ],
+            "texture": "arm"
+        }
+    ]
+}

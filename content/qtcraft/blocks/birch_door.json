@@ -36,5 +36,8 @@
             "upper": "birch_door_upper"
         }
     },
-    "fuelSeconds": 10
+    "fuelSeconds": 10,
+    "signal": {
+        "type": "opener"
+    }
 }

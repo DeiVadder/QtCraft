@@ -14,13 +14,16 @@ namespace QcShowcaseBlockArea {
 
 // Podiums per line at most.
 inline constexpr int maxLineSlots = 21;
+// Blocks with more states show only those that differ from the default in one property.
+inline constexpr int maxAllStates = 32;
 
 // Whether podiums may stand in this column (x) or line (z): odd local x up to 13, local z 1, 4, 7,
 // 10 or 13.
 bool usableX(int x);
 bool usableZ(int z);
 
-// The states of a block shown on podiums: all of them, for doors only the lower halves.
+// The states of a block shown on podiums: all of them (up to maxAllStates), for doors only the lower
+// halves.
 QList<QcBlockId> shownStates(const QcContentRegistry &content, quint32 type);
 
 QcShowcaseArea build(const QcShowcaseContext &context, const QcShowcaseCategory &category, const QList<quint32> &types,

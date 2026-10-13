@@ -6,5 +6,6 @@
     "toolLevel": 3,
     "textures": {
         "all": "obsidian"
-    }
+    },
+    "signal": { "movable": "immovable" }
 }

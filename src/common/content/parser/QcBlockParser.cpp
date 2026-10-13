@@ -6,6 +6,7 @@
 #include "QcFarmingParser.h"
 #include "QcJsonFieldReader.h"
 #include "QcShapeParser.h"
+#include "QcSignalParser.h"
 #include "QcSmeltingRecipe.h"
 #include "QcSoundKeys.h"
 
@@ -533,6 +534,9 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
     parseGround(json, block, reader, packNamespace);
     reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
     parseFarming(block, reader, packNamespace);
+    reader.nestedObject(u"signal"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcSignalParser::parseSignal(block, nested, packNamespace);
+    });
     block.soundMaterial = reader.name(u"sound"_s, packNamespace, QcSoundKeys::defaultMaterialFor(block));
     reader.nestedObject(u"sounds"_s, [&block, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         parseSounds(block, nested, packNamespace);
@@ -540,6 +544,7 @@ QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &p
 
     parseTextures(json, block, reader, packNamespace);
     block.itemTexture = reader.name(u"itemTexture"_s, packNamespace);
+    block.hasItem = reader.boolean(u"item"_s, true);
     block.itemTags = QcContentFields::parseTags(json.value(u"tags"_s), packNamespace, reader);
     checkPartTextures(block, reader);
 

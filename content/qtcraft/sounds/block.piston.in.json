@@ -1,0 +1,26 @@
+{
+    "name": "block.piston.in",
+    "volume": 0.6,
+    "variants": 2,
+    "pitchVariation": 0.08,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.16,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 600,
+            "gain": 0.8
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.12,
+            "frequency": 220,
+            "endFrequency": 130,
+            "attack": 0.005,
+            "curve": 2,
+            "lowpass": 800,
+            "gain": 0.6
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "name": "lever",
+    "type": "shaped",
+    "pattern": [
+        "|",
+        "c"
+    ],
+    "key": {
+        "|": "stick",
+        "c": "cobblestone"
+    },
+    "result": {
+        "item": "lever"
+    }
+}

@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -154,6 +154,44 @@ Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zu
 
 [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato), [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem), [Melonenstängel](blocks.md#block-qtcraft-melon_stem), [Brot](food.md#item-qtcraft-bread), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep)
 
+### <a id="chapter-qtcraft-signal"></a>Signalstaub
+
+**Die Leitung**
+
+Signalstaub stammt aus Signalerz tief unten (Eisenspitzhacke oder besser). Auf einen Block gelegt wird er zur Leitung: Er verbindet sich mit dem Staub daneben, steigt an der Seite eines Blocks hinauf, wenn nichts Undurchsichtiges auf ihm liegt, und läuft an der Seite eines nicht undurchsichtigen Blocks hinab. Ein einzelner Staub ist ein Punkt, der alle vier Seiten versorgt; eine Verbindung ergibt eine gerade Linie, die weiter zeigt; mehr ergeben Ecken und Kreuze. Ein Signal beginnt mit Stärke 15 und verliert je Leitungsblock eins, nach fünfzehn Blöcken ist es weg; ein Signal-Repeater bringt es wieder auf 15.
+
+**Versorgte Blöcke**
+
+Volle feste Blöcke wie Stein geben Signal weiter. Ein Hebel oder Knopf versorgt den Block, an dem er hängt, stark, eine Druckplatte den Block darunter, eine Signalfackel den Block darüber, ein Repeater den Block vor sich. Ein stark versorgter Block versorgt Staub und Slots ringsum. Staub versorgt den Block, auf dem er liegt, und die Blöcke, auf die seine Linien zeigen, nur schwach: Ein solcher Block versorgt noch Lampen, Kolben, Türen, Fackeln und Repeater daneben, aber nie anderen Staub. Glas, Kolben und Stufen leiten nicht.
+
+**Quellen**
+
+Ein Hebel bleibt an oder aus. Ein Steinknopf gibt eine Sekunde lang Signal, einer aus Holz anderthalb. Eine Holzdruckplatte wird von allem gedrückt, was darauf liegt oder steht, eine aus Stein nur von Spielern und Wesen; sie springt etwa eine Sekunde, nachdem sie frei ist, zurück. Eine Signalfackel leuchtet, solange ihr Block nicht versorgt ist, zwei Ticks nach der Änderung: ein Inverter. Öfter als achtmal in drei Sekunden an- und ausgeschaltet, brennt sie für acht Sekunden aus. Ein Signal-Repeater gibt ein Signal von hinten nach vorn weiter, nach einer bis vier Stufen zu zwei Ticks (Benutzen ändert die Verzögerung); ein kurzer Puls kommt so lang heraus wie seine Verzögerung, und ein versorgter Repeater, der auf seine Seite zeigt, sperrt ihn.
+
+**Slots**
+
+Was auf ein Signal reagiert, heißt Slot. Eine Signallampe leuchtet sofort und erlischt einen Moment, nachdem sie das Signal verliert. Türen, Falltüren und Zauntore öffnen sich, wenn ihr Signal kommt, und schließen sich, wenn es geht; dazwischen öffnen und schließen Spieler sie weiter von Hand. Eisentüren und Eisenfalltüren öffnen sich nur durch ein Signal, nicht von Hand.
+
+**Kolben**
+
+Ein versorgter Signalkolben schiebt bis zu 12 Blöcke vor sich um einen weiter. Truhen, Fässer und Öfen wandern samt Inhalt mit. Pflanzen, Fackeln, Staub und Flüssigkeiten im Weg gehen kaputt; Grundgestein, Obsidian und ausgefahrene Kolben halten ihn auf. Spieler, Wesen, Gegenstände und Rüstungsständer im Weg werden mitgeschoben. Ein klebriger Signalkolben zieht den Block vor seinem Kopf beim Einfahren zurück. Durch seine Vorderseite wird ein Kolben nicht versorgt.
+
+**Bekannte Eigenheiten**
+
+Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert: Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Kolben kann es in seinen Daten ablehnen. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.
+
+**Überall gleich**
+
+Eine Schaltung verhält sich an jeder Koordinate und in jeder Drehung gleich. Alles, was im selben Schritt schaltet, entscheidet über die Welt, wie sie vor dem Schritt war, und schaltet gemeinsam. Wollen zwei Kolben im selben Schritt denselben Block oder dieselbe Zelle, bleiben beide stehen.
+
+**Auf einem Server**
+
+Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpfe und Repeater schalten je Spieler höchstens 5-mal pro Sekunde. Die Arbeit aller Schaltungen je Tick ist begrenzt; eine riesige Maschine wird langsamer, statt den Server anzuhalten.
+
+**Siehe auch**
+
+[Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston)
+
 ### <a id="chapter-qtcraft-health"></a>Gesundheit und Schaden
 
 **Gesundheit**
@@ -243,7 +281,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -278,7 +316,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks> [true|false]`
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft

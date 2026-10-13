@@ -4,6 +4,7 @@
 #include "QcChatText.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
+#include "QcServerCircuits.h"
 #include "QcServerCombat.h"
 #include "QcServerFarming.h"
 #include "QcServerBlocks.h"
@@ -129,6 +130,14 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
         return true;
     }
 
+    // Levers, buttons and repeaters (decision E-339); a spammed switch is ignored beyond its budget.
+    if (clickedBlock && m_state.content->block(*clickedBlock).signal.isUsable() && !client.sneaking && m_state.isWithinReach(client, target)) {
+        if (client.rateLimiter.allow(QcRateLimiter::Kind::Switch, m_state.playerTimeNs)) {
+            m_parts.circuits.use(target);
+        }
+        return true;
+    }
+
     return false;
 }
 
@@ -140,7 +149,7 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     const bool clickedSolid = clicked && content.isValidBlock(*clicked) && !content.block(*clicked).liquid;
     const std::optional<QcBlockRules::Placement> placement =
         placed && clickedSolid && *clicked != qcAirBlockId
-            ? QcBlockRules::placement(m_state.world, *placed, {message.target, message.face, message.hit, client.yaw})
+            ? QcBlockRules::placement(m_state.world, *placed, {message.target, message.face, message.hit, client.yaw, client.pitch})
             : std::nullopt;
 
     const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, message.face);

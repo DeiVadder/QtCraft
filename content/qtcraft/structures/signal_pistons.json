@@ -1,0 +1,182 @@
+{
+    "name": "signal_pistons",
+    "showcase": {
+        "order": 82
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "d": "signal_dust",
+        "S": "stone",
+        "B": "stone_bricks",
+        "L": "lever[attach=floor,powered=true]",
+        "l": "lever[attach=floor,powered=false]",
+        "K": "sticky_signal_piston[facing=north]",
+        "Q": "polished_stone",
+        "H": "chest[facing=east]",
+        "p": "signal_piston[facing=east]",
+        "R": "signal_repeater[facing=east,delay=1]",
+        "M": "signal_lamp",
+        "F": "lever[attach=floor,powered=true]",
+        "f": "lever[attach=floor,powered=false]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "........................................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "...............pH.......................",
+            "...Q.....Q.....L........................",
+            "...KS....KS.............................",
+            "........................................",
+            "........................................",
+            ".LddddddddddddddRddddddddddddddRddddddM.",
+            "........................................",
+            "........................................"
+        ],
+        [
+            "........................................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "........................................",
+            "...Q.....Q..............................",
+            "...KF....Kf.............................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................"
+        ],
+        [
+            "........................................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "...B.....B..............................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................"
+        ],
+        [
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................",
+            "........................................"
+        ]
+    ],
+    "updates": [
+        [
+            4,
+            2,
+            5
+        ],
+        [
+            10,
+            2,
+            5
+        ],
+        [
+            15,
+            1,
+            4
+        ],
+        [
+            1,
+            1,
+            8
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                4.6,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_pistons.door_closed"
+        },
+        {
+            "at": [
+                9.5,
+                4.6,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_pistons.door_open"
+        },
+        {
+            "at": [
+                17.5,
+                3.0,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_pistons.push_chest"
+        },
+        {
+            "at": [
+                19.5,
+                2.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_pistons.long_wire"
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                16,
+                1,
+                3
+            ],
+            "items": [
+                {
+                    "item": "diamond",
+                    "count": 5
+                },
+                {
+                    "item": "gold_ingot",
+                    "count": 12
+                },
+                {
+                    "item": "signal_dust",
+                    "count": 64
+                }
+            ]
+        }
+    ],
+    "stands": [
+        {
+            "at": [
+                17.5,
+                1.0,
+                3.5
+            ],
+            "yaw": 270,
+            "properties": [
+                "equip iron"
+            ]
+        }
+    ]
+}

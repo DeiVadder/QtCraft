@@ -44,6 +44,9 @@ struct EntitySpawn
     static constexpr qint32 fallingBlockType = -3;
     // An armour stand (decision E-238): equipment, held item, name and `stand` as it shows them.
     static constexpr qint32 armourStandType = -4;
+    // A block in the state `block` sliding where a piston moves it (decision E-337); its cell shows
+    // the block once the move ends.
+    static constexpr qint32 movingBlockType = -5;
 
     quint32 id = 0;
     qint32 mobType = playerType;
@@ -59,7 +62,7 @@ struct EntitySpawn
     float pitch = 0.0f;
     quint8 flags = 0;
     QcItemId held = qcNoItem;
-    // The block of a falling block entity; air otherwise.
+    // The block of a falling or moving block entity; air otherwise.
     QcBlockId block = qcAirBlockId;
     // Players and armour stands: what they wear, so others draw it (decision E-234); empty for the rest.
     QcEquipment equipment{};

@@ -42,6 +42,8 @@ qt_add_library(qc_common STATIC
     content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
+    content/parser/QcSignalParser.h content/parser/QcSignalParser.cpp
+    content/definitions/QcSignalDefinition.h
     content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
     content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
     content/parser/QcStructureParser.h content/parser/QcStructureParser.cpp
@@ -57,6 +59,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcPackReference.h
     content/definitions/QcPartFamily.h
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
+    content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
     content/definitions/QcArmourDefinition.h
     content/definitions/QcMaterialDefinition.h
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp

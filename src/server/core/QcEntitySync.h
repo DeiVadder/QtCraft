@@ -35,6 +35,8 @@ private:
     void consider(Pass &pass, const QcMsg::EntitySpawn &spawn, bool hurt);
     void considerPlayers(Pass &pass);
     void considerFallingBlocks(Pass &pass);
+    // Blocks sliding where a piston moves them (decision E-337).
+    void considerMovingBlocks(Pass &pass);
     void considerItems(Pass &pass) const;
     // Armour stands never move: a spawn when they come into view or change, no moves.
     void considerStands(Pass &pass) const;

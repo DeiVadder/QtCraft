@@ -146,8 +146,10 @@ void QcBlockUpdateQueue::handleLoadedChunks()
             continue;
         }
 
-        // A chunk seen for the first time gets its animals (decision E-086).
+        // A chunk seen for the first time gets its animals (decision E-086); circuits waiting for it
+        // look at their blocks (decision E-340).
         m_state.mobs.populateChunk(m_state.world, chunk, [this] { return m_state.newEntityId(); });
+        m_state.circuits.chunkLoaded(m_state.world, chunk);
 
         m_commandMode = true;
         if (const auto waiting = m_waitingUpdates.constFind(chunk); waiting != m_waitingUpdates.constEnd()) {

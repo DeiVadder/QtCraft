@@ -61,6 +61,7 @@ QcShowcaseMatch parseMatch(const QJsonObject &json, QcJsonFieldReader &reader)
     match.plant = optionalBoolean(json, u"plant"_s, reader);
     match.functional = optionalBoolean(json, u"functional"_s, reader);
     match.falls = optionalBoolean(json, u"falls"_s, reader);
+    match.signal = optionalBoolean(json, u"signal"_s, reader);
     match.render = stringList(json, u"render"_s, reader);
     match.tools = stringList(json, u"tool"_s, reader);
     match.nameContains = stringList(json, u"nameContains"_s, reader);

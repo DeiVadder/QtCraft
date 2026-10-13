@@ -167,6 +167,44 @@ void QcServerCombat::applyContactDamage()
     });
 }
 
+namespace {
+
+bool eyesInsideBlock(const QcServerState &state, const QcVec3 &eyes)
+{
+    const std::optional<QcBlockId> block = state.world.blockAt(QcPhysics::blockContaining(eyes));
+    return block && state.content->isValidBlock(*block) && state.content->block(*block).solid && state.content->state(*block).fullCube
+           && state.content->state(*block).opaque;
+}
+
+} // namespace
+
+void QcServerCombat::applySuffocation()
+{
+    if (m_state.tickCount % suffocationIntervalTicks != 0) {
+        return;
+    }
+
+    for (const auto &client : m_state.clients) {
+        const QcVec3 eyes = client->motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+        if (client->state == QcServerClient::State::Playing && !client->dead && eyesInsideBlock(m_state, eyes)) {
+            damagePlayer(*client, suffocationDamage, {}, DamageKind::Unblockable);
+        }
+    }
+
+    QList<quint32> suffocating;
+    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
+        const double height = m_state.content->mobs().value(mob.type).height;
+        if (!mob.dormant && eyesInsideBlock(m_state, mob.motion.position + QcVec3{0.0, height * 0.85, 0.0})) {
+            suffocating.append(mob.id);
+        }
+    }
+    for (const quint32 id : std::as_const(suffocating)) {
+        if (m_state.mobs.hurt(id, suffocationDamage)) {
+            m_state.died.insert(id);
+        }
+    }
+}
+
 void QcServerCombat::damagePlayer(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
 {
     const bool fromVoid = kind == DamageKind::Void;

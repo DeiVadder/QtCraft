@@ -32,6 +32,12 @@ inline constexpr auto armourEquip = "qtcraft:item.armour.equip";
 inline constexpr auto itemBreak = "qtcraft:item.break";
 // Lava near the listener now and then.
 inline constexpr auto lavaPop = "qtcraft:liquid.lava.pop";
+// Circuits (decision E-336): a lever or button switching, a piston moving out and in, a Signal
+// Torch burning out.
+inline constexpr auto signalClick = "qtcraft:block.signal.click";
+inline constexpr auto pistonOut = "qtcraft:block.piston.out";
+inline constexpr auto pistonIn = "qtcraft:block.piston.in";
+inline constexpr auto torchFizz = "qtcraft:block.torch.fizz";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

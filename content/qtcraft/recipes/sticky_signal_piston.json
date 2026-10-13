@@ -1,0 +1,15 @@
+{
+    "name": "sticky_signal_piston",
+    "type": "shaped",
+    "pattern": [
+        "s",
+        "P"
+    ],
+    "key": {
+        "s": "slimeball",
+        "P": "signal_piston"
+    },
+    "result": {
+        "item": "sticky_signal_piston"
+    }
+}

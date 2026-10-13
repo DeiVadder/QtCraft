@@ -111,6 +111,8 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     updates.setCommandMode(true);
     for (const QcBlockPos &pos : setup.updates) {
         updates.queue(pos);
+        // Circuits of demos start too (decision E-340).
+        state.circuits.wake(state.world, pos);
     }
     updates.setCommandMode(false);
     state.info.setupDone = true;

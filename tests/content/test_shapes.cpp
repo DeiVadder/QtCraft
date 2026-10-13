@@ -227,7 +227,7 @@ private slots:
     {
         const auto tooMany = QcContentParser::parseBlock(
             json(R"({"name":"x","states":{"a":["1","2","3","4","5","6","7","8"],"b":["1","2","3","4","5","6","7","8"],)"
-                 R"("c":["1","2","3","4","5","6","7","8"],"d":["1","2","3"]},"textures":{"all":"x"}})"),
+                 R"("c":["1","2","3","4","5","6","7","8"],"d":["1","2","3","4","5"]},"textures":{"all":"x"}})"),
             u"t"_s);
         QVERIFY(!tooMany.has_value());
         QVERIFY2(tooMany.error().contains(u"states per block"_s), qPrintable(tooMany.error()));

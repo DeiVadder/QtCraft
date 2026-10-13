@@ -702,3 +702,16 @@ Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `d0c905c`: G
 #### Zahl der Wesen in crowd
 
 Die BENCH-Zeile meldet seit diesem Branch zusätzlich `server_mobs` und `server_items` (Kreaturen und Item-Stapel auf dem Server am Ende, im Server-Thread gezählt) und `inventory_items` (Items im Inventar des Spielers). Gegenprobe (crowd, je 4 Läufe 16× und 128×, Release): Der Server hat am Ende immer alle 24 Item-Stapel, das Inventar ist leer; die Vermutung des Reviews (ein Zombie stößt den Spieler in die Items, er sammelt alle 24 ein, 84 − 24 = 60) trifft nicht zu. Es fehlen Kreaturen: in den 84er-Läufen hat der Server 127 Kreaturen (mit den Tieren der Umgebung), in den 60er-Läufen 103, also 24 weniger. Eine einmalige Aufschlüsselung nach Art (Diagnose, nicht eingecheckt) zeigt, dass je nach Lauf alle 16 Zombies oder alle 8 Schleime fehlen, dazu bis 32 Schweine: 16× 75 Schweine, 36 Schafe, 16 Zombies, 0 Schleime (84 sichtbar); 128× 43 bzw. 59 Schweine, 36 Schafe, 0 Zombies, 8 Schleime (45 bzw. 60 sichtbar). Welche Kreaturen bis zum Ende des Laufs sterben oder verschwinden (Zombies in der Sonne, Kämpfe, Entladen), hängt vom Zeitpunkt des Starts ab, den der Atlasbau verschiebt; das Szenario bleibt wegen der Vergleichbarkeit mit der Historie unverändert. Werte von crowd sind nur zwischen Läufen mit gleicher Zahl `entities` und `server_mobs` vergleichbar.
+
+## Etappe 29a: Signal Dust (nur headless, keine GUI-Messung)
+
+GUI-Benchmarks sind auf Anweisung des Menschen ausgesetzt. Gemessen wurde nur die Signal-Phase im Server-Tick, headless mit `test_signal_measure` im Release-Build (`QTCRAFT_SIGNAL_MEASURE=full build/release/tests/test_signal_measure`, Apple M4 Max, sonst ruhiges System, je Szenario nach dem Aufbau, bis alle Bau-Änderungen abgearbeitet waren). Ganze Server-Ticks (alle Phasen, ein Spieler fern der Schaltungen), Arbeit = `QcServerCircuits::lastTickWork` (Budget 8192, E-335).
+
+| Szenario | Größe | Ticks | Tick Ø ms | Tick max ms | Arbeit Ø | Arbeit max |
+|----------|-------|------:|----------:|------------:|---------:|-----------:|
+| Staublinie, Hebel jeden Tick umgeschaltet | 4096 Staub | 40 | 0,058 | 0,154 | 176 | 176 |
+| Staubfeld, Hebel jeden Tick umgeschaltet | 64 × 64 | 40 | 0,361 | 0,458 | 895 | 895 |
+| Repeater-Takte (Fackel + Repeater Verzögerung 4, gleichphasig) | 1000 | 100 | 1,915 | 3,310 | 6822 | 10963 |
+| Klebkolben mit Block, alle 5 Ticks gemeinsam geschaltet | 500 | 40 | 1,061 | 2,840 | 3604 | 10000 |
+
+Die Linie kostet unabhängig von ihrer Länge dasselbe (Region von 15 Verbindungen, E-335); das Feld kostet die Fläche, die ein Signal erreicht. Takte und Kolben überschreiten im Spitzentick das Budget um höchstens einen Schritt (geteilte Schritte, E-335 nach dem Review); alle Werte bleiben weit unter dem Tick von 50 ms. Die GUI-Messung (Szenario `showcase` an der Station) steht aus.

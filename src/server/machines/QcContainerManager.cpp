@@ -56,6 +56,18 @@ QcContainerManager::Container QcContainerManager::remove(QcBlockPos pos)
     return container;
 }
 
+bool QcContainerManager::relocate(QcBlockPos from, QcBlockPos to)
+{
+    if (!m_containers.contains(from) || m_containers.contains(to)) {
+        return false;
+    }
+
+    Container container = m_containers.take(from);
+    container.pos = to;
+    m_containers.insert(to, container);
+    return true;
+}
+
 void QcContainerManager::restore(const QList<Container> &containers)
 {
     m_containers.clear();

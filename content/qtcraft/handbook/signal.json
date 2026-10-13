@@ -1,0 +1,27 @@
+{
+    "name": "signal",
+    "order": 78,
+    "icon": "signal_dust",
+    "sections": [
+        "wire",
+        "power",
+        "sources",
+        "slots",
+        "pistons",
+        "quirks",
+        "rotation",
+        "multiplayer"
+    ],
+    "related": [
+        "signal_dust",
+        "signal_ore",
+        "signal_torch",
+        "lever",
+        "stone_button",
+        "oak_pressure_plate",
+        "signal_repeater",
+        "signal_lamp",
+        "signal_piston",
+        "sticky_signal_piston"
+    ]
+}

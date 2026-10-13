@@ -85,6 +85,18 @@ QcMachineManager::Machine QcMachineManager::remove(QcBlockPos pos)
     return removed;
 }
 
+bool QcMachineManager::relocate(QcBlockPos from, QcBlockPos to)
+{
+    if (!m_machines.contains(from) || m_machines.contains(to)) {
+        return false;
+    }
+
+    Machine machine = m_machines.take(from);
+    machine.pos = to;
+    m_machines.insert(to, machine);
+    return true;
+}
+
 void QcMachineManager::restore(const QList<Machine> &machines)
 {
     m_machines.clear();

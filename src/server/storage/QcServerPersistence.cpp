@@ -6,6 +6,7 @@
 #include "QcServerBlocks.h"
 #include "QcServerGameModes.h"
 #include "QcServerState.h"
+#include "QcSignalStorage.h"
 
 #include <QDir>
 #include <QFile>
@@ -100,6 +101,10 @@ QcStatus QcServerPersistence::readWorldState(const QcWorldStorage &storage)
         return read;
     }
     readStands(storage);
+    // Damaged circuits do not keep the world from opening: they start quiet (decision E-335).
+    if (const QcStatus read = QcSignalStorage::read(m_state.config.worldDirectory, m_state.circuits, m_state.tickCount); !read) {
+        noteWarnings({read.error() + u"; the circuits start quiet"_s});
+    }
     return readBlockUpdates(storage);
 }
 
@@ -378,6 +383,7 @@ QcStatus QcServerPersistence::save()
     keep(storage.writeContainers(m_state.containers.containers()));
     keep(storage.writeStands(m_state.stands.stands()));
     keep(saveBlockUpdates(storage));
+    keep(QcSignalStorage::write(m_state.config.worldDirectory, m_state.circuits, m_state.tickCount));
 
     // Last: the setup counts as done once everything it brought is stored (see readWorldState()).
     m_state.info.lastPlayed = QDateTime::currentDateTimeUtc();

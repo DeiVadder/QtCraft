@@ -1,0 +1,8 @@
+{
+    "name": "lever_item",
+    "pattern": "lever",
+    "primary": "#8a6a3a",
+    "secondary": "#7a7a7a",
+    "variation": 0.08,
+    "seed": 2910
+}

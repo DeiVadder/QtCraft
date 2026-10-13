@@ -50,7 +50,7 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
 
 const char *QcRateLimiter::name(Kind kind)
 {
-    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance"};
+    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch"};
     return names[size_t(kind)];
 }
 

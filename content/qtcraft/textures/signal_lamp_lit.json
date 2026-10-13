@@ -1,0 +1,8 @@
+{
+    "name": "signal_lamp_lit",
+    "pattern": "lantern",
+    "primary": "#6a4a2a",
+    "secondary": "#ffe08a",
+    "variation": 0.08,
+    "seed": 2914
+}

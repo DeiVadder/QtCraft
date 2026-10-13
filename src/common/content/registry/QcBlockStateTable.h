@@ -13,7 +13,8 @@
 class QcBlockStateTable
 {
 public:
-    static constexpr int maxStatesPerBlock = 1024;
+    // Signal Dust needs 16 strengths times 81 connection shapes (decision E-334).
+    static constexpr int maxStatesPerBlock = 2048;
     static constexpr qsizetype maxStates = qsizetype(1) << 16;
     // States of a block that turn, flip and select the same parts share their derived data; this
     // limits the boxes of all distinct variants of all blocks together (memory and build time).

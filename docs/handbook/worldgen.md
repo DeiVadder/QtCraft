@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Alliums](#feature-qtcraft-allium) · [Birch tree](#feature-qtcraft-birch_tree) · [Blue orchids](#feature-qtcraft-blue_orchid) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Ferns](#feature-qtcraft-fern) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lilies of the valley](#feature-qtcraft-lily_of_the_valley) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
+**QtCraft:** [Alliums](#feature-qtcraft-allium) · [Birch tree](#feature-qtcraft-birch_tree) · [Blue orchids](#feature-qtcraft-blue_orchid) · [Brown mushrooms](#feature-qtcraft-brown_mushroom) · [Cactus](#feature-qtcraft-cactus) · [Clay veins](#ore-qtcraft-clay_pocket) · [Coal ore veins](#ore-qtcraft-coal) · [Cobweb veins](#ore-qtcraft-cobweb) · [Cornflowers](#feature-qtcraft-cornflower) · [Dandelions](#feature-qtcraft-dandelion) · [Dead bushes](#feature-qtcraft-dead_bush) · [Diamond ore veins](#ore-qtcraft-diamond) · [Dirt veins](#ore-qtcraft-dirt_pocket) · [Ferns](#feature-qtcraft-fern) · [Gold ore veins](#ore-qtcraft-gold) · [Gravel veins](#ore-qtcraft-gravel_pocket) · [Iron ore veins](#ore-qtcraft-iron) · [Lava lake](#feature-qtcraft-lava_lake) · [Lava pool](#feature-qtcraft-lava_pool) · [Lilies of the valley](#feature-qtcraft-lily_of_the_valley) · [Magma block veins](#ore-qtcraft-magma) · [Melons](#feature-qtcraft-melon_patch) · [Oak tree](#feature-qtcraft-oak_tree) · [Poppies](#feature-qtcraft-poppy) · [Pumpkins](#feature-qtcraft-pumpkin_patch) · [Red mushrooms](#feature-qtcraft-red_mushroom) · [Signal ore veins](#ore-qtcraft-signal) · [Snow cover](#feature-qtcraft-snow_layer) · [Spruce tree](#feature-qtcraft-spruce_tree) · [Sugar cane](#feature-qtcraft-sugar_cane) · [Tall grass](#feature-qtcraft-tall_grass) · [Terrain](#world-terrain) · [Wild carrots](#feature-qtcraft-wild_carrots) · [Wild potatoes](#feature-qtcraft-wild_potatoes)
 
 ## QtCraft
 
@@ -339,6 +339,16 @@ Tried in every chunk, whatever the biome.
 
 [Forest](biomes.md#biome-qtcraft-forest) (0.3 % of columns), [Swamp](biomes.md#biome-qtcraft-swamp) (0.6 % of columns)
 
+### <a id="ore-qtcraft-signal"></a>Signal ore veins
+
+| | |
+|---|---|
+| ID | `qtcraft:signal` |
+| Block | [Signal ore](blocks.md#block-qtcraft-signal_ore) |
+| Replaces | [Stone](blocks.md#block-qtcraft-stone) |
+| Heights | y 2–16 |
+| Veins | 8 per chunk, up to 7 blocks each |
+
 ### <a id="feature-qtcraft-snow_layer"></a>Snow cover
 
 | | |
@@ -411,7 +421,7 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 
 **Ore veins**
 
-[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Magma block veins](#ore-qtcraft-magma) (y 5–24)
+[Clay veins](#ore-qtcraft-clay_pocket) (y 40–70), [Coal ore veins](#ore-qtcraft-coal) (y 5–110), [Cobweb veins](#ore-qtcraft-cobweb) (y 10–50), [Diamond ore veins](#ore-qtcraft-diamond) (y 2–16), [Dirt veins](#ore-qtcraft-dirt_pocket) (y 20–100), [Gold ore veins](#ore-qtcraft-gold) (y 5–32), [Gravel veins](#ore-qtcraft-gravel_pocket) (y 5–100), [Iron ore veins](#ore-qtcraft-iron) (y 5–72), [Magma block veins](#ore-qtcraft-magma) (y 5–24), [Signal ore veins](#ore-qtcraft-signal) (y 2–16)
 
 **Biomes**
 

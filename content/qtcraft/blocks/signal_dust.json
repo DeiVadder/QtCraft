@@ -1,0 +1,63 @@
+{
+    "name": "signal_dust",
+    "sound": "stone",
+    "shape": "signal_dust",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.0,
+    "support": "below",
+    "washable": true,
+    "states": {
+        "power": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"
+        ],
+        "north": [
+            "none",
+            "side",
+            "up"
+        ],
+        "east": [
+            "none",
+            "side",
+            "up"
+        ],
+        "south": [
+            "none",
+            "side",
+            "up"
+        ],
+        "west": [
+            "none",
+            "side",
+            "up"
+        ]
+    },
+    "itemTexture": "signal_dust_item",
+    "textures": {
+        "all": "signal_dust_off",
+        "slots": {
+            "off": "signal_dust_off",
+            "low": "signal_dust_low",
+            "high": "signal_dust_high"
+        }
+    },
+    "signal": {
+        "type": "dust"
+    }
+}

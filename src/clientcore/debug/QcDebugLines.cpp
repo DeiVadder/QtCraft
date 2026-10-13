@@ -22,7 +22,7 @@ std::pair<double, double> bodySize(const QcClientEntity &entity, const QcContent
     if (entity.isItem()) {
         return {0.25, 0.25};
     }
-    if (entity.isFallingBlock()) {
+    if (entity.isBlockEntity()) {
         return {0.98, 0.98};
     }
     const auto &mobs = content.mobs();
@@ -112,7 +112,7 @@ void QcDebugLines::addHitboxes(const QcClientSession &session, double alpha)
         const double half = width / 2.0;
         addBox({{at.x - half, at.y, at.z - half}, {at.x + half, at.y + height, at.z + half}}, hitboxColor);
 
-        if (!entity.isItem() && !entity.isFallingBlock()) {
+        if (!entity.isItem() && !entity.isBlockEntity()) {
             // Yaw 0 looks north (-Z), 90 east (+X).
             const double yaw = double(entity.yaw) * std::numbers::pi / 180.0;
             const QcVec3 eye{at.x, at.y + height * 0.85, at.z};

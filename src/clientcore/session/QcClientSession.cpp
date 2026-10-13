@@ -492,7 +492,7 @@ void QcClientSession::refreshTarget()
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : m_entities.all()) {
-        if (entity.isItem() || entity.isFallingBlock()) {
+        if (entity.isItem() || entity.isBlockEntity()) {
             continue;
         }
 
@@ -651,13 +651,14 @@ bool QcClientSession::useItem()
     const QcItemStack &held = m_inventory.selectedStack();
     const QcItemDefinition *item = !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
 
-    // Machines, chests, doors and crafting tables react when used (unless sneaking); otherwise food without a block
-    // to place is eaten and everything else acts on the targeted block.
+    // Machines, chests, doors, levers, buttons, repeaters and crafting tables react when used (unless sneaking);
+    // otherwise food without a block to place is eaten and everything else acts on the targeted block.
     const std::optional<QcBlockId> targetBlock = m_target ? m_world->blockAt(m_target->block) : std::nullopt;
     const QcBlockDefinition *targetDefinition = targetBlock ? &m_content->block(*targetBlock) : nullptr;
     const bool opensScreen = targetDefinition && !m_intent.sneak
                              && (targetDefinition->opensCrafting || targetDefinition->machine.isMachine()
-                                 || targetDefinition->containerSlots > 0 || targetDefinition->toggles);
+                                 || targetDefinition->containerSlots > 0 || targetDefinition->toggles
+                                 || targetDefinition->signal.isUsable());
     // An armour stand takes or gives armour and items, also with an empty hand.
     if (m_targetEntity && m_entities.all().value(*m_targetEntity).isArmourStand()) {
         m_connection->send(QcMsg::UseEntity{*m_targetEntity});

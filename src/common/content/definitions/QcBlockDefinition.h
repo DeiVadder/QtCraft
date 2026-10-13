@@ -7,6 +7,7 @@
 #include "QcMachineDefinition.h"
 #include "QcShapeCondition.h"
 #include "QcShapeDefinition.h"
+#include "QcSignalDefinition.h"
 
 #include <QList>
 #include <QString>
@@ -140,6 +141,9 @@ struct QcBlockDefinition
     QList<std::pair<QString, QString>> textureSlots;
     // Item icon drawn flat instead of the block model (torches, doors); empty for the block model.
     QString itemTexture;
+    // Whether the block gets an item of its own name; internal variants (a lit lamp, a piston head)
+    // have none and drop the item of their main block. Server side only.
+    bool hasItem = true;
     // Block light emitted, 0..15.
     int lightLevel = 0;
     // Entities inside climb up and down (ladders).
@@ -188,6 +192,9 @@ struct QcBlockDefinition
     QcSoilDefinition soil;
     // Block it turns into when an item that `tills` (a hoe) is used on it, empty for none. Server side only.
     QString tillsInto;
+    // Part in Signal Dust circuits (decision E-333); the kind reaches the client (usable blocks), the
+    // rest is server side only.
+    QcSignalDefinition signal;
 
     static constexpr int maxLightLevel = 15;
     static constexpr int maxContainerSlots = 54;

@@ -186,7 +186,7 @@ Params forPattern(Pattern pattern)
     }
     // Masonry and metal: strong bevels.
     if (among(pattern, {Pattern::Bricks, Pattern::Furnace, Pattern::MetalBlock, Pattern::Bars, Pattern::PumpkinSide,
-                        Pattern::PumpkinTop, Pattern::MelonSide})) {
+                        Pattern::PumpkinTop, Pattern::MelonSide, Pattern::Repeater, Pattern::PistonSide})) {
         return {0.05, 0.22, false};
     }
     if (among(pattern, {Pattern::Glass, Pattern::StainedGlass, Pattern::FireflyGlass})) {

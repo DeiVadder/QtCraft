@@ -168,10 +168,18 @@ QList<QcBlockId> shownStates(const QcContentRegistry &content, quint32 type)
     const QcBlockDefinition &block = content.blocks()[type];
     const QcBlockStateTable &table = content.stateTable();
     const QcBlockProperty *half = block.property(u"half"_s);
+    const QcBlockId first = table.firstState(type);
+    // Blocks with very many states (Signal Dust: 16 strengths times 81 shapes, the repeater) show
+    // the default state and every state that differs from it in one property only (decision E-340).
+    const bool axesOnly = table.stateCount(type) > maxAllStates;
     QList<QcBlockId> states;
     for (int index = 0; index < table.stateCount(type); ++index) {
-        const QcBlockId state = table.firstState(type) + quint32(index);
+        const QcBlockId state = first + quint32(index);
         if (block.door && half && content.property(state, u"half"_s) != half->values.value(0)) {
+            continue;
+        }
+        const auto differs = [&](const QcBlockProperty &property) { return content.property(state, property.name) != content.property(first, property.name); };
+        if (axesOnly && std::ranges::count_if(block.properties, differs) > 1) {
             continue;
         }
         states.append(state);

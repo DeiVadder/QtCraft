@@ -95,6 +95,8 @@ public:
     QList<Item> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const TickCallbacks &callbacks);
 
     const QList<Item> &items() const { return m_items; }
+    // For moving items from outside their physics (pistons push them, decision E-337).
+    QList<Item> &editableItems() { return m_items; }
     const QList<Drop> &queued() const { return m_queue; }
     // Awake items in loaded chunks after the last tick (plus drops spawned since).
     int activeCount() const { return m_activeCount; }

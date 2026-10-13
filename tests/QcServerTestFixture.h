@@ -51,6 +51,8 @@ protected:
     // How the raw client of the next join() connects: like a client over the network, or like the
     // local player of the in-process host.
     QcServer::ClientOrigin m_origin = QcServer::ClientOrigin::Remote;
+    // Chunks streamed around the raw client's player.
+    int m_viewDistance = 1;
 
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
@@ -67,7 +69,7 @@ protected:
     // is an operator unless the config names other operators (notOperator()).
     void join(QcServerConfig config = {}, std::unique_ptr<QcWorldGenerator> generator = nullptr)
     {
-        config.viewDistance = 1;
+        config.viewDistance = m_viewDistance;
         if (config.operators.isEmpty()) {
             config.operators = {QStringLiteral("Raw")};
         }

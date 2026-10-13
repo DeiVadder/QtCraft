@@ -1,0 +1,16 @@
+{
+    "name": "signal_repeater",
+    "type": "shaped",
+    "pattern": [
+        "tdt",
+        "sss"
+    ],
+    "key": {
+        "t": "signal_torch",
+        "d": "signal_dust",
+        "s": "stone"
+    },
+    "result": {
+        "item": "signal_repeater"
+    }
+}

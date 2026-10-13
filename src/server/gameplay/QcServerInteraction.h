@@ -5,6 +5,7 @@
 #include "QcMessages.h"
 
 class QcServerBlocks;
+class QcServerCircuits;
 class QcServerCombat;
 class QcServerFarming;
 class QcServerInventory;
@@ -15,7 +16,8 @@ struct QcServerClient;
 struct QcServerState;
 
 // What players do to the world: mining blocks, using blocks and items (opening machines, toggling
-// doors, tilling, placing blocks, scooping liquids) and using creatures (feeding, catching).
+// doors, switching levers, tilling, placing blocks, scooping liquids) and using creatures (feeding,
+// catching).
 class QcServerInteraction
 {
 public:
@@ -33,6 +35,7 @@ public:
         QcServerStands &stands;
         QcServerFarming &farming;
         QcServerCombat &combat;
+        QcServerCircuits &circuits;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);
@@ -42,8 +45,8 @@ public:
     void useEntity(QcServerClient &client, quint32 entityId);
 
 private:
-    // Opens a machine, chest or crafting table or toggles a door at `target`; false when the click
-    // is not such a use.
+    // Opens a machine, chest or crafting table, toggles a door or switches a lever, button or repeater
+    // at `target`; false when the click is not such a use.
     bool useClickedBlock(QcServerClient &client, QcBlockPos target);
     // Empties a liquid source into the held scooping item; false when nothing was taken.
     bool scoopLiquid(QcServerClient &client, QcBlockPos pos);
