@@ -26,14 +26,23 @@
 # QTCRAFT_RELEASE_TMP (default: $TMPDIR) and is removed when all checks pass.
 #
 # Usage: scripts/release.sh            (QT_DIR overrides ~/Qt/6.8.3/macos; QTCRAFT_RELEASE_DMG=0
-#                                       skips the disk image)
+#                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
+#                                       preset "deploy"; QTCRAFT_RELEASE_GUI=0 skips the starts of
+#                                       the game and keeps the static and dedicated-server checks,
+#                                       for machines without a display such as GitHub Actions)
 
 set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
 QT_DIR=${QT_DIR:-"$HOME/Qt/6.8.3/macos"}
-BUILD_DIR="$PROJECT_DIR/build/deploy"
+PRESET=${QTCRAFT_RELEASE_PRESET:-deploy}
+GUI_RUNS=${QTCRAFT_RELEASE_GUI:-1}
+case "$GUI_RUNS" in
+0 | 1) ;;
+*) echo "QTCRAFT_RELEASE_GUI must be 0 or 1, not '$GUI_RUNS'" >&2; exit 2 ;;
+esac
+BUILD_DIR="$PROJECT_DIR/build/$PRESET"
 DEPLOY_DIR="$PROJECT_DIR/deploy"
 APP="$DEPLOY_DIR/QtCraft.app"
 VERSION=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
@@ -80,9 +89,9 @@ macho_files() {
 echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 [ -x "$QT_DIR/bin/macdeployqt" ] || abort "macdeployqt not found in $QT_DIR/bin"
 
-echo "== build (preset deploy, $BUILD_DIR)"
-limited 300 cmake --preset deploy -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
-limited 1800 cmake --build --preset deploy --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
+echo "== build (preset $PRESET, $BUILD_DIR)"
+limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
+limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
     abort "build failed, see $WORK/build.log"
 
 echo "== assemble $APP"
@@ -290,58 +299,63 @@ mkdir -p "$WORK/copy" && ditto "$APP" "$RUN_APP" || abort "cannot copy the bundl
 DATA="$WORK/data"
 mkdir -p "$DATA" && printf '[audio]\nmuted=true\n' >"$DATA/settings.ini"
 
-if run_copy world "$DATA" --play --seed 42 --look 45,-20; then
-    ok "world run exited normally"
-else
-    problem "world run failed (log: $WORK/world.log)"
-fi
-check_screenshot "$WORK/world.png"
-check_loaded_libraries "$WORK/world.log"
-check_audio world
-if grep -q "Installed bundled mods (switched off) in .*: rubies" "$WORK/world.log" && [ -f "$DATA/mods/rubies/pack.json" ] &&
-    grep -q '"rubies"' "$DATA/mods/mods.json" && grep -q "Mods loaded: none" "$WORK/world.log"; then
-    ok "example mod installed switched off in the data directory"
-else
-    problem "example mod not installed switched off"
-fi
+# The starts of the game need a display; without one only the static and server checks run.
+if [ "$GUI_RUNS" = 1 ]; then
+    if run_copy world "$DATA" --play --seed 42 --look 45,-20; then
+        ok "world run exited normally"
+    else
+        problem "world run failed (log: $WORK/world.log)"
+    fi
+    check_screenshot "$WORK/world.png"
+    check_loaded_libraries "$WORK/world.log"
+    check_audio world
+    if grep -q "Installed bundled mods (switched off) in .*: rubies" "$WORK/world.log" && [ -f "$DATA/mods/rubies/pack.json" ] &&
+        grep -q '"rubies"' "$DATA/mods/mods.json" && grep -q "Mods loaded: none" "$WORK/world.log"; then
+        ok "example mod installed switched off in the data directory"
+    else
+        problem "example mod not installed switched off"
+    fi
 
-# Second start: the player switches the mod on and plays in German.
-printf '{"disabled": []}\n' >"$DATA/mods/mods.json"
-if run_copy mod "$DATA" --play --seed 42 --look 45,-20 --language de --overlay inventory --chat "/give rubies:ruby_pickaxe 1" --chat "/give rubies:ruby_block 8"; then
-    ok "run with the example mod exited normally"
-else
-    problem "run with the example mod failed (log: $WORK/mod.log)"
-fi
-check_screenshot "$WORK/mod.png"
-if grep -q "Mods loaded: rubies " "$WORK/mod.log" && ! grep -q "Content:" "$WORK/mod.log"; then
-    ok "$(grep -o 'Mods loaded: .*' "$WORK/mod.log" | head -1), no content warnings"
-else
-    problem "example mod not loaded cleanly (log: $WORK/mod.log)"
-fi
-if grep -q "UI language de.*: translation loaded" "$WORK/mod.log"; then
-    ok "German translation loaded"
-else
-    problem "German translation not loaded"
-fi
+    # Second start: the player switches the mod on and plays in German.
+    printf '{"disabled": []}\n' >"$DATA/mods/mods.json"
+    if run_copy mod "$DATA" --play --seed 42 --look 45,-20 --language de --overlay inventory --chat "/give rubies:ruby_pickaxe 1" --chat "/give rubies:ruby_block 8"; then
+        ok "run with the example mod exited normally"
+    else
+        problem "run with the example mod failed (log: $WORK/mod.log)"
+    fi
+    check_screenshot "$WORK/mod.png"
+    if grep -q "Mods loaded: rubies " "$WORK/mod.log" && ! grep -q "Content:" "$WORK/mod.log"; then
+        ok "$(grep -o 'Mods loaded: .*' "$WORK/mod.log" | head -1), no content warnings"
+    else
+        problem "example mod not loaded cleanly (log: $WORK/mod.log)"
+    fi
+    if grep -q "UI language de.*: translation loaded" "$WORK/mod.log"; then
+        ok "German translation loaded"
+    else
+        problem "German translation not loaded"
+    fi
 
-# Third start through Launch Services, as a double click does (main menu, no world).
-LS_DATA="$WORK/data-ls"
-mkdir -p "$LS_DATA" && printf '[audio]\nmuted=true\n' >"$LS_DATA/settings.ini"
-if limited 120 open -g -n -W --stdout "$WORK/open.log" --stderr "$WORK/open.log" \
-    --env QTCRAFT_DATA_DIR="$LS_DATA" --env QTCRAFT_SCREENSHOT="$WORK/open.png" --env QTCRAFT_SCREENSHOT_FRAMES=60 \
-    --env QTCRAFT_SCREEN=builtin --env QTCRAFT_BACKGROUND=1 --env QTCRAFT_AUDIO=1 \
-    --env QML_DISK_CACHE_PATH="$WORK/cache/qml" --env QSG_RHI_DISABLE_DISK_CACHE=1 "$RUN_APP" --args --screen builtin --background; then
-    ok "start through Launch Services exited normally"
+    # Third start through Launch Services, as a double click does (main menu, no world).
+    LS_DATA="$WORK/data-ls"
+    mkdir -p "$LS_DATA" && printf '[audio]\nmuted=true\n' >"$LS_DATA/settings.ini"
+    if limited 120 open -g -n -W --stdout "$WORK/open.log" --stderr "$WORK/open.log" \
+        --env QTCRAFT_DATA_DIR="$LS_DATA" --env QTCRAFT_SCREENSHOT="$WORK/open.png" --env QTCRAFT_SCREENSHOT_FRAMES=60 \
+        --env QTCRAFT_SCREEN=builtin --env QTCRAFT_BACKGROUND=1 --env QTCRAFT_AUDIO=1 \
+        --env QML_DISK_CACHE_PATH="$WORK/cache/qml" --env QSG_RHI_DISABLE_DISK_CACHE=1 "$RUN_APP" --args --screen builtin --background; then
+        ok "start through Launch Services exited normally"
+    else
+        problem "start through Launch Services failed (log: $WORK/open.log)"
+        # open itself was stopped by the time limit; end the copy it started.
+        # Anchored: the dedicated server qtcraft-headless next to it is no match.
+        for pid in $(pgrep -f "^$RUN_APP/Contents/MacOS/qtcraft( |\$)"); do
+            kill "$pid"
+        done
+    fi
+    check_screenshot "$WORK/open.png"
+    check_audio open
 else
-    problem "start through Launch Services failed (log: $WORK/open.log)"
-    # open itself was stopped by the time limit; end the copy it started.
-    # Anchored: the dedicated server qtcraft-headless next to it is no match.
-    for pid in $(pgrep -f "^$RUN_APP/Contents/MacOS/qtcraft( |\$)"); do
-        kill "$pid"
-    done
+    echo "skip the starts of the game: QTCRAFT_RELEASE_GUI=0"
 fi
-check_screenshot "$WORK/open.png"
-check_audio open
 
 # The dedicated server of the copy: starts on a free port of the loopback interface, says so,
 # loads only libraries from the copy or the system, and saves and stops on SIGTERM with exit code 0.
@@ -397,7 +411,7 @@ fi
 check_bundle_libraries "$WORK/server.log"
 
 # Fourth start: the Intel half of the universal app under Rosetta, when it is installed.
-if arch -x86_64 /usr/bin/true 2>/dev/null; then
+if [ "$GUI_RUNS" = 1 ] && arch -x86_64 /usr/bin/true 2>/dev/null; then
     X86_DATA="$WORK/data-x86_64"
     mkdir -p "$X86_DATA" && printf '[audio]\nmuted=true\n' >"$X86_DATA/settings.ini"
     if RUN_ARCH=x86_64 run_copy x86_64 "$X86_DATA" --play --seed 42 --look 45,-20; then
@@ -408,7 +422,7 @@ if arch -x86_64 /usr/bin/true 2>/dev/null; then
     check_screenshot "$WORK/x86_64.png"
     check_audio x86_64
 else
-    echo "skip x86_64 start: Rosetta is not installed"
+    echo "skip x86_64 start: Rosetta is not installed or QTCRAFT_RELEASE_GUI=0"
 fi
 
 # Nothing of the runs went to the player's caches.
@@ -440,7 +454,13 @@ if [ -n "$failures" ]; then
     echo "logs and screenshots: $WORK"
     exit 1
 fi
-cp "$WORK/world.png" "$DEPLOY_DIR/release-check-world.png"
-cp "$WORK/mod.png" "$DEPLOY_DIR/release-check-mod-de.png"
+if [ "$GUI_RUNS" = 1 ]; then
+    cp "$WORK/world.png" "$DEPLOY_DIR/release-check-world.png"
+    cp "$WORK/mod.png" "$DEPLOY_DIR/release-check-mod-de.png"
+fi
 rm -rf "$WORK"
-echo "RELEASE OK (screenshots of the checks in $DEPLOY_DIR)"
+if [ "$GUI_RUNS" = 1 ]; then
+    echo "RELEASE OK (screenshots of the checks in $DEPLOY_DIR)"
+else
+    echo "RELEASE OK WITHOUT STARTS OF THE GAME (QTCRAFT_RELEASE_GUI=0): try the package once before publishing it"
+fi

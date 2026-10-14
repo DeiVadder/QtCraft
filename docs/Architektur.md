@@ -32,7 +32,7 @@ Inside each library folder the classes live in thematic subfolders (E-089); the 
 | `src/common/content/definitions` | 27 | Plain definition structs (blocks, items, shapes, materials, mobs, models, sounds, recipes, worldgen) and sound keys |
 | `src/common/content/registry` | 13 | `QcContentRegistry`, block states (`QcBlockStateTable`), content names, building parts, content-sync serializers |
 | `src/common/content/parser` | 26 | JSON parser entry point and one parser per definition kind, field readers |
-| `src/common/handbook` | 10 | Handbook model, chapters and entries, Markdown and JSON output, link check |
+| `src/common/handbook` | 12 | Handbook model, chapters and entries, Markdown, JSON and web-handbook output, link check |
 | `src/common/handbook/builder` | 21 | `QcHandbookBuilder`, pages per category and their shared helpers |
 | `src/common/auth` | 4 | Login cryptography (`QcLoginCrypto`: PBKDF2, HMAC proofs, identities, fingerprints) and the installation key (`QcPlayerKey`) |
 | `src/network` | 6 | `qc_network`: TCP transport, connector, server addresses |
@@ -55,7 +55,7 @@ Inside each library folder the classes live in thematic subfolders (E-089); the 
 | `src/clientcore/control` | 25 | Control interface, command table and command groups |
 | `src/clientcore/meshing` | 18 | Chunk and entity meshers, vertex formats, render table, mesh scheduler, animator |
 | `src/clientcore/light` | 6 | Client block light engine, light snapshots for meshing, the sky of a moment (`QcSky`) |
-| `src/clientcore/textures` | 40 | Texture synthesis and HD detail, texture packs (manifest, loader, library, sources), atlas layout with mip levels, block and app icons |
+| `src/clientcore/textures` | 44 | Texture synthesis and HD detail, texture packs (manifest, loader, library, sources), atlas layout with mip levels, block, item and app icons, the icon sheet and colours of the web handbook |
 | `src/clientcore/camera` | 12 | Camera, view camera, frustum, mouse look, mouse capture (`QcMouseCapture`), world labels on screen (`QcLabelProjector`) |
 | `src/clientcore/sound` | 16 | Synthesis, sound bank, mixer, spatial sound, local sounds, ambience, music |
 | `src/clientcore/settings` | 14 | Game settings, character profile (colours, presets, random looks: `QcCharacterProfile`), debug options, screen choice, key controls and labels, UI palette (`QcUiPalette`) |
@@ -67,7 +67,7 @@ Inside each library folder the classes live in thematic subfolders (E-089); the 
 | `src/app/multiplayer` | 8 | What the multiplayer screens show and keep (E-258 to E-260): recent servers (`QcServerHistory`), player name and host choices (`QcMultiplayerSettings`), the player list with join and leave lines (`QcPlayerList`), the LAN addresses (`QcLanAddresses`) |
 | `src/app/hooks` | 15 | Test and benchmark hooks: screenshots, offscreen rendering, startup options, benchmark, scripted runs, frame profile, thread CPU clock |
 | `src/app/qml`, `src/app/shaders` | 34, 11 | QML screens and the QRhi shaders (unchanged locations: QML module and shader resources) |
-| `src/audio`, `src/headless` | 6, 23 | Small single-purpose targets, kept flat |
+| `src/audio`, `src/headless` | 6, 25 | Small single-purpose targets, kept flat |
 | `tests/{content,world,gameplay,client,sound}` | 8, 12, 13, 13, 5 | Test programs by topic; the shared fixtures (`QcTestWorld.h`, `QcServerTestFixture.h`, `QcRawClient.h`, `QcTestUtil.h`) and scenario scripts stay in `tests/` |
 
 Every class has its own header and source, except the thematic message headers and small header-only types; no function is longer than 80 lines and no source file longer than 800 lines (E-088). The larger subsystems are split into collaborating classes:
@@ -292,6 +292,7 @@ Screens (E-078): overlays are QML items over the world (`GameController.overlay`
 - **Export** (E-066): `QcHandbookMarkdown::files` gives `index.md` and one file per category, entries as `### <a id="block-qtcraft-stone"></a>…` with relative links; byte-identical for the same content. `docs/handbook/` (English) and `docs/handbook/de/` are the base game's handbook; `test_handbook` fails when they differ from a fresh export.
 - **Game** (E-067): `QcGameController` builds the handbook on first use from the full content of the world (or, in the menu, the content it loads for the character screen and menu sounds) and again after a content or language change; in the menu it also draws the item icons from that content. `QcHandbookModel` gives QML the categories, entry lists (with pack headings when mods are loaded), search results and pages (`QcHandbookJson`, converted per page). `HandbookScreen.qml` lies above every other screen and keeps the screen below open; it opens with the handbook key (H or F1 by default; in the world at the target, in inventory, furnace and chest at the hovered item), from the main and pause menus and with the "?" on a hovered slot.
 - **Control interface:** `handbook` in `qtcraft-headless` (see `docs/Steuerschnittstelle.md`).
+- **Web handbook** (E-950): `web/handbook/` (`index.html`, `handbook.css`, `handbook.js`, no framework, no build step) shows the handbook like `HandbookScreen.qml`: categories, entry list or search results, the page with facts, link chips and recipe grids, English and German, addresses `#<language>/<entry id>`, one column at a time on phones. Its data in `web/handbook/data` comes from `qtcraft-headless --export-handbook-web`: `<language>.json` per content language (`QcHandbookWeb::data`: packs, categories with their entry ids in list order, every page as `QcHandbookJson::entry` plus `englishTitle`), `languages.json`, `icons.png` with `icons.json` (`QcWebHandbookAssets::iconSheet`: every item icon drawn by `QcItemIconSet` at 64 pixels, cells sorted by name) and `theme.css` (`--qc-<name>` per `QcUiPalette` role). `search.js` repeats `QcHandbook::search` (same keys, ranks and order; `test_web_handbook` runs it in `QJSEngine` against the C++ search for over 300 queries per language), `handbook.js` the text subset (paragraphs, `- ` lists, `**bold**`, `` `code` ``). The data is checked in; `test_web_handbook` compares it with a fresh export (the icon sheet by pixels, at most 2 per channel apart) and checks that every link and icon exists. `scripts/export-handbook.sh` regenerates the Markdown and the web data after a content change. `web/` is the GitHub Pages site (`.github/workflows/pages.yml`, from `main`).
 
 ## World generation
 
@@ -361,6 +362,7 @@ Decision E-231. `CharacterPreview` (`QcCharacterPreview`, a `QQuickRhiItem`) sho
 | `QTCRAFT_PREVIEW_ACTIVE=1` | Character previews in the inactive window of a scripted, background or offscreen run animate as in an active window (E-231), so benchmarks can measure them (`PREVIEW_ACTIVE=1` in `scripts/bench-common.sh`); paused, hidden and minimised previews stay still or off |
 | `--handbook <entry\|name\|search>`, `--overlay handbook` | Opens the handbook at an entry (`block:qtcraft:furnace`, `zombie`) or with a search, once the world is loaded; without `--play` in the main menu at once |
 | `qtcraft-headless --export-handbook <dir> [--language de]` | Writes the handbook as Markdown and prints problems: the base game, plus mods only when `--mods-dir` is given |
+| `qtcraft-headless --export-handbook-web <dir>` | Writes the data of the web handbook (every language, icon sheet, colours) and prints problems, exit code 1 when a shown icon is missing; base game unless `--mods-dir` is given. `scripts/export-handbook.sh` runs both exports for the checked-in copies |
 | `QTCRAFT_COLOR_SCHEME=light\|system` | The UI is dark whatever the system appearance (E-079); this test hook forces the light scheme or follows the system, for comparison screenshots |
 | `QTCRAFT_MENU_WORLD_TYPE=flat\|void\|showcase` | Test hook: the main menu starts with that world type chosen for a new world, so screenshots show its fields (layers of a flat world) |
 | `--no-audio`, `QTCRAFT_AUDIO=0` | No audio device is opened; the game is silent. Runs with `QTCRAFT_SCREENSHOT` are silent unless `QTCRAFT_AUDIO=1` |

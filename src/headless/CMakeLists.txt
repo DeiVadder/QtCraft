@@ -1,6 +1,7 @@
 qt_add_executable(qtcraft-headless
     main.cpp
     QcDedicatedServer.h QcDedicatedServer.cpp
+    QcHandbookExport.h QcHandbookExport.cpp
     QcHeadlessGame.h QcHeadlessGame.cpp
     QcHeadlessJoin.h QcHeadlessJoin.cpp
     QcHeadlessOptions.h QcHeadlessOptions.cpp

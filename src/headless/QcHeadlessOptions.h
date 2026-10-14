@@ -47,6 +47,9 @@ struct Options
                                 u"Write the handbook as Markdown files into a directory and exit (base game; with --mods-dir also those mods)."_s,
                                 u"dir"_s};
     QCommandLineOption language{u"language"_s, u"Language of --export-handbook, e.g. 'de' (default: en)."_s, u"locale"_s, u"en"_s};
+    QCommandLineOption handbookWeb{u"export-handbook-web"_s,
+                                   u"Write the data of the web handbook (every language, icons, colours) into a directory and exit (base game; with --mods-dir also those mods)."_s,
+                                   u"dir"_s};
     QCommandLineOption generator{u"generator"_s, u"World type of the world started at once: terrain, flat, void or showcase."_s, u"type"_s,
                                  u"terrain"_s};
     QCommandLineOption generatorOptions{u"generator-options"_s,
@@ -110,7 +113,7 @@ struct Options
     {
         parser.addOptions({sounds, icon});
         parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
-        parser.addOptions({handbook, language});
+        parser.addOptions({handbook, language, handbookWeb});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
         parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, data, mods,
                            noMods, statsLog});

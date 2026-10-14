@@ -33,6 +33,7 @@ Client-Code bindet nie Server-Header ein, außer in den beiden Kompositionswurze
 ## Bauen, testen, prüfen
 
 - Debug: `cmake --preset debug && cmake --build --preset debug`; Tests: `ctest --preset debug` (oder `-R <regex>`).
+- Inhalt oder Handbuch geändert: `scripts/export-handbook.sh` erzeugt `docs/handbook` und `web/handbook/data` neu (`test_handbook` und `test_web_handbook` vergleichen sie).
 - Während der Arbeit: `scripts/verify.sh --quick [--tests <regex>]` (Debug-Build, Tests, statische Analyse der gegen `dev` geänderten Dateien, rund 3–6 min). Vor dem Merge einmal `scripts/verify.sh` (voll, mit ASan/TSan, Release, Smoke).
 - Benchmarks und Fensterläufe (`scripts/bench.sh`, `scripts/bench-ab.sh`, `scripts/profile.sh`, `scripts/showcase-tour.sh` im Fenstermodus) nur nach Freigabe des Menschen und mit der Sperre `~/.cache/qtcraft/bench.lock` (Regeln in `docs/FORTSCHRITT.md`, „Arbeitsweise für Skript-Läufe“). Solange die Sperre existiert: keine Builds, Tests oder Verify-Läufe starten.
 

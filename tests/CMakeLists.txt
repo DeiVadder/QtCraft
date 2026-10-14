@@ -27,6 +27,8 @@ qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_server qc_clientcore Qt::Qml)
+target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
 qc_add_test(test_protocol SOURCES gameplay/test_protocol.cpp LIBRARIES qc_common)

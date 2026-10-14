@@ -6,6 +6,8 @@ qt_add_library(qc_clientcore STATIC
     textures/QcAppIcon.h textures/QcAppIcon.cpp
     sound/QcAudioMixer.h sound/QcAudioMixer.cpp
     textures/QcBlockIcon.h textures/QcBlockIcon.cpp
+    textures/QcItemIconSet.h textures/QcItemIconSet.cpp
+    textures/QcWebHandbookAssets.h textures/QcWebHandbookAssets.cpp
     light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp
     meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
     meshing/QcBlockVertex.h

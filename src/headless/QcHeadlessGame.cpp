@@ -9,8 +9,8 @@
 #include "QcControlInterface.h"
 #include "QcDebugJson.h"
 #include "QcHandbookBuilder.h"
+#include "QcHandbookExport.h"
 #include "QcHandbookJson.h"
-#include "QcHandbookMarkdown.h"
 #include "QcHandbookRules.h"
 #include "QcHeadlessJoin.h"
 #include "QcHeadlessOptions.h"
@@ -104,34 +104,6 @@ void exportSounds(const QcContentRegistry &content, const QString &directory, qu
         printError(exported.error());
     }
     exitSoon(exported ? 0 : 1);
-}
-
-// The export documents the base game unless mods are asked for with --mods-dir.
-bool exportHandbook(const QCommandLineParser &parser, const Options &options, const std::shared_ptr<const QcContentRegistry> &content)
-{
-    std::shared_ptr<const QcContentRegistry> exported = content;
-    if (!parser.isSet(options.mods)) {
-        QStringList baseWarnings;
-        QcResult<std::shared_ptr<QcContentRegistry>> base = QcBaseContent::load(baseWarnings);
-        if (!base) {
-            printError(u"Cannot load the base game: "_s + base.error());
-            return false;
-        }
-        exported = *base;
-    }
-
-    const QcHandbook book = QcHandbookBuilder::build(*exported, parser.value(options.language), QcHandbookRules::values(), QcKeyBindings::defaults(QcKeyBindings::Platform::Other).placeholderKeys());
-    for (const QString &problem : book.problems()) {
-        printError(u"handbook problem: "_s + problem);
-    }
-    const QcStatus written = QcHandbookMarkdown::write(book, parser.value(options.handbook));
-    if (written) {
-        std::println("{} entries in {} files", book.entries().size(), QcHandbookMarkdown::files(book).size());
-    } else {
-        printError(written.error());
-    }
-    exitSoon(written ? 0 : 1);
-    return true;
 }
 
 void saveMap(const QImage &map, const QString &file)
@@ -293,7 +265,12 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         return true;
     }
     if (parser.isSet(options.handbook)) {
-        return exportHandbook(parser, options, shared);
+        exitSoon(QcHandbookExport::markdown(parser, options, shared));
+        return true;
+    }
+    if (parser.isSet(options.handbookWeb)) {
+        exitSoon(QcHandbookExport::web(parser, options, shared));
+        return true;
     }
     if (parser.isSet(options.exportTextures) || parser.isSet(options.atlasStats)) {
         exitSoon(runTextureTool(parser, options, *shared));

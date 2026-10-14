@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- The handbook of QtCraft on the web, laid out like the handbook screen of the game
+     (src/app/qml/HandbookScreen.qml). Data: data/, written by
+     qtcraft-headless --export-handbook-web web/handbook/data. -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QtCraft Handbook</title>
+    <meta name="description" content="Every block, item, recipe, creature and biome of QtCraft, and how to play.">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="data/theme.css">
+    <link rel="stylesheet" href="handbook.css">
+    <script src="search.js" defer></script>
+    <script src="handbook.js" defer></script>
+</head>
+<body>
+    <div class="screen" id="screen">
+        <header class="bar">
+            <button type="button" id="back" disabled>‹ Back</button>
+            <button type="button" id="contents" class="narrow-only">☰</button>
+            <h1 id="heading">Handbook</h1>
+            <span class="spacer"></span>
+            <input type="search" id="search" autocomplete="off" spellcheck="false" placeholder="Search blocks, items, creatures …">
+            <select id="language" aria-label="Language"></select>
+        </header>
+        <main class="columns">
+            <nav class="categories" id="categories" aria-label="Categories"></nav>
+            <div class="separator"></div>
+            <div class="entries" id="entries" role="listbox" tabindex="0"></div>
+            <div class="separator"></div>
+            <article class="page" id="page" tabindex="-1"></article>
+        </main>
+        <footer class="hint" id="hint"></footer>
+    </div>
+    <noscript><p class="noscript">The handbook needs JavaScript. The same pages are in the repository as Markdown (docs/handbook).</p></noscript>
+</body>
+</html>

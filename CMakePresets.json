@@ -22,6 +22,18 @@
         {
             "name": "tsan", "inherits": "base",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "thread" }
+        },
+        {
+            "name": "ci", "hidden": true,
+            "description": "GitHub Actions: Qt from QT_ROOT_DIR (install-qt-action), Ninja from PATH",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": { "CMAKE_PREFIX_PATH": "$env{QT_ROOT_DIR}" }
+        },
+        { "name": "ci-debug", "inherits": "ci", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        {
+            "name": "ci-deploy", "inherits": "ci",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64" }
         }
     ],
     "buildPresets": [
@@ -30,13 +42,16 @@
         { "name": "deploy", "configurePreset": "deploy", "jobs": 16 },
         { "name": "profile", "configurePreset": "profile", "jobs": 16 },
         { "name": "asan", "configurePreset": "asan", "jobs": 16 },
-        { "name": "tsan", "configurePreset": "tsan", "jobs": 16 }
+        { "name": "tsan", "configurePreset": "tsan", "jobs": 16 },
+        { "name": "ci-debug", "configurePreset": "ci-debug" },
+        { "name": "ci-deploy", "configurePreset": "ci-deploy" }
     ],
     "testPresets": [
         { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } },
         { "name": "release", "configurePreset": "release", "output": { "outputOnFailure": true } },
         { "name": "asan", "configurePreset": "asan", "output": { "outputOnFailure": true } },
         { "name": "tsan", "configurePreset": "tsan", "output": { "outputOnFailure": true },
-          "environment": { "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1" } }
+          "environment": { "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1" } },
+        { "name": "ci-debug", "configurePreset": "ci-debug", "output": { "outputOnFailure": true } }
     ]
 }

@@ -79,6 +79,7 @@ qt_add_library(qc_common STATIC
     handbook/QcHandbookJson.h handbook/QcHandbookJson.cpp
     handbook/QcHandbookLinks.h handbook/QcHandbookLinks.cpp
     handbook/QcHandbookMarkdown.h handbook/QcHandbookMarkdown.cpp
+    handbook/QcHandbookWeb.h handbook/QcHandbookWeb.cpp
     handbook/builder/QcHandbookOverviewPages.h handbook/builder/QcHandbookOverviewPages.cpp
     handbook/builder/QcHandbookRecipes.h handbook/builder/QcHandbookRecipes.cpp
     handbook/builder/QcHandbookText.h handbook/builder/QcHandbookText.cpp
