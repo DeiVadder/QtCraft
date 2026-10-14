@@ -3,11 +3,13 @@
 #include "QcContentFields.h"
 #include "QcContentNames.h"
 #include "QcJsonFieldReader.h"
+#include "QcStreamLimits.h"
 
 #include <QJsonArray>
 #include <QRegularExpression>
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -100,6 +102,12 @@ QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, co
 
 QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
 {
+    // Clients take at most this many per language (QcContentSerializer); a larger file is refused
+    // before its table is built (decision E-371).
+    if (std::cmp_greater(json.size(), QcStreamLimits::maxDefinitions)) {
+        return qcError(u"more than %1 translations in one file"_s.arg(QcStreamLimits::maxDefinitions));
+    }
+
     QHash<QString, QString> entries;
     for (auto it = json.constBegin(); it != json.constEnd(); ++it) {
         if (!it.value().isString()) {

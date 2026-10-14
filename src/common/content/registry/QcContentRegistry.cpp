@@ -478,6 +478,22 @@ QString QcContentRegistry::translate(const QString &key, const QString &language
     return key;
 }
 
+qsizetype QcContentRegistry::translationTotal() const
+{
+    qsizetype total = 0;
+    for (const QHash<QString, QString> &table : m_translations) {
+        total += table.size();
+    }
+    return total;
+}
+
+QStringList QcContentRegistry::translationKeys(const QString &language) const
+{
+    QStringList keys = m_translations.value(language).keys();
+    keys.sort();
+    return keys;
+}
+
 bool QcContentRegistry::hasTranslation(const QString &key, const QString &language) const
 {
     const auto table = m_translations.constFind(language);

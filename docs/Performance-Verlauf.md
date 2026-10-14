@@ -988,3 +988,61 @@ Nachgeholt mit Freigabe des Menschen („31.2 jetzt messen“, Mensch abwesend).
 ### Fazit Etappe 31.2
 
 Im Fenster keine Regression in Frame-Zeit, GPU, Render-/GUI-CPU, Speicher oder Entity-Darstellung; crowd und flat-crowd mit gleichen Wesen- und Item-Zahlen, keine Entity-Probleme. Die wiederholten Tick-Abstände (+13 bis +25 % in drei Szenarien) sind eine Lage des Server-Threads, die alle Phasen gleichmäßig trifft: Eine dritte Reihe und headless dieselben Szenen zeigen 31.2 schneller (−11 bis −14 %). Einzige echte Mehrkosten ist `settle` in der Phase Chunk-Laden (0,01–0,03 ms je Tick), als Folgeaufgabe für 31.3 vorgemerkt.
+
+## Etappe 43: Speicher der Übersetzungen (headless, 2026-10-14)
+
+Keine gerenderte Messung (Vorgabe „Keine GUI-Benchmarks“). `0c11c73` (`dev` `eac19ad` plus Messtest) gegen `feature/43-translation-memory` (Grenze der Übersetzungen, E-371), Release (`RelWithDebInfo`), der alte Stand aus `git archive` unter `$TMPDIR`, Apple M4 Max, verschränkt (je Runde erst alt, dann neu), Last 2–5.
+
+**Methode (zum Wiederholen):**
+- `QTCRAFT_TRANSLATION_MEASURE=full build/release/tests/test_translation_measure <Fall>`, jeder Fall in einem eigenen Prozess (der Spitzenspeicher wächst nur). `baseGame`: Einträge je Sprache, Zahl der Teile, Ladezeit des Grundinhalts (`QcBaseContent::load`), Heap des Inhalts und einer tiefen Kopie aller Übersetzungstabellen (`malloc_zone_statistics`, Linux `mallinfo2`). `languageFiles`: Lesen und Parsen der Sprachdateien (Mittel über 20 Durchläufe). `modAtTheLimits`: ein Mod mit 34 Sprachen × 60 000 kürzesten Einträgen (16 Bytes je Eintrag in der Synchronisierung, knapp unter 32 MiB), `modBeyondTheLimits`: zwei Mods mit je 8 Dateien × 380 000 Einträgen (je knapp 32 MiB, zusammen fast die 64 MiB, die Mods lesen dürfen); jeweils Ladezeit (`QcModLoader::load`), Heap danach, Spitzenspeicher (`getrusage`) und `/usr/bin/time -l`. `largeLanguageFile`: Parsen einer Datei mit 380 000 Einträgen allein.
+- Headless Lauf: `/usr/bin/time -l qtcraft-headless --script run.jsonl --no-mods --seed 42 --view-distance 8 --data-dir <tmp> --time-limit 300` mit `waitUntilReady`, `wait` 200 Ticks, `move` vorwärts sprintend und springend 400 Ticks, `wait` 100 Ticks (Client und Server in einem Prozess, Gelände-Welt, frisches Datenverzeichnis je Lauf); dasselbe mit `--mods-dir` auf den Mod von `modAtTheLimits` (als Dateien unter `$TMPDIR`).
+
+| Messung | Wert | `0c11c73` (vorher) | Etappe 43 | Differenz |
+|---|---|---:|---:|---:|
+| Grundspiel (5 Läufe) | Einträge je Sprache (en, de) / davon Teile | 1306 / 50 | 1306 / 50 | 0 |
+| | Übersetzungstabellen Heap MB (Median) | 0,707 | 0,707 | 0 % |
+| | Grundinhalt laden ms (Median, ohne 1. Lauf) / Heap MB | 12,83 / 3,61 | 12,89 / 3,61 | +0,5 % / 0 % |
+| | Sprachdateien lesen und parsen ms (2512 Einträge) | 0,95 | – | – |
+| Mod an den Grenzen vor E-371 (derselbe Mod in beiden Ständen; nachher laden 4 seiner 34 Dateien, nahe der neuen Obergrenze 262 144; 3 Läufe) | Einträge nach dem Laden | 2 042 612 | 242 612 (6 Sprachen, Rest übersprungen) | −88 % |
+| | Heap danach MB | 202,9 | 27,1 | −87 % |
+| | Spitzenspeicher MB / Laden ms | 466 / 971 | 91 / 442 | −80 % / −54 % |
+| Zwei Mods über den Grenzen (3 Läufe, beide abgelehnt bzw. ohne Sprachdateien) | Spitzenspeicher MB / Laden ms | 489 / 1861 | 371 / 443 | −24 % / −76 % |
+| Eine Datei mit 380 000 Einträgen parsen | Spitzenspeicher +MB / ms | – | +38 / 26 | – |
+| headless Lauf ohne Mods (3 Läufe) | Spitzenspeicher MB | 67,8 / 68,0 / 67,8 | 68,8 / 69,0 / 67,8 | 0 % |
+| headless Lauf mit dem Mod (3 Läufe) | Spitzenspeicher MB | 549 / 546 / 553 | 135 / 135 / 143 | −75 % |
+
+**Bewertung:** Das Grundspiel ist unverändert (0,7 MB Übersetzungen, 68 MB headless); der Posten „700–870 MB“ war der Grenzfall eines Mods und ist jetzt begrenzt (E-371). Die zwei abgelehnten Mods heben die Spitze weiterhin um rund 300 MB: Die Dateien werden geparst, bevor ihre Größe geprüft werden kann, der Heap ist danach wieder frei (bekanntes Restrisiko in `docs/Mod-Sicherheit.md`). Die Laufzeit beim Laden des Grundspiels ändert sich nicht messbar (+0,1 ms für die Prüfung der neuen Schlüssel).
+
+**Absolute Ziele (`docs/Performance.md`):** Die Speicherziele gelten für das Spiel mit Fenster bei 8/12/16 Chunks und sind headless nicht prüfbar. Die Übersetzungen erklären den Befund „1 384 MB im Szenario sprint, 16 Chunks“ nicht (Grundspiel: 0,7 MB je Kopie); der Befund bleibt offen für 31.3 und eine gerenderte Messung.
+
+## Etappe 43: gerenderte Messung (2026-10-14)
+
+Etappen-Ende von Etappe 43 (Grenze der Übersetzungen, E-371), GUI-Benchmarks wieder erlaubt. Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`): `dev` `eac19ad` in einem temporären Worktree gegen `feature/43-translation-memory` (`25b14b4`). Geändert ist nur das Laden des Inhalts (Prüfungen der Grenzen in Parser, Paket-Lader, Mod-Lader, Serialisierer); erwartet ist keine Änderung zur Laufzeit. `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, Mittel [Spanne]. Hauptreihe 6 Runden bei 8 Chunks (stand, sprint, showcase, crowd), Wiederholung 6 Runden für die drei Szenarien mit Werten über der Schwelle (stand, showcase, crowd), dazu sprint bei 16 Chunks 3 Runden für den offenen Speicher-Befund. Last vor und nach den Läufen 2,1–9,3; belastet markiert sind 3 von 90 Läufen (Safari 84–100 % nach zwei Läufen von 43, einmal Last 9,3 nach einem Lauf von `dev`, alle in der Hauptreihe), ohne sie ändert sich keine Aussage.
+
+**Ladezeit:** Die BENCH-Zeile und das Log tragen keine Lade- oder Startzeit (nur Atlas: 2–3 ms Bau, 5,7–6,3 ms angewandt, bei beiden gleich). Die Ladezeit des Inhalts ist headless gemessen (oben: Grundinhalt 12,83 → 12,89 ms, +0,5 %).
+
+### 43 gegen `eac19ad`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
+|---|---|---|---|---|---|---|---|---|---|
+| stand (12) | 119 / 119 | 11,5 → 11,1 | 1,75 → 1,74 | 1,72 → 1,74 | 0,462 → 0,461 | 0,734 → 0,735 (0 %) | 3,02 → 2,64 | 445 → 444 | Wesen 0,518 → 0,517, Streaming 0,091 → 0,090; 92 Wesen auf dem Server (beide) |
+| sprint (6) | 119 / 119 | 12,8 → 10,9 | 2,12 → 2,11 | 1,83 → 1,82 | 0,449 → 0,457 | 0,766 → 0,726 (−5 %) | 2,84 → 2,94 | 610 → 605 | Meshing je Sektion 1,30 → 1,34, Wesen 0,543 → 0,512 |
+| showcase (12) | 119 / 119 | 13,3 → 12,3 | 0,671 → 0,679 | 1,21 → 1,24 | 0,372 → 0,380 | 0,359 → 0,371 (+3 %) | 1,51 → 1,30 | 324 → 322 | Signal 0,132 → 0,137, Client-Sync 0,020 → 0,022 |
+| crowd (12) | 119 / 119 | 10,9 → 11,6 | 2,18 → 2,17 | 1,49 → 1,48 | 0,841 → 0,823 | 1,00 → 0,99 (−1 %) | 2,69 → 2,73 | 448 → 450 | Wesen 0,736 → 0,725; 93 Wesen sichtbar, 135 / 24 Wesen / Items auf dem Server (beide) |
+| sprint, 16 Chunks (3) | 119 / 119 | 10,1 → 10,1 | 3,01 → 2,84 | 2,44 → 2,48 | 0,287 → 0,296 | 1,04 → 1,10 (+6 %) | 3,29 → 3,21 | 1370 [1328–1391] → 1386 [1386–1388] | Chunk-Laden 0,032 → 0,037, 1430 Draw-Calls, 5356 Sektionen, 349 MB Sektionspuffer (beide) |
+
+`entity_problems` und `block_entity_problems` = 0 in allen Läufen, keine übersprungenen Ticks; Wesen- und Item-Zahlen bei beiden Ständen gleich (crowd vergleichbar).
+
+**Bewertung:** Frame-Zeit, GPU, Render- und GUI-CPU, Tick Ø und Speicher liegen in allen Szenarien innerhalb von ±6 %, wie erwartet. Über 10 % lagen in der Hauptreihe:
+
+- **Tick-Verspätung Ø crowd +18 % und stand +14 %, Tick max crowd +19 %:** in der Wiederholung crowd −3 % / −16 % und stand −10 % / −12 %, über 12 Runden crowd +7 % / +1 %, stand +3 % / −13 %. Nicht wiederholbar, Streuung der Einzelticks (2–5 ms, weit unter 50 ms).
+- **Phase Client-Sync showcase +12 %** (0,020 → 0,022 ms, 2 µs): in der Wiederholung +6 %, über 12 Runden +9 %; Signal (±13 %) und Chunk-Laden bei 16 Chunks (+13 %, 5 µs) ebenso Mikrosekunden mit wechselndem Vorzeichen. 43 ändert keinen Tick-Pfad.
+- **Frame p99** sprint −15 %, showcase −10 %, Wiederholung crowd +11 %: zweigipflig (10–12 ms oder 14–16 ms = verpasste VSyncs), 9 von 42 Läufen (`dev`) gegen 4 von 42 (43) oben, Frame-Kosten-p99 ≤ 3,3 ms in jedem Lauf. Streuung.
+
+**Keine Regression.**
+
+**Absolute Ziele (`docs/Performance.md`):** Bei 8 Chunks Bildrate 119 FPS in allen Läufen (Ziel ≥ 60) erfüllt; Frame-Kosten im Mittel höchstens 2,23 ms (GPU crowd), Ziel ≤ 4 ms erfüllt; p99 ≤ 12,5 ms im Median aller Läufe (11,0 ms) erfüllt, 13 von 84 Läufen bei 14–16 ms (bekannter Vorbehalt „nur auf ruhigem Desktop“). **Spitzenspeicher sprint bei 8 Chunks 604–612 MB** (beide Stände) über der Grenze 600 MB (Perf-Check, 20-s-Lauf; stand, showcase und crowd 318–454 MB): neuer Befund, nicht durch 43 (−5 MB), schon in Etappe 28 lag sprint bei 598 MB (16×-Atlas). Bei 16 Chunks: Bildrate 119 FPS, p99 10,1 ms (≤ 16,7), Frame-Kosten höchstens 3,0 ms (≤ 8,3) erfüllt; **Spitzenspeicher sprint 1386 MB** (`dev` 1370, ohne den ersten Lauf 1391) gegen ≤ 800 MB, unverändert gegen 31.1 (1 384 / 1 385 MB). Die Übersetzungen erklären ihn nicht (oben, headless); 349 MB davon sind Sektionspuffer der 5356 Sektionen. Beide Befunde bleiben offen für 31.3.
+
+### Fazit Etappe 43
+
+Im Fenster keine Änderung durch die Grenze der Übersetzungen: alle Kennzahlen innerhalb der Schwelle, die Ausreißer der Hauptreihe wiederholen sich nicht. Der Speicher-Befund bei 16 Chunks ist unverändert (1386 MB gegen ≤ 800 MB); neu festgehalten ist, dass sprint bei 8 Chunks mit 20-s-Läufen knapp über 600 MB liegt (604–612 MB, bei beiden Ständen).

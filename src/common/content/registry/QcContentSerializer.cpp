@@ -323,13 +323,16 @@ QcStatus readTranslations(QDataStream &stream, QcContentRegistry &registry)
         return qcError(u"Corrupt content: translations"_s);
     }
 
+    quint32 total = 0;
     for (quint32 i = 0; i < languageCount; ++i) {
         QString language;
         quint32 entryCount = 0;
         stream >> language;
-        if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, entryCount)) {
+        if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, entryCount)
+            || entryCount > QcStreamLimits::maxTranslations - total) {
             return qcError(u"Corrupt content: translations"_s);
         }
+        total += entryCount;
 
         QHash<QString, QString> entries;
         for (quint32 entry = 0; entry < entryCount; ++entry) {

@@ -120,7 +120,7 @@ scripts/verify.sh                                                         # alle
   - Licht auf Mobs ist nur grob angenähert.
 - **Mods:**
   - Ein Mod ersetzt Definitionen nur vollständig.
-  - Höchstens 64 Mods pro Start; viele kurze Übersetzungseinträge können beim Laden bis etwa 870 MB Speicher kosten (innerhalb der Grenzen gemessen).
+  - Höchstens 64 Mods pro Start; ein Mod an den Grenzen des Mod-Laders konnte mit vielen kurzen Übersetzungseinträgen (rund 2–3 Mio. innerhalb der 32 MiB) beim Laden bis etwa 870 MB Speicher kosten; das Grundspiel selbst hält rund 0,7 MB Übersetzungen. Seit Etappe 43 ist die Zahl der Übersetzungen begrenzt (65 536 je Sprachdatei, 262 144 über alle Sprachen, E-371).
   - Mods gelten global, nicht pro Welt.
   - Unter Windows werden Junctions nicht als Link erkannt.
   - Öffnet man eine Welt ohne einen früher genutzten Mod, gehen dessen Inhalte darin dauerhaft verloren (der Mods-Bildschirm warnt davor).

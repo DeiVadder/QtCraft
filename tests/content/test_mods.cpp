@@ -268,7 +268,8 @@ private slots:
                      0);
         }
 
-        // Clients also limit what they accept beyond the byte count, e.g. translations per language.
+        // Clients also limit what they accept beyond the byte count, e.g. translations per language: a
+        // file with more is skipped before its table is built (decision E-371).
         QJsonObject many;
         for (int i = 0; i < 70000; ++i) {
             many.insert(u"k%1"_s.arg(i), u"v"_s);
@@ -289,8 +290,9 @@ private slots:
         QVERIFY(loaded.has_value());
         QVERIFY(timer.elapsed() < 20000);
         QVERIFY(find(loaded->mods, u"links"_s)->reason.contains(u"MiB left"_s));
-        QVERIFY(find(loaded->mods, u"words"_s)->reason.contains(u"clients would reject"_s));
-        QCOMPARE(loadedIds(loaded->mods), QStringList{u"wg"_s});
+        QVERIFY(find(loaded->mods, u"words"_s)->warnings.join(u'\n').contains(u"more than 65536 translations in one file"_s));
+        QVERIFY(!loaded->content->hasTranslation(u"k1"_s, u"en"_s));
+        QCOMPARE(loadedIds(loaded->mods), (QStringList{u"wg"_s, u"words"_s}));
         QVERIFY(std::ranges::any_of(loaded->mods, [](const QcModStatus &mod) { return mod.reason.contains(u"too long"_s); }));
         QVERIFY(loaded->content->terrainSettings().seaLevel != 3);
 #else

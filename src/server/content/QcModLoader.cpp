@@ -245,6 +245,10 @@ QString countProblem(const QcContentRegistry &content)
         return u"clients would reject the content (more than %1 definitions of one kind)"_s.arg(QcStreamLimits::maxDefinitions);
     }
 
+    if (std::cmp_greater(content.translationTotal(), QcStreamLimits::maxTranslations)) {
+        return u"clients would reject the content (more than %1 translations in all languages)"_s.arg(QcStreamLimits::maxTranslations);
+    }
+
     const QStringList languages = content.languages();
     for (const QString &language : languages) {
         if (tooMany(content.translationCount(language))) {

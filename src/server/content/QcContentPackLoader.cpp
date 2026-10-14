@@ -2,6 +2,7 @@
 
 #include "QcContentNames.h"
 #include "QcContentParser.h"
+#include "QcStreamLimits.h"
 
 #include <QDir>
 #include <QFile>
@@ -344,6 +345,17 @@ void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegi
     }
 }
 
+// Whether the new keys of a language file keep all languages within QcStreamLimits::maxTranslations
+// (decision E-371): checked per file, so a mod never builds a table that clients would refuse.
+bool fitsTranslationBudget(const QcContentRegistry &registry, const QString &language, const QHash<QString, QString> &entries)
+{
+    qsizetype added = 0;
+    for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
+        added += registry.hasTranslation(it.key(), language) ? 0 : 1;
+    }
+    return registry.translationTotal() + added <= qsizetype(QcStreamLimits::maxTranslations);
+}
+
 void loadTranslations(const QDir &root, QcContentRegistry &registry, QStringList &warnings)
 {
     const QStringList languageFiles = filesIn(root.filePath(u"lang"_s), u"*.json"_s);
@@ -362,7 +374,11 @@ void loadTranslations(const QDir &root, QcContentRegistry &registry, QStringList
         if (language.endsWith(suffix)) {
             language.chop(suffix.size());
         }
-        registry.addTranslations(language, *entries);
+        if (fitsTranslationBudget(registry, language, *entries)) {
+            registry.addTranslations(language, *entries);
+        } else {
+            warnings.append(u"%1: more than %2 translations in all languages"_s.arg(path).arg(QcStreamLimits::maxTranslations));
+        }
     }
 }
 

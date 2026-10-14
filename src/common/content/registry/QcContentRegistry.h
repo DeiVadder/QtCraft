@@ -162,6 +162,10 @@ public:
 
     QStringList languages() const { return m_translations.keys(); }
     qsizetype translationCount(const QString &language) const { return m_translations.value(language).size(); }
+    // Entries of all languages together (bounded by QcStreamLimits::maxTranslations, decision E-371).
+    qsizetype translationTotal() const;
+    // Every key with a text in that language (no English fallback), sorted.
+    QStringList translationKeys(const QString &language) const;
     // Falls back to English and finally to the key itself.
     QString translate(const QString &key, const QString &language) const;
     bool hasTranslation(const QString &key, const QString &language) const;
