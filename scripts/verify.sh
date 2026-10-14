@@ -6,7 +6,10 @@
 #   --quick:          debug build, debug tests (optionally only those matching --tests) and static analysis
 #                     of the files changed against dev (committed on this branch or not yet committed).
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
-# Usage: scripts/verify.sh [--quick|--full] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
+# --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
+#                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
+#                    a stage. Before the merge the full run checks every test under TSan.
+# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
 
@@ -14,21 +17,34 @@ PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
 
 MODE=full
+MODE_GIVEN=""
 TEST_REGEX=""
+TSAN_LABEL=""
 SANITIZERS="asan tsan"
 SANITIZERS_GIVEN=0
 SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
 BASE_BRANCH=${QC_VERIFY_BASE:-dev}
 
 usage() {
-    echo "usage: scripts/verify.sh [--quick|--full] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
+    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
     exit 2
 }
 
 while [ $# -gt 0 ]; do
     case "$1" in
-    --quick) MODE=quick ;;
-    --full) MODE=full ;;
+    --quick)
+        MODE=quick
+        MODE_GIVEN="$MODE_GIVEN quick"
+        ;;
+    --full)
+        MODE=full
+        MODE_GIVEN="$MODE_GIVEN full"
+        ;;
+    --tsan-concurrent)
+        MODE=quick
+        MODE_GIVEN="$MODE_GIVEN tsan-concurrent"
+        TSAN_LABEL=concurrency
+        ;;
     --tests)
         [ $# -ge 2 ] || usage
         TEST_REGEX=$2
@@ -48,6 +64,18 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+# --tsan-concurrent is a level of its own: it neither combines with --full nor with other sanitizers.
+if [ -n "$TSAN_LABEL" ]; then
+    case "$MODE_GIVEN" in
+    *full*) usage ;;
+    esac
+    if [ "$SANITIZERS_GIVEN" -eq 1 ] && [ "$SANITIZERS" != tsan ]; then
+        usage
+    fi
+    SANITIZERS=tsan
+    SANITIZERS_GIVEN=1
+fi
 
 if [ "$MODE" = quick ] && [ "$SANITIZERS_GIVEN" -eq 0 ]; then
     SANITIZERS=""
@@ -78,11 +106,14 @@ limited() {
 run_tests() {
     preset=$1
     # The TSan suite alone takes about 40 minutes by now (stage 29.2); allow an hour per step.
+    set -- --preset "$preset"
     if [ -n "$TEST_REGEX" ]; then
-        limited 3600 ctest --preset "$preset" -R "$TEST_REGEX"
-    else
-        limited 3600 ctest --preset "$preset"
+        set -- "$@" -R "$TEST_REGEX"
     fi
+    if [ "$preset" = tsan ] && [ -n "$TSAN_LABEL" ]; then
+        set -- "$@" -L "$TSAN_LABEL"
+    fi
+    limited 3600 ctest "$@"
 }
 
 build_and_test() {
@@ -161,7 +192,9 @@ if [ -n "$failures" ]; then
     echo "FAILED:$failures"
     exit 1
 fi
-if [ "$MODE" = quick ]; then
+if [ -n "$TSAN_LABEL" ]; then
+    echo "ALL GREEN (quick, TSan on label $TSAN_LABEL)"
+elif [ "$MODE" = quick ]; then
     echo "ALL GREEN (quick)"
 else
     echo "ALL GREEN (screenshot: $SCREENSHOT)"

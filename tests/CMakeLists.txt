@@ -365,3 +365,20 @@ add_dependencies(test_signal_bots qtcraft-headless)
 qc_add_test(test_machine_bots SOURCES network/test_machine_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_machine_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_machine_bots qtcraft-headless)
+
+# Tests that run code on several threads or processes: server host and world generation pool,
+# client session, mesh scheduler (meshing and client light on workers), texture atlas builds, TCP
+# and multiplayer, headless process with its Unix signal watcher, audio output, and the game
+# rendering offscreen. During a stage TSan runs only these (`scripts/verify.sh --tsan-concurrent`,
+# `ctest -L concurrency`); the full verify run before the merge runs every test under TSan.
+# A new test that starts threads, a server host or a process belongs in this list.
+set(qc_concurrency_tests
+    test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
+    test_interpolation test_client_server test_scenarios test_survival_scenario test_persistence
+    test_terrain_generator test_world_backup test_world_maintenance test_audio_output
+    test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
+    test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_machine_bots test_headless_cli scenario_headless_walk_and_jump
+    scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
+    app_offscreen_world_screenshot)
+set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)

@@ -34,7 +34,7 @@ Client-Code bindet nie Server-Header ein, außer in den beiden Kompositionswurze
 
 - Debug: `cmake --preset debug && cmake --build --preset debug`; Tests: `ctest --preset debug` (oder `-R <regex>`).
 - Inhalt oder Handbuch geändert: `scripts/export-handbook.sh` erzeugt `docs/handbook` und `web/handbook/data` neu (`test_handbook` und `test_web_handbook` vergleichen sie).
-- Während der Arbeit: `scripts/verify.sh --quick [--tests <regex>]` (Debug-Build, Tests, statische Analyse der gegen `dev` geänderten Dateien, rund 3–6 min). Vor dem Merge einmal `scripts/verify.sh` (voll, mit ASan/TSan, Release, Smoke).
+- Während der Arbeit: `scripts/verify.sh --quick [--tests <regex>]` (Debug-Build, Tests, statische Analyse der gegen `dev` geänderten Dateien, rund 3–6 min). Bei Änderungen an Threads, Server-Host, Netz, Meshing oder Texturen zusätzlich TSan nur auf den nebenläufigen Tests: `scripts/verify.sh --tsan-concurrent` (= `--quick` plus `ctest -L concurrency` im TSan-Build; Liste `qc_concurrency_tests` am Ende von `tests/CMakeLists.txt`, neue Tests mit Threads oder Prozessen dort eintragen; E-370). Vor dem Merge einmal `scripts/verify.sh` (voll, alle Tests unter ASan und TSan, Release, Smoke; rund 65 min).
 - Benchmarks und Fensterläufe (`scripts/bench.sh`, `scripts/bench-ab.sh`, `scripts/profile.sh`, `scripts/showcase-tour.sh` im Fenstermodus) nur nach Freigabe des Menschen und mit der Sperre `~/.cache/qtcraft/bench.lock` (Regeln in `docs/FORTSCHRITT.md`, „Arbeitsweise für Skript-Läufe“). Solange die Sperre existiert: keine Builds, Tests oder Verify-Läufe starten.
 
 ## Regeln, die am häufigsten verletzt werden

@@ -50,7 +50,7 @@ Aus `docs/FORTSCHRITT.md`. Der Mensch entscheidet, was davon in einen Auftrag ko
 - **Später (eigene Etappe oder bei passender Gelegenheit):**
   - Mob-Wegfindung (Abgründe/Wasser meiden, Mob-Mob-Ausweichen). Wird für Dorfbewohner ohnehin nötig und gehört in B4 (heute Teil-Etappe 37.1).
   - Bewegtes Licht (gehaltene Fackel, leuchtende Items, Glühwürmchen), Treppen mit Innen-/Außenecken, weitere Türen/Falltüren-Holzarten, Doppeltruhen, Zauntor-Verbindungslogik.
-  - Speicherverbrauch der Übersetzungsdateien (heute Vorschlag Etappe 43, Abschnitt F), Steuerschnittstelle am grafischen Spiel (lokaler Socket, Screenshots), Mods: Teil-Patches, pro Welt (Vorschlag „Mods global statt pro Welt“, Abschnitt F), mehr als 64.
+  - Speicherverbrauch der Übersetzungsdateien (Etappe 43, seit 2026-10-14 beauftragt, Abschnitt F), Steuerschnittstelle am grafischen Spiel (lokaler Socket, Screenshots), Mods: Teil-Patches, pro Welt (Vorschlag „Mods global statt pro Welt“, Abschnitt F), mehr als 64.
   - Disconnect-Gründe (`QcMsg::Disconnect`) noch nicht übersetzbar (nur der Chat hat Meldungsschlüssel, E-094).
   - `QcProtocol.cpp` steht bei 795 von 800 Zeilen: Encoder und Decoder vor der nächsten Nachricht nach Themen aufteilen (z. B. Etappe 22/23).
   - Showcase-Welt: Hinzufügen eines Mods verschiebt das Layout unveränderter Chunks einer bestehenden Showcase-Welt (Vorschlag „feste Plätze pro Name“, Abschnitt F); Wesen in den Gehegen jagen den Spieler weiter durch das Glas (kein Schaden; gemessen unkritisch, 6 Wesen, Tick 0,23 ms).
@@ -171,8 +171,10 @@ Wichtig für Multiplayer: Spieler sehen sich gegenseitig, also muss die Anpassun
 | 27 | Landwirtschaft, Nahrung, Kürbisse und Melonen | B6 | |
 | 28 | HD-Texturpaket | B2 | |
 | 29 | Signal Dust (Schaltungen), 29.1 und 29.2 (abgeschlossen) | B5 | |
-| 30 | Fehler im Benchmark `crowd` (und fehlende Saat in `farm-seeds`) | Auftrag Punkt 30 | neu |
-| 31 | Umbau: 31.1 Block-Entities, 31.2 Entities, 31.3 Chunks auf dem Server entladen (inkl. Grenzwerte in `QcServerLimits` abschließen) | Auftrag Punkt 31 | neu; 31.3 = 32 |
+| 30 | Fehler im Benchmark `crowd` (und fehlende Saat in `farm-seeds`) (abgeschlossen) | Auftrag Punkt 30 | neu |
+| 31.1, 31.2 | Umbau: Block-Entities, Entities (abgeschlossen) | Auftrag Punkt 31 | neu |
+| 43 | Speicher der Übersetzungen (seit 2026-10-14 beauftragt, vor 31.3) | Auftrag Punkt 43, F | neu |
+| 31.3 | Chunks auf dem Server entladen (inkl. Grenzwerte in `QcServerLimits` abschließen, `static_cast`-Downcasts entscheiden) | Auftrag Punkt 31 | 32 |
 | 32 | Schienen und Loren | B5, Auftrag Punkt 32 | 29.3 |
 | 33 | Licht auf dem Server | Auftrag Punkt 33 | neu |
 | 34 | Feuer | Auftrag Punkt 34 | 29b |
@@ -180,14 +182,17 @@ Wichtig für Multiplayer: Spieler sehen sich gegenseitig, also muss die Anpassun
 | 36 | Erfahrung und Lapislazuli | Auftrag Punkt 36 | 29d |
 | 37 | Wegfindung (37.1), Dörfer und Dorfbewohner (37.2) | B4, A2 „Später“ | 30 |
 | 38 | Monster-Spawner und Minenschächte | Auftrag Punkt 38 | 30b |
-| 39 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3) | Auftrag Punkt 39 | 31 |
-| 45 | Realistischer Render-Modus (Wasser und Licht), 45.1–45.4 | Auftrag Punkt 45 | neu |
-| 46 | Client-Code nach Zuständigkeit neu gliedern | Auftrag Punkt 46 | neu |
-| 44 | Client-Tick auf eigenem Session-Thread (Vorschlag, vor 40 entscheiden) | F | neu |
+| 46 | Client nach Zuständigkeit gliedern (46.1), Session-Tick auf eigenem Thread (46.2, früher Vorschlag 44) | Auftrag Punkt 46, F | neu |
 | 40 | Gamepad-Unterstützung | Auftrag Punkt 40 | 33 |
 | 41 | Verzauberung (41.1) und Amboss (41.2) | Auftrag Punkt 41 | 34 |
+| 47 | Feinschliff Darstellung (Beschriftungen, anisotrope Filterung, Arm, Mindesthelligkeit, Laub) | Auftrag Punkt 47 | neu |
+| 45 | Realistischer Render-Modus (Wasser und Licht), 45.1–45.4 | Auftrag Punkt 45 | neu |
+| 39 | Veröffentlichungs-Vorbereitung (GitHub, GPLv3), am Ende | Auftrag Punkt 39 | 31 |
 | 42 | Zustandsbudget (Vorschlag) | F | neu |
-| 43 | Speicher der Übersetzungen (Vorschlag) | F | neu |
+| 48 | TLS-Verschlüsselung im Mehrspieler (Vorschlag) | F | neu |
+| 44 | stillgelegt: zusammengelegt in 46.2 | F | neu |
+
+**Anpassung vom 2026-10-14 (Projektzeugnis, E-370):** Reihenfolge ab jetzt 43, 31.3, 32, 33, 34, 35, 36, 37 (37.1, 37.2), 38, 46 (46.1, 46.2), 40, 41, 47, 45, 39; Vorschläge 42 und 48; die Nummer 44 ist stillgelegt (nie wieder vergeben). Abhängigkeiten: 38 nach 32, 41 nach 36, 37.2 nach 36 und 37.1, 35 nach 34, 45 nach 33, 46.2 vor 40, 43 vor 31.3.
 
 Die Aufzählung unten ist die ursprüngliche Begründung der Reihenfolge (ältere Nummerierung, maßgeblich ist die Tabelle oben).
 
@@ -223,10 +228,11 @@ Es sind keine Fragen mehr offen. Die Liste ist als Etappen 20 bis 30 beauftragt.
 
 ## F. Vorschläge aus dem Umbau-Auftrag (Teil 3, vom Menschen 2026-10-13)
 
-Prüfen und entscheiden; umsetzen nur bei geringem Aufwand, sonst als Vorschlag mit eigener Nummer (ab 42) in der Etappentabelle (Abschnitt C). Keiner dieser Punkte ist beauftragt; ob und wann, entscheidet der Mensch.
+Prüfen und entscheiden; umsetzen nur bei geringem Aufwand, sonst als Vorschlag mit eigener Nummer (ab 42) in der Etappentabelle (Abschnitt C). Ob und wann, entscheidet der Mensch. Stand 2026-10-14 (E-370): 43 ist beauftragt, 44 in 46.2 aufgegangen, 48 neu als Vorschlag; 42 und 48 sind nicht beauftragt.
 
 - **Zustandsbudget (Vorschlag Etappe 42):** Zustands-Ids sind `uint16` (65 536 Zustände gesamt, `QcBlockStateTable::maxStatesPerBlock = 2048`). Signal Dust allein hat 1296 Zustände; Zäune, Mauern und Scheiben je Material zahlen für ihre Verbindungen ebenso. Prüfen, ob Verbindungen, die nur der Darstellung dienen (Staubseiten, Zäune, Mauern, Scheiben), beim Meshen aus den Nachbarn abgeleitet statt gespeichert werden können (Folgen für Kollision, Raycast, Speicherformat und Protokoll klären; Migration alter Welten). **Mindestens** (klein, kann in jeder Etappe mitgehen): Budget-Meldung beim Laden mit der Zahl der verbrauchten Zustände (Log, Debug-Anzeige, Handbuch-Übersicht), Warnung ab einem Schwellwert. Die Angabe „höchstens 1024 je Block“ in `docs/Architektur.md` ist auf 2048 korrigiert.
-- **Speicher der Übersetzungen (Vorschlag Etappe 43):** Rund 3 Mio. Einträge belegen beim Laden 700 bis 870 MB. Namen der Teile-Familien (Bauteile je Material) zur Laufzeit aus den `%1`-Vorlagen zusammensetzen statt jede Kombination auszuschreiben; Handbuch-Suche und Creative-Suche müssen dieselben Namen finden. Messung vorher/nachher (Speicher, Ladezeit) headless.
-- **Client-Tick auf dem GUI-Thread (Vorschlag Etappe 44, vor Etappe 40 entscheiden):** `QcClientSession` tickt mit einem 20-Hz-`QTimer` auf dem GUI-Thread; ein langer Frame verzögert damit Vorhersage und Netz. Aufwand und Nutzen eines eigenen Session-Threads abschätzen (Übergaben an QML und Renderer, Sperren, TSan); Kandidat für vor dem Gamepad (Etappe 40), weil analoge Eingabe einen gleichmäßigen Takt braucht.
+- **Speicher der Übersetzungen (Etappe 43, seit 2026-10-14 beauftragt, E-370; vor 31.3):** Rund 3 Mio. Einträge belegen beim Laden 700 bis 870 MB. Namen der Teile-Familien (Bauteile je Material) zur Laufzeit aus den `%1`-Vorlagen zusammensetzen statt jede Kombination auszuschreiben; Handbuch-Suche und Creative-Suche müssen dieselben Namen finden. Messung vorher/nachher (Speicher, Ladezeit) headless.
+- **Client-Tick auf dem GUI-Thread (früher Vorschlag 44, seit 2026-10-14 Teil-Etappe 46.2, E-370; die Nummer 44 ist stillgelegt):** `QcClientSession` tickt mit einem 20-Hz-`QTimer` auf dem GUI-Thread; ein langer Frame verzögert damit Vorhersage und Netz. Aufwand und Nutzen eines eigenen Session-Threads abschätzen (Übergaben an QML und Renderer, Sperren, TSan); Kandidat für vor dem Gamepad (Etappe 40), weil analoge Eingabe einen gleichmäßigen Takt braucht.
+- **TLS-Verschlüsselung im Mehrspieler (Vorschlag Etappe 48, aus dem Projektzeugnis 2026-10-14):** Chat und Spieldaten gehen im Klartext, die erste Anmeldung schickt die Identität im Klartext (`docs/Multiplayer.md`). Vorschlag: TLS über `QSslSocket` (Qt Network, keine neue Abhängigkeit), Server-Zertifikat selbst erzeugt und vom Client beim ersten Verbinden festgehalten (wie SSH), Login und Ratenbegrenzung unverändert darüber; Kosten (Handshake, CPU je Spieler) headless messen. Dazu der IPv6-Hinweis: Ein Server oder eine fürs LAN geöffnete Welt auf allen Schnittstellen ist mit IPv6 ohne Firewall aus dem Internet erreichbar; in 39 sichtbarer machen, mit 48 den Standard entscheiden. Nicht beauftragt.
 - **Showcase-Layout (ohne eigene Etappe):** Ein neuer Mod verschiebt Chunks einer bestehenden Showcase-Welt, weil die Plätze nach Register-Reihenfolge vergeben werden. Feste Plätze pro Name (z. B. stabile Zuordnung Name → Platz, in der Weltinfo gespeichert, neue Einträge hinten). Gering genug, um in der nächsten Etappe mitzugehen, die die Showcase-Welt ohnehin anfasst; sonst als eigene Nummer einsortieren.
 - **Mods global statt pro Welt (nur Vorschlag, nicht umsetzen):** Mods gelten heute global für alle Welten. Vorschlag: Mod-Auswahl pro Welt (in `world.json`, beim Öffnen fehlende Mods melden, Server gibt die Liste vor). Keine Nummer, bis der Mensch es beauftragt.

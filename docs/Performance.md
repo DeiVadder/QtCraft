@@ -155,6 +155,14 @@ Erfüllung (Endstand, Werte aus der Schlussmessung und dem Perf-Check):
 | 12 Chunks | 117–119 FPS | 13,1–15,6 ms | 1,4–1,9 ms | 428–490 MB | erfüllt (vorher Speicher bis 566 MB) |
 | 16 Chunks | 118–119 FPS | 12,4–14,4 ms | 2,2–2,4 ms | 602–692 MB | erfüllt (vorher sprint 780–810 MB, über dem Ziel) |
 
+Die Erfüllung oben ist der Endstand von Etappe 16. Seit 2026-10-14 (E-370) prüft jede Messung neben alt gegen neu auch diese Ziele; ein verfehltes Ziel steht unten als Befund, bis eine Messung es wieder erfüllt.
+
+### Befunde: verfehlte Ziele
+
+| Seit | Ziel | Gemessen | Messung | Vermutete Ursache | Angehen in |
+|------|------|----------|---------|-------------------|------------|
+| 2026-10-14 | Spitzenspeicher ≤ 800 MB bei 16 Chunks | **1 384 MB** (31.1: 1 385 MB) im Szenario „sprint, 16 Chunks“ | Etappe 31.1, gerendert (`fe0a8c9` gegen `8aa4346`, `bench-ab.sh`, 4 Runden; `docs/Performance-Verlauf.md`, „Etappe 31.1: gerenderte Messung“) | nicht gemessen, nur naheliegend: Übersetzungen (700–870 MB beim Laden, rund 3 Mio. Einträge) und kein Entladen geänderter Chunks auf dem Server; seit Etappe 16 außerdem mehr Inhalt (Blöcke, Zustände, Texturen) | 43 (Übersetzungen), 31.3 (Entladen); danach gezielt neu messen. Der Verlauf hat nur alt gegen neu verglichen (1 384 → 1 385) und die Zielverletzung nicht gemeldet (Projektzeugnis 2026-10-14). |
+
 ## Regressionsschutz
 
 `scripts/perf-check.sh [seconds]` baut das Release-Preset, misst stand, sprint und crowd bei 8 Chunks je einmal und scheitert, wenn ein Wert seine Grenze überschreitet: Frame Ø ≤ 16,7 ms (60 FPS), p99 ≤ 25 ms, GUI-CPU ≤ 4 ms, Render-CPU ≤ 6 ms, GPU ≤ 6 ms, Tick Ø ≤ 5 ms, Spitzenspeicher ≤ 600 MB, Meshing pro Sektion ≤ 5 ms. Die Grenzen liegen beim 3- bis 10-Fachen der Messwerte, damit die Tageslast der Maschine die Prüfung nicht scheitern lässt; nicht Teil von `ctest`.
