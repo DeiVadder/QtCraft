@@ -22,13 +22,17 @@ qt_add_library(qc_server STATIC
     commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
     content/QcBaseContent.h content/QcBaseContent.cpp
+    storage/QcBlockEntityRecord.h
+    storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
     storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
+    storage/QcStackReader.h storage/QcStackReader.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
     core/QcChunkStreaming.h core/QcChunkStreaming.cpp
-    machines/QcContainerManager.h machines/QcContainerManager.cpp
+    blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
+    blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     content/QcContentPackLoader.h content/QcContentPackLoader.cpp
     storage/QcEntityStorage.h storage/QcEntityStorage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
@@ -44,7 +48,7 @@ qt_add_library(qc_server STATIC
     blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
     blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
-    machines/QcMachineManager.h machines/QcMachineManager.cpp
+    machines/QcMachineRules.h machines/QcMachineRules.cpp
     content/QcModLoader.h content/QcModLoader.cpp
     content/QcModStatus.h
     gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
@@ -67,7 +71,9 @@ qt_add_library(qc_server STATIC
     core/QcServerConfig.h
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
-    gameplay/QcServerItemsAndPlants.h gameplay/QcServerItemsAndPlants.cpp
+    gameplay/QcServerItems.h gameplay/QcServerItems.cpp
+    gameplay/QcServerPlants.h gameplay/QcServerPlants.cpp
+    machines/QcBlockScreens.h machines/QcBlockScreens.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
@@ -117,7 +123,7 @@ qt_add_library(qc_server STATIC
     signal/QcCircuitMachines.h signal/QcCircuitMachines.cpp
     signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
     signal/QcDispenserActions.h signal/QcDispenserActions.cpp
-    signal/QcHopperState.h signal/QcHopperState.cpp
+    signal/QcHopperQueue.h signal/QcHopperQueue.cpp
     signal/QcServerHoppers.h signal/QcServerHoppers.cpp
     signal/QcCircuitPlan.h
     signal/QcCircuitState.h signal/QcCircuitState.cpp
@@ -129,7 +135,6 @@ qt_add_library(qc_server STATIC
     signal/QcSignalPower.h signal/QcSignalPower.cpp
     signal/QcSignalSchedule.h signal/QcSignalSchedule.cpp
     signal/QcSignalTable.h signal/QcSignalTable.cpp
-    storage/QcSignalStorage.h storage/QcSignalStorage.cpp
 )
 qc_configure_target(qc_server)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
@@ -151,6 +156,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
+    ${CMAKE_CURRENT_SOURCE_DIR}/blockentities
     ${CMAKE_CURRENT_SOURCE_DIR}/signal
     ${CMAKE_CURRENT_SOURCE_DIR}/storage
     ${CMAKE_CURRENT_SOURCE_DIR}/content

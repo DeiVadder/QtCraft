@@ -24,7 +24,6 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
             continue;
         }
 
-        dropBlockEntities(chunk);
         dropPendingChanges(chunk);
         resend(chunk);
         done.append(chunk);
@@ -42,6 +41,7 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     m_updates.forgetChunk(chunk);
     m_state.liquids.forgetChunk(chunk);
     m_state.circuits.forgetChunk(chunk);
+    m_state.hoppers.forgetChunk(chunk);
     m_state.falling.removeInChunk(chunk);
 }
 
@@ -69,28 +69,6 @@ void QcChunkRegeneration::removeBuriedCreatures(const QList<QcChunkPos> &chunks)
     for (const quint32 id : std::as_const(buried)) {
         m_state.mobs.remove(id);
     }
-}
-
-void QcChunkRegeneration::dropBlockEntities(QcChunkPos chunk)
-{
-    // The generator's blocks replace them; what they held goes with the changes of the chunk.
-    const QList<QcBlockPos> machines = m_state.machines.all().keys();
-    for (const QcBlockPos &pos : machines) {
-        if (pos.chunk() == chunk) {
-            m_state.machines.remove(pos);
-        }
-    }
-
-    const QList<QcBlockPos> containers = m_state.containers.positions();
-    for (const QcBlockPos &pos : containers) {
-        if (pos.chunk() == chunk) {
-            m_state.containers.remove(pos);
-        }
-    }
-
-    QList<QcPlantManager::Sapling> saplings = m_state.plants.saplings();
-    saplings.removeIf([chunk](const QcPlantManager::Sapling &sapling) { return sapling.pos.chunk() == chunk; });
-    m_state.plants.restoreSaplings(saplings);
 }
 
 void QcChunkRegeneration::resend(QcChunkPos chunk)

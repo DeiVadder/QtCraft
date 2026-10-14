@@ -20,13 +20,13 @@
 
 #include <memory>
 
-// Metadata of a saved world (world.json). Format 2 adds the generator type, whether its one-time
-// setup ran and the game rules daylightCycle and mobSpawning (decision E-221); format 1 files load
-// as terrain worlds that are set up, with both rules on.
+// Metadata of a saved world (world.json). Format 3 (stage 31.1) keeps block entities per chunk
+// (decision E-358); worlds of older development versions are refused, not converted (decision E-356,
+// QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 2;
-    static constexpr int oldestFormatVersion = 1;
+    static constexpr int formatVersion = 3;
+    static constexpr int oldestFormatVersion = 3;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -64,10 +64,11 @@ struct QcWorldInfo
 };
 
 // Reads and writes one world directory: world.json, modified chunks in region files
-// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), players (players/<name>-<hash>.qcp) and dropped items with
-// growing saplings (entities.qce), animals (mobs.qce, both QcEntityStorage), machines (machines.qce), chests
-// (containers.qce, both QcBlockEntityStorage) and pending neighbour updates (blockupdates.qce). Only modified chunks
-// are stored; everything else is regenerated from the seed. Blocks and items are stored by name, so
+// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), block entities per chunk in a file per
+// region (blockentities/r.<x>.<z>.qcb, QcBlockEntityStorage), players (players/<name>-<hash>.qcp), dropped
+// items and falling blocks (entities.qce), animals (mobs.qce, both QcEntityStorage), armour stands
+// (stands.qce) and pending neighbour updates (blockupdates.qce). Only modified chunks are stored;
+// everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
 class QcWorldStorage
@@ -80,6 +81,8 @@ public:
     const QString &directory() const { return m_directory; }
 
     QcResult<QcWorldInfo> readInfo() const;
+    // The format version world.json names; 0 when it cannot be read.
+    int storedFormatVersion() const;
     QcStatus writeInfo(const QcWorldInfo &info) const;
 
     // Loads every stored chunk. Unknown block names become air and are listed in `warnings`.
@@ -105,21 +108,9 @@ public:
     QcResult<QcWorldMobs> readMobs(QStringList &warnings) const { return m_entities.readMobs(warnings); }
     QcStatus writeMobs(const QcWorldMobs &mobs) const { return m_entities.writeMobs(mobs); }
 
-    // Machines with their contents (machines.qce). Empty without error when nothing was saved yet.
-    // Unknown items are dropped with a warning.
-    QcResult<QList<QcMachineManager::Machine>> readMachines(QStringList &warnings) const { return m_blockEntities.readMachines(warnings); }
-    QcStatus writeMachines(const QList<QcMachineManager::Machine> &machines) const { return m_blockEntities.writeMachines(machines); }
-
-    // Storage blocks with their contents (containers.qce). Empty without error when nothing was saved
-    // yet. Unknown items are dropped with a warning.
-    QcResult<QList<QcContainerManager::Container>> readContainers(QStringList &warnings) const
-    {
-        return m_blockEntities.readContainers(warnings);
-    }
-    QcStatus writeContainers(const QList<QcContainerManager::Container> &containers) const
-    {
-        return m_blockEntities.writeContainers(containers);
-    }
+    // Block entities per chunk (QcBlockEntityStorage, decision E-358).
+    QcResult<QList<QcBlockEntityRecord>> readBlockEntities(QStringList &warnings) const { return m_blockEntities.read(warnings); }
+    QcStatus writeBlockEntities(const QList<QcBlockEntityRecord> &records) const { return m_blockEntities.write(records); }
 
     // Armour stands (stands.qce, decision E-238). Empty when nothing was saved yet; a damaged file
     // is kept aside and only warned about.

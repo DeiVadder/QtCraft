@@ -23,21 +23,20 @@ void QcPlantGrowth::tick(const QcServerWorld &world, const SetBlock &setBlock)
 {
     // Only sections that may hold a growing plant: a scan of every loaded section per tick cost
     // more than the rest of the tick.
-    const QcSectionMarks &marks = world.growingSections();
-    const QHash<QcChunkPos, quint32> &sections = marks.chunks();
-    if (m_growing.isEmpty() || sections.isEmpty()) {
+    const QcSectionMarks &marks = world.marks();
+    if (m_growing.isEmpty() || marks.isEmpty(QcBlockTrait::RandomTicks)) {
         return;
     }
 
     // In a fixed order of chunks, so the same seed draws the same random cells in every run (the
     // hash order differs between processes).
-    const QList<QcChunkPos> &order = marks.orderedChunks();
+    const QList<QcChunkPos> &order = marks.orderedChunks(QcBlockTrait::RandomTicks);
 
     // Collected first: setting blocks while holding a chunk snapshot would copy the chunk.
     QList<QcBlockPos> ticked;
     for (const QcChunkPos pos : std::as_const(order)) {
         if (const std::shared_ptr<const QcChunk> chunk = world.chunk(pos)) {
-            pickRandomPlants(*chunk, sections.value(pos), ticked);
+            pickRandomPlants(*chunk, marks.sectionsOf(pos, QcBlockTrait::RandomTicks), ticked);
         }
     }
 
@@ -54,7 +53,7 @@ void QcPlantGrowth::pickRandomPlants(const QcChunk &chunk, quint32 sections, QLi
             continue;
         }
 
-        for (int i = 0; i < randomTicksPerSection; ++i) {
+        for (int i = 0; i < m_randomTicksPerSection; ++i) {
             // A random cell of the section: x, z and y in 16 values each.
             const int cell = int(m_random.bounded(4096u));
             const int x = cell % 16;

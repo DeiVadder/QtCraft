@@ -37,8 +37,8 @@ private:
     {
         int total = 0;
         const QcItemId diamond = item("qtcraft:diamond");
-        const QList<QcContainerManager::Container> containers = m_server->containers().containers();
-        for (const QcContainerManager::Container &container : containers) {
+        const QList<QcBlockEntities::Container> containers = allContainers();
+        for (const QcBlockEntities::Container &container : containers) {
             for (const QcItemStack &stack : container.stacks) {
                 total += stack.item == diamond ? stack.count : 0;
             }
@@ -50,8 +50,8 @@ private:
     void chestWithDiamonds(int x, int y, int z)
     {
         put(x, y, z, u"chest[facing=south]"_s);
-        QVERIFY(m_server->containers().add(at(x, y, z), 27));
-        m_server->containers().find(at(x, y, z))->stacks[0] = {item("qtcraft:diamond"), 5, 0};
+        QVERIFY(ensureEntity(at(x, y, z)));
+        m_server->blockEntities().container(at(x, y, z))->stacks[0] = {item("qtcraft:diamond"), 5, 0};
     }
 
     // Records every cell of the area, turned back, after each tick.
@@ -258,7 +258,7 @@ private slots:
         chat(u"/confirm"_s);
         ticks(QcMovingBlocks::moveTicks + 2);
         QVERIFY(!m_server->movingBlocks().isMovingTo(arrived));
-        QVERIFY(!m_server->containers().find(arrived));
+        QVERIFY(!m_server->blockEntities().container(arrived));
         QVERIFY(!isBlock(7, 0, 8, "chest"));
         // The client got the cell as it is now, not the chest.
         const auto last = std::ranges::find_last_if(m_client->blockUpdates, [arrived](QcMsg::BlockUpdate update) { return update.pos == arrived; });
@@ -321,21 +321,21 @@ private slots:
         put(3, 0, 8, u"lever[attach=floor]"_s);
         put(4, 0, 8, u"sticky_signal_piston[facing=east]"_s);
         put(5, 0, 8, u"furnace[facing=south]"_s);
-        QVERIFY(m_server->machines().add(at(5, 0, 8)));
-        m_server->machines().find(at(5, 0, 8))->stacks[0] = {item("qtcraft:iron_ore"), 3, 0};
-        m_server->machines().find(at(5, 0, 8))->progress = 4.0;
-        m_server->machines().find(at(5, 0, 8))->progressItem = item("qtcraft:iron_ore");
+        QVERIFY(ensureEntity(at(5, 0, 8)));
+        m_server->blockEntities().machine(at(5, 0, 8))->stacks[0] = {item("qtcraft:iron_ore"), 3, 0};
+        m_server->blockEntities().machine(at(5, 0, 8))->progress = 4.0;
+        m_server->blockEntities().machine(at(5, 0, 8))->progressItem = item("qtcraft:iron_ore");
         chestWithDiamonds(6, 0, 8);
         QVERIFY(at(6, 0, 8).chunk() != at(7, 0, 8).chunk());
         ticks(1);
 
         flip(3, 0, 8);
         ticks(1);
-        QVERIFY(m_server->containers().find(at(7, 0, 8)));
-        QVERIFY(!m_server->containers().find(at(6, 0, 8)));
+        QVERIFY(m_server->blockEntities().container(at(7, 0, 8)));
+        QVERIFY(!m_server->blockEntities().container(at(6, 0, 8)));
         // Without fuel the progress falls back slowly, as it would have in place.
-        QVERIFY(m_server->machines().find(at(6, 0, 8))->progress > 3.5);
-        QCOMPARE(m_server->machines().find(at(6, 0, 8))->stacks[0].count, 3);
+        QVERIFY(m_server->blockEntities().machine(at(6, 0, 8))->progress > 3.5);
+        QCOMPARE(m_server->blockEntities().machine(at(6, 0, 8))->stacks[0].count, 3);
         QCOMPARE(diamondsInWorld(), 5);
 
         // Saved while the clients still see the chest sliding: one chest, five diamonds after loading.
@@ -347,13 +347,13 @@ private slots:
         m_origin = origin;
         QVERIFY(isBlock(7, 0, 8, "chest"));
         QCOMPARE(diamondsInWorld(), 5);
-        QCOMPARE(m_server->containers().find(at(7, 0, 8))->stacks[0].count, 5);
+        QCOMPARE(m_server->blockEntities().container(at(7, 0, 8))->stacks[0].count, 5);
 
         // Pulled back: the furnace returns with its fire and ore.
         flip(3, 0, 8);
         ticks(1);
-        QCOMPARE(m_server->machines().find(at(5, 0, 8))->stacks[0].count, 3);
-        QVERIFY(!m_server->machines().find(at(6, 0, 8)));
+        QCOMPARE(m_server->blockEntities().machine(at(5, 0, 8))->stacks[0].count, 3);
+        QVERIFY(!m_server->blockEntities().machine(at(6, 0, 8)));
         QCOMPARE(diamondsInWorld(), 5);
     }
 

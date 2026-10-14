@@ -6,7 +6,7 @@
 #include "QcPhysics.h"
 #include "QcQuickMove.h"
 #include "QcRepair.h"
-#include "QcServerMachines.h"
+#include "QcBlockScreens.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
@@ -23,8 +23,8 @@ namespace {
 
 // Inventory, the usable part of the grid and the open machine or chest form one slot space;
 // other grid cells and block slots without an open block are invalid.
-bool isUsableSlot(const QcServerClient &client, int slot, const QcMachineManager::Machine *machine,
-                  const QcContainerManager::Container *container)
+bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities::Machine *machine,
+                  const QcBlockEntities::Container *container)
 {
     if (slot < QcServerInventory::craftingGridSlot) {
         return QcInventory::isValidSlot(slot);
@@ -34,7 +34,7 @@ bool isUsableSlot(const QcServerClient &client, int slot, const QcMachineManager
     }
 
     if (slot >= QcServerInventory::machineSlot && slot < QcServerInventory::equipmentSlot) {
-        return (machine && slot < QcServerInventory::machineSlot + QcMachineManager::slotCount)
+        return (machine && slot < QcServerInventory::machineSlot + QcMachineRules::slotCount)
                || (container && slot < QcServerInventory::machineSlot + container->stacks.size());
     }
 
@@ -44,9 +44,9 @@ bool isUsableSlot(const QcServerClient &client, int slot, const QcMachineManager
 
 } // namespace
 
-QcServerInventory::QcServerInventory(QcServerState &state, QcServerMachines &machines, QcServerSounds &sounds)
+QcServerInventory::QcServerInventory(QcServerState &state, QcBlockScreens &screens, QcServerSounds &sounds)
     : m_state(state)
-    , m_machines(machines)
+    , m_screens(screens)
     , m_sounds(sounds)
 {
 }
@@ -118,7 +118,7 @@ bool QcServerInventory::hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy
 
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
-    OpenSlots open{m_machines.openMachineOf(client), m_machines.openContainerOf(client), {}};
+    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), {}};
     open.combined = client.inventory.allSlots();
     open.combined.append(client.craftingGrid);
     if (open.machine) {
@@ -136,7 +136,7 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
 {
     if (!armourFits(open.combined)) {
         send(client);
-        m_machines.send(client, true);
+        m_screens.send(client, true);
         return false;
     }
 
@@ -147,10 +147,10 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     if (open.machine) {
         if (!machineAccepts(*open.machine, open.combined)) {
             send(client);
-            m_machines.send(client, true);
+            m_screens.send(client, true);
             return false;
         }
-        for (int slot = 0; slot < QcMachineManager::slotCount; ++slot) {
+        for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
             open.machine->stacks[std::size_t(slot)] = open.combined[machineSlot + slot];
         }
     }
@@ -169,13 +169,13 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     send(client);
     // Everyone looking into this machine or chest sees the change; comparators and hoppers too.
     if (open.container) {
-        m_machines.sendToViewers(open.container->pos);
+        m_screens.sendToViewers(open.container->pos);
         if (open.container->stacks != before) {
             m_state.noteContents(open.container->pos);
         }
     }
     if (open.machine) {
-        m_machines.sendToViewers(open.machine->pos);
+        m_screens.sendToViewers(open.machine->pos);
         if (QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()) != before) {
             m_state.noteContents(open.machine->pos);
         }
@@ -190,7 +190,7 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
         || !isUsableSlot(client, move.to, open.machine, open.container)
         || (open.machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
         send(client);
-        m_machines.send(client, true);
+        m_screens.send(client, true);
         return;
     }
 
@@ -208,7 +208,7 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     OpenSlots open = openSlots(client);
     if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined[move.slot].isEmpty()) {
         send(client);
-        m_machines.send(client, true);
+        m_screens.send(client, true);
         return;
     }
 
@@ -219,25 +219,25 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     if (open.machine) {
         const QcItemId item = open.combined[move.slot].item;
         const std::optional<QcBlockId> block = m_state.world.blockAt(open.machine->pos);
-        const QcMachineDefinition *definition = block ? m_state.machines.machineOf(*block) : nullptr;
-        situation.smeltable = definition && m_state.machines.recipeFor(*definition, item);
-        situation.fuel = m_state.machines.fuelSeconds(item) > 0.0;
+        const QcMachineDefinition *definition = block ? m_state.machineRules.machineOf(*block) : nullptr;
+        situation.smeltable = definition && m_state.machineRules.recipeFor(*definition, item);
+        situation.fuel = m_state.machineRules.fuelSeconds(item) > 0.0;
     }
 
     QcInventory::moveInto(open.combined, move.slot, QcQuickMove::targets(move.slot, situation), *m_state.content);
     applyOpenSlots(client, open);
 }
 
-bool QcServerInventory::machineAccepts(const QcMachineManager::Machine &machine, const QList<QcItemStack> &combined) const
+bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const
 {
     // Only fuel goes into the fuel slot, and nothing goes into the output (not even by a swap).
     // An emptied container left behind by burnt fuel may stay or be taken out.
-    const QcItemStack &fuel = combined[machineSlot + QcMachineManager::fuelSlot];
-    const QcItemStack &previousFuel = machine.stacks[QcMachineManager::fuelSlot];
-    const QcItemStack &output = combined[machineSlot + QcMachineManager::outputSlot];
-    const QcItemStack &previousOutput = machine.stacks[QcMachineManager::outputSlot];
+    const QcItemStack &fuel = combined[machineSlot + QcMachineRules::fuelSlot];
+    const QcItemStack &previousFuel = machine.stacks[QcMachineRules::fuelSlot];
+    const QcItemStack &output = combined[machineSlot + QcMachineRules::outputSlot];
+    const QcItemStack &previousOutput = machine.stacks[QcMachineRules::outputSlot];
 
-    const bool fuelOk = fuel.isEmpty() || m_state.machines.fuelSeconds(fuel.item) > 0.0
+    const bool fuelOk = fuel.isEmpty() || m_state.machineRules.fuelSeconds(fuel.item) > 0.0
                         || (fuel.item == previousFuel.item && fuel.damage == previousFuel.damage && fuel.count <= previousFuel.count);
     const bool outputOk = output.isEmpty() || (output.item == previousOutput.item && output.count <= previousOutput.count);
     return fuelOk && outputOk;

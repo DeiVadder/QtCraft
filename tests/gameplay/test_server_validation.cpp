@@ -361,7 +361,7 @@ private slots:
 
         chat(u"/setblock ~2 ~ ~1 oak_sapling"_s);
         QCOMPARE(m_server->world().blockAt(m_feet.offset(2, 0, 1)), std::optional<QcBlockId>(id("qtcraft:oak_sapling")));
-        QCOMPARE(m_server->plants().saplings().size(), 1);
+        QCOMPARE(m_server->blockEntities().saplingsInOrder().size(), 1);
 
         chat(u"/setblock %1 %2 %3 glass"_s.arg(m_feet.x + 1).arg(m_feet.y).arg(m_feet.z + 2));
         QCOMPARE(m_server->world().blockAt(m_feet.offset(1, 0, 2)), std::optional<QcBlockId>(id("qtcraft:glass")));

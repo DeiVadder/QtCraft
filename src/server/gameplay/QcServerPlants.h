@@ -6,32 +6,28 @@
 #include <QSet>
 
 class QcServerBlocks;
-class QcServerInventory;
 class QcServerSounds;
-struct QcServerClient;
 struct QcServerState;
 
-// The per-tick life of dropped items (players pick them up, despawning saplings plant themselves,
-// seeds lying on free soil plant themselves) and of plants (growing saplings, random ticks of plants
-// that grow upwards like sugar cane, of crops and soil).
-class QcServerItemsAndPlants
+// Plants in the server tick: growing saplings and decaying leaves (QcPlantManager), random ticks of
+// plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth), and items that plant
+// themselves (despawning saplings, seeds lying on free soil; decision E-294).
+class QcServerPlants
 {
 public:
-    QcServerItemsAndPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory);
-
-    // Dropped items: pick-up, merging, despawning (saplings plant themselves).
-    void tickItems();
-    // Growing saplings and plants with random ticks (unless the game rule randomTicks is off).
-    void tickPlants();
-
     // Seeds (items placing a crop with `plantChance`) plant themselves once every this many ticks
     // with that chance when they lie on soil with air above (decision E-294).
     static constexpr int seedCheckTicks = 20;
 
+    QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks);
+
+    // Growing saplings, decaying leaves and random ticks (unless the game rule randomTicks is off).
+    void tick();
+    // Items in the item phase of a tick: despawning saplings and, every seedCheckTicks, resting
+    // seeds plant themselves.
+    void plantItems(const QList<QcItemEntityManager::Item> &despawned);
+
 private:
-    // Puts the stack into the inventory of the playing player with this entity id; returns what
-    // did not fit and remembers players whose inventory changed.
-    int giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed);
     // Puts a despawning sapling item into the ground when there is room.
     void tryPlant(const QcItemEntityManager::Item &item);
     // Lets resting seed items on free soil plant one of their stack.
@@ -45,7 +41,6 @@ private:
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcServerBlocks &m_blocks;
-    QcServerInventory &m_inventory;
     quint64 m_itemTicks = 0;
     // Crop each self-planting seed item places.
     QHash<QcItemId, QcBlockId> m_seedCrops;

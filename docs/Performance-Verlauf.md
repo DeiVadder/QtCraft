@@ -770,3 +770,170 @@ Seit Etappe 30 prüft jeder Tick für jedes wache laufende Wesen, ob sein Körpe
 | Prüfung ohne Liste, Boxen direkt aus dem Zustand (Stand nach dem Review) | 0,844 / 0,844 / 0,819 |
 
 Die Prüfung ohne Liste kostet im Rauschen der Messung (höchstens rund 20 ns je Wesen und Tick); mit Liste waren es rund +0,1 ms (+13 %) je 1000 Wesen. Die mittlere Zeile enthält schon die zusätzliche Zellebene darunter (Zäune), ist also etwas teurer als die erste Fassung.
+
+## Etappe 31.1: Block-Entity-Register (nur headless)
+
+Gemessen mit `QTCRAFT_BLOCK_ENTITY_MEASURE=full build/release/tests/test_block_entity_measure` (Release, Apple M4 Max): 441 Chunks mit je 5 gefüllten Truhen, 3 brennenden Öfen, 3 Trichtern unter Truhen und 3 Setzlingen (2205 Truhen, 1323 Öfen, 1323 Trichter, 1323 Setzlinge), 200 Ticks, danach erstes Speichern (alle Regionen), ein Tick, zweites Speichern, Öffnen der Welt in einem neuen Server. Vorher = `eef0382` (Code vor dem Register, Testprogramm um die Phasen-Ausgabe ergänzt, unter `$TMPDIR` gebaut), nachher = Stand nach E-357 bis E-361; verschränkt, je drei Läufe abwechselnd (E-358).
+
+| Wert (Mittel aus 3 Läufen) | vorher | nachher | Änderung |
+|---|---:|---:|---:|
+| Tick Ø | 0,390 ms | 0,405 ms | +4 % |
+| Phase Signal (Trichter) | 0,261 ms | 0,257 ms | −2 % |
+| Phase Maschinen | 0,086 ms | 0,084 ms | −2 % |
+| Phase Pflanzen (Setzlinge) | 0,032 ms | 0,052 ms | +20 µs |
+| erstes Speichern | 21,6 ms | 22,7 ms | +5 % |
+| zweites Speichern | 9,8 ms | 10,8 ms | +10 % |
+| Öffnen | 32,0 ms | 35,0 ms | +9 % |
+
+Eine erste Fassung mit einem `QHash` je Chunk und Art kostete Tick 0,58 ms (Maschinen 0,145, Signal 0,33 ms): Qt-Hashes haben Spans zu 128 Einträgen, das Durchlaufen vieler kleiner Hashes prüft je Chunk 128 Plätze; die Einträge liegen deshalb in einer Tabelle je Art mit einem Index je Chunk. Öffnen kostete zuerst 39 ms; das Anlegen der Container ankommender Chunks vergleicht jetzt Palettenindizes statt Blöcke. Mehrkosten bleiben bei den Setzlingen (Zeitgeber in einer nach Pflanzreihenfolge geordneten Tabelle statt einer Liste, rund 15 ns je Setzling und Tick) und beim Speichern (Datensätze je Chunk sortiert und je Region verglichen); beides unter der Schwelle.
+
+Nach dem Review (Etappe 31.1, je drei Läufe verschränkt gegen `eef0382`, Mittel): Tick 0,389 → 0,390 ms, Phase Pflanzen 0,031 → 0,030 ms (Setzlinge über einen Gang durch die nach Pflanzreihenfolge geordnete Tabelle statt Liste und Suche je Setzling), Signal 0,261 → 0,262 ms, Maschinen 0,085 → 0,085 ms, erstes Speichern 22,0 → 22,8 ms (+4 %), zweites Speichern 9,9 → 10,7 ms (+8 %; Datensätze direkt aus dem Index statt über Kopien je Chunk; in diesem Szenario ändern sich mit den brennenden Öfen alle Regionen in jedem Speichern, dazu kommen Sortieren und das Umbenennen der Staging-Dateien), Öffnen 32,6 → 35,0 ms (+7 %).
+
+
+## Etappe 31.1: gerenderte Messung (2026-10-14)
+
+Ausnahme von „Keine GUI-Benchmarks“ für diese Etappe (Mensch abwesend). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft` und `qtcraft-headless`) aus `git archive` unter `$TMPDIR`: `fe0a8c9` (`dev` mit Etappe 30) gegen `8aa4346` (31.1 mit Review-Fixes). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, 8 Chunks, Mittel [Spanne]. Last vor und nach den Läufen 2,0–5,1; belastet markiert ist 1 von 128 Läufen der Hauptreihe (`systemstats` 87 % nach einem Lauf), ohne ihn ändert sich nichts. Zweimal kam während der Reihe Eingabe am Rechner an (23:48 und 00:47, HID-Leerlauf unter 60 s): Die Reihe wurde jeweils abgebrochen (die angebrochene erste Runde verworfen) und erst nach mehr als 10 min ohne Eingabe neu gestartet. Neue Szenarien in `scripts/bench-common.sh`: `showcase-<demo>` (Aussichtspunkt eines Demo-Bauwerks aus der Showcase-Tour des jeweiligen Builds), `liquid-fill`, `flight`, `showcase-flight`, `signal-stress`; `STATS=<ms>` schreibt die Debug-Daten als Zeitreihe ins Log.
+
+### 31.1 gegen `fe0a8c9`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
+|---|---|---|---|---|---|---|---|---|---|
+| stand (6) | 120 / 120 | 9,77 → 9,99 | 1,55 → 1,48 | 1,31 → 1,27 | 0,415 → 0,397 | 0,464 → 0,501 (+8 %) | 1,89 → 1,80 | 443 → 444 | Wesen 0,336 → 0,367 |
+| sprint (6) | 120 / 120 | 10,0 → 9,83 | 1,84 → 1,91 | 1,34 → 1,32 | 0,403 → 0,396 | 0,427 → 0,484 (+13 %) | 2,00 → 1,96 | 607 → 606 | Wesen 0,307 → 0,350, Streaming 0,065 → 0,070 |
+| sprint, 16 Chunks (4) | 120 / 120 | 9,31 → 9,24 | 3,39 → 3,38 | 2,03 → 2,08 | 0,292 → 0,284 | 0,927 → 0,789 (−15 %) | 2,90 → 2,49 | 1384 → 1385 | Chunk-Laden max 1,07 → 0,92 |
+| crowd (4) | 120 / 120 | 10,1 → 9,92 | 1,81 → 1,99 (+10 %) | 1,03 → 1,03 | 0,658 → 0,673 | 0,629 → 0,594 | 2,54 → 2,09 | 447 → 452 | 94–95 Wesen sichtbar, 135 auf dem Server |
+| flat-crowd (4) | 120 / 120 | 10,1 → 9,68 | 0,775 → 0,791 | 0,759 → 0,695 | 0,666 → 0,588 | 0,352 → 0,352 | 1,15 → 2,29 | 313 → 314 | |
+| showcase (6) | 120 / 120 | 9,71 → 10,0 | 0,593 → 0,602 | 1,04 → 1,10 | 0,375 → 0,427 (+14 %) | 0,249 → 0,271 (+9 %) | 1,03 → 0,99 | 322 → 321 | Signal 0,095 → 0,107 |
+| showcase-signal_components (8) | 120 / 120 | 9,98 → 10,1 | 0,599 → 0,599 | 1,09 → 1,12 | 0,362 → 0,392 | 0,222 → 0,248 (+12 %) | 0,51 → 1,28 | 327 → 325 | Signal 0,085 → 0,098 (+15 %), Maschinen 0,004 → 0,006 |
+| showcase-signal_machines (8) | 120 / 120 | 9,97 → 10,1 | 0,526 → 0,528 | 0,969 → 0,976 | 0,584 → 0,609 | 0,237 → 0,231 | 0,80 → 0,76 | 322 → 324 | Signal 0,083 → 0,082, Maschinen 0,005 → 0,006 |
+| showcase-signal_farm (8) | 120 / 120 | 10,1 → 9,97 | 0,514 → 0,515 | 1,07 → 1,08 | 0,375 → 0,375 | 0,240 → 0,301 (+26 %) | 1,06 → 1,51 | 323 → 321 | Signal 0,075 → 0,102 (+35 %), Maschinen 0,005 → 0,008 |
+| liquids (6) | 120 / 120 | 9,93 → 10,2 | 1,24 → 1,22 | 1,22 → 1,27 | 0,388 → 0,424 (+9 %) | 0,454 → 0,449 | 1,89 → 1,64 | 458 → 456 | Flüssigkeiten 0,009 → 0,006 |
+| liquid-fill (4) | 120 / 120 | 10,4 → 10,4 | 0,645 → 0,636 | 1,05 → 0,974 | 0,413 → 0,399 | 0,567 → 0,592 (+4 %) | 2,67 → 4,30 | 329 → 329 | Flüssigkeiten 0,339 → 0,345 (max 2,20 → 3,04), Blockupdates 0,103 → 0,107 |
+| farm (4) | 120 / 120 | 10,4 → 10,3 | 0,760 → 0,762 | 1,06 → 1,00 | 0,381 → 0,345 | 0,036 → 0,034 | 2,11 → 1,69 | 326 → 326 | Pflanzen 0,012 → 0,012 |
+| gravel-collapse (6) | 120 / 120 | 10,1 → 10,3 | 0,592 → 0,588 | 0,663 → 0,674 | 2,05 → 2,09 | 1,14 → 1,23 (+8 %) | 3,56 → 3,78 | 328 → 327 | fallende Blöcke 0,525 → 0,565 (+8 %) |
+
+`server_block_entities` (nur 31.1): 99 in allen Showcase-Szenarien, 0 sonst; `block_entity_problems` = 0 in allen 107 Läufen mit diesem Feld (31.1 und die verworfene Speicher-Variante unten, alle Reihen einschließlich Flügen und großer Welt). Keine „Too many chests/machines“: Die Meldung gibt es nur beim Öffnen eines Bildschirms über der Grenze; die höchste Zahl in allen Läufen war 864 Einträge (Grenzen 16384 Container, 4096 Maschinen), und alle 3456 `openMachine` beim Bau der vier großen Welten gelangen.
+
+**Bewertung der Hauptreihe:** Frame-Zeiten, GPU, Render-CPU und Speicher liegen in allen Szenarien innerhalb der Schwelle; 120 FPS überall (31.1 ändert keinen Code des Renderers). Über 10 % auf der ungünstigen Seite:
+
+- **Tick sprint +13 %, stand +8 %** (je 6 Runden): zweigipflig (sprint 0,39–0,46 ms oder 0,58–0,63 ms je Lauf; zwei Läufe des neuen Stands in der oberen Gruppe), gleichmäßig über alle Phasen verteilt, am stärksten in der Phase Wesen, deren Code 31.1 nicht ändert; mit 16 Chunks −15 %. Gegenprobe headless (Weltgenerator Gelände, Seed 42, Spawn, 8 Chunks, je 4 Läufe verschränkt, 600 Ticks): Tick 0,723 → 0,675 ms, Wesen 0,536 → 0,494 ms. Keine Regression.
+- **gravel-collapse Tick +8 %, fallende Blöcke +8 %** (Spannen fast ohne Überlappung): headless dieselbe Szene (je 3 Läufe, 400 Ticks): fallende Blöcke 0,945 / 1,191 / 0,936 gegen 0,962 / 0,940 / 0,978 ms, gleiche Zahl fallender Blöcke (2048 an der Grenze). Keine Regression.
+- **crowd GPU +10 %**: 31.1 ändert nichts am Zeichnen; `fe0a8c9` selbst lag zwei Stunden später in der Reihe der nachgeholten Messungen bei 1,98 ms (unten). Streuung.
+- **GUI-CPU showcase +14 %, signal_components +8 %**: zwei Lagen der GUI-CPU (0,25–0,29 oder 0,42–0,44 ms), der alte Stand hatte zwei Läufe in der unteren Lage; Mediane 0,424 → 0,425 ms.
+- **Signal-Phase an den Stationen (`showcase-signal_components` +15 %, `showcase-signal_farm` +35 %)**: in einer zweiten Reihe (4 weitere Runden nur dieser Szenarien) bestätigt, also wiederholbar; absolut +0,013 bzw. +0,027 ms je Tick. Eingegrenzt und begründet in **E-362**: headless dieselben Szenen +5 % bzw. ohne gerichteten Unterschied, im `sample`-Profil kein heißer Pfad aus 31.1; ein kleiner, gewollter Teil ist das Durchlaufen der ungenutzten generierten Öfen (Maschinen-Phase +2–3 µs, E-357).
+- **Tick max liquid-fill +61 %, signal_components ×2,5**: Einzelwerte (2,8–7,2 ms gegen 1,8–4,0 ms bzw. 0,5–2,8 ms), weit unter dem Tick von 50 ms, keine übersprungenen Ticks, Verspätung Ø gleich.
+
+### Signal-Stress (Referenz und A/B)
+
+`signal-stress`: flache Welt, 48 × 48 Staub-Feld, von 16 Beobachter-Takten alle 2 Ticks umgeschaltet; 200 Repeater-Takte (Fackel an einem Block, Staub über einen Repeater mit Verzögerung 4 zurück in den Block: 20 Ticks je Periode, 3 Wechsel in 60 Ticks, die Fackeln brennen nie durch) mit je zwei Lampen (je 10 Ticks an und aus, länger als die Ausschaltverzögerung 4); 32 weitere Repeater-Takte mit je zwei Klebkolben, die Stein heben und senken. Spieler auf einem Block 10 m hoch, Blick nach Norden, nächste Bauteile 15–21 m entfernt. Aufbau über rund 1950 Chat-Befehle beim Laden; Beobachter-Takte statt Fackel-Takte für das Feld, weil nur sie schneller als alle 4 Ticks takten, ohne dass etwas durchbrennt.
+
+Der Lauf landet in einer von zwei Lagen, bei beiden Ständen (Ursache nicht untersucht; die Befehle kommen in allen Läufen vollständig an, vermutlich der Zeitpunkt, zu dem die Takte relativ zueinander starten): „hoch“ mit rund 31 500 Licht-Aufträgen und 33 000 neu vernetzten Sektionen in 20 s, „niedrig“ mit 14 300 bzw. 26 500. Verglichen wird je Lage (6 Runden aus zwei Reihen, dazu 2 Runden mit STATS):
+
+| Wert | hoch: `fe0a8c9` (5) → 31.1 (2) | niedrig: `fe0a8c9` (3) → 31.1 (6) |
+|---|---|---|
+| FPS / Frame p99 ms | 118,4 / 14,6 → 117,8 / 15,9 | 120,0 / 9,67 → 120,0 / 9,87 |
+| GPU / Render-CPU / GUI-CPU ms | 0,685 / 1,06 / 0,445 → 0,683 / 1,05 / 0,433 | 0,648 / 0,993 / 0,484 → 0,644 / 0,995 / 0,504 |
+| Uploads Ø ms / MB in 20 s | 0,369 / 2025 → 0,362 / 1990 | 0,312 / 1398 → 0,312 / 1397 |
+| neu vernetzte Sektionen / Mesh-Aufträge | 33 331 / 27 632 → 33 250 / 27 402 | 26 474 / 15 884 → 26 465 / 15 914 |
+| Änderung bis Bild Ø ms | 22,3 → 26,3 | 12,5 → 12,4 |
+| Licht-Aufträge / Ø ms / max ms | 31 474 / 0,027 / 0,55 → 31 482 / 0,028 / 0,45 | 14 281 / 0,024 / 0,39 → 14 278 / 0,024 / 0,54 |
+| Tick Ø / max ms | 7,28 / 11,2 → 7,35 / 10,7 | 5,86 / 13,2 → 6,05 / 13,9 |
+| Phase Signal Ø / max ms | 7,07 / 11,0 → 7,12 / 10,4 (+1 %) | 5,63 / 12,9 → 5,82 / 13,4 (+3 %) |
+| Phase Blockupdates Ø ms | 0,151 → 0,166 | 0,151 → 0,148 |
+| Spitzenspeicher MB | 584 → 580 | 457 → 460 |
+
+Keine Regression (Signal +1 bis +3 % innerhalb der Lage). Headless (Release, 6 Chunks) läuft dieselbe Szene mit Signal Ø 8,8 ms in beiden Ständen gleich. **Referenz für spätere Etappen:** 117–120 FPS, p99 9,7–16 ms je nach Lage (verpasste VSyncs in der hohen Lage), Tick 6–7,4 ms, davon Signal 5,6–7,1 ms, Licht-Auftrag Ø 0,024–0,028 ms. `entities` am Ende schwankt mit der Phase der Kolben (bewegte Blöcke zählen als Wesen, 0–61) und ist nicht vergleichbar.
+
+### Lange Flüge
+
+`flight` (120 s, 3 Runden): Kreativ-Modus, Teleport alle 250 ms um 5 m nach Osten auf y 200 (20 m/s, 2,4 km neues Gelände); `showcase-flight` (80 s = eine Runde, und 240 s = drei Runden, je 2 Runden): dieselbe Geschwindigkeit auf y 110 um ein Quadrat von 400 m mit der ganzen Showcase-Welt, jeder Chunk verlässt die Sichtweite einmal je Runde und kommt zurück. STATS jede Sekunde. Bei Verzögerungen über 2 s laufen die Teleports über grobe Qt-Timer und kommen teils gebündelt an; für beide Stände gleich.
+
+| Wert | flight | showcase-flight 1 Runde | showcase-flight 3 Runden |
+|---|---|---|---|
+| FPS / p99 ms | 120 / 10,0 → 120 / 10,0 | 120 / 9,87 → 120 / 9,38 | 120 / 9,87 → 120 / 10,3 |
+| GPU / Render-CPU / GUI-CPU ms | 0,530 / 0,592 / 0,332 → 0,535 / 0,650 / 0,346 | 0,619 / 0,797 / 0,376 → 0,619 / 0,745 / 0,358 | 0,619 / 0,790 / 0,372 → 0,615 / 0,668 / 0,326 |
+| Tick Ø / max ms | 0,646 / 2,90 → 0,681 / 3,86 | 0,259 / 2,44 → 0,254 / 1,47 | 0,382 / 3,61 → 0,357 / 2,80 |
+| Verspätung Ø / p99 / max ms | 0,136 / 0,84 / 3,2 → 0,112 / 0,71 / 3,2 | 0,075 / – / 1,19 → 0,088 / – / 0,64 | 0,137 / – / 3,6 → 0,243 / – / 8,6 (ein Lauf 15,0, der andere 2,1) |
+| Chunk-Laden Ø / max ms | 0,025 / 1,39 → 0,027 / 1,57 | 0,006 / 0,47 → 0,006 / 0,33 | – / 1,59 → – / 1,21 |
+| Streaming Ø / max ms | 0,132 / 2,05 → 0,144 / 2,25 | 0,096 → 0,097 | – |
+| Spitzenspeicher MB | 555 → 552 | 347 → 345 | 358 → 361 |
+| Block-Entities am Ende (31.1) | 0 | 53 | 53 |
+
+Über die Zeit (STATS): Beim Flug durch neues Gelände bleibt der Prozessspeicher bei 473–549 MB (Wellen mit dem Gelände, beide Stände gleich), geladen sind immer 380 Chunks beim Client und beim Server; kein Tick wird übersprungen. Im Showcase-Flug wächst der Speicher bei beiden Ständen gleich um rund 5 MB je Runde (331 → 346 bzw. 334 → 344 MB nach drei Runden), die Block-Entities bleiben nach einer wie nach drei Runden bei 53 (am Start mitten in der Showcase 99): leere, ruhende Container unveränderter Chunks gehen beim Entladen mit (E-358), **begrenzt**. Kosten des Ankommens von Chunks (Phase Chunk-Laden) und Verspätung liegen in der Streuung beider Stände; der eine Lauf mit 15 ms Verspätung hat keinen zweiten.
+
+### Große gespeicherte Welt: Öffnen und Autosave
+
+Welten je Stand mit dessen `qtcraft-headless` über die Steuerschnittstelle gebaut (flache Welt, Seed 42, Kreativ-Modus): auf einem Raster von 12 × 12 Stellen im Abstand von 6 Chunks (9 Regionen) je 4 Truhen mit 3 Stapeln und 2 Öfen mit 64 Eisenerz, in der Variante „brennend“ mit 16 Kohle (brennen länger als 10 min), in „kalt“ ohne Brennstoff: 576 gefüllte Truhen, 288 Öfen, 144 geänderte Chunks, 864 Block-Entities; Speicherung am Ende am Ursprung (rund 0,4 MB auf der Platte). Gemessen mit einem nur für die Messung in temporäre Kopien beider Stände eingebauten Haken (`QTCRAFT_BENCH_OPEN_WORLD=<Ordner>`: öffnet die gespeicherte Welt wie „Spielen“ im Menü und schreibt die Zeit bis zum Spielbeginn und bis zum ersten danach getauschten Bild; nicht im Repository), danach 130 s stehen mit zwei Autosaves (alle 60 s), STATS alle 200 ms (Phase „saving“ und Verspätung je Fenster). Eine frische Kopie der Welt je Lauf.
+
+| Welt (Läufe je Stand) | bis Spielbeginn ms | bis erstes Bild ms | 1. Autosave ms | 2. Autosave ms | Verspätung max in Speicher-Fenstern ms | Tick Ø ms |
+|---|---|---|---|---|---|---|
+| brennend, Reihe 1 (3) | 151 → 139 | 155 → 143 | 6,0 [3,7–9,2] → 9,8 [8,2–10,7] | 5,3 [4,5–6,1] → 8,4 [6,7–9,3] | 0,8 → 5,0 | 0,31 → 0,27 |
+| brennend, Gegenprobe (6, rotiert) | 132 → 149 | 151 → 154 | 7,9 [5,5–10,3] → 7,7 [5,8–11,3] | 7,6 [5,6–10,2] → 7,0 [5,9–7,9] | 1,9 → 1,0 | 0,32 → 0,28 |
+| kalt (3) | 150 → 132 | 153 → 153 | 5,9 [5,7–6,3] → 5,2 [4,1–6,5] | 7,5 [4,9–9,4] → 6,6 [3,3–9,3] | 1,3 → 1,0 | 0,33 → 0,31 |
+
+Das Speichern läuft im Tick (die Speicher-Phase ist der Tick-Stillstand: Tick max = Speichern + 0,1–0,3 ms). Die erste Reihe zeigte für die brennende Welt +65 %; die Gegenprobe mit 6 rotierten Runden wiederholt das nicht (−3 % / −8 %), headless 48 Speicherungen derselben Welt je Stand 8,79 → 8,95 ms (+2 %). Welche Dateien ein Speichern schreibt (headless, brennend): `fe0a8c9` 7 Dateien (`containers.qce` und `machines.qce` der ganzen Welt, Wesen, Spieler, `world.json` u. a.), 31.1 9 Dateien (die 4 Regionen mit brennenden Öfen in Reichweite über `.next`-Zwischennamen, ohne die beiden Ganzwelt-Dateien); kalt: 7 → 5 Dateien (ein Speichern ohne Änderung an Block-Entities schreibt keine Block-Entity-Datei). Eine Variante, die die `.next`-Dateien ohne den eigenen Zwischenschritt von `QSaveFile` schreibt (ein Umbenennen weniger je Region), brachte nichts Messbares (Fenster 9,0 / 7,6 ms, headless 8,86 ms) und wurde verworfen. **Keine Regression**; Stillstand je Autosave 3–11 ms bei beiden Ständen, keine übersprungenen Ticks. Öffnen bis zum ersten Bild 128–168 ms bei beiden Ständen; das erste Speichern einer frisch gebauten Welt (headless, `worldSave` nach dem Bau, alle Regionen neu) 8,6–13,1 ms gegen 10,2–10,5 ms.
+
+### Flüssigkeiten (`placed()` mit schnellem Weg)
+
+`liquid-fill` (Tabelle oben): Phase Flüssigkeiten 0,339 → 0,345 ms (+2 %) bei voller Schrittgrenze, Blockupdates 0,103 → 0,107 ms (+4 %). Die zusätzlichen Nachschlagen beim Setzen kosten nichts Messbares; die höheren Maxima (Flüssigkeiten max 2,20 → 3,04 ms) sind Einzelticks ohne Wirkung auf Verspätung oder Frames.
+
+### Fazit Etappe 31.1
+
+Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-CPU, Speicher, Speichern oder Öffnen; Block-Entities beim Hin- und Herfliegen begrenzt, keine verletzten Regeln. Wiederholbar über 10 % ist nur die Signal-Phase an zwei Showcase-Stationen (+0,013 und +0,027 ms je Tick), headless nicht in dieser Größe nachweisbar und ohne Ursache im Profil; begründet in E-362 und zur Beobachtung in 31.2/31.3 vorgemerkt. Alle Tick-Werte unter 1,3 ms außerhalb der Stress-Szenen.
+
+## Etappe 29.1: gerenderte Messung (nachgeholt 2026-10-14)
+
+`234529c` (Benchmark von Etappe 28, Vorgänger in `dev`) gegen `393c1e7` (29.1), in einer Reihe mit 29.2 und 30 (vier Stände, 4 rotierte Runden, Bedingungen wie oben). Die Showcase-Welt bekommt mit 29.1 die Signal-Stationen; `showcase` sieht dadurch eine andere Szene, `showcase-signal_components` gibt es erst ab 29.1 (Referenz).
+
+| Szenario | Wert | `234529c` | `393c1e7` (29.1) |
+|---|---|---:|---:|
+| showcase | FPS / p99 ms | 120 / 9,76 | 120 / 10,1 |
+| showcase | GPU / Render-CPU / GUI-CPU ms | 0,572 / 0,940 / 0,370 | 0,598 / 1,09 / 0,456 |
+| showcase | neu vernetzte Sektionen / Licht-Aufträge in 20 s | 81 / 15 | 276 / 47 |
+| showcase | Tick Ø / max ms, Signal ms | 0,170 / 0,63, – | 0,212 / 1,18, 0,022 |
+| showcase | Spitzenspeicher MB | 309 | 320 |
+| showcase-signal_components | FPS / p99 ms | – | 120 / 9,78 |
+| showcase-signal_components | GPU / Render-CPU / GUI-CPU ms | – | 0,573 / 1,03 / 0,365 |
+| showcase-signal_components | neu vernetzte Sektionen / Mesh-Aufträge / Licht-Aufträge | – | 276 / 269 / 47 |
+| showcase-signal_components | Änderung bis Bild Ø ms | – | 13,5 |
+| showcase-signal_components | Tick Ø / max ms, Signal ms | – | 0,235 / 1,01, 0,024 |
+
+**Bewertung:** Die Takte der Signal-Station (Staub, Lampen) lösen im Showcase rund 14 Neu-Vernetzungen je Sekunde aus; 120 FPS, GPU +5 % (mehr Bauwerke im Bild), GUI-CPU in den Spannen der zwei Lagen (0,30–0,44 gegen 0,45–0,46 ms), Speicher +11 MB (neue Bauwerke). Die Signal-Phase kostet an der Station 0,024 ms je Tick. Kein Befund.
+
+## Etappe 29.2: gerenderte Messung (nachgeholt 2026-10-14)
+
+`393c1e7` (29.1) gegen `3f29c94` (29.2), dieselbe Reihe. Die Maschinen-Station (Trichter, Sortierer) und die Wasser-Farm gibt es erst ab 29.2 (Referenz).
+
+| Szenario | Wert | `393c1e7` | `3f29c94` (29.2) |
+|---|---|---:|---:|
+| showcase | FPS / p99 ms | 120 / 10,1 | 120 / 10,0 |
+| showcase | GPU / Render-CPU / GUI-CPU ms | 0,598 / 1,09 / 0,456 | 0,594 / 1,01 / 0,366 |
+| showcase | neu vernetzte Sektionen / Mesh-Aufträge / Licht-Aufträge | 276 / 241 / 47 | 6534 / 3723 / 515 |
+| showcase | Tick Ø ms, Signal ms | 0,212, 0,022 | 0,286, 0,109 |
+| showcase-signal_components | neu vernetzte Sektionen / Licht-Aufträge | 276 / 47 | 5930 / 515 |
+| showcase-signal_components | Tick Ø ms, Signal ms | 0,235, 0,024 | 0,295, 0,126 |
+| showcase-signal_machines | FPS / p99 ms, GPU / Render / GUI ms | – | 120 / 9,91, 0,524 / 0,959 / 0,550 |
+| showcase-signal_machines | Tick Ø / max ms, Signal ms | – | 0,285 / 1,42, 0,102 |
+| showcase-signal_farm | FPS / p99 ms, GPU / Render / GUI ms | – | 120 / 10,1, 0,517 / 1,09 / 0,382 |
+| showcase-signal_farm | neu vernetzte Sektionen / Änderung bis Bild Ø ms | – | 1065 / 6,1 |
+| showcase-signal_farm | Tick Ø / max ms, Signal ms | – | 0,243 / 1,11, 0,077 |
+
+**Bewertung:** Mit 29.2 laufen in der Showcase dauerhaft Takte (Wasser-Farm alle 40 Ticks, Beobachter, Trichter), die vom Spawn aus im Bild sind: rund 330 Neu-Vernetzungen je Sekunde (vorher 14) und 26 Licht-Aufträge je Sekunde, Tick +0,07 ms durch die Signal-Phase (0,02 → 0,11 ms). Frame-Werte unverändert (120 FPS, GPU −1 %, GUI-CPU in den zwei Lagen), Uploads 132 → 185 MB in 20 s. Gewollt (neue Inhalte), kein Befund.
+
+## Etappe 30: gerenderte Messung (nachgeholt 2026-10-14)
+
+`3f29c94` (29.2) gegen `fe0a8c9` (30), dieselbe Reihe. Vergleich mit älteren Ständen über `flat-crowd` (E-354); `crowd` mit den neuen Zahlen als Referenz.
+
+| Szenario | Wert | `234529c` | `393c1e7` | `3f29c94` | `fe0a8c9` (30) |
+|---|---|---:|---:|---:|---:|
+| flat-crowd | FPS / p99 ms | 120 / 9,98 | 120 / 10,3 | 120 / 10,3 | 120 / 10,3 |
+| flat-crowd | GPU / Render-CPU / GUI-CPU ms | 0,780 / 0,691 / 0,605 | 0,785 / 0,674 / 0,600 | 0,774 / 0,691 / 0,630 | 0,776 / 0,732 / 0,653 |
+| flat-crowd | Tick Ø / max ms, Wesen ms | 0,366 / 2,49, 0,169 | 0,361 / 2,01, 0,167 | 0,363 / 1,87, 0,170 | 0,317 / 1,09, 0,153 |
+| flat-crowd | Spitzenspeicher MB, Wesen sichtbar / Server | 301, 80 / 56 | 311, 80 / 56 | 313, 80 / 56 | 310, 80 / 56 |
+| crowd | Wesen sichtbar / Server | 76 / 119 | 72–79 / 112–120 | 72 / 112 | 93–95 / 135 |
+| crowd | FPS / p99 ms | 120 / 10,3 | 120 / 10,3 | 120 / 10,3 | 120 / 10,3 |
+| crowd | GPU / Render-CPU / GUI-CPU ms | 1,81 / 1,10 / 0,572 | 1,85 / 1,08 / 0,625 | 1,60 / 1,09 / 0,546 | 1,98 / 1,05 / 0,712 |
+| crowd | Tick Ø ms, Wesen ms | 0,654, 0,463 | 0,733, 0,526 | 0,481, 0,343 | 0,727, 0,537 |
+| crowd | Spitzenspeicher MB | 437 | 445 | 445 | 450 |
+
+**Bewertung:** In `flat-crowd` (alle Stände rufen alle 56 Wesen) keine Verschlechterung durch Etappe 30: Tick −13 %, Wesen-Phase −10 % (das Prüfen auf Überlappung mit Blöcken, E-352, kostet hier nichts Messbares), Frame-Werte gleich (Render-/GUI-CPU +6 / +4 %). In `crowd` gelingen seit Etappe 30 alle 56 Rufe (Server 135 Kreaturen mit den Tieren der Umgebung, sichtbar 93–95 statt 72–79): GPU 1,98 ms, GUI-CPU 0,712 ms, Tick 0,73 ms als neue Referenz; die Abstände zu den älteren Ständen sind die zusätzlichen Wesen (E-351), kein Befund. 120 FPS in allen Ständen.

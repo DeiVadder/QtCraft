@@ -4,50 +4,115 @@
 #include <utility>
 
 static_assert(QcWorld::sectionCount <= 32, "one bit per section in a quint32");
+static_assert(qcBlockTraitCount <= 8, "one bit per trait in QcSectionMarks::Traits");
 
-QcSectionMarks::QcSectionMarks(std::vector<bool> marked)
-    : m_marked(std::move(marked))
+QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
 {
+    Traits traits = 0;
+    if (block.contactDamage > 0.0) {
+        traits |= bit(QcBlockTrait::ContactDamage);
+    }
+    if (block.hasRandomTicks()) {
+        traits |= bit(QcBlockTrait::RandomTicks);
+    }
+    if (block.signal.isComponent() && block.signal.kind != QcSignalKind::Hopper) {
+        traits |= bit(QcBlockTrait::Circuit);
+    }
+    if (block.signal.kind == QcSignalKind::Plate) {
+        traits |= bit(QcBlockTrait::Plate);
+    }
+    if (block.containerSlots > 0 || block.machine.isMachine()) {
+        traits |= bit(QcBlockTrait::BlockEntity);
+    }
+    return traits;
+}
+
+QcSectionMarks::QcSectionMarks(std::vector<Traits> traits)
+    : m_traits(std::move(traits))
+{
+}
+
+quint32 QcSectionMarks::sectionsOf(QcChunkPos pos, QcBlockTrait trait) const
+{
+    const auto it = m_chunks.constFind(pos);
+    return it == m_chunks.constEnd() ? 0u : (*it)[std::size_t(trait)];
+}
+
+void QcSectionMarks::noteBits(const Bits &before, const Bits &after)
+{
+    for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+        if ((before[trait] == 0) != (after[trait] == 0)) {
+            m_chunkCount[trait] += after[trait] != 0 ? 1 : -1;
+            m_orderStale[trait] = true;
+        }
+    }
 }
 
 void QcSectionMarks::noteChunk(QcChunkPos pos, const QcChunk &chunk)
 {
-    quint32 sections = 0;
+    Bits after{};
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        if (std::ranges::any_of(chunk.section(index).palette(), [this](QcBlockId id) { return isMarked(id); })) {
-            sections |= 1u << index;
+        Traits traits = 0;
+        for (const QcBlockId id : chunk.section(index).palette()) {
+            traits |= traitsOf(id);
+        }
+        for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+            if ((traits & (1u << trait)) != 0) {
+                after[trait] |= 1u << index;
+            }
         }
     }
 
-    const qsizetype before = m_sections.size();
-    if (sections != 0) {
-        m_sections.insert(pos, sections);
+    const Bits before = m_chunks.value(pos, Bits{});
+    if (std::ranges::any_of(after, [](quint32 sections) { return sections != 0; })) {
+        m_chunks.insert(pos, after);
     } else {
-        m_sections.remove(pos);
+        m_chunks.remove(pos);
     }
-    m_orderStale = m_orderStale || m_sections.size() != before;
+    noteBits(before, after);
 }
 
 void QcSectionMarks::noteBlock(QcBlockPos pos, QcBlockId block)
 {
-    if (isMarked(block)) {
-        const qsizetype before = m_sections.size();
-        m_sections[pos.chunk()] |= 1u << (pos.y / QcWorld::sectionHeight);
-        m_orderStale = m_orderStale || m_sections.size() != before;
+    const Traits traits = traitsOf(block);
+    if (traits == 0) {
+        return;
     }
+
+    Bits &bits = m_chunks[pos.chunk()];
+    const Bits before = bits;
+    for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+        if ((traits & (1u << trait)) != 0) {
+            bits[trait] |= 1u << (pos.y / QcWorld::sectionHeight);
+        }
+    }
+    noteBits(before, bits);
 }
 
 void QcSectionMarks::forgetChunk(QcChunkPos pos)
 {
-    m_orderStale = m_sections.remove(pos) || m_orderStale;
+    const auto it = m_chunks.constFind(pos);
+    if (it == m_chunks.constEnd()) {
+        return;
+    }
+    const Bits before = *it;
+    m_chunks.erase(it);
+    noteBits(before, Bits{});
 }
 
-const QList<QcChunkPos> &QcSectionMarks::orderedChunks() const
+const QList<QcChunkPos> &QcSectionMarks::orderedChunks(QcBlockTrait trait) const
 {
-    if (m_orderStale) {
-        m_order = m_sections.keys();
-        std::ranges::sort(m_order, [](QcChunkPos a, QcChunkPos b) { return std::pair{a.x, a.z} < std::pair{b.x, b.z}; });
-        m_orderStale = false;
+    const auto index = std::size_t(trait);
+    if (m_orderStale[index]) {
+        QList<QcChunkPos> &order = m_order[index];
+        order.clear();
+        for (auto it = m_chunks.constBegin(); it != m_chunks.constEnd(); ++it) {
+            if ((*it)[index] != 0) {
+                order.append(it.key());
+            }
+        }
+        std::ranges::sort(order, [](QcChunkPos a, QcChunkPos b) { return std::pair{a.x, a.z} < std::pair{b.x, b.z}; });
+        m_orderStale[index] = false;
     }
-    return m_order;
+    return m_order[index];
 }

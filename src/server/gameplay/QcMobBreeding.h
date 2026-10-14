@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
 #include "QcMobManager.h"
@@ -19,14 +20,20 @@ public:
     // Share of the time to grow up that feeding a young one takes off.
     static constexpr double feedGrowUpShare = 0.1;
     // No young one is born while this many animals of the kind (awake or dormant) live in the 3 x 3
-    // chunks around the birth place ...
-    static constexpr int crowdLimit = 24;
-    // ... or while this many bred animals of the kind live in the whole world.
-    static constexpr int maxBredPerKind = 256;
+    // chunks around the birth place or this many bred animals of the kind live in the whole world,
+    // by default (QcServerLimits::breedingCrowd, bredPerKind).
+    static constexpr int crowdLimit = int(QcServerLimits{}.breedingCrowd);
+    static constexpr int maxBredPerKind = int(QcServerLimits{}.bredPerKind);
     // Seconds an animal is in love before it pairs (others see it in love first).
     static constexpr double courtshipSeconds = 1.0;
 
     enum class Fed { No, Love, Young };
+
+    void setLimits(qint64 crowd, qint64 bredPerKind)
+    {
+        m_crowdLimit = crowd;
+        m_bredPerKind = bredPerKind;
+    }
 
     struct Birth
     {
@@ -58,4 +65,6 @@ private:
     qsizetype partnerOf(const QcBlockAccess &world, const QList<QcMobManager::Mob> &mobs, qsizetype index) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
+    qint64 m_crowdLimit = crowdLimit;
+    qint64 m_bredPerKind = maxBredPerKind;
 };

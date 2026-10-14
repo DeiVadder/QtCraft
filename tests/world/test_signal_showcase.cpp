@@ -60,7 +60,7 @@ private:
     // Wheat in the farm's chest.
     int harvested(const QString &demo) const
     {
-        const QcContainerManager::Container *chest = m_server->containers().find(origin(demo).offset(10, 1, 2));
+        const QcBlockEntities::Container *chest = m_server->blockEntities().container(origin(demo).offset(10, 1, 2));
         int wheat = 0;
         for (const QcItemStack &stack : chest ? chest->stacks : QList<QcItemStack>()) {
             wheat += !stack.isEmpty() && m_content->item(stack.item).name == u"qtcraft:wheat"_s ? stack.count : 0;
@@ -136,7 +136,7 @@ private slots:
         QCOMPARE(property(demo, 20, 1, 8, u"extended"_s), u"true"_s);
         // The clock burnt out within its first sixty ticks.
         QCOMPARE(block(demo, 2, 2, 2), u"signal_torch_off"_s);
-        QVERIFY(m_server->circuitState().burntOutUntil.contains(origin(demo).offset(2, 2, 2)));
+        QVERIFY(burntOut(origin(demo).offset(2, 2, 2)));
     }
 
     void pistonsMoveDoorsChestsAndStands()
@@ -148,10 +148,10 @@ private slots:
         QCOMPARE(block(demo, 9, 1, 3), u"air"_s);
         QCOMPARE(block(demo, 9, 2, 3), u"air"_s);
         QCOMPARE(block(demo, 17, 1, 3), u"chest"_s);
-        const QcContainerManager::Container *chest = m_server->containers().find(origin(demo).offset(17, 1, 3));
+        const QcBlockEntities::Container *chest = m_server->blockEntities().container(origin(demo).offset(17, 1, 3));
         QVERIFY(chest);
         QCOMPARE(chest->stacks[0].count, 5);
-        QVERIFY(!m_server->containers().find(origin(demo).offset(16, 1, 3)));
+        QVERIFY(!m_server->blockEntities().container(origin(demo).offset(16, 1, 3)));
         const QcBlockPos standCell = origin(demo).offset(17, 1, 3);
         const auto stand = std::ranges::find_if(m_server->stands().stands(), [&](const QcArmourStandManager::Stand &candidate) {
             return std::abs(candidate.position.z - (standCell.z + 0.5)) < 0.01 && candidate.position.y == standCell.y;
@@ -168,7 +168,7 @@ private slots:
         idle(600);
         const auto countIn = [&](int x, int y, int z, const QString &name) {
             int total = 0;
-            if (const QcContainerManager::Container *box = m_server->containers().find(origin(demo).offset(x, y, z))) {
+            if (const QcBlockEntities::Container *box = m_server->blockEntities().container(origin(demo).offset(x, y, z))) {
                 for (const QcItemStack &stack : box->stacks) {
                     total += stack.isEmpty() ? 0 : (m_content->item(stack.item).name == u"qtcraft:"_s + name ? stack.count : 0);
                 }

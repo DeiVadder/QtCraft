@@ -374,12 +374,12 @@ private slots:
     void farmlandSectionsGetRandomTicks()
     {
         const auto world = makeWorld();
-        QVERIFY(world->growingSections().isEmpty());
+        QVERIFY(world->marks().isEmpty(QcBlockTrait::RandomTicks));
         QVERIFY(world->setBlock({firstX, groundY, wetZ}, soil(false)));
-        QVERIFY(world->growingSections().isMarked(soil(false)));
-        QVERIFY(world->growingSections().isMarked(stage("melon_stem", 3)));
-        QVERIFY(!world->growingSections().isMarked(id("wild_carrots")));
-        QCOMPARE(world->growingSections().chunks().size(), 1);
+        QVERIFY(world->marks().isMarked(soil(false), QcBlockTrait::RandomTicks));
+        QVERIFY(world->marks().isMarked(stage("melon_stem", 3), QcBlockTrait::RandomTicks));
+        QVERIFY(!world->marks().isMarked(id("wild_carrots"), QcBlockTrait::RandomTicks));
+        QCOMPARE(world->marks().chunkCount(QcBlockTrait::RandomTicks), 1);
     }
 };
 

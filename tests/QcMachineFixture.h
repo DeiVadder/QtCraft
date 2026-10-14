@@ -20,28 +20,27 @@ protected:
     {
         const QcBlockPos pos = at(x, y, z);
         const QcBlockId block = *m_server->world().blockAt(pos);
-        if (const int count = m_server->containers().slotsOf(block); count > 0) {
-            QVERIFY(m_server->containers().add(pos, count));
-            QcContainerManager::Container *container = m_server->containers().find(pos);
+        QVERIFY(ensureEntity(pos));
+        if (m_server->blockEntities().containerSlots(block) > 0) {
+            QcBlockEntities::Container *container = m_server->blockEntities().container(pos);
             for (qsizetype i = 0; i < stacks.size(); ++i) {
                 container->stacks[i] = stacks[i];
             }
         } else {
-            QVERIFY(m_server->machines().add(pos));
             for (qsizetype i = 0; i < stacks.size(); ++i) {
-                m_server->machines().find(pos)->stacks[std::size_t(i)] = stacks[i];
+                m_server->blockEntities().machine(pos)->stacks[std::size_t(i)] = stacks[i];
             }
         }
-        m_server->circuitState().noteContents(m_server->world(), pos);
+        m_server->noteContents(pos);
     }
 
     QList<QcItemStack> slotsAt(int x, int y, int z) const
     {
         const QcBlockPos pos = at(x, y, z);
-        if (const QcContainerManager::Container *container = m_server->containers().find(pos)) {
+        if (const QcBlockEntities::Container *container = m_server->blockEntities().container(pos)) {
             return container->stacks;
         }
-        if (const QcMachineManager::Machine *machine = m_server->machines().find(pos)) {
+        if (const QcBlockEntities::Machine *machine = m_server->blockEntities().machine(pos)) {
             return QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
         }
         return {};
@@ -63,13 +62,14 @@ protected:
     {
         const QcItemId wanted = item(name);
         int total = droppedCount(wanted) + countOf(wanted);
-        const QList<QcContainerManager::Container> containers = m_server->containers().containers();
-        for (const QcContainerManager::Container &container : containers) {
+        const QList<QcBlockEntities::Container> containers = allContainers();
+        for (const QcBlockEntities::Container &container : containers) {
             for (const QcItemStack &slot : container.stacks) {
                 total += slot.item == wanted ? slot.count : 0;
             }
         }
-        for (const QcMachineManager::Machine &machine : m_server->machines().all()) {
+        const QList<QcBlockEntities::Machine> machines = allMachines();
+        for (const QcBlockEntities::Machine &machine : machines) {
             for (const QcItemStack &slot : machine.stacks) {
                 total += slot.item == wanted ? slot.count : 0;
             }

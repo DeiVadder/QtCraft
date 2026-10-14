@@ -70,7 +70,7 @@ void QcBlockUpdateQueue::queue(QcBlockPos pos)
         return;
     }
 
-    if (std::cmp_greater_equal(m_commandUpdates.size(), m_state.config.maxCommandBlockUpdates)) {
+    if (std::cmp_greater_equal(m_commandUpdates.size(), m_state.config.limits.commandBlockUpdates)) {
         // Bounded memory and save size; a block whose update was dropped is checked again
         // by the next change next to it.
         if (m_dropped++ == 0) {
@@ -121,7 +121,7 @@ void QcBlockUpdateQueue::forgetChunk(QcChunkPos chunk)
 
 void QcBlockUpdateQueue::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
 {
-    if (m_waitingCount < maxWaitingBlockUpdates) {
+    if (m_waitingCount < m_state.config.limits.waitingBlockUpdates) {
         QSet<QcBlockPos> &waiting = m_waitingUpdates[chunk];
         const qsizetype before = waiting.size();
         waiting.insert(pos);

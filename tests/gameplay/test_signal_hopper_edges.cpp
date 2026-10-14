@@ -73,8 +73,8 @@ private slots:
             QVERIFY(m_server->world().setBlock(pos, hopper));
             QVERIFY(m_server->world().setBlock(pos.offset(0, -1, 0), chest));
             QVERIFY(m_server->world().setBlock(pos.offset(0, 1, 0), *m_content->stateId(u"qtcraft:stone"_s)));
-            QVERIFY(m_server->containers().add(pos, 5));
-            m_server->containers().find(pos)->stacks[0] = stack("qtcraft:diamond", 1);
+            QVERIFY(ensureEntity(pos));
+            m_server->blockEntities().container(pos)->stacks[0] = stack("qtcraft:diamond", 1);
             hoppers.append(pos);
         }
         for (int dx = -32; dx <= 132; dx += 16) {
@@ -88,7 +88,7 @@ private slots:
         ticks(bound);
         int served = 0;
         for (const QcBlockPos &pos : std::as_const(hoppers)) {
-            const QcContainerManager::Container *below = m_server->containers().find(pos.offset(0, -1, 0));
+            const QcBlockEntities::Container *below = m_server->blockEntities().container(pos.offset(0, -1, 0));
             served += below && below->stacks.value(0).count == 1 ? 1 : 0;
         }
         QCOMPARE(served, count);
@@ -189,7 +189,7 @@ private slots:
         ticks(1);
         ticks(3);
         const QcBlockPos first = at(1, 0, 5);
-        const quint64 left = m_server->circuitState().hoppers.readyAt.value(first) - m_server->tickCount();
+        const quint64 left = m_server->blockEntities().container(first)->readyAt - m_server->tickCount();
         QVERIFY(left > 0 && left < 8);
         QVERIFY(m_server->save().has_value());
         cleanup();
@@ -197,7 +197,9 @@ private slots:
         // Read right after opening the world, before any tick.
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
-        const quint64 loadedLeft = m_server->circuitState().hoppers.readyAt.value(first) - m_server->tickCount();
+        const QcBlockEntities::Container *loaded = m_server->blockEntities().container(first);
+        QVERIFY(loaded);
+        const quint64 loadedLeft = loaded->readyAt - m_server->tickCount();
         QCOMPARE(loadedLeft, left);
         cleanup();
         join(config);

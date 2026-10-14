@@ -180,7 +180,7 @@ private slots:
         // The player looks north, so the furnace's front faces south, back at the player.
         QCOMPARE(m_server->world().blockAt(pos),
                  std::optional<QcBlockId>(m_content->withProperty(id("qtcraft:furnace"), u"facing"_s, u"south"_s)));
-        QVERIFY(m_server->machines().find(pos));
+        QVERIFY(m_server->blockEntities().machine(pos));
         // Machine slots mean nothing before a machine is open.
         chat(u"/give iron_ore 3"_s);
         move(slotOf(item("qtcraft:iron_ore")), input);
@@ -220,7 +220,7 @@ private slots:
 
         // After closing, the machine slots are invalid again.
         send(QcMsg::CloseMachine{});
-        QVERIFY(!m_server->machines().find(pos)->stacks[0].isEmpty());
+        QVERIFY(!m_server->blockEntities().machine(pos)->stacks[0].isEmpty());
         move(input, 21);
         QCOMPARE(countOf(item("qtcraft:iron_ore")), 0);
         move(slotOf(item("qtcraft:dirt")), fuel);
@@ -334,7 +334,7 @@ private slots:
         ticks(1);
 
         QCOMPARE(m_server->world().blockAt(pos), std::optional<QcBlockId>(qcAirBlockId));
-        QVERIFY(!m_server->machines().find(pos));
+        QVERIFY(!m_server->blockEntities().machine(pos));
         QVERIFY(m_client->machineClosed);
         QCOMPARE(droppedCount(item("qtcraft:iron_ore")), 3);
         QCOMPARE(droppedCount(item("qtcraft:coal")), 1);
@@ -353,33 +353,37 @@ private slots:
         chat(u"/give coal 2"_s);
         move(slotOf(item("qtcraft:iron_ore")), input);
         move(slotOf(item("qtcraft:coal")), fuel);
-        const QcMachineManager::Machine before = *m_server->machines().find(pos);
+        const QcBlockEntities::Machine before = *m_server->blockEntities().machine(pos);
         QCOMPARE(before.stacks[1].count, 1);
         QVERIFY(before.burnRemaining > 0.0);
         QVERIFY(m_server->stop().has_value());
-        QVERIFY(QFile::exists(dir.filePath(u"machines.qce"_s)));
+        // The furnace is kept with its chunk, in the block-entity file of its region (decision E-358).
+        const QcChunkPos region = QcWorldStorage::regionOf(pos.chunk());
+        const QString path = dir.filePath(u"blockentities/r.%1.%2.qcb"_s.arg(region.x).arg(region.z));
+        QVERIFY(QFile::exists(path));
+        QVERIFY(!QFile::exists(dir.filePath(u"machines.qce"_s)));
         m_client.reset();
         config.viewDistance = 1;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
-        const QcMachineManager::Machine *after = m_server->machines().find(pos);
+        const QcBlockEntities::Machine *after = m_server->blockEntities().machine(pos);
         QVERIFY(after);
         QCOMPARE(after->stacks, before.stacks);
         QCOMPARE(after->burnRemaining, before.burnRemaining);
         QCOMPARE(after->burnSeconds, 80.0);
         QCOMPARE(after->progress, before.progress);
 
-        // A damaged machine file stops the world from opening with a message naming it.
+        // A damaged block-entity file stops the world from opening with a message naming it.
         QVERIFY(m_server->stop().has_value());
         m_server.reset();
-        QFile file(dir.filePath(u"machines.qce"_s));
+        QFile file(path);
         QVERIFY(file.open(QIODevice::ReadWrite));
         file.resize(file.size() - 4);
         file.close();
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         const QcStatus opened = m_server->openWorld();
         QVERIFY(!opened.has_value());
-        QVERIFY2(opened.error().contains(u"machines.qce"_s), qPrintable(opened.error()));
+        QVERIFY2(opened.error().contains(path), qPrintable(opened.error()));
     }
 
     void crowdedCraftingGridSpillsOntoTheGround()

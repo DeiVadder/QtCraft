@@ -1,21 +1,17 @@
-#include "QcServerItemsAndPlants.h"
+#include "QcServerPlants.h"
 
 #include "QcBlockRules.h"
 #include "QcPhysics.h"
 #include "QcServerBlocks.h"
-#include "QcServerInventory.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
-#include "QcSoundKeys.h"
 
 #include <array>
 
-QcServerItemsAndPlants::QcServerItemsAndPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks,
-                                               QcServerInventory &inventory)
+QcServerPlants::QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks)
     : m_state(state)
     , m_sounds(sounds)
     , m_blocks(blocks)
-    , m_inventory(inventory)
 {
     // Items that plant themselves: they place a crop with a plantChance (decision E-294).
     const QcContentRegistry &content = *m_state.content;
@@ -27,36 +23,17 @@ QcServerItemsAndPlants::QcServerItemsAndPlants(QcServerState &state, QcServerSou
     }
 }
 
-void QcServerItemsAndPlants::tickItems()
+void QcServerPlants::plantItems(const QList<QcItemEntityManager::Item> &despawned)
 {
-    const double dt = QcPhysics::tickDuration;
-    QList<QcItemEntityManager::PlayerView> players;
-    for (const auto &client : m_state.clients) {
-        if (client->state == QcServerClient::State::Playing) {
-            players.append({client->entityId, client->motion.position, !client->dead});
-        }
-    }
-
-    QSet<QcServerClient *> changed;
-    const QList<QcItemEntityManager::Item> despawned = m_state.items.tick(
-        m_state.world, players, dt,
-        {[this](const QcVec3 &position) { return m_state.isLoadedAt(QcPhysics::blockContaining(position)); },
-         [this, &changed](quint32 entityId, QcItemStack stack) { return giveToPlayer(entityId, stack, changed); },
-         [this] { return m_state.newEntityId(); }});
-
-    for (QcServerClient *client : std::as_const(changed)) {
-        m_inventory.send(*client);
-    }
     for (const QcItemEntityManager::Item &item : despawned) {
         tryPlant(item);
     }
-
     if (++m_itemTicks % seedCheckTicks == 0) {
         plantSeeds();
     }
 }
 
-void QcServerItemsAndPlants::plantSeeds()
+void QcServerPlants::plantSeeds()
 {
     struct Planting
     {
@@ -90,7 +67,7 @@ void QcServerItemsAndPlants::plantSeeds()
     }
 }
 
-std::optional<QcBlockPos> QcServerItemsAndPlants::seedTarget(const QcItemEntityManager::Item &item, QcBlockId crop,
+std::optional<QcBlockPos> QcServerPlants::seedTarget(const QcItemEntityManager::Item &item, QcBlockId crop,
                                                              const QSet<QcBlockPos> &planned)
 {
     // The item lies on the top of the block below its feet (farmland is lower than a full block).
@@ -110,7 +87,7 @@ std::optional<QcBlockPos> QcServerItemsAndPlants::seedTarget(const QcItemEntityM
     return std::nullopt;
 }
 
-bool QcServerItemsAndPlants::isFreeSoil(QcBlockPos ground, QcBlockId crop) const
+bool QcServerPlants::isFreeSoil(QcBlockPos ground, QcBlockId crop) const
 {
     const QcBlockPos target = ground.offset(0, 1, 0);
     const std::optional<QcBlockId> soil = m_state.world.blockAt(ground);
@@ -121,39 +98,22 @@ bool QcServerItemsAndPlants::isFreeSoil(QcBlockPos ground, QcBlockId crop) const
     return QcBlockRules::isSupported(m_state.world, target, crop);
 }
 
-int QcServerItemsAndPlants::giveToPlayer(quint32 entityId, QcItemStack stack, QSet<QcServerClient *> &changed)
-{
-    for (const auto &client : m_state.clients) {
-        if (client->entityId != entityId || client->state != QcServerClient::State::Playing) {
-            continue;
-        }
-
-        const int left = client->inventory.add(stack.item, stack.count, *m_state.content, stack.damage);
-        if (left < stack.count) {
-            changed.insert(client.get());
-            m_sounds.play(QString::fromLatin1(QcSoundKeys::itemPickup), client->motion.position, 0.6f);
-        }
-        return left;
-    }
-    return stack.count;
-}
-
-void QcServerItemsAndPlants::tickPlants()
+void QcServerPlants::tick()
 {
     const double dt = QcPhysics::tickDuration;
     const auto setBlock = [this](QcBlockPos pos, QcBlockId block) {
         m_blocks.setAndBroadcast(pos, block);
         return m_state.world.blockAt(pos) == block;
     };
-    m_state.plants.tick(
-        m_state.world, dt, [this](QcBlockPos pos) { return m_state.isLoadedAt(pos); }, setBlock,
-        [this](QcBlockPos pos) { m_blocks.breakBlock(pos, true); });
+    m_state.plants.tick(m_state.world, m_state.blockEntities(), dt,
+                        {[this](QcBlockPos pos) { return m_state.isLoadedAt(pos); }, setBlock,
+                         [this](QcBlockPos pos) { m_blocks.breakBlock(pos, true); }});
     if (m_state.info.randomTicks) {
         m_state.growth.tick(m_state.world, setBlock);
     }
 }
 
-void QcServerItemsAndPlants::tryPlant(const QcItemEntityManager::Item &item)
+void QcServerPlants::tryPlant(const QcItemEntityManager::Item &item)
 {
     const QcContentRegistry &content = *m_state.content;
     const QcItemDefinition &definition = content.item(item.stack.item);
@@ -170,8 +130,6 @@ void QcServerItemsAndPlants::tryPlant(const QcItemEntityManager::Item &item)
         return;
     }
 
+    // Setting the sapling starts its timer (QcServerBlocks::setQuietly).
     m_blocks.setAndBroadcast(pos, *sapling);
-    if (m_state.world.blockAt(pos) == *sapling) {
-        m_state.plants.saplingPlaced(pos, *sapling);
-    }
 }

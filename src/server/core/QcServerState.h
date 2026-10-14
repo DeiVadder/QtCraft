@@ -3,13 +3,13 @@
 #include "QcAccessList.h"
 #include "QcArmourStandManager.h"
 #include "QcCircuitState.h"
-#include "QcContainerManager.h"
 #include "QcContentRegistry.h"
 #include "QcFallingBlockManager.h"
 #include "QcIdentityStore.h"
 #include "QcItemEntityManager.h"
 #include "QcLiquidFlow.h"
-#include "QcMachineManager.h"
+#include "QcHopperQueue.h"
+#include "QcMachineRules.h"
 #include "QcMobManager.h"
 #include "QcMovingBlocks.h"
 #include "QcPermission.h"
@@ -55,7 +55,14 @@ struct QcServerState
     QcPermission permissionOf(const QcServerClient &client) const;
     // The contents of the container or machine at `pos` changed (a screen, a hopper, a furnace):
     // comparators reading it and hoppers next to it look again (decisions E-343, E-344).
-    void noteContents(QcBlockPos pos) { circuits.noteContents(world, pos); }
+    void noteContents(QcBlockPos pos)
+    {
+        hoppers.touched.insert(pos);
+        circuits.noteContents(world, pos);
+    }
+    // State that belongs to single blocks (decision E-357).
+    QcBlockEntities &blockEntities() { return world.blockEntities(); }
+    const QcBlockEntities &blockEntities() const { return world.blockEntities(); }
     // Hands the limits of the config to the parts that keep their own copy (decision E-349).
     void applyLimits();
 
@@ -82,13 +89,14 @@ struct QcServerState
     QcItemEntityManager items;
     QcPlantManager plants;
     QcPlantGrowth growth;
-    QcMachineManager machines;
-    QcContainerManager containers;
+    QcMachineRules machineRules;
     QcLiquidFlow liquids;
     QcFallingBlockManager falling;
     QcArmourStandManager stands;
-    // Signal Dust circuits (decision E-335) and the blocks pistons move as the clients see them.
+    // Signal Dust circuits (decision E-335), the hoppers to look at (decision E-344) and the blocks
+    // pistons move as the clients see them.
     QcCircuitState circuits;
+    QcHopperQueue hoppers;
     QcMovingBlocks movingBlocks;
     QRandomGenerator random;
     // Separate from random so that sounds never change drops or spawns.

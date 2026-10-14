@@ -95,7 +95,7 @@ bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message
     stand.item = held->name;
     if (!spawn(stand)) {
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many armour stands in the world (at most %1)"),
-                                                    {QString::number(QcArmourStandManager::maxStands)}));
+                                                    {QString::number(m_state.stands.limit())}));
         m_inventory.send(client);
         return true;
     }

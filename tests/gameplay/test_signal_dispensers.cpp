@@ -131,8 +131,8 @@ private slots:
         for (const auto &[pos, facing] : {std::pair{low, u"down"_s}, std::pair{high, u"up"_s}}) {
             putAt(pos, *m_content->stateId(u"qtcraft:signal_dispenser[facing=%1]"_s.arg(facing)));
             putAt(pos.offset(1, 0, 0), *m_content->stateId(u"qtcraft:stone"_s));
-            QVERIFY(m_server->containers().add(pos, 9));
-            m_server->containers().find(pos)->stacks[0] = stack("qtcraft:water_bucket", 1);
+            QVERIFY(ensureEntity(pos));
+            m_server->blockEntities().container(pos)->stacks[0] = stack("qtcraft:water_bucket", 1);
         }
         ticks(2);
         for (const QcBlockPos &pos : {low, high}) {
@@ -267,8 +267,8 @@ private slots:
         const QcBlockPos dispenser = m_feet.offset(-1, 0, 0);
         putAt(dispenser, *m_content->stateId(u"qtcraft:signal_dispenser[facing=east]"_s));
         putAt(dispenser.offset(0, 0, 1), *m_content->stateId(u"qtcraft:lever[attach=floor]"_s));
-        QVERIFY(m_server->containers().add(dispenser, 9));
-        m_server->containers().find(dispenser)->stacks[0] = stack("qtcraft:iron_boots", 1);
+        QVERIFY(ensureEntity(dispenser));
+        m_server->blockEntities().container(dispenser)->stacks[0] = stack("qtcraft:iron_boots", 1);
         ticks(2);
         QVERIFY(m_server->circuits().use(dispenser.offset(0, 0, 1)));
         ticks(6);
@@ -323,8 +323,8 @@ private slots:
         const QcBlockPos dispenser = m_feet.offset(-1, 0, 0);
         putAt(dispenser, *m_content->stateId(u"qtcraft:signal_dispenser[facing=east]"_s));
         putAt(dispenser.offset(0, 0, 1), *m_content->stateId(u"qtcraft:lever[attach=floor]"_s));
-        QVERIFY(m_server->containers().add(dispenser, 9));
-        m_server->containers().find(dispenser)->stacks[0] = stack("qtcraft:iron_helmet", 1);
+        QVERIFY(ensureEntity(dispenser));
+        m_server->blockEntities().container(dispenser)->stacks[0] = stack("qtcraft:iron_helmet", 1);
         ticks(2);
         QVERIFY(m_server->circuits().use(dispenser.offset(0, 0, 1)));
         ticks(6);

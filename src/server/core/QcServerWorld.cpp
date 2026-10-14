@@ -11,32 +11,22 @@
 QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator)
     : m_content(std::move(content))
     , m_generator(std::move(generator))
+    , m_blockEntities(m_content)
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
 {
     const auto stateCount = std::size_t(m_content->stateCount());
-    std::vector<bool> damaging(stateCount);
-    std::vector<bool> growing(stateCount);
-    std::vector<bool> circuits(stateCount);
-    std::vector<bool> plates(stateCount);
+    std::vector<QcSectionMarks::Traits> traits(stateCount);
     std::vector<bool> hoppers(stateCount);
     m_contactDamage.resize(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcBlockDefinition &block = m_content->block(QcBlockId(id));
         m_contactDamage[id] = block.contactDamage;
-        damaging[id] = block.contactDamage > 0.0;
-        growing[id] = block.hasRandomTicks();
-        // Hoppers react only to power, which comes from components that are marked themselves; a
-        // flow of water next to hoppers is no circuit work (decision E-344).
-        circuits[id] = block.signal.isComponent() && block.signal.kind != QcSignalKind::Hopper;
-        plates[id] = block.signal.kind == QcSignalKind::Plate;
+        traits[id] = QcSectionMarks::traitsOf(block);
         hoppers[id] = block.signal.kind == QcSignalKind::Hopper;
     }
 
-    m_damagingSections = QcSectionMarks(std::move(damaging));
-    m_growingSections = QcSectionMarks(std::move(growing));
-    m_signalSections = QcSectionMarks(std::move(circuits));
-    m_plateSections = QcSectionMarks(std::move(plates));
+    m_marks = QcSectionMarks(std::move(traits));
     m_hoppers = QcBlockIndex(std::move(hoppers));
 }
 
@@ -148,7 +138,7 @@ double QcServerWorld::contactDamageIn(const QcAabb &box) const
     // Outside the world height there is only air, which does no damage.
     bounds.minY = std::max(int(std::floor(box.min.y + inset)), 0);
     bounds.maxY = std::min(int(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
-    if (m_damagingSections.isEmpty() || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY || bounds.minZ > bounds.maxZ) {
+    if (!mayHaveContactDamage() || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY || bounds.minZ > bounds.maxZ) {
         return 0.0;
     }
 
@@ -156,7 +146,7 @@ double QcServerWorld::contactDamageIn(const QcAabb &box) const
     for (int chunkX = qcFloorDiv(bounds.minX, size); chunkX <= qcFloorDiv(bounds.maxX, size); ++chunkX) {
         for (int chunkZ = qcFloorDiv(bounds.minZ, size); chunkZ <= qcFloorDiv(bounds.maxZ, size); ++chunkZ) {
             const QcChunkPos pos{chunkX, chunkZ};
-            const quint32 sections = m_damagingSections.sectionsOf(pos);
+            const quint32 sections = m_marks.sectionsOf(pos, QcBlockTrait::ContactDamage);
             if (sections == 0) {
                 continue;
             }
@@ -174,11 +164,15 @@ double QcServerWorld::contactDamageIn(const QcAabb &box) const
 
 void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
 {
-    m_damagingSections.noteChunk(pos, chunk);
-    m_growingSections.noteChunk(pos, chunk);
-    m_signalSections.noteChunk(pos, chunk);
-    m_plateSections.noteChunk(pos, chunk);
+    m_marks.noteChunk(pos, chunk);
     m_hoppers.noteChunk(pos, chunk);
+    m_blockEntities.chunkArrived(chunk, m_marks.sectionsOf(pos, QcBlockTrait::BlockEntity));
+}
+
+void QcServerWorld::forgetSections(QcChunkPos pos)
+{
+    m_marks.forgetChunk(pos);
+    m_hoppers.forgetChunk(pos);
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
@@ -203,22 +197,15 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
         return;
     }
     m_chunks.remove(pos);
-    m_damagingSections.forgetChunk(pos);
-    m_growingSections.forgetChunk(pos);
-    m_signalSections.forgetChunk(pos);
-    m_plateSections.forgetChunk(pos);
-    m_hoppers.forgetChunk(pos);
+    forgetSections(pos);
+    m_blockEntities.chunkLeft(pos);
 }
 
 std::shared_ptr<QcChunk> QcServerWorld::takeChunk(QcChunkPos pos)
 {
     std::shared_ptr<QcChunk> chunk = m_chunks.take(pos);
     m_modified.remove(pos);
-    m_damagingSections.forgetChunk(pos);
-    m_growingSections.forgetChunk(pos);
-    m_signalSections.forgetChunk(pos);
-    m_plateSections.forgetChunk(pos);
-    m_hoppers.forgetChunk(pos);
+    forgetSections(pos);
     return chunk;
 }
 
@@ -230,11 +217,8 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
     }
 
     *it = m_generator->generate(pos);
-    m_damagingSections.forgetChunk(pos);
-    m_growingSections.forgetChunk(pos);
-    m_signalSections.forgetChunk(pos);
-    m_plateSections.forgetChunk(pos);
-    m_hoppers.forgetChunk(pos);
+    forgetSections(pos);
+    m_blockEntities.forgetChunk(pos);
     noteSections(pos, **it);
     m_modified.insert(pos);
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos));
@@ -256,12 +240,11 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
         *it = std::make_shared<QcChunk>(**it);
     }
 
+    const QcBlockId before = (*it)->block(pos.localX(), pos.y, pos.localZ());
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
-    m_damagingSections.noteBlock(pos, block);
-    m_growingSections.noteBlock(pos, block);
-    m_signalSections.noteBlock(pos, block);
-    m_plateSections.noteBlock(pos, block);
+    m_marks.noteBlock(pos, block);
     m_hoppers.noteBlock(pos, block);
+    m_blockEntities.placed(pos, before, block);
 
     m_modified.insert(pos.chunk());
     m_dirtyRegions.insert(QcWorldStorage::regionOf(pos.chunk()));

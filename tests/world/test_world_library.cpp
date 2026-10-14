@@ -33,6 +33,30 @@ private slots:
         QVERIFY(!QDir(first->directory).exists());
     }
 
+    void worldOfAnOlderVersionIsListedAsTooOld()
+    {
+        // The world in the format before stage 31.1 (decision E-356) and a current one.
+        QTemporaryDir root;
+        const QDir old(QStringLiteral(QTCRAFT_OLD_WORLD));
+        QVERIFY(QDir().mkpath(root.filePath(u"Old/regions"_s)));
+        const QStringList files = old.entryList(QDir::Files);
+        for (const QString &file : files) {
+            QVERIFY(QFile::copy(old.filePath(file), root.filePath(u"Old/"_s + file)));
+        }
+        const QcWorldLibrary library(root.path());
+        QVERIFY(library.create(u"New"_s, 1).has_value());
+
+        const QList<QcWorldLibrary::Entry> entries = library.list();
+        QCOMPARE(entries.size(), 2);
+        const auto oldEntry = std::ranges::find(entries, u"Old"_s, &QcWorldLibrary::Entry::folder);
+        const auto newEntry = std::ranges::find(entries, u"New"_s, &QcWorldLibrary::Entry::folder);
+        QVERIFY(oldEntry != entries.end() && newEntry != entries.end());
+        QVERIFY(oldEntry->tooOld);
+        QVERIFY(!oldEntry->error.isEmpty());
+        QVERIFY(!newEntry->tooOld);
+        QVERIFY(newEntry->error.isEmpty());
+    }
+
     void refusesToDeleteOutsideTheLibrary_data()
     {
         QTest::addColumn<QString>("folder");

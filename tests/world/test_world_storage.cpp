@@ -236,7 +236,6 @@ private slots:
         QcWorldEntities entities;
         entities.items.append({{*content->itemId(u"a:stone"_s), 12, 0}, {1.5, 64.0, -2.5}, {0.5, -1.0, 0.0}, 0.25, 42.0});
         entities.items.append({{*content->itemId(u"mod:gem"_s), 3, 0}, {4.5, 70.0, 4.5}, {}, 0.0, 1.0});
-        entities.saplings.append({{7, 65, -9}, 33.5});
         QVERIFY(storage.writeEntities(entities).has_value());
 
         const auto withoutMod = registryWith({u"a:stone"_s});
@@ -249,9 +248,6 @@ private slots:
         QCOMPARE(stone.velocity, (QcVec3{0.5, -1.0, 0.0}));
         QCOMPARE(stone.pickupDelay, 0.25);
         QCOMPARE(stone.age, 42.0);
-        QCOMPARE(read->saplings.size(), 1);
-        QCOMPARE(read->saplings.first().pos, (QcBlockPos{7, 65, -9}));
-        QCOMPARE(read->saplings.first().remaining, 33.5);
         QCOMPARE(warnings.size(), 1);
 
         // A flipped byte fails the checksum.
@@ -391,7 +387,7 @@ private slots:
         QVERIFY(without->fallingBlocks.isEmpty());
         QVERIFY(warnings.join(u'\n').contains(u"a:sand"_s));
 
-        // A version 1 file (items and saplings only) still loads.
+        // A file of an older development version (version 1: items and saplings) is refused.
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
@@ -407,10 +403,8 @@ private slots:
         old.close();
 
         const auto oldRead = storage.readEntities(warnings);
-        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
-        QCOMPARE(oldRead->saplings.size(), qsizetype(1));
-        QCOMPARE(oldRead->saplings[0].remaining, 33.0);
-        QVERIFY(oldRead->fallingBlocks.isEmpty());
+        QVERIFY(!oldRead.has_value());
+        QVERIFY(oldRead.error().contains(u"older development version"_s));
     }
 
     void overfullStacksAreSplitOnLoad()
@@ -459,12 +453,8 @@ private slots:
         QVERIFY(!storage.readEntities(warnings).has_value());
 
         entities.items.clear();
-        entities.saplings.append({{0, 9999, 0}, 1.0});
-        QVERIFY(storage.writeEntities(entities).has_value());
-        QVERIFY(!storage.readEntities(warnings).has_value());
 
         // Out-of-range values are clamped instead.
-        entities.saplings.clear();
         entities.items.append({{*content->itemId(u"a:stone"_s), 500, 0}, {0.5, 64.0, 0.5}, {}, 99.0, 1e6});
         QVERIFY(storage.writeEntities(entities).has_value());
         const auto read = storage.readEntities(warnings);
@@ -745,48 +735,6 @@ private slots:
         QCOMPARE(reread->value({0, 0})->block(6, 70, 4), loaded->block(6, 70, 4));
     }
 
-    void containersRoundTripAndUnknownItems()
-    {
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
-        const QcWorldStorage storage(dir.path(), content);
-        QStringList warnings;
-        QVERIFY(storage.readContainers(warnings)->isEmpty());
-
-        QcContainerManager::Container chest{{4, 70, -9}, QList<QcItemStack>(27)};
-        chest.stacks[0] = {*content->itemId(u"a:stone"_s), 64, 0};
-        chest.stacks[26] = {*content->itemId(u"mod:gem"_s), 3, 0};
-        QcContainerManager::Container small{{-4, 10, 9}, QList<QcItemStack>(5)};
-        QVERIFY(storage.writeContainers({chest, small}).has_value());
-
-        const auto withoutMod = registryWith({u"a:stone"_s});
-        const auto read = QcWorldStorage(dir.path(), withoutMod).readContainers(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->size(), 2);
-        QCOMPARE(read->at(0).pos, chest.pos);
-        QCOMPARE(read->at(0).stacks.size(), 27);
-        QCOMPARE(read->at(0).stacks[0], (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 64, 0}));
-        QVERIFY(read->at(0).stacks[26].isEmpty());
-        QCOMPARE(read->at(1).stacks.size(), 5);
-        QCOMPARE(warnings.size(), 1);
-
-        // A damaged file stops loading with a message.
-        QFile file(dir.filePath(u"containers.qce"_s));
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        file.seek(20);
-        file.write("\x7f", 1);
-        file.close();
-        const auto damaged = storage.readContainers(warnings);
-        QVERIFY(!damaged.has_value());
-        QVERIFY(damaged.error().contains(u"containers.qce"_s));
-
-        // A container without slots cannot come from a storage block: the file is damaged.
-        QVERIFY(storage.writeContainers({chest, {{1, 2, 3}, {}}}).has_value());
-        const auto empty = storage.readContainers(warnings);
-        QVERIFY(!empty.has_value());
-        QVERIFY(empty.error().contains(u"container 1"_s));
-    }
-
     void blockUpdatesRoundTrip()
     {
         QTemporaryDir dir;
@@ -804,120 +752,6 @@ private slots:
         // Positions outside the world make the file damaged.
         QVERIFY(storage.writeBlockUpdates({{0, 256, 0}}).has_value());
         QVERIFY(!storage.readBlockUpdates().has_value());
-    }
-
-    void machinesRoundTripAndUnknownItems()
-    {
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
-        const QcWorldStorage storage(dir.path(), content);
-        QStringList warnings;
-        QVERIFY(storage.readMachines(warnings)->isEmpty());
-
-        QcMachineManager::Machine furnace;
-        furnace.pos = {-12, 64, 7};
-        furnace.stacks = {QcItemStack{*content->itemId(u"a:stone"_s), 9, 0}, QcItemStack{*content->itemId(u"mod:gem"_s), 2, 0},
-                          QcItemStack{}};
-        furnace.burnRemaining = 12.5;
-        furnace.burnSeconds = 80.0;
-        furnace.progress = 3.25;
-
-        QcMachineManager::Machine empty;
-        empty.pos = {100, 3, -100};
-        QVERIFY(storage.writeMachines({furnace, empty}).has_value());
-
-        const auto withoutMod = registryWith({u"a:stone"_s});
-        const auto read = QcWorldStorage(dir.path(), withoutMod).readMachines(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->size(), 2);
-        const QcMachineManager::Machine &loaded = read->at(0);
-        QCOMPARE(loaded.pos, furnace.pos);
-        QCOMPARE(loaded.stacks[0], (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 9, 0}));
-        QVERIFY(loaded.stacks[1].isEmpty());
-        QCOMPARE(loaded.burnRemaining, 12.5);
-        QCOMPARE(loaded.burnSeconds, 80.0);
-        QCOMPARE(loaded.progress, 3.25);
-        QCOMPARE(read->at(1).pos, empty.pos);
-        QCOMPARE(warnings.size(), 1);
-    }
-
-    void damagedMachineFilesFailWithAMessage_data()
-    {
-        QTest::addColumn<int>("cut");
-        QTest::addColumn<int>("flipAt");
-        QTest::newRow("truncated") << 6 << -1;
-        QTest::newRow("only the header") << -1 << 14;
-        QTest::newRow("bit flip") << 0 << 20;
-    }
-
-    void damagedMachineFilesFailWithAMessage()
-    {
-        QFETCH(int, cut);
-        QFETCH(int, flipAt);
-
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s});
-        const QcWorldStorage storage(dir.path(), content);
-        QcMachineManager::Machine furnace;
-        furnace.pos = {1, 64, 1};
-        furnace.stacks[0] = {*content->itemId(u"a:stone"_s), 3, 0};
-        QVERIFY(storage.writeMachines({furnace}).has_value());
-
-        const QString path = dir.filePath(u"machines.qce"_s);
-        QFile file(path);
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        QByteArray data = file.readAll();
-        if (cut > 0) {
-            data.chop(cut);
-        } else if (cut < 0) {
-            data = data.left(flipAt);
-        } else {
-            data[flipAt] = char(data[flipAt] ^ 0x40);
-        }
-        file.resize(0);
-        file.seek(0);
-        file.write(data);
-        file.close();
-
-        QStringList warnings;
-        const auto read = storage.readMachines(warnings);
-        QVERIFY(!read.has_value());
-        QVERIFY2(read.error().contains(path), qPrintable(read.error()));
-    }
-
-    void implausibleMachinesAreRejected()
-    {
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s});
-        const QcWorldStorage storage(dir.path(), content);
-        QcMachineManager::Machine machine;
-        machine.pos = {1, 64, 1};
-        QStringList warnings;
-
-        // Two machines at one position, positions outside the world and broken times are damage.
-        QVERIFY(storage.writeMachines({machine, machine}).has_value());
-        QVERIFY(!storage.readMachines(warnings).has_value());
-
-        machine.pos = {1, -3, 1};
-        QVERIFY(storage.writeMachines({machine}).has_value());
-        QVERIFY(!storage.readMachines(warnings).has_value());
-
-        machine.pos = {1, 64, 1};
-        machine.progress = std::numeric_limits<double>::infinity();
-        QVERIFY(storage.writeMachines({machine}).has_value());
-        QVERIFY(!storage.readMachines(warnings).has_value());
-
-        // Out-of-range values are clamped instead.
-        machine.progress = -5.0;
-        machine.burnSeconds = 10.0;
-        machine.burnRemaining = 50.0;
-        machine.stacks[0] = {*content->itemId(u"a:stone"_s), 500, 0};
-        QVERIFY(storage.writeMachines({machine}).has_value());
-        const auto read = storage.readMachines(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->first().progress, 0.0);
-        QCOMPARE(read->first().burnRemaining, 10.0);
-        QCOMPARE(read->first().stacks[0].count, 64);
     }
 
     void missingPlayerIsNotAnError()

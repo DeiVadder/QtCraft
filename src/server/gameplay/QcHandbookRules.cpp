@@ -17,7 +17,7 @@
 #include "QcRaycast.h"
 #include "QcServer.h"
 #include "QcServerCombat.h"
-#include "QcServerItemsAndPlants.h"
+#include "QcServerPlants.h"
 #include "QcWorldCommands.h"
 #include "QcWorldConstants.h"
 
@@ -63,7 +63,7 @@ QMap<QString, double> values()
         {u"hunger.sprintMinutesForFullBar"_s,
          std::round(QcHunger::minutesForFullBar(QcHunger::sprintPerMetre, QcPhysics::sprintSpeed))},
         {u"farming.randomTickSeconds"_s, std::round(QcPlantGrowth::randomTickSeconds)},
-        {u"farming.seedCheckSeconds"_s, QcServerItemsAndPlants::seedCheckTicks * QcPhysics::tickDuration},
+        {u"farming.seedCheckSeconds"_s, QcServerPlants::seedCheckTicks * QcPhysics::tickDuration},
         {u"farming.youngFeedShare"_s, 100.0 * QcMobBreeding::feedGrowUpShare},
         {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},

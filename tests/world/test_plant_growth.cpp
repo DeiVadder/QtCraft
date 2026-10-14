@@ -144,19 +144,23 @@ private slots:
     {
         const auto world = makeWorld();
         // The test terrain has no sugar cane, so no section is ticked.
-        QVERIFY(world->growingSections().isEmpty());
+        constexpr QcBlockTrait growing = QcBlockTrait::RandomTicks;
+        QVERIFY(world->marks().isEmpty(growing));
 
         plantCane(*world, firstX);
         const QcChunkPos chunk = QcBlockPos{firstX, groundY + 1, plantZ}.chunk();
-        QCOMPARE(world->growingSections().chunks().size(), 1);
-        QCOMPARE(world->growingSections().sectionsOf(chunk), 1u << ((groundY + 1) / QcWorld::sectionHeight));
+        QCOMPARE(world->marks().chunkCount(growing), 1);
+        QCOMPARE(world->marks().sectionsOf(chunk, growing), 1u << ((groundY + 1) / QcWorld::sectionHeight));
 
         // A cane placed in a higher section marks that section too.
         QVERIFY(world->setBlock({firstX + 2, groundY + 20, plantZ}, id("sugar_cane")));
-        QCOMPARE(world->growingSections().sectionsOf(chunk),
+        QCOMPARE(world->marks().sectionsOf(chunk, growing),
                  (1u << ((groundY + 1) / QcWorld::sectionHeight)) | (1u << ((groundY + 20) / QcWorld::sectionHeight)));
-        QVERIFY(!world->growingSections().isMarked(id("stone")));
-        QVERIFY(world->growingSections().isMarked(id("sugar_cane")));
+        QVERIFY(!world->marks().isMarked(id("stone"), growing));
+        QVERIFY(world->marks().isMarked(id("sugar_cane"), growing));
+        // Other traits of the same world are marked apart: no circuit, no contact damage here.
+        QVERIFY(world->marks().isEmpty(QcBlockTrait::Circuit));
+        QCOMPARE(world->marks().sectionsOf(chunk, QcBlockTrait::ContactDamage), 0u);
     }
 
     void markedChunksComeInAFixedOrderThatFollowsChanges()
@@ -164,26 +168,34 @@ private slots:
         // The random cells are drawn chunk by chunk in this order, so it must not depend on the
         // hash; it is sorted again only when chunks come or go.
         const QcBlockId marked = 1;
-        std::vector<bool> kinds(2, false);
-        kinds[marked] = true;
-        QcSectionMarks marks(kinds);
+        const QcBlockId other = 2;
+        constexpr QcBlockTrait growing = QcBlockTrait::RandomTicks;
+        std::vector<QcSectionMarks::Traits> traits(3, 0);
+        traits[marked] = QcSectionMarks::bit(growing);
+        traits[other] = QcSectionMarks::bit(QcBlockTrait::Plate);
+        QcSectionMarks marks(traits);
         marks.noteBlock({40, 3, -20}, marked);
         marks.noteBlock({-5, 70, 7}, marked);
         marks.noteBlock({-5, 3, -40}, marked);
         marks.noteBlock({0, 0, 0}, 0);
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
+        // A block of another trait leaves this order alone.
+        marks.noteBlock({100, 3, 100}, other);
+        QCOMPARE(marks.orderedChunks(growing), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::Plate), (QList<QcChunkPos>{{6, 6}}));
 
         // Another block in a known chunk, a new chunk, then one forgotten.
         marks.noteBlock({-6, 20, 8}, marked);
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
+        QCOMPARE(marks.orderedChunks(growing), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {2, -2}}));
         marks.noteBlock({1, 1, 1}, marked);
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {0, 0}, {2, -2}}));
+        QCOMPARE(marks.orderedChunks(growing), (QList<QcChunkPos>{{-1, -3}, {-1, 0}, {0, 0}, {2, -2}}));
         marks.forgetChunk({-1, 0});
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {0, 0}, {2, -2}}));
+        QCOMPARE(marks.orderedChunks(growing), (QList<QcChunkPos>{{-1, -3}, {0, 0}, {2, -2}}));
 
         // A chunk noted without marked blocks leaves the order.
         marks.noteChunk({0, 0}, QcChunk());
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{-1, -3}, {2, -2}}));
+        QCOMPARE(marks.orderedChunks(growing), (QList<QcChunkPos>{{-1, -3}, {2, -2}}));
+        QCOMPARE(marks.chunkCount(growing), 2);
+        QCOMPARE(marks.chunkCount(QcBlockTrait::Plate), 1);
     }
 
     void worldsLoadingChunksInAnotherOrderTickTheSameCells()
@@ -214,7 +226,7 @@ private slots:
             second.unloadChunk({-10 - i, 40 + i});
         }
         QCOMPARE(second.loadedChunkCount(), side * side);
-        QCOMPARE(first.growingSections().orderedChunks(), second.growingSections().orderedChunks());
+        QCOMPARE(first.marks().orderedChunks(QcBlockTrait::RandomTicks), second.marks().orderedChunks(QcBlockTrait::RandomTicks));
 
         // Every grown block with its tick, in the order it grew.
         const auto growAll = [&](QcServerWorld &world) {
@@ -242,23 +254,23 @@ private slots:
         world.loadChunk({2, 0});
         world.loadChunk({0, 1});
         world.loadChunk({0, 0});
-        const QcSectionMarks &marks = world.growingSections();
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
+        const QcSectionMarks &marks = world.marks();
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::RandomTicks), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
 
         // A chunk generated without plants is not in the order; regenerated with a cane it is.
         *withCane = false;
         world.loadChunk({1, 0});
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::RandomTicks), (QList<QcChunkPos>{{0, 0}, {0, 1}, {2, 0}}));
         *withCane = true;
         QVERIFY(world.regenerateChunk({1, 0}));
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {0, 1}, {1, 0}, {2, 0}}));
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::RandomTicks), (QList<QcChunkPos>{{0, 0}, {0, 1}, {1, 0}, {2, 0}}));
 
         // An unloaded chunk leaves it; one regenerated without plants too.
         world.unloadChunk({0, 1});
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {1, 0}, {2, 0}}));
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::RandomTicks), (QList<QcChunkPos>{{0, 0}, {1, 0}, {2, 0}}));
         *withCane = false;
         QVERIFY(world.regenerateChunk({2, 0}));
-        QCOMPARE(marks.orderedChunks(), (QList<QcChunkPos>{{0, 0}, {1, 0}}));
+        QCOMPARE(marks.orderedChunks(QcBlockTrait::RandomTicks), (QList<QcChunkPos>{{0, 0}, {1, 0}}));
     }
 
     void onlyTheTopOfARootedShortColumnGrows()

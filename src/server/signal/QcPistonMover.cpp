@@ -80,7 +80,7 @@ void QcPistonMover::extend(const QcPistonPlan &plan)
     if (base) {
         m_blocks.setAndBroadcast(plan.base, m_table.withFlag(*base, u"extended"_s, true));
     }
-    m_state.circuits.extending.insert(plan.base, m_state.tickCount);
+    m_state.blockEntities().memoryAt(plan.base).extendingSince = m_state.tickCount;
 
     QList<QcBlockPos> occupied{plan.head()};
     for (const QcBlockPos &cell : plan.moved) {
@@ -107,7 +107,9 @@ void QcPistonMover::retract(const QcPistonPlan &plan)
     if (const std::optional<QcBlockId> base = m_state.world.blockAt(plan.base)) {
         m_blocks.setAndBroadcast(plan.base, m_table.withFlag(*base, u"extended"_s, false));
     }
-    m_state.circuits.extending.remove(plan.base);
+    if (m_state.blockEntities().memory(plan.base)) {
+        m_state.blockEntities().memoryAt(plan.base).extendingSince.reset();
+    }
     m_sounds.play(QString::fromLatin1(QcSoundKeys::pistonIn), centreOf(plan.base));
 }
 
@@ -122,14 +124,10 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
         }
     }
 
-    // Contents first: setting the block at `to` keeps a container that is already there.
-    m_state.containers.relocate(from, to);
-    m_state.machines.relocate(from, to);
-    m_state.circuits.hoppers.relocate(from, to);
-    // A dispenser waiting to fire fires where it is now; other components look again anyway.
-    if (m_table.at(block).kind == QcSignalKind::Dispenser) {
-        m_state.circuits.schedule.relocate(from, to);
-    }
+    // Everything of the cell first (contents, cooldown, timers, memory, scheduled tick: a dispenser
+    // waiting to fire fires where it is now), so setting the block at `to` keeps it.
+    m_state.blockEntities().relocate(from, to);
+    m_state.hoppers.wake(to);
     m_blocks.setQuietly(to, block);
 
     // The clients see the source empty at once and the block sliding into its new cell.

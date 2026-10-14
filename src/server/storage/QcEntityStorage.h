@@ -4,7 +4,6 @@
 #include "QcFallingBlockManager.h"
 #include "QcItemEntityManager.h"
 #include "QcMobManager.h"
-#include "QcPlantManager.h"
 #include "QcResult.h"
 
 #include <QDataStream>
@@ -14,12 +13,10 @@
 
 #include <memory>
 
-// Dropped items, growing saplings and falling blocks of a world (entities.qce).
+// Dropped items and falling blocks of a world (entities.qce).
 struct QcWorldEntities
 {
     QList<QcItemEntityManager::Drop> items;
-    QList<QcPlantManager::Sapling> saplings;
-    // Since format 2 of entities.qce.
     QList<QcFallingBlockManager::Falling> fallingBlocks;
 };
 
@@ -30,7 +27,7 @@ struct QcWorldMobs
     QSet<QcChunkPos> populatedChunks;
 };
 
-// Entities of a world directory: dropped items, saplings and falling blocks (entities.qce) and
+// Entities of a world directory: dropped items and falling blocks (entities.qce) and
 // persistent creatures (mobs.qce). Items, blocks and creatures are stored by name.
 class QcEntityStorage
 {
@@ -54,8 +51,7 @@ private:
     // Adds a read drop of `count` items, split into stacks the item allows, up to maxStoredEntities
     // drops; returns the number of items left over.
     int addItem(QcItemEntityManager::Drop drop, QcItemId item, int count, int damage, QList<QcItemEntityManager::Drop> &items) const;
-    static QcStatus readSaplings(QDataStream &stream, const QString &path, QList<QcPlantManager::Sapling> &saplings);
-    QcStatus readFallingBlocks(QDataStream &stream, const QString &path, quint16 version, QList<QcFallingBlockManager::Falling> &blocks,
+    QcStatus readFallingBlocks(QDataStream &stream, const QString &path, QList<QcFallingBlockManager::Falling> &blocks,
                                QStringList &warnings) const;
 
     QString m_directory;

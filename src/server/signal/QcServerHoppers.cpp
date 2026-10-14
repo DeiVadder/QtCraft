@@ -75,14 +75,29 @@ void QcServerHoppers::tick()
 
     // Moved: rest for the cooldown, then look again. Nothing to do: sleep until woken.
     for (const QcBlockPos &hopper : std::as_const(moved)) {
-        m_state.circuits.hoppers.startCooldown(hopper, m_state.tickCount);
+        startCooldown(hopper);
     }
     m_stats.moved = moved.size();
 }
 
+void QcServerHoppers::startCooldown(QcBlockPos hopper)
+{
+    const quint64 ready = m_state.tickCount + quint64(m_state.hoppers.cooldownTicks);
+    if (QcBlockEntities::Container *container = m_state.blockEntities().container(hopper)) {
+        container->readyAt = ready;
+    }
+    m_state.hoppers.wakeAt(hopper, ready);
+}
+
+quint64 QcServerHoppers::readyAt(QcBlockPos hopper) const
+{
+    const QcBlockEntities::Container *container = m_state.blockEntities().container(hopper);
+    return container ? container->readyAt : 0;
+}
+
 void QcServerHoppers::wakeAround()
 {
-    QcHopperState &hoppers = m_state.circuits.hoppers;
+    QcHopperQueue &hoppers = m_state.hoppers;
     const QcBlockIndex &index = m_state.world.hoppers();
     QList<QcBlockPos> cells = m_state.world.hoppers().takeTouched();
     cells.append(QList<QcBlockPos>(hoppers.touched.begin(), hoppers.touched.end()));
@@ -116,7 +131,7 @@ void QcServerHoppers::wakeAround()
 
 QList<QcBlockPos> QcServerHoppers::actors()
 {
-    QcHopperState &hoppers = m_state.circuits.hoppers;
+    QcHopperQueue &hoppers = m_state.hoppers;
     QSet<QcBlockPos> due;
     hoppers.takeDue(m_state.tickCount, due);
     m_stats.woken = due.size();
@@ -128,8 +143,8 @@ QList<QcBlockPos> QcServerHoppers::actors()
             // Gone, unloaded or locked: unlocking or loading is a block change that wakes it.
             continue;
         }
-        if (hoppers.isCoolingDown(pos, m_state.tickCount)) {
-            hoppers.wakeAt(pos, hoppers.readyAt.value(pos));
+        if (const quint64 ready = readyAt(pos); ready > m_state.tickCount) {
+            hoppers.wakeAt(pos, ready);
             continue;
         }
         const std::optional<QcBlockFace> facing = m_table.at(*block).facing;
@@ -199,7 +214,7 @@ void QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
     // A hopper that was empty waits its cooldown before passing the item on (as in the reference).
     for (const QcBlockPos &target : std::as_const(received)) {
         if (m_state.world.hoppers().contains(target) && !moved.contains(target)) {
-            m_state.circuits.hoppers.startCooldown(target, m_state.tickCount);
+            startCooldown(target);
         }
     }
 }
@@ -211,7 +226,7 @@ void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
     QList<Pull> pulls;
     QList<QcBlockPos> searching;
     for (const QcBlockPos &hopper : hoppers) {
-        if (m_state.circuits.hoppers.isCoolingDown(hopper, m_state.tickCount)) {
+        if (readyAt(hopper) > m_state.tickCount) {
             continue;
         }
         if (std::optional<Pull> pull = pullFor(hopper, access, searching)) {

@@ -6,7 +6,7 @@
 #include "QcServerBlocks.h"
 #include "QcServerGameModes.h"
 #include "QcServerState.h"
-#include "QcSignalStorage.h"
+#include "QcBlockEntityRecords.h"
 
 #include <QDir>
 #include <QFile>
@@ -44,6 +44,14 @@ QcStatus QcServerPersistence::open()
 
     if (m_state.config.worldDirectory.isEmpty()) {
         return {};
+    }
+
+    // A world of an older development version is refused before anything of it is read or written,
+    // the lock file included (decision E-356): its format is not converted.
+    const int version = QcWorldStorage(m_state.config.worldDirectory, m_state.content).storedFormatVersion();
+    if (version > 0 && version < QcWorldInfo::oldestFormatVersion) {
+        m_worldTooOld = true;
+        return qcError(u"The world was saved by an older development version of QtCraft (format %1) and cannot be opened"_s.arg(version));
     }
 
     if (const QcStatus locked = lockWorld(); !locked) {
@@ -94,17 +102,10 @@ QcStatus QcServerPersistence::readWorldState(const QcWorldStorage &storage)
     if (const QcStatus read = readMobs(storage); !read) {
         return read;
     }
-    if (const QcStatus read = readMachines(storage); !read) {
-        return read;
-    }
-    if (const QcStatus read = readContainers(storage); !read) {
+    if (const QcStatus read = readBlockEntities(storage); !read) {
         return read;
     }
     readStands(storage);
-    // Damaged circuits do not keep the world from opening: they start quiet (decision E-335).
-    if (const QcStatus read = QcSignalStorage::read(m_state.config.worldDirectory, m_state.circuits, m_state.tickCount); !read) {
-        noteWarnings({read.error() + u"; the circuits start quiet"_s});
-    }
     return readBlockUpdates(storage);
 }
 
@@ -183,7 +184,6 @@ QcStatus QcServerPersistence::readEntities(const QcWorldStorage &storage)
     }
 
     m_state.items.restore(entities->items, [this] { return m_state.newEntityId(); });
-    m_state.plants.restoreSaplings(entities->saplings);
     m_state.falling.restore(entities->fallingBlocks, [this] { return m_state.newEntityId(); });
     return {};
 }
@@ -200,35 +200,30 @@ QcStatus QcServerPersistence::readMobs(const QcWorldStorage &storage)
     return {};
 }
 
-QcStatus QcServerPersistence::readMachines(const QcWorldStorage &storage)
+QcStatus QcServerPersistence::readBlockEntities(const QcWorldStorage &storage)
 {
     QStringList warnings;
-    const QcResult<QList<QcMachineManager::Machine>> machines = storage.readMachines(warnings);
+    const QcResult<QList<QcBlockEntityRecord>> records = storage.readBlockEntities(warnings);
     noteWarnings(warnings);
-    if (!machines) {
-        return qcError(machines.error());
+    if (!records) {
+        return qcError(records.error());
     }
-    m_state.machines.restore(*machines);
-    return {};
-}
+    noteWarnings(QcBlockEntityRecords::apply(*records, m_state.blockEntities(), m_state.circuits, m_state.hoppers, m_state.tickCount));
 
-QcStatus QcServerPersistence::readContainers(const QcWorldStorage &storage)
-{
-    QStringList warnings;
-    const QcResult<QList<QcContainerManager::Container>> containers = storage.readContainers(warnings);
-    noteWarnings(warnings);
-    if (!containers) {
-        return qcError(containers.error());
+    // Chests whose block went away with a mod (or whose size changed) must not linger: their chunks
+    // load now, everything kept for a loaded chunk is fitted to its blocks (other chunks are fitted
+    // when they arrive) and spilled contents drop.
+    for (const QcBlockEntityRecord &record : *records) {
+        if (!record.containers.isEmpty()) {
+            m_state.world.loadChunk(record.chunk);
+        }
     }
-
-    m_state.containers.restore(*containers);
-
-    // Chests whose block went away with a mod (or whose size changed) must not linger.
-    const QList<QcBlockPos> chestPositions = m_state.containers.positions();
-    for (const QcBlockPos &pos : chestPositions) {
-        m_state.world.loadChunk(pos.chunk());
-        m_blocks.reconcileContainer(pos);
+    for (const QcBlockEntityRecord &record : *records) {
+        if (const std::shared_ptr<const QcChunk> chunk = m_state.world.chunk(record.chunk)) {
+            m_state.blockEntities().reconcile(*chunk);
+        }
     }
+    m_blocks.dropSpills();
     return {};
 }
 
@@ -241,7 +236,7 @@ void QcServerPersistence::readStands(const QcWorldStorage &storage)
     }
 
     if (const qsizetype dropped = m_state.stands.restore(std::move(stands)); dropped > 0) {
-        warnings.append(u"%1 armour stands beyond the limit of %2 were left out"_s.arg(dropped).arg(QcArmourStandManager::maxStands));
+        warnings.append(u"%1 armour stands beyond the limit of %2 were left out"_s.arg(dropped).arg(m_state.stands.limit()));
     }
     noteWarnings(warnings);
 }
@@ -361,6 +356,8 @@ QcStatus QcServerPersistence::save()
     }
 
     const QcWorldStorage &storage = *m_storage;
+    // Contents spilled since the last tick lie on the ground before the items are written.
+    m_blocks.dropSpills();
     QcStatus result;
     const auto keep = [&result](const QcStatus &written) {
         if (!written && result) {
@@ -384,11 +381,9 @@ QcStatus QcServerPersistence::save()
 
     keep(saveEntities(storage));
     keep(storage.writeMobs({m_state.mobs.persistentMobs(), m_state.mobs.populatedChunks()}));
-    keep(storage.writeMachines(m_state.machines.machines()));
-    keep(storage.writeContainers(m_state.containers.containers()));
+    keep(storage.writeBlockEntities(QcBlockEntityRecords::collect(m_state.blockEntities(), m_state.circuits, m_state.tickCount)));
     keep(storage.writeStands(m_state.stands.stands()));
     keep(saveBlockUpdates(storage));
-    keep(QcSignalStorage::write(m_state.config.worldDirectory, m_state.circuits, m_state.tickCount));
 
     // Last: the setup counts as done once everything it brought is stored (see readWorldState()).
     m_state.info.lastPlayed = QDateTime::currentDateTimeUtc();
@@ -409,7 +404,6 @@ QcStatus QcServerPersistence::saveEntities(const QcWorldStorage &storage) const
 
     // Waiting drops follow the items; on the next start they wait again if there is no room.
     entities.items.append(m_state.items.queued());
-    entities.saplings = m_state.plants.saplings();
     entities.fallingBlocks = m_state.falling.all();
     return storage.writeEntities(entities);
 }
@@ -424,7 +418,7 @@ QcStatus QcServerPersistence::saveBlockUpdates(const QcWorldStorage &storage) co
     updates.append(m_updates.commandUpdates());
     updates.append(m_updates.waitingUpdates());
 
-    const qsizetype storable = std::min(m_state.config.maxSavedBlockUpdates, qsizetype(QcWorldStorage::maxStoredBlockUpdates));
+    const qsizetype storable = std::min(qsizetype(m_state.config.limits.savedBlockUpdates), qsizetype(QcWorldStorage::maxStoredBlockUpdates));
     if (updates.size() > storable) {
         qCWarning(lcPersistence) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
         updates.resize(storable);

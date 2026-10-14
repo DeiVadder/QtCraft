@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAabb.h"
+#include "QcBlockEntities.h"
 #include "QcBlockIndex.h"
 #include "QcBlockAccess.h"
 #include "QcChunk.h"
@@ -31,14 +32,15 @@ public:
     // The strongest contact damage (lava) of the loaded blocks a box overlaps, 0 for none.
     double contactDamageIn(const QcAabb &box) const;
     // False when no loaded chunk holds a block with contact damage, so nothing can burn.
-    bool mayHaveContactDamage() const { return !m_damagingSections.isEmpty(); }
-    // Sections of the loaded chunks that may hold a block with random ticks (growing plants, crops, soil).
-    const QcSectionMarks &growingSections() const { return m_growingSections; }
-    // Sections that may hold a Signal Dust component (decision E-335): block changes far from any
-    // circuit cost the signal engine nothing.
-    const QcSectionMarks &signalSections() const { return m_signalSections; }
-    // Sections that may hold a pressure plate: only bodies there are checked for pressing one.
-    const QcSectionMarks &plateSections() const { return m_plateSections; }
+    bool mayHaveContactDamage() const { return !m_marks.isEmpty(QcBlockTrait::ContactDamage); }
+    // Sections of the loaded chunks that may hold blocks with a trait (decision E-359): growing
+    // plants, circuit components (block changes far from any circuit cost the signal engine
+    // nothing), pressure plates, block entities.
+    const QcSectionMarks &marks() const { return m_marks; }
+    // State that belongs to single blocks (decision E-357), kept in step with every block set here,
+    // every chunk that arrives and every chunk generated again.
+    QcBlockEntities &blockEntities() { return m_blockEntities; }
+    const QcBlockEntities &blockEntities() const { return m_blockEntities; }
     // The loaded Signal Hoppers and the cells changed next to them (decision E-344).
     QcBlockIndex &hoppers() { return m_hoppers; }
     const QcBlockIndex &hoppers() const { return m_hoppers; }
@@ -54,19 +56,23 @@ public:
     // Moves finished background chunks into the world; returns their positions.
     QList<QcChunkPos> collectGeneratedChunks();
     qsizetype pendingGenerationCount() const { return m_pending.size(); }
-    // Modified chunks stay loaded until the world closes so that saves always see them.
+    // Modified chunks stay loaded until the world closes so that saves always see them. Empty,
+    // resting containers and idle machines of an unloaded chunk are forgotten; they come back with
+    // their blocks.
     void unloadChunk(QcChunkPos pos);
     qsizetype loadedChunkCount() const { return m_chunks.size(); }
     // Chunks that became loaded (generated, loaded synchronously or read from a save) since the last call.
     QList<QcChunkPos> takeNewlyLoaded() { return std::exchange(m_newlyLoaded, {}); }
     QList<QcChunkPos> loadedChunks() const { return m_chunks.keys(); }
 
-    // Replaces a loaded chunk with what the generator makes of it (decision E-246). It stays marked
-    // as modified, so the next save also overwrites the stored copy. False when it is not loaded
-    // (then nothing was changed in it since it was last generated).
+    // Replaces a loaded chunk with what the generator makes of it (decision E-246); its block
+    // entities are forgotten and those of the generated blocks created. It stays marked as
+    // modified, so the next save also overwrites the stored copy. False when it is not loaded (then
+    // nothing was changed in it since it was last generated).
     bool regenerateChunk(QcChunkPos pos);
 
-    // Fails for unloaded chunks, positions outside the world height and unknown block ids.
+    // Fails for unloaded chunks, positions outside the world height and unknown block ids. The block
+    // entities follow (QcBlockEntities::placed); spilled contents wait in blockEntities().
     bool setBlock(QcBlockPos pos, QcBlockId block);
 
     // Block light (0..15) at a position, computed from the light sources around it in loaded chunks
@@ -85,19 +91,18 @@ public:
     void markDirty(const QList<QcChunkPos> &chunks);
 
 private:
-    // Records which sections of a chunk that entered the world hold blocks with contact damage,
-    // growing plants or circuit components.
+    // Records the marked sections, the hoppers and the block entities of a chunk that entered the world.
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
+    // Forgets what was derived from a chunk that left the world or is generated again.
+    void forgetSections(QcChunkPos pos);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcWorldGenerator> m_generator;
     // Contact damage of every block state, indexed by id.
     std::vector<double> m_contactDamage;
-    QcSectionMarks m_damagingSections;
-    QcSectionMarks m_growingSections;
-    QcSectionMarks m_signalSections;
-    QcSectionMarks m_plateSections;
+    QcSectionMarks m_marks;
     QcBlockIndex m_hoppers;
+    QcBlockEntities m_blockEntities;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     QSet<QcChunkPos> m_pending;
     QSet<QcChunkPos> m_modified;

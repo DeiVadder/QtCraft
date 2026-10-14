@@ -184,7 +184,7 @@ private slots:
         const QcBlockPos grass = m_feet.offset(2, -1, 0);
         send(QcMsg::UseItem{grass, QcBlockFace::Up});
         QCOMPARE(m_server->world().blockAt(grass.offset(0, 1, 0)), std::optional<QcBlockId>(id("qtcraft:oak_sapling")));
-        QCOMPARE(m_server->plants().saplings().size(), 1);
+        QCOMPARE(m_server->blockEntities().saplingsInOrder().size(), 1);
         QCOMPARE(countOf(item("qtcraft:oak_sapling")), 2);
         // Not on stone, and not on another sapling.
         const QcBlockPos stone = m_feet.offset(-2, -1, 0);
@@ -205,7 +205,7 @@ private slots:
         QCOMPARE(droppedCount(item("qtcraft:oak_sapling")), 1);
         QCOMPARE(droppedCount(item("qtcraft:dirt")), 1);
         ticks(1);
-        QVERIFY(m_server->plants().saplings().isEmpty());
+        QVERIFY(m_server->blockEntities().saplingsInOrder().isEmpty());
     }
 
     void despawningSaplingsPlantThemselves()
@@ -237,7 +237,7 @@ private slots:
             }
         }
         QVERIFY2(planted >= 8 && planted <= 20, qPrintable(QString::number(planted)));
-        QCOMPARE(m_server->plants().saplings().size(), planted);
+        QCOMPARE(m_server->blockEntities().saplingsInOrder().size(), planted);
 
         // Other items just vanish.
         QcItemEntityManager::Drop dirt;
@@ -265,7 +265,7 @@ private slots:
 
         const QcBlockPos sapling = m_feet.offset(-2, 0, -2);
         QVERIFY(m_server->world().setBlock(sapling, id("qtcraft:birch_sapling")));
-        m_server->plants().saplingPlaced(sapling, id("qtcraft:birch_sapling"));
+        m_server->plants().saplingPlaced(m_server->blockEntities(), sapling, id("qtcraft:birch_sapling"));
 
         ticks(1);
         QVERIFY(m_server->stop().has_value());
@@ -279,8 +279,8 @@ private slots:
         QVERIFY(!m_server->keepInventory());
         QCOMPARE(m_server->items().items().size(), 1);
         QCOMPARE(m_server->items().items().first().stack, (QcItemStack{item("qtcraft:stone_pickaxe"), 1, 7}));
-        QCOMPARE(m_server->plants().saplings().size(), 1);
-        QCOMPARE(m_server->plants().saplings().first().pos, sapling);
+        QCOMPARE(m_server->blockEntities().saplingsInOrder().size(), 1);
+        QCOMPARE(m_server->blockEntities().saplingsInOrder().first().pos, sapling);
     }
 
     void failedSavesAreRetried()

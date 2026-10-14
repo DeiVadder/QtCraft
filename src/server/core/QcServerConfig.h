@@ -51,10 +51,6 @@ struct QcServerConfig
     // (world.json) counts; set (server.json "defaultGameMode", an unsaved world) it wins, and a new
     // world is created with it.
     std::optional<QcGameMode> defaultGameMode;
-    // Neighbour updates of commands (/fill) queued at most; further ones are dropped with a warning.
-    qsizetype maxCommandBlockUpdates = qsizetype(1024) * 1024;
-    // Pending updates written to blockupdates.qce at most (those of player actions first).
-    qsizetype maxSavedBlockUpdates = qsizetype(4) * 1024 * 1024;
     // Budgets of the simulation (decision E-349); `limitsFromServer` is set when server.json gave
     // them, then the world's own limits (world.json) are ignored.
     QcServerLimits limits;

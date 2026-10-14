@@ -161,7 +161,7 @@ bool QcStandCommands::summon(QcServerClient &client, const QStringList &words)
     const QcArmourStandManager::Stand *spawned = m_stands.spawn(stand);
     if (!spawned) {
         reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Too many armour stands in the world (at most %1)"),
-              {QString::number(QcArmourStandManager::maxStands)});
+              {QString::number(m_state.stands.limit())});
         return true;
     }
     reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Summoned armour stand %1"), {QString::number(spawned->id)});

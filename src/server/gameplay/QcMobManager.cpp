@@ -33,12 +33,6 @@ bool keepsSpawnsAway(const QcBlockDefinition &block)
 // A group stands on these neighbouring columns.
 constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1}, {1, 1}}};
 
-int capOf(const QcMobDefinition &definition)
-{
-    return definition.ambient ? QcMobManager::ambientCapPerPlayer
-                              : (definition.hostile ? QcMobManager::hostileCapPerPlayer : QcMobManager::passiveCapPerPlayer);
-}
-
 // Peaceful walkers: the persistent kind (flying creatures stay ordinary).
 bool isAnimal(const QcMobDefinition &definition)
 {
@@ -715,4 +709,16 @@ qsizetype QcMobManager::awakeCount() const
 qsizetype QcMobManager::awakeSummonedCount() const
 {
     return std::ranges::count_if(m_mobs, [](const Mob &mob) { return mob.summoned && !mob.dormant; });
+}
+
+void QcMobManager::setCaps(int hostile, int passive, int ambient)
+{
+    m_hostileCap = hostile;
+    m_passiveCap = passive;
+    m_ambientCap = ambient;
+}
+
+int QcMobManager::capOf(const QcMobDefinition &definition) const
+{
+    return definition.ambient ? m_ambientCap : (definition.hostile ? m_hostileCap : m_passiveCap);
 }

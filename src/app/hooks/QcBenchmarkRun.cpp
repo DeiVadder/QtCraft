@@ -337,7 +337,11 @@ QString QcBenchmarkRun::entityPairs() const
             carried += stack.isEmpty() ? 0 : stack.count;
         }
     }
-    return u"server_mobs=%1 server_items=%2 inventory_items=%3"_s.arg(server.mobs).arg(server.items).arg(carried);
+    return u"server_mobs=%1 server_items=%2 inventory_items=%3 server_block_entities=%4 block_entity_problems=%5"_s.arg(server.mobs)
+        .arg(server.items)
+        .arg(carried)
+        .arg(server.blockEntities)
+        .arg(server.blockEntityProblems);
 }
 
 void QcBenchmarkRun::logReport(const QList<qint64> &sorted, double p99Ms) const

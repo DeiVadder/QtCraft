@@ -325,7 +325,7 @@ private slots:
         send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:iron_ore")), QcMsg::MoveInventoryItem::machineInputSlot, 0});
         send(QcMsg::MoveInventoryItem{slotOf(item("qtcraft:coal")), QcMsg::MoveInventoryItem::machineFuelSlot, 0});
         send(QcMsg::CloseMachine{});
-        QVERIFY(m_server->machines().find(furnace)->burnRemaining > 0.0);
+        QVERIFY(m_server->blockEntities().machine(furnace)->burnRemaining > 0.0);
         m_client->sounds.clear();
         ticks(20 * 20);
         const QList<QcMsg::SoundEvent> crackles = m_client->soundsNamed(u"qtcraft:machine.furnace"_s);

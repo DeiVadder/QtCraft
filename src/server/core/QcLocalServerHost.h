@@ -32,6 +32,8 @@ public:
     QString startError() const { return m_startError; }
     // Whether the world could not open because another server (window or process) has it open.
     bool worldInUse() const { return m_worldInUse; }
+    // The world comes from an older development version (decision E-356).
+    bool worldTooOld() const { return m_worldTooOld; }
 
     // Connects a new client; the returned transport belongs to the caller's thread. Clients of the
     // host are local players (QcServer::ClientOrigin::Local: chat is not rate limited, debug data
@@ -60,6 +62,10 @@ public:
     {
         qsizetype mobs = -1;
         qsizetype items = -1;
+        // Containers, machines and saplings, and broken rules between them and the blocks
+        // (QcBlockEntityChecks, decision E-357).
+        qsizetype blockEntities = -1;
+        qsizetype blockEntityProblems = -1;
     };
     EntityCounts entityCounts();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
@@ -77,6 +83,7 @@ private:
     QThread *m_thread = nullptr;
     QString m_startError;
     bool m_worldInUse = false;
+    bool m_worldTooOld = false;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
     QcServer *m_server = nullptr;
     // Lives in the server thread as a child of the server; only touched there.

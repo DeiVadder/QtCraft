@@ -61,6 +61,10 @@ private:
 
     // Wakes the hoppers around changed cells and below moving items.
     void wakeAround();
+    // The hopper moved an item: it rests for the cooldown (kept with its container) and looks again then.
+    void startCooldown(QcBlockPos hopper);
+    // The tick its cooldown ends, 0 when it never moved anything.
+    quint64 readyAt(QcBlockPos hopper) const;
     // The awake hoppers that act now, at most QcServerLimits::hopperBudget; the rest waits for the
     // next tick, taken from where this one stopped (only then is a step not simultaneous for all).
     QList<QcBlockPos> actors();

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "QcBlockPos.h"
-#include "QcContainerManager.h"
+#include "QcBlockEntities.h"
 #include "QcItemStack.h"
-#include "QcMachineManager.h"
+#include "QcMachineRules.h"
 #include "QcMessages.h"
 
 #include <QList>
@@ -11,7 +11,7 @@
 
 #include <optional>
 
-class QcServerMachines;
+class QcBlockScreens;
 class QcServerSounds;
 struct QcServerClient;
 struct QcServerState;
@@ -29,7 +29,7 @@ public:
     // Speed of items thrown by a player.
     static constexpr double throwSpeed = 6.0;
 
-    QcServerInventory(QcServerState &state, QcServerMachines &machines, QcServerSounds &sounds);
+    QcServerInventory(QcServerState &state, QcBlockScreens &screens, QcServerSounds &sounds);
 
     void send(QcServerClient &client);
     // Shift-clicks on a crafting result take it as often as possible.
@@ -71,8 +71,8 @@ private:
     // Inventory, crafting grid and the open machine or chest as one slot list.
     struct OpenSlots
     {
-        QcMachineManager::Machine *machine = nullptr;
-        QcContainerManager::Container *container = nullptr;
+        QcBlockEntities::Machine *machine = nullptr;
+        QcBlockEntities::Container *container = nullptr;
         QList<QcItemStack> combined;
     };
 
@@ -97,9 +97,9 @@ private:
     // Whether a crafting table stands in the column (dx, dy) around `feet` within reach.
     bool hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
-    bool machineAccepts(const QcMachineManager::Machine &machine, const QList<QcItemStack> &combined) const;
+    bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
 
     QcServerState &m_state;
-    QcServerMachines &m_machines;
+    QcBlockScreens &m_screens;
     QcServerSounds &m_sounds;
 };

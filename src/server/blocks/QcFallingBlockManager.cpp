@@ -108,7 +108,7 @@ void QcFallingBlockManager::restore(const QList<Falling> &falling, const std::fu
 {
     m_falling.clear();
     for (Falling block : falling) {
-        if (m_falling.size() >= maxFalling) {
+        if (m_falling.size() >= m_maxFalling) {
             break;
         }
         block.id = nextEntityId();

@@ -21,7 +21,7 @@ void QcBlockSimulation::processBlockUpdates()
 {
     retryDeferredFalls();
 
-    for (int budget = maxBlockUpdatesPerTick; budget > 0; --budget) {
+    for (qint64 budget = m_state.config.limits.blockUpdatesPerTick; budget > 0; --budget) {
         const std::optional<QcBlockUpdateQueue::Update> update = m_updates.takeNext();
         if (!update) {
             break;
@@ -81,7 +81,8 @@ void QcBlockSimulation::processLiquids()
     // Flood cascades queue behind the updates of player actions, like commands.
     m_updates.setCommandMode(true);
     const QcLiquidFlow::TickResult result = m_state.liquids.tick(
-        m_state.tickCount, m_state.world, [this](QcBlockPos pos, QcBlockId block) { applyFlowStep(pos, block); });
+        m_state.tickCount, m_state.world, [this](QcBlockPos pos, QcBlockId block) { applyFlowStep(pos, block); },
+        int(m_state.config.limits.liquidStepsPerTick));
     m_updates.setCommandMode(false);
 
     for (const QcBlockPos &pos : result.unloaded) {

@@ -484,6 +484,7 @@ private slots:
         QVERIFY(crown > 20);
 
         QcPlantManager plants(m_content, 1);
+        QcBlockEntities entities(m_content);
         QList<QcBlockPos> broken;
         const auto breakBlock = [&world, &broken](QcBlockPos pos) {
             broken.append(pos);
@@ -505,7 +506,7 @@ private slots:
         plants.blockRemoved({0, 64, 0}, block("qtcraft:oak_log"), world);
         QVERIFY(plants.pendingCheckCount() > 0);
         for (int i = 0; i < ticksFor(QcPlantManager::maxDecayDelay) + 2; ++i) {
-            plants.tick(world, dt, loaded, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {loaded, setBlock, breakBlock});
         }
         QVERIFY(broken.isEmpty());
 
@@ -515,10 +516,10 @@ private slots:
             plants.blockRemoved({0, y, 0}, block("qtcraft:oak_log"), world);
         }
 
-        plants.tick(world, dt, loaded, setBlock, breakBlock);
+        plants.tick(world, entities, dt, {loaded, setBlock, breakBlock});
         QVERIFY(broken.size() <= QcPlantManager::maxDecaysPerTick);
         for (int i = 0; i < ticksFor(30.0); ++i) {
-            plants.tick(world, dt, loaded, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {loaded, setBlock, breakBlock});
         }
 
         QCOMPARE(leafCount(-5, 5), 0);
@@ -541,6 +542,7 @@ private slots:
         world.loadedRadius = 3;
 
         QcPlantManager plants(m_content, 1);
+        QcBlockEntities entities(m_content);
         for (int y = 64; y < 69; ++y) {
             world.set({0, y, 0}, qcAirBlockId);
             plants.blockRemoved({0, y, 0}, block("qtcraft:oak_log"), world);
@@ -553,7 +555,7 @@ private slots:
         const auto breakBlock = [&world](QcBlockPos pos) { world.set(pos, qcAirBlockId); };
 
         for (int i = 0; i < ticksFor(QcPlantManager::maxDecayDelay) + 2; ++i) {
-            plants.tick(world, dt, [](QcBlockPos) { return true; }, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {[](QcBlockPos) { return true; }, setBlock, breakBlock});
         }
         QVERIFY(plants.pendingCheckCount() > 0);
         QCOMPARE(world.blockAt({2, 66, 0}), std::optional<QcBlockId>(block("qtcraft:oak_leaves")));
@@ -561,7 +563,7 @@ private slots:
         // Once loaded, the checks run again and the crown decays.
         world.loadedRadius = 1000;
         for (int i = 0; i < ticksFor(QcPlantManager::recheckSeconds + 10.0); ++i) {
-            plants.tick(world, dt, [](QcBlockPos) { return true; }, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {[](QcBlockPos) { return true; }, setBlock, breakBlock});
         }
         QCOMPARE(plants.pendingCheckCount(), 0);
         QCOMPARE(world.blockAt({2, 66, 0}), std::optional<QcBlockId>(qcAirBlockId));
@@ -579,9 +581,10 @@ private slots:
         world.set({4, 66, 0}, block("qtcraft:stone"));
 
         QcPlantManager plants(m_content, 1);
-        plants.saplingPlaced({0, 64, 0}, sapling);
-        plants.saplingPlaced({4, 64, 0}, sapling);
-        QCOMPARE(plants.saplings().size(), 2);
+        QcBlockEntities entities(m_content);
+        plants.saplingPlaced(entities, {0, 64, 0}, sapling);
+        plants.saplingPlaced(entities, {4, 64, 0}, sapling);
+        QCOMPARE(entities.saplingsInOrder().size(), 2);
 
         const auto setBlock = [&world](QcBlockPos pos, QcBlockId id) {
             world.set(pos, id);
@@ -592,12 +595,12 @@ private slots:
         const double maxSeconds = m_content->block(sapling).sapling.maxSeconds;
         // Nothing grows while the chunk is unloaded.
         for (int i = 0; i < ticksFor(maxSeconds + 1.0); ++i) {
-            plants.tick(world, dt, [](QcBlockPos) { return false; }, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {[](QcBlockPos) { return false; }, setBlock, breakBlock});
         }
         QCOMPARE(world.blockAt({0, 64, 0}), std::optional<QcBlockId>(sapling));
 
         for (int i = 0; i < ticksFor(maxSeconds + 1.0); ++i) {
-            plants.tick(world, dt, [](QcBlockPos) { return true; }, setBlock, breakBlock);
+            plants.tick(world, entities, dt, {[](QcBlockPos) { return true; }, setBlock, breakBlock});
         }
         QCOMPARE(world.blockAt({0, 64, 0}), std::optional<QcBlockId>(block("qtcraft:oak_log")));
         QCOMPARE(world.blockAt({0, 67, 0}), std::optional<QcBlockId>(block("qtcraft:oak_log")));
@@ -605,13 +608,14 @@ private slots:
 
         // No room: it stays a sapling and keeps trying.
         QCOMPARE(world.blockAt({4, 64, 0}), std::optional<QcBlockId>(sapling));
-        QCOMPARE(plants.saplings().size(), 1);
-        QVERIFY(plants.saplings().first().remaining <= QcPlantManager::retrySeconds);
+        QCOMPARE(entities.saplingsInOrder().size(), 1);
+        const QList<QcBlockEntities::Sapling> waiting = entities.saplingsInOrder();
+        QVERIFY(waiting.first().remaining <= QcPlantManager::retrySeconds);
 
         // A broken sapling is forgotten.
         world.set({4, 64, 0}, qcAirBlockId);
-        plants.tick(world, dt, [](QcBlockPos) { return true; }, setBlock, breakBlock);
-        QVERIFY(plants.saplings().isEmpty());
+        plants.tick(world, entities, dt, {[](QcBlockPos) { return true; }, setBlock, breakBlock});
+        QVERIFY(entities.saplingsInOrder().isEmpty());
     }
 
     void saplingsWithAnUnknownFeatureNeverGrow()
@@ -645,17 +649,18 @@ private slots:
         world.set({0, 64, 0}, saplingId);
 
         QcPlantManager plants(content, 1);
+        QcBlockEntities entities(content);
         // Without a plantOn list any solid block will do.
         QVERIFY(plants.canPlant(saplingId, content->blockId(u"test:ground"_s)));
-        plants.saplingPlaced({0, 64, 0}, saplingId);
+        plants.saplingPlaced(entities, {0, 64, 0}, saplingId);
 
         for (int i = 0; i < ticksFor(3.0); ++i) {
             plants.tick(
-                world, dt, [](QcBlockPos) { return true; }, [](QcBlockPos, QcBlockId) { return true; }, [](QcBlockPos) {});
+                world, entities, dt, {[](QcBlockPos) { return true; }, [](QcBlockPos, QcBlockId) { return true; }, [](QcBlockPos) {}});
         }
 
         QCOMPARE(world.blockAt({0, 64, 0}), std::optional<QcBlockId>(saplingId));
-        QVERIFY(plants.saplings().isEmpty());
+        QVERIFY(entities.saplingsInOrder().isEmpty());
     }
 };
 

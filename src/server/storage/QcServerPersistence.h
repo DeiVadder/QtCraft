@@ -15,7 +15,7 @@ class QcServerBlocks;
 struct QcServerClient;
 struct QcServerState;
 
-// Opening and saving the world of the server: world info, chunks, entities, mobs, machines, chests,
+// Opening and saving the world of the server: world info, chunks, block entities, entities, mobs,
 // pending block updates and players.
 class QcServerPersistence
 {
@@ -42,6 +42,8 @@ public:
     void noteWarnings(const QStringList &warnings);
     // Whether open() failed because another server (in this or another process) has the world open.
     bool worldInUse() const { return m_worldInUse; }
+    // Whether open() failed because the world comes from an older development version.
+    bool worldTooOld() const { return m_worldTooOld; }
 
 private:
     // Takes the world's lock file; fails when another server holds it.
@@ -53,12 +55,12 @@ private:
     QcResult<qsizetype> readChunks(const QcWorldStorage &storage, QStringList &warnings);
     QcStatus readEntities(const QcWorldStorage &storage);
     QcStatus readMobs(const QcWorldStorage &storage);
-    QcStatus readMachines(const QcWorldStorage &storage);
-    QcStatus readContainers(const QcWorldStorage &storage);
+    // Block entities per chunk (decision E-358).
+    QcStatus readBlockEntities(const QcWorldStorage &storage);
     // Never fails: stands of a damaged file and beyond the limit are left out with a warning.
     void readStands(const QcWorldStorage &storage);
     QcStatus readBlockUpdates(const QcWorldStorage &storage);
-    // Entities, creatures, machines, chests and block updates, if the world's setup was saved.
+    // Entities, creatures, block entities and block updates, if the world's setup was saved.
     QcStatus readWorldState(const QcWorldStorage &storage);
     QcStatus saveEntities(const QcWorldStorage &storage) const;
     QcStatus saveBlockUpdates(const QcWorldStorage &storage) const;
@@ -69,6 +71,7 @@ private:
     std::optional<QcWorldStorage> m_storage;
     std::unique_ptr<QLockFile> m_lock;
     bool m_worldInUse = false;
+    bool m_worldTooOld = false;
     // world.json on disk says the generator's setup is done.
     bool m_setupSaved = false;
     QStringList m_openWarnings;

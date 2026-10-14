@@ -1,4 +1,4 @@
-#include "QcMachineManager.h"
+#include "QcMachineRules.h"
 
 #include <algorithm>
 #include <cmath>
@@ -12,7 +12,7 @@ constexpr int maxItemsPerTick = 64;
 
 } // namespace
 
-QcMachineManager::QcMachineManager(std::shared_ptr<const QcContentRegistry> content)
+QcMachineRules::QcMachineRules(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
 {
     for (const QcSmeltingRecipe &recipe : m_content->smeltingRecipes()) {
@@ -28,7 +28,7 @@ QcMachineManager::QcMachineManager(std::shared_ptr<const QcContentRegistry> cont
     }
 }
 
-const QcMachineDefinition *QcMachineManager::machineOf(QcBlockId block) const
+const QcMachineDefinition *QcMachineRules::machineOf(QcBlockId block) const
 {
     if (!m_content->isValidBlock(block)) {
         return nullptr;
@@ -37,7 +37,7 @@ const QcMachineDefinition *QcMachineManager::machineOf(QcBlockId block) const
     return machine.isMachine() ? &machine : nullptr;
 }
 
-const QcSmeltingRecipe *QcMachineManager::recipeFor(const QcMachineDefinition &machine, QcItemId input) const
+const QcSmeltingRecipe *QcMachineRules::recipeFor(const QcMachineDefinition &machine, QcItemId input) const
 {
     const auto category = m_recipes.constFind(machine.category);
     if (category == m_recipes.constEnd()) {
@@ -46,76 +46,17 @@ const QcSmeltingRecipe *QcMachineManager::recipeFor(const QcMachineDefinition &m
     return category->value(input, nullptr);
 }
 
-double QcMachineManager::fuelSeconds(QcItemId item) const
+double QcMachineRules::fuelSeconds(QcItemId item) const
 {
     return m_content->isValidItem(item) ? m_content->item(item).fuelSeconds : 0.0;
 }
 
-QcMachineManager::Machine *QcMachineManager::find(QcBlockPos pos)
-{
-    const auto it = m_machines.find(pos);
-    return it == m_machines.end() ? nullptr : &*it;
-}
-
-const QcMachineManager::Machine *QcMachineManager::find(QcBlockPos pos) const
-{
-    const auto it = m_machines.constFind(pos);
-    return it == m_machines.constEnd() ? nullptr : &*it;
-}
-
-bool QcMachineManager::add(QcBlockPos pos)
-{
-    if (m_machines.contains(pos)) {
-        return true;
-    }
-    if (isFull()) {
-        return false;
-    }
-
-    Machine machine;
-    machine.pos = pos;
-    m_machines.insert(pos, machine);
-    return true;
-}
-
-QcMachineManager::Machine QcMachineManager::remove(QcBlockPos pos)
-{
-    Machine removed = m_machines.take(pos);
-    removed.pos = pos;
-    return removed;
-}
-
-bool QcMachineManager::relocate(QcBlockPos from, QcBlockPos to)
-{
-    if (!m_machines.contains(from) || m_machines.contains(to)) {
-        return false;
-    }
-
-    Machine machine = m_machines.take(from);
-    machine.pos = to;
-    m_machines.insert(to, machine);
-    return true;
-}
-
-void QcMachineManager::restore(const QList<Machine> &machines)
-{
-    m_machines.clear();
-    for (const Machine &machine : machines) {
-        if (isFull()) {
-            break;
-        }
-        Machine restored = machine;
-        restored.progressItem = restored.stacks[inputSlot].item;
-        m_machines.insert(restored.pos, restored);
-    }
-}
-
-double QcMachineManager::burnFraction(const Machine &machine) const
+double QcMachineRules::burnFraction(const Machine &machine) const
 {
     return machine.burnSeconds > 0.0 ? std::clamp(machine.burnRemaining / machine.burnSeconds, 0.0, 1.0) : 0.0;
 }
 
-double QcMachineManager::progressFraction(const Machine &machine, QcBlockId block) const
+double QcMachineRules::progressFraction(const Machine &machine, QcBlockId block) const
 {
     const QcMachineDefinition *definition = machineOf(block);
     const QcSmeltingRecipe *recipe =
@@ -123,7 +64,7 @@ double QcMachineManager::progressFraction(const Machine &machine, QcBlockId bloc
     return recipe ? std::clamp(machine.progress / recipe->seconds, 0.0, 1.0) : 0.0;
 }
 
-const QcSmeltingRecipe *QcMachineManager::workableRecipe(const Machine &machine, const QcMachineDefinition &definition) const
+const QcSmeltingRecipe *QcMachineRules::workableRecipe(const Machine &machine, const QcMachineDefinition &definition) const
 {
     const QcItemStack &input = machine.stacks[inputSlot];
     const QcSmeltingRecipe *recipe = input.isEmpty() ? nullptr : recipeFor(definition, input.item);
@@ -146,7 +87,7 @@ const QcSmeltingRecipe *QcMachineManager::workableRecipe(const Machine &machine,
     return fits ? recipe : nullptr;
 }
 
-bool QcMachineManager::refuel(Machine &machine) const
+bool QcMachineRules::refuel(Machine &machine) const
 {
     QcItemStack &fuel = machine.stacks[fuelSlot];
     const double seconds = fuel.isEmpty() ? 0.0 : fuelSeconds(fuel.item);
@@ -165,7 +106,7 @@ bool QcMachineManager::refuel(Machine &machine) const
     return true;
 }
 
-const QcSmeltingRecipe *QcMachineManager::finishItems(Machine &machine, const QcMachineDefinition &definition,
+const QcSmeltingRecipe *QcMachineRules::finishItems(Machine &machine, const QcMachineDefinition &definition,
                                                       const QcSmeltingRecipe *recipe) const
 {
     // A fast machine finishes several items in one tick; the rest of the work carries over.
@@ -186,7 +127,7 @@ const QcSmeltingRecipe *QcMachineManager::finishItems(Machine &machine, const Qc
     return recipe;
 }
 
-bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definition, double dt)
+bool QcMachineRules::step(Machine &machine, const QcMachineDefinition &definition, double dt) const
 {
     const double work = dt * definition.speed;
     const QcSmeltingRecipe *recipe = workableRecipe(machine, definition);
@@ -232,33 +173,23 @@ bool QcMachineManager::step(Machine &machine, const QcMachineDefinition &definit
     return changed;
 }
 
-QList<QcMachineManager::Machine> QcMachineManager::tick(const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed,
-                                                       QList<QcBlockPos> *slotsChanged)
+void QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world, double dt, QList<QcBlockPos> *changed,
+                          QList<QcBlockPos> *slotsChanged) const
 {
-    QList<Machine> removed;
-    for (auto it = m_machines.begin(); it != m_machines.end();) {
-        const std::optional<QcBlockId> block = world.blockAt(it.key());
-        if (!block) {
-            ++it;
-            continue;
-        }
-
-        const QcMachineDefinition *definition = machineOf(*block);
+    entities.forEachMachine([&](Machine &machine) {
+        const std::optional<QcBlockId> block = world.blockAt(machine.pos);
+        const QcMachineDefinition *definition = block ? machineOf(*block) : nullptr;
         if (!definition) {
-            removed.append(*it);
-            it = m_machines.erase(it);
-            continue;
+            // Not loaded (a machine entry always has a machine block, QcBlockEntityChecks).
+            return;
         }
 
-        const std::array<QcItemStack, slotCount> before = it->stacks;
-        if (step(*it, *definition, dt) && changed) {
-            changed->append(it.key());
+        const std::array<QcItemStack, slotCount> before = machine.stacks;
+        if (step(machine, *definition, dt) && changed) {
+            changed->append(machine.pos);
         }
-        if (slotsChanged && it->stacks != before) {
-            slotsChanged->append(it.key());
+        if (slotsChanged && machine.stacks != before) {
+            slotsChanged->append(machine.pos);
         }
-
-        ++it;
-    }
-    return removed;
+    });
 }

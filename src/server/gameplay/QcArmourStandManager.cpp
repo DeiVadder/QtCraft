@@ -58,9 +58,9 @@ void QcArmourStandManager::tick(double dt)
 
 qsizetype QcArmourStandManager::restore(QList<Stand> stands)
 {
-    const qsizetype dropped = std::max<qsizetype>(0, stands.size() - maxStands);
+    const qsizetype dropped = std::max<qsizetype>(0, stands.size() - m_maxStands);
     if (dropped > 0) {
-        stands.resize(maxStands);
+        stands.resize(m_maxStands);
     }
     m_stands = std::move(stands);
     return dropped;

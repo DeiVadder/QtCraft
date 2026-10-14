@@ -93,7 +93,7 @@ void QcPlantManager::blockRemoved(QcBlockPos pos, QcBlockId previous, const QcBl
 void QcPlantManager::planDecayCheck(QcBlockPos pos, const QcBlockAccess &world)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
-    if (!block || !isLeaves(*block) || m_pendingPositions.contains(pos) || m_pending.size() >= maxPendingChecks) {
+    if (!block || !isLeaves(*block) || m_pendingPositions.contains(pos) || m_pending.size() >= m_pendingLimit) {
         return;
     }
 
@@ -102,20 +102,27 @@ void QcPlantManager::planDecayCheck(QcBlockPos pos, const QcBlockAccess &world)
     m_pendingPositions.insert(pos);
 }
 
-void QcPlantManager::saplingPlaced(QcBlockPos pos, QcBlockId sapling)
+void QcPlantManager::setLeafLimits(qint64 decays, qint64 checks, qint64 pending)
+{
+    m_decaysPerTick = decays;
+    m_checksPerTick = checks;
+    m_pendingLimit = pending;
+}
+
+void QcPlantManager::saplingPlaced(QcBlockEntities &entities, QcBlockPos pos, QcBlockId sapling)
 {
     if (!m_content->isValidBlock(sapling) || !m_content->block(sapling).sapling.isSapling()) {
         return;
     }
 
-    if (m_saplings.size() >= maxSaplings) {
+    if (entities.saplingCount() >= entities.limits().saplings) {
         qCWarning(lcPlants) << "Too many growing saplings; the one at" << pos.x << pos.y << pos.z << "will not grow";
         return;
     }
 
     const QcSaplingDefinition &definition = m_content->block(sapling).sapling;
     const double span = definition.maxSeconds - definition.minSeconds;
-    m_saplings.append({pos, definition.minSeconds + (span > 0.0 ? m_random.bounded(span) : 0.0)});
+    entities.plantSapling(pos, definition.minSeconds + (span > 0.0 ? m_random.bounded(span) : 0.0));
 }
 
 QcPlantManager::Support QcPlantManager::supportOf(QcBlockPos pos, const QcBlockAccess &world) const
@@ -144,7 +151,7 @@ bool QcPlantManager::rowHasTrunk(QcBlockPos centre, const QcBlockAccess &world, 
     return false;
 }
 
-bool QcPlantManager::grow(const Sapling &sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock)
+bool QcPlantManager::grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock)
 {
     const QcTreeShape::Params &tree = m_trees[block];
     const double random = m_random.generateDouble();
@@ -157,7 +164,7 @@ bool QcPlantManager::grow(const Sapling &sapling, QcBlockId block, const QcBlock
     };
 
     QList<Placement> placements;
-    QcTreeShape::build(tree, sapling.pos, random, m_seed, [&placements](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
+    QcTreeShape::build(tree, sapling, random, m_seed, [&placements](QcBlockPos pos, QcBlockId id, bool onlyIntoAir) {
         placements.append({pos, id, onlyIntoAir});
     });
 
@@ -168,7 +175,7 @@ bool QcPlantManager::grow(const Sapling &sapling, QcBlockId block, const QcBlock
             return false;
         }
 
-        const bool free = *existing == qcAirBlockId || placement.pos == sapling.pos
+        const bool free = *existing == qcAirBlockId || placement.pos == sapling
                           || (m_content->block(*existing).replaceable && !m_content->block(*existing).liquid);
         if (!placement.onlyIntoAir && !free) {
             return false;
@@ -185,14 +192,18 @@ bool QcPlantManager::grow(const Sapling &sapling, QcBlockId block, const QcBlock
     return true;
 }
 
-void QcPlantManager::tick(const QcBlockAccess &world, double dt, const LoadedFunction &isLoaded, const SetBlock &setBlock,
-                          const BreakBlock &breakBlock)
+void QcPlantManager::tick(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const Actions &actions)
 {
     m_time += dt;
+    decayLeaves(world, actions.breakBlock);
+    growSaplings(world, entities, dt, actions.isLoaded, actions.setBlock);
+}
+
+void QcPlantManager::decayLeaves(const QcBlockAccess &world, const BreakBlock &breakBlock)
+{
     int decays = 0;
     int checks = 0;
-
-    for (qsizetype i = 0; i < m_pending.size() && decays < maxDecaysPerTick && checks < maxChecksPerTick;) {
+    for (qsizetype i = 0; i < m_pending.size() && decays < m_decaysPerTick && checks < m_checksPerTick;) {
         const PendingCheck &check = m_pending[i];
         if (check.due > m_time) {
             ++i;
@@ -222,40 +233,35 @@ void QcPlantManager::tick(const QcBlockAccess &world, double dt, const LoadedFun
             ++decays;
         }
     }
+}
 
-    QList<Sapling> waiting;
-    for (Sapling sapling : std::as_const(m_saplings)) {
+void QcPlantManager::growSaplings(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const LoadedFunction &isLoaded,
+                                  const SetBlock &setBlock)
+{
+    using Step = QcBlockEntities::SaplingStep;
+    entities.tickSaplings([&](QcBlockEntities::Sapling &sapling) {
         if (!isLoaded(sapling.pos)) {
-            waiting.append(sapling);
-            continue;
+            return Step::Keep;
         }
 
         const std::optional<QcBlockId> block = world.blockAt(sapling.pos);
         if (!block || !m_content->isValidBlock(*block) || !m_content->block(*block).sapling.isSapling()) {
-            // Broken or replaced meanwhile.
-            continue;
+            return Step::Remove;
         }
 
         sapling.remaining -= dt;
         if (sapling.remaining > 0.0) {
-            waiting.append(sapling);
-            continue;
+            return Step::Keep;
         }
-
         if (!m_trees.contains(*block)) {
-            continue;
+            return Step::Remove;
         }
 
-        if (!grow(sapling, *block, world, setBlock)) {
-            sapling.remaining = retrySeconds;
-            waiting.append(sapling);
+        // A tree that grew may have taken the place of other saplings: the walk seeks again.
+        if (grow(sapling.pos, *block, world, setBlock)) {
+            return Step::Grew;
         }
-    }
-
-    m_saplings = std::move(waiting);
-}
-
-void QcPlantManager::restoreSaplings(const QList<Sapling> &saplings)
-{
-    m_saplings = saplings.first(std::min<qsizetype>(saplings.size(), maxSaplings));
+        sapling.remaining = retrySeconds;
+        return Step::Keep;
+    });
 }

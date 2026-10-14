@@ -151,9 +151,9 @@ private:
     void feedChains(const QList<QcBlockPos> &hoppers)
     {
         for (qsizetype i = 0; i < hoppers.size(); i += 10) {
-            QVERIFY(m_server->containers().add(hoppers[i], 5));
-            m_server->containers().find(hoppers[i])->stacks[0] = {item("qtcraft:cobblestone"), 64, 0};
-            m_server->circuitState().noteContents(m_server->world(), hoppers[i]);
+            QVERIFY(ensureEntity(hoppers[i]));
+            m_server->blockEntities().container(hoppers[i])->stacks[0] = {item("qtcraft:cobblestone"), 64, 0};
+            m_server->noteContents(hoppers[i]);
         }
     }
 
@@ -172,8 +172,8 @@ private:
         put(x, line, u"chest[facing=south]"_s);
         put(x, line, u"signal_hopper[facing=down,enabled=false]"_s, 1);
         put(x, line, u"signal_hopper[facing=south]"_s, 2);
-        QVERIFY(m_server->containers().add(m_base.offset(x, 2, line), 5));
-        QList<QcItemStack> &stacks = m_server->containers().find(m_base.offset(x, 2, line))->stacks;
+        QVERIFY(ensureEntity(m_base.offset(x, 2, line)));
+        QList<QcItemStack> &stacks = m_server->blockEntities().container(m_base.offset(x, 2, line))->stacks;
         stacks = {{item(filter), 18, 0}};
         for (int i = 0; i < 4; ++i) {
             stacks.append({item("qtcraft:string"), 24, 0});
@@ -280,7 +280,13 @@ private slots:
         });
         report("clocks", clocks, sample);
         QVERIFY2(switches >= 6, qPrintable(QString::number(switches)));
-        QVERIFY(m_server->circuitState().burntOutUntil.isEmpty());
+        const QList<QcChunkPos> chunks = m_server->blockEntities().chunks();
+        for (const QcChunkPos &chunk : chunks) {
+            const QHash<QcBlockPos, QcBlockEntities::Memory> memories = m_server->blockEntities().chunk(chunk)->memories;
+            for (const QcBlockEntities::Memory &memory : memories) {
+                QCOMPARE(memory.burntOutUntil, quint64(0));
+            }
+        }
     }
 
     void pistonsSwitchedTogether()
@@ -346,8 +352,8 @@ private slots:
         reportHoppers("hoppers-rain", count, sample);
         ticks(400);
         int stored = 0;
-        const QList<QcContainerManager::Container> containers = m_server->containers().containers();
-        for (const QcContainerManager::Container &container : containers) {
+        const QList<QcBlockEntities::Container> containers = allContainers();
+        for (const QcBlockEntities::Container &container : containers) {
             for (const QcItemStack &stack : container.stacks) {
                 stored += stack.item == stick ? stack.count : 0;
             }
@@ -377,16 +383,16 @@ private slots:
         const QcBlockPos inputPos = m_base.offset(0, 4, line);
         int fed = 0;
         const auto refill = [&] {
-            QcContainerManager::Container *input = m_server->containers().find(inputPos);
+            QcBlockEntities::Container *input = m_server->blockEntities().container(inputPos);
             if (!input || !std::ranges::all_of(input->stacks, &QcItemStack::isEmpty)) {
                 return;
             }
             for (int slot = 0; slot < 24 && fed < items; ++slot, ++fed) {
                 input->stacks[slot] = {item(kinds[fed % kinds.size()]), 1, 0};
             }
-            m_server->circuitState().noteContents(m_server->world(), inputPos);
+            m_server->noteContents(inputPos);
         };
-        QVERIFY(m_server->containers().add(inputPos, 27));
+        QVERIFY(ensureEntity(inputPos));
         refill();
         settleBuild();
 
@@ -395,7 +401,7 @@ private slots:
         int sorted = 0;
         for (qsizetype unit = 0; unit < kinds.size(); ++unit) {
             for (const int y : {0, 1}) {
-                const QcContainerManager::Container *box = m_server->containers().find(m_base.offset(1 + int(unit) * 5, y, line));
+                const QcBlockEntities::Container *box = m_server->blockEntities().container(m_base.offset(1 + int(unit) * 5, y, line));
                 for (const QcItemStack &stack : box->stacks) {
                     sorted += stack.item == item(kinds[unit]) ? stack.count : 0;
                 }
@@ -457,8 +463,8 @@ private slots:
         const int count = m_full ? 1000 : 100;
         const QList<QcBlockPos> hoppers = hopperChains(count, {});
         for (const QcBlockPos &hopper : hoppers) {
-            QVERIFY(m_server->containers().add(hopper, 5));
-            m_server->containers().find(hopper)->stacks = QList<QcItemStack>(5, {item("qtcraft:dirt"), 64, 0});
+            QVERIFY(ensureEntity(hopper));
+            m_server->blockEntities().container(hopper)->stacks = QList<QcItemStack>(5, {item("qtcraft:dirt"), 64, 0});
         }
         settleBuild();
         quint32 nextId = 710000;

@@ -155,8 +155,8 @@ private slots:
         // Dirt is no fuel: the coal behind it goes into the fuel slot from the side.
         fill(2, 0, 2, {stack("qtcraft:dirt", 4), stack("qtcraft:coal", 2)});
         ticks(1);
-        QCOMPARE(slotsAt(3, 0, 2).value(QcMachineManager::fuelSlot), stack("qtcraft:coal", 1));
-        QCOMPARE(slotsAt(3, 0, 2).value(QcMachineManager::inputSlot), QcItemStack{});
+        QCOMPARE(slotsAt(3, 0, 2).value(QcMachineRules::fuelSlot), stack("qtcraft:coal", 1));
+        QCOMPARE(slotsAt(3, 0, 2).value(QcMachineRules::inputSlot), QcItemStack{});
         QCOMPARE(countIn(2, 0, 2, "qtcraft:dirt"), 4);
     }
 
@@ -172,7 +172,7 @@ private slots:
 
         // From above into the input; from below out of the output only.
         ticks(1);
-        QCOMPARE(slotsAt(4, 1, 4).value(QcMachineManager::inputSlot).item, item("qtcraft:iron_ore"));
+        QCOMPARE(slotsAt(4, 1, 4).value(QcMachineRules::inputSlot).item, item("qtcraft:iron_ore"));
         QCOMPARE(countIn(4, 0, 4, "qtcraft:iron_ingot"), 1);
         QCOMPARE(countIn(4, 0, 4, "qtcraft:coal"), 0);
         ticks(800);
@@ -344,17 +344,18 @@ private slots:
     {
         buildArea();
         put(2, 0, 2, u"signal_hopper[facing=east]"_s);
-        put(3, 0, 2, u"chest[facing=south]"_s);
         fill(2, 0, 2, {stack("qtcraft:cobblestone", 3)});
         put(2, 0, 5, u"signal_dropper[facing=east]"_s);
-        put(3, 0, 5, u"chest[facing=south]"_s);
         put(2, 0, 6, u"lever[attach=floor]"_s);
         fill(2, 0, 5, {stack("qtcraft:stick", 2)});
-        // Entries for chests nobody opened, far away, up to the limit: the chests in front have none.
-        for (int i = 0; !m_server->containers().isFull(); ++i) {
-            QVERIFY(m_server->containers().add({100000 + i, 70, 100000}, 1));
-        }
-        const QcBlockPos spare{100000, 70, 100000};
+        // The table of containers is full: the chests placed in front get no entry (decision E-357).
+        QcBlockEntities &entities = m_server->blockEntities();
+        QcBlockEntities::Limits limits = entities.limits();
+        limits.containers = entities.containerCount();
+        entities.setLimits(limits);
+        put(3, 0, 2, u"chest[facing=south]"_s);
+        put(3, 0, 5, u"chest[facing=south]"_s);
+        QVERIFY(!entities.container(at(3, 0, 2)));
         ticks(20);
         flip(2, 0, 6);
         ticks(10);
@@ -363,8 +364,9 @@ private slots:
         // The dropper has no container in front: it throws instead.
         QCOMPARE(everywhere("qtcraft:stick"), 2);
 
-        // Room again: the next push goes in.
-        m_server->containers().remove(spare);
+        // Room again: the next push makes the chest's entry and goes in.
+        limits.containers += 1;
+        entities.setLimits(limits);
         put(2, 1, 2, u"stone"_s);
         ticks(20);
         QVERIFY(countIn(3, 0, 2, "qtcraft:cobblestone") >= 1);

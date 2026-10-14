@@ -7,15 +7,14 @@
 
 #include <optional>
 
-class QcContainerManager;
-class QcMachineManager;
+class QcBlockEntities;
 
 // What a Signal Comparator reads from a block (decision E-343): the fullness of a container or
 // machine with the reference formula, or a state property scaled to 0..15, as the block's data says.
 class QcComparatorReadings
 {
 public:
-    QcComparatorReadings(const QcBlockAccess &world, const QcContainerManager &containers, const QcMachineManager &machines);
+    QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities);
 
     // The reference formula: 0 when every slot is empty, else 1 + 14 times the mean fullness of the
     // slots (each stack's count over its item's maxStack), rounded down.
@@ -28,6 +27,5 @@ private:
     int contentsAt(QcBlockPos pos) const;
 
     const QcBlockAccess &m_world;
-    const QcContainerManager &m_containers;
-    const QcMachineManager &m_machines;
+    const QcBlockEntities &m_entities;
 };

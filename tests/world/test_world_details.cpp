@@ -3,7 +3,7 @@
 #include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcInProcessTransport.h"
-#include "QcMachineManager.h"
+#include "QcTestMachines.h"
 #include "QcMobManager.h"
 #include "QcPhysics.h"
 #include "QcServer.h"
@@ -801,16 +801,16 @@ private slots:
         QcTestWorld world(*m_content);
         const QcBlockPos furnacePos{0, 64, 0};
         world.set(furnacePos, *m_content->blockId(u"qtcraft:furnace"_s));
-        QcMachineManager machines(m_content);
-        QVERIFY(machines.add(furnacePos));
-        QcMachineManager::Machine &furnace = *machines.find(furnacePos);
-        furnace.stacks[QcMachineManager::inputSlot] = {item("unfired_lamp_shell"), 1, 0};
-        furnace.stacks[QcMachineManager::fuelSlot] = {item("coal"), 1, 0};
+        QcTestMachines machines(m_content);
+        QVERIFY(machines.add(furnacePos, *m_content->blockId(u"qtcraft:furnace"_s)));
+        QcBlockEntities::Machine &furnace = *machines.find(furnacePos);
+        furnace.stacks[QcMachineRules::inputSlot] = {item("unfired_lamp_shell"), 1, 0};
+        furnace.stacks[QcMachineRules::fuelSlot] = {item("coal"), 1, 0};
         for (int tick = 0; tick < 20 * 12; ++tick) {
             machines.tick(world, 0.05);
         }
 
-        QCOMPARE(machines.find(furnacePos)->stacks[QcMachineManager::outputSlot], (QcItemStack{item("fired_lamp_shell"), 1, 0}));
+        QCOMPARE(machines.find(furnacePos)->stacks[QcMachineRules::outputSlot], (QcItemStack{item("fired_lamp_shell"), 1, 0}));
 
         QList<QcItemStack> small(4);
         small[0] = {item("firefly_bottle"), 1, 0};

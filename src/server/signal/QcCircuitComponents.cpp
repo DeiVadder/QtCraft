@@ -147,7 +147,8 @@ void QcCircuitComponents::observed(QcBlockPos pos, QcCircuitPlan &plan) const
 
 bool QcCircuitComponents::torchShouldLight(QcBlockPos pos, QcSignalState state) const
 {
-    const bool burnt = m_context.memory.burntOutUntil.value(pos, 0) > m_context.now;
+    const QcBlockEntities::Memory *memory = m_context.entities.memory(pos);
+    const bool burnt = memory && memory->burntOutUntil > m_context.now;
     const bool powered = state.facing && m_context.power.weakLevel(qcNeighbour(pos, *state.facing)) > 0;
     return !burnt && !powered;
 }
@@ -161,9 +162,9 @@ void QcCircuitComponents::reactTorch(QcBlockPos pos, QcSignalState state, QcCirc
 
 void QcCircuitComponents::switchTorch(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan)
 {
-    QcCircuitState &memory = m_context.memory;
-    if (memory.burntOutUntil.value(pos, m_context.now + 1) <= m_context.now) {
-        memory.burntOutUntil.remove(pos);
+    QcBlockEntities &entities = m_context.entities;
+    if (const QcBlockEntities::Memory *ended = entities.memory(pos); ended && ended->burntOutUntil != 0 && ended->burntOutUntil <= m_context.now) {
+        entities.memoryAt(pos).burntOutUntil = 0;
     }
 
     const bool light = torchShouldLight(pos, state);
@@ -176,12 +177,13 @@ void QcCircuitComponents::switchTorch(QcBlockPos pos, QcBlockId block, QcSignalS
     }
 
     // Going out: too often within the window burns the torch out.
-    QList<quint64> &offTicks = memory.torchOffTicks[pos];
+    QcBlockEntities::Memory &memory = entities.memoryAt(pos);
+    QList<quint64> &offTicks = memory.torchOffTicks;
     offTicks.removeIf([this](quint64 tick) { return tick + burnoutWindowTicks <= m_context.now; });
     offTicks.append(m_context.now);
     if (offTicks.size() >= burnoutToggles) {
-        memory.torchOffTicks.remove(pos);
-        memory.burntOutUntil.insert(pos, m_context.now + burnoutTicks);
+        memory.torchOffTicks.clear();
+        memory.burntOutUntil = m_context.now + burnoutTicks;
         plan.schedules.append({pos, burnoutTicks, Priority::Release});
         plan.burntOut.append(pos);
     }
@@ -215,7 +217,7 @@ void QcCircuitComponents::reactRepeater(QcBlockPos pos, QcBlockId block, QcSigna
     }
 
     const bool input = m_context.power.inputFrom(pos, QcBlockRules::opposite(*state.facing)) > 0;
-    if (input != state.on && !m_context.memory.schedule.contains(pos)) {
+    if (input != state.on && !m_context.entities.schedule().contains(pos)) {
         plan.schedules.append({pos, state.delay * repeaterStepTicks, Priority::Diode});
     }
 }
@@ -261,15 +263,11 @@ void QcCircuitComponents::reactOpener(QcBlockPos pos, QcBlockId block, QcSignalS
     const QcBlockPos bottom = door && content.property(block, u"half"_s) == u"top"_s ? pos.offset(0, -1, 0) : pos;
     const bool powered = m_context.power.input(bottom) > 0 || (door && m_context.power.input(bottom.offset(0, 1, 0)) > 0);
 
-    QSet<QcBlockPos> &poweredOpeners = m_context.memory.poweredOpeners;
-    if (powered == poweredOpeners.contains(bottom)) {
+    const QcBlockEntities::Memory *memory = m_context.entities.memory(bottom);
+    if (powered == (memory && memory->powered)) {
         return;
     }
-    if (powered) {
-        poweredOpeners.insert(bottom);
-    } else {
-        poweredOpeners.remove(bottom);
-    }
+    m_context.entities.memoryAt(bottom).powered = powered;
     if (state.on != powered) {
         plan.openings.append({bottom, powered});
     }
@@ -314,8 +312,8 @@ void QcCircuitComponents::reactPiston(QcBlockPos pos, QcBlockId block, QcSignalS
     if (!powered && state.on && (acts & retractedThisTick) == 0) {
         // Retracting before the extension ended (a pulse of less than its duration): a sticky piston
         // lets go of its block.
-        const auto started = m_context.memory.extending.constFind(pos);
-        const bool letGo = started != m_context.memory.extending.constEnd() && m_context.now < *started + QcMovingBlocks::moveTicks;
+        const QcBlockEntities::Memory *memory = m_context.entities.memory(pos);
+        const bool letGo = memory && memory->extendingSince && m_context.now < *memory->extendingSince + QcMovingBlocks::moveTicks;
         plan.pistons.append(QcPistonPlanner::retraction(m_context.power, pos, state, definition(block), letGo));
         return;
     }

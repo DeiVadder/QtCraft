@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
@@ -17,7 +18,8 @@
 class QcFallingBlockManager
 {
 public:
-    static constexpr int maxFalling = 2048;
+    // Falling blocks at once by default (QcServerLimits::fallingBlocks).
+    static constexpr int maxFalling = int(QcServerLimits{}.fallingBlocks);
     // Edge length of the falling cube, a little less than a block so it slides into one-wide shafts.
     static constexpr double size = 0.98;
     // A block still falling after this long (stuck on something) drops as items.
@@ -54,7 +56,8 @@ public:
     // or in unloaded chunks.
     static std::optional<QcBlockPos> restingCell(const QcBlockAccess &world, QcBlockPos from);
 
-    bool isFull() const { return m_falling.size() >= maxFalling; }
+    bool isFull() const { return m_falling.size() >= m_maxFalling; }
+    void setMaxFalling(qsizetype limit) { m_maxFalling = limit; }
     // Starts a falling block in the cell `from` (the caller removes the block there).
     void start(QcBlockPos from, QcBlockId block, quint32 id);
     // One tick of physics; returns the blocks that came to rest. Blocks that fall below
@@ -70,4 +73,5 @@ public:
 private:
     std::shared_ptr<const QcContentRegistry> m_content;
     QList<Falling> m_falling;
+    qsizetype m_maxFalling = maxFalling;
 };

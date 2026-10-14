@@ -134,5 +134,5 @@ bool QcMobBreeding::roomFor(const QList<QcMobManager::Mob> &mobs, int type, cons
         return mob.type == type && std::abs(chunk.x - centre.x) <= 1 && std::abs(chunk.z - centre.z) <= 1;
     };
     const auto bred = [type](const QcMobManager::Mob &mob) { return mob.type == type && mob.bred; };
-    return std::ranges::count_if(mobs, near) < crowdLimit && std::ranges::count_if(mobs, bred) < maxBredPerKind;
+    return std::ranges::count_if(mobs, near) < m_crowdLimit && std::ranges::count_if(mobs, bred) < m_bredPerKind;
 }

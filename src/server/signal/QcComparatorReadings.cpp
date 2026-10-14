@@ -1,15 +1,12 @@
 #include "QcComparatorReadings.h"
 
-#include "QcContainerManager.h"
-#include "QcMachineManager.h"
+#include "QcBlockEntities.h"
 
 #include <cmath>
 
-QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcContainerManager &containers,
-                                           const QcMachineManager &machines)
+QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities)
     : m_world(world)
-    , m_containers(containers)
-    , m_machines(machines)
+    , m_entities(entities)
 {
 }
 
@@ -63,10 +60,10 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
 int QcComparatorReadings::contentsAt(QcBlockPos pos) const
 {
     const QcContentRegistry &content = m_world.content();
-    if (const QcContainerManager::Container *container = m_containers.find(pos)) {
+    if (const QcBlockEntities::Container *container = m_entities.container(pos)) {
         return fullness(content, container->stacks);
     }
-    if (const QcMachineManager::Machine *machine = m_machines.find(pos)) {
+    if (const QcBlockEntities::Machine *machine = m_entities.machine(pos)) {
         return fullness(content, QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()));
     }
     // A container nobody opened yet is empty.

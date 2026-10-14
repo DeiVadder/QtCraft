@@ -1,6 +1,5 @@
 #include "QcCircuitComponents.h"
 #include "QcCircuitFixture.h"
-#include "QcSignalStorage.h"
 
 #include <QTemporaryDir>
 
@@ -293,16 +292,16 @@ private slots:
         }
         put(4, 0, 5, u"lever[attach=east]"_s);
         put(5, 1, 5, u"signal_torch[attach=floor]"_s);
-        for (int tick = 0; tick < 60 && !m_server->circuitState().burntOutUntil.contains(at(5, 1, 5)); ++tick) {
+        for (int tick = 0; tick < 60 && !burntOut(at(5, 1, 5)); ++tick) {
             ticks(1);
         }
-        QVERIFY(m_server->circuitState().burntOutUntil.contains(at(5, 1, 5)));
+        QVERIFY(burntOut(at(5, 1, 5)));
 
         // Burnt out with its block powered by the lever: when the burnout ends it stays off.
         flip(4, 0, 5);
         ticks(QcCircuitComponents::burnoutTicks + 10);
         QVERIFY(isBlock(5, 1, 5, "signal_torch_off"));
-        QVERIFY(!m_server->circuitState().burntOutUntil.contains(at(5, 1, 5)));
+        QVERIFY(!burntOut(at(5, 1, 5)));
     }
 
     void openersOfEveryKind()
@@ -363,7 +362,7 @@ private slots:
         put(3, 1, 8, u"air"_s);
         put(3, 0, 8, u"air"_s);
         ticks(1);
-        QVERIFY(!m_server->circuitState().poweredOpeners.contains(at(3, 0, 8)));
+        QVERIFY(!poweredOpener(at(3, 0, 8)));
         put(3, 0, 8, u"oak_door[facing=north,half=bottom]"_s);
         put(3, 1, 8, u"oak_door[facing=north,half=top]"_s);
         ticks(1);
@@ -483,61 +482,6 @@ private slots:
         QCOMPARE(updatesAt(lever) - before, int(QcRateLimiter::limit(QcRateLimiter::Kind::Switch).burst));
     }
 
-    void signalsFileRoundTrip()
-    {
-        QTemporaryDir directory;
-        QcCircuitState saved;
-        saved.schedule.add({1, 64, 2}, 105, QcSignalSchedule::Priority::Diode);
-        saved.schedule.add({-3, 70, 9}, 260, QcSignalSchedule::Priority::Release);
-        saved.changes.append({{4, 65, -4}, qcAirBlockId, qcAirBlockId});
-        saved.waiting[QcChunkPos{100, 100}].append({1601, 66, 1602});
-        saved.burntOutUntil.insert({5, 66, 5}, 200);
-        saved.poweredOpeners.insert({6, 64, 6});
-        saved.extending.insert({7, 64, 7}, 99);
-        saved.hoppers.startCooldown({8, 64, 8}, 95);
-        QVERIFY(QcSignalStorage::write(directory.path(), saved, 100).has_value());
-
-        // Read at another tick count: what waits keeps the ticks it still had.
-        QcCircuitState loaded;
-        QVERIFY(QcSignalStorage::read(directory.path(), loaded, 1000).has_value());
-        const QList<QcSignalSchedule::Entry> entries = loaded.schedule.entries();
-        QCOMPARE(entries.size(), 2);
-        QCOMPARE(entries[0].pos, (QcBlockPos{1, 64, 2}));
-        QCOMPARE(entries[0].due, quint64(1005));
-        QCOMPARE(entries[1].due, quint64(1160));
-        QCOMPARE(entries[1].priority, QcSignalSchedule::Priority::Release);
-        QCOMPARE(loaded.waiting.value(QcBlockPos{4, 65, -4}.chunk()).size(), 1);
-        QCOMPARE(loaded.waiting.value(QcChunkPos{100, 100}).size(), 1);
-        QCOMPARE(loaded.burntOutUntil.value({5, 66, 5}), quint64(1100));
-        QVERIFY(loaded.poweredOpeners.contains({6, 64, 6}));
-        QCOMPARE(loaded.extending.value({7, 64, 7}), quint64(999));
-        // A hopper's cooldown goes on: 3 ticks were left.
-        QCOMPARE(loaded.hoppers.readyAt.value({8, 64, 8}), quint64(1003));
-        QCOMPARE(loaded.hoppers.timers.begin()->first, quint64(1003));
-
-        // Quiet circuits leave no file behind.
-        QVERIFY(QcSignalStorage::write(directory.path(), QcCircuitState(), 0).has_value());
-        QVERIFY(!QFile::exists(directory.filePath(u"signals.qce"_s)));
-    }
-
-    void damagedSignalsFileDoesNotStopTheWorld()
-    {
-        QTemporaryDir directory;
-        QcServerConfig config;
-        config.worldDirectory = directory.path();
-        join(config);
-        QVERIFY(m_server->save().has_value());
-        cleanup();
-
-        QFile file(directory.filePath(u"signals.qce"_s));
-        QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("QCSG not a circuit file");
-        file.close();
-        join(config);
-        QVERIFY(m_server->clientCount() == 1);
-        QVERIFY(m_server->openWarnings().join(u'\n').contains(u"circuits start quiet"_s));
-    }
-
     void circuitsGoOnAfterARestart()
     {
         QTemporaryDir directory;
@@ -550,7 +494,7 @@ private slots:
 
         // Saved while the repeater waits for its tick: nothing else would wake it after loading,
         // yet it comes (joining runs two ticks).
-        QCOMPARE(m_server->circuitState().schedule.size(), 1);
+        QCOMPARE(m_server->blockEntities().schedule().size(), 1);
         QVERIFY(m_server->save().has_value());
         const QcBlockPos origin = m_origin;
         cleanup();

@@ -31,8 +31,7 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     , items(content, quint64(config.seed))
     , plants(content, quint64(config.seed))
     , growth(content, quint64(config.seed))
-    , machines(content)
-    , containers(content)
+    , machineRules(content)
     , liquids(content)
     , falling(content)
     , random(quint32(quint64(config.seed) ^ 0xD2095u))
@@ -44,7 +43,17 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
 void QcServerState::applyLimits()
 {
     circuits.maxPendingChanges = qsizetype(config.limits.signalMaxPendingChanges);
-    circuits.hoppers.cooldownTicks = int(config.limits.hopperCooldownTicks);
+    hoppers.cooldownTicks = int(config.limits.hopperCooldownTicks);
+    const QcServerLimits &limits = config.limits;
+    world.blockEntities().setLimits({qsizetype(limits.maxContainers), qsizetype(limits.maxMachines), qsizetype(limits.maxSaplings)});
+    liquids.setMaxPlanned(qsizetype(limits.liquidPlannedSteps));
+    falling.setMaxFalling(qsizetype(limits.fallingBlocks));
+    items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
+    mobs.setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
+    growth.setRandomTicksPerSection(int(limits.randomTicksPerSection));
+    plants.setLeafLimits(limits.leafDecaysPerTick, limits.leafChecksPerTick, limits.leafPendingChecks);
+    stands.setLimit(qsizetype(limits.maxArmourStands));
+    movingBlocks.setMaxMoving(qsizetype(limits.movingBlocksShown));
 }
 
 QcPermission QcServerState::permissionOf(const QcServerClient &client) const

@@ -76,7 +76,7 @@ int QcCircuitMachines::comparatorOutput(QcBlockPos pos, QcSignalState state) con
 
 void QcCircuitMachines::reactComparator(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const
 {
-    if (!std::cmp_equal(comparatorOutput(pos, state), state.power) && !m_context.memory.schedule.contains(pos)) {
+    if (!std::cmp_equal(comparatorOutput(pos, state), state.power) && !m_context.entities.schedule().contains(pos)) {
         plan.schedules.append({pos, comparatorDelayTicks, Priority::Diode});
     }
 }
@@ -96,14 +96,14 @@ void QcCircuitMachines::switchComparator(QcBlockPos pos, QcBlockId block, QcSign
 void QcCircuitMachines::reactObserver(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const
 {
     // A pulse never stays on (a world loaded in the middle of one, a moved observer).
-    if (state.on && !m_context.memory.schedule.contains(pos)) {
+    if (state.on && !m_context.entities.schedule().contains(pos)) {
         plan.schedules.append({pos, observerPulseTicks, Priority::Diode});
     }
 }
 
 void QcCircuitMachines::observed(QcBlockPos pos, QcCircuitPlan &plan) const
 {
-    if (!m_context.memory.schedule.contains(pos)) {
+    if (!m_context.entities.schedule().contains(pos)) {
         plan.schedules.append({pos, observerPulseTicks, Priority::Diode});
     }
 }

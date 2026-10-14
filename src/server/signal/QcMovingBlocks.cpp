@@ -4,7 +4,7 @@
 
 bool QcMovingBlocks::add(const Moving &moving)
 {
-    if (m_moving.size() >= maxMoving) {
+    if (m_moving.size() >= m_maxMoving) {
         return false;
     }
     m_moving.append(moving);

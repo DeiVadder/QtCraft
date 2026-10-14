@@ -57,7 +57,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
         return spawn(first, id);
     }
 
-    if (m_activeCount >= activeLimit) {
+    if (m_activeCount >= m_activeLimit) {
         enqueue(drop);
         return 0;
     }
@@ -100,7 +100,7 @@ void QcItemEntityManager::enqueue(const Drop &drop)
         }
     }
 
-    if (m_queue.size() >= queueLimit) {
+    if (m_queue.size() >= m_queueLimit) {
         m_discarded += m_queue.first().stack.count;
         qCWarning(lcItems) << "Too many dropped items; discarding the oldest waiting drop";
         m_queue.removeFirst();
@@ -227,7 +227,7 @@ QList<QcItemEntityManager::Item> QcItemEntityManager::removeFinished(const QList
 void QcItemEntityManager::spawnQueued(const TickCallbacks &callbacks)
 {
     // Waiting drops appear as soon as there is room again, but only where a player is near.
-    for (qsizetype i = 0; i < m_queue.size() && m_activeCount < activeLimit;) {
+    for (qsizetype i = 0; i < m_queue.size() && m_activeCount < m_activeLimit;) {
         if (!callbacks.isLoaded(m_queue[i].position)) {
             ++i;
             continue;
@@ -283,7 +283,7 @@ QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &
 
 void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
 {
-    // Keep at most activeLimit items awake in loaded chunks. Surplus items (a chunk full of saved
+    // Keep at most the limit of items awake in loaded chunks. Surplus items (a chunk full of saved
     // items was loaded) stay where they are but sleep, the youngest first; they wake oldest first
     // when room frees up. Their ids stay the same, nothing goes through the lossy queue.
     QList<qsizetype> awake;
@@ -301,14 +301,14 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
     };
     const auto byAge = [&sleepOrder](qsizetype a, qsizetype b) { return sleepOrder(a) < sleepOrder(b); };
 
-    if (awake.size() > activeLimit) {
+    if (awake.size() > m_activeLimit) {
         std::ranges::sort(awake, byAge);
-        for (qsizetype i = 0; i < awake.size() - activeLimit; ++i) {
+        for (qsizetype i = 0; i < awake.size() - m_activeLimit; ++i) {
             m_items[awake[i]].dormant = true;
         }
-    } else if (awake.size() < activeLimit && !sleeping.isEmpty()) {
+    } else if (awake.size() < m_activeLimit && !sleeping.isEmpty()) {
         std::ranges::sort(sleeping, [&byAge](qsizetype a, qsizetype b) { return byAge(b, a); });
-        for (qsizetype i = 0; i < sleeping.size() && i < activeLimit - awake.size(); ++i) {
+        for (qsizetype i = 0; i < sleeping.size() && i < m_activeLimit - awake.size(); ++i) {
             m_items[sleeping[i]].dormant = false;
             // A hopper below may be asleep; it takes note of the item now.
             m_stirred.append(m_items[sleeping[i]].motion.position);
@@ -318,12 +318,12 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
 
 void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
 {
-    if (m_items.size() <= totalLimit) {
+    if (m_items.size() <= m_totalLimit) {
         return;
     }
 
     // Forget the oldest items in unloaded chunks first; nobody is near them.
-    qsizetype excess = m_items.size() - totalLimit;
+    qsizetype excess = m_items.size() - m_totalLimit;
     QList<qsizetype> candidates;
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         if (!isLoaded(m_items[i].motion.position)) {
@@ -374,7 +374,7 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
         }
 
         // Beyond the total limit drops wait in the (bounded) queue, as before saving.
-        if (m_items.size() >= totalLimit) {
+        if (m_items.size() >= m_totalLimit) {
             enqueue(drop);
             continue;
         }
@@ -410,4 +410,11 @@ bool QcItemEntityManager::take(quint32 id, int count)
         m_items.erase(it);
     }
     return true;
+}
+
+void QcItemEntityManager::setLimits(qsizetype active, qsizetype queued, qsizetype total)
+{
+    m_activeLimit = active;
+    m_queueLimit = queued;
+    m_totalLimit = total;
 }

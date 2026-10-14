@@ -55,6 +55,48 @@ protected:
     int m_viewDistance = 1;
 
     QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
+
+    // Makes sure the block at `pos` has its container or machine (decision E-357); blocks set
+    // through the world have them already, unless the table was full.
+    bool ensureEntity(QcBlockPos pos) const
+    {
+        const std::optional<QcBlockId> block = m_server->world().blockAt(pos);
+        return block && m_server->blockEntities().ensure(pos, *block);
+    }
+
+    // Every container and every machine of the world.
+    QList<QcBlockEntities::Container> allContainers() const
+    {
+        QList<QcBlockEntities::Container> all;
+        const QList<QcChunkPos> chunks = m_server->blockEntities().chunks();
+        for (const QcChunkPos &chunk : chunks) {
+            all.append(m_server->blockEntities().chunk(chunk)->containers.values());
+        }
+        return all;
+    }
+
+    QList<QcBlockEntities::Machine> allMachines() const
+    {
+        QList<QcBlockEntities::Machine> all;
+        const QList<QcChunkPos> chunks = m_server->blockEntities().chunks();
+        for (const QcChunkPos &chunk : chunks) {
+            all.append(m_server->blockEntities().chunk(chunk)->machines.values());
+        }
+        return all;
+    }
+
+    // What circuit components remember at `pos`.
+    bool burntOut(QcBlockPos pos) const
+    {
+        const QcBlockEntities::Memory *memory = m_server->blockEntities().memory(pos);
+        return memory && memory->burntOutUntil != 0;
+    }
+
+    bool poweredOpener(QcBlockPos pos) const
+    {
+        const QcBlockEntities::Memory *memory = m_server->blockEntities().memory(pos);
+        return memory && memory->powered;
+    }
     QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
 
     void ticks(int count)

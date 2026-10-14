@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
 #include "QcVec3.h"
@@ -23,10 +24,12 @@
 class QcLiquidFlow
 {
 public:
-    // Flow steps per server tick at most; the rest waits for the next tick.
-    static constexpr int maxStepsPerTick = 512;
-    // Planned steps at most; further plans are dropped (the cell flows again when touched).
-    static constexpr qsizetype maxPlanned = 262144;
+    // Flow steps per server tick at most by default (QcServerLimits::liquidStepsPerTick); the rest
+    // waits for the next tick.
+    static constexpr int maxStepsPerTick = int(QcServerLimits{}.liquidStepsPerTick);
+    // Planned steps at most by default (QcServerLimits::liquidPlannedSteps); further plans are
+    // dropped (the cell flows again when touched).
+    static constexpr qsizetype maxPlanned = QcServerLimits{}.liquidPlannedSteps;
 
     // Replaces the block at a position (the caller breaks washable blocks first and tells clients).
     using SetFunction = std::function<void(QcBlockPos pos, QcBlockId block)>;
@@ -50,6 +53,7 @@ public:
     // Whether a planned step is due at `now`.
     bool hasDueSteps(quint64 now) const { return !m_due.empty() && m_due.begin()->first <= now; }
     qsizetype plannedCount() const { return m_planned.size(); }
+    void setMaxPlanned(qsizetype limit) { m_maxPlanned = limit; }
     QList<QcBlockPos> plannedPositions() const { return m_planned.keys(); }
     quint64 droppedCount() const { return m_dropped; }
     void clear();
@@ -99,5 +103,6 @@ private:
     // Due tick -> positions in the order they were planned.
     std::map<quint64, QList<QcBlockPos>> m_due;
     QHash<QcBlockPos, quint64> m_planned;
+    qsizetype m_maxPlanned = maxPlanned;
     quint64 m_dropped = 0;
 };

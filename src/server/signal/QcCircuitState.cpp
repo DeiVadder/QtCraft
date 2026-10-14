@@ -1,7 +1,6 @@
 #include "QcCircuitState.h"
 
 #include "QcBlockRules.h"
-#include "QcMovingBlocks.h"
 #include "QcServerWorld.h"
 
 #include <QLoggingCategory>
@@ -24,8 +23,8 @@ constexpr int reach = 2;
 
 bool QcCircuitState::isNearCircuit(const QcServerWorld &world, QcBlockPos pos) const
 {
-    const QcSectionMarks &marks = world.signalSections();
-    if (marks.isEmpty()) {
+    const QcSectionMarks &marks = world.marks();
+    if (marks.isEmpty(QcBlockTrait::Circuit)) {
         return false;
     }
 
@@ -35,7 +34,7 @@ bool QcCircuitState::isNearCircuit(const QcServerWorld &world, QcBlockPos pos) c
     const quint32 sections = ((2U << high) - 1U) & ~((1U << low) - 1U);
     for (const int dx : {-reach, reach}) {
         for (const int dz : {-reach, reach}) {
-            if ((marks.sectionsOf(pos.offset(dx, 0, dz).chunk()) & sections) != 0) {
+            if ((marks.sectionsOf(pos.offset(dx, 0, dz).chunk(), QcBlockTrait::Circuit) & sections) != 0) {
                 return true;
             }
         }
@@ -47,9 +46,6 @@ void QcCircuitState::noteChange(const QcServerWorld &world, QcBlockPos pos, QcBl
 {
     const QcContentRegistry &content = world.content();
     const auto kindOf = [&content](QcBlockId id) { return content.isValidBlock(id) ? content.block(id).signal.kind : QcSignalKind::None; };
-    if (kindOf(before) != kindOf(after)) {
-        forgetMemory(pos, kindOf(after));
-    }
     if (kindOf(before) == QcSignalKind::None && kindOf(after) == QcSignalKind::None && !isNearCircuit(world, pos)) {
         return;
     }
@@ -65,7 +61,6 @@ void QcCircuitState::noteChange(const QcServerWorld &world, QcBlockPos pos, QcBl
 
 void QcCircuitState::noteContents(const QcServerWorld &world, QcBlockPos pos)
 {
-    hoppers.touched.insert(pos);
     if (!isNearCircuit(world, pos)) {
         return;
     }
@@ -115,31 +110,6 @@ bool QcCircuitState::isSurroundedByLoaded(const QcServerWorld &world, QcChunkPos
     return true;
 }
 
-void QcCircuitState::forgetMemory(QcBlockPos pos, QcSignalKind now)
-{
-    if (now != QcSignalKind::Torch) {
-        torchOffTicks.remove(pos);
-        burntOutUntil.remove(pos);
-    }
-    if (now != QcSignalKind::Opener) {
-        poweredOpeners.remove(pos);
-    }
-    if (now != QcSignalKind::Piston) {
-        extending.remove(pos);
-    }
-    if (now != QcSignalKind::Hopper) {
-        hoppers.readyAt.remove(pos);
-    }
-}
-
-void QcCircuitState::prune(quint64 now, quint64 window)
-{
-    torchOffTicks.removeIf([now, window](const auto &it) { return it.value().isEmpty() || it.value().constLast() + window <= now; });
-    burntOutUntil.removeIf([now](const auto &it) { return it.value() <= now; });
-    extending.removeIf([now](const auto &it) { return it.value() + QcMovingBlocks::moveTicks <= now; });
-    hoppers.prune(now);
-}
-
 void QcCircuitState::wake(const QcServerWorld &world, QcBlockPos pos)
 {
     if (!isSurroundedByLoaded(world, pos.chunk())) {
@@ -151,7 +121,7 @@ void QcCircuitState::wake(const QcServerWorld &world, QcBlockPos pos)
 
 void QcCircuitState::wakeBorder(const QcServerWorld &world, QcChunkPos chunk, QcBlockFace face)
 {
-    const quint32 sections = world.signalSections().sectionsOf(chunk);
+    const quint32 sections = world.marks().sectionsOf(chunk, QcBlockTrait::Circuit);
     if (sections == 0) {
         return;
     }
@@ -222,17 +192,25 @@ void QcCircuitState::forgetChunk(QcChunkPos chunk)
     waitingOn.remove(chunk);
     const auto inChunk = [chunk](QcBlockPos pos) { return pos.chunk() == chunk; };
     changes.removeIf([&inChunk](const Change &change) { return inChunk(change.pos); });
-    const QList<QcSignalSchedule::Entry> entries = schedule.entries();
-    for (const QcSignalSchedule::Entry &entry : entries) {
-        if (inChunk(entry.pos)) {
-            schedule.remove(entry.pos);
+}
+
+QHash<QcChunkPos, QList<QcBlockPos>> QcCircuitState::pendingByChunk() const
+{
+    QHash<QcChunkPos, QList<QcBlockPos>> pending;
+    for (const Change &change : changes) {
+        pending[change.pos.chunk()].append(change.pos);
+    }
+    for (const QList<QcBlockPos> &positions : waiting) {
+        for (const QcBlockPos &pos : positions) {
+            pending[pos.chunk()].append(pos);
         }
     }
-    torchOffTicks.removeIf([&inChunk](const auto &it) { return inChunk(it.key()); });
-    burntOutUntil.removeIf([&inChunk](const auto &it) { return inChunk(it.key()); });
-    poweredOpeners.removeIf(inChunk);
-    extending.removeIf([&inChunk](const auto &it) { return inChunk(it.key()); });
-    hoppers.forgetChunk(chunk);
+    for (const QList<QcBlockPos> &positions : waitingOn) {
+        for (const QcBlockPos &pos : positions) {
+            pending[pos.chunk()].append(pos);
+        }
+    }
+    return pending;
 }
 
 void QcCircuitState::clear()
@@ -240,11 +218,5 @@ void QcCircuitState::clear()
     changes.clear();
     waiting.clear();
     waitingOn.clear();
-    schedule.clear();
-    torchOffTicks.clear();
-    burntOutUntil.clear();
-    poweredOpeners.clear();
-    extending.clear();
-    hoppers.clear();
     readers.clear();
 }

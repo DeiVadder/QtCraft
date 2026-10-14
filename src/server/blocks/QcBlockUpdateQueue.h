@@ -4,6 +4,7 @@
 #include "QcBlockFace.h"
 #include "QcBlockPos.h"
 #include "QcChunkPos.h"
+#include "QcServerLimits.h"
 
 #include <QHash>
 #include <QList>
@@ -22,7 +23,8 @@ class QcBlockUpdateQueue
 public:
     // Updates waiting for their chunk to load at most; loading a chunk also re-checks every block on
     // its borders that connects or hangs across them, so dropping beyond this loses nothing.
-    static constexpr qsizetype maxWaitingBlockUpdates = 65536;
+    // Updates waiting for unloaded chunks by default (QcServerLimits::waitingBlockUpdates).
+    static constexpr qsizetype maxWaitingBlockUpdates = QcServerLimits{}.waitingBlockUpdates;
 
     struct Update
     {

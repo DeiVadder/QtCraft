@@ -100,10 +100,13 @@ private:
     static qsizetype storedItems(QcServer &server)
     {
         QSet<QcItemId> stored;
-        const QList<QcContainerManager::Container> containers = server.containers().containers();
-        for (const QcContainerManager::Container &container : containers) {
-            for (const QcItemStack &stack : container.stacks) {
-                stored.insert(stack.item);
+        const QList<QcChunkPos> chunks = server.blockEntities().chunks();
+        for (const QcChunkPos &chunk : chunks) {
+            const QHash<QcBlockPos, QcBlockEntities::Container> containers = server.blockEntities().chunk(chunk)->containers;
+            for (const QcBlockEntities::Container &container : containers) {
+                for (const QcItemStack &stack : container.stacks) {
+                    stored.insert(stack.item);
+                }
             }
         }
         return stored.size();
@@ -129,18 +132,19 @@ private slots:
             QVERIFY(!server->mobs().naturalSpawning());
 
             // The workshop's furnace got its ore, the item chests hold every item.
-            const bool furnaceFilled = std::ranges::any_of(server->machines().machines(), [this](const QcMachineManager::Machine &machine) {
-                return machine.stacks[QcMachineManager::inputSlot].item == *m_content->itemId(u"qtcraft:iron_ore"_s);
+            bool furnaceFilled = false;
+            server->blockEntities().forEachMachine([&](const QcBlockEntities::Machine &machine) {
+                furnaceFilled = furnaceFilled || machine.stacks[QcMachineRules::inputSlot].item == *m_content->itemId(u"qtcraft:iron_ore"_s);
             });
             QVERIFY(furnaceFilled);
             QVERIFY(storedItems(*server) >= m_content->itemCount());
-            QVERIFY(!server->plants().saplings().isEmpty());
+            QVERIFY(!server->blockEntities().saplingsInOrder().isEmpty());
             QVERIFY(server->pendingCommandBlockUpdates() + server->waitingBlockUpdates() >= 6);
             QVERIFY(server->stop());
         }
 
         const QJsonObject info = readJson(QDir(directory.path()).filePath(u"world.json"_s));
-        QCOMPARE(info.value(u"formatVersion"_s).toInt(), 2);
+        QCOMPARE(info.value(u"formatVersion"_s).toInt(), QcWorldInfo::formatVersion);
         QCOMPARE(info.value(u"generator"_s).toObject().value(u"type"_s).toString(), u"showcase"_s);
         QVERIFY(info.value(u"generator"_s).toObject().value(u"setupDone"_s).toBool());
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"daylightCycle"_s).toBool(true), false);
@@ -161,9 +165,12 @@ private slots:
         const QDir world(directory.path());
         const int mobs = expectedMobs();
 
-        // The chests cannot be written: the first save breaks off after the creatures were stored.
-        const QString blocker = world.filePath(u"containers.qce"_s);
-        QVERIFY(QDir().mkpath(blocker));
+        // The block entities (chests) cannot be written, a file stands where their folder belongs:
+        // the first save breaks off after the creatures were stored.
+        const QString blocker = world.filePath(u"blockentities"_s);
+        QFile blocking(blocker);
+        QVERIFY(blocking.open(QIODevice::WriteOnly));
+        blocking.close();
         {
             std::unique_ptr<QcServer> server = makeServer(directory.path());
             QVERIFY(server->openWorld());
@@ -172,7 +179,7 @@ private slots:
         }
         QVERIFY(QFile::exists(world.filePath(u"mobs.qce"_s)));
         QVERIFY(!readJson(world.filePath(u"world.json"_s)).value(u"generator"_s).toObject().value(u"setupDone"_s).toBool(true));
-        QVERIFY(QDir(blocker).removeRecursively());
+        QVERIFY(QFile::remove(blocker));
 
         // Opened again, the setup runs once more: every creature once, the chests filled.
         {
@@ -231,39 +238,38 @@ private slots:
         QVERIFY(server->stop());
     }
 
-    void worldsOfFormatOneStillLoad()
+    void worldsOfOtherFormatsAreRefused()
     {
-        // world.json as written before the showcase: no generator, keepInventory as the only rule.
+        // world.json of format 1 (before the showcase) and 2 (before stage 31.1): a world of an older
+        // development version is refused, not converted (decision E-356), and nothing is written.
+        for (const int version : {1, 2}) {
+            QTemporaryDir directory;
+            const QString path = QDir(directory.path()).filePath(u"world.json"_s);
+            const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
+            writeJson(path, old);
+            QVERIFY(!QcWorldStorage(directory.path(), m_content).readInfo());
+
+            QcServerConfig config;
+            config.worldDirectory = directory.path();
+            config.seed = 42;
+            QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+            const QcStatus opened = server.openWorld();
+            QVERIFY(!opened.has_value());
+            QVERIFY(server.worldTooOld());
+            QVERIFY(opened.error().contains(u"older development version"_s));
+            QCOMPARE(readJson(path), old);
+        }
+
+        // Later formats are refused too, but not as old ones.
         QTemporaryDir directory;
-        writeJson(QDir(directory.path()).filePath(u"world.json"_s),
-                  {{u"formatVersion"_s, 1}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5},
-                   {u"created"_s, u"2026-10-01T10:00:00Z"_s}, {u"lastPlayed"_s, u"2026-10-02T10:00:00Z"_s},
-                   {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, false}}}});
-
-        const QcResult<QcWorldInfo> info = QcWorldStorage(directory.path(), m_content).readInfo();
-        QVERIFY2(info, qPrintable(info ? QString() : info.error()));
-        QCOMPARE(info->generator, u"terrain"_s);
-        QVERIFY(info->setupDone);
-        QVERIFY(info->daylightCycle);
-        QVERIFY(info->mobSpawning);
-        QVERIFY(!info->keepInventory);
-        QCOMPARE(info->worldTime, 1234.5);
-
-        // The server opens it as before and does not touch its time.
+        writeJson(QDir(directory.path()).filePath(u"world.json"_s), {{u"formatVersion"_s, 4}, {u"name"_s, u"New"_s}, {u"seed"_s, u"1"_s}});
+        QVERIFY(!QcWorldStorage(directory.path(), m_content).readInfo());
         QcServerConfig config;
         config.worldDirectory = directory.path();
-        config.seed = 42;
-        config.viewDistance = 1;
+        config.seed = 1;
         QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
-        QVERIFY(server.openWorld());
-        QCOMPARE(server.worldTime(), 1234.5);
-        QVERIFY(!server.keepInventory());
-        QVERIFY(server.stop());
-        QCOMPARE(readJson(QDir(directory.path()).filePath(u"world.json"_s)).value(u"formatVersion"_s).toInt(), 2);
-
-        // Later formats are refused.
-        writeJson(QDir(directory.path()).filePath(u"world.json"_s), {{u"formatVersion"_s, 3}, {u"name"_s, u"New"_s}, {u"seed"_s, u"1"_s}});
-        QVERIFY(!QcWorldStorage(directory.path(), m_content).readInfo());
+        QVERIFY(!server.openWorld().has_value());
+        QVERIFY(!server.worldTooOld());
     }
 
     void clientGetsLabelsAndAStandingTime()

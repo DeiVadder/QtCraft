@@ -39,6 +39,45 @@ struct QcServerLimits
     // Creatures summoned by /summon awake at once at most (E-351); natural ones do not count, 0
     // switches summoning creatures off (armour stands are no creatures and stay possible).
     qint64 summonLimit = 64;
+    // Block entities in the world at most (decision E-357): containers (chests, barrels, hoppers,
+    // dispensers), machines (furnaces) and growing saplings. Placing a chest or machine beyond is
+    // refused, a sapling beyond does not grow.
+    qint64 maxContainers = 16384;
+    qint64 maxMachines = 4096;
+    qint64 maxSaplings = 4096;
+    // Neighbour updates (connections, lost support, starting falls) per tick; those of player actions
+    // go first. Updates waiting for unloaded chunks, queued by commands (/fill) and written to a save
+    // at most.
+    qint64 blockUpdatesPerTick = 1024;
+    qint64 waitingBlockUpdates = 65536;
+    qint64 commandBlockUpdates = qint64(1) << 20;
+    qint64 savedBlockUpdates = qint64(4) << 20;
+    // Flow steps of liquids per tick and planned at most (E-054).
+    qint64 liquidStepsPerTick = 512;
+    qint64 liquidPlannedSteps = 262144;
+    // Falling blocks as entities at once (E-055); beyond, they drop straight or wait (E-288).
+    qint64 fallingBlocks = 2048;
+    // Dropped items: awake in loaded chunks, waiting to appear, in the world at all.
+    qint64 itemsAwake = 512;
+    qint64 itemsQueued = 1024;
+    qint64 itemsTotal = 4096;
+    // Creatures that spawn by themselves per player, by kind.
+    qint64 hostileCreaturesPerPlayer = 8;
+    qint64 passiveCreaturesPerPlayer = 6;
+    qint64 ambientCreaturesPerPlayer = 10;
+    // Breeding (E-293): animals of a kind within 3 x 3 chunks, bred animals of a kind in the world.
+    qint64 breedingCrowd = 24;
+    qint64 bredPerKind = 256;
+    // Random ticks per marked section and tick (growing plants, crops, soil; E-289): more makes
+    // plants grow faster, as the reference's randomTickSpeed.
+    qint64 randomTicksPerSection = 3;
+    // Leaves decaying and checked per tick, checks waiting at most.
+    qint64 leafDecaysPerTick = 8;
+    qint64 leafChecksPerTick = 64;
+    qint64 leafPendingChecks = 16384;
+    // Armour stands in the world (E-238) and blocks shown sliding behind pistons (E-337).
+    qint64 maxArmourStands = 4096;
+    qint64 movingBlocksShown = 4096;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

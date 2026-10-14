@@ -31,14 +31,13 @@ bool QcServerBlocks::setQuietly(QcBlockPos pos, QcBlockId block)
         return false;
     }
 
-    // A machine that is replaced by anything but another machine spills its contents.
-    if (m_state.machines.find(pos) && !m_state.machines.machineOf(block)) {
-        dropMachineContents(m_state.machines.remove(pos));
+    // A machine replaced by anything but another machine spills its contents, so does a chest
+    // replaced by anything but another storage block; a storage block of another size keeps what
+    // fits and spills the rest (QcBlockEntities::placed). A sapling placed starts to grow.
+    dropSpills();
+    if (m_state.blockEntities().isSapling(block) && !m_state.content->isSameBlock(before, block)) {
+        m_state.plants.saplingPlaced(m_state.blockEntities(), pos, block);
     }
-
-    // So does a chest replaced by anything but another storage block; a storage block of another
-    // size keeps what fits and spills the rest.
-    reconcileContainer(pos);
 
     m_updates.queueNeighbours(pos, block != qcAirBlockId);
     // Circuits nearby look at the change in the next signal step (decision E-335).
@@ -55,18 +54,11 @@ void QcServerBlocks::sendBlock(QcBlockPos pos, QcBlockId block) const
     }
 }
 
-void QcServerBlocks::reconcileContainer(QcBlockPos pos)
+void QcServerBlocks::dropSpills()
 {
-    if (!m_state.containers.find(pos)) {
-        return;
-    }
-
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    const int slotCount = block ? m_state.containers.slotsOf(*block) : 0;
-    if (slotCount == 0) {
-        dropStacks(m_state.containers.remove(pos).stacks, pos);
-    } else {
-        dropStacks(m_state.containers.resize(pos, slotCount), pos);
+    const QList<QcBlockEntities::Spill> spills = m_state.blockEntities().takeSpills();
+    for (const QcBlockEntities::Spill &spill : spills) {
+        dropStacks(spill.stacks, spill.pos);
     }
 }
 
@@ -185,16 +177,6 @@ void QcServerBlocks::dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos
 {
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
     for (const QcItemStack &stack : stacks) {
-        if (!stack.isEmpty()) {
-            m_state.items.spawnScattered(stack, centre, m_state.newEntityId());
-        }
-    }
-}
-
-void QcServerBlocks::dropMachineContents(const QcMachineManager::Machine &machine)
-{
-    const QcVec3 centre{machine.pos.x + 0.5, machine.pos.y + 0.5, machine.pos.z + 0.5};
-    for (const QcItemStack &stack : machine.stacks) {
         if (!stack.isEmpty()) {
             m_state.items.spawnScattered(stack, centre, m_state.newEntityId());
         }

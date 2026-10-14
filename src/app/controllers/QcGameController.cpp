@@ -411,9 +411,12 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
 
     m_parts.server = std::make_unique<QcLocalServerHost>(config, content, std::move(generator));
     if (!m_parts.server->startError().isEmpty()) {
-        const QString error = m_parts.server->worldInUse()
-                                  ? tr("It is already open in another QtCraft window or process. Close it there first.")
-                                  : m_parts.server->startError();
+        QString error = m_parts.server->startError();
+        if (m_parts.server->worldInUse()) {
+            error = tr("It is already open in another QtCraft window or process. Close it there first.");
+        } else if (m_parts.server->worldTooOld()) {
+            error = tr("It was saved by an older development version of QtCraft and cannot be opened.");
+        }
         m_parts.server.reset();
         setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
         return false;

@@ -36,9 +36,9 @@ public:
     explicit QcInventoryAccess(QcServerState &state);
 
     bool hasInventory(QcBlockPos pos) const;
-    // Makes sure the container or machine at `pos` has its entry (an unopened chest has none), so
-    // items can go into it; false when it has no inventory or the table of entries is full. Called
-    // while deciding, so a step never moves an item into nowhere.
+    // Makes sure the container or machine at `pos` has its entry (it has none when the table was
+    // full as the block was placed), so items can go into it; false when it has no inventory or the
+    // table of entries is full. Called while deciding, so a step never moves an item into nowhere.
     bool ensure(QcBlockPos pos);
     // A copy of the slots (an unopened container is empty); empty without an inventory.
     QList<QcItemStack> slotsAt(QcBlockPos pos) const;

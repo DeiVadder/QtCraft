@@ -14,8 +14,9 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr QByteArrayView entitiesMagic("QCEN");
-// Version 2 adds falling blocks after the saplings.
-constexpr quint16 entitiesVersion = 2;
+// Version 3 (stage 31.1) has no saplings any more: they are block entities saved with their chunk
+// (decision E-358). Files of older development versions are refused like their worlds.
+constexpr quint16 entitiesVersion = 3;
 // Version 2 adds each creature's breeding cooldown, time until it grows up and whether it was bred
 // (decision E-293).
 constexpr quint16 mobsVersion = 2;
@@ -64,10 +65,6 @@ QcStatus QcEntityStorage::writeEntities(const QcWorldEntities &entities) const
         stream << item.position.x << item.position.y << item.position.z << item.velocity.x << item.velocity.y
                << item.velocity.z << item.age << item.pickupDelay;
     }
-    stream << quint32(entities.saplings.size());
-    for (const QcPlantManager::Sapling &sapling : entities.saplings) {
-        stream << qint32(sapling.pos.x) << qint32(sapling.pos.y) << qint32(sapling.pos.z) << sapling.remaining;
-    }
     stream << quint32(entities.fallingBlocks.size());
     for (const QcFallingBlockManager::Falling &falling : entities.fallingBlocks) {
         const QcEntityMotion &motion = falling.motion;
@@ -88,6 +85,9 @@ QcResult<QcWorldEntities> QcEntityStorage::readEntities(QStringList &warnings) c
     if (!payload) {
         return qcError(payload.error());
     }
+    if (version < entitiesVersion) {
+        return qcError(u"%1 is from an older development version"_s.arg(path));
+    }
 
     QDataStream stream(*payload);
     stream.setVersion(QcSaveFile::streamVersion);
@@ -95,10 +95,7 @@ QcResult<QcWorldEntities> QcEntityStorage::readEntities(QStringList &warnings) c
     if (const QcStatus read = readItems(stream, path, entities.items, warnings); !read) {
         return qcError(read.error());
     }
-    if (const QcStatus read = readSaplings(stream, path, entities.saplings); !read) {
-        return qcError(read.error());
-    }
-    if (const QcStatus read = readFallingBlocks(stream, path, version, entities.fallingBlocks, warnings); !read) {
+    if (const QcStatus read = readFallingBlocks(stream, path, entities.fallingBlocks, warnings); !read) {
         return qcError(read.error());
     }
     if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
@@ -161,34 +158,11 @@ int QcEntityStorage::addItem(QcItemEntityManager::Drop drop, QcItemId item, int 
     return left;
 }
 
-QcStatus QcEntityStorage::readSaplings(QDataStream &stream, const QString &path, QList<QcPlantManager::Sapling> &saplings)
-{
-    quint32 saplingCount = 0;
-    if (!QcStreamLimits::readCount(stream, maxStoredEntities, saplingCount)) {
-        return qcError(u"%1 is damaged (sapling count)"_s.arg(path));
-    }
-
-    for (quint32 i = 0; i < saplingCount; ++i) {
-        qint32 x = 0;
-        qint32 y = 0;
-        qint32 z = 0;
-        double remaining = 0.0;
-        stream >> x >> y >> z >> remaining;
-        const QcBlockPos pos{x, y, z};
-        if (stream.status() != QDataStream::Ok || !std::isfinite(remaining) || !pos.isInsideWorldHeight()
-            || std::abs(x) > QcWorld::maxHorizontalBlock || std::abs(z) > QcWorld::maxHorizontalBlock) {
-            return qcError(u"%1 is damaged (sapling %2)"_s.arg(path).arg(i));
-        }
-        saplings.append({pos, std::clamp(remaining, 0.0, 86400.0)});
-    }
-    return {};
-}
-
-QcStatus QcEntityStorage::readFallingBlocks(QDataStream &stream, const QString &path, quint16 version,
+QcStatus QcEntityStorage::readFallingBlocks(QDataStream &stream, const QString &path,
                                             QList<QcFallingBlockManager::Falling> &blocks, QStringList &warnings) const
 {
     quint32 fallingCount = 0;
-    if (version >= 2 && !QcStreamLimits::readCount(stream, maxStoredEntities, fallingCount)) {
+    if (!QcStreamLimits::readCount(stream, maxStoredEntities, fallingCount)) {
         return qcError(u"%1 is damaged (falling block count)"_s.arg(path));
     }
 

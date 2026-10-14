@@ -3,7 +3,7 @@
 #include "QcConnection.h"
 #include "QcCrafting.h"
 #include "QcInProcessTransport.h"
-#include "QcMachineManager.h"
+#include "QcTestMachines.h"
 #include "QcBlockRules.h"
 #include "QcFallingBlockManager.h"
 #include "QcLiquidFlow.h"
@@ -588,11 +588,11 @@ private slots:
         QCOMPARE(content.item(ember).fuelSeconds, 120.0);
 
         auto shared = std::make_shared<const QcContentRegistry>(content);
-        QcMachineManager machines(shared);
+        QcTestMachines machines(shared);
         QcTestWorld world(content);
         const QcBlockPos pos{0, 64, 0};
         world.set(pos, *content.blockId(u"qtcraft:furnace"_s));
-        QVERIFY(machines.add(pos));
+        QVERIFY(machines.add(pos, *content.blockId(u"qtcraft:furnace"_s)));
         machines.find(pos)->stacks = {QcItemStack{*content.itemId(u"qtcraft:gravel"_s), 5, 0}, QcItemStack{ember, 1, 0}, QcItemStack{}};
         for (int i = 0; i < 30 * 20 + 1; ++i) {
             machines.tick(world, 0.05);
@@ -745,11 +745,11 @@ private slots:
         QVERIFY(content->smeltingRecipe(u"milling"_s, u"qtcraft:gravel"_s));
         QVERIFY(!content->smeltingRecipe(u"milling"_s, u"qtcraft:iron_ore"_s));
 
-        QcMachineManager machines(content);
+        QcTestMachines machines(content);
         QcTestWorld world(*content);
         const QcBlockPos pos{3, 64, 3};
         world.set(pos, millstone);
-        QVERIFY(machines.add(pos));
+        QVERIFY(machines.add(pos, millstone));
         const QcItemId bush = *content->itemId(u"mill:dry_bush"_s);
         QCOMPARE(content->item(bush).fuelSeconds, 1.0);
         machines.find(pos)->stacks = {QcItemStack{*content->itemId(u"qtcraft:gravel"_s), 3, 0}, QcItemStack{bush, 1, 0}, QcItemStack{}};

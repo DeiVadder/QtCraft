@@ -28,6 +28,8 @@ public:
         QcWorldInfo info;
         // Set when world.json cannot be read; the world is listed but cannot be played.
         QString error;
+        // Saved by an older development version (decision E-356): listed, but it cannot be played.
+        bool tooOld = false;
     };
 
     using NewWorld = QcNewWorld;

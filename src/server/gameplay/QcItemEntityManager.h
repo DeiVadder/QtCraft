@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
 #include "QcItemStack.h"
@@ -38,9 +39,10 @@ public:
     // Speed in m/s that items in flowing liquid drift with along its current (decision E-296).
     static constexpr double driftSpeed = 1.2;
     static constexpr int mergeIntervalTicks = 10;
-    static constexpr int activeLimit = 512;
-    static constexpr int queueLimit = 1024;
-    static constexpr int totalLimit = 4096;
+    // The bounds by default (QcServerLimits::itemsAwake, itemsQueued, itemsTotal).
+    static constexpr int activeLimit = int(QcServerLimits{}.itemsAwake);
+    static constexpr int queueLimit = int(QcServerLimits{}.itemsQueued);
+    static constexpr int totalLimit = int(QcServerLimits{}.itemsTotal);
 
     struct Item
     {
@@ -101,6 +103,7 @@ public:
     const QList<Drop> &queued() const { return m_queue; }
     // Awake items in loaded chunks after the last tick (plus drops spawned since).
     int activeCount() const { return m_activeCount; }
+    void setLimits(qsizetype active, qsizetype queued, qsizetype total);
     // Items removed because a limit was exceeded since the start.
     qint64 discardedCount() const { return m_discarded; }
     void clear();
@@ -134,6 +137,9 @@ private:
     QList<Drop> m_queue;
     QList<QcVec3> m_stirred;
     int m_activeCount = 0;
+    qsizetype m_activeLimit = activeLimit;
+    qsizetype m_queueLimit = queueLimit;
+    qsizetype m_totalLimit = totalLimit;
     quint64 m_ticks = 0;
     qint64 m_discarded = 0;
 };

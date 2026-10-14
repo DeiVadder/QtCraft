@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
 
@@ -15,10 +16,10 @@ struct QcServerState;
 class QcBlockSimulation
 {
 public:
-    // Neighbour updates (connections, lost support) processed per tick at most; the rest waits for
-    // the next tick, so a long chain of falling torches never stalls the server. Updates caused by
+    // Neighbour updates (connections, lost support) processed per tick at most by default
+    // (QcServerLimits::blockUpdatesPerTick); the rest waits for the next tick, so a long chain of falling torches never stalls the server. Updates caused by
     // players go first; those of commands (/fill) and their cascades use what is left.
-    static constexpr int maxBlockUpdatesPerTick = 1024;
+    static constexpr int maxBlockUpdatesPerTick = int(QcServerLimits{}.blockUpdatesPerTick);
 
     QcBlockSimulation(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates, QcServerBlocks &blocks);
 

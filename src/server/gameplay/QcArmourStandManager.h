@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcAabb.h"
 #include "QcEquipment.h"
 #include "QcStandPose.h"
@@ -14,7 +15,10 @@
 class QcArmourStandManager
 {
 public:
-    static constexpr int maxStands = 4096;
+    // Stands in the world by default (QcServerLimits::maxArmourStands); a save holds at most the
+    // highest limit.
+    static constexpr int maxStands = int(QcServerLimits{}.maxArmourStands);
+    static constexpr int maxStoredStands = 65536;
     // A stand breaks when the same player hits it twice within this time (a single hit only wobbles
     // it). Longer than the attack cooldown (QcServerCombat::playerAttackCooldown), during which hits
     // do not count.
@@ -52,7 +56,9 @@ public:
     bool add(const Stand &stand);
     // Removes the stand and returns it (to drop what it carried).
     std::optional<Stand> remove(quint32 id);
-    bool isFull() const { return m_stands.size() >= maxStands; }
+    bool isFull() const { return m_stands.size() >= m_maxStands; }
+    qsizetype limit() const { return m_maxStands; }
+    void setLimit(qsizetype limit) { m_maxStands = limit; }
     // Advances the hit timers and removes stands in the void.
     void tick(double dt);
     // Replaces all stands, e.g. from a save; entries beyond the limit are left out and counted.
@@ -60,4 +66,5 @@ public:
 
 private:
     QList<Stand> m_stands;
+    qsizetype m_maxStands = maxStands;
 };

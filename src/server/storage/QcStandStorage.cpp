@@ -90,7 +90,7 @@ QcResult<QList<QcArmourStandManager::Stand>> QcStandStorage::readFile(const QStr
     QDataStream stream(*payload);
     stream.setVersion(QcSaveFile::streamVersion);
     quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, QcArmourStandManager::maxStands, count)) {
+    if (!QcStreamLimits::readCount(stream, QcArmourStandManager::maxStoredStands, count)) {
         return qcError(u"%1 is damaged (stand count)"_s.arg(path));
     }
 

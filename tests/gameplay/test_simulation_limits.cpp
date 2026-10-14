@@ -2,6 +2,7 @@
 #include "QcServerSettings.h"
 
 #include <QJsonDocument>
+#include <QSet>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -44,6 +45,39 @@ private slots:
         QCOMPARE(limits.signalMaxPendingChanges, qint64(1) << 20);
         QCOMPARE(limits.hopperBudget, 4096);
         QCOMPARE(limits.hopperCooldownTicks, 8);
+        // The bounds of older stages kept their values when they moved here (stage 31.1).
+        QCOMPARE(limits.maxContainers, 16384);
+        QCOMPARE(limits.maxMachines, 4096);
+        QCOMPARE(limits.maxSaplings, 4096);
+        QCOMPARE(limits.blockUpdatesPerTick, 1024);
+        QCOMPARE(limits.waitingBlockUpdates, 65536);
+        QCOMPARE(limits.commandBlockUpdates, qint64(1) << 20);
+        QCOMPARE(limits.savedBlockUpdates, qint64(4) << 20);
+        QCOMPARE(limits.liquidStepsPerTick, 512);
+        QCOMPARE(limits.liquidPlannedSteps, 262144);
+        QCOMPARE(limits.fallingBlocks, 2048);
+        QCOMPARE(limits.itemsAwake, 512);
+        QCOMPARE(limits.itemsQueued, 1024);
+        QCOMPARE(limits.itemsTotal, 4096);
+        QCOMPARE(limits.hostileCreaturesPerPlayer, 8);
+        QCOMPARE(limits.passiveCreaturesPerPlayer, 6);
+        QCOMPARE(limits.ambientCreaturesPerPlayer, 10);
+        QCOMPARE(limits.breedingCrowd, 24);
+        QCOMPARE(limits.bredPerKind, 256);
+        QCOMPARE(limits.randomTicksPerSection, 3);
+        QCOMPARE(limits.leafDecaysPerTick, 8);
+        QCOMPARE(limits.leafChecksPerTick, 64);
+        QCOMPARE(limits.leafPendingChecks, 16384);
+        QCOMPARE(limits.maxArmourStands, 4096);
+        QCOMPARE(limits.movingBlocksShown, 4096);
+        // Every field is in the table once, with its default inside its range.
+        QSet<QString> keys;
+        for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
+            QVERIFY(!keys.contains(QLatin1StringView(field.key)));
+            keys.insert(QLatin1StringView(field.key));
+            QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
+        }
+        QCOMPARE(keys.size(), qsizetype(32));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());
@@ -85,10 +119,30 @@ private slots:
             moved += countIn(i % 10, 0, (i / 10) * 2, "qtcraft:diamond");
         }
         QCOMPARE(moved, 50);
-        QCOMPARE(m_server->circuitState().hoppers.cooldownTicks, 20);
+        QCOMPARE(m_server->hopperQueue().cooldownTicks, 20);
 
         chat(u"/limits"_s);
         QVERIFY(m_client->chatLines.join(u'\n').contains(u"hopperBudget = 10"_s));
+    }
+
+    void limitsOfOlderStagesTakeEffect()
+    {
+        // Lowered bounds reach the parts that keep them: items awake, falling blocks, containers.
+        QcServerConfig config;
+        config.limits.itemsAwake = 20;
+        config.limits.fallingBlocks = 16;
+        config.limits.maxContainers = 16;
+        buildArea(config);
+        for (quint32 i = 0; i < 30; ++i) {
+            m_server->items().spawnScattered(stack("qtcraft:stick", 1), {at(5, 1, 5).x + 0.5, double(at(5, 1, 5).y), at(5, 1, 5).z + 0.5}, 800000 + i);
+        }
+        QCOMPARE(m_server->items().activeCount(), 20);
+        QVERIFY(!m_server->fallingBlocks().isFull());
+        for (quint32 i = 0; i < 16; ++i) {
+            m_server->fallingBlocks().start(at(1, 6, 1).offset(0, 0, 0), id("qtcraft:sand"), 900000 + i);
+        }
+        QVERIFY(m_server->fallingBlocks().isFull());
+        QCOMPARE(m_server->blockEntities().limits().containers, 16);
     }
 
     void singlePlayerWorldUsesWorldJson()

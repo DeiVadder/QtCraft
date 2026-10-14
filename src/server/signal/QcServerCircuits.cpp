@@ -65,7 +65,7 @@ void QcServerCircuits::tick()
     m_budget = qsizetype(limits.signalBudget);
     m_pistonActs.clear();
     if (m_state.tickCount % pruneIntervalTicks == 0) {
-        m_state.circuits.prune(m_state.tickCount, QcCircuitComponents::burnoutWindowTicks);
+        m_state.blockEntities().prune(m_state.tickCount, QcCircuitComponents::burnoutWindowTicks, QcMovingBlocks::moveTicks);
     }
     finishMoves();
     m_state.circuits.takeReaders(m_state.world);
@@ -74,7 +74,7 @@ void QcServerCircuits::tick()
     settle(qsizetype(limits.scheduleReserve()));
 
     while (m_budget > 0) {
-        const auto group = m_state.circuits.schedule.nextGroup(m_state.tickCount);
+        const auto group = m_state.blockEntities().schedule().nextGroup(m_state.tickCount);
         if (!group) {
             break;
         }
@@ -121,7 +121,7 @@ bool QcServerCircuits::use(QcBlockPos pos)
             return true;
         }
         m_blocks.setAndBroadcast(pos, m_table.withFlag(*block, u"powered"_s, true));
-        m_state.circuits.schedule.add(pos, m_state.tickCount + quint64(definition.pulseTicks), QcSignalSchedule::Priority::Release);
+        m_state.blockEntities().schedule().add(pos, m_state.tickCount + quint64(definition.pulseTicks), QcSignalSchedule::Priority::Release);
         break;
     case QcSignalKind::Repeater: {
         const QString delay = QString::number(state.delay % 4 + 1);
@@ -143,15 +143,15 @@ void QcServerCircuits::pressPlates()
 {
     m_pressedByAnything.clear();
     m_pressedByLiving.clear();
-    const QcSectionMarks &plates = m_state.world.plateSections();
-    if (plates.isEmpty()) {
+    const QcSectionMarks &marks = m_state.world.marks();
+    if (marks.isEmpty(QcBlockTrait::Plate)) {
         return;
     }
 
-    const auto note = [this, &plates](const QcVec3 &feet, bool living) {
+    const auto note = [this, &marks](const QcVec3 &feet, bool living) {
         --m_budget;
         const QcBlockPos cell = QcPhysics::blockContaining(feet);
-        if (!cell.isInsideWorldHeight() || (plates.sectionsOf(cell.chunk()) & (1U << unsigned(cell.y / QcWorld::sectionHeight))) == 0) {
+        if (!cell.isInsideWorldHeight() || (marks.sectionsOf(cell.chunk(), QcBlockTrait::Plate) & (1U << unsigned(cell.y / QcWorld::sectionHeight))) == 0) {
             return;
         }
         const std::optional<QcBlockId> block = m_state.world.blockAt(cell);
@@ -316,8 +316,8 @@ void QcServerCircuits::runWave(qsizetype limit)
         plan.writes.insert(change.pos, change.state);
     }
 
-    const QcComparatorReadings readings(m_state.world, m_state.containers, m_state.machines);
-    QcCircuitComponents reactions({power, m_state.circuits, m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
+    const QcComparatorReadings readings(m_state.world, m_state.blockEntities());
+    QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
                                    m_pressedByAnything, m_pressedByLiving, readings});
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
@@ -350,20 +350,20 @@ void QcServerCircuits::reactReadersAndObservers(const Collected &collected, QcCi
 
 void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority priority)
 {
-    QList<QcBlockPos> positions = m_state.circuits.schedule.takeGroup(due, priority);
+    QList<QcBlockPos> positions = m_state.blockEntities().schedule().takeGroup(due, priority);
     std::ranges::sort(positions, before);
     const QcServerLimits &limits = m_state.config.limits;
     const qsizetype room = std::max(m_budget / qsizetype(limits.signalWorkPerChange), qsizetype(limits.signalMinimumStep));
     // A group larger than the budget: the rest stays due with its tick and priority for the next
     // tick (not simultaneous with the first part any more).
     for (qsizetype i = room; i < positions.size(); ++i) {
-        m_state.circuits.schedule.add(positions[i], due, priority);
+        m_state.blockEntities().schedule().add(positions[i], due, priority);
     }
     positions.resize(std::min(positions.size(), room));
 
     const QcSignalPower power(m_state.world, m_table);
-    const QcComparatorReadings readings(m_state.world, m_state.containers, m_state.machines);
-    QcCircuitComponents reactions({power, m_state.circuits, m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
+    const QcComparatorReadings readings(m_state.world, m_state.blockEntities());
+    QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.tickCount, m_state.info.quasiConnectivity, m_pistonActs,
                                    m_pressedByAnything, m_pressedByLiving, readings});
     QcCircuitPlan plan;
     for (const QcBlockPos &pos : std::as_const(positions)) {
@@ -382,7 +382,7 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
 {
     m_budget -= std::max<qsizetype>(1, plan.work);
     for (const QcCircuitPlan::Schedule &schedule : std::as_const(plan.schedules)) {
-        m_state.circuits.schedule.add(schedule.pos, m_state.tickCount + quint64(std::max(1, schedule.delay)), schedule.priority);
+        m_state.blockEntities().schedule().add(schedule.pos, m_state.tickCount + quint64(std::max(1, schedule.delay)), schedule.priority);
     }
 
     applyWrites(plan);
@@ -422,13 +422,8 @@ void QcServerCircuits::applyOpenings(const QcCircuitPlan &plan)
         m_blocks.toggle(opening.pos, *block);
         if (m_state.world.blockAt(opening.pos) == block) {
             // Someone stands in the way: the opener has not seen the change yet and tries again.
-            QSet<QcBlockPos> &powered = m_state.circuits.poweredOpeners;
-            if (opening.open) {
-                powered.remove(opening.pos);
-            } else {
-                powered.insert(opening.pos);
-            }
-            m_state.circuits.schedule.add(opening.pos, m_state.tickCount + openerRetryTicks, QcSignalSchedule::Priority::Release);
+            m_state.blockEntities().memoryAt(opening.pos).powered = !opening.open;
+            m_state.blockEntities().schedule().add(opening.pos, m_state.tickCount + openerRetryTicks, QcSignalSchedule::Priority::Release);
         }
     }
 }
@@ -439,7 +434,7 @@ qsizetype QcServerCircuits::applyPistons(const QcCircuitPlan &plan)
     // Pistons that lost a conflict look again next tick, all of them, so none wins by order.
     for (const QcPistonPlan &dropped : plan.pistons) {
         if (!std::ranges::any_of(kept, [&dropped](const QcPistonPlan &piston) { return piston.base == dropped.base; })) {
-            m_state.circuits.schedule.add(dropped.base, m_state.tickCount + 1, QcSignalSchedule::Priority::Diode);
+            m_state.blockEntities().schedule().add(dropped.base, m_state.tickCount + 1, QcSignalSchedule::Priority::Diode);
         }
     }
 

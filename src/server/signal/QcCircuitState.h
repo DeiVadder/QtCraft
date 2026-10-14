@@ -1,8 +1,6 @@
 #pragma once
 
 #include "QcBlockDefinition.h"
-#include "QcHopperState.h"
-#include "QcSignalSchedule.h"
 
 #include <QHash>
 #include <QList>
@@ -10,9 +8,10 @@
 
 class QcServerWorld;
 
-// What the circuits of a world remember between ticks (decision E-335): block changes near circuits
-// not yet looked at, scheduled ticks, recent switching of torches, openers last seen powered and
-// pistons in the middle of extending. Lives in QcServerState; saved in signals.qce.
+// The work of the circuits of a world between ticks (decision E-335): block changes near circuits not
+// yet looked at, positions waiting for chunks to load and comparators to read again. What components
+// remember at their position and their scheduled ticks are block entities (QcBlockEntities, decision
+// E-357). Lives in QcServerState; the waiting positions are saved with their chunk.
 struct QcCircuitState
 {
     // Pending changes beyond this many are dropped; the circuits around them are looked at again with
@@ -35,9 +34,9 @@ struct QcCircuitState
     // is one); changes far from any circuit cost nothing.
     void noteChange(const QcServerWorld &world, QcBlockPos pos, QcBlockId before, QcBlockId after);
     bool isNearCircuit(const QcServerWorld &world, QcBlockPos pos) const;
-    // The contents of the container or machine at `pos` changed: hoppers next to it wake, and the
-    // comparators that read it (behind them, or two behind through a block) look again in the next
-    // tick, each once (decision E-343). Without such a comparator it costs the circuits nothing.
+    // The contents of the container or machine at `pos` changed: the comparators that read it (behind
+    // them, or two behind through a block) look again in the next tick, each once (decision E-343).
+    // Without such a comparator it costs the circuits nothing.
     void noteContents(const QcServerWorld &world, QcBlockPos pos);
     // The comparators whose readings may have changed, as changes of themselves; clears them.
     void takeReaders(const QcServerWorld &world);
@@ -54,14 +53,11 @@ struct QcCircuitState
     // other (a lamp loaded next to powered dust lights). Pistons there are left alone: they wait for
     // a block update as always.
     void chunkLoaded(const QcServerWorld &world, QcChunkPos chunk);
-    // Drops what is remembered for `pos` that no longer fits the kind of block there now (a door
-    // replaced by a lever, a torch broken).
-    void forgetMemory(QcBlockPos pos, QcSignalKind now);
-    // Drops memories that ran out: torches that have not gone out within `window` ticks, ended
-    // burnouts and extensions.
-    void prune(quint64 now, quint64 window);
-    // Forgets everything of a chunk that was generated again.
+    // Forgets the work of a chunk that was generated again.
     void forgetChunk(QcChunkPos chunk);
+    // Every position waiting for some chunk or change, by the chunk it lies in (saved with that
+    // chunk; read back as positions to look at once their chunk and the eight around it are loaded).
+    QHash<QcChunkPos, QList<QcBlockPos>> pendingByChunk() const;
     void clear();
 
     QList<Change> changes;
@@ -69,17 +65,6 @@ struct QcCircuitState
     QHash<QcChunkPos, QList<QcBlockPos>> waiting;
     // Positions to look at once a chunk next to them is loaded (they read into it).
     QHash<QcChunkPos, QList<QcBlockPos>> waitingOn;
-    QcSignalSchedule schedule;
-    // Ticks at which each torch went out lately (for burning out) and torches burnt out until a tick.
-    QHash<QcBlockPos, QList<quint64>> torchOffTicks;
-    QHash<QcBlockPos, quint64> burntOutUntil;
-    // Openers (the lower half of doors) that were powered when last looked at: they only switch when
-    // that changes, so players can still open and close them by hand.
-    QSet<QcBlockPos> poweredOpeners;
-    // Pistons whose extension started at a tick and lasts QcPistonMover::moveTicks: retracting before
-    // it ends lets a sticky piston drop its block (block spitting).
-    QHash<QcBlockPos, quint64> extending;
-    QcHopperState hoppers;
     // Comparators to look at again because what they read changed its contents.
     QSet<QcBlockPos> readers;
     quint64 droppedChanges = 0;

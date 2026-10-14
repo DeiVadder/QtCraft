@@ -34,30 +34,27 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
     return stacks;
 }
 
-// A chest gets the stacks in its slotCount, a machine as input, fuel and output.
+// A chest gets the stacks in its slots, a machine as input, fuel and output.
 void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
 {
     const QcBlockId block = blockAt(state, contents.at);
     const QList<QcItemStack> stacks = stacksOf(state, contents.items);
-    const int slotCount = state.containers.slotsOf(block);
-    if (slotCount > 0 && state.containers.add(contents.at, slotCount)) {
-        QcContainerManager::Container *container = state.containers.find(contents.at);
-        for (qsizetype i = 0; i < stacks.size() && i < container->stacks.size(); ++i) {
-            container->stacks[i] = stacks[i];
-        }
-        state.noteContents(contents.at);
+    QcBlockEntities &entities = state.blockEntities();
+    if (!entities.ensure(contents.at, block)) {
+        qCWarning(lcSetup) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;
         return;
     }
 
-    if (state.machines.machineOf(block) && state.machines.add(contents.at)) {
-        QcMachineManager::Machine *machine = state.machines.find(contents.at);
-        for (qsizetype i = 0; i < stacks.size() && i < QcMachineManager::slotCount; ++i) {
+    if (QcBlockEntities::Container *container = entities.container(contents.at)) {
+        for (qsizetype i = 0; i < stacks.size() && i < container->stacks.size(); ++i) {
+            container->stacks[i] = stacks[i];
+        }
+    } else if (QcBlockEntities::Machine *machine = entities.machine(contents.at)) {
+        for (qsizetype i = 0; i < stacks.size() && i < QcBlockEntities::Machine::slotCount; ++i) {
             machine->stacks[std::size_t(i)] = stacks[i];
         }
-        state.noteContents(contents.at);
-        return;
     }
-    qCWarning(lcSetup) << "World setup: no chest or machine for contents at" << contents.at.x << contents.at.y << contents.at.z;
+    state.noteContents(contents.at);
 }
 
 // An armour stand of a structure; properties that do not apply are reported and left out.
@@ -107,7 +104,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         fill(state, contents);
     }
     for (const QcBlockPos &pos : setup.growing) {
-        state.plants.saplingPlaced(pos, blockAt(state, pos));
+        state.plants.saplingPlaced(state.blockEntities(), pos, blockAt(state, pos));
     }
 
     updates.setCommandMode(true);

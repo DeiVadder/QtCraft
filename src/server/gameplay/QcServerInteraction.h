@@ -9,7 +9,7 @@ class QcServerCircuits;
 class QcServerCombat;
 class QcServerFarming;
 class QcServerInventory;
-class QcServerMachines;
+class QcBlockScreens;
 class QcServerSounds;
 class QcServerStands;
 struct QcServerClient;
@@ -31,7 +31,7 @@ public:
         QcServerSounds &sounds;
         QcServerBlocks &blocks;
         QcServerInventory &inventory;
-        QcServerMachines &machines;
+        QcBlockScreens &screens;
         QcServerStands &stands;
         QcServerFarming &farming;
         QcServerCombat &combat;

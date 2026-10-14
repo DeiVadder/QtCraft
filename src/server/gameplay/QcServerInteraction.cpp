@@ -9,7 +9,7 @@
 #include "QcServerFarming.h"
 #include "QcServerBlocks.h"
 #include "QcServerInventory.h"
-#include "QcServerMachines.h"
+#include "QcBlockScreens.h"
 #include "QcServerSounds.h"
 #include "QcServerStands.h"
 #include "QcServerState.h"
@@ -113,10 +113,10 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
     // Using a machine opens its screen, a crafting table its 3 x 3 grid, unless the player sneaks
     // to place against them.
     const std::optional<QcBlockId> clickedBlock = m_state.world.blockAt(target);
-    const bool storage = clickedBlock && m_state.containers.slotsOf(*clickedBlock) > 0;
+    const bool storage = clickedBlock && m_state.blockEntities().containerSlots(*clickedBlock) > 0;
 
-    if (clickedBlock && (m_state.machines.machineOf(*clickedBlock) || storage) && !client.sneaking && m_state.isWithinReach(client, target)) {
-        m_parts.machines.open(client, target);
+    if (clickedBlock && (m_state.machineRules.machineOf(*clickedBlock) || storage) && !client.sneaking && m_state.isWithinReach(client, target)) {
+        m_parts.screens.open(client, target);
         return true;
     }
 
@@ -176,15 +176,15 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
         return false;
     }
 
-    if (placedDefinition.containerSlots > 0 && m_state.containers.isFull()) {
+    if (placedDefinition.containerSlots > 0 && m_state.blockEntities().isContainerTableFull()) {
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many chests in the world (at most %1)"),
-            {QString::number(QcContainerManager::maxContainers)}));
+            {QString::number(m_state.blockEntities().limits().containers)}));
         return false;
     }
 
-    if (placedDefinition.machine.isMachine() && m_state.machines.isFull()) {
+    if (placedDefinition.machine.isMachine() && m_state.blockEntities().isMachineTableFull()) {
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many machines in the world (at most %1)"),
-            {QString::number(QcMachineManager::maxMachines)}));
+            {QString::number(m_state.blockEntities().limits().machines)}));
         return false;
     }
 
@@ -210,16 +210,8 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
         m_parts.blocks.setAndBroadcast(target.offset(0, 1, 0), content.withProperty(state, u"half"_s, u"top"_s));
     }
 
+    // Setting the block made its chest, machine or sapling timer (QcServerBlocks::setQuietly).
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
-    if (placedDefinition.sapling.isSapling()) {
-        m_state.plants.saplingPlaced(target, state);
-    }
-    if (placedDefinition.machine.isMachine()) {
-        m_state.machines.add(target);
-    }
-    if (placedDefinition.containerSlots > 0) {
-        m_state.containers.add(target, placedDefinition.containerSlots);
-    }
 
     const bool pours = !held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo);
     if (pours) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
 #include "QcVec3.h"
@@ -15,7 +16,9 @@ class QcMovingBlocks
 public:
     static constexpr int moveTicks = 2;
     // Moves shown at once at most; beyond, blocks jump without the slide.
-    static constexpr qsizetype maxMoving = 4096;
+    // Blocks shown sliding at once by default (QcServerLimits::movingBlocksShown).
+    static constexpr qsizetype maxMoving = QcServerLimits{}.movingBlocksShown;
+    void setMaxMoving(qsizetype limit) { m_maxMoving = limit; }
 
     struct Moving
     {
@@ -39,4 +42,5 @@ public:
 
 private:
     QList<Moving> m_moving;
+    qsizetype m_maxMoving = maxMoving;
 };

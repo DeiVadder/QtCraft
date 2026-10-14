@@ -54,6 +54,32 @@
 #              items; decision E-294). Stage 27 and newer
 #   inventory, furnace, handbook - standing with the inventory, a filled furnace (looking down at
 #              it) or the handbook page of stone open (QML screens over the world)
+#   showcase-<demo> - standing in the showcase world at the lookout of a demo structure, e.g.
+#              showcase-signal_components (dust and lamp clocks, stage 29.1), showcase-signal_machines
+#              (hoppers and the sorter, stage 29.2), showcase-signal_farm (the repeating water farm):
+#              the stop "demo-<demo>" that the build's own qtcraft-headless --showcase-tour gives
+#              (areas move when content changes). A build without that demo produces no result
+#   liquid-fill - standing in a flat world on a stone wall while a 14 x 33 sheet of water sources
+#              west of it and one of lava east of it appear 6 m up and vanish again, one change a
+#              second: liquids fall and spread at the step budget, recede, and lava meets water
+#              (phase liquids, block changes through the block-entity path)
+#   signal-stress - looking down from a block 10 m up in a flat world at Signal Dust contraptions
+#              that run on their own (stage 29 and newer): a 48 x 48 dust field 21 to 68 m north,
+#              toggled every 2 ticks by 16 observer clocks inside it (two observers facing each
+#              other); 200 repeater clocks (a torch on a block, its dust through a repeater of delay 4
+#              back into the block: 20 ticks a period, 3 times out in 60 ticks, so the torch never
+#              burns out) with two lamps each, in two squares of 40 m left and right of the field
+#              (lamps on for 10 ticks and off for 10, longer than their off delay of 4: light changes
+#              and remeshing); 32 more repeater clocks each moving two sticky pistons with stone on
+#              top up and down, in a row 15 to 17 m ahead (moving blocks, block updates). Phases
+#              signal and blockUpdates, light jobs, remeshing. About 2000 /setblock lines at the start
+#   flight   - creative mode, flying east from the spawn at 20 m/s at y 200 through new
+#              terrain (teleports every 250 ms, so the speed does not depend on the physics): chunk
+#              generation, arrival and unloading for the whole run. Tick lateness, memory and the
+#              chunk phases over time come from STATS lines (STATS=<ms>, see below)
+#   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
+#              showcase world and its surroundings, so every chunk leaves view and comes back once
+#              a lap: whether block entities and memory stay bounded (runs of one and three laps)
 #
 # TEXTURE_PACKS=<ids> runs with these texture packs (QTCRAFT_TEXTURE_PACKS, stage 28, decision E-304),
 # highest priority first, e.g. builtin:qtcraft_hd_32, builtin:qtcraft_hd_64, builtin:qtcraft_hd_128,
@@ -67,6 +93,9 @@
 # PREVIEW_ACTIVE=1 animates the character previews (inventory, main menu) although the window of a
 # scripted run is inactive (QTCRAFT_PREVIEW_ACTIVE, decision E-231); otherwise they draw one still
 # picture, as in a game whose window lost the focus.
+#
+# STATS=<ms> writes the debug data as a STATS line into the run's log every <ms> milliseconds
+# (QTCRAFT_STATS, decision E-225): values over time, e.g. memory and tick lateness of a flight.
 
 # Display awake while the calling script runs; runs wait while the screen is locked (screen-guard.sh).
 . "${QC_SCRIPTS_DIR:-$PROJECT_DIR/scripts}/screen-guard.sh"
@@ -206,6 +235,127 @@ farm_chat() {
     echo "/tp ~$((-x)) ~ ~$((-z))"
 }
 
+# Prints the chat lines of a flight scenario, one per line. Usage: flight_chat terrain|showcase <seconds>
+# Creative mode (no fall damage, nothing attacks); from three seconds in a teleport every 250 ms moves
+# the player 5 m on (20 m/s; a teleport also stops the fall in between). terrain flies east from the
+# spawn at y 200; showcase flies laps of 80 s at y 110 around the square of corners (-130, 50) and
+# (270, -350), which holds the whole showcase world (x 0 to 160, z -260 to 10) with 110 m to spare
+# on every side, more than the view distance of 8 chunks: every chunk leaves and comes back once a lap.
+flight_chat() {
+    echo "/gamemode creative"
+    echo "/time set day"
+    at=3000
+    step=0
+    while [ "$at" -le $((3000 + $2 * 1000)) ]; do
+        if [ "$1" = terrain ]; then
+            echo "@$at /tp ~5 200 ~"
+        else
+            # 320 steps a lap, 80 along each side.
+            side=$(((step % 320) / 80))
+            along=$(((step % 80) * 5))
+            case $side in
+            0) echo "@$at /tp $((-130 + along)) 110 50" ;;
+            1) echo "@$at /tp 270 110 $((50 - along))" ;;
+            2) echo "@$at /tp $((270 - along)) 110 -350" ;;
+            *) echo "@$at /tp -130 110 $((-350 + along))" ;;
+            esac
+        fi
+        at=$((at + 250))
+        step=$((step + 1))
+    done
+}
+
+# Prints the chat lines of the liquid-fill scenario, one per line. Usage: liquid_fill_chat <seconds>
+# A stone wall 5 m wide, 8 m high and 49 m long through the player, who then stands on top of it;
+# from three seconds in, once a second: water sources on x -16..-3, lava sources on x 3..16 (both z
+# -16..16, 6 m above the ground), then the water sources and the lava sources gone again (4 s a cycle).
+liquid_fill_chat() {
+    echo "/time set day"
+    echo "/fill ~-2 ~ ~-24 ~2 ~7 ~24 stone"
+    echo "/tp ~ ~8 ~"
+    at=3000
+    step=0
+    while [ "$at" -lt $((3000 + $1 * 1000)) ]; do
+        case $((step % 4)) in
+        0) echo "@$at /fill ~-16 ~-2 ~-16 ~-3 ~-2 ~16 water" ;;
+        1) echo "@$at /fill ~3 ~-2 ~-16 ~16 ~-2 ~16 lava" ;;
+        2) echo "@$at /fill ~-16 ~-2 ~-16 ~-3 ~-2 ~16 air" ;;
+        *) echo "@$at /fill ~3 ~-2 ~-16 ~16 ~-2 ~16 air" ;;
+        esac
+        at=$((at + 1000))
+        step=$((step + 1))
+    done
+}
+
+# Prints the chat lines of the signal-stress scenario, one per line (see the scenario above).
+# Observer clock: observer facing east at x, observer facing west at x + 1; each sees the other
+# change and pulses backwards (x - 1 and x + 2) for 2 ticks, so the pair runs once the second is
+# placed. Repeater clock at x, z (as in test_signal_measure): block at x, z, torch on its east side,
+# dust at x + 1, z + 1 and z + 2 and at x, z + 2, repeater (delay 4) at x, z + 1 facing north back
+# into the block; placed block first and repeater last, so it starts at once. The torch drives what
+# stands on top of it and east of it (lamps, or sticky pistons facing up with stone on top).
+signal_stress_chat() {
+    echo "/time set day"
+    # Dust field x -24..23, z -68..-21; feeding pairs at x -18/-6/6/18 (and +1), z -62/-50/-38/-26.
+    echo "/fill ~-24 ~ ~-68 ~23 ~ ~-21 signal_dust"
+    for facing in east west; do
+        for x in -18 -6 6 18; do
+            [ "$facing" = west ] && x=$((x + 1))
+            for z in -62 -50 -38 -26; do
+                echo "/setblock ~$x ~ ~$z signal_observer[facing=$facing]"
+            done
+        done
+    done
+    # Lamp clocks: 10 x 10 in each square, x -66..-27 and 27..66, z -66..-27, 4 m apart.
+    for left in -66 27; do
+        i=0
+        while [ "$i" -lt 10 ]; do
+            j=0
+            while [ "$j" -lt 10 ]; do
+                stress_clock $((left + 4 * i)) $((-66 + 4 * j)) signal_lamp
+                j=$((j + 1))
+            done
+            i=$((i + 1))
+        done
+    done
+    # Piston clocks: 32 in a row, x -64..63, z -17..-15.
+    i=0
+    while [ "$i" -lt 32 ]; do
+        stress_clock $((-64 + 4 * i)) -17 "sticky_signal_piston[facing=up]"
+        i=$((i + 1))
+    done
+    echo "/setblock ~ ~9 ~ stone"
+    echo "/tp ~ ~10 ~"
+}
+
+# One repeater clock of signal-stress at x $1, z $2 driving two blocks $3 (pistons get stone on top).
+stress_clock() {
+    x=$1
+    z=$2
+    echo "/setblock ~$x ~ ~$z stone"
+    echo "/setblock ~$((x + 1)) ~ ~$z signal_torch[attach=west]"
+    case $3 in
+    sticky_signal_piston*)
+        echo "/setblock ~$((x + 1)) ~2 ~$z stone"
+        echo "/setblock ~$((x + 2)) ~1 ~$z stone"
+        ;;
+    esac
+    echo "/setblock ~$((x + 1)) ~1 ~$z $3"
+    echo "/setblock ~$((x + 2)) ~ ~$z $3"
+    echo "/setblock ~$((x + 1)) ~ ~$((z + 1)) signal_dust"
+    echo "/setblock ~$((x + 1)) ~ ~$((z + 2)) signal_dust"
+    echo "/setblock ~$x ~ ~$((z + 2)) signal_dust"
+    echo "/setblock ~$x ~ ~$((z + 1)) signal_repeater[facing=north,delay=4]"
+}
+
+# The camera stop "demo-<demo>" of the showcase tour as "x z yaw pitch", from the qtcraft-headless
+# of the build of app $1 (empty when the build has no such demo). Usage: showcase_stop <app> <demo>
+showcase_stop() {
+    headless="${1%/app/qtcraft.app/Contents/MacOS/qtcraft}/headless/qtcraft-headless"
+    [ -x "$headless" ] || return 0
+    "$headless" --showcase-tour --no-mods 2>/dev/null | awk -v name="demo-$2" '$1 == name { print $2, $3, $4, $5; exit }'
+}
+
 # Runs one benchmark of the game.
 # Usage: run_game <app> <scenario> <seconds> <view distance> <data dir> <log> [wrapper command...]
 # The wrapper (e.g. a profiler) is put in front of the app. Prints the BENCH line. The run is killed
@@ -240,8 +390,19 @@ run_game() {
         armour=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress)
         world=flat
+        ;;
+    esac
+    stop=
+    case "$scenario" in
+    showcase-flight) ;;
+    showcase-*)
+        stop=$(showcase_stop "$app" "${scenario#showcase-}")
+        if [ -z "$stop" ]; then
+            echo "Scenario $requested: this build has no showcase demo ${scenario#showcase-}; no run" >&2
+            return 0
+        fi
         ;;
     esac
     if [ "$world" = void ]; then
@@ -260,6 +421,12 @@ run_game() {
     set -- --play --seed 42 --view-distance "$view" --look "$look"
     if [ "$scenario" = showcase ]; then
         set -- --showcase --view-distance "$view" --spawn 40,-19 --look 345,-8
+    elif [ -n "$stop" ]; then
+        # shellcheck disable=SC2086
+        set -- $stop
+        set -- --showcase --view-distance "$view" --spawn "$1,$2" --look "$3,$4"
+    elif [ "$scenario" = showcase-flight ]; then
+        set -- --showcase --view-distance "$view" --spawn 40,-19 --look 270,-20
     elif [ -n "$world" ]; then
         set -- "$@" --world-type "$world"
     fi
@@ -320,6 +487,23 @@ EOF
     handbook)
         set -- "$@" --handbook block:qtcraft:stone
         ;;
+    flight | showcase-flight | liquid-fill | signal-stress)
+        if [ "$scenario" = signal-stress ]; then
+            chat=$(signal_stress_chat)
+            set -- "$@" --look 0,-25
+        elif [ "$scenario" = flight ]; then
+            chat=$(flight_chat terrain "$seconds")
+        elif [ "$scenario" = showcase-flight ]; then
+            chat=$(flight_chat showcase "$seconds")
+        else
+            chat=$(liquid_fill_chat "$seconds")
+        fi
+        while IFS= read -r line; do
+            set -- "$@" --chat "$line"
+        done <<EOF
+$chat
+EOF
+        ;;
     gravel-collapse)
         set -- "$@" --flat-layers "3*gravel,grass_block" --chat "@2000 /fill ~2 ~-4 ~ ~2 ~-1 ~ air"
         ;;
@@ -345,7 +529,7 @@ EOF
     while :; do
         wait_for_screen || return 1
         # shellcheck disable=SC2086
-        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_BENCHMARK_PACK_SWITCH="${PACK_SWITCH:-}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_BENCHMARK_PACK_SWITCH="${PACK_SWITCH:-}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QTCRAFT_STATS="${STATS:-}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
             perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
         if ! screen_locked || [ "$attempt" -ge 3 ]; then
             break

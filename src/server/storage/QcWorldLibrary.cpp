@@ -62,7 +62,10 @@ QList<QcWorldLibrary::Entry> QcWorldLibrary::list() const
         Entry entry;
         entry.folder = folder;
         entry.directory = root.filePath(folder);
-        const QcResult<QcWorldInfo> info = QcWorldStorage(entry.directory, nullptr).readInfo();
+        const QcWorldStorage storage(entry.directory, nullptr);
+        const int version = storage.storedFormatVersion();
+        entry.tooOld = version > 0 && version < QcWorldInfo::oldestFormatVersion;
+        const QcResult<QcWorldInfo> info = storage.readInfo();
         if (info) {
             entry.info = *info;
         } else {

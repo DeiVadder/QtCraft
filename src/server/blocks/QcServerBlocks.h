@@ -3,7 +3,6 @@
 #include "QcAabb.h"
 #include "QcBlockDefinition.h"
 #include "QcItemStack.h"
-#include "QcMachineManager.h"
 
 #include <QList>
 
@@ -12,7 +11,8 @@ class QcServerSounds;
 struct QcServerState;
 
 // Block changes of the server with their consequences: clients are told, neighbours queued for an
-// update, machines and chests spill their contents and broken blocks drop their items.
+// update, machines and chests spill their contents, placed saplings start to grow and broken blocks
+// drop their items.
 class QcServerBlocks
 {
 public:
@@ -34,14 +34,12 @@ public:
     void toggle(QcBlockPos pos, QcBlockId block);
     // Whether any of `boxes` (world space) overlaps a playing player or a mob.
     bool overlapsBody(const QList<QcAabb> &boxes) const;
-    // Removes chests whose block is no longer a storage block (removed mods) and fits the others to
-    // their block's size; spilled contents drop as items.
-    void reconcileContainer(QcBlockPos pos);
+    // Drops the contents that block entities spilled (QcBlockEntities::takeSpills) as items.
+    void dropSpills();
     // Drops the items of block state `block` as if it broke at `pos` (each drop by its chance, only
     // from the states its `when` allows).
     void dropBlockItems(QcBlockId block, QcBlockPos pos);
     void dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos);
-    void dropMachineContents(const QcMachineManager::Machine &machine);
 
 private:
     QcServerState &m_state;

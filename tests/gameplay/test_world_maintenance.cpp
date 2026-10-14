@@ -82,14 +82,14 @@ private slots:
         QVERIFY(m_server->world().setBlock(m_feet.offset(2, 0, 0), id("qtcraft:bedrock")));
         QVERIFY(!asGenerated(chunk, *reference));
         chat(u"/setblock ~1 ~ ~ chest"_s);
-        QVERIFY(m_server->containers().add(m_feet.offset(1, 0, 0), 27));
+        QVERIFY(ensureEntity(m_feet.offset(1, 0, 0)));
 
         chat(u"/regenerate"_s);
         QVERIFY(!asGenerated(chunk, *reference));
         chat(u"/confirm"_s);
         QCOMPARE(lastLine(), u"Regenerated 1 chunks (0 were not loaded and unchanged)"_s);
         QVERIFY(asGenerated(chunk, *reference));
-        QVERIFY(m_server->containers().find(m_feet.offset(1, 0, 0)) == nullptr);
+        QVERIFY(m_server->blockEntities().container(m_feet.offset(1, 0, 0)) == nullptr);
 
         // The client gets the chunk again, and the saved world keeps the generated blocks.
         m_client->chunks.clear();
@@ -320,12 +320,14 @@ private slots:
         join();
         ticks(5);
         chat(u"/worldinfo"_s);
-        const QStringList lines = m_client->chatLines.mid(m_client->chatLines.size() - 5);
+        const QStringList lines = m_client->chatLines.mid(m_client->chatLines.size() - 6);
         QVERIFY(lines[0].startsWith(u"World World (terrain, seed 0), tick "_s));
         QVERIFY(lines[1].startsWith(u"Chunks: "_s));
         QVERIFY(lines[2].startsWith(u"Entities: "_s));
-        QVERIFY(lines[3].startsWith(u"Tick: "_s));
-        QVERIFY(lines[4].startsWith(u"Memory: "_s));
+        // The block entities and the central check of their rules (decision E-357).
+        QVERIFY2(lines[3].startsWith(u"Block entities: "_s) && lines[3].endsWith(u"; 0 broken rules"_s), qPrintable(lines[3]));
+        QVERIFY(lines[4].startsWith(u"Tick: "_s));
+        QVERIFY(lines[5].startsWith(u"Memory: "_s));
     }
 };
 

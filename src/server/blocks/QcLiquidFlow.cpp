@@ -324,7 +324,7 @@ bool QcLiquidFlow::schedule(const QcBlockAccess &world, QcBlockPos pos, quint64 
         return false;
     }
 
-    if (m_planned.size() >= maxPlanned) {
+    if (m_planned.size() >= m_maxPlanned) {
         ++m_dropped;
         return false;
     }

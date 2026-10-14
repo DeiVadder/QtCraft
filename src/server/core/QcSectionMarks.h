@@ -1,47 +1,79 @@
 #pragma once
 
+#include "QcBlockDefinition.h"
 #include "QcChunk.h"
 
 #include <QHash>
 #include <QList>
 
+#include <array>
 #include <vector>
 
-// Per loaded chunk, a bit for each section that may hold a block of the marked kinds (contact
-// damage, growing plants). A bit is set when its chunk arrives or such a block is placed and only
-// cleared when the chunk is noted again or forgotten, so it means "maybe": callers still look at
-// the blocks. Chunks without any marked section are missing, so a tick over the marked sections
-// costs nothing in a world without such blocks.
+// Properties of blocks that the server finds by section instead of scanning the world (decision
+// E-359). Each comes from the block data (QcSectionMarks::traitsOf).
+enum class QcBlockTrait : quint8 {
+    // Hurts what touches it (lava, magma).
+    ContactDamage,
+    // Gets random ticks: growing plants, crops, soil.
+    RandomTicks,
+    // A Signal Dust component other than a hopper (decision E-335; hoppers react only to power,
+    // which comes from components that are marked themselves, decision E-344).
+    Circuit,
+    // A pressure plate: only bodies in its sections are checked for pressing one.
+    Plate,
+    // Holds a block entity created with the block: a container or a machine (decision E-357).
+    BlockEntity,
+};
+inline constexpr int qcBlockTraitCount = 5;
+
+// Per loaded chunk and block trait, a bit for each section that may hold a block with that trait.
+// A bit is set when its chunk arrives or such a block is placed and only cleared when the chunk is
+// noted again or forgotten, so it means "maybe": callers still look at the blocks. Chunks without
+// any marked section are missing, so a tick over the marked sections costs nothing in a world
+// without such blocks. One object marks every trait in one pass over the palettes and forgets a
+// chunk with one call.
 class QcSectionMarks
 {
 public:
-    QcSectionMarks() = default;
-    // `marked` is indexed by block state id.
-    explicit QcSectionMarks(std::vector<bool> marked);
+    // One bit per QcBlockTrait.
+    using Traits = quint8;
 
-    bool isMarked(QcBlockId block) const { return std::size_t(block) < m_marked.size() && m_marked[std::size_t(block)]; }
+    static Traits traitsOf(const QcBlockDefinition &block);
+    static constexpr Traits bit(QcBlockTrait trait) { return Traits(1u << unsigned(trait)); }
+
+    QcSectionMarks() = default;
+    // `traits` is indexed by block state id.
+    explicit QcSectionMarks(std::vector<Traits> traits);
+
+    Traits traitsOf(QcBlockId block) const { return std::size_t(block) < m_traits.size() ? m_traits[std::size_t(block)] : Traits(0); }
+    bool isMarked(QcBlockId block, QcBlockTrait trait) const { return (traitsOf(block) & bit(trait)) != 0; }
 
     // Replaces the bits of a chunk that entered the world from its section palettes.
     void noteChunk(QcChunkPos pos, const QcChunk &chunk);
-    // Sets the bit of the section `block` was placed in, if it is marked.
+    // Sets the bits of the section `block` was placed in for its traits.
     void noteBlock(QcBlockPos pos, QcBlockId block);
     void forgetChunk(QcChunkPos pos);
 
-    bool isEmpty() const { return m_sections.isEmpty(); }
-    // The bits of a chunk (bit n: section n), 0 for a chunk without marked sections.
-    quint32 sectionsOf(QcChunkPos pos) const { return m_sections.value(pos, 0); }
-    // Every chunk with at least one marked section and its bits.
-    const QHash<QcChunkPos, quint32> &chunks() const { return m_sections; }
-    // The same chunks sorted by x, then z: an order that does not depend on the hash of the
-    // process (QcPlantGrowth draws its random cells in it). Sorted again only after chunks were
-    // added or removed, not on every call. The returned reference is only valid until the next
-    // noteChunk, noteBlock or forgetChunk: a change of the chunk set re-sorts the list in place on
-    // the next call, so callers must not hold it across changes (copy it if they do).
-    const QList<QcChunkPos> &orderedChunks() const;
+    // Whether no loaded chunk may hold a block with the trait.
+    bool isEmpty(QcBlockTrait trait) const { return m_chunkCount[std::size_t(trait)] == 0; }
+    qsizetype chunkCount(QcBlockTrait trait) const { return m_chunkCount[std::size_t(trait)]; }
+    // The bits of a chunk for the trait (bit n: section n), 0 for a chunk without such sections.
+    quint32 sectionsOf(QcChunkPos pos, QcBlockTrait trait) const;
+    // The chunks with sections marked for the trait, sorted by x, then z: an order that does not
+    // depend on the hash of the process (QcPlantGrowth draws its random cells in it). Sorted again
+    // only after chunks gained or lost the trait, not on every call. The returned reference is only
+    // valid until the next noteChunk, noteBlock or forgetChunk (copy it to hold it across changes).
+    const QList<QcChunkPos> &orderedChunks(QcBlockTrait trait) const;
 
 private:
-    std::vector<bool> m_marked;
-    QHash<QcChunkPos, quint32> m_sections;
-    mutable QList<QcChunkPos> m_order;
-    mutable bool m_orderStale = false;
+    using Bits = std::array<quint32, qcBlockTraitCount>;
+
+    // Keeps the counts and orders in step with a chunk whose bits went from `before` to `after`.
+    void noteBits(const Bits &before, const Bits &after);
+
+    std::vector<Traits> m_traits;
+    QHash<QcChunkPos, Bits> m_chunks;
+    std::array<qsizetype, qcBlockTraitCount> m_chunkCount{};
+    mutable std::array<QList<QcChunkPos>, qcBlockTraitCount> m_order;
+    mutable std::array<bool, qcBlockTraitCount> m_orderStale{};
 };

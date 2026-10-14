@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcBlockEntities.h"
 #include "QcCircuitPlan.h"
 #include "QcCircuitState.h"
 #include "QcComparatorReadings.h"
@@ -32,7 +33,8 @@ public:
     struct Context
     {
         const QcSignalPower &power;
-        QcCircuitState &memory;
+        // What components remember at their position and their scheduled ticks.
+        QcBlockEntities &entities;
         quint64 now = 0;
         // The world's game rule; each piston can also refuse it in data.
         bool quasiConnectivity = true;

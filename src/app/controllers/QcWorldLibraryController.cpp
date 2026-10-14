@@ -54,7 +54,8 @@ void QcWorldLibraryController::refreshWorlds()
                                     {u"seed"_s, QString::number(entry.info.seed)},
                                     {u"generator"_s, entry.info.generator},
                                     {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
-                                    {u"error"_s, entry.error}});
+                                    {u"error"_s, entry.tooOld ? tr("It was saved by an older development version of QtCraft and cannot be opened.")
+                                                              : entry.error}});
     }
     emit worldsChanged();
 }

@@ -34,13 +34,15 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
     , m_circuits(m_state, m_sounds, m_blocks)
-    , m_machineScreens(m_state, m_sounds, m_blocks)
-    , m_inventory(m_state, m_machineScreens, m_sounds)
+    , m_screens(m_state)
+    , m_machines(m_state, m_sounds)
+    , m_inventory(m_state, m_screens, m_sounds)
     , m_gameModes(m_state, m_inventory)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_farming(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_machineScreens, m_stands, m_farming, m_combat, m_circuits})
-    , m_itemsAndPlants(m_state, m_sounds, m_blocks, m_inventory)
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_screens, m_stands, m_farming, m_combat, m_circuits})
+    , m_items(m_state, m_sounds, m_inventory)
+    , m_plants(m_state, m_sounds, m_blocks)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_entitySync(m_state)
     , m_chunkStreaming(m_state)
@@ -296,7 +298,7 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
     } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
         m_combat.consume(client);
     } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
-        m_machineScreens.close(client, false);
+        m_screens.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
         m_inventory.dropItem(client, *drop);
     } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
@@ -608,6 +610,8 @@ void QcServer::tick()
 void QcServer::simulate()
 {
     using Phase = QcTickPhase;
+    // Contents spilled by blocks set outside a block change of the server (the spawn's ground, tests).
+    m_blocks.dropSpills();
     m_blockSimulation.processBlockUpdates();
     m_phases.lap(Phase::BlockUpdates);
     m_circuits.tick();
@@ -618,14 +622,15 @@ void QcServer::simulate()
     m_combat.applyContactDamage();
     m_combat.applySuffocation();
     m_phases.lap(Phase::Mobs);
-    m_itemsAndPlants.tickItems();
+    m_plants.plantItems(m_items.tick());
     m_phases.lap(Phase::Items);
-    m_itemsAndPlants.tickPlants();
+    m_plants.tick();
     m_farming.tick();
     m_phases.lap(Phase::Plants);
     m_blockSimulation.tickFallingBlocks();
     m_phases.lap(Phase::FallingBlocks);
-    m_machineScreens.tick();
+    m_machines.tick();
+    m_screens.update();
     m_phases.lap(Phase::Machines);
 }
 

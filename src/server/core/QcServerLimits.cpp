@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 8> table{{
+constexpr std::array<QcServerLimits::Field, 32> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -21,6 +21,30 @@ constexpr std::array<QcServerLimits::Field, 8> table{{
     {"hopperBudget", "Signal Hoppers acting per tick", 1, qint64(1) << 20, &QcServerLimits::hopperBudget},
     {"hopperCooldownTicks", "ticks a hopper rests after moving an item", 1, 1200, &QcServerLimits::hopperCooldownTicks},
     {"summonLimit", "awake creatures summoned by /summon (0: none)", 0, 4096, &QcServerLimits::summonLimit},
+    {"maxContainers", "containers (chests, barrels, hoppers, dispensers) in the world", 16, 1 << 20, &QcServerLimits::maxContainers},
+    {"maxMachines", "machines (furnaces) in the world", 16, 1 << 18, &QcServerLimits::maxMachines},
+    {"maxSaplings", "growing saplings in the world", 16, 1 << 18, &QcServerLimits::maxSaplings},
+    {"blockUpdatesPerTick", "neighbour updates per tick", 64, 1 << 20, &QcServerLimits::blockUpdatesPerTick},
+    {"waitingBlockUpdates", "neighbour updates waiting for unloaded chunks", 1024, 1 << 24, &QcServerLimits::waitingBlockUpdates},
+    {"commandBlockUpdates", "neighbour updates queued by commands", 1024, 1 << 24, &QcServerLimits::commandBlockUpdates},
+    {"savedBlockUpdates", "pending neighbour updates written to a save", 1024, qint64(4) << 20, &QcServerLimits::savedBlockUpdates},
+    {"liquidStepsPerTick", "flow steps of liquids per tick", 16, 1 << 20, &QcServerLimits::liquidStepsPerTick},
+    {"liquidPlannedSteps", "flow steps of liquids planned", 1024, 1 << 24, &QcServerLimits::liquidPlannedSteps},
+    {"fallingBlocks", "falling blocks at once", 16, 65536, &QcServerLimits::fallingBlocks},
+    {"itemsAwake", "dropped items awake in loaded chunks", 16, 65536, &QcServerLimits::itemsAwake},
+    {"itemsQueued", "dropped items waiting to appear", 16, 1 << 20, &QcServerLimits::itemsQueued},
+    {"itemsTotal", "dropped items in the world", 64, 1 << 20, &QcServerLimits::itemsTotal},
+    {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
+    {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
+    {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},
+    {"breedingCrowd", "animals of a kind within 3 x 3 chunks that still breed", 2, 1024, &QcServerLimits::breedingCrowd},
+    {"bredPerKind", "bred animals of a kind in the world", 0, 65536, &QcServerLimits::bredPerKind},
+    {"randomTicksPerSection", "random ticks per marked section and tick", 0, 64, &QcServerLimits::randomTicksPerSection},
+    {"leafDecaysPerTick", "leaves decaying per tick", 1, 4096, &QcServerLimits::leafDecaysPerTick},
+    {"leafChecksPerTick", "leaves checked per tick", 1, 65536, &QcServerLimits::leafChecksPerTick},
+    {"leafPendingChecks", "leaf checks waiting", 256, 1 << 20, &QcServerLimits::leafPendingChecks},
+    {"maxArmourStands", "armour stands in the world", 16, 65536, &QcServerLimits::maxArmourStands},
+    {"movingBlocksShown", "blocks shown sliding behind pistons", 16, 65536, &QcServerLimits::movingBlocksShown},
 }};
 
 } // namespace

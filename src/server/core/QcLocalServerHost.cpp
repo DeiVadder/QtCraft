@@ -1,5 +1,6 @@
 #include "QcLocalServerHost.h"
 
+#include "QcBlockEntityChecks.h"
 #include "QcChatText.h"
 #include "QcInProcessTransport.h"
 #include "QcServer.h"
@@ -23,6 +24,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
     if (const QcStatus opened = m_server->openWorld(); !opened) {
         m_startError = opened.error();
         m_worldInUse = m_server->worldInUse();
+        m_worldTooOld = m_server->worldTooOld();
         delete m_server;
         m_server = nullptr;
         return;
@@ -85,7 +87,10 @@ QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()
         server,
         [server, &result, &mutex] {
             const std::scoped_lock lock(mutex);
-            result = {server->mobs().mobs().size(), server->items().items().size()};
+            const QcBlockEntities &entities = server->blockEntities();
+            result = {server->mobs().mobs().size(), server->items().items().size(),
+                      entities.containerCount() + entities.machineCount() + entities.saplingCount(),
+                      QcBlockEntityChecks::problems(server->world()).size()};
         },
         Qt::BlockingQueuedConnection);
 

@@ -827,8 +827,8 @@ private slots:
         QTemporaryDir directory;
         QcServerConfig config;
         config.worldDirectory = directory.path();
-        config.maxCommandBlockUpdates = 1000;
-        config.maxSavedBlockUpdates = 300;
+        config.limits.commandBlockUpdates = 1024;
+        config.limits.savedBlockUpdates = 1024;
         join(config);
         hold("stone", 5);
 
@@ -839,13 +839,13 @@ private slots:
             QcMsg::ChatInput{u"/fill %1 %2 %3 %4 %5 %6 torch"_s.arg(low.x).arg(low.y).arg(low.z).arg(low.x + 47).arg(low.y + 2).arg(low.z + 47)});
         m_client->connection.send(QcMsg::ChatInput{u"/confirm"_s});
         pump();
-        QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1000));
+        QCOMPARE(m_server->pendingCommandBlockUpdates(), qsizetype(1024));
         QVERIFY(m_server->droppedBlockUpdates() > 5000);
 
-        // Saving keeps the first 300 updates, writes everything else and the player first.
+        // Saving keeps the first 1024 updates, writes everything else and the player first.
         QVERIFY(m_server->save().has_value());
         const QcWorldStorage storage(directory.path(), m_content);
-        QCOMPARE(storage.readBlockUpdates()->size(), qsizetype(300));
+        QCOMPARE(storage.readBlockUpdates()->size(), qsizetype(1024));
         QStringList warnings;
         const auto player = storage.readPlayer(u"Builder"_s, warnings);
         QVERIFY(player.has_value() && player->has_value());
@@ -889,24 +889,24 @@ private slots:
         face(0.0f);
         hold("chest");
         use(chest.offset(0, -1, 0), QcBlockFace::Up);
-        QVERIFY(m_server->containers().find(chest));
+        QVERIFY(m_server->blockEntities().container(chest));
         for (int slot = 0; slot < 27; ++slot) {
-            m_server->containers().find(chest)->stacks[slot] = {item("cobblestone"), 1, 0};
+            m_server->blockEntities().container(chest)->stacks[slot] = {item("cobblestone"), 1, 0};
         }
 
         // A smaller storage block in its place keeps what fits and spills the rest.
         chat(u"/setblock %1 %2 %3 test:crate"_s.arg(chest.x).arg(chest.y).arg(chest.z));
-        QCOMPARE(m_server->containers().find(chest)->stacks.size(), 9);
+        QCOMPARE(m_server->blockEntities().container(chest)->stacks.size(), 9);
         QCOMPARE(dropped(item("cobblestone")), 18);
 
-        // A chest whose block vanished without the manager noticing (a mod was removed between
-        // sessions) is gone after loading, and its contents lie on the ground.
+        // A chest whose block is set in the world directly (no player, no command) is gone as well:
+        // its contents lie on the ground, also after saving and loading (decision E-357).
         QVERIFY(m_server->world().setBlock(chest, qcAirBlockId));
         QVERIFY(m_server->save().has_value());
         cleanup();
         join(config, false);
-        QVERIFY(!m_server->containers().find(chest));
-        QCOMPARE(m_server->containers().count(), 0);
+        QVERIFY(!m_server->blockEntities().container(chest));
+        QCOMPARE(m_server->blockEntities().containerCount(), 0);
         QCOMPARE(dropped(item("cobblestone")), 18 + 9);
     }
 
@@ -921,7 +921,7 @@ private slots:
         const QcBlockPos chest = m_feet.offset(0, 0, -2);
         use(chest.offset(0, -1, 0), QcBlockFace::Up);
         QCOMPARE(nameAt(chest), u"qtcraft:chest[facing=south]"_s);
-        QVERIFY(m_server->containers().find(chest));
+        QVERIFY(m_server->blockEntities().container(chest));
 
         // Using it opens a screen with its 27 slots.
         use(chest, QcBlockFace::South);
@@ -933,23 +933,23 @@ private slots:
         QVERIFY(slot >= 0);
         send(QcMsg::MoveInventoryItem{slot, QcMsg::MoveInventoryItem::machineInputSlot + 26, 0});
         QCOMPARE(m_client->blockStacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
-        QCOMPARE(m_server->containers().find(chest)->stacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
+        QCOMPARE(m_server->blockEntities().container(chest)->stacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
 
         // Slots past the chest's 27 do not exist.
         send(QcMsg::MoveInventoryItem{QcMsg::MoveInventoryItem::machineInputSlot + 26, QcMsg::MoveInventoryItem::machineInputSlot + 27, 0});
-        QCOMPARE(m_server->containers().find(chest)->stacks[26].count, 40);
+        QCOMPARE(m_server->blockEntities().container(chest)->stacks[26].count, 40);
 
         // Saved with the world and back after a restart.
         QVERIFY(m_server->save().has_value());
         cleanup();
         join(config, false);
-        QVERIFY(m_server->containers().find(chest));
-        QCOMPARE(m_server->containers().find(chest)->stacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
+        QVERIFY(m_server->blockEntities().container(chest));
+        QCOMPARE(m_server->blockEntities().container(chest)->stacks[26], (QcItemStack{item("cobblestone"), 40, 0}));
         QCOMPARE(nameAt(chest), u"qtcraft:chest[facing=south]"_s);
 
         // Breaking it spills the contents.
         chat(u"/setblock %1 %2 %3 air"_s.arg(chest.x).arg(chest.y).arg(chest.z));
-        QVERIFY(!m_server->containers().find(chest));
+        QVERIFY(!m_server->blockEntities().container(chest));
         QCOMPARE(dropped(item("cobblestone")), 40);
     }
 };

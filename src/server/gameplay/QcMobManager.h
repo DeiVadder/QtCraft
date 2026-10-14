@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcServerLimits.h"
 #include "QcChunkPos.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
@@ -32,10 +33,11 @@ public:
     static constexpr double chunkAnimalChance = 0.1;
     // Animals spawn naturally around a player only while none is awake within this distance.
     static constexpr double animalSearchDistance = 128.0;
-    static constexpr int hostileCapPerPlayer = 8;
-    static constexpr int passiveCapPerPlayer = 6;
-    // Ambient creatures (fireflies) around one player at most.
-    static constexpr int ambientCapPerPlayer = 10;
+    // Creatures spawning by themselves around one player at most by default (QcServerLimits
+    // hostileCreaturesPerPlayer, passiveCreaturesPerPlayer, ambientCreaturesPerPlayer: fireflies).
+    static constexpr int hostileCapPerPlayer = int(QcServerLimits{}.hostileCreaturesPerPlayer);
+    static constexpr int passiveCapPerPlayer = int(QcServerLimits{}.passiveCreaturesPerPlayer);
+    static constexpr int ambientCapPerPlayer = int(QcServerLimits{}.ambientCreaturesPerPlayer);
     // Flying creatures keep between these heights above the ground below them.
     static constexpr double flyMinHeight = 1.2;
     static constexpr double flyMaxHeight = 3.0;
@@ -113,6 +115,8 @@ public:
     };
 
     QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
+    // Creatures spawning by themselves around one player at most, by kind.
+    void setCaps(int hostile, int passive, int ambient);
 
     // Advances all mobs by one tick and returns the hits they dealt to players.
     QList<PlayerHit> tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime, double dt,
@@ -156,6 +160,7 @@ public:
     Mob *find(quint32 id);
 
 private:
+    int capOf(const QcMobDefinition &definition) const;
     using SpawnRule = QcMobDefinition::SpawnRule;
 
     // Awake mobs near a spawn centre per category and kind, and whether an animal is awake within
@@ -229,6 +234,9 @@ private:
     quint64 m_seed = 0;
     QRandomGenerator m_random;
     QList<Mob> m_mobs;
+    int m_hostileCap = hostileCapPerPlayer;
+    int m_passiveCap = passiveCapPerPlayer;
+    int m_ambientCap = ambientCapPerPlayer;
     QSet<QcChunkPos> m_populated;
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;

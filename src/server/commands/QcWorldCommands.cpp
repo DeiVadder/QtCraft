@@ -1,5 +1,6 @@
 #include "QcWorldCommands.h"
 
+#include "QcBlockEntityChecks.h"
 #include "QcChatText.h"
 #include "QcCommandArguments.h"
 #include "QcPendingCommands.h"
@@ -181,7 +182,16 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands; %5 machines, %6 chests"),
                   {QString::number(m_state.mobs.awakeCount()), QString::number(m_state.items.items().size()),
                    QString::number(m_state.falling.all().size()), QString::number(m_state.stands.stands().size()),
-                   QString::number(m_state.machines.count()), QString::number(m_state.containers.count())});
+                   QString::number(m_state.blockEntities().machineCount()), QString::number(m_state.blockEntities().containerCount())});
+    // The rules between blocks and block entities (decision E-357); broken ones go to the log too.
+    const QStringList problems = QcBlockEntityChecks::problems(m_state.world);
+    for (const QString &problem : problems) {
+        qCWarning(lcWorldCommands) << "Block entities:" << problem;
+    }
+    const QcBlockEntities &entities = m_state.blockEntities();
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Block entities: %1 containers, %2 machines, %3 saplings, %4 scheduled ticks; %5 broken rules"),
+                  {QString::number(entities.containerCount()), QString::number(entities.machineCount()), QString::number(entities.saplingCount()),
+                   QString::number(entities.schedule().size()), QString::number(problems.size())});
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Tick: %1 ms mean, %2 ms max, %3 ms late on average, %4 skipped; slowest phase %5 (%6 ms)"),
                   {ms(window.mean(QcTickPhaseTimer::durationSeries)), ms(window.max(QcTickPhaseTimer::durationSeries)),
                    ms(window.mean(QcTickPhaseTimer::lateSeries)), QString::number(m_parts.ticks.stats().skipped()),

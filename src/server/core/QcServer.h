@@ -15,7 +15,9 @@
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
 #include "QcServerStands.h"
-#include "QcServerItemsAndPlants.h"
+#include "QcServerItems.h"
+#include "QcServerPlants.h"
+#include "QcBlockScreens.h"
 #include "QcServerMachines.h"
 #include "QcServerCommands.h"
 #include "QcServerPersistence.h"
@@ -69,14 +71,19 @@ public:
     QcMobManager &mobs() { return m_state.mobs; }
     QcItemEntityManager &items() { return m_state.items; }
     QcPlantManager &plants() { return m_state.plants; }
-    QcMachineManager &machines() { return m_state.machines; }
-    QcContainerManager &containers() { return m_state.containers; }
+    // State that belongs to single blocks (decision E-357) and the rules of machines.
+    QcBlockEntities &blockEntities() { return m_state.blockEntities(); }
+    const QcMachineRules &machineRules() const { return m_state.machineRules; }
     QcLiquidFlow &liquids() { return m_state.liquids; }
     QcFallingBlockManager &fallingBlocks() { return m_state.falling; }
     QcArmourStandManager &stands() { return m_state.stands; }
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits() { return m_circuits; }
     QcCircuitState &circuitState() { return m_state.circuits; }
+    QcHopperQueue &hopperQueue() { return m_state.hoppers; }
+    // The contents of the container or machine at `pos` changed (set by a test or tool): comparators
+    // reading it and hoppers next to it look again.
+    void noteContents(QcBlockPos pos) { m_state.noteContents(pos); }
     const QcMovingBlocks &movingBlocks() const { return m_state.movingBlocks; }
     bool keepInventory() const { return m_state.info.keepInventory; }
     void setKeepInventory(bool keep) { m_state.info.keepInventory = keep; }
@@ -85,6 +92,8 @@ public:
     const QStringList &openWarnings() const { return m_persistence.openWarnings(); }
     // Whether openWorld() failed because another server has the world open.
     bool worldInUse() const { return m_persistence.worldInUse(); }
+    // Whether openWorld() failed because the world comes from an older development version.
+    bool worldTooOld() const { return m_persistence.worldTooOld(); }
     void setWorldTime(double seconds);
 
     static constexpr double attackReach = QcServerCombat::attackReach;
@@ -112,7 +121,7 @@ public:
     qsizetype pendingPlayerBlockUpdates() const { return m_blockUpdates.pendingPlayerCount(); }
     qsizetype pendingCommandBlockUpdates() const { return m_blockUpdates.pendingCommandCount(); }
     quint64 processedBlockUpdates() const { return m_blockUpdates.processedCount(); }
-    // Command updates dropped because the command queue was full (config.maxCommandBlockUpdates).
+    // Command updates dropped because the command queue was full (QcServerLimits::commandBlockUpdates).
     quint64 droppedBlockUpdates() const { return m_blockUpdates.droppedCount(); }
 
     // Duration and lateness of the timed ticks; safe to read and reset from other threads (benchmark).
@@ -205,13 +214,15 @@ private:
     QcServerBlocks m_blocks;
     QcBlockSimulation m_blockSimulation;
     QcServerCircuits m_circuits;
-    QcServerMachines m_machineScreens;
+    QcBlockScreens m_screens;
+    QcServerMachines m_machines;
     QcServerInventory m_inventory;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
     QcServerFarming m_farming;
     QcServerInteraction m_interaction;
-    QcServerItemsAndPlants m_itemsAndPlants;
+    QcServerItems m_items;
+    QcServerPlants m_plants;
     QcServerCombat m_combat;
     QcEntitySync m_entitySync;
     QcChunkStreaming m_chunkStreaming;

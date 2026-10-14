@@ -33,6 +33,16 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
 {
 }
 
+int QcWorldStorage::storedFormatVersion() const
+{
+    QFile file(QDir(m_directory).filePath(u"world.json"_s));
+    if (!file.open(QIODevice::ReadOnly)) {
+        return 0;
+    }
+    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64(1024) * 1024));
+    return document.isObject() ? document.object().value(u"formatVersion"_s).toInt() : 0;
+}
+
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
 {
     const QString path = QDir(m_directory).filePath(u"world.json"_s);
@@ -67,9 +77,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.mobSpawning = rules.value(u"mobSpawning"_s).toBool(true);
     info.randomTicks = rules.value(u"randomTicks"_s).toBool(true);
     info.quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
-    // Worlds without a generator entry (format 1) are terrain worlds that need no setup.
     const QJsonObject generator = json.value(u"generator"_s).toObject();
-    info.generator = generator.value(u"type"_s).toString(QString::fromLatin1(QcWorldInfo::defaultGenerator));
+    info.generator = generator.value(u"type"_s).toString();
     info.setupDone = generator.value(u"setupDone"_s).toBool(true);
     info.generatorOptions = generator.value(u"options"_s).toString();
     // A mode this version does not know (a newer one) plays as survival and keeps its name.

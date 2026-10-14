@@ -88,6 +88,7 @@ QcServerFarming::Feeding QcServerFarming::feed(QcServerClient &client, quint32 m
 
 void QcServerFarming::tick()
 {
+    m_breeding.setLimits(m_state.config.limits.breedingCrowd, m_state.config.limits.bredPerKind);
     const QList<QcMobBreeding::Birth> births = m_breeding.tick(m_state.world, m_state.mobs, QcPhysics::tickDuration);
     for (const QcMobBreeding::Birth &birth : births) {
         // Bred animals are always kept with the world.

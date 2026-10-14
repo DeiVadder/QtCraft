@@ -4,6 +4,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QSet>
 
 #include <map>
 #include <optional>
@@ -12,7 +13,8 @@
 
 // The scheduled ticks of circuit components (decision E-335): a component asks to be looked at again
 // after a delay (a torch after 2 ticks, a repeater after its delay, a button when it springs back).
-// One entry per position; asking again while one is pending keeps the earlier one. Entries are due
+// One entry per position; asking again while one is pending keeps the earlier one. The entries of a
+// chunk move and go with it (QcBlockEntities owns the schedule, decision E-357). Entries are due
 // in the order of their tick and then their priority; everything of one tick and priority runs as
 // one simultaneous step, so their order among each other never matters.
 class QcSignalSchedule
@@ -38,7 +40,8 @@ public:
     bool add(QcBlockPos pos, quint64 due, Priority priority);
     bool contains(QcBlockPos pos) const { return m_byPos.contains(pos); }
     void remove(QcBlockPos pos);
-    // The entry of `from` (a dispenser a piston moved) now belongs to `to`, unless `to` has one.
+    // The entry of `from` (a component a piston moved) now belongs to `to`; when `to` has one too,
+    // the earlier of the two stays.
     void relocate(QcBlockPos from, QcBlockPos to);
     // The tick and priority of the first group of entries due at `now` or before (overdue ones
     // first), if any.
@@ -47,12 +50,21 @@ public:
     QList<QcBlockPos> takeGroup(quint64 due, Priority priority);
     qsizetype size() const { return m_byPos.size(); }
     QList<Entry> entries() const;
+    // The entries of one chunk, in the order they are due; the chunks that have entries.
+    QList<Entry> entriesIn(QcChunkPos chunk) const;
+    QList<QcChunkPos> chunks() const { return m_byChunk.keys(); }
+    // Drops the entries of a chunk (it was generated again).
+    void forgetChunk(QcChunkPos chunk);
     void clear();
 
 private:
     using Key = std::tuple<quint64, quint8, quint64>;
 
+    void index(QcBlockPos pos, const Key &key);
+    void unindex(QcBlockPos pos);
+
     std::map<Key, QcBlockPos> m_entries;
     QHash<QcBlockPos, Key> m_byPos;
+    QHash<QcChunkPos, QSet<QcBlockPos>> m_byChunk;
     quint64 m_sequence = 0;
 };

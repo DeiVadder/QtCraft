@@ -1376,6 +1376,14 @@
     </message>
 </context>
 <context>
+    <name>QcWorldLibraryController</name>
+    <message>
+        <location filename="../src/app/controllers/QcWorldLibraryController.cpp" line="58"/>
+        <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
+        <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
+    </message>
+</context>
+<context>
     <name>QcGameController</name>
     <message>
         <location filename="../src/app/controllers/QcGameController.cpp" line="202"/>
@@ -1433,6 +1441,11 @@
         <location filename="../src/app/controllers/QcGameController.cpp" line="415"/>
         <source>It is already open in another QtCraft window or process. Close it there first.</source>
         <translation>Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="418"/>
+        <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
+        <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
     <message>
         <source>Disconnected: %1</source>

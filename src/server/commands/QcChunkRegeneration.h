@@ -8,9 +8,10 @@ class QcBlockUpdateQueue;
 struct QcServerState;
 
 // Repairs chunks by generating them again (decision E-246): the blocks become what the world's
-// generator (terrain, flat, void or showcase) makes of the chunk, chests and machines in it lose
-// their contents, growing saplings, pending block and liquid updates and falling blocks in it are
-// dropped, players get the chunk again, players inside blocks are lifted to free space and
+// generator (terrain, flat, void or showcase) makes of the chunk, its block entities go with the old
+// blocks (QcServerWorld::regenerateChunk: chests and machines lose their contents, saplings and
+// circuit memory are forgotten), pending block, liquid, circuit and hopper work and falling blocks
+// in it are dropped, players get the chunk again, players inside blocks are lifted to free space and
 // creatures inside blocks are removed. Other entities stay; /remove clears them.
 class QcChunkRegeneration
 {
@@ -24,8 +25,7 @@ public:
     int regenerate(const QList<QcChunkPos> &chunks);
 
 private:
-    void dropBlockEntities(QcChunkPos chunk);
-    // Block and liquid updates and falling blocks of the old blocks.
+    // Block, liquid, circuit and hopper work and falling blocks of the old blocks.
     void dropPendingChanges(QcChunkPos chunk);
     void resend(QcChunkPos chunk);
     // Moves playing players in regenerated chunks up until feet and head are in passable blocks.

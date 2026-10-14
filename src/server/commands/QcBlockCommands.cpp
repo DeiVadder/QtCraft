@@ -155,7 +155,7 @@ bool QcBlockCommands::parseFilter(const QcCommandContext &context, BlockArea &ar
 
 void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area, bool single)
 {
-    const bool machine = m_state.machines.machineOf(area.block) != nullptr;
+    const bool machine = m_state.machineRules.machineOf(area.block) != nullptr;
 
     // The changes and their cascades queue behind the updates of player actions.
     m_updates.setCommandMode(true);
@@ -184,7 +184,7 @@ void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area
 bool QcBlockCommands::changeBlock(QcBlockPos pos, const BlockArea &area, bool machine)
 {
     const std::optional<QcBlockId> current = m_state.world.blockAt(pos);
-    if (!current || (machine && !m_state.machines.find(pos) && m_state.machines.isFull())) {
+    if (!current || (machine && !m_state.blockEntities().machine(pos) && m_state.blockEntities().isMachineTableFull())) {
         return false;
     }
     if (area.filter && (area.filterState ? *current != *area.filter : !m_state.content->isSameBlock(*current, *area.filter))) {
@@ -196,13 +196,8 @@ bool QcBlockCommands::changeBlock(QcBlockPos pos, const BlockArea &area, bool ma
         return true;
     }
 
+    // Setting the block makes its machine, chest or sapling timer (QcServerBlocks::setQuietly).
     m_blocks.setAndBroadcast(pos, area.explicitState ? area.block : QcBlockRules::connectedState(m_state.world, pos, area.block));
-    if (m_state.content->block(area.block).sapling.isSapling()) {
-        m_state.plants.saplingPlaced(pos, area.block);
-    }
-    if (machine) {
-        m_state.machines.add(pos);
-    }
     return true;
 }
 

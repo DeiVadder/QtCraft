@@ -48,6 +48,30 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `hopperBudget` | 4096 | 1 – 1048576 | Signal Hoppers acting per tick; the rest follow in the next ticks, round-robin (E-344) |
 | `hopperCooldownTicks` | 8 | 1 – 1200 | Ticks a hopper rests after moving an item |
 | `summonLimit` | 64 | 0 – 4096 | Awake creatures summoned by `/summon` at most; natural ones (animals of the chunks, night spawns, bred young) do not count; 0 switches summoning creatures off, armour stands stay possible (E-351) |
+| `maxContainers` | 16384 | 16 – 1048576 | Containers (chests, barrels, hoppers, dispensers, droppers) in the world; placing one beyond is refused (E-357) |
+| `maxMachines` | 4096 | 16 – 262144 | Machines (furnaces) in the world; placing one beyond is refused |
+| `maxSaplings` | 4096 | 16 – 262144 | Growing saplings in the world; a sapling beyond does not grow |
+| `blockUpdatesPerTick` | 1024 | 64 – 1048576 | Neighbour updates (connections, lost support, starting falls) per tick; those of player actions go first |
+| `waitingBlockUpdates` | 65536 | 1024 – 16777216 | Neighbour updates waiting for unloaded chunks |
+| `commandBlockUpdates` | 1048576 | 1024 – 16777216 | Neighbour updates queued by commands (`/fill`); further ones are dropped with a warning |
+| `savedBlockUpdates` | 4194304 | 1024 – 4194304 | Pending neighbour updates written to a save (those of player actions first) |
+| `liquidStepsPerTick` | 512 | 16 – 1048576 | Flow steps of liquids per tick (E-054) |
+| `liquidPlannedSteps` | 262144 | 1024 – 16777216 | Flow steps of liquids planned at most; further cells flow again when touched |
+| `fallingBlocks` | 2048 | 16 – 65536 | Falling blocks at once; beyond, blocks land straight or wait (E-055, E-288) |
+| `itemsAwake` | 512 | 16 – 65536 | Dropped items awake in loaded chunks; new drops wait, surplus ones sleep |
+| `itemsQueued` | 1024 | 16 – 1048576 | Drops waiting to appear; the oldest goes when full |
+| `itemsTotal` | 4096 | 64 – 1048576 | Dropped items in the world, also in unloaded chunks; the oldest goes when full |
+| `hostileCreaturesPerPlayer` | 8 | 0 – 256 | Hostile creatures spawning by themselves around one player |
+| `passiveCreaturesPerPlayer` | 6 | 0 – 256 | Passive creatures spawning by themselves around one player |
+| `ambientCreaturesPerPlayer` | 10 | 0 – 256 | Ambient creatures (fireflies) spawning around one player |
+| `breedingCrowd` | 24 | 2 – 1024 | Animals of a kind within 3 × 3 chunks above which no young are born (E-293) |
+| `bredPerKind` | 256 | 0 – 65536 | Bred animals of a kind in the world at most |
+| `randomTicksPerSection` | 3 | 0 – 64 | Random ticks per marked section and tick (growing plants, crops, soil, E-289); more makes plants grow faster, 0 stops them like the game rule `randomTicks` |
+| `leafDecaysPerTick` | 8 | 1 – 4096 | Leaves decaying per tick after a trunk was removed |
+| `leafChecksPerTick` | 64 | 1 – 65536 | Leaves checked per tick |
+| `leafPendingChecks` | 16384 | 256 – 1048576 | Leaf checks waiting at most |
+| `maxArmourStands` | 4096 | 16 – 65536 | Armour stands in the world (E-238) |
+| `movingBlocksShown` | 4096 | 16 – 65536 | Blocks shown sliding behind pistons at once; beyond, they appear at once (E-337) |
 
 Observers and dispensers have no bounds of their own: their pulses and shots are scheduled ticks inside the signal budget.
 
