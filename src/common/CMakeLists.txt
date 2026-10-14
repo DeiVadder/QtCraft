@@ -28,6 +28,7 @@ qt_add_library(qc_common STATIC
     core/QcProcessMemory.h core/QcProcessMemory.cpp
     core/QcTickPhase.h
     world/QcDayCycle.h world/QcDayCycle.cpp
+    world/QcEntityKind.h world/QcEntityKind.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp

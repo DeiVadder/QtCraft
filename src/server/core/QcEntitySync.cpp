@@ -2,6 +2,8 @@
 
 #include "QcServerState.h"
 
+#include <algorithm>
+
 namespace {
 
 quint8 flagsOf(const QcEntityMotion &motion, bool swung, bool sneaking, bool sprinting)
@@ -22,143 +24,160 @@ QcEntitySync::QcEntitySync(QcServerState &state)
 void QcEntitySync::sync(QcServerClient &client)
 {
     Pass pass{client, {}, {}};
-    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
-        if (mob.dormant) {
-            continue;
-        }
-
-        const quint8 breeding = quint8((mob.isYoung() ? QcMsg::Young : 0) | (mob.love > 0.0 ? QcMsg::InLove : 0));
-        consider(pass,
-                 {mob.id, mob.type, QString(), mob.motion.position, mob.yaw, mob.health, {}, {}, 0.0f,
-                  quint8(flagsOf(mob.motion, mob.attackedThisTick, false, false) | breeding), qcNoItem},
-                 mob.hurtThisTick);
-    }
-
-    considerPlayers(pass);
-    considerFallingBlocks(pass);
-    considerMovingBlocks(pass);
-    considerItems(pass);
-    considerStands(pass);
+    std::as_const(m_state.entities()).forEach([this, &pass](const QcEntity &entity) { consider(pass, entity); });
     removeUnseen(pass);
 
     if (!pass.moves.moves.isEmpty()) {
-        pass.moves.timeMs = m_state.playerTimeNs / 1'000'000;
+        pass.moves.timeMs = m_state.clock().playerTimeNs() / 1'000'000;
         client.connection->send(pass.moves);
     }
 }
 
-void QcEntitySync::consider(Pass &pass, const QcMsg::EntitySpawn &spawn, bool hurt)
+QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
 {
-    QcServerClient &client = pass.client;
-    if ((spawn.position - client.motion.position).length() > entityViewDistance) {
-        return;
+    QcMsg::EntityMove now{entity.id, entity.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem};
+    switch (entity.kind) {
+    case QcEntityKind::Creature: {
+        const auto &creature = static_cast<const QcCreature &>(entity);
+        const quint8 breeding = quint8((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0));
+        now.yaw = creature.yaw;
+        now.health = creature.health;
+        now.hurt = creature.hurtThisTick;
+        now.flags = quint8(flagsOf(creature.motion, creature.attackedThisTick, false, false) | breeding);
+        break;
     }
-
-    pass.visible.insert(spawn.id);
-    const bool known = client.knownEntities.contains(spawn.id);
-    if (!known || client.staleEntities.remove(spawn.id)) {
-        client.knownEntities.insert(spawn.id);
-        client.connection->send(spawn);
+    case QcEntityKind::Player: {
+        const auto &player = static_cast<const QcServerClient &>(entity);
+        const QcItemStack &held = player.inventory.selectedStack();
+        now.yaw = player.yaw;
+        now.health = player.health;
+        now.hurt = player.hurtThisTick;
+        now.pitch = player.pitch;
+        now.flags = flagsOf(player.motion, player.swung, player.sneaking, player.sprinting);
+        now.held = held.isEmpty() ? qcNoItem : held.item;
+        break;
     }
-
-    // A known entity sent again (new look) still moves, swings and flashes in this tick.
-    if (known) {
-        pass.moves.moves.append({spawn.id, spawn.position, spawn.yaw, spawn.health, hurt, spawn.pitch, spawn.flags, spawn.held});
+    case QcEntityKind::MovingBlock:
+        now.position = QcMovingBlocks::positionAt(static_cast<const QcMovingBlock &>(entity), m_state.clock().tick());
+        break;
+    case QcEntityKind::ArmourStand: {
+        const auto &stand = static_cast<const QcArmourStand &>(entity);
+        now.yaw = stand.yaw;
+        now.held = stand.held.isEmpty() ? qcNoItem : stand.held.item;
+        break;
     }
+    case QcEntityKind::Item:
+    case QcEntityKind::FallingBlock:
+        break;
+    }
+    return now;
 }
 
-void QcEntitySync::considerPlayers(Pass &pass)
+QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::EntityMove &now) const
 {
-    for (const auto &other : m_state.clients) {
-        if (other.get() != &pass.client && other->state == QcServerClient::State::Playing && !other->dead) {
-            const QcItemStack &held = other->inventory.selectedStack();
-            QcMsg::EntitySpawn spawn{other->entityId, QcMsg::EntitySpawn::playerType, other->name, other->motion.position, other->yaw,
-                                     other->health, {}, other->appearance, other->pitch,
-                                     flagsOf(other->motion, other->swung, other->sneaking, other->sprinting), held.isEmpty() ? qcNoItem : held.item};
-            spawn.equipment = other->equipment;
-            consider(pass, spawn, other->hurtThisTick);
-        }
+    QcMsg::EntitySpawn spawn{entity.id, entity.kind, QString(), now.position, now.yaw, now.health, {}, {}, now.pitch, now.flags, now.held};
+    switch (entity.kind) {
+    case QcEntityKind::Player: {
+        const auto &player = static_cast<const QcServerClient &>(entity);
+        spawn.name = player.name;
+        spawn.appearance = player.appearance;
+        spawn.equipment = player.equipment;
+        break;
     }
-}
-
-void QcEntitySync::considerFallingBlocks(Pass &pass)
-{
-    for (const QcFallingBlockManager::Falling &falling : m_state.falling.all()) {
-        QcMsg::EntitySpawn spawn{falling.id, QcMsg::EntitySpawn::fallingBlockType, QString(), falling.motion.position, 0.0f, 0.0,
-                                 {}, {}, 0.0f, 0, qcNoItem};
-        spawn.block = falling.block;
-        consider(pass, spawn, false);
-    }
-}
-
-void QcEntitySync::considerMovingBlocks(Pass &pass)
-{
-    for (const QcMovingBlocks::Moving &moving : m_state.movingBlocks.all()) {
-        QcMsg::EntitySpawn spawn{moving.id, QcMsg::EntitySpawn::movingBlockType, QString(), QcMovingBlocks::positionAt(moving, m_state.tickCount),
-                                 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
-        spawn.block = moving.block;
-        consider(pass, spawn, false);
-    }
-}
-
-void QcEntitySync::considerItems(Pass &pass) const
-{
-    QcServerClient &client = pass.client;
-    // Items are sent again when their count changed and moved only when their position did.
-    for (const QcItemEntityManager::Item &item : m_state.items.items()) {
-        if (item.dormant || (item.motion.position - client.motion.position).length() > itemViewDistance) {
-            continue;
-        }
-
-        pass.visible.insert(item.id);
-
-        const auto known = client.knownItems.find(item.id);
-        if (known == client.knownItems.end() || known->count != item.stack.count) {
-            client.connection->send(QcMsg::EntitySpawn{item.id, QcMsg::EntitySpawn::itemType, QString(), item.motion.position, 0.0f,
-                                                       0.0, item.stack, {}, 0.0f, 0, qcNoItem});
-            client.knownEntities.insert(item.id);
-            client.knownItems.insert(item.id, {item.stack.count, item.motion.position});
-        } else if ((known->position - item.motion.position).length() > itemMoveThreshold) {
-            pass.moves.moves.append({item.id, item.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem});
-            known->position = item.motion.position;
-        }
-    }
-}
-
-void QcEntitySync::considerStands(Pass &pass) const
-{
-    QcServerClient &client = pass.client;
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
-        if ((stand.position - client.motion.position).length() > entityViewDistance) {
-            continue;
-        }
-
-        pass.visible.insert(stand.id);
-        if (client.knownEntities.contains(stand.id) && !client.staleEntities.remove(stand.id)) {
-            continue;
-        }
-
-        QcMsg::EntitySpawn spawn{stand.id, QcMsg::EntitySpawn::armourStandType, stand.name, stand.position, stand.yaw, 0.0,
-                                 {}, {}, 0.0f, 0, stand.held.isEmpty() ? qcNoItem : stand.held.item};
+    case QcEntityKind::Item:
+        spawn.item = static_cast<const QcItemEntity &>(entity).stack;
+        break;
+    case QcEntityKind::FallingBlock:
+        spawn.block = static_cast<const QcFallingBlock &>(entity).block;
+        break;
+    case QcEntityKind::MovingBlock:
+        spawn.block = static_cast<const QcMovingBlock &>(entity).block;
+        break;
+    case QcEntityKind::ArmourStand: {
+        const auto &stand = static_cast<const QcArmourStand &>(entity);
+        spawn.name = stand.name;
         spawn.equipment = stand.equipment;
         spawn.stand = stand.pose;
         spawn.appearance.cape = stand.cape;
-        client.knownEntities.insert(stand.id);
-        client.connection->send(spawn);
+        break;
+    }
+    case QcEntityKind::Creature:
+        spawn.creatureType = static_cast<const QcCreature &>(entity).type;
+        break;
+    }
+    return spawn;
+}
+
+void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
+{
+    QcServerClient &client = pass.client;
+    const bool item = entity.kind == QcEntityKind::Item;
+    if (&entity == &client || entity.dormant || (item && static_cast<const QcItemEntity &>(entity).surplus)) {
+        return;
+    }
+
+    const QcVec3 position = entity.kind == QcEntityKind::MovingBlock
+                                ? QcMovingBlocks::positionAt(static_cast<const QcMovingBlock &>(entity), m_state.clock().tick())
+                                : entity.motion.position;
+    if ((position - client.motion.position).length() > (item ? itemViewDistance : entityViewDistance)) {
+        return;
+    }
+
+    const QcMsg::EntityMove now = seen(entity);
+
+    pass.visible.insert(entity.id);
+    const int count = item ? static_cast<const QcItemEntity &>(entity).stack.count : 0;
+    const auto known = client.view.known.find(entity.id);
+    if (known == client.view.known.end()) {
+        client.view.known.insert(entity.id, {count, now.position});
+        client.connection->send(spawnOf(entity, now));
+        return;
+    }
+
+    switch (entity.kind) {
+    case QcEntityKind::Item:
+        // Sent again when the count changed, moved only when the position did.
+        if (known->count != count) {
+            *known = {count, now.position};
+            client.connection->send(spawnOf(entity, now));
+        } else if ((known->position - now.position).length() > itemMoveThreshold) {
+            known->position = now.position;
+            pass.moves.moves.append(now);
+        }
+        break;
+    case QcEntityKind::ArmourStand:
+        // Stands send no moves: a spawn when they changed or were pushed.
+        if (client.view.stale.remove(entity.id)) {
+            client.connection->send(spawnOf(entity, now));
+        }
+        break;
+    default:
+        // A known entity sent again (new look) still moves, swings and flashes in this tick.
+        if (client.view.stale.remove(entity.id)) {
+            client.connection->send(spawnOf(entity, now));
+        }
+        pass.moves.moves.append(now);
+        break;
     }
 }
 
 void QcEntitySync::removeUnseen(Pass &pass) const
 {
     QcServerClient &client = pass.client;
-    for (auto it = client.knownEntities.begin(); it != client.knownEntities.end();) {
-        if (!pass.visible.contains(*it)) {
-            client.connection->send(QcMsg::EntityRemove{*it, m_state.died.contains(*it)});
-            client.knownItems.remove(*it);
-            client.staleEntities.remove(*it);
-            it = client.knownEntities.erase(it);
+    QList<quint32> gone;
+    for (auto it = client.view.known.begin(); it != client.view.known.end();) {
+        if (!pass.visible.contains(it.key())) {
+            gone.append(it.key());
+            client.view.stale.remove(it.key());
+            it = client.view.known.erase(it);
         } else {
             ++it;
         }
+    }
+
+    // In the order of the ids, so the removals of a tick reach the client in the same order every time.
+    std::ranges::sort(gone);
+    for (const quint32 id : std::as_const(gone)) {
+        client.connection->send(QcMsg::EntityRemove{id, m_state.entities().diedThisTick(id)});
     }
 }

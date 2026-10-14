@@ -1,15 +1,20 @@
 #include "QcServerInteraction.h"
 
 #include "QcBlockRules.h"
+#include "QcBlockScreens.h"
 #include "QcChatText.h"
+#include "QcLineOfSight.h"
 #include "QcMining.h"
+#include "QcOpeners.h"
 #include "QcPhysics.h"
+#include "QcPlayerHealth.h"
+#include "QcServerAnimals.h"
+#include "QcServerBlocks.h"
 #include "QcServerCircuits.h"
 #include "QcServerCombat.h"
-#include "QcServerFarming.h"
-#include "QcServerBlocks.h"
+#include "QcServerCrafting.h"
 #include "QcServerInventory.h"
-#include "QcBlockScreens.h"
+#include "QcServerPlants.h"
 #include "QcServerSounds.h"
 #include "QcServerStands.h"
 #include "QcServerState.h"
@@ -28,11 +33,11 @@ QcServerInteraction::QcServerInteraction(QcServerState &state, const Parts &part
 
 void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
 {
-    const bool sameTarget = client.miningPos && *client.miningPos == pos;
-    client.miningPos.reset();
+    const bool sameTarget = client.mining.pos && *client.mining.pos == pos;
+    client.mining.pos.reset();
 
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (!sameTarget || !block || *block == qcAirBlockId || !m_state.isWithinReach(client, pos) || !m_state.canSee(client, pos)) {
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!sameTarget || !block || *block == qcAirBlockId || !QcLineOfSight::isWithinReach(client, pos) || !QcLineOfSight::canSee(m_state.world(), client, pos)) {
         // Resend the true block so a client that predicted the break shows it again.
         if (block) {
             client.connection->send(QcMsg::BlockUpdate{pos, *block});
@@ -46,14 +51,14 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
-    const QcBlockDefinition &definition = m_state.content->block(*block);
+    const QcBlockDefinition &definition = m_state.content().block(*block);
     const QcItemDefinition *held = m_state.heldItem(client);
     const double seconds = QcMining::breakSeconds(definition, held);
     // In the players' time, so the mining takes as long at every tick rate.
     constexpr qint64 tickNs = qint64(QcPhysics::tickDuration * 1e9);
     const qint64 requiredNs = qint64(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
-    const qint64 toleranceNs = (miningToleranceTicks - 1) * tickNs + std::max(tickNs, m_state.lastTickNs);
-    if (seconds < 0.0 || m_state.playerTimeNs - client.miningStartNs + toleranceNs < requiredNs) {
+    const qint64 toleranceNs = (miningToleranceTicks - 1) * tickNs + std::max(tickNs, m_state.clock().lastTickNs());
+    if (seconds < 0.0 || m_state.clock().playerTimeNs() - client.mining.startNs + toleranceNs < requiredNs) {
         client.connection->send(QcMsg::BlockUpdate{pos, *block});
         return;
     }
@@ -79,8 +84,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     client.swung = true;
 
     // Nothing is used, placed or scooped through walls; the client may have predicted a placement.
-    if (!m_state.canSee(client, message.target)) {
-        if (const std::optional<QcBlockId> clicked = m_state.world.blockAt(message.target)) {
+    if (!QcLineOfSight::canSee(m_state.world(), client, message.target)) {
+        if (const std::optional<QcBlockId> clicked = m_state.world().blockAt(message.target)) {
             client.connection->send(QcMsg::BlockUpdate{message.target, *clicked});
         }
         rejectPlacement(client, qcNeighbour(message.target, message.face));
@@ -94,7 +99,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
     const QcItemDefinition *held = m_state.heldItem(client);
     if (held && (held->scoops || held->bottles)) {
         if (!(held->bottles ? fillBottle(client, message.target) : scoopLiquid(client, message.target))) {
-            if (const std::optional<QcBlockId> block = m_state.world.blockAt(message.target)) {
+            if (const std::optional<QcBlockId> block = m_state.world().blockAt(message.target)) {
                 client.connection->send(QcMsg::BlockUpdate{message.target, *block});
             }
             m_parts.inventory.send(client);
@@ -102,7 +107,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
-    if (m_parts.farming.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)) {
+    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)) {
         return;
     }
     placeHeld(client, message, held);
@@ -112,27 +117,27 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 {
     // Using a machine opens its screen, a crafting table its 3 x 3 grid, unless the player sneaks
     // to place against them.
-    const std::optional<QcBlockId> clickedBlock = m_state.world.blockAt(target);
+    const std::optional<QcBlockId> clickedBlock = m_state.world().blockAt(target);
     const bool storage = clickedBlock && m_state.blockEntities().containerSlots(*clickedBlock) > 0;
 
-    if (clickedBlock && (m_state.machineRules.machineOf(*clickedBlock) || storage) && !client.sneaking && m_state.isWithinReach(client, target)) {
+    if (clickedBlock && (m_state.machineRules().machineOf(*clickedBlock) || storage) && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         m_parts.screens.open(client, target);
         return true;
     }
 
-    if (clickedBlock && m_state.content->block(*clickedBlock).opensCrafting && !client.sneaking && m_state.isWithinReach(client, target)) {
-        m_parts.inventory.openCraftingTable(client, target);
+    if (clickedBlock && m_state.content().block(*clickedBlock).opensCrafting && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
+        m_parts.crafting.openCraftingTable(client, target);
         return true;
     }
 
-    if (clickedBlock && m_state.content->block(*clickedBlock).toggles && !client.sneaking && m_state.isWithinReach(client, target)) {
-        m_parts.blocks.toggle(target, *clickedBlock);
+    if (clickedBlock && m_state.content().block(*clickedBlock).toggles && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
+        QcOpeners(m_state, m_parts.sounds, m_parts.blocks).toggle(target, *clickedBlock);
         return true;
     }
 
     // Levers, buttons and repeaters (decision E-339); a spammed switch is ignored beyond its budget.
-    if (clickedBlock && m_state.content->block(*clickedBlock).signal.isUsable() && !client.sneaking && m_state.isWithinReach(client, target)) {
-        if (client.rateLimiter.allow(QcRateLimiter::Kind::Switch, m_state.playerTimeNs)) {
+    if (clickedBlock && m_state.content().block(*clickedBlock).signal.isUsable() && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
+        if (client.input.rateLimiter.allow(QcRateLimiter::Kind::Switch, m_state.clock().playerTimeNs())) {
             m_parts.circuits.use(target);
         }
         return true;
@@ -143,22 +148,22 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
 
 void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem &message, const QcItemDefinition *held)
 {
-    const QcContentRegistry &content = *m_state.content;
-    const std::optional<QcBlockId> clicked = m_state.world.blockAt(message.target);
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(message.target);
     const std::optional<QcBlockId> placed = held ? content.blockId(held->placesBlock) : std::nullopt;
     const bool clickedSolid = clicked && content.isValidBlock(*clicked) && !content.block(*clicked).liquid;
     const std::optional<QcBlockRules::Placement> placement =
         placed && clickedSolid && *clicked != qcAirBlockId
-            ? QcBlockRules::placement(m_state.world, *placed, {message.target, message.face, message.hit, client.yaw, client.pitch})
+            ? QcBlockRules::placement(m_state.world(), *placed, {message.target, message.face, message.hit, client.yaw, client.pitch})
             : std::nullopt;
 
     const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, message.face);
-    const std::optional<QcBlockId> existing = m_state.world.blockAt(target);
-    if (!placement || !existing || !m_state.isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)) {
+    const std::optional<QcBlockId> existing = m_state.world().blockAt(target);
+    if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)) {
         rejectPlacement(client, target);
         // Food that plants (carrots, potatoes) is eaten where it cannot be planted (decision E-292).
         if (held && held->food > 0) {
-            m_parts.combat.consume(client);
+            m_parts.health.consume(client);
         }
         return;
     }
@@ -168,11 +173,11 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
 
 bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBlockId placed, QcBlockPos target) const
 {
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     // Saplings need suitable ground.
     const QcBlockDefinition &placedDefinition = content.block(state);
-    const std::optional<QcBlockId> ground = m_state.world.blockAt(target.offset(0, -1, 0));
-    if (placedDefinition.sapling.isSapling() && !m_state.plants.canPlant(placed, ground)) {
+    const std::optional<QcBlockId> ground = m_state.world().blockAt(target.offset(0, -1, 0));
+    if (placedDefinition.sapling.isSapling() && !m_state.plants().canPlant(placed, ground)) {
         return false;
     }
 
@@ -198,12 +203,12 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
         }
     }
 
-    return !m_parts.blocks.overlapsBody(boxes);
+    return !m_state.entities().overlapsLiving(boxes);
 }
 
 void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDefinition &held, QcBlockId state, QcBlockPos target)
 {
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     const QcBlockDefinition &placedDefinition = content.block(state);
     m_parts.blocks.setAndBroadcast(target, state);
     if (placedDefinition.door) {
@@ -230,7 +235,7 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
 void QcServerInteraction::rejectPlacement(QcServerClient &client, QcBlockPos target)
 {
     for (const QcBlockPos pos : {target, target.offset(0, 1, 0)}) {
-        if (const std::optional<QcBlockId> block = m_state.world.blockAt(pos)) {
+        if (const std::optional<QcBlockId> block = m_state.world().blockAt(pos)) {
             client.connection->send(QcMsg::BlockUpdate{pos, *block});
         }
     }
@@ -239,14 +244,14 @@ void QcServerInteraction::rejectPlacement(QcServerClient &client, QcBlockPos tar
 
 bool QcServerInteraction::scoopLiquid(QcServerClient &client, QcBlockPos pos)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (!block || !m_state.content->isValidBlock(*block) || !m_state.isWithinReach(client, pos)) {
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!block || !m_state.content().isValidBlock(*block) || !QcLineOfSight::isWithinReach(client, pos)) {
         return false;
     }
 
-    const QcBlockDefinition &definition = m_state.content->block(*block);
-    if (!definition.liquid || definition.flow.bucket.isEmpty() || !QcLiquidFlow::isSource(*m_state.content, *block)
-        || !m_state.content->itemId(definition.flow.bucket)) {
+    const QcBlockDefinition &definition = m_state.content().block(*block);
+    if (!definition.liquid || definition.flow.bucket.isEmpty() || !QcLiquidFlow::isSource(m_state.content(), *block)
+        || !m_state.content().itemId(definition.flow.bucket)) {
         return false;
     }
 
@@ -259,13 +264,13 @@ bool QcServerInteraction::scoopLiquid(QcServerClient &client, QcBlockPos pos)
 
 bool QcServerInteraction::fillBottle(QcServerClient &client, QcBlockPos pos)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (!block || !m_state.content->isValidBlock(*block) || !m_state.isWithinReach(client, pos)) {
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (!block || !m_state.content().isValidBlock(*block) || !QcLineOfSight::isWithinReach(client, pos)) {
         return false;
     }
 
-    const QcBlockDefinition &definition = m_state.content->block(*block);
-    if (!definition.liquid || definition.flow.bottle.isEmpty() || !m_state.content->itemId(definition.flow.bottle)) {
+    const QcBlockDefinition &definition = m_state.content().block(*block);
+    if (!definition.liquid || definition.flow.bottle.isEmpty() || !m_state.content().itemId(definition.flow.bottle)) {
         return false;
     }
 
@@ -279,29 +284,39 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
 {
     client.swung = true;
     // Food the animal eats is never eaten by the player instead, even when the animal refuses it now.
-    if (m_parts.farming.feed(client, entityId) != QcServerFarming::Feeding::NotItsFood) {
+    if (m_parts.animals.feed(client, entityId) != QcServerAnimals::Feeding::NotItsFood) {
         return;
     }
 
-    const QcMobManager::Mob *mob = m_state.mobs.find(entityId);
+    const QcCreature *mob = m_state.entities().creatures().find(entityId);
     const QcItemDefinition *held = m_state.heldItem(client);
     if (!mob || !held) {
         return;
     }
 
-    const QcMobDefinition &definition = m_state.content->mobs()[mob->type];
+    const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-    if (definition.catchWith != held->name || !m_state.content->itemId(definition.catchItem)
+    if (definition.catchWith != held->name || !m_state.content().itemId(definition.catchItem)
         || (centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0
-        || !m_state.canSee(client, QcServerFarming::shownBox(definition, *mob))) {
+        || !QcLineOfSight::canSee(m_state.world(), client, QcServerAnimals::shownBox(definition, *mob))) {
         // Food and armour aimed at a creature that does not take them are eaten or put on.
-        m_parts.combat.consume(client);
+        m_parts.health.consume(client);
         return;
     }
 
-    m_state.mobs.remove(entityId);
+    m_state.entities().creatures().remove(entityId);
     m_parts.sounds.play(QString::fromLatin1(QcSoundKeys::bottleCatch), centre);
     m_parts.inventory.exchangeHeld(client, definition.catchItem);
     m_parts.inventory.send(client);
+}
+
+void QcServerInteraction::swingWhileMining()
+{
+    for (const auto &client : m_state.clients()) {
+        if (client->state == QcServerClient::State::Playing && client->mining.pos
+            && (m_state.clock().tick() - client->mining.startTick) % miningSwingTicks == 0) {
+            client->swung = true;
+        }
+    }
 }

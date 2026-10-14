@@ -4,7 +4,7 @@
 #include "QcBlockPos.h"
 
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // The screens of containers and machines the players have open (chests, hoppers, dispensers,
 // furnaces): opening, closing, sending their state.

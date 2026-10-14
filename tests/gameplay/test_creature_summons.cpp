@@ -20,11 +20,11 @@ private:
     qsizetype countOf(const char *name) const
     {
         const int type = mobType(name);
-        return std::ranges::count_if(m_server->mobs().mobs(), [type](const QcMobManager::Mob &mob) { return mob.type == type; });
+        return std::ranges::count_if(m_server->mobs().mobs(), [type](const QcCreature &mob) { return mob.type == type; });
     }
 
     // Whether the creature's body (shrunk by `inset`) overlaps a collision box of a block.
-    bool insideBlocks(const QcMobManager::Mob &mob) const
+    bool insideBlocks(const QcCreature &mob) const
     {
         const QcMobDefinition &definition = m_content->mobs()[mob.type];
         constexpr double inset = 1e-6;
@@ -70,12 +70,12 @@ private:
     QList<quint32> summon(const QString &line)
     {
         QSet<quint32> before;
-        for (const QcMobManager::Mob &mob : m_server->mobs().mobs()) {
+        for (const QcCreature &mob : m_server->mobs().mobs()) {
             before.insert(mob.id);
         }
         chat(line);
         QList<quint32> added;
-        for (const QcMobManager::Mob &mob : m_server->mobs().mobs()) {
+        for (const QcCreature &mob : m_server->mobs().mobs()) {
             if (!before.contains(mob.id)) {
                 added.append(mob.id);
             }
@@ -83,7 +83,7 @@ private:
         return added;
     }
 
-    static QString where(const QcMobManager::Mob &mob)
+    static QString where(const QcCreature &mob)
     {
         return u"%1 %2 %3"_s.arg(mob.motion.position.x).arg(mob.motion.position.y).arg(mob.motion.position.z);
     }
@@ -100,7 +100,7 @@ private slots:
         summoned += summon(u"/summon zombie 3"_s);
         QCOMPARE(summoned.size(), 6);
         for (const quint32 mobId : std::as_const(summoned)) {
-            const QcMobManager::Mob &mob = *m_server->mobs().find(mobId);
+            const QcCreature &mob = *m_server->mobs().find(mobId);
             const bool inside = insideBlocks(mob);
             const double feetY = mob.motion.position.y;
             QVERIFY2(!inside, qPrintable(where(mob)));
@@ -124,7 +124,7 @@ private slots:
         QCOMPARE(summoned.size(), 1);
         idle(20);
 
-        const QcMobManager::Mob &pig = *m_server->mobs().find(summoned.constFirst());
+        const QcCreature &pig = *m_server->mobs().find(summoned.constFirst());
         const bool inside = insideBlocks(pig);
         const double feetY = pig.motion.position.y;
         const double fenceNorthFace = m_feet.z - 3 + 0.375;
@@ -146,7 +146,7 @@ private slots:
         QCOMPARE(placed.z, wanted.z);
 
         idle(20);
-        const QcMobManager::Mob *pig = m_server->mobs().find(summoned.constFirst());
+        const QcCreature *pig = m_server->mobs().find(summoned.constFirst());
         QVERIFY(pig != nullptr);
         const bool swimming = pig->motion.inWater;
         QVERIFY2(swimming, qPrintable(where(*pig)));

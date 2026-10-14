@@ -29,13 +29,13 @@ QcChunkPos QcChunkStreaming::chunkOf(const QcVec3 &position)
 void QcChunkStreaming::stream(QcServerClient &client)
 {
     const QcChunkPos centre = chunkOf(client.motion.position);
-    const int radius = client.viewDistance > 0 ? client.viewDistance : m_state.config.viewDistance;
+    const int radius = client.view.distance > 0 ? client.view.distance : m_state.config().viewDistance;
 
     // Unload with one chunk of hysteresis so walking along a border does not thrash.
-    for (auto it = client.sentChunks.begin(); it != client.sentChunks.end();) {
+    for (auto it = client.view.sentChunks.begin(); it != client.view.sentChunks.end();) {
         if (qcChunkDistance(*it, centre) > radius + 1) {
             client.connection->send(QcMsg::ChunkUnload{*it});
-            it = client.sentChunks.erase(it);
+            it = client.view.sentChunks.erase(it);
         } else {
             ++it;
         }
@@ -45,7 +45,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dz = -radius; dz <= radius; ++dz) {
             const QcChunkPos pos{centre.x + dx, centre.z + dz};
-            if (!client.sentChunks.contains(pos)) {
+            if (!client.view.sentChunks.contains(pos)) {
                 missing.append(pos);
             }
         }
@@ -62,23 +62,23 @@ void QcChunkStreaming::stream(QcServerClient &client)
     int sent = 0;
     const bool backlog = client.connection->pendingBytes() > maxPendingChunkBytes;
     for (const QcChunkPos &pos : std::as_const(missing)) {
-        if (const std::shared_ptr<const QcChunk> chunk = m_state.world.chunk(pos)) {
-            if (sent < m_state.config.chunksPerTick && !backlog) {
+        if (const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(pos)) {
+            if (sent < m_state.config().chunksPerTick && !backlog) {
                 client.connection->send(QcMsg::ChunkData{chunk});
                 sendLabels(client, pos);
-                client.sentChunks.insert(pos);
+                client.view.sentChunks.insert(pos);
                 ++sent;
             }
-        } else if (m_state.world.pendingGenerationCount() < maxPendingGeneration) {
+        } else if (m_state.world().pendingGenerationCount() < maxPendingGeneration) {
             // Nearest first: the list is sorted by distance and the pool works in FIFO order.
-            m_state.world.requestChunk(pos);
+            m_state.world().requestChunk(pos);
         }
     }
 }
 
 void QcChunkStreaming::sendLabels(QcServerClient &client, QcChunkPos pos) const
 {
-    QList<QcWorldLabel> labels = m_state.world.generator().labelsIn(pos);
+    QList<QcWorldLabel> labels = m_state.world().generator().labelsIn(pos);
     if (labels.isEmpty()) {
         return;
     }
@@ -98,10 +98,10 @@ void QcChunkStreaming::sendLabels(QcServerClient &client, QcChunkPos pos) const
 void QcChunkStreaming::unloadUnneeded()
 {
     QSet<QcChunkPos> needed;
-    for (const auto &client : m_state.clients) {
-        needed.unite(client->sentChunks);
+    for (const auto &client : m_state.clients()) {
+        needed.unite(client->view.sentChunks);
         const QcChunkPos centre = chunkOf(client->motion.position);
-        const int radius = client->viewDistance > 0 ? client->viewDistance : m_state.config.viewDistance;
+        const int radius = client->view.distance > 0 ? client->view.distance : m_state.config().viewDistance;
         for (int dx = -radius; dx <= radius; ++dx) {
             for (int dz = -radius; dz <= radius; ++dz) {
                 needed.insert({centre.x + dx, centre.z + dz});
@@ -109,10 +109,10 @@ void QcChunkStreaming::unloadUnneeded()
         }
     }
 
-    const QList<QcChunkPos> loaded = m_state.world.loadedChunks();
+    const QList<QcChunkPos> loaded = m_state.world().loadedChunks();
     for (const QcChunkPos &pos : loaded) {
         if (!needed.contains(pos)) {
-            m_state.world.unloadChunk(pos);
+            m_state.world().unloadChunk(pos);
         }
     }
 }

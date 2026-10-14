@@ -15,7 +15,7 @@
 
 class QcServerBlocks;
 class QcServerSounds;
-struct QcServerState;
+class QcServerState;
 
 // The Signal Dust circuits of the server: the tick phase "signal" (decision E-335). Each tick it
 // presses plates, then looks at the block changes near circuits since the last step and at the

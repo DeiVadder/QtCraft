@@ -56,29 +56,47 @@ private:
         return drop;
     }
 
+    // Items where `isLoaded` says no rest, as the server's entity register decides at the start of
+    // each tick (QcEntities::settle).
+    static void settle(QcItemEntityManager &items, const QcItemEntityManager::LoadedFunction &isLoaded)
+    {
+        for (QcItemEntity &entry : items.editableItems()) {
+            entry.dormant = !isLoaded(entry.motion.position);
+        }
+    }
+
+    // One tick after settling the items like the server.
+    static QList<QcItemEntity> tickOnce(QcItemEntityManager &items, const QcTestWorld &world,
+                                        const QList<QcItemEntityManager::PlayerView> &players,
+                                        const QcItemEntityManager::TickCallbacks &callbacks)
+    {
+        settle(items, callbacks.isLoaded);
+        return items.tick(world, players, dt, callbacks);
+    }
+
     // Runs ticks with `players` in the world and the given callbacks; new entity ids count up from 1000.
-    static QList<QcItemEntityManager::Item> tickTimes(QcItemEntityManager &items, const QcTestWorld &world, int count,
+    static QList<QcItemEntity> tickTimes(QcItemEntityManager &items, const QcTestWorld &world, int count,
                                                       const QList<QcItemEntityManager::PlayerView> &players,
                                                       QcItemEntityManager::TickCallbacks callbacks)
     {
         quint32 nextId = 1000;
         callbacks.nextEntityId = [&nextId] { return nextId++; };
-        QList<QcItemEntityManager::Item> despawned;
+        QList<QcItemEntity> despawned;
         for (int i = 0; i < count; ++i) {
-            despawned += items.tick(world, players, dt, callbacks);
+            despawned += tickOnce(items, world, players, callbacks);
         }
         return despawned;
     }
 
     // Runs ticks without players; everything counts as loaded unless `loaded` is false.
-    static QList<QcItemEntityManager::Item> run(QcItemEntityManager &items, const QcTestWorld &world, int count, bool loaded = true)
+    static QList<QcItemEntity> run(QcItemEntityManager &items, const QcTestWorld &world, int count, bool loaded = true)
     {
         return tickTimes(items, world, count, {},
                          {[loaded](const QcVec3 &) { return loaded; }, [](quint32, QcItemStack stack) { return stack.count; }, {}});
     }
 
     // Runs ticks with `players` in the loaded world; `give` hands them the items they touch.
-    static QList<QcItemEntityManager::Item> runWithPlayers(QcItemEntityManager &items, const QcTestWorld &world, int count,
+    static QList<QcItemEntity> runWithPlayers(QcItemEntityManager &items, const QcTestWorld &world, int count,
                                                            const QList<QcItemEntityManager::PlayerView> &players,
                                                            const QcItemEntityManager::GiveFunction &give)
     {
@@ -93,7 +111,7 @@ private slots:
         items.spawn(dropAt({item("qtcraft:dirt"), 1, 0}, {0.5, 70.0, 0.5}), 1);
         run(items, world, 60);
         QCOMPARE(items.items().size(), 1);
-        const QcItemEntityManager::Item &dropped = items.items().first();
+        const QcItemEntity &dropped = items.items().first();
         QCOMPARE(dropped.motion.position.y, 64.0);
         QVERIFY(dropped.motion.onGround);
         QVERIFY(dropped.resting);
@@ -187,7 +205,7 @@ private slots:
         QList<int> dirt;
         int stone = 0;
         int pickaxes = 0;
-        for (const QcItemEntityManager::Item &entry : items.items()) {
+        for (const QcItemEntity &entry : items.items()) {
             if (entry.stack.item == item("qtcraft:dirt")) {
                 dirt.append(entry.stack.count);
             }
@@ -212,7 +230,7 @@ private slots:
         QVERIFY(run(items, world, ticksFor(5.0), false).isEmpty());
         QCOMPARE(items.items().size(), 1);
         QCOMPARE(items.items().first().age, QcItemEntityManager::despawnSeconds - 1.0);
-        const QList<QcItemEntityManager::Item> despawned = run(items, world, ticksFor(1.0) + 1);
+        const QList<QcItemEntity> despawned = run(items, world, ticksFor(1.0) + 1);
         QCOMPARE(despawned.size(), 1);
         QCOMPARE(despawned.first().stack.item, item("qtcraft:dirt"));
         QVERIFY(items.items().isEmpty());
@@ -307,14 +325,14 @@ private slots:
         items.restore(drops, [&nextId] { return nextId++; });
         const auto ids = [&items] {
             QSet<quint32> result;
-            for (const QcItemEntityManager::Item &entry : items.items()) {
+            for (const QcItemEntity &entry : items.items()) {
                 result.insert(entry.id);
             }
             return result;
         };
         const QSet<quint32> before = ids();
-        const auto dormant = [&items] {
-            return std::ranges::count_if(items.items(), &QcItemEntityManager::Item::dormant);
+        const auto surplus = [&items] {
+            return std::ranges::count_if(items.items(), &QcItemEntity::surplus);
         };
 
         // All chunks load: every item is kept, the youngest beyond the limit sleep.
@@ -322,14 +340,14 @@ private slots:
         QCOMPARE(items.items().size(), 2000);
         QVERIFY(items.queued().isEmpty());
         QCOMPARE(items.activeCount(), QcItemEntityManager::activeLimit);
-        QCOMPARE(dormant(), 2000 - QcItemEntityManager::activeLimit);
+        QCOMPARE(surplus(), 2000 - QcItemEntityManager::activeLimit);
 
         double oldestSleeper = 0.0;
         double youngestAwake = 1e9;
         // Items a few seconds old count as fresh drops and stay awake; among the others the
         // youngest sleep.
-        for (const QcItemEntityManager::Item &entry : items.items()) {
-            if (entry.dormant) {
+        for (const QcItemEntity &entry : items.items()) {
+            if (entry.surplus) {
                 QVERIFY(entry.age >= 10.0);
                 oldestSleeper = std::max(oldestSleeper, entry.age);
             } else if (entry.age >= 10.0) {
@@ -343,11 +361,11 @@ private slots:
         const auto keep = [](quint32, QcItemStack stack) { return stack.count; };
         const auto noId = [] { return quint32(0); };
         for (int i = 0; i < 3; ++i) {
-            items.tick(world, {}, dt, QcItemEntityManager::TickCallbacks{firstLoaded, keep, noId});
+            tickOnce(items, world, {}, QcItemEntityManager::TickCallbacks{firstLoaded, keep, noId});
         }
-        for (const QcItemEntityManager::Item &entry : items.items()) {
+        for (const QcItemEntity &entry : items.items()) {
             if (entry.motion.position.x < 900.0) {
-                QVERIFY(!entry.dormant);
+                QVERIFY(!entry.surplus);
             }
         }
         QCOMPARE(items.activeCount(), 300);
@@ -379,9 +397,9 @@ private slots:
         QCOMPARE(fresh, 9999u);
         run(items, world, 1);
 
-        const auto it = std::ranges::find(items.items(), fresh, &QcItemEntityManager::Item::id);
+        const auto it = std::ranges::find(items.items(), fresh, &QcItemEntity::id);
         QVERIFY(it != items.items().end());
-        QVERIFY(!it->dormant);
+        QVERIFY(!it->surplus);
         QCOMPARE(items.activeCount(), QcItemEntityManager::activeLimit);
     }
 
@@ -413,7 +431,7 @@ private slots:
         QCOMPARE(items.items().first().stack.count, 1);
         run(items, world, 1);
         QCOMPARE(items.items().size(), 5);
-        for (const QcItemEntityManager::Item &entry : items.items()) {
+        for (const QcItemEntity &entry : items.items()) {
             QCOMPARE(entry.stack, (QcItemStack{pickaxe, 1, 0}));
         }
     }

@@ -53,25 +53,25 @@ std::optional<QcBlockPos> QcFallingBlockManager::restingCell(const QcBlockAccess
 
 void QcFallingBlockManager::start(QcBlockPos from, QcBlockId block, quint32 id)
 {
-    Falling falling;
+    QcFallingBlock falling;
     falling.id = id;
     falling.block = block;
     falling.motion.position = {from.x + 0.5, double(from.y), from.z + 0.5};
     m_falling.append(falling);
 }
 
-QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockAccess &world, double dt, const LoadedFunction &isLoaded)
+QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockAccess &world, double dt)
 {
     QList<Landing> landed;
-    QList<Falling> still;
+    QList<QcFallingBlock> still;
     still.reserve(m_falling.size());
 
-    for (Falling falling : std::as_const(m_falling)) {
+    for (QcFallingBlock falling : std::as_const(m_falling)) {
         // Also those resting in unloaded chunks (from a save).
         if (QcWorld::isInVoid(falling.motion.position.y)) {
             continue;
         }
-        if (!isLoaded(falling.motion.position)) {
+        if (falling.dormant) {
             still.append(falling);
             continue;
         }
@@ -101,13 +101,13 @@ QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockA
 
 qsizetype QcFallingBlockManager::removeInChunk(QcChunkPos chunk)
 {
-    return m_falling.removeIf([chunk](const Falling &falling) { return QcPhysics::blockContaining(falling.motion.position).chunk() == chunk; });
+    return m_falling.removeIf([chunk](const QcFallingBlock &falling) { return QcPhysics::blockContaining(falling.motion.position).chunk() == chunk; });
 }
 
-void QcFallingBlockManager::restore(const QList<Falling> &falling, const std::function<quint32()> &nextEntityId)
+void QcFallingBlockManager::restore(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId)
 {
     m_falling.clear();
-    for (Falling block : falling) {
+    for (QcFallingBlock block : falling) {
         if (m_falling.size() >= m_maxFalling) {
             break;
         }

@@ -75,8 +75,8 @@ private:
         QList<double> health;
         double left = QcServerClient::maxHealth;
         for (int tick = 0; left > 0.0; ++tick) {
-            if (tick % QcServerCombat::voidDamageIntervalTicks == 0) {
-                left = std::max(0.0, left - QcServerCombat::voidDamage);
+            if (tick % QcPlayerHealth::voidDamageIntervalTicks == 0) {
+                left = std::max(0.0, left - QcPlayerHealth::voidDamage);
             }
             health.append(left);
         }
@@ -96,11 +96,11 @@ private:
                && m_client->chatKeys.last().arguments == QStringList{argument};
     }
 
-    static QcArmourStandManager::Stand standAt(quint32 id, const QcVec3 &position)
+    static QcArmourStand standAt(quint32 id, const QcVec3 &position)
     {
-        QcArmourStandManager::Stand stand;
+        QcArmourStand stand;
         stand.id = id;
-        stand.position = position;
+        stand.motion.position = position;
         stand.item = u"qtcraft:armor_stand"_s;
         return stand;
     }
@@ -160,7 +160,7 @@ private slots:
         // The rhythm starts afresh: back in the void, the first hit comes at once again.
         chat(u"/tp ~ %1 ~"_s.arg(QcWorld::voidLimitY - 10.0));
         ticks(1);
-        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcServerCombat::voidDamage);
+        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcPlayerHealth::voidDamage);
     }
 
     void keepInventoryKeepsItThroughADeathInTheVoid()
@@ -198,7 +198,7 @@ private slots:
 
         join(config);
         QVERIFY(QcWorld::isInVoid(m_client->motion.position.y));
-        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcServerCombat::voidDamage);
+        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcPlayerHealth::voidDamage);
         healthUntilDeath(100);
         QVERIFY(m_client->dead);
         QVERIFY(lastChatIs("%1 fell out of the world", u"Raw"_s));
@@ -215,7 +215,7 @@ private slots:
 
         step();
         QVERIFY(QcWorld::isInVoid(m_client->motion.position.y));
-        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcServerCombat::voidDamage);
+        QCOMPARE(m_client->health, QcServerClient::maxHealth - QcPlayerHealth::voidDamage);
 
         // /kill still works down there, with its own message.
         chat(u"/kill"_s);
@@ -363,10 +363,10 @@ private slots:
         const quint32 deep = m_server->mobs().spawn(pig, far, 900'030, false, true);
         const quint32 highPig = m_server->mobs().spawn(pig, far + QcVec3{0.0, 200.0, 0.0}, 900'031, false, true);
 
-        QcFallingBlockManager::Falling sand;
+        QcFallingBlock sand;
         sand.block = id("qtcraft:sand");
         sand.motion.position = far;
-        QcFallingBlockManager::Falling high = sand;
+        QcFallingBlock high = sand;
         high.motion.position = far + QcVec3{0.0, 200.0, 0.0};
         m_server->fallingBlocks().restore({sand, high}, [&nextId] { return nextId++; });
 
@@ -449,10 +449,10 @@ private slots:
         int tick = 0;
         for (; tick < 2000; ++tick) {
             ticks(1);
-            const QList<QcFallingBlockManager::Falling> &falling = m_server->fallingBlocks().all();
+            const QList<QcFallingBlock> &falling = m_server->fallingBlocks().all();
             mostFalling = std::max(mostFalling, falling.size());
             QSet<quint32> present;
-            for (const QcFallingBlockManager::Falling &block : falling) {
+            for (const QcFallingBlock &block : falling) {
                 present.insert(block.id);
                 started.insert(block.id);
                 lastSeen.insert(block.id, block.motion.position.y);

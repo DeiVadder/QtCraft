@@ -1,11 +1,11 @@
-// Payloads of the entity messages (QcEntityMessages.h): mobs, other players, dropped items and
-// falling blocks.
+// Payloads of the entity messages (QcEntityMessages.h).
 
 #include "QcProtocolCodec.h"
 
 #include "QcStreamLimits.h"
 
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -13,11 +13,15 @@ namespace QcProtocolCodec {
 
 void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
 {
-    stream << m.id << m.mobType << m.name << m.position << m.yaw << m.health;
+    stream << m.id << quint8(m.kind);
+    if (m.kind == QcEntityKind::Creature) {
+        stream << m.creatureType;
+    }
+    stream << m.name << m.position << m.yaw << m.health;
     writeStack(stream, m.item);
     stream << m.appearance << m.pitch << m.flags << m.held << m.block;
     writeEquipment(stream, m.equipment);
-    if (m.mobType == QcMsg::EntitySpawn::armourStandType) {
+    if (m.kind == QcEntityKind::ArmourStand) {
         writeStandPose(stream, m.stand);
     }
 }
@@ -48,7 +52,21 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
 QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
 {
     QcMsg::EntitySpawn m;
-    stream >> m.id >> m.mobType >> m.name >> m.position >> m.yaw >> m.health;
+    quint8 kind = 0;
+    stream >> m.id >> kind;
+    const std::optional<QcEntityKind> known = QcEntityKinds::fromValue(kind);
+    if (!known) {
+        return qcError(u"Unknown entity kind %1"_s.arg(kind));
+    }
+    m.kind = *known;
+    if (m.kind == QcEntityKind::Creature) {
+        stream >> m.creatureType;
+        if (m.creatureType < 0 || std::cmp_greater_equal(m.creatureType, QcStreamLimits::maxDefinitions)) {
+            return qcError(u"Invalid creature type %1"_s.arg(m.creatureType));
+        }
+    }
+
+    stream >> m.name >> m.position >> m.yaw >> m.health;
     m.item = readStack(stream);
     if (!readAppearance(stream, m.appearance)) {
         return qcError(u"Invalid appearance"_s);
@@ -56,7 +74,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
 
     stream >> m.pitch >> m.flags >> m.held >> m.block;
     m.equipment = readEquipment(stream);
-    if (m.mobType == QcMsg::EntitySpawn::armourStandType) {
+    if (m.kind == QcEntityKind::ArmourStand) {
         m.stand = readStandPose(stream);
     }
     if (!std::isfinite(m.pitch)) {

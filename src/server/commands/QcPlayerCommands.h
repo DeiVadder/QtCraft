@@ -6,7 +6,7 @@
 #include <QString>
 
 class QcPendingCommands;
-struct QcServerState;
+class QcServerState;
 
 // Player management (decision E-244): the player list, kick, ban and unban, the whitelist,
 // operators and teleporting. The lists are QcAccessList, bound to the identity of a player when it

@@ -177,6 +177,12 @@ void QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world,
                           QList<QcBlockPos> *slotsChanged) const
 {
     entities.forEachMachine([&](Machine &machine) {
+        // An empty, cold machine has nothing to do (generated furnaces, decision E-369); its step
+        // would change nothing, so it costs no block lookup.
+        if (machine.isIdle()) {
+            return;
+        }
+
         const std::optional<QcBlockId> block = world.blockAt(machine.pos);
         const QcMachineDefinition *definition = block ? machineOf(*block) : nullptr;
         if (!definition) {

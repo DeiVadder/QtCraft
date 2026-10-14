@@ -68,7 +68,7 @@ void QcServerCommands::addBuiltIns()
     m_registry.addBuiltIn({.name = u"confirm"_s, .permission = QcPermission::Player,
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /confirm"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Runs the destructive command you started last."),
-                           .run = [this](const QcCommandContext &context) { m_pending.confirm(context.source, m_state.playerTimeNs); }});
+                           .run = [this](const QcCommandContext &context) { m_pending.confirm(context.source, m_state.clock().playerTimeNs()); }});
     m_registry.addBuiltIn({.name = u"cancel"_s, .permission = QcPermission::Player,
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /cancel"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops the command waiting for /confirm."),
@@ -98,7 +98,7 @@ void QcServerCommands::console(const QString &line, const QcCommandSource::Outpu
 
 void QcServerCommands::broadcast(const QcServerClient &client, const QString &text) const
 {
-    for (const auto &other : m_state.clients) {
+    for (const auto &other : m_state.clients()) {
         if (other->state == QcServerClient::State::Playing) {
             other->connection->send(QcChatText::plain(u"<%1> %2"_s.arg(client.name, text)));
         }
@@ -127,7 +127,7 @@ void QcServerCommands::execute(const QcCommandSource &source, const QString &tex
 
     const QcCommandSpec *spec = m_registry.find(name);
     if (!spec) {
-        const QcCommandMacroDefinition *macro = depth == 0 ? m_state.content->commandMacro(name) : nullptr;
+        const QcCommandMacroDefinition *macro = depth == 0 ? m_state.content().commandMacro(name) : nullptr;
         if (macro && permitted(source, macro->operatorOnly ? QcPermission::Operator : QcPermission::Player, name)) {
             runMacro(source, *macro, args);
         } else if (!macro) {
@@ -175,7 +175,7 @@ void QcServerCommands::help(const QcCommandContext &context) const
         if (const QcCommandSpec *spec = m_registry.find(name)) {
             source.reply(spec->usage);
             source.reply(spec->description);
-        } else if (const QcCommandMacroDefinition *macro = m_state.content->commandMacro(name); macro && mayRun(source, *macro)) {
+        } else if (const QcCommandMacroDefinition *macro = m_state.content().commandMacro(name); macro && mayRun(source, *macro)) {
             source.replyPlain(macro->usage);
             source.replyPlain(macro->description);
         } else {
@@ -191,7 +191,7 @@ void QcServerCommands::help(const QcCommandContext &context) const
             names.append(u'/' + spec->name);
         }
     }
-    for (const QcCommandMacroDefinition &macro : m_state.content->commandMacros()) {
+    for (const QcCommandMacroDefinition &macro : m_state.content().commandMacros()) {
         if (!m_registry.find(macro.name) && mayRun(source, macro)) {
             names.append(u'/' + macro.name);
         }

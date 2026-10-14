@@ -23,4 +23,10 @@ QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 new
 // An item stack by item name, count and damage; empty stacks and invalid items as an empty name.
 void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content);
 
+// Damaged copies kept aside per file at most (<path>.damaged, .damaged.2, …).
+inline constexpr int maxDamagedCopies = 16;
+// Copies a damaged file to the first free name <path>.damaged, .damaged.2, … (access.json); that
+// name, or empty when copying failed or all names are taken.
+QString keepAside(const QString &path);
+
 } // namespace QcSaveFile

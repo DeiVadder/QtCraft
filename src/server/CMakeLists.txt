@@ -5,6 +5,7 @@ qt_add_library(qc_server STATIC
     network/QcNetworkServer.h network/QcNetworkServer.cpp
     login/QcIdentityStore.h login/QcIdentityStore.cpp
     login/QcServerLogin.h login/QcServerLogin.cpp
+    login/QcPlayerJoin.h login/QcPlayerJoin.cpp
     commands/QcAccessList.h commands/QcAccessList.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
@@ -25,15 +26,28 @@ qt_add_library(qc_server STATIC
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
     storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
+    storage/QcRegionSideFiles.h storage/QcRegionSideFiles.cpp
     storage/QcStackReader.h storage/QcStackReader.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
+    blocks/QcServerFallingBlocks.h blocks/QcServerFallingBlocks.cpp
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
+    blocks/QcOpeners.h blocks/QcOpeners.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
     core/QcChunkStreaming.h core/QcChunkStreaming.cpp
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
+    entities/QcEntity.h
+    entities/QcEntities.h entities/QcEntities.cpp
+    entities/QcEntityChecks.h entities/QcEntityChecks.cpp
+    entities/QcCreature.h
+    entities/QcItemEntity.h
+    entities/QcFallingBlock.h
+    entities/QcArmourStand.h
+    entities/QcMovingBlock.h
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     content/QcContentPackLoader.h content/QcContentPackLoader.cpp
+    storage/QcEntityRecord.h
+    storage/QcEntityRecords.h storage/QcEntityRecords.cpp
     storage/QcEntityStorage.h storage/QcEntityStorage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
@@ -59,18 +73,22 @@ qt_add_library(qc_server STATIC
     storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
-    storage/QcStandStorage.h storage/QcStandStorage.cpp
+    storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
     core/QcProfileValidation.h core/QcProfileValidation.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
     core/QcServer.h core/QcServer.cpp
     blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
     core/QcServerClient.h
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
-    gameplay/QcServerFarming.h gameplay/QcServerFarming.cpp
+    gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
+    gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
+    gameplay/QcServerCreatures.h gameplay/QcServerCreatures.cpp
+    gameplay/QcServerAnimals.h gameplay/QcServerAnimals.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
     core/QcServerConfig.h
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
+    gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
     gameplay/QcServerItems.h gameplay/QcServerItems.cpp
     gameplay/QcServerPlants.h gameplay/QcServerPlants.cpp
     machines/QcBlockScreens.h machines/QcBlockScreens.cpp
@@ -82,7 +100,9 @@ qt_add_library(qc_server STATIC
     core/QcServerLimits.h core/QcServerLimits.cpp
     core/QcServerSetup.h core/QcServerSetup.cpp
     core/QcServerSounds.h core/QcServerSounds.cpp
+    core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcServerState.h core/QcServerState.cpp
+    core/QcSpawnPoint.h core/QcSpawnPoint.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcServerDebug.h core/QcServerDebug.cpp
     core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
@@ -120,7 +140,6 @@ qt_add_library(qc_server STATIC
     worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
     worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
     signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
-    signal/QcCircuitMachines.h signal/QcCircuitMachines.cpp
     signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
     signal/QcDispenserActions.h signal/QcDispenserActions.cpp
     signal/QcHopperQueue.h signal/QcHopperQueue.cpp
@@ -157,6 +176,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
     ${CMAKE_CURRENT_SOURCE_DIR}/blockentities
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities
     ${CMAKE_CURRENT_SOURCE_DIR}/signal
     ${CMAKE_CURRENT_SOURCE_DIR}/storage
     ${CMAKE_CURRENT_SOURCE_DIR}/content

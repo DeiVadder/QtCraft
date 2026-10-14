@@ -8,7 +8,7 @@
 class QcTickControl;
 class QcTickPhaseTimer;
 class QcTickScheduler;
-struct QcServerState;
+class QcServerState;
 
 // /tick (decision E-249): freezing the world, single steps, the tick rate, sprints and a query.
 // Rate and freezing are not saved; a world always opens at 20 ticks per second, running.

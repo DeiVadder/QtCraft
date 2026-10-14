@@ -46,7 +46,7 @@ private:
     int pigCount() const
     {
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        return int(std::ranges::count(m_server->mobs().mobs(), pig, &QcMobManager::Mob::type));
+        return int(std::ranges::count(m_server->mobs().mobs(), pig, &QcCreature::type));
     }
 
 private slots:
@@ -319,7 +319,7 @@ private slots:
 
         dropOn({m_feet.x - 2, m_feet.y - 1, z}, "qtcraft:stick", 1);
         idle(100);
-        const QcItemEntityManager::Item carried = m_server->items().items().constFirst();
+        const QcItemEntity carried = m_server->items().items().constFirst();
         QVERIFY2(carried.motion.position.x > m_feet.x + 2.5, qPrintable(QString::number(carried.motion.position.x - m_feet.x)));
         QCOMPARE(QcPhysics::blockContaining(carried.motion.position).z, z);
 
@@ -397,7 +397,7 @@ private slots:
         QCOMPARE(pigCount(), 3);
         QCOMPARE(countOf(item("qtcraft:carrot")), 3);
 
-        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcMobManager::Mob::isYoung);
+        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcCreature::isYoung);
         QVERIFY(young != m_server->mobs().mobs().end());
         const quint32 youngId = young->id;
         QVERIFY(young->persistent);
@@ -454,7 +454,7 @@ private slots:
             ticks(1);
         }
         QCOMPARE(pigCount(), 3);
-        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcMobManager::Mob::isYoung);
+        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcCreature::isYoung);
         QVERIFY(young->bred);
         QVERIFY(young->persistent);
         QVERIFY2((young->motion.position - parent).length() < 0.5, qPrintable(QString::number((young->motion.position - parent).length())));
@@ -477,7 +477,7 @@ private slots:
             ticks(1);
         }
         QCOMPARE(pigCount(), 3);
-        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcMobManager::Mob::isYoung);
+        const auto young = std::ranges::find_if(m_server->mobs().mobs(), &QcCreature::isYoung);
         // Not in the air between them (the midpoint would float a block up).
         QVERIFY(std::abs(young->motion.position.y - m_feet.y) < 0.01 || std::abs(young->motion.position.y - (pillar.y + 2.0)) < 0.01);
     }

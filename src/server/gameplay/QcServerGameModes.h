@@ -8,9 +8,10 @@
 #include <optional>
 
 class QcContentRegistry;
+class QcServerCrafting;
 class QcServerInventory;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // The game modes of the players (decisions E-282 to E-285): the mode of new players, changing a
 // player's mode with the inventory set that belongs to it, the items of the creative catalogue and
@@ -18,7 +19,7 @@ struct QcServerState;
 class QcServerGameModes
 {
 public:
-    QcServerGameModes(QcServerState &state, QcServerInventory &inventory);
+    QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting);
 
     // The mode of a player who joins the world for the first time: the server's setting
     // (server.json, an unsaved world) or else the world's default.
@@ -54,4 +55,5 @@ private:
 
     QcServerState &m_state;
     QcServerInventory &m_inventory;
+    QcServerCrafting &m_crafting;
 };

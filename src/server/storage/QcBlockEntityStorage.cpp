@@ -5,15 +5,11 @@
 #include "QcStackReader.h"
 #include "QcStreamLimits.h"
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
+#include <QIODevice>
 #include <QSet>
 
 #include <algorithm>
 #include <cmath>
-#include <filesystem>
-#include <system_error>
 
 using namespace Qt::StringLiterals;
 
@@ -198,14 +194,9 @@ private:
 } // namespace
 
 QcBlockEntityStorage::QcBlockEntityStorage(QString directory, std::shared_ptr<const QcContentRegistry> content)
-    : m_directory(std::move(directory))
-    , m_content(std::move(content))
+    : m_content(std::move(content))
+    , m_files(std::move(directory), QString::fromLatin1(folder), u"qcb"_s, magic, version)
 {
-}
-
-QString QcBlockEntityStorage::regionPath(QcChunkPos region) const
-{
-    return QDir(m_directory).filePath(u"%1/r.%2.%3.qcb"_s.arg(QLatin1StringView(folder)).arg(region.x).arg(region.z));
 }
 
 void QcBlockEntityStorage::writeRecord(QDataStream &stream, const QcBlockEntityRecord &record) const
@@ -271,99 +262,38 @@ QcStatus QcBlockEntityStorage::write(const QList<QcBlockEntityRecord> &records) 
             regions[QcRegionStorage::regionOf(record.chunk)].append(&record);
         }
     }
-    const QString folderPath = QDir(m_directory).filePath(QString::fromLatin1(folder));
-    if (regions.isEmpty() && !QDir(folderPath).exists()) {
-        return {};
-    }
-    if (!QDir().mkpath(folderPath)) {
-        return qcError(u"Cannot create the folder %1 in %2"_s.arg(QLatin1StringView(folder), m_directory));
-    }
 
-    QHash<QcChunkPos, QByteArray> changed;
+    QHash<QcChunkPos, QByteArray> payloads;
     for (auto it = regions.begin(); it != regions.end(); ++it) {
         std::ranges::sort(*it, [](const QcBlockEntityRecord *a, const QcBlockEntityRecord *b) {
             return std::pair{a->chunk.x, a->chunk.z} < std::pair{b->chunk.x, b->chunk.z};
         });
-        if (const QByteArray payload = payloadOf(*it); m_written.value(it.key()) != payload) {
-            changed.insert(it.key(), payload);
-        }
+        payloads.insert(it.key(), payloadOf(*it));
     }
-    if (const QcStatus written = writeStaged(changed); !written) {
-        return written;
-    }
-    return removeRegionsWithout(regions);
-}
-
-QcStatus QcBlockEntityStorage::writeStaged(const QHash<QcChunkPos, QByteArray> &changed) const
-{
-    // All changed regions are written under a staging name first and only then renamed, so a save
-    // that breaks off while writing leaves the previous files whole (decision E-358).
-    const QDir folderDir(QDir(m_directory).filePath(QString::fromLatin1(folder)));
-    const QStringList stale = folderDir.entryList({u"*.qcb.next"_s}, QDir::Files);
-    for (const QString &fileName : stale) {
-        QFile::remove(folderDir.filePath(fileName));
-    }
-    for (auto it = changed.constBegin(); it != changed.constEnd(); ++it) {
-        if (const QcStatus written = QcSaveFile::write(regionPath(it.key()) + u".next"_s, magic, it.value(), version); !written) {
-            return written;
-        }
-    }
-    for (auto it = changed.constBegin(); it != changed.constEnd(); ++it) {
-        const QString target = regionPath(it.key());
-        std::error_code error;
-        std::filesystem::rename(std::filesystem::path(QFile::encodeName(target + u".next"_s).toStdString()),
-                                std::filesystem::path(QFile::encodeName(target).toStdString()), error);
-        if (error) {
-            return qcError(u"Cannot replace %1: %2"_s.arg(target, QString::fromStdString(error.message())));
-        }
-        m_written.insert(it.key(), it.value());
-    }
-    return {};
-}
-
-QcStatus QcBlockEntityStorage::removeRegionsWithout(const QHash<QcChunkPos, QList<const QcBlockEntityRecord *>> &regions) const
-{
-    // Every file of a region without records goes, also files this storage never read.
-    const QDir folderDir(QDir(m_directory).filePath(QString::fromLatin1(folder)));
-    const QStringList files = folderDir.entryList({u"r.*.qcb"_s}, QDir::Files);
-    for (const QString &fileName : files) {
-        const QStringList parts = fileName.split(u'.');
-        bool xOk = false;
-        bool zOk = false;
-        const QcChunkPos region{parts.value(1).toInt(&xOk), parts.value(2).toInt(&zOk)};
-        if (xOk && zOk && parts.size() == 4 && regions.contains(region)) {
-            continue;
-        }
-        if (!QFile::remove(folderDir.filePath(fileName))) {
-            return qcError(u"Cannot remove %1"_s.arg(folderDir.filePath(fileName)));
-        }
-        m_written.remove(region);
-    }
-    return {};
+    return m_files.write(payloads);
 }
 
 QcResult<QList<QcBlockEntityRecord>> QcBlockEntityStorage::read(QStringList &warnings) const
 {
-    m_written.clear();
+    const QcResult<QList<std::pair<QString, QByteArray>>> files = m_files.read();
+    if (!files) {
+        return qcError(files.error());
+    }
+
     QList<QcBlockEntityRecord> records;
-    const QDir folderDir(QDir(m_directory).filePath(QString::fromLatin1(folder)));
-    const QStringList files = folderDir.entryList({u"r.*.qcb"_s}, QDir::Files, QDir::Name);
-    for (const QString &fileName : files) {
-        if (const QcStatus read = readRegion(folderDir.filePath(fileName), records, warnings); !read) {
+    for (const auto &[path, payload] : *files) {
+        if (const QcStatus read = readRegion(path, payload, records, warnings); !read) {
+            m_files.noteDamaged(path);
             return qcError(read.error());
         }
     }
     return records;
 }
 
-QcStatus QcBlockEntityStorage::readRegion(const QString &path, QList<QcBlockEntityRecord> &records, QStringList &warnings) const
+QcStatus QcBlockEntityStorage::readRegion(const QString &path, const QByteArray &payload, QList<QcBlockEntityRecord> &records,
+                                          QStringList &warnings) const
 {
-    const QcResult<QByteArray> payload = QcSaveFile::read(path, magic, version);
-    if (!payload) {
-        return qcError(payload.error());
-    }
-
-    QDataStream stream(*payload);
+    QDataStream stream(payload);
     stream.setVersion(QcSaveFile::streamVersion);
     quint32 count = 0;
     if (!QcStreamLimits::readCount(stream, quint32(QcRegionStorage::regionSize * QcRegionStorage::regionSize), count)) {
@@ -381,7 +311,7 @@ QcStatus QcBlockEntityStorage::readRegion(const QString &path, QList<QcBlockEnti
         record.chunk = {x, z};
         region = region.value_or(QcRegionStorage::regionOf(record.chunk));
         const bool fits = std::abs(qint64(x)) <= QcWorld::maxHorizontalChunk && std::abs(qint64(z)) <= QcWorld::maxHorizontalChunk
-                          && QFileInfo(regionPath(*region)).fileName() == QFileInfo(path).fileName()
+                          && m_files.isFileOf(path, *region)
                           && QcRegionStorage::regionOf(record.chunk) == *region && !chunks.contains(record.chunk);
         if (stream.status() != QDataStream::Ok || !fits || !RecordReader(stream, stacks, record).read()) {
             return qcError(u"%1 is damaged (chunk %2)"_s.arg(path).arg(i));
@@ -393,7 +323,7 @@ QcStatus QcBlockEntityStorage::readRegion(const QString &path, QList<QcBlockEnti
         return qcError(u"%1 is damaged"_s.arg(path));
     }
     if (region) {
-        m_written.insert(*region, *payload);
+        m_files.remember(*region, payload);
     }
     return {};
 }

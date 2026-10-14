@@ -325,7 +325,7 @@ private slots:
         QcClientEntities entities;
         QcMsg::EntitySpawn spawn;
         spawn.id = 9;
-        spawn.mobType = QcMsg::EntitySpawn::armourStandType;
+        spawn.kind = QcEntityKind::ArmourStand;
         spawn.name = u"Tin"_s;
         spawn.yaw = 90.0f;
         spawn.equipment.at(QcEquipmentSlot::Chest) = {item("iron_chestplate"), 1, 4};

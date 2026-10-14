@@ -1,6 +1,8 @@
 #include "QcLineOfSight.h"
 
+#include "QcPhysics.h"
 #include "QcRaycast.h"
+#include "QcServerClient.h"
 
 #include <array>
 #include <cmath>
@@ -85,6 +87,37 @@ QcAabb blockBox(QcBlockPos pos)
 {
     const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
     return {corner, corner + QcVec3{1.0, 1.0, 1.0}};
+}
+
+namespace {
+
+bool seenFromEyes(const QcBlockAccess &world, const QcServerClient &player, const QcAabb &box, std::optional<QcBlockPos> target)
+{
+    const QcVec3 eyeOffset{0.0, QcPhysics::playerEyeHeight, 0.0};
+    if (reaches(world, player.motion.position + eyeOffset, box, target)) {
+        return true;
+    }
+    return player.previousPosition && reaches(world, *player.previousPosition + eyeOffset, box, target);
+}
+
+} // namespace
+
+bool isWithinReach(const QcServerClient &player, QcBlockPos pos)
+{
+    constexpr double tolerance = 1.0;
+    const QcVec3 eye = player.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
+    return (centre - eye).length() <= QcRaycast::playerReach + tolerance;
+}
+
+bool canSee(const QcBlockAccess &world, const QcServerClient &player, QcBlockPos pos)
+{
+    return seenFromEyes(world, player, blockBox(pos), pos);
+}
+
+bool canSee(const QcBlockAccess &world, const QcServerClient &player, const QcAabb &body)
+{
+    return seenFromEyes(world, player, body, std::nullopt);
 }
 
 } // namespace QcLineOfSight

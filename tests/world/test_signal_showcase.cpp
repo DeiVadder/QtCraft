@@ -153,11 +153,11 @@ private slots:
         QCOMPARE(chest->stacks[0].count, 5);
         QVERIFY(!m_server->blockEntities().container(origin(demo).offset(16, 1, 3)));
         const QcBlockPos standCell = origin(demo).offset(17, 1, 3);
-        const auto stand = std::ranges::find_if(m_server->stands().stands(), [&](const QcArmourStandManager::Stand &candidate) {
-            return std::abs(candidate.position.z - (standCell.z + 0.5)) < 0.01 && candidate.position.y == standCell.y;
+        const auto stand = std::ranges::find_if(m_server->stands().stands(), [&](const QcArmourStand &candidate) {
+            return std::abs(candidate.motion.position.z - (standCell.z + 0.5)) < 0.01 && candidate.motion.position.y == standCell.y;
         });
         QVERIFY(stand != m_server->stands().stands().end());
-        QVERIFY(stand->position.x > standCell.x + 1.0);
+        QVERIFY(stand->motion.position.x > standCell.x + 1.0);
         QCOMPARE(block(demo, 38, 1, 8), u"signal_lamp_lit"_s);
     }
 

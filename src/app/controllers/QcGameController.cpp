@@ -15,6 +15,7 @@
 #include "QcWorldLibrary.h"
 
 #include <QCoreApplication>
+#include <QDir>
 #include <QLoggingCategory>
 #include <QQuickWindow>
 
@@ -374,6 +375,24 @@ std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
     return shared;
 }
 
+QString QcGameController::damagedFileMessage(const QcServerPersistence::DamagedFile &damaged)
+{
+    using Part = QcServerPersistence::DamagedPart;
+    switch (damaged.part) {
+    case Part::Entities:
+        return tr("The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the creatures, "
+                  "items and armour stands saved in it.")
+            .arg(damaged.file);
+    case Part::BlockEntities:
+        return tr("The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the contents "
+                  "of the chests and machines saved in it.")
+            .arg(damaged.file);
+    case Part::None:
+        break;
+    }
+    return {};
+}
+
 bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world)
 {
     QcServerConfig config;
@@ -416,10 +435,16 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
             error = tr("It is already open in another QtCraft window or process. Close it there first.");
         } else if (m_parts.server->worldTooOld()) {
             error = tr("It was saved by an older development version of QtCraft and cannot be opened.");
+        } else if (const QString damaged = damagedFileMessage(m_parts.server->damagedFile()); !damaged.isEmpty()) {
+            error = damaged;
+            m_library->noteUnplayable(QDir(m_worldDirectory).dirName(), damaged);
         }
         m_parts.server.reset();
         setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
         return false;
+    }
+    if (!m_worldDirectory.isEmpty()) {
+        m_library->noteUnplayable(QDir(m_worldDirectory).dirName(), {});
     }
     return true;
 }

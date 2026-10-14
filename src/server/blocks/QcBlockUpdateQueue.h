@@ -13,7 +13,7 @@
 #include <deque>
 #include <optional>
 
-struct QcServerState;
+class QcServerState;
 
 // Pending neighbour updates (connections, lost support, liquid flow) of the server, in a queue of
 // player actions and a queue of commands and their cascades. Updates of positions in chunks that are

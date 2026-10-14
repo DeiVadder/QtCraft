@@ -28,7 +28,6 @@ QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcConten
     , m_regions(m_directory, m_content)
     , m_entities(m_directory, m_content)
     , m_blockEntities(m_directory, m_content)
-    , m_stands(m_directory, m_content)
     , m_players(m_directory, m_content)
 {
 }

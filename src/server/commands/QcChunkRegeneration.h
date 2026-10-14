@@ -5,7 +5,7 @@
 #include <QList>
 
 class QcBlockUpdateQueue;
-struct QcServerState;
+class QcServerState;
 
 // Repairs chunks by generating them again (decision E-246): the blocks become what the world's
 // generator (terrain, flat, void or showcase) makes of the chunk, its block entities go with the old

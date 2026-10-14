@@ -369,7 +369,8 @@ private slots:
         // Mobs and items wear nothing, whatever the server sends.
         QcMsg::EntitySpawn zombie;
         zombie.id = 8;
-        zombie.mobType = 0;
+        zombie.kind = QcEntityKind::Creature;
+        zombie.creatureType = 0;
         zombie.equipment.at(QcEquipmentSlot::Chest) = {helmet, 1, 0};
         QVERIFY(entities.spawn(zombie, &content));
         QVERIFY(entities.all().value(8).equipment.isEmpty());

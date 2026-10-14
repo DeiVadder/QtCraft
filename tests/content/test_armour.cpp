@@ -403,13 +403,13 @@ private slots:
     {
         QFETCH(QString, line);
         QFETCH(bool, valid);
-        QcArmourStandManager::Stand stand;
+        QcArmourStand stand;
         QCOMPARE(QcStandProperties::applyLine(*m_content, stand, line), valid);
     }
 
     void standPropertiesChangeTheStand()
     {
-        QcArmourStandManager::Stand stand;
+        QcArmourStand stand;
         const QcContentRegistry &content = *m_content;
         QVERIFY(QcStandProperties::applyLine(content, stand, u"equip diamond"_s));
         QCOMPARE(QcArmour::points(content, stand.equipment), 20);

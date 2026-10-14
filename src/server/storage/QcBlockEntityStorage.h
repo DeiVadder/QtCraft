@@ -2,6 +2,7 @@
 
 #include "QcBlockEntityRecord.h"
 #include "QcContentRegistry.h"
+#include "QcRegionSideFiles.h"
 #include "QcResult.h"
 
 #include <QByteArray>
@@ -16,9 +17,8 @@
 // (blockentities/r.<x>.<z>.qcb, the regions of QcRegionStorage; decision E-358). Each file holds the
 // records of the chunks of its region that have anything to keep: containers and machines with
 // their contents, saplings, what circuit components remember, scheduled ticks and positions the
-// circuits wait to look at. Items and blocks are stored by name. Only regions whose records changed
-// since the last write are written again, first all under staging names, then renamed; a region
-// without records loses its file. No folder is made for a world without block entities.
+// circuits wait to look at. Items and blocks are stored by name. The files are QcRegionSideFiles:
+// only changed regions are written, staged and then renamed.
 class QcBlockEntityStorage
 {
 public:
@@ -33,17 +33,14 @@ public:
     // first time); removes the files of regions that have no records any more.
     QcStatus write(const QList<QcBlockEntityRecord> &records) const;
 
+    // The file the last read() failed on, relative to the world directory; empty after a good read.
+    QString damagedFile() const { return m_files.damagedFile(); }
+
 private:
-    QString regionPath(QcChunkPos region) const;
-    // Writes the changed regions under staging names, then renames them all.
-    QcStatus writeStaged(const QHash<QcChunkPos, QByteArray> &changed) const;
-    QcStatus removeRegionsWithout(const QHash<QcChunkPos, QList<const QcBlockEntityRecord *>> &regions) const;
     QByteArray payloadOf(const QList<const QcBlockEntityRecord *> &records) const;
     void writeRecord(QDataStream &stream, const QcBlockEntityRecord &record) const;
-    QcStatus readRegion(const QString &path, QList<QcBlockEntityRecord> &records, QStringList &warnings) const;
+    QcStatus readRegion(const QString &path, const QByteArray &payload, QList<QcBlockEntityRecord> &records, QStringList &warnings) const;
 
-    QString m_directory;
     std::shared_ptr<const QcContentRegistry> m_content;
-    // The payload of every region file as last read or written.
-    mutable QHash<QcChunkPos, QByteArray> m_written;
+    QcRegionSideFiles m_files;
 };

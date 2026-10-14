@@ -6,6 +6,7 @@
 #include "QcTestUtil.h"
 #include "QcWorldStorage.h"
 
+#include <QDeadlineTimer>
 #include <QSignalSpy>
 #include <QTcpSocket>
 #include <QTemporaryDir>
@@ -66,18 +67,24 @@ private:
             return nullptr;
         }
         client->hello(name);
-        for (int i = 0; i < 100 && client->entityId == 0 && client->disconnectReason.isEmpty(); ++i) {
+        // The login (key derivation, TCP round trips) takes real time, more under load: wait for it
+        // by the clock, not by a number of ticks.
+        const QDeadlineTimer deadline(timeoutMs);
+        while (client->entityId == 0 && client->disconnectReason.isEmpty() && !deadline.hasExpired()) {
             QTest::qWait(5);
             ticks(1);
         }
         return client;
     }
 
-    // Ticks until `done` holds or the time is up.
+    // Ticks once per wait of about 5 ms until `done` holds or the real time is up: the larger of
+    // timeoutMs and maxTicks × 10 ms. The number of ticks is not capped: messages over TCP take real
+    // time, more under load, so a fixed number of ticks may end too early.
     template<typename Done>
     bool tickUntil(Done done, int maxTicks = 400)
     {
-        for (int i = 0; i < maxTicks; ++i) {
+        const QDeadlineTimer deadline(std::max(timeoutMs, maxTicks * 10));
+        while (!deadline.hasExpired()) {
             if (done()) {
                 return true;
             }
@@ -109,7 +116,7 @@ private slots:
         QVERIFY(tickUntil([&] {
             return std::ranges::all_of(players, [&](const std::unique_ptr<RawClient> &viewer) {
                 return viewer->playerList.size() == 4 && std::ranges::all_of(players, [&](const std::unique_ptr<RawClient> &other) {
-                    return other == viewer || viewer->entities.value(other->entityId, 0) == QcMsg::EntitySpawn::playerType;
+                    return other == viewer || (viewer->entities.contains(other->entityId) && viewer->entities.value(other->entityId) == QcEntityKind::Player);
                 });
             });
         }));
@@ -274,8 +281,9 @@ private slots:
         QVERIFY(client);
         // A frame beyond the server's incoming limit ends the connection before any decoding.
         client->connection.send(QcMsg::ChatInput{QString(200'000, u'x')});
-        QVERIFY(tickUntil([&] { return !client->connection.isOpen(); }));
-        QCOMPARE(m_server->clientCount(), 0);
+        // The server drops the client in the tick after its side of the connection closed, which may
+        // come after the client saw the close.
+        QVERIFY(tickUntil([&] { return !client->connection.isOpen() && m_server->clientCount() == 0; }));
     }
 
     void theHostListensBesideItsLocalPlayer()
@@ -301,8 +309,10 @@ private slots:
         QVERIFY(remote);
         remote->hello(u"Guest"_s);
         QTRY_VERIFY_WITH_TIMEOUT(remote->entityId != 0, timeoutMs);
-        QTRY_COMPARE_WITH_TIMEOUT(local.entities.value(remote->entityId, 0), QcMsg::EntitySpawn::playerType, timeoutMs);
-        QTRY_COMPARE_WITH_TIMEOUT(remote->entities.value(local.entityId, 0), QcMsg::EntitySpawn::playerType, timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(local.entities.contains(remote->entityId) && local.entities.value(remote->entityId) == QcEntityKind::Player,
+                                 timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(remote->entities.contains(local.entityId) && remote->entities.value(local.entityId) == QcEntityKind::Player,
+                                 timeoutMs);
         QVERIFY(host.runConsoleCommand(u"list"_s).join(u' ').contains(u"2 players online"_s));
 
         // Stopping to host tells the remote player why and saves him; the host plays on.

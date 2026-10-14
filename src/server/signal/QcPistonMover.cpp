@@ -50,7 +50,7 @@ qsizetype QcPistonMover::apply(const QcPistonPlan &plan)
 QcBlockId QcPistonMover::headState(const QcPistonPlan &plan) const
 {
     const QcContentRegistry &content = m_table.content();
-    const std::optional<QcBlockId> base = m_state.world.blockAt(plan.base);
+    const std::optional<QcBlockId> base = m_state.world().blockAt(plan.base);
     const std::optional<QcBlockId> head = base ? content.blockId(content.block(*base).signal.head) : std::nullopt;
     if (!head) {
         return qcAirBlockId;
@@ -69,18 +69,18 @@ void QcPistonMover::extend(const QcPistonPlan &plan)
     // Read every block first, then move from the far end, so each lands in a cell already emptied.
     QList<QcBlockId> blocks;
     for (const QcBlockPos &cell : plan.moved) {
-        blocks.append(m_state.world.blockAt(cell).value_or(qcAirBlockId));
+        blocks.append(m_state.world().blockAt(cell).value_or(qcAirBlockId));
     }
     for (qsizetype i = plan.moved.size() - 1; i >= 0; --i) {
         moveBlock(plan.moved[i], qcNeighbour(plan.moved[i], plan.facing), blocks[i]);
     }
 
-    const std::optional<QcBlockId> base = m_state.world.blockAt(plan.base);
+    const std::optional<QcBlockId> base = m_state.world().blockAt(plan.base);
     m_blocks.setAndBroadcast(plan.head(), headState(plan));
     if (base) {
         m_blocks.setAndBroadcast(plan.base, m_table.withFlag(*base, u"extended"_s, true));
     }
-    m_state.blockEntities().memoryAt(plan.base).extendingSince = m_state.tickCount;
+    m_state.blockEntities().memoryAt(plan.base).extendingSince = m_state.clock().tick();
 
     QList<QcBlockPos> occupied{plan.head()};
     for (const QcBlockPos &cell : plan.moved) {
@@ -94,17 +94,17 @@ void QcPistonMover::retract(const QcPistonPlan &plan)
 {
     m_bodiesLookedAt = 0;
     const QcBlockPos head = plan.head();
-    const std::optional<QcBlockId> headBlock = m_state.world.blockAt(head);
+    const std::optional<QcBlockId> headBlock = m_state.world().blockAt(head);
     if (!plan.moved.isEmpty()) {
         const QcBlockPos pulled = plan.moved.constFirst();
-        const QcBlockId block = m_state.world.blockAt(pulled).value_or(qcAirBlockId);
+        const QcBlockId block = m_state.world().blockAt(pulled).value_or(qcAirBlockId);
         moveBlock(pulled, head, block);
         m_blocks.setAndBroadcast(pulled, qcAirBlockId);
     } else if (headBlock && m_table.at(*headBlock).kind == QcSignalKind::PistonHead) {
         m_blocks.setAndBroadcast(head, qcAirBlockId);
     }
 
-    if (const std::optional<QcBlockId> base = m_state.world.blockAt(plan.base)) {
+    if (const std::optional<QcBlockId> base = m_state.world().blockAt(plan.base)) {
         m_blocks.setAndBroadcast(plan.base, m_table.withFlag(*base, u"extended"_s, false));
     }
     if (m_state.blockEntities().memory(plan.base)) {
@@ -116,10 +116,10 @@ void QcPistonMover::retract(const QcPistonPlan &plan)
 void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
 {
     // Screens open on the block close: its cell will hold another block (decision E-337).
-    for (const auto &client : m_state.clients) {
-        if (client->machine == from) {
-            client->machine.reset();
-            client->sentMachine.reset();
+    for (const auto &client : m_state.clients()) {
+        if (client->screen.open == from) {
+            client->screen.open.reset();
+            client->screen.sent.reset();
             client->connection->send(QcMsg::CloseMachine{});
         }
     }
@@ -127,12 +127,18 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
     // Everything of the cell first (contents, cooldown, timers, memory, scheduled tick: a dispenser
     // waiting to fire fires where it is now), so setting the block at `to` keeps it.
     m_state.blockEntities().relocate(from, to);
-    m_state.hoppers.wake(to);
+    m_state.hoppers().wake(to);
     m_blocks.setQuietly(to, block);
 
     // The clients see the source empty at once and the block sliding into its new cell.
     m_blocks.sendBlock(from, qcAirBlockId);
-    const bool shown = m_state.movingBlocks.add({m_state.newEntityId(), block, from, to, m_state.tickCount});
+    QcMovingBlock moving;
+    moving.id = m_state.entities().newId();
+    moving.block = block;
+    moving.from = from;
+    moving.to = to;
+    moving.start = m_state.clock().tick();
+    const bool shown = m_state.entities().movingBlocks().add(moving);
     if (!shown) {
         m_blocks.sendBlock(to, block);
     }
@@ -170,26 +176,13 @@ void QcPistonMover::notePush(quint32 body, const QcAabb &box, const QList<QcBloc
 
 void QcPistonMover::pushBodies(const QList<QcBlockPos> &cells, QcBlockFace towards)
 {
-    m_bodiesLookedAt = qsizetype(m_state.clients.size()) + m_state.mobs.mobs().size() + m_state.items.items().size()
-                       + m_state.stands.stands().size();
-    for (const auto &client : m_state.clients) {
-        if (client->state == QcServerClient::State::Playing && !client->dead) {
-            notePush(client->entityId, QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight), cells, towards);
+    m_bodiesLookedAt = 0;
+    m_state.entities().forEachBody([&](const QcEntity &body) {
+        ++m_bodiesLookedAt;
+        if (const std::optional<QcAabb> box = m_state.entities().boxOf(body)) {
+            notePush(body.id, *box, cells, towards);
         }
-    }
-
-    const QList<QcMobDefinition> &definitions = m_state.content->mobs();
-    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
-        if (mob.type >= 0 && mob.type < definitions.size()) {
-            notePush(mob.id, QcPhysics::boxAt(mob.motion.position, definitions[mob.type].width, definitions[mob.type].height), cells, towards);
-        }
-    }
-    for (const QcItemEntityManager::Item &item : m_state.items.items()) {
-        notePush(item.id, QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize), cells, towards);
-    }
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
-        notePush(stand.id, QcArmourStandManager::bodyOf(stand), cells, towards);
-    }
+    });
 }
 
 QcVec3 QcPistonMover::takePush(quint32 body)
@@ -211,7 +204,7 @@ QcVec3 QcPistonMover::takePush(quint32 body)
 QcVec3 QcPistonMover::moveBody(const QcAabb &box, const QcVec3 &push) const
 {
     // Along the push, stopped by what is solid in the world after the move.
-    const QcVec3 moved = QcPhysics::moveBox(box, push, m_state.world).applied;
+    const QcVec3 moved = QcPhysics::moveBox(box, push, m_state.world()).applied;
     const QcAabb after = box.moved(moved);
     if (!overlapsSolid(after)) {
         return moved;
@@ -226,7 +219,7 @@ QcVec3 QcPistonMover::moveBody(const QcAabb &box, const QcVec3 &push) const
             return moved + step;
         }
     }
-    // Nowhere to go: it stays and suffocates (QcServerCombat::applySuffocation).
+    // Nowhere to go: it stays and suffocates (QcEnvironmentDamage::applySuffocation).
     return moved;
 }
 
@@ -257,7 +250,7 @@ QList<QcVec3> QcPistonMover::escapes(const QcAabb &box, const QcVec3 &push)
 bool QcPistonMover::overlapsSolid(const QcAabb &box) const
 {
     // Cells not loaded block: a body is never pushed into them.
-    return QcBodyFit::overlapsBlocks(m_state.world, box, QcBodyFit::Unloaded::Blocked);
+    return QcBodyFit::overlapsBlocks(m_state.world(), box, QcBodyFit::Unloaded::Blocked);
 }
 
 void QcPistonMover::applyPushes()
@@ -266,42 +259,15 @@ void QcPistonMover::applyPushes()
         return;
     }
 
-    for (const auto &client : m_state.clients) {
-        const QcVec3 push = takePush(client->entityId);
-        if (push.length() > 0.0) {
-            const QcAabb box = QcPhysics::boxAt(client->motion.position, QcPhysics::playerWidth, QcPhysics::playerHeight);
-            client->motion.position += moveBody(box, push);
-            client->stateDirty = true;
+    // Each body moves on its own against the world after the moves, so the order does not matter.
+    m_state.entities().forEachBody([this](QcEntity &body) {
+        const QcVec3 push = takePush(body.id);
+        if (push.length() <= 0.0) {
+            return;
         }
-    }
-
-    const QList<QcMobDefinition> &definitions = m_state.content->mobs();
-    for (QcMobManager::Mob &mob : m_state.mobs.editableMobs()) {
-        const QcVec3 push = takePush(mob.id);
-        if (push.length() > 0.0 && mob.type >= 0 && mob.type < definitions.size()) {
-            mob.motion.position += moveBody(QcPhysics::boxAt(mob.motion.position, definitions[mob.type].width, definitions[mob.type].height), push);
+        if (const std::optional<QcAabb> box = m_state.entities().boxOf(body)) {
+            m_state.entities().displace(body, moveBody(*box, push));
         }
-    }
-    applyPushesToThings();
+    });
     m_pushes.clear();
-}
-
-void QcPistonMover::applyPushesToThings()
-{
-    for (QcItemEntityManager::Item &item : m_state.items.editableItems()) {
-        const QcVec3 push = takePush(item.id);
-        if (push.length() > 0.0) {
-            item.motion.position += moveBody(QcPhysics::boxAt(item.motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize), push);
-            item.resting = false;
-        }
-    }
-
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
-        const QcVec3 push = takePush(stand.id);
-        QcArmourStandManager::Stand *moved = push.length() > 0.0 ? m_state.stands.find(stand.id) : nullptr;
-        if (moved) {
-            moved->position += moveBody(QcArmourStandManager::bodyOf(stand), push);
-            m_state.markStale(stand.id);
-        }
-    }
 }

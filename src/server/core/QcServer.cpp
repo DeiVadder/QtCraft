@@ -3,6 +3,7 @@
 #include "QcChatText.h"
 #include "QcConnection.h"
 #include "QcDayCycle.h"
+#include "QcLineOfSight.h"
 #include "QcPhysics.h"
 #include "QcProfileValidation.h"
 #include "QcProtocol.h"
@@ -32,26 +33,32 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_sounds(m_state, m_ticks)
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
-    , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks)
+    , m_fallingBlocks(m_state, m_sounds, m_blockUpdates, m_blocks)
+    , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks, m_fallingBlocks)
     , m_circuits(m_state, m_sounds, m_blocks)
     , m_screens(m_state)
     , m_machines(m_state, m_sounds)
     , m_inventory(m_state, m_screens, m_sounds)
-    , m_gameModes(m_state, m_inventory)
+    , m_crafting(m_state, m_inventory)
+    , m_health(m_state, m_sounds, m_inventory)
+    , m_gameModes(m_state, m_inventory, m_crafting)
     , m_stands(m_state, m_sounds, m_inventory)
-    , m_farming(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_screens, m_stands, m_farming, m_combat, m_circuits})
+    , m_animals(m_state, m_sounds, m_inventory)
+    , m_plants(m_state, m_sounds, m_blocks, m_inventory)
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_animals, m_plants, m_health, m_circuits})
     , m_items(m_state, m_sounds, m_inventory)
-    , m_plants(m_state, m_sounds, m_blocks)
     , m_combat(m_state, m_sounds, m_inventory)
+    , m_creatures(m_state, m_sounds, m_health)
+    , m_environment(m_state, m_sounds, m_health)
     , m_entitySync(m_state)
     , m_chunkStreaming(m_state)
     , m_persistence(m_state, m_blocks, m_blockUpdates)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
-                           {m_inventory, m_combat, m_stands, m_gameModes, [this](double seconds) { setWorldTime(seconds); }},
+                           {m_inventory, m_health, m_stands, m_gameModes, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
                            {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
-    , m_login(m_state, [this](Client &client) { join(client); })
+    , m_join(m_state, {m_persistence, m_inventory, m_health, m_gameModes, m_chunkStreaming, [this](Client &client) { sendTime(client); }})
+    , m_login(m_state, [this](Client &client) { m_join.join(client); })
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_phases, m_ticks)
 {
@@ -81,13 +88,13 @@ QcStatus QcServer::openWorld()
     }
 
     QStringList accessWarnings;
-    m_state.access.open(m_state.config.worldDirectory, m_state.config.operators, accessWarnings);
-    m_state.identities.open(m_state.config.worldDirectory, accessWarnings);
+    m_state.access().open(m_state.config().worldDirectory, m_state.config().operators, accessWarnings);
+    m_state.identities().open(m_state.config().worldDirectory, accessWarnings);
     m_persistence.noteWarnings(accessWarnings);
 
     // A new world gets what its generator sets up once (decision E-221).
-    if (!m_state.info.setupDone) {
-        QcServerSetup::apply(m_state, m_blockUpdates, m_state.world.generator().setup());
+    if (!m_state.info().setupDone) {
+        QcServerSetup::apply(m_state, m_blockUpdates, m_state.world().generator().setup());
     }
     return {};
 }
@@ -101,16 +108,16 @@ QcStatus QcServer::save()
 void QcServer::flushIdentitiesWhenDue()
 {
     // New identities are written at most once a second, not with every login (decision E-273).
-    if (m_state.identities.hasUnsavedChanges() && m_state.playerTimeNs - m_lastIdentityFlushNs >= identityFlushIntervalNs) {
+    if (m_state.identities().hasUnsavedChanges() && m_state.clock().playerTimeNs() - m_lastIdentityFlushNs >= identityFlushIntervalNs) {
         flushIdentities();
     }
 }
 
 void QcServer::flushIdentities()
 {
-    m_lastIdentityFlushNs = m_state.playerTimeNs;
+    m_lastIdentityFlushNs = m_state.clock().playerTimeNs();
     // Failures are logged by the store; the registrations count until the restart.
-    [[maybe_unused]] const QcStatus flushed = m_state.identities.flush();
+    [[maybe_unused]] const QcStatus flushed = m_state.identities().flush();
 }
 
 QcStatus QcServer::stop()
@@ -118,10 +125,10 @@ QcStatus QcServer::stop()
     m_tickTimer->stop();
 
     // Open crafting grids are emptied like on a disconnect, so overflow lands in the saved world.
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         // Also clients that already disconnected: removeClosedClients() will not run any more.
         if (client->joined) {
-            m_inventory.returnCraftingGrid(*client);
+            m_crafting.returnCraftingGrid(*client);
         }
     }
 
@@ -132,7 +139,7 @@ QcStatus QcServer::stop()
     // A backup being copied finishes first; it reads only its snapshot, not the world.
     m_commands.waitForBackups();
 
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The server stopped")));
         client->connection->close();
     }
@@ -143,14 +150,14 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
 {
     auto client = std::make_unique<Client>();
     client->local = origin == ClientOrigin::Local;
-    client->address = transport->peerAddress();
-    client->connected.start();
+    client->login.address = transport->peerAddress();
+    client->login.connected.start();
     Client *raw = client.get();
     client->connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Client,
                                                         [this, raw](QcMessage &&message) { handleMessage(*raw, std::move(message)); });
     connect(client->connection.get(), &QcConnection::closed, this, [raw] { raw->state = Client::State::Closed; });
 
-    m_state.clients.push_back(std::move(client));
+    m_state.clientList().push_back(std::move(client));
     emit clientCountChanged(clientCount());
 }
 
@@ -181,7 +188,7 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
                              || std::holds_alternative<QcMsg::FinishMining>(message)
                              || std::holds_alternative<QcMsg::UseItem>(message) || std::holds_alternative<QcMsg::UseEntity>(message);
     if (client.dead && worldAction) {
-        client.miningPos.reset();
+        client.mining.pos.reset();
         return;
     }
 
@@ -196,7 +203,7 @@ bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
     // The local player (in-process host, the operator) is not limited in chat: command bursts of
     // scripts and benchmark scenarios must arrive complete. All other kinds stay limited for him.
     const bool exempt = kind && client.local && *kind == QcRateLimiter::Kind::Chat;
-    if (!kind || exempt || client.rateLimiter.allow(*kind, m_state.playerTimeNs)) {
+    if (!kind || exempt || client.input.rateLimiter.allow(*kind, m_state.clock().playerTimeNs())) {
         return true;
     }
 
@@ -205,7 +212,7 @@ bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
     }
 
     // Dropped without a kick; the log names the spammer at most once a second per kind.
-    if (const quint64 dropped = client.rateLimiter.takeDropReport(*kind, m_state.playerTimeNs); dropped > 0) {
+    if (const quint64 dropped = client.input.rateLimiter.takeDropReport(*kind, m_state.clock().playerTimeNs()); dropped > 0) {
         const QLatin1StringView kindName(QcRateLimiter::name(*kind));
         qCWarning(lcServer).noquote() << u"Rate limit: dropped %1 %2 messages from %3"_s.arg(dropped).arg(kindName, client.name);
     }
@@ -220,22 +227,22 @@ void QcServer::resendDroppedMiningTarget(Client &client, const QcMessage &messag
     } else if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
         pos = finish->pos;
     }
-    if (!pos || !m_state.isWithinReach(client, *pos)) {
+    if (!pos || !QcLineOfSight::isWithinReach(client, *pos)) {
         return;
     }
 
     // A flood must not turn into a flood of answers: each position once per tick, and only as many
     // positions as the real client mines in one tick.
-    if (client.miningResendTick != m_state.tickCount) {
-        client.miningResendTick = m_state.tickCount;
-        client.miningResends.clear();
+    if (client.input.miningResendTick != m_state.clock().tick()) {
+        client.input.miningResendTick = m_state.clock().tick();
+        client.input.miningResends.clear();
     }
-    if (client.miningResends.contains(*pos) || client.miningResends.size() >= Client::maxMiningResendsPerTick) {
+    if (client.input.miningResends.contains(*pos) || client.input.miningResends.size() >= Client::maxMiningResendsPerTick) {
         return;
     }
 
-    if (const std::optional<QcBlockId> block = m_state.world.blockAt(*pos)) {
-        client.miningResends.append(*pos);
+    if (const std::optional<QcBlockId> block = m_state.world().blockAt(*pos)) {
+        client.input.miningResends.append(*pos);
         client.connection->send(QcMsg::BlockUpdate{*pos, *block});
     }
 }
@@ -245,11 +252,11 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     if (const auto *input = std::get_if<QcMsg::PlayerInput>(&message)) {
         handleInput(client, *input);
     } else if (const auto *start = std::get_if<QcMsg::StartMining>(&message)) {
-        client.miningPos = start->pos;
-        client.miningStartTick = m_state.tickCount;
-        client.miningStartNs = m_state.playerTimeNs;
+        client.mining.pos = start->pos;
+        client.mining.startTick = m_state.clock().tick();
+        client.mining.startNs = m_state.clock().playerTimeNs();
     } else if (std::holds_alternative<QcMsg::CancelMining>(message)) {
-        client.miningPos.reset();
+        client.mining.pos.reset();
     } else if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
         m_interaction.finishMining(client, finish->pos);
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
@@ -263,7 +270,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
-        m_combat.respawn(client);
+        m_health.respawn(client);
     } else if (const auto *chat = std::get_if<QcMsg::ChatInput>(&message)) {
         m_commands.chat(client, chat->text.left(256));
     } else if (std::holds_alternative<QcMsg::Disconnect>(message)) {
@@ -281,22 +288,26 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
 {
     if (const auto *select = std::get_if<QcMsg::SelectHotbarSlot>(&message)) {
         client.inventory.setSelectedHotbarSlot(select->slot);
-        client.miningPos.reset();
+        client.mining.pos.reset();
         m_inventory.send(client);
     } else if (const auto *move = std::get_if<QcMsg::MoveInventoryItem>(&message)) {
-        client.miningPos.reset();
+        client.mining.pos.reset();
         m_inventory.moveItem(client, *move);
     } else if (const auto *quick = std::get_if<QcMsg::QuickMoveItem>(&message)) {
-        client.miningPos.reset();
-        m_inventory.quickMove(client, *quick);
+        client.mining.pos.reset();
+        if (quick->slot == QcMsg::QuickMoveItem::craftingResultSlot) {
+            m_crafting.craftAll(client);
+        } else {
+            m_inventory.quickMove(client, *quick);
+        }
     } else if (std::holds_alternative<QcMsg::TakeCraftingResult>(message)) {
-        m_inventory.takeCraftingResult(client);
+        m_crafting.takeCraftingResult(client);
     } else if (const auto *craft = std::get_if<QcMsg::CraftRecipe>(&message)) {
-        m_inventory.craftRecipe(client, *craft);
+        m_crafting.craftRecipe(client, *craft);
     } else if (std::holds_alternative<QcMsg::CloseCrafting>(message)) {
-        m_inventory.closeCrafting(client);
+        m_crafting.closeCrafting(client);
     } else if (std::holds_alternative<QcMsg::ConsumeItem>(message)) {
-        m_combat.consume(client);
+        m_health.consume(client);
     } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
         m_screens.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
@@ -328,52 +339,31 @@ void QcServer::handleLoginMessage(Client &client, const QcMessage &message)
     }
 }
 
-void QcServer::join(Client &client)
-{
-    if (restorePlayer(client)) {
-        return;
-    }
-
-    client.state = Client::State::Playing;
-    client.joined = true;
-    client.motion.position = m_state.spawnPosition();
-    client.fallPeak = client.motion.position.y;
-    client.gameMode = m_gameModes.defaultMode();
-    QcServerGameModes::applyRules(client);
-    client.stateDirty = true;
-    m_state.playerListDirty = true;
-
-    qCInfo(lcServer) << "Player" << client.name << "joined as entity" << client.entityId;
-    sendWelcome(client, false);
-    m_chunkStreaming.stream(client);
-}
-
 void QcServer::sendPlayerList()
 {
     QcMsg::PlayerList list;
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
-            list.players.append({client->entityId, client->name, m_state.permissionOf(*client) == QcPermission::Operator});
+            list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator});
         }
     }
 
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
             client->connection->send(list);
         }
     }
-    m_state.playerListDirty = false;
 }
 
 void QcServer::setLoginSettings(const QcLoginSettings &login)
 {
-    m_state.config.apply(login);
+    m_state.config().apply(login);
     m_login.forgetPasswordKey();
 }
 
 void QcServer::disconnectRemoteClients()
 {
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (!client->local && client->state != Client::State::Closed) {
             client->connection->send(QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "The host stopped sharing the world")));
             client->connection->close();
@@ -386,108 +376,20 @@ void QcServer::runConsoleCommand(const QString &line, const QcCommandSource::Out
     m_commands.console(line, output);
 }
 
-bool QcServer::restorePlayer(Client &client)
-{
-    if (!m_persistence.hasStorage()) {
-        return false;
-    }
-
-    QStringList warnings;
-    const QcResult<std::optional<QcPlayerData>> stored = m_persistence.readPlayer(client.name, warnings);
-    for (const QString &warning : std::as_const(warnings)) {
-        qCWarning(lcServer) << warning;
-    }
-
-    if (!stored) {
-        QcServerLogin::refuse(client, QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Cannot load player data: %1"), {stored.error()}));
-        return true;
-    }
-
-    if (!*stored) {
-        return false;
-    }
-
-    QcServerPersistence::restorePlayer(client, **stored);
-
-    // Who left while dead comes back to the death screen and respawns from there.
-    client.dead = client.health <= 0.0;
-    client.state = Client::State::Playing;
-    client.joined = true;
-    client.stateDirty = true;
-    m_state.playerListDirty = true;
-
-    qCInfo(lcServer) << "Player" << client.name << "rejoined as entity" << client.entityId;
-    sendWelcome(client, true);
-    m_state.world.loadChunk(QcChunkStreaming::chunkOf(client.motion.position));
-    m_chunkStreaming.stream(client);
-
-    return true;
-}
-
-void QcServer::sendWelcome(Client &client, bool rejoined)
-{
-    client.connection->send(QcMsg::Welcome{QcProtocol::version, client.entityId, m_state.config.worldName, m_state.config.seed,
-                                           rejoined ? client.yaw : 0.0f, rejoined ? client.pitch : 0.0f, rejoined,
-                                           std::clamp(client.viewDistance, 0, QcMsg::Welcome::maxViewDistance)});
-    client.connection->send(QcMsg::ContentSync{m_state.content});
-    QcServerGameModes::send(client);
-    m_inventory.send(client);
-    m_combat.sendHealth(client);
-    m_combat.sendFood(client);
-    sendTime(client);
-    sendOpenWarnings(client);
-    sendAccessWarning(client);
-}
-
-void QcServer::sendAccessWarning(Client &client)
-{
-    // Operators (the host among them) should repair the lists of a damaged access.json (E-244).
-    if (!m_state.access.wasDamaged() || m_state.permissionOf(client) == QcPermission::Player) {
-        return;
-    }
-
-    if (m_state.access.damagedCopy().isEmpty()) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP(
-            "QcServerMessages", "access.json is damaged and could not be copied aside: operators, bans and the whitelist start empty "
-                                "with the whitelist on, and changes are not saved until the file is repaired")));
-    } else {
-        client.connection->send(QcChatText::message(
-            QT_TRANSLATE_NOOP("QcServerMessages", "access.json was damaged: operators, bans and the whitelist start empty with the "
-                                                  "whitelist on; the damaged file was kept as %1"),
-            {m_state.access.damagedCopy()}));
-    }
-}
-
-void QcServer::sendOpenWarnings(Client &client)
-{
-    // The player should know why blocks or items of a removed mod are gone.
-    constexpr qsizetype shown = 5;
-    const QStringList first = m_persistence.openWarnings().first(std::min(shown, m_persistence.openWarnings().size()));
-
-    for (const QString &warning : first) {
-        client.connection->send(QcChatText::plain(warning));
-    }
-
-    if (m_persistence.openWarnings().size() > shown) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "... and %1 more warnings in the log"),
-            {QString::number(m_persistence.openWarnings().size() - shown)}));
-    }
-}
-
 void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
 {
-    if (client.inputBudget < 1.0) {
+    if (client.input.budget < 1.0) {
         return;
     }
 
     if (client.dead) {
         // Acknowledge without moving so the client's queue of predicted inputs drains.
-        client.lastInputSequence = message.input.sequence;
+        client.input.lastSequence = message.input.sequence;
         client.stateDirty = true;
         return;
     }
 
-    client.inputBudget -= 1.0;
+    client.input.budget -= 1.0;
 
     // The decoder already rejects non-finite values; ranges are enforced here.
     QcPlayerInput input = message.input;
@@ -500,8 +402,8 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
     client.previousPosition = previous;
-    QcPhysics::stepPlayer(client.motion, input, m_state.world, QcPhysics::tickDuration, client.rules().mayFly);
-    m_combat.updateHealth(client, wasOnGround, wasInWater, previous.y);
+    QcPhysics::stepPlayer(client.motion, input, m_state.world(), QcPhysics::tickDuration, client.rules().mayFly);
+    m_health.afterMove(client, wasOnGround, wasInWater, previous.y);
 
     client.yaw = input.yaw;
     client.pitch = input.pitch;
@@ -514,7 +416,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     const double distance = std::hypot(client.motion.position.x - previous.x, client.motion.position.z - previous.z);
     client.hunger.exhaust(QcHunger::movementExhaustion(distance, client.sprinting, client.motion.inWater, jumped));
 
-    client.lastInputSequence = input.sequence;
+    client.input.lastSequence = input.sequence;
     client.stateDirty = true;
 }
 
@@ -553,28 +455,29 @@ void QcServer::tick()
     // Each lap gives the time since the previous one to its phase (decision E-225).
     using Phase = QcTickPhase;
     m_phases.beginTick();
-    ++m_state.tickCount;
-    m_state.lastTickNs = m_ticks.tickRealNs();
-    m_state.playerTimeNs += m_state.lastTickNs;
+    m_state.advanceClock(m_ticks.tickRealNs());
     // A frozen world only ticks for the players (decision E-249).
     const bool simulating = m_tickControl.simulateNext();
-    if (simulating && m_state.info.daylightCycle) {
-        m_state.info.worldTime += QcPhysics::tickDuration;
+    if (simulating && m_state.info().daylightCycle) {
+        m_state.info().worldTime += QcPhysics::tickDuration;
     }
-    m_state.mobs.setNaturalSpawning(m_state.info.mobSpawning);
+    m_state.entities().creatures().setNaturalSpawning(m_state.info().mobSpawning);
 
     m_login.expire();
     flushIdentitiesWhenDue();
     removeClosedClients();
     m_commands.pollBackups();
-    if (m_state.playerListDirty) {
+    if (m_state.takePlayerListChanged()) {
         sendPlayerList();
     }
     m_phases.lap(Phase::Players);
     autosave();
     m_phases.lap(Phase::Saving);
-    m_state.world.collectGeneratedChunks();
+    m_state.world().collectGeneratedChunks();
     m_blockUpdates.handleLoadedChunks();
+    // Entities in chunks that are not loaded rest for this tick, every kind by the same rule; also in
+    // a frozen world, whose clients still get what comes into view (E-249).
+    m_state.entities().settle([this](QcChunkPos chunk) { return m_state.world().chunk(chunk) != nullptr; });
     m_phases.lap(Phase::ChunkLoading);
 
     if (simulating) {
@@ -586,18 +489,18 @@ void QcServer::tick()
     }
 
     const ClientSync sync = clientSyncDue();
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
             updateClient(*client, sync);
         }
     }
 
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         client->swung = false;
         client->hurtThisTick = false;
     }
 
-    m_state.died.clear();
+    m_state.entities().forgetDeaths();
     m_phases.lap(Phase::ClientSync);
 
     // Drop chunks no player needs any more.
@@ -618,16 +521,19 @@ void QcServer::simulate()
     m_phases.lap(Phase::Signal);
     m_blockSimulation.processLiquids();
     m_phases.lap(Phase::Liquids);
-    m_combat.tick();
-    m_combat.applyContactDamage();
-    m_combat.applySuffocation();
+    m_health.tick();
+    m_interaction.swingWhileMining();
+    m_stands.tick();
+    m_creatures.tick();
+    m_environment.applyContactDamage();
+    m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_plants.plantItems(m_items.tick());
     m_phases.lap(Phase::Items);
     m_plants.tick();
-    m_farming.tick();
+    m_animals.tick();
     m_phases.lap(Phase::Plants);
-    m_blockSimulation.tickFallingBlocks();
+    m_fallingBlocks.tick();
     m_phases.lap(Phase::FallingBlocks);
     m_machines.tick();
     m_screens.update();
@@ -637,16 +543,16 @@ void QcServer::simulate()
 void QcServer::autosave()
 {
     // In the players' time: neither a high tick rate nor a sprint saves more often (decision E-249).
-    const qint64 intervalNs = qint64(m_state.config.autosaveSeconds) * 1'000'000'000;
-    if (!m_persistence.hasStorage() || intervalNs <= 0 || m_state.playerTimeNs - m_lastAutosaveNs < intervalNs) {
+    const qint64 intervalNs = qint64(m_state.config().autosaveSeconds) * 1'000'000'000;
+    if (!m_persistence.hasStorage() || intervalNs <= 0 || m_state.clock().playerTimeNs() - m_lastAutosaveNs < intervalNs) {
         return;
     }
 
-    m_lastAutosaveNs = m_state.playerTimeNs;
+    m_lastAutosaveNs = m_state.clock().playerTimeNs();
     ++m_autosaves;
     if (const QcStatus saved = save(); !saved) {
         qCWarning(lcServer) << "Autosave failed:" << saved.error();
-        for (const auto &client : m_state.clients) {
+        for (const auto &client : m_state.clients()) {
             client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"),
                 {saved.error()}));
         }
@@ -658,14 +564,14 @@ QcServer::ClientSync QcServer::clientSyncDue()
     // During a sprint the clients hear of the world at most once per interval of real time, not
     // with every tick (decision E-249); the time of day goes along then, at its sprint speed.
     const bool sprinting = m_ticks.sprinting();
-    const bool world = !sprinting || m_state.playerTimeNs - m_lastSprintSyncNs >= QcTickScheduler::intervalNs;
+    const bool world = !sprinting || m_state.clock().playerTimeNs() - m_lastSprintSyncNs >= QcTickScheduler::intervalNs;
     if (sprinting && world) {
-        m_lastSprintSyncNs = m_state.playerTimeNs;
+        m_lastSprintSyncNs = m_state.clock().playerTimeNs();
     }
 
     // Otherwise the time goes out once per second of the players' time.
     constexpr qint64 secondNs = 1'000'000'000;
-    const bool second = m_state.playerTimeNs / secondNs != (m_state.playerTimeNs - m_state.lastTickNs) / secondNs;
+    const bool second = m_state.clock().playerTimeNs() / secondNs != (m_state.clock().playerTimeNs() - m_state.clock().lastTickNs()) / secondNs;
     return {world, sprinting ? world : second};
 }
 
@@ -673,9 +579,9 @@ void QcServer::refillInputBudget(Client &client) const
 {
     // One input per 50 ms of the real time the tick stands for, whatever the tick rate; the cap
     // holds a whole tick's share, so slow rates keep the player's pace (decision E-249).
-    const double share = double(m_state.lastTickNs) / double(QcTickScheduler::intervalNs);
+    const double share = double(m_state.clock().lastTickNs()) / double(QcTickScheduler::intervalNs);
     const double cap = std::max(double(Client::maxInputBudget), share + Client::inputMargin);
-    client.inputBudget = std::min(client.inputBudget + share, cap);
+    client.input.budget = std::min(client.input.budget + share, cap);
 }
 
 void QcServer::updateClient(Client &client, ClientSync sync)
@@ -694,29 +600,29 @@ void QcServer::updateClient(Client &client, ClientSync sync)
     }
 
     if (client.hunger.food() != client.sentFood) {
-        m_combat.sendFood(client);
+        m_health.sendFood(client);
     }
 
     if (client.stateDirty) {
-        client.connection->send(QcMsg::PlayerState{client.lastInputSequence, client.motion});
+        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion});
         client.stateDirty = false;
     }
 }
 
 void QcServer::removeClosedClients()
 {
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Closed && client->joined) {
             // Only a player who was on the list changes it; refused logins do not.
-            m_state.playerListDirty = true;
-            m_inventory.returnCraftingGrid(*client);
-            m_commands.playerLeft(client->entityId);
+            m_state.notePlayerListChanged();
+            m_crafting.returnCraftingGrid(*client);
+            m_commands.playerLeft(client->id);
             // Failures are logged by savePlayer; the client is gone and cannot be told.
             [[maybe_unused]] const QcStatus saved = m_persistence.savePlayer(*client);
         }
     }
 
-    const auto removed = std::erase_if(m_state.clients, [](const std::unique_ptr<Client> &client) {
+    const auto removed = std::erase_if(m_state.clientList(), [](const std::unique_ptr<Client> &client) {
         return client->state == Client::State::Closed;
     });
 
@@ -727,13 +633,13 @@ void QcServer::removeClosedClients()
 
 void QcServer::setWorldTime(double seconds)
 {
-    m_state.info.worldTime = std::max(0.0, seconds);
+    m_state.info().worldTime = std::max(0.0, seconds);
     sendTimeToAll();
 }
 
 void QcServer::sendTimeToAll()
 {
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
             sendTime(*client);
         }
@@ -753,13 +659,13 @@ double QcServer::timeSpeed() const
 
 void QcServer::sendTime(Client &client)
 {
-    client.connection->send(QcMsg::WorldTime{m_state.info.worldTime, QcDayCycle::dayLength, m_state.info.daylightCycle, timeSpeed()});
+    client.connection->send(QcMsg::WorldTime{m_state.info().worldTime, QcDayCycle::dayLength, m_state.info().daylightCycle, timeSpeed()});
 }
 
 void QcServer::handleSetAppearance(Client &client, const QcAppearance &appearance)
 {
-    client.appearance = QcProfileValidation::appearance(*m_state.content, appearance);
+    client.appearance = QcProfileValidation::appearance(m_state.content(), appearance);
 
     // Others that know the player get the spawn again with the new look.
-    m_state.markStale(client.entityId);
+    m_state.entities().markStale(client.id);
 }

@@ -25,7 +25,8 @@ class QcAccessList
 {
 public:
     static constexpr QStringView fileName = u"access.json";
-    // Format 2 has the fingerprints; files of format 1 (names only) are read and written as 2.
+    // Format 2 has the fingerprints; files of other formats count as damaged (decision E-356: no
+    // migration before the first release).
     static constexpr int formatVersion = 2;
     // Per list; further entries of a file are left out with a warning.
     static constexpr qsizetype maxEntries = 4096;

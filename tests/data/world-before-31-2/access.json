@@ -1,0 +1,18 @@
+{
+    "bans": [
+    ],
+    "configOperators": [
+        {
+            "fingerprint": "8d41f9c33fde32c054f38e556e80d0d2",
+            "name": "Raw"
+        }
+    ],
+    "format": 2,
+    "operators": [
+    ],
+    "whitelist": {
+        "enabled": false,
+        "names": [
+        ]
+    }
+}

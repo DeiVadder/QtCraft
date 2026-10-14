@@ -11,7 +11,7 @@
 #include <vector>
 
 class QcSignalTable;
-struct QcServerState;
+class QcServerState;
 
 // The Signal Hoppers of the server (decision E-344), run at the end of the signal phase. Only awake
 // hoppers whose cooldown has ended and that no power locks act, in two simultaneous steps on the

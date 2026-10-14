@@ -11,7 +11,7 @@ QcMobBreeding::QcMobBreeding(std::shared_ptr<const QcContentRegistry> content)
 {
 }
 
-bool QcMobBreeding::wouldEat(const QcMobManager::Mob &mob, const QString &item) const
+bool QcMobBreeding::wouldEat(const QcCreature &mob, const QString &item) const
 {
     if (mob.type < 0 || mob.type >= m_content->mobs().size()) {
         return false;
@@ -24,7 +24,7 @@ bool QcMobBreeding::wouldEat(const QcMobManager::Mob &mob, const QString &item) 
     return mob.isYoung() || (mob.love <= 0.0 && mob.breedCooldown <= 0.0);
 }
 
-QcMobBreeding::Fed QcMobBreeding::feed(QcMobManager::Mob &mob, const QString &item) const
+QcMobBreeding::Fed QcMobBreeding::feed(QcCreature &mob, const QString &item) const
 {
     if (!wouldEat(mob, item)) {
         return Fed::No;
@@ -42,8 +42,8 @@ QcMobBreeding::Fed QcMobBreeding::feed(QcMobManager::Mob &mob, const QString &it
 
 QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMobManager &mobs, double dt) const
 {
-    QList<QcMobManager::Mob> &all = mobs.editableMobs();
-    for (QcMobManager::Mob &mob : all) {
+    QList<QcCreature> &all = mobs.editableMobs();
+    for (QcCreature &mob : all) {
         if (!mob.dormant) {
             mob.love = std::max(0.0, mob.love - dt);
             mob.breedCooldown = std::max(0.0, mob.breedCooldown - dt);
@@ -60,8 +60,8 @@ QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMo
             continue;
         }
 
-        QcMobManager::Mob &first = all[i];
-        QcMobManager::Mob &second = all[partner];
+        QcCreature &first = all[i];
+        QcCreature &second = all[partner];
         const QcBreedingDefinition &breeding = m_content->mobs()[first.type].breeding;
         first.love = 0.0;
         second.love = 0.0;
@@ -75,18 +75,18 @@ QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMo
     return births;
 }
 
-void QcMobBreeding::approachPartners(QList<QcMobManager::Mob> &mobs) const
+void QcMobBreeding::approachPartners(QList<QcCreature> &mobs) const
 {
     // Animals in love walk towards the nearest other one of their kind in love (through the
     // wandering of QcMobManager, which keeps a direction until its timer runs out).
-    for (QcMobManager::Mob &mob : mobs) {
+    for (QcCreature &mob : mobs) {
         if (mob.dormant || mob.love <= 0.0 || mob.fleeTimer > 0.0) {
             continue;
         }
 
-        const QcMobManager::Mob *nearest = nullptr;
+        const QcCreature *nearest = nullptr;
         double best = m_content->mobs()[mob.type].breeding.partnerDistance * seekFactor;
-        for (const QcMobManager::Mob &other : std::as_const(mobs)) {
+        for (const QcCreature &other : std::as_const(mobs)) {
             const double distance = (other.motion.position - mob.motion.position).length();
             if (&other != &mob && other.type == mob.type && other.love > 0.0 && !other.dormant && distance < best) {
                 nearest = &other;
@@ -101,19 +101,19 @@ void QcMobBreeding::approachPartners(QList<QcMobManager::Mob> &mobs) const
     }
 }
 
-bool QcMobBreeding::courting(const QcMobManager::Mob &mob) const
+bool QcMobBreeding::courting(const QcCreature &mob) const
 {
     const double loveSeconds = m_content->mobs()[mob.type].breeding.loveSeconds;
     return !mob.dormant && mob.love > 0.0 && mob.love <= loveSeconds - courtshipSeconds;
 }
 
-qsizetype QcMobBreeding::partnerOf(const QcBlockAccess &world, const QList<QcMobManager::Mob> &mobs, qsizetype index) const
+qsizetype QcMobBreeding::partnerOf(const QcBlockAccess &world, const QList<QcCreature> &mobs, qsizetype index) const
 {
-    const QcMobManager::Mob &mob = mobs[index];
+    const QcCreature &mob = mobs[index];
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     const QcVec3 eye = mob.motion.position + QcVec3{0.0, definition.height * 0.85, 0.0};
     for (qsizetype other = index + 1; other < mobs.size(); ++other) {
-        const QcMobManager::Mob &candidate = mobs[other];
+        const QcCreature &candidate = mobs[other];
         if (candidate.type != mob.type || !courting(candidate)
             || (candidate.motion.position - mob.motion.position).length() > definition.breeding.partnerDistance) {
             continue;
@@ -126,13 +126,13 @@ qsizetype QcMobBreeding::partnerOf(const QcBlockAccess &world, const QList<QcMob
     return -1;
 }
 
-bool QcMobBreeding::roomFor(const QList<QcMobManager::Mob> &mobs, int type, const QcVec3 &position) const
+bool QcMobBreeding::roomFor(const QList<QcCreature> &mobs, int type, const QcVec3 &position) const
 {
     const QcChunkPos centre = QcPhysics::blockContaining(position).chunk();
-    const auto near = [&](const QcMobManager::Mob &mob) {
+    const auto near = [&](const QcCreature &mob) {
         const QcChunkPos chunk = QcPhysics::blockContaining(mob.motion.position).chunk();
         return mob.type == type && std::abs(chunk.x - centre.x) <= 1 && std::abs(chunk.z - centre.z) <= 1;
     };
-    const auto bred = [type](const QcMobManager::Mob &mob) { return mob.type == type && mob.bred; };
+    const auto bred = [type](const QcCreature &mob) { return mob.type == type && mob.bred; };
     return std::ranges::count_if(mobs, near) < m_crowdLimit && std::ranges::count_if(mobs, bred) < m_bredPerKind;
 }

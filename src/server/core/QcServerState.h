@@ -1,23 +1,22 @@
 #pragma once
 
 #include "QcAccessList.h"
-#include "QcArmourStandManager.h"
 #include "QcCircuitState.h"
+#include "QcContactDamage.h"
 #include "QcContentRegistry.h"
-#include "QcFallingBlockManager.h"
+#include "QcEntities.h"
 #include "QcIdentityStore.h"
-#include "QcItemEntityManager.h"
 #include "QcLiquidFlow.h"
 #include "QcHopperQueue.h"
 #include "QcMachineRules.h"
-#include "QcMobManager.h"
-#include "QcMovingBlocks.h"
 #include "QcPermission.h"
 #include "QcPlantGrowth.h"
 #include "QcPlantManager.h"
 #include "QcServerClient.h"
+#include "QcServerClock.h"
 #include "QcServerConfig.h"
 #include "QcServerWorld.h"
+#include "QcSpawnPoint.h"
 #include "QcWorldStorage.h"
 
 #include <QRandomGenerator>
@@ -25,31 +24,24 @@
 
 #include <memory>
 #include <optional>
+#include <utility>
 #include <vector>
 
-// The world, the clients and the entity managers of the authoritative server, shared by its parts.
-// Lives in the server's thread like QcServer itself.
-struct QcServerState
+// The world, the clients and the entities of the authoritative server, shared by its parts
+// (decision E-367): each part is reached through its own accessor and keeps its data behind its own
+// interface; what changes at the level of the whole server (the clock, the player list) changes
+// through a named function. Lives in the server's thread like QcServer itself.
+class QcServerState
 {
+public:
     QcServerState(QcServerConfig serverConfig, std::shared_ptr<const QcContentRegistry> registry,
                   std::unique_ptr<QcWorldGenerator> generator);
+    // The parts keep references into it (QcEntities to the clients, QcSpawnPoint to the world).
+    QcServerState(const QcServerState &) = delete;
+    QcServerState &operator=(const QcServerState &) = delete;
 
-    quint32 newEntityId() { return nextEntityId++; }
     bool isLoadedAt(QcBlockPos pos) const;
     const QcItemDefinition *heldItem(const QcServerClient &client) const;
-    bool isWithinReach(const QcServerClient &client, QcBlockPos pos) const;
-
-    // Line of sight from the player's eye, now or before the last input (decision E-092), to a
-    // block (which does not hide itself) or to a body.
-    bool canSee(const QcServerClient &client, QcBlockPos pos) const;
-    bool canSee(const QcServerClient &client, const QcAabb &body) const;
-    // On the surface of the spawn column (or the configured one) as the world stores it; when that
-    // is no natural ground (a tree, a building, water), on the nearest natural ground around it.
-    // A column without any block gets one under the generator's spawn height, so a respawn never
-    // drops into the void (decision E-288).
-    QcVec3 spawnPosition();
-    // Clients that know the entity get its spawn again (a new look, armour or stand pose).
-    void markStale(quint32 entityId);
     // The local player (host of a single player world) and listed operators are operators
     // (decision E-243).
     QcPermission permissionOf(const QcServerClient &client) const;
@@ -57,66 +49,81 @@ struct QcServerState
     // comparators reading it and hoppers next to it look again (decisions E-343, E-344).
     void noteContents(QcBlockPos pos)
     {
-        hoppers.touched.insert(pos);
-        circuits.noteContents(world, pos);
+        m_hoppers.touched.insert(pos);
+        m_circuits.noteContents(m_world, pos);
     }
     // State that belongs to single blocks (decision E-357).
-    QcBlockEntities &blockEntities() { return world.blockEntities(); }
-    const QcBlockEntities &blockEntities() const { return world.blockEntities(); }
+    QcBlockEntities &blockEntities() { return m_world.blockEntities(); }
+    const QcBlockEntities &blockEntities() const { return m_world.blockEntities(); }
     // Hands the limits of the config to the parts that keep their own copy (decision E-349).
     void applyLimits();
 
-    QcServerConfig config;
-    std::shared_ptr<const QcContentRegistry> content;
-    QcServerWorld world;
-    std::vector<std::unique_ptr<QcServerClient>> clients;
-    QcWorldInfo info;
-    QcAccessList access;
+    // The server's settings; a single-player world's limits replace those of the config (world.json).
+    QcServerConfig &config() { return m_config; }
+    const QcServerConfig &config() const { return m_config; }
+    const QcContentRegistry &content() const { return *m_content; }
+    const std::shared_ptr<const QcContentRegistry> &contentPointer() const { return m_content; }
+    QcServerWorld &world() { return m_world; }
+    const QcServerWorld &world() const { return m_world; }
+    // The connected clients; the parts may change a client, only QcServer adds and removes them.
+    const std::vector<std::unique_ptr<QcServerClient>> &clients() const { return m_clients; }
+    // Every entity of the world (decision E-364); players are the clients.
+    QcEntities &entities() { return m_entities; }
+    const QcEntities &entities() const { return m_entities; }
+    QcSpawnPoint &spawnPoint() { return m_spawnPoint; }
+    // Damage of the blocks bodies touch (lava, magma).
+    const QcContactDamage &contactDamage() const { return m_contactDamage; }
+    // world.json: name, seed, time of day, game rules.
+    QcWorldInfo &info() { return m_info; }
+    const QcWorldInfo &info() const { return m_info; }
+    QcAccessList &access() { return m_access; }
+    const QcAccessList &access() const { return m_access; }
     // Identities of remote players per name (decision E-252).
-    QcIdentityStore identities;
+    QcIdentityStore &identities() { return m_identities; }
+    // Read by every part; only QcServer advances it, once per tick.
+    const QcServerClock &clock() const { return m_clock; }
+    QcPlantManager &plants() { return m_plants; }
+    const QcPlantManager &plants() const { return m_plants; }
+    QcPlantGrowth &growth() { return m_growth; }
+    const QcMachineRules &machineRules() const { return m_machineRules; }
+    QcLiquidFlow &liquids() { return m_liquids; }
+    const QcLiquidFlow &liquids() const { return m_liquids; }
+    // Signal Dust circuits (decision E-335) and the hoppers to look at (decision E-344).
+    QcCircuitState &circuits() { return m_circuits; }
+    const QcCircuitState &circuits() const { return m_circuits; }
+    QcHopperQueue &hoppers() { return m_hoppers; }
+    QRandomGenerator &random() { return m_random; }
+    // Separate from random() so that sounds never change drops or spawns.
+    QRandomGenerator &soundRandom() { return m_soundRandom; }
+
     // Someone joined or left, or operator rights changed: the clients get the player list again.
-    bool playerListDirty = false;
-    quint64 tickCount = 0;
-    // Real time as the players live it (decision E-249): each tick adds the real time it stands for
-    // (QcTickScheduler::tickRealNs). Input budgets, rate limits, autosaves, confirmations and the
-    // pace of messages to the clients follow it at every tick rate and during a sprint; the
-    // simulation follows tickCount.
-    qint64 playerTimeNs = 0;
-    // The real time the latest tick stood for.
-    qint64 lastTickNs = 50'000'000;
-    quint32 nextEntityId = 1;
-    QcMobManager mobs;
-    QcItemEntityManager items;
-    QcPlantManager plants;
-    QcPlantGrowth growth;
-    QcMachineRules machineRules;
-    QcLiquidFlow liquids;
-    QcFallingBlockManager falling;
-    QcArmourStandManager stands;
-    // Signal Dust circuits (decision E-335), the hoppers to look at (decision E-344) and the blocks
-    // pistons move as the clients see them.
-    QcCircuitState circuits;
-    QcHopperQueue hoppers;
-    QcMovingBlocks movingBlocks;
-    QRandomGenerator random;
-    // Separate from random so that sounds never change drops or spawns.
-    QRandomGenerator soundRandom;
-    // Entities that died this tick; their removal tells clients to play the death animation.
-    QSet<quint32> died;
-    // The generator's spawn point, searched once (it may generate chunks to find open ground).
-    std::optional<QcBlockPos> generatorSpawn;
+    void notePlayerListChanged() { m_playerListChanged = true; }
+    // Whether the list changed since the last call.
+    bool takePlayerListChanged() { return std::exchange(m_playerListChanged, false); }
 
 private:
-    // Searched by spawnPosition() on squares of growing radius around the spawn column.
-    static constexpr int spawnGroundRadius = 16;
-    // Nearest stored column around `column` (within spawnGroundRadius) whose top block is natural
-    // ground; returns that top block.
-    std::optional<QcBlockPos> naturalGroundNear(QcBlockPos column);
-    // The same on the square ring of `radius` around `column`.
-    std::optional<QcBlockPos> naturalGroundOnRing(QcBlockPos column, int radius);
-    // The top block of a stored column if it is natural ground, else nullopt.
-    std::optional<QcBlockPos> naturalGroundAt(int x, int z);
-    // Puts the platform block (or stone) at `pos` and tells the clients that have the chunk; false
-    // when there is no such block.
-    bool placeSpawnGround(QcBlockPos pos);
+    friend class QcServer;
+    void advanceClock(qint64 realNs) { m_clock.advance(realNs); }
+    std::vector<std::unique_ptr<QcServerClient>> &clientList() { return m_clients; }
+
+    QcServerConfig m_config;
+    std::shared_ptr<const QcContentRegistry> m_content;
+    QcServerWorld m_world;
+    std::vector<std::unique_ptr<QcServerClient>> m_clients;
+    QcEntities m_entities;
+    QcSpawnPoint m_spawnPoint;
+    QcContactDamage m_contactDamage;
+    QcWorldInfo m_info;
+    QcAccessList m_access;
+    QcIdentityStore m_identities;
+    QcServerClock m_clock;
+    QcPlantManager m_plants;
+    QcPlantGrowth m_growth;
+    QcMachineRules m_machineRules;
+    QcLiquidFlow m_liquids;
+    QcCircuitState m_circuits;
+    QcHopperQueue m_hoppers;
+    QRandomGenerator m_random;
+    QRandomGenerator m_soundRandom;
+    bool m_playerListChanged = false;
 };

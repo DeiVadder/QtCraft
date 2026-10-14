@@ -210,7 +210,7 @@ private:
     int dropped(QcItemId wanted) const
     {
         int total = 0;
-        for (const QcItemEntityManager::Item &entity : m_server->items().items()) {
+        for (const QcItemEntity &entity : m_server->items().items()) {
             total += entity.stack.item == wanted ? entity.stack.count : 0;
         }
         return total;

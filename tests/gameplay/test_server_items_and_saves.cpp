@@ -154,7 +154,7 @@ private slots:
         // Thrown items land a few metres ahead, out of the player's reach.
         ticks(int(QcItemEntityManager::thrownPickupDelay * QcPhysics::tickRate) + 5);
         QCOMPARE(countOf(item("qtcraft:dirt")), 0);
-        for (const QcItemEntityManager::Item &thrown : m_server->items().items()) {
+        for (const QcItemEntity &thrown : m_server->items().items()) {
             QVERIFY((thrown.motion.position - m_client->motion.position).length() > 1.5);
         }
     }
@@ -269,7 +269,7 @@ private slots:
 
         ticks(1);
         QVERIFY(m_server->stop().has_value());
-        QVERIFY(QFile::exists(dir.filePath(u"entities.qce"_s)));
+        QVERIFY(!QDir(dir.filePath(u"entities"_s)).entryList({u"r.*.qen"_s}, QDir::Files).isEmpty());
 
         m_client.reset();
         config.viewDistance = 1;

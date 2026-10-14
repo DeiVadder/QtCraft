@@ -1,5 +1,6 @@
 #include "QcCircuitComponents.h"
 #include "QcCircuitFixture.h"
+#include "QcLightVolume.h"
 
 #include <QTemporaryDir>
 
@@ -63,7 +64,7 @@ private slots:
         QVERIFY(flag(4, 0, 5, u"powered"_s));
         QCOMPARE(power(5, 0, 5), 15);
         QVERIFY(isBlock(6, 0, 5, "signal_lamp_lit"));
-        QCOMPARE(m_server->world().blockLightAt(at(6, 1, 5)), 14);
+        QCOMPARE(QcLightVolume::blockLightAt(m_server->world(), at(6, 1, 5)), 14);
 
         // Off: the repeater after its delay, the lamp four ticks later.
         flip(0, 0, 5);
@@ -209,7 +210,7 @@ private slots:
         for (const QcBlockPos cell : {at(3, 0, 3), at(8, 0, 3)}) {
             const QcVec3 centre{cell.x + 0.5, cell.y + 0.05, cell.z + 0.5};
             const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 900000 + quint32(cell.x & 0xFFFF));
-            for (QcItemEntityManager::Item &entity : m_server->items().editableItems()) {
+            for (QcItemEntity &entity : m_server->items().editableItems()) {
                 if (entity.id == dropped) {
                     entity.motion.position = centre;
                     entity.motion.velocity = {};
@@ -226,7 +227,7 @@ private slots:
         QVERIFY(flag(8, 0, 3, u"powered"_s));
 
         // Gone from the plate: it springs back within its check interval.
-        m_server->items().removeWhere([](const QcItemEntityManager::Item &) { return true; });
+        m_server->items().removeWhere([](const QcItemEntity &) { return true; });
         teleport(11, 0, 11);
         ticks(QcCircuitComponents::plateCheckTicks + 1);
         QVERIFY(!flag(3, 0, 3, u"powered"_s));

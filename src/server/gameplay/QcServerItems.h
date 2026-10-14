@@ -7,7 +7,7 @@
 class QcServerInventory;
 class QcServerSounds;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Dropped items in the server tick: they move, merge and despawn (QcItemEntityManager), and players
 // pick them up.
@@ -17,7 +17,7 @@ public:
     QcServerItems(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
     // Returns the items that despawned this tick (saplings among them may plant themselves).
-    QList<QcItemEntityManager::Item> tick();
+    QList<QcItemEntity> tick();
 
 private:
     // Puts the stack into the inventory of the playing player with this entity id; returns what

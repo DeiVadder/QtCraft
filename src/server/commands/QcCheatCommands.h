@@ -10,13 +10,13 @@
 #include <functional>
 #include <optional>
 
-class QcServerCombat;
+class QcPlayerHealth;
 class QcServerGameModes;
 class QcServerInventory;
 class QcServerStands;
 struct QcMobDefinition;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Commands that bend the rules for operators (decision E-243): items, creatures, health and food,
 // armour and stands, time, game rules, the game mode and finding biomes.
@@ -29,7 +29,7 @@ public:
     struct Parts
     {
         QcServerInventory &inventory;
-        QcServerCombat &combat;
+        QcPlayerHealth &health;
         QcServerStands &stands;
         QcServerGameModes &gameModes;
         std::function<void(double seconds)> setWorldTime;

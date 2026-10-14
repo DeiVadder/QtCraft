@@ -23,7 +23,7 @@ QString QcCommandSource::name() const
 
 quint32 QcCommandSource::id() const
 {
-    return m_client ? m_client->entityId : 0;
+    return m_client ? m_client->id : 0;
 }
 
 std::optional<QcBlockPos> QcCommandSource::origin() const

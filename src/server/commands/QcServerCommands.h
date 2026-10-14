@@ -14,7 +14,7 @@ class QcBlockUpdateQueue;
 class QcServerBlocks;
 struct QcCommandMacroDefinition;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // The command layer of the server (decision E-243), shared by the chat of every player and the
 // server console: plain chat lines go to everyone, lines starting with '/' run a command of the

@@ -16,7 +16,7 @@
 #include "QcPlantGrowth.h"
 #include "QcRaycast.h"
 #include "QcServer.h"
-#include "QcServerCombat.h"
+#include "QcPlayerHealth.h"
 #include "QcServerPlants.h"
 #include "QcWorldCommands.h"
 #include "QcWorldConstants.h"
@@ -69,8 +69,8 @@ QMap<QString, double> values()
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
         {u"signal.hopperItemsPerSecond"_s, 1.0 / (double(QcServerLimits{}.hopperCooldownTicks) * QcPhysics::tickDuration)},
         {u"void.depth"_s, -QcWorld::voidLimitY},
-        {u"void.damage"_s, QcServerCombat::voidDamage},
-        {u"void.interval"_s, QcServerCombat::voidDamageIntervalTicks * QcPhysics::tickDuration},
+        {u"void.damage"_s, QcPlayerHealth::voidDamage},
+        {u"void.interval"_s, QcPlayerHealth::voidDamageIntervalTicks * QcPhysics::tickDuration},
         {u"items.despawnSeconds"_s, QcItemEntityManager::despawnSeconds},
         {u"items.thrownPickupDelay"_s, QcItemEntityManager::thrownPickupDelay},
         {u"mobs.hostileCap"_s, QcMobManager::hostileCapPerPlayer},

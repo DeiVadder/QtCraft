@@ -1,27 +1,33 @@
 #pragma once
 
+#include "QcBlockScreens.h"
 #include "QcBlockSimulation.h"
 #include "QcBlockUpdateQueue.h"
 #include "QcChunkStreaming.h"
 #include "QcEntitySync.h"
+#include "QcEnvironmentDamage.h"
 #include "QcMessages.h"
+#include "QcPlayerHealth.h"
+#include "QcPlayerJoin.h"
+#include "QcServerAnimals.h"
 #include "QcServerBlocks.h"
 #include "QcServerCircuits.h"
-#include "QcServerDebug.h"
-#include "QcServerLogin.h"
 #include "QcServerCombat.h"
-#include "QcServerFarming.h"
+#include "QcServerCommands.h"
+#include "QcServerCrafting.h"
+#include "QcServerCreatures.h"
+#include "QcServerFallingBlocks.h"
+#include "QcServerDebug.h"
 #include "QcServerGameModes.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
-#include "QcServerStands.h"
 #include "QcServerItems.h"
-#include "QcServerPlants.h"
-#include "QcBlockScreens.h"
+#include "QcServerLogin.h"
 #include "QcServerMachines.h"
-#include "QcServerCommands.h"
 #include "QcServerPersistence.h"
+#include "QcServerPlants.h"
 #include "QcServerSounds.h"
+#include "QcServerStands.h"
 #include "QcServerState.h"
 #include "QcTickControl.h"
 #include "QcTickPhaseTimer.h"
@@ -64,44 +70,49 @@ public:
     enum class ClientOrigin { Remote, Local };
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
-    int clientCount() const { return int(m_state.clients.size()); }
+    int clientCount() const { return int(m_state.clients().size()); }
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
-    quint64 tickCount() const { return m_state.tickCount; }
-    QcServerWorld &world() { return m_state.world; }
-    QcMobManager &mobs() { return m_state.mobs; }
-    QcItemEntityManager &items() { return m_state.items; }
-    QcPlantManager &plants() { return m_state.plants; }
+    quint64 tickCount() const { return m_state.clock().tick(); }
+    QcServerWorld &world() { return m_state.world(); }
+    // Every entity of the world (decision E-364) and the tables of the kinds.
+    QcEntities &entities() { return m_state.entities(); }
+    const QcEntities &entities() const { return m_state.entities(); }
+    QcMobManager &mobs() { return m_state.entities().creatures(); }
+    QcItemEntityManager &items() { return m_state.entities().items(); }
+    QcPlantManager &plants() { return m_state.plants(); }
     // State that belongs to single blocks (decision E-357) and the rules of machines.
     QcBlockEntities &blockEntities() { return m_state.blockEntities(); }
-    const QcMachineRules &machineRules() const { return m_state.machineRules; }
-    QcLiquidFlow &liquids() { return m_state.liquids; }
-    QcFallingBlockManager &fallingBlocks() { return m_state.falling; }
-    QcArmourStandManager &stands() { return m_state.stands; }
+    const QcMachineRules &machineRules() const { return m_state.machineRules(); }
+    QcLiquidFlow &liquids() { return m_state.liquids(); }
+    QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
+    QcArmourStandManager &stands() { return m_state.entities().stands(); }
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits() { return m_circuits; }
-    QcCircuitState &circuitState() { return m_state.circuits; }
-    QcHopperQueue &hopperQueue() { return m_state.hoppers; }
+    QcCircuitState &circuitState() { return m_state.circuits(); }
+    QcHopperQueue &hopperQueue() { return m_state.hoppers(); }
     // The contents of the container or machine at `pos` changed (set by a test or tool): comparators
     // reading it and hoppers next to it look again.
     void noteContents(QcBlockPos pos) { m_state.noteContents(pos); }
-    const QcMovingBlocks &movingBlocks() const { return m_state.movingBlocks; }
-    bool keepInventory() const { return m_state.info.keepInventory; }
-    void setKeepInventory(bool keep) { m_state.info.keepInventory = keep; }
-    double worldTime() const { return m_state.info.worldTime; }
+    const QcMovingBlocks &movingBlocks() const { return m_state.entities().movingBlocks(); }
+    bool keepInventory() const { return m_state.info().keepInventory; }
+    void setKeepInventory(bool keep) { m_state.info().keepInventory = keep; }
+    double worldTime() const { return m_state.info().worldTime; }
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_persistence.openWarnings(); }
     // Whether openWorld() failed because another server has the world open.
     bool worldInUse() const { return m_persistence.worldInUse(); }
     // Whether openWorld() failed because the world comes from an older development version.
     bool worldTooOld() const { return m_persistence.worldTooOld(); }
+    // Whether openWorld() failed on a damaged per-region file, and which.
+    const QcServerPersistence::DamagedFile &damagedFile() const { return m_persistence.damagedFile(); }
     void setWorldTime(double seconds);
 
     static constexpr double attackReach = QcServerCombat::attackReach;
     static constexpr double playerAttackCooldown = QcServerCombat::playerAttackCooldown;
-    static constexpr double fallDamageThreshold = QcServerCombat::fallDamageThreshold;
-    static constexpr double craftingTableReach = QcServerInventory::craftingTableReach;
+    static constexpr double fallDamageThreshold = QcPlayerHealth::fallDamageThreshold;
+    static constexpr double craftingTableReach = QcServerCrafting::craftingTableReach;
     static constexpr int craftingGridSlot = QcServerInventory::craftingGridSlot;
-    const QcServerConfig &config() const { return m_state.config; }
+    const QcServerConfig &config() const { return m_state.config(); }
 
     // Runs one simulation tick immediately (used by tests and by the tick timer).
     void tick();
@@ -163,21 +174,12 @@ private:
     // Messages before the client plays: Hello, the login response and leaving; anything else ends
     // the connection.
     void handleLoginMessage(Client &client, const QcMessage &message);
-    // The admitted client becomes a player: restored from his save or spawned (QcServerLogin::Join).
-    void join(Client &client);
-    // Restores a saved player; false when there is none (or no storage). Closes the connection
-    // when the saved data cannot be read.
-    bool restorePlayer(Client &client);
     // Everyone on the server to every player (QcMsg::PlayerList), after joins, leaves and changes
     // of operator rights.
     void sendPlayerList();
-    void sendWelcome(Client &client, bool rejoined);
     void handleInput(Client &client, const QcMsg::PlayerInput &message);
     // Replaces unknown outfits and hair styles with defaults; names come from the content.
     void handleSetAppearance(Client &client, const QcAppearance &appearance);
-    void sendOpenWarnings(Client &client);
-    // Tells an operator who joins that access.json was damaged when the world opened.
-    void sendAccessWarning(Client &client);
     void sendTime(Client &client);
     void sendTimeToAll();
     void autosave();
@@ -212,27 +214,33 @@ private:
     QcServerSounds m_sounds;
     QcBlockUpdateQueue m_blockUpdates;
     QcServerBlocks m_blocks;
+    QcServerFallingBlocks m_fallingBlocks;
     QcBlockSimulation m_blockSimulation;
     QcServerCircuits m_circuits;
     QcBlockScreens m_screens;
     QcServerMachines m_machines;
     QcServerInventory m_inventory;
+    QcServerCrafting m_crafting;
+    QcPlayerHealth m_health;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
-    QcServerFarming m_farming;
+    QcServerAnimals m_animals;
+    QcServerPlants m_plants;
     QcServerInteraction m_interaction;
     QcServerItems m_items;
-    QcServerPlants m_plants;
     QcServerCombat m_combat;
+    QcServerCreatures m_creatures;
+    QcEnvironmentDamage m_environment;
     QcEntitySync m_entitySync;
     QcChunkStreaming m_chunkStreaming;
     QcServerPersistence m_persistence;
     QcServerCommands m_commands;
+    QcPlayerJoin m_join;
     QcServerLogin m_login;
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
-    // Players' time (QcServerState::playerTimeNs) of the latest autosave and sprint sync.
+    // Players' time (QcServerClock::playerTimeNs) of the latest autosave and sprint sync.
     qint64 m_lastAutosaveNs = 0;
     static constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
     // The first registration is written with the next tick.

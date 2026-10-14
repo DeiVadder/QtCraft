@@ -4,7 +4,7 @@
 #include "QcLoginCrypto.h"
 #include "QcLoginMessages.h"
 #include "QcProfileValidation.h"
-#include "QcStandStorage.h"
+#include "QcSaveFile.h"
 
 #include <QDir>
 #include <QFile>
@@ -49,7 +49,7 @@ void QcIdentityStore::read(const QString &path, QStringList &warnings)
     const QByteArray salt = QByteArray::fromBase64(root.value(u"salt"_s).toString().toLatin1());
     if (!document.isObject() || error.error != QJsonParseError::NoError || root.value(u"format"_s).toInt() != formatVersion
         || salt.size() != QcMsg::LoginChallenge::saltBytes) {
-        const QString copy = QcStandStorage::keepAside(path);
+        const QString copy = QcSaveFile::keepAside(path);
         m_readOnly = copy.isEmpty();
         warnings.append(copy.isEmpty() ? u"%1 is damaged and could not be copied aside; players register anew and it is not overwritten"_s.arg(path)
                                        : u"%1 was damaged and kept as %2; players register anew"_s.arg(path, copy));

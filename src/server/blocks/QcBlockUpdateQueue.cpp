@@ -70,7 +70,7 @@ void QcBlockUpdateQueue::queue(QcBlockPos pos)
         return;
     }
 
-    if (std::cmp_greater_equal(m_commandUpdates.size(), m_state.config.limits.commandBlockUpdates)) {
+    if (std::cmp_greater_equal(m_commandUpdates.size(), m_state.config().limits.commandBlockUpdates)) {
         // Bounded memory and save size; a block whose update was dropped is checked again
         // by the next change next to it.
         if (m_dropped++ == 0) {
@@ -121,7 +121,7 @@ void QcBlockUpdateQueue::forgetChunk(QcChunkPos chunk)
 
 void QcBlockUpdateQueue::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
 {
-    if (m_waitingCount < m_state.config.limits.waitingBlockUpdates) {
+    if (m_waitingCount < m_state.config().limits.waitingBlockUpdates) {
         QSet<QcBlockPos> &waiting = m_waitingUpdates[chunk];
         const qsizetype before = waiting.size();
         waiting.insert(pos);
@@ -140,16 +140,16 @@ QList<QcBlockPos> QcBlockUpdateQueue::waitingUpdates() const
 
 void QcBlockUpdateQueue::handleLoadedChunks()
 {
-    const QList<QcChunkPos> loaded = m_state.world.takeNewlyLoaded();
+    const QList<QcChunkPos> loaded = m_state.world().takeNewlyLoaded();
     for (const QcChunkPos &chunk : loaded) {
-        if (!m_state.world.chunk(chunk)) {
+        if (!m_state.world().chunk(chunk)) {
             continue;
         }
 
         // A chunk seen for the first time gets its animals (decision E-086); circuits waiting for it
         // look at their blocks (decision E-340).
-        m_state.mobs.populateChunk(m_state.world, chunk, [this] { return m_state.newEntityId(); });
-        m_state.circuits.chunkLoaded(m_state.world, chunk);
+        m_state.entities().creatures().populateChunk(m_state.world(), chunk, [this] { return m_state.entities().newId(); });
+        m_state.circuits().chunkLoaded(m_state.world(), chunk);
 
         m_commandMode = true;
         if (const auto waiting = m_waitingUpdates.constFind(chunk); waiting != m_waitingUpdates.constEnd()) {
@@ -164,7 +164,7 @@ void QcBlockUpdateQueue::handleLoadedChunks()
         for (const QcBlockFace side : sides) {
             const QcFaceOffset offset = qcFaceOffset(side);
             const QcChunkPos neighbour{chunk.x + offset.dx, chunk.z + offset.dz};
-            if (m_state.world.chunk(neighbour)) {
+            if (m_state.world().chunk(neighbour)) {
                 queueBorderUpdates(chunk, side);
                 queueBorderUpdates(neighbour, QcBlockRules::opposite(side));
             }
@@ -176,12 +176,12 @@ void QcBlockUpdateQueue::handleLoadedChunks()
 
 void QcBlockUpdateQueue::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards)
 {
-    const std::shared_ptr<const QcChunk> chunk = m_state.world.chunk(chunkPos);
+    const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(chunkPos);
     if (!chunk) {
         return;
     }
 
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     BorderScan scan{*chunk, chunkPos, towards, {}, false};
 
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
@@ -195,7 +195,7 @@ void QcBlockUpdateQueue::queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace tow
 
 void QcBlockUpdateQueue::queueSectionBorder(BorderScan &scan, int sectionIndex)
 {
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     const QcChunkSection &section = scan.chunk.section(sectionIndex);
     const QcFaceOffset offset = qcFaceOffset(scan.towards);
     constexpr int last = QcWorld::chunkSize - 1;
@@ -222,7 +222,7 @@ void QcBlockUpdateQueue::queueSectionBorder(BorderScan &scan, int sectionIndex)
 
 bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcBlockPos pos) const
 {
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     // A still source only matters where it can flow across the border or reacts with a
     // liquid there (oceans would otherwise queue every border cell on each load). Only the
     // neighbour across the border is looked at: the other sides lie inside a chunk that
@@ -231,7 +231,7 @@ bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcB
         return false;
     }
 
-    const std::optional<QcBlockId> neighbour = m_state.world.blockAt(qcNeighbour(pos, scan.towards));
+    const std::optional<QcBlockId> neighbour = m_state.world().blockAt(qcNeighbour(pos, scan.towards));
     if (scan.checked && scan.lastCheck.block == block && scan.lastCheck.neighbour == neighbour) {
         return scan.lastCheck.stays;
     }

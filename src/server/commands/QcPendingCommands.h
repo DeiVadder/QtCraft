@@ -8,7 +8,7 @@
 
 // Destructive commands wait for /confirm (decision E-245): each source (player or console) has at
 // most one pending action, a new one replaces it, and it expires after timeoutSeconds of real time
-// (the players' time of the server, QcServerState::playerTimeNs). The action keeps the right its
+// (the players' time of the server, QcServerClock::playerTimeNs). The action keeps the right its
 // command needs: a source that lost it (/deop) cannot confirm. The action receives the source that
 // confirms, so nothing refers to a player who has left.
 class QcPendingCommands

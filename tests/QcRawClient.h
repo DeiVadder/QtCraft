@@ -7,6 +7,7 @@
 #include <QHash>
 #include <QSet>
 
+#include <functional>
 #include <optional>
 
 // A raw protocol client: sends exactly what a test wants and records everything the server says.
@@ -96,9 +97,14 @@ public:
     // Entities, labels and the world time.
     void receivedWorld(const QcMessage &message)
     {
+        const bool aboutEntities = std::holds_alternative<QcMsg::EntitySpawn>(message) || std::holds_alternative<QcMsg::EntityMoves>(message)
+                                   || std::holds_alternative<QcMsg::EntityRemove>(message);
+        if (onEntityMessage && aboutEntities) {
+            onEntityMessage(message);
+        }
         if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
-            entities.insert(spawn->id, spawn->mobType);
-            if (spawn->mobType == QcMsg::EntitySpawn::itemType) {
+            entities.insert(spawn->id, spawn->kind);
+            if (spawn->kind == QcEntityKind::Item) {
                 items.insert(spawn->id, spawn->item);
             }
             spawns.insert(spawn->id, *spawn);
@@ -131,6 +137,8 @@ public:
     }
 
     QcConnection connection;
+    // Called with every spawn, move and removal of an entity, in the order received (comparison runs).
+    std::function<void(const QcMessage &)> onEntityMessage;
     // The login: the installation key (set by hello() when empty), the server password, the packs
     // to report (none: the server's), the wanted view distance, and whether to answer at all.
     QByteArray key;
@@ -180,7 +188,8 @@ public:
     float machineBurn = 0.0f;
     // The server closed the machine screen.
     bool machineClosed = false;
-    QHash<quint32, qint32> entities;
+    // The kind of each entity the client knows.
+    QHash<quint32, QcEntityKind> entities;
     // Item entities the client was told about, with their latest stack.
     QHash<quint32, QcItemStack> items;
     // Latest spawn message per entity, entities reported dead, and all move flags seen per entity.

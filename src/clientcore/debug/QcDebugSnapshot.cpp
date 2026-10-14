@@ -61,8 +61,8 @@ QString targetEntityName(const QcClientSession &session)
     }
 
     const QcClientEntity entity = session.entities().value(*id);
-    const auto &mobs = session.content()->mobs();
-    const QString name = entity.mobType >= 0 && entity.mobType < mobs.size() ? mobs[entity.mobType].name : entity.name;
+    const QcMobDefinition *creature = entity.creature(*session.content());
+    const QString name = creature ? creature->name : entity.name;
     return QStringLiteral("%1 #%2").arg(name).arg(*id);
 }
 

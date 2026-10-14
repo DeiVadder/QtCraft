@@ -28,10 +28,10 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
     }
 
     // Young animals are drawn and aimed at half size (decision E-293).
-    const bool mob = entity.mobType >= 0 && entity.mobType < content.mobs().size();
+    const QcMobDefinition *creature = entity.creature(content);
     const double scale = (entity.flags & QcMsg::Young) != 0 ? QcMsg::youngScale : 1.0;
-    const double width = mob ? content.mobs()[entity.mobType].width : QcPhysics::playerWidth;
-    const double height = mob ? content.mobs()[entity.mobType].height : QcPhysics::playerHeight;
+    const double width = creature ? creature->width : QcPhysics::playerWidth;
+    const double height = creature ? creature->height : QcPhysics::playerHeight;
     return QcPhysics::boxAt(entity.position, width * scale, height * scale);
 }
 
@@ -39,12 +39,8 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
 // catching item or its breeding food (decision E-293).
 bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &entity, const QcItemDefinition &item)
 {
-    if (entity.mobType < 0 || entity.mobType >= content.mobs().size()) {
-        return false;
-    }
-
-    const QcMobDefinition &mob = content.mobs()[entity.mobType];
-    return item.food > 0 || item.armour || mob.catchWith == item.name || mob.breeding.food.contains(item.name);
+    const QcMobDefinition *creature = entity.creature(content);
+    return creature && (item.food > 0 || item.armour || creature->catchWith == item.name || creature->breeding.food.contains(item.name));
 }
 
 Q_LOGGING_CATEGORY(lcSession, "qtcraft.session")

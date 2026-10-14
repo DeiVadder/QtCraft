@@ -16,7 +16,7 @@ Q_LOGGING_CATEGORY(lcSetup, "qtcraft.server")
 
 QcBlockId blockAt(QcServerState &state, QcBlockPos pos)
 {
-    const std::shared_ptr<const QcChunk> chunk = state.world.loadChunk(pos.chunk());
+    const std::shared_ptr<const QcChunk> chunk = state.world().loadChunk(pos.chunk());
     return chunk->block(pos.localX(), pos.y, pos.localZ());
 }
 
@@ -24,12 +24,12 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
 {
     QList<QcItemStack> stacks;
     for (const QcStructureDefinition::Stack &item : items) {
-        const std::optional<QcItemId> id = state.content->itemId(item.item);
+        const std::optional<QcItemId> id = state.content().itemId(item.item);
         if (!id) {
             qCWarning(lcSetup) << "World setup: unknown item" << item.item;
             continue;
         }
-        stacks.append({*id, std::min(item.count, state.content->item(*id).maxStack), 0});
+        stacks.append({*id, std::min(item.count, state.content().item(*id).maxStack), 0});
     }
     return stacks;
 }
@@ -60,17 +60,17 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
 // An armour stand of a structure; properties that do not apply are reported and left out.
 void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
 {
-    QcArmourStandManager::Stand stand;
-    stand.id = state.newEntityId();
-    stand.position = setup.at;
+    QcArmourStand stand;
+    stand.id = state.entities().newId();
+    stand.motion.position = setup.at;
     stand.yaw = qcNormalizedAngle(setup.yaw);
-    stand.item = QcStandProperties::standItem(*state.content);
+    stand.item = QcStandProperties::standItem(state.content());
     for (const QString &property : setup.properties) {
-        if (!QcStandProperties::applyLine(*state.content, stand, property)) {
+        if (!QcStandProperties::applyLine(state.content(), stand, property)) {
             qCWarning(lcSetup) << "World setup: armour stand property" << property << "does not apply";
         }
     }
-    if (!state.stands.add(stand)) {
+    if (!state.entities().stands().add(stand)) {
         qCWarning(lcSetup) << "World setup: too many armour stands";
     }
 }
@@ -82,15 +82,15 @@ namespace QcServerSetup {
 void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup &setup)
 {
     if (setup.timeOfDay) {
-        state.info.worldTime = *setup.timeOfDay;
+        state.info().worldTime = *setup.timeOfDay;
     }
-    state.info.daylightCycle = setup.daylightCycle;
-    state.info.mobSpawning = setup.mobSpawning;
-    state.info.randomTicks = setup.randomTicks;
+    state.info().daylightCycle = setup.daylightCycle;
+    state.info().mobSpawning = setup.mobSpawning;
+    state.info().randomTicks = setup.randomTicks;
 
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
-        if (const std::optional<int> type = state.content->mobIndex(mob.mob)) {
-            state.mobs.spawn(*type, mob.at, state.newEntityId(), false, true);
+        if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
+            state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
         } else {
             qCWarning(lcSetup) << "World setup: unknown creature" << mob.mob;
         }
@@ -104,17 +104,17 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         fill(state, contents);
     }
     for (const QcBlockPos &pos : setup.growing) {
-        state.plants.saplingPlaced(state.blockEntities(), pos, blockAt(state, pos));
+        state.plants().saplingPlaced(state.blockEntities(), pos, blockAt(state, pos));
     }
 
     updates.setCommandMode(true);
     for (const QcBlockPos &pos : setup.updates) {
         updates.queue(pos);
         // Circuits of demos start too (decision E-340).
-        state.circuits.wake(state.world, pos);
+        state.circuits().wake(state.world(), pos);
     }
     updates.setCommandMode(false);
-    state.info.setupDone = true;
+    state.info().setupDone = true;
 }
 
 } // namespace QcServerSetup

@@ -177,16 +177,15 @@ double QcRenderBridge::capeFrameSeconds()
 
 void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
 {
-    const QList<QcMobDefinition> &mobs = frame.content.mobs();
-    const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
+    const QcMobDefinition *creature = entity.creature(frame.content);
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
     QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, frame.alpha), entityLight(frame.world, position),
                                         entity.hurtTicks > 0};
     if ((entity.flags & QcMsg::Young) != 0) {
         placement.scale = QcMsg::youngScale;
     }
-    if (mob && mobs[entity.mobType].glow > 0) {
-        placement.light = glowingLight(placement.light, mobs[entity.mobType], double(entity.id % 97), frame.seconds);
+    if (creature && creature->glow > 0) {
+        placement.light = glowingLight(placement.light, *creature, double(entity.id % 97), frame.seconds);
     }
 
     if (entity.isArmourStand()) {
@@ -196,20 +195,20 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
 
     QcEntityPose pose = QcClientSession::poseOf(entity, frame.alpha);
     QcEntityMesher::ModelLook look;
-    if (mob && !mobs[entity.mobType].skeleton.isEmpty()) {
-        const QcMobDefinition &definition = mobs[entity.mobType];
+    if (creature && !creature->skeleton.isEmpty()) {
+        const QcMobDefinition &definition = *creature;
         look.model = frame.content.model(definition.skeleton);
         look.outfit = frame.content.appearance(definition.outfit);
         look.scale = definition.height / QcEntityMesher::modelHeight * placement.scale;
         look.cape = QcFigureLook::cape(frame.content, definition.cape);
         pose.armsForward = definition.armsForward;
-    } else if (!mob) {
+    } else if (!creature) {
         look = playerLook(entity.appearance);
     }
     if (!look.isValid()) {
         // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
-        const bool ownParts = mob && !mobs[entity.mobType].parts.isEmpty();
-        QcEntityMesher::appendParts(mesh, ownParts ? mobs[entity.mobType].parts : QcEntityMesher::playerParts(), placement, frame.uv);
+        const bool ownParts = creature && !creature->parts.isEmpty();
+        QcEntityMesher::appendParts(mesh, ownParts ? creature->parts : QcEntityMesher::playerParts(), placement, frame.uv);
         return;
     }
 

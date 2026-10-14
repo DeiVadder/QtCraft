@@ -1,11 +1,13 @@
 #pragma once
 
-// Protocol messages about entities: mobs, other players, dropped items and falling blocks.
+// Protocol messages about entities: creatures, other players, dropped items, falling and sliding
+// blocks and armour stands.
 // Part of the QcMessage variant (QcMessages.h).
 
 #include "QcAppearance.h"
 #include "QcEquipment.h"
 #include "QcBlockDefinition.h"
+#include "QcEntityKind.h"
 #include "QcItemStack.h"
 #include "QcStandPose.h"
 #include "QcVec3.h"
@@ -32,29 +34,18 @@ enum EntityFlag : quint8 {
 
 inline constexpr double youngScale = 0.5;
 
-// Server -> client: an entity came into view. mobType is an index into the content's mobs, or
-// playerType for another player, itemType for a dropped item stack, fallingBlockType or
-// armourStandType. Sent again for a known id when an item stack's count, a player's look or
-// armour or a stand changes.
+// Server -> client: an entity came into view, with its kind (decision E-365); a creature also names
+// its type, an index into the content's mobs. Sent again for a known id when an item stack's count,
+// a player's look or armour or a stand changes.
 struct EntitySpawn
 {
-    static constexpr qint32 playerType = -1;
-    static constexpr qint32 itemType = -2;
-    // A falling block (sand, gravel) in the state `block`.
-    static constexpr qint32 fallingBlockType = -3;
-    // An armour stand (decision E-238): equipment, held item, name and `stand` as it shows them.
-    static constexpr qint32 armourStandType = -4;
-    // A block in the state `block` sliding where a piston moves it (decision E-337); its cell shows
-    // the block once the move ends.
-    static constexpr qint32 movingBlockType = -5;
-
     quint32 id = 0;
-    qint32 mobType = playerType;
+    QcEntityKind kind = QcEntityKind::Player;
     QString name;
     QcVec3 position;
     float yaw = 0.0f;
     double health = 0.0;
-    // The stack of an item entity; empty for mobs and players.
+    // The stack of an item entity; empty for the other kinds.
     QcItemStack item;
     // Players: their chosen look; armour stands: only its cape counts (decision E-239).
     QcAppearance appearance;
@@ -68,6 +59,8 @@ struct EntitySpawn
     QcEquipment equipment{};
     // Armour stands only: pose and what they show.
     QcStandPose stand{};
+    // Creatures only: index into the content's mobs (at most QcStreamLimits::maxDefinitions).
+    qint32 creatureType = 0;
 };
 
 struct EntityMove
@@ -84,7 +77,7 @@ struct EntityMove
 };
 
 // Server -> client: positions of all visible entities that changed this tick, with the server's
-// time of the tick (players' time, QcServerState::playerTimeNs, in ms) for the client's
+// time of the tick (players' time, QcServerClock::playerTimeNs, in ms) for the client's
 // interpolation buffer (decision E-271).
 struct EntityMoves
 {

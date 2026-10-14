@@ -28,11 +28,10 @@ void QcHudState::updateTarget()
     m_targetName.clear();
     if (targetEntity) {
         const QcClientEntity entity = session.entities().value(*targetEntity);
-        const auto &mobs = content.mobs();
-        const bool mob = entity.mobType >= 0 && entity.mobType < mobs.size();
-        targetLabel = mob ? content.translate(mobs[entity.mobType].translationKey, m_settings.contentLanguage()) : entity.name;
-        if (mob) {
-            m_targetName = u"mob:"_s + mobs[entity.mobType].name;
+        const QcMobDefinition *creature = entity.creature(content);
+        targetLabel = creature ? content.translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;
+        if (creature) {
+            m_targetName = u"mob:"_s + creature->name;
         }
         targetLabel += u" (%1)"_s.arg(qRound(entity.health));
     } else if (target) {

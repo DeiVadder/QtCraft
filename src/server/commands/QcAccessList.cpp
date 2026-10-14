@@ -2,7 +2,7 @@
 
 #include "QcChatText.h"
 #include "QcProfileValidation.h"
-#include "QcStandStorage.h"
+#include "QcSaveFile.h"
 
 #include <QDir>
 #include <QFile>
@@ -125,7 +125,7 @@ void QcAccessList::read(const QString &path, QStringList &warnings)
     file.close();
 
     const QJsonObject root = document.object();
-    if (!document.isObject() || error.error != QJsonParseError::NoError || (root.value(u"format"_s).toInt() != 1 && root.value(u"format"_s).toInt() != formatVersion)) {
+    if (!document.isObject() || error.error != QJsonParseError::NoError || root.value(u"format"_s).toInt() != formatVersion) {
         openDamaged(path);
         return;
     }
@@ -143,7 +143,7 @@ void QcAccessList::openDamaged(const QString &path)
     // Fail closed: nobody but operators, the local player and the console joins until it is fixed.
     // Operators hear of it when they join (QcServer::sendWelcome).
     m_damaged = true;
-    m_damagedCopy = QcStandStorage::keepAside(path);
+    m_damagedCopy = QcSaveFile::keepAside(path);
     m_whitelistEnabled = true;
     if (m_damagedCopy.isEmpty()) {
         qCWarning(lcAccess).noquote() << u"%1 is damaged and could not be copied aside: operators, bans and the whitelist start "
@@ -158,10 +158,8 @@ void QcAccessList::readNames(const QJsonValue &value, QMap<QString, Entry> &name
 {
     const QJsonArray array = value.toArray();
     for (const auto &item : array) {
-        // Format 1 has plain names, format 2 objects with name and fingerprint.
         const QJsonObject object = item.toObject();
-        const Entry entry = item.isString() ? Entry{item.toString(), {}}
-                                            : Entry{object.value(u"name"_s).toString(), object.value(u"fingerprint"_s).toString()};
+        const Entry entry{object.value(u"name"_s).toString(), object.value(u"fingerprint"_s).toString()};
         if (entry.name.isEmpty() || QcProfileValidation::playerName(entry.name) != entry.name || !validFingerprint(entry.fingerprint)) {
             warnings.append(u"access.json: invalid name in %1 left out"_s.arg(list));
         } else if (names.size() >= maxEntries) {

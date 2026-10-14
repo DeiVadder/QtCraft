@@ -19,7 +19,14 @@
 // - an opener follows rising and falling power, so players can still use it in between;
 // - a piston extends or retracts at once (BUD: with quasi-connectivity it is also powered through
 //   the block above it, but only finds out when something next to it changes);
-// - buttons spring back after `pulseTicks`, plates when nothing stands on them any more.
+// - buttons spring back after `pulseTicks`, plates when nothing stands on them any more;
+// - a Signal Comparator recomputes its output 2 ticks after its inputs changed: the back input (or
+//   the reading of a container or readable block behind it, also through one conductor) compared
+//   with or reduced by the strongest side input (decision E-343);
+// - a Signal Observer turns on 2 ticks after the block in front of it changed and off 2 ticks later;
+// - a Signal Hopper is locked while it gets any power;
+// - a Signal Dispenser or dropper notes rising power (also quasi-connectivity, like a piston) and
+//   ejects an item 4 ticks later (decision E-345).
 class QcCircuitComponents
 {
 public:
@@ -29,6 +36,9 @@ public:
     static constexpr int burnoutTicks = 160;
     static constexpr int repeaterStepTicks = 2;
     static constexpr int plateCheckTicks = 20;
+    static constexpr int comparatorDelayTicks = 2;
+    static constexpr int observerPulseTicks = 2;
+    static constexpr int dispenserDelayTicks = 4;
 
     struct Context
     {
@@ -76,8 +86,22 @@ private:
     void reactPiston(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactHead(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;
     void releasePlate(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
-    // Scheduled ticks of comparators, observers and dispensers (QcCircuitMachines).
+    // Scheduled ticks of comparators, observers and dispensers.
     void scheduledMachine(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    void reactComparator(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;
+    void switchComparator(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    // The strength the comparator at `pos` would put out now.
+    int comparatorOutput(QcBlockPos pos, QcSignalState state) const;
+    // The back input: power from behind, replaced by the reading of a readable block behind it or,
+    // when a conductor that gets less than 15 is behind it, two behind it.
+    int backInput(QcBlockPos pos, QcBlockFace back) const;
+    // A side input: dust's strength, a diode pointing in, or a source's strong power towards it.
+    int sideInput(QcBlockPos pos, QcBlockFace side) const;
+    void reactObserver(QcBlockPos pos, QcSignalState state, QcCircuitPlan &plan) const;
+    void observedChange(QcBlockPos pos, QcCircuitPlan &plan) const;
+    void switchObserver(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    void reactHopper(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    void reactDispenser(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
 
     const QcSignalTable &table() const { return m_context.power.table(); }
     const QcSignalDefinition &definition(QcBlockId block) const;

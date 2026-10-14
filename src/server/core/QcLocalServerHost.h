@@ -4,6 +4,7 @@
 #include "QcNetworkServer.h"
 #include "QcResult.h"
 #include "QcServerConfig.h"
+#include "QcServerPersistence.h"
 #include "QcTickStats.h"
 #include "QcTransport.h"
 
@@ -34,6 +35,8 @@ public:
     bool worldInUse() const { return m_worldInUse; }
     // The world comes from an older development version (decision E-356).
     bool worldTooOld() const { return m_worldTooOld; }
+    // The damaged per-region file that kept the world from opening (decision E-366).
+    const QcServerPersistence::DamagedFile &damagedFile() const { return m_damagedFile; }
 
     // Connects a new client; the returned transport belongs to the caller's thread. Clients of the
     // host are local players (QcServer::ClientOrigin::Local: chat is not rate limited, debug data
@@ -66,6 +69,8 @@ public:
         // (QcBlockEntityChecks, decision E-357).
         qsizetype blockEntities = -1;
         qsizetype blockEntityProblems = -1;
+        // Broken rules of the entity register (QcEntityChecks).
+        qsizetype entityProblems = -1;
     };
     EntityCounts entityCounts();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
@@ -84,6 +89,7 @@ private:
     QString m_startError;
     bool m_worldInUse = false;
     bool m_worldTooOld = false;
+    QcServerPersistence::DamagedFile m_damagedFile;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
     QcServer *m_server = nullptr;
     // Lives in the server thread as a child of the server; only touched there.

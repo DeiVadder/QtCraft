@@ -61,7 +61,7 @@ private slots:
         // A sliding block (decision E-337) is accepted only with a block the content knows; air or an
         // unknown id is an invalid message.
         QcClientEntities entities;
-        QcMsg::EntitySpawn moving{9, QcMsg::EntitySpawn::movingBlockType, QString(), {0.5, 70.0, 0.5}, 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
+        QcMsg::EntitySpawn moving{9, QcEntityKind::MovingBlock, QString(), {0.5, 70.0, 0.5}, 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
         moving.block = *m_content->blockId(u"qtcraft:stone"_s);
         QVERIFY(entities.spawn(moving, m_content.get()));
         QVERIFY(entities.all().value(9).isMovingBlock());
@@ -252,21 +252,23 @@ private slots:
 
     void itemEntitiesAreMirroredAndBogusOnesRejected_data()
     {
-        QTest::addColumn<qint32>("type");
+        QTest::addColumn<int>("kind");
         QTest::addColumn<quint32>("item");
         QTest::addColumn<int>("count");
         QTest::addColumn<bool>("accepted");
         const quint32 dirt = *loadContent()->itemId(u"qtcraft:dirt"_s);
-        QTest::newRow("dirt") << QcMsg::EntitySpawn::itemType << dirt << 3 << true;
-        QTest::newRow("unknown item") << QcMsg::EntitySpawn::itemType << 999999u << 3 << false;
-        QTest::newRow("no item") << QcMsg::EntitySpawn::itemType << quint32(qcNoItem) << 3 << false;
-        QTest::newRow("empty stack") << QcMsg::EntitySpawn::itemType << dirt << 0 << false;
-        QTest::newRow("unknown type") << qint32(-3) << dirt << 3 << false;
+        const int item = int(QcEntityKind::Item);
+        QTest::newRow("dirt") << item << dirt << 3 << true;
+        QTest::newRow("unknown item") << item << 999999u << 3 << false;
+        QTest::newRow("no item") << item << quint32(qcNoItem) << 3 << false;
+        QTest::newRow("empty stack") << item << dirt << 0 << false;
+        QTest::newRow("falling block of air") << int(QcEntityKind::FallingBlock) << dirt << 3 << false;
     }
 
     void itemEntitiesAreMirroredAndBogusOnesRejected()
     {
-        QFETCH(qint32, type);
+        QFETCH(int, kind);
+        const QcEntityKind type = QcEntityKind(kind);
         QFETCH(quint32, item);
         QFETCH(int, count);
         QFETCH(bool, accepted);

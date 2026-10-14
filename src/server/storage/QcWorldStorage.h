@@ -10,7 +10,6 @@
 #include "QcPlayerStorage.h"
 #include "QcRegionStorage.h"
 #include "QcResult.h"
-#include "QcStandStorage.h"
 
 #include <QDateTime>
 #include <QHash>
@@ -20,13 +19,13 @@
 
 #include <memory>
 
-// Metadata of a saved world (world.json). Format 3 (stage 31.1) keeps block entities per chunk
-// (decision E-358); worlds of older development versions are refused, not converted (decision E-356,
-// QtCraft has not been released).
+// Metadata of a saved world (world.json). Format 4 (stage 31.2) keeps entities per chunk (decision
+// E-366), format 3 (stage 31.1) block entities (decision E-358); worlds of older development
+// versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 3;
-    static constexpr int oldestFormatVersion = 3;
+    static constexpr int formatVersion = 4;
+    static constexpr int oldestFormatVersion = 4;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -65,9 +64,9 @@ struct QcWorldInfo
 
 // Reads and writes one world directory: world.json, modified chunks in region files
 // (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), block entities per chunk in a file per
-// region (blockentities/r.<x>.<z>.qcb, QcBlockEntityStorage), players (players/<name>-<hash>.qcp), dropped
-// items and falling blocks (entities.qce), animals (mobs.qce, both QcEntityStorage), armour stands
-// (stands.qce) and pending neighbour updates (blockupdates.qce). Only modified chunks are stored;
+// region (blockentities/r.<x>.<z>.qcb, QcBlockEntityStorage), entities per chunk in a file per region
+// (entities/r.<x>.<z>.qen, QcEntityStorage), players (players/<name>-<hash>.qcp) and pending neighbour
+// updates (blockupdates.qce). Only modified chunks are stored;
 // everything else is regenerated from the seed. Blocks and items are stored by name, so
 // content changes between sessions do not scramble a world. Every file carries a magic number, a
 // format version and a CRC; damaged files make loading fail with a message instead of crashing.
@@ -98,24 +97,15 @@ public:
     }
     QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
 
-    // Empty without error when nothing was saved yet. Unknown items are dropped with a warning.
-    QcResult<QcWorldEntities> readEntities(QStringList &warnings) const { return m_entities.readEntities(warnings); }
-    QcStatus writeEntities(const QcWorldEntities &entities) const { return m_entities.writeEntities(entities); }
-
-    // Persistent creatures (mobs.qce). Empty without error when nothing was saved yet. Unknown kinds
-    // are dropped with a warning.
-    static constexpr quint32 maxStoredPopulatedChunks = QcEntityStorage::maxStoredPopulatedChunks;
-    QcResult<QcWorldMobs> readMobs(QStringList &warnings) const { return m_entities.readMobs(warnings); }
-    QcStatus writeMobs(const QcWorldMobs &mobs) const { return m_entities.writeMobs(mobs); }
+    // Entities per chunk (QcEntityStorage, decision E-366); empty without error when nothing was saved.
+    QcResult<QcWorldEntityRecords> readEntities(QStringList &warnings) const { return m_entities.read(warnings); }
+    QString damagedEntityFile() const { return m_entities.damagedFile(); }
+    QcStatus writeEntities(const QcWorldEntityRecords &entities) const { return m_entities.write(entities); }
 
     // Block entities per chunk (QcBlockEntityStorage, decision E-358).
     QcResult<QList<QcBlockEntityRecord>> readBlockEntities(QStringList &warnings) const { return m_blockEntities.read(warnings); }
+    QString damagedBlockEntityFile() const { return m_blockEntities.damagedFile(); }
     QcStatus writeBlockEntities(const QList<QcBlockEntityRecord> &records) const { return m_blockEntities.write(records); }
-
-    // Armour stands (stands.qce, decision E-238). Empty when nothing was saved yet; a damaged file
-    // is kept aside and only warned about.
-    QList<QcArmourStandManager::Stand> readStands(QStringList &warnings) const { return m_stands.read(warnings); }
-    QcStatus writeStands(const QList<QcArmourStandManager::Stand> &stands) const { return m_stands.write(stands); }
 
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
     // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
@@ -131,6 +121,5 @@ private:
     QcRegionStorage m_regions;
     QcEntityStorage m_entities;
     QcBlockEntityStorage m_blockEntities;
-    QcStandStorage m_stands;
     QcPlayerStorage m_players;
 };

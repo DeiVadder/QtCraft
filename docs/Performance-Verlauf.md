@@ -937,3 +937,20 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 | crowd | Spitzenspeicher MB | 437 | 445 | 445 | 450 |
 
 **Bewertung:** In `flat-crowd` (alle Stände rufen alle 56 Wesen) keine Verschlechterung durch Etappe 30: Tick −13 %, Wesen-Phase −10 % (das Prüfen auf Überlappung mit Blöcken, E-352, kostet hier nichts Messbares), Frame-Werte gleich (Render-/GUI-CPU +6 / +4 %). In `crowd` gelingen seit Etappe 30 alle 56 Rufe (Server 135 Kreaturen mit den Tieren der Umgebung, sichtbar 93–95 statt 72–79): GPU 1,98 ms, GUI-CPU 0,712 ms, Tick 0,73 ms als neue Referenz; die Abstände zu den älteren Ständen sind die zusätzlichen Wesen (E-351), kein Befund. 120 FPS in allen Ständen.
+
+## Etappe 31.2: headless Messung (2026-10-14)
+
+`d6568ba` (31.1) gegen `feature/31-2-entities`, Release, verschränkt. Keine gerenderte Messung (Vorgabe des Menschen für 31.2); was gerendert nachzuholen ist, steht in der Bewertung.
+
+| Messung | Wert | `d6568ba` (31.1) | 31.2 | Differenz |
+|---|---|---:|---:|---:|
+| `test_entity_measure` (1323 Entities, 5 Läufe) | Tick ms | 0,600 | 0,602 | +0,3 % |
+| | Phase Wesen / Items / Client-Sync ms | 0,478 / 0,094 / 0,021 | 0,471 / 0,092 / 0,020 | −1 / −2 / −5 % |
+| | erstes / zweites Speichern ms | 9,9 / 1,95 | 10,6 / 2,62 | +7 / +35 % |
+| | Öffnen ms | 14,0 | 14,8 | +6 % |
+| headless `showcase-signal_farm` (3 Läufe) | Tick / Signal / Maschinen ms | 0,164 / 0,0435 / 0,0029 | 0,166 / 0,0389 / 0,0023 | +1 / −11 / −21 % |
+| headless `showcase-signal_components` (3 Läufe) | Tick / Signal / Maschinen ms | 0,187 / 0,0439 / 0,0085 | 0,181 / 0,0404 / 0,0071 | −3 / −8 / −16 % |
+
+**Bewertung:** Tick, Wesen, Items und Synchronisierung unverändert; das Speichern je Chunk kostet beim zweiten Speichern +0,7 ms (vier Regionsdateien statt dreier Weltdateien), als Voraussetzung für 31.3 hingenommen (E-369). Signal-Phase headless ohne den in E-362 gesehenen Abstand; untätige Maschinen werden übersprungen. Gerendert nachzuholen: `crowd`/`flat-crowd` (Entity-Synchronisierung und Darstellung mit der Art im Protokoll), `showcase` (Ständer und Items in nicht geladenen Chunks werden nicht mehr gesendet), `showcase-signal_*`, `gravel-collapse` (fallende Blöcke über das Register).
+
+**Nach der Prüfung von 31.2** (Reihenfolge-Schlüssel ist die Entity-Id statt des Tabellenindex, Entity-Dateiversion 2, E-366): `test_entity_measure` verschränkt gegen `5c0fba7` (31.2 vor den Korrekturen), je 7 Läufe, Mediane: zweites Speichern 2,66 → 2,66 ms, erstes Speichern 10,97 → 11,34 ms, Öffnen 14,89 → 14,78 ms, Tick 0,617 → 0,610 ms. Das zweite Speichern bleibt gleich: In diesem Szenario bewegen sich die Tiere in jedem Tick, alle Regionen ändern sich ohnehin. Der Schlüssel wirkt beim Entfernen einer Entity (nur ihre Region wird neu geschrieben, `test_entity_model::removingAnEntityRewritesOnlyItsRegion`), nicht bei diesem Lauf.

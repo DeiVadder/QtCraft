@@ -4,16 +4,18 @@
 #include "QcItemDefinition.h"
 #include "QcMessages.h"
 
+class QcBlockScreens;
+class QcPlayerHealth;
+class QcServerAnimals;
 class QcServerBlocks;
 class QcServerCircuits;
-class QcServerCombat;
-class QcServerFarming;
+class QcServerCrafting;
 class QcServerInventory;
-class QcBlockScreens;
+class QcServerPlants;
 class QcServerSounds;
 class QcServerStands;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // What players do to the world: mining blocks, using blocks and items (opening machines, toggling
 // doors, switching levers, tilling, placing blocks, scooping liquids) and using creatures (feeding,
@@ -21,6 +23,8 @@ struct QcServerState;
 class QcServerInteraction
 {
 public:
+    static constexpr int miningSwingTicks = 6;
+
     // Ticks of slack (of 50 ms) when checking a client's claim that a block is broken (network
     // jitter); at a slower tick rate the latest tick's real time counts as slack too, since the
     // players' time only moves with the ticks (decision E-249).
@@ -31,10 +35,12 @@ public:
         QcServerSounds &sounds;
         QcServerBlocks &blocks;
         QcServerInventory &inventory;
+        QcServerCrafting &crafting;
         QcBlockScreens &screens;
         QcServerStands &stands;
-        QcServerFarming &farming;
-        QcServerCombat &combat;
+        QcServerAnimals &animals;
+        QcServerPlants &plants;
+        QcPlayerHealth &health;
         QcServerCircuits &circuits;
     };
 
@@ -43,6 +49,8 @@ public:
     void finishMining(QcServerClient &client, QcBlockPos pos);
     void useItem(QcServerClient &client, const QcMsg::UseItem &message);
     void useEntity(QcServerClient &client, quint32 entityId);
+    // While a player mines, the arm swings again every miningSwingTicks (simulated ticks only).
+    void swingWhileMining();
 
 private:
     // Opens a machine, chest or crafting table, toggles a door or switches a lever, button or repeater

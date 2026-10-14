@@ -219,7 +219,7 @@ protected:
     int droppedCount(QcItemId wanted) const
     {
         int total = 0;
-        for (const QcItemEntityManager::Item &dropped : m_server->items().items()) {
+        for (const QcItemEntity &dropped : m_server->items().items()) {
             total += dropped.stack.item == wanted ? dropped.stack.count : 0;
         }
         return total;

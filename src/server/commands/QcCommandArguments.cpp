@@ -113,7 +113,7 @@ QList<QcServerClient *> players(const QcServerState &state, const QString &name)
 {
     const QString key = QcAccessList::key(name);
     QList<QcServerClient *> found;
-    for (const auto &client : state.clients) {
+    for (const auto &client : state.clients()) {
         if (client->joined && client->state != QcServerClient::State::Closed && QcAccessList::key(client->name) == key) {
             found.append(client.get());
         }

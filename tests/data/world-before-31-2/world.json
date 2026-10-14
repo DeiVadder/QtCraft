@@ -1,0 +1,28 @@
+{
+    "created": "2026-10-14T04:04:57Z",
+    "defaultGameMode": "survival",
+    "formatVersion": 3,
+    "gameRules": {
+        "daylightCycle": true,
+        "keepInventory": true,
+        "mobSpawning": false,
+        "quasiConnectivity": true,
+        "randomTicks": true
+    },
+    "generator": {
+        "options": "",
+        "setupDone": true,
+        "type": "terrain"
+    },
+    "lastPlayed": "2026-10-14T04:04:57Z",
+    "name": "World",
+    "packs": [
+        {
+            "id": "qtcraft",
+            "name": "QtCraft",
+            "version": "0.1.0"
+        }
+    ],
+    "seed": "0",
+    "worldTime": 60.29999999999998
+}

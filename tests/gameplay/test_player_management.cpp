@@ -164,7 +164,7 @@ private slots:
     void aDamagedAccessFileClosesTheWorldToStrangers()
     {
         QTemporaryDir directory;
-        const QByteArray damaged = "{\"format\": 1, \"operators\": [\"Al";
+        const QByteArray damaged = "{\"format\": 2, \"operators\": [\"Al";
         {
             QFile file(directory.filePath(u"access.json"_s));
             QVERIFY(file.open(QIODevice::WriteOnly));
@@ -202,7 +202,7 @@ private slots:
         {
             QFile file(path);
             QVERIFY(file.open(QIODevice::WriteOnly));
-            file.write("{\"format\": 1, \"bans\": [");
+            file.write("{\"format\": 2, \"bans\": [");
         }
         // Unreadable: neither read nor copied.
         QVERIFY(QFile::setPermissions(path, QFileDevice::WriteOwner));
@@ -218,7 +218,7 @@ private slots:
         QVERIFY(QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner));
         QFile file(path);
         QVERIFY(file.open(QIODevice::ReadOnly));
-        QCOMPARE(file.readAll(), QByteArray("{\"format\": 1, \"bans\": ["));
+        QCOMPARE(file.readAll(), QByteArray("{\"format\": 2, \"bans\": ["));
     }
 
     void namesThatNameNobodyAreRefused()
@@ -265,13 +265,13 @@ private slots:
         QJsonArray names;
         QJsonArray bans;
         for (int i = 0; i < QcAccessList::maxEntries; ++i) {
-            names.append(u"Name%1"_s.arg(i));
+            names.append(QJsonObject{{u"name"_s, u"Name%1"_s.arg(i)}});
             bans.append(QJsonObject{{u"name"_s, u"Banned%1"_s.arg(i)}});
         }
         {
             QFile file(directory.filePath(u"access.json"_s));
             QVERIFY(file.open(QIODevice::WriteOnly));
-            file.write(QJsonDocument(QJsonObject{{u"format"_s, 1}, {u"operators"_s, names}, {u"bans"_s, bans},
+            file.write(QJsonDocument(QJsonObject{{u"format"_s, 2}, {u"operators"_s, names}, {u"bans"_s, bans},
                                                  {u"whitelist"_s, QJsonObject{{u"enabled"_s, false}, {u"names"_s, names}}}})
                            .toJson());
         }
@@ -299,15 +299,35 @@ private slots:
         QVERIFY(connect(u"Helper"_s, QcServer::ClientOrigin::Local)->disconnectReason.isEmpty());
     }
 
+    void accessListsOfAnOlderFormatCountAsDamaged()
+    {
+        // Format 1 (plain names, before the fingerprints) is not converted (decision E-356): such a
+        // file is treated like a damaged one, kept aside and the lists start closed.
+        QTemporaryDir directory;
+        {
+            QFile file(directory.filePath(u"access.json"_s));
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write(QJsonDocument(QJsonObject{{u"format"_s, 1}, {u"operators"_s, QJsonArray{u"Al"_s}}}).toJson());
+        }
+        QcAccessList access;
+        QStringList warnings;
+        access.open(directory.path(), {}, warnings);
+        QVERIFY(access.wasDamaged());
+        QVERIFY(access.operators().isEmpty());
+        QVERIFY(access.whitelistEnabled());
+        QVERIFY(QFile::exists(directory.filePath(u"access.json.damaged"_s)));
+    }
+
     void invalidEntriesAreLeftOut()
     {
         QTemporaryDir directory;
-        QJsonArray names{u"Good"_s, u""_s, 5, u"  padded  "_s, QString(40, u'x')};
+        const auto named = [](const QString &name) { return QJsonObject{{u"name"_s, name}}; };
+        QJsonArray names{named(u"Good"_s), named(u""_s), 5, named(u"  padded  "_s), named(QString(40, u'x'))};
         QJsonArray bans{QJsonObject{{u"name"_s, u"Bad"_s}, {u"reason"_s, QString(500, u'r')}}, QJsonObject{{u"reason"_s, u"no name"_s}}};
         {
             QFile file(directory.filePath(u"access.json"_s));
             QVERIFY(file.open(QIODevice::WriteOnly));
-            file.write(QJsonDocument(QJsonObject{{u"format"_s, 1}, {u"operators"_s, names}, {u"bans"_s, bans}}).toJson());
+            file.write(QJsonDocument(QJsonObject{{u"format"_s, 2}, {u"operators"_s, names}, {u"bans"_s, bans}}).toJson());
         }
         QcAccessList access;
         QStringList warnings;

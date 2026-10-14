@@ -218,7 +218,7 @@ private slots:
         QVERIFY(m_client->died.contains(pig));
         // The loot falls into the pit, out of the player's reach.
         int dropped = 0;
-        for (const QcItemEntityManager::Item &loot : m_server->items().items()) {
+        for (const QcItemEntity &loot : m_server->items().items()) {
             dropped += loot.stack.item == item("qtcraft:raw_porkchop") ? loot.stack.count : 0;
         }
         QCOMPARE(dropped, 2);
@@ -408,7 +408,7 @@ private slots:
                                   return spawn.name == u"Bob"_s;
                               })->id;
         const QcMsg::EntitySpawn seen = m_client->spawns.value(bobId);
-        QCOMPARE(seen.mobType, QcMsg::EntitySpawn::playerType);
+        QCOMPARE(seen.kind, QcEntityKind::Player);
         QCOMPARE(seen.appearance.outfit, u"qtcraft:miner"_s);
         QVERIFY(seen.appearance.hair.isEmpty());
         QCOMPARE(seen.appearance.shirtColor, 0x112233u);

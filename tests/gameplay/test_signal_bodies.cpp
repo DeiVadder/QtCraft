@@ -1,3 +1,4 @@
+#include "QcEnvironmentDamage.h"
 #include "QcCircuitFixture.h"
 #include "QcPhysics.h"
 #include "QcServerCombat.h"
@@ -82,7 +83,7 @@ private slots:
 
         const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), centreOf(3, 0, 8), 700001, false, true);
         const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centreOf(3, 0, 8), 700002);
-        for (QcItemEntityManager::Item &entity : m_server->items().editableItems()) {
+        for (QcItemEntity &entity : m_server->items().editableItems()) {
             entity.motion.position = entity.id == dropped ? centreOf(3, 0, 8) : entity.motion.position;
             entity.motion.velocity = {};
         }
@@ -93,7 +94,7 @@ private slots:
         const QcVec3 pigFeet = m_server->mobs().find(pig)->motion.position;
         QVERIFY(!insideSolid(QcPhysics::boxAt(pigFeet, definition.width, definition.height)));
         QVERIFY(pigFeet.x < at(4, 0, 8).x);
-        const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntityManager::Item::id);
+        const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntity::id);
         QVERIFY(stick != m_server->items().items().end());
         QVERIFY(!insideSolid(QcPhysics::boxAt(stick->motion.position, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize)));
         QVERIFY(stick->motion.position.x < at(4, 0, 8).x);
@@ -116,7 +117,7 @@ private slots:
         const double health = 20.0;
 
         flip(5, 4, 5);
-        idle(QcServerCombat::suffocationIntervalTicks * 2 + 2);
+        idle(QcEnvironmentDamage::suffocationIntervalTicks * 2 + 2);
         QVERIFY2(m_client->motion.position.y >= at(5, 0, 5).y - 0.01, qPrintable(QString::number(m_client->motion.position.y)));
         QVERIFY(isBlock(5, 1, 5, "stone"));
         QVERIFY2(m_client->health < health, qPrintable(QString::number(m_client->health)));
@@ -148,14 +149,14 @@ private slots:
         ticks(1);
         const QcVec3 start = centreOf(5, 1, 5) + QcVec3{0.0, 0.5, 0.0};
         const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, start, 700003);
-        for (QcItemEntityManager::Item &entity : m_server->items().editableItems()) {
+        for (QcItemEntity &entity : m_server->items().editableItems()) {
             entity.motion.position = entity.id == dropped ? start : entity.motion.position;
             entity.motion.velocity = {};
         }
 
         flip(5, 4, 5);
         ticks(1);
-        const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntityManager::Item::id);
+        const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntity::id);
         QVERIFY(stick != m_server->items().items().end());
         QVERIFY2(stick->motion.position.y < at(5, 1, 5).y, qPrintable(QString::number(stick->motion.position.y)));
     }
@@ -176,9 +177,9 @@ private slots:
             const QcBlockPos between = at(2, 0, 6);
             const QcBlockPos other = at(3, 0, 6);
             const QcVec3 start{(between.x + other.x) * 0.5 + 0.5, double(between.y), (between.z + other.z) * 0.5 + 0.5};
-            m_server->items().removeWhere([](const QcItemEntityManager::Item &) { return true; });
+            m_server->items().removeWhere([](const QcItemEntity &) { return true; });
             const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, start, 710000 + quint32(turns));
-            for (QcItemEntityManager::Item &entity : m_server->items().editableItems()) {
+            for (QcItemEntity &entity : m_server->items().editableItems()) {
                 entity.motion.position = entity.id == dropped ? start : entity.motion.position;
                 entity.motion.velocity = {};
             }
@@ -186,7 +187,7 @@ private slots:
             flip(1, 0, 7);
             flip(4, 0, 7);
             ticks(1);
-            const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntityManager::Item::id);
+            const auto stick = std::ranges::find(m_server->items().items(), dropped, &QcItemEntity::id);
             QVERIFY(stick != m_server->items().items().end());
             ends.append(stick->motion.position - start);
         }

@@ -81,7 +81,7 @@ void QcBlockCommands::fill(const QcCommandContext &context, bool clear)
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "This changes up to %1 blocks."), {QString::number(area->volume())});
-    m_pending.ask(context, [this, area = *area](const QcCommandSource &source) { apply(source, area, false); }, m_state.playerTimeNs);
+    m_pending.ask(context, [this, area = *area](const QcCommandSource &source) { apply(source, area, false); }, m_state.clock().playerTimeNs());
 }
 
 std::optional<QcBlockId> QcBlockCommands::parseBlock(const QcCommandContext &context, const QString &text, QString &name) const
@@ -89,7 +89,7 @@ std::optional<QcBlockId> QcBlockCommands::parseBlock(const QcCommandContext &con
     // "name" or "name[property=value,...]"; without states, connections follow the neighbours.
     name = text.section(u'[', 0, 0).contains(u':') ? text : u"qtcraft:"_s + text;
     QStringList problems;
-    const std::optional<QcBlockId> block = m_state.content->stateId(name, &problems);
+    const std::optional<QcBlockId> block = m_state.content().stateId(name, &problems);
     if (block && !problems.isEmpty()) {
         context.source.replyPlain(problems.join(u"; "_s));
         return std::nullopt;
@@ -155,7 +155,7 @@ bool QcBlockCommands::parseFilter(const QcCommandContext &context, BlockArea &ar
 
 void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area, bool single)
 {
-    const bool machine = m_state.machineRules.machineOf(area.block) != nullptr;
+    const bool machine = m_state.machineRules().machineOf(area.block) != nullptr;
 
     // The changes and their cascades queue behind the updates of player actions.
     m_updates.setCommandMode(true);
@@ -183,11 +183,11 @@ void QcBlockCommands::apply(const QcCommandSource &source, const BlockArea &area
 
 bool QcBlockCommands::changeBlock(QcBlockPos pos, const BlockArea &area, bool machine)
 {
-    const std::optional<QcBlockId> current = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> current = m_state.world().blockAt(pos);
     if (!current || (machine && !m_state.blockEntities().machine(pos) && m_state.blockEntities().isMachineTableFull())) {
         return false;
     }
-    if (area.filter && (area.filterState ? *current != *area.filter : !m_state.content->isSameBlock(*current, *area.filter))) {
+    if (area.filter && (area.filterState ? *current != *area.filter : !m_state.content().isSameBlock(*current, *area.filter))) {
         return false;
     }
 
@@ -197,7 +197,7 @@ bool QcBlockCommands::changeBlock(QcBlockPos pos, const BlockArea &area, bool ma
     }
 
     // Setting the block makes its machine, chest or sapling timer (QcServerBlocks::setQuietly).
-    m_blocks.setAndBroadcast(pos, area.explicitState ? area.block : QcBlockRules::connectedState(m_state.world, pos, area.block));
+    m_blocks.setAndBroadcast(pos, area.explicitState ? area.block : QcBlockRules::connectedState(m_state.world(), pos, area.block));
     return true;
 }
 
@@ -237,5 +237,5 @@ void QcBlockCommands::regenerate(const QcCommandContext &context)
         const int done = m_regeneration.regenerate(chunks);
         source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Regenerated %1 chunks (%2 were not loaded and unchanged)"),
                      {QString::number(done), QString::number(chunks.size() - done)});
-    }, m_state.playerTimeNs);
+    }, m_state.clock().playerTimeNs());
 }

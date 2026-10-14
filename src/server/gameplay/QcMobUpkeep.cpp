@@ -15,7 +15,7 @@ constexpr double daylightStayDistance = 24.0;
 
 } // namespace
 
-bool despawns(const QcMobManager::Mob &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
+bool despawns(const QcCreature &mob, const QcMobDefinition &definition, const QList<QcMobManager::PlayerView> &players,
               bool night)
 {
     // The void takes every creature, without loot.
@@ -37,7 +37,7 @@ bool despawns(const QcMobManager::Mob &mob, const QcMobDefinition &definition, c
     return nearest > QcMobManager::despawnDistance || outOfTime;
 }
 
-void leaveBlocks(QcMobManager::Mob &mob, const QcMobDefinition &definition, const QcBlockAccess &world)
+void leaveBlocks(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world)
 {
     // Causes: summoned or bred where a block stands, /fill or /setblock over it, a liquid
     // hardening around it, a growing plant or tree, an old save, a piston without a free cell.

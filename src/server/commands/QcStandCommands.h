@@ -10,7 +10,7 @@
 class QcServerInventory;
 class QcServerStands;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Chat commands for armour stands and armour (decision E-239), called by QcChatCommands:
 //   /armorstand <nearest|looking|id> <property> [values]
@@ -32,11 +32,11 @@ public:
 
 
 private:
-    QcArmourStandManager::Stand *target(const QcServerClient &client, const QString &word);
-    QcArmourStandManager::Stand *standInView(const QcServerClient &client);
+    QcArmourStand *target(const QcServerClient &client, const QString &word);
+    QcArmourStand *standInView(const QcServerClient &client);
     // Where a summoned stand stands: three metres in front of the player, on the ground below.
     std::optional<QcVec3> summonPosition(const QcServerClient &client) const;
-    static QString describe(const QcArmourStandManager::Stand &stand);
+    static QString describe(const QcArmourStand &stand);
 
     QcServerState &m_state;
     QcServerStands &m_stands;

@@ -2,6 +2,7 @@
 
 #include "QcArmour.h"
 #include "QcChatText.h"
+#include "QcLineOfSight.h"
 #include "QcPhysics.h"
 #include "QcRaycast.h"
 #include "QcServerCombat.h"
@@ -62,15 +63,15 @@ QcEquipmentSlot QcServerStands::slotAtHeight(double height)
 bool QcServerStands::isFreeForStand(QcBlockPos feet) const
 {
     for (const QcBlockPos pos : {feet, feet.offset(0, 1, 0)}) {
-        const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-        if (!block || !m_state.content->isValidBlock(*block) || !m_state.content->state(*block).collision.isEmpty()
-            || m_state.content->block(*block).liquid) {
+        const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+        if (!block || !m_state.content().isValidBlock(*block) || !m_state.content().state(*block).collision.isEmpty()
+            || m_state.content().block(*block).liquid) {
             return false;
         }
     }
 
     const QcAabb cell{{double(feet.x), double(feet.y), double(feet.z)}, {feet.x + 1.0, feet.y + 2.0, feet.z + 1.0}};
-    return std::ranges::none_of(m_state.stands.stands(), [&](const auto &stand) { return QcArmourStandManager::bodyOf(stand).intersects(cell); });
+    return std::ranges::none_of(m_state.entities().stands().stands(), [&](const auto &stand) { return QcArmourStandManager::bodyOf(stand).intersects(cell); });
 }
 
 bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message)
@@ -81,21 +82,21 @@ bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message
     }
 
     const QcBlockPos feet = message.target.offset(0, 1, 0);
-    const std::optional<QcBlockId> ground = m_state.world.blockAt(message.target);
-    const bool onTop = message.face == QcBlockFace::Up && ground && m_state.content->isValidBlock(*ground)
-                       && m_state.content->block(*ground).solid;
-    if (client.dead || !onTop || !m_state.isWithinReach(client, feet) || !isFreeForStand(feet)) {
+    const std::optional<QcBlockId> ground = m_state.world().blockAt(message.target);
+    const bool onTop = message.face == QcBlockFace::Up && ground && m_state.content().isValidBlock(*ground)
+                       && m_state.content().block(*ground).solid;
+    if (client.dead || !onTop || !QcLineOfSight::isWithinReach(client, feet) || !isFreeForStand(feet)) {
         m_inventory.send(client);
         return true;
     }
 
-    QcArmourStandManager::Stand stand;
-    stand.position = {feet.x + 0.5, double(feet.y), feet.z + 0.5};
+    QcArmourStand stand;
+    stand.motion.position = {feet.x + 0.5, double(feet.y), feet.z + 0.5};
     stand.yaw = facingYaw(client.yaw);
     stand.item = held->name;
     if (!spawn(stand)) {
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many armour stands in the world (at most %1)"),
-                                                    {QString::number(m_state.stands.limit())}));
+                                                    {QString::number(m_state.entities().stands().limit())}));
         m_inventory.send(client);
         return true;
     }
@@ -103,23 +104,23 @@ bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message
     if (!client.rules().infiniteItems) {
         client.inventory.removeFromSlot(client.inventory.selectedHotbarSlot(), 1);
     }
-    m_sounds.play(placeSound, stand.position);
+    m_sounds.play(placeSound, stand.motion.position);
     m_inventory.send(client);
     return true;
 }
 
-QcArmourStandManager::Stand *QcServerStands::spawn(QcArmourStandManager::Stand stand)
+QcArmourStand *QcServerStands::spawn(QcArmourStand stand)
 {
-    stand.id = m_state.newEntityId();
+    stand.id = m_state.entities().newId();
     stand.pose = stand.pose.normalized();
     stand.yaw = qcNormalizedAngle(stand.yaw);
-    if (!m_state.stands.add(stand)) {
+    if (!m_state.entities().stands().add(stand)) {
         return nullptr;
     }
-    return m_state.stands.find(stand.id);
+    return m_state.entities().stands().find(stand.id);
 }
 
-void QcServerStands::dropReplaced(const QcArmourStandManager::Stand &before, const QcArmourStandManager::Stand &after)
+void QcServerStands::dropReplaced(const QcArmourStand &before, const QcArmourStand &after)
 {
     QList<QcItemStack> replaced;
     for (std::size_t slot = 0; slot < QcEquipment::slotCount; ++slot) {
@@ -131,28 +132,28 @@ void QcServerStands::dropReplaced(const QcArmourStandManager::Stand &before, con
         replaced.append(before.held);
     }
 
-    const QcVec3 position = before.position + QcVec3{0.0, 0.5, 0.0};
+    const QcVec3 position = before.motion.position + QcVec3{0.0, 0.5, 0.0};
     for (const QcItemStack &stack : std::as_const(replaced)) {
         if (!stack.isEmpty()) {
-            m_state.items.spawnScattered(stack, position, m_state.newEntityId());
+            m_state.entities().items().spawnScattered(stack, position, m_state.entities().newId());
         }
     }
 }
 
-void QcServerStands::changed(const QcArmourStandManager::Stand &stand)
+void QcServerStands::changed(const QcArmourStand &stand)
 {
-    m_state.markStale(stand.id);
+    m_state.entities().markStale(stand.id);
 }
 
-bool QcServerStands::canReach(const QcServerClient &client, const QcArmourStandManager::Stand &stand) const
+bool QcServerStands::canReach(const QcServerClient &client, const QcArmourStand &stand) const
 {
     const QcAabb body = QcArmourStandManager::bodyOf(stand);
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 centre = (body.min + body.max) * 0.5;
-    return !client.dead && (centre - eye).length() <= QcServerCombat::attackReach + 1.0 && m_state.canSee(client, body);
+    return !client.dead && (centre - eye).length() <= QcServerCombat::attackReach + 1.0 && QcLineOfSight::canSee(m_state.world(), client, body);
 }
 
-std::optional<double> QcServerStands::aimedHeight(const QcServerClient &client, const QcArmourStandManager::Stand &stand) const
+std::optional<double> QcServerStands::aimedHeight(const QcServerClient &client, const QcArmourStand &stand) const
 {
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     const QcVec3 direction = viewDirection(client);
@@ -163,12 +164,12 @@ std::optional<double> QcServerStands::aimedHeight(const QcServerClient &client, 
     }
 
     const double scale = stand.pose.small ? 0.5 : 1.0;
-    return ((eye + direction * *distance).y - stand.position.y) / scale;
+    return ((eye + direction * *distance).y - stand.motion.position.y) / scale;
 }
 
 bool QcServerStands::use(QcServerClient &client, quint32 id)
 {
-    QcArmourStandManager::Stand *stand = m_state.stands.find(id);
+    QcArmourStand *stand = m_state.entities().stands().find(id);
     if (!stand) {
         return false;
     }
@@ -177,7 +178,7 @@ bool QcServerStands::use(QcServerClient &client, quint32 id)
     }
 
     const QcItemStack held = client.inventory.selectedStack();
-    const QcArmourDefinition *armour = held.isEmpty() ? nullptr : QcArmour::of(*m_state.content, held.item);
+    const QcArmourDefinition *armour = held.isEmpty() ? nullptr : QcArmour::of(m_state.content(), held.item);
     if (armour) {
         swapWithHand(client, *stand, armour->slot);
     } else if (!held.isEmpty()) {
@@ -193,7 +194,7 @@ bool QcServerStands::use(QcServerClient &client, quint32 id)
     return true;
 }
 
-void QcServerStands::swapWithHand(QcServerClient &client, QcArmourStandManager::Stand &stand, std::optional<QcEquipmentSlot> slot)
+void QcServerStands::swapWithHand(QcServerClient &client, QcArmourStand &stand, std::optional<QcEquipmentSlot> slot)
 {
     const int hand = client.inventory.selectedHotbarSlot();
     const QcItemStack held = client.inventory.slot(hand);
@@ -211,7 +212,7 @@ void QcServerStands::swapWithHand(QcServerClient &client, QcArmourStandManager::
     QcInventory inventory = client.inventory;
     if (held.count > 1) {
         inventory.removeFromSlot(hand, 1);
-        if (!onStand.isEmpty() && inventory.add(onStand.item, onStand.count, *m_state.content, onStand.damage) > 0) {
+        if (!onStand.isEmpty() && inventory.add(onStand.item, onStand.count, m_state.content(), onStand.damage) > 0) {
             return;
         }
     } else {
@@ -220,14 +221,14 @@ void QcServerStands::swapWithHand(QcServerClient &client, QcArmourStandManager::
 
     client.inventory = inventory;
     onStand = given;
-    m_sounds.play(QString::fromLatin1(QcSoundKeys::armourEquip), stand.position + QcVec3{0.0, 1.0, 0.0});
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::armourEquip), stand.motion.position + QcVec3{0.0, 1.0, 0.0});
     changed(stand);
     m_inventory.send(client);
 }
 
 bool QcServerStands::hit(QcServerClient &client, quint32 id)
 {
-    QcArmourStandManager::Stand *stand = m_state.stands.find(id);
+    QcArmourStand *stand = m_state.entities().stands().find(id);
     if (!stand) {
         return false;
     }
@@ -238,35 +239,40 @@ bool QcServerStands::hit(QcServerClient &client, quint32 id)
 
     client.attackCooldown = QcServerCombat::playerAttackCooldown;
     client.swung = true;
-    if (stand->hitBy == client.entityId && stand->sinceHit < QcArmourStandManager::breakWindow) {
-        m_sounds.play(breakSound, stand->position);
+    if (stand->hitBy == client.id && stand->sinceHit < QcArmourStand::breakWindow) {
+        m_sounds.play(breakSound, stand->motion.position);
         breakStand(id, true);
         return true;
     }
 
     stand->sinceHit = 0.0;
-    stand->hitBy = client.entityId;
-    m_sounds.play(hitSound, stand->position);
+    stand->hitBy = client.id;
+    m_sounds.play(hitSound, stand->motion.position);
     return true;
 }
 
 void QcServerStands::breakStand(quint32 id, bool drops)
 {
-    const std::optional<QcArmourStandManager::Stand> stand = m_state.stands.remove(id);
+    const std::optional<QcArmourStand> stand = m_state.entities().stands().remove(id);
     if (!stand || !drops) {
         return;
     }
 
-    const QcVec3 position = stand->position + QcVec3{0.0, 0.5, 0.0};
+    const QcVec3 position = stand->motion.position + QcVec3{0.0, 0.5, 0.0};
     QList<QcItemStack> stacks(stand->equipment.stacks.begin(), stand->equipment.stacks.end());
     stacks.append(stand->held);
-    if (const std::optional<QcItemId> item = m_state.content->itemId(stand->item)) {
+    if (const std::optional<QcItemId> item = m_state.content().itemId(stand->item)) {
         stacks.append({*item, 1, 0});
     }
 
     for (const QcItemStack &stack : std::as_const(stacks)) {
         if (!stack.isEmpty()) {
-            m_state.items.spawnScattered(stack, position, m_state.newEntityId());
+            m_state.entities().items().spawnScattered(stack, position, m_state.entities().newId());
         }
     }
+}
+
+void QcServerStands::tick()
+{
+    m_state.entities().stands().tick(QcPhysics::tickDuration);
 }

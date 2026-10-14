@@ -217,9 +217,15 @@ private slots:
         file.close();
 
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), m_mod).readBlockEntities(warnings);
+        const QcWorldStorage storage(dir.path(), m_mod);
+        const auto read = storage.readBlockEntities(warnings);
         QVERIFY(!read.has_value());
         QVERIFY2(read.error().contains(path), qPrintable(read.error()));
+        // Named relative to the world folder for the menu entry (decision E-366).
+        QCOMPARE(storage.damagedBlockEntityFile(), QDir(dir.path()).relativeFilePath(path));
+        QVERIFY(QFile::remove(path));
+        QVERIFY(storage.readBlockEntities(warnings).has_value());
+        QVERIFY(storage.damagedBlockEntityFile().isEmpty());
     }
 
     void implausibleRecordsAreRejected_data()

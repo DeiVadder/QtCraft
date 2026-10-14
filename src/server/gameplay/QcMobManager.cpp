@@ -103,21 +103,21 @@ QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, qui
     }
 }
 
-const QcMobManager::Mob *QcMobManager::find(quint32 id) const
+const QcCreature *QcMobManager::find(quint32 id) const
 {
-    const auto it = std::ranges::find(m_mobs, id, &Mob::id);
+    const auto it = std::ranges::find(m_mobs, id, &QcCreature::id);
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
-QcMobManager::Mob *QcMobManager::find(quint32 id)
+QcCreature *QcMobManager::find(quint32 id)
 {
-    const auto it = std::ranges::find(m_mobs, id, &Mob::id);
+    const auto it = std::ranges::find(m_mobs, id, &QcCreature::id);
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
 quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
 {
-    Mob mob;
+    QcCreature mob;
     mob.underground = underground;
     mob.persistent = persistent;
     mob.id = id;
@@ -131,12 +131,12 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
 
 std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amount, const QcVec3 &from)
 {
-    const auto it = std::ranges::find(m_mobs, mobId, &Mob::id);
+    const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
     if (it == m_mobs.end() || it->hurtTimer > 0.0) {
         return std::nullopt;
     }
 
-    Mob &mob = *it;
+    QcCreature &mob = *it;
     mob.health -= amount;
     mob.hurtTimer = hurtInvulnerability;
     mob.hurtThisTick = true;
@@ -162,7 +162,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
 
 bool QcMobManager::hurt(quint32 mobId, double amount)
 {
-    const auto it = std::ranges::find(m_mobs, mobId, &Mob::id);
+    const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
     if (it == m_mobs.end() || it->hurtTimer > 0.0) {
         return false;
     }
@@ -178,18 +178,17 @@ bool QcMobManager::hurt(quint32 mobId, double amount)
 
 bool QcMobManager::remove(quint32 mobId)
 {
-    return m_mobs.removeIf([mobId](const Mob &mob) { return mob.id == mobId; }) > 0;
+    return m_mobs.removeIf([mobId](const QcCreature &mob) { return mob.id == mobId; }) > 0;
 }
 
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
     QList<PlayerHit> hits;
-    for (Mob &mob : m_mobs) {
+    for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
         mob.attackedThisTick = false;
-        // Mobs rest where they are while their chunk is not loaded.
-        mob.dormant = !world.chunk(QcPhysics::blockContaining(mob.motion.position).chunk());
+        // Mobs rest where they are while their chunk is not loaded (QcEntities::settle).
         if (!mob.dormant) {
             think(mob, world, players, dt, hits);
         }
@@ -197,7 +196,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
 
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
-    m_mobs.removeIf([&](const Mob &mob) { return QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night); });
+    m_mobs.removeIf([&](const QcCreature &mob) { return QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night); });
 
     m_spawnTimer += dt;
     if (m_naturalSpawning && m_spawnTimer >= spawnInterval) {
@@ -211,7 +210,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     return hits;
 }
 
-void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits)
+void QcMobManager::think(QcCreature &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits)
 {
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     mob.hurtTimer = std::max(0.0, mob.hurtTimer - dt);
@@ -239,7 +238,7 @@ void QcMobManager::think(Mob &mob, QcServerWorld &world, const QList<PlayerView>
     mob.blockedLastTick = move.blockedX || move.blockedZ;
 }
 
-QcPhysics::Steering QcMobManager::wander(Mob &mob, const QcMobDefinition &definition, double dt)
+QcPhysics::Steering QcMobManager::wander(QcCreature &mob, const QcMobDefinition &definition, double dt)
 {
     QcPhysics::Steering steering{{}, definition.walkSpeed};
     mob.wanderTimer -= dt;
@@ -266,7 +265,7 @@ QcPhysics::Steering QcMobManager::wander(Mob &mob, const QcMobDefinition &defini
     return steering;
 }
 
-void QcMobManager::fly(Mob &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)
+void QcMobManager::fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)
 {
     mob.wanderTimer -= dt;
     if (mob.wanderTimer <= 0.0 || mob.blockedLastTick) {
@@ -340,7 +339,7 @@ QcMobManager::NearbyCounts QcMobManager::countNear(const QcVec3 &centre) const
 {
     // Animals spawn naturally only where none is awake around the player: most come with new chunks.
     NearbyCounts counts;
-    for (const Mob &mob : m_mobs) {
+    for (const QcCreature &mob : m_mobs) {
         if (mob.dormant) {
             continue;
         }
@@ -460,7 +459,7 @@ bool QcMobManager::ruleAllows(const QcServerWorld &world, SpawnPlace &place, Spa
     // The light only matters for mobs that shun it.
     if (rule.maxLight < QcLightVolume::maxLevel) {
         if (!place.light) {
-            place.light = world.blockLightAt({place.x, place.floorY + 1, place.z});
+            place.light = QcLightVolume::blockLightAt(world, {place.x, place.floorY + 1, place.z});
         }
         return *place.light <= rule.maxLight;
     }
@@ -667,12 +666,17 @@ int QcMobManager::pickAnimal(const QList<int> &candidates, double random) const
     return candidates.constLast();
 }
 
+QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
+{
+    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred};
+}
+
 QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
 {
     QList<Stored> stored;
-    for (const Mob &mob : m_mobs) {
+    for (const QcCreature &mob : m_mobs) {
         if (mob.persistent) {
-            stored.append({mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred});
+            stored.append(storedOf(mob));
         }
     }
     return stored;
@@ -686,7 +690,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
             continue;
         }
 
-        Mob mob;
+        QcCreature mob;
         mob.id = nextEntityId();
         mob.type = stored.type;
         mob.motion.position = stored.position;
@@ -703,12 +707,12 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
 
 qsizetype QcMobManager::awakeCount() const
 {
-    return std::ranges::count_if(m_mobs, [](const Mob &mob) { return !mob.dormant; });
+    return std::ranges::count_if(m_mobs, [](const QcCreature &mob) { return !mob.dormant; });
 }
 
 qsizetype QcMobManager::awakeSummonedCount() const
 {
-    return std::ranges::count_if(m_mobs, [](const Mob &mob) { return mob.summoned && !mob.dormant; });
+    return std::ranges::count_if(m_mobs, [](const QcCreature &mob) { return mob.summoned && !mob.dormant; });
 }
 
 void QcMobManager::setCaps(int hostile, int passive, int ambient)

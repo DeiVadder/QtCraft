@@ -37,7 +37,7 @@ private:
     QStringList itemLines() const
     {
         QStringList lines;
-        for (const QcItemEntityManager::Item &dropped : m_server->items().items()) {
+        for (const QcItemEntity &dropped : m_server->items().items()) {
             const QcVec3 &p = dropped.motion.position;
             lines.append(u"item %1 at %2 %3 %4"_s.arg(stackText(dropped.stack, *m_content)).arg(p.x, 0, 'f', 3).arg(p.y, 0, 'f', 3).arg(p.z, 0, 'f', 3));
         }
@@ -75,6 +75,25 @@ private:
         return lines;
     }
 
+    static qint32 legacyCode(QcEntityKind kind, qint32 creatureType)
+    {
+        switch (kind) {
+        case QcEntityKind::Creature:
+            return creatureType;
+        case QcEntityKind::Player:
+            return -1;
+        case QcEntityKind::Item:
+            return -2;
+        case QcEntityKind::FallingBlock:
+            return -3;
+        case QcEntityKind::ArmourStand:
+            return -4;
+        case QcEntityKind::MovingBlock:
+            return -5;
+        }
+        return 0;
+    }
+
     QStringList clientLines() const
     {
         QStringList lines;
@@ -84,9 +103,11 @@ private:
             updates.addData(m_content->stateName(update.block).toUtf8());
         }
         lines.append(u"client block updates %1 %2"_s.arg(m_client->blockUpdates.size()).arg(QString::fromLatin1(updates.result().toHex())));
+        // Counted by the codes this dump has always used: a creature's type, -1 player, -2 item,
+        // -3 falling block, -4 armour stand, -5 sliding block.
         QHash<qint32, int> kinds;
-        for (const qint32 kind : std::as_const(m_client->entities)) {
-            ++kinds[kind];
+        for (auto it = m_client->entities.cbegin(); it != m_client->entities.cend(); ++it) {
+            ++kinds[legacyCode(it.value(), m_client->spawns.value(it.key()).creatureType)];
         }
         QList<qint32> keys = kinds.keys();
         std::ranges::sort(keys);

@@ -2,6 +2,8 @@
 
 #include "QcAppearance.h"
 #include "QcBlockDefinition.h"
+#include "QcContentRegistry.h"
+#include "QcEntityKind.h"
 #include "QcEquipment.h"
 #include "QcItemStack.h"
 #include "QcStandPose.h"
@@ -9,13 +11,13 @@
 
 #include <QString>
 
-// Client mirror of an entity the server reported (mob, other player or dropped item).
+// Client mirror of an entity the server reported (QcMsg::EntitySpawn).
 struct QcClientEntity
 {
     quint32 id = 0;
-    // Index into the content's mobs, -1 for a player, -2 for a dropped item, -3 for a falling block,
-    // -4 for an armour stand (see QcMsg::EntitySpawn).
-    int mobType = -1;
+    QcEntityKind kind = QcEntityKind::Player;
+    // Creatures: index into the content's mobs (checked on arrival).
+    int creatureType = 0;
     // The block of a falling block; air otherwise.
     QcBlockId block = qcAirBlockId;
     // The stack of a dropped item; empty otherwise.
@@ -51,11 +53,17 @@ struct QcClientEntity
     int swingTicks = -1;
     int deathTicks = -1;
 
-    bool isItem() const { return !item.isEmpty(); }
-    bool isPlayer() const { return mobType == -1; }
-    bool isFallingBlock() const { return mobType == -3; }
-    bool isMovingBlock() const { return mobType == -5; }
+    bool isItem() const { return kind == QcEntityKind::Item; }
+    bool isPlayer() const { return kind == QcEntityKind::Player; }
+    bool isCreature() const { return kind == QcEntityKind::Creature; }
+    bool isFallingBlock() const { return kind == QcEntityKind::FallingBlock; }
+    bool isMovingBlock() const { return kind == QcEntityKind::MovingBlock; }
     // Falling and moving blocks: drawn as a block, never targeted, no steps.
     bool isBlockEntity() const { return isFallingBlock() || isMovingBlock(); }
-    bool isArmourStand() const { return mobType == -4; }
+    bool isArmourStand() const { return kind == QcEntityKind::ArmourStand; }
+    // The definition of a creature; nothing for the other kinds.
+    const QcMobDefinition *creature(const QcContentRegistry &content) const
+    {
+        return isCreature() && creatureType >= 0 && creatureType < content.mobs().size() ? &content.mobs()[creatureType] : nullptr;
+    }
 };

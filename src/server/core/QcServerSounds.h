@@ -5,7 +5,7 @@
 
 #include <QString>
 
-struct QcServerState;
+class QcServerState;
 class QcTickScheduler;
 
 // Sends sound events to the clients that can hear them.

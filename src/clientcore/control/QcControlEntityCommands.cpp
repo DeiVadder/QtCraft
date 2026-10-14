@@ -72,17 +72,17 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                 {u"distance"_s, distance}};
     }
 
-    const bool mob = content && entity.mobType >= 0 && entity.mobType < content->mobs().size();
+    const QcMobDefinition *creature = content ? entity.creature(*content) : nullptr;
     QJsonObject json{{u"id"_s, qint64(entity.id)},
-                     {u"type"_s, mob ? content->mobs()[entity.mobType].name : u"player"_s},
+                     {u"type"_s, creature ? creature->name : u"player"_s},
                      {u"name"_s, entity.name},
-                     {u"hostile"_s, mob && content->mobs()[entity.mobType].hostile},
+                     {u"hostile"_s, creature && creature->hostile},
                      {u"position"_s, QcControlReports::vectorJson(entity.position)},
                      {u"distance"_s, distance},
                      {u"health"_s, entity.health},
                      {u"yaw"_s, entity.yaw},
                      {u"animation"_s, animationJson(entity)}};
-    if (mob) {
+    if (creature) {
         json.insert(u"young"_s, (entity.flags & QcMsg::Young) != 0);
         json.insert(u"inLove"_s, (entity.flags & QcMsg::InLove) != 0);
     }
@@ -142,8 +142,8 @@ bool QcControlEntityCommands::turnToEntity(const QJsonObject &request)
     }
 
     const auto content = session().content();
-    const double height = it->mobType >= 0 && it->mobType < content->mobs().size() ? content->mobs()[it->mobType].height
-                                                                                   : QcPhysics::playerHeight;
+    const QcMobDefinition *creature = it->creature(*content);
+    const double height = creature ? creature->height : QcPhysics::playerHeight;
 
     QcControlAim::lookAtPoint(session(), it->position + QcVec3{0.0, height * 0.5, 0.0});
     return true;
@@ -234,9 +234,8 @@ QString QcControlEntityCommands::useEntityError(quint32 entityId, UseBefore befo
 
     const QcContentRegistry *content = session().content().get();
     const QcItemStack &held = session().inventory().selectedStack();
-    const bool mob = content && entity->mobType >= 0 && entity->mobType < content->mobs().size();
-    const bool food = mob && content->isValidItem(before.held.item)
-                      && content->mobs()[entity->mobType].breeding.food.contains(content->item(before.held.item).name);
+    const QcMobDefinition *creature = content ? entity->creature(*content) : nullptr;
+    const bool food = creature && content->isValidItem(before.held.item) && creature->breeding.food.contains(content->item(before.held.item).name);
     const bool used = held.item != before.held.item || held.count != before.held.count;
     const bool fellInLove = (entity->flags & QcMsg::InLove) != 0 && (before.flags & QcMsg::InLove) == 0;
     const bool youngFed = food && (before.flags & QcMsg::Young) != 0 && (used || session().gameMode().rules().infiniteItems);

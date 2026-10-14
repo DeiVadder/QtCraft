@@ -2,17 +2,20 @@
 
 #include "QcMessages.h"
 
-#include <QSet>
+#include <QList>
 
+struct QcEntity;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
-// Tells each client about the mobs, other players, falling blocks, dropped items and armour stands near it: spawns
-// for new ones, moves for known ones and removals for those out of sight or dead.
+// Tells each client about the entities near it (decision E-364), the same way for every kind: a
+// spawn when one comes into view or its spawn data changed, moves for known ones and a removal when
+// one is out of sight, rests or died. What differs per kind is a rule: how far it is seen, whether
+// and when its moves are sent, and what its spawn says.
 class QcEntitySync
 {
 public:
-    // Players are visible to each other and mobs are sent to clients within this distance.
+    // Players are visible to each other and other entities are sent to clients within this distance.
     static constexpr double entityViewDistance = 64.0;
     // Dropped items are sent to clients within this distance.
     static constexpr double itemViewDistance = 32.0;
@@ -32,14 +35,10 @@ private:
         QcMsg::EntityMoves moves;
     };
 
-    void consider(Pass &pass, const QcMsg::EntitySpawn &spawn, bool hurt);
-    void considerPlayers(Pass &pass);
-    void considerFallingBlocks(Pass &pass);
-    // Blocks sliding where a piston moves them (decision E-337).
-    void considerMovingBlocks(Pass &pass);
-    void considerItems(Pass &pass) const;
-    // Armour stands never move: a spawn when they come into view or change, no moves.
-    void considerStands(Pass &pass) const;
+    void consider(Pass &pass, const QcEntity &entity) const;
+    // What the client sees of the entity now, as a move (also the base of its spawn).
+    QcMsg::EntityMove seen(const QcEntity &entity) const;
+    QcMsg::EntitySpawn spawnOf(const QcEntity &entity, const QcMsg::EntityMove &now) const;
     void removeUnseen(Pass &pass) const;
 
     QcServerState &m_state;

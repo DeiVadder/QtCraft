@@ -14,7 +14,7 @@ class QcServerBlocks;
 class QcServerSounds;
 class QcSignalTable;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // What Signal Dispensers and droppers do when their delay ends (decision E-345). Each picks one of
 // its non-empty slots at random, from a generator seeded with the world's seed, the tick and its

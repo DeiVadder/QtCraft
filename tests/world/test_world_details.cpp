@@ -3,13 +3,14 @@
 #include "QcCrafting.h"
 #include "QcDayCycle.h"
 #include "QcInProcessTransport.h"
-#include "QcTestMachines.h"
+#include "QcLightVolume.h"
 #include "QcMobManager.h"
 #include "QcPhysics.h"
 #include "QcServer.h"
+#include "QcTerrainGenerator.h"
+#include "QcTestMachines.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestWorld.h"
-#include "QcTerrainGenerator.h"
 
 #include "QcTestLogin.h"
 
@@ -146,7 +147,7 @@ private:
     int dropped(QcItemId wanted) const
     {
         int total = 0;
-        for (const QcItemEntityManager::Item &entity : m_server->items().items()) {
+        for (const QcItemEntity &entity : m_server->items().items()) {
             total += entity.stack.item == wanted ? entity.stack.count : 0;
         }
         return total;
@@ -325,6 +326,7 @@ private slots:
     void contactDamageCoversChunkAndSectionBorders()
     {
         QcServerWorld world(m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        const QcContactDamage contact(*m_content);
         for (int x = -2; x <= 1; ++x) {
             for (int z = -2; z <= 1; ++z) {
                 world.loadChunk({x, z});
@@ -336,17 +338,17 @@ private slots:
         const double lavaDamage = m_content->block(lava).contactDamage;
         QVERIFY(lavaDamage > 0.0);
         const QcAabb onCorner{{-0.5, 63.5, -0.5}, {0.5, 64.5, 0.5}};
-        QCOMPARE(world.contactDamageIn(onCorner), 0.0);
+        QCOMPARE(contact.in(world, onCorner), 0.0);
 
         // The test terrain holds no lava.
-        QVERIFY(!world.mayHaveContactDamage());
+        QVERIFY(!contact.isPossibleIn(world));
 
         // Lava on both sides of the chunk corner at (0, 0) and of the section border at y = 64.
         QVERIFY(world.setBlock({-1, 64, -1}, lava));
         QVERIFY(world.setBlock({0, 63, 15}, flowing));
         QVERIFY(world.setBlock({16, 70, 0}, lava));
         QVERIFY(world.setBlock({-17, 0, 5}, lava));
-        QVERIFY(world.mayHaveContactDamage());
+        QVERIFY(contact.isPossibleIn(world));
 
         // Independent reference: every overlapped cell looked up one by one.
         const auto expected = [&](const QcAabb &box) {
@@ -362,12 +364,12 @@ private slots:
             return damage;
         };
 
-        QCOMPARE(world.contactDamageIn(onCorner), lavaDamage);
+        QCOMPARE(contact.in(world, onCorner), lavaDamage);
 
         // Touching a lava cell only on its face does not burn.
-        QCOMPARE(world.contactDamageIn({{0.0, 64.0, -1.0}, {0.6, 65.8, -0.4}}), 0.0);
-        QCOMPARE(world.contactDamageIn({{-0.02, 64.0, -1.0}, {0.6, 65.8, -0.4}}), lavaDamage);
-        QCOMPARE(world.contactDamageIn({{-17.0, -2.0, 5.2}, {-16.5, 0.5, 5.8}}), lavaDamage);
+        QCOMPARE(contact.in(world, {{0.0, 64.0, -1.0}, {0.6, 65.8, -0.4}}), 0.0);
+        QCOMPARE(contact.in(world, {{-0.02, 64.0, -1.0}, {0.6, 65.8, -0.4}}), lavaDamage);
+        QCOMPARE(contact.in(world, {{-17.0, -2.0, 5.2}, {-16.5, 0.5, 5.8}}), lavaDamage);
 
         QRandomGenerator random(14);
         int burning = 0;
@@ -377,20 +379,20 @@ private slots:
             const QcAabb box{min, min + size};
             const double reference = expected(box);
             burning += reference > 0.0 ? 1 : 0;
-            QCOMPARE(world.contactDamageIn(box), reference);
+            QCOMPARE(contact.in(world, box), reference);
         }
         QVERIFY(burning > 0);
 
         // Taken away again, nothing burns there any more.
         QVERIFY(world.setBlock({-1, 64, -1}, qcAirBlockId));
-        QCOMPARE(world.contactDamageIn({{-1.0, 64.0, -1.0}, {-0.5, 64.5, -0.5}}), 0.0);
+        QCOMPARE(contact.in(world, {{-1.0, 64.0, -1.0}, {-0.5, 64.5, -0.5}}), 0.0);
 
         // Lava in a chunk read from a save is found as well.
         auto stored = std::make_shared<QcChunk>(QcChunkPos{5, 5});
         stored->setBlock(3, 100, 3, lava);
         world.adoptStoredChunks({{QcChunkPos{5, 5}, stored}});
-        QCOMPARE(world.contactDamageIn({{83.2, 100.2, 83.2}, {83.8, 101.0, 83.8}}), lavaDamage);
-        QCOMPARE(world.contactDamageIn({{84.2, 100.2, 83.2}, {84.8, 101.0, 83.8}}), 0.0);
+        QCOMPARE(contact.in(world, {{83.2, 100.2, 83.2}, {83.8, 101.0, 83.8}}), lavaDamage);
+        QCOMPARE(contact.in(world, {{84.2, 100.2, 83.2}, {84.8, 101.0, 83.8}}), 0.0);
     }
 
     void generatedLavaPoolsStayStill()
@@ -515,7 +517,7 @@ private slots:
         ticks(1);
 
         // The client sees a falling block entity of sand.
-        const auto spawn = std::ranges::find(m_client->spawns, QcMsg::EntitySpawn::fallingBlockType, &QcMsg::EntitySpawn::mobType);
+        const auto spawn = std::ranges::find(m_client->spawns, QcEntityKind::FallingBlock, &QcMsg::EntitySpawn::kind);
         QVERIFY(spawn != m_client->spawns.end());
         QCOMPARE(spawn->block, id(u"sand"_s));
         ticks(40);
@@ -581,7 +583,7 @@ private slots:
         double x = 0.0;
         bool fell = false;
         for (int tick = 0; tick < 20; ++tick) {
-            const auto body = std::ranges::find(m_server->mobs().mobs(), quint32(900001), &QcMobManager::Mob::id);
+            const auto body = std::ranges::find(m_server->mobs().mobs(), quint32(900001), &QcCreature::id);
             QVERIFY(body != m_server->mobs().mobs().end());
             if (!m_server->fallingBlocks().all().isEmpty()) {
                 x = body->motion.position.x;
@@ -749,7 +751,7 @@ private slots:
         quint32 next = 100;
         const QcVec3 player{0.5, 70.0, 0.5};
         const auto countFireflies = [&](const QcMobManager &mobs) {
-            return std::ranges::count(mobs.mobs(), firefly, &QcMobManager::Mob::type);
+            return std::ranges::count(mobs.mobs(), firefly, &QcCreature::type);
         };
 
         auto swamp = world(true);
@@ -759,7 +761,7 @@ private slots:
             mobs.tick(*swamp, {{7, player, true}}, midnight, 0.05, [&next] { return next++; });
             most = std::max(most, int(countFireflies(mobs)));
             // Fireflies fly: never on the ground.
-            for (const QcMobManager::Mob &mob : mobs.mobs()) {
+            for (const QcCreature &mob : mobs.mobs()) {
                 if (mob.type == firefly) {
                     QVERIFY(!mob.motion.onGround);
                 }
@@ -827,8 +829,8 @@ private slots:
         hold("mine_lamp", 3);
         use(ceiling, QcBlockFace::Down);
         QCOMPARE(nameAt(ceiling.offset(0, -1, 0)), u"qtcraft:mine_lamp[attach=ceiling]"_s);
-        QCOMPARE(m_server->world().blockLightAt(ceiling.offset(0, -1, 0)), 12);
-        QCOMPARE(m_server->world().blockLightAt(ceiling.offset(0, -3, 0)), 10);
+        QCOMPARE(QcLightVolume::blockLightAt(m_server->world(), ceiling.offset(0, -1, 0)), 12);
+        QCOMPARE(QcLightVolume::blockLightAt(m_server->world(), ceiling.offset(0, -3, 0)), 10);
         QCOMPARE(m_content->block(*m_content->blockId(u"qtcraft:torch"_s)).lightLevel, 14);
 
         // On a wall and on the floor too.

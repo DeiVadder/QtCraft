@@ -305,7 +305,7 @@ therefore shows them a little in the past (E-271):
   states are block states in the usual `BlockUpdate`s; the content sync carries each block's signal
   kind, so the client uses levers, buttons and repeaters instead of placing against them. Blocks a
   piston moves are at their new cells in the server's world at once; the clients see the source cells
-  empty, the block as a sliding entity (`EntitySpawn` with `mobType` −5) for two ticks and then the
+  empty, the block as a sliding entity (`EntitySpawn` of the kind `MovingBlock`) for two ticks and then the
   new cells. Bodies in the way are pushed by the server: the pushed player gets the new position with
   the next `PlayerState`, like knockback; the client predicts nothing of pistons. Levers, buttons and
   repeaters switch at most 5 times per second per player (burst 10; bucket `switch`, beyond it a click

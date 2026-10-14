@@ -14,7 +14,7 @@
 class QcPendingCommands;
 class QcTickPhaseTimer;
 class QcTickScheduler;
-struct QcServerState;
+class QcServerState;
 
 // Maintenance of the world (decisions E-245, E-246): saving, backups, the world's numbers, removing
 // entities and stopping the server.

@@ -10,7 +10,7 @@
 #include <optional>
 
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Parsing of command words shared by the commands. Everything a command reads is checked here or
 // by the command before it changes anything.

@@ -11,7 +11,7 @@
 class QcBlockUpdateQueue;
 class QcPendingCommands;
 class QcServerBlocks;
-struct QcServerState;
+class QcServerState;
 
 // Commands that change blocks (decision E-245): /setblock, /fill (optionally only replacing one
 // block), /clear and /regenerate. Areas are limited in size; large fills and every regeneration

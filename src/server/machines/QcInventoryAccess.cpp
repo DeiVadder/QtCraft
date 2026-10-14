@@ -27,19 +27,19 @@ QcInventoryAccess::QcInventoryAccess(QcServerState &state)
 
 bool QcInventoryAccess::hasInventory(QcBlockPos pos) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    return block && (m_state.blockEntities().containerSlots(*block) > 0 || m_state.machineRules.machineOf(*block));
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    return block && (m_state.blockEntities().containerSlots(*block) > 0 || m_state.machineRules().machineOf(*block));
 }
 
 bool QcInventoryAccess::ensure(QcBlockPos pos)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     return block && m_state.blockEntities().ensure(pos, *block);
 }
 
 QList<QcItemStack> QcInventoryAccess::slotsAt(QcBlockPos pos) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     if (!block) {
         return {};
     }
@@ -47,7 +47,7 @@ QList<QcItemStack> QcInventoryAccess::slotsAt(QcBlockPos pos) const
         const QcBlockEntities::Container *container = m_state.blockEntities().container(pos);
         return container ? container->stacks : QList<QcItemStack>(cells);
     }
-    if (m_state.machineRules.machineOf(*block)) {
+    if (m_state.machineRules().machineOf(*block)) {
         const QcBlockEntities::Machine *machine = m_state.blockEntities().machine(pos);
         return machine ? QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end()) : QList<QcItemStack>(QcMachineRules::slotCount);
     }
@@ -56,8 +56,8 @@ QList<QcItemStack> QcInventoryAccess::slotsAt(QcBlockPos pos) const
 
 QList<int> QcInventoryAccess::slotsIn(QcBlockPos pos, QcBlockFace face) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (block && m_state.machineRules.machineOf(*block)) {
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (block && m_state.machineRules().machineOf(*block)) {
         return {face == QcBlockFace::Up ? QcMachineRules::inputSlot : QcMachineRules::fuelSlot};
     }
 
@@ -68,8 +68,8 @@ QList<int> QcInventoryAccess::slotsIn(QcBlockPos pos, QcBlockFace face) const
 
 QList<int> QcInventoryAccess::slotsOut(QcBlockPos pos, QcBlockFace face) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (block && m_state.machineRules.machineOf(*block)) {
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (block && m_state.machineRules().machineOf(*block)) {
         // Downwards the output, and an empty bucket left in the fuel slot (as in the reference).
         return face == QcBlockFace::Down ? QList<int>{QcMachineRules::outputSlot, QcMachineRules::fuelSlot} : QList<int>{};
     }
@@ -81,29 +81,29 @@ QList<int> QcInventoryAccess::slotsOut(QcBlockPos pos, QcBlockFace face) const
 
 bool QcInventoryAccess::mayTakeOut(QcBlockPos pos, int slot, QcItemStack stack) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (block && m_state.machineRules.machineOf(*block) && slot == QcMachineRules::fuelSlot) {
-        return m_state.content->isValidItem(stack.item) && m_state.content->item(stack.item).scoops;
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (block && m_state.machineRules().machineOf(*block) && slot == QcMachineRules::fuelSlot) {
+        return m_state.content().isValidItem(stack.item) && m_state.content().item(stack.item).scoops;
     }
     return true;
 }
 
 bool QcInventoryAccess::accepts(QcBlockPos pos, int slot, QcItemStack stack) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-    if (block && m_state.machineRules.machineOf(*block) && slot == QcMachineRules::fuelSlot) {
-        return m_state.machineRules.fuelSeconds(stack.item) > 0.0;
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+    if (block && m_state.machineRules().machineOf(*block) && slot == QcMachineRules::fuelSlot) {
+        return m_state.machineRules().fuelSeconds(stack.item) > 0.0;
     }
     return true;
 }
 
 int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks, const QList<int> &cells, QcItemStack stack) const
 {
-    if (stack.isEmpty() || !m_state.content->isValidItem(stack.item)) {
+    if (stack.isEmpty() || !m_state.content().isValidItem(stack.item)) {
         return -1;
     }
 
-    const int maxStack = m_state.content->item(stack.item).maxStack;
+    const int maxStack = m_state.content().item(stack.item).maxStack;
     for (const int slot : cells) {
         const QcItemStack &there = stacks[slot];
         const bool room = there.isEmpty() || (sameItem(there, stack) && there.count < maxStack);
@@ -116,7 +116,7 @@ int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks,
 
 QList<std::pair<int, int>> QcInventoryAccess::fit(QcBlockPos pos, QList<QcItemStack> stacks, const QList<int> &cells, QcItemStack stack) const
 {
-    const int maxStack = m_state.content->isValidItem(stack.item) ? m_state.content->item(stack.item).maxStack : 0;
+    const int maxStack = m_state.content().isValidItem(stack.item) ? m_state.content().item(stack.item).maxStack : 0;
     QList<std::pair<int, int>> places;
     int placed = 0;
     while (placed < stack.count) {
@@ -193,7 +193,7 @@ QList<QcInventoryAccess::Insertion> QcInventoryAccess::resolveTarget(QList<Inser
 
 QcItemStack *QcInventoryAccess::slotPtr(QcBlockPos pos, int slot)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     if (!block || slot < 0) {
         return nullptr;
     }
@@ -201,7 +201,7 @@ QcItemStack *QcInventoryAccess::slotPtr(QcBlockPos pos, int slot)
         QcBlockEntities::Container *container = m_state.blockEntities().container(pos);
         return container && slot < container->stacks.size() ? &container->stacks[slot] : nullptr;
     }
-    QcBlockEntities::Machine *machine = m_state.machineRules.machineOf(*block) ? m_state.blockEntities().machine(pos) : nullptr;
+    QcBlockEntities::Machine *machine = m_state.machineRules().machineOf(*block) ? m_state.blockEntities().machine(pos) : nullptr;
     return machine && slot < QcMachineRules::slotCount ? &machine->stacks[std::size_t(slot)] : nullptr;
 }
 

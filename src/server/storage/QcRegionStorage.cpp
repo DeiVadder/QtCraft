@@ -13,8 +13,8 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 2 stores block states in the palette ("name[property=value,...]"); version 1 has plain
-// names, which load as default states.
+// Version 2 stores block states in the palette ("name[property=value,...]"); files of older
+// development versions are refused (decision E-356).
 constexpr quint16 regionVersion = 2;
 constexpr QByteArrayView regionMagic("QCRG");
 
@@ -137,9 +137,13 @@ QcResult<QcRegionStorage::Chunks> QcRegionStorage::read(QStringList &warnings) c
 
 QcStatus QcRegionStorage::readRegion(const QString &path, Chunks &chunks, QStringList &warnings) const
 {
-    const QcResult<QByteArray> payload = QcSaveFile::read(path, regionMagic, regionVersion);
+    quint16 version = 0;
+    const QcResult<QByteArray> payload = QcSaveFile::read(path, regionMagic, regionVersion, &version);
     if (!payload) {
         return qcError(payload.error());
+    }
+    if (version < regionVersion) {
+        return qcError(u"%1 is from an older development version"_s.arg(path));
     }
 
     QDataStream stream(*payload);

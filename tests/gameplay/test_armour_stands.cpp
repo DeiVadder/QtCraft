@@ -2,11 +2,12 @@
 #include "QcProtocolCodec.h"
 #include "QcSaveFile.h"
 #include "QcServerCombat.h"
+#include "QcServerPersistence.h"
 #include "QcServerStands.h"
 #include "QcServerTestFixture.h"
 #include "QcShowcaseArmourArea.h"
 #include "QcShowcasePlanner.h"
-#include "QcStandStorage.h"
+#include "QcEntityStorage.h"
 #include "QcTestUtil.h"
 
 #include <QFile>
@@ -32,11 +33,11 @@ class TestArmourStands : public QcServerTestFixture
         return m_server->stands().stands().isEmpty() ? 0 : m_server->stands().stands().constLast().id;
     }
 
-    const QcArmourStandManager::Stand *stand(quint32 id) { return m_server->stands().find(id); }
+    const QcArmourStand *stand(quint32 id) { return m_server->stands().find(id); }
 
     // Ticks until the attack cooldown is over, and ticks of the break window.
     static constexpr int cooldownTicks = int(QcServerCombat::playerAttackCooldown * QcPhysics::tickRate) + 1;
-    static constexpr int breakWindowTicks = int(QcArmourStandManager::breakWindow * QcPhysics::tickRate);
+    static constexpr int breakWindowTicks = int(QcArmourStand::breakWindow * QcPhysics::tickRate);
     static_assert(cooldownTicks + 1 < breakWindowTicks, "a second hit after the cooldown must fit into the break window");
 
     // A second raw client on the server.
@@ -54,8 +55,8 @@ class TestArmourStands : public QcServerTestFixture
     // Fills the world up to the stand limit with stands high above the stage.
     void fillWithStands()
     {
-        QcArmourStandManager::Stand far;
-        far.position = {m_feet.x + 0.5, 300.0, m_feet.z + 0.5};
+        QcArmourStand far;
+        far.motion.position = {m_feet.x + 0.5, 300.0, m_feet.z + 0.5};
         far.item = u"qtcraft:armor_stand"_s;
         for (quint32 i = 0; m_server->stands().stands().size() < QcArmourStandManager::maxStands; ++i) {
             far.id = 4'000'000'000u + i;
@@ -88,7 +89,7 @@ private slots:
         const quint32 id = placeStand();
         QVERIFY(id != 0);
         QCOMPARE(m_server->stands().stands().size(), 1);
-        QCOMPARE(stand(id)->position, (QcVec3{m_feet.x + 0.5, double(m_feet.y), m_feet.z - 1.5}));
+        QCOMPARE(stand(id)->motion.position, (QcVec3{m_feet.x + 0.5, double(m_feet.y), m_feet.z - 1.5}));
         // The player looks north (yaw 0): the stand looks south at them.
         QCOMPARE(stand(id)->yaw, 180.0f);
         QCOMPARE(stand(id)->item, u"qtcraft:armor_stand"_s);
@@ -241,14 +242,14 @@ private slots:
                 m_server->world().setBlock(m_feet.offset(dx, dy, -1), qcAirBlockId);
             }
         }
-        m_server->stands().find(standId)->position.z -= 10.0;
+        m_server->stands().find(standId)->motion.position.z -= 10.0;
         send(QcMsg::UseEntity{standId});
         QVERIFY(stand(standId)->equipment.isEmpty());
         send(QcMsg::AttackEntity{standId});
         QCOMPARE(stand(standId)->hitBy, quint32(0));
 
         // Back in reach and sight, the helmet goes on.
-        m_server->stands().find(standId)->position.z += 10.0;
+        m_server->stands().find(standId)->motion.position.z += 10.0;
         send(QcMsg::UseEntity{standId});
         QCOMPARE(stand(standId)->equipment.at(QcEquipmentSlot::Head).item, item("qtcraft:iron_helmet"));
     }
@@ -307,7 +308,7 @@ private slots:
         QVERIFY(stand(id)->pose.showName);
 
         // Wrong values change nothing and get the usage.
-        const QcArmourStandManager::Stand before = *stand(id);
+        const QcArmourStand before = *stand(id);
         chat(u"/armorstand nearest pose head nan 0 0"_s);
         chat(u"/armorstand nearest rotation"_s);
         chat(u"/armorstand nearest equip nothing_at_all"_s);
@@ -331,7 +332,7 @@ private slots:
         chat(u"/summon armor_stand equip=iron pose=head,20,0,0 small arms=false name=Tin"_s);
         QCOMPARE(m_server->stands().stands().size(), 1);
         QCOMPARE(m_server->mobs().mobs().size(), creatures);
-        const QcArmourStandManager::Stand &summoned = m_server->stands().stands().constFirst();
+        const QcArmourStand &summoned = m_server->stands().stands().constFirst();
         QCOMPARE(QcArmour::points(*m_content, summoned.equipment), 15);
         QCOMPARE(summoned.pose.at(QcStandPose::Part::Head).x, 20.0f);
         QVERIFY(summoned.pose.small && !summoned.pose.arms);
@@ -351,7 +352,7 @@ private slots:
         const quint32 id = placeStand();
         ticks(2);
         QVERIFY(m_client->spawns.contains(id));
-        QCOMPARE(m_client->spawns.value(id).mobType, QcMsg::EntitySpawn::armourStandType);
+        QCOMPARE(m_client->spawns.value(id).kind, QcEntityKind::ArmourStand);
         QVERIFY(m_client->spawns.value(id).equipment.isEmpty());
 
         chat(u"/armorstand nearest equip diamond"_s);
@@ -387,110 +388,113 @@ private slots:
         chat(u"/armorstand nearest pose head 0 30 0"_s);
         chat(u"/armorstand nearest name Keeper"_s);
         chat(u"/armorstand nearest cape green_cape"_s);
-        const QcArmourStandManager::Stand saved = m_server->stands().stands().constFirst();
+        const QcArmourStand saved = m_server->stands().stands().constFirst();
         QCOMPARE(saved.cape, u"qtcraft:green_cape"_s);
         QVERIFY(m_server->save().has_value());
-        QVERIFY(QFile::exists(dir.filePath(u"stands.qce"_s)));
+        // Saved with the entities of its chunk (decision E-366).
+        QVERIFY(!QDir(dir.filePath(u"entities"_s)).entryList({u"r.*.qen"_s}, QDir::Files).isEmpty());
         m_client.reset();
         m_server.reset();
 
         join(config);
         QCOMPARE(m_server->stands().stands().size(), 1);
-        QcArmourStandManager::Stand loaded = m_server->stands().stands().constFirst();
+        QcArmourStand loaded = m_server->stands().stands().constFirst();
         loaded.id = saved.id;
         loaded.sinceHit = saved.sinceHit;
         QCOMPARE(loaded, saved);
     }
 
-    void worldsWithoutStandsLoadAndDamagedFilesAreKeptAside()
+    void standsKeepWhatTheyWearThroughTheEntityFiles()
     {
         QTemporaryDir dir;
-        const QcStandStorage storage(dir.path(), m_content);
+        const QcEntityStorage storage(dir.path(), m_content);
         QStringList warnings;
-        // No file (a world from before stage 23): no stands, no warning.
-        QVERIFY(storage.read(warnings).isEmpty());
+        // Nothing saved yet: no stands, no warning.
+        const auto empty = storage.read(warnings);
+        QVERIFY(empty.has_value() && empty->records.isEmpty());
         QVERIFY(warnings.isEmpty());
 
-        QcArmourStandManager::Stand stand;
-        stand.position = {1.5, 64.0, -3.5};
+        QcArmourStand stand;
+        stand.motion.position = {1.5, 64.0, -3.5};
         stand.item = u"qtcraft:armor_stand"_s;
+        stand.name = u"Tin"_s;
         stand.equipment.at(QcEquipmentSlot::Head) = {item("qtcraft:iron_helmet"), 1, 12};
         stand.held = {item("qtcraft:stick"), 1, 0};
-        QVERIFY(storage.write({stand}).has_value());
-        const QList<QcArmourStandManager::Stand> read = storage.read(warnings);
+        stand.pose.at(QcStandPose::Part::Head) = {10.0f, -20.0f, 5.0f};
+        QcEntityRecord record;
+        record.chunk = {0, -1};
+        record.stands.append({stand, 0});
+        QVERIFY(storage.write({{record}, {}}).has_value());
+        const auto read = storage.read(warnings);
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
-        QCOMPARE(read, QList{stand});
+        QCOMPARE(read->records.size(), 1);
+        QCOMPARE(read->records.first().stands.first().entry, stand);
 
         // A cape the content no longer offers is dropped with a warning; the stand stays.
-        QcArmourStandManager::Stand caped = stand;
-        caped.cape = u"oldmod:cape"_s;
-        QVERIFY(storage.write({caped}).has_value());
-        QCOMPARE(storage.read(warnings), QList{stand});
+        record.stands.first().entry.cape = u"oldmod:cape"_s;
+        QVERIFY(storage.write({{record}, {}}).has_value());
+        QCOMPARE(storage.read(warnings)->records.first().stands.first().entry, stand);
         QCOMPARE(warnings.size(), 1);
 
-        // Files of version 1 (before the cape) load without one.
-        QByteArray payload;
-        QDataStream out(&payload, QIODevice::WriteOnly);
-        out.setVersion(QcSaveFile::streamVersion);
-        out << quint32(1) << stand.position.x << stand.position.y << stand.position.z << stand.yaw;
-        QcProtocolCodec::writeStandPose(out, stand.pose);
-        out << stand.name << stand.item;
-        QcSaveFile::writeStack(out, stand.held, *m_content);
-        for (const QcItemStack &stack : stand.equipment.stacks) {
-            QcSaveFile::writeStack(out, stack, *m_content);
-        }
-        QVERIFY(QcSaveFile::write(dir.filePath(u"stands.qce"_s), "QCAS", payload, 1).has_value());
+        // Armour that does not fit its slot any more is dropped with a warning.
+        record.stands.first().entry = stand;
+        record.stands.first().entry.equipment.at(QcEquipmentSlot::Feet) = {item("qtcraft:iron_helmet"), 1, 0};
         warnings.clear();
-        QCOMPARE(storage.read(warnings), QList{stand});
-        QVERIFY(warnings.isEmpty());
-
-        // A damaged file costs the stands, not the world: a warning, and the file is kept aside
-        // byte for byte (a second damaged read does not overwrite the first copy).
-        QFile file(dir.filePath(u"stands.qce"_s));
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        file.seek(file.size() - 3);
-        file.write("xyz");
-        file.close();
-        QVERIFY(file.open(QIODevice::ReadOnly));
-        const QByteArray damaged = file.readAll();
-        file.close();
-        QVERIFY(storage.read(warnings).isEmpty());
+        QVERIFY(storage.write({{record}, {}}).has_value());
+        QCOMPARE(storage.read(warnings)->records.first().stands.first().entry, stand);
         QCOMPARE(warnings.size(), 1);
-        QVERIFY2(warnings.constFirst().contains(u"stands.qce.damaged"_s), qPrintable(warnings.constFirst()));
-        QFile backup(dir.filePath(u"stands.qce.damaged"_s));
-        QVERIFY(backup.open(QIODevice::ReadOnly));
-        QCOMPARE(backup.readAll(), damaged);
-        QVERIFY(storage.read(warnings).isEmpty());
-        QVERIFY(QFile::exists(dir.filePath(u"stands.qce.damaged.2"_s)));
     }
 
-    void aWorldWithADamagedStandFileStillOpens()
+    void aWorldWithADamagedEntityFileIsRefused()
     {
+        // Stands are entities like the others now: a damaged file stops the world from opening with a
+        // message, instead of losing them unnoticed (decision E-366).
         QTemporaryDir dir;
         QcServerConfig config;
         config.worldDirectory = dir.path();
         join(config);
         placeStand();
+        const QcChunkPos chunk = QcPhysics::blockContaining(m_server->stands().stands().constFirst().motion.position).chunk();
         QVERIFY(m_server->save().has_value());
         m_client.reset();
         m_server.reset();
 
-        QFile file(dir.filePath(u"stands.qce"_s));
+        const QcChunkPos region = QcWorldStorage::regionOf(chunk);
+        const QString name = u"r.%1.%2.qen"_s.arg(region.x).arg(region.z);
+        QFile file(QDir(dir.filePath(u"entities"_s)).filePath(name));
         QVERIFY(file.open(QIODevice::ReadWrite));
         file.seek(file.size() - 2);
         file.write("!!");
         file.close();
 
-        join(config);
-        QVERIFY(m_server->stands().stands().isEmpty());
-        QVERIFY(std::ranges::any_of(m_server->openWarnings(), [](const QString &warning) { return warning.contains(u"armour stands"_s); }));
-        QVERIFY(QFile::exists(dir.filePath(u"stands.qce.damaged"_s)));
+        {
+            // The message names the file and the way out; the menu shows the same through damagedFile().
+            QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+            const QcStatus opened = server.openWorld();
+            QVERIFY(!opened.has_value());
+            QVERIFY2(opened.error().contains(name), qPrintable(opened.error()));
+            QVERIFY2(opened.error().contains(u"out of the world folder opens the world without the creatures"_s), qPrintable(opened.error()));
+            const QcServerPersistence::DamagedFile damaged = server.damagedFile();
+            const bool entityPart = damaged.part == QcServerPersistence::DamagedPart::Entities;
+            QVERIFY(entityPart);
+            QCOMPARE(damaged.file, u"entities/"_s + name);
+            QVERIFY(!server.worldTooOld());
+        }
+
+        // Moved away, the file no longer stops the world: it opens without the stand.
+        QVERIFY(QFile::rename(file.fileName(), dir.filePath(name)));
+        QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+        const QcStatus opened = server.openWorld();
+        QVERIFY2(opened.has_value(), qPrintable(opened ? QString() : opened.error()));
+        const bool undamaged = server.damagedFile().part == QcServerPersistence::DamagedPart::None;
+        QVERIFY(undamaged);
+        QVERIFY(server.stands().stands().isEmpty());
     }
 
     void restoringMoreThanTheLimitCountsTheRest()
     {
         QcArmourStandManager manager;
-        const QList<QcArmourStandManager::Stand> stands(QcArmourStandManager::maxStands + 7);
+        const QList<QcArmourStand> stands(QcArmourStandManager::maxStands + 7);
         QCOMPARE(manager.restore(stands), qsizetype(7));
         QCOMPARE(manager.stands().size(), qsizetype(QcArmourStandManager::maxStands));
         QCOMPARE(manager.restore(stands.mid(0, 3)), qsizetype(0));

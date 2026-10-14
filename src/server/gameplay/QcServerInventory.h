@@ -14,39 +14,27 @@
 class QcBlockScreens;
 class QcServerSounds;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
-// Inventories and crafting grids of the players: moving items (also into an open machine or chest),
-// crafting, throwing and dropping items.
+// Inventories of the players: moving items between the inventory, the crafting grid, armour slots and
+// an open machine or chest, throwing and dropping items, armour worn and taken off. Crafting itself is
+// QcServerCrafting's.
 class QcServerInventory
 {
 public:
     static constexpr int craftingGridSlot = QcMsg::MoveInventoryItem::craftingGridSlot;
     static constexpr int machineSlot = QcMsg::MoveInventoryItem::machineInputSlot;
     static constexpr int equipmentSlot = QcMsg::MoveInventoryItem::equipmentSlot;
-    // Crafting needs a crafting table within this distance for 3 x 3 recipes.
-    static constexpr double craftingTableReach = 5.0;
     // Speed of items thrown by a player.
     static constexpr double throwSpeed = 6.0;
 
     QcServerInventory(QcServerState &state, QcBlockScreens &screens, QcServerSounds &sounds);
 
     void send(QcServerClient &client);
-    // Shift-clicks on a crafting result take it as often as possible.
-    static constexpr int maxCraftAllRounds = 64;
 
     void moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move);
     // Shift-click: moves the whole stack to where it belongs (QcQuickMove).
     void quickMove(QcServerClient &client, QcMsg::QuickMoveItem move);
-    void takeCraftingResult(QcServerClient &client);
-    void craftAll(QcServerClient &client);
-    void craftRecipe(QcServerClient &client, const QcMsg::CraftRecipe &request);
-    // Opens the 3 x 3 grid of the crafting table at `pos`.
-    void openCraftingTable(QcServerClient &client, QcBlockPos pos);
-    void closeCrafting(QcServerClient &client);
-    // Moves the crafting grid into the inventory; what does not fit is thrown on the ground, or
-    // deleted in a mode with the item catalogue.
-    void returnCraftingGrid(QcServerClient &client);
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
     // Drops everything the player carries (death without keepInventory).
     void dropAll(QcServerClient &client);
@@ -66,8 +54,6 @@ public:
     void equipmentWorn(QcServerClient &client, const QcEquipment &equipment, bool broke);
 
 private:
-    enum class CraftOutcome { Crafted, NoRecipe, NoRoom, TooFar };
-
     // Inventory, crafting grid and the open machine or chest as one slot list.
     struct OpenSlots
     {
@@ -79,23 +65,11 @@ private:
     OpenSlots openSlots(QcServerClient &client);
     // Writes the slot list back and sends it; false (and nothing changed) when the machine refuses.
     bool applyOpenSlots(QcServerClient &client, const OpenSlots &open);
-    // Takes the crafting result once.
-    CraftOutcome craftOnce(QcServerClient &client);
-    // Takes the repair result (QcRepair) once.
-    CraftOutcome repairOnce(QcServerClient &client);
-    void takeOneOfEachCell(QcServerClient &client);
     // Whether the armour slots of the slot list hold only armour made for them.
     bool armourFits(const QList<QcItemStack> &combined) const;
     // The armour slot a shift-clicked stack goes to, or -1.
     int freeArmourSlotFor(const QcServerClient &client, QcItemStack stack) const;
 
-    void finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore);
-    // The grid of the current size as a size x size list, and the recipe it makes.
-    QList<QcItemStack> craftingView(const QcServerClient &client) const;
-    std::optional<qsizetype> craftingMatch(const QcServerClient &client) const;
-    bool isNearCraftingTable(const QcServerClient &client) const;
-    // Whether a crafting table stands in the column (dx, dy) around `feet` within reach.
-    bool hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
 

@@ -278,7 +278,7 @@ private slots:
         QcServerClient client;
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         client.connection = std::make_unique<QcConnection>(std::move(serverEnd), QcProtocol::Peer::Client, [](QcMessage &&) {});
-        client.entityId = 77;
+        client.id = 77;
         QcPendingCommands pending;
         bool ran = false;
         const QStringList args;

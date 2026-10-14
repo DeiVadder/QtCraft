@@ -39,7 +39,7 @@ QcServerHoppers::QcServerHoppers(QcServerState &state, const QcSignalTable &tabl
     : m_state(state)
     , m_table(table)
 {
-    const QcContentRegistry &content = *state.content;
+    const QcContentRegistry &content = state.content();
     m_fillsCell.resize(std::size_t(content.stateCount()));
     for (std::size_t id = 0; id < m_fillsCell.size(); ++id) {
         m_fillsCell[id] = fillsUnitCell(content.state(QcBlockId(id)).collision);
@@ -53,7 +53,7 @@ bool QcServerHoppers::fillsCell(QcBlockId block) const
 
 std::optional<QcBlockFace> QcServerHoppers::facingOf(QcBlockPos hopper) const
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(hopper);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(hopper);
     return block ? m_table.at(*block).facing : std::nullopt;
 }
 
@@ -82,11 +82,11 @@ void QcServerHoppers::tick()
 
 void QcServerHoppers::startCooldown(QcBlockPos hopper)
 {
-    const quint64 ready = m_state.tickCount + quint64(m_state.hoppers.cooldownTicks);
+    const quint64 ready = m_state.clock().tick() + quint64(m_state.hoppers().cooldownTicks);
     if (QcBlockEntities::Container *container = m_state.blockEntities().container(hopper)) {
         container->readyAt = ready;
     }
-    m_state.hoppers.wakeAt(hopper, ready);
+    m_state.hoppers().wakeAt(hopper, ready);
 }
 
 quint64 QcServerHoppers::readyAt(QcBlockPos hopper) const
@@ -97,12 +97,12 @@ quint64 QcServerHoppers::readyAt(QcBlockPos hopper) const
 
 void QcServerHoppers::wakeAround()
 {
-    QcHopperQueue &hoppers = m_state.hoppers;
-    const QcBlockIndex &index = m_state.world.hoppers();
-    QList<QcBlockPos> cells = m_state.world.hoppers().takeTouched();
+    QcHopperQueue &hoppers = m_state.hoppers();
+    const QcBlockIndex &index = m_state.world().hoppers();
+    QList<QcBlockPos> cells = m_state.world().hoppers().takeTouched();
     cells.append(QList<QcBlockPos>(hoppers.touched.begin(), hoppers.touched.end()));
     hoppers.touched.clear();
-    const QList<QcVec3> stirred = m_state.items.takeStirred();
+    const QList<QcVec3> stirred = m_state.entities().items().takeStirred();
     if (index.size() == 0) {
         return;
     }
@@ -131,32 +131,32 @@ void QcServerHoppers::wakeAround()
 
 QList<QcBlockPos> QcServerHoppers::actors()
 {
-    QcHopperQueue &hoppers = m_state.hoppers;
+    QcHopperQueue &hoppers = m_state.hoppers();
     QSet<QcBlockPos> due;
-    hoppers.takeDue(m_state.tickCount, due);
+    hoppers.takeDue(m_state.clock().tick(), due);
     m_stats.woken = due.size();
 
     QList<QcBlockPos> ready;
     for (const QcBlockPos &pos : std::as_const(due)) {
-        const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
-        if (!block || !m_state.world.hoppers().contains(pos) || m_table.at(*block).locked) {
+        const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
+        if (!block || !m_state.world().hoppers().contains(pos) || m_table.at(*block).locked) {
             // Gone, unloaded or locked: unlocking or loading is a block change that wakes it.
             continue;
         }
-        if (const quint64 ready = readyAt(pos); ready > m_state.tickCount) {
+        if (const quint64 ready = readyAt(pos); ready > m_state.clock().tick()) {
             hoppers.wakeAt(pos, ready);
             continue;
         }
         const std::optional<QcBlockFace> facing = m_table.at(*block).facing;
-        if (!m_state.world.blockAt(pos.offset(0, 1, 0)) || !facing || !m_state.world.blockAt(qcNeighbour(pos, *facing))) {
-            hoppers.wakeAt(pos, m_state.tickCount + unloadedRetryTicks);
+        if (!m_state.world().blockAt(pos.offset(0, 1, 0)) || !facing || !m_state.world().blockAt(qcNeighbour(pos, *facing))) {
+            hoppers.wakeAt(pos, m_state.clock().tick() + unloadedRetryTicks);
             continue;
         }
         ready.append(pos);
     }
     std::ranges::sort(ready, before);
 
-    const auto budget = qsizetype(m_state.config.limits.hopperBudget);
+    const auto budget = qsizetype(m_state.config().limits.hopperBudget);
     if (ready.size() > budget) {
         // Overloaded: go on after the hopper where the last tick stopped, the rest waits.
         const auto start = m_cursor ? std::ranges::upper_bound(ready, *m_cursor, before) : ready.begin();
@@ -213,7 +213,7 @@ void QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
 
     // A hopper that was empty waits its cooldown before passing the item on (as in the reference).
     for (const QcBlockPos &target : std::as_const(received)) {
-        if (m_state.world.hoppers().contains(target) && !moved.contains(target)) {
+        if (m_state.world().hoppers().contains(target) && !moved.contains(target)) {
             startCooldown(target);
         }
     }
@@ -226,7 +226,7 @@ void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
     QList<Pull> pulls;
     QList<QcBlockPos> searching;
     for (const QcBlockPos &hopper : hoppers) {
-        if (readyAt(hopper) > m_state.tickCount) {
+        if (readyAt(hopper) > m_state.clock().tick()) {
             continue;
         }
         if (std::optional<Pull> pull = pullFor(hopper, access, searching)) {
@@ -253,7 +253,7 @@ void QcServerHoppers::pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &
 bool QcServerHoppers::apply(const Pull &pull, QcInventoryAccess &access)
 {
     // An item entity is taken first (it may be gone); a slot only after the put succeeded.
-    if (pull.entity != 0 && !m_state.items.take(pull.entity, pull.stack.count)) {
+    if (pull.entity != 0 && !m_state.entities().items().take(pull.entity, pull.stack.count)) {
         return false;
     }
 
@@ -266,8 +266,8 @@ bool QcServerHoppers::apply(const Pull &pull, QcInventoryAccess &access)
     }
     if (placed < pull.stack.count) {
         // Cannot happen after ensure(); never lose the rest.
-        m_state.items.spawn({{pull.stack.item, pull.stack.count - placed, pull.stack.damage}, {pull.hopper.x + 0.5, pull.hopper.y + 1.0, pull.hopper.z + 0.5}, {}},
-                            m_state.newEntityId());
+        m_state.entities().items().spawn({{pull.stack.item, pull.stack.count - placed, pull.stack.damage}, {pull.hopper.x + 0.5, pull.hopper.y + 1.0, pull.hopper.z + 0.5}, {}},
+                            m_state.entities().newId());
     }
     return true;
 }
@@ -296,7 +296,7 @@ std::optional<QcServerHoppers::Pull> QcServerHoppers::pullFor(QcBlockPos hopper,
     }
 
     // A block filling its cell leaves no room for items above the hopper: no search at all.
-    if (!fillsCell(m_state.world.blockAt(above).value_or(qcAirBlockId))) {
+    if (!fillsCell(m_state.world().blockAt(above).value_or(qcAirBlockId))) {
         searching.append(hopper);
     }
     return std::nullopt;
@@ -306,7 +306,7 @@ std::optional<QcServerHoppers::Pull> QcServerHoppers::pickUp(QcBlockPos hopper, 
 {
     ++m_stats.searches;
 
-    const QList<QcItemEntityManager::Item> &items = m_state.items.items();
+    const QList<QcItemEntity> &items = m_state.entities().items().items();
     QList<qsizetype> candidates = m_grid.value(hopper.offset(0, 1, 0));
     const QList<qsizetype> inBowl = m_grid.value(hopper);
     for (const qsizetype index : inBowl) {
@@ -344,9 +344,9 @@ void QcServerHoppers::buildGrid(const QList<QcBlockPos> &searching)
         m_grid.insert(hopper, {});
         m_grid.insert(hopper.offset(0, 1, 0), {});
     }
-    const QList<QcItemEntityManager::Item> &items = m_state.items.items();
+    const QList<QcItemEntity> &items = m_state.entities().items().items();
     for (qsizetype i = 0; i < items.size(); ++i) {
-        if (items[i].dormant || items[i].stack.isEmpty()) {
+        if (items[i].surplus || items[i].stack.isEmpty()) {
             continue;
         }
         // Items in unloaded chunks never lie in a hopper's cells (hoppers act only when loaded).

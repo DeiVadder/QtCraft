@@ -1,7 +1,7 @@
 #pragma once
 
 class QcServerSounds;
-struct QcServerState;
+class QcServerState;
 
 // The machines (furnaces) in the server tick: they work by QcMachineRules, tell comparators and
 // hoppers when their slots changed, and crackle while they burn.

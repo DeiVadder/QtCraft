@@ -1,6 +1,8 @@
 #include "QcServerGameModes.h"
 
 #include "QcArmour.h"
+#include "QcLineOfSight.h"
+#include "QcServerCrafting.h"
 #include "QcServerInventory.h"
 #include "QcServerState.h"
 
@@ -15,22 +17,23 @@ Q_LOGGING_CATEGORY(lcGameModes, "qtcraft.gamemodes")
 
 } // namespace
 
-QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory)
+QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting)
     : m_state(state)
     , m_inventory(inventory)
+    , m_crafting(crafting)
 {
 }
 
 QcGameMode QcServerGameModes::defaultMode() const
 {
-    return m_state.config.defaultGameMode.value_or(m_state.info.defaultGameMode);
+    return m_state.config().defaultGameMode.value_or(m_state.info().defaultGameMode);
 }
 
 void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
 {
     if (QcGameModes::inventorySet(client.gameMode) != QcGameModes::inventorySet(mode)) {
         // The grid's items belong to the inventory that is put aside.
-        m_inventory.returnCraftingGrid(client);
+        m_crafting.returnCraftingGrid(client);
         std::swap(client.inventory, client.keptInventory);
         const QcEquipment worn = client.keptEquipment;
         client.keptEquipment = client.equipment;
@@ -41,7 +44,7 @@ void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
     applyRules(client);
     // The new rules may end a flight; the client hears it with the next state.
     client.stateDirty = true;
-    client.miningPos.reset();
+    client.mining.pos.reset();
     send(client);
     m_inventory.send(client);
 }
@@ -62,7 +65,7 @@ void QcServerGameModes::send(QcServerClient &client)
 
 QcItemStack QcServerGameModes::validStack(QcItemStack stack) const
 {
-    const QcContentRegistry &content = *m_state.content;
+    const QcContentRegistry &content = m_state.content();
     if (stack.count <= 0 || !content.isValidItem(stack.item)) {
         return {};
     }
@@ -83,7 +86,7 @@ void QcServerGameModes::creativeItem(QcServerClient &client, QcMsg::CreativeItem
     const QcItemStack stack = validStack(message.stack);
     if (message.slot == QcMsg::CreativeItem::addSlot) {
         if (!stack.isEmpty()) {
-            client.inventory.add(stack.item, stack.count, *m_state.content, stack.damage);
+            client.inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
         }
     } else if (QcMsg::MoveInventoryItem::isEquipmentSlot(message.slot)) {
         putIntoArmourSlot(client, message.slot - QcMsg::MoveInventoryItem::equipmentSlot, stack);
@@ -97,7 +100,7 @@ void QcServerGameModes::putIntoSlot(QcServerClient &client, int slot, QcItemStac
 {
     const QcItemStack existing = client.inventory.slot(slot);
     if (!stack.isEmpty() && !existing.isEmpty() && existing.item == stack.item && existing.damage == stack.damage) {
-        const int limit = m_state.content->item(stack.item).maxStack;
+        const int limit = m_state.content().item(stack.item).maxStack;
         client.inventory.setSlot(slot, {stack.item, std::min(existing.count + stack.count, limit), stack.damage});
         return;
     }
@@ -106,7 +109,7 @@ void QcServerGameModes::putIntoSlot(QcServerClient &client, int slot, QcItemStac
 
 bool QcServerGameModes::putIntoArmourSlot(QcServerClient &client, int slot, QcItemStack stack) const
 {
-    if (!stack.isEmpty() && !QcArmour::fits(*m_state.content, stack, QcEquipmentSlot(slot))) {
+    if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, QcEquipmentSlot(slot))) {
         return false;
     }
 
@@ -159,13 +162,13 @@ int QcServerGameModes::pickTarget(const QcServerClient &client)
 
 void QcServerGameModes::pickBlock(QcServerClient &client, QcBlockPos pos)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     // Like mining and placing: within reach and in sight, not through walls.
-    if (client.dead || !block || *block == qcAirBlockId || !m_state.isWithinReach(client, pos) || !m_state.canSee(client, pos)) {
+    if (client.dead || !block || *block == qcAirBlockId || !QcLineOfSight::isWithinReach(client, pos) || !QcLineOfSight::canSee(m_state.world(), client, pos)) {
         return;
     }
 
-    const std::optional<QcItemId> item = itemForBlock(*m_state.content, *block);
+    const std::optional<QcItemId> item = itemForBlock(m_state.content(), *block);
     if (!item) {
         return;
     }
@@ -189,7 +192,7 @@ void QcServerGameModes::pickBlock(QcServerClient &client, QcBlockPos pos)
 
     if (QcGameModes::rules(client.gameMode).itemCatalogue) {
         const int target = pickTarget(client);
-        client.inventory.setSlot(target, {*item, m_state.content->item(*item).maxStack, 0});
+        client.inventory.setSlot(target, {*item, m_state.content().item(*item).maxStack, 0});
         client.inventory.setSelectedHotbarSlot(target);
         m_inventory.send(client);
     }

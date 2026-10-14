@@ -1,6 +1,7 @@
 #include "QcBaseContent.h"
 #include "QcClientSession.h"
 #include "QcLocalServerHost.h"
+#include "QcPhysics.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestUtil.h"
 #include "QcTransport.h"
@@ -44,6 +45,21 @@ private:
         config.viewDistance = 2;
         config.worldDirectory = directory;
         return std::make_unique<QcLocalServerHost>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+    }
+
+    // The saved creatures of every chunk, in their saved order.
+    static QList<QcMobManager::Stored> creaturesOf(const QcWorldEntityRecords &saved)
+    {
+        QList<QcEntityRecord::Ordered<QcMobManager::Stored>> all;
+        for (const QcEntityRecord &record : saved.records) {
+            all.append(record.creatures);
+        }
+        std::ranges::sort(all, {}, &QcEntityRecord::Ordered<QcMobManager::Stored>::order);
+        QList<QcMobManager::Stored> creatures;
+        for (const auto &creature : std::as_const(all)) {
+            creatures.append(creature.entry);
+        }
+        return creatures;
     }
 
 private slots:
@@ -153,26 +169,28 @@ private slots:
         }
 
         QStringList warnings;
-        const QcResult<QcWorldMobs> saved = QcWorldStorage(dir.path(), m_content).readMobs(warnings);
+        const QcResult<QcWorldEntityRecords> saved = QcWorldStorage(dir.path(), m_content).readEntities(warnings);
         QVERIFY2(saved.has_value(), qcErrorText(saved).constData());
+        const QList<QcMobManager::Stored> animals = creaturesOf(*saved);
 
         // The chunks around the spawn were seen and some of them got animals.
-        QVERIFY(saved->populatedChunks.contains({0, 0}));
-        QVERIFY(!saved->mobs.isEmpty());
+        QVERIFY(saved->populated.contains({0, 0}));
+        QVERIFY(!animals.isEmpty());
 
         QSet<QString> kinds;
-        for (const QcMobManager::Stored &mob : saved->mobs) {
+        for (const QcMobManager::Stored &mob : animals) {
             kinds.insert(m_content->mobs()[mob.type].name);
             QVERIFY(!m_content->mobs()[mob.type].hostile);
         }
 
         // Keep a single marked animal: after the restart exactly it must come back. Regenerated
         // animals would show up as more creatures with full health.
-        QcWorldMobs marked;
-        marked.populatedChunks = saved->populatedChunks;
-        marked.mobs.append(saved->mobs.first());
-        marked.mobs.first().health = 3.5;
-        QVERIFY(QcWorldStorage(dir.path(), m_content).writeMobs(marked).has_value());
+        QcMobManager::Stored marked = animals.first();
+        marked.health = 3.5;
+        QcEntityRecord record;
+        record.chunk = QcPhysics::blockContaining(marked.position).chunk();
+        record.creatures.append({marked, 0});
+        QVERIFY(QcWorldStorage(dir.path(), m_content).writeEntities({{record}, saved->populated}).has_value());
 
         auto server = host(dir.path());
         QVERIFY2(server->startError().isEmpty(), qPrintable(server->startError()));
@@ -183,13 +201,14 @@ private slots:
 
         QVERIFY(server->shutdown().has_value());
 
-        const QcResult<QcWorldMobs> again = QcWorldStorage(dir.path(), m_content).readMobs(warnings);
+        const QcResult<QcWorldEntityRecords> again = QcWorldStorage(dir.path(), m_content).readEntities(warnings);
         QVERIFY(again.has_value());
-        QVERIFY(again->populatedChunks.contains(saved->populatedChunks));
-        QCOMPARE(again->mobs.size(), qsizetype(1));
-        QCOMPARE(again->mobs.first().type, marked.mobs.first().type);
-        QCOMPARE(again->mobs.first().health, 3.5);
-        QVERIFY(kinds.contains(m_content->mobs()[again->mobs.first().type].name));
+        QVERIFY(again->populated.contains(saved->populated));
+        const QList<QcMobManager::Stored> after = creaturesOf(*again);
+        QCOMPARE(after.size(), qsizetype(1));
+        QCOMPARE(after.first().type, marked.type);
+        QCOMPARE(after.first().health, 3.5);
+        QVERIFY(kinds.contains(m_content->mobs()[after.first().type].name));
     }
 
     void damagedWorldInfoRefusesToStart()

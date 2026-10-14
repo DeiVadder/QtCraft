@@ -4,27 +4,27 @@
 
 #include <algorithm>
 
-QcAabb QcArmourStandManager::bodyOf(const Stand &stand)
+QcAabb QcArmourStandManager::bodyOf(const QcArmourStand &stand)
 {
     const double scale = stand.pose.small ? 0.5 : 1.0;
     const double half = QcStandPose::bodyWidth * scale * 0.5;
-    const QcVec3 &p = stand.position;
+    const QcVec3 &p = stand.motion.position;
     return {{p.x - half, p.y, p.z - half}, {p.x + half, p.y + QcStandPose::bodyHeight * scale, p.z + half}};
 }
 
-QcArmourStandManager::Stand *QcArmourStandManager::find(quint32 id)
+QcArmourStand *QcArmourStandManager::find(quint32 id)
 {
-    const auto it = std::ranges::find(m_stands, id, &Stand::id);
+    const auto it = std::ranges::find(m_stands, id, &QcArmourStand::id);
     return it == m_stands.end() ? nullptr : &*it;
 }
 
-const QcArmourStandManager::Stand *QcArmourStandManager::find(quint32 id) const
+const QcArmourStand *QcArmourStandManager::find(quint32 id) const
 {
-    const auto it = std::ranges::find(m_stands, id, &Stand::id);
+    const auto it = std::ranges::find(m_stands, id, &QcArmourStand::id);
     return it == m_stands.end() ? nullptr : &*it;
 }
 
-bool QcArmourStandManager::add(const Stand &stand)
+bool QcArmourStandManager::add(const QcArmourStand &stand)
 {
     if (isFull()) {
         return false;
@@ -33,14 +33,14 @@ bool QcArmourStandManager::add(const Stand &stand)
     return true;
 }
 
-std::optional<QcArmourStandManager::Stand> QcArmourStandManager::remove(quint32 id)
+std::optional<QcArmourStand> QcArmourStandManager::remove(quint32 id)
 {
-    const auto it = std::ranges::find(m_stands, id, &Stand::id);
+    const auto it = std::ranges::find(m_stands, id, &QcArmourStand::id);
     if (it == m_stands.end()) {
         return std::nullopt;
     }
 
-    Stand removed = *it;
+    QcArmourStand removed = *it;
     m_stands.erase(it);
     return removed;
 }
@@ -49,14 +49,16 @@ void QcArmourStandManager::tick(double dt)
 {
     // Stands do not move; one that is in the void anyway (a save edited by hand) goes, without
     // dropping its armour (decision E-288).
-    m_stands.removeIf([](const Stand &stand) { return QcWorld::isInVoid(stand.position.y); });
+    m_stands.removeIf([](const QcArmourStand &stand) { return QcWorld::isInVoid(stand.motion.position.y); });
 
-    for (Stand &stand : m_stands) {
-        stand.sinceHit = std::min(breakWindow, stand.sinceHit + dt);
+    // The break window runs out also while a stand rests: it is a time limit for the player who hit
+    // it, not a simulation of the stand, and it can only close (a resting stand cannot be hit).
+    for (QcArmourStand &stand : m_stands) {
+        stand.sinceHit = std::min(QcArmourStand::breakWindow, stand.sinceHit + dt);
     }
 }
 
-qsizetype QcArmourStandManager::restore(QList<Stand> stands)
+qsizetype QcArmourStandManager::restore(QList<QcArmourStand> stands)
 {
     const qsizetype dropped = std::max<qsizetype>(0, stands.size() - m_maxStands);
     if (dropped > 0) {

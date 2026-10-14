@@ -18,7 +18,7 @@ void QcServerSounds::play(const QString &key, const QcVec3 &position, float volu
         return;
     }
 
-    const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_state.content->sound(key);
+    const QcSoundDefinition *sound = key.isEmpty() ? nullptr : m_state.content().sound(key);
     if (!sound) {
         return;
     }
@@ -26,7 +26,7 @@ void QcServerSounds::play(const QString &key, const QcVec3 &position, float volu
     const double range = sound->range * std::max(1.0, double(volume));
     const QcMsg::SoundEvent event{key, position, volume, pitch};
 
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && (client->motion.position - position).length() <= range) {
             client->connection->send(event);
         }

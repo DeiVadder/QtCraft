@@ -44,7 +44,7 @@ namespace QcStandProperties {
 
 namespace {
 
-bool applyFlag(QcArmourStandManager::Stand &stand, const QString &flag, const QString &value)
+bool applyFlag(QcArmourStand &stand, const QString &flag, const QString &value)
 {
     const std::optional<bool> on = parseBool(value);
     if (!on) {
@@ -63,7 +63,7 @@ bool applyFlag(QcArmourStandManager::Stand &stand, const QString &flag, const QS
     return target != nullptr;
 }
 
-bool applyPose(QcArmourStandManager::Stand &stand, const QStringList &args)
+bool applyPose(QcArmourStand &stand, const QStringList &args)
 {
     const std::optional<QcStandPose::Part> part = QcStandPose::partFromName(args.value(1));
     if (!part || args.size() != 5) {
@@ -81,7 +81,7 @@ bool applyPose(QcArmourStandManager::Stand &stand, const QStringList &args)
     return true;
 }
 
-bool applyEquip(const QcContentRegistry &content, QcArmourStandManager::Stand &stand, const QString &name)
+bool applyEquip(const QcContentRegistry &content, QcArmourStand &stand, const QString &name)
 {
     const QList<QcItemStack> items = QcStandProperties::itemsNamed(content, name);
     for (const QcItemStack &stack : items) {
@@ -94,7 +94,7 @@ bool applyEquip(const QcContentRegistry &content, QcArmourStandManager::Stand &s
     return !items.isEmpty();
 }
 
-bool applyCape(const QcContentRegistry &content, QcArmourStandManager::Stand &stand, const QString &name)
+bool applyCape(const QcContentRegistry &content, QcArmourStand &stand, const QString &name)
 {
     if (name == u"none"_s) {
         stand.cape.clear();
@@ -131,7 +131,7 @@ QList<QcItemStack> itemsNamed(const QcContentRegistry &content, const QString &n
     return {};
 }
 
-bool apply(const QcContentRegistry &content, QcArmourStandManager::Stand &stand, const QStringList &args)
+bool apply(const QcContentRegistry &content, QcArmourStand &stand, const QStringList &args)
 {
     const QString &property = args.value(0);
     if (property == u"pose"_s) {
@@ -167,7 +167,7 @@ bool apply(const QcContentRegistry &content, QcArmourStandManager::Stand &stand,
     return args.size() == 2 && applyFlag(stand, property, args[1]);
 }
 
-bool applyLine(const QcContentRegistry &content, QcArmourStandManager::Stand &stand, const QString &line)
+bool applyLine(const QcContentRegistry &content, QcArmourStand &stand, const QString &line)
 {
     return apply(content, stand, line.split(u' ', Qt::SkipEmptyParts));
 }

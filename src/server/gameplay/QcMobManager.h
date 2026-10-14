@@ -3,6 +3,7 @@
 #include "QcServerLimits.h"
 #include "QcChunkPos.h"
 #include "QcContentRegistry.h"
+#include "QcCreature.h"
 #include "QcEntityMotion.h"
 #include "QcPhysics.h"
 
@@ -46,45 +47,6 @@ public:
     static constexpr double hurtInvulnerability = 0.5;
     static constexpr double knockbackSpeed = 6.0;
 
-    struct Mob
-    {
-        quint32 id = 0;
-        int type = 0;
-        QcEntityMotion motion;
-        float yaw = 0.0f;
-        double health = 0.0;
-        double attackCooldown = 0.0;
-        double hurtTimer = 0.0;
-        double wanderTimer = 0.0;
-        QcVec3 wanderDirection;
-        double fleeTimer = 0.0;
-        bool hurtThisTick = false;
-        // Struck at a player this tick (animation).
-        bool attackedThisTick = false;
-        bool blockedLastTick = false;
-        // Spawned on a cave floor: night creatures there stay in daylight.
-        bool underground = false;
-        // Never despawns and is saved with the world (peaceful animals).
-        bool persistent = false;
-        // In a chunk that is not loaded: not ticked, not sent, not counted.
-        bool dormant = false;
-        // Spawned by a rule for the night only: leaves by day like night creatures.
-        bool nightRule = false;
-        // Entity id of the player it chases this tick; 0 for none (debug display of goals).
-        quint32 chasing = 0;
-        // Breeding (decision E-293): seconds left in love, until it may breed again and until a
-        // young one grows up (> 0: young).
-        double love = 0.0;
-        double breedCooldown = 0.0;
-        double growUp = 0.0;
-        // Born from breeding (counted against QcMobBreeding::maxBredPerKind).
-        bool bred = false;
-        // Came by /summon (counted against QcServerLimits::summonLimit); not saved.
-        bool summoned = false;
-
-        bool isYoung() const { return growUp > 0.0; }
-    };
-
     // A persistent mob as saved with the world.
     struct Stored
     {
@@ -95,6 +57,8 @@ public:
         double breedCooldown = 0.0;
         double growUp = 0.0;
         bool bred = false;
+
+        bool operator==(const Stored &) const = default;
     };
 
     // What the mob logic needs to know about a player.
@@ -143,6 +107,7 @@ public:
     const QSet<QcChunkPos> &populatedChunks() const { return m_populated; }
     // Persistent mobs to save, and loading them back (as dormant until the next tick sees their chunk).
     QList<Stored> persistentMobs() const;
+    static Stored storedOf(const QcCreature &mob);
     void restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &populated, const std::function<quint32()> &nextEntityId);
     // Mobs that are not dormant, all of them and those that came by /summon.
     qsizetype awakeCount() const;
@@ -153,11 +118,11 @@ public:
     bool spawnsInChunk(int type, QcChunkPos pos) const;
     bool spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const;
 
-    const QList<Mob> &mobs() const { return m_mobs; }
+    const QList<QcCreature> &mobs() const { return m_mobs; }
     // For the breeding timers (QcMobBreeding); never add or remove mobs through it.
-    QList<Mob> &editableMobs() { return m_mobs; }
-    const Mob *find(quint32 id) const;
-    Mob *find(quint32 id);
+    QList<QcCreature> &editableMobs() { return m_mobs; }
+    const QcCreature *find(quint32 id) const;
+    QcCreature *find(quint32 id);
 
 private:
     int capOf(const QcMobDefinition &definition) const;
@@ -224,16 +189,16 @@ private:
     // Weighted choice by spawn weight for a `random` value in [0, 1).
     int pickAnimal(const QList<int> &candidates, double random) const;
 
-    void think(Mob &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits);
+    void think(QcCreature &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits);
     // Walking about, standing still or fleeing when hurt.
-    QcPhysics::Steering wander(Mob &mob, const QcMobDefinition &definition, double dt);
+    QcPhysics::Steering wander(QcCreature &mob, const QcMobDefinition &definition, double dt);
     // Drifting flight without gravity at a few metres above the ground.
-    void fly(Mob &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
+    void fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
     QRandomGenerator m_random;
-    QList<Mob> m_mobs;
+    QList<QcCreature> m_mobs;
     int m_hostileCap = hostileCapPerPlayer;
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;

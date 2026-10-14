@@ -225,245 +225,6 @@ private slots:
         QCOMPARE(storage.readInfo()->randomTicks, true);
     }
 
-    void entitiesRoundTripAndUnknownItems()
-    {
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s, u"mod:gem"_s});
-        const QcWorldStorage storage(dir.path(), content);
-        QStringList warnings;
-        QVERIFY(storage.readEntities(warnings)->items.isEmpty());
-
-        QcWorldEntities entities;
-        entities.items.append({{*content->itemId(u"a:stone"_s), 12, 0}, {1.5, 64.0, -2.5}, {0.5, -1.0, 0.0}, 0.25, 42.0});
-        entities.items.append({{*content->itemId(u"mod:gem"_s), 3, 0}, {4.5, 70.0, 4.5}, {}, 0.0, 1.0});
-        QVERIFY(storage.writeEntities(entities).has_value());
-
-        const auto withoutMod = registryWith({u"a:stone"_s});
-        const auto read = QcWorldStorage(dir.path(), withoutMod).readEntities(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->items.size(), 1);
-        const QcItemEntityManager::Drop &stone = read->items.first();
-        QCOMPARE(stone.stack, (QcItemStack{*withoutMod->itemId(u"a:stone"_s), 12, 0}));
-        QCOMPARE(stone.position, (QcVec3{1.5, 64.0, -2.5}));
-        QCOMPARE(stone.velocity, (QcVec3{0.5, -1.0, 0.0}));
-        QCOMPARE(stone.pickupDelay, 0.25);
-        QCOMPARE(stone.age, 42.0);
-        QCOMPARE(warnings.size(), 1);
-
-        // A flipped byte fails the checksum.
-        QFile file(dir.filePath(u"entities.qce"_s));
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        file.seek(file.size() - 3);
-        file.write("\x7f");
-        file.close();
-        QVERIFY(!storage.readEntities(warnings).has_value());
-    }
-
-    void mobsRoundTripWithPopulatedChunksAndUnknownKinds()
-    {
-        QTemporaryDir dir;
-        auto content = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
-        QcMobDefinition pig;
-        pig.name = u"a:pig"_s;
-        pig.maxHealth = 10.0;
-        content->registerMob(pig);
-        QcMobDefinition beetle;
-        beetle.name = u"mod:beetle"_s;
-        content->registerMob(beetle);
-
-        const QcWorldStorage storage(dir.path(), content);
-        QStringList warnings;
-
-        // Nothing saved yet: empty, no error.
-        QVERIFY(storage.readMobs(warnings)->mobs.isEmpty());
-        QcWorldMobs mobs;
-        mobs.mobs.append({*content->mobIndex(u"a:pig"_s), {10.5, 70.0, -3.5}, 90.0f, 7.5});
-        mobs.mobs.append({*content->mobIndex(u"mod:beetle"_s), {1.0, 65.0, 1.0}, 0.0f, 1.0});
-        mobs.populatedChunks = {{0, 0}, {-3, 7}, {100000, -100000}};
-        QVERIFY(storage.writeMobs(mobs).has_value());
-
-        // Read without the mod: the beetle is dropped with one warning, the rest comes back.
-        auto withoutMod = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
-        withoutMod->registerMob(pig);
-        const auto read = QcWorldStorage(dir.path(), withoutMod).readMobs(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->mobs.size(), 1);
-        QCOMPARE(read->mobs.first().type, *withoutMod->mobIndex(u"a:pig"_s));
-        QCOMPARE(read->mobs.first().position, (QcVec3{10.5, 70.0, -3.5}));
-        QCOMPARE(read->mobs.first().yaw, 90.0f);
-        QCOMPARE(read->mobs.first().health, 7.5);
-        QCOMPARE(read->populatedChunks, mobs.populatedChunks);
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY(warnings.first().contains(u"mod:beetle"_s));
-
-        // An implausible position is rejected, a flipped byte fails the checksum.
-        mobs.mobs = {{0, {qInf(), 70.0, 0.0}, 0.0f, 1.0}};
-        QVERIFY(storage.writeMobs(mobs).has_value());
-        QVERIFY(!storage.readMobs(warnings).has_value());
-
-        mobs.mobs.clear();
-        QVERIFY(storage.writeMobs(mobs).has_value());
-        QFile file(dir.filePath(u"mobs.qce"_s));
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        file.seek(file.size() - 3);
-        file.write("\x7f");
-        file.close();
-        QVERIFY(!storage.readMobs(warnings).has_value());
-    }
-
-    void breedingTimersRoundTripAndOldMobFilesLoad()
-    {
-        QTemporaryDir dir;
-        auto content = std::make_shared<QcContentRegistry>(*registryWith({u"a:stone"_s}));
-        QcMobDefinition pig;
-        pig.name = u"a:pig"_s;
-        pig.maxHealth = 10.0;
-        content->registerMob(pig);
-        const QcWorldStorage storage(dir.path(), content);
-        QStringList warnings;
-
-        // Version 2 keeps the breeding cooldown and the time until a young one grows up (E-293).
-        QcWorldMobs mobs;
-        mobs.mobs.append({0, {1.5, 70.0, 2.5}, 0.0f, 10.0, 120.0, 900.0});
-        QVERIFY(storage.writeMobs(mobs).has_value());
-        const auto read = storage.readMobs(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->mobs.first().breedCooldown, 120.0);
-        QCOMPARE(read->mobs.first().growUp, 900.0);
-
-        // Timers longer than a day are damage.
-        mobs.mobs.first().growUp = 1e9;
-        QVERIFY(storage.writeMobs(mobs).has_value());
-        QVERIFY(!storage.readMobs(warnings).has_value());
-
-        // A version 1 file (no timers) loads with adult animals.
-        QByteArray payload;
-        QDataStream stream(&payload, QIODevice::WriteOnly);
-        stream.setVersion(QDataStream::Qt_6_8);
-        stream << quint32(1) << u"a:pig"_s << 1.5 << 70.0 << 2.5 << 0.0f << 10.0 << quint32(0);
-        QByteArray file("QCMB");
-        QDataStream header(&file, QIODevice::Append);
-        header.setVersion(QDataStream::Qt_6_8);
-        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
-        file.append(payload);
-        QFile old(dir.filePath(u"mobs.qce"_s));
-        QVERIFY(old.open(QIODevice::WriteOnly));
-        old.write(file);
-        old.close();
-        const auto oldRead = storage.readMobs(warnings);
-        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
-        QCOMPARE(oldRead->mobs.size(), qsizetype(1));
-        QCOMPARE(oldRead->mobs.first().growUp, 0.0);
-        QCOMPARE(oldRead->mobs.first().breedCooldown, 0.0);
-    }
-
-    void fallingBlocksRoundTripAndOldEntityFilesLoad()
-    {
-        QTemporaryDir dir;
-        auto content = registryWith({u"a:sand"_s, u"a:gravel"_s});
-        const QcWorldStorage storage(dir.path(), content);
-
-        QcWorldEntities entities;
-        QcFallingBlockManager::Falling sand;
-        sand.block = *content->blockId(u"a:sand"_s);
-        sand.motion.position = {3.5, 71.25, -2.5};
-        sand.motion.velocity = {0.0, -4.5, 0.0};
-        sand.age = 0.6;
-        entities.fallingBlocks = {sand};
-        QVERIFY(storage.writeEntities(entities).has_value());
-
-        QStringList warnings;
-        const auto read = storage.readEntities(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->fallingBlocks.size(), qsizetype(1));
-        QCOMPARE(read->fallingBlocks[0].block, sand.block);
-        QCOMPARE(read->fallingBlocks[0].motion.position, sand.motion.position);
-        QCOMPARE(read->fallingBlocks[0].motion.velocity, sand.motion.velocity);
-        QCOMPARE(read->fallingBlocks[0].age, 0.6);
-
-        // Without the block (a removed mod) the falling block is dropped with a warning.
-        const auto without = QcWorldStorage(dir.path(), registryWith({u"a:gravel"_s})).readEntities(warnings);
-        QVERIFY(without.has_value());
-        QVERIFY(without->fallingBlocks.isEmpty());
-        QVERIFY(warnings.join(u'\n').contains(u"a:sand"_s));
-
-        // A file of an older development version (version 1: items and saplings) is refused.
-        QByteArray payload;
-        QDataStream stream(&payload, QIODevice::WriteOnly);
-        stream.setVersion(QDataStream::Qt_6_8);
-        stream << quint32(0) << quint32(1) << qint32(1) << qint32(70) << qint32(2) << 33.0;
-        QByteArray file("QCEN");
-        QDataStream header(&file, QIODevice::Append);
-        header.setVersion(QDataStream::Qt_6_8);
-        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
-        file.append(payload);
-        QFile old(dir.filePath(u"entities.qce"_s));
-        QVERIFY(old.open(QIODevice::WriteOnly));
-        old.write(file);
-        old.close();
-
-        const auto oldRead = storage.readEntities(warnings);
-        QVERIFY(!oldRead.has_value());
-        QVERIFY(oldRead.error().contains(u"older development version"_s));
-    }
-
-    void overfullStacksAreSplitOnLoad()
-    {
-        QTemporaryDir dir;
-        auto content = std::make_shared<QcContentRegistry>();
-        QcItemDefinition tool;
-        tool.name = u"a:tool"_s;
-        tool.maxStack = 1;
-        QVERIFY(content->registerItem(tool).has_value());
-
-        const QcWorldStorage storage(dir.path(), content);
-        QcWorldEntities entities;
-        entities.items.append({{*content->itemId(u"a:tool"_s), 5, 0}, {0.5, 64.0, 0.5}, {}, 0.0, 0.0});
-        QVERIFY(storage.writeEntities(entities).has_value());
-
-        QStringList warnings;
-        const auto read = storage.readEntities(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->items.size(), 5);
-        QCOMPARE(read->items.last().stack.count, 1);
-
-        // Large stacks of items that allow them come back whole.
-        QcItemDefinition sand;
-        sand.name = u"a:sand"_s;
-        sand.maxStack = 500;
-        QVERIFY(content->registerItem(sand).has_value());
-
-        entities.items = {{{*content->itemId(u"a:sand"_s), 300, 0}, {0.5, 64.0, 0.5}, {}, 0.0, 0.0}};
-        QVERIFY(storage.writeEntities(entities).has_value());
-        const auto large = storage.readEntities(warnings);
-        QCOMPARE(large->items.size(), 1);
-        QCOMPARE(large->items.first().stack.count, 300);
-    }
-
-    void implausibleEntitiesAreRejected()
-    {
-        QTemporaryDir dir;
-        const auto content = registryWith({u"a:stone"_s});
-        const QcWorldStorage storage(dir.path(), content);
-
-        QcWorldEntities entities;
-        entities.items.append({{*content->itemId(u"a:stone"_s), 1, 0}, {std::numeric_limits<double>::quiet_NaN(), 64.0, 0.0}, {}, 0.0, 0.0});
-        QVERIFY(storage.writeEntities(entities).has_value());
-        QStringList warnings;
-        QVERIFY(!storage.readEntities(warnings).has_value());
-
-        entities.items.clear();
-
-        // Out-of-range values are clamped instead.
-        entities.items.append({{*content->itemId(u"a:stone"_s), 500, 0}, {0.5, 64.0, 0.5}, {}, 99.0, 1e6});
-        QVERIFY(storage.writeEntities(entities).has_value());
-        const auto read = storage.readEntities(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE(read->items.first().stack.count, 64);
-        QCOMPARE(read->items.first().age, QcItemEntityManager::despawnSeconds);
-        QCOMPARE(read->items.first().pickupDelay, QcItemEntityManager::thrownPickupDelay);
-    }
-
     void implausiblePlayerDataIsRejected_data()
     {
         QTest::addColumn<double>("x");
@@ -540,7 +301,7 @@ private slots:
         QVERIFY(!storage.readChunks(warnings).has_value());
     }
 
-    void foodRoundTripsAndOldPlayersComeBackFull()
+    void foodRoundTripsAndOlderPlayerFilesAreRefused()
     {
         QTemporaryDir dir;
         const auto content = registryWith({u"a:stone"_s});
@@ -557,7 +318,7 @@ private slots:
         QCOMPARE((*read)->food, 7);
         QCOMPARE((*read)->exhaustion, 2.5);
 
-        // A version 1 file, written as before hunger existed: the same payload without the food.
+        // A file of an older development version (version 1, before hunger) is refused, not converted.
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
@@ -571,17 +332,14 @@ private slots:
         header.setVersion(QDataStream::Qt_6_8);
         header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
         file.append(payload);
-        QFile old(dir.filePath(u"players/Old.qcp"_s));
+        QFile old(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Old"_s)));
         QVERIFY(old.open(QIODevice::WriteOnly));
         old.write(file);
         old.close();
 
         const auto oldRead = storage.readPlayer(u"Old"_s, warnings);
-        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
-        QCOMPARE((*oldRead)->health, 12.0);
-        QCOMPARE((*oldRead)->inventory.slot(0).count, 5);
-        QCOMPARE((*oldRead)->food, 20);
-        QCOMPARE((*oldRead)->exhaustion, 0.0);
+        QVERIFY(!oldRead.has_value());
+        QVERIFY2(oldRead.error().contains(u"older development version"_s), qPrintable(oldRead.error()));
 
         // Food beyond the range is clamped.
         player.food = 99;
@@ -622,30 +380,25 @@ private slots:
         QVERIFY(!*storage.readPlayer(u"BOB"_s, warnings));
     }
 
-    void playerFilesOfOlderVersionsAreRenamedForTheirExactName()
+    void playerFilesUnderTheNamesOfOlderVersionsAreNotRead()
     {
+        // Older development versions named the file after the name as typed (players/Alice.qcp);
+        // such files are not looked for any more (decision E-356) and stay untouched.
         QTemporaryDir dir;
         const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
         QcPlayerData player;
         player.motion.position = {0.5, 70.0, 0.5};
         player.health = 7.0;
         QVERIFY(storage.writePlayer(u"Alice"_s, player).has_value());
-
-        // Older versions named the file after the name as typed: players/Alice.qcp.
         const QDir players(dir.filePath(u"players"_s));
-        const QString current = players.filePath(QcWorldStorage::playerFileName(u"Alice"_s));
-        QVERIFY(QFile::rename(current, players.filePath(u"Alice.qcp"_s)));
+        QVERIFY(QFile::rename(players.filePath(QcWorldStorage::playerFileName(u"Alice"_s)), players.filePath(u"Alice.qcp"_s)));
 
-        // Another case of the name does not take the file over, even where the file system ignores case.
         QStringList warnings;
-        QVERIFY(!*storage.readPlayer(u"alice"_s, warnings));
-        QVERIFY(players.entryList(QDir::Files).contains(u"Alice.qcp"_s));
-
         const auto read = storage.readPlayer(u"Alice"_s, warnings);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QCOMPARE((*read)->health, 7.0);
+        QVERIFY(!read->has_value());
         QVERIFY(warnings.isEmpty());
-        QCOMPARE(players.entryList(QDir::Files), QStringList{QcWorldStorage::playerFileName(u"Alice"_s)});
+        QCOMPARE(players.entryList(QDir::Files), QStringList{u"Alice.qcp"_s});
     }
 
     void blockStatesRoundTripByName()
@@ -677,21 +430,20 @@ private slots:
         QVERIFY2(warnings.first().contains(u"half=top"_s), qPrintable(warnings.first()));
     }
 
-    void oldRegionFilesStillLoad()
+    void regionFilesOfOlderVersionsAreRefused()
     {
-        // A region file of format 1, written here byte by byte: plain block names, no states.
+        // A region file of format 1 (plain block names), written here byte by byte: refused, not
+        // converted (decision E-356).
         QTemporaryDir dir;
         QVERIFY(QDir().mkpath(dir.filePath(u"regions"_s)));
         QcChunk chunk({0, 0});
-        chunk.setBlock(3, 70, 4, 0);
         chunk.setBlock(5, 70, 4, 1);
-        chunk.setBlock(6, 70, 4, 2);
 
         QByteArray payload;
         {
             QDataStream stream(&payload, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << quint32(3) << u"a:air_like"_s << u"a:stone"_s << u"a:stairs"_s << quint32(1);
+            stream << quint32(2) << u"a:air_like"_s << u"a:stone"_s << quint32(1);
             QcProtocol::writeChunk(stream, chunk);
         }
 
@@ -706,33 +458,10 @@ private slots:
 
         auto content = std::make_shared<QcContentRegistry>();
         QVERIFY(content->registerBlock(block(u"a:stone"_s)));
-        QVERIFY(content->registerBlock(stairs({u"north"_s, u"east"_s, u"south"_s, u"west"_s}, true)));
         QStringList warnings;
         const auto read = QcWorldStorage(dir.path(), content).readChunks(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        const auto loaded = read->value({0, 0});
-        QVERIFY(loaded);
-        QCOMPARE(content->stateName(loaded->block(5, 70, 4)), u"a:stone"_s);
-
-        // A plain name of a block with states loads as its default state.
-        QCOMPARE(content->stateName(loaded->block(6, 70, 4)), u"a:stairs[facing=north,half=bottom]"_s);
-        QCOMPARE(loaded->block(3, 70, 4), qcAirBlockId);
-
-        // The unknown name from palette slot 0 becomes air with a warning.
-        QCOMPARE(warnings.size(), 1);
-        QVERIFY(warnings.first().contains(u"a:air_like"_s));
-
-        // Saving again writes format 2 with states, which reads back the same.
-        QVERIFY(QcWorldStorage(dir.path(), content).writeChunks({{loaded->pos(), loaded}}).has_value());
-        QFile again(dir.filePath(u"regions/r.0.0.qcr"_s));
-        QVERIFY(again.open(QIODevice::ReadOnly));
-        QCOMPARE(again.read(6).mid(4), QByteArray("\x00\x02", 2));
-        again.close();
-
-        warnings.clear();
-        const auto reread = QcWorldStorage(dir.path(), content).readChunks(warnings);
-        QVERIFY(warnings.isEmpty());
-        QCOMPARE(reread->value({0, 0})->block(6, 70, 4), loaded->block(6, 70, 4));
+        QVERIFY(!read.has_value());
+        QVERIFY2(read.error().contains(u"older development version"_s), qPrintable(read.error()));
     }
 
     void blockUpdatesRoundTrip()

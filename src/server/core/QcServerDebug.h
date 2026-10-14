@@ -8,7 +8,7 @@ class QcBlockUpdateQueue;
 class QcTickPhaseTimer;
 class QcTickScheduler;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Debug data for the clients that ask for it (QcMsg::DebugSubscribe, decision E-225): the tick
 // phases of the server's window, its counts and, on request, where the creatures near the player

@@ -1,11 +1,9 @@
 #include "QcServerInventory.h"
 
 #include "QcArmour.h"
-#include "QcChatText.h"
-#include "QcCrafting.h"
 #include "QcPhysics.h"
 #include "QcQuickMove.h"
-#include "QcRepair.h"
+#include "QcServerCrafting.h"
 #include "QcBlockScreens.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
@@ -39,7 +37,7 @@ bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities:
     }
 
     const int cell = slot - QcServerInventory::craftingGridSlot;
-    return cell >= 0 && cell < 9 && cell / 3 < client.craftingSize && cell % 3 < client.craftingSize;
+    return cell >= 0 && cell < 9 && cell / 3 < client.crafting.size && cell % 3 < client.crafting.size;
 }
 
 } // namespace
@@ -56,71 +54,20 @@ void QcServerInventory::send(QcServerClient &client)
     QcMsg::InventoryState state;
     state.stacks = client.inventory.allSlots();
     state.selected = client.inventory.selectedHotbarSlot();
-    state.craftingGrid = client.craftingGrid;
-    state.craftingSize = client.craftingSize;
+    state.craftingGrid = client.crafting.grid;
+    state.craftingSize = client.crafting.size;
     state.equipment = client.equipment;
 
-    if (const std::optional<qsizetype> recipe = craftingMatch(client)) {
-        const QcRecipeDefinition &definition = m_state.content->recipes()[*recipe];
-        if (const std::optional<QcItemId> item = m_state.content->itemId(definition.resultItem)) {
-            state.craftingResult = {*item, definition.resultCount, 0};
-        }
-    } else if (const std::optional<QcItemStack> repaired = QcRepair::result(*m_state.content, craftingView(client))) {
-        state.craftingResult = *repaired;
-    }
+    state.craftingResult = QcServerCrafting::resultOf(m_state.content(), client).value_or(QcItemStack());
 
     client.connection->send(state);
-}
-
-QList<QcItemStack> QcServerInventory::craftingView(const QcServerClient &client) const
-{
-    QList<QcItemStack> view;
-    for (int row = 0; row < client.craftingSize; ++row) {
-        for (int column = 0; column < client.craftingSize; ++column) {
-            view.append(client.craftingGrid[row * 3 + column]);
-        }
-    }
-    return view;
-}
-
-std::optional<qsizetype> QcServerInventory::craftingMatch(const QcServerClient &client) const
-{
-    return QcCrafting::match(*m_state.content, craftingView(client), client.craftingSize);
-}
-
-bool QcServerInventory::isNearCraftingTable(const QcServerClient &client) const
-{
-    const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
-    const int reach = int(std::ceil(craftingTableReach));
-
-    for (int dx = -reach; dx <= reach; ++dx) {
-        for (int dy = -reach; dy <= reach; ++dy) {
-            if (hasCraftingTableInColumn(feet, dx, dy)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool QcServerInventory::hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy) const
-{
-    const int reach = int(std::ceil(craftingTableReach));
-    for (int dz = -reach; dz <= reach; ++dz) {
-        const std::optional<QcBlockId> block = m_state.world.blockAt(feet.offset(dx, dy, dz));
-        if (block && m_state.content->block(*block).opensCrafting
-            && QcVec3{double(dx), double(dy), double(dz)}.length() <= craftingTableReach) {
-            return true;
-        }
-    }
-    return false;
 }
 
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
     OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), {}};
     open.combined = client.inventory.allSlots();
-    open.combined.append(client.craftingGrid);
+    open.combined.append(client.crafting.grid);
     if (open.machine) {
         open.combined.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
     } else if (open.container) {
@@ -158,7 +105,7 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     for (int i = 0; i < QcInventory::slotCount; ++i) {
         client.inventory.setSlot(i, open.combined[i]);
     }
-    client.craftingGrid = open.combined.mid(QcInventory::slotCount, 9);
+    client.crafting.grid = open.combined.mid(QcInventory::slotCount, 9);
     if (open.container) {
         open.container->stacks = open.combined.mid(machineSlot, open.container->stacks.size());
     }
@@ -194,17 +141,12 @@ void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryIte
         return;
     }
 
-    QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), *m_state.content);
+    QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), m_state.content());
     applyOpenSlots(client, open);
 }
 
 void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem move)
 {
-    if (move.slot == QcMsg::QuickMoveItem::craftingResultSlot) {
-        craftAll(client);
-        return;
-    }
-
     OpenSlots open = openSlots(client);
     if (client.dead || !isUsableSlot(client, move.slot, open.machine, open.container) || open.combined[move.slot].isEmpty()) {
         send(client);
@@ -218,13 +160,13 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined[move.slot]);
     if (open.machine) {
         const QcItemId item = open.combined[move.slot].item;
-        const std::optional<QcBlockId> block = m_state.world.blockAt(open.machine->pos);
-        const QcMachineDefinition *definition = block ? m_state.machineRules.machineOf(*block) : nullptr;
-        situation.smeltable = definition && m_state.machineRules.recipeFor(*definition, item);
-        situation.fuel = m_state.machineRules.fuelSeconds(item) > 0.0;
+        const std::optional<QcBlockId> block = m_state.world().blockAt(open.machine->pos);
+        const QcMachineDefinition *definition = block ? m_state.machineRules().machineOf(*block) : nullptr;
+        situation.smeltable = definition && m_state.machineRules().recipeFor(*definition, item);
+        situation.fuel = m_state.machineRules().fuelSeconds(item) > 0.0;
     }
 
-    QcInventory::moveInto(open.combined, move.slot, QcQuickMove::targets(move.slot, situation), *m_state.content);
+    QcInventory::moveInto(open.combined, move.slot, QcQuickMove::targets(move.slot, situation), m_state.content());
     applyOpenSlots(client, open);
 }
 
@@ -237,175 +179,10 @@ bool QcServerInventory::machineAccepts(const QcBlockEntities::Machine &machine, 
     const QcItemStack &output = combined[machineSlot + QcMachineRules::outputSlot];
     const QcItemStack &previousOutput = machine.stacks[QcMachineRules::outputSlot];
 
-    const bool fuelOk = fuel.isEmpty() || m_state.machineRules.fuelSeconds(fuel.item) > 0.0
+    const bool fuelOk = fuel.isEmpty() || m_state.machineRules().fuelSeconds(fuel.item) > 0.0
                         || (fuel.item == previousFuel.item && fuel.damage == previousFuel.damage && fuel.count <= previousFuel.count);
     const bool outputOk = output.isEmpty() || (output.item == previousOutput.item && output.count <= previousOutput.count);
     return fuelOk && outputOk;
-}
-
-QcServerInventory::CraftOutcome QcServerInventory::craftOnce(QcServerClient &client)
-{
-    if (client.craftingSize == 3 && !isNearCraftingTable(client)) {
-        return CraftOutcome::TooFar;
-    }
-
-    const std::optional<qsizetype> recipe = craftingMatch(client);
-    if (!client.dead && !recipe) {
-        return repairOnce(client);
-    }
-    if (client.dead) {
-        return CraftOutcome::NoRecipe;
-    }
-
-    const QcContentRegistry &content = *m_state.content;
-    const QcRecipeDefinition &definition = content.recipes()[*recipe];
-    const std::optional<QcItemId> item = content.itemId(definition.resultItem);
-    QcInventory result = client.inventory;
-    if (!item || result.add(*item, definition.resultCount, content) > 0) {
-        return CraftOutcome::NoRoom;
-    }
-
-    client.inventory = result;
-    takeOneOfEachCell(client);
-    return CraftOutcome::Crafted;
-}
-
-QcServerInventory::CraftOutcome QcServerInventory::repairOnce(QcServerClient &client)
-{
-    const std::optional<QcItemStack> repaired = QcRepair::result(*m_state.content, craftingView(client));
-    if (!repaired) {
-        return CraftOutcome::NoRecipe;
-    }
-
-    QcInventory result = client.inventory;
-    if (result.add(repaired->item, 1, *m_state.content, repaired->damage) > 0) {
-        return CraftOutcome::NoRoom;
-    }
-
-    client.inventory = result;
-    takeOneOfEachCell(client);
-    return CraftOutcome::Crafted;
-}
-
-void QcServerInventory::takeOneOfEachCell(QcServerClient &client)
-{
-    for (int row = 0; row < client.craftingSize; ++row) {
-        for (int column = 0; column < client.craftingSize; ++column) {
-            QcItemStack &cell = client.craftingGrid[row * 3 + column];
-            if (!cell.isEmpty() && --cell.count <= 0) {
-                cell = {};
-            }
-        }
-    }
-}
-
-void QcServerInventory::takeCraftingResult(QcServerClient &client)
-{
-    finishCrafting(client, craftOnce(client), false);
-}
-
-void QcServerInventory::craftAll(QcServerClient &client)
-{
-    // As often as the grid and the inventory allow, at most a full stack of rounds.
-    CraftOutcome outcome = CraftOutcome::NoRecipe;
-    bool crafted = false;
-    for (int round = 0; round < maxCraftAllRounds; ++round) {
-        outcome = craftOnce(client);
-        if (outcome != CraftOutcome::Crafted) {
-            break;
-        }
-        crafted = true;
-    }
-    finishCrafting(client, outcome, crafted);
-}
-
-void QcServerInventory::finishCrafting(QcServerClient &client, CraftOutcome outcome, bool craftedBefore)
-{
-    if (outcome == CraftOutcome::TooFar) {
-        closeCrafting(client);
-        return;
-    }
-    if (outcome == CraftOutcome::NoRoom && !craftedBefore) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Not enough room in the inventory")));
-    }
-    send(client);
-}
-
-void QcServerInventory::craftRecipe(QcServerClient &client, const QcMsg::CraftRecipe &request)
-{
-    const QcContentRegistry &content = *m_state.content;
-    const std::optional<qsizetype> index = content.recipeIndex(request.recipe);
-    if (client.dead) {
-        return;
-    }
-
-    if (!index) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown recipe %1"),
-            {request.recipe}));
-        return;
-    }
-
-    const QcRecipeDefinition &recipe = content.recipes()[*index];
-    if (QcCrafting::gridSizeNeeded(recipe) > 2 && !isNearCraftingTable(client)) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 needs a crafting table nearby"),
-            {recipe.name}));
-        return;
-    }
-
-    const std::optional<QcItemId> result = content.itemId(recipe.resultItem);
-    int crafted = 0;
-    for (int round = 0; round < std::clamp(request.count, 1, 64) && result; ++round) {
-        // All or nothing per round, on a copy so a full inventory leaves everything unchanged.
-        QcInventory attempt = client.inventory;
-        if (!QcCrafting::consume(content, attempt, recipe, 1) || attempt.add(*result, recipe.resultCount, content) > 0) {
-            break;
-        }
-
-        client.inventory = attempt;
-        ++crafted;
-    }
-
-    if (crafted > 0) {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Crafted %1 x %2"),
-                                                    {QString::number(crafted * recipe.resultCount), recipe.resultItem}));
-    } else {
-        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Missing ingredients or room for %1"), {recipe.name}));
-    }
-    send(client);
-}
-
-void QcServerInventory::openCraftingTable(QcServerClient &client, QcBlockPos pos)
-{
-    client.craftingSize = 3;
-    client.craftingTable = pos;
-    client.connection->send(QcMsg::OpenCrafting{3});
-    send(client);
-}
-
-void QcServerInventory::closeCrafting(QcServerClient &client)
-{
-    returnCraftingGrid(client);
-    client.craftingSize = 2;
-    client.craftingTable.reset();
-    send(client);
-}
-
-void QcServerInventory::returnCraftingGrid(QcServerClient &client)
-{
-    // Catalogue items that do not fit go into the bin rather than into the world (decision E-283).
-    const bool catalogue = QcGameModes::rules(client.gameMode).itemCatalogue;
-    for (QcItemStack &cell : client.craftingGrid) {
-        if (cell.isEmpty()) {
-            continue;
-        }
-
-        if (catalogue) {
-            client.inventory.add(cell.item, cell.count, *m_state.content, cell.damage);
-        } else {
-            giveOrThrow(client, cell);
-        }
-        cell = {};
-    }
 }
 
 void QcServerInventory::giveOrThrow(QcServerClient &client, QcItemStack stack)
@@ -414,7 +191,7 @@ void QcServerInventory::giveOrThrow(QcServerClient &client, QcItemStack stack)
         return;
     }
 
-    const int left = client.inventory.add(stack.item, stack.count, *m_state.content, stack.damage);
+    const int left = client.inventory.add(stack.item, stack.count, m_state.content(), stack.damage);
     if (left > 0) {
         throwFromPlayer(client, {stack.item, left, stack.damage});
     }
@@ -430,7 +207,7 @@ void QcServerInventory::dropItem(QcServerClient &client, QcMsg::DropItem message
 
     const int removed = client.inventory.removeFromSlot(slot, message.wholeStack ? stack.count : 1);
     throwFromPlayer(client, {stack.item, removed, stack.damage});
-    client.miningPos.reset();
+    client.mining.pos.reset();
     send(client);
 }
 
@@ -438,22 +215,22 @@ void QcServerInventory::dropAll(QcServerClient &client)
 {
     const QcVec3 position = client.motion.position + QcVec3{0.0, 1.0, 0.0};
     QList<QcItemStack> stacks = client.inventory.allSlots();
-    stacks.append(client.craftingGrid);
+    stacks.append(client.crafting.grid);
     stacks.append(QList<QcItemStack>(client.equipment.stacks.begin(), client.equipment.stacks.end()));
 
     for (const QcItemStack &stack : std::as_const(stacks)) {
         if (!stack.isEmpty()) {
-            m_state.items.spawnScattered(stack, position, m_state.newEntityId());
+            m_state.entities().items().spawnScattered(stack, position, m_state.entities().newId());
         }
     }
 
     const int selected = client.inventory.selectedHotbarSlot();
     client.inventory = {};
     client.inventory.setSelectedHotbarSlot(selected);
-    client.craftingGrid = QList<QcItemStack>(9);
+    client.crafting.grid = QList<QcItemStack>(9);
     // Dying takes nothing off: no equip sound, others just see the player without armour.
     client.equipment = {};
-    m_state.markStale(client.entityId);
+    m_state.entities().markStale(client.id);
     send(client);
 }
 
@@ -469,12 +246,12 @@ void QcServerInventory::throwFromPlayer(const QcServerClient &client, QcItemStac
     drop.velocity = direction * throwSpeed + QcVec3{0.0, 2.0, 0.0};
     drop.pickupDelay = QcItemEntityManager::thrownPickupDelay;
 
-    m_state.items.spawn(drop, m_state.newEntityId());
+    m_state.entities().items().spawn(drop, m_state.entities().newId());
 }
 
 void QcServerInventory::exchangeHeld(QcServerClient &client, const QString &item)
 {
-    const std::optional<QcItemId> result = m_state.content->itemId(item);
+    const std::optional<QcItemId> result = m_state.content().itemId(item);
     const int slot = client.inventory.selectedHotbarSlot();
     if (!result || client.inventory.slot(slot).isEmpty()) {
         return;
@@ -483,7 +260,7 @@ void QcServerInventory::exchangeHeld(QcServerClient &client, const QString &item
     // Creative mode: the held item stays, the result joins the inventory once (decision E-282).
     if (client.rules().infiniteItems) {
         if (client.inventory.countOf(*result) == 0) {
-            client.inventory.add(*result, 1, *m_state.content);
+            client.inventory.add(*result, 1, m_state.content());
         }
         return;
     }
@@ -494,7 +271,7 @@ void QcServerInventory::exchangeHeld(QcServerClient &client, const QString &item
     }
 
     client.inventory.removeFromSlot(slot, 1);
-    if (const int left = client.inventory.add(*result, 1, *m_state.content); left > 0) {
+    if (const int left = client.inventory.add(*result, 1, m_state.content()); left > 0) {
         throwFromPlayer(client, {*result, left, 0});
     }
 }
@@ -503,7 +280,7 @@ bool QcServerInventory::armourFits(const QList<QcItemStack> &combined) const
 {
     for (std::size_t i = 0; i < QcEquipment::slotCount; ++i) {
         const QcItemStack &stack = combined[equipmentSlot + qsizetype(i)];
-        if (!stack.isEmpty() && !QcArmour::fits(*m_state.content, stack, QcEquipmentSlot(i))) {
+        if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, QcEquipmentSlot(i))) {
             return false;
         }
     }
@@ -512,7 +289,7 @@ bool QcServerInventory::armourFits(const QList<QcItemStack> &combined) const
 
 int QcServerInventory::freeArmourSlotFor(const QcServerClient &client, QcItemStack stack) const
 {
-    const QcArmourDefinition *armour = stack.isEmpty() ? nullptr : QcArmour::of(*m_state.content, stack.item);
+    const QcArmourDefinition *armour = stack.isEmpty() ? nullptr : QcArmour::of(m_state.content(), stack.item);
     if (!armour || !client.equipment.at(armour->slot).isEmpty()) {
         return -1;
     }
@@ -536,14 +313,14 @@ void QcServerInventory::setEquipment(QcServerClient &client, const QcEquipment &
     }
 
     client.equipment = equipment;
-    m_state.markStale(client.entityId);
+    m_state.entities().markStale(client.id);
 }
 
 void QcServerInventory::equipHeld(QcServerClient &client)
 {
     const int slot = client.inventory.selectedHotbarSlot();
     const QcItemStack held = client.inventory.slot(slot);
-    const QcArmourDefinition *armour = held.isEmpty() ? nullptr : QcArmour::of(*m_state.content, held.item);
+    const QcArmourDefinition *armour = held.isEmpty() ? nullptr : QcArmour::of(m_state.content(), held.item);
     if (client.dead || !armour || held.count != 1) {
         return;
     }
@@ -559,7 +336,7 @@ void QcServerInventory::equipHeld(QcServerClient &client)
 void QcServerInventory::equipmentWorn(QcServerClient &client, const QcEquipment &equipment, bool broke)
 {
     client.equipment = equipment;
-    m_state.markStale(client.entityId);
+    m_state.entities().markStale(client.id);
     if (broke) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::itemBreak), client.motion.position + QcVec3{0.0, 1.0, 0.0});
     }

@@ -62,7 +62,7 @@ quint32 QcItemEntityManager::spawn(const Drop &drop, quint32 id)
         return 0;
     }
 
-    Item item;
+    QcItemEntity item;
     item.id = id;
     item.stack = drop.stack;
     item.motion.position = drop.position;
@@ -109,7 +109,7 @@ void QcItemEntityManager::enqueue(const Drop &drop)
     m_queue.append(drop);
 }
 
-void QcItemEntityManager::step(Item &item, const QcBlockAccess &world, double dt)
+void QcItemEntityManager::step(QcItemEntity &item, const QcBlockAccess &world, double dt)
 {
     const QcBlockPos below = QcPhysics::blockContaining(item.motion.position - QcVec3{0.0, 0.01, 0.0});
     if (item.resting && QcPhysics::isSolidAt(world, below)) {
@@ -154,14 +154,14 @@ void QcItemEntityManager::merge(const QList<bool> &active)
     }
 
     for (qsizetype a = 0; a < awake.size(); ++a) {
-        Item &target = m_items[awake[a]];
+        QcItemEntity &target = m_items[awake[a]];
         if (target.stack.isEmpty() || target.stack.damage != 0) {
             continue;
         }
 
         const int maxStack = m_content->item(target.stack.item).maxStack;
         for (qsizetype b = a + 1; b < awake.size() && target.stack.count < maxStack; ++b) {
-            Item &other = m_items[awake[b]];
+            QcItemEntity &other = m_items[awake[b]];
             if (other.stack.isEmpty() || other.stack.item != target.stack.item || other.stack.damage != 0
                 || (other.motion.position - target.motion.position).length() > mergeRadius) {
                 continue;
@@ -179,7 +179,7 @@ void QcItemEntityManager::merge(const QList<bool> &active)
     }
 }
 
-void QcItemEntityManager::pickUp(Item &item, const QList<PlayerView> &players, const GiveFunction &give)
+void QcItemEntityManager::pickUp(QcItemEntity &item, const QList<PlayerView> &players, const GiveFunction &give)
 {
     const QcAabb box = itemBox(item.motion.position);
     for (const PlayerView &player : players) {
@@ -197,15 +197,15 @@ void QcItemEntityManager::pickUp(Item &item, const QList<PlayerView> &players, c
     }
 }
 
-QList<QcItemEntityManager::Item> QcItemEntityManager::removeFinished(const QList<bool> &awake)
+QList<QcItemEntity> QcItemEntityManager::removeFinished(const QList<bool> &awake)
 {
-    QList<Item> despawned;
+    QList<QcItemEntity> despawned;
     int awakeCount = 0;
-    QList<Item> kept;
+    QList<QcItemEntity> kept;
     kept.reserve(m_items.size());
 
     for (qsizetype i = 0; i < m_items.size(); ++i) {
-        const Item &item = m_items[i];
+        const QcItemEntity &item = m_items[i];
         if (item.stack.isEmpty() || QcWorld::isInVoid(item.motion.position.y)) {
             continue;
         }
@@ -238,21 +238,22 @@ void QcItemEntityManager::spawnQueued(const TickCallbacks &callbacks)
     }
 }
 
-QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt,
+QList<QcItemEntity> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt,
                                                            const TickCallbacks &callbacks)
 {
     ++m_ticks;
 
+    // Items in chunks that are not loaded rest (QcEntities::settle).
     QList<bool> loaded(m_items.size());
     for (qsizetype i = 0; i < m_items.size(); ++i) {
-        loaded[i] = callbacks.isLoaded(m_items[i].motion.position);
+        loaded[i] = !m_items[i].dormant;
     }
 
     balanceDormancy(loaded);
 
     QList<bool> awake(m_items.size());
     for (qsizetype i = 0; i < m_items.size(); ++i) {
-        awake[i] = loaded[i] && !m_items[i].dormant;
+        awake[i] = loaded[i] && !m_items[i].surplus;
     }
 
     for (qsizetype i = 0; i < m_items.size(); ++i) {
@@ -260,7 +261,7 @@ QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &
             continue;
         }
 
-        Item &item = m_items[i];
+        QcItemEntity &item = m_items[i];
         step(item, world, dt);
         item.age += dt;
         item.pickupDelay = std::max(0.0, item.pickupDelay - dt);
@@ -275,9 +276,9 @@ QList<QcItemEntityManager::Item> QcItemEntityManager::tick(const QcBlockAccess &
     }
 
     // Remove picked-up, merged and expired items.
-    QList<Item> despawned = removeFinished(awake);
+    QList<QcItemEntity> despawned = removeFinished(awake);
     spawnQueued(callbacks);
-    enforceTotalLimit(callbacks.isLoaded);
+    enforceTotalLimit();
     return despawned;
 }
 
@@ -290,7 +291,7 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
     QList<qsizetype> sleeping;
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         if (loaded[i]) {
-            (m_items[i].dormant ? sleeping : awake).append(i);
+            (m_items[i].surplus ? sleeping : awake).append(i);
         }
     }
 
@@ -304,19 +305,19 @@ void QcItemEntityManager::balanceDormancy(const QList<bool> &loaded)
     if (awake.size() > m_activeLimit) {
         std::ranges::sort(awake, byAge);
         for (qsizetype i = 0; i < awake.size() - m_activeLimit; ++i) {
-            m_items[awake[i]].dormant = true;
+            m_items[awake[i]].surplus = true;
         }
     } else if (awake.size() < m_activeLimit && !sleeping.isEmpty()) {
         std::ranges::sort(sleeping, [&byAge](qsizetype a, qsizetype b) { return byAge(b, a); });
         for (qsizetype i = 0; i < sleeping.size() && i < m_activeLimit - awake.size(); ++i) {
-            m_items[sleeping[i]].dormant = false;
+            m_items[sleeping[i]].surplus = false;
             // A hopper below may be asleep; it takes note of the item now.
             m_stirred.append(m_items[sleeping[i]].motion.position);
         }
     }
 }
 
-void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
+void QcItemEntityManager::enforceTotalLimit()
 {
     if (m_items.size() <= m_totalLimit) {
         return;
@@ -326,7 +327,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
     qsizetype excess = m_items.size() - m_totalLimit;
     QList<qsizetype> candidates;
     for (qsizetype i = 0; i < m_items.size(); ++i) {
-        if (!isLoaded(m_items[i].motion.position)) {
+        if (m_items[i].dormant) {
             candidates.append(i);
         }
     }
@@ -343,7 +344,7 @@ void QcItemEntityManager::enforceTotalLimit(const LoadedFunction &isLoaded)
         }
     }
 
-    QList<Item> kept;
+    QList<QcItemEntity> kept;
     for (qsizetype i = 0; i < m_items.size(); ++i) {
         if (remove[i]) {
             m_discarded += m_items[i].stack.count;
@@ -379,7 +380,7 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
             continue;
         }
 
-        Item item;
+        QcItemEntity item;
         item.id = nextEntityId();
         item.stack = drop.stack;
         item.motion.position = drop.position;
@@ -393,15 +394,15 @@ void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<
     m_activeCount = 0;
 }
 
-qsizetype QcItemEntityManager::removeWhere(const std::function<bool(const Item &)> &match)
+qsizetype QcItemEntityManager::removeWhere(const std::function<bool(const QcItemEntity &)> &match)
 {
-    return m_items.removeIf([&match](const Item &item) { return !item.dormant && match(item); });
+    return m_items.removeIf([&match](const QcItemEntity &item) { return !item.surplus && match(item); });
 }
 
 bool QcItemEntityManager::take(quint32 id, int count)
 {
-    const auto it = std::ranges::find(m_items, id, &Item::id);
-    if (it == m_items.end() || it->dormant || it->stack.isEmpty() || count <= 0 || it->stack.count < count) {
+    const auto it = std::ranges::find(m_items, id, &QcItemEntity::id);
+    if (it == m_items.end() || it->surplus || it->stack.isEmpty() || count <= 0 || it->stack.count < count) {
         return false;
     }
 

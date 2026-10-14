@@ -3,7 +3,7 @@
 #include "QcWorldSetup.h"
 
 class QcBlockUpdateQueue;
-struct QcServerState;
+class QcServerState;
 
 // Applies a world generator's one-time setup to a world that was just created (decision E-221):
 // time of day and game rules, persistent creatures, contents of chests and machines, block updates

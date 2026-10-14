@@ -128,7 +128,7 @@ private slots:
             server->tick();
             QCOMPARE(server->worldTime(), 150.0);
             QCOMPARE(server->mobs().mobs().size(), mobs);
-            QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcMobManager::Mob::persistent));
+            QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcCreature::persistent));
             QVERIFY(!server->mobs().naturalSpawning());
 
             // The workshop's furnace got its ore, the item chests hold every item.
@@ -177,7 +177,7 @@ private slots:
             QCOMPARE(server->mobs().mobs().size(), mobs);
             QVERIFY(!server->stop());
         }
-        QVERIFY(QFile::exists(world.filePath(u"mobs.qce"_s)));
+        QVERIFY(!QDir(world.filePath(u"entities"_s)).entryList({u"r.*.qen"_s}, QDir::Files).isEmpty());
         QVERIFY(!readJson(world.filePath(u"world.json"_s)).value(u"generator"_s).toObject().value(u"setupDone"_s).toBool(true));
         QVERIFY(QFile::remove(blocker));
 
@@ -240,9 +240,10 @@ private slots:
 
     void worldsOfOtherFormatsAreRefused()
     {
-        // world.json of format 1 (before the showcase) and 2 (before stage 31.1): a world of an older
-        // development version is refused, not converted (decision E-356), and nothing is written.
-        for (const int version : {1, 2}) {
+        // world.json of format 1 (before the showcase), 2 (before stage 31.1) and 3 (before stage
+        // 31.2): a world of an older development version is refused, not converted (decision E-356),
+        // and nothing is written.
+        for (const int version : {1, 2, 3}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
@@ -262,7 +263,7 @@ private slots:
 
         // Later formats are refused too, but not as old ones.
         QTemporaryDir directory;
-        writeJson(QDir(directory.path()).filePath(u"world.json"_s), {{u"formatVersion"_s, 4}, {u"name"_s, u"New"_s}, {u"seed"_s, u"1"_s}});
+        writeJson(QDir(directory.path()).filePath(u"world.json"_s), {{u"formatVersion"_s, QcWorldInfo::formatVersion + 1}, {u"name"_s, u"New"_s}, {u"seed"_s, u"1"_s}});
         QVERIFY(!QcWorldStorage(directory.path(), m_content).readInfo());
         QcServerConfig config;
         config.worldDirectory = directory.path();

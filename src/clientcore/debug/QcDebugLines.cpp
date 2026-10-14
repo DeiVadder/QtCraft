@@ -25,9 +25,8 @@ std::pair<double, double> bodySize(const QcClientEntity &entity, const QcContent
     if (entity.isBlockEntity()) {
         return {0.98, 0.98};
     }
-    const auto &mobs = content.mobs();
-    if (entity.mobType >= 0 && entity.mobType < mobs.size()) {
-        return {mobs[entity.mobType].width, mobs[entity.mobType].height};
+    if (const QcMobDefinition *creature = entity.creature(content)) {
+        return {creature->width, creature->height};
     }
     return {0.6, 1.8};
 }

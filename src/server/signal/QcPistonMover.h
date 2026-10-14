@@ -11,14 +11,15 @@
 class QcServerBlocks;
 class QcServerSounds;
 class QcSignalTable;
-struct QcServerState;
+class QcServerState;
 
 // Carries out piston plans (decision E-337). Blocks move in the world at once, nearest last, each
 // with its chest or furnace contents: the contents are re-keyed to the new cell before the block is
 // set there, so nothing is dropped, copied or lost, also across chunk borders and in a save made in
-// the middle of a move. Players, creatures, items and armour stands in the cells the blocks and the
-// head move into are pushed out along the piston's direction by the server; players get their new
-// position like any other server correction. The clients see the blocks slide (QcMovingBlocks).
+// the middle of a move. Bodies in the cells the blocks and the head move into (every body of the
+// entity register QcEntities: players, creatures, items, falling blocks, armour stands) are pushed
+// out along the piston's direction by the server; players get their new position like any other
+// server correction. The clients see the blocks slide (QcMovingBlocks).
 class QcPistonMover
 {
 public:
@@ -52,7 +53,6 @@ private:
     bool overlapsSolid(const QcAabb &box) const;
     // Where a body stuck in a block may go, in the order tried.
     static QList<QcVec3> escapes(const QcAabb &box, const QcVec3 &push);
-    void applyPushesToThings();
     QcBlockId headState(const QcPistonPlan &plan) const;
 
     QcServerState &m_state;

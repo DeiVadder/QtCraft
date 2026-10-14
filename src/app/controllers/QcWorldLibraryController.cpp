@@ -55,9 +55,22 @@ void QcWorldLibraryController::refreshWorlds()
                                     {u"generator"_s, entry.info.generator},
                                     {u"lastPlayed"_s, QLocale().toString(entry.info.lastPlayed.toLocalTime(), QLocale::ShortFormat)},
                                     {u"error"_s, entry.tooOld ? tr("It was saved by an older development version of QtCraft and cannot be opened.")
-                                                              : entry.error}});
+                                                              : m_unplayable.value(entry.folder, entry.error)}});
     }
     emit worldsChanged();
+}
+
+void QcWorldLibraryController::noteUnplayable(const QString &folder, const QString &message)
+{
+    if (message.isEmpty() && !m_unplayable.contains(folder)) {
+        return;
+    }
+    if (message.isEmpty()) {
+        m_unplayable.remove(folder);
+    } else {
+        m_unplayable.insert(folder, message);
+    }
+    refreshWorlds();
 }
 
 void QcWorldLibraryController::deleteWorld(const QString &folder)

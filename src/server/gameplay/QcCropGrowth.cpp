@@ -1,5 +1,6 @@
 #include "QcCropGrowth.h"
 
+#include "QcLightVolume.h"
 #include "QcServerWorld.h"
 
 #include <algorithm>
@@ -201,7 +202,7 @@ QcBlockId QcCropGrowth::freshSoil(const QcBlockAccess &world, QcBlockPos pos, Qc
 
 int QcCropGrowth::plantLightAt(const QcServerWorld &world, QcBlockPos pos)
 {
-    const int blockLight = world.blockLightAt(pos);
+    const int blockLight = QcLightVolume::blockLightAt(world, pos);
     const std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
     if (!chunk) {
         return blockLight;

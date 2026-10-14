@@ -7,34 +7,51 @@
 
 namespace {
 
-// Whether the server sent a player, a known mob, a valid item or a valid falling or moving block.
+// The creature type of a spawn; 0 for the other kinds.
+int creatureTypeOf(const QcMsg::EntitySpawn &spawn)
+{
+    return spawn.kind == QcEntityKind::Creature ? spawn.creatureType : 0;
+}
+
+bool isBlockKind(QcEntityKind kind)
+{
+    return kind == QcEntityKind::FallingBlock || kind == QcEntityKind::MovingBlock;
+}
+
+// Whether the server sent a player, a stand, a known creature, a valid item or a valid falling or
+// moving block (the decoder already refused unknown kinds).
 bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
-    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType || spawn.mobType == QcMsg::EntitySpawn::movingBlockType;
-    const bool stand = spawn.mobType == QcMsg::EntitySpawn::armourStandType;
-    return !((spawn.mobType < QcMsg::EntitySpawn::playerType && !item && !fallingBlock && !stand)
-             || (fallingBlock && (!content || !content->isValidBlock(spawn.block) || spawn.block == qcAirBlockId))
-             || (spawn.mobType >= 0 && (!content || spawn.mobType >= content->mobs().size()))
-             || (item && (!content || spawn.item.isEmpty() || !content->isValidItem(spawn.item.item))));
+    switch (spawn.kind) {
+    case QcEntityKind::Creature:
+        return content && spawn.creatureType >= 0 && spawn.creatureType < content->mobs().size();
+    case QcEntityKind::Item:
+        return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
+    case QcEntityKind::FallingBlock:
+    case QcEntityKind::MovingBlock:
+        return content && content->isValidBlock(spawn.block) && spawn.block != qcAirBlockId;
+    case QcEntityKind::Player:
+    case QcEntityKind::ArmourStand:
+        return true;
+    }
+    return false;
 }
 
 // Armour only for players and armour stands and only of items the content knows (decisions E-232, E-238).
 QcEquipment equipmentOf(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    const bool wears = spawn.mobType == QcMsg::EntitySpawn::playerType || spawn.mobType == QcMsg::EntitySpawn::armourStandType;
+    const bool wears = spawn.kind == QcEntityKind::Player || spawn.kind == QcEntityKind::ArmourStand;
     return wears && content ? spawn.equipment.knownTo(*content) : QcEquipment();
 }
 
 QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
 {
-    return spawn.mobType == QcMsg::EntitySpawn::armourStandType ? spawn.stand : QcStandPose();
+    return spawn.kind == QcEntityKind::ArmourStand ? spawn.stand : QcStandPose();
 }
 
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
-    const bool fallingBlock = spawn.mobType == QcMsg::EntitySpawn::fallingBlockType || spawn.mobType == QcMsg::EntitySpawn::movingBlockType;
+    const bool item = spawn.kind == QcEntityKind::Item;
 
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();
@@ -45,8 +62,9 @@ QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentR
     entity.flags = spawn.flags;
     entity.held = spawn.held;
     entity.id = spawn.id;
-    entity.mobType = spawn.mobType;
-    entity.block = fallingBlock ? spawn.block : qcAirBlockId;
+    entity.kind = spawn.kind;
+    entity.creatureType = creatureTypeOf(spawn);
+    entity.block = isBlockKind(spawn.kind) ? spawn.block : qcAirBlockId;
     entity.name = spawn.name;
     entity.position = entity.previousPosition = spawn.position;
     entity.yaw = entity.previousYaw = spawn.yaw;
@@ -62,9 +80,10 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         return false;
     }
 
-    const bool item = spawn.mobType == QcMsg::EntitySpawn::itemType;
+    const bool item = spawn.kind == QcEntityKind::Item;
     // A known entity sent again changed its count (items) or look (players); keep its motion history.
-    if (const auto known = m_entities.find(spawn.id); known != m_entities.end() && known->mobType == spawn.mobType) {
+    const auto known = m_entities.find(spawn.id);
+    if (known != m_entities.end() && known->kind == spawn.kind && known->creatureType == creatureTypeOf(spawn)) {
         known->item = item ? spawn.item : QcItemStack();
         known->appearance = spawn.appearance;
         known->equipment = equipmentOf(spawn, content);

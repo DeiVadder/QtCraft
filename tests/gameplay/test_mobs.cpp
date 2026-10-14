@@ -1,5 +1,7 @@
 #include "QcBaseContent.h"
 #include "QcDayCycle.h"
+#include "QcEntities.h"
+#include "QcLightVolume.h"
 #include "QcMobManager.h"
 #include "QcMobUpkeep.h"
 #include "QcPhysics.h"
@@ -34,6 +36,13 @@ class TestMobs : public QObject
 private:
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
     quint32 m_nextId = 100;
+
+    // Creatures in chunks that are not loaded rest, as the server's entity register decides at the
+    // start of each tick.
+    static void settle(QcMobManager &mobs, const QcServerWorld &world)
+    {
+        QcEntities::settle(mobs.editableMobs(), [&world](QcChunkPos chunk) { return world.chunk(chunk) != nullptr; });
+    }
 
     std::unique_ptr<QcServerWorld> makeWorld(int radius = 4)
     {
@@ -96,7 +105,7 @@ private:
         for (int tick = 0; tick < 20 * 30; ++tick) {
             mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
         }
-        return int(std::ranges::count(mobs.mobs(), zombie, &QcMobManager::Mob::type));
+        return int(std::ranges::count(mobs.mobs(), zombie, &QcCreature::type));
     }
 
     // Animals the chunks around the origin get, with `block` over the surface (dy 1, or `dy`) if
@@ -220,7 +229,7 @@ private slots:
         const double share = double(groups) / chunks;
         QVERIFY2(share > 0.03 && share < QcMobManager::chunkAnimalChance + 0.04, qPrintable(QString::number(share)));
 
-        for (const QcMobManager::Mob &mob : mobs.mobs()) {
+        for (const QcCreature &mob : mobs.mobs()) {
             const QcMobDefinition &definition = m_content->mobs()[mob.type];
             QVERIFY(!definition.hostile && !definition.ambient && mob.persistent);
             const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
@@ -253,6 +262,7 @@ private slots:
         const QcVec3 player = surface(*world, 0, 0);
         mobs.spawn(type("pig"), farAway, 1, false, true);
         mobs.spawn(type("pig"), surface(*world, 110, 0), 2);
+        settle(mobs, *world);
         mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
 
         // The persistent pig stays far from every player; the ordinary one despawns.
@@ -262,10 +272,12 @@ private slots:
 
         // Its chunk goes away: it rests where it is, is not counted and does not move.
         world->unloadChunk(QcPhysics::blockContaining(mobs.find(1)->motion.position).chunk());
+        settle(mobs, *world);
         mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
         const QcVec3 resting = mobs.find(1)->motion.position;
         for (int tick = 0; tick < 100; ++tick) {
-            mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+            settle(mobs, *world);
+        mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
         }
         QVERIFY(mobs.find(1)->dormant);
         QCOMPARE(mobs.find(1)->motion.position, resting);
@@ -277,14 +289,15 @@ private slots:
 
         // Animals that spawned near the player meanwhile are persistent too.
         QCOMPARE(loaded.mobs().size(), mobs.persistentMobs().size());
-        const auto restored = std::ranges::find(loaded.mobs(), resting, [](const QcMobManager::Mob &mob) { return mob.motion.position; });
+        const auto restored = std::ranges::find(loaded.mobs(), resting, [](const QcCreature &mob) { return mob.motion.position; });
         QVERIFY(restored != loaded.mobs().end());
         const quint32 restoredId = restored->id;
-        for (const QcMobManager::Mob &mob : loaded.mobs()) {
+        for (const QcCreature &mob : loaded.mobs()) {
             QVERIFY(mob.dormant && mob.persistent);
         }
         QVERIFY(loaded.isPopulated({1, 2}));
         world->loadChunk(QcPhysics::blockContaining(resting).chunk());
+        settle(loaded, *world);
         loaded.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(!loaded.find(restoredId)->dormant);
     }
@@ -306,7 +319,7 @@ private slots:
             }
 
             qsizetype animals = 0;
-            for (const QcMobManager::Mob &mob : mobs.mobs()) {
+            for (const QcCreature &mob : mobs.mobs()) {
                 const QcMobDefinition &definition = m_content->mobs()[mob.type];
                 animals += !definition.hostile && !definition.ambient;
                 allAnimalsPersistent = allAnimalsPersistent && (definition.hostile || definition.ambient || mob.persistent);
@@ -338,7 +351,7 @@ private slots:
             QSet<quint32> seen;
             for (int tick = 0; tick < 20 * 40; ++tick) {
                 mobs.tick(*world, {{7, player, true}}, time, dt, [this] { return m_nextId++; });
-                for (const QcMobManager::Mob &mob : mobs.mobs()) {
+                for (const QcCreature &mob : mobs.mobs()) {
                     if (mob.type == slime && !mob.underground) {
                         seen.insert(mob.id);
                     }
@@ -366,14 +379,14 @@ private slots:
         bool spawned = false;
         for (int tick = 0; tick < 20 * 40 && !spawned; ++tick) {
             mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
-            spawned = std::ranges::any_of(mobs.mobs(), [&](const QcMobManager::Mob &mob) {
+            spawned = std::ranges::any_of(mobs.mobs(), [&](const QcCreature &mob) {
                 return mob.type == type("slime") && mob.nightRule && (mob.motion.position - player).length() > 24.0;
             });
         }
         QVERIFY(spawned);
 
         mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
-        QVERIFY(std::ranges::none_of(mobs.mobs(), [&](const QcMobManager::Mob &mob) {
+        QVERIFY(std::ranges::none_of(mobs.mobs(), [&](const QcCreature &mob) {
             return mob.nightRule && (mob.motion.position - player).length() > 24.0;
         }));
     }
@@ -465,7 +478,7 @@ private slots:
         QCOMPARE(zombieFeet, zombieGround.y);
 
         // The whole place, without the walk: straight up onto the block.
-        QcMobManager::Mob sunk;
+        QcCreature sunk;
         sunk.type = type("pig");
         sunk.motion.position = pigGround - QcVec3{0.0, 0.6, 0.0};
         QcMobUpkeep::leaveBlocks(sunk, m_content->mobs()[sunk.type], *world);
@@ -566,7 +579,7 @@ private slots:
         QcMobManager day(m_content, 5);
         runFor(day, noon);
         QVERIFY(!day.mobs().isEmpty());
-        for (const QcMobManager::Mob &mob : day.mobs()) {
+        for (const QcCreature &mob : day.mobs()) {
             const QcMobDefinition &definition = m_content->mobs()[mob.type];
             if (definition.spawnTime != QcMobDefinition::SpawnTime::Night) {
                 continue;
@@ -582,7 +595,7 @@ private slots:
         QcMobManager night(m_content, 5);
         runFor(night, midnight);
         bool zombie = false;
-        for (const QcMobManager::Mob &mob : night.mobs()) {
+        for (const QcCreature &mob : night.mobs()) {
             zombie = zombie || mob.type == type("zombie");
             const double distance = (mob.motion.position - player).length();
             QVERIFY2(distance < QcMobManager::despawnDistance, qPrintable(QString::number(distance)));
@@ -590,7 +603,7 @@ private slots:
 
         QVERIFY(zombie);
         int hostile = 0;
-        for (const QcMobManager::Mob &mob : night.mobs()) {
+        for (const QcCreature &mob : night.mobs()) {
             hostile += m_content->mobs()[mob.type].hostile;
         }
         QVERIFY(hostile <= QcMobManager::hostileCapPerPlayer + 3);
@@ -613,7 +626,7 @@ private slots:
                 }
             }
 
-            const int light = world->blockLightAt(QcPhysics::blockContaining(surface(*world, 2, 2)));
+            const int light = QcLightVolume::blockLightAt(*world, QcPhysics::blockContaining(surface(*world, 2, 2)));
             if (torches != (light >= 9)) {
                 return -1;
             }
@@ -623,7 +636,7 @@ private slots:
             QSet<quint32> seen;
             for (int tick = 0; tick < 20 * 40; ++tick) {
                 mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
-                for (const QcMobManager::Mob &mob : mobs.mobs()) {
+                for (const QcCreature &mob : mobs.mobs()) {
                     if (!seen.contains(mob.id)) {
                         seen.insert(mob.id);
                         count += m_content->mobs()[mob.type].hostile && !mob.underground;

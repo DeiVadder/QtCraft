@@ -1,6 +1,5 @@
 #pragma once
 
-#include "QcAabb.h"
 #include "QcBlockDefinition.h"
 #include "QcItemStack.h"
 
@@ -8,7 +7,7 @@
 
 class QcBlockUpdateQueue;
 class QcServerSounds;
-struct QcServerState;
+class QcServerState;
 
 // Block changes of the server with their consequences: clients are told, neighbours queued for an
 // update, machines and chests spill their contents, placed saplings start to grow and broken blocks
@@ -29,11 +28,6 @@ public:
     // react (leaves decay, unsupported saplings break). The other half of a door breaks with it
     // under the same drop decision.
     void breakBlock(QcBlockPos pos, bool drops);
-    // Opens or closes a door, trapdoor or gate (both halves of a door), unless the changed shape
-    // would close on a player or mob.
-    void toggle(QcBlockPos pos, QcBlockId block);
-    // Whether any of `boxes` (world space) overlaps a playing player or a mob.
-    bool overlapsBody(const QList<QcAabb> &boxes) const;
     // Drops the contents that block entities spilled (QcBlockEntities::takeSpills) as items.
     void dropSpills();
     // Drops the items of block state `block` as if it broke at `pos` (each drop by its chance, only

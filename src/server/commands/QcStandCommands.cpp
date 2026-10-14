@@ -41,26 +41,26 @@ QcStandCommands::QcStandCommands(QcServerState &state, QcServerStands &stands, Q
 {
 }
 
-QcArmourStandManager::Stand *QcStandCommands::standInView(const QcServerClient &client)
+QcArmourStand *QcStandCommands::standInView(const QcServerClient &client)
 {
     const double yaw = qDegreesToRadians(double(client.yaw));
     const double pitch = qDegreesToRadians(double(client.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
-    QcArmourStandManager::Stand *best = nullptr;
+    QcArmourStand *best = nullptr;
     double nearest = targetRange;
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
+    for (const QcArmourStand &stand : m_state.entities().stands().stands()) {
         const std::optional<double> distance = QcRaycast::intersectBox(eye, direction, QcArmourStandManager::bodyOf(stand), nearest);
         if (distance && *distance < nearest) {
             nearest = *distance;
-            best = m_state.stands.find(stand.id);
+            best = m_state.entities().stands().find(stand.id);
         }
     }
     return best;
 }
 
-QcArmourStandManager::Stand *QcStandCommands::target(const QcServerClient &client, const QString &word)
+QcArmourStand *QcStandCommands::target(const QcServerClient &client, const QString &word)
 {
     if (word == u"looking"_s) {
         return standInView(client);
@@ -68,14 +68,14 @@ QcArmourStandManager::Stand *QcStandCommands::target(const QcServerClient &clien
 
     bool isId = false;
     const quint32 id = word.toUInt(&isId);
-    QcArmourStandManager::Stand *best = nullptr;
+    QcArmourStand *best = nullptr;
     double nearest = targetRange;
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
-        const double distance = (stand.position - client.motion.position).length();
+    for (const QcArmourStand &stand : m_state.entities().stands().stands()) {
+        const double distance = (stand.motion.position - client.motion.position).length();
         const bool wanted = isId ? stand.id == id : word == u"nearest"_s;
         if (wanted && distance <= nearest) {
             nearest = distance;
-            best = m_state.stands.find(stand.id);
+            best = m_state.entities().stands().find(stand.id);
         }
     }
     return best;
@@ -88,7 +88,7 @@ void QcStandCommands::armorStand(QcServerClient &client, const QStringList &word
         return;
     }
 
-    QcArmourStandManager::Stand *stand = target(client, words[1]);
+    QcArmourStand *stand = target(client, words[1]);
     if (!stand) {
         reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "No armour stand found: %1"), {words[1]});
         return;
@@ -98,8 +98,8 @@ void QcStandCommands::armorStand(QcServerClient &client, const QStringList &word
         reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Armour stand %1: %2"), {QString::number(stand->id), describe(*stand)});
         return;
     }
-    const QcArmourStandManager::Stand before = *stand;
-    if (!QcStandProperties::apply(*m_state.content, *stand, words.mid(2))) {
+    const QcArmourStand before = *stand;
+    if (!QcStandProperties::apply(m_state.content(), *stand, words.mid(2))) {
         reply(client, usage);
         return;
     }
@@ -119,8 +119,8 @@ std::optional<QcVec3> QcStandCommands::summonPosition(const QcServerClient &clie
     // The first block with a solid top within a few metres below (or the player's height) carries it.
     for (int dy = 2; dy >= -8; --dy) {
         const QcBlockPos below = column.offset(0, dy - 1, 0);
-        const std::optional<QcBlockId> block = m_state.world.blockAt(below);
-        if (block && m_state.content->isValidBlock(*block) && m_state.content->block(*block).solid) {
+        const std::optional<QcBlockId> block = m_state.world().blockAt(below);
+        if (block && m_state.content().isValidBlock(*block) && m_state.content().block(*block).solid) {
             return QcVec3{column.x + 0.5, double(column.y + dy), column.z + 0.5};
         }
     }
@@ -129,19 +129,19 @@ std::optional<QcVec3> QcStandCommands::summonPosition(const QcServerClient &clie
 
 bool QcStandCommands::summon(QcServerClient &client, const QStringList &words)
 {
-    const std::optional<QcItemId> item = m_state.content->itemId(qualified(words.value(1)));
-    if (!item || !m_state.content->item(*item).placesStand) {
+    const std::optional<QcItemId> item = m_state.content().itemId(qualified(words.value(1)));
+    if (!item || !m_state.content().item(*item).placesStand) {
         return false;
     }
 
-    QcArmourStandManager::Stand stand;
-    stand.item = m_state.content->item(*item).name;
+    QcArmourStand stand;
+    stand.item = m_state.content().item(*item).name;
     stand.yaw = QcServerStands::facingYaw(client.yaw);
     const QStringList options = words.mid(2);
     for (const QString &option : options) {
         // Values of a property follow '=' separated by commas; "small" alone means small=true.
         const QString property = option.section(u'=', 0, 0);
-        const QcContentRegistry &content = *m_state.content;
+        const QcContentRegistry &content = m_state.content();
         const bool applied = option.contains(u'=')
                                  ? QcStandProperties::apply(content, stand, QStringList{property} + option.section(u'=', 1).split(u','))
                                  : QcStandProperties::apply(content, stand, {property}) || QcStandProperties::apply(content, stand, {property, u"true"_s});
@@ -157,11 +157,11 @@ bool QcStandCommands::summon(QcServerClient &client, const QStringList &words)
         return true;
     }
 
-    stand.position = *position;
-    const QcArmourStandManager::Stand *spawned = m_stands.spawn(stand);
+    stand.motion.position = *position;
+    const QcArmourStand *spawned = m_stands.spawn(stand);
     if (!spawned) {
         reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Too many armour stands in the world (at most %1)"),
-              {QString::number(m_state.stands.limit())});
+              {QString::number(m_state.entities().stands().limit())});
         return true;
     }
     reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Summoned armour stand %1"), {QString::number(spawned->id)});
@@ -175,10 +175,10 @@ void QcStandCommands::equip(QcServerClient &client, const QStringList &words)
     if (name == u"clear"_s) {
         equipment = {};
     } else {
-        const QList<QcItemStack> items = QcStandProperties::itemsNamed(*m_state.content, name);
+        const QList<QcItemStack> items = QcStandProperties::itemsNamed(m_state.content(), name);
         bool any = false;
         for (const QcItemStack &stack : items) {
-            if (const QcArmourDefinition *armour = QcArmour::of(*m_state.content, stack.item)) {
+            if (const QcArmourDefinition *armour = QcArmour::of(m_state.content(), stack.item)) {
                 equipment.at(armour->slot) = stack;
                 any = true;
             }
@@ -198,10 +198,10 @@ void QcStandCommands::equip(QcServerClient &client, const QStringList &words)
     }
     m_inventory.setEquipment(client, equipment);
     m_inventory.send(client);
-    reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Armour: %1 points"), {QString::number(QcArmour::points(*m_state.content, equipment))});
+    reply(client, QT_TRANSLATE_NOOP("QcServerMessages", "Armour: %1 points"), {QString::number(QcArmour::points(m_state.content(), equipment))});
 }
 
-QString QcStandCommands::describe(const QcArmourStandManager::Stand &stand)
+QString QcStandCommands::describe(const QcArmourStand &stand)
 {
     QStringList parts;
     for (std::size_t i = 0; i < QcStandPose::partCount; ++i) {

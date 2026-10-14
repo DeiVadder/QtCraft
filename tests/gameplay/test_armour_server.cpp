@@ -257,7 +257,7 @@ private slots:
 
         const auto spawnOfRaw = [&other]() -> std::optional<QcMsg::EntitySpawn> {
             for (const QcMsg::EntitySpawn &spawn : std::as_const(other.spawns)) {
-                if (spawn.mobType == QcMsg::EntitySpawn::playerType && spawn.name == u"Raw"_s) {
+                if (spawn.kind == QcEntityKind::Player && spawn.name == u"Raw"_s) {
                     return spawn;
                 }
             }
@@ -275,7 +275,7 @@ private slots:
         QVERIFY(spawnOfRaw()->equipment.isEmpty());
     }
 
-    void playerFileKeepsArmourAndOldFilesLoad()
+    void playerFileKeepsArmourAndOlderFilesAreRefused()
     {
         QTemporaryDir dir;
         const QcWorldStorage storage(dir.path(), m_content);
@@ -291,7 +291,7 @@ private slots:
         QCOMPARE((*read)->equipment, player.equipment);
         QVERIFY(warnings.isEmpty());
 
-        // A file of format 2 (before armour): the same payload without the armour slots.
+        // A file of format 2 (before armour) is refused, not converted (decision E-356).
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
@@ -306,16 +306,14 @@ private slots:
         header << quint16(2) << quint32(payload.size()) << qcCrc32(payload);
         file.append(payload);
         QVERIFY(QDir().mkpath(dir.filePath(u"players"_s)));
-        QFile old(dir.filePath(u"players/Old.qcp"_s));
+        QFile old(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Old"_s)));
         QVERIFY(old.open(QIODevice::WriteOnly));
         old.write(file);
         old.close();
 
         const auto oldRead = storage.readPlayer(u"Old"_s, warnings);
-        QVERIFY2(oldRead.has_value(), qcErrorText(oldRead).constData());
-        QCOMPARE((*oldRead)->food, 15);
-        QCOMPARE((*oldRead)->inventory.slot(0).count, 5);
-        QVERIFY((*oldRead)->equipment.isEmpty());
+        QVERIFY(!oldRead.has_value());
+        QVERIFY2(oldRead.error().contains(u"older development version"_s), qPrintable(oldRead.error()));
     }
 
     void armourOfAnotherSlotGoesIntoTheInventory()

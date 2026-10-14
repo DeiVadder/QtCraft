@@ -78,4 +78,16 @@ void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry 
     stream << name << qint32(name.isEmpty() ? 0 : stack.count) << qint32(stack.damage);
 }
 
+QString keepAside(const QString &path)
+{
+    // An older copy is never overwritten.
+    for (int attempt = 1; attempt <= maxDamagedCopies; ++attempt) {
+        const QString backup = attempt == 1 ? path + u".damaged"_s : u"%1.damaged.%2"_s.arg(path).arg(attempt);
+        if (!QFile::exists(backup)) {
+            return QFile::copy(path, backup) ? backup : QString();
+        }
+    }
+    return {};
+}
+
 } // namespace QcSaveFile

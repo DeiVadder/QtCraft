@@ -135,7 +135,7 @@ private slots:
 
         // The client sees the stones slide as entities and gets the far cell when the slide ends.
         const auto sliding = std::ranges::count_if(m_client->spawns, [&](const QcMsg::EntitySpawn &spawn) {
-            return spawn.mobType == QcMsg::EntitySpawn::movingBlockType && spawn.block == id("qtcraft:stone");
+            return spawn.kind == QcEntityKind::MovingBlock && spawn.block == id("qtcraft:stone");
         });
         QCOMPARE(sliding, 12);
         const QcBlockPos far = at(14, 0, 5);
@@ -403,12 +403,12 @@ private slots:
         const QcBlockPos cell = at(3, 0, 10);
         const QcVec3 centre{cell.x + 0.5, double(cell.y), cell.z + 0.5};
         const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 800001);
-        QcArmourStandManager::Stand stand;
+        QcArmourStand stand;
         stand.id = 800002;
-        stand.position = centre;
+        stand.motion.position = centre;
         QVERIFY(m_server->stands().add(stand));
         const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), centre, 800003, false, true);
-        for (QcItemEntityManager::Item &entity : m_server->items().editableItems()) {
+        for (QcItemEntity &entity : m_server->items().editableItems()) {
             entity.motion.position = entity.id == dropped ? centre : entity.motion.position;
         }
 
@@ -416,10 +416,10 @@ private slots:
         ticks(1);
         QVERIFY(isBlock(3, 0, 10, "stone"));
         const double front = cell.x + 1.0;
-        const auto item = std::ranges::find(m_server->items().items(), dropped, &QcItemEntityManager::Item::id);
+        const auto item = std::ranges::find(m_server->items().items(), dropped, &QcItemEntity::id);
         QVERIFY(item != m_server->items().items().end());
         QVERIFY2(item->motion.position.x - 0.125 >= front - 0.05, qPrintable(QString::number(item->motion.position.x)));
-        QVERIFY(m_server->stands().find(800002)->position.x > front);
+        QVERIFY(m_server->stands().find(800002)->motion.position.x > front);
         QVERIFY(m_server->mobs().find(pig)->motion.position.x > front);
 
         // A player standing in front of the head is pushed out of its cell as well.

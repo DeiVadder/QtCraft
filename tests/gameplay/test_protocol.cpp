@@ -474,45 +474,6 @@ private slots:
         QVERIFY(QcMsg::InventoryState().equipment.isEmpty());
     }
 
-    void equipmentOfOthersRoundTrips()
-    {
-        // Armour slots (stage 23) travel with a player's spawn, so others can draw them.
-        QcMsg::EntitySpawn spawn;
-        spawn.name = u"Ann"_s;
-        spawn.equipment.at(QcEquipmentSlot::Head) = {3, 1, 0};
-        spawn.equipment.at(QcEquipmentSlot::Feet) = {4, 1, 120};
-        const QcMsg::EntitySpawn copy = roundTrip(spawn);
-        QCOMPARE(copy.equipment, spawn.equipment);
-        QCOMPARE(copy.equipment.at(QcEquipmentSlot::Feet).damage, 120);
-        QCOMPARE(copy.name, u"Ann"_s);
-        QCOMPARE(QcEquipment::slotCount, std::size_t(4));
-    }
-
-    void armourStandsRoundTrip()
-    {
-        // Stands (protocol 23) carry their pose and flags; other entities do not.
-        QcMsg::EntitySpawn spawn;
-        spawn.id = 5;
-        spawn.mobType = QcMsg::EntitySpawn::armourStandType;
-        spawn.name = u"Tin"_s;
-        spawn.held = 12;
-        spawn.equipment.at(QcEquipmentSlot::Legs) = {6, 1, 2};
-        spawn.stand.at(QcStandPose::Part::RightArm) = {-90.0f, 5.0f, 370.0f};
-        spawn.stand.small = true;
-        spawn.stand.basePlate = false;
-        const QcMsg::EntitySpawn copy = roundTrip(spawn);
-        QCOMPARE(copy.equipment, spawn.equipment);
-        QCOMPARE(copy.held, QcItemId(12));
-        // Angles arrive normalised.
-        QCOMPARE(copy.stand.at(QcStandPose::Part::RightArm), (QcStandPose::Rotation{-90.0f, 5.0f, 10.0f}));
-        QVERIFY(copy.stand.small && !copy.stand.basePlate && copy.stand.arms);
-
-        QcMsg::EntitySpawn player = spawn;
-        player.mobType = QcMsg::EntitySpawn::playerType;
-        QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 31u);
-    }
-
     void machineAndFoodMessagesRoundTrip()
     {
         const QcMsg::OpenMachine open = roundTrip(QcMsg::OpenMachine{{-7, 64, 12}, u"smelting"_s});
@@ -800,9 +761,12 @@ private slots:
 
     void entityAndStatusMessagesRoundTrip()
     {
-        const QcMsg::EntitySpawn spawn = roundTrip(QcMsg::EntitySpawn{42, 3, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}, {}, 12.5f, QcMsg::Swing | QcMsg::OnGround, 5});
+        QcMsg::EntitySpawn sent{42, QcEntityKind::Creature, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}, {}, 12.5f, QcMsg::Swing | QcMsg::OnGround, 5};
+        sent.creatureType = 3;
+        const QcMsg::EntitySpawn spawn = roundTrip(sent);
         QCOMPARE(spawn.id, 42u);
-        QCOMPARE(spawn.mobType, 3);
+        QCOMPARE(spawn.kind, QcEntityKind::Creature);
+        QCOMPARE(spawn.creatureType, 3);
         QCOMPARE(spawn.name, u"Alex"_s);
         QCOMPARE(spawn.position, (QcVec3{1.5, 70.0, -2.25}));
         QCOMPARE(spawn.yaw, 90.0f);
@@ -833,8 +797,8 @@ private slots:
         roundTrip(QcMsg::Respawn{});
 
         const QcMsg::EntitySpawn item = roundTrip(
-            QcMsg::EntitySpawn{7, QcMsg::EntitySpawn::itemType, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {12, 33, 4}, {}, 0.0f, 0, qcNoItem});
-        QCOMPARE(item.mobType, QcMsg::EntitySpawn::itemType);
+            QcMsg::EntitySpawn{7, QcEntityKind::Item, QString(), {0.5, 64.0, 0.5}, 0.0f, 0.0, {12, 33, 4}, {}, 0.0f, 0, qcNoItem});
+        QCOMPARE(item.kind, QcEntityKind::Item);
         QCOMPARE(item.item, (QcItemStack{12, 33, 4}));
         QCOMPARE(roundTrip(QcMsg::DropItem{true}).wholeStack, true);
         QCOMPARE(roundTrip(QcMsg::DropItem{false}).wholeStack, false);
@@ -848,20 +812,7 @@ private slots:
 
         // Dropping is a client request; a server must not send it.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DropItem{true}), QcProtocol::Peer::Server).has_value());
-        // Falling blocks carry their block state; using an item on a creature is a client request.
-        QcMsg::EntitySpawn falling{11, QcMsg::EntitySpawn::fallingBlockType, QString(), {0.5, 80.0, 0.5}, 0.0f, 0.0, {}, {}, 0.0f, 0, qcNoItem};
-        falling.block = 37;
-        const QcMsg::EntitySpawn fallingCopy = roundTrip(falling);
-        QCOMPARE(fallingCopy.mobType, QcMsg::EntitySpawn::fallingBlockType);
-        QCOMPARE(fallingCopy.block, 37u);
-        // So do blocks a piston moves (decision E-337).
-        QcMsg::EntitySpawn moving = falling;
-        moving.mobType = QcMsg::EntitySpawn::movingBlockType;
-        moving.block = 4242;
-        const QcMsg::EntitySpawn movingCopy = roundTrip(moving);
-        QCOMPARE(movingCopy.mobType, QcMsg::EntitySpawn::movingBlockType);
-        QCOMPARE(movingCopy.block, 4242u);
-        QCOMPARE(movingCopy.position, moving.position);
+        // Using an item on a creature is a client request.
         QCOMPARE(roundTrip(QcMsg::UseEntity{21}).id, 21u);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::UseEntity{21}), QcProtocol::Peer::Server).has_value());
 

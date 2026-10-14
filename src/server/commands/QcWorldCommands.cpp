@@ -1,6 +1,7 @@
 #include "QcWorldCommands.h"
 
 #include "QcBlockEntityChecks.h"
+#include "QcEntityChecks.h"
 #include "QcChatText.h"
 #include "QcCommandArguments.h"
 #include "QcPendingCommands.h"
@@ -91,8 +92,8 @@ void QcWorldCommands::save(const QcCommandContext &context) const
 void QcWorldCommands::backup(const QcCommandContext &context)
 {
     const QString label = context.args.value(0);
-    if (m_state.config.worldDirectory.isEmpty() || !QcWorldBackup::isValidLabel(label) || context.args.size() > 1) {
-        context.reply(m_state.config.worldDirectory.isEmpty() ? QT_TRANSLATE_NOOP("QcServerMessages", "This world is not saved, there is nothing to back up")
+    if (m_state.config().worldDirectory.isEmpty() || !QcWorldBackup::isValidLabel(label) || context.args.size() > 1) {
+        context.reply(m_state.config().worldDirectory.isEmpty() ? QT_TRANSLATE_NOOP("QcServerMessages", "This world is not saved, there is nothing to back up")
                                                               : QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /backup [label]"));
         return;
     }
@@ -112,9 +113,9 @@ void QcWorldCommands::backup(const QcCommandContext &context)
         m_clock.start();
     }
     const qint64 started = m_clock.elapsed();
-    const QString root = m_state.config.backupDirectory.isEmpty() ? QcWorldBackup::defaultRoot(m_state.config.worldDirectory)
-                                                                  : m_state.config.backupDirectory;
-    QcResult<QcWorldBackup::Snapshot> snapshot = QcWorldBackup::snapshot(m_state.config.worldDirectory, root, label, QDateTime::currentDateTime());
+    const QString root = m_state.config().backupDirectory.isEmpty() ? QcWorldBackup::defaultRoot(m_state.config().worldDirectory)
+                                                                  : m_state.config().backupDirectory;
+    QcResult<QcWorldBackup::Snapshot> snapshot = QcWorldBackup::snapshot(m_state.config().worldDirectory, root, label, QDateTime::currentDateTime());
     if (!snapshot) {
         qCWarning(lcWorldCommands).noquote() << u"Backup failed: %1"_s.arg(snapshot.error());
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {snapshot.error()});
@@ -148,8 +149,8 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
     }
 
     // The player who asked hears of it if he is still there; the console reads the log.
-    for (const auto &client : m_state.clients) {
-        if (requester != 0 && client->entityId == requester && client->state == QcServerClient::State::Playing) {
+    for (const auto &client : m_state.clients()) {
+        if (requester != 0 && client->id == requester && client->state == QcServerClient::State::Playing) {
             client->connection->send(line);
         }
     }
@@ -158,8 +159,8 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
 void QcWorldCommands::limits(const QcCommandContext &context) const
 {
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Limits from %1:"),
-                  {m_state.config.limitsFromServer ? u"server.json"_s : u"world.json"_s});
-    const QStringList lines = m_state.config.limits.lines();
+                  {m_state.config().limitsFromServer ? u"server.json"_s : u"world.json"_s});
+    const QStringList lines = m_state.config().limits.lines();
     for (const QString &line : lines) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "  %1"), {line});
     }
@@ -175,16 +176,22 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
     const auto ms = [](double value) { return QString::number(value, 'f', 2); };
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "World %1 (%2, seed %3), tick %4"),
-                  {m_state.config.worldName, m_state.config.generator, QString::number(m_state.config.seed), QString::number(m_state.tickCount)});
+                  {m_state.config().worldName, m_state.config().generator, QString::number(m_state.config().seed), QString::number(m_state.clock().tick())});
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Chunks: %1 loaded, %2 changed; players: %3"),
-                  {QString::number(m_state.world.loadedChunkCount()), QString::number(m_state.world.modifiedChunkCount()),
-                   QString::number(std::ranges::count_if(m_state.clients, [](const auto &client) { return client->joined; }))});
-    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands; %5 machines, %6 chests"),
-                  {QString::number(m_state.mobs.awakeCount()), QString::number(m_state.items.items().size()),
-                   QString::number(m_state.falling.all().size()), QString::number(m_state.stands.stands().size()),
-                   QString::number(m_state.blockEntities().machineCount()), QString::number(m_state.blockEntities().containerCount())});
+                  {QString::number(m_state.world().loadedChunkCount()), QString::number(m_state.world().modifiedChunkCount()),
+                   QString::number(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }))});
+    // The rules of the entity register (decision E-364); broken ones go to the log too.
+    const QStringList entityProblems = QcEntityChecks::problems(m_state.entities());
+    for (const QString &problem : entityProblems) {
+        qCWarning(lcWorldCommands) << "Entities:" << problem;
+    }
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Entities: %1 creatures, %2 items, %3 falling blocks, %4 armour stands, %5 broken rules; %6 machines, %7 chests"),
+                  {QString::number(m_state.entities().creatures().awakeCount()), QString::number(m_state.entities().items().items().size()),
+                   QString::number(m_state.entities().fallingBlocks().all().size()), QString::number(m_state.entities().stands().stands().size()),
+                   QString::number(entityProblems.size()), QString::number(m_state.blockEntities().machineCount()),
+                   QString::number(m_state.blockEntities().containerCount())});
     // The rules between blocks and block entities (decision E-357); broken ones go to the log too.
-    const QStringList problems = QcBlockEntityChecks::problems(m_state.world);
+    const QStringList problems = QcBlockEntityChecks::problems(m_state.world());
     for (const QString &problem : problems) {
         qCWarning(lcWorldCommands) << "Block entities:" << problem;
     }
@@ -203,14 +210,14 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
 bool QcWorldCommands::isKnownSelector(const QString &what) const
 {
     if (what.startsWith(u"item:"_s)) {
-        return m_state.content->itemId(QcCommandArguments::qualified(what.mid(5))).has_value();
+        return m_state.content().itemId(QcCommandArguments::qualified(what.mid(5))).has_value();
     }
-    return kinds.contains(what) || m_state.content->mobIndex(QcCommandArguments::qualified(what)).has_value();
+    return kinds.contains(what) || m_state.content().mobIndex(QcCommandArguments::qualified(what)).has_value();
 }
 
 bool QcWorldCommands::matchesMob(const QString &what, int type) const
 {
-    const QcMobDefinition &mob = m_state.content->mobs()[type];
+    const QcMobDefinition &mob = m_state.content().mobs()[type];
     if (what == u"mobs"_s || what == u"all"_s) {
         return true;
     }
@@ -218,7 +225,7 @@ bool QcWorldCommands::matchesMob(const QString &what, int type) const
         const bool animal = !mob.hostile && !mob.ambient;
         return (what == u"hostile"_s && mob.hostile) || (what == u"animals"_s && animal) || (what == u"ambient"_s && mob.ambient);
     }
-    return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content->mobIndex(QcCommandArguments::qualified(what)) == type;
+    return !kinds.contains(what) && !what.startsWith(u"item:"_s) && m_state.content().mobIndex(QcCommandArguments::qualified(what)) == type;
 }
 
 bool QcWorldCommands::matchesItem(const QString &what, QcItemStack stack) const
@@ -226,44 +233,44 @@ bool QcWorldCommands::matchesItem(const QString &what, QcItemStack stack) const
     if (what == u"items"_s || what == u"all"_s) {
         return true;
     }
-    return what.startsWith(u"item:"_s) && m_state.content->itemId(QcCommandArguments::qualified(what.mid(5))) == stack.item;
+    return what.startsWith(u"item:"_s) && m_state.content().itemId(QcCommandArguments::qualified(what.mid(5))) == stack.item;
 }
 
 void QcWorldCommands::sweep(Removal &removal, bool apply)
 {
     removal.mobs = removal.items = removal.stands = 0;
     QList<quint32> mobs;
-    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
+    for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         if (!mob.dormant && matchesMob(removal.what, mob.type) && inRange(removal.centre, removal.radius, mob.motion.position)) {
             mobs.append(mob.id);
         }
     }
 
     QList<quint32> stands;
-    for (const QcArmourStandManager::Stand &stand : m_state.stands.stands()) {
-        if (removal.what == u"stands"_s && inRange(removal.centre, removal.radius, stand.position)) {
+    for (const QcArmourStand &stand : m_state.entities().stands().stands()) {
+        if (removal.what == u"stands"_s && inRange(removal.centre, removal.radius, stand.motion.position)) {
             stands.append(stand.id);
         }
     }
 
-    const auto itemMatches = [&](const QcItemEntityManager::Item &item) {
+    const auto itemMatches = [&](const QcItemEntity &item) {
         return matchesItem(removal.what, item.stack) && inRange(removal.centre, removal.radius, item.motion.position);
     };
     removal.mobs = int(mobs.size());
     removal.stands = int(stands.size());
-    removal.items = int(std::ranges::count_if(m_state.items.items(), itemMatches));
+    removal.items = int(std::ranges::count_if(m_state.entities().items().items(), itemMatches));
     if (!apply) {
         return;
     }
 
     // Removed without dying: no drops; the clients drop them with the next entity sync.
     for (const quint32 id : std::as_const(mobs)) {
-        m_state.mobs.remove(id);
+        m_state.entities().creatures().remove(id);
     }
     for (const quint32 id : std::as_const(stands)) {
-        m_state.stands.remove(id);
+        m_state.entities().stands().remove(id);
     }
-    m_state.items.removeWhere(itemMatches);
+    m_state.entities().items().removeWhere(itemMatches);
 }
 
 void QcWorldCommands::remove(const QcCommandContext &context)
@@ -297,5 +304,5 @@ void QcWorldCommands::remove(const QcCommandContext &context)
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "This removes %1 creatures, %2 item stacks and %3 armour stands."),
                   {QString::number(removal.mobs), QString::number(removal.items), QString::number(removal.stands)});
-    m_pending.ask(context, run, m_state.playerTimeNs);
+    m_pending.ask(context, run, m_state.clock().playerTimeNs());
 }

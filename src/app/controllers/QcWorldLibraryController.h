@@ -33,6 +33,9 @@ public:
     void setModsDirectory(const QString &directory);
 
     Q_INVOKABLE void refreshWorlds();
+    // A world that failed to open for a reason the list cannot see (a damaged per-region file):
+    // its entry shows `message` until the game restarts or the world opens (an empty message).
+    void noteUnplayable(const QString &folder, const QString &message);
     // Deletes a saved world permanently; the UI asks for confirmation first.
     Q_INVOKABLE void deleteWorld(const QString &folder);
     // Mod list as found on disk: id, name, version, description, state (loaded/disabled/failed), reason.
@@ -66,6 +69,8 @@ private:
     QVariantList m_mods;
     // Mods that passed discovery but failed when the last world loaded its content, with the reason.
     QHash<QString, QString> m_modLoadFailures;
+    // Worlds that failed to open, with the reason (noteUnplayable).
+    QHash<QString, QString> m_unplayable;
     QString m_modsDirectory;
     mutable std::shared_ptr<const QcContentRegistry> m_content;
     int m_contentGeneration = 0;

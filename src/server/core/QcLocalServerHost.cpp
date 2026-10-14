@@ -1,6 +1,7 @@
 #include "QcLocalServerHost.h"
 
 #include "QcBlockEntityChecks.h"
+#include "QcEntityChecks.h"
 #include "QcChatText.h"
 #include "QcInProcessTransport.h"
 #include "QcServer.h"
@@ -25,6 +26,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
         m_startError = opened.error();
         m_worldInUse = m_server->worldInUse();
         m_worldTooOld = m_server->worldTooOld();
+        m_damagedFile = m_server->damagedFile();
         delete m_server;
         m_server = nullptr;
         return;
@@ -90,7 +92,7 @@ QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()
             const QcBlockEntities &entities = server->blockEntities();
             result = {server->mobs().mobs().size(), server->items().items().size(),
                       entities.containerCount() + entities.machineCount() + entities.saplingCount(),
-                      QcBlockEntityChecks::problems(server->world()).size()};
+                      QcBlockEntityChecks::problems(server->world()).size(), QcEntityChecks::problems(server->entities()).size()};
         },
         Qt::BlockingQueuedConnection);
 

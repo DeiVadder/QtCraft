@@ -22,7 +22,7 @@ float yawTowards(const QcVec3 &direction)
     return float(qRadiansToDegrees(std::atan2(direction.x, -direction.z)));
 }
 
-const QcMobManager::PlayerView *nearestTarget(const QcMobManager::Mob &mob, const QcMobDefinition &definition,
+const QcMobManager::PlayerView *nearestTarget(const QcCreature &mob, const QcMobDefinition &definition,
                                               const QList<QcMobManager::PlayerView> &players)
 {
     const QcMobManager::PlayerView *target = nullptr;
@@ -37,7 +37,7 @@ const QcMobManager::PlayerView *nearestTarget(const QcMobManager::Mob &mob, cons
     return target;
 }
 
-QcPhysics::Steering chase(QcMobManager::Mob &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
+QcPhysics::Steering chase(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
                           QList<QcMobManager::PlayerHit> &hits)
 {
     const QcVec3 towards{target.position.x - mob.motion.position.x, 0.0, target.position.z - mob.motion.position.z};

@@ -9,7 +9,7 @@
 
 #include <memory>
 
-// Breeding of peaceful animals (decision E-293), on the timers of QcMobManager::Mob. An adult fed
+// Breeding of peaceful animals (decision E-293), on the timers of QcCreature. An adult fed
 // with one of its `breeding.food` falls in love (unless it is in love already or still resting
 // after breeding); two awake animals of a kind in love within `partnerDistance` that see each other
 // get a young one at the feet of one of them and rest for `cooldownSeconds`. Feeding a young one
@@ -44,13 +44,13 @@ public:
     explicit QcMobBreeding(std::shared_ptr<const QcContentRegistry> content);
 
     // Whether `mob` would eat the item named `item` now (in love or growing up).
-    bool wouldEat(const QcMobManager::Mob &mob, const QString &item) const;
+    bool wouldEat(const QcCreature &mob, const QString &item) const;
     // Feeds `mob` with the item named `item`; what happened (No: it does not eat that now).
-    Fed feed(QcMobManager::Mob &mob, const QString &item) const;
+    Fed feed(QcCreature &mob, const QString &item) const;
     // Advances the timers by `dt` seconds and pairs animals in love; returns the young ones to spawn.
     QList<Birth> tick(const QcBlockAccess &world, QcMobManager &mobs, double dt) const;
     // Whether another young one of `type` may be born at `position`.
-    bool roomFor(const QList<QcMobManager::Mob> &mobs, int type, const QcVec3 &position) const;
+    bool roomFor(const QList<QcCreature> &mobs, int type, const QcVec3 &position) const;
 
 private:
     // Animals in love look for a partner within partnerDistance times this ...
@@ -58,11 +58,11 @@ private:
     // ... and stop walking towards it this close.
     static constexpr double closeEnough = 1.5;
 
-    void approachPartners(QList<QcMobManager::Mob> &mobs) const;
+    void approachPartners(QList<QcCreature> &mobs) const;
     // In love for at least courtshipSeconds and awake.
-    bool courting(const QcMobManager::Mob &mob) const;
+    bool courting(const QcCreature &mob) const;
     // The partner index for mob `index` in love, -1 for none.
-    qsizetype partnerOf(const QcBlockAccess &world, const QList<QcMobManager::Mob> &mobs, qsizetype index) const;
+    qsizetype partnerOf(const QcBlockAccess &world, const QList<QcCreature> &mobs, qsizetype index) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     qint64 m_crowdLimit = crowdLimit;

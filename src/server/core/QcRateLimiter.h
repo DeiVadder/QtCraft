@@ -8,7 +8,7 @@
 #include <optional>
 
 // Token buckets of one player, one per kind of spammable message (decision E-091). A bucket starts
-// full, refills with the players' time of the server (QcServerState::playerTimeNs: real time at every
+// full, refills with the players' time of the server (QcServerClock::playerTimeNs: real time at every
 // tick rate and during a sprint, deterministic in tests) and pays one token per message; a message
 // finding its bucket empty is dropped. The limits lie well above what the real client sends while
 // playing.

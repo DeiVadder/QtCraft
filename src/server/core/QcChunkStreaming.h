@@ -4,7 +4,7 @@
 #include "QcVec3.h"
 
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // Sends each client the chunks around it (nearest first, generating missing ones in the background)
 // and unloads chunks no player needs any more.

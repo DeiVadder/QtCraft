@@ -5,7 +5,7 @@
 #include "QcCommandArguments.h"
 #include "QcDayCycle.h"
 #include "QcPhysics.h"
-#include "QcServerCombat.h"
+#include "QcPlayerHealth.h"
 #include "QcServerGameModes.h"
 #include "QcServerInventory.h"
 #include "QcServerState.h"
@@ -134,7 +134,7 @@ void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
 void QcCheatCommands::give(const QcCommandContext &context)
 {
     const QString name = qualified(context.args[0]);
-    const std::optional<QcItemId> item = m_state.content->itemId(name);
+    const std::optional<QcItemId> item = m_state.content().itemId(name);
     const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 64 * QcInventory::slotCount);
     if (!item || !count) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown item or invalid count: %1"), {context.text});
@@ -142,7 +142,7 @@ void QcCheatCommands::give(const QcCommandContext &context)
     }
 
     QcServerClient &player = context.player();
-    const int leftover = player.inventory.add(*item, *count, *m_state.content);
+    const int leftover = player.inventory.add(*item, *count, m_state.content());
     m_parts.inventory.send(player);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Gave %1 x %2"), {QString::number(*count - leftover), name});
 }
@@ -150,7 +150,7 @@ void QcCheatCommands::give(const QcCommandContext &context)
 void QcCheatCommands::spawnItem(const QcCommandContext &context)
 {
     const QString name = qualified(context.args[0]);
-    const std::optional<QcItemId> item = m_state.content->itemId(name);
+    const std::optional<QcItemId> item = m_state.content().itemId(name);
     const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 64);
     if (!item || !count) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown item or invalid count: %1"), {context.text});
@@ -161,7 +161,7 @@ void QcCheatCommands::spawnItem(const QcCommandContext &context)
     const QcServerClient &player = context.player();
     const double yaw = qDegreesToRadians(double(player.yaw));
     const QcVec3 position = player.motion.position + QcVec3{std::sin(yaw) * 2.0, 0.5, -std::cos(yaw) * 2.0};
-    m_state.items.spawnScattered({*item, *count, 0}, position, m_state.newEntityId());
+    m_state.entities().items().spawnScattered({*item, *count, 0}, position, m_state.entities().newId());
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Dropped %1 x %2"), {QString::number(*count), name});
 }
 
@@ -173,7 +173,7 @@ void QcCheatCommands::summon(const QcCommandContext &context)
     }
 
     const QString name = qualified(context.args[0]);
-    const std::optional<int> type = m_state.content->mobIndex(name);
+    const std::optional<int> type = m_state.content().mobIndex(name);
     const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 16);
     if (!type || !count) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {context.text});
@@ -182,8 +182,8 @@ void QcCheatCommands::summon(const QcCommandContext &context)
 
     // Only creatures that came by /summon count: the animals of the loaded chunks would make the
     // limit depend on the view distance and on how far the world has loaded (decision E-351).
-    const qint64 limit = m_state.config.limits.summonLimit;
-    if (m_state.mobs.awakeSummonedCount() + *count > limit) {
+    const qint64 limit = m_state.config().limits.summonLimit;
+    if (m_state.entities().creatures().awakeSummonedCount() + *count > limit) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many summoned creatures in the world (at most %1)"), {QString::number(limit)});
         return;
     }
@@ -191,14 +191,14 @@ void QcCheatCommands::summon(const QcCommandContext &context)
     // Three metres in front of the player.
     const double yaw = qDegreesToRadians(double(player.yaw));
     const QcVec3 position = player.motion.position + QcVec3{std::sin(yaw) * 3.0, 0.5, -std::cos(yaw) * 3.0};
-    const QcMobDefinition &definition = m_state.content->mobs()[*type];
+    const QcMobDefinition &definition = m_state.content().mobs()[*type];
     for (int i = 0; i < *count; ++i) {
         const int row = i / 3; // NOLINT(bugprone-integer-division): grid row
         const QcVec3 at = summonPlace(player, definition, position + QcVec3{(i % 3) * 0.8, 0.0, row * 0.8});
         // Summoned animals stay like natural ones.
-        const quint32 id = m_state.mobs.spawn(*type, at, m_state.newEntityId(), false,
+        const quint32 id = m_state.entities().creatures().spawn(*type, at, m_state.entities().newId(), false,
                                               !definition.hostile && !definition.ambient && !definition.flying);
-        m_state.mobs.find(id)->summoned = true;
+        m_state.entities().creatures().find(id)->summoned = true;
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(*count), name});
@@ -209,8 +209,8 @@ QcVec3 QcCheatCommands::summonPlace(const QcServerClient &player, const QcMobDef
     // The nearest place where the body is clear of blocks (over a step or a hill, decision E-352),
     // else the player's feet; also there instead of in lava, magma or fire.
     const QcPhysics::BodySize body{definition.width, definition.height};
-    const std::optional<QcVec3> clear = QcBodyFit::clearFeet(m_state.world, wanted, body);
-    if (!clear || m_state.world.contactDamageIn(QcPhysics::boxAt(*clear, body.width, body.height)) > 0.0) {
+    const std::optional<QcVec3> clear = QcBodyFit::clearFeet(m_state.world(), wanted, body);
+    if (!clear || m_state.contactDamage().in(m_state.world(), QcPhysics::boxAt(*clear, body.width, body.height)) > 0.0) {
         return player.motion.position;
     }
     return *clear;
@@ -220,7 +220,7 @@ void QcCheatCommands::kill(const QcCommandContext &context)
 {
     QcServerClient &player = context.player();
     player.hurtTimer = 0.0;
-    m_parts.combat.damagePlayer(player, player.health, {}, QcServerCombat::DamageKind::Command);
+    m_parts.health.damage(player, player.health, {}, QcPlayerHealth::DamageKind::Command);
 }
 
 void QcCheatCommands::feed(const QcCommandContext &context)
@@ -238,7 +238,7 @@ void QcCheatCommands::feed(const QcCommandContext &context)
     }
 
     player.hunger.restore(*food, 0.0);
-    m_parts.combat.sendFood(player);
+    m_parts.health.sendFood(player);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Food is now %1"), {QString::number(*food)});
 }
 
@@ -251,14 +251,14 @@ void QcCheatCommands::heal(const QcCommandContext &context)
     }
 
     player.health = QcServerClient::maxHealth;
-    m_parts.combat.sendHealth(player);
+    m_parts.health.sendHealth(player);
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Healed"));
 }
 
 void QcCheatCommands::time(const QcCommandContext &context) const
 {
     const QStringList &args = context.args;
-    const double now = m_state.info.worldTime;
+    const double now = m_state.info().worldTime;
     if (args.isEmpty()) {
         context.reply(QcDayCycle::isNight(now) ? QT_TRANSLATE_NOOP("QcServerMessages", "Time is now %1 s (night)")
                                                : QT_TRANSLATE_NOOP("QcServerMessages", "Time is now %1 s (day)"),
@@ -312,7 +312,7 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
     }
 
     // The values are part of the keys, so they are translated with the line.
-    bool &value = m_state.info.*(rule->second);
+    bool &value = m_state.info().*(rule->second);
     if (!wanted) {
         context.reply(value ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is true") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is false"),
                       {args[0]});
@@ -327,7 +327,7 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
     context.reply(value ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now true") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now false"),
                   {args[0]});
     if (rule->second == &QcWorldInfo::daylightCycle) {
-        m_parts.setWorldTime(m_state.info.worldTime);
+        m_parts.setWorldTime(m_state.info().worldTime);
     }
 }
 
@@ -397,9 +397,9 @@ void QcCheatCommands::defaultGamemode(const QcCommandContext &context)
     }
 
     // Saved with the world; a server.json setting no longer overrides it until the server restarts.
-    m_state.info.defaultGameMode = *mode;
-    m_state.info.unknownGameMode.clear();
-    m_state.config.defaultGameMode.reset();
+    m_state.info().defaultGameMode = *mode;
+    m_state.info().unknownGameMode.clear();
+    m_state.config().defaultGameMode.reset();
     context.reply(newPlayersStart(*mode));
 }
 
@@ -428,7 +428,7 @@ void QcCheatCommands::locateBiome(const QcCommandContext &context)
 std::optional<int> QcCheatCommands::findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const
 {
     for (int dz = -radius; dz <= radius; dz += 8) {
-        if (std::max(std::abs(dx), std::abs(dz)) == radius && m_state.world.generator().biomeAt(feet.x + dx, feet.z + dz) == name) {
+        if (std::max(std::abs(dx), std::abs(dz)) == radius && m_state.world().generator().biomeAt(feet.x + dx, feet.z + dz) == name) {
             return dz;
         }
     }

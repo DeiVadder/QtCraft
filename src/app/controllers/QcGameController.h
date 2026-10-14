@@ -10,6 +10,7 @@
 #include "QcPlayerController.h"
 #include "QcPreviewSource.h"
 #include "QcRenderBridge.h"
+#include "QcServerPersistence.h"
 #include "QcResult.h"
 #include "QcSessionParts.h"
 #include "QcSettingsController.h"
@@ -135,6 +136,11 @@ signals:
     // An unsaved world (startSingleplayer) was not started: its options do not suit its type.
     void worldRefused(const QString &reason);
     void overlayChanged();
+
+public:
+    // The translated message for a world that a damaged per-region file kept from opening (decision
+    // E-366); empty when no such file was the reason.
+    static QString damagedFileMessage(const QcServerPersistence::DamagedFile &damaged);
 
 private:
     void setPhase(const QString &phase, const QString &status = {});

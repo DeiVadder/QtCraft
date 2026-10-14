@@ -4,6 +4,7 @@
 #include "QcBlockAccess.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
+#include "QcFallingBlock.h"
 
 #include <QList>
 
@@ -27,14 +28,6 @@ public:
     // Scan depth for blocks that land without becoming entities.
     static constexpr int maxDirectDrop = 256;
 
-    struct Falling
-    {
-        quint32 id = 0;
-        QcBlockId block = qcAirBlockId;
-        QcEntityMotion motion;
-        double age = 0.0;
-    };
-
     struct Landing
     {
         QcBlockId block = qcAirBlockId;
@@ -42,8 +35,6 @@ public:
         QcBlockPos pos;
         bool placed = false;
     };
-
-    using LoadedFunction = std::function<bool(const QcVec3 &position)>;
 
     explicit QcFallingBlockManager(std::shared_ptr<const QcContentRegistry> content);
 
@@ -60,18 +51,21 @@ public:
     void setMaxFalling(qsizetype limit) { m_maxFalling = limit; }
     // Starts a falling block in the cell `from` (the caller removes the block there).
     void start(QcBlockPos from, QcBlockId block, quint32 id);
-    // One tick of physics; returns the blocks that came to rest. Blocks that fall below
-    // QcWorld::voidLimitY disappear (decision E-288).
-    QList<Landing> tick(const QcBlockAccess &world, double dt, const LoadedFunction &isLoaded);
+    // One tick of physics for the blocks that do not rest (QcEntities::settle); returns the blocks
+    // that came to rest. Blocks that fall below QcWorld::voidLimitY disappear, resting ones too
+    // (decision E-288).
+    QList<Landing> tick(const QcBlockAccess &world, double dt);
 
-    const QList<Falling> &all() const { return m_falling; }
+    const QList<QcFallingBlock> &all() const { return m_falling; }
+    // For moving falling blocks from outside (pistons push them); never add or remove through it.
+    QList<QcFallingBlock> &editableAll() { return m_falling; }
     // Removes the blocks falling inside the chunk; returns how many.
     qsizetype removeInChunk(QcChunkPos chunk);
     // Replaces all falling blocks (from a save); ids come from `nextEntityId`.
-    void restore(const QList<Falling> &falling, const std::function<quint32()> &nextEntityId);
+    void restore(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId);
 
 private:
     std::shared_ptr<const QcContentRegistry> m_content;
-    QList<Falling> m_falling;
+    QList<QcFallingBlock> m_falling;
     qsizetype m_maxFalling = maxFalling;
 };

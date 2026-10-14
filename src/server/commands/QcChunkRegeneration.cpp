@@ -20,7 +20,7 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
 {
     QList<QcChunkPos> done;
     for (const QcChunkPos &chunk : chunks) {
-        if (!m_state.world.regenerateChunk(chunk)) {
+        if (!m_state.world().regenerateChunk(chunk)) {
             continue;
         }
 
@@ -39,27 +39,27 @@ void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)
     // They belong to the old blocks; the generated ones need none (the clients drop the falling
     // blocks with the next entity sync).
     m_updates.forgetChunk(chunk);
-    m_state.liquids.forgetChunk(chunk);
-    m_state.circuits.forgetChunk(chunk);
-    m_state.hoppers.forgetChunk(chunk);
-    m_state.falling.removeInChunk(chunk);
+    m_state.liquids().forgetChunk(chunk);
+    m_state.circuits().forgetChunk(chunk);
+    m_state.hoppers().forgetChunk(chunk);
+    m_state.entities().fallingBlocks().removeInChunk(chunk);
 }
 
 void QcChunkRegeneration::removeBuriedCreatures(const QList<QcChunkPos> &chunks)
 {
     const QSet<QcChunkPos> regenerated(chunks.begin(), chunks.end());
     QList<quint32> buried;
-    for (const QcMobManager::Mob &mob : m_state.mobs.mobs()) {
+    for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
         if (mob.dormant || !regenerated.contains(feet.chunk())) {
             continue;
         }
 
         // Every cell from the feet to the top of the body.
-        const double height = m_state.content->mobs()[mob.type].height;
+        const double height = m_state.content().mobs()[mob.type].height;
         const int top = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, std::max(0.0, height - 0.01), 0.0}).y;
         for (QcBlockPos cell = feet; cell.y <= top; ++cell.y) {
-            if (!QcFallingBlockManager::isPassable(m_state.world, cell)) {
+            if (!QcFallingBlockManager::isPassable(m_state.world(), cell)) {
                 buried.append(mob.id);
                 break;
             }
@@ -67,7 +67,7 @@ void QcChunkRegeneration::removeBuriedCreatures(const QList<QcChunkPos> &chunks)
     }
 
     for (const quint32 id : std::as_const(buried)) {
-        m_state.mobs.remove(id);
+        m_state.entities().creatures().remove(id);
     }
 }
 
@@ -75,15 +75,15 @@ void QcChunkRegeneration::resend(QcChunkPos chunk)
 {
     // Streaming sends a chunk again once it is missing from the client's list; the client replaces
     // its copy.
-    for (const auto &client : m_state.clients) {
-        client->sentChunks.remove(chunk);
+    for (const auto &client : m_state.clients()) {
+        client->view.sentChunks.remove(chunk);
     }
 }
 
 void QcChunkRegeneration::liftPlayers(const QList<QcChunkPos> &chunks)
 {
     const QSet<QcChunkPos> regenerated(chunks.begin(), chunks.end());
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->state != QcServerClient::State::Playing || !regenerated.contains(QcChunkStreaming::chunkOf(client->motion.position))) {
             continue;
         }
@@ -91,7 +91,7 @@ void QcChunkRegeneration::liftPlayers(const QList<QcChunkPos> &chunks)
         QcBlockPos feet = QcPhysics::blockContaining(client->motion.position);
         const QcBlockPos start = feet;
         while (feet.y < QcWorld::worldHeight
-               && (!QcFallingBlockManager::isPassable(m_state.world, feet) || !QcFallingBlockManager::isPassable(m_state.world, feet.offset(0, 1, 0)))) {
+               && (!QcFallingBlockManager::isPassable(m_state.world(), feet) || !QcFallingBlockManager::isPassable(m_state.world(), feet.offset(0, 1, 0)))) {
             ++feet.y;
         }
         if (feet == start) {

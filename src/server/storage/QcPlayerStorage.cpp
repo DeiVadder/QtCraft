@@ -15,8 +15,8 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 2 adds food and exhaustion, version 3 the armour slots, version 4 the game mode, the
-// flight and the kept inventory of the other mode.
+// Version 4: position and motion, view, health, inventory, food, armour, game mode, flight and the
+// kept inventory of the other mode. Files of older development versions are refused (decision E-356).
 constexpr quint16 playerVersion = 4;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -48,29 +48,6 @@ QString QcPlayerStorage::fileName(const QString &playerName)
 QString QcPlayerStorage::path(const QString &playerName) const
 {
     return QDir(m_directory).filePath(u"players/"_s + fileName(playerName));
-}
-
-QString QcPlayerStorage::migratedPath(const QString &playerName, QStringList &warnings) const
-{
-    QString current = path(playerName);
-    if (QFile::exists(current)) {
-        return current;
-    }
-
-    // Files of older versions are named after the sanitized name as typed. They belong to the
-    // player whose name gives exactly that file name (also in case), which the directory listing
-    // tells even where the file system ignores case.
-    const QDir players(QDir(m_directory).filePath(u"players"_s));
-    const QString legacyName = sanitizedPlayerName(playerName) + u".qcp"_s;
-    if (!players.entryList(QDir::Files).contains(legacyName)) {
-        return current;
-    }
-
-    if (!QFile::rename(players.filePath(legacyName), current)) {
-        warnings.append(u"Cannot rename the player file %1; reading it under its old name"_s.arg(players.filePath(legacyName)));
-        return players.filePath(legacyName);
-    }
-    return current;
 }
 
 QcStatus QcPlayerStorage::write(const QString &playerName, const QcPlayerData &player) const
@@ -113,7 +90,7 @@ void QcPlayerStorage::writeEquipment(QDataStream &stream, const QcEquipment &equ
 
 QcResult<std::optional<QcPlayerData>> QcPlayerStorage::read(const QString &playerName, QStringList &warnings) const
 {
-    const QString file = migratedPath(playerName, warnings);
+    const QString file = path(playerName);
     if (!QFile::exists(file)) {
         return std::optional<QcPlayerData>();
     }
@@ -122,6 +99,9 @@ QcResult<std::optional<QcPlayerData>> QcPlayerStorage::read(const QString &playe
     const QcResult<QByteArray> payload = QcSaveFile::read(file, playerMagic, playerVersion, &version);
     if (!payload) {
         return qcError(payload.error());
+    }
+    if (version < playerVersion) {
+        return qcError(u"%1 is from an older development version"_s.arg(file));
     }
 
     QDataStream stream(*payload);
@@ -137,15 +117,13 @@ QcResult<std::optional<QcPlayerData>> QcPlayerStorage::read(const QString &playe
     }
     player.inventory.setSelectedHotbarSlot(selected);
 
-    if (version >= 2) {
-        qint32 food = 0;
-        stream >> food >> player.exhaustion;
-        player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
-    }
-    if (version >= 3 && !readEquipment(stream, file, player.equipment, player.inventory, warnings)) {
+    qint32 food = 0;
+    stream >> food >> player.exhaustion;
+    player.food = std::clamp(food, 0, QcItemDefinition::maxFood);
+    if (!readEquipment(stream, file, player.equipment, player.inventory, warnings)) {
         return qcError(u"%1 is damaged (armour)"_s.arg(file));
     }
-    if (version >= 4 && !readGameMode(stream, file, player, warnings)) {
+    if (!readGameMode(stream, file, player, warnings)) {
         return qcError(u"%1 is damaged (game mode)"_s.arg(file));
     }
 

@@ -340,7 +340,7 @@ private slots:
         const QcMobBreeding breeding(m_content);
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         const auto pigAt = [pig](double x, bool dormant = false, bool bred = false) {
-            QcMobManager::Mob mob;
+            QcCreature mob;
             mob.type = pig;
             mob.motion.position = {x, 70.0, 8.0};
             mob.dormant = dormant;
@@ -349,7 +349,7 @@ private slots:
         };
 
         // 23 pigs in the 3 x 3 chunks around x = 8 (dormant ones count), one far away.
-        QList<QcMobManager::Mob> mobs;
+        QList<QcCreature> mobs;
         for (int i = 0; i < QcMobBreeding::crowdLimit - 1; ++i) {
             mobs.append(pigAt(-15.0 + i, i % 2 == 0));
         }
@@ -362,7 +362,7 @@ private slots:
         QVERIFY(breeding.roomFor(mobs, pig, {200.0, 70.0, 8.0}));
 
         // The bred animals of a kind are limited in the whole world.
-        QList<QcMobManager::Mob> bred;
+        QList<QcCreature> bred;
         for (int i = 0; i < QcMobBreeding::maxBredPerKind - 1; ++i) {
             bred.append(pigAt(1000.0 + 20.0 * i, true, true));
         }

@@ -90,7 +90,7 @@ void QcPlayerCommands::addListCommands(QcCommandRegistry &registry)
 void QcPlayerCommands::list(const QcCommandContext &context) const
 {
     QStringList names;
-    for (const auto &client : m_state.clients) {
+    for (const auto &client : m_state.clients()) {
         if (client->joined && client->state == QcServerClient::State::Playing) {
             names.append(client->name);
         }
@@ -153,7 +153,7 @@ void QcPlayerCommands::ban(const QcCommandContext &context)
     }
 
     const QString reason = reasonOf(context.args, 1);
-    const QcResult<bool> changed = m_state.access.addBan({name, reason, context.source.name(), QDateTime::currentDateTimeUtc(), fingerprintOf(name)});
+    const QcResult<bool> changed = m_state.access().addBan({name, reason, context.source.name(), QDateTime::currentDateTimeUtc(), fingerprintOf(name)});
     bool hostRefused = false;
     disconnect(name,
                reason.isEmpty() ? QcChatText::disconnect(QT_TRANSLATE_NOOP("QcServerMessages", "Banned by %1"), {context.source.name()})
@@ -170,7 +170,7 @@ void QcPlayerCommands::unban(const QcCommandContext &context)
         return;
     }
 
-    const QcResult<bool> changed = m_state.access.removeBan(context.args[0]);
+    const QcResult<bool> changed = m_state.access().removeBan(context.args[0]);
     if (changed && !*changed) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is not banned"), {context.args[0]});
         return;
@@ -181,7 +181,7 @@ void QcPlayerCommands::unban(const QcCommandContext &context)
 
 void QcPlayerCommands::banList(const QcCommandContext &context) const
 {
-    const QList<QcAccessList::Ban> bans = m_state.access.bans();
+    const QList<QcAccessList::Ban> bans = m_state.access().bans();
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 banned names"), {QString::number(bans.size())});
     for (const QcAccessList::Ban &ban : bans) {
         context.source.replyPlain(u"%1 (%2, %3): %4"_s.arg(ban.name, ban.by, ban.since.toString(Qt::ISODate), ban.reason));
@@ -194,19 +194,19 @@ void QcPlayerCommands::whitelist(const QcCommandContext &context)
     const std::optional<bool> toggle = QcCommandArguments::toggle(args[0]);
     QcResult<bool> changed = false;
     if (toggle && args.size() == 1) {
-        changed = m_state.access.setWhitelistEnabled(*toggle);
+        changed = m_state.access().setWhitelistEnabled(*toggle);
         context.reply(*toggle ? QT_TRANSLATE_NOOP("QcServerMessages", "The whitelist is on") : QT_TRANSLATE_NOOP("QcServerMessages", "The whitelist is off"));
     } else if (args[0] == u"list"_s && args.size() == 1) {
-        context.reply(m_state.access.whitelistEnabled() ? QT_TRANSLATE_NOOP("QcServerMessages", "The whitelist is on: %1")
+        context.reply(m_state.access().whitelistEnabled() ? QT_TRANSLATE_NOOP("QcServerMessages", "The whitelist is on: %1")
                                                         : QT_TRANSLATE_NOOP("QcServerMessages", "The whitelist is off: %1"),
-                      {m_state.access.whitelist().join(u", "_s)});
+                      {m_state.access().whitelist().join(u", "_s)});
     } else if ((args[0] == u"add"_s || args[0] == u"remove"_s) && args.size() == 2) {
         const bool add = args[0] == u"add"_s;
         const std::optional<QString> name = nameOf(context, args[1]);
         if (!name || (add && refusedAsFull(context, QcAccessList::List::Whitelist, *name))) {
             return;
         }
-        changed = m_state.access.setWhitelisted(*name, add, fingerprintOf(*name));
+        changed = m_state.access().setWhitelisted(*name, add, fingerprintOf(*name));
         context.reply(add ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is on the whitelist") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is not on the whitelist"),
                       {*name});
     } else {
@@ -219,7 +219,7 @@ void QcPlayerCommands::whitelist(const QcCommandContext &context)
 void QcPlayerCommands::op(const QcCommandContext &context, bool grant)
 {
     if (context.args.isEmpty()) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Operators: %1"), {m_state.access.operators().join(u", "_s)});
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Operators: %1"), {m_state.access().operators().join(u", "_s)});
         return;
     }
 
@@ -235,8 +235,8 @@ void QcPlayerCommands::op(const QcCommandContext &context, bool grant)
         return;
     }
 
-    const QcResult<bool> changed = m_state.access.setOperator(name, grant, fingerprintOf(name));
-    m_state.playerListDirty = true;
+    const QcResult<bool> changed = m_state.access().setOperator(name, grant, fingerprintOf(name));
+    m_state.notePlayerListChanged();
     qCInfo(lcPlayers).noquote() << u"%1 %2 %3"_s.arg(context.source.name(), grant ? u"made an operator:"_s : u"took operator rights from"_s, name);
     for (QcServerClient *player : online) {
         player->connection->send(QcChatText::message(grant ? QT_TRANSLATE_NOOP("QcServerMessages", "You are now an operator")
@@ -244,8 +244,8 @@ void QcPlayerCommands::op(const QcCommandContext &context, bool grant)
         if (!grant) {
             // Server-wide debug data is for operators only (decision E-225), and a destructive
             // command waiting for /confirm goes with the rights.
-            player->debugFlags = 0;
-            m_pending.forget(player->entityId);
+            player->view.debugFlags = 0;
+            m_pending.forget(player->id);
         }
     }
     context.reply(grant ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is an operator") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is no operator"), {name});
@@ -257,16 +257,16 @@ QString QcPlayerCommands::fingerprintOf(const QString &name) const
     // The identity of a player online, else the one registered for the name (decision E-253).
     const QList<QcServerClient *> players = QcCommandArguments::players(m_state, name);
     for (const QcServerClient *player : std::as_const(players)) {
-        if (!player->fingerprint.isEmpty()) {
-            return player->fingerprint;
+        if (!player->login.fingerprint.isEmpty()) {
+            return player->login.fingerprint;
         }
     }
-    return m_state.identities.fingerprintOf(name);
+    return m_state.identities().fingerprintOf(name);
 }
 
 bool QcPlayerCommands::refusedAsFull(const QcCommandContext &context, QcAccessList::List list, const QString &name) const
 {
-    if (!m_state.access.isFullFor(list, name)) {
+    if (!m_state.access().isFullFor(list, name)) {
         return false;
     }
 
@@ -318,11 +318,11 @@ void QcPlayerCommands::moveTo(QcServerClient &player, const QcVec3 &position)
 {
     // Loaded at once so the player does not fall through a missing chunk; the client takes the new
     // position from the next PlayerState like after a respawn.
-    m_state.world.loadChunk(QcChunkStreaming::chunkOf(position));
+    m_state.world().loadChunk(QcChunkStreaming::chunkOf(position));
     player.motion.position = position;
     player.motion.velocity = {};
     player.previousPosition.reset();
     player.fallPeak = position.y;
-    player.miningPos.reset();
+    player.mining.pos.reset();
     player.stateDirty = true;
 }

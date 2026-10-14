@@ -3,6 +3,7 @@
 #include "QcServerLimits.h"
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
+#include "QcItemEntity.h"
 #include "QcItemStack.h"
 
 #include <QList>
@@ -22,7 +23,7 @@ class QcBlockAccess;
 //
 // The number of items is bounded: above `activeLimit` awake items in loaded chunks new drops wait
 // in a queue and appear as soon as older items are picked up or despawn. A chunk that loads with
-// too many items keeps the surplus as dormant items (frozen, invisible) that wake up oldest first.
+// too many items keeps the surplus as surplus items (frozen, invisible) that wake up oldest first.
 // The queue and the number of items (also those in unloaded chunks) are bounded as well, dropping
 // the oldest when full.
 class QcItemEntityManager
@@ -44,19 +45,6 @@ public:
     static constexpr int queueLimit = int(QcServerLimits{}.itemsQueued);
     static constexpr int totalLimit = int(QcServerLimits{}.itemsTotal);
 
-    struct Item
-    {
-        quint32 id = 0;
-        QcItemStack stack;
-        QcEntityMotion motion;
-        double age = 0.0;
-        double pickupDelay = 0.0;
-        // Lying still on the ground: skipped by physics until the block below changes.
-        bool resting = false;
-        // Surplus item in a loaded chunk beyond activeLimit: frozen and not sent to clients.
-        bool dormant = false;
-    };
-
     struct Drop
     {
         QcItemStack stack;
@@ -64,6 +52,8 @@ public:
         QcVec3 velocity;
         double pickupDelay = QcItemEntityManager::pickupDelay;
         double age = 0.0;
+
+        bool operator==(const Drop &) const = default;
     };
 
     struct PlayerView
@@ -88,6 +78,7 @@ public:
     // What a tick asks the server.
     struct TickCallbacks
     {
+        // Whether a waiting drop may appear at a position (its chunk is loaded).
         LoadedFunction isLoaded;
         GiveFunction give;
         std::function<quint32()> nextEntityId;
@@ -95,11 +86,11 @@ public:
 
     // One tick: physics, pickup, merging, ageing and despawning. Returns the items that despawned
     // of old age (the caller may plant saplings from them).
-    QList<Item> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const TickCallbacks &callbacks);
+    QList<QcItemEntity> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const TickCallbacks &callbacks);
 
-    const QList<Item> &items() const { return m_items; }
+    const QList<QcItemEntity> &items() const { return m_items; }
     // For moving items from outside their physics (pistons push them, decision E-337).
-    QList<Item> &editableItems() { return m_items; }
+    QList<QcItemEntity> &editableItems() { return m_items; }
     const QList<Drop> &queued() const { return m_queue; }
     // Awake items in loaded chunks after the last tick (plus drops spawned since).
     int activeCount() const { return m_activeCount; }
@@ -116,24 +107,24 @@ public:
     // sleeping hoppers below them wake (decision E-344); resting items cost nothing.
     QList<QcVec3> takeStirred() { return std::exchange(m_stirred, {}); }
     // Removes the awake items that match (burning in lava); returns how many.
-    qsizetype removeWhere(const std::function<bool(const Item &)> &match);
+    qsizetype removeWhere(const std::function<bool(const QcItemEntity &)> &match);
     // Replaces all items, e.g. from a save; ids are assigned by `nextEntityId`.
     void restore(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId);
 
 private:
-    void step(Item &item, const QcBlockAccess &world, double dt);
-    void pickUp(Item &item, const QList<PlayerView> &players, const GiveFunction &give);
+    void step(QcItemEntity &item, const QcBlockAccess &world, double dt);
+    void pickUp(QcItemEntity &item, const QList<PlayerView> &players, const GiveFunction &give);
     // Drops emptied items and items in the void, collects the ones that despawned of old age and recounts the awake ones.
-    QList<Item> removeFinished(const QList<bool> &awake);
+    QList<QcItemEntity> removeFinished(const QList<bool> &awake);
     void spawnQueued(const TickCallbacks &callbacks);
     void merge(const QList<bool> &active);
     void enqueue(const Drop &drop);
-    void enforceTotalLimit(const LoadedFunction &isLoaded);
+    void enforceTotalLimit();
     void balanceDormancy(const QList<bool> &loaded);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QRandomGenerator m_random;
-    QList<Item> m_items;
+    QList<QcItemEntity> m_items;
     QList<Drop> m_queue;
     QList<QcVec3> m_stirred;
     int m_activeCount = 0;

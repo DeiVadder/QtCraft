@@ -13,9 +13,9 @@ class QLockFile;
 class QcBlockUpdateQueue;
 class QcServerBlocks;
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
-// Opening and saving the world of the server: world info, chunks, block entities, entities, mobs,
+// Opening and saving the world of the server: world info, chunks, block entities, entities,
 // pending block updates and players.
 class QcServerPersistence
 {
@@ -31,9 +31,6 @@ public:
     // Writes everything; the first error is returned (see QcServer::save). No-op without storage.
     QcStatus save();
     QcStatus savePlayer(const QcServerClient &client);
-    // The saved state of a player who rejoins (the reverse of savePlayer), with the rules of the
-    // saved game mode applied.
-    static void restorePlayer(QcServerClient &client, const QcPlayerData &player);
     bool hasStorage() const { return m_storage.has_value(); }
     QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
@@ -44,6 +41,16 @@ public:
     bool worldInUse() const { return m_worldInUse; }
     // Whether open() failed because the world comes from an older development version.
     bool worldTooOld() const { return m_worldTooOld; }
+    // What a damaged per-region file of the world held (decision E-366): open() refuses the world
+    // and names the file; moved out of the world folder, the world opens without what it held.
+    enum class DamagedPart { None, Entities, BlockEntities };
+    struct DamagedFile
+    {
+        DamagedPart part = DamagedPart::None;
+        // Relative to the world directory.
+        QString file;
+    };
+    const DamagedFile &damagedFile() const { return m_damagedFile; }
 
 private:
     // Takes the world's lock file; fails when another server holds it.
@@ -53,16 +60,13 @@ private:
     QcStatus readInfo(const QcWorldStorage &storage, QStringList &warnings);
     // Returns the number of stored chunks.
     QcResult<qsizetype> readChunks(const QcWorldStorage &storage, QStringList &warnings);
+    // Entities per chunk (decision E-366).
     QcStatus readEntities(const QcWorldStorage &storage);
-    QcStatus readMobs(const QcWorldStorage &storage);
     // Block entities per chunk (decision E-358).
     QcStatus readBlockEntities(const QcWorldStorage &storage);
-    // Never fails: stands of a damaged file and beyond the limit are left out with a warning.
-    void readStands(const QcWorldStorage &storage);
     QcStatus readBlockUpdates(const QcWorldStorage &storage);
-    // Entities, creatures, block entities and block updates, if the world's setup was saved.
+    // Entities, block entities and block updates, if the world's setup was saved.
     QcStatus readWorldState(const QcWorldStorage &storage);
-    QcStatus saveEntities(const QcWorldStorage &storage) const;
     QcStatus saveBlockUpdates(const QcWorldStorage &storage) const;
 
     QcServerState &m_state;
@@ -72,6 +76,7 @@ private:
     std::unique_ptr<QLockFile> m_lock;
     bool m_worldInUse = false;
     bool m_worldTooOld = false;
+    DamagedFile m_damagedFile;
     // world.json on disk says the generator's setup is done.
     bool m_setupSaved = false;
     QStringList m_openWarnings;

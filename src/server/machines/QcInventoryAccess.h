@@ -7,7 +7,7 @@
 #include <QList>
 #include <QSet>
 
-struct QcServerState;
+class QcServerState;
 
 // The slots of containers (chests, barrels, hoppers, dispensers) and machines (furnaces) as Signal
 // Hoppers, droppers and dispensers reach them (decision E-344). A furnace takes items from above into

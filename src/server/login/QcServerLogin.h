@@ -9,7 +9,7 @@
 #include <optional>
 
 struct QcServerClient;
-struct QcServerState;
+class QcServerState;
 
 // The server's side of the handshake (decision E-252). Hello checks the protocol version and the
 // name; a local player (in-process host) joins at once, a remote client gets a LoginChallenge and

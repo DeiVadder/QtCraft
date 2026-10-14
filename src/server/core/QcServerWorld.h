@@ -29,13 +29,9 @@ public:
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
 
-    // The strongest contact damage (lava) of the loaded blocks a box overlaps, 0 for none.
-    double contactDamageIn(const QcAabb &box) const;
-    // False when no loaded chunk holds a block with contact damage, so nothing can burn.
-    bool mayHaveContactDamage() const { return !m_marks.isEmpty(QcBlockTrait::ContactDamage); }
-    // Sections of the loaded chunks that may hold blocks with a trait (decision E-359): growing
-    // plants, circuit components (block changes far from any circuit cost the signal engine
-    // nothing), pressure plates, block entities.
+    // Sections of the loaded chunks that may hold blocks with a trait (decision E-359): contact
+    // damage (QcContactDamage), growing plants, circuit components (block changes far from any
+    // circuit cost the signal engine nothing), pressure plates, block entities.
     const QcSectionMarks &marks() const { return m_marks; }
     // State that belongs to single blocks (decision E-357), kept in step with every block set here,
     // every chunk that arrives and every chunk generated again.
@@ -75,10 +71,6 @@ public:
     // entities follow (QcBlockEntities::placed); spilled contents wait in blockEntities().
     bool setBlock(QcBlockPos pos, QcBlockId block);
 
-    // Block light (0..15) at a position, computed from the light sources around it in loaded chunks
-    // (decision E-049: block light is derived, never stored). Cheap when no source is near.
-    int blockLightAt(QcBlockPos pos) const;
-
     const QcWorldGenerator &generator() const { return *m_generator; }
 
     // Chunks read from a save; they count as modified.
@@ -98,8 +90,6 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content;
     std::unique_ptr<QcWorldGenerator> m_generator;
-    // Contact damage of every block state, indexed by id.
-    std::vector<double> m_contactDamage;
     QcSectionMarks m_marks;
     QcBlockIndex m_hoppers;
     QcBlockEntities m_blockEntities;

@@ -441,7 +441,7 @@ private slots:
         QVERIFY(m_server->openWorld().has_value());
 
         int pickaxes = 0;
-        for (const QcItemEntityManager::Item &dropped : m_server->items().items()) {
+        for (const QcItemEntity &dropped : m_server->items().items()) {
             if (dropped.stack.item == item("qtcraft:stone_pickaxe")) {
                 ++pickaxes;
                 QCOMPARE(dropped.stack.damage, 1);

@@ -246,10 +246,10 @@ private slots:
         buildArea();
         put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
         put(4, 0, 6, u"lever[attach=floor]"_s);
-        QcArmourStandManager::Stand stand;
+        QcArmourStand stand;
         stand.id = 800002;
         const QcBlockPos cell = at(5, 0, 5);
-        stand.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        stand.motion.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
         QVERIFY(m_server->stands().add(stand));
         fill(4, 0, 5, {stack("qtcraft:iron_helmet", 1), stack("qtcraft:iron_helmet", 1)});
         ticks(2);

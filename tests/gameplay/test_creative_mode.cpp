@@ -250,7 +250,7 @@ private slots:
             const quint32 mobId = m_server->mobs().spawn(zombie, near, 900'000);
             idle(10);
 
-            const QcMobManager::Mob *mob = m_server->mobs().find(mobId);
+            const QcCreature *mob = m_server->mobs().find(mobId);
             QVERIFY(mob);
             const bool chases = mob->chasing == m_client->entityId;
             QCOMPARE(chases, !config.defaultGameMode.has_value());
@@ -522,7 +522,7 @@ private slots:
         QCOMPARE(m_client->food, 2);
     }
 
-    void formatThreePlayerFilesLoadAsSurvival()
+    void formatThreePlayerFilesAreRefused()
     {
         QTemporaryDir directory;
         QVERIFY(QDir().mkpath(directory.filePath(u"players"_s)));
@@ -542,21 +542,12 @@ private slots:
         const QString file = QDir(directory.filePath(u"players"_s)).filePath(QcWorldStorage::playerFileName(u"Ann"_s));
         QVERIFY(QcSaveFile::write(file, "QCPL", payload, 3));
 
+        // Refused, not converted (decision E-356): a player of an older development version would
+        // otherwise come back without the game mode he had.
         QStringList warnings;
         const QcResult<std::optional<QcPlayerData>> read = QcWorldStorage(directory.path(), m_content).readPlayer(u"Ann"_s, warnings);
-        QVERIFY(read && *read);
-        const QcPlayerData &loaded = **read;
-        QCOMPARE(loaded.gameMode, QcGameMode::Survival);
-        QVERIFY(!loaded.motion.flying);
-        QCOMPARE(loaded.inventory.slot(2), (QcItemStack{item("qtcraft:stone"), 12, 0}));
-        QCOMPARE(loaded.food, 9);
-        for (int i = 0; i < QcInventory::slotCount; ++i) {
-            QVERIFY(loaded.keptInventory.slot(i).isEmpty());
-        }
-        for (const QcItemStack &stack : loaded.keptEquipment.stacks) {
-            QVERIFY(stack.isEmpty());
-        }
-        QVERIFY(warnings.isEmpty());
+        QVERIFY(!read.has_value());
+        QVERIFY2(read.error().contains(u"older development version"_s), qPrintable(read.error()));
     }
 
     void defaultGameModeReachesNewPlayersAfterARestart()

@@ -1,6 +1,7 @@
 #include "QcBlockScreens.h"
 
 #include "QcChatText.h"
+#include "QcLineOfSight.h"
 #include "QcServerState.h"
 
 using namespace Qt::StringLiterals;
@@ -12,27 +13,27 @@ QcBlockScreens::QcBlockScreens(QcServerState &state)
 
 QcBlockEntities::Machine *QcBlockScreens::openMachineOf(const QcServerClient &client)
 {
-    if (!client.machine) {
+    if (!client.screen.open) {
         return nullptr;
     }
 
-    const std::optional<QcBlockId> block = m_state.world.blockAt(*client.machine);
-    return block && m_state.machineRules.machineOf(*block) ? m_state.blockEntities().machine(*client.machine) : nullptr;
+    const std::optional<QcBlockId> block = m_state.world().blockAt(*client.screen.open);
+    return block && m_state.machineRules().machineOf(*block) ? m_state.blockEntities().machine(*client.screen.open) : nullptr;
 }
 
 QcBlockEntities::Container *QcBlockScreens::openContainerOf(const QcServerClient &client)
 {
-    if (!client.machine) {
+    if (!client.screen.open) {
         return nullptr;
     }
 
-    const std::optional<QcBlockId> block = m_state.world.blockAt(*client.machine);
-    return block && m_state.blockEntities().containerSlots(*block) > 0 ? m_state.blockEntities().container(*client.machine) : nullptr;
+    const std::optional<QcBlockId> block = m_state.world().blockAt(*client.screen.open);
+    return block && m_state.blockEntities().containerSlots(*block) > 0 ? m_state.blockEntities().container(*client.screen.open) : nullptr;
 }
 
 void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
 {
-    const std::optional<QcBlockId> block = m_state.world.blockAt(pos);
+    const std::optional<QcBlockId> block = m_state.world().blockAt(pos);
     if (!block) {
         return;
     }
@@ -45,14 +46,14 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
             return;
         }
 
-        client.machine = pos;
-        client.sentMachine.reset();
+        client.screen.open = pos;
+        client.screen.sent.reset();
         client.connection->send(QcMsg::OpenMachine{pos, {}});
         send(client, true);
         return;
     }
 
-    const QcMachineDefinition *definition = m_state.machineRules.machineOf(*block);
+    const QcMachineDefinition *definition = m_state.machineRules().machineOf(*block);
     if (!definition) {
         return;
     }
@@ -63,20 +64,20 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
-    client.machine = pos;
-    client.sentMachine.reset();
+    client.screen.open = pos;
+    client.screen.sent.reset();
     client.connection->send(QcMsg::OpenMachine{pos, definition->category});
     send(client, true);
 }
 
 void QcBlockScreens::close(QcServerClient &client, bool notify)
 {
-    if (!client.machine) {
+    if (!client.screen.open) {
         return;
     }
 
-    client.machine.reset();
-    client.sentMachine.reset();
+    client.screen.open.reset();
+    client.screen.sent.reset();
 
     if (notify) {
         client.connection->send(QcMsg::CloseMachine{});
@@ -98,18 +99,18 @@ void QcBlockScreens::send(QcServerClient &client, bool force)
     QcMsg::MachineState state;
     state.pos = machine->pos;
     state.stacks = QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
-    state.burn = float(m_state.machineRules.burnFraction(*machine));
-    state.progress = float(m_state.machineRules.progressFraction(*machine, m_state.world.blockAt(machine->pos).value_or(qcAirBlockId)));
+    state.burn = float(m_state.machineRules().burnFraction(*machine));
+    state.progress = float(m_state.machineRules().progressFraction(*machine, m_state.world().blockAt(machine->pos).value_or(qcAirBlockId)));
 
     // Bars move in steps of one percent; smaller changes are not worth a message.
     const auto percent = [](float value) { return qRound(value * 100.0f); };
-    const std::optional<QcMsg::MachineState> &sent = client.sentMachine;
+    const std::optional<QcMsg::MachineState> &sent = client.screen.sent;
     if (!force && sent && sent->stacks == state.stacks && percent(sent->burn) == percent(state.burn)
         && percent(sent->progress) == percent(state.progress)) {
         return;
     }
 
-    client.sentMachine = state;
+    client.screen.sent = state;
     client.connection->send(state);
 }
 
@@ -119,16 +120,16 @@ void QcBlockScreens::sendContainer(QcServerClient &client, const QcBlockEntities
     state.pos = container.pos;
     state.stacks = container.stacks;
 
-    if (force || !client.sentMachine || client.sentMachine->stacks != state.stacks) {
-        client.sentMachine = state;
+    if (force || !client.screen.sent || client.screen.sent->stacks != state.stacks) {
+        client.screen.sent = state;
         client.connection->send(state);
     }
 }
 
 void QcBlockScreens::sendToViewers(QcBlockPos pos)
 {
-    for (const auto &other : m_state.clients) {
-        if (other->machine == pos) {
+    for (const auto &other : m_state.clients()) {
+        if (other->screen.open == pos) {
             send(*other, true);
         }
     }
@@ -136,13 +137,13 @@ void QcBlockScreens::sendToViewers(QcBlockPos pos)
 
 void QcBlockScreens::update()
 {
-    for (const auto &client : m_state.clients) {
-        if (client->state != QcServerClient::State::Playing || !client->machine) {
+    for (const auto &client : m_state.clients()) {
+        if (client->state != QcServerClient::State::Playing || !client->screen.open) {
             continue;
         }
 
         // The screen closes when the machine is gone, its chunk unloaded or the player walked away.
-        if (client->dead || (!openMachineOf(*client) && !openContainerOf(*client)) || !m_state.isWithinReach(*client, *client->machine)) {
+        if (client->dead || (!openMachineOf(*client) && !openContainerOf(*client)) || !QcLineOfSight::isWithinReach(*client, *client->screen.open)) {
             close(*client, true);
         } else {
             send(*client);
