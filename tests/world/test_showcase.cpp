@@ -371,6 +371,35 @@ private slots:
         }
     }
 
+    void fireStationBurnsOnMagmaBehindGlass()
+    {
+        // The fire pit (decision E-393): fire on magma only (eternal, spread is off anyway) behind one row of glass, nothing
+        // flammable right next to any fire, and the hay bale on show.
+        const auto station = std::ranges::find(m_generator->plan().areas, u"demo-fire_station"_s, &QcShowcaseAreaInfo::name);
+        QVERIFY(station != m_generator->plan().areas.end());
+        const QcBlockId fire = *m_content->blockId(u"qtcraft:fire"_s);
+        int fires = 0;
+        bool hay = false;
+        for (int x = 0; x < station->sizeX; ++x) {
+            for (int y = 0; y < station->sizeY; ++y) {
+                for (int z = 0; z < station->sizeZ; ++z) {
+                    const QcBlockPos pos = station->origin.offset(x, y, z);
+                    hay = hay || blockAt(m_chunks, pos) == *m_content->blockId(u"qtcraft:hay_block"_s);
+                    if (blockAt(m_chunks, pos) != fire) {
+                        continue;
+                    }
+                    ++fires;
+                    QVERIFY(m_content->block(blockAt(m_chunks, pos.offset(0, -1, 0))).fire.eternal);
+                    for (const QcBlockFace face : qcAllBlockFaces) {
+                        QVERIFY(!m_content->block(blockAt(m_chunks, qcNeighbour(pos, face))).fire.isFlammable());
+                    }
+                }
+            }
+        }
+        QCOMPARE(fires, 9);
+        QVERIFY(hay);
+    }
+
     void modBlocksAppearWithoutExtraData()
     {
         // A copy of the base game plus one block of a mod with two states.

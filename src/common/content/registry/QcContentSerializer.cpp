@@ -66,7 +66,7 @@ void writeItem(QDataStream &stream, const QcItemDefinition &item)
     for (const QString &tag : item.tags) {
         stream << tag;
     }
-    stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand << item.cartBlock;
+    stream << item.scoops << item.emptiesTo << item.bottles << item.placesStand << item.cartBlock << item.ignites;
     QcArmourSerializer::write(stream, item.armour);
 }
 
@@ -184,7 +184,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         item.tags.append(tag);
     }
 
-    stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand >> item.cartBlock;
+    stream >> item.scoops >> item.emptiesTo >> item.bottles >> item.placesStand >> item.cartBlock >> item.ignites;
     if (!QcArmourSerializer::read(stream, item.armour)) {
         return false;
     }

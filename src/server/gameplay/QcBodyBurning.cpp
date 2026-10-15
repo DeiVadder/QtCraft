@@ -1,0 +1,113 @@
+#include "QcBodyBurning.h"
+
+#include "QcPhysics.h"
+#include "QcPlayerHealth.h"
+#include "QcServerCombat.h"
+#include "QcServerSounds.h"
+#include "QcServerState.h"
+
+#include <algorithm>
+
+QcBodyBurning::QcBodyBurning(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health)
+    : m_state(state)
+    , m_sounds(sounds)
+    , m_health(health)
+{
+}
+
+void QcBodyBurning::tick()
+{
+    for (const auto &client : m_state.clients()) {
+        if (client->state == QcServerClient::State::Playing) {
+            tickPlayer(*client);
+        }
+    }
+    tickCreatures();
+}
+
+bool QcBodyBurning::inWater(const QcVec3 &feet, double height) const
+{
+    const QcContentRegistry &content = m_state.content();
+    for (const double up : {0.1, height * 0.5}) {
+        const std::optional<QcBlockId> block = m_state.world().blockAt(QcPhysics::blockContaining(feet + QcVec3{0.0, up, 0.0}));
+        if (block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).fire.setsAlightSeconds == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double height) const
+{
+    const QcVec3 &feet = body.motion.position;
+    const QcContactDamage::Touch touch = m_state.contactDamage().touching(m_state.world(), QcPhysics::boxAt(feet, width, height));
+    if (body.burnTicks <= 0 && touch.alightTicks <= 0) {
+        return 0;
+    }
+    if (inWater(feet, height) || (m_rainsOn && m_rainsOn(QcPhysics::blockContaining(feet)))) {
+        return 0;
+    }
+    return std::max(body.burnTicks - 1, touch.alightTicks);
+}
+
+bool QcBodyBurning::damageDue(const QcEntity &body) const
+{
+    return (m_state.clock().tick() + body.id) % quint64(burnIntervalTicks) == 0;
+}
+
+void QcBodyBurning::tickPlayer(QcServerClient &client)
+{
+    const bool wasBurning = client.burnTicks > 0;
+    if (client.dead || client.rules().invulnerable) {
+        client.burnTicks = 0;
+    } else {
+        client.burnTicks = burnTicksAfter(client, QcPhysics::playerWidth, QcPhysics::playerHeight);
+        if (client.burnTicks > 0 && damageDue(client)) {
+            m_health.damage(client, burnDamage, {}, QcPlayerHealth::DamageKind::Armoured);
+        }
+    }
+
+    // Dying in the flames put them out; the death sent the health already.
+    if (client.dead) {
+        client.burnTicks = 0;
+    }
+    if (wasBurning != (client.burnTicks > 0)) {
+        m_health.sendHealth(client);
+    }
+}
+
+void QcBodyBurning::tickCreatures()
+{
+    // Hurting may remove a creature, so the burning ones are collected first.
+    QList<quint32> hurt;
+    for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
+        if (mob.dormant) {
+            continue;
+        }
+        const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
+        mob.burnTicks = burnTicksAfter(mob, definition.width, definition.height);
+        if (mob.burnTicks > 0 && damageDue(mob)) {
+            hurt.append(mob.id);
+        }
+    }
+
+    for (const quint32 id : std::as_const(hurt)) {
+        const QcCreature *mob = m_state.entities().creatures().find(id);
+        if (!mob) {
+            continue;
+        }
+        // Like a hit: the hurt sound when the damage takes (not while the creature is still
+        // invulnerable from the last), the death sound and the loot when it dies.
+        const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
+        const QList<QcItemDrop> drops = mob->isYoung() ? QList<QcItemDrop>() : definition.drops;
+        const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+        const bool vulnerable = mob->hurtTimer <= 0.0;
+        if (m_state.entities().creatures().hurt(id, burnDamage)) {
+            m_sounds.play(definition.deathSound, centre);
+            m_state.entities().noteDeath(id);
+            QcServerCombat::dropLoot(m_state, drops, centre);
+        } else if (vulnerable) {
+            m_sounds.play(definition.hurtSound, centre);
+        }
+    }
+}

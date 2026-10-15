@@ -57,6 +57,10 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `savedBlockUpdates` | 4194304 | 1024 – 4194304 | Pending neighbour updates written to a save (those of player actions first) |
 | `liquidStepsPerTick` | 512 | 16 – 1048576 | Flow steps of liquids per tick (E-054) |
 | `liquidPlannedSteps` | 262144 | 1024 – 16777216 | Flow steps of liquids planned at most; further cells flow again when touched |
+| `fireStepsPerTick` | 256 | 16 – 1048576 | Steps of burning fires per tick, each a fire's chance to spread; the rest waits for the next tick (E-392) |
+| `firesPerChunk` | 256 | 1 – 65536 | Burning fires in one chunk; beyond, no new fire is lit there and fire set by commands goes out |
+| `fires` | 4096 | 16 – 1048576 | Burning fires in the world, the same way |
+| `fireSpreadRadius` | 12 | 0 – 64 | Blocks fire spreads from the spark it began with along each axis; 0 switches spreading off on the whole server, whatever the game rule `fireSpread` of a world says |
 | `fallingBlocks` | 2048 | 16 – 65536 | Falling blocks at once; beyond, blocks land straight or wait (E-055, E-288) |
 | `itemsAwake` | 512 | 16 – 65536 | Dropped items awake in loaded chunks; new drops wait, surplus ones sleep |
 | `itemsQueued` | 1024 | 16 – 1048576 | Drops waiting to appear; the oldest goes when full |

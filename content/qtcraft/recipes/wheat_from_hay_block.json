@@ -1,0 +1,11 @@
+{
+    "name": "wheat_from_hay_block",
+    "type": "shapeless",
+    "ingredients": [
+        "hay_block"
+    ],
+    "result": {
+        "item": "wheat",
+        "count": 9
+    }
+}

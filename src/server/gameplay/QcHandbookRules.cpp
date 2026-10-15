@@ -1,8 +1,11 @@
 #include "QcHandbookRules.h"
 
 #include "QcBlockCommands.h"
+#include "QcBodyBurning.h"
 #include "QcChunkRegeneration.h"
 #include "QcDayCycle.h"
+#include "QcFireQueue.h"
+#include "QcFireRules.h"
 #include "QcServerLimits.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
@@ -68,6 +71,15 @@ QMap<QString, double> values()
         {u"signal.pushLimit"_s, QcSignalDefinition{}.pushLimit},
         {u"signal.switchesPerSecond"_s, QcRateLimiter::limit(QcRateLimiter::Kind::Switch).perSecond},
         {u"signal.hopperItemsPerSecond"_s, 1.0 / (double(QcServerLimits{}.hopperCooldownTicks) * QcPhysics::tickDuration)},
+        {u"fire.maxAge"_s, QcFireQueue::maxAge},
+        {u"fire.stepSecondsMin"_s, QcFireRules::minStepTicks * QcPhysics::tickDuration},
+        {u"fire.stepSecondsMax"_s, (QcFireRules::minStepTicks + QcFireRules::stepTicksSpread - 1) * QcPhysics::tickDuration},
+        {u"fire.ageWithoutFuel"_s, QcFireRules::ageWithoutFuel},
+        {u"fire.spreadRadius"_s, double(QcServerLimits{}.fireSpreadRadius)},
+        {u"fire.perChunk"_s, double(QcServerLimits{}.firesPerChunk)},
+        {u"fire.total"_s, double(QcServerLimits{}.fires)},
+        {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
+        {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},
         {u"void.damage"_s, QcPlayerHealth::voidDamage},
         {u"void.interval"_s, QcPlayerHealth::voidDamageIntervalTicks * QcPhysics::tickDuration},

@@ -239,7 +239,7 @@ bool readBlockBehaviour(QDataStream &stream, QcBlockDefinition &block)
     qint32 flowDistance = 0;
     stream >> containerSlots >> containerColumns >> flowDistance >> block.flow.movementFactor;
     quint8 signalKind = 0;
-    stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> signalKind;
+    stream >> block.slowsInside >> block.surfaceSpeed >> block.surfaceJump >> signalKind >> block.fire.isFire;
     if (signalKind >= quint8(qcSignalKindCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return false;
@@ -325,6 +325,8 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     }
     stream << qint32(block.containerSlots) << qint32(block.containerColumns) << qint32(block.flow.distance) << block.flow.movementFactor;
     stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << quint8(block.signal.kind);
+    // Whether it is fire: the client shows the default fire around burning bodies.
+    stream << block.fire.isFire;
 }
 
 bool readBlock(QDataStream &stream, QcBlockDefinition &block)

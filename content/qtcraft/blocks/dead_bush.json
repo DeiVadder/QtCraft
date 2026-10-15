@@ -19,6 +19,10 @@
         }
     ],
     "fuelSeconds": 5,
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
     "textures": {
         "all": "dead_bush"
     }

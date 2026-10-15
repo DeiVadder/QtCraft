@@ -8,7 +8,7 @@
 
 ### <a id="block-qtcraft-lava"></a>Lava
 
-Hot liquid that glows, burns items and hurts. Next to water it turns into obsidian or cobblestone.
+Hot liquid that glows, burns items and sets whoever touches it on fire. Next to water it turns into obsidian or cobblestone; next to flammable blocks it may start a fire.
 
 | | |
 |---|---|
@@ -24,6 +24,8 @@ Hot liquid that glows, burns items and hurts. Next to water it turns into obsidi
 | Solid | no |
 | Replaced when building into it | yes |
 | Damage on contact | 3 health points |
+| Sets bodies on fire for | 15 s |
+| Lights fire next to it | 3 in 100 per block update, next to flammable blocks |
 | States | falling (false, true); level (0, 1, 2, 3) |
 
 **Found in**

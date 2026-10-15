@@ -1,0 +1,20 @@
+{
+    "name": "fire_station",
+    "showcase": { "order": 35 },
+    "palette": {
+        "B": "stone_bricks",
+        "M": "magma_block",
+        "F": "fire",
+        "G": "glass",
+        "H": "hay_block",
+        "S": "stone"
+    },
+    "layers": [
+        ["SSSSSSS", "SBBBBBS", "SBMMMBS", "SBMMMBS", "SBMMMBS", "SBBBBBS", "SSSSSSS"],
+        ["H      ", " GGGGG ", " GFFFG ", " GFFFG ", " GFFFG ", " GGGGG ", "       "]
+    ],
+    "labels": [
+        { "at": [3.5, 2.4, 3.5], "text": "structure.qtcraft.fire_station" },
+        { "at": [0.5, 2.6, 0.5], "text": "block.qtcraft.hay_block" }
+    ]
+}

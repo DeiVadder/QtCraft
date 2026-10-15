@@ -6,6 +6,7 @@
     "toolLevel": 1,
     "light": 3,
     "contactDamage": 1,
+    "eternalFire": true,
     "textures": {
         "all": "magma_block"
     }

@@ -55,6 +55,13 @@ struct QcServerLimits
     // Flow steps of liquids per tick and planned at most (E-054).
     qint64 liquidStepsPerTick = 512;
     qint64 liquidPlannedSteps = 262144;
+    // Fire (E-392): steps of fires per tick (each a fire's chance to spread; the rest waits), burning
+    // fires per chunk and in the world (beyond, no new fire is lit), and how far fire spreads from the
+    // spark it began with (0: fire never spreads, whatever the game rule fireSpread says).
+    qint64 fireStepsPerTick = 256;
+    qint64 firesPerChunk = 256;
+    qint64 fires = 4096;
+    qint64 fireSpreadRadius = 12;
     // Falling blocks as entities at once (E-055); beyond, they drop straight or wait (E-288).
     qint64 fallingBlocks = 2048;
     // Dropped items: awake in loaded chunks, waiting to appear, in the world at all.

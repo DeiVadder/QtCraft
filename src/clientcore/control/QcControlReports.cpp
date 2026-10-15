@@ -67,6 +67,7 @@ QJsonObject QcControlReports::playerStatus() const
 
     status.insert(u"health"_s, m_session.health());
     status.insert(u"maxHealth"_s, m_session.maxHealth());
+    status.insert(u"burning"_s, m_session.burning());
     status.insert(u"dead"_s, m_session.isDead());
     status.insert(u"food"_s, m_session.food());
     status.insert(u"maxFood"_s, m_session.maxFood());

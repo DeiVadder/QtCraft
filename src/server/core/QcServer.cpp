@@ -34,29 +34,32 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_fallingBlocks(m_state, m_sounds, m_blockUpdates, m_blocks)
+    , m_fire(m_state, m_blocks, m_sounds)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks, m_fallingBlocks)
     , m_circuits(m_state, m_sounds, m_blocks)
     , m_screens(m_state)
     , m_machines(m_state, m_sounds)
     , m_inventory(m_state, m_screens, m_sounds)
     , m_crafting(m_state, m_inventory)
+    , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_gameModes(m_state, m_inventory, m_crafting)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_animals(m_state, m_sounds, m_inventory)
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits})
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits, m_ignition})
     , m_items(m_state, m_sounds, m_inventory)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health)
     , m_environment(m_state, m_sounds, m_health)
+    , m_burning(m_state, m_sounds, m_health)
     , m_entitySync(m_state)
     , m_chunkLoading(m_state, m_blocks, m_blockUpdates)
     , m_chunkStreaming(m_state, m_chunkLoading)
     , m_persistence(m_state, m_blocks, m_blockUpdates, m_chunkLoading)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
-                           {m_inventory, m_health, m_stands, m_gameModes, [this](double seconds) { setWorldTime(seconds); }},
+                           {m_inventory, m_health, m_stands, m_gameModes, m_minecarts, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
                            {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
     , m_join(m_state, {m_persistence, m_inventory, m_health, m_gameModes, m_chunkStreaming, [this](Client &client) { sendTime(client); }})
@@ -68,6 +71,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setSingleShot(true);
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
+    m_circuits.setIgnite([this](QcBlockPos pos) { return m_ignition.strike(pos); });
+    m_blockSimulation.setIgnition(&m_ignition);
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
 }
 
@@ -536,11 +541,14 @@ void QcServer::simulate()
     m_phases.lap(Phase::Signal);
     m_blockSimulation.processLiquids();
     m_phases.lap(Phase::Liquids);
+    m_fire.tick();
+    m_phases.lap(Phase::Fire);
     m_health.tick();
     m_interaction.swingWhileMining();
     m_stands.tick();
     m_creatures.tick();
     m_environment.applyContactDamage();
+    m_burning.tick();
     m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_plants.plantItems(m_items.tick());

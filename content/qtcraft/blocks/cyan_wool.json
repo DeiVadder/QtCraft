@@ -6,6 +6,10 @@
     "tags": [
         "wool"
     ],
+    "flammable": {
+        "ignite": 30,
+        "burn": 60
+    },
     "textures": {
         "all": "cyan_wool"
     }

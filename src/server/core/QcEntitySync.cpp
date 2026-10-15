@@ -6,12 +6,13 @@
 
 namespace {
 
-quint8 flagsOf(const QcEntityMotion &motion, bool swung, bool sneaking, bool sprinting)
+quint16 flagsOf(const QcEntity &entity, bool swung, bool sneaking, bool sprinting)
 {
+    const QcEntityMotion &motion = entity.motion;
     // Sneaking in flight is descending: the figure does not crouch (decision E-284).
     const bool crouching = sneaking && !motion.flying;
-    return quint8((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
-                  | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0));
+    return quint16((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
+                   | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0) | (entity.burnTicks > 0 ? QcMsg::Burning : 0));
 }
 
 } // namespace
@@ -39,11 +40,11 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     switch (entity.kind) {
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
-        const quint8 breeding = quint8((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0));
+        const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0));
         now.yaw = creature.yaw;
         now.health = creature.health;
         now.hurt = creature.hurtThisTick;
-        now.flags = quint8(flagsOf(creature.motion, creature.attackedThisTick, false, false) | breeding);
+        now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
         break;
     }
     case QcEntityKind::Player: {
@@ -53,9 +54,9 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.health = player.health;
         now.hurt = player.hurtThisTick;
         now.pitch = player.pitch;
-        now.flags = flagsOf(player.motion, player.swung, player.sneaking, player.sprinting);
+        now.flags = flagsOf(player, player.swung, player.sneaking, player.sprinting);
         if (m_state.entities().minecarts().ridden(player.id)) {
-            now.flags = quint8((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
+            now.flags = quint16((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
         }
         now.held = held.isEmpty() ? qcNoItem : held.item;
         break;

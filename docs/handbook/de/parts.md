@@ -19,6 +19,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenstufe](#block-qtcraft-birch_slab) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
 | Art des Bauteils | Stufe |
@@ -50,6 +51,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkentreppe](#block-qtcraft-birch_stairs) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 11,25 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
 | Art des Bauteils | Treppe |
@@ -83,6 +85,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenzaun](#block-qtcraft-birch_fence) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
 | Art des Bauteils | Zaun |
@@ -116,6 +119,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenzauntor](#block-qtcraft-birch_fence_gate) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Öffnet und schließt beim Benutzen | ja |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Birkenbretter](blocks.md#block-qtcraft-birch_planks) |
@@ -149,6 +153,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Blauer Teppich](#block-qtcraft-blue_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Blaue Wolle](blocks.md#block-qtcraft-blue_wool) |
 | Art des Bauteils | Teppich |
@@ -174,6 +179,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Brauner Teppich](#block-qtcraft-brown_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Braune Wolle](blocks.md#block-qtcraft-brown_wool) |
 | Art des Bauteils | Teppich |
@@ -297,6 +303,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenstufe](#block-qtcraft-oak_slab) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
 | Art des Bauteils | Stufe |
@@ -328,6 +335,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichentreppe](#block-qtcraft-oak_stairs) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 11,25 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
 | Art des Bauteils | Treppe |
@@ -361,6 +369,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenzaun](#block-qtcraft-oak_fence) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
 | Art des Bauteils | Zaun |
@@ -394,6 +403,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenzauntor](#block-qtcraft-oak_fence_gate) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Öffnet und schließt beim Benutzen | ja |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Eichenbretter](blocks.md#block-qtcraft-oak_planks) |
@@ -428,6 +438,7 @@ Ein halber Block. Die angeklickte Hälfte entscheidet, ob sie unten oder oben li
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenstufe](#block-qtcraft-spruce_slab) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 7,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
 | Art des Bauteils | Stufe |
@@ -459,6 +470,7 @@ Treppen zeigen beim Setzen von dir weg; auf der oberen Hälfte einer Fläche ges
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtentreppe](#block-qtcraft-spruce_stairs) |
 | Lichtdämpfung | nur an den Seiten, die seine Form ganz bedeckt |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 11,25 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
 | Art des Bauteils | Treppe |
@@ -492,6 +504,7 @@ Zäune verbinden sich mit Zäunen, Toren und vollen festen Blöcken und sind zu 
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenzaun](#block-qtcraft-spruce_fence) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
 | Art des Bauteils | Zaun |
@@ -525,6 +538,7 @@ Ein Tor im Zaun: Benutzen öffnet oder schließt es. Offene Tore lassen alles du
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenzauntor](#block-qtcraft-spruce_fence_gate) |
 | Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Öffnet und schließt beim Benutzen | ja |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Fichtenbretter](blocks.md#block-qtcraft-spruce_planks) |
@@ -558,6 +572,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Gelber Teppich](#block-qtcraft-yellow_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool) |
 | Art des Bauteils | Teppich |
@@ -748,6 +763,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Grauer Teppich](#block-qtcraft-gray_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Graue Wolle](blocks.md#block-qtcraft-gray_wool) |
 | Art des Bauteils | Teppich |
@@ -773,6 +789,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Grüner Teppich](#block-qtcraft-green_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Grüne Wolle](blocks.md#block-qtcraft-green_wool) |
 | Art des Bauteils | Teppich |
@@ -798,6 +815,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Hellblauer Teppich](#block-qtcraft-light_blue_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool) |
 | Art des Bauteils | Teppich |
@@ -823,6 +841,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Hellgrauer Teppich](#block-qtcraft-light_gray_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool) |
 | Art des Bauteils | Teppich |
@@ -848,6 +867,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Hellgrüner Teppich](#block-qtcraft-lime_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool) |
 | Art des Bauteils | Teppich |
@@ -970,6 +990,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Magentafarbener Teppich](#block-qtcraft-magenta_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool) |
 | Art des Bauteils | Teppich |
@@ -995,6 +1016,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Orangefarbener Teppich](#block-qtcraft-orange_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool) |
 | Art des Bauteils | Teppich |
@@ -1020,6 +1042,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Rosafarbener Teppich](#block-qtcraft-pink_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool) |
 | Art des Bauteils | Teppich |
@@ -1045,6 +1068,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Roter Teppich](#block-qtcraft-red_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Rote Wolle](blocks.md#block-qtcraft-red_wool) |
 | Art des Bauteils | Teppich |
@@ -1167,6 +1191,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Schwarzer Teppich](#block-qtcraft-black_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Schwarze Wolle](blocks.md#block-qtcraft-black_wool) |
 | Art des Bauteils | Teppich |
@@ -1353,6 +1378,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Türkiser Teppich](#block-qtcraft-cyan_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool) |
 | Art des Bauteils | Teppich |
@@ -1378,6 +1404,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Violetter Teppich](#block-qtcraft-purple_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Violette Wolle](blocks.md#block-qtcraft-purple_wool) |
 | Art des Bauteils | Teppich |
@@ -1403,6 +1430,7 @@ Eine dünne Schicht Wolle, die einen Block darunter braucht.
 | Beute | [Weißer Teppich](#block-qtcraft-white_wool_carpet) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 2,5 s: [Brennstoffe](tables.md#table-fuels) |
 | Hergestellt aus | [Weiße Wolle](blocks.md#block-qtcraft-white_wool) |
 | Art des Bauteils | Teppich |

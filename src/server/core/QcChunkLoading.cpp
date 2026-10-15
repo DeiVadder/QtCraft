@@ -199,6 +199,9 @@ void QcChunkLoading::restore(QcChunkIo::Arrival &arrival)
     // What was kept is fitted to the blocks (a mod took a block away); spills drop in the next tick.
     if (const std::shared_ptr<const QcChunk> chunk = m_state.world().chunk(pos)) {
         m_state.blockEntities().reconcile(*chunk);
+        // Burning fires go on with their steps (decision E-392); fire blocks left without one are
+        // adopted as new sparks in the next fire step.
+        m_state.world().fires().restore(arrival.blockEntities.fires, upcomingTick(), *chunk);
     }
 
     const bool commandMode = m_updates.commandMode();
@@ -486,6 +489,7 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         departure.blockEntities = QcBlockEntityRecords::take(pos, m_state.blockEntities(), m_state.circuits(), m_state.hoppers(), now);
         departure.blockEntities.blockUpdates = updates.value(pos);
         departure.blockEntities.blockUpdates.append(flows.value(pos));
+        departure.blockEntities.fires = world.fires().takeChunk(pos, now);
         departure.entities = entities.value(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);
@@ -546,6 +550,7 @@ QList<QcChunkIo::Departure> QcChunkLoading::departuresForSave()
         departure.blocks = world.takeChanged(pos);
         departure.blockEntities = blockEntities.take(pos);
         departure.blockEntities.chunk = pos;
+        departure.blockEntities.fires = world.fires().savedOf(pos, upcomingTick());
         departure.entities = entities.take(pos);
         departure.entities.chunk = pos;
         departure.entities.populated = m_state.entities().creatures().isPopulated(pos);

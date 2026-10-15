@@ -6,6 +6,10 @@
     "tags": [
         "planks"
     ],
+    "flammable": {
+        "ignite": 5,
+        "burn": 20
+    },
     "textures": {
         "all": "oak_planks"
     },

@@ -1,0 +1,8 @@
+{
+    "name": "hay_block_side",
+    "pattern": "hay_side",
+    "primary": "#c8a440",
+    "secondary": "#8c6c24",
+    "variation": 0.08,
+    "seed": 7403
+}

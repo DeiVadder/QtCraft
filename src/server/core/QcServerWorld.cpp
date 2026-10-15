@@ -28,14 +28,19 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     const auto stateCount = std::size_t(m_content->stateCount());
     std::vector<QcSectionMarks::Traits> traits(stateCount);
     std::vector<bool> hoppers(stateCount);
+    std::vector<bool> fires(stateCount);
+    std::vector<bool> eternalGround(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcBlockDefinition &block = m_content->block(QcBlockId(id));
         traits[id] = QcSectionMarks::traitsOf(block);
         hoppers[id] = block.signal.kind == QcSignalKind::Hopper;
+        fires[id] = block.fire.isFire;
+        eternalGround[id] = block.fire.eternal;
     }
 
     m_marks = QcSectionMarks(std::move(traits));
     m_hoppers = QcBlockIndex(std::move(hoppers));
+    m_fires = QcFireQueue(std::move(fires), std::move(eternalGround));
 }
 
 void QcServerWorld::setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog)
@@ -179,6 +184,7 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     m_links.noteChunk(chunk);
     m_loaders.noteChunk(chunk);
     m_blockEntities.chunkArrived(chunk, m_marks.sectionsOf(pos, QcBlockTrait::BlockEntity));
+    m_fires.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Fire));
 }
 
 void QcServerWorld::forgetSections(QcChunkPos pos)
@@ -186,6 +192,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_marks.forgetChunk(pos);
     m_hoppers.forgetChunk(pos);
     m_links.forgetChunk(pos);
+    m_fires.forgetChunk(pos);
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
@@ -314,6 +321,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_links.noteBlock(pos, before, block);
     m_loaders.noteBlock(pos, before, block);
     m_blockEntities.placed(pos, before, block);
+    m_fires.noteBlock(pos, before, block);
 
     m_changed.insert(pos.chunk());
     m_differs.insert(pos.chunk());

@@ -1326,3 +1326,109 @@ Wesen und Entity-Vernetzung (Client, je Bild) und Lorenphase (Server):
 ### Fazit Etappe 32
 
 Schienen und Loren kosten im Fenster keine GPU- und keine Render-CPU-Zeit. Messbar und vollständig zugeordnet: GUI-CPU +0,14 ms im Showcase durch die Vernetzung der sichtbaren Loren (rund 0,02 ms je Lore) und die neue Server-Phase Loren (0,03 ms im Fenster bei den Showcase-Loren, 0,015 ms auch ohne Loren). Keine unerklärte Regression. Offen: Szenario mit vielen Loren und einer Fahrt mit Kamera (braucht `/summon minecart` oder einen Hook), früher Ausstieg der Lorenphase ohne Loren.
+
+## Etappe 34.1: Feuer, headless Messung (2026-10-15)
+
+Release (`RelWithDebInfo`), `QTCRAFT_FIRE_MEASURE=full build/release/tests/test_fire measureForestFire`: Wald von 160 × 160 Blöcken (Bäume alle 3 Blöcke, Stamm 4 hoch, Krone 3 × 3 × 2, die Kronen berühren sich) auf Steinboden, 25 Funken im Raster von 32 Blöcken, Ticks von Hand so schnell wie der Server kann, bis kein Feuer mehr brennt (keine Echtzeit, 0,8 s Wanduhr je Lauf). Standardgrenzen (`fireStepsPerTick` 256, `firesPerChunk` 256, `fires` 4096, `fireSpreadRadius` 12). 3 Läufe, alle gleich im Ablauf (deterministisch):
+
+| | Lauf 1 | Lauf 2 | Lauf 3 |
+|---|---:|---:|---:|
+| Ticks bis aus | 1601 | 1601 | 1601 |
+| Phase Feuer Ø (ms) | 0,336 | 0,337 | 0,339 |
+| Phase Feuer max (ms) | 1,995 | 2,013 | 1,975 |
+| Tick Ø (ms) | 0,500 | 0,500 | 0,503 |
+| Tick max (ms) | 2,099 | 2,119 | 2,079 |
+
+46 007 Feuer-Schritte (Ø 29 je Tick), 7833 entzündet, 5952 Blöcke abgebrannt, höchstens 2365 Feuer zugleich. Die Phase enthält das Setzen der Blöcke mit dem Nachführen des Server-Lichts (Licht 15 je Feuer, E-389) und die Nachricht an die Clients. Der höchste Tick (2,1 ms, 4 % des Budgets von 50 ms) liegt im Anstieg des Brandes. Die Kosten hängen von den brennenden Feuern ab, nicht von der Weltgröße: ohne Feuer kostet die Phase nur den Blick auf die leere Warteschlange. Pflicht-Test (`aForestFireEndsWithinBoundsOfTimeAndArea`, Wald 72 × 72, ein Funke): aus nach 1584 Ticks (Grenze 46 × 39 = 1794), 379 entzündet, 266 abgebrannt, 146 Spalten verändert (höchstens 25 × 25 = 625 erlaubt). Der gerenderte Benchmark Waldbrand (Licht- und Mesh-Last beim Client, verschränkter A/B-Vergleich) ist Teil von 34.2.
+
+## Etappe 34.2: Zündquellen und brennende Körper, headless Messung (2026-10-15)
+
+Release (`RelWithDebInfo`), `SCENARIOS="forest-fire crowd" scripts/bench-headless.sh <Datei> 3 60 new=build/release` (keine Echtzeit, unter 1 s Wanduhr je Lauf). Neues Szenario `forest-fire` (`scripts/bench-common.sh`, Gruppe `@fire`): flache Welt, 1024 Eichen im Abstand von 3 m auf 96 × 96 m nördlich des Spielers (Stamm 4, Kronen berühren sich), 25 Funken im Raster nach 3 s, `fireSpread` an; 60 s Spielzeit gemessen, der Brand läuft die ganze Zeit.
+
+| | Lauf 1 | Lauf 2 | Lauf 3 |
+|---|---:|---:|---:|
+| Tick Ø (ms) | 0,264 | 0,264 | 0,265 |
+| Tick p99 (ms) | 0,724 | 0,720 | 0,708 |
+| Tick max (ms) | 0,975 | 1,055 | 0,981 |
+| Phase Feuer Ø (ms) | 0,178 | 0,178 | 0,179 |
+| Phase Feuer max (ms) | 0,741 | 0,807 | 0,752 |
+| Phase Block-Updates Ø (ms) | 0,066 | 0,065 | 0,065 |
+| Spitzen-RSS (MB) | 45,6 | 45,6 | 45,7 |
+
+- Phase Loren in `crowd` (keine Loren): 0,0000 ms (früher Ausstieg, E-393; Etappe 32 maß hier 0,0007–0,0009 ms headless, im Fenster 0,014–0,018 ms).
+- Die Kosten der brennenden Körper liegen in der Phase Wesen (`crowd`: Ø 0,113–0,115 ms, Tick gesamt 0,128–0,130 ms); ein A/B gegen `dev` steht aus (Hauptsitzung, `@server` und `@fire`).
+- Offen: der gerenderte Waldbrand im Fenster (Licht- und Mesh-Last beim Client) mit `scripts/bench-ab.sh` und `SCENARIOS=@fire` durch die Hauptsitzung.
+
+## Etappe 34 (Feuer)
+
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `53707b8` in einem temporären Worktree gegen `feature/34-fire` `8fa475b`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @fire` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 22:52–22:55); im Fenster `@core` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 22:56–23:05) und `forest-fire` 3 Runden à 30 s (23:06–23:10). Last 1,5–4,0 im Fenster, belastet markiert 2 von 36 Läufen der `@core`-Reihe (je ein `sprint`), headless 1 von 60 (`explore`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 25 min.
+
+**`forest-fire` auf `dev`:** `dev` kennt weder den Feuerblock noch die Spielregel `fireSpread`; die Chat-Zeilen `/gamerule fireSpread` und `/setblock … fire` laufen ins Leere, die Szene ist derselbe Wald ohne Brand. Der Vergleich zeigt also die Kosten des Brandes gegenüber dem stehenden Wald.
+
+**Showcase verschoben:** Die neue Feuerstation steht in der ersten Reihe der Showcase-Welt; alle Stationen dahinter rücken (`signal_components` 17,−21 → 34,−21, `signal_machines` 134,−21 → 4,−38, `signal_farm` 4,−43 → 40,−38, Bahnstationen 26/46,−43 → 62/82,−38). Der Blick aus `showcase` (40,−19) und die Umgebung der Signal-Stationen sind darum nicht mehr dieselben Szenen (wie in Etappe 32).
+
+### Fenster: 34 gegen `53707b8`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|---|
+| stand (3) | 118 / 117 | 13,9 → 14,4 | 1,75 → 1,72 | 1,84 → 1,86 | 1,11 → 1,13 | 0,473 → 0,471 | 0,150 → 0,153 | 0,657 → 0,654 | 445 → 446 | 347 → 347 |
+| sprint (6) | 117 / 118 | 15,1 → 13,5 (−10 %) | 2,02 → 2,10 (+4 %) | 1,90 → 1,90 | 1,21 → 1,19 | 0,472 → 0,467 | 0,142 → 0,144 | 0,694 → 0,661 | 557 → 556 | 389 → 389 |
+| showcase (3) | 117 / 117 | 15,2 → 15,5 | 0,710 → 0,686 | 1,34 → 1,32 | 0,593 → 0,623 | **0,554 → 0,692 (+25 %)** | **0,195 → 0,353** | 0,388 → 0,373 | 328 → 331 | 180 → 153 |
+| crowd (6) | 117 / 116 | 15,7 → 15,4 | 2,27 → 2,25 | 1,55 → 1,52 | 1,24 → 1,21 | 0,925 → 0,910 | 0,573 → 0,560 | 0,884 → 0,902 (+2 %) | 450 → 450 | 345 → 345 |
+
+Server-Phasen im Fenster (Ø ms): Loren ohne Loren (stand, sprint, crowd) 0,015–0,016 → 0,0006–0,0008 (−95 %); in `showcase` mit Loren 0,031 → 0,026. Phase Feuer ohne Brand 0,001–0,002. Phase Wesen crowd 0,701 → 0,717 (+2 %, Runden überlappen: 0,670–0,742 gegen 0,688–0,800), stand und sprint ±2 %. `entity_problems` und `block_entity_problems` = 0, keine übersprungenen Ticks, Tick max höchstens 3,8 ms (crowd).
+
+### Fenster: Waldbrand (`forest-fire`, 30 s, 3 Runden; `dev` = Wald ohne Brand)
+
+| | `dev` (ohne Feuer) | 34 (Brand) |
+|---|---:|---:|
+| FPS / Frame Ø ms | 117 / 8,54 | 117 / 8,54 |
+| Frame p99 ms | 14,8 [14,5–15,3] | 15,2 [14,7–15,8] |
+| GPU Ø / p99 ms | 1,36 / 1,61 | 1,29 / 1,57 |
+| Render-CPU Ø / p99 ms | 1,36 / 2,10 | 1,34 / **2,90** |
+| Welt-Renderer Ø ms | 0,472 | 0,555 (+18 %) |
+| GUI-CPU Ø / p99 ms | 0,352 / 0,758 | 0,324 / 0,765 |
+| Upload Ø ms / MB in 30 s | 0,004 / 7 | 0,086 / 657 |
+| Neu vernetzte Abschnitte | 0 | 6593 [6583–6609] |
+| Mesh-Jobs, Ø / max ms | 0 | 4189, 2,42 / 11,7 |
+| Mesh-Rückstau max | 0 | 104 [92–111] |
+| Änderung bis Mesh Ø / max ms | – | 12,8 / 67 [51–81] |
+| Licht-Jobs, Ø / max ms | 0 | 769, 0,163 / 1,75 |
+| Tick Ø / max ms | 0,116 / 1,16 | 0,304 / 2,41 [2,19–2,66] |
+| Phase Feuer Ø / max ms | – | 0,168 / 2,30 |
+| Phase Block-Updates Ø / max ms | 0,002 / 0,09 | 0,033 / 0,55 |
+| Spitzenspeicher MB | 369 | 390 (+21) |
+| Draw-Calls / sichtbare Abschnitte | 104 / 103 | 113 / 112 |
+
+Keine übersprungenen Ticks, kein Tick über 3 ms.
+
+### Headless: 34 gegen `53707b8` (Tick, Mittel über 3 bzw. 6 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
+|---|---:|---:|---:|---|
+| crowd | 0,126 → 0,126 | 0,162 → 0,158 | 50,2 → 50,6 | Wesen 0,110 → 0,112 (+2 %), Loren 0,0009 → 0 |
+| gravel-collapse | 0,482 → 0,480 | 1,37 → 1,38 | 70,9 → 70,5 | Loren 0,0002 → 0 |
+| farm (6) / farm-seeds | 0,0070 → 0,0065 / 0,0167 → 0,0173 | 0,011 → 0,011 / 0,052 → 0,053 | 43,6 → 44,3 / 43,6 → 43,9 | Loren 0,0001 → 0 |
+| explore | 0,159 → 0,166 (+4 %) | 0,790 → 0,813 | 56,1 → 56,4 | Wesen 0,046 → 0,049, Chunk-Laden 0,035 → 0,037, Streaming 0,073 → 0,076, Loren 0,0007 → 0 |
+| signal_components (6) | **0,0248 → 0,0285 (+15 %)** | 0,088 → 0,092 | 44,3 → 44,5 | Signal 0,0096 → 0,0124, Block-Updates 0,0004 → 0,0006, Feuer 0,0001 |
+| signal_machines (6) | 0,0288 → 0,0260 (−10 %) | 0,092 → 0,090 | 44,3 → 44,5 | Wesen 0,0082 → 0,0058, Signal gleich 0,0125 |
+| signal_farm | **0,0210 → 0,0287 (+37 %)** | 0,090 → 0,092 | 44,6 → 44,5 | Signal 0,0062 → 0,0124, Block-Updates 0,0003 → 0,0006, Abgleich 0,0014 → 0,0023 |
+| forest-fire | 0,003 (Wald ohne Feuer) → 0,263 | 0,006 → 0,711 | 44,7 → 45,5 | Feuer 0,178 (max 0,81), Block-Updates 0,065, Pflanzen 0,017 |
+
+**Bewertung:**
+
+- **`@core` innerhalb von 10 %, Bild und GPU unverändert** (GPU, Render-CPU, Frame Ø überall innerhalb von 4 %; Draw-Calls in stand, sprint, crowd gleich). Neue Tick-Phase Feuer ohne Brand 0,001–0,002 ms im Fenster, 0 headless.
+- **Lorenphase ohne Loren fort:** im Fenster 0,015–0,016 → 0,0006–0,0008 ms, headless 0,0002–0,0009 → 0 (früher Ausstieg, E-393). Erwartet.
+- **Brennen je Körper (Phase Wesen) und 16-Bit-Flags:** crowd Phase Wesen headless +2 % (0,110 → 0,112 ms), im Fenster +2 % mit überlappenden Runden; Entity-Vernetzung und GUI-CPU in crowd (94 Wesen) gleich (−2 %). Kein messbarer Preis.
+- **GUI-CPU `showcase` +25 % (+0,14 ms), in allen 3 Runden** (34: 0,685–0,699, `dev` 0,519–0,586): Die Szene ist eine andere. Die Feuerstation schiebt die Stationen der ersten Reihen; vom Startpunkt aus sind jetzt 25 statt 10 Entities im Bild (naheliegend die Station der Rüstungsständer-Posen, jetzt auf 4,−21 und 36 m vom Startpunkt, vorher weiter weg; nicht einzeln gezählt), die Entity-Vernetzung steigt um denselben Betrag (0,195 → 0,353 ms). Je Entity gleich teuer (crowd unverändert), Draw-Calls 180 → 153, GPU −3 %. Keine Regression des Codes; absolut 0,69 ms.
+- **Tick an den Signal-Stationen headless +15 % und +37 % (+0,004 bzw. +0,008 ms), `signal_machines` −10 %:** Auch hier andere Szenen. Die drei Haltepunkte liegen jetzt in einer Umgebung, deren Signal-Phase der von `signal_machines` auf `dev` gleicht (alle drei 0,0124 ms; Block-Entities 44 → 68 in der Nähe von `signal_machines`/`signal_farm`). Absolut 0,03 ms je Tick von 50 ms; keine Regression im eigentlichen Sinn. Ein Szenen-Bezug unabhängig vom Layout der Showcase wäre für spätere Vergleiche besser (z. B. Haltepunkte relativ zur Station und nur deren Chunks).
+- **`explore` headless +4 %** (Wesen, Chunk-Laden, Streaming je +3 bis +6 %, eine Runde belastet): innerhalb der Schwelle.
+- **Frame p99 `sprint` −10 %:** Streuung der verpassten VSyncs (bekannter Vorbehalt), GPU +4 % mit überlappenden Runden.
+
+**Waldbrand (34):** Der Brand kostet im Fenster keine Bildzeit (117 FPS, Frame Ø gleich, GPU sogar −5 %, vermutlich weil abgebrannte Kronen weniger Fläche zeichnen). Messbar sind die erwarteten Posten: der Client vernetzt in 30 s rund 6600 Abschnitte neu (4189 Mesh-Jobs, Ø 2,4 ms im Hintergrund, Rückstau bis 111) und rechnet 769 Licht-Jobs (Ø 0,16 ms); vom Setzen eines Blocks bis zum neuen Mesh Ø 13 ms, höchstens 51–81 ms (1–2 Bilder an der Spitze des Brandes). Render-CPU p99 2,1 → 2,9 ms (Uploads von 657 MB in 30 s, Ø 0,09 ms je Bild), Welt-Renderer +0,08 ms. Server: Tick Ø 0,30 ms im Fenster (headless 0,26), Phase Feuer Ø 0,17, Spitze 2,3 ms (5 % des Budgets); Block-Updates (Laubverfall, Erlöschen) 0,03–0,07 ms. Spitzenspeicher +21 MB (nicht aufgeschlüsselt; naheliegend Mesh-Rückstau und Uploads). Alle Werte weit unter den Zielen.
+
+**Absolute Ziele (`docs/Performance.md`, 8 Chunks):** Bildrate 116–118 FPS (Ziel ≥ 60) und Frame-Kosten (höchstens 2,25 ms GPU in crowd, 1,90 ms Render-CPU in sprint, 1,34 ms im Waldbrand; Ziel ≤ 4 ms) erfüllt. p99 ≤ 12,5 ms im Median verfehlt (13,5–15,5 ms bei beiden Ständen, externer Monitor angeschlossen; bekannter Vorbehalt wie in 31.3, 32 und 33, Frame-Kosten-p99 klein). Spitzenspeicher stand, showcase, crowd, Waldbrand 331–450 MB und sprint (10 s) 556 MB unter 600 MB erfüllt; die offenen Befunde sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen, durch 34 nicht berührt. Tick: kein Tick über 50 ms (höchstens 3,8 ms), keine übersprungenen Ticks.
+
+### Fazit Etappe 34
+
+Feuer kostet ohne Brand nichts Messbares: neue Phase Feuer 0,001–0,002 ms, Brennen je Körper und 16-Bit-Flags in crowd innerhalb von 2 %, die Lorenphase ohne Loren ist mit dem frühen Ausstieg praktisch fort (−95 %). Ein Waldbrand mit über 2000 Feuern bleibt bei 117 FPS; Client-Neuvernetzung und Licht laufen im Hintergrund mit Ø 13 ms Verzögerung, der Server-Tick steigt auf Ø 0,3 ms, Spitze 2,4 ms. Die Abweichungen über 10 % (GUI-CPU im Showcase, Tick an zwei Signal-Stationen) kommen vom verschobenen Layout der Showcase-Welt, nicht vom Code; keine unerklärte Regression.

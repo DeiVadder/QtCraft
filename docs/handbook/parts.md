@@ -19,6 +19,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch fence](#block-qtcraft-birch_fence) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
 | Kind of part | Fence |
@@ -52,6 +53,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch fence gate](#block-qtcraft-birch_fence_gate) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Opens and closes when used | yes |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
@@ -86,6 +88,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch slab](#block-qtcraft-birch_slab) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
 | Kind of part | Slab |
@@ -117,6 +120,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch stairs](#block-qtcraft-birch_stairs) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 11.25 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Birch planks](blocks.md#block-qtcraft-birch_planks) |
 | Kind of part | Stairs |
@@ -149,6 +153,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Black carpet](#block-qtcraft-black_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Black wool](blocks.md#block-qtcraft-black_wool) |
 | Kind of part | Carpet |
@@ -174,6 +179,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Blue carpet](#block-qtcraft-blue_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Blue wool](blocks.md#block-qtcraft-blue_wool) |
 | Kind of part | Carpet |
@@ -296,6 +302,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Brown carpet](#block-qtcraft-brown_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Brown wool](blocks.md#block-qtcraft-brown_wool) |
 | Kind of part | Carpet |
@@ -418,6 +425,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Cyan carpet](#block-qtcraft-cyan_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Cyan wool](blocks.md#block-qtcraft-cyan_wool) |
 | Kind of part | Carpet |
@@ -443,6 +451,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Gray carpet](#block-qtcraft-gray_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Gray wool](blocks.md#block-qtcraft-gray_wool) |
 | Kind of part | Carpet |
@@ -468,6 +477,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Green carpet](#block-qtcraft-green_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Green wool](blocks.md#block-qtcraft-green_wool) |
 | Kind of part | Carpet |
@@ -493,6 +503,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Light blue carpet](#block-qtcraft-light_blue_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Light blue wool](blocks.md#block-qtcraft-light_blue_wool) |
 | Kind of part | Carpet |
@@ -518,6 +529,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Light gray carpet](#block-qtcraft-light_gray_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Light gray wool](blocks.md#block-qtcraft-light_gray_wool) |
 | Kind of part | Carpet |
@@ -543,6 +555,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Lime carpet](#block-qtcraft-lime_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Lime wool](blocks.md#block-qtcraft-lime_wool) |
 | Kind of part | Carpet |
@@ -568,6 +581,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Magenta carpet](#block-qtcraft-magenta_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Magenta wool](blocks.md#block-qtcraft-magenta_wool) |
 | Kind of part | Carpet |
@@ -691,6 +705,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak fence](#block-qtcraft-oak_fence) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
 | Kind of part | Fence |
@@ -724,6 +739,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak fence gate](#block-qtcraft-oak_fence_gate) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Opens and closes when used | yes |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
@@ -758,6 +774,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak slab](#block-qtcraft-oak_slab) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
 | Kind of part | Slab |
@@ -789,6 +806,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak stairs](#block-qtcraft-oak_stairs) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 11.25 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Oak planks](blocks.md#block-qtcraft-oak_planks) |
 | Kind of part | Stairs |
@@ -821,6 +839,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Orange carpet](#block-qtcraft-orange_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Orange wool](blocks.md#block-qtcraft-orange_wool) |
 | Kind of part | Carpet |
@@ -846,6 +865,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Pink carpet](#block-qtcraft-pink_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Pink wool](blocks.md#block-qtcraft-pink_wool) |
 | Kind of part | Carpet |
@@ -939,6 +959,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Purple carpet](#block-qtcraft-purple_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Purple wool](blocks.md#block-qtcraft-purple_wool) |
 | Kind of part | Carpet |
@@ -964,6 +985,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Red carpet](#block-qtcraft-red_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Red wool](blocks.md#block-qtcraft-red_wool) |
 | Kind of part | Carpet |
@@ -1184,6 +1206,7 @@ Fences connect to fences, gates and full solid blocks and are too high to jump o
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce fence](#block-qtcraft-spruce_fence) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
 | Kind of part | Fence |
@@ -1217,6 +1240,7 @@ A gate in a fence: use it to open or close it. Open gates let everything through
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce fence gate](#block-qtcraft-spruce_fence_gate) |
 | Light blocked | 0 of 15 |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Opens and closes when used | yes |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
@@ -1251,6 +1275,7 @@ Half a block. The clicked half decides whether it lies low or high; a second sla
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce slab](#block-qtcraft-spruce_slab) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 7.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
 | Kind of part | Slab |
@@ -1282,6 +1307,7 @@ Stairs turn away from you when placed; place them on the upper half of a face to
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce stairs](#block-qtcraft-spruce_stairs) |
 | Light blocked | only at the sides its shape covers fully |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 11.25 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |
 | Kind of part | Stairs |
@@ -1475,6 +1501,7 @@ A thin layer of wool that needs a block below.
 | Drops | [White carpet](#block-qtcraft-white_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [White wool](blocks.md#block-qtcraft-white_wool) |
 | Kind of part | Carpet |
@@ -1500,6 +1527,7 @@ A thin layer of wool that needs a block below.
 | Drops | [Yellow carpet](#block-qtcraft-yellow_wool_carpet) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 2.5 s: [Fuels](tables.md#table-fuels) |
 | Made from | [Yellow wool](blocks.md#block-qtcraft-yellow_wool) |
 | Kind of part | Carpet |

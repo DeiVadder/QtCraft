@@ -1,0 +1,11 @@
+{
+    "name": "flint_and_steel",
+    "type": "shapeless",
+    "ingredients": [
+        "iron_ingot",
+        "flint"
+    ],
+    "result": {
+        "item": "flint_and_steel"
+    }
+}

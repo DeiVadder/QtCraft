@@ -16,6 +16,7 @@
 #   server     crowd gravel-collapse farm farm-seeds explore showcase-signal_components
 #              showcase-signal_machines showcase-signal_farm: the default
 #   farm       farm farm-seeds
+#   fire       forest-fire: fire steps, burning blocks and light (stage 34.2; both scripts)
 # Every group works in both scripts; the window groups also say which server scenes to measure
 # headless for a change of that kind (e.g. @liquids headless for the flow steps).
 
@@ -32,6 +33,7 @@ scenario_group() {
     memory) echo "explore showcase-flight" ;;
     server) echo "crowd gravel-collapse farm farm-seeds explore showcase-signal_components showcase-signal_machines showcase-signal_farm" ;;
     farm) echo "farm farm-seeds" ;;
+    fire) echo "forest-fire" ;;
     *) return 1 ;;
     esac
 }
@@ -44,7 +46,7 @@ expand_scenarios() {
         case "$word" in
         @*)
             members=$(scenario_group "${word#@}") || {
-                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm)" >&2
+                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm, fire)" >&2
                 return 1
             }
             ;;

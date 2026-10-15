@@ -10,6 +10,10 @@
         }
     ],
     "fuelSeconds": 15,
+    "flammable": {
+        "ignite": 30,
+        "burn": 20
+    },
     "textures": {
         "top": "oak_planks",
         "bottom": "oak_planks",

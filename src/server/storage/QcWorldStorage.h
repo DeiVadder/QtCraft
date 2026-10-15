@@ -21,12 +21,12 @@
 // Metadata of a saved world (world.json). Format 5 (stage 31.3) keeps chunks in indexed region files
 // read on demand, saved as one through a journal (decision E-373); format 6 (stage 32.1) saves
 // minecarts with the entities of their chunk (decision E-382), format 7 (stage 32.2) also the slots of
-// container carts (decision E-386). Worlds of older development versions
+// container carts (decision E-386), format 8 (stage 34) burning fires with their chunk (decision E-392). Worlds of older development versions
 // are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 7;
-    static constexpr int oldestFormatVersion = 7;
+    static constexpr int formatVersion = 8;
+    static constexpr int oldestFormatVersion = 8;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -44,6 +44,9 @@ struct QcWorldInfo
     bool mobSpawning = true;
     // Game rule: blocks get random ticks (growing plants, crops, soil; decision E-295).
     bool randomTicks = true;
+    // Game rule: fire spreads to flammable blocks and burns them away (decision E-392); off, fires
+    // only burn where they are until they go out.
+    bool fireSpread = true;
     // Game rule: pistons that allow it are also powered through the block above them, noticed only
     // with a block update next to them (quasi-connectivity, decision E-338).
     bool quasiConnectivity = true;

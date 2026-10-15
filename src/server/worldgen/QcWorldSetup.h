@@ -24,6 +24,8 @@ struct QcWorldSetup
     bool daylightCycle = true;
     bool mobSpawning = true;
     bool randomTicks = true;
+    // Game rule fireSpread (decision E-392).
+    bool fireSpread = true;
     QList<Mob> mobs;
     QList<Stand> stands;
     QList<Contents> contents;

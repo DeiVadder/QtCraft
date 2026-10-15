@@ -163,7 +163,52 @@ QColor paintPie(const QcTextureSpec &spec, int x, int y, QColor color)
     return distance > 5.6 || lattice ? varied(spec, spec.secondary, x, y, 3) : color;
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 12> painters = {{
+// Straw from top to bottom: stalks of slightly varied shade, some darker (secondary), tied by two
+// bands of darker, flattened straw.
+QColor paintHaySide(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool band = y == 3 || y == 4 || y == 11 || y == 12;
+    const bool darkStalk = hashPixel(spec.seed, x, 0) % 4 == 0;
+    const QColor stalk = darkStalk ? spec.secondary : color;
+    if (band) {
+        return scaled(varied(spec, spec.secondary, x, y, 3), 0.75);
+    }
+    return varied(spec, x % 2 == 0 ? stalk : scaled(stalk, 0.92), x, y, 7);
+}
+
+// The cut ends of the stalks: dots of light and dark straw in a bundle, a darker rim.
+QColor paintHayTop(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    if (x == 0 || y == 0 || x == size - 1 || y == size - 1) {
+        return scaled(color, 0.8);
+    }
+    const quint32 end = hashPixel(spec.seed, x, y) % 5;
+    if (end == 0) {
+        return varied(spec, spec.secondary, x, y, 3);
+    }
+    return end == 1 ? scaled(color, 1.1) : varied(spec, color, x, y, 5);
+}
+
+// A C-shaped steel striker (secondary) at the top left and a flint chip (primary) at the bottom right.
+QColor paintFlintAndSteel(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const double dx = x - 6.0;
+    const double dy = y - 6.0;
+    const double ring = std::sqrt(dx * dx + dy * dy);
+    const bool striker = ring >= 3.0 && ring <= 4.6 && !(x > 6 && std::abs(y - 6) <= 1);
+    const int along = x + y;
+    const int across = std::abs(x - y);
+    const bool flint = along >= 17 && along <= 27 && across <= 3 - std::abs(along - 22) / 3;
+    if (striker) {
+        return y < 5 ? scaled(spec.secondary, 1.15) : spec.secondary;
+    }
+    if (flint) {
+        return varied(spec, along % 3 == 0 ? scaled(color, 1.3) : color, x, y, 9);
+    }
+    return clear();
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
     {Pattern::Crop, paintCrop},
     {Pattern::RootCrop, paintRootCrop},
     {Pattern::Stem, paintStem},
@@ -176,6 +221,9 @@ constexpr std::array<std::pair<Pattern, Painter>, 12> painters = {{
     {Pattern::Carrot, paintCarrot},
     {Pattern::MelonSlice, paintMelonSlice},
     {Pattern::Pie, paintPie},
+    {Pattern::HaySide, paintHaySide},
+    {Pattern::HayTop, paintHayTop},
+    {Pattern::FlintAndSteel, paintFlintAndSteel},
 }};
 
 } // namespace

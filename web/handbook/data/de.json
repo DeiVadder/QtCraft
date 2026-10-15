@@ -13,6 +13,7 @@
                 "chapter:qtcraft:signal",
                 "chapter:qtcraft:rails",
                 "chapter:qtcraft:health",
+                "chapter:qtcraft:fire",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
@@ -75,6 +76,7 @@
                 "block:qtcraft:torch",
                 "block:qtcraft:fern",
                 "block:qtcraft:barrel",
+                "block:qtcraft:fire",
                 "block:qtcraft:spruce_planks",
                 "block:qtcraft:spruce_trapdoor",
                 "block:qtcraft:spruce_wood",
@@ -213,6 +215,7 @@
                 "block:qtcraft:stone_button",
                 "block:qtcraft:coal_ore",
                 "block:qtcraft:stone_bricks",
+                "block:qtcraft:hay_block",
                 "block:qtcraft:terracotta",
                 "block:qtcraft:clay",
                 "block:qtcraft:dead_bush",
@@ -320,6 +323,8 @@
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
                 "item:qtcraft:string",
+                "item:qtcraft:flint",
+                "item:qtcraft:flint_and_steel",
                 "item:qtcraft:fired_lamp_shell",
                 "item:qtcraft:yellow_dye",
                 "item:qtcraft:glass_bottle",
@@ -2165,6 +2170,12 @@
                     "value": "ja"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -2728,6 +2739,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -2949,6 +2966,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Öffnet und schließt beim Benutzen",
                     "links": [
                     ],
@@ -3158,6 +3181,12 @@
                     "value": "1 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -3246,6 +3275,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -3453,6 +3488,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -3914,6 +3955,12 @@
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -4109,6 +4156,12 @@
                     "links": [
                     ],
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -4524,6 +4577,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -5491,6 +5550,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -5736,6 +5801,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -6224,6 +6295,12 @@
                     "links": [
                     ],
                     "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
                 },
                 {
                     "label": "Klang",
@@ -6793,6 +6870,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -7040,6 +7123,12 @@
                     "value": "einen festen Block darunter"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -7179,6 +7268,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -9135,6 +9230,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -9380,6 +9481,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -10437,6 +10544,12 @@
                     "links": [
                     ],
                     "value": "nichts"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -11803,6 +11916,12 @@
                     "value": "ja"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -13051,6 +13170,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -13298,6 +13423,12 @@
                     "value": "einen festen Block darunter"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -13457,6 +13588,12 @@
                     "value": "ja"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -13589,6 +13726,12 @@
                     "links": [
                     ],
                     "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -14598,6 +14741,12 @@
                     "value": "ja"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -14627,6 +14776,94 @@
             ],
             "text": "Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöcken ersetzt.",
             "title": "Farn"
+        },
+        "block:qtcraft:fire": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Fire",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:fire"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,05 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Licht",
+                    "links": [
+                    ],
+                    "value": "15 von 15"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Wird beim Bauen ersetzt",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Schaden bei Berührung",
+                    "links": [
+                    ],
+                    "value": "1 Lebenspunkt"
+                },
+                {
+                    "label": "Setzt Körper in Brand für",
+                    "links": [
+                    ],
+                    "value": "8 s"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "",
+            "id": "block:qtcraft:fire",
+            "name": "qtcraft:fire",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Brennt, wo es steht, und greift auf brennbare Blöcke daneben über. Es leuchtet hell, verletzt, wer hineinläuft, und erlischt von selbst. Wasser spült es fort.",
+            "title": "Feuer"
         },
         "block:qtcraft:firefly_glass": {
             "category": "blocks",
@@ -16512,6 +16749,12 @@
                             "note": "",
                             "target": "block:qtcraft:gravel",
                             "text": "Kies"
+                        },
+                        {
+                            "icon": "qtcraft:flint",
+                            "note": "10 %",
+                            "target": "item:qtcraft:flint",
+                            "text": "Feuerstein"
                         }
                     ],
                     "value": ""
@@ -16724,7 +16967,7 @@
                     "title": "Wesen, die darauf erscheinen"
                 }
             ],
-            "text": "Lose Steine, die fallen, wenn nichts sie hält.",
+            "text": "Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein Feuerstein heraus.",
             "title": "Kies"
         },
         "block:qtcraft:gray_concrete": {
@@ -17573,6 +17816,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -17818,6 +18067,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -18753,6 +19008,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -19000,6 +19261,12 @@
                     "value": "einen festen Block darunter"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -19086,6 +19353,217 @@
             ],
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Grüner Teppich"
+        },
+        "block:qtcraft:hay_block": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Hay bale",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:hay_block"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "0,75 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "hoe (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_hoe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_hoe",
+                            "text": "Goldhacke"
+                        }
+                    ],
+                    "value": "0,06 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:hay_block",
+                            "note": "",
+                            "target": "block:qtcraft:hay_block",
+                            "text": "Strohballen"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 20 (0 bis 100)"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Gras und Pflanzen"
+                }
+            ],
+            "icon": "qtcraft:hay_block",
+            "id": "block:qtcraft:hay_block",
+            "name": "qtcraft:hay_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                },
+                                {
+                                    "icon": "qtcraft:wheat",
+                                    "note": "",
+                                    "target": "item:qtcraft:wheat",
+                                    "text": "Weizen"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:hay_block",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:hay_block",
+                                "note": "",
+                                "target": "block:qtcraft:hay_block",
+                                "text": "Strohballen"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:wheat",
+                            "note": "",
+                            "target": "item:qtcraft:wheat",
+                            "text": "Weizen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_hoe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_hoe",
+                            "text": "Goldhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_hoe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_hoe",
+                            "text": "Holzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_hoe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_hoe",
+                            "text": "Steinhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_hoe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_hoe",
+                            "text": "Eisenhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_hoe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_hoe",
+                            "text": "Diamanthacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Neun Weizen zum Ballen gebunden, und wieder zu neun Weizen zerlegt. Fängt leicht Feuer.",
+            "title": "Strohballen"
         },
         "block:qtcraft:ice": {
             "category": "blocks",
@@ -20712,6 +21190,18 @@
                     "value": "3 Lebenspunkte"
                 },
                 {
+                    "label": "Setzt Körper in Brand für",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Entzündet Feuer daneben",
+                    "links": [
+                    ],
+                    "value": "3 von 100 je Block-Update, neben brennbaren Blöcken"
+                },
+                {
                     "label": "Zustände",
                     "links": [
                     ],
@@ -20745,7 +21235,7 @@
                     "title": "Kommt vor in"
                 }
             ],
-            "text": "Heiße Flüssigkeit, die leuchtet, Items verbrennt und verletzt. Neben Wasser wird sie zu Obsidian oder Bruchstein.",
+            "text": "Heiße Flüssigkeit, die leuchtet, Items verbrennt und jeden in Brand setzt, der sie berührt. Neben Wasser wird sie zu Obsidian oder Bruchstein; neben brennbaren Blöcken kann sie ein Feuer entfachen.",
             "title": "Lava"
         },
         "block:qtcraft:lever": {
@@ -21717,6 +22207,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -21962,6 +22458,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -22897,6 +23399,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -23144,6 +23652,12 @@
                     "value": "einen festen Block darunter"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -23301,6 +23815,12 @@
                     "links": [
                     ],
                     "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
                 },
                 {
                     "label": "Klang",
@@ -24199,6 +24719,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -24444,6 +24970,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -25379,6 +25911,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -25626,6 +26164,12 @@
                     "value": "einen festen Block darunter"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -25785,6 +26329,12 @@
                     "value": "1 Lebenspunkt"
                 },
                 {
+                    "label": "Feuer darauf brennt ewig",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -25850,7 +26400,7 @@
                     "title": "Kommt vor in"
                 }
             ],
-            "text": "Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der darauf steht.",
+            "text": "Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der darauf steht. Feuer darauf brennt ewig.",
             "title": "Magmablock"
         },
         "block:qtcraft:melon": {
@@ -27854,6 +28404,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -28075,6 +28631,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Öffnet und schließt beim Benutzen",
                     "links": [
                     ],
@@ -28290,6 +28852,12 @@
                     "value": "1 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -28384,6 +28952,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -28597,6 +29171,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -29243,6 +29823,12 @@
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -29438,6 +30024,12 @@
                     "links": [
                     ],
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -29853,6 +30445,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -30930,6 +31528,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -31175,6 +31779,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -32470,6 +33080,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -32715,6 +33331,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -33492,6 +34114,12 @@
                     "links": [
                     ],
                     "value": "ja"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
                 },
                 {
                     "label": "Klang",
@@ -35020,6 +35648,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -35265,6 +35899,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -36521,6 +37161,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -36766,6 +37412,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -41956,6 +42608,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -42177,6 +42835,12 @@
                     "value": "0 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Öffnet und schließt beim Benutzen",
                     "links": [
                     ],
@@ -42386,6 +43050,12 @@
                     "value": "1 von 15"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -42480,6 +43150,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -42693,6 +43369,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -43160,6 +43842,12 @@
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -43355,6 +44043,12 @@
                     "links": [
                     ],
                     "value": "nur an den Seiten, die seine Form ganz bedeckt"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 20 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -43770,6 +44464,12 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 5, brennt ab 5 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -46236,6 +46936,12 @@
                     "value": "ja"
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 60, brennt ab 100 (0 bis 100)"
+                },
+                {
                     "label": "Klang",
                     "links": [
                     ],
@@ -47768,6 +48474,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -48039,6 +48751,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -49202,6 +49920,12 @@
                     "value": ""
                 },
                 {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
+                },
+                {
                     "label": "Brennt als Brennstoff",
                     "links": [
                         {
@@ -49447,6 +50171,12 @@
                     "links": [
                     ],
                     "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Brennbar",
+                    "links": [
+                    ],
+                    "value": "fängt Feuer 30, brennt ab 60 (0 bis 100)"
                 },
                 {
                     "label": "Brennt als Brennstoff",
@@ -49741,7 +50471,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -50187,6 +50917,136 @@
             ],
             "text": "",
             "title": "Landwirtschaft"
+        },
+        "chapter:qtcraft:fire": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Fire",
+            "facts": [
+            ],
+            "icon": "qtcraft:magma_block",
+            "id": "chapter:qtcraft:fire",
+            "name": "qtcraft:fire",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Feuer steht auf einem festen Block oder neben einem brennbaren und erhellt seine Umgebung mit Licht 15. Etwa alle 1,5 bis 1,95 Sekunden macht es einen Schritt und wird älter; nach spätestens 45 Schritten erlischt es. Ohne brennbaren Block daneben erlischt es nach 9 Schritten, Feuer auf Stein oder Sand brennt also schnell herunter. Verliert Feuer seinen Untergrund oder seinen Brennstoff, erlischt es sofort, und hineinfließendes Wasser spült es fort. Abbauen löscht es.",
+                    "title": "Brennen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Ein Feuerzeug entzündet Feuer vor der Seite eines Blocks, auf den du es anwendest, wenn dort Feuer stehen kann: auf einem festen Block oder neben einem brennbaren. Jedes Feuer nutzt es um einen Gebrauch ab; im Kreativmodus nutzt es sich nicht ab. Ein Signalspender mit einem Feuerzeug entzündet beim Auslösen die Zelle vor sich; kann dort nichts brennen, bleibt das Feuerzeug darin. Lava setzt ab und zu die Luft direkt neben sich in Brand, wenn diese an einen brennbaren Block grenzt, aber nur, wenn sich neben der Lava etwas ändert oder sie fließt: ein ruhiger Lavasee setzt den Wald um ihn nicht in Brand. Jedes neue Feuer ist ein eigener Funke und hält die Grenzen unten ein. Abbauen oder Schlagen löscht Feuer, auch im Kreativmodus.",
+                    "title": "Feuer entzünden"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Jeder Schritt kann die brennbaren Blöcke neben dem Feuer abbrennen: Sie werden zu Feuer oder zu Luft, und nichts fällt heraus. Außerdem kann er die Luft ringsum neben brennbaren Blöcken entzünden, am ehesten über dem Feuer. Wie leicht ein Block Feuer fängt und wie schnell er abbrennt, hängt vom Block ab: Laub, Wolle, Gras und Blumen brennen leicht, Stämme, Bretter und Kohleblöcke langsam; Stein, Erde, Glas und Metall brennen nie. Feuer auf einem Magmablock brennt ewig, ohne sich auszubreiten: eine Feuerstelle. Ein neues Feuer ist so alt wie das, das es entzündet hat, darum erlischt jede Feuerfront.",
+                    "title": "Ausbreitung"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Feuer breitet sich höchstens 12 Blöcke vom Funken aus, mit dem es begann; ein einzelner Funke brennt also nie einen ganzen Wald oder ein Dorf nieder. In nicht geladene Chunks breitet es sich nie aus. Ein Chunk hält höchstens 256 Feuer, die Welt 4096; darüber hinaus entsteht kein neues Feuer. Die Spielregel `fireSpread` (`/gamerule fireSpread false`) hält Feuer davon ab, sich auszubreiten und Blöcke abzubrennen; Feuer brennt dann nur, wo es ist, bis es erlischt. Die Showcase-Welt hat sie aus. Ein Server kann die Ausbreitung für alle seine Welten auch mit der Grenze `fireSpreadRadius` 0 in server.json abschalten.",
+                    "title": "Grenzen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Wer in Feuer oder Lava gerät, fängt Feuer und brennt nach dem Herausgehen noch eine Weile weiter (Feuer 8 Sekunden, Lava 15; siehe die Blockseiten). Solange ein Spieler oder Wesen brennt, verliert es alle 1 Sekunde 1 Gesundheit; Rüstung fängt einen Teil davon ab wie bei jedem Schlag. Wasser löscht die Flammen sofort. Spieler im Kreativmodus brennen nicht. Items, die in Feuer oder Lava fallen, verbrennen.",
+                    "title": "Brennende Spieler und Wesen"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "block:qtcraft:fire",
+                            "text": "Feuer"
+                        },
+                        {
+                            "icon": "qtcraft:flint_and_steel",
+                            "note": "",
+                            "target": "item:qtcraft:flint_and_steel",
+                            "text": "Feuerzeug"
+                        },
+                        {
+                            "icon": "qtcraft:flint",
+                            "note": "",
+                            "target": "item:qtcraft:flint",
+                            "text": "Feuerstein"
+                        },
+                        {
+                            "icon": "qtcraft:lava_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:lava",
+                            "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:magma_block",
+                            "note": "",
+                            "target": "block:qtcraft:magma_block",
+                            "text": "Magmablock"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "",
+                            "target": "block:qtcraft:oak_log",
+                            "text": "Eichenstamm"
+                        },
+                        {
+                            "icon": "qtcraft:oak_leaves",
+                            "note": "",
+                            "target": "block:qtcraft:oak_leaves",
+                            "text": "Eichenlaub"
+                        },
+                        {
+                            "icon": "qtcraft:white_wool",
+                            "note": "",
+                            "target": "block:qtcraft:white_wool",
+                            "text": "Weiße Wolle"
+                        },
+                        {
+                            "icon": "qtcraft:bookshelf",
+                            "note": "",
+                            "target": "block:qtcraft:bookshelf",
+                            "text": "Bücherregal"
+                        },
+                        {
+                            "icon": "qtcraft:coal_block",
+                            "note": "",
+                            "target": "block:qtcraft:coal_block",
+                            "text": "Kohleblock"
+                        },
+                        {
+                            "icon": "qtcraft:hay_block",
+                            "note": "",
+                            "target": "block:qtcraft:hay_block",
+                            "text": "Strohballen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Feuer"
         },
         "chapter:qtcraft:health": {
             "category": "playing",
@@ -56879,6 +57739,149 @@
             "text": "Ein gefangenes Glühwürmchen. Es bringt die Minenlampe zum Leuchten.",
             "title": "Glühwürmchen in der Flasche"
         },
+        "item:qtcraft:flint": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Flint",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:flint"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:flint",
+            "id": "item:qtcraft:flint",
+            "name": "qtcraft:flint",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:flint_and_steel",
+                            "note": "",
+                            "target": "item:qtcraft:flint_and_steel",
+                            "text": "Feuerzeug"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "10 %",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Kies"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Ein scharfer Stein, der manchmal aus Kies fällt. Mit einem Eisenbarren wird daraus ein Feuerzeug.",
+            "title": "Feuerstein"
+        },
+        "item:qtcraft:flint_and_steel": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Flint and steel",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:flint_and_steel"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Haltbarkeit",
+                    "links": [
+                    ],
+                    "value": "64 Benutzungen"
+                },
+                {
+                    "label": "Entzündet",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "block:qtcraft:fire",
+                            "text": "Feuer"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:flint_and_steel",
+            "id": "item:qtcraft:flint_and_steel",
+            "name": "qtcraft:flint_and_steel",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:flint",
+                                    "note": "",
+                                    "target": "item:qtcraft:flint",
+                                    "text": "Feuerstein"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:flint_and_steel",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:flint_and_steel",
+                                "note": "",
+                                "target": "item:qtcraft:flint_and_steel",
+                                "text": "Feuerzeug"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Schlägt Funken: auf einen Block angewendet, entzündet es Feuer vor der angeklickten Seite, wo Feuer stehen kann. Jedes Feuer nutzt es ein wenig ab. Ein Signalspender benutzt es genauso.",
+            "title": "Feuerzeug"
+        },
         "item:qtcraft:glass_bottle": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -60032,6 +61035,12 @@
                             "note": "",
                             "target": "block:qtcraft:iron_door",
                             "text": "Eisentür"
+                        },
+                        {
+                            "icon": "qtcraft:flint_and_steel",
+                            "note": "",
+                            "target": "item:qtcraft:flint_and_steel",
+                            "text": "Feuerzeug"
                         },
                         {
                             "icon": "qtcraft:minecart",
@@ -65685,6 +66694,41 @@
             "sections": [
                 {
                     "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:hay_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:hay_block",
+                                    "text": "Strohballen"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:wheat_from_hay_block",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:wheat",
+                                "note": "",
+                                "target": "item:qtcraft:wheat",
+                                "text": "Weizen"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
                         {
                             "icon": "qtcraft:bread",
                             "note": "",
@@ -65696,6 +66740,12 @@
                             "note": "",
                             "target": "item:qtcraft:pumpkin_pie",
                             "text": "Kürbiskuchen"
+                        },
+                        {
+                            "icon": "qtcraft:hay_block",
+                            "note": "",
+                            "target": "block:qtcraft:hay_block",
+                            "text": "Strohballen"
                         }
                     ],
                     "recipes": [

@@ -74,6 +74,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.daylightCycle = rules.value(u"daylightCycle"_s).toBool(true);
     info.mobSpawning = rules.value(u"mobSpawning"_s).toBool(true);
     info.randomTicks = rules.value(u"randomTicks"_s).toBool(true);
+    info.fireSpread = rules.value(u"fireSpread"_s).toBool(true);
     info.quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
     const QJsonObject generator = json.value(u"generator"_s).toObject();
     info.generator = generator.value(u"type"_s).toString();
@@ -140,6 +141,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                                                         {u"daylightCycle"_s, info.daylightCycle},
                                                         {u"mobSpawning"_s, info.mobSpawning},
                                                         {u"randomTicks"_s, info.randomTicks},
+                                                        {u"fireSpread"_s, info.fireSpread},
                                                         {u"quasiConnectivity"_s, info.quasiConnectivity},
                                                         {u"spawnChunkRadius"_s, info.spawnChunkRadius}}}};
     if (!info.limits.isEmpty()) {

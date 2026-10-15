@@ -51,6 +51,7 @@ public:
     const QcServerHoppers &hoppers() const { return m_hoppers; }
     // How a dispenser puts armour on a player (the server's inventory part does it).
     void setEquipPlayer(QcDispenserActions::EquipPlayer equip) { m_dispensers.setEquipPlayer(std::move(equip)); }
+    void setIgnite(QcDispenserActions::Ignite ignite) { m_dispensers.setIgnite(std::move(ignite)); }
     // Work done in the latest tick (debug display).
     qsizetype lastTickWork() const { return m_lastWork; }
 

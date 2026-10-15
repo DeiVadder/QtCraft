@@ -69,6 +69,8 @@ public:
     void tick(const QcBlockAccess &world, const QList<QcAabb> &bodies, double dt);
     // The carts (ids) that were on a powered activator rail in the latest tick (their riders get out).
     const QList<quint32> &activated() const { return m_activated; }
+    // A tick without carts: nothing was activated.
+    void forgetTick() { m_activated.clear(); }
 
 private:
     // How a cart stands still at `position` on the rail at `rail`; nothing when no rail is there.

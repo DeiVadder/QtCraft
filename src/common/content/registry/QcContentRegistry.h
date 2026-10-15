@@ -63,6 +63,9 @@ public:
     const QcBlockState &state(QcBlockId id) const;
     // Default state of the named block.
     [[nodiscard]] std::optional<QcBlockId> blockId(const QString &name) const;
+    // The fire a spark lights and burning bodies show: the first block with "fire": true
+    // (qtcraft:fire in the base game; decision E-392).
+    [[nodiscard]] std::optional<QcBlockId> defaultFire() const;
     const QList<QcBlockDefinition> &blocks() const { return m_blocks; }
     const QcBlockStateTable &stateTable() const { return m_states; }
     // Whether two states belong to the same block definition.

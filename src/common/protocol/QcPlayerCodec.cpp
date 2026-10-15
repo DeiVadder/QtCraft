@@ -68,7 +68,7 @@ void encode(QDataStream &stream, QcMsg::OpenCrafting m)
 
 void encode(QDataStream &stream, const QcMsg::PlayerHealth &m)
 {
-    stream << m.health << m.maxHealth << m.dead;
+    stream << m.health << m.maxHealth << m.dead << m.burning;
 }
 
 void encode(QDataStream &, QcMsg::Respawn) {}
@@ -199,7 +199,7 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerHealth>, QDataStream &stream)
 {
     QcMsg::PlayerHealth m;
-    stream >> m.health >> m.maxHealth >> m.dead;
+    stream >> m.health >> m.maxHealth >> m.dead >> m.burning;
     if (!std::isfinite(m.health) || !std::isfinite(m.maxHealth)) {
         return qcError(u"Non-finite health"_s);
     }

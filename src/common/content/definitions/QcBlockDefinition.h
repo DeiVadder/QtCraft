@@ -3,6 +3,7 @@
 #include "QcBlockFace.h"
 #include "QcBlockProperty.h"
 #include "QcFarmingDefinitions.h"
+#include "QcFireDefinition.h"
 #include "QcLiquidDefinition.h"
 #include "QcMachineDefinition.h"
 #include "QcShapeCondition.h"
@@ -190,6 +191,8 @@ struct QcBlockDefinition
     bool washable = false;
     // Without a block below it falls as an entity and lands again (sand, gravel). Server side only.
     bool falls = false;
+    // Fire, flammability and eternal fire (decision E-392). Server side only.
+    QcFireDefinition fire;
     // A rail (decision E-382): minecarts roll along it; its states `facing` and `shape` follow from
     // the rails around it (QcRails). Server side only.
     bool rail = false;

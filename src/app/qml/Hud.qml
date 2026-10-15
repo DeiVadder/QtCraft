@@ -10,6 +10,46 @@ Item {
 
     required property GameController game
 
+    // On fire (decision E-393): flames rise from the bottom of the view and flicker until the
+    // burning ends or water puts it out.
+    Rectangle {
+        id: burningOverlay
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: parent.height * 0.4
+        visible: hud.game.player.burning
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: Qt.alpha(Theme.flame, 0.0)
+            }
+            GradientStop {
+                position: 0.6
+                color: Qt.alpha(Theme.flame, 0.6)
+            }
+            GradientStop {
+                position: 1.0
+                color: Theme.flameCore
+            }
+        }
+
+        SequentialAnimation on opacity {
+            running: burningOverlay.visible
+            loops: Animation.Infinite
+
+            NumberAnimation {
+                to: 0.7
+                duration: 180
+            }
+            NumberAnimation {
+                to: 0.45
+                duration: 240
+            }
+        }
+    }
+
     WorldLabels {
         anchors.fill: parent
         visible: hud.game.settings.showLabels

@@ -2,6 +2,7 @@
 
 #include "QcBlockRules.h"
 #include "QcBlockUpdateQueue.h"
+#include "QcFireIgnition.h"
 #include "QcServerBlocks.h"
 #include "QcServerFallingBlocks.h"
 #include "QcServerSounds.h"
@@ -15,6 +16,7 @@ QcBlockSimulation::QcBlockSimulation(QcServerState &state, QcServerSounds &sound
     , m_updates(updates)
     , m_blocks(blocks)
     , m_falling(falling)
+    , m_fireTable(state.content())
 {
 }
 
@@ -61,7 +63,13 @@ void QcBlockSimulation::processUpdate(QcBlockPos pos, QcBlockId block)
             m_sounds.play(QString::fromLatin1(QcSoundKeys::liquidHiss), {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
         } else {
             m_state.liquids().schedule(m_state.world(), pos, m_state.clock().tick());
+            if (m_ignition) {
+                m_ignition->blockUpdated(pos, block);
+            }
         }
+    } else if (m_fireTable.of(block).fire && !QcFireRules::canStay(m_state.world(), m_fireTable, pos)) {
+        // Fire whose ground or fuel went away goes out at once (decision E-392).
+        m_blocks.setAndBroadcast(pos, qcAirBlockId);
     } else if (!QcBlockRules::isSupported(m_state.world(), pos, block)) {
         // A door half without its partner was cut off by a command or a removed mod: the item
         // went with the other half.

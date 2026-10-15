@@ -59,6 +59,11 @@ bool QcPlayerController::dead() const
     return m_parts.session && m_parts.session->isDead();
 }
 
+bool QcPlayerController::burning() const
+{
+    return m_parts.session && m_parts.session->burning();
+}
+
 int QcPlayerController::food() const
 {
     return m_parts.session ? m_parts.session->food() : QcItemDefinition::maxFood;

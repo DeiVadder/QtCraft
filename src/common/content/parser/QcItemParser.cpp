@@ -11,7 +11,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// "dispense": throw (default), place_liquid, scoop or equip, checked against what the item is.
+// "dispense": throw (default), place_liquid, scoop, equip or ignite, checked against what the item is.
 void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
 {
     const QString action = reader.string(u"dispense"_s, u"throw"_s);
@@ -30,8 +30,13 @@ void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
         if (!item.armour) {
             reader.fail(u"'dispense': equip needs 'armour'"_s);
         }
+    } else if (action == u"ignite"_s) {
+        item.dispense = QcDispenseAction::Ignite;
+        if (!item.ignites) {
+            reader.fail(u"'dispense': ignite needs 'ignites'"_s);
+        }
     } else if (action != u"throw"_s) {
-        reader.fail(u"'dispense' must be throw, place_liquid, scoop or equip"_s);
+        reader.fail(u"'dispense' must be throw, place_liquid, scoop, equip or ignite"_s);
     }
 }
 
@@ -77,6 +82,10 @@ namespace QcItemParser {
         reader.fail(u"only an item that places a minecart has a 'cartBlock'"_s);
     }
     item.tills = reader.boolean(u"tills"_s, false);
+    item.ignites = reader.boolean(u"ignites"_s, false);
+    if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.scoops || item.bottles)) {
+        reader.fail(u"an item that 'ignites' neither places, tills, scoops nor bottles"_s);
+    }
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);
     });

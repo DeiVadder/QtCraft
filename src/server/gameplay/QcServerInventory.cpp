@@ -339,3 +339,20 @@ void QcServerInventory::equipmentWorn(QcServerClient &client, const QcEquipment 
     }
     send(client);
 }
+
+void QcServerInventory::wearHeld(QcServerClient &client)
+{
+    const QcItemDefinition *held = m_state.heldItem(client);
+    // Tools wear like when mining, except in creative mode (decision E-282).
+    if (!held || held->durability <= 0 || client.rules().infiniteItems) {
+        return;
+    }
+
+    const int slot = client.inventory.selectedHotbarSlot();
+    QcItemStack tool = client.inventory.slot(slot);
+    if (++tool.damage >= held->durability) {
+        tool = {};
+    }
+    client.inventory.setSlot(slot, tool);
+    send(client);
+}

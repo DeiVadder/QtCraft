@@ -123,6 +123,32 @@ void checkBookkeeping(const QcBlockEntities &entities, QStringList &problems)
     }
 }
 
+// Every burning fire lies on a fire block of a loaded chunk, knows whether its ground is eternal, and
+// the fires that count stay within the caps (decisions E-392, E-394).
+void checkFires(const QcServerWorld &world, QStringList &found)
+{
+    const QcFireQueue &fires = world.fires();
+    const QList<QcFireQueue::Fire> all = fires.fires();
+    for (const QcFireQueue::Fire &fire : all) {
+        const std::optional<QcBlockId> block = world.blockAt(fire.pos);
+        if (!block || !fires.isFire(*block)) {
+            found.append(u"fire at %1 has no fire block"_s.arg(at(fire.pos)));
+        }
+        const bool eternal = fire.pos.y > 0 && world.blockAt(fire.pos.offset(0, -1, 0)).transform([&](QcBlockId below) {
+            return fires.isEternalGround(below);
+        }).value_or(false);
+        if (fire.eternal != eternal) {
+            found.append(u"the fire at %1 does not know whether its ground is eternal"_s.arg(at(fire.pos)));
+        }
+        if (fires.countIn(fire.pos.chunk()) > fires.limits().perChunk) {
+            found.append(u"the chunk of the fire at %1 holds too many fires"_s.arg(at(fire.pos)));
+        }
+    }
+    if (fires.counted() > fires.limits().total) {
+        found.append(u"%1 fires burn, more than the world allows"_s.arg(fires.counted()));
+    }
+}
+
 } // namespace
 
 namespace QcBlockEntityChecks {
@@ -132,6 +158,7 @@ QStringList problems(const QcServerWorld &world)
     QStringList found;
     const QcBlockEntities &entities = world.blockEntities();
     checkBookkeeping(entities, found);
+    checkFires(world, found);
     const QList<QcChunkPos> loaded = world.loadedChunks();
     for (const QcChunkPos &pos : loaded) {
         const std::shared_ptr<const QcChunk> chunk = world.chunk(pos);

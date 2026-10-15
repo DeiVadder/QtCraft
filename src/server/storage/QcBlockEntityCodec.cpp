@@ -72,7 +72,8 @@ public:
         return readEntries(m_stream, maxPerChunk, [this] { return container(); }) && readEntries(m_stream, maxPerChunk, [this] { return machine(); })
                && readEntries(m_stream, maxPerChunk, [this] { return sapling(); }) && readEntries(m_stream, maxPerChunk, [this] { return memory(); })
                && readEntries(m_stream, maxPerChunk, [this] { return scheduled(); }) && readEntries(m_stream, maxWakes, [this] { return wake(); })
-               && readEntries(m_stream, maxWakes, [this] { return signalWake(); }) && readEntries(m_stream, maxWakes, [this] { return update(); });
+               && readEntries(m_stream, maxWakes, [this] { return signalWake(); }) && readEntries(m_stream, maxWakes, [this] { return update(); })
+               && readEntries(m_stream, maxPerChunk, [this] { return fire(); });
     }
 
 private:
@@ -195,6 +196,23 @@ private:
         return placed;
     }
 
+    // A burning fire (decision E-392); its origin may lie in another chunk.
+    bool fire()
+    {
+        QcFireQueue::Saved entry;
+        qint32 x = 0;
+        qint32 y = 0;
+        qint32 z = 0;
+        quint8 age = 0;
+        const bool placed = readPos(m_stream, m_record.chunk, entry.pos);
+        m_stream >> x >> y >> z >> age >> entry.ticksLeft;
+        entry.origin = {x, y, z};
+        entry.age = std::min<quint8>(age, QcFireQueue::maxAge);
+        entry.ticksLeft = std::min(entry.ticksLeft, maxTicks);
+        m_record.fires.append(entry);
+        return placed && m_stream.status() == QDataStream::Ok && fresh(m_fires, entry.pos);
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -203,6 +221,7 @@ private:
     QSet<QcBlockPos> m_saplings;
     QSet<QcBlockPos> m_memories;
     QSet<QcBlockPos> m_scheduled;
+    QSet<QcBlockPos> m_fires;
 };
 
 void writePositions(QDataStream &stream, const QList<QcBlockPos> &positions)
@@ -258,6 +277,12 @@ QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &co
     writePositions(stream, record.wakes);
     writePositions(stream, record.signalWakes);
     writePositions(stream, record.blockUpdates);
+    stream << quint32(record.fires.size());
+    for (const QcFireQueue::Saved &fire : record.fires) {
+        writePos(stream, fire.pos);
+        writePos(stream, fire.origin);
+        stream << fire.age << fire.ticksLeft;
+    }
     return blob;
 }
 

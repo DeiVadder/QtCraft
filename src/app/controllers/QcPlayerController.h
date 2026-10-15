@@ -22,6 +22,8 @@ class QcPlayerController : public QObject
     Q_PROPERTY(double health READ health NOTIFY healthChanged FINAL)
     Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
+    // On fire (decision E-393): the HUD shows flames at the bottom of the view.
+    Q_PROPERTY(bool burning READ burning NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
     Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
     // Armour points of what the player wears (0..20 count, decision E-234).
@@ -51,6 +53,7 @@ public:
     double health() const;
     double maxHealth() const;
     bool dead() const;
+    bool burning() const;
     int food() const;
     int maxFood() const;
     int armour() const;

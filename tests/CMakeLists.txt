@@ -281,6 +281,8 @@ target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOL
 qc_add_test(test_entity_compare SOURCES gameplay/test_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/entity-compare-before-31-2.txt")
 qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_fire SOURCES gameplay/test_fire.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_fire_sources SOURCES gameplay/test_fire_sources.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_chunk_unloading SOURCES gameplay/test_chunk_unloading.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcBlockEntityDump.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_entity_model SOURCES gameplay/test_entity_model.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_entity_measure SOURCES gameplay/test_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

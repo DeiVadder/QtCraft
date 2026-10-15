@@ -187,6 +187,11 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
     if (creature && creature->glow > 0) {
         placement.light = glowingLight(placement.light, *creature, double(entity.id % 97), frame.seconds);
     }
+    if ((entity.flags & QcMsg::Burning) != 0) {
+        const QcPhysics::BodySize body = creature ? QcPhysics::BodySize{creature->width, creature->height}
+                                                  : QcPhysics::BodySize{QcPhysics::playerWidth, QcPhysics::playerHeight};
+        appendFlames(mesh, frame, position, {body.width * placement.scale, body.height * placement.scale});
+    }
 
     if (entity.isArmourStand()) {
         appendStand(mesh, entity, placement, frame);
@@ -276,6 +281,16 @@ void QcRenderBridge::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &fr
     }
     QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body,
                                 {feet, double(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
+    if (session.burning()) {
+        appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
+    }
+}
+
+void QcRenderBridge::appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body)
+{
+    if (const std::optional<QcEntityMesher::ItemLook> look = QcFigureLook::flames(frame.content, body.width, body.height)) {
+        QcEntityMesher::appendBlock(mesh, *look, {feet, body.height}, 1.0f, frame.uv);
+    }
 }
 
 void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)

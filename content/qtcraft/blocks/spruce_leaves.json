@@ -10,6 +10,10 @@
             "chance": 0.08
         }
     ],
+    "flammable": {
+        "ignite": 30,
+        "burn": 60
+    },
     "textures": {
         "all": "spruce_leaves"
     }

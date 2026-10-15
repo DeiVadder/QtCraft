@@ -8,6 +8,8 @@
     "drops": [],
     "light": 15,
     "contactDamage": 3,
+    "setsAlight": 15,
+    "sparks": 3,
     "states": {
         "level": [
             "0",

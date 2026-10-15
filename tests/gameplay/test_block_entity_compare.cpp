@@ -33,7 +33,11 @@ using namespace Qt::StringLiterals;
 // stations 80 ticks later (the stations stay where their order puts them). The one other difference
 // in that run, the dropper at 140 65 -26 splitting its sticks differently between its two slots,
 // came from the new items' ids sorting before the stick while dispensers hashed item ids; they hash
-// item names since (decision E-345), and the dump was written again for that dropper alone. With
+// item names since (decision E-345), and the dump was written again for that dropper alone. Stage
+// 34.2 (decision E-393) wrote it again: three new items (flint, flint and steel, the hay bale) in the
+// item chests and the fire pit station, which moves the areas after it (the furnace, burnout,
+// sapling and hopper values of the tour's stations change with when the tour reaches them); the
+// piston chains of the four rotations are unchanged. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture

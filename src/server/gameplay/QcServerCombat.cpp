@@ -65,18 +65,18 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
 
     if (drops) {
         // Like block drops (decision E-028) the loot falls where the mob died.
-        dropLoot(*drops, lootPosition);
+        dropLoot(m_state, *drops, lootPosition);
     }
 }
 
-void QcServerCombat::dropLoot(const QList<QcItemDrop> &drops, const QcVec3 &position)
+void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)
 {
     for (const QcItemDrop &drop : drops) {
-        if (drop.chance < 1.0 && m_state.random().generateDouble() >= drop.chance) {
+        if (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance) {
             continue;
         }
-        if (const std::optional<QcItemId> item = m_state.content().itemId(drop.item)) {
-            m_state.entities().items().spawnScattered({*item, drop.count, 0}, position, m_state.entities().newId());
+        if (const std::optional<QcItemId> item = state.content().itemId(drop.item)) {
+            state.entities().items().spawnScattered({*item, drop.count, 0}, position, state.entities().newId());
         }
     }
 }

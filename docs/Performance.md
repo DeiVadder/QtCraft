@@ -59,6 +59,7 @@ Seit E-388 misst jede Etappe ihre Werte dort, wo sie entstehen:
 | `@memory` | explore showcase-flight | Speicher und Entladen (mit `STATS=5000`) |
 | `@server` | crowd gravel-collapse farm farm-seeds explore und die drei Signal-Stationen | Standard von `bench-headless.sh`: Server-Tick jeder Etappe |
 | `@farm` | farm farm-seeds | Pflanzen, Items, Selbstpflanzen |
+| `@fire` | forest-fire | Feuer: Schritte, abbrennende Blöcke, Licht und Neuvernetzung eines Waldbrands (headless und im Fenster, E-393) |
 
 Typischer Etappen-Plan: headless `@server` plus die Gruppe der Änderung (z. B. `@signal`), im Fenster `@core` plus die Gruppe der Änderung, wenn sie das Bild betrifft; Texturpakete wie bisher über `:TEXTURE_PACKS=` auf `@core`.
 

@@ -19,7 +19,7 @@ namespace QcMsg {
 
 // Movement and action states of an entity, as bits of EntitySpawn/EntityMove::flags. The client
 // animates from them.
-enum EntityFlag : quint8 {
+enum EntityFlag : quint16 {
     // A swing of the right arm started this tick (mining, attacking, using).
     Swing = 1,
     OnGround = 2,
@@ -32,6 +32,8 @@ enum EntityFlag : quint8 {
     InLove = 64,
     // A player sitting in a minecart (decision E-382).
     Riding = 128,
+    // On fire (decision E-393): flames around the body.
+    Burning = 256,
 };
 
 inline constexpr double youngScale = 0.5;
@@ -53,7 +55,7 @@ struct EntitySpawn
     QcAppearance appearance;
     // View pitch in degrees, EntityFlag bits and the item in the right hand.
     float pitch = 0.0f;
-    quint8 flags = 0;
+    quint16 flags = 0;
     QcItemId held = qcNoItem;
     // The block of a falling or moving block entity; air otherwise.
     QcBlockId block = qcAirBlockId;
@@ -74,7 +76,7 @@ struct EntityMove
     // Set in the tick the entity took damage (for a hurt flash).
     bool hurt = false;
     float pitch = 0.0f;
-    quint8 flags = 0;
+    quint16 flags = 0;
     QcItemId held = qcNoItem;
 };
 

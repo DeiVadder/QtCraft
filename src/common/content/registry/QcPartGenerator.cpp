@@ -71,6 +71,10 @@ QJsonObject partBlockJson(const PartSource &source, const QString &name, const Q
         json.insert(u"sound"_s, base.soundMaterial);
     }
     json.insert(u"fuelSeconds"_s, base.fuelSeconds * family.fuelFactor);
+    // Parts burn like their material (wooden stairs, wool carpets; decision E-392).
+    if (base.fire.isFlammable()) {
+        json.insert(u"flammable"_s, QJsonObject{{u"ignite"_s, base.fire.ignite}, {u"burn"_s, base.fire.burn}});
+    }
     json.insert(u"drops"_s, QJsonArray{QJsonObject{{u"item"_s, name}}});
     return json;
 }

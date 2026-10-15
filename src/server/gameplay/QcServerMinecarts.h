@@ -48,6 +48,10 @@ public:
     void leave(QcServerClient &client);
     // Adds a cart (commands, world setup, tests) with a new id; null when the limit is reached.
     QcMinecart *spawn(QcMinecart cart);
+    // A cart of the cart item `item` near `wanted` (/summon): on the rail in the cell of `wanted` or
+    // the one below, standing along it, else at `wanted` itself, where it falls like a dropped cart.
+    // Null when the item places no cart or the limit is reached.
+    QcMinecart *summon(const QString &item, const QcVec3 &wanted, float yaw);
     // Moves every cart one tick and takes the riders along, then the items of hopper carts.
     void tick();
     const QcMinecartHoppers &hoppers() const { return m_hoppers; }

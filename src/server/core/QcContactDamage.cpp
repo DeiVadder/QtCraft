@@ -1,6 +1,7 @@
 #include "QcContactDamage.h"
 
 #include "QcIntMath.h"
+#include "QcPhysics.h"
 #include "QcServerWorld.h"
 
 #include <algorithm>
@@ -19,31 +20,39 @@ struct BlockBounds
     int maxZ = 0;
 };
 
-double contactDamageOf(const std::vector<double> &table, QcBlockId id)
+using Touch = QcContactDamage::Touch;
+
+Touch touchOf(const std::vector<Touch> &table, QcBlockId id)
 {
-    return std::size_t(id) < table.size() ? table[std::size_t(id)] : 0.0;
+    return std::size_t(id) < table.size() ? table[std::size_t(id)] : Touch{};
 }
 
-// Highest contact damage in `section` within `local` (coordinates local to the section).
-double contactDamageInSection(const QcChunkSection &section, const BlockBounds &local, const std::vector<double> &table)
+// The stronger of both values of two touches.
+Touch strongest(Touch a, Touch b)
 {
-    double damage = 0.0;
+    return {std::max(a.damage, b.damage), std::max(a.alightTicks, b.alightTicks)};
+}
+
+// Highest contact damage and burning in `section` within `local` (coordinates local to the section).
+Touch touchInSection(const QcChunkSection &section, const BlockBounds &local, const std::vector<Touch> &table)
+{
+    Touch touch;
     for (int x = local.minX; x <= local.maxX; ++x) {
         for (int y = local.minY; y <= local.maxY; ++y) {
             for (int z = local.minZ; z <= local.maxZ; ++z) {
-                damage = std::max(damage, contactDamageOf(table, section.block(x, y, z)));
+                touch = strongest(touch, touchOf(table, section.block(x, y, z)));
             }
         }
     }
-    return damage;
+    return touch;
 }
 
-// Highest contact damage in the sections of `chunk` marked in `mask`, within `local` (x and z
-// local to the chunk, y in the world).
-double contactDamageInChunk(const QcChunk &chunk, quint32 mask, const BlockBounds &local, const std::vector<double> &table)
+// Highest contact damage and burning in the sections of `chunk` marked in `mask`, within `local`
+// (x and z local to the chunk, y in the world).
+Touch touchInChunk(const QcChunk &chunk, quint32 mask, const BlockBounds &local, const std::vector<Touch> &table)
 {
     constexpr int height = QcWorld::sectionHeight;
-    double damage = 0.0;
+    Touch touch;
     for (int index = local.minY / height; index <= local.maxY / height; ++index) {
         if ((mask & (1u << index)) == 0) {
             continue;
@@ -52,18 +61,19 @@ double contactDamageInChunk(const QcChunk &chunk, quint32 mask, const BlockBound
         BlockBounds inSection = local;
         inSection.minY = std::max(local.minY, index * height) - index * height;
         inSection.maxY = std::min(local.maxY, index * height + height - 1) - index * height;
-        damage = std::max(damage, contactDamageInSection(chunk.section(index), inSection, table));
+        touch = strongest(touch, touchInSection(chunk.section(index), inSection, table));
     }
-    return damage;
+    return touch;
 }
 
 } // namespace
 
 QcContactDamage::QcContactDamage(const QcContentRegistry &content)
-    : m_damage(std::size_t(content.stateCount()))
+    : m_touch(std::size_t(content.stateCount()))
 {
-    for (std::size_t id = 0; id < m_damage.size(); ++id) {
-        m_damage[id] = content.block(QcBlockId(id)).contactDamage;
+    for (std::size_t id = 0; id < m_touch.size(); ++id) {
+        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        m_touch[id] = {block.contactDamage, int(std::lround(block.fire.setsAlightSeconds * QcPhysics::tickRate))};
     }
 }
 
@@ -73,6 +83,11 @@ bool QcContactDamage::isPossibleIn(const QcServerWorld &world) const
 }
 
 double QcContactDamage::in(const QcServerWorld &world, const QcAabb &box) const
+{
+    return touching(world, box).damage;
+}
+
+QcContactDamage::Touch QcContactDamage::touching(const QcServerWorld &world, const QcAabb &box) const
 {
     constexpr double inset = 1e-3;
     constexpr int size = QcWorld::chunkSize;
@@ -87,10 +102,10 @@ double QcContactDamage::in(const QcServerWorld &world, const QcAabb &box) const
     bounds.minY = std::max(int(std::floor(box.min.y + inset)), 0);
     bounds.maxY = std::min(int(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
     if (!isPossibleIn(world) || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY || bounds.minZ > bounds.maxZ) {
-        return 0.0;
+        return {};
     }
 
-    double damage = 0.0;
+    Touch touch;
     for (int chunkX = qcFloorDiv(bounds.minX, size); chunkX <= qcFloorDiv(bounds.maxX, size); ++chunkX) {
         for (int chunkZ = qcFloorDiv(bounds.minZ, size); chunkZ <= qcFloorDiv(bounds.maxZ, size); ++chunkZ) {
             const QcChunkPos pos{chunkX, chunkZ};
@@ -104,8 +119,8 @@ double QcContactDamage::in(const QcServerWorld &world, const QcAabb &box) const
             local.maxX = std::min(bounds.maxX, chunkX * size + size - 1) - chunkX * size;
             local.minZ = std::max(bounds.minZ, chunkZ * size) - chunkZ * size;
             local.maxZ = std::min(bounds.maxZ, chunkZ * size + size - 1) - chunkZ * size;
-            damage = std::max(damage, contactDamageInChunk(*world.chunk(pos), sections, local, m_damage));
+            touch = strongest(touch, touchInChunk(*world.chunk(pos), sections, local, m_touch));
         }
     }
-    return damage;
+    return touch;
 }

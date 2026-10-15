@@ -195,7 +195,7 @@ void QcPlayerHealth::consume(QcServerClient &client)
 
 void QcPlayerHealth::sendHealth(QcServerClient &client)
 {
-    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead});
+    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0});
 }
 
 void QcPlayerHealth::sendFood(QcServerClient &client)

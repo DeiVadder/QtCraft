@@ -57,6 +57,9 @@ struct QcTextureSpec
         ChestTop,
         // Molten rock: glowing streaks (secondary) in a darker flow (primary).
         Lava,
+        // Flames on a transparent background (decision E-392): tongues rising from the bottom, the
+        // secondary colour in their core, the primary at their edges.
+        Fire,
         // Blossom (primary) with a light centre on a stem with two leaves (secondary).
         Flower,
         // Blades of grass of different heights (primary, tips secondary).
@@ -134,6 +137,12 @@ struct QcTextureSpec
         Carrot,
         MelonSlice,
         Pie,
+        // ... the hay bale: straw running from top to bottom (primary, darker stalks secondary)
+        // tied by two bands, its top with cut stalk ends; and flint and steel: a steel striker
+        // (secondary) bent around a dark flint chip (primary), an item icon (decision E-393).
+        HaySide,
+        HayTop,
+        FlintAndSteel,
         // Patterns of QcTextureArmourPatterns (decision E-235): item icons in the material
         // (primary) with a light upper edge (secondary) ...
         Helmet,

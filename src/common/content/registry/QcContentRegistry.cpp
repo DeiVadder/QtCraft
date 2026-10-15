@@ -458,6 +458,16 @@ std::optional<QcBlockId> QcContentRegistry::blockId(const QString &name) const
     return m_states.firstState(*it);
 }
 
+std::optional<QcBlockId> QcContentRegistry::defaultFire() const
+{
+    for (qsizetype index = 0; index < m_blocks.size(); ++index) {
+        if (m_blocks[index].fire.isFire) {
+            return m_states.firstState(quint32(index));
+        }
+    }
+    return std::nullopt;
+}
+
 const QcTextureDefinition *QcContentRegistry::texture(const QString &name) const
 {
     const auto it = m_textureIndex.constFind(name);

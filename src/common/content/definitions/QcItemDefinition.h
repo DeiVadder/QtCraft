@@ -20,6 +20,8 @@ enum class QcDispenseAction : quint8 {
     Scoop,
     // Armour goes onto a player or armour stand in front with that slot free.
     Equip,
+    // Flint and steel (`ignites`) lights fire in the cell in front and wears by one (decision E-393).
+    Ignite,
 };
 
 struct QcItemDefinition
@@ -75,6 +77,9 @@ struct QcItemDefinition
     // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
     // decision E-290). Server side only.
     bool tills = false;
+    // Used on a block face, lights fire in the cell in front of it and wears by one (flint and
+    // steel, decision E-393). Also reaches the client (the creative inventory files it under tools).
+    bool ignites = false;
     // Server side only.
     QcDispenseAction dispense = QcDispenseAction::Throw;
 };

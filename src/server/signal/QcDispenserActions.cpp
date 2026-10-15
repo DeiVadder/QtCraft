@@ -152,8 +152,15 @@ QList<QcDispenserActions::Shot> QcDispenserActions::use(const QList<Shot> &shots
             m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(shot.dispenser));
             continue;
         }
-        if (!acts[i] || !useOne(shot, access)) {
+        if (!acts[i]) {
             thrown.append(shot);
+        } else if (!useOne(shot, access)) {
+            // Flint and steel that lights nothing stays in the dispenser, as in the reference.
+            if (content.item(shot.unit.item).dispense == QcDispenseAction::Ignite) {
+                m_sounds.play(QString::fromLatin1(QcSoundKeys::dispenserFail), centreOf(shot.dispenser));
+            } else {
+                thrown.append(shot);
+            }
         }
     }
     return thrown;
@@ -168,6 +175,8 @@ bool QcDispenserActions::useOne(const Shot &shot, QcInventoryAccess &access)
         return scoopLiquid(shot, access);
     case QcDispenseAction::Equip:
         return equip(shot, access);
+    case QcDispenseAction::Ignite:
+        return ignite(shot, access);
     case QcDispenseAction::Throw:
         break;
     }
@@ -274,6 +283,29 @@ bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
         m_equipPlayer(*player, equipment);
     }
     m_sounds.play(QString::fromLatin1(QcSoundKeys::armourEquip), centreOf(shot.dispenser));
+    return true;
+}
+
+bool QcDispenserActions::ignite(const Shot &shot, QcInventoryAccess &access)
+{
+    const QcItemDefinition &item = m_state.content().item(shot.unit.item);
+    if (!m_ignite || !m_ignite(qcNeighbour(shot.dispenser, shot.facing))) {
+        return false;
+    }
+
+    // The shot's slot is the one aim() found filled, so taking from it cannot fail; the worn tool
+    // goes back into it (a stack of one, so the slot is empty now).
+    [[maybe_unused]] const bool taken = access.take(shot.dispenser, shot.slot, 1);
+    QcItemStack worn = shot.unit;
+    if (item.durability > 0 && ++worn.damage >= item.durability) {
+        return true;
+    }
+    if (!access.put(shot.dispenser, shot.slot, worn)) {
+        Shot rest = shot;
+        rest.unit = worn;
+        rest.slot = -1;
+        throwItem(rest, access);
+    }
     return true;
 }
 

@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -252,6 +252,32 @@ Left-click a creature within 4 m to hit it, at most every 0.4 s. Swords and axes
 
 [Iron sword](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava)
 
+### <a id="chapter-qtcraft-fire"></a>Fire
+
+**Burning**
+
+Fire stands on a solid block or next to a flammable one, and it lights everything around it with light 15. About every 1.5 to 1.95 seconds it takes a step and grows older; after 45 steps at the latest it goes out. Without a flammable block next to it, it goes out after 9 steps, so fire on stone or sand burns down quickly. Fire whose ground or fuel goes away goes out at once, and water flowing in washes it away. Breaking fire puts it out.
+
+**Lighting fire**
+
+Flint and steel lights fire in front of the face of a block you use it on, if fire can stand there: on a solid block or next to a flammable one. Each fire wears it by one use; in creative mode it does not wear. A Signal Dispenser holding flint and steel lights the cell in front of it when it fires; if nothing can burn there, the flint and steel stays inside. Lava now and then sets fire to the air right next to it when that air touches a flammable block, but only when something next to the lava changes or it flows: a still lava lake does not set the woods around it alight. Every new fire is a spark of its own and keeps the limits below. Breaking or punching fire puts it out, also in creative mode.
+
+**Spreading**
+
+Each step may burn away the flammable blocks next to the fire: they turn into fire or into air, and nothing drops. It may also light the air around it next to flammable blocks, most readily above it. How readily a block catches fire and how quickly it burns away depends on the block: leaves, wool, grass and flowers burn readily, logs, planks and coal blocks slowly; stone, earth, glass and metal never burn. Fire on a magma block burns forever without spreading: a hearth. A new fire is as old as the one that lit it, so a fire front always dies out.
+
+**Limits**
+
+Fire spreads at most 12 blocks from the spark it began with, so a single spark never burns down a whole forest or village. It never spreads into chunks that are not loaded. A chunk holds at most 256 fires and the world 4096; beyond, no new fire is lit. The game rule `fireSpread` (`/gamerule fireSpread false`) stops fire from spreading and burning blocks away; fires then only burn where they are until they go out. The showcase world has it off. A server can also switch spreading off for all its worlds with the limit `fireSpreadRadius` 0 in server.json.
+
+**Burning players and creatures**
+
+Whoever walks into fire or lava catches fire and keeps burning for a while after stepping out (fire 8 seconds, lava 15; see the block pages). While burning, a player or creature loses 1 health every 1 second; armour takes part of it like any blow. Water puts the flames out at once. Players in creative mode do not burn. Items that fall into fire or lava burn up.
+
+**See also**
+
+[Fire](blocks.md#block-qtcraft-fire), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Flint](items.md#item-qtcraft-flint), [Lava](liquids.md#block-qtcraft-lava), [Magma block](blocks.md#block-qtcraft-magma_block), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak leaves](blocks.md#block-qtcraft-oak_leaves), [White wool](blocks.md#block-qtcraft-white_wool), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Block of coal](blocks.md#block-qtcraft-coal_block), [Hay bale](blocks.md#block-qtcraft-hay_block)
+
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
 **When you die**
@@ -362,7 +388,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …)
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs

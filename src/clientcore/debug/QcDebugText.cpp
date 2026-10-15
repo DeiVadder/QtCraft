@@ -28,12 +28,16 @@ constexpr std::array<const char *, QcTickPhases::count> tickPhaseNames{
     QT_TRANSLATE_NOOP("QcDebugText", "Players"),        QT_TRANSLATE_NOOP("QcDebugText", "Saving"),
     QT_TRANSLATE_NOOP("QcDebugText", "Chunk loading"),  QT_TRANSLATE_NOOP("QcDebugText", "Block updates"),
     QT_TRANSLATE_NOOP("QcDebugText", "Signal Dust"),
-    QT_TRANSLATE_NOOP("QcDebugText", "Liquids"),        QT_TRANSLATE_NOOP("QcDebugText", "Creatures"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Liquids"),        QT_TRANSLATE_NOOP("QcDebugText", "Fire"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Creatures"),
     QT_TRANSLATE_NOOP("QcDebugText", "Items"),          QT_TRANSLATE_NOOP("QcDebugText", "Plant growth"),
-    QT_TRANSLATE_NOOP("QcDebugText", "Falling blocks"), QT_TRANSLATE_NOOP("QcDebugText", "Machines"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Falling blocks"), QT_TRANSLATE_NOOP("QcDebugText", "Minecarts"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Machines"),
     QT_TRANSLATE_NOOP("QcDebugText", "Chunk streaming"), QT_TRANSLATE_NOOP("QcDebugText", "Client sync"),
     QT_TRANSLATE_NOOP("QcDebugText", "Messages"),
 };
+// Every phase has its name (an array initialised with fewer names ends in null pointers).
+static_assert(std::ranges::none_of(tickPhaseNames, [](const char *name) { return name == nullptr; }));
 
 constexpr std::array<const char *, QcFramePhases::count> framePhaseNames{
     QT_TRANSLATE_NOOP("QcDebugText", "Frame interval"), QT_TRANSLATE_NOOP("QcDebugText", "GUI thread"),

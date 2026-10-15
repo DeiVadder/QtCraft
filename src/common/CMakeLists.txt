@@ -98,6 +98,7 @@ qt_add_library(qc_common STATIC
     gameplay/QcItemStack.h
     gameplay/QcKeyBindings.h gameplay/QcKeyBindings.cpp
     content/definitions/QcFarmingDefinitions.h
+    content/definitions/QcFireDefinition.h
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
     content/definitions/QcMachineDefinition.h

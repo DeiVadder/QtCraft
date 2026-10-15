@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bedrock](#block-qtcraft-bedrock) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Firefly glass](#block-qtcraft-firefly_glass) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Ice](#block-qtcraft-ice) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bedrock](#block-qtcraft-bedrock) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
 
@@ -53,6 +53,7 @@ A purple ball of blossoms on meadows and mountains; gives magenta dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -148,6 +149,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 | Breaking by hand | 0.3 s |
 | Drops | [Birch sapling](#block-qtcraft-birch_sapling) (8 %) |
 | Light blocked | 1 of 15 |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Sound | grass and plants |
 
 **Found in**
@@ -166,6 +168,7 @@ Wood of the birch. Four planks each; burns in the furnace into charcoal.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch log](#block-qtcraft-birch_log) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -205,6 +208,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch planks](#block-qtcraft-birch_planks) |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 | Groups | [Any planks](tags.md#tag-qtcraft-planks) |
@@ -296,6 +300,7 @@ A log with bark on all six sides, for walls and beams.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Birch wood](#block-qtcraft-birch_wood) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -452,6 +457,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Black wool](#block-qtcraft-black_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -485,6 +491,7 @@ Nine pieces of coal packed into a block; crafting it back gives all nine.
 | Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Block of coal](#block-qtcraft-coal_block) |
 | Drops without the right tool | nothing |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 720 s: [Fuels](tables.md#table-fuels) |
 | Sound | stone |
 
@@ -668,6 +675,7 @@ A flower that only grows in swamps; gives light blue dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Mud](#block-qtcraft-mud) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -769,6 +777,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Blue wool](#block-qtcraft-blue_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -801,6 +810,7 @@ Shelves full of books; breaking it gives the three books back.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.19 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Book](items.md#item-qtcraft-book) (3×) |
+| Flammable | catches fire 30, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -1018,6 +1028,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Brown wool](#block-qtcraft-brown_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -1297,6 +1308,7 @@ A blue flower of the plains; gives blue dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -1504,6 +1516,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Cyan wool](#block-qtcraft-cyan_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -1538,6 +1551,7 @@ A yellow flower; gives yellow dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -1563,6 +1577,7 @@ A dry shrub of the desert; breaking it gives a stick or two.
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Sand](#block-qtcraft-sand) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | grass and plants |
 
@@ -1698,11 +1713,31 @@ Grows in the shade of the taiga. Like tall grass, blocks placed into it replace 
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Found in**
 
 [Taiga](biomes.md#biome-qtcraft-taiga) (Ferns)
+
+### <a id="block-qtcraft-fire"></a>Fire
+
+Burns where it stands and spreads to flammable blocks next to it. It lights its surroundings brightly, hurts whoever walks into it and goes out by itself. Water washes it away.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire` |
+| Hardness | 0 |
+| Breaking by hand | 0.05 s |
+| Drops | nothing |
+| Light | 15 of 15 |
+| Light blocked | 0 of 15 |
+| Solid | no |
+| Replaced when building into it | yes |
+| Washed away by liquids | yes |
+| Damage on contact | 1 health point |
+| Sets bodies on fire for | 8 s |
+| Sound | grass and plants |
 
 ### <a id="block-qtcraft-firefly_glass"></a>Firefly glass
 
@@ -2022,7 +2057,7 @@ Earth covered with grass, the surface of most land.
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
-Loose stones that fall when nothing holds them.
+Loose stones that fall when nothing holds them. Now and then it drops a flint as well.
 
 | | |
 |---|---|
@@ -2031,7 +2066,7 @@ Loose stones that fall when nothing holds them.
 | Breaking by hand | 0.9 s |
 | Tool | Shovel (faster, not needed) |
 | Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
-| Drops | [Gravel](#block-qtcraft-gravel) |
+| Drops | [Gravel](#block-qtcraft-gravel), [Flint](items.md#item-qtcraft-flint) (10 %) |
 | Falls without support | yes |
 | Sound | gravel |
 
@@ -2191,6 +2226,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Gray wool](#block-qtcraft-gray_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -2351,6 +2387,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Green wool](#block-qtcraft-green_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -2370,6 +2407,39 @@ Wool coloured with a dye. Two wool make three carpets.
 **Used in**
 
 [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green carpet](parts.md#block-qtcraft-green_wool_carpet), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+
+### <a id="block-qtcraft-hay_block"></a>Hay bale
+
+Nine wheat bound into a bale, and back into nine wheat. It catches fire easily.
+
+| | |
+|---|---|
+| ID | `qtcraft:hay_block` |
+| Hardness | 0.5 |
+| Breaking by hand | 0.75 s |
+| Tool | hoe (faster, not needed) |
+| Breaking with the best tool | 0.06 s: [Golden hoe](tools.md#item-qtcraft-golden_hoe) |
+| Drops | [Hay bale](#block-qtcraft-hay_block) |
+| Flammable | catches fire 60, burns away 20 (0 to 100) |
+| Sound | grass and plants |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Hay bale](#block-qtcraft-hay_block) |
+| [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) |  |
+| [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) | [Wheat](items.md#item-qtcraft-wheat) |  |
+
+**Used in**
+
+[Wheat](items.md#item-qtcraft-wheat)
+
+**Faster with**
+
+[Golden hoe](tools.md#item-qtcraft-golden_hoe) (level 1), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (level 1), [Stone hoe](tools.md#item-qtcraft-stone_hoe) (level 2), [Iron hoe](tools.md#item-qtcraft-iron_hoe) (level 3), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe) (level 4)
 
 ### <a id="block-qtcraft-ice"></a>Ice
 
@@ -2762,6 +2832,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Light blue wool](#block-qtcraft-light_blue_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -2922,6 +2993,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Light gray wool](#block-qtcraft-light_gray_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -2956,6 +3028,7 @@ A small white flower of the woods; gives white dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -3106,6 +3179,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Lime wool](#block-qtcraft-lime_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -3266,6 +3340,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Magenta wool](#block-qtcraft-magenta_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -3288,7 +3363,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 ### <a id="block-qtcraft-magma_block"></a>Magma block
 
-Hot rock deep underground. It glows faintly and burns whoever stands on it.
+Hot rock deep underground. It glows faintly and burns whoever stands on it. Fire on top of it burns forever.
 
 | | |
 |---|---|
@@ -3301,6 +3376,7 @@ Hot rock deep underground. It glows faintly and burns whoever stands on it.
 | Drops without the right tool | nothing |
 | Light | 3 of 15 |
 | Damage on contact | 1 health point |
+| Fire on it burns forever | yes |
 | Sound | stone |
 
 **Mined with**
@@ -3545,6 +3621,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 | Breaking by hand | 0.3 s |
 | Drops | [Oak sapling](#block-qtcraft-oak_sapling) (8 %), [Apple](food.md#item-qtcraft-apple) (2 %) |
 | Light blocked | 1 of 15 |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Sound | grass and plants |
 
 **Found in**
@@ -3563,6 +3640,7 @@ Wood of the oak: the first thing to collect. Four planks each.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak log](#block-qtcraft-oak_log) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -3602,6 +3680,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak planks](#block-qtcraft-oak_planks) |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 | Groups | [Any planks](tags.md#tag-qtcraft-planks) |
@@ -3723,6 +3802,7 @@ A log with bark on all six sides, for walls and beams.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Oak wood](#block-qtcraft-oak_wood) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -3902,6 +3982,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Orange wool](#block-qtcraft-orange_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -4124,6 +4205,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Pink wool](#block-qtcraft-pink_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -4217,6 +4299,7 @@ A red flower; gives red dye.
 | Solid | no |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Used in**
@@ -4468,6 +4551,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Purple wool](#block-qtcraft-purple_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -4685,6 +4769,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Red wool](#block-qtcraft-red_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -5350,6 +5435,7 @@ Leaves decay a few at a time once no log is near. They sometimes drop a sapling.
 | Breaking by hand | 0.3 s |
 | Drops | [Spruce sapling](#block-qtcraft-spruce_sapling) (8 %) |
 | Light blocked | 1 of 15 |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Sound | grass and plants |
 
 **Found in**
@@ -5368,6 +5454,7 @@ Wood of the spruce. Four planks each.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce log](#block-qtcraft-spruce_log) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -5407,6 +5494,7 @@ Building wood; any planks fit recipes that ask for planks.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce planks](#block-qtcraft-spruce_planks) |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 | Groups | [Any planks](tags.md#tag-qtcraft-planks) |
@@ -5498,6 +5586,7 @@ A log with bark on all six sides, for walls and beams.
 | Tool | Axe (faster, not needed) |
 | Breaking with the best tool | 0.25 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
 | Drops | [Spruce wood](#block-qtcraft-spruce_wood) |
+| Flammable | catches fire 5, burns away 5 (0 to 100) |
 | Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
 | Sound | wood |
 
@@ -5744,6 +5833,7 @@ Covers meadows; you can build right into it.
 | Replaced when building into it | yes |
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt), [Mud](#block-qtcraft-mud) |
 | Washed away by liquids | yes |
+| Flammable | catches fire 60, burns away 100 (0 to 100) |
 | Sound | grass and plants |
 
 **Found in**
@@ -5977,6 +6067,7 @@ Soft block from sheep; dye any wool with a dye to colour it.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [White wool](#block-qtcraft-white_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |
@@ -6182,6 +6273,7 @@ Wool coloured with a dye. Two wool make three carpets.
 | Hardness | 0.8 |
 | Breaking by hand | 1.2 s |
 | Drops | [Yellow wool](#block-qtcraft-yellow_wool) |
+| Flammable | catches fire 30, burns away 60 (0 to 100) |
 | Burns as fuel | 5 s: [Fuels](tables.md#table-fuels) |
 | Sound | wool |
 | Groups | [Any wool](tags.md#tag-qtcraft-wool) |

@@ -1,0 +1,7 @@
+{
+    "name": "flint_and_steel",
+    "maxStack": 1,
+    "durability": 64,
+    "ignites": true,
+    "dispense": "ignite"
+}

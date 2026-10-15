@@ -45,6 +45,11 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item);
 // know.
 [[nodiscard]] std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item);
 
+// Flames around a burning body (decision E-393): four walls with the texture of the content's default
+// fire (QcContentRegistry::defaultFire) standing just outside a body `width` wide, inside a cube of
+// `height` (BlockPlacement::size), glowing. Nothing when the content has no fire block.
+[[nodiscard]] std::optional<QcEntityMesher::ItemLook> flames(const QcContentRegistry &content, double width, double height);
+
 // The state a block item is drawn in (icons, hand, dropped items): fences, walls and panes show a
 // piece of a run rather than a lone post.
 QcBlockId itemState(const QcContentRegistry &content, QcBlockId block);

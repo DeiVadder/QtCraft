@@ -27,7 +27,7 @@ void addArmourFacts(const QcHandbookContext &context, const QcArmourDefinition &
     facts.append({text.label(u"fact.armourSet"_s), context.content.translate(setKey, text.language()), {}});
 }
 
-// Tool, durability, attack, food and fuel values.
+// Tool, durability, attack, food and fuel values, and lighting fire (decision E-393).
 void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item, QList<Fact> &facts)
 {
     const QcHandbookText &text = context.text;
@@ -50,6 +50,9 @@ void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item,
     }
     if (item.fuelSeconds > 0.0) {
         facts.append({text.label(u"fact.fuel"_s), text.seconds(item.fuelSeconds), {context.links.tableLink(u"fuels"_s)}});
+    }
+    if (item.ignites) {
+        facts.append({text.label(u"fact.ignites"_s), {}, {context.links.blockLink(u"qtcraft:fire"_s)}});
     }
 }
 

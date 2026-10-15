@@ -3,6 +3,10 @@
     "sound": "wood",
     "hardness": 2.0,
     "tool": "axe",
+    "flammable": {
+        "ignite": 5,
+        "burn": 5
+    },
     "textures": {
         "top": "oak_log_top",
         "bottom": "oak_log_top",

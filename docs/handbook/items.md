@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -402,6 +402,42 @@ A caught firefly. It lights the mine lamp.
 
 [Firefly](creatures.md#mob-qtcraft-firefly) (Glass bottle)
 
+### <a id="item-qtcraft-flint"></a>Flint
+
+A sharp stone that sometimes comes out of gravel. With an iron ingot it makes flint and steel.
+
+| | |
+|---|---|
+| ID | `qtcraft:flint` |
+| Stack size | 64 |
+
+**Used in**
+
+[Flint and steel](#item-qtcraft-flint_and_steel)
+
+**Dropped by**
+
+[Gravel](blocks.md#block-qtcraft-gravel) (10 %)
+
+### <a id="item-qtcraft-flint_and_steel"></a>Flint and steel
+
+Strikes sparks: used on a block, it lights fire in front of the face you click, where fire can stand. Each fire wears it a little. A Signal Dispenser uses it the same way.
+
+| | |
+|---|---|
+| ID | `qtcraft:flint_and_steel` |
+| Stack size | 1 |
+| Durability | 64 uses |
+| Lights | [Fire](blocks.md#block-qtcraft-fire) |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | 2 | → |
+|---|---|---|
+| [Iron ingot](#item-qtcraft-iron_ingot) | [Flint](#item-qtcraft-flint) | [Flint and steel](#item-qtcraft-flint_and_steel) |
+
 ### <a id="item-qtcraft-glass_bottle"></a>Glass bottle
 
 Use it on a firefly at night in a swamp to catch it.
@@ -574,7 +610,7 @@ Smelted iron for tools, buckets and more.
 
 **Used in**
 
-[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
+[Activator Rail](blocks.md#block-qtcraft-activator_rail), [Block of iron](blocks.md#block-qtcraft-iron_block), [Bucket](#item-qtcraft-bucket), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Flint and steel](#item-qtcraft-flint_and_steel), [Iron axe](tools.md#item-qtcraft-iron_axe), [Iron bars](blocks.md#block-qtcraft-iron_bars), [Iron boots](tools.md#item-qtcraft-iron_boots), [Iron chestplate](tools.md#item-qtcraft-iron_chestplate), [Iron door](blocks.md#block-qtcraft-iron_door), [Iron helmet](tools.md#item-qtcraft-iron_helmet), [Iron hoe](tools.md#item-qtcraft-iron_hoe), [Iron leggings](tools.md#item-qtcraft-iron_leggings), [Iron nugget](#item-qtcraft-iron_nugget), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe), [Iron shovel](tools.md#item-qtcraft-iron_shovel), [Iron sword](tools.md#item-qtcraft-iron_sword), [Iron trapdoor](blocks.md#block-qtcraft-iron_trapdoor), [Minecart](#item-qtcraft-minecart), [Rail](blocks.md#block-qtcraft-rail), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="item-qtcraft-iron_nugget"></a>Iron nugget
 
@@ -1108,9 +1144,17 @@ Harvested from ripe wheat. Three make a bread; animals like sheep love it.
 | ID | `qtcraft:wheat` |
 | Stack size | 64 |
 
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Hay bale](blocks.md#block-qtcraft-hay_block) | 9 × [Wheat](#item-qtcraft-wheat) |
+
 **Used in**
 
-[Bread](food.md#item-qtcraft-bread), [Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
+[Bread](food.md#item-qtcraft-bread), [Hay bale](blocks.md#block-qtcraft-hay_block), [Pumpkin pie](food.md#item-qtcraft-pumpkin_pie)
 
 **Dropped by**
 

@@ -1,0 +1,15 @@
+{
+    "name": "hay_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "wheat"
+    },
+    "result": {
+        "item": "hay_block"
+    }
+}

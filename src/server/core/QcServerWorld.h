@@ -9,6 +9,7 @@
 #include "QcChunkLinks.h"
 #include "QcChunkLoaders.h"
 #include "QcContentRegistry.h"
+#include "QcFireQueue.h"
 #include "QcLightEngine.h"
 #include "QcMailbox.h"
 #include "QcSectionMarks.h"
@@ -62,6 +63,10 @@ public:
     // The loaded Signal Hoppers and the cells changed next to them (decision E-344).
     QcBlockIndex &hoppers() { return m_hoppers; }
     const QcBlockIndex &hoppers() const { return m_hoppers; }
+    // The burning fires of the loaded chunks and their next steps (decision E-392), kept in step with
+    // every block set here and every chunk that arrives, leaves or is generated again.
+    QcFireQueue &fires() { return m_fires; }
+    const QcFireQueue &fires() const { return m_fires; }
     // Circuits across chunk borders (decision E-375).
     const QcChunkLinks &links() const { return m_links; }
     // Chunk loader blocks of the world, loaded or not (decision E-377).
@@ -151,8 +156,8 @@ public:
     void noteKept(const QcChunkIo::Departure &departure);
 
 private:
-    // Records the marked sections, the hoppers, the links and the block entities of a chunk that
-    // entered the world.
+    // Records the marked sections, the hoppers, the links, the block entities and the fires of a chunk
+    // that entered the world.
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
     // Forgets what was derived from a chunk that left the world or is generated again.
     void forgetSections(QcChunkPos pos);
@@ -167,6 +172,7 @@ private:
     QcChunkLinks m_links;
     QcChunkLoaders m_loaders;
     QcBlockEntities m_blockEntities;
+    QcFireQueue m_fires;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
     // Reads the chunks of m_chunks in place (told about every replaced copy).
     QcLightEngine m_light;

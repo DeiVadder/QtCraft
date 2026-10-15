@@ -70,6 +70,7 @@ void QcControlWorldCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"mine"_s, [this](const QJsonObject &request) { mine(request); });
     table.add(u"place"_s, [this](const QJsonObject &request) { useOnBlock(request); });
     table.add(u"use"_s, [this](const QJsonObject &request) { useOnBlock(request); });
+    table.add(u"ignite"_s, [this](const QJsonObject &request) { ignite(request); });
     table.add(u"block"_s, [this](const QJsonObject &request) { block(request); });
     table.add(u"blocks"_s, [this](const QJsonObject &request) { blocks(request); });
 }
@@ -139,6 +140,21 @@ void QcControlWorldCommands::mine(const QJsonObject &request)
                          session().setMining(false);
                          return true;
                      }});
+}
+
+void QcControlWorldCommands::ignite(const QJsonObject &request)
+{
+    const std::shared_ptr<const QcContentRegistry> content = session().content();
+    const QcInventory &inventory = session().inventory();
+    for (int slot = 0; content && slot < QcInventory::hotbarSize; ++slot) {
+        const QcItemStack &stack = inventory.slot(slot);
+        if (!stack.isEmpty() && content->isValidItem(stack.item) && content->item(stack.item).ignites) {
+            session().selectHotbarSlot(slot);
+            useOnBlock(request);
+            return;
+        }
+    }
+    m_context.fail(request, u"No item that lights fire (flint and steel) in the hotbar"_s);
 }
 
 void QcControlWorldCommands::useOnBlock(const QJsonObject &request)

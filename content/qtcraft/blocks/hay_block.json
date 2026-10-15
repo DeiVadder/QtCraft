@@ -1,0 +1,15 @@
+{
+    "name": "hay_block",
+    "sound": "grass",
+    "hardness": 0.5,
+    "tool": "hoe",
+    "flammable": {
+        "ignite": 60,
+        "burn": 20
+    },
+    "textures": {
+        "top": "hay_block_top",
+        "bottom": "hay_block_top",
+        "side": "hay_block_side"
+    }
+}

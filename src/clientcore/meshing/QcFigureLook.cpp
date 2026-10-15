@@ -148,4 +148,30 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
     return QcFigureLook::item(content, item);
 }
 
+std::optional<QcEntityMesher::ItemLook> flames(const QcContentRegistry &content, double width, double height)
+{
+    const std::optional<QcBlockId> fire = content.defaultFire();
+    if (!fire || height <= 0.0) {
+        return std::nullopt;
+    }
+
+    QcEntityMesher::ItemLook look;
+    look.cube = true;
+    look.faces = content.block(*fire).faceTextures;
+    look.glow = 1.0f;
+    // Walls a little outside the body (gap metres beyond half its width, whatever its shape), as
+    // thin as the mesher draws them without flicker. The block is drawn `height` metres high, so
+    // the walls are given in units of the height.
+    constexpr double gap = 0.06;
+    constexpr double thickness = 0.01;
+    const double half = (width * 0.5 + gap) / height;
+    const double low = 0.5 - half;
+    const double high = 0.5 + half;
+    look.boxes = {{{low, 0.0, low}, {high, 1.0, low + thickness}},
+                  {{low, 0.0, high - thickness}, {high, 1.0, high}},
+                  {{low, 0.0, low}, {low + thickness, 1.0, high}},
+                  {{high - thickness, 0.0, low}, {high, 1.0, high}}};
+    return look;
+}
+
 } // namespace QcFigureLook

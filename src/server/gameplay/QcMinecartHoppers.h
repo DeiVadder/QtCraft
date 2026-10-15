@@ -36,6 +36,8 @@ public:
 
     void tick();
     const Stats &lastTick() const { return m_stats; }
+    // A tick without carts: nothing acted and nothing moved.
+    void forgetTick() { m_stats = {}; }
 
     // The slot of `stacks` that takes one more of `unit`'s item, or -1 (first that fits).
     static int slotFor(const QList<QcItemStack> &stacks, QcItemStack unit, int maxStack);

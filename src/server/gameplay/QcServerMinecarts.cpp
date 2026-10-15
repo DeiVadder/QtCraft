@@ -79,6 +79,27 @@ QcMinecart *QcServerMinecarts::spawn(QcMinecart cart)
     return m_state.entities().minecarts().find(cart.id);
 }
 
+QcMinecart *QcServerMinecarts::summon(const QString &item, const QcVec3 &wanted, float yaw)
+{
+    const std::optional<QcItemId> id = m_state.content().itemId(item);
+    if (!id || !m_state.content().item(*id).placesCart) {
+        return nullptr;
+    }
+
+    QcMinecart cart = m_state.entities().minecarts().fromItem(m_state.content().item(*id).name);
+    const QcBlockPos cell = QcPhysics::blockContaining(wanted);
+    std::optional<QcVec3> spot = restingPlace(cell);
+    if (!spot) {
+        spot = restingPlace(cell.offset(0, -1, 0));
+    }
+    cart.motion.position = spot.value_or(wanted);
+    cart.motion.onGround = spot.has_value();
+    const std::optional<QcMinecartMotion::Segment> segment =
+        spot ? QcMinecartMotion::segmentAt(*spot, m_state.entities().minecarts().rails(), m_state.world()) : std::nullopt;
+    cart.yaw = segment ? QcMinecartMotion::yawAlong(segment->direction) : yaw;
+    return spawn(cart);
+}
+
 bool QcServerMinecarts::place(QcServerClient &client, const QcMsg::UseItem &message)
 {
     const QcItemDefinition *held = m_state.heldItem(client);
@@ -304,6 +325,14 @@ void QcServerMinecarts::releaseLostRiders()
 void QcServerMinecarts::tick()
 {
     QcMinecartManager &carts = m_state.entities().minecarts();
+    // A world without carts has nothing to move and no hopper cart to act: no list of bodies, no
+    // steps (most worlds most of the time).
+    if (carts.all().isEmpty()) {
+        carts.forgetTick();
+        m_hoppers.forgetTick();
+        return;
+    }
+
     // Carts in the void go, like everything that falls there (decision E-288).
     carts.editableAll().removeIf([this](const QcMinecart &cart) {
         if (!QcWorld::isInVoid(cart.motion.position.y)) {

@@ -4,6 +4,10 @@
     "hardness": 5.0,
     "tool": "pickaxe",
     "toolLevel": 1,
+    "flammable": {
+        "ignite": 5,
+        "burn": 5
+    },
     "textures": {
         "all": "coal_block"
     },

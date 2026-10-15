@@ -403,6 +403,32 @@ void parseBehaviourFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     }
 }
 
+// Fire, flammability and eternal fire (decision E-392).
+void parseFireFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
+{
+    QcFireDefinition &fire = block.fire;
+    fire.isFire = reader.boolean(u"fire"_s, false);
+    fire.eternal = reader.boolean(u"eternalFire"_s, false);
+    fire.setsAlightSeconds = reader.integer(u"setsAlight"_s, 0, 0, QcFireDefinition::maxAlightSeconds);
+    fire.sparks = reader.integer(u"sparks"_s, 0, 0, QcFireDefinition::maxChance);
+    reader.nestedObject(u"flammable"_s, [&fire](const QJsonObject &, QcJsonFieldReader &nested) {
+        fire.ignite = nested.integer(u"ignite"_s, 0, 0, QcFireDefinition::maxChance);
+        fire.burn = nested.integer(u"burn"_s, 0, 0, QcFireDefinition::maxChance);
+    });
+    if (fire.isFire && (block.solid || block.liquid || fire.isFlammable() || fire.eternal)) {
+        reader.fail(u"fire must be neither solid nor liquid, flammable or eternal"_s);
+    }
+    if (fire.isFire && block.lightOpacity != 0) {
+        reader.fail(u"fire must have 'lightOpacity' 0"_s);
+    }
+    if (block.liquid && fire.isFlammable()) {
+        reader.fail(u"a liquid cannot be flammable"_s);
+    }
+    if (fire.setsAlightSeconds > 0 && block.solid) {
+        reader.fail(u"'setsAlight' needs a block bodies can stand in (not solid)"_s);
+    }
+}
+
 // Slowing inside (cobweb), the walking surface (mud) and hardening next to another block
 // (concrete powder), decisions E-207 and E-208.
 void parseMovementFields(QcBlockDefinition &block, QcJsonFieldReader &reader, const QString &packNamespace)
@@ -584,6 +610,7 @@ namespace QcBlockParser {
     parseFlow(json, block, reader, packNamespace);
     parseBehaviourFields(block, reader);
     parseMovementFields(block, reader, packNamespace);
+    parseFireFields(block, reader);
     parseGround(json, block, reader, packNamespace);
     reader.nestedObject(u"growth"_s, [&block](const QJsonObject &, QcJsonFieldReader &nested) { parseGrowth(block, nested); });
     parseFarming(block, reader, packNamespace);

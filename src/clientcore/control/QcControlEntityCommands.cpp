@@ -92,7 +92,8 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                      {u"distance"_s, distance},
                      {u"health"_s, entity.health},
                      {u"yaw"_s, entity.yaw},
-                     {u"animation"_s, animationJson(entity)}};
+                     {u"animation"_s, animationJson(entity)},
+                     {u"burning"_s, (entity.flags & QcMsg::Burning) != 0}};
     if (creature) {
         json.insert(u"young"_s, (entity.flags & QcMsg::Young) != 0);
         json.insert(u"inLove"_s, (entity.flags & QcMsg::InLove) != 0);

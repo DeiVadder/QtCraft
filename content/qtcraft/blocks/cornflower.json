@@ -8,6 +8,10 @@
         "grass_block",
         "dirt"
     ],
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
     "textures": {
         "all": "cornflower"
     }

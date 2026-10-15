@@ -4,6 +4,7 @@
 #include "QcCapeTracker.h"
 #include "QcEntityMesher.h"
 #include "QcFovEffect.h"
+#include "QcPhysics.h"
 #include "QcViewCamera.h"
 
 #include <QElapsedTimer>
@@ -56,6 +57,8 @@ private:
 
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
+    // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
+    static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);
     // The block a container or hopper cart carries, inside the cart standing at `position`.
     void appendCartLoad(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, const QcVec3 &position) const;
     // An armour stand in its pose with what it wears and holds (decision E-238).

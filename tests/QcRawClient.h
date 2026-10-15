@@ -71,6 +71,7 @@ public:
         } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
             this->health = health->health;
             dead = health->dead;
+            burning = health->burning;
         } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
             openedCrafting = open->size;
         } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
@@ -182,6 +183,8 @@ public:
     QList<QcMsg::ChatMessage> chatKeys;
     double health = 0.0;
     bool dead = false;
+    // The player is on fire (decision E-393).
+    bool burning = false;
     int food = -1;
     // The game mode the server reported last (decision E-282); empty before the first.
     std::optional<QcGameMode> gameMode;
@@ -200,7 +203,7 @@ public:
     // Latest spawn message per entity, entities reported dead, and all move flags seen per entity.
     QHash<quint32, QcMsg::EntitySpawn> spawns;
     QSet<quint32> died;
-    QHash<quint32, quint8> flags;
+    QHash<quint32, quint16> flags;
     // Entities reported hurt in any move.
     QSet<quint32> hurt;
     // Labels per chunk and the last world time.

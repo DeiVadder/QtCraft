@@ -180,6 +180,8 @@ QcShowcasePlan QcShowcasePlanner::build()
     m_plan.setup.daylightCycle = false;
     // Every crop stage and soil state on show stays as it is (decision E-295).
     m_plan.setup.randomTicks = false;
+    // Fire on show burns where it is and never reaches the stations (decision E-392).
+    m_plan.setup.fireSpread = false;
     m_plan.setup.mobSpawning = false;
 
     Cursor cursor;

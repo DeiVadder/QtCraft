@@ -1,12 +1,14 @@
 #pragma once
 
 #include "QcBlockScreens.h"
+#include "QcBodyBurning.h"
 #include "QcBlockSimulation.h"
 #include "QcBlockUpdateQueue.h"
 #include "QcChunkLoading.h"
 #include "QcChunkStreaming.h"
 #include "QcEntitySync.h"
 #include "QcEnvironmentDamage.h"
+#include "QcFireIgnition.h"
 #include "QcMessages.h"
 #include "QcPlayerHealth.h"
 #include "QcPlayerJoin.h"
@@ -19,6 +21,7 @@
 #include "QcServerCreatures.h"
 #include "QcServerFallingBlocks.h"
 #include "QcServerDebug.h"
+#include "QcServerFire.h"
 #include "QcServerGameModes.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
@@ -87,6 +90,12 @@ public:
     const QcMachineRules &machineRules() const { return m_state.machineRules(); }
     QcLiquidFlow &liquids() { return m_state.liquids(); }
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
+    // Fire (decision E-392): the queue of the burning fires and their step in the tick.
+    QcFireQueue &fires() { return m_state.world().fires(); }
+    QcServerFire &fire() { return m_fire; }
+    // Flint and steel, dispensers and lava lighting fire (decision E-393).
+    QcFireIgnition &ignition() { return m_ignition; }
+    QcBodyBurning &burning() { return m_burning; }
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
     QcMinecartManager &carts() { return m_state.entities().minecarts(); }
     QcServerMinecarts &minecarts() { return m_minecarts; }
@@ -228,12 +237,14 @@ private:
     QcBlockUpdateQueue m_blockUpdates;
     QcServerBlocks m_blocks;
     QcServerFallingBlocks m_fallingBlocks;
+    QcServerFire m_fire;
     QcBlockSimulation m_blockSimulation;
     QcServerCircuits m_circuits;
     QcBlockScreens m_screens;
     QcServerMachines m_machines;
     QcServerInventory m_inventory;
     QcServerCrafting m_crafting;
+    QcFireIgnition m_ignition;
     QcPlayerHealth m_health;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
@@ -245,6 +256,7 @@ private:
     QcServerCombat m_combat;
     QcServerCreatures m_creatures;
     QcEnvironmentDamage m_environment;
+    QcBodyBurning m_burning;
     QcEntitySync m_entitySync;
     QcChunkLoading m_chunkLoading;
     QcChunkStreaming m_chunkStreaming;

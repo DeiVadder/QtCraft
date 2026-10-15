@@ -27,7 +27,7 @@ private:
     struct UseBefore
     {
         QcItemStack held;
-        quint8 flags = 0;
+        quint16 flags = 0;
     };
 
     void useEntity(const QJsonObject &request);

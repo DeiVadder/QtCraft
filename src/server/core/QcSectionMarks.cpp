@@ -9,7 +9,8 @@ static_assert(qcBlockTraitCount <= 8, "one bit per trait in QcSectionMarks::Trai
 QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
 {
     Traits traits = 0;
-    if (block.contactDamage > 0.0) {
+    // Burning blocks (`setsAlight`) are looked for with the damaging ones (QcContactDamage).
+    if (block.contactDamage > 0.0 || block.fire.setsAlightSeconds > 0) {
         traits |= bit(QcBlockTrait::ContactDamage);
     }
     if (block.hasRandomTicks()) {
@@ -23,6 +24,9 @@ QcSectionMarks::Traits QcSectionMarks::traitsOf(const QcBlockDefinition &block)
     }
     if (block.containerSlots > 0 || block.machine.isMachine()) {
         traits |= bit(QcBlockTrait::BlockEntity);
+    }
+    if (block.fire.isFire) {
+        traits |= bit(QcBlockTrait::Fire);
     }
     return traits;
 }

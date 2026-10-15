@@ -10,6 +10,10 @@
         "mud"
     ],
     "washable": true,
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
     "textures": {
         "all": "blue_orchid"
     }

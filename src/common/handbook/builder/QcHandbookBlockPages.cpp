@@ -290,6 +290,18 @@ void BlockPage::addPhysicalFacts()
     if (block.contactDamage > 0.0) {
         addFact(u"contactDamage"_s, m_text.healthPoints(block.contactDamage));
     }
+    // Fire (decision E-392): how readily the block catches fire and burns away, eternal fire on it.
+    if (block.fire.isFlammable()) {
+        addFact(u"flammable"_s, label(u"unit.flammable"_s).arg(block.fire.ignite).arg(block.fire.burn));
+    }
+    addFlag(block.fire.eternal, u"eternalFire"_s);
+    // Burning bodies and lighting fire next to it (decision E-393).
+    if (block.fire.setsAlightSeconds > 0) {
+        addFact(u"setsAlight"_s, m_text.seconds(block.fire.setsAlightSeconds));
+    }
+    if (block.fire.sparks > 0) {
+        addFact(u"sparks"_s, label(u"unit.sparks"_s).arg(block.fire.sparks));
+    }
     addFlag(block.climbable, u"climbable"_s);
     addMovementFacts();
 }

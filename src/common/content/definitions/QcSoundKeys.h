@@ -41,6 +41,8 @@ inline constexpr auto torchFizz = "qtcraft:block.torch.fizz";
 // A dispenser or dropper ejecting an item, and one with nothing to eject or no room (decision E-345).
 inline constexpr auto dispenserDispense = "qtcraft:block.dispenser.dispense";
 inline constexpr auto dispenserFail = "qtcraft:block.dispenser.fail";
+// Flint and steel striking a fire (decision E-393).
+inline constexpr auto flintAndSteel = "qtcraft:item.flint_and_steel.use";
 // Material of blocks that do not name one and are not obviously wood, earth, glass or plants.
 inline constexpr auto defaultMaterial = "qtcraft:stone";
 

@@ -55,6 +55,11 @@ private slots:
         QCOMPARE(limits.savedBlockUpdates, qint64(4) << 20);
         QCOMPARE(limits.liquidStepsPerTick, 512);
         QCOMPARE(limits.liquidPlannedSteps, 262144);
+        // Fire (stage 34, decision E-392).
+        QCOMPARE(limits.fireStepsPerTick, 256);
+        QCOMPARE(limits.firesPerChunk, 256);
+        QCOMPARE(limits.fires, 4096);
+        QCOMPARE(limits.fireSpreadRadius, 12);
         QCOMPARE(limits.fallingBlocks, 2048);
         QCOMPARE(limits.itemsAwake, 512);
         QCOMPARE(limits.itemsQueued, 1024);
@@ -78,7 +83,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(42));
+        QCOMPARE(keys.size(), qsizetype(46));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

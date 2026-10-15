@@ -35,7 +35,7 @@ QcCreativeCatalog::Category QcCreativeCatalog::categoryOf(const QcContentRegistr
             return content.block(*block).partOf.isEmpty() ? Category::Blocks : Category::Parts;
         }
     }
-    if (!item.tool.isEmpty() || item.armour) {
+    if (!item.tool.isEmpty() || item.armour || item.ignites) {
         return Category::Tools;
     }
     return item.food > 0 ? Category::Food : Category::Items;

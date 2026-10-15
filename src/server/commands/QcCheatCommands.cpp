@@ -8,6 +8,7 @@
 #include "QcPlayerHealth.h"
 #include "QcServerGameModes.h"
 #include "QcServerInventory.h"
+#include "QcServerMinecarts.h"
 #include "QcServerState.h"
 
 #include <QtMath>
@@ -73,8 +74,8 @@ void QcCheatCommands::addItemCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops up to 64 items two metres ahead of you."),
                          .run = [this](const QcCommandContext &context) { spawnItem(context); }});
     registry.addBuiltIn({.name = u"summon"_s, .needsPlayer = true, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature> [count] or /summon armor_stand [property=value …]"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures or an armour stand in front of you."),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature|minecart|chest_minecart|hopper_minecart> [count] or /summon armor_stand [property=value …]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures, minecarts or an armour stand in front of you."),
                          .run = [this](const QcCommandContext &context) { summon(context); }});
     registry.addBuiltIn({.name = u"equip"_s, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /equip <armour|set|clear>"),
@@ -122,7 +123,7 @@ void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or changes the time of day (a day lasts 600 s)."),
                          .run = [this](const QcCommandContext &context) { time(context); }});
     registry.addBuiltIn({.name = u"gamerule"_s, .permission = QcPermission::Player, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows a game rule; operators change it."),
                          .run = [this](const QcCommandContext &context) { gamerule(context); }});
     registry.addBuiltIn({.name = u"locatebiome"_s, .permission = QcPermission::Player, .needsPlayer = true, .minArguments = 1,
@@ -168,7 +169,7 @@ void QcCheatCommands::spawnItem(const QcCommandContext &context)
 void QcCheatCommands::summon(const QcCommandContext &context)
 {
     QcServerClient &player = context.player();
-    if (m_standCommands.summon(player, withName(u"/summon"_s, context.args))) {
+    if (m_standCommands.summon(player, withName(u"/summon"_s, context.args)) || summonCarts(context)) {
         return;
     }
 
@@ -202,6 +203,42 @@ void QcCheatCommands::summon(const QcCommandContext &context)
     }
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(*count), name});
+}
+
+bool QcCheatCommands::summonCarts(const QcCommandContext &context)
+{
+    const QString name = qualified(context.args[0]);
+    const std::optional<QcItemId> item = m_state.content().itemId(name);
+    if (!item || !m_state.content().item(*item).placesCart) {
+        return false;
+    }
+
+    const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 16);
+    if (!count) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {context.text});
+        return true;
+    }
+
+    // Three metres in front of the player, one behind the other along the view (a row on a rail
+    // laid there); each stands on a rail in its cell or the one below, else falls.
+    const QcServerClient &player = context.player();
+    const double yaw = qDegreesToRadians(double(player.yaw));
+    const QcVec3 along{std::sin(yaw), 0.0, -std::cos(yaw)};
+    int summoned = 0;
+    for (int i = 0; i < *count; ++i) {
+        const QcVec3 wanted = player.motion.position + along * (3.0 + i) + QcVec3{0.0, 0.1, 0.0};
+        if (!m_parts.minecarts.summon(name, wanted, player.yaw)) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many minecarts in the world (at most %1)"),
+                          {QString::number(m_state.entities().minecarts().limit())});
+            break;
+        }
+        ++summoned;
+    }
+
+    if (summoned > 0) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(summoned), name});
+    }
+    return true;
 }
 
 QcVec3 QcCheatCommands::summonPlace(const QcServerClient &player, const QcMobDefinition &definition, const QcVec3 &wanted) const
@@ -296,12 +333,13 @@ void QcCheatCommands::time(const QcCommandContext &context) const
 void QcCheatCommands::gamerule(const QcCommandContext &context)
 {
     // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221;
-    // randomTicks, decision E-295; quasiConnectivity, decision E-338).
+    // randomTicks, decision E-295; quasiConnectivity, decision E-338; fireSpread, decision E-392).
     using Rule = std::pair<QStringView, bool QcWorldInfo::*>;
-    const std::array<Rule, 5> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
+    const std::array<Rule, 6> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
                                      {u"daylightCycle", &QcWorldInfo::daylightCycle},
                                      {u"mobSpawning", &QcWorldInfo::mobSpawning},
                                      {u"randomTicks", &QcWorldInfo::randomTicks},
+                                     {u"fireSpread", &QcWorldInfo::fireSpread},
                                      {u"quasiConnectivity", &QcWorldInfo::quasiConnectivity}}};
     const QStringList &args = context.args;
     if (args[0] == u"spawnChunkRadius"_s) {
@@ -311,7 +349,7 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
     const auto rule = std::ranges::find(rules, QStringView(args[0]), &Rule::first);
     const std::optional<bool> wanted = args.size() >= 2 ? QcCommandArguments::toggle(args[1]) : std::nullopt;
     if (rule == rules.end() || (args.size() >= 2 && !wanted)) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"));
         return;
     }
 
@@ -347,7 +385,7 @@ void QcCheatCommands::spawnChunkRadius(const QcCommandContext &context)
     }
     const std::optional<int> wanted = QcCommandArguments::count(args, 1, -1, 0, QcWorldInfo::maxSpawnChunkRadius);
     if (!wanted || args.size() != 2) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]"));
         return;
     }
     if (!context.source.may(QcPermission::Operator)) {

@@ -11,6 +11,10 @@
     ],
     "washable": true,
     "drops": [],
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
     "textures": {
         "all": "fern"
     }

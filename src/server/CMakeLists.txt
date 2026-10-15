@@ -77,6 +77,10 @@ qt_add_library(qc_server STATIC
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
     blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
+    blocks/QcFireQueue.h blocks/QcFireQueue.cpp
+    blocks/QcFireRules.h blocks/QcFireRules.cpp
+    blocks/QcServerFire.h blocks/QcServerFire.cpp
+    blocks/QcFireIgnition.h blocks/QcFireIgnition.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     content/QcModLoader.h content/QcModLoader.cpp
@@ -97,6 +101,7 @@ qt_add_library(qc_server STATIC
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
+    gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
     gameplay/QcServerCreatures.h gameplay/QcServerCreatures.cpp
     gameplay/QcServerAnimals.h gameplay/QcServerAnimals.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp

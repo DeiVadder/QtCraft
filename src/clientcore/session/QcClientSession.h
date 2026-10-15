@@ -160,6 +160,8 @@ public:
     int maxFood() const { return m_food.maxFood; }
     double health() const { return m_health.health; }
     double maxHealth() const { return m_health.maxHealth; }
+    // The player is on fire (decision E-393): the HUD shows flames at the edge of the view.
+    bool burning() const { return m_health.burning; }
     bool isDead() const { return m_health.dead; }
     // Seconds of world time, advanced locally between server updates while the time of day runs, by
     // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).

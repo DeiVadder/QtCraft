@@ -335,10 +335,12 @@ run_headless() {
         return 0
     fi
     stats=${STATS:-0}
+    # Every chat line is logged as a message: scenes of thousands of lines (signal-stress,
+    # forest-fire) would reach QtTest's limit of 2000 and lose the BENCH line without -maxwarnings 0.
     env QTCRAFT_SCENARIO_MEASURE="$4.chat" QTCRAFT_SCENARIO_SECONDS="$3" QTCRAFT_SCENARIO_WORLD="$SCENE_WORLD" \
         QTCRAFT_SCENARIO_LAYERS="$SCENE_LAYERS" QTCRAFT_SCENARIO_SPAWN="$SCENE_SPAWN" QTCRAFT_SCENARIO_LOOK="$SCENE_LOOK" \
         QTCRAFT_SCENARIO_VIEW="${VIEW:-8}" QTCRAFT_SCENARIO_SAMPLE=$((stats / 1000)) \
-        perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-600}" "$1/tests/test_scenario_measure" >"$4" 2>&1
+        perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-600}" "$1/tests/test_scenario_measure" -maxwarnings 0 >"$4" 2>&1
     grep -o 'BENCH .*' "$4" | tail -1
 }
 

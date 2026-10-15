@@ -90,6 +90,12 @@
 #              distance on the left): sections with water under ice draw the water list and the
 #              translucent list (decision E-390), the case with the most extra draw calls in
 #              generated terrain (stage 33 and newer; older builds stand there too)
+#   forest-fire - a flat world with a forest of 1024 oaks (trunks four logs high, crowns of leaves
+#              touching, 3 m apart) filling 96 x 96 m north of the player, who looks down on it from
+#              a stone block 16 m up; three seconds in, 25 sparks in a 5 x 5 grid set it alight with
+#              fireSpread on (stage 34.2): fire steps, burning blocks, block updates and light on the
+#              server, remeshing and block light on the client, until it burns out (about 80 s).
+#              About 1100 /fill lines at the start. Always flat
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
@@ -347,6 +353,34 @@ signal_stress_chat() {
     echo "/tp ~ ~10 ~"
 }
 
+# Prints the chat lines of the forest-fire scenario, one per line (see the scenario above): trees
+# at x -47..46 and z -99..-6 in steps of 3, the touching crowns of a row as one fill first, then the
+# trunks through them; the player on
+# a block 16 m up, then the sparks on the ground east of 25 trunks (y relative to the raised feet).
+forest_fire_chat() {
+    echo "/time set day"
+    echo "/gamerule fireSpread true"
+    awk 'BEGIN {
+        for (j = 0; j < 32; j++) {
+            z = -99 + 3 * j
+            printf "/fill ~-48 ~3 ~%d ~47 ~4 ~%d oak_leaves\n", z - 1, z + 1
+            for (i = 0; i < 32; i++) {
+                printf "/fill ~%d ~ ~%d ~%d ~3 ~%d oak_log\n", -47 + 3 * i, z, -47 + 3 * i, z
+            }
+        }
+    }'
+    echo "/setblock ~ ~15 ~ stone"
+    echo "/tp ~ ~16 ~"
+    awk 'BEGIN {
+        for (i = 0; i < 5; i++) {
+            for (j = 0; j < 5; j++) {
+                x = -47 + 3 * (3 + 6 * i); z = -99 + 3 * (3 + 6 * j)
+                printf "@3000 /setblock ~%d ~-16 ~%d fire\n", x + 1, z
+            }
+        }
+    }'
+}
+
 # One repeater clock of signal-stress at x $1, z $2 driving two blocks $3 (pistons get stone on top).
 stress_clock() {
     x=$1
@@ -412,6 +446,7 @@ scene_chat() {
     inventory) printf '%s\n' "/give iron_pickaxe 1" "/give oak_planks 64" "/give torch 32" ;;
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
+    forest-fire) forest_fire_chat ;;
     flight) flight_chat terrain "$2" ;;
     explore) flight_chat explore "$2" ;;
     showcase-flight) flight_chat showcase "$2" ;;
@@ -474,7 +509,7 @@ scene_of() {
         SCENE_ARMOUR=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire)
         SCENE_WORLD=flat
         ;;
     esac
@@ -519,6 +554,7 @@ scene_of() {
         SCENE_WINDOW="--overlay furnace"
         ;;
     signal-stress) SCENE_LOOK=0,-25 ;;
+    forest-fire) SCENE_LOOK=0,-35 ;;
     gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;
     inventory) SCENE_WINDOW="--overlay inventory" ;;
     handbook) SCENE_WINDOW="--handbook block:qtcraft:stone" ;;

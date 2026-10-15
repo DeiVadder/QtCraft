@@ -3,6 +3,7 @@
 #include "QcBlockRules.h"
 #include "QcBlockScreens.h"
 #include "QcChatText.h"
+#include "QcFireIgnition.h"
 #include "QcLineOfSight.h"
 #include "QcMining.h"
 #include "QcOpeners.h"
@@ -108,7 +109,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
-    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)
+    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message)
         || m_parts.minecarts.place(client, message)) {
         return;
     }

@@ -1,0 +1,8 @@
+{
+    "name": "hay_block_top",
+    "pattern": "hay_top",
+    "primary": "#c09a38",
+    "secondary": "#7c5c1c",
+    "variation": 0.08,
+    "seed": 7404
+}

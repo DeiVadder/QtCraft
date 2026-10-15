@@ -46,8 +46,6 @@ private:
     std::optional<QcBlockPos> seedTarget(const QcItemEntity &item, QcBlockId crop, const QSet<QcBlockPos> &planned);
     // Soil at `ground` with air above where `crop` may stand.
     bool isFreeSoil(QcBlockPos ground, QcBlockId crop) const;
-    // One use of the held tool, except in creative mode.
-    void wearHeld(QcServerClient &client);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

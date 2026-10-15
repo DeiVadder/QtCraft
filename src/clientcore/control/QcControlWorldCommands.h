@@ -6,7 +6,8 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands that query blocks and act on them: block queries, mining and using the held item on a block.
+// Control commands that query blocks and act on them: block queries, mining, using the held item on a
+// block and lighting fire.
 class QcControlWorldCommands
 {
 public:
@@ -22,6 +23,8 @@ private:
     void mine(const QJsonObject &request);
     // `place` and `use`.
     void useOnBlock(const QJsonObject &request);
+    // Selects the first item of the hotbar that lights fire (flint and steel) and uses it like `use`.
+    void ignite(const QJsonObject &request);
 
     QcControlContext &m_context;
 };

@@ -8,7 +8,7 @@
 
 ### <a id="block-qtcraft-lava"></a>Lava
 
-Heiße Flüssigkeit, die leuchtet, Items verbrennt und verletzt. Neben Wasser wird sie zu Obsidian oder Bruchstein.
+Heiße Flüssigkeit, die leuchtet, Items verbrennt und jeden in Brand setzt, der sie berührt. Neben Wasser wird sie zu Obsidian oder Bruchstein; neben brennbaren Blöcken kann sie ein Feuer entfachen.
 
 | | |
 |---|---|
@@ -24,6 +24,8 @@ Heiße Flüssigkeit, die leuchtet, Items verbrennt und verletzt. Neben Wasser wi
 | Fest | nein |
 | Wird beim Bauen ersetzt | ja |
 | Schaden bei Berührung | 3 Lebenspunkte |
+| Setzt Körper in Brand für | 15 s |
+| Entzündet Feuer daneben | 3 von 100 je Block-Update, neben brennbaren Blöcken |
 | Zustände | falling (false, true); level (0, 1, 2, 3) |
 
 **Kommt vor in**

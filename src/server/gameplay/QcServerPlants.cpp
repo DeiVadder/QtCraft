@@ -154,23 +154,7 @@ bool QcServerPlants::till(QcServerClient &client, QcBlockPos target, QcBlockFace
     // Wet at once next to water, so a fresh field does not wait for its first random tick.
     m_blocks.setAndBroadcast(target, m_state.growth().crops().freshSoil(m_state.world(), target, *soil));
     m_sounds.playBlock(content.block(*soil), QcBlockSoundAction::Place, target);
-    wearHeld(client);
+    m_inventory.wearHeld(client);
     return true;
 }
 
-void QcServerPlants::wearHeld(QcServerClient &client)
-{
-    const QcItemDefinition *held = m_state.heldItem(client);
-    // Tools wear like when mining, except in creative mode (decision E-282).
-    if (!held || held->durability <= 0 || client.rules().infiniteItems) {
-        return;
-    }
-
-    const int slot = client.inventory.selectedHotbarSlot();
-    QcItemStack tool = client.inventory.slot(slot);
-    if (++tool.damage >= held->durability) {
-        tool = {};
-    }
-    client.inventory.setSlot(slot, tool);
-    m_inventory.send(client);
-}

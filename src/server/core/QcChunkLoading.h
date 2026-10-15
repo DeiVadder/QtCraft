@@ -22,7 +22,7 @@ class QcServerState;
 // chunk waits until every chunk of its group has arrived, then all enter the world in the same tick.
 // A group leaves the world when none of its chunks is needed any more: everything attached to its
 // chunks (block entities, scheduled ticks, the circuits' and hoppers' work, pending block updates and
-// planned flow steps, entities and whether the chunk got its animals) is taken out and handed to the
+// planned flow steps, burning fires, entities and whether the chunk got its animals) is taken out and handed to the
 // storage with the blocks if they changed (QcChunkIo), and comes back when the chunk is read again.
 class QcChunkLoading
 {

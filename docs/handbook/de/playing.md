@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -252,6 +252,32 @@ Klicke mit links auf ein Wesen in bis zu 4 m, um es zu treffen, höchstens alle 
 
 [Eisenschwert](tools.md#item-qtcraft-iron_sword), [Zombie](creatures.md#mob-qtcraft-zombie), [Lava](liquids.md#block-qtcraft-lava)
 
+### <a id="chapter-qtcraft-fire"></a>Feuer
+
+**Brennen**
+
+Feuer steht auf einem festen Block oder neben einem brennbaren und erhellt seine Umgebung mit Licht 15. Etwa alle 1,5 bis 1,95 Sekunden macht es einen Schritt und wird älter; nach spätestens 45 Schritten erlischt es. Ohne brennbaren Block daneben erlischt es nach 9 Schritten, Feuer auf Stein oder Sand brennt also schnell herunter. Verliert Feuer seinen Untergrund oder seinen Brennstoff, erlischt es sofort, und hineinfließendes Wasser spült es fort. Abbauen löscht es.
+
+**Feuer entzünden**
+
+Ein Feuerzeug entzündet Feuer vor der Seite eines Blocks, auf den du es anwendest, wenn dort Feuer stehen kann: auf einem festen Block oder neben einem brennbaren. Jedes Feuer nutzt es um einen Gebrauch ab; im Kreativmodus nutzt es sich nicht ab. Ein Signalspender mit einem Feuerzeug entzündet beim Auslösen die Zelle vor sich; kann dort nichts brennen, bleibt das Feuerzeug darin. Lava setzt ab und zu die Luft direkt neben sich in Brand, wenn diese an einen brennbaren Block grenzt, aber nur, wenn sich neben der Lava etwas ändert oder sie fließt: ein ruhiger Lavasee setzt den Wald um ihn nicht in Brand. Jedes neue Feuer ist ein eigener Funke und hält die Grenzen unten ein. Abbauen oder Schlagen löscht Feuer, auch im Kreativmodus.
+
+**Ausbreitung**
+
+Jeder Schritt kann die brennbaren Blöcke neben dem Feuer abbrennen: Sie werden zu Feuer oder zu Luft, und nichts fällt heraus. Außerdem kann er die Luft ringsum neben brennbaren Blöcken entzünden, am ehesten über dem Feuer. Wie leicht ein Block Feuer fängt und wie schnell er abbrennt, hängt vom Block ab: Laub, Wolle, Gras und Blumen brennen leicht, Stämme, Bretter und Kohleblöcke langsam; Stein, Erde, Glas und Metall brennen nie. Feuer auf einem Magmablock brennt ewig, ohne sich auszubreiten: eine Feuerstelle. Ein neues Feuer ist so alt wie das, das es entzündet hat, darum erlischt jede Feuerfront.
+
+**Grenzen**
+
+Feuer breitet sich höchstens 12 Blöcke vom Funken aus, mit dem es begann; ein einzelner Funke brennt also nie einen ganzen Wald oder ein Dorf nieder. In nicht geladene Chunks breitet es sich nie aus. Ein Chunk hält höchstens 256 Feuer, die Welt 4096; darüber hinaus entsteht kein neues Feuer. Die Spielregel `fireSpread` (`/gamerule fireSpread false`) hält Feuer davon ab, sich auszubreiten und Blöcke abzubrennen; Feuer brennt dann nur, wo es ist, bis es erlischt. Die Showcase-Welt hat sie aus. Ein Server kann die Ausbreitung für alle seine Welten auch mit der Grenze `fireSpreadRadius` 0 in server.json abschalten.
+
+**Brennende Spieler und Wesen**
+
+Wer in Feuer oder Lava gerät, fängt Feuer und brennt nach dem Herausgehen noch eine Weile weiter (Feuer 8 Sekunden, Lava 15; siehe die Blockseiten). Solange ein Spieler oder Wesen brennt, verliert es alle 1 Sekunde 1 Gesundheit; Rüstung fängt einen Teil davon ab wie bei jedem Schlag. Wasser löscht die Flammen sofort. Spieler im Kreativmodus brennen nicht. Items, die in Feuer oder Lava fallen, verbrennen.
+
+**Siehe auch**
+
+[Feuer](blocks.md#block-qtcraft-fire), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Feuerstein](items.md#item-qtcraft-flint), [Lava](liquids.md#block-qtcraft-lava), [Magmablock](blocks.md#block-qtcraft-magma_block), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenlaub](blocks.md#block-qtcraft-oak_leaves), [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Bücherregal](blocks.md#block-qtcraft-bookshelf), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Strohballen](blocks.md#block-qtcraft-hay_block)
+
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
 **Wenn du stirbst**
@@ -362,7 +388,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft

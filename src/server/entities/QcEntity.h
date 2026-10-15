@@ -26,6 +26,8 @@ struct QcEntity
     // Its chunk was not loaded at the start of the tick (QcEntities::settle): it is not simulated,
     // not sent to clients and not counted. Players never rest.
     bool dormant = false;
+    // Ticks it still burns (players and creatures, QcBodyBurning, decision E-393); not saved.
+    int burnTicks = 0;
     // The chunk the last QcEntities::settle saw it in; settle looks up whether a chunk is loaded only
     // when this changed or the loaded chunks did.
     QcChunkPos settledChunk;

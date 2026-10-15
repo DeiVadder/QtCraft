@@ -261,6 +261,32 @@ private slots:
         QCOMPARE(countOf(u"qtcraft:glass_bottle"_s), 0);
     }
 
+    // Fire as a bot plays it (decision E-393): `ignite` takes the flint and steel from the hotbar and
+    // lights the face it is given; the status tells whether the player burns, and water puts it out.
+    void fireThroughTheInterface()
+    {
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/fill ~1 ~ ~-1 ~3 ~3 ~1 air"_s}});
+        const QJsonObject without = request({{u"cmd"_s, u"ignite"_s}, {u"x"_s, 0}, {u"y"_s, 0}, {u"z"_s, 0}});
+        QVERIFY(!without.value(u"ok"_s).toBool());
+
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give flint_and_steel 1"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return countOf(u"qtcraft:flint_and_steel"_s) == 1; }, timeoutMs));
+        const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
+        const int x = int(std::floor(feet.x)) + 2;
+        const int y = int(std::floor(feet.y));
+        const int z = int(std::floor(feet.z));
+        const QJsonObject lit = request({{u"cmd"_s, u"ignite"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+        QVERIFY2(lit.value(u"ok"_s).toBool(), QJsonDocument(lit).toJson().constData());
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+        QCOMPARE(request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString(), u"qtcraft:fire"_s);
+
+        // Standing in fire sets the player alight; water at the feet puts it out.
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~ ~ fire"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return request({{u"cmd"_s, u"status"_s}}).value(u"burning"_s).toBool(); }, timeoutMs));
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~ ~ water"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return !request({{u"cmd"_s, u"status"_s}}).value(u"burning"_s).toBool(); }, timeoutMs));
+    }
+
     // Farming as a bot plays it (decisions E-289 to E-293): till, plant, let a sped-up day ripen the
     // wheat, harvest, eat, and feed two pigs until a young one appears.
     void farmingThroughTheInterface()

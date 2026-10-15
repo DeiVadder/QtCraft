@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 42> table{{
+constexpr std::array<QcServerLimits::Field, 46> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -30,6 +30,10 @@ constexpr std::array<QcServerLimits::Field, 42> table{{
     {"savedBlockUpdates", "pending neighbour updates written to a save", 1024, qint64(4) << 20, &QcServerLimits::savedBlockUpdates},
     {"liquidStepsPerTick", "flow steps of liquids per tick", 16, 1 << 20, &QcServerLimits::liquidStepsPerTick},
     {"liquidPlannedSteps", "flow steps of liquids planned", 1024, 1 << 24, &QcServerLimits::liquidPlannedSteps},
+    {"fireStepsPerTick", "steps of burning fires per tick (the rest waits)", 16, 1 << 20, &QcServerLimits::fireStepsPerTick},
+    {"firesPerChunk", "burning fires in one chunk", 1, 65536, &QcServerLimits::firesPerChunk},
+    {"fires", "burning fires in the world", 16, 1 << 20, &QcServerLimits::fires},
+    {"fireSpreadRadius", "blocks fire spreads from the spark it began with (0: never)", 0, 64, &QcServerLimits::fireSpreadRadius},
     {"fallingBlocks", "falling blocks at once", 16, 65536, &QcServerLimits::fallingBlocks},
     {"itemsAwake", "dropped items awake in loaded chunks", 16, 65536, &QcServerLimits::itemsAwake},
     {"itemsQueued", "dropped items waiting to appear", 16, 1 << 20, &QcServerLimits::itemsQueued},

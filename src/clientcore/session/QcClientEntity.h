@@ -36,7 +36,7 @@ struct QcClientEntity
     QcAppearance appearance;
     float pitch = 0.0f;
     float previousPitch = 0.0f;
-    quint8 flags = 0;
+    quint16 flags = 0;
     QcItemId held = qcNoItem;
     // Players and armour stands: their armour slots.
     QcEquipment equipment;

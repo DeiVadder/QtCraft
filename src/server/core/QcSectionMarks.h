@@ -23,8 +23,10 @@ enum class QcBlockTrait : quint8 {
     Plate,
     // Holds a block entity created with the block: a container or a machine (decision E-357).
     BlockEntity,
+    // Fire (decision E-392): a chunk that arrives is searched for fire blocks only in these sections.
+    Fire,
 };
-inline constexpr int qcBlockTraitCount = 5;
+inline constexpr int qcBlockTraitCount = 6;
 
 // Per loaded chunk and block trait, a bit for each section that may hold a block with that trait.
 // A bit is set when its chunk arrives or such a block is placed and only cleared when the chunk is

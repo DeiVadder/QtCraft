@@ -4,6 +4,15 @@
     "falls": true,
     "hardness": 0.6,
     "tool": "shovel",
+    "drops": [
+        {
+            "item": "gravel"
+        },
+        {
+            "item": "flint",
+            "chance": 0.1
+        }
+    ],
     "textures": {
         "all": "gravel"
     }

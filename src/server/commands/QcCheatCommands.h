@@ -13,13 +13,14 @@
 class QcPlayerHealth;
 class QcServerGameModes;
 class QcServerInventory;
+class QcServerMinecarts;
 class QcServerStands;
 struct QcMobDefinition;
 struct QcServerClient;
 class QcServerState;
 
 // Commands that bend the rules for operators (decision E-243): items, creatures, health and food,
-// armour and stands, time, game rules, the game mode and finding biomes.
+// armour, stands and minecarts, time, game rules, the game mode and finding biomes.
 class QcCheatCommands
 {
 public:
@@ -32,6 +33,7 @@ public:
         QcPlayerHealth &health;
         QcServerStands &stands;
         QcServerGameModes &gameModes;
+        QcServerMinecarts &minecarts;
         std::function<void(double seconds)> setWorldTime;
     };
 
@@ -47,6 +49,8 @@ private:
     void give(const QcCommandContext &context);
     void spawnItem(const QcCommandContext &context);
     void summon(const QcCommandContext &context);
+    // /summon of a cart item (minecart, chest_minecart, hopper_minecart); false for other names.
+    bool summonCarts(const QcCommandContext &context);
     // Where a creature summoned for `wanted` appears.
     QcVec3 summonPlace(const QcServerClient &player, const QcMobDefinition &definition, const QcVec3 &wanted) const;
     void kill(const QcCommandContext &context);

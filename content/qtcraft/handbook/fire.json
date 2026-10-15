@@ -1,0 +1,25 @@
+{
+    "name": "fire",
+    "order": 81,
+    "icon": "magma_block",
+    "sections": [
+        "burning",
+        "lighting",
+        "spreading",
+        "limits",
+        "bodies"
+    ],
+    "related": [
+        "fire",
+        "flint_and_steel",
+        "flint",
+        "lava",
+        "magma_block",
+        "oak_log",
+        "oak_leaves",
+        "white_wool",
+        "bookshelf",
+        "coal_block",
+        "hay_block"
+    ]
+}

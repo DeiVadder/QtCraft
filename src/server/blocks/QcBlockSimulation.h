@@ -3,16 +3,18 @@
 #include "QcServerLimits.h"
 #include "QcBlockDefinition.h"
 #include "QcBlockPos.h"
+#include "QcFireRules.h"
 
 
 class QcBlockUpdateQueue;
+class QcFireIgnition;
 class QcServerBlocks;
 class QcServerFallingBlocks;
 class QcServerSounds;
 class QcServerState;
 
 // The per-tick block simulation of the server: queued neighbour updates (connections, lost support,
-// starting falls through QcServerFallingBlocks) and liquid flow.
+// starting falls through QcServerFallingBlocks, fire that lost its place going out) and liquid flow.
 class QcBlockSimulation
 {
 public:
@@ -29,6 +31,8 @@ public:
     void processBlockUpdates();
     // Runs the due flow steps of liquids within their budget (decision E-054).
     void processLiquids();
+    // Lava that gets a block update may light fire next to it (decision E-393).
+    void setIgnition(QcFireIgnition *ignition) { m_ignition = ignition; }
 
 private:
     void processUpdate(QcBlockPos pos, QcBlockId block);
@@ -39,6 +43,8 @@ private:
     QcBlockUpdateQueue &m_updates;
     QcServerBlocks &m_blocks;
     QcServerFallingBlocks &m_falling;
+    QcFireRules::Table m_fireTable;
+    QcFireIgnition *m_ignition = nullptr;
     // Spreading liquids make at most one sound per tick.
     bool m_liquidSoundPlayed = false;
 };

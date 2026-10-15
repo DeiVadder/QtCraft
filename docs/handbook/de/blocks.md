@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -106,6 +106,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenbretter](#block-qtcraft-birch_planks) |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 | Gruppen | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |
@@ -173,6 +174,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenholz](#block-qtcraft-birch_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -200,6 +202,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 | Abbauen mit der Hand | 0,3 s |
 | Beute | [Birkensetzling](#block-qtcraft-birch_sapling) (8 %) |
 | Lichtdämpfung | 1 von 15 |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Kommt vor in**
@@ -242,6 +245,7 @@ Holz der Birke. Ergibt je vier Bretter; wird im Ofen zu Holzkohle.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Birkenstamm](#block-qtcraft-birch_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -340,6 +344,7 @@ Eine Blume, die nur im Sumpf wächst; ergibt hellblauen Farbstoff.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt), [Schlamm](#block-qtcraft-mud) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**
@@ -390,6 +395,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Blaue Wolle](#block-qtcraft-blue_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -550,6 +556,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Braune Wolle](#block-qtcraft-brown_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -725,6 +732,7 @@ Regale voller Bücher; abgebaut gibt es die drei Bücher zurück.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,19 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Buch](items.md#item-qtcraft-book) (3×) |
+| Brennbar | fängt Feuer 30, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -841,6 +849,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenbretter](#block-qtcraft-oak_planks) |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 | Gruppen | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |
@@ -908,6 +917,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenholz](#block-qtcraft-oak_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -996,6 +1006,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 | Abbauen mit der Hand | 0,3 s |
 | Beute | [Eichensetzling](#block-qtcraft-oak_sapling) (8 %), [Apfel](food.md#item-qtcraft-apple) (2 %) |
 | Lichtdämpfung | 1 von 15 |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Kommt vor in**
@@ -1038,6 +1049,7 @@ Holz der Eiche: das Erste, was man sammelt. Ergibt je vier Bretter.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Eichenstamm](#block-qtcraft-oak_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -1367,6 +1379,7 @@ Wächst im Schatten der Taiga. Wie hohes Gras wird er von hineingesetzten Blöck
 | Wird beim Bauen ersetzt | ja |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Kommt vor in**
@@ -1404,6 +1417,25 @@ Fasst so viel wie eine Truhe und passt Seite an Seite in jede Reihe.
 
 [Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
+### <a id="block-qtcraft-fire"></a>Feuer
+
+Brennt, wo es steht, und greift auf brennbare Blöcke daneben über. Es leuchtet hell, verletzt, wer hineinläuft, und erlischt von selbst. Wasser spült es fort.
+
+| | |
+|---|---|
+| ID | `qtcraft:fire` |
+| Härte | 0 |
+| Abbauen mit der Hand | 0,05 s |
+| Beute | nichts |
+| Licht | 15 von 15 |
+| Lichtdämpfung | 0 von 15 |
+| Fest | nein |
+| Wird beim Bauen ersetzt | ja |
+| Wird von Flüssigkeiten weggespült | ja |
+| Schaden bei Berührung | 1 Lebenspunkt |
+| Setzt Körper in Brand für | 8 s |
+| Klang | Gras und Pflanzen |
+
 ### <a id="block-qtcraft-spruce_planks"></a>Fichtenbretter
 
 Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
@@ -1416,6 +1448,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenbretter](#block-qtcraft-spruce_planks) |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 | Gruppen | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |
@@ -1483,6 +1516,7 @@ Ein Stamm mit Rinde auf allen sechs Seiten, für Wände und Balken.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenholz](#block-qtcraft-spruce_wood) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -1510,6 +1544,7 @@ Laub zerfällt nach und nach, wenn kein Stamm mehr in der Nähe ist. Manchmal f�
 | Abbauen mit der Hand | 0,3 s |
 | Beute | [Fichtensetzling](#block-qtcraft-spruce_sapling) (8 %) |
 | Lichtdämpfung | 1 von 15 |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Kommt vor in**
@@ -1552,6 +1587,7 @@ Holz der Fichte. Ergibt je vier Bretter.
 | Werkzeug | Axt (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
 | Beute | [Fichtenstamm](#block-qtcraft-spruce_log) |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Holz |
 
@@ -1676,6 +1712,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Gelbe Wolle](#block-qtcraft-yellow_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2148,6 +2185,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Graue Wolle](#block-qtcraft-gray_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2318,6 +2356,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Grüne Wolle](#block-qtcraft-green_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2504,6 +2543,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Hellblaue Wolle](#block-qtcraft-light_blue_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2664,6 +2704,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Hellgraue Wolle](#block-qtcraft-light_gray_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2824,6 +2865,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Hellgrüne Wolle](#block-qtcraft-lime_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -2935,6 +2977,7 @@ Bedeckt Wiesen; man kann direkt hineinbauen.
 | Wird beim Bauen ersetzt | ja |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt), [Schlamm](#block-qtcraft-mud) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Kommt vor in**
@@ -3012,7 +3055,7 @@ Wächst aus einer Kartoffel auf Ackerboden in vier Stufen. Reife Pflanzen geben 
 
 ### <a id="block-qtcraft-gravel"></a>Kies
 
-Lose Steine, die fallen, wenn nichts sie hält.
+Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein Feuerstein heraus.
 
 | | |
 |---|---|
@@ -3021,7 +3064,7 @@ Lose Steine, die fallen, wenn nichts sie hält.
 | Abbauen mit der Hand | 0,9 s |
 | Werkzeug | Schaufel (schneller, nicht nötig) |
 | Abbauen mit dem besten Werkzeug | 0,08 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
-| Beute | [Kies](#block-qtcraft-gravel) |
+| Beute | [Kies](#block-qtcraft-gravel), [Feuerstein](items.md#item-qtcraft-flint) (10 %) |
 | Fällt ohne Stütze | ja |
 | Klang | Kies |
 
@@ -3110,6 +3153,7 @@ Neun Stück Kohle als Block; zurück ergibt er alle neun.
 | Abbauen mit dem besten Werkzeug | 0,63 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
 | Beute | [Kohleblock](#block-qtcraft-coal_block) |
 | Beute ohne passendes Werkzeug | nichts |
+| Brennbar | fängt Feuer 5, brennt ab 5 (0 bis 100) |
 | Brennt als Brennstoff | 720 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Stein |
 
@@ -3165,6 +3209,7 @@ Eine blaue Blume der Ebenen; ergibt blauen Farbstoff.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**
@@ -3343,6 +3388,7 @@ Eine gelbe Blume; ergibt gelben Farbstoff.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**
@@ -3417,6 +3463,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Magentafarbene Wolle](#block-qtcraft-magenta_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -3515,7 +3562,7 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 ### <a id="block-qtcraft-magma_block"></a>Magmablock
 
-Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der darauf steht.
+Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der darauf steht. Feuer darauf brennt ewig.
 
 | | |
 |---|---|
@@ -3528,6 +3575,7 @@ Heißes Gestein tief unter der Erde. Es glüht schwach und verbrennt jeden, der 
 | Beute ohne passendes Werkzeug | nichts |
 | Licht | 3 von 15 |
 | Schaden bei Berührung | 1 Lebenspunkt |
+| Feuer darauf brennt ewig | ja |
 | Klang | Stein |
 
 **Abbaubar mit**
@@ -3552,6 +3600,7 @@ Eine kleine weiße Waldblume; ergibt weißen Farbstoff.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**
@@ -3655,6 +3704,7 @@ Eine rote Blume; ergibt roten Farbstoff.
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**
@@ -3929,6 +3979,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Orangefarbene Wolle](#block-qtcraft-orange_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -4117,6 +4168,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Rosafarbene Wolle](#block-qtcraft-pink_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -4277,6 +4329,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Rote Wolle](#block-qtcraft-red_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -4722,6 +4775,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Schwarze Wolle](#block-qtcraft-black_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -5405,6 +5459,39 @@ Sauber geschnittener Stein.
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-hay_block"></a>Strohballen
+
+Neun Weizen zum Ballen gebunden, und wieder zu neun Weizen zerlegt. Fängt leicht Feuer.
+
+| | |
+|---|---|
+| ID | `qtcraft:hay_block` |
+| Härte | 0,5 |
+| Abbauen mit der Hand | 0,75 s |
+| Werkzeug | hoe (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,06 s: [Goldhacke](tools.md#item-qtcraft-golden_hoe) |
+| Beute | [Strohballen](#block-qtcraft-hay_block) |
+| Brennbar | fängt Feuer 60, brennt ab 20 (0 bis 100) |
+| Klang | Gras und Pflanzen |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Strohballen](#block-qtcraft-hay_block) |
+| [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) |  |
+| [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) | [Weizen](items.md#item-qtcraft-wheat) |  |
+
+**Wird verwendet für**
+
+[Weizen](items.md#item-qtcraft-wheat)
+
+**Schneller mit**
+
+[Goldhacke](tools.md#item-qtcraft-golden_hoe) (Stufe 1), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Stufe 1), [Steinhacke](tools.md#item-qtcraft-stone_hoe) (Stufe 2), [Eisenhacke](tools.md#item-qtcraft-iron_hoe) (Stufe 3), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe) (Stufe 4)
+
 ### <a id="block-qtcraft-terracotta"></a>Terrakotta
 
 Ein im Ofen gebrannter Tonblock: hart, glatt und färbbar.
@@ -5499,6 +5586,7 @@ Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.
 | Wird beim Bauen ersetzt | ja |
 | Braucht Halt | steht nur auf: [Sand](#block-qtcraft-sand) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Gras und Pflanzen |
 
@@ -5606,6 +5694,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Türkise Wolle](#block-qtcraft-cyan_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -5766,6 +5855,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Violette Wolle](#block-qtcraft-purple_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -5946,6 +6036,7 @@ Weicher Block vom Schaf; jede Wolle lässt sich mit einem Farbstoff färben.
 | Härte | 0,8 |
 | Abbauen mit der Hand | 1,2 s |
 | Beute | [Weiße Wolle](#block-qtcraft-white_wool) |
+| Brennbar | fängt Feuer 30, brennt ab 60 (0 bis 100) |
 | Brennt als Brennstoff | 5 s: [Brennstoffe](tables.md#table-fuels) |
 | Klang | Wolle |
 | Gruppen | [Beliebige Wolle](tags.md#tag-qtcraft-wool) |
@@ -6166,6 +6257,7 @@ Eine violette Blütenkugel auf Wiesen und im Gebirge; ergibt magentafarbenen Far
 | Fest | nein |
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
+| Brennbar | fängt Feuer 60, brennt ab 100 (0 bis 100) |
 | Klang | Gras und Pflanzen |
 
 **Wird verwendet für**

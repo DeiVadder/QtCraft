@@ -16,6 +16,10 @@
             "chance": 0.125
         }
     ],
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
     "textures": {
         "all": "tall_grass"
     }

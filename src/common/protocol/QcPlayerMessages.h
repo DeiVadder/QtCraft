@@ -110,12 +110,14 @@ struct OpenCrafting
     qint32 size = 3;
 };
 
-// Server -> client: the receiving player's health; dead players wait for Respawn.
+// Server -> client: the receiving player's health; dead players wait for Respawn. Also sent when the
+// player catches fire or stops burning (`burning`, decision E-393).
 struct PlayerHealth
 {
     double health = 0.0;
     double maxHealth = 0.0;
     bool dead = false;
+    bool burning = false;
 };
 
 // Client -> server: leave the death screen.

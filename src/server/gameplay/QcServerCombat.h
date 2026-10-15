@@ -23,9 +23,11 @@ public:
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
     void attack(QcServerClient &client, quint32 entityId);
+    // Drops the loot of a creature that died at `position`, each drop by its chance (also burn
+    // deaths, QcBodyBurning).
+    static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position);
 
 private:
-    void dropLoot(const QList<QcItemDrop> &drops, const QcVec3 &position);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

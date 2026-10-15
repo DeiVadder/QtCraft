@@ -1,0 +1,8 @@
+{
+    "name": "flint",
+    "pattern": "lump",
+    "primary": "#3c3c42",
+    "secondary": "#5c5c66",
+    "variation": 0.12,
+    "seed": 7401
+}

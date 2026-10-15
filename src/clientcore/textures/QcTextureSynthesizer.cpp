@@ -321,6 +321,18 @@ QColor paintLava(const QcTextureSpec &spec, int x, int y, QColor color)
     return wave < -1.3 || (hashPixel(spec.seed + 47, x, y) % 11) == 0 ? scaled(spec.primary, 0.7) : color;
 }
 
+QColor paintFire(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    // Each column carries a tongue of flame up to its own height, narrowing towards the tip.
+    const double height = 7.0 + 7.0 * (0.5 + 0.5 * noise(spec.seed + 71, x / 2, 0)) + 1.5 * std::sin(x * 1.3);
+    const double rise = double(size - y);
+    if (rise > height || (rise > height - 3.0 && (hashPixel(spec.seed + 73, x, y) % 3) == 0)) {
+        return clear();
+    }
+    const double heat = 1.0 - rise / height;
+    return heat > 0.45 && (hashPixel(spec.seed + 79, x, y) % 5) != 0 ? varied(spec, spec.secondary, x, y, 7) : color;
+}
+
 QColor paintFlower(const QcTextureSpec &spec, int x, int y, QColor)
 {
     const double dx = x - 7.5;
@@ -482,7 +494,7 @@ QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
     return scaled(spec.primary, shade);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 44> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 45> painters = {{
     {Pattern::Noise, paintNoise},
     {Pattern::Speckle, paintSpeckle},
     {Pattern::Planks, paintPlanks},
@@ -517,6 +529,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 44> painters = {{
     {Pattern::ChestFront, paintChest},
     {Pattern::ChestTop, paintChest},
     {Pattern::Lava, paintLava},
+    {Pattern::Fire, paintFire},
     {Pattern::Flower, paintFlower},
     {Pattern::TallGrass, paintTallGrass},
     {Pattern::Mushroom, paintMushroom},

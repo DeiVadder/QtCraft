@@ -94,6 +94,14 @@ QString stateDetail(const QcContentRegistry &content, QcBlockId state)
 
 QcBlockId podiumFor(const QcShowcaseContext &context, const QcBlockDefinition &block)
 {
+    // Fire stands on a block with eternal fire, so it burns on its podium for ever (decision E-392).
+    if (block.fire.isFire) {
+        for (const QcBlockDefinition &candidate : context.content.blocks()) {
+            if (const std::optional<QcBlockId> id = context.content.blockId(candidate.name); id && candidate.fire.eternal) {
+                return *id;
+            }
+        }
+    }
     for (const QString &ground : block.groundBlocks) {
         if (const std::optional<QcBlockId> id = context.content.blockId(ground)) {
             return *id;

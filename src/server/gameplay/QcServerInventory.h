@@ -53,6 +53,9 @@ public:
     void equipHeld(QcServerClient &client);
     // Takes over armour worn down by a hit (QcArmour::wear) and tells the player and those who see them.
     void equipmentWorn(QcServerClient &client, const QcEquipment &equipment, bool broke);
+    // One use of the held tool (a hoe tilling, flint and steel lighting fire), except in creative
+    // mode; a tool used up breaks. Tells the player.
+    void wearHeld(QcServerClient &client);
 
 private:
     // Inventory, crafting grid and the open machine or chest as one slot list.

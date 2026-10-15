@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcBlockEntities.h"
+#include "QcFireQueue.h"
 #include "QcSignalSchedule.h"
 
 #include <QList>
@@ -45,10 +46,13 @@ struct QcBlockEntityRecord
     // Neighbour updates and planned flow steps of the chunk not yet carried out when it was unloaded
     // or saved (decision E-374); queued again when it comes back.
     QList<QcBlockPos> blockUpdates;
+    // Burning fires with the ticks left to their next step (decision E-392), in the order of their steps.
+    QList<QcFireQueue::Saved> fires;
 
     bool isEmpty() const
     {
         return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty() && scheduled.isEmpty()
-               && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty();
+               && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty()
+               && fires.isEmpty();
     }
 };

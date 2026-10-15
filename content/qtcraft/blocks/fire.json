@@ -1,0 +1,19 @@
+{
+    "name": "fire",
+    "shape": "cross",
+    "render": "cutout",
+    "solid": false,
+    "replaceable": true,
+    "support": "none",
+    "lightOpacity": 0,
+    "light": 15,
+    "hardness": 0.0,
+    "drops": [],
+    "item": false,
+    "fire": true,
+    "contactDamage": 1,
+    "setsAlight": 8,
+    "textures": {
+        "all": "fire"
+    }
+}
