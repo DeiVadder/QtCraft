@@ -374,7 +374,11 @@ private slots:
         QCOMPARE(m_server->items().items().size(), 1);
         QCOMPARE(m_server->items().items().first().stack.count, 4);
         QCOMPARE(m_server->fallingBlocks().all().size(), 1);
-        QCOMPARE(m_server->fallingBlocks().all().first().motion.position.y, high.motion.position.y);
+        // Its chunk is asked for (strays load their chunk, decision E-374); once it is there the block
+        // falls again, which a busy machine may reach within these two ticks.
+        if (!m_server->world().chunk(QcPhysics::blockContaining(high.motion.position).chunk())) {
+            QCOMPARE(m_server->fallingBlocks().all().first().motion.position.y, high.motion.position.y);
+        }
         QVERIFY(!m_server->mobs().find(deep));
         QVERIFY(m_server->mobs().find(highPig));
     }

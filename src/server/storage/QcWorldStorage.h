@@ -2,13 +2,12 @@
 
 #include "QcPackReference.h"
 
-#include "QcBlockEntityStorage.h"
 #include "QcChunk.h"
+#include "QcChunkLoaders.h"
 #include "QcContentRegistry.h"
-#include "QcEntityStorage.h"
 #include "QcGameMode.h"
 #include "QcPlayerStorage.h"
-#include "QcRegionStorage.h"
+#include "QcRegionFile.h"
 #include "QcResult.h"
 
 #include <QDateTime>
@@ -19,13 +18,13 @@
 
 #include <memory>
 
-// Metadata of a saved world (world.json). Format 4 (stage 31.2) keeps entities per chunk (decision
-// E-366), format 3 (stage 31.1) block entities (decision E-358); worlds of older development
+// Metadata of a saved world (world.json). Format 5 (stage 31.3) keeps chunks in indexed region files
+// read on demand, saved as one through a journal (decision E-373); worlds of older development
 // versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 4;
-    static constexpr int oldestFormatVersion = 4;
+    static constexpr int formatVersion = 5;
+    static constexpr int oldestFormatVersion = 5;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -60,20 +59,29 @@ struct QcWorldInfo
     // The world's simulation limits (decision E-349) as written in world.json ("limits"), only the
     // keys an operator set; a single-player world plays with them, a dedicated server ignores them.
     QJsonObject limits;
+    // Game rule (decision E-377): the chunks around the spawn column within this many chunks minus
+    // one stay loaded (0: none, 1: the spawn chunk, 2: 3 x 3 chunks …).
+    int spawnChunkRadius = 0;
+    static constexpr int maxSpawnChunkRadius = 16;
+    // Chunks kept loaded by /forceload (decision E-377), in the order they were added.
+    QList<QcChunkPos> forcedChunks;
+    // Every chunk loader block of the world in the order they were placed (decision E-377).
+    QList<QcChunkLoaders::Loader> chunkLoaders;
 };
 
-// Reads and writes one world directory: world.json, modified chunks in region files
-// (regions/r.<x>.<z>.qcr, 32 x 32 chunks each, QcRegionStorage), block entities per chunk in a file per
-// region (blockentities/r.<x>.<z>.qcb, QcBlockEntityStorage), entities per chunk in a file per region
-// (entities/r.<x>.<z>.qen, QcEntityStorage), players (players/<name>-<hash>.qcp) and pending neighbour
-// updates (blockupdates.qce). Only modified chunks are stored;
-// everything else is regenerated from the seed. Blocks and items are stored by name, so
-// content changes between sessions do not scramble a world. Every file carries a magic number, a
-// format version and a CRC; damaged files make loading fail with a message instead of crashing.
+// Reads and writes the files of one world directory besides its chunks: world.json, players
+// (players/<name>-<hash>.qcp) and pending neighbour updates (blockupdates.qce). The chunks (blocks,
+// block entities and entities in indexed region files) are QcChunkStore's; a save writes world.json
+// and blockupdates.qce together with the chunks through its journal (infoBytes, blockUpdatesBytes).
+// Blocks and items are stored by name, so content changes between sessions do not scramble a world.
+// Every binary file carries a magic number, a format version and a CRC; damaged files make loading
+// fail with a message instead of crashing.
 class QcWorldStorage
 {
 public:
-    static constexpr int regionSize = QcRegionStorage::regionSize;
+    static constexpr int regionSize = QcRegionFile::regionSize;
+    static constexpr auto infoFileName = "world.json";
+    static constexpr auto blockUpdatesFileName = "blockupdates.qce";
 
     QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content);
 
@@ -83,11 +91,8 @@ public:
     // The format version world.json names; 0 when it cannot be read.
     int storedFormatVersion() const;
     QcStatus writeInfo(const QcWorldInfo &info) const;
-
-    // Loads every stored chunk. Unknown block names become air and are listed in `warnings`.
-    QcResult<QHash<QcChunkPos, std::shared_ptr<QcChunk>>> readChunks(QStringList &warnings) const { return m_regions.read(warnings); }
-    // Rewrites the region files that contain any of the given chunks with all chunks of those regions.
-    QcStatus writeChunks(const QHash<QcChunkPos, std::shared_ptr<const QcChunk>> &chunks) const { return m_regions.write(chunks); }
+    // The contents of world.json for `info`.
+    static QByteArray infoBytes(const QcWorldInfo &info);
 
     // Player files (QcPlayerStorage).
     static QString playerFileName(const QString &playerName) { return QcPlayerStorage::fileName(playerName); }
@@ -96,30 +101,23 @@ public:
         return m_players.read(playerName, warnings);
     }
     QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
-
-    // Entities per chunk (QcEntityStorage, decision E-366); empty without error when nothing was saved.
-    QcResult<QcWorldEntityRecords> readEntities(QStringList &warnings) const { return m_entities.read(warnings); }
-    QString damagedEntityFile() const { return m_entities.damagedFile(); }
-    QcStatus writeEntities(const QcWorldEntityRecords &entities) const { return m_entities.write(entities); }
-
-    // Block entities per chunk (QcBlockEntityStorage, decision E-358).
-    QcResult<QList<QcBlockEntityRecord>> readBlockEntities(QStringList &warnings) const { return m_blockEntities.read(warnings); }
-    QString damagedBlockEntityFile() const { return m_blockEntities.damagedFile(); }
-    QcStatus writeBlockEntities(const QList<QcBlockEntityRecord> &records) const { return m_blockEntities.write(records); }
+    QByteArray playerBytes(const QcPlayerData &player) const { return m_players.bytes(player); }
+    QcResult<std::optional<QcPlayerData>> parsePlayer(const QString &playerName, const std::optional<QByteArray> &file, QStringList &warnings) const
+    {
+        return m_players.parse(playerName, file, warnings);
+    }
 
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
     // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
     static constexpr quint32 maxStoredBlockUpdates = 4 * 1024 * 1024;
     QcResult<QList<QcBlockPos>> readBlockUpdates() const;
-    QcStatus writeBlockUpdates(const QList<QcBlockPos> &positions) const;
+    // The contents of blockupdates.qce for `positions` (none: no file).
+    static QcResult<std::optional<QByteArray>> blockUpdatesBytes(const QList<QcBlockPos> &positions);
 
-    static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionStorage::regionOf(chunk); }
+    static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionFile::regionOf(chunk); }
 
 private:
     QString m_directory;
     std::shared_ptr<const QcContentRegistry> m_content;
-    QcRegionStorage m_regions;
-    QcEntityStorage m_entities;
-    QcBlockEntityStorage m_blockEntities;
     QcPlayerStorage m_players;
 };

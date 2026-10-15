@@ -165,6 +165,8 @@ private:
     {
         config.viewDistance = 1;
         config.operators = {u"Tester"_s};
+        // These tests build away from the player (stage 31.3: chunks would leave the world).
+        config.keepChunksLoaded = true;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
 

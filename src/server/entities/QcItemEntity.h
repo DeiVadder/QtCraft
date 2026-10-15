@@ -7,6 +7,9 @@
 // ages them.
 struct QcItemEntity : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::Item;
+
     QcItemEntity()
         : QcEntity(QcEntityKind::Item)
     {

@@ -103,6 +103,9 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
 
     stream << m.tick << m.skippedTicks << m.loadedChunks << m.players << m.mobs << m.items << m.fallingBlocks << m.pendingBlockUpdates
            << m.waitingBlockUpdates << m.biome << m.worldType;
+    const QcMsg::ServerDebug::Chunks &c = m.chunks;
+    stream << c.stored << c.arriving << c.unsaved << c.groups << c.largestGroup << c.playerGroup << c.oversizeGroups << c.tickets << c.refusedTickets
+           << c.forced << c.loaders;
 
     stream << quint32(m.goals.size());
     for (const QcMsg::MobGoal &goal : m.goals) {
@@ -133,6 +136,9 @@ QcResult<QcMessage> decode(Tag<QcMsg::ServerDebug>, QDataStream &stream)
 
     stream >> m.tick >> m.skippedTicks >> m.loadedChunks >> m.players >> m.mobs >> m.items >> m.fallingBlocks >> m.pendingBlockUpdates
         >> m.waitingBlockUpdates >> m.biome >> m.worldType;
+    QcMsg::ServerDebug::Chunks &c = m.chunks;
+    stream >> c.stored >> c.arriving >> c.unsaved >> c.groups >> c.largestGroup >> c.playerGroup >> c.oversizeGroups >> c.tickets >> c.refusedTickets
+        >> c.forced >> c.loaders;
     if (m.biome.size() > QcMsg::ServerDebug::maxTextLength || m.worldType.size() > QcMsg::ServerDebug::maxTextLength) {
         return qcError(u"Invalid server debug text"_s);
     }

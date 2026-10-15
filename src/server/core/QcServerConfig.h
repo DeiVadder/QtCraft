@@ -41,6 +41,15 @@ struct QcServerConfig
     // Directory of the saved world; empty runs without persistence (tests, throw-away worlds).
     QString worldDirectory;
     int autosaveSeconds = 60;
+    // Test hook: no chunk leaves the world once loaded; for tests that build away from their player
+    // or look at the whole world without one.
+    bool keepChunksLoaded = false;
+    // Test hook: only chunks whose blocks differ from the generated ones stay (the world before stage
+    // 31.3, for comparison runs against its dumps).
+    bool keepChangedChunks = false;
+    // Test hook: chunks are read or generated at once when asked for, not in the background, so a
+    // run does not depend on how fast the threads are (comparison runs).
+    bool loadChunksAtOnce = false;
     // Operators besides the world's list (access.json) and the local player (decision E-244).
     QStringList operators;
     // Where /backup puts copies; empty: "backups" next to the folder of worlds.

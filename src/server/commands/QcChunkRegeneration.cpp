@@ -20,6 +20,10 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
 {
     QList<QcChunkPos> done;
     for (const QcChunkPos &chunk : chunks) {
+        // A stored chunk that is not loaded comes in first, so its stored copy is replaced too.
+        if (!m_state.world().chunk(chunk) && m_state.world().stored(chunk)) {
+            m_state.world().loadChunk(chunk);
+        }
         if (!m_state.world().regenerateChunk(chunk)) {
             continue;
         }
@@ -76,7 +80,9 @@ void QcChunkRegeneration::resend(QcChunkPos chunk)
     // Streaming sends a chunk again once it is missing from the client's list; the client replaces
     // its copy.
     for (const auto &client : m_state.clients()) {
-        client->view.sentChunks.remove(chunk);
+        if (client->view.sentChunks.remove(chunk)) {
+            ++client->view.sentChanges;
+        }
     }
 }
 

@@ -1,0 +1,8 @@
+{
+    "name": "chunk_loader",
+    "pattern": "lantern",
+    "primary": "#2a1f3d",
+    "secondary": "#41cd52",
+    "variation": 0.1,
+    "seed": 3131
+}

@@ -22,12 +22,41 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
 }
 
-void QcEntities::settle(const ChunkLoadedFunction &isLoaded)
+namespace {
+
+// Looks up whether the entity's chunk is loaded when it is new, moved to another chunk or the loaded
+// chunks changed (`everyone`); notes the chunk of a resting one.
+void settleOne(QcEntity &entity, const QcEntities::ChunkLoadedFunction &isLoaded, bool everyone, QSet<QcChunkPos> &strays)
 {
-    settle(m_creatures.editableMobs(), isLoaded);
-    settle(m_falling.editableAll(), isLoaded);
-    settle(m_items.editableItems(), isLoaded);
-    settle(m_stands.editableStands(), isLoaded);
+    const QcChunkPos chunk = QcEntities::chunkOf(entity);
+    if (!everyone && entity.settled && entity.settledChunk == chunk) {
+        return;
+    }
+    entity.dormant = !isLoaded(chunk);
+    entity.settledChunk = chunk;
+    entity.settled = true;
+    if (entity.dormant) {
+        strays.insert(chunk);
+    }
+}
+
+} // namespace
+
+QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64 loadedEpoch)
+{
+    const bool everyone = m_settledEpoch != loadedEpoch;
+    m_settledEpoch = loadedEpoch;
+    QSet<QcChunkPos> strays;
+    const auto settleList = [&isLoaded, &strays, everyone](auto &list) {
+        for (QcEntity &entity : list) {
+            settleOne(entity, isLoaded, everyone, strays);
+        }
+    };
+    settleList(m_creatures.editableMobs());
+    settleList(m_falling.editableAll());
+    settleList(m_items.editableItems());
+    settleList(m_stands.editableStands());
+    return strays;
 }
 
 std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
@@ -38,7 +67,7 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcPhysics::boxAt(feet, QcPhysics::playerWidth, QcPhysics::playerHeight);
     case QcEntityKind::Creature: {
         const QList<QcMobDefinition> &definitions = m_content->mobs();
-        const int type = static_cast<const QcCreature &>(entity).type;
+        const int type = entity.as<QcCreature>().type;
         if (type < 0 || type >= definitions.size()) {
             return std::nullopt;
         }
@@ -49,7 +78,7 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
     case QcEntityKind::FallingBlock:
         return QcPhysics::boxAt(feet, QcFallingBlockManager::size, QcFallingBlockManager::size);
     case QcEntityKind::ArmourStand:
-        return QcArmourStandManager::bodyOf(static_cast<const QcArmourStand &>(entity));
+        return QcArmourStandManager::bodyOf(entity.as<QcArmourStand>());
     case QcEntityKind::MovingBlock:
         break;
     }
@@ -62,10 +91,10 @@ void QcEntities::displace(QcEntity &entity, const QcVec3 &delta) const
     switch (entity.kind) {
     case QcEntityKind::Player:
         // Like any other server correction (decision E-337).
-        static_cast<QcServerClient &>(entity).stateDirty = true;
+        entity.as<QcServerClient>().stateDirty = true;
         break;
     case QcEntityKind::Item:
-        static_cast<QcItemEntity &>(entity).resting = false;
+        entity.as<QcItemEntity>().resting = false;
         break;
     case QcEntityKind::ArmourStand:
         // Stands send no moves, only spawns.

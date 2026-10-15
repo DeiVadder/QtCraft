@@ -1,6 +1,7 @@
 #include "QcServerDebug.h"
 
 #include "QcBlockUpdateQueue.h"
+#include "QcChunkLoading.h"
 #include "QcServerClient.h"
 #include "QcServerState.h"
 #include "QcTickPhaseTimer.h"
@@ -8,6 +9,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace {
 
@@ -16,9 +18,10 @@ constexpr double goalLookAhead = 4.0;
 
 } // namespace
 
-QcServerDebug::QcServerDebug(const QcServerState &state, const QcBlockUpdateQueue &updates, const QcTickPhaseTimer &phases,
-                             const QcTickScheduler &ticks)
+QcServerDebug::QcServerDebug(const QcServerState &state, const QcBlockUpdateQueue &updates, const QcChunkLoading &loading,
+                             const QcTickPhaseTimer &phases, const QcTickScheduler &ticks)
     : m_state(state)
+    , m_loading(loading)
     , m_updates(updates)
     , m_phases(phases)
     , m_ticks(ticks)
@@ -72,10 +75,29 @@ QcMsg::ServerDebug QcServerDebug::build(const QcServerClient &client) const
     message.biome = m_state.world().generator().biomeAt(int(std::floor(feet.x)), int(std::floor(feet.z))).left(QcMsg::ServerDebug::maxTextLength);
     message.worldType = m_state.config().generator.left(QcMsg::ServerDebug::maxTextLength);
 
+    addChunks(client, message);
     if ((client.view.debugFlags & QcMsg::DebugSubscribe::mobGoals) != 0) {
         addGoals(client, message);
     }
     return message;
+}
+
+void QcServerDebug::addChunks(const QcServerClient &client, QcMsg::ServerDebug &message) const
+{
+    const QcChunkLoading::Numbers numbers = m_loading.numbers();
+    QcMsg::ServerDebug::Chunks &chunks = message.chunks;
+    chunks.stored = quint32(numbers.stored);
+    chunks.arriving = quint32(numbers.waiting);
+    chunks.unsaved = quint32(numbers.unsaved);
+    chunks.groups = quint32(numbers.groups);
+    chunks.largestGroup = quint32(numbers.largestGroup);
+    chunks.oversizeGroups = quint32(numbers.oversizeGroups);
+    chunks.tickets = quint32(numbers.tickets);
+    chunks.refusedTickets = quint32(std::min<quint64>(numbers.refusedTickets, std::numeric_limits<quint32>::max()));
+    chunks.forced = quint32(numbers.forced);
+    chunks.loaders = quint32(numbers.loaders);
+    const QcChunkPos here = QcPhysics::blockContaining(client.motion.position).chunk();
+    chunks.playerGroup = m_state.world().chunk(here) ? quint32(m_loading.groupOf(here).chunks.size()) : 0;
 }
 
 void QcServerDebug::addGoals(const QcServerClient &client, QcMsg::ServerDebug &message) const

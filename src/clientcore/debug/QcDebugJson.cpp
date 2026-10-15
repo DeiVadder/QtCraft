@@ -129,7 +129,18 @@ QJsonObject serverJson(const QcMsg::ServerDebug &server)
             {u"pendingBlockUpdates"_s, qint64(server.pendingBlockUpdates)},
             {u"waitingBlockUpdates"_s, qint64(server.waitingBlockUpdates)},
             {u"biome"_s, server.biome},
-            {u"worldType"_s, server.worldType}};
+            {u"worldType"_s, server.worldType},
+            {u"chunks"_s, QJsonObject{{u"stored"_s, qint64(server.chunks.stored)},
+                                       {u"arriving"_s, qint64(server.chunks.arriving)},
+                                       {u"unsaved"_s, qint64(server.chunks.unsaved)},
+                                       {u"groups"_s, qint64(server.chunks.groups)},
+                                       {u"largestGroup"_s, qint64(server.chunks.largestGroup)},
+                                       {u"playerGroup"_s, qint64(server.chunks.playerGroup)},
+                                       {u"oversizeGroups"_s, qint64(server.chunks.oversizeGroups)},
+                                       {u"tickets"_s, qint64(server.chunks.tickets)},
+                                       {u"refusedTickets"_s, qint64(server.chunks.refusedTickets)},
+                                       {u"forced"_s, qint64(server.chunks.forced)},
+                                       {u"loaders"_s, qint64(server.chunks.loaders)}}}};
 
     if (!server.goals.isEmpty()) {
         static constexpr std::array<const char *, QcMsg::MobGoal::kindCount> kinds{"wander", "chase", "flee"};

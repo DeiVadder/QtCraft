@@ -30,12 +30,15 @@ private slots:
         join(config);
         QVERIFY(m_server->world().setBlock(m_feet.offset(1, 0, 0), id("qtcraft:glass")));
         ticks(20);
+        m_server->waitForStorage();
         QVERIFY(QFile::exists(regionFile(dir.path(), m_feet.offset(1, 0, 0))));
         // The autosave wrote the player too; remove it so only the save on disconnect can recreate it.
         QVERIFY(QFile::remove(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Raw"_s))));
         m_client->connection.close();
         pump();
         ticks(1);
+        // Saved with the world in the background (decision E-378).
+        m_server->waitForStorage();
         QVERIFY(QFile::exists(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Raw"_s))));
     }
 
@@ -275,6 +278,7 @@ private slots:
         config.viewDistance = 1;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+        loadAround(m_feet);
 
         QVERIFY(!m_server->keepInventory());
         QCOMPARE(m_server->items().items().size(), 1);

@@ -95,7 +95,7 @@ Das härteste Material, für die besten Werkzeuge.
 
 **Wird verwendet für**
 
-[Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamantbeinschutz](tools.md#item-qtcraft-diamond_leggings), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Diamantbrustplatte](tools.md#item-qtcraft-diamond_chestplate), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamanthelm](tools.md#item-qtcraft-diamond_helmet), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Diamantstiefel](tools.md#item-qtcraft-diamond_boots)
+[Chunk-Lader](blocks.md#block-qtcraft-chunk_loader), [Diamantaxt](tools.md#item-qtcraft-diamond_axe), [Diamantbeinschutz](tools.md#item-qtcraft-diamond_leggings), [Diamantblock](blocks.md#block-qtcraft-diamond_block), [Diamantbrustplatte](tools.md#item-qtcraft-diamond_chestplate), [Diamanthacke](tools.md#item-qtcraft-diamond_hoe), [Diamanthelm](tools.md#item-qtcraft-diamond_helmet), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel), [Diamantschwert](tools.md#item-qtcraft-diamond_sword), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe), [Diamantstiefel](tools.md#item-qtcraft-diamond_boots)
 
 **Droppt aus**
 

@@ -91,8 +91,13 @@ void applyCircuits(const QcBlockEntityRecord &record, QcBlockEntities &entities,
     for (const QcBlockEntityRecord::Scheduled &entry : record.scheduled) {
         entities.schedule().add(entry.pos, now + entry.ticksLeft, entry.priority);
     }
+    // Looked at in the next step as the changes they were; where they read a chunk that is not
+    // loaded they wait for it (QcServerCircuits::takeChanges), so the chunks around need not be there.
     for (const QcBlockPos &pos : record.wakes) {
-        circuits.waiting[pos.chunk()].append(pos);
+        circuits.changes.append({pos, qcAirBlockId, qcAirBlockId, false, false});
+    }
+    for (const QcBlockPos &pos : record.signalWakes) {
+        circuits.changes.append({pos, qcAirBlockId, qcAirBlockId, false, true});
     }
 }
 
@@ -109,7 +114,7 @@ namespace QcBlockEntityRecords {
 
 QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCircuitState &circuits, quint64 now)
 {
-    const QHash<QcChunkPos, QList<QcBlockPos>> pending = circuits.pendingByChunk();
+    const QHash<QcChunkPos, QcCircuitState::Pending> pending = circuits.pendingByChunk();
     QSet<QcChunkPos> chunks;
     for (const QList<QcChunkPos> &keys : {entities.chunks(), entities.schedule().chunks(), pending.keys()}) {
         chunks.unite(QSet<QcChunkPos>(keys.begin(), keys.end()));
@@ -126,7 +131,9 @@ QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCirc
         for (const QcSignalSchedule::Entry &entry : scheduled) {
             record.scheduled.append({entry.pos, ticksLeft(entry.due, now), entry.priority});
         }
-        record.wakes = pending.value(pos);
+        const QcCircuitState::Pending waits = pending.value(pos);
+        record.wakes = waits.looks;
+        record.signalWakes = waits.onTheirWay;
         sortByPos(record.containers);
         sortByPos(record.machines);
         sortByPos(record.saplings);
@@ -139,6 +146,30 @@ QList<QcBlockEntityRecord> collect(const QcBlockEntities &entities, const QcCirc
         return std::pair{a.chunk.x, a.chunk.z} < std::pair{b.chunk.x, b.chunk.z};
     });
     return records;
+}
+
+QcBlockEntityRecord take(QcChunkPos chunk, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers, quint64 now)
+{
+    QcBlockEntityRecord record;
+    record.chunk = chunk;
+    if (const QcBlockEntities::ChunkIndex *index = entities.chunkIndex(chunk)) {
+        collectEntries(entities, *index, now, record);
+    }
+    const QList<QcSignalSchedule::Entry> scheduled = entities.schedule().entriesIn(chunk);
+    for (const QcSignalSchedule::Entry &entry : scheduled) {
+        record.scheduled.append({entry.pos, ticksLeft(entry.due, now), entry.priority});
+    }
+    const QcCircuitState::Pending waits = circuits.takeChunk(chunk);
+    record.wakes = waits.looks;
+    record.signalWakes = waits.onTheirWay;
+    sortByPos(record.containers);
+    sortByPos(record.machines);
+    sortByPos(record.saplings);
+    sortByPos(record.memories);
+
+    entities.forgetChunk(chunk);
+    hoppers.forgetChunk(chunk);
+    return record;
 }
 
 QStringList apply(const QList<QcBlockEntityRecord> &records, QcBlockEntities &entities, QcCircuitState &circuits, QcHopperQueue &hoppers,

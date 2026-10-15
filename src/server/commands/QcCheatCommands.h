@@ -54,6 +54,7 @@ private:
     void heal(const QcCommandContext &context);
     void time(const QcCommandContext &context) const;
     void gamerule(const QcCommandContext &context);
+    void spawnChunkRadius(const QcCommandContext &context);
     void gamemode(const QcCommandContext &context);
     void setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode);
     void defaultGamemode(const QcCommandContext &context);

@@ -40,6 +40,8 @@ public:
     void tick(double dt);
     // Replaces all stands, e.g. from a save; entries beyond the limit are left out and counted.
     qsizetype restore(QList<QcArmourStand> stands);
+    // Adds the stands of a chunk that came back (decision E-374); returns how many were left out at the limit.
+    qsizetype adopt(const QList<QcArmourStand> &stands);
 
 private:
     QList<QcArmourStand> m_stands;

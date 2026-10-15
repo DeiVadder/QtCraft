@@ -48,6 +48,12 @@ public:
     // version is an error (decision E-356).
     QcResult<std::optional<QcPlayerData>> read(const QString &playerName, QStringList &warnings) const;
     QcStatus write(const QString &playerName, const QcPlayerData &player) const;
+    // The file of a player relative to the world directory ("players/<file name>").
+    static QString relativePath(const QString &playerName);
+    // The contents of a player file, for a save that writes it with the world (decision E-378).
+    QByteArray bytes(const QcPlayerData &player) const;
+    // A player from the contents of his file (none: never saved).
+    QcResult<std::optional<QcPlayerData>> parse(const QString &playerName, const std::optional<QByteArray> &contents, QStringList &warnings) const;
 
 private:
     void writeSlots(QDataStream &stream, const QcInventory &inventory) const;

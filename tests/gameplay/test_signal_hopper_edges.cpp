@@ -194,9 +194,10 @@ private slots:
         QVERIFY(m_server->save().has_value());
         cleanup();
 
-        // Read right after opening the world, before any tick.
+        // Read right after its chunk loads, before any tick.
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+        m_server->world().loadChunk(first.chunk());
         const QcBlockEntities::Container *loaded = m_server->blockEntities().container(first);
         QVERIFY(loaded);
         const quint64 loadedLeft = loaded->readyAt - m_server->tickCount();

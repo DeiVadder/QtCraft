@@ -3,6 +3,7 @@
 #include "QcBlockScreens.h"
 #include "QcBlockSimulation.h"
 #include "QcBlockUpdateQueue.h"
+#include "QcChunkLoading.h"
 #include "QcChunkStreaming.h"
 #include "QcEntitySync.h"
 #include "QcEnvironmentDamage.h"
@@ -103,6 +104,13 @@ public:
     bool worldInUse() const { return m_persistence.worldInUse(); }
     // Whether openWorld() failed because the world comes from an older development version.
     bool worldTooOld() const { return m_persistence.worldTooOld(); }
+    // Saves in the background like an autosave (tests and measurements).
+    void saveInBackground() { m_persistence.saveInBackground(); }
+    // Which chunks are loaded and how they come and go (decisions E-374 to E-377).
+    QcChunkLoading &chunkLoading() { return m_chunkLoading; }
+    // Waits until everything handed to the world's storage is written (autosaves run in the
+    // background, decision E-373).
+    void waitForStorage() { m_persistence.waitForStorage(); }
     // Whether openWorld() failed on a damaged per-region file, and which.
     const QcServerPersistence::DamagedFile &damagedFile() const { return m_persistence.damagedFile(); }
     void setWorldTime(double seconds);
@@ -182,6 +190,8 @@ private:
     void handleSetAppearance(Client &client, const QcAppearance &appearance);
     void sendTime(Client &client);
     void sendTimeToAll();
+    // Tells the operators of chunks found damaged (decision E-373).
+    void reportDamagedChunks();
     void autosave();
     // Writes identities.json when players registered since the last write (decision E-273).
     void flushIdentities();
@@ -232,6 +242,7 @@ private:
     QcServerCreatures m_creatures;
     QcEnvironmentDamage m_environment;
     QcEntitySync m_entitySync;
+    QcChunkLoading m_chunkLoading;
     QcChunkStreaming m_chunkStreaming;
     QcServerPersistence m_persistence;
     QcServerCommands m_commands;

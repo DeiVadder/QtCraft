@@ -69,8 +69,8 @@ QStringList problems(const QcEntities &entities)
     QStringList problems;
     checkIdsAndTables(entities, problems);
 
-    const QcWorldEntityRecords saved = QcEntityRecords::collect(entities);
-    for (const QcEntityRecord &record : saved.records) {
+    const QHash<QcChunkPos, QcEntityRecord> saved = QcEntityRecords::collect(entities);
+    for (const QcEntityRecord &record : saved) {
         checkChunks(record.creatures, record.chunk, "creature", [](const QcMobManager::Stored &stored) { return stored.position; }, problems);
         checkChunks(record.items, record.chunk, "item", [](const QcItemEntityManager::Drop &drop) { return drop.position; }, problems);
         checkChunks(record.fallingBlocks, record.chunk, "falling block", [](const QcFallingBlock &falling) { return falling.motion.position; },

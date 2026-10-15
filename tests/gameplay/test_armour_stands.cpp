@@ -7,10 +7,12 @@
 #include "QcServerTestFixture.h"
 #include "QcShowcaseArmourArea.h"
 #include "QcShowcasePlanner.h"
-#include "QcEntityStorage.h"
+#include "QcEntityCodec.h"
+#include "QcRegionFile.h"
 #include "QcTestUtil.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -406,14 +408,6 @@ private slots:
 
     void standsKeepWhatTheyWearThroughTheEntityFiles()
     {
-        QTemporaryDir dir;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QStringList warnings;
-        // Nothing saved yet: no stands, no warning.
-        const auto empty = storage.read(warnings);
-        QVERIFY(empty.has_value() && empty->records.isEmpty());
-        QVERIFY(warnings.isEmpty());
-
         QcArmourStand stand;
         stand.motion.position = {1.5, 64.0, -3.5};
         stand.item = u"qtcraft:armor_stand"_s;
@@ -424,46 +418,75 @@ private slots:
         QcEntityRecord record;
         record.chunk = {0, -1};
         record.stands.append({stand, 0});
-        QVERIFY(storage.write({{record}, {}}).has_value());
-        const auto read = storage.read(warnings);
+        const auto roundTrip = [this](const QcEntityRecord &written, QStringList &warnings) {
+            QSet<QString> reported;
+            return QcEntityCodec::decode(QcEntityCodec::encode(written, *m_content), written.chunk, *m_content, warnings, reported);
+        };
+        QStringList warnings;
+        const auto read = roundTrip(record, warnings);
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
-        QCOMPARE(read->records.size(), 1);
-        QCOMPARE(read->records.first().stands.first().entry, stand);
+        QCOMPARE(read->stands.size(), 1);
+        QCOMPARE(read->stands.first().entry, stand);
 
         // A cape the content no longer offers is dropped with a warning; the stand stays.
         record.stands.first().entry.cape = u"oldmod:cape"_s;
-        QVERIFY(storage.write({{record}, {}}).has_value());
-        QCOMPARE(storage.read(warnings)->records.first().stands.first().entry, stand);
+        QCOMPARE(roundTrip(record, warnings)->stands.first().entry, stand);
         QCOMPARE(warnings.size(), 1);
 
         // Armour that does not fit its slot any more is dropped with a warning.
         record.stands.first().entry = stand;
         record.stands.first().entry.equipment.at(QcEquipmentSlot::Feet) = {item("qtcraft:iron_helmet"), 1, 0};
         warnings.clear();
-        QVERIFY(storage.write({{record}, {}}).has_value());
-        QCOMPARE(storage.read(warnings)->records.first().stands.first().entry, stand);
+        QCOMPARE(roundTrip(record, warnings)->stands.first().entry, stand);
         QCOMPARE(warnings.size(), 1);
     }
 
-    void aWorldWithADamagedEntityFileIsRefused()
+private:
+    QcChunkPos m_standChunk;
+
+    // The bytes the entity region file at `path` holds for the stand's chunk, as they are, with the
+    // checksum of its index entry (none when it holds nothing for it).
+    QByteArray storedBlob(const QString &path) const
     {
-        // Stands are entities like the others now: a damaged file stops the world from opening with a
-        // message, instead of losing them unnoticed (decision E-366).
-        QTemporaryDir dir;
-        QcServerConfig config;
-        config.worldDirectory = dir.path();
+        const QcResult<QcRegionFile::Index> index = QcRegionFile::readIndex(path, QcRegionFile::regionOf(m_standChunk), "QCER", 3);
+        if (!index || !index->contains(m_standChunk)) {
+            return {};
+        }
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly) || !file.seek(index->value(m_standChunk).offset)) {
+            return {};
+        }
+        return file.read(index->value(m_standChunk).size) + " crc " + QByteArray::number(index->value(m_standChunk).crc);
+    }
+
+    // Saves a world with one stand and returns the path of its entity region file.
+    QString saveWorldWithAStand(const QcServerConfig &config)
+    {
         join(config);
         placeStand();
         const QcChunkPos chunk = QcPhysics::blockContaining(m_server->stands().stands().constFirst().motion.position).chunk();
-        QVERIFY(m_server->save().has_value());
+        m_standChunk = chunk;
+        [[maybe_unused]] const bool saved = m_server->save().has_value();
         m_client.reset();
         m_server.reset();
-
         const QcChunkPos region = QcWorldStorage::regionOf(chunk);
-        const QString name = u"r.%1.%2.qen"_s.arg(region.x).arg(region.z);
-        QFile file(QDir(dir.filePath(u"entities"_s)).filePath(name));
+        return QDir(QDir(config.worldDirectory).filePath(u"entities"_s)).filePath(u"r.%1.%2.qen"_s.arg(region.x).arg(region.z));
+    }
+
+private slots:
+    void aWorldWithADamagedEntityIndexIsRefused()
+    {
+        // Stands are entities like the others: a damaged index of their region file stops the world
+        // from opening with a message, instead of losing them unnoticed (decisions E-366, E-373).
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        const QString path = saveWorldWithAStand(config);
+        const QString name = QFileInfo(path).fileName();
+        QFile file(path);
         QVERIFY(file.open(QIODevice::ReadWrite));
-        file.seek(file.size() - 2);
+        // The first index entry, behind magic, version, count and crc.
+        file.seek(14);
         file.write("!!");
         file.close();
 
@@ -483,12 +506,58 @@ private slots:
 
         // Moved away, the file no longer stops the world: it opens without the stand.
         QVERIFY(QFile::rename(file.fileName(), dir.filePath(name)));
-        QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
-        const QcStatus opened = server.openWorld();
-        QVERIFY2(opened.has_value(), qPrintable(opened ? QString() : opened.error()));
-        const bool undamaged = server.damagedFile().part == QcServerPersistence::DamagedPart::None;
+        join(config);
+        const bool undamaged = m_server->damagedFile().part == QcServerPersistence::DamagedPart::None;
         QVERIFY(undamaged);
-        QVERIFY(server.stands().stands().isEmpty());
+        QVERIFY(m_server->stands().stands().isEmpty());
+    }
+
+    void aDamagedChunkPlaysAsGeneratedAndKeepsItsData()
+    {
+        // Damage inside a chunk's data is found when the chunk is read (decision E-373): the world
+        // opens, the chunk plays as generated without what was kept of it, and its data on disk stays
+        // as it is, so nothing is overwritten.
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        const QString path = saveWorldWithAStand(config);
+        const QcResult<QcRegionFile::Index> index = QcRegionFile::readIndex(path, QcRegionFile::regionOf(m_standChunk), "QCER", 3);
+        QVERIFY(index.has_value() && index->contains(m_standChunk));
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.seek(index->value(m_standChunk).offset);
+        file.write("!!");
+        file.close();
+        // The chunk's own bytes are compared: a save may rewrite the region for other chunks.
+        const QByteArray before = storedBlob(path);
+        QVERIFY(before.contains("!!"));
+
+        join(config);
+        QVERIFY(m_server->stands().stands().isEmpty());
+        QVERIFY(m_server->save().has_value());
+        QCOMPARE(storedBlob(path), before);
+
+        // The operators are told, once; /regenerate gives the damaged data up and the chunk is
+        // saved again (review of 31.3).
+        ticks(1);
+        pump();
+        const auto told = [this] {
+            return std::ranges::count_if(m_client->chatLines, [](const QString &line) { return line.contains(u"is damaged"_s); });
+        };
+        QCOMPARE(told(), 1);
+        QVERIFY(m_server->world().isQuarantined(m_standChunk));
+        chat(u"/regenerate %1 %2"_s.arg(m_standChunk.x * QcWorld::chunkSize).arg(m_standChunk.z * QcWorld::chunkSize));
+        chat(u"/confirm"_s);
+        QVERIFY(!m_server->world().isQuarantined(m_standChunk));
+        QVERIFY(m_server->save().has_value());
+        QVERIFY(storedBlob(path) != before);
+        cleanup();
+        join(config);
+        ticks(1);
+        pump();
+        QVERIFY(m_server->world().chunk(m_standChunk));
+        QVERIFY(!m_server->world().isQuarantined(m_standChunk));
+        QCOMPARE(told(), 0);
     }
 
     void restoringMoreThanTheLimitCountsTheRest()

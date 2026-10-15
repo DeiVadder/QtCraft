@@ -58,6 +58,20 @@ void QcArmourStandManager::tick(double dt)
     }
 }
 
+qsizetype QcArmourStandManager::adopt(const QList<QcArmourStand> &stands)
+{
+    qsizetype left = 0;
+    for (QcArmourStand stand : stands) {
+        if (m_stands.size() >= m_maxStands) {
+            ++left;
+            continue;
+        }
+        stand.settled = false;
+        m_stands.append(stand);
+    }
+    return left;
+}
+
 qsizetype QcArmourStandManager::restore(QList<QcArmourStand> stands)
 {
     const qsizetype dropped = std::max<qsizetype>(0, stands.size() - m_maxStands);

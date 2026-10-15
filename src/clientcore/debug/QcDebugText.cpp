@@ -181,6 +181,19 @@ QStringList QcDebugText::serverLines(const QcMsg::ServerDebug &server)
             .arg(ms(server.tickMeanMs), ms(server.tickMaxMs), ms(server.lateMeanMs), ms(server.lateMaxMs))
             .arg(server.skippedTicks),
         tr("Block updates: %1 queued, %2 waiting for chunks").arg(server.pendingBlockUpdates).arg(server.waitingBlockUpdates),
+        tr("Chunks: %1 stored, %2 arriving, %3 not yet saved · forced %4 · loaders %5")
+            .arg(server.chunks.stored)
+            .arg(server.chunks.arriving)
+            .arg(server.chunks.unsaved)
+            .arg(server.chunks.forced)
+            .arg(server.chunks.loaders),
+        tr("Groups: %1 (largest %2, here %3, too large %4) · tickets %5 (refused %6)")
+            .arg(server.chunks.groups)
+            .arg(server.chunks.largestGroup)
+            .arg(server.chunks.playerGroup)
+            .arg(server.chunks.oversizeGroups)
+            .arg(server.chunks.tickets)
+            .arg(server.chunks.refusedTickets),
     };
 }
 

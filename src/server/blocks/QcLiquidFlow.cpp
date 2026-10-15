@@ -372,6 +372,27 @@ void QcLiquidFlow::forgetChunk(QcChunkPos chunk)
     });
 }
 
+QHash<QcChunkPos, QList<QcBlockPos>> QcLiquidFlow::takeChunks(const QSet<QcChunkPos> &chunks)
+{
+    QHash<QcChunkPos, QList<QcBlockPos>> taken;
+    if (m_planned.isEmpty()) {
+        return taken;
+    }
+    // In the order they are due, so they come back in the same order.
+    std::erase_if(m_due, [&](auto &due) {
+        due.second.removeIf([&](QcBlockPos pos) {
+            if (!chunks.contains(pos.chunk())) {
+                return false;
+            }
+            taken[pos.chunk()].append(pos);
+            return true;
+        });
+        return due.second.isEmpty();
+    });
+    m_planned.removeIf([&chunks](const auto &planned) { return chunks.contains(planned.key().chunk()); });
+    return taken;
+}
+
 void QcLiquidFlow::change(QcBlockPos pos, QcBlockId block, const StepContext &context)
 {
     context.set(pos, block);

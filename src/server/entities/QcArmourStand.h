@@ -10,6 +10,9 @@
 // AI, no health and no physics of its own and stands where it was placed until something pushes it.
 struct QcArmourStand : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::ArmourStand;
+
     // A stand breaks when the same player hits it twice within this time (a single hit only wobbles
     // it). Longer than the attack cooldown (QcServerCombat::playerAttackCooldown), during which hits
     // do not count.

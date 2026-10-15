@@ -50,6 +50,7 @@
                 "block:qtcraft:brown_stained_glass",
                 "block:qtcraft:cobblestone",
                 "block:qtcraft:bookshelf",
+                "block:qtcraft:chunk_loader",
                 "block:qtcraft:diamond_block",
                 "block:qtcraft:diamond_ore",
                 "block:qtcraft:oak_planks",
@@ -496,6 +497,7 @@
                 "tag:qtcraft:planks",
                 "tag:qtcraft:terracotta",
                 "tag:qtcraft:wool",
+                "tag:qtcraft:chunk_loaders",
                 "tag:qtcraft:dyes",
                 "tag:qtcraft:coals"
             ],
@@ -9710,6 +9712,209 @@
             ],
             "text": "Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.",
             "title": "Truhe"
+        },
+        "block:qtcraft:chunk_loader": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Chunk Loader",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chunk_loader"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 2 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "0,94 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Licht",
+                    "links": [
+                    ],
+                    "value": "7 von 15"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Gruppen",
+                    "links": [
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "tag:qtcraft:chunk_loaders",
+                            "text": "Beliebiger Chunk-Lader"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:chunk_loader",
+            "id": "block:qtcraft:chunk_loader",
+            "name": "qtcraft:chunk_loader",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamant"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signalstaub"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_lamp",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_lamp",
+                                    "text": "Signallampe"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signalstaub"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamant"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:chunk_loader",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:chunk_loader",
+                                "note": "",
+                                "target": "block:qtcraft:chunk_loader",
+                                "text": "Chunk-Lader"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Hält seinen Chunk geladen, auch wenn kein Spieler in der Nähe ist, mit allen Chunks, die seine Schaltungen verbinden, sodass Farmen und Maschinen weiterlaufen. Jeder Spieler darf einige setzen (chunkLoadersPerPlayer, standardmäßig 4); in einer Welt arbeiten höchstens so viele (chunkLoaders, 64).",
+            "title": "Chunk-Lader"
         },
         "block:qtcraft:clay": {
             "category": "blocks",
@@ -29393,6 +29598,20 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:iron_pickaxe",
                             "note": "Stufe 3",
                             "target": "item:qtcraft:iron_pickaxe",
@@ -37604,6 +37823,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        },
+                        {
                             "icon": "qtcraft:signal_repeater",
                             "note": "",
                             "target": "block:qtcraft:signal_repeater",
@@ -37973,6 +38198,20 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
                 },
                 {
                     "links": [
@@ -48578,7 +48817,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.",
+                    "text": "- `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`\n- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)\n- `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler\n- `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen\n- `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft\n- `/tick sprint <Ticks|Sekunden s|Minuten min|Stunden h|Tage d>`: so viel Spielzeit so schnell wie möglich ablaufen lassen (`/tick sprint stop` beendet es)\n- `/tick query`: Rate, gemessene Rate, Einfrieren und die Zeit pro Tick-Phase\nRate und Einfrieren werden nicht gespeichert; eine Welt öffnet immer normal.\n- `/forceload add <x> <z> [<x2> <z2>]`, `/forceload remove <x> <z> [<x2> <z2>]|all`, `/forceload query [<x> <z>]`: hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (Blockkoordinaten eines Chunks oder der Ecken eines Bereichs, höchstens 256 Chunks auf einmal und `forcedChunks` in der Welt), gibt sie frei oder listet sie; mit einem erzwungenen Chunk verbundene Schaltungen bleiben mit ihm geladen",
                     "title": "Zeit und Ticks"
                 },
                 {
@@ -53739,6 +53978,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        },
+                        {
                             "icon": "qtcraft:diamond_axe",
                             "note": "",
                             "target": "item:qtcraft:diamond_axe",
@@ -54735,6 +54980,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:cobblestone_stairs",
                             "text": "Bruchsteintreppe"
+                        },
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
                         },
                         {
                             "icon": "qtcraft:diamond_block",
@@ -59004,6 +59255,12 @@
                             "text": "Bruchsteintreppe"
                         },
                         {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        },
+                        {
                             "icon": "qtcraft:diamond_block",
                             "note": "Stufe 3",
                             "target": "block:qtcraft:diamond_block",
@@ -63093,6 +63350,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:cobblestone_stairs",
                             "text": "Bruchsteintreppe"
+                        },
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
                         },
                         {
                             "icon": "qtcraft:iron_block",
@@ -68323,7 +68586,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Eisenblock, Eisenerz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian",
+                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian",
                     "title": "Spitzhacke"
                 },
                 {
@@ -68367,6 +68630,42 @@
             ],
             "text": "Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit dieser Werkzeugart mindestens seiner Stufe abgebaut wird. Höhere Stufen bauen schneller ab und halten länger.",
             "title": "Werkzeugstufen"
+        },
+        "tag:qtcraft:chunk_loaders": {
+            "category": "tags",
+            "categoryTitle": "Item-Gruppen",
+            "englishTitle": "Any chunk loader",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "#qtcraft:chunk_loaders"
+                }
+            ],
+            "icon": "qtcraft:chunk_loader",
+            "id": "tag:qtcraft:chunk_loaders",
+            "name": "qtcraft:chunk_loaders",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:chunk_loader",
+                            "note": "",
+                            "target": "block:qtcraft:chunk_loader",
+                            "text": "Chunk-Lader"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Items dieser Gruppe"
+                }
+            ],
+            "text": "Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.",
+            "title": "Beliebiger Chunk-Lader"
         },
         "tag:qtcraft:coals": {
             "category": "tags",

@@ -7,6 +7,9 @@
 // health, behaviour timers and breeding state. QcMobManager moves and spawns them.
 struct QcCreature : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::Creature;
+
     QcCreature()
         : QcEntity(QcEntityKind::Creature)
     {

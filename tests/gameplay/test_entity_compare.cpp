@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
+#include <QRegularExpression>
 #include <QTemporaryDir>
 
 #include <cmath>
@@ -22,6 +23,10 @@ using namespace Qt::StringLiterals;
 class TestEntityCompare : public QcMachineFixture
 {
     Q_OBJECT
+
+public:
+    // Chunks load at once, so the run does not depend on how fast the threads are (stage 31.3).
+    TestEntityCompare() { m_loadChunksAtOnce = true; }
 
 private:
     QStringList m_dump;
@@ -266,14 +271,43 @@ private slots:
         QFile golden(QStringLiteral(QTCRAFT_COMPARE_GOLDEN));
         QVERIFY(golden.open(QIODevice::ReadOnly));
         const QStringList before = QString::fromUtf8(golden.readAll()).split(u'\n', Qt::SkipEmptyParts);
-        for (qsizetype i = 0; i < std::min(m_dump.size(), before.size()); ++i) {
+
+        // Everything up to the reopened world is compared line by line. A reopened world brings its
+        // entities back with new ids as their chunks load (decision E-374): right after reopening the
+        // same entities are there (whole, creatures without where they wandered to); the ticks after
+        // that run in the new order and are not compared, test_chunk_unloading compares states.
+        const qsizetype reopenedNow = m_dump.indexOf(u"== reopened"_s);
+        const qsizetype reopenedThen = before.indexOf(u"== reopened"_s);
+        QVERIFY(reopenedNow > 0 && reopenedThen > 0);
+        QCOMPARE(reopenedNow, reopenedThen);
+        for (qsizetype i = 0; i < reopenedNow; ++i) {
             const QString now = m_dump[i];
             const QString &then = before[i];
             QCOMPARE(now, then);
         }
-        const qsizetype lines = m_dump.size();
-        const qsizetype goldenLines = before.size();
-        QCOMPARE(lines, goldenLines);
+        const QStringList entitiesNow = reopenedBlock(m_dump, reopenedNow);
+        const QStringList entitiesThen = reopenedBlock(before, reopenedThen);
+        QCOMPARE(entitiesNow, entitiesThen);
+    }
+
+    // The entities of the block starting at `start` without their ids, sorted. Items, falling blocks,
+    // stands and the player are compared whole; creatures by kind, health and what they are, since
+    // where they wandered in the ticks after reopening depends on their new ids.
+    static QStringList reopenedBlock(const QStringList &dump, qsizetype start)
+    {
+        static const QRegularExpression id(uR"(^(creature|item|falling|stand|moving) \d+ )"_s);
+        static const QRegularExpression motion(uR"( at \S+ \S+ \S+ velocity \S+ \S+ \S+ yaw \S+)"_s);
+        QStringList block;
+        for (qsizetype i = start + 1; i < dump.size() && !dump[i].startsWith(u"=="_s); ++i) {
+            QString line = dump[i];
+            line.replace(id, u"\\1 "_s);
+            if (line.startsWith(u"creature"_s)) {
+                line.remove(motion);
+            }
+            block.append(line);
+        }
+        block.sort();
+        return block;
     }
 
     // Every kind in one scene, tick by tick: creatures wander and chase, items merge, fall through a

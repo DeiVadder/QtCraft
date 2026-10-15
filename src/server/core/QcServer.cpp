@@ -51,8 +51,9 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_creatures(m_state, m_sounds, m_health)
     , m_environment(m_state, m_sounds, m_health)
     , m_entitySync(m_state)
-    , m_chunkStreaming(m_state)
-    , m_persistence(m_state, m_blocks, m_blockUpdates)
+    , m_chunkLoading(m_state, m_blocks, m_blockUpdates)
+    , m_chunkStreaming(m_state, m_chunkLoading)
+    , m_persistence(m_state, m_blocks, m_blockUpdates, m_chunkLoading)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
                            {m_inventory, m_health, m_stands, m_gameModes, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
@@ -60,7 +61,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_join(m_state, {m_persistence, m_inventory, m_health, m_gameModes, m_chunkStreaming, [this](Client &client) { sendTime(client); }})
     , m_login(m_state, [this](Client &client) { m_join.join(client); })
     , m_tickTimer(new QTimer(this))
-    , m_debug(m_state, m_blockUpdates, m_phases, m_ticks)
+    , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
 {
     static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
@@ -456,6 +457,7 @@ void QcServer::tick()
     using Phase = QcTickPhase;
     m_phases.beginTick();
     m_state.advanceClock(m_ticks.tickRealNs());
+    m_chunkLoading.beginTick();
     // A frozen world only ticks for the players (decision E-249).
     const bool simulating = m_tickControl.simulateNext();
     if (simulating && m_state.info().daylightCycle) {
@@ -472,17 +474,21 @@ void QcServer::tick()
     }
     m_phases.lap(Phase::Players);
     autosave();
+    reportDamagedChunks();
     m_phases.lap(Phase::Saving);
-    m_state.world().collectGeneratedChunks();
+    m_chunkLoading.admitArrivals();
     m_blockUpdates.handleLoadedChunks();
     // Entities in chunks that are not loaded rest for this tick, every kind by the same rule; also in
-    // a frozen world, whose clients still get what comes into view (E-249).
-    m_state.entities().settle([this](QcChunkPos chunk) { return m_state.world().chunk(chunk) != nullptr; });
+    // a frozen world, whose clients still get what comes into view (E-249). Their chunks load, so
+    // they go back to storage with them (decision E-374).
+    m_chunkLoading.requestStrays(
+        m_state.entities().settle([this](QcChunkPos chunk) { return m_state.world().chunk(chunk) != nullptr; }, m_state.world().loadedEpoch()));
     m_phases.lap(Phase::ChunkLoading);
 
     if (simulating) {
         simulate();
     }
+    m_chunkLoading.noteSimulated();
     // A step of a frozen world moves the time the clients do not advance themselves.
     if (simulating && m_tickControl.frozen()) {
         sendTimeToAll();
@@ -503,8 +509,9 @@ void QcServer::tick()
     m_state.entities().forgetDeaths();
     m_phases.lap(Phase::ClientSync);
 
-    // Drop chunks no player needs any more.
-    m_chunkStreaming.unloadUnneeded();
+    // Chunks no one needs any more leave the world, whole groups at a time (decision E-374).
+    m_chunkLoading.updateTickets();
+    m_chunkLoading.unloadUnneeded();
     m_phases.lap(Phase::Streaming);
     m_phases.endTick(m_ticks.currentLateNs());
     m_ticks.stats().addPhases(m_phases.lastTick());
@@ -540,23 +547,47 @@ void QcServer::simulate()
     m_phases.lap(Phase::Machines);
 }
 
+void QcServer::reportDamagedChunks()
+{
+    const QList<QcChunkPos> damaged = m_state.world().takeNewlyQuarantined();
+    for (const QcChunkPos &chunk : damaged) {
+        const QString x = QString::number(chunk.x * QcWorld::chunkSize);
+        const QString z = QString::number(chunk.z * QcWorld::chunkSize);
+        for (const auto &client : m_state.clients()) {
+            if (m_state.permissionOf(*client) == QcPermission::Operator) {
+                client->connection->send(QcChatText::message(
+                    QT_TRANSLATE_NOOP("QcServerMessages",
+                                      "The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. "
+                                      "/regenerate there gives the data up."),
+                    {x, z}));
+            }
+        }
+    }
+}
+
 void QcServer::autosave()
 {
+    // A failed save in the background is told to everyone once per streak of failures (review of 31.3).
+    if (const std::optional<QcStatus> failed = m_persistence.takeNewFailure()) {
+        qCWarning(lcServer) << "Autosave failed:" << failed->error();
+        for (const auto &client : m_state.clients()) {
+            client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"), {failed->error()}));
+        }
+    }
+
     // In the players' time: neither a high tick rate nor a sprint saves more often (decision E-249).
+    // Unloaded chunks waiting in memory beyond their limit are written early (decision E-374), unless
+    // saving fails: then only the normal interval tries again. One save runs at a time.
     const qint64 intervalNs = qint64(m_state.config().autosaveSeconds) * 1'000'000'000;
-    if (!m_persistence.hasStorage() || intervalNs <= 0 || m_state.clock().playerTimeNs() - m_lastAutosaveNs < intervalNs) {
+    const bool due = intervalNs > 0 && m_state.clock().playerTimeNs() - m_lastAutosaveNs >= intervalNs;
+    const bool early = m_persistence.manyUnsavedChunks() && !m_persistence.savesFailing();
+    if (!m_persistence.hasStorage() || m_persistence.saveRunning() || (!due && !early)) {
         return;
     }
 
     m_lastAutosaveNs = m_state.clock().playerTimeNs();
     ++m_autosaves;
-    if (const QcStatus saved = save(); !saved) {
-        qCWarning(lcServer) << "Autosave failed:" << saved.error();
-        for (const auto &client : m_state.clients()) {
-            client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Autosave failed: %1"),
-                {saved.error()}));
-        }
-    }
+    m_persistence.saveInBackground();
 }
 
 QcServer::ClientSync QcServer::clientSyncDue()
@@ -611,15 +642,20 @@ void QcServer::updateClient(Client &client, ClientSync sync)
 
 void QcServer::removeClosedClients()
 {
+    bool leaving = false;
     for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Closed && client->joined) {
             // Only a player who was on the list changes it; refused logins do not.
             m_state.notePlayerListChanged();
             m_crafting.returnCraftingGrid(*client);
             m_commands.playerLeft(client->id);
-            // Failures are logged by savePlayer; the client is gone and cannot be told.
-            [[maybe_unused]] const QcStatus saved = m_persistence.savePlayer(*client);
+            leaving = true;
         }
+    }
+    // A player who leaves is saved with the world, in the background (decision E-378); failures go
+    // to the log and to the others with the next autosave report.
+    if (leaving) {
+        m_persistence.saveInBackground();
     }
 
     const auto removed = std::erase_if(m_state.clientList(), [](const std::unique_ptr<Client> &client) {

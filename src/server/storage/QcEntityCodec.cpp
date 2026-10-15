@@ -1,4 +1,4 @@
-#include "QcEntityStorage.h"
+#include "QcEntityCodec.h"
 
 #include "QcArmour.h"
 #include "QcArmourStandManager.h"
@@ -6,7 +6,6 @@
 #include "QcNameText.h"
 #include "QcPhysics.h"
 #include "QcProtocolCodec.h"
-#include "QcRegionStorage.h"
 #include "QcSaveFile.h"
 #include "QcStreamLimits.h"
 #include "QcWorldConstants.h"
@@ -21,10 +20,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr QByteArrayView magic("QCER");
-// Version 2: the order keys are 64 bits (entity ids, decision E-366); version 1 files of older
-// development versions are refused.
-constexpr quint16 version = 2;
 // Longer breeding timers than a day of seconds are damaged data.
 constexpr double maxBreedingSeconds = 86400.0;
 constexpr double maxSpeed = 60.0;
@@ -82,7 +77,7 @@ private:
     bool entries(Read read)
     {
         quint32 count = 0;
-        if (!QcStreamLimits::readCount(m_stream, QcEntityStorage::maxPerChunk, count)) {
+        if (!QcStreamLimits::readCount(m_stream, QcEntityCodec::maxPerChunk, count)) {
             return false;
         }
         for (quint32 i = 0; i < count; ++i) {
@@ -279,33 +274,24 @@ private:
     QcEntityRecord &m_record;
 };
 
-} // namespace
-
-QcEntityStorage::QcEntityStorage(QString directory, std::shared_ptr<const QcContentRegistry> content)
-    : m_content(std::move(content))
-    , m_files(std::move(directory), QString::fromLatin1(folder), u"qen"_s, magic, version)
+void writeRecord(QDataStream &stream, const QcEntityRecord &record, const QcContentRegistry &content)
 {
-}
-
-void QcEntityStorage::writeRecord(QDataStream &stream, const QcEntityRecord &record) const
-{
-    stream << qint32(record.chunk.x) << qint32(record.chunk.z);
     stream << quint32(record.creatures.size());
     for (const auto &[mob, order] : record.creatures) {
-        stream << m_content->mobs()[mob.type].name;
+        stream << content.mobs()[mob.type].name;
         writeVec(stream, mob.position);
         stream << mob.yaw << mob.health << mob.breedCooldown << mob.growUp << mob.bred << order;
     }
     stream << quint32(record.items.size());
     for (const auto &[drop, order] : record.items) {
-        QcSaveFile::writeStack(stream, drop.stack, *m_content);
+        QcSaveFile::writeStack(stream, drop.stack, content);
         writeVec(stream, drop.position);
         writeVec(stream, drop.velocity);
         stream << drop.age << drop.pickupDelay << order;
     }
     stream << quint32(record.fallingBlocks.size());
     for (const auto &[falling, order] : record.fallingBlocks) {
-        stream << m_content->stateName(falling.block);
+        stream << content.stateName(falling.block);
         writeVec(stream, falling.motion.position);
         writeVec(stream, falling.motion.velocity);
         stream << falling.age << order;
@@ -316,129 +302,44 @@ void QcEntityStorage::writeRecord(QDataStream &stream, const QcEntityRecord &rec
         stream << stand.yaw;
         QcProtocolCodec::writeStandPose(stream, stand.pose);
         stream << stand.name << stand.item;
-        QcSaveFile::writeStack(stream, stand.held, *m_content);
+        QcSaveFile::writeStack(stream, stand.held, content);
         for (const QcItemStack &stack : stand.equipment.stacks) {
-            QcSaveFile::writeStack(stream, stack, *m_content);
+            QcSaveFile::writeStack(stream, stack, content);
         }
         stream << stand.cape << order;
     }
 }
 
-QByteArray QcEntityStorage::payloadOf(const QList<const QcEntityRecord *> &records, QList<QcChunkPos> populated) const
+} // namespace
+
+namespace QcEntityCodec {
+
+QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content)
 {
-    QByteArray payload;
-    QDataStream stream(&payload, QIODevice::WriteOnly);
+    QByteArray blob;
+    QDataStream stream(&blob, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    stream << quint32(records.size());
-    for (const QcEntityRecord *record : records) {
-        writeRecord(stream, *record);
-    }
-
-    // In a fixed order, so an unchanged region gives the same bytes.
-    std::ranges::sort(populated, [](QcChunkPos a, QcChunkPos b) { return std::pair{a.x, a.z} < std::pair{b.x, b.z}; });
-    stream << quint32(populated.size());
-    for (const QcChunkPos &chunk : std::as_const(populated)) {
-        stream << qint32(chunk.x) << qint32(chunk.z);
-    }
-    return payload;
+    writeRecord(stream, record, content);
+    stream << quint8(record.populated ? 1 : 0);
+    return blob;
 }
 
-QcStatus QcEntityStorage::write(const QcWorldEntityRecords &entities) const
+QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
+                                QSet<QString> &reported)
 {
-    QHash<QcChunkPos, QList<const QcEntityRecord *>> regions;
-    for (const QcEntityRecord &record : entities.records) {
-        if (!record.isEmpty()) {
-            regions[QcRegionStorage::regionOf(record.chunk)].append(&record);
-        }
-    }
-    QHash<QcChunkPos, QList<QcChunkPos>> populated;
-    for (const QcChunkPos &chunk : entities.populated) {
-        populated[QcRegionStorage::regionOf(chunk)].append(chunk);
-        regions[QcRegionStorage::regionOf(chunk)];
-    }
-
-    QHash<QcChunkPos, QByteArray> payloads;
-    for (auto it = regions.begin(); it != regions.end(); ++it) {
-        std::ranges::sort(*it, [](const QcEntityRecord *a, const QcEntityRecord *b) {
-            return std::pair{a->chunk.x, a->chunk.z} < std::pair{b->chunk.x, b->chunk.z};
-        });
-        payloads.insert(it.key(), payloadOf(*it, populated.value(it.key())));
-    }
-    return m_files.write(payloads);
-}
-
-QcResult<QcWorldEntityRecords> QcEntityStorage::read(QStringList &warnings) const
-{
-    const QcResult<QList<std::pair<QString, QByteArray>>> files = m_files.read();
-    if (!files) {
-        return qcError(files.error());
-    }
-
-    QcWorldEntityRecords entities;
-    QSet<QString> unknown;
-    for (const auto &[path, payload] : *files) {
-        if (const QcStatus read = readRegion(path, payload, entities, warnings, unknown); !read) {
-            m_files.noteDamaged(path);
-            return qcError(read.error());
-        }
-    }
-    return entities;
-}
-
-QcStatus QcEntityStorage::readRegion(const QString &path, const QByteArray &payload, QcWorldEntityRecords &entities, QStringList &warnings,
-                                     QSet<QString> &unknown) const
-{
-    QDataStream stream(payload);
+    QDataStream stream(blob);
     stream.setVersion(QcSaveFile::streamVersion);
-    constexpr quint32 chunksPerRegion = quint32(QcRegionStorage::regionSize * QcRegionStorage::regionSize);
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, chunksPerRegion, count)) {
-        return qcError(u"%1 is damaged (chunk count)"_s.arg(path));
+    QcEntityRecord record;
+    record.chunk = chunk;
+    const QString where = u"chunk %1, %2"_s.arg(chunk.x).arg(chunk.z);
+    quint8 populated = 0;
+    const bool read = RecordReader(stream, content, where, {warnings, reported}, record).read();
+    stream >> populated;
+    if (!read || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
+        return qcError(u"damaged entities of chunk %1, %2"_s.arg(chunk.x).arg(chunk.z));
     }
-
-    // Every chunk of the file must belong to the region its name says, and only once.
-    QSet<QcChunkPos> chunks;
-    const auto belongs = [&](QcChunkPos chunk) {
-        return std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk
-               && m_files.isFileOf(path, QcRegionStorage::regionOf(chunk));
-    };
-    for (quint32 i = 0; i < count; ++i) {
-        QcEntityRecord record;
-        qint32 x = 0;
-        qint32 z = 0;
-        stream >> x >> z;
-        record.chunk = {x, z};
-        if (stream.status() != QDataStream::Ok || !belongs(record.chunk) || chunks.contains(record.chunk)
-            || !RecordReader(stream, *m_content, path, {warnings, unknown}, record).read()) {
-            return qcError(u"%1 is damaged (chunk %2)"_s.arg(path).arg(i));
-        }
-        chunks.insert(record.chunk);
-        entities.records.append(std::move(record));
-    }
-
-    if (!QcStreamLimits::readCount(stream, chunksPerRegion, count)) {
-        return qcError(u"%1 is damaged (populated chunks)"_s.arg(path));
-    }
-    std::optional<QcChunkPos> region;
-    for (quint32 i = 0; i < count; ++i) {
-        qint32 x = 0;
-        qint32 z = 0;
-        stream >> x >> z;
-        if (stream.status() != QDataStream::Ok || !belongs({x, z})) {
-            return qcError(u"%1 is damaged (populated chunk %2)"_s.arg(path).arg(i));
-        }
-        entities.populated.insert({x, z});
-        region = QcRegionStorage::regionOf({x, z});
-    }
-    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
-        return qcError(u"%1 is damaged"_s.arg(path));
-    }
-
-    if (!chunks.isEmpty()) {
-        region = QcRegionStorage::regionOf(*chunks.cbegin());
-    }
-    if (region) {
-        m_files.remember(*region, payload);
-    }
-    return {};
+    record.populated = populated == 1;
+    return record;
 }
+
+} // namespace QcEntityCodec

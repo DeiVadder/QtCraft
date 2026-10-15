@@ -110,6 +110,10 @@ public:
     qsizetype removeWhere(const std::function<bool(const QcItemEntity &)> &match);
     // Replaces all items, e.g. from a save; ids are assigned by `nextEntityId`.
     void restore(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId);
+    // The same without clearing first: the drops of a chunk that came back (decision E-374).
+    void adopt(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId);
+    // Takes the waiting drops `match` picks out of the queue, in queue order.
+    QList<Drop> takeQueued(const std::function<bool(const Drop &)> &match);
 
 private:
     void step(QcItemEntity &item, const QcBlockAccess &world, double dt);

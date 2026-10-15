@@ -1,7 +1,10 @@
 #pragma once
 
 #include "QcEntityKind.h"
+#include "QcChunkPos.h"
 #include "QcEntityMotion.h"
+
+#include <QtGlobal>
 
 // What every entity of the server has (decision E-364): an id unique among all entities of the
 // world, its kind, where it is and how it moves (feet in the middle of the bottom face), the
@@ -23,6 +26,26 @@ struct QcEntity
     // Its chunk was not loaded at the start of the tick (QcEntities::settle): it is not simulated,
     // not sent to clients and not counted. Players never rest.
     bool dormant = false;
+    // The chunk the last QcEntities::settle saw it in; settle looks up whether a chunk is loaded only
+    // when this changed or the loaded chunks did.
+    QcChunkPos settledChunk;
+    bool settled = false;
+
+    // The entity as its type (decision E-372): every type names its kind (`entityKind`), so a
+    // mismatch between the kind field and the type asked for is caught in debug builds instead of
+    // reading another type's fields.
+    template<typename Type>
+    Type &as()
+    {
+        Q_ASSERT(kind == Type::entityKind);
+        return static_cast<Type &>(*this);
+    }
+    template<typename Type>
+    const Type &as() const
+    {
+        Q_ASSERT(kind == Type::entityKind);
+        return static_cast<const Type &>(*this);
+    }
 
     bool operator==(const QcEntity &) const = default;
 };

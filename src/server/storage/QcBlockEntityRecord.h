@@ -38,12 +38,17 @@ struct QcBlockEntityRecord
     QList<Memory> memories;
     QList<Scheduled> scheduled;
     // Positions the circuits were going to look at (changes not yet looked at, positions waiting for
-    // chunks): looked at as if just placed once the chunk and the eight around it are loaded.
+    // chunks): looked at again as changes when the chunk is back.
     QList<QcBlockPos> wakes;
+    // The same for signals that were on their way (decision E-376): they come back as signals.
+    QList<QcBlockPos> signalWakes;
+    // Neighbour updates and planned flow steps of the chunk not yet carried out when it was unloaded
+    // or saved (decision E-374); queued again when it comes back.
+    QList<QcBlockPos> blockUpdates;
 
     bool isEmpty() const
     {
         return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty() && scheduled.isEmpty()
-               && wakes.isEmpty();
+               && wakes.isEmpty() && signalWakes.isEmpty() && blockUpdates.isEmpty();
     }
 };

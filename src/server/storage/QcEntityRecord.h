@@ -36,14 +36,11 @@ struct QcEntityRecord
     QList<Ordered<QcFallingBlock>> fallingBlocks;
     // Armour stands; the id is not saved.
     QList<Ordered<QcArmourStand>> stands;
+    // The chunk got its group of animals already (decision E-086); kept with the chunk.
+    bool populated = false;
 
+    // No entities; a populated chunk still keeps its record.
     bool isEmpty() const { return creatures.isEmpty() && items.isEmpty() && fallingBlocks.isEmpty() && stands.isEmpty(); }
 };
 
-// The saved entities of a world: a record per chunk with any, and the chunks that already got their
-// group of animals (decision E-086).
-struct QcWorldEntityRecords
-{
-    QList<QcEntityRecord> records;
-    QSet<QcChunkPos> populated;
-};
+

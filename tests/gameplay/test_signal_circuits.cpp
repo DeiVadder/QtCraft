@@ -39,6 +39,14 @@ private:
         ticks(1);
     }
 
+    // A config whose circuits ask for no load tickets (stage 31.3): the edge wait itself is tested.
+    static QcServerConfig withoutTickets()
+    {
+        QcServerConfig config;
+        config.limits.chunkTicketsPerTick = 0;
+        return config;
+    }
+
 private slots:
     void cleanup()
     {
@@ -410,7 +418,7 @@ private slots:
 
     void circuitWaitsForAnUnloadedNeighbourChunk()
     {
-        buildArea();
+        buildArea(withoutTickets());
         // Far from the player, in chunks that only the test loads: lever and dust in one chunk, more
         // dust and a lamp across the border in the next.
         clearArea(m_origin.offset(4000, 0, 4000));
@@ -441,7 +449,7 @@ private slots:
 
     void wireFarFromAnUnloadedChunkDoesNotWait()
     {
-        buildArea();
+        buildArea(withoutTickets());
         // The chunk border 12 blocks east of the area's origin.
         const QcBlockPos far = m_origin.offset(4000, 0, 4000);
         clearArea(far.offset(((4 - far.x) % 16 + 16) % 16, 0, 0));

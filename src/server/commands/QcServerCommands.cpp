@@ -50,6 +50,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_players(state, m_pending)
     , m_world(state, m_pending, std::move(parts.world))
     , m_ticks(state, std::move(parts.ticks))
+    , m_chunks(state)
 {
     addBuiltIns();
     m_cheats.addTo(m_registry);
@@ -57,6 +58,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_players.addTo(m_registry);
     m_world.addTo(m_registry);
     m_ticks.addTo(m_registry);
+    m_chunks.addTo(m_registry);
 }
 
 void QcServerCommands::addBuiltIns()

@@ -21,6 +21,8 @@ public:
     QcWorkerPool &operator=(const QcWorkerPool &) = delete;
 
     void submit(std::function<void()> job);
+    // Puts the job before every job that has not started yet.
+    void submitFirst(std::function<void()> job);
     // Blocks until the queue is empty and no job is running.
     void waitForIdle();
     // Drops the jobs that have not started yet and returns how many; running jobs go on.

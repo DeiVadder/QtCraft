@@ -168,6 +168,10 @@ private slots:
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
         report("open", double(timer.nsecsElapsed()) / 1e6);
+        // Chunks are read when needed (stage 31.3): reading all of them is measured on its own.
+        timer.start();
+        loadStored();
+        report("load-all", double(timer.nsecsElapsed()) / 1e6);
         const qsizetype animalsAfter = m_server->mobs().mobs().size();
         const qsizetype standsAfter = m_server->stands().stands().size();
         const qsizetype itemsAfter = m_server->items().items().size() + m_server->items().queued().size();

@@ -68,6 +68,27 @@ struct ServerDebug
     quint32 fallingBlocks = 0;
     quint32 pendingBlockUpdates = 0;
     quint32 waitingBlockUpdates = 0;
+    // Chunks on the server (decisions E-374 to E-377): in its storage, under way (read or generated,
+    // waiting for their group), unloaded and not yet saved; groups of circuits among the loaded ones
+    // (more than one chunk), the largest, the one of the player's chunk, groups over the limit seen
+    // so far; load tickets of circuits (and those refused), forced chunks, chunk loaders.
+    struct Chunks
+    {
+        quint32 stored = 0;
+        quint32 arriving = 0;
+        quint32 unsaved = 0;
+        quint32 groups = 0;
+        quint32 largestGroup = 0;
+        quint32 playerGroup = 0;
+        quint32 oversizeGroups = 0;
+        quint32 tickets = 0;
+        quint32 refusedTickets = 0;
+        quint32 forced = 0;
+        quint32 loaders = 0;
+
+        bool operator==(const Chunks &) const = default;
+    };
+    Chunks chunks;
     // Biome at the player's feet (registry name) and the world type (generator).
     QString biome;
     QString worldType;

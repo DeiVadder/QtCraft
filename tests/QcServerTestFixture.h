@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
 
 // A server with a flat stage around the spawn and one raw protocol client, the base of the server
@@ -53,8 +54,22 @@ protected:
     QcServer::ClientOrigin m_origin = QcServer::ClientOrigin::Remote;
     // Chunks streamed around the raw client's player.
     int m_viewDistance = 1;
+    // Changed chunks leave the world like in the game (tests of unloading, stage 31.3).
+    bool m_unloadChunks = false;
+    // Only changed chunks stay, as before stage 31.3 (comparison runs).
+    bool m_keepChangedChunks = false;
+    // Chunks load at once instead of in the background (comparison runs).
+    bool m_loadChunksAtOnce = false;
 
-    QcBlockId id(const char *name) const { return *m_content->blockId(QString::fromLatin1(name)); }
+    // A block of the content; a name the content does not have stops the test.
+    QcBlockId id(const char *name) const
+    {
+        const std::optional<QcBlockId> found = m_content->blockId(QString::fromLatin1(name));
+        if (!found) {
+            qFatal("Test uses the block %s, which the content does not have", name);
+        }
+        return *found;
+    }
 
     // Makes sure the block at `pos` has its container or machine (decision E-357); blocks set
     // through the world have them already, unless the table was full.
@@ -97,7 +112,37 @@ protected:
         const QcBlockEntities::Memory *memory = m_server->blockEntities().memory(pos);
         return memory && memory->powered;
     }
-    QcItemId item(const char *name) const { return *m_content->itemId(QString::fromLatin1(name)); }
+    // An item of the content; a name the content does not have stops the test (it would be garbage).
+    QcItemId item(const char *name) const
+    {
+        const std::optional<QcItemId> found = m_content->itemId(QString::fromLatin1(name));
+        if (!found) {
+            qFatal("Test uses the item %s, which the content does not have", name);
+        }
+        return *found;
+    }
+
+    // Loads the chunks within `radius` of the chunk of `centre` now: what was kept of them comes back
+    // with them (stored chunks are read when needed, stage 31.3).
+    void loadAround(QcBlockPos centre, int radius = 1)
+    {
+        for (int dx = -radius; dx <= radius; ++dx) {
+            for (int dz = -radius; dz <= radius; ++dz) {
+                m_server->world().loadChunk({centre.chunk().x + dx, centre.chunk().z + dz});
+            }
+        }
+    }
+
+    // Loads every chunk the world's storage holds, as a world was opened before stage 31.3 (comparison
+    // runs), in a fixed order.
+    void loadStored()
+    {
+        QList<QcChunkPos> stored = m_server->world().storedChunks();
+        std::ranges::sort(stored, {}, [](QcChunkPos chunk) { return std::pair{chunk.x, chunk.z}; });
+        for (const QcChunkPos &chunk : std::as_const(stored)) {
+            m_server->world().loadChunk(chunk);
+        }
+    }
 
     void ticks(int count)
     {
@@ -112,6 +157,10 @@ protected:
     void join(QcServerConfig config = {}, std::unique_ptr<QcWorldGenerator> generator = nullptr)
     {
         config.viewDistance = m_viewDistance;
+        // Most tests build away from their player; those of unloading set m_unloadChunks.
+        config.keepChunksLoaded = config.keepChunksLoaded || (!m_unloadChunks && !m_keepChangedChunks);
+        config.keepChangedChunks = config.keepChangedChunks || m_keepChangedChunks;
+        config.loadChunksAtOnce = config.loadChunksAtOnce || m_loadChunksAtOnce;
         if (config.operators.isEmpty()) {
             config.operators = {QStringLiteral("Raw")};
         }

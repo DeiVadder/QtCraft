@@ -38,7 +38,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     QcMsg::EntityMove now{entity.id, entity.motion.position, 0.0f, 0.0, false, 0.0f, 0, qcNoItem};
     switch (entity.kind) {
     case QcEntityKind::Creature: {
-        const auto &creature = static_cast<const QcCreature &>(entity);
+        const auto &creature = entity.as<QcCreature>();
         const quint8 breeding = quint8((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0));
         now.yaw = creature.yaw;
         now.health = creature.health;
@@ -47,7 +47,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         break;
     }
     case QcEntityKind::Player: {
-        const auto &player = static_cast<const QcServerClient &>(entity);
+        const auto &player = entity.as<QcServerClient>();
         const QcItemStack &held = player.inventory.selectedStack();
         now.yaw = player.yaw;
         now.health = player.health;
@@ -58,10 +58,10 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         break;
     }
     case QcEntityKind::MovingBlock:
-        now.position = QcMovingBlocks::positionAt(static_cast<const QcMovingBlock &>(entity), m_state.clock().tick());
+        now.position = QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), m_state.clock().tick());
         break;
     case QcEntityKind::ArmourStand: {
-        const auto &stand = static_cast<const QcArmourStand &>(entity);
+        const auto &stand = entity.as<QcArmourStand>();
         now.yaw = stand.yaw;
         now.held = stand.held.isEmpty() ? qcNoItem : stand.held.item;
         break;
@@ -78,23 +78,23 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     QcMsg::EntitySpawn spawn{entity.id, entity.kind, QString(), now.position, now.yaw, now.health, {}, {}, now.pitch, now.flags, now.held};
     switch (entity.kind) {
     case QcEntityKind::Player: {
-        const auto &player = static_cast<const QcServerClient &>(entity);
+        const auto &player = entity.as<QcServerClient>();
         spawn.name = player.name;
         spawn.appearance = player.appearance;
         spawn.equipment = player.equipment;
         break;
     }
     case QcEntityKind::Item:
-        spawn.item = static_cast<const QcItemEntity &>(entity).stack;
+        spawn.item = entity.as<QcItemEntity>().stack;
         break;
     case QcEntityKind::FallingBlock:
-        spawn.block = static_cast<const QcFallingBlock &>(entity).block;
+        spawn.block = entity.as<QcFallingBlock>().block;
         break;
     case QcEntityKind::MovingBlock:
-        spawn.block = static_cast<const QcMovingBlock &>(entity).block;
+        spawn.block = entity.as<QcMovingBlock>().block;
         break;
     case QcEntityKind::ArmourStand: {
-        const auto &stand = static_cast<const QcArmourStand &>(entity);
+        const auto &stand = entity.as<QcArmourStand>();
         spawn.name = stand.name;
         spawn.equipment = stand.equipment;
         spawn.stand = stand.pose;
@@ -102,7 +102,7 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         break;
     }
     case QcEntityKind::Creature:
-        spawn.creatureType = static_cast<const QcCreature &>(entity).type;
+        spawn.creatureType = entity.as<QcCreature>().type;
         break;
     }
     return spawn;
@@ -112,12 +112,12 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
 {
     QcServerClient &client = pass.client;
     const bool item = entity.kind == QcEntityKind::Item;
-    if (&entity == &client || entity.dormant || (item && static_cast<const QcItemEntity &>(entity).surplus)) {
+    if (&entity == &client || entity.dormant || (item && entity.as<QcItemEntity>().surplus)) {
         return;
     }
 
     const QcVec3 position = entity.kind == QcEntityKind::MovingBlock
-                                ? QcMovingBlocks::positionAt(static_cast<const QcMovingBlock &>(entity), m_state.clock().tick())
+                                ? QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), m_state.clock().tick())
                                 : entity.motion.position;
     if ((position - client.motion.position).length() > (item ? itemViewDistance : entityViewDistance)) {
         return;
@@ -126,7 +126,7 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     const QcMsg::EntityMove now = seen(entity);
 
     pass.visible.insert(entity.id);
-    const int count = item ? static_cast<const QcItemEntity &>(entity).stack.count : 0;
+    const int count = item ? entity.as<QcItemEntity>().stack.count : 0;
     const auto known = client.view.known.find(entity.id);
     if (known == client.view.known.end()) {
         client.view.known.insert(entity.id, {count, now.position});

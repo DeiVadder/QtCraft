@@ -3,7 +3,7 @@
 #include "QcProtocol.h"
 #include "QcTestUtil.h"
 #include "QcWorldConstants.h"
-#include "QcWorldStorage.h"
+#include "QcTestWorldFiles.h"
 
 #include <QDir>
 #include <QFile>
@@ -58,7 +58,7 @@ private slots:
     void worldInfoRoundTrip()
     {
         QTemporaryDir dir;
-        const QcWorldStorage storage(dir.path(), registryWith({}));
+        const QcTestWorldFiles storage(dir.path(), registryWith({}));
 
         QcWorldInfo info;
         info.name = u"Mein Welt ü"_s;
@@ -85,12 +85,12 @@ private slots:
         chunk->setBlock(1, 2, 3, *before->blockId(u"a:stone"_s));
         chunk->setBlock(4, 70, 5, *before->blockId(u"a:dirt"_s));
         chunk->setBlock(6, 200, 7, *before->blockId(u"mod:gem"_s));
-        QVERIFY(QcWorldStorage(dir.path(), before).writeChunks({{chunk->pos(), chunk}}).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), before).writeChunks({{chunk->pos(), chunk}}).has_value());
 
         // The new content registers blocks in another order and lost the mod block.
         const auto after = registryWith({u"a:dirt"_s, u"b:new"_s, u"a:stone"_s});
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), after).readChunks(warnings);
+        const auto read = QcTestWorldFiles(dir.path(), after).readChunks(warnings);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
         QCOMPARE(read->size(), 1);
         const auto loaded = read->value({-33, 40});
@@ -114,7 +114,7 @@ private slots:
             chunks.insert(pos, chunk);
         }
 
-        const QcWorldStorage storage(dir.path(), content);
+        const QcTestWorldFiles storage(dir.path(), content);
         QVERIFY(storage.writeChunks(chunks).has_value());
         QCOMPARE(QDir(dir.filePath(u"regions"_s)).entryList({u"*.qcr"_s}).size(), 3);
 
@@ -145,7 +145,7 @@ private slots:
         const auto content = registryWith({u"a:stone"_s});
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(0, 0, 0, 1);
-        const QcWorldStorage storage(dir.path(), content);
+        const QcTestWorldFiles storage(dir.path(), content);
         QVERIFY(storage.writeChunks({{chunk->pos(), chunk}}).has_value());
 
         const QString path = dir.filePath(u"regions/r.0.0.qcr"_s);
@@ -181,11 +181,11 @@ private slots:
         player.inventory.setSlot(0, {*content->itemId(u"a:stone"_s), 42, 0});
         player.inventory.setSlot(20, {*content->itemId(u"mod:gem"_s), 3, 0});
         player.inventory.setSelectedHotbarSlot(4);
-        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Jonas"_s, player).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Jonas"_s, player).has_value());
 
         const auto withoutMod = registryWith({u"a:stone"_s});
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), withoutMod).readPlayer(u"Jonas"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), withoutMod).readPlayer(u"Jonas"_s, warnings);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
         QVERIFY(read->has_value());
         const QcPlayerData &loaded = **read;
@@ -202,7 +202,7 @@ private slots:
     void gameRulesRoundTripAndDefaultForOldWorlds()
     {
         QTemporaryDir dir;
-        const QcWorldStorage storage(dir.path(), registryWith({}));
+        const QcTestWorldFiles storage(dir.path(), registryWith({}));
 
         QcWorldInfo info;
         info.name = u"Rules"_s;
@@ -251,10 +251,10 @@ private slots:
         player.motion.position = {x, y, 0.5};
         player.yaw = yaw;
         player.pitch = pitch;
-        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Odd"_s, player).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Odd"_s, player).has_value());
 
         QStringList warnings;
-        QVERIFY(!QcWorldStorage(dir.path(), content).readPlayer(u"Odd"_s, warnings).has_value());
+        QVERIFY(!QcTestWorldFiles(dir.path(), content).readPlayer(u"Odd"_s, warnings).has_value());
     }
 
     void playerFallingThroughTheVoidLoads()
@@ -265,10 +265,10 @@ private slots:
         QcPlayerData player;
         player.motion.position = {0.5, QcWorld::voidFloorY, 0.5};
         player.motion.velocity = {0.0, -QcPhysics::terminalVelocity, 0.0};
-        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Faller"_s, player).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Faller"_s, player).has_value());
 
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), content).readPlayer(u"Faller"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Faller"_s, warnings);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
         QVERIFY(read->has_value());
         QCOMPARE((*read)->motion.position.y, QcWorld::voidFloorY);
@@ -281,10 +281,10 @@ private slots:
         QcPlayerData player;
         player.motion.position = {0.5, 70.0, 0.5};
         player.health = -7.0;
-        QVERIFY(QcWorldStorage(dir.path(), content).writePlayer(u"Hurt"_s, player).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Hurt"_s, player).has_value());
 
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), content).readPlayer(u"Hurt"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Hurt"_s, warnings);
         QVERIFY(read.has_value() && read->has_value());
         QCOMPARE((*read)->health, 0.0);
     }
@@ -295,7 +295,7 @@ private slots:
         const auto content = registryWith({u"a:stone"_s});
         auto chunk = std::make_shared<QcChunk>(QcChunkPos{QcWorld::maxHorizontalChunk + 10, 0});
         chunk->setBlock(0, 0, 0, 1);
-        const QcWorldStorage storage(dir.path(), content);
+        const QcTestWorldFiles storage(dir.path(), content);
         QVERIFY(storage.writeChunks({{chunk->pos(), chunk}}).has_value());
         QStringList warnings;
         QVERIFY(!storage.readChunks(warnings).has_value());
@@ -305,7 +305,7 @@ private slots:
     {
         QTemporaryDir dir;
         const auto content = registryWith({u"a:stone"_s});
-        const QcWorldStorage storage(dir.path(), content);
+        const QcTestWorldFiles storage(dir.path(), content);
         QcPlayerData player;
         player.motion.position = {0.5, 70.0, 0.5};
         player.food = 7;
@@ -350,7 +350,7 @@ private slots:
     void playerNamesDifferingInCaseGetTheirOwnFiles()
     {
         QTemporaryDir dir;
-        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        const QcTestWorldFiles storage(dir.path(), registryWith({u"a:stone"_s}));
         QcPlayerData bob;
         bob.motion.position = {0.5, 70.0, 0.5};
         bob.health = 5.0;
@@ -385,7 +385,7 @@ private slots:
         // Older development versions named the file after the name as typed (players/Alice.qcp);
         // such files are not looked for any more (decision E-356) and stay untouched.
         QTemporaryDir dir;
-        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        const QcTestWorldFiles storage(dir.path(), registryWith({u"a:stone"_s}));
         QcPlayerData player;
         player.motion.position = {0.5, 70.0, 0.5};
         player.health = 7.0;
@@ -411,7 +411,7 @@ private slots:
         auto chunk = std::make_shared<QcChunk>(QcChunkPos{2, -3});
         chunk->setBlock(1, 64, 1, east);
         chunk->setBlock(2, 64, 1, *before->blockId(u"a:stone"_s));
-        QVERIFY(QcWorldStorage(dir.path(), before).writeChunks({{chunk->pos(), chunk}}).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), before).writeChunks({{chunk->pos(), chunk}}).has_value());
 
         // Later content lists the values in another order and drops the half property: runtime
         // ids differ, the saved state still means facing east.
@@ -419,7 +419,7 @@ private slots:
         QVERIFY(after->registerBlock(stairs({u"west"_s, u"south"_s, u"east"_s, u"north"_s}, false)));
         QVERIFY(after->registerBlock(block(u"a:stone"_s)));
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), after).readChunks(warnings);
+        const auto read = QcTestWorldFiles(dir.path(), after).readChunks(warnings);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
         const auto loaded = read->value({2, -3});
         QCOMPARE(after->stateName(loaded->block(1, 64, 1)), u"a:stairs[facing=east]"_s);
@@ -459,7 +459,7 @@ private slots:
         auto content = std::make_shared<QcContentRegistry>();
         QVERIFY(content->registerBlock(block(u"a:stone"_s)));
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), content).readChunks(warnings);
+        const auto read = QcTestWorldFiles(dir.path(), content).readChunks(warnings);
         QVERIFY(!read.has_value());
         QVERIFY2(read.error().contains(u"older development version"_s), qPrintable(read.error()));
     }
@@ -467,7 +467,7 @@ private slots:
     void blockUpdatesRoundTrip()
     {
         QTemporaryDir dir;
-        const QcWorldStorage storage(dir.path(), registryWith({u"a:stone"_s}));
+        const QcTestWorldFiles storage(dir.path(), registryWith({u"a:stone"_s}));
         QVERIFY(storage.readBlockUpdates()->isEmpty());
         const QList<QcBlockPos> positions{{1, 2, 3}, {-40, 255, 7}, {0, 0, -1}};
         QVERIFY(storage.writeBlockUpdates(positions).has_value());
@@ -487,7 +487,7 @@ private slots:
     {
         QTemporaryDir dir;
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), registryWith({})).readPlayer(u"Nobody"_s, warnings);
+        const auto read = QcTestWorldFiles(dir.path(), registryWith({})).readPlayer(u"Nobody"_s, warnings);
         QVERIFY(read.has_value());
         QVERIFY(!read->has_value());
     }

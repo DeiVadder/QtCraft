@@ -5,7 +5,7 @@
 #include "QcTestTerrainGenerator.h"
 #include "QcTestUtil.h"
 #include "QcTransport.h"
-#include "QcWorldStorage.h"
+#include "QcTestWorldFiles.h"
 
 #include <QDir>
 #include <QFile>
@@ -169,7 +169,7 @@ private slots:
         }
 
         QStringList warnings;
-        const QcResult<QcWorldEntityRecords> saved = QcWorldStorage(dir.path(), m_content).readEntities(warnings);
+        const QcResult<QcWorldEntityRecords> saved = QcTestWorldFiles(dir.path(), m_content).readEntities(warnings);
         QVERIFY2(saved.has_value(), qcErrorText(saved).constData());
         const QList<QcMobManager::Stored> animals = creaturesOf(*saved);
 
@@ -190,7 +190,7 @@ private slots:
         QcEntityRecord record;
         record.chunk = QcPhysics::blockContaining(marked.position).chunk();
         record.creatures.append({marked, 0});
-        QVERIFY(QcWorldStorage(dir.path(), m_content).writeEntities({{record}, saved->populated}).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), m_content).writeEntities({{record}, saved->populated}).has_value());
 
         auto server = host(dir.path());
         QVERIFY2(server->startError().isEmpty(), qPrintable(server->startError()));
@@ -201,7 +201,7 @@ private slots:
 
         QVERIFY(server->shutdown().has_value());
 
-        const QcResult<QcWorldEntityRecords> again = QcWorldStorage(dir.path(), m_content).readEntities(warnings);
+        const QcResult<QcWorldEntityRecords> again = QcTestWorldFiles(dir.path(), m_content).readEntities(warnings);
         QVERIFY(again.has_value());
         QVERIFY(again->populated.contains(saved->populated));
         const QList<QcMobManager::Stored> after = creaturesOf(*again);

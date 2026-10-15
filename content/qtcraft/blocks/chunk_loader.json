@@ -1,0 +1,15 @@
+{
+    "name": "chunk_loader",
+    "sound": "stone",
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "light": 7,
+    "tags": [
+        "chunk_loaders"
+    ],
+    "textures": {
+        "all": "chunk_loader"
+    },
+    "signal": { "movable": "immovable" }
+}

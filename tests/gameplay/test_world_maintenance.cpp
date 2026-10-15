@@ -99,7 +99,7 @@ private slots:
         cleanup();
         m_server = std::make_unique<QcServer>(typed(type, directory.path()), m_content, generatorOf(type));
         QVERIFY(m_server->openWorld().has_value());
-        QVERIFY(m_server->world().chunk(chunk) != nullptr);
+        QVERIFY(m_server->world().loadChunk(chunk) != nullptr);
         QVERIFY(asGenerated(chunk, *reference));
     }
 

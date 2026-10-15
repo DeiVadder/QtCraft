@@ -1,3 +1,4 @@
+#include "QcTestWorldFiles.h"
 #include "QcBlockEntityChecks.h"
 #include "QcBlockEntityRecords.h"
 #include "QcCircuitState.h"
@@ -103,7 +104,7 @@ private slots:
         QcBlockEntities saved(m_mod);
         QcCircuitState circuits;
         fillWorld(saved, circuits);
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities(QcBlockEntityRecords::collect(saved, circuits, 100)).has_value());
         // One file per region with records.
         for (const QcChunkPos region : {QcChunkPos{0, -1}, QcChunkPos{-1, 0}, QcChunkPos{0, 0}, QcChunkPos{-1, 0}, QcChunkPos{3, 3}}) {
@@ -112,7 +113,7 @@ private slots:
 
         // Read without the mod at another tick: what waits keeps the ticks it still had.
         QStringList warnings;
-        const QcWorldStorage withoutMod(dir.path(), m_content);
+        const QcTestWorldFiles withoutMod(dir.path(), m_content);
         const auto records = withoutMod.readBlockEntities(warnings);
         QVERIFY2(records.has_value(), qcErrorText(records).constData());
         QCOMPARE(warnings.size(), 1);
@@ -148,8 +149,10 @@ private slots:
         QCOMPARE(entries[0].due, quint64(1005));
         QCOMPARE(entries[1].due, quint64(1160));
         QCOMPARE(entries[1].priority, QcSignalSchedule::Priority::Release);
-        QCOMPARE(loadedCircuits.waiting.value(QcBlockPos{4, 65, -4}.chunk()).size(), 1);
-        QCOMPARE(loadedCircuits.waiting.value(QcChunkPos{100, 100}).size(), 1);
+        // The positions the circuits were going to look at are changes again (stage 31.3).
+        QCOMPARE(loadedCircuits.changes.size(), 2);
+        QVERIFY(std::ranges::any_of(loadedCircuits.changes, [](const QcCircuitState::Change &change) { return change.pos == QcBlockPos{4, 65, -4}; }));
+        QVERIFY(std::ranges::any_of(loadedCircuits.changes, [](const QcCircuitState::Change &change) { return change.pos == QcBlockPos{1601, 66, 1602}; }));
     }
 
     void onlyChangedRegionsAreWrittenAndEmptyOnesGo()
@@ -158,7 +161,7 @@ private slots:
         QcBlockEntities entities(m_mod);
         QcCircuitState circuits;
         fillWorld(entities, circuits);
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities(QcBlockEntityRecords::collect(entities, circuits, 100)).has_value());
 
         // Unchanged regions are not written again (the removed file stays away), a changed one is.
@@ -170,7 +173,7 @@ private slots:
         QVERIFY(!QFile::exists(furnaces));
         QVERIFY(QFile::exists(saplings));
         QStringList warnings;
-        const auto read = QcWorldStorage(dir.path(), m_mod).readBlockEntities(warnings);
+        const auto read = QcTestWorldFiles(dir.path(), m_mod).readBlockEntities(warnings);
         QVERIFY(read.has_value());
         const auto sapling = std::ranges::find_if(*read, [](const QcBlockEntityRecord &record) { return !record.saplings.isEmpty(); });
         QCOMPARE(sapling->saplings.first().remaining, 20.0);
@@ -198,7 +201,7 @@ private slots:
         QcBlockEntities entities(m_mod);
         QcCircuitState circuits;
         fillWorld(entities, circuits);
-        QVERIFY(QcWorldStorage(dir.path(), m_mod).writeBlockEntities(QcBlockEntityRecords::collect(entities, circuits, 100)).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), m_mod).writeBlockEntities(QcBlockEntityRecords::collect(entities, circuits, 100)).has_value());
 
         const QString path = regionFile(dir.path(), {-1, 0});
         QFile file(path);
@@ -217,15 +220,15 @@ private slots:
         file.close();
 
         QStringList warnings;
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         const auto read = storage.readBlockEntities(warnings);
         QVERIFY(!read.has_value());
         QVERIFY2(read.error().contains(path), qPrintable(read.error()));
         // Named relative to the world folder for the menu entry (decision E-366).
-        QCOMPARE(storage.damagedBlockEntityFile(), QDir(dir.path()).relativeFilePath(path));
+        QCOMPARE(storage.damagedFile(), QDir(dir.path()).relativeFilePath(path));
         QVERIFY(QFile::remove(path));
         QVERIFY(storage.readBlockEntities(warnings).has_value());
-        QVERIFY(storage.damagedBlockEntityFile().isEmpty());
+        QVERIFY(storage.damagedFile().isEmpty());
     }
 
     void implausibleRecordsAreRejected_data()
@@ -261,7 +264,7 @@ private slots:
             break;
         }
         record.machines = {machine};
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities({record}).has_value());
         QStringList warnings;
         QVERIFY(!storage.readBlockEntities(warnings).has_value());
@@ -279,7 +282,7 @@ private slots:
         machine.burnRemaining = 50.0;
         machine.stacks[0] = {*m_mod->itemId(u"qtcraft:stone"_s), 500, 0};
         record.machines = {machine};
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities({record}).has_value());
         QStringList warnings;
         const auto read = storage.readBlockEntities(warnings);
@@ -301,7 +304,7 @@ private slots:
         record.memories = {{{2, 64, 2}, 4'000'000'000u, false, 4'000'000'000u}};
         record.scheduled = {{{3, 64, 3}, 4'000'000'000u, QcSignalSchedule::Priority::Diode}};
         record.saplings = {{{4, 64, 4}, 10.0, 7}};
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities({record}).has_value());
         QStringList warnings;
         const auto read = storage.readBlockEntities(warnings);
@@ -332,7 +335,7 @@ private slots:
         QcBlockEntities entities(m_mod);
         QcCircuitState circuits;
         fillWorld(entities, circuits);
-        const QcWorldStorage storage(dir.path(), m_mod);
+        const QcTestWorldFiles storage(dir.path(), m_mod);
         QVERIFY(storage.writeBlockEntities(QcBlockEntityRecords::collect(entities, circuits, 100)).has_value());
         QFile chests(regionFile(dir.path(), {0, -1}));
         QVERIFY(chests.open(QIODevice::ReadOnly));

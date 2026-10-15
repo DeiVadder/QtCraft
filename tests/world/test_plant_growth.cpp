@@ -332,6 +332,7 @@ private slots:
 
         QcServerConfig config;
         config.viewDistance = 1;
+        config.keepChunksLoaded = true;
         QcServer server(config, content, std::make_unique<QcTestTerrainGenerator>(content));
         QVERIFY(server.openWorld().has_value());
         for (int cx = 0; cx <= (firstX + 2 * plantCount) / QcWorld::chunkSize + 1; ++cx) {

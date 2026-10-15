@@ -267,16 +267,21 @@ qc_add_test(test_signal_showcase SOURCES world/test_signal_showcase.cpp QcServer
 qc_add_test(test_signal_pistons SOURCES gameplay/test_signal_pistons.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_hoppers SOURCES gameplay/test_signal_hoppers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entity_compare SOURCES gameplay/test_block_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
-target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/block-entity-compare-before-31-1.txt")
+target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/block-entity-compare-31-3.txt")
 qc_add_test(test_entity_compare SOURCES gameplay/test_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/entity-compare-before-31-2.txt")
+qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_chunk_unloading SOURCES gameplay/test_chunk_unloading.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcBlockEntityDump.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_entity_model SOURCES gameplay/test_entity_model.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_entity_measure SOURCES gameplay/test_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entities SOURCES gameplay/test_block_entities.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entity_storage SOURCES world/test_block_entity_storage.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_block_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
 qc_add_test(test_entity_storage SOURCES world/test_entity_storage.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_server)
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
+qc_add_test(test_world_open_measure SOURCES gameplay/test_world_open_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_explore_measure SOURCES gameplay/test_explore_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_block_entity_measure SOURCES gameplay/test_block_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_simulation_limits SOURCES gameplay/test_simulation_limits.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_network)
 qc_add_test(test_signal_hopper_edges SOURCES gameplay/test_signal_hopper_edges.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -397,7 +402,8 @@ set(qc_concurrency_tests
     test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
-    app_offscreen_world_screenshot)
+    app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
+    test_explore_measure)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are

@@ -187,6 +187,14 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
         return false;
     }
 
+    // A player's chunk loaders are limited (decision E-377).
+    const qint64 loaderLimit = m_state.config().limits.chunkLoadersPerPlayer;
+    if (m_state.world().loaders().isLoader(state) && m_state.world().loaders().countOf(client.name) >= loaderLimit) {
+        client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "You have placed as many chunk loaders as you may (%1)"),
+            {QString::number(loaderLimit)}));
+        return false;
+    }
+
     if (placedDefinition.machine.isMachine() && m_state.blockEntities().isMachineTableFull()) {
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Too many machines in the world (at most %1)"),
             {QString::number(m_state.blockEntities().limits().machines)}));
@@ -215,7 +223,9 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
         m_parts.blocks.setAndBroadcast(target.offset(0, 1, 0), content.withProperty(state, u"half"_s, u"top"_s));
     }
 
-    // Setting the block made its chest, machine or sapling timer (QcServerBlocks::setQuietly).
+    // Setting the block made its chest, machine or sapling timer (QcServerBlocks::setQuietly); a chunk
+    // loader belongs to the player who placed it.
+    m_state.world().loaders().setOwner(target, client.name);
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
 
     const bool pours = !held.emptiesTo.isEmpty() && content.itemId(held.emptiesTo);

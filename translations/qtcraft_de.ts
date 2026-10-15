@@ -1348,29 +1348,39 @@
         <translation>Block-Updates: %1 in der Warteschlange, %2 warten auf Chunks</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="184"/>
+        <source>Chunks: %1 stored, %2 arriving, %3 not yet saved · forced %4 · loaders %5</source>
+        <translation>Chunks: %1 gespeichert, %2 unterwegs, %3 noch nicht gesichert · erzwungen %4 · Lader %5</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="190"/>
+        <source>Groups: %1 (largest %2, here %3, too large %4) · tickets %5 (refused %6)</source>
+        <translation>Gruppen: %1 (größte %2, hier %3, zu groß %4) · Lade-Tickets %5 (abgelehnt %6)</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="213"/>
         <source>Client frame</source>
         <translation>Client-Frame</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="213"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="222"/>
         <source>mean</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="200"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="213"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="222"/>
         <source>max</source>
         <translation>max.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="222"/>
         <source>Server tick</source>
         <translation>Server-Tick</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="214"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="227"/>
         <source>Whole tick</source>
         <translation>Ganzer Tick</translation>
     </message>
@@ -1400,7 +1410,7 @@
     </message>
     <message>
         <location filename="../src/app/controllers/QcGameController.cpp" line="251"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="443"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="451"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -1430,22 +1440,32 @@
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sich die Welt ohne die darin gespeicherten Inhalte der Truhen und Maschinen öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="415"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="391"/>
+        <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open with the chunks saved in it generated anew; their changes are lost.</source>
+        <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sie die Welt öffnen, mit den darin gespeicherten Chunks neu erzeugt; ihre Änderungen gehen verloren.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="395"/>
+        <source>The last save of this world broke off and cannot be finished. Removing %1 and every file ending in .next from the world folder lets the world open as it was saved the time before.</source>
+        <translation>Das letzte Speichern dieser Welt brach ab und lässt sich nicht beenden. Werden %1 und alle Dateien mit der Endung .next aus dem Weltordner entfernt, öffnet sich die Welt so, wie sie davor gespeichert wurde.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="423"/>
         <source>Cannot start the world: %1</source>
         <translation>Die Welt kann nicht gestartet werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="427"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
         <source>Cannot load the world: it was made by the unknown world type &apos;%1&apos;</source>
         <translation>Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="443"/>
         <source>It is already open in another QtCraft window or process. Close it there first.</source>
         <translation>Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="437"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="445"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
@@ -1459,7 +1479,7 @@
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="649"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="657"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -1832,58 +1852,58 @@
         <translation type="vanished">Cheats sind auf diesem Server abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="65"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="67"/>
         <source>Usage: /help [command]</source>
         <translation>Verwendung: /help [Befehl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="66"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="68"/>
         <source>Lists the commands you may use, or explains one.</source>
         <translation>Listet die Befehle, die du verwenden darfst, oder erklärt einen.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="69"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="71"/>
         <source>Usage: /confirm</source>
         <translation>Verwendung: /confirm</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="70"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="72"/>
         <source>Runs the destructive command you started last.</source>
         <translation>Führt den zuletzt begonnenen zerstörenden Befehl aus.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="73"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="75"/>
         <source>Usage: /cancel</source>
         <translation>Verwendung: /cancel</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="74"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="76"/>
         <source>Drops the command waiting for /confirm.</source>
         <translation>Verwirft den Befehl, der auf /confirm wartet.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="115"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="117"/>
         <source>Only the server console can use /%1</source>
         <translation>Nur die Server-Konsole darf /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="134"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="182"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="136"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="184"/>
         <source>Unknown command: %1</source>
         <translation>Unbekannter Befehl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="143"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="145"/>
         <source>Only players can use /%1</source>
         <translation>Nur Spieler können /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="199"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="201"/>
         <source>Commands: %1</source>
         <translation>Befehle: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="200"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="202"/>
         <source>Type /help &lt;command&gt; for its usage</source>
         <translation>/help &lt;Befehl&gt; zeigt seine Verwendung</translation>
     </message>
@@ -1912,19 +1932,22 @@
         <translation type="vanished">Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;, /equip &lt;Rüstung|Satz|clear&gt;, /armorstand &lt;nearest|looking|Id&gt; &lt;Eigenschaft&gt; [Werte], /summon armor_stand [Eigenschaft=Wert …]</translation>
     </message>
     <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="345"/>
         <source>%1 is %2</source>
-        <translation type="vanished">%1 ist %2</translation>
+        <translation>%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="322"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="348"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="116"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="326"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="354"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="375"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="118"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
     </message>
     <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="358"/>
         <source>%1 is now %2</source>
-        <translation type="vanished">%1 ist jetzt %2</translation>
+        <translation>%1 ist jetzt %2</translation>
     </message>
     <message>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks&gt; [true|false]</source>
@@ -2046,13 +2069,11 @@
         <translation>Setzt deine Nahrungspunkte (ohne Zahl voll).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="125"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="310"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
+        <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="368"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="395"/>
         <source>The console must name a player: /gamemode &lt;mode&gt; &lt;player&gt;</source>
         <translation>Die Konsole muss einen Spieler nennen: /gamemode &lt;Modus&gt; &lt;Spieler&gt;</translation>
     </message>
@@ -2088,6 +2109,13 @@
         <translation>Zeigt oder ändert die Tageszeit (ein Tag dauert 600 s).</translation>
     </message>
     <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="125"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="314"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="350"/>
+        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false] | spawnChunkRadius [0-16]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false] | spawnChunkRadius [0-16]</translation>
+    </message>
+    <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
         <source>Shows a game rule; operators change it.</source>
         <translation>Zeigt eine Spielregel; Operatoren ändern sie.</translation>
@@ -2115,22 +2143,22 @@
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="317"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="321"/>
         <source>%1 is true</source>
         <translation>%1 ist wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="317"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="321"/>
         <source>%1 is false</source>
         <translation>%1 ist falsch</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="327"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="331"/>
         <source>%1 is now true</source>
         <translation>%1 ist jetzt wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="327"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="331"/>
         <source>%1 is now false</source>
         <translation>%1 ist jetzt falsch</translation>
     </message>
@@ -2139,13 +2167,13 @@
         <translation type="vanished">Spielmodus von %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="354"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="395"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="381"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="422"/>
         <source>Unknown game mode %1; use survival or creative</source>
         <translation>Unbekannter Spielmodus %1; möglich sind survival und creative</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="362"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="389"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
@@ -2260,6 +2288,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcBlockCommands.cpp" line="222"/>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="56"/>
         <source>At most %1 chunks at once</source>
         <translation>Höchstens %1 Chunks auf einmal</translation>
     </message>
@@ -2283,12 +2312,12 @@
         <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="419"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="446"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="425"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="452"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
@@ -2300,7 +2329,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="109"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="340"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="367"/>
         <source>Usage: /gamemode [survival|creative] [player]</source>
         <translation>Verwendung: /gamemode [survival|creative] [Spieler]</translation>
     </message>
@@ -2455,8 +2484,12 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="180"/>
+        <source>Chunks: %1 loaded, %2 stored; players: %3</source>
+        <translation>Chunks: %1 geladen, %2 gespeichert; Spieler: %3</translation>
+    </message>
+    <message>
         <source>Chunks: %1 loaded, %2 changed; players: %3</source>
-        <translation>Chunks: %1 geladen, %2 geändert; Spieler: %3</translation>
+        <translation type="vanished">Chunks: %1 geladen, %2 geändert; Spieler: %3</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcWorldCommands.cpp" line="188"/>
@@ -2494,19 +2527,24 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="143"/>
+        <location filename="../src/server/core/QcServer.cpp" line="144"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="338"/>
+        <location filename="../src/server/core/QcServer.cpp" line="339"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="368"/>
+        <location filename="../src/server/core/QcServer.cpp" line="369"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcServer.cpp" line="559"/>
+        <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
+        <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
     <message>
         <location filename="../src/server/login/QcPlayerJoin.cpp" line="63"/>
@@ -2529,7 +2567,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="556"/>
+        <location filename="../src/server/core/QcServer.cpp" line="574"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -2550,7 +2588,12 @@
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="191"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="193"/>
+        <source>You have placed as many chunk loaders as you may (%1)</source>
+        <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="199"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="62"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -2994,7 +3037,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="178"/>
+        <location filename="../src/server/core/QcServer.cpp" line="179"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
@@ -3054,6 +3097,48 @@
         <location filename="../src/server/commands/QcAccessList.cpp" line="369"/>
         <source>You are not on the whitelist of this world</source>
         <translation>Du stehst nicht auf der Whitelist dieser Welt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="12"/>
+        <source>Usage: /forceload &lt;add|remove&gt; &lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;] | remove all | query [&lt;x&gt; &lt;z&gt;]</source>
+        <translation>Verwendung: /forceload &lt;add|remove&gt; &lt;x&gt; &lt;z&gt; [&lt;x2&gt; &lt;z2&gt;] | remove all | query [&lt;x&gt; &lt;z&gt;]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="29"/>
+        <source>Keeps chunks loaded although no player is near (by block coordinates of a chunk or the corners of an area), lets them go again or lists them.</source>
+        <translation>Hält Chunks geladen, auch wenn kein Spieler in der Nähe ist (über Blockkoordinaten eines Chunks oder die Ecken eines Bereichs), gibt sie wieder frei oder listet sie auf.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="78"/>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="121"/>
+        <source>%1 chunks are no longer forced</source>
+        <translation>%1 Chunks werden nicht mehr erzwungen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="102"/>
+        <source>At most %1 chunks may be forced (forcedChunks); %2 are</source>
+        <translation>Höchstens %1 Chunks dürfen erzwungen sein (forcedChunks); es sind %2</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="112"/>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="133"/>
+        <source>Chunk %1 is forced</source>
+        <translation>Chunk %1 wird erzwungen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="114"/>
+        <source>%1 chunks are forced (%2 new)</source>
+        <translation>%1 Chunks werden erzwungen (%2 neu)</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="134"/>
+        <source>Chunk %1 is not forced</source>
+        <translation>Chunk %1 wird nicht erzwungen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcChunkCommands.cpp" line="142"/>
+        <source>%1 forced chunks: %2</source>
+        <translation>%1 erzwungene Chunks: %2</translation>
     </message>
 </context>
 <context>

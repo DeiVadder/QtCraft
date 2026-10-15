@@ -25,6 +25,9 @@ public:
 
     // The feet of a player appearing now; may generate chunks and place the ground block.
     QcVec3 position();
+    // The spawn column (x and z; y is the generator's spawn height): the configured one or the
+    // generator's. Cheap after the first call.
+    QcBlockPos column();
 
 private:
     // Searched on squares of growing radius around the spawn column.
@@ -46,4 +49,6 @@ private:
     const Clients &m_clients;
     // The generator's spawn point, searched once (it may generate chunks to find open ground).
     std::optional<QcBlockPos> m_generatorSpawn;
+    // The natural ground found last time.
+    std::optional<QcBlockPos> m_lastGround;
 };

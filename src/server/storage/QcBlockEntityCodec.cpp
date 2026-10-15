@@ -1,6 +1,5 @@
-#include "QcBlockEntityStorage.h"
+#include "QcBlockEntityCodec.h"
 
-#include "QcRegionStorage.h"
 #include "QcSaveFile.h"
 #include "QcStackReader.h"
 #include "QcStreamLimits.h"
@@ -15,8 +14,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr QByteArrayView magic("QCBE");
-constexpr quint16 version = 1;
 // Entries of one kind in one chunk at most: one per cell.
 constexpr quint32 maxPerChunk = QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::worldHeight;
 // Positions the circuits wait to look at, per chunk (QcServerLimits::signalMaxPendingChanges at most).
@@ -74,7 +71,8 @@ public:
     {
         return readEntries(m_stream, maxPerChunk, [this] { return container(); }) && readEntries(m_stream, maxPerChunk, [this] { return machine(); })
                && readEntries(m_stream, maxPerChunk, [this] { return sapling(); }) && readEntries(m_stream, maxPerChunk, [this] { return memory(); })
-               && readEntries(m_stream, maxPerChunk, [this] { return scheduled(); }) && readEntries(m_stream, maxWakes, [this] { return wake(); });
+               && readEntries(m_stream, maxPerChunk, [this] { return scheduled(); }) && readEntries(m_stream, maxWakes, [this] { return wake(); })
+               && readEntries(m_stream, maxWakes, [this] { return signalWake(); }) && readEntries(m_stream, maxWakes, [this] { return update(); });
     }
 
 private:
@@ -181,6 +179,22 @@ private:
         return placed;
     }
 
+    bool signalWake()
+    {
+        QcBlockPos pos;
+        const bool placed = readPos(m_stream, m_record.chunk, pos);
+        m_record.signalWakes.append(pos);
+        return placed;
+    }
+
+    bool update()
+    {
+        QcBlockPos pos;
+        const bool placed = readPos(m_stream, m_record.chunk, pos);
+        m_record.blockUpdates.append(pos);
+        return placed;
+    }
+
     QDataStream &m_stream;
     QcStackReader &m_stacks;
     QcBlockEntityRecord &m_record;
@@ -191,23 +205,30 @@ private:
     QSet<QcBlockPos> m_scheduled;
 };
 
-} // namespace
-
-QcBlockEntityStorage::QcBlockEntityStorage(QString directory, std::shared_ptr<const QcContentRegistry> content)
-    : m_content(std::move(content))
-    , m_files(std::move(directory), QString::fromLatin1(folder), u"qcb"_s, magic, version)
+void writePositions(QDataStream &stream, const QList<QcBlockPos> &positions)
 {
+    const qsizetype count = std::min<qsizetype>(positions.size(), maxWakes);
+    stream << quint32(count);
+    for (qsizetype i = 0; i < count; ++i) {
+        writePos(stream, positions[i]);
+    }
 }
 
-void QcBlockEntityStorage::writeRecord(QDataStream &stream, const QcBlockEntityRecord &record) const
+} // namespace
+
+namespace QcBlockEntityCodec {
+
+QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &content)
 {
-    stream << qint32(record.chunk.x) << qint32(record.chunk.z);
+    QByteArray blob;
+    QDataStream stream(&blob, QIODevice::WriteOnly);
+    stream.setVersion(QcSaveFile::streamVersion);
     stream << quint32(record.containers.size());
     for (const QcBlockEntities::Container &container : record.containers) {
         writePos(stream, container.pos);
         stream << quint32(container.stacks.size());
         for (const QcItemStack &stack : container.stacks) {
-            QcSaveFile::writeStack(stream, stack, *m_content);
+            QcSaveFile::writeStack(stream, stack, content);
         }
         stream << quint32(container.readyAt);
     }
@@ -215,7 +236,7 @@ void QcBlockEntityStorage::writeRecord(QDataStream &stream, const QcBlockEntityR
     for (const QcBlockEntities::Machine &machine : record.machines) {
         writePos(stream, machine.pos);
         for (const QcItemStack &stack : machine.stacks) {
-            QcSaveFile::writeStack(stream, stack, *m_content);
+            QcSaveFile::writeStack(stream, stack, content);
         }
         stream << machine.burnRemaining << machine.burnSeconds << machine.progress;
     }
@@ -234,96 +255,24 @@ void QcBlockEntityStorage::writeRecord(QDataStream &stream, const QcBlockEntityR
         writePos(stream, entry.pos);
         stream << entry.ticksLeft << quint8(entry.priority);
     }
-    const qsizetype wakes = std::min<qsizetype>(record.wakes.size(), maxWakes);
-    stream << quint32(wakes);
-    for (qsizetype i = 0; i < wakes; ++i) {
-        writePos(stream, record.wakes[i]);
-    }
+    writePositions(stream, record.wakes);
+    writePositions(stream, record.signalWakes);
+    writePositions(stream, record.blockUpdates);
+    return blob;
 }
 
-QByteArray QcBlockEntityStorage::payloadOf(const QList<const QcBlockEntityRecord *> &records) const
+QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+                                     QStringList &warnings, QSet<QString> &reported)
 {
-    QByteArray payload;
-    QDataStream stream(&payload, QIODevice::WriteOnly);
+    QDataStream stream(blob);
     stream.setVersion(QcSaveFile::streamVersion);
-    stream << quint32(records.size());
-    for (const QcBlockEntityRecord *record : records) {
-        writeRecord(stream, *record);
+    QcBlockEntityRecord record;
+    record.chunk = chunk;
+    QcStackReader stacks(content, u"chunk %1, %2"_s.arg(chunk.x).arg(chunk.z), warnings, &reported);
+    if (!RecordReader(stream, stacks, record).read() || stream.status() != QDataStream::Ok || !stream.atEnd()) {
+        return qcError(u"damaged block entities of chunk %1, %2"_s.arg(chunk.x).arg(chunk.z));
     }
-    return payload;
+    return record;
 }
 
-QcStatus QcBlockEntityStorage::write(const QList<QcBlockEntityRecord> &records) const
-{
-    // By region, each region's chunks in a fixed order, so unchanged contents give the same bytes.
-    QHash<QcChunkPos, QList<const QcBlockEntityRecord *>> regions;
-    for (const QcBlockEntityRecord &record : records) {
-        if (!record.isEmpty()) {
-            regions[QcRegionStorage::regionOf(record.chunk)].append(&record);
-        }
-    }
-
-    QHash<QcChunkPos, QByteArray> payloads;
-    for (auto it = regions.begin(); it != regions.end(); ++it) {
-        std::ranges::sort(*it, [](const QcBlockEntityRecord *a, const QcBlockEntityRecord *b) {
-            return std::pair{a->chunk.x, a->chunk.z} < std::pair{b->chunk.x, b->chunk.z};
-        });
-        payloads.insert(it.key(), payloadOf(*it));
-    }
-    return m_files.write(payloads);
-}
-
-QcResult<QList<QcBlockEntityRecord>> QcBlockEntityStorage::read(QStringList &warnings) const
-{
-    const QcResult<QList<std::pair<QString, QByteArray>>> files = m_files.read();
-    if (!files) {
-        return qcError(files.error());
-    }
-
-    QList<QcBlockEntityRecord> records;
-    for (const auto &[path, payload] : *files) {
-        if (const QcStatus read = readRegion(path, payload, records, warnings); !read) {
-            m_files.noteDamaged(path);
-            return qcError(read.error());
-        }
-    }
-    return records;
-}
-
-QcStatus QcBlockEntityStorage::readRegion(const QString &path, const QByteArray &payload, QList<QcBlockEntityRecord> &records,
-                                          QStringList &warnings) const
-{
-    QDataStream stream(payload);
-    stream.setVersion(QcSaveFile::streamVersion);
-    quint32 count = 0;
-    if (!QcStreamLimits::readCount(stream, quint32(QcRegionStorage::regionSize * QcRegionStorage::regionSize), count)) {
-        return qcError(u"%1 is damaged (chunk count)"_s.arg(path));
-    }
-
-    QcStackReader stacks(*m_content, path, warnings);
-    std::optional<QcChunkPos> region;
-    QSet<QcChunkPos> chunks;
-    for (quint32 i = 0; i < count; ++i) {
-        QcBlockEntityRecord record;
-        qint32 x = 0;
-        qint32 z = 0;
-        stream >> x >> z;
-        record.chunk = {x, z};
-        region = region.value_or(QcRegionStorage::regionOf(record.chunk));
-        const bool fits = std::abs(qint64(x)) <= QcWorld::maxHorizontalChunk && std::abs(qint64(z)) <= QcWorld::maxHorizontalChunk
-                          && m_files.isFileOf(path, *region)
-                          && QcRegionStorage::regionOf(record.chunk) == *region && !chunks.contains(record.chunk);
-        if (stream.status() != QDataStream::Ok || !fits || !RecordReader(stream, stacks, record).read()) {
-            return qcError(u"%1 is damaged (chunk %2)"_s.arg(path).arg(i));
-        }
-        chunks.insert(record.chunk);
-        records.append(std::move(record));
-    }
-    if (stream.status() != QDataStream::Ok || !stream.atEnd()) {
-        return qcError(u"%1 is damaged"_s.arg(path));
-    }
-    if (region) {
-        m_files.remember(*region, payload);
-    }
-    return {};
-}
+} // namespace QcBlockEntityCodec

@@ -78,6 +78,20 @@ struct QcServerLimits
     // Armour stands in the world (E-238) and blocks shown sliding behind pistons (E-337).
     qint64 maxArmourStands = 4096;
     qint64 movingBlocksShown = 4096;
+    // Loading and unloading chunks (stage 31.3, decisions E-374 to E-377): chunks a circuit group may
+    // span before it falls back to waiting at the edge; chunks unloaded per tick (whole groups are
+    // finished); unloaded chunks kept in memory before a save writes them; load tickets of circuits
+    // (new per tick, at once in the world, ticks each lasts); chunks forced by /forceload; chunk
+    // loader blocks per player and in the world.
+    qint64 chunkGroupLimit = 64;
+    qint64 chunkUnloadsPerTick = 32;
+    qint64 unsavedChunks = 2048;
+    qint64 chunkTicketsPerTick = 4;
+    qint64 chunkTickets = 256;
+    qint64 chunkTicketTicks = 100;
+    qint64 forcedChunks = 256;
+    qint64 chunkLoadersPerPlayer = 4;
+    qint64 chunkLoaders = 64;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

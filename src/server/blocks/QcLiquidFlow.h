@@ -59,6 +59,9 @@ public:
     void clear();
     // Drops the planned steps inside the chunk (it was generated again).
     void forgetChunk(QcChunkPos chunk);
+    // Takes the planned steps inside these chunks (they leave the world, decision E-374), by chunk;
+    // they come back as block updates, which plan them again.
+    QHash<QcChunkPos, QList<QcBlockPos>> takeChunks(const QSet<QcChunkPos> &chunks);
 
     // Rules, shared with tests.
     static bool flows(const QcContentRegistry &content, QcBlockId id);

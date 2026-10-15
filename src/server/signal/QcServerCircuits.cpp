@@ -278,7 +278,7 @@ QList<QcCircuitState::Change> QcServerCircuits::takeChanges(qsizetype limit)
     changes.removeIf([&](const QcCircuitState::Change &change) {
         const std::optional<QcChunkPos> missing = power.unloadedNear(change.pos);
         if (missing) {
-            m_state.circuits().waitOn(*missing, change.pos);
+            m_state.circuits().waitOn(*missing, change.pos, change.signal);
         }
         return missing.has_value();
     });
@@ -300,10 +300,12 @@ void QcServerCircuits::runWave(qsizetype limit)
 
     QcCircuitPlan plan;
     plan.work = changes.size() + wired.visited;
-    // A wire that reaches a chunk that is not loaded is recomputed once that chunk is.
+    // A wire that reaches a chunk that is not loaded is recomputed once that chunk is; a signal on
+    // its way asks for that chunk (decision E-376).
+    const bool signal = std::ranges::any_of(changes, &QcCircuitState::Change::signal);
     for (const QcDustNetwork::Result::Blocked &blocked : std::as_const(wired.blocked)) {
         for (const QcBlockPos &pos : blocked.seeds) {
-            m_state.circuits().waitOn(blocked.chunk, pos);
+            m_state.circuits().waitOn(blocked.chunk, pos, signal);
         }
     }
     for (const QcDustNetwork::Change &change : std::as_const(wired.changes)) {
@@ -316,7 +318,7 @@ void QcServerCircuits::runWave(qsizetype limit)
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
             if (m_table.at(m_state.world().blockAt(pos).value_or(qcAirBlockId)).kind != QcSignalKind::None) {
-                m_state.circuits().waitOn(*missing, pos);
+                m_state.circuits().waitOn(*missing, pos, signal);
             }
             continue;
         }
@@ -363,7 +365,7 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
     for (const QcBlockPos &pos : std::as_const(positions)) {
         // Next to an unloaded chunk the component waits for it and then looks again.
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
-            m_state.circuits().waitOn(*missing, pos);
+            m_state.circuits().waitOn(*missing, pos, true);
             ++plan.work;
             continue;
         }

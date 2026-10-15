@@ -13,7 +13,8 @@
 class QcStackReader
 {
 public:
-    QcStackReader(const QcContentRegistry &content, QString path, QStringList &warnings);
+    // `reported`: unknown names warned about before (one warning per world); without it, per reader.
+    QcStackReader(const QcContentRegistry &content, QString path, QStringList &warnings, QSet<QString> *reported = nullptr);
 
     // The stack of one slot; empty for an empty slot or an unknown item.
     QcItemStack read(QDataStream &stream);
@@ -22,5 +23,6 @@ private:
     const QcContentRegistry &m_content;
     QString m_path;
     QStringList &m_warnings;
-    QSet<QString> m_unknown;
+    QSet<QString> m_ownUnknown;
+    QSet<QString> &m_unknown;
 };

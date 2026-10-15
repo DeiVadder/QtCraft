@@ -4,10 +4,11 @@
 
 using namespace Qt::StringLiterals;
 
-QcStackReader::QcStackReader(const QcContentRegistry &content, QString path, QStringList &warnings)
+QcStackReader::QcStackReader(const QcContentRegistry &content, QString path, QStringList &warnings, QSet<QString> *reported)
     : m_content(content)
     , m_path(std::move(path))
     , m_warnings(warnings)
+    , m_unknown(reported ? *reported : m_ownUnknown)
 {
 }
 
@@ -25,7 +26,7 @@ QcItemStack QcStackReader::read(QDataStream &stream)
     if (!item) {
         if (!m_unknown.contains(name)) {
             m_unknown.insert(name);
-            m_warnings.append(u"%1: unknown item '%2' dropped"_s.arg(m_path, name));
+            m_warnings.append(u"%1: unknown item '%2' dropped (in this world reported only here)"_s.arg(m_path, name));
         }
         return {};
     }

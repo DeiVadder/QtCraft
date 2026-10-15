@@ -13,19 +13,30 @@ QcSpawnPoint::QcSpawnPoint(QcServerWorld &world, const QcServerConfig &config, c
 {
 }
 
-QcVec3 QcSpawnPoint::position()
+QcBlockPos QcSpawnPoint::column()
 {
     if (!m_generatorSpawn) {
         m_generatorSpawn = m_world.generator().spawnPoint();
     }
-
-    QcBlockPos spawn = *m_generatorSpawn;
     if (m_config.spawnColumn) {
-        spawn = {(*m_config.spawnColumn)[0], 0, (*m_config.spawnColumn)[1]};
+        return {(*m_config.spawnColumn)[0], 0, (*m_config.spawnColumn)[1]};
     }
+    return *m_generatorSpawn;
+}
+
+QcVec3 QcSpawnPoint::position()
+{
+    QcBlockPos spawn = column();
 
     if (!m_config.spawnColumn) {
-        if (const std::optional<QcBlockPos> ground = naturalGroundNear(spawn)) {
+        // The column found last time is looked at first: the spawn chunks are usually not loaded
+        // (stage 31.3), and a full search would read every chunk it passes.
+        std::optional<QcBlockPos> ground = m_lastGround ? naturalGroundAt(m_lastGround->x, m_lastGround->z) : std::nullopt;
+        if (!ground) {
+            ground = naturalGroundNear(spawn);
+        }
+        if (ground) {
+            m_lastGround = ground;
             return {ground->x + 0.5, double(ground->y + 1), ground->z + 0.5};
         }
     }

@@ -7,6 +7,7 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
+#include <QSaveFile>
 
 #include <algorithm>
 #include <cmath>
@@ -50,12 +51,26 @@ QString QcPlayerStorage::path(const QString &playerName) const
     return QDir(m_directory).filePath(u"players/"_s + fileName(playerName));
 }
 
+QString QcPlayerStorage::relativePath(const QString &playerName)
+{
+    return u"players/"_s + fileName(playerName);
+}
+
 QcStatus QcPlayerStorage::write(const QString &playerName, const QcPlayerData &player) const
 {
     if (!QDir().mkpath(QDir(m_directory).filePath(u"players"_s))) {
         return qcError(u"Cannot create the players directory in %1"_s.arg(m_directory));
     }
+    QSaveFile file(path(playerName));
+    const QByteArray data = bytes(player);
+    if (!file.open(QIODevice::WriteOnly) || file.write(data) != data.size() || !file.commit()) {
+        return qcError(u"Cannot write %1: %2"_s.arg(path(playerName), file.errorString()));
+    }
+    return {};
+}
 
+QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
+{
     QByteArray payload;
     QDataStream stream(&payload, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
@@ -69,7 +84,7 @@ QcStatus QcPlayerStorage::write(const QString &playerName, const QcPlayerData &p
     stream << quint8(player.gameMode) << m.flying << qint32(player.keptInventory.selectedHotbarSlot());
     writeSlots(stream, player.keptInventory);
     writeEquipment(stream, player.keptEquipment);
-    return QcSaveFile::write(path(playerName), playerMagic, payload, playerVersion);
+    return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
 void QcPlayerStorage::writeSlots(QDataStream &stream, const QcInventory &inventory) const
@@ -90,13 +105,26 @@ void QcPlayerStorage::writeEquipment(QDataStream &stream, const QcEquipment &equ
 
 QcResult<std::optional<QcPlayerData>> QcPlayerStorage::read(const QString &playerName, QStringList &warnings) const
 {
+    QFile stored(path(playerName));
+    if (!stored.exists()) {
+        return std::optional<QcPlayerData>();
+    }
+    if (!stored.open(QIODevice::ReadOnly)) {
+        return qcError(u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()));
+    }
+    return parse(playerName, stored.read(qint64(16) * 1024 * 1024), warnings);
+}
+
+QcResult<std::optional<QcPlayerData>> QcPlayerStorage::parse(const QString &playerName, const std::optional<QByteArray> &contents,
+                                                             QStringList &warnings) const
+{
     const QString file = path(playerName);
-    if (!QFile::exists(file)) {
+    if (!contents) {
         return std::optional<QcPlayerData>();
     }
 
     quint16 version = 0;
-    const QcResult<QByteArray> payload = QcSaveFile::read(file, playerMagic, playerVersion, &version);
+    const QcResult<QByteArray> payload = QcSaveFile::parse(*contents, file, playerMagic, playerVersion, &version);
     if (!payload) {
         return qcError(payload.error());
     }

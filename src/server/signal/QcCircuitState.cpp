@@ -116,7 +116,7 @@ void QcCircuitState::wake(const QcServerWorld &world, QcBlockPos pos)
         waiting[pos.chunk()].append(pos);
         return;
     }
-    changes.append({pos, qcAirBlockId, qcAirBlockId});
+    changes.append({pos, qcAirBlockId, qcAirBlockId, false, false});
 }
 
 void QcCircuitState::wakeBorder(const QcServerWorld &world, QcChunkPos chunk, QcBlockFace face)
@@ -147,7 +147,7 @@ void QcCircuitState::wakeOne(const QcServerWorld &world, QcBlockPos pos)
     const QcBlockId block = world.blockAt(pos).value_or(qcAirBlockId);
     const QcSignalKind kind = world.content().block(block).signal.kind;
     if (kind != QcSignalKind::None && kind != QcSignalKind::Piston && kind != QcSignalKind::PistonHead) {
-        changes.append({pos, block, block, true});
+        changes.append({pos, block, block, true, false});
     }
 }
 
@@ -155,7 +155,8 @@ void QcCircuitState::chunkLoaded(const QcServerWorld &world, QcChunkPos chunk)
 {
     const QList<QcBlockPos> readers = waitingOn.take(chunk);
     for (const QcBlockPos &pos : readers) {
-        changes.append({pos, qcAirBlockId, qcAirBlockId});
+        // A signal that waited goes on as one; a look after a chunk came stays a look.
+        changes.append({pos, qcAirBlockId, qcAirBlockId, false, signalWaits.remove(pos)});
     }
 
     constexpr std::array<QcBlockFace, 4> sides{QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
@@ -182,7 +183,7 @@ void QcCircuitState::releaseWaiting(QcChunkPos chunk)
 {
     const QList<QcBlockPos> positions = waiting.take(chunk);
     for (const QcBlockPos &pos : positions) {
-        changes.append({pos, qcAirBlockId, qcAirBlockId});
+        changes.append({pos, qcAirBlockId, qcAirBlockId, false, false});
     }
 }
 
@@ -194,20 +195,58 @@ void QcCircuitState::forgetChunk(QcChunkPos chunk)
     changes.removeIf([&inChunk](const Change &change) { return inChunk(change.pos); });
 }
 
-QHash<QcChunkPos, QList<QcBlockPos>> QcCircuitState::pendingByChunk() const
+void QcCircuitState::Pending::add(QcBlockPos pos, bool signal)
 {
-    QHash<QcChunkPos, QList<QcBlockPos>> pending;
+    (signal ? onTheirWay : looks).append(pos);
+}
+
+QcCircuitState::Pending QcCircuitState::takeChunk(QcChunkPos chunk)
+{
+    const auto inChunk = [chunk](QcBlockPos pos) { return pos.chunk() == chunk; };
+    Pending taken;
+    taken.looks = waiting.take(chunk);
+    changes.removeIf([&](const Change &change) {
+        if (!inChunk(change.pos)) {
+            return false;
+        }
+        taken.add(change.pos, change.signal);
+        return true;
+    });
+    for (auto it = waitingOn.begin(); it != waitingOn.end();) {
+        it->removeIf([&](QcBlockPos pos) {
+            if (!inChunk(pos)) {
+                return false;
+            }
+            taken.add(pos, signalWaits.contains(pos));
+            return true;
+        });
+        it = it->isEmpty() ? waitingOn.erase(it) : std::next(it);
+    }
+    readers.removeIf([&](QcBlockPos pos) {
+        if (!inChunk(pos)) {
+            return false;
+        }
+        taken.add(pos, true);
+        return true;
+    });
+    signalWaits.removeIf(inChunk);
+    return taken;
+}
+
+QHash<QcChunkPos, QcCircuitState::Pending> QcCircuitState::pendingByChunk() const
+{
+    QHash<QcChunkPos, Pending> pending;
     for (const Change &change : changes) {
-        pending[change.pos.chunk()].append(change.pos);
+        pending[change.pos.chunk()].add(change.pos, change.signal);
     }
     for (const QList<QcBlockPos> &positions : waiting) {
         for (const QcBlockPos &pos : positions) {
-            pending[pos.chunk()].append(pos);
+            pending[pos.chunk()].add(pos, false);
         }
     }
     for (const QList<QcBlockPos> &positions : waitingOn) {
         for (const QcBlockPos &pos : positions) {
-            pending[pos.chunk()].append(pos);
+            pending[pos.chunk()].add(pos, signalWaits.contains(pos));
         }
     }
     return pending;

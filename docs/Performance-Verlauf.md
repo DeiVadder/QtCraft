@@ -1046,3 +1046,113 @@ Etappen-Ende von Etappe 43 (Grenze der Übersetzungen, E-371), GUI-Benchmarks wi
 ### Fazit Etappe 43
 
 Im Fenster keine Änderung durch die Grenze der Übersetzungen: alle Kennzahlen innerhalb der Schwelle, die Ausreißer der Hauptreihe wiederholen sich nicht. Der Speicher-Befund bei 16 Chunks ist unverändert (1386 MB gegen ≤ 800 MB); neu festgehalten ist, dass sprint bei 8 Chunks mit 20-s-Läufen knapp über 600 MB liegt (604–612 MB, bei beiden Ständen).
+
+## Etappe 31.3: headless Messung (2026-10-15)
+
+`da33b56` (dev `d530a7f` plus E-372, also vor dem Entladen) gegen `feature/31-3-chunk-unloading`, Release, `qtcraft-headless` und `test_world_open_measure` als feste Binärdateien.
+
+**Langer Erkundungsflug** (`scripts/explore-headless.sh <app> 300 8 10000`: Bot im Creative-Modus fliegt mit 20 m/s auf y 200 nach Osten, setzt jede Sekunde eine 3 × 3-Glasfläche auf y 70, also wird jeder überflogene Chunk geändert; Sichtweite 8, Server und Bot in einem Prozess; je ein Lauf von rund 510 s Wanduhr, Werte alle 10 s):
+
+| | Server-Chunks am Anfang / nach 300 s / am Ende | Prozessspeicher am Anfang / am Ende (MB) | Tick Ø / max (ms) |
+|---|---:|---:|---:|
+| vorher | 306 / 518 / 669 (wächst um 7 je 10 s) | 74 / 96 | 0,801 / 4,99 |
+| nachher | 306 / 306 / 306 | 72 / 80 | 0,712 / 5,53 |
+
+Vorher blieb jeder geänderte Chunk bis zum Schließen der Welt geladen (und alle Wesen und Items im Register), die Zahl wuchs mit der Flugstrecke; nachher bleibt sie bei der Sicht (17 × 17 plus Rand), der Rest geht im Hintergrund in den Speicher. Der Speicher wächst nachher noch um 8 MB in 500 s (Allokator, Puffer der unverschlüsselt zu schreibenden Chunks bis zum Autosave, Client-Seite des Bots); vorher um 22 MB. Wesen (wache Kreaturen) gleich (kurzer Lauf von 100 s: Verlauf 71 → 25 → 120 gegen 71 → 19 → 106).
+
+**Große Welt öffnen** (`QTCRAFT_WORLD_OPEN_MEASURE=full`: 41 × 41 = 1681 geänderte Chunks mit je zwei Tieren und einer gefüllten Truhe; verschränkt je 3 Läufe):
+
+| | vorher | nachher |
+|---|---:|---:|
+| Öffnen | 89,4 / 90,3 / 93,9 ms (1681 Chunks geladen) | 2,9 / 3,0 / 3,0 ms (0 Chunks geladen, nur die Indizes) |
+| Öffnen bis der Spieler in geladenen Chunks steht | 6,9 / 7,1 / 7,2 ms | 8,0 / 8,1 / 8,1 ms (ein Tick, 3 × 3 Chunks gelesen) |
+| erstes Speichern der 1681 Chunks (wartend) | 45,8 / 46,5 / 48,2 ms | 73,5 / 73,6 / 73,9 ms |
+
+**Bewertung:** Ziel der Etappe erreicht: Server-Chunks und -Speicher beim Erkunden begrenzt, Öffnen großer Welten unabhängig von ihrer Größe (30-mal schneller bei 1681 Chunks). Das wartende Speichern aller Chunks wird um 58 % langsamer (Komprimieren der Datenblöcke, Index, Journal); das Autosave wartet aber nicht mehr, der Tick sammelt nur die Datensätze, Verschlüsseln und Schreiben laufen auf dem Thread von `QcChunkIo` (E-373). Tick-Zeit im Flug −11 % (keine Ruhe-Prüfung aller Entities je Tick mehr, E-372, kleineres Register). Gerendert nachzuholen (Hauptsitzung): Szenario `explore` (neu, `STATS=5000`, lang) A/B, `sprint` bei 8 und 16 Chunks gegen die Ziele 600/800 MB (Befund in `docs/Performance.md`), `showcase`, `showcase-flight` und die Signal-Szenarien (Gruppen, Tickets).
+
+## Etappe 31.3: gerenderte Messung (2026-10-15)
+
+Pflicht-Benchmark am Etappen-Ende (Mensch zuerst abwesend, GUI-Messungen erlaubt). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_world_open_measure`): `dev` `d530a7f` in einem temporären Worktree (dazu nur der Messtest aus `1d5afde`) gegen `feature/31-3-chunk-unloading` (`9ffa0c4`). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: Hauptreihe 6 Runden à 20 s (stand, sprint, showcase, showcase-signal_farm, showcase-signal_components, crowd, 06:43–07:14), `explore` 6 Runden à 300 s mit `STATS=5000` (07:15–08:16), `showcase-flight` 6 Runden à 80 s (eine Runde um die Showcase-Welt) mit `STATS=1000`, sprint bei 16 Chunks 3 Runden, Wiederholung 6 Runden der Szenarien über der Schwelle (signal_farm, signal_components, showcase, sprint; 08:38–08:58). Last vor und nach den Läufen 2,0–7,2; belastet markiert 13 von 150 Läufen (Safari, Teams oder `suggestd` über 80 % nach dem Lauf, Last bis 7,2), ohne sie ändert sich keine Aussage. HID-Leerlauf alle 15 s protokolliert.
+
+**Externer Monitor und Mensch am Rechner:** Um 07:13:25 kam Eingabe an (der Mensch schloss nach eigener Angabe gegen 07:00–07:10 einen externen Monitor an; das Fenster blieb auf dem eingebauten Display). Genau in diesem Lauf (Hauptreihe, Runde 6, `showcase-signal_components` von `dev`, 07:13:26–07:13:46) fallen Render-CPU (0,73 statt 1,3 ms), GUI-CPU und Tick (0,22 statt 0,36–0,50 ms) aus der Reihe; er ist unten herausgenommen. Danach liegt bei beiden Ständen gelegentlich eine zweite, niedrigere Lage der Render-CPU (0,7 statt 1,3 ms) vor, frame Ø und GPU bleiben gleich. Ab 08:07 wurde der Rechner laufend benutzt: die sechste Runde von `explore`, die Reihen `showcase-flight` und sprint 16 Chunks und die ganze Wiederholung liefen mit Mensch am Rechner. Weil jede Runde beide Stände im Abstand von Sekunden misst, trifft das beide gleich; keine Aussage unten hängt allein an diesen Läufen (die Hauptreihe und fünf der sechs Erkundungsflüge liefen ohne Eingabe; Ausnahme: eine Eingabe um 07:53 in der vierten Runde von `explore`, ohne Auffälligkeit).
+
+### 31.3 gegen `d530a7f`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
+|---|---|---|---|---|---|---|---|---|---|
+| stand (6) | 119 / 119 | 12,5 → 12,0 | 1,75 → 1,76 | 1,80 → 1,83 | 0,472 → 0,489 | 0,800 → 0,780 (−2 %) | 2,87 → 2,40 | 444 → 445 | Chunk-Laden 0,031 → 0,010, Streaming 0,095 → 0,102, Speichern 0,0005 → 0,0020; 92 / 91 Wesen auf dem Server |
+| sprint (12) | 119 / 119 | 13,1 → 13,6 | 2,13 → 2,13 | 1,80 → 1,79 | 0,453 → 0,443 | 0,776 → 0,790 (+2 %) | 2,91 → 2,86 | 609 → 610 [606–620] | Chunk-Laden 0,029 → 0,013, Streaming 0,102 → 0,108 |
+| showcase (12) | 119 / 119 | 14,4 → 14,6 | 0,687 → 0,688 | 1,21 → 1,22 | 0,376 → 0,377 | 0,369 → 0,376 (+2 %) | 1,40 → 1,39 | 324 → 324 | Signal 0,134 → 0,135, Chunk-Laden 0,011 → 0,008, Streaming 0,089 → 0,096; Block-Entities 99 → 85 (unten) |
+| showcase-signal_farm (12) | 118 / 118 | 15,6 → 15,8 | 0,643 → 0,643 | 1,24 → 1,23 | 0,355 → 0,351 | 0,348 → 0,398 (+15 %; Haupt +24, Wdh. +4) | 1,68 → 1,68 | 323 → 323 | Signal 0,102 → 0,117, Streaming 0,095 → 0,112, Client-Sync 0,023 → 0,025 |
+| showcase-signal_components (11 → 12) | 118 / 118 | 15,0 → 15,1 | 0,698 → 0,708 | 1,26 → 1,28 | 0,344 → 0,349 | 0,362 → 0,385 (+6 %; Haupt +5, Wdh. +6) | 1,35 → 1,70 | 325 → 327 | Signal 0,135 → 0,136, Streaming 0,086 → 0,100, Client-Sync 0,015 → 0,018 |
+| crowd (6) | 119 / 119 | 13,4 → 13,7 | 2,17 → 2,15 | 1,53 → 1,55 | 0,872 → 0,884 | 1,08 → 1,07 (−1 %) | 2,60 → 3,48 | 448 → 451 | Wesen 0,799 → 0,803, Chunk-Laden 0,035 → 0,013; 135 / 24 Wesen / Items auf dem Server (beide) |
+| explore, 300 s (6) | 118 / 118 | 15,3 → 15,8 | 0,533 → 0,530 | 0,720 → 0,731 | 0,357 → 0,359 | 1,19 → 0,764 (−36 %) | 6,2 → 19,0 (ein Lauf 85,6) | 615 [605–627] → 601 [580–607] | Wesen 0,789 → 0,439, Chunk-Laden 0,094 → 0,047, Streaming 0,184 → 0,183, Speichern max 0,07 → 0,33 |
+| showcase-flight, 80 s (6) | 118 / 118 | 15,3 → 14,7 | 0,681 → 0,675 | 0,649 → 0,572 | 0,293 → 0,272 | 0,302 → 0,245 (−19 %) | 2,00 → 1,80 | 346 → 346 | Signal 0,097 → 0,042, Chunk-Laden 0,014 → 0,016, Client-Sync 0,016 → 0,019; am Ende Wesen 10 → 0, Block-Entities 53 → 4 (unten) |
+| sprint, 16 Chunks (3) | 118 / 118 | 13,9 → 14,6 | 2,89 → 2,86 | 2,22 → 2,21 | 0,271 → 0,268 | 0,934 → 0,911 (−2 %) | 3,25 → 3,05 | 1389 → 1390 | Chunk-Laden 0,029 → 0,012; 5356 Sektionen, 349 MB Sektionspuffer (beide) |
+
+sprint, showcase und die Signal-Stationen über Haupt- und Wiederholungsreihe (12 Runden). `entity_problems` und `block_entity_problems` = 0 in allen 150 Läufen, keine übersprungenen Ticks.
+
+**Langer Erkundungsflug (`explore`, 300 s, Mittel über 6 Läufe je Stand, Werte alle 30 s):**
+
+| s | 0 | 30 | 60 | 90 | 120 | 150 | 180 | 210 | 240 | 270 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Server-Chunks `dev` | 380 | 409 | 447 | 484 | 522 | 560 | 598 | 634 | 672 | 710 |
+| Server-Chunks 31.3 | 380 | 380 | 380 | 380 | 380 | 380 | 380 | 380 | 380 | 380 |
+| Prozess MB `dev` | 461 | 488 | 505 | 552 | 503 | 536 | 536 | 531 | 563 | 572 |
+| Prozess MB 31.3 | 462 | 490 | 505 | 545 | 494 | 526 | 530 | 528 | 551 | 559 |
+| Tick Ø ms `dev` | 0,62 | 0,81 | 1,07 | 1,02 | 1,18 | 1,40 | 1,56 | 1,20 | 1,34 | 1,49 |
+| Tick Ø ms 31.3 | 0,74 | 0,82 | 1,09 | 0,76 | 0,86 | 0,89 | 0,89 | 0,46 | 0,63 | 0,53 |
+
+Der Server von `dev` hält jeden geänderten Chunk bis zum Schließen (am Ende 741–742, in jedem Lauf gleich, und 1238 Wesen im Register), 31.3 bleibt bei der Sicht (380, 17 × 17 plus Rand beim Client und Server gleich); Tick Ø wächst bei `dev` mit der Flugstrecke (Wesen der gehaltenen Chunks), bei 31.3 nicht. Der Prozessspeicher wellt sich bei beiden mit dem Gelände und endet bei 31.3 10–13 MB tiefer (Spitze 615 → 601 MB, −2 %): Der Server-Anteil ist klein, den Großteil hält der Client (Sektionen, Atlas, Puffer), der in beiden Ständen gleich ist. Wache Wesen (STATS) zu Beginn gleich (83 / 83), danach bei 31.3 weniger: `dev` zählt die Wesen der gehaltenen Chunks hinter dem Spieler mit; am Ende (Tundra, ohne Tiere) 82 gegen 0. Speichern im Tick höchstens 0,53 ms (Datensätze sammeln, E-373), Chunk-Laden Ø halbiert.
+
+**Weltöffnung einer großen Welt** (headless, `QTCRAFT_WORLD_OPEN_MEASURE=full build/release/tests/test_world_open_measure`, 41 × 41 = 1681 geänderte Chunks mit je zwei Tieren und einer gefüllten Truhe, je 3 Läufe verschränkt, Sperre von Hand gehalten):
+
+| | `d530a7f` | 31.3 |
+|---|---:|---:|
+| Öffnen | 78,5 / 78,2 / 81,9 ms (1681 Chunks geladen, +1,2 MB) | 2,3 / 2,6 / 2,8 ms (0 Chunks geladen, nur die Indizes, +0,1 MB) |
+| Öffnen bis der Spieler in geladenen Chunks steht | 6,2 / 6,4 / 6,2 ms | 7,2 / 7,7 / 7,9 ms (ein Tick, 3 × 3 Chunks gelesen) |
+| Beitreten eines Spielers während eines Hintergrund-Speicherns aller Chunks | – | 10,4 / 11,5 / 10,5 ms |
+
+Das Speichern ist hier nicht vergleichbar (der Messtest von 31.3 speichert erst nach einem Hintergrund-Speichern derselben Chunks); für das erste Speichern aller 1681 Chunks gilt die headless Messung oben (45,8 → 73,5 ms, wartend; das Autosave wartet nicht). **Öffnen 30-mal schneller**, unabhängig von der Größe der Welt.
+
+**Bewertung:** Ziel der Etappe gerendert bestätigt: Server-Chunks beim Erkunden begrenzt, Tick im Flug −36 %, im Showcase-Flug −19 %, Öffnen großer Welten in 3 statt 80 ms. Frame-Zeit, GPU, Render- und GUI-CPU und Speicher in allen Szenarien innerhalb der Schwelle, 118–119 FPS überall. Über 10 % auf der ungünstigen Seite:
+
+- **Tick showcase-signal_farm +24 % in der Hauptreihe** (alle Phasen +20 bis +37 %, auch solche, die 31.3 nicht ändert: das Muster der Lage des Server-Threads wie in 31.1/31.2), in der Wiederholung +4 %, über 12 Runden +15 %; signal_components in der Hauptreihe +13,5 % allein durch den einen Lauf beim Anschließen des Monitors, ohne ihn +5 %, Wiederholung +6 %. **Gegenprobe headless** (Showcase-Welt, Spawn an der Station, 8 Chunks, je 5 Läufe rotiert, 1000 Ticks, Mittel der STATS-Fenster 3–10): signal_farm Tick 0,290 → 0,321 ms (+11 %, in allen 5 Runden höher), davon Signal 0,050 → 0,059, Streaming 0,088 → 0,101, Client-Sync 0,033 → 0,040, Speichern 0 → 0,002, Chunk-Laden 0,010 → 0,007 ms; signal_components 0,343 → 0,362 ms (+6 %), Signal +0,004, Streaming +0,006, Client-Sync +0,009 ms. Also **echte Mehrkosten von 0,02–0,03 ms je Tick** (rund 0,05 % des Tick-Budgets von 50 ms), keine Lage. Profil (`sample`, headless signal_farm, je 270 s, Server-Thread): neu sind `QcChunkLoading::unloadUnneeded` mit `neededChunks`/`addPlayerChunks` (190 Proben, vorher `QcChunkStreaming::unloadUnneeded` 143: die Menge der benötigten Chunks wird jeden Tick neu aufgebaut), `QcCircuitState::takeReaders` 37 → 84 und `QcServerCircuits::tick` 74 → 135 (Signal-Phase; Prüfung der Gruppen bzw. Tickets der Leser), dazu kleine Posten im Speichern (`QcChunkIo::takeSaves`, `QcServerPersistence::takeNewFailure`, `reportDamagedChunks`, je Tick abgefragt); `QcEntities::settle` 154 → 48 (Folgeaufgabe aus 31.2 erledigt). **Folgeaufgaben:** benötigte Chunks nur bei Wechsel des Spieler-Chunks, der Tickets oder der erzwungenen Chunks neu berechnen; die Prüfung je Signal-Leser zwischenspeichern; Client-Sync +0,007–0,009 ms headless ist im Profil nicht zuzuordnen.
+- **Streaming +5 bis +19 %** in allen Szenarien (0,006–0,016 ms je Tick), gleich gerichtet in allen Reihen: dieselbe Ursache (benötigte Chunks je Tick), Folgeaufgabe oben.
+- **Phase Speichern 0,0003 → 0,002 ms je Tick** in allen Szenarien: das Abfragen der Hintergrund-Ein-/Ausgabe je Tick (E-373), gewollt und vernachlässigbar.
+- **Tick max explore 6,2 → 19,0 ms**: ein einziger Tick von 85,6 ms (Chunk-Laden 81,6, Nachrichten 115, Wesen 25 ms im selben 5-s-Fenster) im dritten Flug von 31.3 (07:43, keine Eingabe am Rechner), zugleich ein Bild von 505 ms: ein Stillstand des ganzen Prozesses, nicht der Phase allein; keine übersprungenen Ticks. Bilder über 100 ms kamen in beiden Ständen vor (`dev` 102 und 150 ms in zwei Flügen; 31.3 100 ms und im sechsten Flug mit Mensch am Rechner bis 1010 ms). In den übrigen fünf Flügen von 31.3 Tick max 4,1–6,1 ms. Nicht wiederholt (keine weiteren GUI-Läufe nach Anweisung des Menschen). **Folgeaufgabe:** headless langer Flug mit STATS je Sekunde, um einen Stillstand im Chunk-Laden (z. B. synchrones Lesen, das auf die Schreib-Schlange wartet) auszuschließen.
+- **Tick-Verspätung Ø explore +22 %** (0,136 → 0,166 ms) und Tick max crowd +34 %, signal_components +25 %: Einzelticks von 2–5 ms, Verspätung weit unter einem Tick; Streuung bzw. der Stillstand oben.
+- **Frame p99 sprint (Hauptreihe) +12 %**: zweigipflig (10–12 oder 14–16 ms), in der Wiederholung −1 %, über 12 Runden +4 %. Streuung.
+- **Block-Entities 99 → 85 an der Showcase, 53 → 4 und Wesen 10 → 0 am Ende des Showcase-Flugs:** gewollt. `dev` behält gefüllte Truhen und Wesen von Chunks außerhalb der Sicht im Register (E-358 gibt nur leere frei), 31.3 nimmt sie mit dem Chunk in den Speicher. Gegenprobe headless (`/worldinfo`): in der Mitte der Showcase (Sicht über die ganze Welt) zeigen beide Stände 91 Behälter und 5 Maschinen; Hin- und Rückflug (40/−19 → −150/150 → 40/−19) gibt bei 31.3 73 → 0 → 73 Behälter und 10 → 0 → 10 Wesen, also nichts verloren.
+- **Signal-Phase im Showcase-Flug −57 %, Tick −19 %**: die Stationen außerhalb der Sicht laufen bei 31.3 nicht mehr (Chunk entladen), bei `dev` schon.
+
+**Absolute Ziele (`docs/Performance.md`):** Bildrate 118–119 FPS (Ziel ≥ 60) und Frame-Kosten (8 Chunks höchstens 2,2 ms GPU in crowd, 16 Chunks 2,9 ms) erfüllt. p99 ≤ 12,5 ms diesmal auch im Median verfehlt (14,5 ms über die 72 Läufe der Hauptreihe, 48 darüber), bei beiden Ständen gleich und schon ab dem ersten Lauf vor dem Monitor, Frame-Kosten-p99 höchstens 3,3 ms: verpasste VSyncs von außerhalb des Spiels (bekannter Vorbehalt). **Spitzenspeicher:** stand, showcase, Stationen und crowd 318–453 MB erfüllt; **sprint 8 Chunks 607–620 MB** (Mittel 610, `dev` 609) und **sprint 16 Chunks 1 390 MB** (`dev` 1 389) **weiter verfehlt, durch 31.3 nicht verändert**: Ein 20-s-Sprint hält auf dem Server kaum mehr Chunks als die Sicht, das Entladen hilft dort nicht; der Speicher liegt beim Client (bei 16 Chunks allein 349 MB Sektionspuffer). Im langen Flug senkt 31.3 die Spitze um 14 MB (615 → 601 MB, immer noch knapp über 600). Beide Befunde bleiben für die Neugliederung des Clients bzw. den Feinschliff der Darstellung (46/47) offen. Tick: kein Tick über 50 ms außer dem einen Stillstand von 85,6 ms oben, keine übersprungenen Ticks.
+
+### Fazit Etappe 31.3
+
+Das Entladen wirkt wie geplant: Server-Chunks und -Wesen bleiben beim Erkunden bei der Sicht, der Tick wächst nicht mehr mit der Flugstrecke (−36 % nach 5 km), große Welten öffnen in 3 statt 80 ms, nichts geht beim Entladen und Wiederladen verloren. Im Fenster keine Regression bei Frame-Zeit, GPU, Render-/GUI-CPU oder Speicher. Echte kleine Mehrkosten von 0,02–0,03 ms je Tick an den Signal-Stationen (benötigte Chunks jeden Tick neu, Prüfung der Signal-Leser, Abfrage der Hintergrund-Ein-/Ausgabe) und ein einzelner Stillstand von 86 ms in einem von sechs Flügen sind als Folgeaufgaben vermerkt. Die beiden Speicher-Befunde (sprint 8 Chunks über 600 MB, 16 Chunks 1 390 MB statt ≤ 800 MB) ändert 31.3 nicht; sie liegen beim Client.
+
+### Folgeaufgaben nach der gerenderten Messung (headless, 2026-10-15)
+
+Release-Builds (`RelWithDebInfo`), vorher `f82ce8b` (Stand der gerenderten Messung), nachher `a2039a6`; Sperre geprüft, keine Fensterläufe.
+
+**1. Benötigte Chunks nicht mehr jeden Tick** (`ac56c49`, `0bfd938`, `f6daf79`): `QcChunkLoading::unloadUnneeded` überspringt den Durchgang, solange sich nichts geändert hat, wovon er abhängt (geladene Chunks, Marken der Gruppen, Spieler-Chunk, Sichtweite und gesendete Chunks je Spieler, Tickets, erzwungene Chunks, Spawn-Chunks, Lader, wartende Signale) und der vorige Durchgang keinen Chunk gehen ließ; dazu fragt das Streaming einen schon angeforderten Chunk nicht mehr jeden Tick nach seiner Gruppe. Test `aCutWireLetsTheFarPartLeave` (eine durchtrennte Leitung lässt den fernen Teil sofort gehen, obwohl der Spieler steht; ohne die Marken im Schlüssel bleibt er). An den Stationen (Showcase-Welt, Spawn an der Station, 8 Chunks, je 5 Läufe rotiert, 1050 Ticks, Mittel der STATS-Fenster 3–10, Echtzeit):
+
+| Station | Tick Ø ms | Streaming ms | Signal ms | Client-Sync ms | Chunk-Laden ms |
+|---|---:|---:|---:|---:|---:|
+| signal_farm | 0,168 → 0,129 (−23 %) | 0,053 → 0,014 (−75 %) | 0,030 → 0,033 | 0,020 → 0,018 | 0,004 → 0,005 |
+| signal_components | 0,235 → 0,148 (−37 %) | 0,061 → 0,013 (−78 %) | 0,066 → 0,051 | 0,026 → 0,019 | 0,005 → 0,005 |
+
+Profil (`sample`, signal_farm, je 30 s): `unloadUnneeded` 16 → 1 Proben bei 82 / 73 Proben im Tick. Die Streaming-Phase liegt damit unter der von `dev` (0,088–0,101 ms in der Gegenprobe der gerenderten Messung).
+
+**2. Prüfung je Signal-Leser:** Es gibt keine. `QcCircuitState::takeReaders` und `QcServerCircuits::tick` sind in 31.3 unverändert (nur die Kennzeichnung `signal` der Wartepositionen kam dazu); `takeReaders` sortiert die von Trichtern gemeldeten Komparatoren und liest ihren Block. Im Profil oben 4 / 3 bzw. 10 / 9 Proben; die Signal-Phase streut an den Stationen zwischen den Läufen stärker (0,021–0,043 ms) als ihr Unterschied. Der Zuwachs gegen `dev` im Profil der gerenderten Messung folgt aus der Arbeit der Szene (welche Trichter und Komparatoren laufen), nicht aus einer Prüfung, die sich zwischenspeichern ließe. Kein Zwischenspeicher.
+
+**3. Stillstand im Chunk-Laden (85,6 ms):** nicht wiederholt.
+- Schneller Flug `QTCRAFT_EXPLORE_MEASURE=300 tests/test_explore_measure` (neu, siehe `docs/Performance.md`; 6000 Ticks, Saatwert 42, Sicht 8, Speichern alle 1200 Ticks, je 6 Läufe rotiert, rund 3 s je Lauf): Tick Ø 0,104 → 0,089 ms (−15 %), p99 0,600 → 0,588 ms, Maximum typisch 0,9–1,0 ms. In 24 weiteren Läufen (12 je Stand) ein Tick von 15,5 ms (vorher) und einer von 8,4 ms (nachher, Streaming-Phase), sonst höchstens 1,2 ms.
+- Zwei Flüge in Echtzeit mit Client (`scripts/explore-headless.sh`, 300 s, STATS je Sekunde, nachher-Stand): Tick max 10,6 und 6,2 ms, Chunk-Laden max 2,8 und 3,1 ms.
+- **Ausgeschlossen am Code:** In der Phase Chunk-Laden wartet nichts auf die Platte: Ankünfte und Anforderungen laufen im Hintergrund; synchron gelesen (`QcChunkIo::readNow`, das auf einen laufenden Auftrag wie ein Speichern warten kann) wird nur über `QcServerWorld::loadChunk` (Befehle wie `/tp` an einen nicht geladenen Ort, Beitritt, Spawn-Suche, Streuner vor einem Speichern), und Gruppen werden nur dort sofort geladen. Entladen ist auf `chunkUnloadsPerTick` (32) begrenzt. Unbegrenzt ist das Zulassen angekommener Chunks: Nach einem Rückstau treten alle im selben Tick ein. **Wache:** Zulassen oder Entladen ab 20 ms in einem Tick steht jetzt mit Zahlen im Log (`a2039a6`). Dass zugleich ein Bild 505 ms brauchte, spricht für einen Stillstand des ganzen Prozesses, nicht des Server-Threads.
+- **Beim Suchen gefunden** (Ticket-Tests unter Last, `4db72fc`): Lief das Ticket eines Chunks ab, in dem ein Signal noch wartete oder gerade einen Repeater-Tick geplant hatte, ging der Chunk mit dem Signal in den Speicher und niemand lud ihn wieder; die Tür blieb in etwa einem von 20 Läufen zu. Jetzt bleibt ein Ticket, solange ein Signal in seinem Chunk wartet, und reicht bis zu seiner Dauer weiter, solange eines durchläuft (E-378); die Tests warten auf das Signal statt auf eine feste Zahl Ticks (40 von 40 unter TSan-Last).
+
+**4. Client-Sync +0,007–0,009 ms:** 31.3 ändert im Client-Abgleich nur das Anfordern fehlender Chunks (`QcChunkStreaming::stream` über `QcChunkLoading::request`, das je fehlendem Chunk und Tick die Gruppe suchte; jetzt nur beim ersten Mal) und die Umwandlungen `as<T>()` in `QcEntitySync` (im Release ohne Kosten). Nachher an den Stationen 0,020 → 0,018 und 0,026 → 0,019 ms; der Rest der Differenz zu `dev` ist nicht zuzuordnen.
+
+**Messweise:** Die Erkundungsflüge in Echtzeit (je rund 9,5 min) wurden nach zwei Läufen abgebrochen; Tick-Kosten werden jetzt mit `test_explore_measure` ohne Echtzeit gemessen (oben).

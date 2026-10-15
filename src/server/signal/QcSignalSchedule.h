@@ -53,6 +53,7 @@ public:
     // The entries of one chunk, in the order they are due; the chunks that have entries.
     QList<Entry> entriesIn(QcChunkPos chunk) const;
     QList<QcChunkPos> chunks() const { return m_byChunk.keys(); }
+    bool hasEntriesIn(QcChunkPos chunk) const { return m_byChunk.contains(chunk); }
     // Drops the entries of a chunk (it was generated again).
     void forgetChunk(QcChunkPos chunk);
     void clear();

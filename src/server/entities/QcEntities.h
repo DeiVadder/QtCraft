@@ -90,7 +90,10 @@ public:
     // Rests every entity whose chunk is not loaded and wakes the others; runs at the start of every
     // tick after the chunks loaded, so all kinds rest by the same rule. Players never rest, nor do
     // sliding blocks: a piston moves them only within loaded chunks and they last three ticks.
-    void settle(const ChunkLoadedFunction &isLoaded);
+    // `loadedEpoch` changes whenever a chunk enters or leaves the world (QcServerWorld::loadedEpoch):
+    // while it stays, only entities that are new or changed their chunk are looked up. Returns the
+    // chunks of the entities looked up that rest (strays: in a chunk that is not loaded, decision E-374).
+    QSet<QcChunkPos> settle(const ChunkLoadedFunction &isLoaded, quint64 loadedEpoch);
     // The same for the entities of one table (tests of a kind's behaviour on its own).
     template<typename List>
     static void settle(List &entities, const ChunkLoadedFunction &isLoaded)
@@ -163,4 +166,6 @@ private:
     QcArmourStandManager m_stands;
     QcMovingBlocks m_moving;
     QSet<quint32> m_died;
+    // The loadedEpoch of the last settle; none before the first.
+    std::optional<quint64> m_settledEpoch;
 };

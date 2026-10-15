@@ -25,6 +25,9 @@
 // it (QcPhysics::stepPlayer), and it never rests.
 struct QcServerClient : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::Player;
+
     QcServerClient()
         : QcEntity(QcEntityKind::Player)
     {
@@ -77,6 +80,8 @@ struct QcServerClient : QcEntity
     {
         int distance = 0;
         QSet<QcChunkPos> sentChunks;
+        // Counts changes of sentChunks (QcChunkLoading recomputes the needed chunks only on a change).
+        quint64 sentChanges = 0;
         QHash<quint32, SentEntity> known;
         QSet<quint32> stale;
         quint8 debugFlags = 0;

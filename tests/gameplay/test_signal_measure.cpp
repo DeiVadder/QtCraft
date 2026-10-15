@@ -493,7 +493,12 @@ private slots:
         quint32 nextId = 730000;
         const HopperSample sample = measureHoppers(200, [&](int tick) { rain(hoppers, tick, nextId); });
         reportHoppers("hoppers-many-items", count, sample);
-        QVERIFY(m_server->items().items().size() >= QcItemEntityManager::activeLimit);
+        // Items lying in chunks that were not loaded bring their chunks in (stage 31.3) and may merge.
+        qsizetype lyingItems = 0;
+        for (const QcItemEntity &lyingItem : m_server->items().items()) {
+            lyingItems += lyingItem.stack.count;
+        }
+        QVERIFY2(lyingItems >= QcItemEntityManager::activeLimit, qPrintable(QString::number(lyingItems)));
     }
 };
 

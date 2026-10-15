@@ -50,6 +50,9 @@ public:
     void handleLoadedChunks();
     // Drops every pending and waiting update inside the chunk (it was generated again).
     void forgetChunk(QcChunkPos chunk);
+    // Takes every pending and waiting update inside these chunks (they leave the world, decision
+    // E-374), by chunk; they come back with their chunk.
+    QHash<QcChunkPos, QList<QcBlockPos>> takeChunks(const QSet<QcChunkPos> &chunks);
 
     QList<QcBlockPos> playerUpdates() const { return {m_playerUpdates.begin(), m_playerUpdates.end()}; }
     QList<QcBlockPos> commandUpdates() const { return {m_commandUpdates.begin(), m_commandUpdates.end()}; }

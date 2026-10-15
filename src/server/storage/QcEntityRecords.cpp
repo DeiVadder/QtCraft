@@ -2,8 +2,6 @@
 
 #include "QcEntities.h"
 
-#include <QHash>
-
 #include <algorithm>
 
 using namespace Qt::StringLiterals;
@@ -25,76 +23,93 @@ QcChunkPos chunkAt(const QcVec3 &feet)
     return QcPhysics::blockContaining(feet).chunk();
 }
 
-// The entries of one kind from every record, in their saved order.
+// The entries of one kind of a record in their saved order.
 template<typename Entry>
-QList<Entry> inOrder(const QList<QcEntityRecord> &records, QList<QcEntityRecord::Ordered<Entry>> QcEntityRecord::*kind)
+QList<Entry> inOrder(QList<QcEntityRecord::Ordered<Entry>> entries)
 {
-    QList<QcEntityRecord::Ordered<Entry>> all;
-    for (const QcEntityRecord &record : records) {
-        all.append(record.*kind);
+    std::ranges::stable_sort(entries, {}, &QcEntityRecord::Ordered<Entry>::order);
+    QList<Entry> sorted;
+    sorted.reserve(entries.size());
+    for (const QcEntityRecord::Ordered<Entry> &ordered : std::as_const(entries)) {
+        sorted.append(ordered.entry);
     }
-    std::ranges::stable_sort(all, {}, &QcEntityRecord::Ordered<Entry>::order);
-
-    QList<Entry> entries;
-    entries.reserve(all.size());
-    for (const QcEntityRecord::Ordered<Entry> &ordered : std::as_const(all)) {
-        entries.append(ordered.entry);
-    }
-    return entries;
+    return sorted;
 }
 
-void collectItems(const QcItemEntityManager &items, QHash<QcChunkPos, QcEntityRecord> &records)
+// Adds the entities `wanted` accepts to their records; `wanted(chunk)`.
+template<typename Wanted>
+void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &records, Wanted wanted)
 {
-    for (const QcItemEntity &item : items.items()) {
-        recordOf(records, QcEntities::chunkOf(item)).items.append({{item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age}, item.id});
+    for (const QcItemEntity &item : entities.items().items()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(item); wanted(chunk)) {
+            recordOf(records, chunk).items.append({{item.stack, item.motion.position, item.motion.velocity, item.pickupDelay, item.age}, item.id});
+        }
     }
     // Waiting drops follow the items; on the next start they wait again if there is no room.
     quint64 waiting = QcEntityRecord::waitingOrderBase;
-    for (const QcItemEntityManager::Drop &drop : items.queued()) {
-        recordOf(records, chunkAt(drop.position)).items.append({drop, waiting++});
+    for (const QcItemEntityManager::Drop &drop : entities.items().queued()) {
+        if (const QcChunkPos chunk = chunkAt(drop.position); wanted(chunk)) {
+            recordOf(records, chunk).items.append({drop, waiting});
+        }
+        ++waiting;
+    }
+    for (const QcFallingBlock &falling : entities.fallingBlocks().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(falling); wanted(chunk)) {
+            recordOf(records, chunk).fallingBlocks.append({falling, falling.id});
+        }
+    }
+    for (const QcCreature &creature : entities.creatures().mobs()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(creature); creature.persistent && wanted(chunk)) {
+            recordOf(records, chunk).creatures.append({QcMobManager::storedOf(creature), creature.id});
+        }
+    }
+    for (const QcArmourStand &stand : entities.stands().stands()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(stand); wanted(chunk)) {
+            recordOf(records, chunk).stands.append({stand, stand.id});
+        }
     }
 }
 
 } // namespace
 
-QcWorldEntityRecords collect(const QcEntities &entities)
+QHash<QcChunkPos, QcEntityRecord> collect(const QcEntities &entities)
 {
     QHash<QcChunkPos, QcEntityRecord> records;
-    collectItems(entities.items(), records);
-
-    for (const QcFallingBlock &falling : entities.fallingBlocks().all()) {
-        recordOf(records, QcEntities::chunkOf(falling)).fallingBlocks.append({falling, falling.id});
-    }
-    for (const QcCreature &creature : entities.creatures().mobs()) {
-        if (creature.persistent) {
-            recordOf(records, QcEntities::chunkOf(creature)).creatures.append({QcMobManager::storedOf(creature), creature.id});
-        }
-    }
-    for (const QcArmourStand &stand : entities.stands().stands()) {
-        recordOf(records, QcEntities::chunkOf(stand)).stands.append({stand, stand.id});
-    }
-
-    QcWorldEntityRecords saved{records.values(), entities.creatures().populatedChunks()};
-    std::ranges::sort(saved.records, [](const QcEntityRecord &a, const QcEntityRecord &b) {
-        return std::pair{a.chunk.x, a.chunk.z} < std::pair{b.chunk.x, b.chunk.z};
-    });
-    return saved;
+    collectInto(entities, records, [](QcChunkPos) { return true; });
+    return records;
 }
 
-QStringList apply(const QcWorldEntityRecords &saved, QcEntities &entities)
+QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkPos> &chunks)
+{
+    QHash<QcChunkPos, QcEntityRecord> records;
+    const auto in = [&chunks](QcChunkPos chunk) { return chunks.contains(chunk); };
+    collectInto(std::as_const(entities), records, in);
+
+    const auto gone = [&in](const QcEntity &entity) { return in(QcEntities::chunkOf(entity)); };
+    entities.items().editableItems().removeIf(gone);
+    entities.items().takeQueued([&in](const QcItemEntityManager::Drop &drop) { return in(chunkAt(drop.position)); });
+    entities.fallingBlocks().editableAll().removeIf(gone);
+    entities.creatures().editableMobs().removeIf(gone);
+    entities.stands().editableStands().removeIf(gone);
+    entities.movingBlocks().editableAll().removeIf(gone);
+    return records;
+}
+
+QStringList apply(const QcEntityRecord &record, QcEntities &entities)
 {
     const auto newId = [&entities] { return entities.newId(); };
-    entities.items().restore(inOrder(saved.records, &QcEntityRecord::items), newId);
-    entities.fallingBlocks().restore(inOrder(saved.records, &QcEntityRecord::fallingBlocks), newId);
-    entities.creatures().restore(inOrder(saved.records, &QcEntityRecord::creatures), saved.populated, newId);
+    entities.items().adopt(inOrder(record.items), newId);
+    QStringList warnings;
+    if (const qsizetype left = entities.fallingBlocks().adopt(inOrder(record.fallingBlocks), newId); left > 0) {
+        warnings.append(u"%1 falling blocks beyond the limit were left out"_s.arg(left));
+    }
+    entities.creatures().restore(inOrder(record.creatures), {}, newId);
 
-    QList<QcArmourStand> stands = inOrder(saved.records, &QcEntityRecord::stands);
+    QList<QcArmourStand> stands = inOrder(record.stands);
     for (QcArmourStand &stand : stands) {
         stand.id = entities.newId();
     }
-
-    QStringList warnings;
-    if (const qsizetype dropped = entities.stands().restore(std::move(stands)); dropped > 0) {
+    if (const qsizetype dropped = entities.stands().adopt(stands); dropped > 0) {
         warnings.append(u"%1 armour stands beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.stands().limit()));
     }
     return warnings;

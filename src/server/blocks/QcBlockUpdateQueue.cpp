@@ -119,6 +119,35 @@ void QcBlockUpdateQueue::forgetChunk(QcChunkPos chunk)
     m_waitingCount -= m_waitingUpdates.take(chunk).size();
 }
 
+QHash<QcChunkPos, QList<QcBlockPos>> QcBlockUpdateQueue::takeChunks(const QSet<QcChunkPos> &chunks)
+{
+    QHash<QcChunkPos, QList<QcBlockPos>> taken;
+    const auto take = [&](QcBlockPos pos) {
+        if (!chunks.contains(pos.chunk())) {
+            return false;
+        }
+        taken[pos.chunk()].append(pos);
+        return true;
+    };
+    std::erase_if(m_playerUpdates, take);
+    std::erase_if(m_commandUpdates, take);
+    const auto inChunks = [&chunks](QcBlockPos pos) { return chunks.contains(pos.chunk()); };
+    m_queuedPlayerUpdates.removeIf(inChunks);
+    m_queuedCommandUpdates.removeIf(inChunks);
+    for (const QcChunkPos &chunk : chunks) {
+        const QSet<QcBlockPos> waiting = m_waitingUpdates.take(chunk);
+        m_waitingCount -= waiting.size();
+        if (!waiting.isEmpty()) {
+            QList<QcBlockPos> &list = taken[chunk];
+            for (const QcBlockPos &pos : waiting) {
+                list.append(pos);
+            }
+            std::ranges::sort(list);
+        }
+    }
+    return taken;
+}
+
 void QcBlockUpdateQueue::waitForChunk(QcChunkPos chunk, QcBlockPos pos)
 {
     if (m_waitingCount < m_state.config().limits.waitingBlockUpdates) {

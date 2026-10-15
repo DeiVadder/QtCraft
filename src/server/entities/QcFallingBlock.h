@@ -7,6 +7,9 @@
 // and land.
 struct QcFallingBlock : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::FallingBlock;
+
     QcFallingBlock()
         : QcEntity(QcEntityKind::FallingBlock)
     {

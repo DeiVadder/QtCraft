@@ -2,6 +2,7 @@
 #include "QcBlockEntityDump.h"
 #include "QcMachineFixture.h"
 #include "QcShowcaseGenerator.h"
+#include "QcStoredWorld.h"
 #include "QcWorldGenerators.h"
 
 #include <QCryptographicHash>
@@ -15,13 +16,27 @@ using namespace Qt::StringLiterals;
 // Comparison runs of the block-entity register (stage 31.1, decision E-357): the showcase world and a
 // piston chain across a chunk border in four rotations, saved in the middle of a move and opened
 // again. The runs give a canonical dump of the block entities, the items, the blocks of every
-// stored chunk and what the client was told, which must equal the dump the code before the register
-// wrote (tests/data/block-entity-compare-before-31-1.txt, from this test at eef0382). With
+// stored chunk and what the client was told. Until stage 31.3 it had to equal the dump the code
+// before the register wrote (tests/data/block-entity-compare-before-31-1.txt, from this test at
+// eef0382); since chunks leave the world (stage 31.3) it is compared with
+// tests/data/block-entity-compare-31-3.txt, whose only differences to that one are the deliberate
+// ones of decision E-374 (the waits of a chunk stand still while it is away, a returning chunk is
+// looked at along its borders); the dump lists what chunks that are not loaded keep, too. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture
 {
     Q_OBJECT
+
+public:
+    // The showcase run unloads what the player leaves behind, as the game does (stage 31.3).
+    // Changed chunks stay and the others leave, as in the code that wrote the dump (stage 31.3).
+    // Chunks load at once, so the run does not depend on how fast the threads are.
+    TestBlockEntityCompare()
+    {
+        m_keepChangedChunks = true;
+        m_loadChunksAtOnce = true;
+    }
 
 private:
     QStringList m_dump;
@@ -49,12 +64,11 @@ private:
     QStringList regionLines(const QString &world) const
     {
         QStringList lines;
-        QStringList warnings;
-        const QcWorldStorage storage(world, m_content);
-        const auto chunks = storage.readChunks(warnings);
-        if (!chunks) {
-            return {u"regions unreadable: "_s + chunks.error()};
+        const QcResult<QcStoredWorld> stored = QcStoredWorld::read(world, *m_content);
+        if (!stored) {
+            return {u"regions unreadable: "_s + stored.error()};
         }
+        const auto *chunks = &stored->chunks;
         QHash<QcBlockId, QByteArray> names;
         for (auto it = chunks->constBegin(); it != chunks->constEnd(); ++it) {
             QCryptographicHash hash(QCryptographicHash::Sha1);
@@ -167,6 +181,7 @@ private:
         m_client.reset();
         m_server.reset();
         join(config, std::move(generator));
+        loadStored();
     }
 
     // A sticky piston pushing a chest, a furnace, a hopper, a dispenser and a dropper, all with

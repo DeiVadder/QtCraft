@@ -120,6 +120,10 @@ private slots:
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
         report("open", double(timer.nsecsElapsed()) / 1e6);
+        // Chunks are read when needed (stage 31.3): reading all of them is measured on its own.
+        timer.start();
+        loadStored();
+        report("load-all", double(timer.nsecsElapsed()) / 1e6);
         // The same block entities come back (ticks counted from now on both sides).
         QCOMPARE(QcBlockEntityDump::lines(*m_server, *m_content), lines);
     }

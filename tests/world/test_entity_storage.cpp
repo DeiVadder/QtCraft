@@ -1,5 +1,6 @@
 #include "QcBaseContent.h"
-#include "QcEntityStorage.h"
+#include "QcEntityCodec.h"
+#include "QcStoredWorld.h"
 #include "QcServer.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTestUtil.h"
@@ -71,9 +72,10 @@ QStringList snapshot(const QString &directory)
 
 } // namespace
 
-// Saving entities per chunk (stage 31.2, decision E-366): one file per region beside the block
-// entities, entries in their table's order, unknown content dropped with a warning, damaged and
-// implausible files refused, only changed regions written, worlds of the format before refused.
+// Saving entities per chunk (stages 31.2 and 31.3, decisions E-366, E-373): a blob per chunk in the
+// indexed region files of the entities, entries in their table's order, unknown content dropped with
+// a warning once per world, damaged and implausible data refused, only changed regions written,
+// worlds of the formats before refused.
 class TestEntityStorage : public QObject
 {
     Q_OBJECT
@@ -122,8 +124,14 @@ private:
         return {stand, order};
     }
 
+    struct Records
+    {
+        QList<QcEntityRecord> records;
+        QSet<QcChunkPos> populated;
+    };
+
     // Two chunks in two regions and a populated chunk without entities in a third one.
-    QcWorldEntityRecords world(const QcContentRegistry &content) const
+    Records world(const QcContentRegistry &content) const
     {
         QcEntityRecord near;
         near.chunk = {0, 0};
@@ -142,20 +150,51 @@ private:
         return QDir(QDir(directory).filePath(u"entities"_s)).entryList({u"r.*.qen"_s}, QDir::Files, QDir::Name);
     }
 
-    static const QcEntityRecord *recordOf(const QcWorldEntityRecords &entities, QcChunkPos chunk)
+    static const QcEntityRecord *recordOf(const QList<QcEntityRecord> &records, QcChunkPos chunk)
     {
-        const auto it = std::ranges::find(entities.records, chunk, &QcEntityRecord::chunk);
-        return it == entities.records.end() ? nullptr : &*it;
+        const auto it = std::ranges::find(records, chunk, &QcEntityRecord::chunk);
+        return it == records.end() ? nullptr : &*it;
+    }
+
+    // Hands the records to a store of `directory` (with `populated`) and commits them.
+    static QcStatus write(QcChunkStore &store, const QcContentRegistry &content, const Records &entities)
+    {
+        QSet<QcChunkPos> chunks = entities.populated;
+        for (const QcEntityRecord &record : entities.records) {
+            chunks.insert(record.chunk);
+        }
+        for (const QcChunkPos &chunk : std::as_const(chunks)) {
+            QcEntityRecord record;
+            if (const QcEntityRecord *found = recordOf(entities.records, chunk)) {
+                record = *found;
+            }
+            record.chunk = chunk;
+            record.populated = entities.populated.contains(chunk);
+            store.put(QcChunkStore::Kind::Entities, chunk, QcEntityCodec::encode(record, content));
+        }
+        return store.commit({});
+    }
+
+    static QcStatus write(const QString &directory, const QcContentRegistry &content, const Records &entities)
+    {
+        QcChunkStore store(directory);
+        if (const QcStatus opened = store.open(); !opened) {
+            return opened;
+        }
+        return write(store, content, entities);
+    }
+
+    static QcResult<QcStoredWorld> read(const QString &directory, const QcContentRegistry &content)
+    {
+        return QcStoredWorld::read(directory, content);
     }
 
     // Writes `entities` and expects reading them back to fail.
-    void expectRefused(const QcWorldEntityRecords &entities, const char *what)
+    void expectRefused(const Records &entities, const char *what)
     {
         QTemporaryDir dir;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QVERIFY(storage.write(entities).has_value());
-        QStringList warnings;
-        const bool read = storage.read(warnings).has_value();
+        QVERIFY(write(dir.path(), *m_content, entities).has_value());
+        const bool read = QcStoredWorld::read(dir.path(), *m_content).has_value();
         QVERIFY2(!read, what);
     }
 
@@ -163,25 +202,23 @@ private slots:
     void recordsRoundTripPerRegionInTheirOrder()
     {
         QTemporaryDir dir;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QStringList warnings;
         // Nothing saved yet: no records, no folder, no error.
-        const auto empty = storage.read(warnings);
-        QVERIFY(empty.has_value() && empty->records.isEmpty() && empty->populated.isEmpty());
-        QVERIFY(storage.write({}).has_value());
+        const auto empty = read(dir.path(), *m_content);
+        QVERIFY(empty.has_value() && empty->entities.isEmpty() && empty->populated.isEmpty());
+        QVERIFY(write(dir.path(), *m_content, {}).has_value());
         QVERIFY(!QDir(dir.filePath(u"entities"_s)).exists());
 
-        const QcWorldEntityRecords saved = world(*m_content);
-        QVERIFY(storage.write(saved).has_value());
+        const Records saved = world(*m_content);
+        QVERIFY(write(dir.path(), *m_content, saved).has_value());
         QCOMPARE(regionFiles(dir.path()), (QStringList{u"r.-4.0.qen"_s, u"r.0.0.qen"_s, u"r.1.-1.qen"_s}));
 
-        const auto read = QcEntityStorage(dir.path(), m_content).read(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
-        QCOMPARE(read->populated, saved.populated);
-        QCOMPARE(read->records.size(), 2);
+        const auto loaded = read(dir.path(), *m_content);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded).constData());
+        QVERIFY2(loaded->warnings.isEmpty(), qPrintable(loaded->warnings.join(u'\n')));
+        QCOMPARE(loaded->populated, saved.populated);
+        QCOMPARE(loaded->entities.size(), 2);
         for (const QcEntityRecord &expected : saved.records) {
-            const QcEntityRecord *record = recordOf(*read, expected.chunk);
+            const QcEntityRecord *record = recordOf(loaded->entities, expected.chunk);
             QVERIFY(record);
             QCOMPARE(record->items.size(), expected.items.size());
             for (qsizetype i = 0; i < expected.items.size(); ++i) {
@@ -210,7 +247,7 @@ private slots:
         // Saved with a mod, opened without it: its item, creature and falling block are left out,
         // each name reported once per world; the rest comes back.
         QTemporaryDir dir;
-        QcWorldEntityRecords saved = world(*m_mod);
+        Records saved = world(*m_mod);
         QcEntityRecord &near = saved.records.first();
         near.items.append(item(*m_mod, u"mod:gem"_s, {2.5, 64.0, 2.5}, 3));
         near.items.append(item(*m_mod, u"mod:gem"_s, {3.5, 64.0, 2.5}, 4));
@@ -225,12 +262,12 @@ private slots:
             more.creatures.append(creature(*m_mod, u"mod:beetle"_s, corner + QcVec3(1.0, 1.0, 1.0), 1));
             saved.records.append(more);
         }
-        QVERIFY(QcEntityStorage(dir.path(), m_mod).write(saved).has_value());
+        QVERIFY(write(dir.path(), *m_mod, saved).has_value());
 
-        QStringList warnings;
-        const auto read = QcEntityStorage(dir.path(), m_content).read(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        const QcEntityRecord *record = recordOf(*read, {0, 0});
+        const auto loaded = read(dir.path(), *m_content);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded).constData());
+        const QStringList warnings = loaded->warnings;
+        const QcEntityRecord *record = recordOf(loaded->entities, {0, 0});
         QCOMPARE(record->items.size(), 2);
         QCOMPARE(record->creatures.size(), 1);
         QCOMPARE(record->fallingBlocks.size(), 1);
@@ -242,67 +279,67 @@ private slots:
 
     void damagedAndImplausibleFilesAreRefused()
     {
-        // A flipped byte fails the checksum.
+        // A flipped byte in a chunk's data fails its checksum.
         {
             QTemporaryDir dir;
-            const QcEntityStorage storage(dir.path(), m_content);
-            QVERIFY(storage.write(world(*m_content)).has_value());
+            QVERIFY(write(dir.path(), *m_content, world(*m_content)).has_value());
             QFile file(QDir(dir.filePath(u"entities"_s)).filePath(u"r.0.0.qen"_s));
             QVERIFY(file.open(QIODevice::ReadWrite));
             file.seek(file.size() - 3);
             file.write("\x7f");
             file.close();
-            QStringList warnings;
-            QVERIFY(!storage.read(warnings).has_value());
+            QVERIFY(!read(dir.path(), *m_content).has_value());
         }
 
         // An entity outside the chunk of its record.
-        QcWorldEntityRecords outside = world(*m_content);
+        Records outside = world(*m_content);
         outside.records.first().items.first().entry.position.x = 17.5;
         expectRefused(outside, "item in another chunk");
 
         // Values that cannot be.
-        QcWorldEntityRecords notANumber = world(*m_content);
+        Records notANumber = world(*m_content);
         notANumber.records.first().creatures.first().entry.position.y = std::numeric_limits<double>::quiet_NaN();
         expectRefused(notANumber, "creature at NaN");
-        QcWorldEntityRecords timer = world(*m_content);
+        Records timer = world(*m_content);
         timer.records.first().creatures.first().entry.growUp = 1e9;
         expectRefused(timer, "growing up for 30 years");
-        QcWorldEntityRecords standBelow = world(*m_content);
+        Records standBelow = world(*m_content);
         standBelow.records.last().stands.first().entry.motion.position.y = -500.0;
         expectRefused(standBelow, "stand far below the void");
 
-        // The same chunk twice in one file.
-        QcWorldEntityRecords twice = world(*m_content);
-        twice.records.append(twice.records.first());
-        expectRefused(twice, "chunk twice");
-
-        // A file under the name of another region.
+        // A file under the name of another region: its entities lie outside the chunks they are read for.
         QTemporaryDir dir;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QVERIFY(storage.write(world(*m_content)).has_value());
+        QVERIFY(write(dir.path(), *m_content, world(*m_content)).has_value());
         const QDir folder(dir.filePath(u"entities"_s));
         QVERIFY(QFile::rename(folder.filePath(u"r.1.-1.qen"_s), folder.filePath(u"r.2.-1.qen"_s)));
-        QStringList warnings;
-        QVERIFY(!storage.read(warnings).has_value());
+        QVERIFY(!read(dir.path(), *m_content).has_value());
+
+        // A damaged index makes the store refuse to open.
+        QFile index(folder.filePath(u"r.0.0.qen"_s));
+        QVERIFY(index.open(QIODevice::ReadWrite));
+        index.seek(15);
+        index.write("\x7f");
+        index.close();
+        QcChunkStore store(dir.path());
+        QVERIFY(!store.open().has_value());
+        QVERIFY(store.damaged().has_value());
+        QCOMPARE(store.damaged()->file, u"entities/r.0.0.qen"_s);
     }
 
     void valuesBeyondTheirRangeAreClampedAndStacksSplit()
     {
         QTemporaryDir dir;
-        QcWorldEntityRecords saved = world(*m_content);
+        Records saved = world(*m_content);
         QcItemEntityManager::Drop &drop = saved.records.first().items.first().entry;
         drop.stack.count = 150;
         drop.velocity = {1000.0, 0.0, -1000.0};
         drop.pickupDelay = 99.0;
         drop.age = 1e6;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QVERIFY(storage.write(saved).has_value());
+        QVERIFY(write(dir.path(), *m_content, saved).has_value());
 
-        QStringList warnings;
-        const auto read = storage.read(warnings);
-        QVERIFY2(read.has_value(), qcErrorText(read).constData());
-        const QcEntityRecord *record = recordOf(*read, {0, 0});
+        const auto loaded = read(dir.path(), *m_content);
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded).constData());
+        const QcEntityRecord *record = recordOf(loaded->entities, {0, 0});
         // 150 sticks come back as three stacks of at most 64, all with the order of the saved one.
         QCOMPARE(record->items.size(), 4);
         QCOMPARE(record->items[0].entry.stack.count, 64);
@@ -317,12 +354,13 @@ private slots:
     void onlyChangedRegionsAreWrittenAndEmptyOnesLoseTheirFile()
     {
         QTemporaryDir dir;
-        const QcEntityStorage storage(dir.path(), m_content);
-        QcWorldEntityRecords saved = world(*m_content);
-        QVERIFY(storage.write(saved).has_value());
+        QcChunkStore store(dir.path());
+        QVERIFY(store.open().has_value());
+        Records saved = world(*m_content);
+        QVERIFY(write(store, *m_content, saved).has_value());
 
         // An unchanged region keeps its file as it is (here: garbage nobody reads), a changed one is
-        // written again.
+        // written again; unchanged chunks handed over again count as unchanged.
         const QDir folder(dir.filePath(u"entities"_s));
         QFile near(folder.filePath(u"r.0.0.qen"_s));
         QVERIFY(near.open(QIODevice::WriteOnly | QIODevice::Truncate));
@@ -333,7 +371,12 @@ private slots:
             return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
         }();
         saved.records.last().stands.first().entry.yaw = 180.0f;
-        QVERIFY(storage.write(saved).has_value());
+        store.put(QcChunkStore::Kind::Entities, {0, 0}, QcEntityCodec::encode([&] {
+            QcEntityRecord near = saved.records.first();
+            near.populated = true;
+            return near;
+        }(), *m_content));
+        QVERIFY(write(store, *m_content, {{saved.records.last()}, {{40, -3}}}).has_value());
         QVERIFY(near.open(QIODevice::ReadOnly));
         QCOMPARE(near.readAll(), QByteArray("untouched"));
         near.close();
@@ -343,11 +386,45 @@ private slots:
         far.close();
 
         // A region without entities and without populated chunks loses its file.
-        saved.records.removeLast();
-        saved.populated.remove({40, -3});
-        QVERIFY(storage.write(saved).has_value());
+        store.put(QcChunkStore::Kind::Entities, {40, -3}, std::nullopt);
+        QVERIFY(store.commit({}).has_value());
         QCOMPARE(regionFiles(dir.path()), (QStringList{u"r.-4.0.qen"_s, u"r.0.0.qen"_s}));
         QVERIFY(folder.entryList({u"*.next"_s}, QDir::Files).isEmpty());
+    }
+
+    void worldOfTheFormatBeforeChunkUnloadingIsRefused()
+    {
+        // A world of format 4 (stage 31.2: region files without an index, everything read at the
+        // start) is refused before anything is read or written (decision E-373); the list shows it as
+        // too old.
+        QTemporaryDir root;
+        const QString directory = root.filePath(u"Format4"_s);
+        QVERIFY(QDir().mkpath(QDir(directory).filePath(u"regions"_s)));
+        QFile info(QDir(directory).filePath(u"world.json"_s));
+        QVERIFY(info.open(QIODevice::WriteOnly));
+        info.write(R"({"formatVersion": 4, "name": "Format4", "seed": "42", "generator": {"type": "terrain"}})");
+        info.close();
+        QFile region(QDir(directory).filePath(u"regions/r.0.0.qcr"_s));
+        QVERIFY(region.open(QIODevice::WriteOnly));
+        region.write("QCRG old region data");
+        region.close();
+        const QStringList before = snapshot(directory);
+
+        QcServerConfig config;
+        config.worldDirectory = directory;
+        config.seed = 42;
+        {
+            QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
+            const QcStatus opened = server.openWorld();
+            QVERIFY(!opened.has_value());
+            QVERIFY(server.worldTooOld());
+            QVERIFY2(opened.error().contains(u"older development version"_s), qPrintable(opened.error()));
+            QCOMPARE(server.world().loadedChunkCount(), 0);
+        }
+        QCOMPARE(snapshot(directory), before);
+        const QList<QcWorldLibrary::Entry> entries = QcWorldLibrary(root.path()).list();
+        QCOMPARE(entries.size(), 1);
+        QVERIFY(entries.first().tooOld);
     }
 
     void worldOfTheFormatBeforeTheEntityModelIsRefused()

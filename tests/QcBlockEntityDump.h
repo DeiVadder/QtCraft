@@ -67,6 +67,35 @@ inline void addChunk(const QcBlockEntities::Chunk &chunk, quint64 now, const QcC
     }
 }
 
+// What a chunk that is not loaded keeps (stage 31.3): its waits stand still while it is away and
+// are shown as left when it went.
+inline void addRecord(const QcBlockEntityRecord &record, const QcContentRegistry &content, QStringList &lines)
+{
+    QcBlockEntities::Chunk chunk;
+    for (const QcBlockEntities::Container &container : record.containers) {
+        chunk.containers.insert(container.pos, container);
+    }
+    for (const QcBlockEntities::Machine &machine : record.machines) {
+        chunk.machines.insert(machine.pos, machine);
+    }
+    for (const QcBlockEntities::Sapling &sapling : record.saplings) {
+        chunk.saplings.insert(sapling.pos, sapling);
+    }
+    for (const QcBlockEntityRecord::Memory &saved : record.memories) {
+        QcBlockEntities::Memory memory;
+        memory.burntOutUntil = saved.burntOutLeft;
+        memory.powered = saved.powered;
+        if (saved.extendingAge) {
+            memory.extendingSince = -qint64(*saved.extendingAge);
+        }
+        chunk.memories.insert(saved.pos, memory);
+    }
+    addChunk(chunk, 0, content, lines);
+    for (const QcBlockEntityRecord::Scheduled &entry : record.scheduled) {
+        lines.append(QStringLiteral("scheduled %1: +%2 %3").arg(posText(entry.pos)).arg(entry.ticksLeft).arg(int(entry.priority)));
+    }
+}
+
 inline QStringList lines(QcServer &server, const QcContentRegistry &content)
 {
     QStringList lines;
@@ -75,6 +104,14 @@ inline QStringList lines(QcServer &server, const QcContentRegistry &content)
     const QList<QcChunkPos> chunks = entities.chunks();
     for (const QcChunkPos &pos : chunks) {
         addChunk(*entities.chunk(pos), now, content, lines);
+    }
+    if (QcChunkIo *storage = server.world().storage()) {
+        const QList<QcChunkPos> stored = server.world().storedChunks();
+        for (const QcChunkPos &pos : stored) {
+            if (!server.world().chunk(pos)) {
+                addRecord(storage->readNow(pos).blockEntities, content, lines);
+            }
+        }
     }
     const QList<QcSignalSchedule::Entry> scheduled = entities.schedule().entries();
     for (const QcSignalSchedule::Entry &entry : scheduled) {

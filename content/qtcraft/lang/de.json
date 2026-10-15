@@ -393,6 +393,7 @@
     "block.qtcraft.signal_repeater": "Signal-Repeater",
     "block.qtcraft.signal_lamp": "Signallampe",
     "block.qtcraft.signal_lamp_lit": "Signallampe (an)",
+    "block.qtcraft.chunk_loader": "Chunk-Lader",
     "block.qtcraft.signal_piston": "Signalkolben",
     "block.qtcraft.sticky_signal_piston": "Klebriger Signalkolben",
     "block.qtcraft.signal_piston_head": "Kolbenkopf",

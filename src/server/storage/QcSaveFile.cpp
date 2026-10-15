@@ -15,19 +15,22 @@ constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
 
 namespace QcSaveFile {
 
-QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version)
+QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 version)
 {
-    QSaveFile file(path);
-    if (!file.open(QIODevice::WriteOnly)) {
-        return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));
-    }
-
-    QDataStream stream(&file);
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
     stream.setVersion(streamVersion);
     stream.writeRawData(magic.data(), int(magic.size()));
     stream << version << quint32(payload.size()) << qcCrc32(payload);
     stream.writeRawData(payload.constData(), int(payload.size()));
-    if (stream.status() != QDataStream::Ok || !file.commit()) {
+    return data;
+}
+
+QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version)
+{
+    QSaveFile file(path);
+    const QByteArray data = bytes(magic, payload, version);
+    if (!file.open(QIODevice::WriteOnly) || file.write(data) != data.size() || !file.commit()) {
         return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));
     }
     return {};
@@ -43,7 +46,11 @@ QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 new
         return qcError(u"%1 is too large"_s.arg(path));
     }
 
-    const QByteArray data = file.readAll();
+    return parse(file.readAll(), path, magic, newestVersion, version);
+}
+
+QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
+{
     constexpr qsizetype headerSize = 4 + 2 + 4 + 4;
     if (data.size() < headerSize || !data.startsWith(magic)) {
         return qcError(u"%1 is not a QtCraft save file or is damaged"_s.arg(path));

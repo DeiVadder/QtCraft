@@ -368,7 +368,24 @@ void QcItemEntityManager::clear()
 void QcItemEntityManager::restore(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId)
 {
     clear();
+    adopt(drops, nextEntityId);
+}
 
+QList<QcItemEntityManager::Drop> QcItemEntityManager::takeQueued(const std::function<bool(const Drop &)> &match)
+{
+    QList<Drop> taken;
+    m_queue.removeIf([&](const Drop &drop) {
+        if (!match(drop)) {
+            return false;
+        }
+        taken.append(drop);
+        return true;
+    });
+    return taken;
+}
+
+void QcItemEntityManager::adopt(const QList<Drop> &drops, const std::function<quint32()> &nextEntityId)
+{
     for (const Drop &drop : drops) {
         if (drop.stack.isEmpty() || !m_content->isValidItem(drop.stack.item)) {
             continue;

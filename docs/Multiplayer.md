@@ -60,7 +60,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `fallingBlocks` | 2048 | 16 – 65536 | Falling blocks at once; beyond, blocks land straight or wait (E-055, E-288) |
 | `itemsAwake` | 512 | 16 – 65536 | Dropped items awake in loaded chunks; new drops wait, surplus ones sleep |
 | `itemsQueued` | 1024 | 16 – 1048576 | Drops waiting to appear; the oldest goes when full |
-| `itemsTotal` | 4096 | 64 – 1048576 | Dropped items in the world, also in unloaded chunks; the oldest goes when full |
+| `itemsTotal` | 4096 | 64 – 1048576 | Dropped items in the loaded world; the oldest goes when full (items of unloaded chunks are stored with them) |
 | `hostileCreaturesPerPlayer` | 8 | 0 – 256 | Hostile creatures spawning by themselves around one player |
 | `passiveCreaturesPerPlayer` | 6 | 0 – 256 | Passive creatures spawning by themselves around one player |
 | `ambientCreaturesPerPlayer` | 10 | 0 – 256 | Ambient creatures (fireflies) spawning around one player |
@@ -72,6 +72,15 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `leafPendingChecks` | 16384 | 256 – 1048576 | Leaf checks waiting at most |
 | `maxArmourStands` | 4096 | 16 – 65536 | Armour stands in the world (E-238) |
 | `movingBlocksShown` | 4096 | 16 – 65536 | Blocks shown sliding behind pistons at once; beyond, they appear at once (E-337) |
+| `chunkGroupLimit` | 64 | 1 – 1024 | Chunks a group of connected circuits may span; a larger group loads chunk by chunk and its circuits wait at the edge of the loaded area (E-375) |
+| `chunkUnloadsPerTick` | 32 | 1 – 4096 | Chunks unloaded per tick; a group is always unloaded whole (E-374) |
+| `unsavedChunks` | 2048 | 16 – 1048576 | Unloaded chunks kept in memory (encoded) before a save in the background writes them (E-374) |
+| `chunkTicketsPerTick` | 4 | 0 – 1024 | Chunks a signal may load per tick to reach parts of its line that are not loaded (E-376) |
+| `chunkTickets` | 256 | 0 – 65536 | Chunks loaded for signals at once; a ticket counts every chunk of the group it loads (E-376) |
+| `chunkTicketTicks` | 100 | 1 – 72000 | Ticks such a chunk stays loaded, counted from its arrival (E-376) |
+| `forcedChunks` | 256 | 0 – 65536 | Chunks kept loaded by `/forceload`; each also keeps its circuit group (up to `chunkGroupLimit` chunks) (E-377) |
+| `chunkLoadersPerPlayer` | 4 | 0 – 1024 | Chunk loader blocks a player may place (E-377) |
+| `chunkLoaders` | 64 | 0 – 65536 | Chunk loader blocks that work in the world, the first placed first; each also keeps its circuit group (E-377) |
 
 Observers and dispensers have no bounds of their own: their pulses and shots are scheduled ticks inside the signal budget.
 

@@ -1,0 +1,18 @@
+{
+    "name": "chunk_loader",
+    "type": "shaped",
+    "pattern": [
+        "ODO",
+        "dLd",
+        "ODO"
+    ],
+    "key": {
+        "O": "obsidian",
+        "D": "diamond",
+        "d": "signal_dust",
+        "L": "signal_lamp"
+    },
+    "result": {
+        "item": "chunk_loader"
+    }
+}

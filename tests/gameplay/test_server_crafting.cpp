@@ -366,6 +366,7 @@ private slots:
         config.viewDistance = 1;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+        loadAround(pos);
         const QcBlockEntities::Machine *after = m_server->blockEntities().machine(pos);
         QVERIFY(after);
         QCOMPARE(after->stacks, before.stacks);
@@ -439,6 +440,7 @@ private slots:
         config.viewDistance = 1;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+        loadAround(m_feet);
 
         int pickaxes = 0;
         for (const QcItemEntity &dropped : m_server->items().items()) {

@@ -107,11 +107,20 @@ qsizetype QcFallingBlockManager::removeInChunk(QcChunkPos chunk)
 void QcFallingBlockManager::restore(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId)
 {
     m_falling.clear();
+    adopt(falling, nextEntityId);
+}
+
+qsizetype QcFallingBlockManager::adopt(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId)
+{
+    qsizetype left = 0;
     for (QcFallingBlock block : falling) {
         if (m_falling.size() >= m_maxFalling) {
-            break;
+            ++left;
+            continue;
         }
         block.id = nextEntityId();
+        block.settled = false;
         m_falling.append(block);
     }
+    return left;
 }

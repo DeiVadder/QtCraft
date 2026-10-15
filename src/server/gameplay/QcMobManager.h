@@ -105,6 +105,9 @@ public:
     void populateChunk(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
     bool isPopulated(QcChunkPos pos) const { return m_populated.contains(pos); }
     const QSet<QcChunkPos> &populatedChunks() const { return m_populated; }
+    // The chunk left the world; whether it got its animals goes with it (decision E-374).
+    void forgetPopulated(QcChunkPos pos) { m_populated.remove(pos); }
+    void notePopulated(QcChunkPos pos) { m_populated.insert(pos); }
     // Persistent mobs to save, and loading them back (as dormant until the next tick sees their chunk).
     QList<Stored> persistentMobs() const;
     static Stored storedOf(const QcCreature &mob);

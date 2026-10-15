@@ -1,5 +1,6 @@
 #include "QcChunkStreaming.h"
 
+#include "QcChunkLoading.h"
 #include "QcServerState.h"
 
 #include <QtLogging>
@@ -16,8 +17,9 @@ constexpr qint64 maxPendingChunkBytes = qint64(4) * 1024 * 1024;
 
 } // namespace
 
-QcChunkStreaming::QcChunkStreaming(QcServerState &state)
+QcChunkStreaming::QcChunkStreaming(QcServerState &state, QcChunkLoading &loading)
     : m_state(state)
+    , m_loading(loading)
 {
 }
 
@@ -36,6 +38,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
         if (qcChunkDistance(*it, centre) > radius + 1) {
             client.connection->send(QcMsg::ChunkUnload{*it});
             it = client.view.sentChunks.erase(it);
+            ++client.view.sentChanges;
         } else {
             ++it;
         }
@@ -67,11 +70,12 @@ void QcChunkStreaming::stream(QcServerClient &client)
                 client.connection->send(QcMsg::ChunkData{chunk});
                 sendLabels(client, pos);
                 client.view.sentChunks.insert(pos);
+                ++client.view.sentChanges;
                 ++sent;
             }
         } else if (m_state.world().pendingGenerationCount() < maxPendingGeneration) {
             // Nearest first: the list is sorted by distance and the pool works in FIFO order.
-            m_state.world().requestChunk(pos);
+            m_loading.request(pos);
         }
     }
 }
@@ -93,26 +97,4 @@ void QcChunkStreaming::sendLabels(QcServerClient &client, QcChunkPos pos) const
         label = label.limited();
     }
     client.connection->send(QcMsg::ChunkLabels{pos, std::move(labels)});
-}
-
-void QcChunkStreaming::unloadUnneeded()
-{
-    QSet<QcChunkPos> needed;
-    for (const auto &client : m_state.clients()) {
-        needed.unite(client->view.sentChunks);
-        const QcChunkPos centre = chunkOf(client->motion.position);
-        const int radius = client->view.distance > 0 ? client->view.distance : m_state.config().viewDistance;
-        for (int dx = -radius; dx <= radius; ++dx) {
-            for (int dz = -radius; dz <= radius; ++dz) {
-                needed.insert({centre.x + dx, centre.z + dz});
-            }
-        }
-    }
-
-    const QList<QcChunkPos> loaded = m_state.world().loadedChunks();
-    for (const QcChunkPos &pos : loaded) {
-        if (!needed.contains(pos)) {
-            m_state.world().unloadChunk(pos);
-        }
-    }
 }

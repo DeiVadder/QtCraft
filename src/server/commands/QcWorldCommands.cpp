@@ -177,8 +177,8 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
 
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "World %1 (%2, seed %3), tick %4"),
                   {m_state.config().worldName, m_state.config().generator, QString::number(m_state.config().seed), QString::number(m_state.clock().tick())});
-    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Chunks: %1 loaded, %2 changed; players: %3"),
-                  {QString::number(m_state.world().loadedChunkCount()), QString::number(m_state.world().modifiedChunkCount()),
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Chunks: %1 loaded, %2 stored; players: %3"),
+                  {QString::number(m_state.world().loadedChunkCount()), QString::number(m_state.world().storedChunkCount()),
                    QString::number(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }))});
     // The rules of the entity register (decision E-364); broken ones go to the log too.
     const QStringList entityProblems = QcEntityChecks::problems(m_state.entities());

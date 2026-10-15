@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 32> table{{
+constexpr std::array<QcServerLimits::Field, 41> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -45,6 +45,15 @@ constexpr std::array<QcServerLimits::Field, 32> table{{
     {"leafPendingChecks", "leaf checks waiting", 256, 1 << 20, &QcServerLimits::leafPendingChecks},
     {"maxArmourStands", "armour stands in the world", 16, 65536, &QcServerLimits::maxArmourStands},
     {"movingBlocksShown", "blocks shown sliding behind pistons", 16, 65536, &QcServerLimits::movingBlocksShown},
+    {"chunkGroupLimit", "chunks a group of connected circuits may span before it waits at its edge", 1, 1024, &QcServerLimits::chunkGroupLimit},
+    {"chunkUnloadsPerTick", "chunks unloaded per tick (groups are always unloaded whole)", 1, 4096, &QcServerLimits::chunkUnloadsPerTick},
+    {"unsavedChunks", "unloaded chunks kept in memory before a save writes them", 16, 1048576, &QcServerLimits::unsavedChunks},
+    {"chunkTicketsPerTick", "chunks circuits may load per tick to reach unloaded parts", 0, 1024, &QcServerLimits::chunkTicketsPerTick},
+    {"chunkTickets", "chunks loaded for circuits at once", 0, 65536, &QcServerLimits::chunkTickets},
+    {"chunkTicketTicks", "ticks a chunk loaded for circuits stays loaded", 1, 72000, &QcServerLimits::chunkTicketTicks},
+    {"forcedChunks", "chunks kept loaded by /forceload", 0, 65536, &QcServerLimits::forcedChunks},
+    {"chunkLoadersPerPlayer", "chunk loaders a player may place", 0, 1024, &QcServerLimits::chunkLoadersPerPlayer},
+    {"chunkLoaders", "chunk loaders that work in the world", 0, 65536, &QcServerLimits::chunkLoaders},
 }};
 
 } // namespace

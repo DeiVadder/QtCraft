@@ -1,3 +1,4 @@
+#include "QcStoredWorld.h"
 #include "QcBaseContent.h"
 #include "QcContentPackLoader.h"
 #include "QcDayCycle.h"
@@ -91,7 +92,32 @@ private:
         config.seed = seed;
         config.viewDistance = 1;
         config.autosaveSeconds = 0;
+        // The setup is looked at as a whole, without a player near it.
+        config.keepChunksLoaded = true;
         return std::make_unique<QcServer>(config, m_content, QcWorldGenerators::create(generator, m_content, seed));
+    }
+
+    // Creatures and filled containers' distinct items in the files of a saved world (chunks are read
+    // only when needed, stage 31.3).
+    std::pair<qsizetype, qsizetype> stored(const QString &directory) const
+    {
+        const QcResult<QcStoredWorld> world = QcStoredWorld::read(directory, *m_content);
+        if (!world) {
+            return {-1, -1};
+        }
+        qsizetype creatures = 0;
+        for (const QcEntityRecord &record : world->entities) {
+            creatures += record.creatures.size();
+        }
+        QSet<QcItemId> items;
+        for (const QcBlockEntityRecord &record : world->blockEntities) {
+            for (const QcBlockEntities::Container &container : record.containers) {
+                for (const QcItemStack &stack : container.stacks) {
+                    items.insert(stack.item);
+                }
+            }
+        }
+        return {creatures, items.size()};
     }
 
     int expectedMobs() const { return int(QcShowcaseGenerator(m_content).setup().mobs.size()); }
@@ -154,9 +180,10 @@ private slots:
         // Opened again, nothing is set up twice.
         std::unique_ptr<QcServer> again = makeServer(directory.path());
         QVERIFY(again->openWorld());
-        QCOMPARE(again->mobs().mobs().size(), mobs);
+        QCOMPARE(again->mobs().mobs().size(), 0);
         QCOMPARE(again->worldTime(), 150.0);
         QVERIFY(again->stop());
+        QCOMPARE(stored(directory.path()).first, mobs);
     }
 
     void setupCountsAsDoneOnlyOnceSaved()
@@ -166,7 +193,7 @@ private slots:
         const int mobs = expectedMobs();
 
         // The block entities (chests) cannot be written, a file stands where their folder belongs:
-        // the first save breaks off after the creatures were stored.
+        // the first save breaks off, and nothing of it is written (decision E-373).
         const QString blocker = world.filePath(u"blockentities"_s);
         QFile blocking(blocker);
         QVERIFY(blocking.open(QIODevice::WriteOnly));
@@ -177,7 +204,7 @@ private slots:
             QCOMPARE(server->mobs().mobs().size(), mobs);
             QVERIFY(!server->stop());
         }
-        QVERIFY(!QDir(world.filePath(u"entities"_s)).entryList({u"r.*.qen"_s}, QDir::Files).isEmpty());
+        QVERIFY(QDir(world.filePath(u"entities"_s)).entryList({u"r.*"_s}, QDir::Files).isEmpty());
         QVERIFY(!readJson(world.filePath(u"world.json"_s)).value(u"generator"_s).toObject().value(u"setupDone"_s).toBool(true));
         QVERIFY(QFile::remove(blocker));
 
@@ -194,9 +221,11 @@ private slots:
         // From then on everything comes from the files.
         std::unique_ptr<QcServer> third = makeServer(directory.path());
         QVERIFY(third->openWorld());
-        QCOMPARE(third->mobs().mobs().size(), mobs);
-        QVERIFY(storedItems(*third) >= m_content->itemCount());
+        QCOMPARE(third->mobs().mobs().size(), 0);
         QVERIFY(third->stop());
+        const auto [creatures, items] = stored(directory.path());
+        QCOMPARE(creatures, mobs);
+        QVERIFY(items >= m_content->itemCount());
     }
 
     void worldOfAnotherTypeDoesNotOpen()

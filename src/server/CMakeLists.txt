@@ -9,6 +9,7 @@ qt_add_library(qc_server STATIC
     commands/QcAccessList.h commands/QcAccessList.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
+    commands/QcChunkCommands.h commands/QcChunkCommands.cpp
     commands/QcChunkRegeneration.h commands/QcChunkRegeneration.cpp
     commands/QcCommandArguments.h commands/QcCommandArguments.cpp
     commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
@@ -25,8 +26,11 @@ qt_add_library(qc_server STATIC
     content/QcBaseContent.h content/QcBaseContent.cpp
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
-    storage/QcBlockEntityStorage.h storage/QcBlockEntityStorage.cpp
-    storage/QcRegionSideFiles.h storage/QcRegionSideFiles.cpp
+    storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
+    storage/QcChunkCodec.h storage/QcChunkCodec.cpp
+    storage/QcChunkIo.h storage/QcChunkIo.cpp
+    storage/QcChunkStore.h storage/QcChunkStore.cpp
+    storage/QcRegionFile.h storage/QcRegionFile.cpp
     storage/QcStackReader.h storage/QcStackReader.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
@@ -34,7 +38,12 @@ qt_add_library(qc_server STATIC
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
     blocks/QcOpeners.h blocks/QcOpeners.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
+    core/QcChunkGroups.h core/QcChunkGroups.cpp
+    core/QcChunkLinks.h core/QcChunkLinks.cpp
+    core/QcChunkLoaders.h core/QcChunkLoaders.cpp
+    core/QcChunkLoading.h core/QcChunkLoading.cpp
     core/QcChunkStreaming.h core/QcChunkStreaming.cpp
+    core/QcChunkTickets.h core/QcChunkTickets.cpp
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
     entities/QcEntity.h
     entities/QcEntities.h entities/QcEntities.cpp
@@ -48,7 +57,7 @@ qt_add_library(qc_server STATIC
     content/QcContentPackLoader.h content/QcContentPackLoader.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
-    storage/QcEntityStorage.h storage/QcEntityStorage.cpp
+    storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
@@ -70,7 +79,6 @@ qt_add_library(qc_server STATIC
     gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
     gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
-    storage/QcRegionStorage.h storage/QcRegionStorage.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp

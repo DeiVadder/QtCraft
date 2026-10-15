@@ -5,6 +5,7 @@
 #include <QtGlobal>
 
 class QcBlockUpdateQueue;
+class QcChunkLoading;
 class QcTickPhaseTimer;
 class QcTickScheduler;
 struct QcServerClient;
@@ -23,8 +24,8 @@ public:
     // Creatures this close to the player report their goal.
     static constexpr double goalRange = 48.0;
 
-    QcServerDebug(const QcServerState &state, const QcBlockUpdateQueue &updates, const QcTickPhaseTimer &phases,
-                  const QcTickScheduler &ticks);
+    QcServerDebug(const QcServerState &state, const QcBlockUpdateQueue &updates, const QcChunkLoading &loading,
+                  const QcTickPhaseTimer &phases, const QcTickScheduler &ticks);
 
     // `flags` as in QcMsg::DebugSubscribe, the latest subscription counts. The first message
     // follows with the next tick, unless the previous one went out less than intervalTicks ago (a
@@ -36,8 +37,11 @@ public:
 
 private:
     void addGoals(const QcServerClient &client, QcMsg::ServerDebug &message) const;
+    // Chunks, groups and tickets (decisions E-374 to E-377).
+    void addChunks(const QcServerClient &client, QcMsg::ServerDebug &message) const;
 
     const QcServerState &m_state;
+    const QcChunkLoading &m_loading;
     const QcBlockUpdateQueue &m_updates;
     const QcTickPhaseTimer &m_phases;
     const QcTickScheduler &m_ticks;

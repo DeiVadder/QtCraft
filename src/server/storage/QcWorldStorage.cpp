@@ -19,15 +19,14 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr QByteArrayView blockUpdatesMagic("QCBU");
+// More forced chunks than any limit allows are damaged data.
+constexpr qsizetype maxForcedChunks = 65536;
 
 } // namespace
 
 QcWorldStorage::QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content)
     : m_directory(std::move(directory))
     , m_content(std::move(content))
-    , m_regions(m_directory, m_content)
-    , m_entities(m_directory, m_content)
-    , m_blockEntities(m_directory, m_content)
     , m_players(m_directory, m_content)
 {
 }
@@ -86,6 +85,25 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.defaultGameMode = knownMode.value_or(QcGameMode::Survival);
     info.unknownGameMode = knownMode || gameMode.isEmpty() ? QString() : gameMode.left(64);
     info.limits = json.value(u"limits"_s).toObject();
+    info.spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, QcWorldInfo::maxSpawnChunkRadius);
+    const QJsonArray loaders = json.value(u"chunkLoaders"_s).toArray();
+    for (const auto &entry : loaders) {
+        const QJsonObject loader = entry.toObject();
+        const QcBlockPos pos{loader.value(u"x"_s).toInt(), loader.value(u"y"_s).toInt(), loader.value(u"z"_s).toInt()};
+        if (info.chunkLoaders.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(qint64(pos.x)) <= QcWorld::maxHorizontalBlock
+            && std::abs(qint64(pos.z)) <= QcWorld::maxHorizontalBlock) {
+            info.chunkLoaders.append({pos, loader.value(u"owner"_s).toString().left(64)});
+        }
+    }
+    const QJsonArray forced = json.value(u"forcedChunks"_s).toArray();
+    for (const auto &entry : forced) {
+        const QJsonArray pair = entry.toArray();
+        const QcChunkPos chunk{pair.at(0).toInt(), pair.at(1).toInt()};
+        if (info.forcedChunks.size() < maxForcedChunks && pair.size() == 2 && std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk
+            && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk && !info.forcedChunks.contains(chunk)) {
+            info.forcedChunks.append(chunk);
+        }
+    }
 
     const QJsonArray packs = json.value(u"packs"_s).toArray();
     for (const auto &entry : packs) {
@@ -101,12 +119,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     return info;
 }
 
-QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
+QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
 {
-    if (!QDir().mkpath(m_directory)) {
-        return qcError(u"Cannot create %1"_s.arg(m_directory));
-    }
-
     QJsonArray packs;
     for (const QcPackReference &pack : info.packs) {
         packs.append(QJsonObject{{u"id"_s, pack.id}, {u"name"_s, pack.name}, {u"version"_s, pack.version}});
@@ -126,35 +140,50 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
                                                         {u"daylightCycle"_s, info.daylightCycle},
                                                         {u"mobSpawning"_s, info.mobSpawning},
                                                         {u"randomTicks"_s, info.randomTicks},
-                                                        {u"quasiConnectivity"_s, info.quasiConnectivity}}}};
+                                                        {u"quasiConnectivity"_s, info.quasiConnectivity},
+                                                        {u"spawnChunkRadius"_s, info.spawnChunkRadius}}}};
     if (!info.limits.isEmpty()) {
         json.insert(u"limits"_s, info.limits);
     }
+    if (!info.chunkLoaders.isEmpty()) {
+        QJsonArray loaders;
+        for (const QcChunkLoaders::Loader &loader : info.chunkLoaders) {
+            loaders.append(QJsonObject{{u"x"_s, loader.pos.x}, {u"y"_s, loader.pos.y}, {u"z"_s, loader.pos.z}, {u"owner"_s, loader.owner}});
+        }
+        json.insert(u"chunkLoaders"_s, loaders);
+    }
+    if (!info.forcedChunks.isEmpty()) {
+        QJsonArray forced;
+        for (const QcChunkPos &chunk : info.forcedChunks) {
+            forced.append(QJsonArray{chunk.x, chunk.z});
+        }
+        json.insert(u"forcedChunks"_s, forced);
+    }
 
-    QSaveFile file(QDir(m_directory).filePath(u"world.json"_s));
-    if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(json).toJson()) < 0 || !file.commit()) {
+    return QJsonDocument(json).toJson();
+}
+
+QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
+{
+    if (!QDir().mkpath(m_directory)) {
+        return qcError(u"Cannot create %1"_s.arg(m_directory));
+    }
+
+    QSaveFile file(QDir(m_directory).filePath(QString::fromLatin1(infoFileName)));
+    if (!file.open(QIODevice::WriteOnly) || file.write(infoBytes(info)) < 0 || !file.commit()) {
         return qcError(u"Cannot write world info: %1"_s.arg(file.errorString()));
     }
     return {};
 }
 
-QcStatus QcWorldStorage::writeBlockUpdates(const QList<QcBlockPos> &positions) const
+QcResult<std::optional<QByteArray>> QcWorldStorage::blockUpdatesBytes(const QList<QcBlockPos> &positions)
 {
     if (positions.size() > qsizetype(maxStoredBlockUpdates)) {
         return qcError(u"Too many pending block updates to save (%1, at most %2)"_s.arg(positions.size()).arg(maxStoredBlockUpdates));
     }
-
-    const QString path = QDir(m_directory).filePath(u"blockupdates.qce"_s);
     if (positions.isEmpty()) {
         // No file means no pending updates.
-        if (QFile::exists(path) && !QFile::remove(path)) {
-            return qcError(u"Cannot remove %1"_s.arg(path));
-        }
-        return {};
-    }
-
-    if (!QDir().mkpath(m_directory)) {
-        return qcError(u"Cannot create %1"_s.arg(m_directory));
+        return std::optional<QByteArray>();
     }
 
     QByteArray payload;
@@ -164,7 +193,7 @@ QcStatus QcWorldStorage::writeBlockUpdates(const QList<QcBlockPos> &positions) c
     for (const QcBlockPos &pos : positions) {
         stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z);
     }
-    return QcSaveFile::write(path, blockUpdatesMagic, payload);
+    return std::optional<QByteArray>(QcSaveFile::bytes(blockUpdatesMagic, payload));
 }
 
 QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const

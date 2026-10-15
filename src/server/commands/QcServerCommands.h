@@ -2,6 +2,7 @@
 
 #include "QcBlockCommands.h"
 #include "QcCheatCommands.h"
+#include "QcChunkCommands.h"
 #include "QcCommandRegistry.h"
 #include "QcPendingCommands.h"
 #include "QcPlayerCommands.h"
@@ -72,4 +73,5 @@ private:
     QcPlayerCommands m_players;
     QcWorldCommands m_world;
     QcTickCommands m_ticks;
+    QcChunkCommands m_chunks;
 };

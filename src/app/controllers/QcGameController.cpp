@@ -387,6 +387,14 @@ QString QcGameController::damagedFileMessage(const QcServerPersistence::DamagedF
         return tr("The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the contents "
                   "of the chests and machines saved in it.")
             .arg(damaged.file);
+    case Part::Blocks:
+        return tr("The file %1 of this world is damaged. Moved out of the world folder, it lets the world open with the chunks saved "
+                  "in it generated anew; their changes are lost.")
+            .arg(damaged.file);
+    case Part::Journal:
+        return tr("The last save of this world broke off and cannot be finished. Removing %1 and every file ending in .next from the world "
+                  "folder lets the world open as it was saved the time before.")
+            .arg(damaged.file);
     case Part::None:
         break;
     }

@@ -77,6 +77,11 @@
 #              terrain (teleports every 250 ms, so the speed does not depend on the physics): chunk
 #              generation, arrival and unloading for the whole run. Tick lateness, memory and the
 #              chunk phases over time come from STATS lines (STATS=<ms>, see below)
+#   explore  - the long exploration flight (stage 31.3): the flight above, and once a second a 3 x 3
+#              glass platform at y 70 below the player, as a player who builds along the way: every
+#              chunk passed is changed and has to be saved and unloaded once out of view (memory,
+#              unloading, background saving). Meant for long runs (e.g. 600 s) with STATS=5000; the
+#              same flight headless: scripts/explore-headless.sh
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
@@ -235,7 +240,7 @@ farm_chat() {
     echo "/tp ~$((-x)) ~ ~$((-z))"
 }
 
-# Prints the chat lines of a flight scenario, one per line. Usage: flight_chat terrain|showcase <seconds>
+# Prints the chat lines of a flight scenario, one per line. Usage: flight_chat terrain|explore|showcase <seconds>
 # Creative mode (no fall damage, nothing attacks); from three seconds in a teleport every 250 ms moves
 # the player 5 m on (20 m/s; a teleport also stops the fall in between). terrain flies east from the
 # spawn at y 200; showcase flies laps of 80 s at y 110 around the square of corners (-130, 50) and
@@ -247,7 +252,10 @@ flight_chat() {
     at=3000
     step=0
     while [ "$at" -le $((3000 + $2 * 1000)) ]; do
-        if [ "$1" = terrain ]; then
+        if [ "$1" = explore ] && [ $((step % 4)) -eq 0 ]; then
+            echo "@$at /fill ~-1 70 ~-1 ~1 70 ~1 glass"
+        fi
+        if [ "$1" = terrain ] || [ "$1" = explore ]; then
             echo "@$at /tp ~5 200 ~"
         else
             # 320 steps a lap, 80 along each side.
@@ -487,12 +495,14 @@ EOF
     handbook)
         set -- "$@" --handbook block:qtcraft:stone
         ;;
-    flight | showcase-flight | liquid-fill | signal-stress)
+    flight | explore | showcase-flight | liquid-fill | signal-stress)
         if [ "$scenario" = signal-stress ]; then
             chat=$(signal_stress_chat)
             set -- "$@" --look 0,-25
         elif [ "$scenario" = flight ]; then
             chat=$(flight_chat terrain "$seconds")
+        elif [ "$scenario" = explore ]; then
+            chat=$(flight_chat explore "$seconds")
         elif [ "$scenario" = showcase-flight ]; then
             chat=$(flight_chat showcase "$seconds")
         else

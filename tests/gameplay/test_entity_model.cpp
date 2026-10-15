@@ -14,6 +14,10 @@ class TestEntityModel : public QcMachineFixture
 {
     Q_OBJECT
 
+public:
+    // Entities leave and come back with their chunks here.
+    TestEntityModel() { m_unloadChunks = true; }
+
 private:
     quint32 m_nextId = 4'000'000;
 
@@ -44,6 +48,19 @@ private:
     }
 
     // Where every entity but the player is, by id.
+    // Where the entities of these kinds are, sorted.
+    QList<QcVec3> sortedPlaces(const QList<QcEntityKind> &kinds) const
+    {
+        QList<QcVec3> sorted;
+        std::as_const(m_server->entities()).forEach([&](const QcEntity &entity) {
+            if (kinds.contains(entity.kind)) {
+                sorted.append(entity.motion.position);
+            }
+        });
+        std::ranges::sort(sorted, [](const QcVec3 &a, const QcVec3 &b) { return std::tuple{a.x, a.y, a.z} < std::tuple{b.x, b.y, b.z}; });
+        return sorted;
+    }
+
     QHash<quint32, QcVec3> places() const
     {
         QHash<quint32, QcVec3> result;
@@ -254,25 +271,30 @@ private slots:
         }
         QVERIFY(crossed);
 
-        // The player goes home: the chunks unload and everything there rests where it is.
+        // The player goes home: the chunks unload and everything there goes with them (decision E-374).
+        // (The thrown item may still slide in the tick the chunks leave; the stand stands still.)
+        const QList<QcVec3> resting = sortedPlaces({QcEntityKind::ArmourStand});
+        const QcVec3 fallingWhenLeft = m_server->fallingBlocks().all().constFirst().motion.position;
         teleport(home);
         ticks(2);
         QVERIFY(!m_server->world().chunk(far));
-        QVERIFY(allRest(true));
-        const QHash<quint32, QcVec3> resting = places();
+        QVERIFY(census().ids.isEmpty());
         ticks(20);
-        QCOMPARE(places(), resting);
-        QCOMPARE(census(), before);
 
-        // Back again: they wake; the block goes on falling where it stopped.
+        // Back again: everything is where it was when the chunks left; the block goes on falling
+        // where it stopped.
         teleport(spot);
         loadAround(far);
+        QCOMPARE(sortedPlaces({QcEntityKind::ArmourStand}), resting);
         ticks(3);
         QVERIFY(allRest(false));
         QCOMPARE(m_server->fallingBlocks().all().size(), 1);
-        const quint32 block = m_server->fallingBlocks().all().constFirst().id;
-        QVERIFY(m_server->fallingBlocks().all().constFirst().motion.position.y < resting.value(block).y);
-        QCOMPARE(census(), before);
+        QVERIFY(m_server->fallingBlocks().all().constFirst().motion.position.y < fallingWhenLeft.y);
+        const Census back = census();
+        QCOMPARE(back.creatures, before.creatures);
+        QCOMPARE(back.items, before.items);
+        QCOMPARE(back.falling, before.falling);
+        QCOMPARE(back.stands, before.stands);
         rulesHold();
 
         // Saved with the block in mid-air and opened again: every entity once, where it was.
@@ -283,6 +305,7 @@ private slots:
         m_server.reset();
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
+        loadAround(far);
         const Census after = census();
         QCOMPARE(after.creatures, before.creatures);
         QCOMPARE(after.items, before.items);
@@ -389,11 +412,15 @@ private slots:
         ticks(3);
         QVERIFY(!m_server->world().chunk(near));
         QVERIFY(!m_client->entities.contains(itemId));
+        QVERIFY(m_server->items().items().isEmpty());
 
+        // The item comes back with its chunk (with a new id) and is sent although no tick simulates.
         chat(u"/tick freeze"_s);
         m_server->world().loadChunk(near);
+        QCOMPARE(m_server->items().items().size(), 1);
+        const quint32 back = m_server->items().items().constFirst().id;
         ticks(1);
-        QVERIFY(m_client->entities.contains(itemId));
+        QVERIFY(m_client->entities.contains(back));
     }
 
     // Removing an entity changes only the record of its own chunk: the other regions are not written
@@ -465,7 +492,8 @@ private slots:
         const quint32 itemId = m_server->items().spawn(resting, m_nextId++);
         QVERIFY(itemId != 0);
 
-        // Seen while the chunk is loaded; it unloads at the end of the tick (nobody needs it).
+        // Seen while the chunk is loaded; it unloads at the end of the tick (nobody needs it) and
+        // takes them along (decision E-374).
         ticks(1);
         QVERIFY(m_client->entities.contains(stand.id));
         QVERIFY(m_client->entities.contains(itemId));
@@ -474,13 +502,17 @@ private slots:
         ticks(2);
         QVERIFY(!m_client->entities.contains(stand.id));
         QVERIFY(!m_client->entities.contains(itemId));
-        QCOMPARE(m_server->stands().stands().size(), 1);
-        QCOMPARE(m_server->items().items().size(), 1);
+        QCOMPARE(m_server->stands().stands().size(), 0);
+        QCOMPARE(m_server->items().items().size(), 0);
 
         m_server->world().loadChunk(near);
+        QCOMPARE(m_server->stands().stands().size(), 1);
+        QCOMPARE(m_server->items().items().size(), 1);
+        const quint32 standBack = m_server->stands().stands().constFirst().id;
+        const quint32 itemBack = m_server->items().items().constFirst().id;
         ticks(1);
-        QVERIFY(m_client->entities.contains(stand.id));
-        QVERIFY(m_client->entities.contains(itemId));
+        QVERIFY(m_client->entities.contains(standBack));
+        QVERIFY(m_client->entities.contains(itemBack));
     }
 };
 

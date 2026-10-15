@@ -63,6 +63,9 @@ public:
     qsizetype removeInChunk(QcChunkPos chunk);
     // Replaces all falling blocks (from a save); ids come from `nextEntityId`.
     void restore(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId);
+    // The same without clearing first (a chunk came back, decision E-374); returns how many were left
+    // out at the limit.
+    qsizetype adopt(const QList<QcFallingBlock> &falling, const std::function<quint32()> &nextEntityId);
 
 private:
     std::shared_ptr<const QcContentRegistry> m_content;

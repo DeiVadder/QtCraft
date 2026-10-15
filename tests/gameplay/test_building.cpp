@@ -146,6 +146,8 @@ private:
     {
         config.viewDistance = 1;
         config.operators = {u"Builder"_s};
+        // These tests build away from the player (stage 31.3: chunks would leave the world).
+        config.keepChunksLoaded = true;
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
 
@@ -737,6 +739,8 @@ private slots:
         QCOMPARE(m_server->waitingBlockUpdates(), 0);
 
         // Hanging on a block across the border counts as supported while that chunk is away.
+        m_server->world().unloadChunk(east);
+        QVERIFY(!m_server->world().chunk(east));
         const QcBlockPos torch = fence.offset(0, 2, 0);
         QVERIFY(m_server->world().setBlock(torch, id(u"torch[attach=east]"_s)));
         chat(u"/setblock %1 %2 %3 stone"_s.arg(x - 1).arg(torch.y).arg(z));

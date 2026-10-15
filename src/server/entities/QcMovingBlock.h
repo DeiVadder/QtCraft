@@ -8,6 +8,9 @@
 // world holds the block at `to` already; the entity only shows the slide (QcMovingBlocks).
 struct QcMovingBlock : QcEntity
 {
+    // The kind of every entity of this type (QcEntity::as).
+    static constexpr QcEntityKind entityKind = QcEntityKind::MovingBlock;
+
     QcMovingBlock()
         : QcEntity(QcEntityKind::MovingBlock)
     {

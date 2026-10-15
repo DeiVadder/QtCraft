@@ -44,6 +44,15 @@ void QcWorkerPool::submit(std::function<void()> job)
     m_wake.notify_one();
 }
 
+void QcWorkerPool::submitFirst(std::function<void()> job)
+{
+    {
+        const std::scoped_lock lock(m_mutex);
+        m_jobs.push_front(std::move(job));
+    }
+    m_wake.notify_one();
+}
+
 void QcWorkerPool::waitForIdle()
 {
     std::unique_lock lock(m_mutex);

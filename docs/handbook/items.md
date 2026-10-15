@@ -354,7 +354,7 @@ The hardest material, for the best tools.
 
 **Used in**
 
-[Block of diamond](blocks.md#block-qtcraft-diamond_block), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond boots](tools.md#item-qtcraft-diamond_boots), [Diamond chestplate](tools.md#item-qtcraft-diamond_chestplate), [Diamond helmet](tools.md#item-qtcraft-diamond_helmet), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond leggings](tools.md#item-qtcraft-diamond_leggings), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword)
+[Block of diamond](blocks.md#block-qtcraft-diamond_block), [Chunk Loader](blocks.md#block-qtcraft-chunk_loader), [Diamond axe](tools.md#item-qtcraft-diamond_axe), [Diamond boots](tools.md#item-qtcraft-diamond_boots), [Diamond chestplate](tools.md#item-qtcraft-diamond_chestplate), [Diamond helmet](tools.md#item-qtcraft-diamond_helmet), [Diamond hoe](tools.md#item-qtcraft-diamond_hoe), [Diamond leggings](tools.md#item-qtcraft-diamond_leggings), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel), [Diamond sword](tools.md#item-qtcraft-diamond_sword)
 
 **Dropped by**
 
