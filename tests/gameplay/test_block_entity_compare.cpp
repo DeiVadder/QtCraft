@@ -30,9 +30,10 @@ using namespace Qt::StringLiterals;
 // the review of stage 32: with both new stations built after all other areas and left out of the
 // tour, the dump equals the one before stage 32 but for the new items in the item chests, so the
 // changed furnace, burnout, sapling and stick values come from the tour reaching the later
-// stations 80 ticks later (the stations stay where their order puts them). One difference remains
-// in that run: the chest at 140 65 -26 holds the same 58 sticks, split 27/31 instead of 36/22
-// between its slots; which change of stage 32.2 moves them is not found yet. With
+// stations 80 ticks later (the stations stay where their order puts them). The one other difference
+// in that run, the dropper at 140 65 -26 splitting its sticks differently between its two slots,
+// came from the new items' ids sorting before the stick while dispensers hashed item ids; they hash
+// item names since (decision E-345), and the dump was written again for that dropper alone. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture

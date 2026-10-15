@@ -9,7 +9,7 @@ container 138 65 -34: qtcraft:wheatx1/0 - - - -
 container 138 66 -34: qtcraft:wheatx18/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0
 container 140 63 -27: qtcraft:stickx1/0 - - - -
 container 140 63 -30: qtcraft:stickx64/0 qtcraft:stickx9/0 - - - - - - - - - - - - - - - - - - - - - - - - -
-container 140 65 -26: qtcraft:stickx25/0 qtcraft:stickx29/0 - - - - - - -
+container 140 65 -26: qtcraft:stickx30/0 qtcraft:stickx24/0 - - - - - - -
 container 141 64 -26: qtcraft:water_bucketx1/0 - - - - - - - -
 container 143 64 -34: qtcraft:cobblestonex19/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
 container 143 65 -34: qtcraft:cobblestonex1/0 - - - -
@@ -95,7 +95,7 @@ container 138 65 -34: qtcraft:wheatx1/0 - - - -
 container 138 66 -34: qtcraft:wheatx18/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0
 container 140 63 -27: qtcraft:stickx1/0 - - - -
 container 140 63 -30: qtcraft:stickx64/0 qtcraft:stickx9/0 - - - - - - - - - - - - - - - - - - - - - - - - -
-container 140 65 -26: qtcraft:stickx25/0 qtcraft:stickx29/0 - - - - - - -
+container 140 65 -26: qtcraft:stickx30/0 qtcraft:stickx24/0 - - - - - - -
 container 141 64 -26: qtcraft:water_bucketx1/0 - - - - - - - -
 container 143 64 -34: qtcraft:cobblestonex19/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
 container 143 65 -34: qtcraft:cobblestonex1/0 - - - -
@@ -156,7 +156,7 @@ container 138 65 -34: qtcraft:wheatx1/0 - - - -
 container 138 66 -34: qtcraft:wheatx18/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0 qtcraft:stringx24/0
 container 140 63 -27: qtcraft:stickx1/0 - - - -
 container 140 63 -30: qtcraft:stickx64/0 qtcraft:stickx14/0 - - - - - - - - - - - - - - - - - - - - - - - - -
-container 140 65 -26: qtcraft:stickx23/0 qtcraft:stickx26/0 - - - - - - -
+container 140 65 -26: qtcraft:stickx29/0 qtcraft:stickx20/0 - - - - - - -
 container 141 64 -26: qtcraft:bucketx1/0 - - - - - - - -
 container 143 64 -34: qtcraft:cobblestonex19/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
 container 143 65 -34: qtcraft:cobblestonex1/0 - - - -

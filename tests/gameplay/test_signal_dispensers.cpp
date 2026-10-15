@@ -5,8 +5,8 @@ using namespace Qt::StringLiterals;
 // Signal Dispensers and droppers on a running server (decision E-345): one item 4 ticks after rising
 // power, into a container in front like a hopper, liquids poured and taken with buckets, armour put
 // on stands and players, seeds only thrown (never planted, decision E-294), a random slot from a
-// generator seeded by the world, quasi-connectivity per world, and actions on one cell that fail
-// together.
+// generator seeded by the world and the names of the items (not their load-order ids),
+// quasi-connectivity per world, and actions on one cell that fail together.
 class TestSignalDispensers : public QcMachineFixture
 {
     Q_OBJECT
@@ -51,6 +51,21 @@ private:
             }
         }
         return order;
+    }
+
+    // The base content after an item registered before all others: every item id is one higher.
+    static std::shared_ptr<const QcContentRegistry> contentWithAnItemFirst()
+    {
+        QStringList warnings;
+        auto content = std::make_shared<QcContentRegistry>();
+        QcItemDefinition first;
+        first.name = u"aaa:first"_s;
+        first.translationKey = u"item.aaa.first"_s;
+        if (!content->registerItem(first) || !QcBaseContent::loadInto(*content, warnings)) {
+            qFatal("cannot load the content with an item first");
+        }
+        warnings += content->finish();
+        return content;
     }
 
 private slots:
@@ -284,6 +299,22 @@ private slots:
             QCOMPARE(fireOrder(), first);
             cleanup();
         }
+    }
+
+    // An item that sorts before the others (new content or a mod) shifts every id; the dropper still
+    // fires the same items in the same order.
+    void newContentKeepsTheSlotsFired()
+    {
+        const QStringList before = fireOrder();
+        cleanup();
+        const std::shared_ptr<const QcContentRegistry> base = m_content;
+        m_content = contentWithAnItemFirst();
+        QCOMPARE(*m_content->itemId(u"qtcraft:stick"_s), *base->itemId(u"qtcraft:stick"_s) + 1);
+        const QStringList after = fireOrder();
+        cleanup();
+        m_content = base;
+        QCOMPARE(before.size(), 9);
+        QCOMPARE(after, before);
     }
 
     void movedDispenserFiresWhereItIs()

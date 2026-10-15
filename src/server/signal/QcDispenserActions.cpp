@@ -3,6 +3,7 @@
 #include "QcArmour.h"
 #include "QcBlockRules.h"
 #include "QcLiquidFlow.h"
+#include "QcNoise.h"
 #include "QcPhysics.h"
 #include "QcServerBlocks.h"
 #include "QcServerSounds.h"
@@ -60,10 +61,14 @@ std::optional<QcDispenserActions::Shot> QcDispenserActions::aim(QcBlockPos pos) 
     }
 
     // Seeded with the world, the tick and the contents: the same world picks the same at any place
-    // and in any rotation, and dispensers with other contents do not all pick alike.
+    // and in any rotation, and dispensers with other contents do not all pick alike. Items enter
+    // the hash by name, not by their load-order id, so new content (also from mods) does not change
+    // what a dispenser fires.
+    const QcContentRegistry &content = m_state.content();
     quint64 contents = 0;
     for (const QcItemStack &stack : stacks) {
-        contents = contents * 0x100000001B3ULL ^ (quint64(stack.item) << 20 ^ quint64(stack.count));
+        const quint64 item = stack.isEmpty() || !content.isValidItem(stack.item) ? 0 : qcNameSalt(content.item(stack.item).name);
+        contents = contents * 0x100000001B3ULL ^ (item << 20 ^ quint64(stack.count));
     }
     const quint64 seed = quint64(m_state.config().seed) * 0x9E3779B97F4A7C15ULL ^ m_state.clock().tick() * 0xBF58476D1CE4E5B9ULL ^ contents;
     QRandomGenerator random(quint32(seed ^ (seed >> 32)));
