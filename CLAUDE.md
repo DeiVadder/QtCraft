@@ -46,6 +46,6 @@ Client-Code bindet nie Server-Header ein, außer in den beiden Kompositionswurze
 - Nie direkt auf `dev`/`main` committen; eigener Feature-Branch, bei parallelen Sitzungen eigener Worktree unter `.claude/worktrees/`. Nie nacktes `git stash`.
 - Commit-Messages englisch, ohne externe Links und ohne Tool-Attribution.
 - Keine Exceptions (`-fno-exceptions`), Fehler über `std::optional`/`std::expected`/`QcResult`; Warnungen sind Fehler.
-- Größen: Funktionen ≤ 80 Zeilen (Ziel 40), ≤ 5 Parameter; `.cpp`/`.qml` ≤ 800 Zeilen (Ziel 500), Header ≤ 300. Absätze in Funktionen durch eine Leerzeile trennen.
+- Größen: Funktionen ≤ 80 Zeilen (Ziel 40), ≤ 5 Parameter; `.cpp`/`.qml` ≤ 800 Zeilen (Ziel 500), Header ≤ 300. Absätze in Funktionen durch eine Leerzeile trennen. **Ist eine Grenze erreicht, nach Zuständigkeit teilen** (eine benennbare Gruppe in eine eigene Klasse/Datei auslagern) – **nie** Zeilen sparen durch Kürzen oder Zusammenziehen von Kommentaren, Zusammenlegen von Anweisungen oder Entfernen der Absatz-Leerzeilen.
 - Kommentare beschreiben den Ist-Zustand, nicht die Historie. Neue Entscheidungen als `## E-<Nummer> <Titel>` in `docs/Entscheidungen.md` (nächste freie Nummer im Index prüfen; parallele Sitzungen sprechen Nummernbereiche ab).
 - Neue Funktionen erweitern die Showcase-Welt (Definition of Done ab Etappe 21).
