@@ -30,7 +30,7 @@ public:
 
     // Opens the default output device. Returns false and keeps silent when there is none or it
     // cannot be opened; the reason is in error() and logged.
-    bool start();
+    [[nodiscard]] bool start();
     void stop();
     bool isActive() const { return m_sink != nullptr; }
     QString error() const { return m_error; }
@@ -47,8 +47,9 @@ private:
 
     mutable std::mutex m_mutex;
     QcAudioMixer m_mixer;
+    // The sink reads from the device: declared after it, so it stops first.
+    std::unique_ptr<QcMixerDevice> m_device;
     std::unique_ptr<QAudioSink> m_sink;
-    QcMixerDevice *m_device = nullptr;
     std::atomic<qint64> m_framesRendered{0};
     QString m_error;
 };

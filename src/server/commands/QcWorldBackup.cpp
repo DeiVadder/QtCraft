@@ -29,7 +29,7 @@ struct Listing
 };
 
 // Every regular file below the world directory (relative paths) without the session lock.
-QcResult<Listing> list(const QString &worldDirectory)
+[[nodiscard]] QcResult<Listing> list(const QString &worldDirectory)
 {
     Listing listing;
     const QDir root(worldDirectory);
@@ -89,7 +89,7 @@ QString freeTarget(const QDir &root, const QString &base)
 }
 
 // A second name for the same file contents; false where the file system cannot do it.
-bool hardLink(const QString &from, const QString &to)
+[[nodiscard]] bool hardLink(const QString &from, const QString &to)
 {
 #ifdef Q_OS_WIN
     return CreateHardLinkW(reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(to).utf16()),
@@ -129,7 +129,7 @@ bool isValidLabel(const QString &label)
     });
 }
 
-QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
+[[nodiscard]] QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
 {
     if (!isValidLabel(label)) {
         return qcError(u"A label may only have up to %1 letters, digits, '_' and '-'"_s.arg(maxLabelLength));
@@ -177,7 +177,7 @@ QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, 
     return snapshot;
 }
 
-QcResult<Summary> complete(const Snapshot &snapshot)
+[[nodiscard]] QcResult<Summary> complete(const Snapshot &snapshot)
 {
     // Written under a hidden name: an interrupted copy never looks like a backup. A snapshot of
     // copies already is the backup.
@@ -194,7 +194,7 @@ QcResult<Summary> complete(const Snapshot &snapshot)
     return Summary{snapshot.target, int(snapshot.files.size()), snapshot.bytes};
 }
 
-QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
+[[nodiscard]] QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)
 {
     const QcResult<Snapshot> frozen = snapshot(worldDirectory, root, label, now);
     if (!frozen) {

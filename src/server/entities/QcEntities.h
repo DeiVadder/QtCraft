@@ -105,7 +105,7 @@ public:
 
     // Where the body of an entity is in the world; nothing for sliding blocks and for creatures of a
     // kind the content does not know.
-    std::optional<QcAabb> boxOf(const QcEntity &entity) const;
+    [[nodiscard]] std::optional<QcAabb> boxOf(const QcEntity &entity) const;
     // Moves a body by `delta` from outside its own motion (a piston pushed it); its kind takes note:
     // the player gets his new position, an item stops resting, a stand is sent again.
     void displace(QcEntity &entity, const QcVec3 &delta) const;

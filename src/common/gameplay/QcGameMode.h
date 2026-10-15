@@ -48,8 +48,8 @@ int inventorySet(QcGameMode mode);
 // "survival", "creative": the names of commands, settings files and world.json.
 QLatin1StringView name(QcGameMode mode);
 // The name, a short form ("s", "c") or the number ("0", "1"), in any case; nullopt otherwise.
-std::optional<QcGameMode> parse(QStringView text);
+[[nodiscard]] std::optional<QcGameMode> parse(QStringView text);
 // A value read from a file or the network; nullopt for unknown values.
-std::optional<QcGameMode> fromValue(quint8 value);
+[[nodiscard]] std::optional<QcGameMode> fromValue(quint8 value);
 
 } // namespace QcGameModes

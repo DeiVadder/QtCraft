@@ -39,7 +39,7 @@ void parseDispense(QcItemDefinition &item, QcJsonFieldReader &reader)
 
 namespace QcItemParser {
 
-QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"item"_s, {}};
     QcItemDefinition item;

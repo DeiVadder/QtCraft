@@ -9,6 +9,7 @@
 #include <QTimer>
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -59,25 +60,28 @@ QcTcpTransport::QcTcpTransport(QTcpSocket *socket, const Limits &limits, QObject
 QcTcpTransport::~QcTcpTransport()
 {
     m_socket->disconnect(this);
-    lingerAndDelete(m_socket, m_limits.lingerMs);
+    // The socket is a child so it follows the transport into another thread; here it leaves it.
+    m_socket->setParent(nullptr);
+    lingerAndDelete(std::unique_ptr<QTcpSocket>(std::exchange(m_socket, nullptr)), m_limits.lingerMs);
 }
 
-void QcTcpTransport::lingerAndDelete(QTcpSocket *socket, int lingerMs)
+void QcTcpTransport::lingerAndDelete(std::unique_ptr<QTcpSocket> owned, int lingerMs)
 {
     // Frames sent just before (the reason of a Disconnect) may still wait in the socket's buffer.
     // They get lingerMs to leave without anybody waiting for them: the socket deletes itself once
     // it is disconnected, or is cut off after that time.
     // Whatever the system takes now goes out even if the program ends right after (a stopping
     // server); flush() never blocks.
-    socket->setParent(nullptr);
-    socket->flush();
-    if (socket->state() == QAbstractSocket::ConnectedState) {
-        socket->disconnectFromHost();
+    owned->flush();
+    if (owned->state() == QAbstractSocket::ConnectedState) {
+        owned->disconnectFromHost();
     }
-    if (socket->state() == QAbstractSocket::UnconnectedState) {
-        delete socket;
+    if (owned->state() == QAbstractSocket::UnconnectedState) {
         return;
     }
+
+    // From here on the socket deletes itself.
+    QTcpSocket *socket = owned.release();
 
     QObject::connect(socket, &QAbstractSocket::disconnected, socket, &QObject::deleteLater);
     QTimer::singleShot(lingerMs, socket, [socket] {

@@ -60,8 +60,8 @@ public:
 
     // Takes `count` from a slot / puts a stack into a slot (the slot was chosen by this class); false
     // when the slot does not exist. Callers put first and take only after a successful put.
-    bool take(QcBlockPos pos, int slot, int count);
-    bool put(QcBlockPos pos, int slot, QcItemStack stack);
+    [[nodiscard]] bool take(QcBlockPos pos, int slot, int count);
+    [[nodiscard]] bool put(QcBlockPos pos, int slot, QcItemStack stack);
     // Empties slots left at count 0 and tells the neighbours about every changed inventory.
     void finish();
     // Whether the hopper at `pos` received something while it was empty since the last finish().

@@ -14,7 +14,7 @@ constexpr int minY = 1;
 constexpr int maxY = QcWorld::worldHeight - 4;
 
 // `value` as a number in [minimum, maximum].
-std::optional<int> numberIn(const QString &value, int minimum, int maximum)
+[[nodiscard]] std::optional<int> numberIn(const QString &value, int minimum, int maximum)
 {
     bool ok = false;
     const int number = value.toInt(&ok);

@@ -79,12 +79,12 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
     return open;
 }
 
-bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
+void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &open)
 {
     if (!armourFits(open.combined)) {
         send(client);
         m_screens.send(client, true);
-        return false;
+        return;
     }
 
     // Only an inventory whose slots really change tells comparators and hoppers.
@@ -95,7 +95,7 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
         if (!machineAccepts(*open.machine, open.combined)) {
             send(client);
             m_screens.send(client, true);
-            return false;
+            return;
         }
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
             open.machine->stacks[std::size_t(slot)] = open.combined[machineSlot + slot];
@@ -127,21 +127,21 @@ bool QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
             m_state.noteContents(open.machine->pos);
         }
     }
-    return true;
 }
 
 void QcServerInventory::moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move)
 {
     OpenSlots open = openSlots(client);
     if (client.dead || !isUsableSlot(client, move.from, open.machine, open.container)
-        || !isUsableSlot(client, move.to, open.machine, open.container)
+        || !isUsableSlot(client, move.to, open.machine, open.container) || move.from == move.to
         || (open.machine && move.to == QcMsg::MoveInventoryItem::machineOutputSlot)) {
         send(client);
         m_screens.send(client, true);
         return;
     }
 
-    QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), m_state.content());
+    // Both slots are usable and differ (checked above), so the move cannot fail.
+    [[maybe_unused]] const bool moved = QcInventory::moveBetween(open.combined, move.from, move.to, std::max(0, move.count), m_state.content());
     applyOpenSlots(client, open);
 }
 

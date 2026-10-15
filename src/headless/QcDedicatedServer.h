@@ -36,11 +36,11 @@ public:
     // Stops the server, which saves the world.
     ~QcDedicatedServer() override;
 
-    QcStatus start(const Options &options);
+    [[nodiscard]] QcStatus start(const Options &options);
 
 private:
     // The configuration of the settings' world, made first when it does not exist.
-    QcResult<QcServerConfig> worldConfig(const Options &options) const;
+    [[nodiscard]] QcResult<QcServerConfig> worldConfig(const Options &options) const;
     void startConsole(bool stopAtEndOfInput);
     // Ends the event loop with `code`; the destructor saves.
     void stop(const QString &why, int code);

@@ -55,7 +55,7 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
     stream << m.time << m.dayLength << m.running << m.speed;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
 {
     QcMsg::Hello m;
     stream >> m.protocolVersion >> m.playerName;
@@ -76,7 +76,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::Hello>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
 {
     QcMsg::Welcome m;
     stream >> m.protocolVersion >> m.playerEntityId >> m.worldName >> m.seed >> m.yaw >> m.pitch >> m.restoredView >> m.viewDistance;
@@ -89,7 +89,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::Welcome>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream)
 {
     QcResult<QcContentRegistry> content = QcContentRegistry::readFrom(stream);
     if (!content) {
@@ -98,7 +98,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::ContentSync>, QDataStream &stream)
     return QcMsg::ContentSync{std::make_shared<const QcContentRegistry>(std::move(*content))};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
 {
     QcMsg::Disconnect m;
     quint32 count = 0;
@@ -115,14 +115,14 @@ QcResult<QcMessage> decode(Tag<QcMsg::Disconnect>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ChatInput>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChatInput>, QDataStream &stream)
 {
     QcMsg::ChatInput m;
     stream >> m.text;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
 {
     QcMsg::ChatMessage m;
     quint32 count = 0;
@@ -139,7 +139,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream)
 {
     QcMsg::WorldTime m;
     stream >> m.time >> m.dayLength >> m.running >> m.speed;

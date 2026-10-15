@@ -18,7 +18,7 @@ QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &co
 // The record of `chunk`. Unknown items are dropped with a warning (once per name in `reported`);
 // damaged or implausible data (a position outside the chunk or twice, unknown priorities) is an
 // error. Values out of range are cut.
-QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+[[nodiscard]] QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
                                      QStringList &warnings, QSet<QString> &reported);
 
 } // namespace QcBlockEntityCodec

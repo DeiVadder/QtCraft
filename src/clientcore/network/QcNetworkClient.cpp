@@ -28,26 +28,24 @@ void QcNetworkClient::join(const Request &request)
 void QcNetworkClient::cancel()
 {
     m_connector->abort();
-    if (m_session && !m_joined) {
+    if (m_session) {
         m_session->disconnect(this);
         m_session->disconnectFromServer();
-        m_session->deleteLater();
+        m_session.release()->deleteLater();
     }
-    m_session.clear();
+    m_joined = false;
     setStage(Stage::Idle);
 }
 
-QcClientSession *QcNetworkClient::takeSession()
+std::unique_ptr<QcClientSession> QcNetworkClient::takeSession()
 {
     if (!m_joined || !m_session) {
         return nullptr;
     }
 
-    QcClientSession *session = m_session;
-    session->disconnect(this);
-    m_session.clear();
+    m_session->disconnect(this);
     m_joined = false;
-    return session;
+    return std::move(m_session);
 }
 
 void QcNetworkClient::onConnected()
@@ -58,13 +56,12 @@ void QcNetworkClient::onConnected()
         return;
     }
 
-    auto *session = new QcClientSession(std::move(transport), m_request.playerName);
-    m_session = session;
-    session->setAppearance(m_request.appearance);
-    session->setCredentials(m_request.credentials);
-    connect(session, &QcClientSession::stateChanged, this, &QcNetworkClient::onSessionState);
+    m_session = std::make_unique<QcClientSession>(std::move(transport), m_request.playerName);
+    m_session->setAppearance(m_request.appearance);
+    m_session->setCredentials(m_request.credentials);
+    connect(m_session.get(), &QcClientSession::stateChanged, this, &QcNetworkClient::onSessionState);
     setStage(Stage::LoggingIn);
-    session->start();
+    m_session->start();
 }
 
 void QcNetworkClient::onSessionState()
@@ -77,8 +74,7 @@ void QcNetworkClient::onSessionState()
     if (m_session->state() == QcClientSession::State::Disconnected) {
         const QString reason = m_session->disconnectReason();
         const QcMsg::Disconnect refusal = m_session->disconnectMessage();
-        m_session->deleteLater();
-        m_session.clear();
+        m_session.release()->deleteLater();
         fail(reason, refusal);
         return;
     }

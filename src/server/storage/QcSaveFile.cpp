@@ -26,7 +26,7 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     return data;
 }
 
-QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version)
+[[nodiscard]] QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version)
 {
     QSaveFile file(path);
     const QByteArray data = bytes(magic, payload, version);
@@ -36,7 +36,7 @@ QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payl
     return {};
 }
 
-QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
+[[nodiscard]] QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -49,7 +49,7 @@ QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 new
     return parse(file.readAll(), path, magic, newestVersion, version);
 }
 
-QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
+[[nodiscard]] QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion, quint16 *version)
 {
     constexpr qsizetype headerSize = 4 + 2 + 4 + 4;
     if (data.size() < headerSize || !data.startsWith(magic)) {

@@ -39,7 +39,7 @@ QString name(Animation animation)
     return u"stand"_s;
 }
 
-std::optional<Animation> fromName(const QString &name)
+[[nodiscard]] std::optional<Animation> fromName(const QString &name)
 {
     for (const Animation animation : {Animation::Stand, Animation::Walk, Animation::Mine}) {
         if (QcPreviewPose::name(animation) == name) {

@@ -52,21 +52,21 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
-    , m_audio(new QcAudioEngine(this))
-    , m_library(new QcWorldLibraryController(this))
-    , m_settings(new QcSettingsController(m_parts, *m_library, m_audio, this))
-    , m_player(new QcPlayerController(m_parts, *m_settings, this))
-    , m_hud(new QcHudState(m_parts, *m_settings, this))
-    , m_handbook(new QcHandbookController(m_parts, *m_settings, *m_library, m_icons, this))
-    , m_input(new QcGameInput(*this, m_parts, *m_settings, m_audio, this))
-    , m_preview(new QcPreviewSource(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks(), this))
-    , m_benchmark(new QcBenchmarkRun(*this, m_parts, *m_input, *m_settings, this))
-    , m_startup(new QcStartupHooks(*this, m_parts, m_benchmark, this))
-    , m_multiplayer(new QcMultiplayerController(*this, m_parts, *m_settings, *m_library, this))
+    , m_audio(std::make_unique<QcAudioEngine>())
+    , m_library(std::make_unique<QcWorldLibraryController>())
+    , m_settings(std::make_unique<QcSettingsController>(m_parts, *m_library, m_audio.get()))
+    , m_player(std::make_unique<QcPlayerController>(m_parts, *m_settings))
+    , m_hud(std::make_unique<QcHudState>(m_parts, *m_settings))
+    , m_handbook(std::make_unique<QcHandbookController>(m_parts, *m_settings, *m_library, m_icons))
+    , m_input(std::make_unique<QcGameInput>(*this, m_parts, *m_settings, m_audio.get()))
+    , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
+    , m_benchmark(std::make_unique<QcBenchmarkRun>(*this, m_parts, *m_input, *m_settings))
+    , m_startup(std::make_unique<QcStartupHooks>(*this, m_parts, m_benchmark.get()))
+    , m_multiplayer(std::make_unique<QcMultiplayerController>(*this, m_parts, *m_settings, *m_library))
     , m_render(m_parts, *m_settings)
 {
     m_frameClock.start();
-    connect(m_handbook, &QcHandbookController::opening, this, [this] {
+    connect(m_handbook.get(), &QcHandbookController::opening, this, [this] {
         m_input->clearKeys();
         if (m_parts.session) {
             m_parts.session->setMining(false);
@@ -74,8 +74,8 @@ QcGameController::QcGameController(QObject *parent)
         m_input->releaseMouse();
     });
     // Closing the handbook gives the world its mouse back without a click.
-    connect(m_handbook, &QcHandbookController::openChanged, m_input, &QcGameInput::syncCapture);
-    connect(m_library, &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
+    connect(m_handbook.get(), &QcHandbookController::openChanged, m_input.get(), &QcGameInput::syncCapture);
+    connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
     // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
     // menu draws its icons and previews again.
     connect(m_settings->texturePacks(), &QcTexturePackController::atlasBuilt, this, &QcGameController::applyAtlas);
@@ -86,25 +86,19 @@ QcGameController::QcGameController(QObject *parent)
         }
     });
     // Players joining and leaving appear in the chat (decision E-259).
-    connect(m_multiplayer->players(), &QcPlayerList::announced, m_hud, &QcHudState::addChatLine);
+    connect(m_multiplayer->players(), &QcPlayerList::announced, m_hud.get(), &QcHudState::addChatLine);
 }
 
 QcGameController::~QcGameController()
 {
+    // The application-wide input filter reads the other parts; it stops before any of them dies.
+    if (QCoreApplication *application = QCoreApplication::instance()) {
+        application->removeEventFilter(m_input.get());
+    }
+
     if (const QcStatus saved = stopSession(); !saved) {
         qCWarning(lcGame) << "Saving the world failed:" << saved.error();
     }
-
-    // The input filter and the parts below hold references to m_parts and m_icons, which die before
-    // QObject deletes the children: remove the application-wide filter and delete them first.
-    if (QCoreApplication *application = QCoreApplication::instance()) {
-        application->removeEventFilter(m_input);
-    }
-    delete m_startup;
-    delete m_benchmark;
-    delete m_input;
-    delete m_handbook;
-    delete m_hud;
 }
 
 void QcGameController::setView(QcWorldView *view)
@@ -144,7 +138,7 @@ void QcGameController::attachWindow(QQuickWindow *window)
     }
 }
 
-void QcGameController::setPhase(const QString &phase, const QString &status)
+void QcGameController::setPhase(Phase phase, const QString &status)
 {
     if (m_statusText != status) {
         m_statusText = status;
@@ -220,7 +214,7 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
     const QcResult<QString> stored =
         QcWorldGenerators::optionsToStore(world.generator, setup.value(u"layers"_s).toString().trimmed(), m_library->content());
     if (!stored) {
-        setPhase(u"error"_s, tr("Cannot create the world: %1").arg(stored.error()));
+        setPhase(Phase::Error, tr("Cannot create the world: %1").arg(stored.error()));
         return;
     }
 
@@ -229,7 +223,7 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
     world.options = *stored;
     const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), world);
     if (!entry) {
-        setPhase(u"error"_s, tr("Cannot create the world: %1").arg(entry.error()));
+        setPhase(Phase::Error, tr("Cannot create the world: %1").arg(entry.error()));
         return;
     }
 
@@ -248,7 +242,7 @@ void QcGameController::playWorld(const QString &folder)
     const QList<QcWorldLibrary::Entry> entries = library.list();
     const auto it = std::ranges::find(entries, folder, &QcWorldLibrary::Entry::folder);
     if (it == entries.end() || !it->error.isEmpty()) {
-        setPhase(u"error"_s, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
+        setPhase(Phase::Error, it == entries.end() ? tr("World not found") : tr("Cannot load the world: %1").arg(it->error));
         return;
     }
 
@@ -307,22 +301,22 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
     }
     m_worldDirectory = directory;
     setOverlay({});
-    setPhase(u"loading"_s, tr("Loading content..."));
+    setPhase(Phase::Loading, tr("Loading content..."));
 
     const std::shared_ptr<const QcContentRegistry> content = loadContent();
     if (!content || !startServer(content, world)) {
         return;
     }
 
-    m_parts.session = new QcClientSession(m_parts.server->connectClient(), u"Player"_s, this);
+    m_parts.session = std::make_unique<QcClientSession>(m_parts.server->connectClient(), u"Player"_s);
     m_parts.session->setAppearance(m_settings->character()->appearance());
     beginSession();
     m_parts.session->start();
-    setPhase(u"loading"_s, tr("Generating world..."));
-    emit sessionStarted(m_parts.session);
+    setPhase(Phase::Loading, tr("Generating world..."));
+    emit sessionStarted(m_parts.session.get());
 }
 
-void QcGameController::startRemoteSession(QcClientSession *session)
+void QcGameController::startRemoteSession(std::unique_ptr<QcClientSession> session)
 {
     if (const QcStatus saved = stopSession(); !saved) {
         qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
@@ -331,17 +325,16 @@ void QcGameController::startRemoteSession(QcClientSession *session)
     m_worldDirectory.clear();
     setOverlay({});
 
-    session->setParent(this);
-    m_parts.session = session;
+    m_parts.session = std::move(session);
     beginSession();
-    setPhase(u"loading"_s, tr("Loading the world..."));
-    emit sessionStarted(m_parts.session);
+    setPhase(Phase::Loading, tr("Loading the world..."));
+    emit sessionStarted(m_parts.session.get());
 }
 
 void QcGameController::beginSession()
 {
     m_parts.session->setCameraMode(m_settings->cameraModeValue());
-    m_parts.meshes = new QcMeshScheduler(this);
+    m_parts.meshes = std::make_unique<QcMeshScheduler>();
     m_parts.session->setIntent(m_startup->initialIntent());
     m_render.setForcedPose(m_startup->forcedPose());
     m_hud->debug()->syncSubscription();
@@ -363,7 +356,7 @@ std::shared_ptr<const QcContentRegistry> QcGameController::loadContent()
         qCWarning(lcGame) << "Content:" << warning;
     }
     if (!content) {
-        setPhase(u"error"_s, tr("Cannot load game content: %1").arg(content.error()));
+        setPhase(Phase::Error, tr("Cannot load game content: %1").arg(content.error()));
         return nullptr;
     }
 
@@ -420,7 +413,7 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
     // falls back to the defaults with a warning.
     if (const QcStatus checked = QcWorldGenerators::checkOptions(world.generator, world.generatorOptions, *content);
         m_worldDirectory.isEmpty() && !checked) {
-        setPhase(u"error"_s, tr("Cannot start the world: %1").arg(checked.error()));
+        setPhase(Phase::Error, tr("Cannot start the world: %1").arg(checked.error()));
         emit worldRefused(checked.error());
         return false;
     }
@@ -432,7 +425,7 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
         qCWarning(lcGame) << "World generation:" << warning;
     }
     if (!generator) {
-        setPhase(u"error"_s, tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator));
+        setPhase(Phase::Error, tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator));
         return false;
     }
 
@@ -448,7 +441,7 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
             m_library->noteUnplayable(QDir(m_worldDirectory).dirName(), damaged);
         }
         m_parts.server.reset();
-        setPhase(u"error"_s, tr("Cannot load the world: %1").arg(error));
+        setPhase(Phase::Error, tr("Cannot load the world: %1").arg(error));
         return false;
     }
     if (!m_worldDirectory.isEmpty()) {
@@ -459,10 +452,10 @@ bool QcGameController::startServer(const std::shared_ptr<const QcContentRegistry
 
 void QcGameController::connectSessionWorld()
 {
-    const QcClientSession *session = m_parts.session;
+    const QcClientSession *session = m_parts.session.get();
     connect(session, &QcClientSession::contentReady, this, &QcGameController::onContentReady);
     connect(session, &QcClientSession::chunkLoaded, this, [this](QcChunkPos pos) { m_parts.meshes->chunkLoaded(*m_parts.session->world(), pos); });
-    connect(session, &QcClientSession::chunkUnloaded, m_parts.meshes, &QcMeshScheduler::chunkUnloaded);
+    connect(session, &QcClientSession::chunkUnloaded, m_parts.meshes.get(), &QcMeshScheduler::chunkUnloaded);
     connect(session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
         m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous);
     });
@@ -476,16 +469,16 @@ void QcGameController::connectSessionWorld()
         const bool front = m_parts.session->cameraMode() == QcCameraMode::Front;
         m_audio->play(cue, ears, m_parts.session->intent().yaw + (front ? 180.0f : 0.0f));
     });
-    connect(session, &QcClientSession::chatReceived, m_hud, &QcHudState::addChatLine);
+    connect(session, &QcClientSession::chatReceived, m_hud.get(), &QcHudState::addChatLine);
     connect(session, &QcClientSession::stateChanged, this, &QcGameController::onSessionState);
 
-    connect(m_parts.meshes, &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
+    connect(m_parts.meshes.get(), &QcMeshScheduler::meshReady, this, [this](quint64 key, std::shared_ptr<const QcChunkMesh> mesh) {
         m_hud->debug()->meshed(key);
         if (m_parts.view) {
             m_parts.view->submitMesh(key, std::move(mesh));
         }
     });
-    connect(m_parts.meshes, &QcMeshScheduler::meshRemoved, this, [this](quint64 key) {
+    connect(m_parts.meshes.get(), &QcMeshScheduler::meshRemoved, this, [this](quint64 key) {
         if (m_parts.view) {
             m_parts.view->removeMesh(key);
         }
@@ -494,11 +487,11 @@ void QcGameController::connectSessionWorld()
 
 void QcGameController::connectSessionPlayer()
 {
-    const QcClientSession *session = m_parts.session;
-    connect(session, &QcClientSession::inventoryChanged, m_player, &QcPlayerController::updateInventory);
+    const QcClientSession *session = m_parts.session.get();
+    connect(session, &QcClientSession::inventoryChanged, m_player.get(), &QcPlayerController::updateInventory);
     connect(session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
-    connect(session, &QcClientSession::foodChanged, m_player, &QcPlayerController::foodChanged);
-    connect(session, &QcClientSession::gameModeChanged, m_player, &QcPlayerController::gameModeChanged);
+    connect(session, &QcClientSession::foodChanged, m_player.get(), &QcPlayerController::foodChanged);
+    connect(session, &QcClientSession::gameModeChanged, m_player.get(), &QcPlayerController::gameModeChanged);
     // An operator changed the mode while the creative inventory was open: the usual one instead.
     connect(session, &QcClientSession::gameModeChanged, this, [this] {
         if (m_overlay == u"creative"_s && !m_player->creative()) {
@@ -506,22 +499,22 @@ void QcGameController::connectSessionPlayer()
         }
     });
     connect(session, &QcClientSession::machineOpened, this, &QcGameController::onMachineOpened);
-    connect(session, &QcClientSession::machineChanged, m_player, &QcPlayerController::updateMachine);
+    connect(session, &QcClientSession::machineChanged, m_player.get(), &QcPlayerController::updateMachine);
     connect(session, &QcClientSession::machineClosed, this, &QcGameController::onMachineClosed);
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, &QcGameController::onHealthChanged);
-    connect(session, &QcClientSession::healthChanged, m_player, &QcPlayerController::healthChanged);
+    connect(session, &QcClientSession::healthChanged, m_player.get(), &QcPlayerController::healthChanged);
 }
 
 void QcGameController::onSessionState(QcClientSession::State state)
 {
     if (state == QcClientSession::State::Playing) {
-        setPhase(u"playing"_s);
+        setPhase(Phase::Playing);
         m_startup->worldPlaying();
-    } else if (state == QcClientSession::State::Disconnected && m_phase != u"menu"_s) {
+    } else if (state == QcClientSession::State::Disconnected && m_phase != Phase::Menu) {
         // The disconnect screen shows the reason (translated, E-094) and leads back to the menu.
         m_input->releaseMouse();
-        setPhase(u"disconnected"_s, m_parts.session->disconnectReason());
+        setPhase(Phase::Disconnected, m_parts.session->disconnectReason());
     }
 }
 
@@ -619,13 +612,11 @@ QcStatus QcGameController::stopSession()
     m_audio->stopWorldSounds();
     if (m_parts.meshes) {
         m_parts.meshes->waitForJobs();
-        delete m_parts.meshes;
-        m_parts.meshes = nullptr;
+        m_parts.meshes.reset();
     }
     if (m_parts.session) {
         m_parts.session->disconnectFromServer();
-        delete m_parts.session;
-        m_parts.session = nullptr;
+        m_parts.session.reset();
     }
     if (m_parts.server) {
         saved = m_parts.server->shutdown();
@@ -654,10 +645,10 @@ QcStatus QcGameController::stopSession()
 void QcGameController::leaveGame()
 {
     if (const QcStatus saved = stopSession(); !saved) {
-        setPhase(u"error"_s, tr("The world could not be saved: %1").arg(saved.error()));
+        setPhase(Phase::Error, tr("The world could not be saved: %1").arg(saved.error()));
         return;
     }
-    setPhase(u"menu"_s);
+    setPhase(Phase::Menu);
 }
 
 float QcGameController::advanceFrameClocks()
@@ -672,12 +663,12 @@ void QcGameController::startStatsLog(int intervalMs)
     }
 
     m_hud->debug()->setStatsLogging(true);
-    m_statsLog = new QcStatsLog(intervalMs, [this]() -> std::optional<QJsonObject> {
+    m_statsLog = std::make_unique<QcStatsLog>(intervalMs, [this]() -> std::optional<QJsonObject> {
         if (!m_parts.session || m_parts.session->state() != QcClientSession::State::Playing) {
             return std::nullopt;
         }
         return QcDebugJson::toJson(m_hud->debug()->snapshot(m_drawnFeet, QcFrameMonitor::Reader::StatsLog));
-    }, this);
+    });
 }
 
 void QcGameController::onFrame()
@@ -724,5 +715,5 @@ void QcGameController::onFrame()
     m_drawnFeet = feet;
     m_hud->debug()->update(feet);
     m_hud->debug()->updateWorld(alpha, feet);
-    m_startup->releaseScreenshotWhenLoaded(m_settings->viewDistance(), m_phase == u"playing"_s);
+    m_startup->releaseScreenshotWhenLoaded(m_settings->viewDistance(), m_phase == Phase::Playing);
 }

@@ -68,7 +68,7 @@ void syncDirectory(const QString &directory)
 #endif
 }
 
-QcStatus renameFile(const QString &from, const QString &to)
+[[nodiscard]] QcStatus renameFile(const QString &from, const QString &to)
 {
     // filesystemFilePath() keeps every character of the path on every system (a narrow string would
     // go through the ANSI code page on Windows).

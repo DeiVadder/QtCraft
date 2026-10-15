@@ -45,7 +45,7 @@ public:
     static bool shouldFall(const QcBlockAccess &world, QcBlockPos pos);
     // The cell a block let go at `from` comes to rest in, scanning down; std::nullopt below the world
     // or in unloaded chunks.
-    static std::optional<QcBlockPos> restingCell(const QcBlockAccess &world, QcBlockPos from);
+    [[nodiscard]] static std::optional<QcBlockPos> restingCell(const QcBlockAccess &world, QcBlockPos from);
 
     bool isFull() const { return m_falling.size() >= m_maxFalling; }
     void setMaxFalling(qsizetype limit) { m_maxFalling = limit; }

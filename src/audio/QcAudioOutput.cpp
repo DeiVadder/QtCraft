@@ -62,16 +62,15 @@ bool QcAudioOutput::start()
         m_mixer = QcAudioMixer(format.sampleRate());
     }
 
-    m_device = new QcMixerDevice([this](float *out, int frames) { render(out, frames); }, sampleFormat, this);
+    m_device = std::make_unique<QcMixerDevice>([this](float *out, int frames) { render(out, frames); }, sampleFormat);
     m_device->open(QIODevice::ReadOnly);
     m_sink = std::make_unique<QAudioSink>(device, format);
     m_sink->setBufferSize(format.bytesForDuration(qint64(bufferMilliseconds) * 1000));
-    m_sink->start(m_device);
+    m_sink->start(m_device.get());
     if (m_sink->error() != QtAudio::NoError) {
         const int code = int(m_sink->error());
         m_sink.reset();
-        delete m_device;
-        m_device = nullptr;
+        m_device.reset();
         fail(u"the audio output could not be started (error %1)"_s.arg(code));
         return false;
     }
@@ -96,8 +95,7 @@ void QcAudioOutput::stop()
         m_sink->stop();
         m_sink.reset();
     }
-    delete m_device;
-    m_device = nullptr;
+    m_device.reset();
 }
 
 int QcAudioOutput::sampleRate() const

@@ -9,7 +9,7 @@ namespace QcTextureEmblem {
 namespace {
 
 // Accepts #RRGGBB only: emblems are opaque.
-std::optional<QColor> opaqueColor(const QJsonValue &value)
+[[nodiscard]] std::optional<QColor> opaqueColor(const QJsonValue &value)
 {
     const QString text = value.toString();
     bool ok = false;

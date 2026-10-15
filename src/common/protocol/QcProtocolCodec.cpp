@@ -22,7 +22,7 @@ QDataStream &operator<<(QDataStream &stream, const QcAppearance &value)
     return stream << value.outfit << value.hair << value.skinColor << value.hairColor << value.shirtColor << value.pantsColor << value.cape;
 }
 
-bool readAppearance(QDataStream &stream, QcAppearance &value)
+[[nodiscard]] bool readAppearance(QDataStream &stream, QcAppearance &value)
 {
     stream >> value.outfit >> value.hair >> value.skinColor >> value.hairColor >> value.shirtColor >> value.pantsColor >> value.cape;
     for (quint32 *color : {&value.skinColor, &value.hairColor, &value.shirtColor, &value.pantsColor}) {

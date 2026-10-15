@@ -121,7 +121,7 @@ void parseShapeless(const QJsonObject &json, QcRecipeDefinition &recipe, QcJsonF
 
 namespace QcRecipeParser {
 
-QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"recipe"_s, {}};
     QcRecipeDefinition recipe;
@@ -157,7 +157,7 @@ QcResult<QcRecipeDefinition> parseRecipe(const QJsonObject &json, const QString 
     return recipe;
 }
 
-QcResult<QcSmeltingRecipe> parseSmeltingRecipe(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcSmeltingRecipe> parseSmeltingRecipe(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"smelting recipe"_s, {}};
     QcSmeltingRecipe recipe;

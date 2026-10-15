@@ -73,10 +73,10 @@ private:
     void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved) const;
     void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
     // The first feature of the column's biome that grows there by density, patches and shore.
-    std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
+    [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
     void placeFeature(QcChunk &chunk, const Feature &feature, QcBlockPos base, double random) const;
     // Spawn candidate on the square ring of `radius` around the origin, if any.
-    std::optional<QcBlockPos> spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const;
+    [[nodiscard]] std::optional<QcBlockPos> spawnOnRing(int radius, std::shared_ptr<QcChunk> &chunk) const;
     // Open, dry and not too high ground at a column; `chunk` caches the last generated chunk.
     bool fitsSpawn(int x, int z, const Column &column, std::shared_ptr<QcChunk> &chunk) const;
 

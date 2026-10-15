@@ -9,7 +9,7 @@
 
 namespace QcRaycast {
 
-std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance)
+[[nodiscard]] std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance)
 {
     // Slab method: intersect the ray's entry and exit distances over the three axes.
     double entry = 0.0;
@@ -41,7 +41,7 @@ std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction
     return entry;
 }
 
-std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box,
+[[nodiscard]] std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box,
                                                                double maxDistance, QcBlockFace insideFace)
 {
     double entry = 0.0;
@@ -173,7 +173,7 @@ FaceHit nearestHit(const Ray &ray, const QList<QcAabb> &boxes, QcBlockPos cell, 
 }
 
 // The hit on `block` in `cell`: the nearest box of its state; a ray that passes between its boxes goes on.
-std::optional<QcRaycastHit> hitBlock(const QcContentRegistry &content, const Ray &ray, QcBlockPos cell, QcBlockId block,
+[[nodiscard]] std::optional<QcRaycastHit> hitBlock(const QcContentRegistry &content, const Ray &ray, QcBlockPos cell, QcBlockId block,
                                      QcBlockFace face)
 {
     if (!content.isValidBlock(block) || block == qcAirBlockId || !isTarget(content.block(block), ray.targets)) {
@@ -189,7 +189,7 @@ std::optional<QcRaycastHit> hitBlock(const QcContentRegistry &content, const Ray
 }
 
 // Collision boxes reach up to 1.5 m (fences): the part above the block below `cell` lies in this cell.
-std::optional<QcRaycastHit> hitUpperPartBelow(const QcBlockAccess &world, const QcContentRegistry &content, const Ray &ray,
+[[nodiscard]] std::optional<QcRaycastHit> hitUpperPartBelow(const QcBlockAccess &world, const QcContentRegistry &content, const Ray &ray,
                                               QcBlockPos cell, QcBlockFace face)
 {
     if (ray.targets != Targets::Solid || cell.y <= 0) {
@@ -224,7 +224,7 @@ std::optional<QcRaycastHit> hitUpperPartBelow(const QcBlockAccess &world, const 
 
 } // namespace
 
-std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
+[[nodiscard]] std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
                                  Targets targets)
 {
     const QcVec3 dir = direction.normalized();

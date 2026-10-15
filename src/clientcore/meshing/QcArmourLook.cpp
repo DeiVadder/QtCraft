@@ -13,7 +13,7 @@ namespace {
 
 // The box grown by `inflate` on every side and cut to the layer's heights (after growing, so a cut
 // edge stays flush with the cut and does not stick out below or above).
-std::optional<QcAabb> layerBox(const QcModelBox &box, const QcArmourLayer &layer)
+[[nodiscard]] std::optional<QcAabb> layerBox(const QcModelBox &box, const QcArmourLayer &layer)
 {
     const QcVec3 grow{layer.inflate, layer.inflate, layer.inflate};
     QcAabb result{box.from - grow, box.to + grow};

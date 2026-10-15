@@ -126,7 +126,7 @@ bool wellInside(const QcTerrainGenerator &generator, int biome, int x, int z)
 }
 
 // The first column well inside `biome` on the square ring of `ring` blocks around the origin.
-std::optional<QString> legendPlaceOnRing(const QcTerrainGenerator &generator, int biome, int ring)
+[[nodiscard]] std::optional<QString> legendPlaceOnRing(const QcTerrainGenerator &generator, int biome, int ring)
 {
     for (int dz = -ring; dz <= ring; dz += 16) {
         for (int dx = -ring; dx <= ring; dx += 16) {
@@ -209,8 +209,9 @@ QcHeadlessGame::~QcHeadlessGame()
         // Says goodbye so the server saves the player at once rather than when the link drops.
         m_session->disconnectFromServer();
     }
-    delete m_control;
-    delete m_session;
+    // The bot leaves before the server shuts down and reports how the final save went.
+    m_control.reset();
+    m_session.reset();
     if (m_server) {
         if (const QcStatus stopped = m_server->shutdown(); !stopped) {
             printError(u"saving the world failed: "_s + stopped.error());
@@ -332,7 +333,11 @@ bool QcHeadlessGame::startJoin(const QCommandLineParser &parser, const QcModLoad
         printError(u"join failed: "_s + reason);
         QCoreApplication::exit(QcHeadlessJoin::exitJoinFailed);
     });
-    connect(joining, &QcHeadlessJoin::joined, this, [this, script](QcClientSession *session) { onJoined(session, script); });
+    connect(joining, &QcHeadlessJoin::joined, this, [this, joining, script] {
+        if (std::unique_ptr<QcClientSession> session = joining->takeSession()) {
+            onJoined(std::move(session), script);
+        }
+    });
     if (const QcStatus started = joining->start(join, content); !started) {
         printError(started.error());
         return false;
@@ -342,19 +347,18 @@ bool QcHeadlessGame::startJoin(const QCommandLineParser &parser, const QcModLoad
     return true;
 }
 
-void QcHeadlessGame::onJoined(QcClientSession *session, const std::optional<QString> &scriptFile)
+void QcHeadlessGame::onJoined(std::unique_ptr<QcClientSession> session, const std::optional<QString> &scriptFile)
 {
-    m_session = session;
-    session->setParent(this);
-    printError(u"joined '%1'"_s.arg(session->login().serverName()));
+    m_session = std::move(session);
+    printError(u"joined '%1'"_s.arg(m_session->login().serverName()));
 
     // Only the server ends the connection while the process runs; quitting deletes the session.
-    connect(session, &QcClientSession::disconnected, this, [](const QString &reason) {
+    connect(m_session.get(), &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);
         QCoreApplication::exit(QcHeadlessJoin::exitConnectionLost);
     });
     if (m_statsLog) {
-        session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+        m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
     }
 
     if (!startControl(scriptFile)) {
@@ -405,16 +409,16 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile)
         return false;
     }
 
-    m_control = new QcControlInterface(m_session, nullptr, m_output);
+    m_control = std::make_unique<QcControlInterface>(m_session.get(), nullptr, m_output);
     m_control->setExtensionHandler([this](const QJsonObject &request, QJsonObject &response) {
         return m_remote ? handleRemoteCommand(request, response) : handleWorldCommand(request, response);
     });
     m_scriptMode = scriptFile.has_value();
     // A script's exit code reports whether every request succeeded, also when it ends with quit.
     if (m_scriptMode) {
-        connect(m_control, &QcControlInterface::quitRequested, this, &QcHeadlessGame::finishScript, Qt::QueuedConnection);
+        connect(m_control.get(), &QcControlInterface::quitRequested, this, &QcHeadlessGame::finishScript, Qt::QueuedConnection);
     } else {
-        connect(m_control, &QcControlInterface::quitRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+        connect(m_control.get(), &QcControlInterface::quitRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
     }
 
     if (m_scriptMode) {
@@ -425,7 +429,7 @@ bool QcHeadlessGame::startControl(const std::optional<QString> &scriptFile)
         }
         // Queued: by the time this runs all script lines are queued, so idle really means done.
         connect(
-            m_control, &QcControlInterface::idle, this,
+            m_control.get(), &QcControlInterface::idle, this,
             [this] {
                 if (m_control->isIdle()) {
                     finishScript();
@@ -466,13 +470,13 @@ void QcHeadlessGame::startConsole(int timeLimit, bool stopAtEndOfInput)
 void QcHeadlessGame::readStandardInput()
 {
     auto *reader = new QcStdinReader(this);
-    connect(reader, &QcStdinReader::lineReceived, m_control, &QcControlInterface::feed);
+    connect(reader, &QcStdinReader::lineReceived, m_control.get(), &QcControlInterface::feed);
     connect(reader, &QcStdinReader::endOfInput, this, [this] {
         // End of input: finish the queued requests, then exit.
         if (m_control->isIdle()) {
             QCoreApplication::quit();
         } else {
-            connect(m_control, &QcControlInterface::idle, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+            connect(m_control.get(), &QcControlInterface::idle, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
         }
     });
     reader->start();
@@ -485,8 +489,9 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
     if (m_server && !config.worldDirectory.isEmpty() && config.worldDirectory == m_currentConfig.worldDirectory) {
         if (m_session) {
             m_session->disconnectFromServer();
-            m_session->deleteLater();
-            m_session = nullptr;
+            // Later, not now: the control interface still points at it while it answers the
+            // request that switches the world.
+            m_session.release()->deleteLater();
         }
 
         if (const QcStatus stopped = m_server->shutdown(); !stopped) {
@@ -535,8 +540,9 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 
     if (m_session) {
         m_session->disconnectFromServer();
-        m_session->deleteLater();
-        m_session = nullptr;
+        // Later, not now: the control interface still points at it while it answers the request
+        // that switches the world.
+        m_session.release()->deleteLater();
     }
 
     if (m_server) {
@@ -549,18 +555,19 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     m_server = std::move(server);
     m_currentConfig = config;
     connect(m_server.get(), &QcLocalServerHost::stopRequested, qApp, &QCoreApplication::quit, Qt::QueuedConnection);
+    // The console mode has no control interface, so no stale session pointer remains there.
     if (m_consoleMode) {
         return {};
     }
-    m_session = new QcClientSession(m_server->connectClient(), u"Bot"_s, this);
+    m_session = std::make_unique<QcClientSession>(m_server->connectClient(), u"Bot"_s);
     if (m_statsLog) {
         m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
     }
-    connect(m_session, &QcClientSession::disconnected, this, [](const QString &reason) {
+    connect(m_session.get(), &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);
     });
     if (m_control) {
-        m_control->setSession(m_session);
+        m_control->setSession(m_session.get());
     }
 
     m_session->start();

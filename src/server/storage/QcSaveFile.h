@@ -17,13 +17,13 @@ namespace QcSaveFile {
 inline constexpr QDataStream::Version streamVersion = QDataStream::Qt_6_8;
 inline constexpr quint16 baseVersion = 1;
 
-QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion);
+[[nodiscard]] QcStatus write(const QString &path, QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion);
 // The bytes write() puts into a file.
 QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 version = baseVersion);
 // `version` receives the file's format version, at most `newestVersion`.
-QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion, quint16 *version = nullptr);
+[[nodiscard]] QcResult<QByteArray> read(const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion, quint16 *version = nullptr);
 // The same for the bytes of a file (`path` names it in messages).
-QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion,
+[[nodiscard]] QcResult<QByteArray> parse(const QByteArray &data, const QString &path, QByteArrayView magic, quint16 newestVersion = baseVersion,
                            quint16 *version = nullptr);
 // An item stack by item name, count and damage; empty stacks and invalid items as an empty name.
 void writeStack(QDataStream &stream, QcItemStack stack, const QcContentRegistry &content);

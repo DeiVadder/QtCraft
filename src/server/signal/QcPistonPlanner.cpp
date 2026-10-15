@@ -53,7 +53,7 @@ QList<QcBlockPos> QcPistonPlan::touched() const
 
 namespace QcPistonPlanner {
 
-std::optional<QcPistonPlan> extension(QcSignalPower power, QcBlockPos base, QcSignalState piston,
+[[nodiscard]] std::optional<QcPistonPlan> extension(QcSignalPower power, QcBlockPos base, QcSignalState piston,
                                       const QcSignalDefinition &definition)
 {
     if (!piston.facing) {

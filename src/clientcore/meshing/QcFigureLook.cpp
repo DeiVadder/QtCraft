@@ -140,7 +140,7 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
     return look;
 }
 
-std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item)
+[[nodiscard]] std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item)
 {
     if (item == qcNoItem || !content.isValidItem(item)) {
         return std::nullopt;

@@ -6,14 +6,14 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-std::optional<double> number(const QString &text, double low, double high)
+[[nodiscard]] std::optional<double> number(const QString &text, double low, double high)
 {
     bool ok = false;
     const double value = text.toDouble(&ok);
     return ok && std::isfinite(value) && value >= low && value <= high ? std::optional(value) : std::nullopt;
 }
 
-std::optional<std::pair<double, double>> point(const QString &text)
+[[nodiscard]] std::optional<std::pair<double, double>> point(const QString &text)
 {
     const QStringList parts = text.split(u':');
     if (parts.size() != 2) {
@@ -24,7 +24,7 @@ std::optional<std::pair<double, double>> point(const QString &text)
     return x && y ? std::optional(std::pair{*x, *y}) : std::nullopt;
 }
 
-std::optional<QcPreviewCamera::Side> side(const QString &text)
+[[nodiscard]] std::optional<QcPreviewCamera::Side> side(const QString &text)
 {
     if (text == u"front"_s) {
         return QcPreviewCamera::Side::Front;
@@ -36,7 +36,7 @@ std::optional<QcPreviewCamera::Side> side(const QString &text)
 }
 
 // Sets the field of `key` from `value`; false when the key is unknown or the value invalid.
-bool apply(QcPreviewHook &hook, const QString &key, const QString &value)
+[[nodiscard]] bool apply(QcPreviewHook &hook, const QString &key, const QString &value)
 {
     if (key == u"animation"_s) {
         hook.animation = QcPreviewPose::fromName(value);

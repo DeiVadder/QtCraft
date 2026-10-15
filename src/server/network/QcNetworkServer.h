@@ -36,7 +36,7 @@ public:
     ~QcNetworkServer() override;
 
     // Starts listening; the port in use (the configured one, or a free one for port 0).
-    QcResult<quint16> listen();
+    [[nodiscard]] QcResult<quint16> listen();
     quint16 port() const;
     int openConnections() const { return m_limiter.open(); }
     // Connections refused by the limits since the start.

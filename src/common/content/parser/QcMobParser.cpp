@@ -37,7 +37,7 @@ QList<QcModelBox> parseBoxes(const QJsonValue &value, int limit, QcJsonFieldRead
     return boxes;
 }
 
-std::optional<QcTint> tintFromName(const QString &name)
+[[nodiscard]] std::optional<QcTint> tintFromName(const QString &name)
 {
     static const QHash<QString, QcTint> tints = {
         {u"none"_s, QcTint::None}, {u"skin"_s, QcTint::Skin}, {u"hair"_s, QcTint::Hair},
@@ -275,7 +275,7 @@ void parseMobSounds(const QJsonObject &json, QcMobDefinition &mob, QcJsonFieldRe
     reader.adopt(soundReader);
 }
 
-QcResult<QcModelBone> parseBone(const QJsonObject &boneJson, const QString &context)
+[[nodiscard]] QcResult<QcModelBone> parseBone(const QJsonObject &boneJson, const QString &context)
 {
     QcJsonFieldReader boneReader{boneJson, context + u" bone"_s, {}};
     QcModelBone bone;
@@ -334,7 +334,7 @@ void parseAppearanceLayers(const QJsonObject &json, QcAppearanceDefinition &appe
     }
 }
 
-std::optional<QcAppearanceDefinition::Kind> appearanceKindFromName(const QString &name)
+[[nodiscard]] std::optional<QcAppearanceDefinition::Kind> appearanceKindFromName(const QString &name)
 {
     static const QHash<QString, QcAppearanceDefinition::Kind> kinds = {
         {u"outfit"_s, QcAppearanceDefinition::Kind::Outfit},
@@ -357,7 +357,7 @@ void parseCapeShape(QcCapeShape &shape, QcJsonFieldReader &reader)
 
 namespace QcMobParser {
 
-QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"mob"_s, {}};
     QcMobDefinition mob;
@@ -390,7 +390,7 @@ QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packN
     return mob;
 }
 
-QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"model"_s, {}};
     QcModelDefinition model;
@@ -416,7 +416,7 @@ QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &p
     return model;
 }
 
-QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"appearance"_s, {}};
     QcAppearanceDefinition appearance;

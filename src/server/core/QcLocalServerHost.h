@@ -43,11 +43,11 @@ public:
     // is sent).
     std::unique_ptr<QcTransport> connectClient();
     // Saves the world now (blocks until done).
-    QcStatus save();
+    [[nodiscard]] QcStatus save();
     // Lets network clients join as well (decision E-251): a listener in the server thread, the
     // local player stays in-process. Returns the port in use; listening again replaces the listener.
     // `login` replaces the login settings of the server's configuration.
-    QcResult<quint16> listen(const QcNetworkConfig &config, const std::optional<QcLoginSettings> &login = std::nullopt);
+    [[nodiscard]] QcResult<quint16> listen(const QcNetworkConfig &config, const std::optional<QcLoginSettings> &login = std::nullopt);
     // Closes the listener and disconnects the network players ("The host stopped sharing the
     // world"); the local player plays on.
     void stopListening();
@@ -75,7 +75,7 @@ public:
     EntityCounts entityCounts();
     // Stops the server (which saves) and joins its thread. Safe to call more than once; later
     // calls report success.
-    QcStatus shutdown();
+    [[nodiscard]] QcStatus shutdown();
 
 signals:
     // The console asked to stop the server (/stop); the owner shuts the host down.
@@ -91,8 +91,9 @@ private:
     bool m_worldTooOld = false;
     QcServerPersistence::DamagedFile m_damagedFile;
     QcMailbox<std::unique_ptr<QcTransport>> m_pendingClients;
-    QcServer *m_server = nullptr;
-    // Lives in the server thread as a child of the server; only touched there.
-    QcNetworkServer *m_network = nullptr;
+    // Both live in the server thread and are created, used and destroyed only there (the network
+    // listener before the server it refers to).
+    std::unique_ptr<QcServer> m_server;
+    std::unique_ptr<QcNetworkServer> m_network;
     quint16 m_listeningPort = 0;
 };

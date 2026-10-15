@@ -46,9 +46,9 @@ public:
 
     // Base game plus every loadable mod. Fails only when the base game cannot be loaded; an empty
     // `modsDirectory` loads no mods.
-    static QcResult<Result> load(const QString &modsDirectory, QStringList &warnings);
+    [[nodiscard]] static QcResult<Result> load(const QString &modsDirectory, QStringList &warnings);
 
     static QStringList disabledMods(const QString &modsDirectory);
     // Writes the disabled list; takes effect the next time content is loaded.
-    static QcStatus setModEnabled(const QString &modsDirectory, const QString &id, bool enabled);
+    [[nodiscard]] static QcStatus setModEnabled(const QString &modsDirectory, const QString &id, bool enabled);
 };

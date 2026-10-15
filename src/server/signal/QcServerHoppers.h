@@ -72,13 +72,13 @@ private:
     void pull(const QList<QcBlockPos> &hoppers, QcInventoryAccess &access, QSet<QcBlockPos> &moved);
     // The pull from a container above; a hopper that has to look for item entities is added to
     // `searching` instead.
-    std::optional<Pull> pullFor(QcBlockPos hopper, QcInventoryAccess &access, QList<QcBlockPos> &searching) const;
+    [[nodiscard]] std::optional<Pull> pullFor(QcBlockPos hopper, QcInventoryAccess &access, QList<QcBlockPos> &searching) const;
     std::optional<Pull> pickUp(QcBlockPos hopper, QcInventoryAccess &access);
     // Carries out a pull; false when nothing moved.
     bool apply(const Pull &pull, QcInventoryAccess &access);
     // Awake item entities by cell, only for the cells the searching hoppers look at.
     void buildGrid(const QList<QcBlockPos> &searching);
-    std::optional<QcBlockFace> facingOf(QcBlockPos hopper) const;
+    [[nodiscard]] std::optional<QcBlockFace> facingOf(QcBlockPos hopper) const;
 
     QcServerState &m_state;
     const QcSignalTable &m_table;

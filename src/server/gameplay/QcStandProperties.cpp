@@ -16,7 +16,7 @@ QString qualified(const QString &name)
     return name.contains(u':') ? name : u"qtcraft:"_s + name;
 }
 
-std::optional<bool> parseBool(const QString &value)
+[[nodiscard]] std::optional<bool> parseBool(const QString &value)
 {
     if (value == u"true"_s || value == u"on"_s) {
         return true;
@@ -27,7 +27,7 @@ std::optional<bool> parseBool(const QString &value)
     return std::nullopt;
 }
 
-std::optional<float> parseAngle(const QString &text)
+[[nodiscard]] std::optional<float> parseAngle(const QString &text)
 {
     bool ok = false;
     const double value = text.toDouble(&ok);
@@ -131,7 +131,7 @@ QList<QcItemStack> itemsNamed(const QcContentRegistry &content, const QString &n
     return {};
 }
 
-bool apply(const QcContentRegistry &content, QcArmourStand &stand, const QStringList &args)
+[[nodiscard]] bool apply(const QcContentRegistry &content, QcArmourStand &stand, const QStringList &args)
 {
     const QString &property = args.value(0);
     if (property == u"pose"_s) {

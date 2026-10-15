@@ -32,7 +32,7 @@ public:
     // lang/<language><suffix>.json adds to <language> (handbook texts kept apart from names).
     static constexpr auto handbookLanguageSuffix = ".handbook";
 
-    static QcResult<QcContentPackInfo> readManifest(const QString &directory);
+    [[nodiscard]] static QcResult<QcContentPackInfo> readManifest(const QString &directory);
     // Lower-case letters, digits, '_', '-', '.', at most 64 characters, no "..".
     static bool isValidPackId(const QString &id);
     // Dotted version, normalized ("1.0.0" == "1"); null when the text is not a plain version.
@@ -40,7 +40,7 @@ public:
 
     // Reads one file of a pack: only regular files (no links, devices or pipes) up to
     // maxContentFileBytes.
-    static QcResult<QByteArray> readPackFile(const QString &path);
+    [[nodiscard]] static QcResult<QByteArray> readPackFile(const QString &path);
 
     // The content files load() reads from the pack besides pack.json (the content folders' *.json,
     // textures/*.png, worldgen/*.json), sorted; hidden files and symbolic links are not among them.
@@ -52,5 +52,5 @@ public:
     // Loads the content folders of the pack (shapes/, parts/, materials/, blocks/, items/, recipes/,
     // smelting/, sounds/, textures/, lang/, handbook/, structures/, worldgen/, ...). Invalid entries are skipped and reported in
     // `warnings`; the pack itself only fails when the manifest is unusable.
-    static QcResult<QcContentPackInfo> load(const QString &directory, QcContentRegistry &registry, QStringList &warnings);
+    [[nodiscard]] static QcResult<QcContentPackInfo> load(const QString &directory, QcContentRegistry &registry, QStringList &warnings);
 };

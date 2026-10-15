@@ -14,12 +14,13 @@ QcHeadlessJoin::QcHeadlessJoin(QObject *parent)
     : QObject(parent)
     , m_client(new QcNetworkClient(this))
 {
-    connect(m_client, &QcNetworkClient::joined, this, [this] {
-        if (QcClientSession *session = m_client->takeSession()) {
-            emit joined(session);
-        }
-    });
+    connect(m_client, &QcNetworkClient::joined, this, &QcHeadlessJoin::joined);
     connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) { emit failed(reason); });
+}
+
+std::unique_ptr<QcClientSession> QcHeadlessJoin::takeSession()
+{
+    return m_client->takeSession();
 }
 
 QcStatus QcHeadlessJoin::start(const Options &options, const QcModLoader::Result &content)

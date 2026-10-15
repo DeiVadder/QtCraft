@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QString>
 
+#include <memory>
+
 class QcClientSession;
 class QcNetworkClient;
 
@@ -36,11 +38,13 @@ public:
     explicit QcHeadlessJoin(QObject *parent = nullptr);
 
     // Starts connecting; an error (bad address, damaged key) when it cannot even start.
-    QcStatus start(const Options &options, const QcModLoader::Result &content);
+    [[nodiscard]] QcStatus start(const Options &options, const QcModLoader::Result &content);
+    // The session after joined(); null before and once taken.
+    std::unique_ptr<QcClientSession> takeSession();
 
 signals:
-    // The session is logged in and loads the world; the receiver takes it over (it has no parent).
-    void joined(QcClientSession *session);
+    // The session is logged in and loads the world; the receiver takes it over with takeSession().
+    void joined();
     // The connection could not be made or broke, or the server refused the login.
     void failed(const QString &reason);
 

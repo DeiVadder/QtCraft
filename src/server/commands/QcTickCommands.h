@@ -42,7 +42,7 @@ private:
     void sprint(const QcCommandContext &context);
     void query(const QcCommandContext &context) const;
     // "<n>" ticks or "<n>s", "<n>min", "<n>h", "<n>d" (days of 600 s) of game time.
-    static std::optional<quint64> parseDuration(const QString &word);
+    [[nodiscard]] static std::optional<quint64> parseDuration(const QString &word);
 
     QcServerState &m_state;
     Parts m_parts;

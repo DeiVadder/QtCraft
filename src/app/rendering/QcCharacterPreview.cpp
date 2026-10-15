@@ -103,9 +103,9 @@ void QcCharacterPreview::setAnimation(const QString &animation)
     redraw();
 }
 
-QString QcCharacterPreview::side() const
+QcCharacterPreview::Side QcCharacterPreview::side() const
 {
-    return m_camera.side() == QcPreviewCamera::Side::Front ? u"front"_s : u"back"_s;
+    return m_camera.side() == QcPreviewCamera::Side::Front ? Side::Front : Side::Back;
 }
 
 void QcCharacterPreview::setZoom(double zoom)
@@ -146,9 +146,9 @@ void QcCharacterPreview::setPaused(bool paused)
     }
 }
 
-void QcCharacterPreview::showSide(const QString &side)
+void QcCharacterPreview::showSide(Side side)
 {
-    m_camera.show(side == u"back"_s ? QcPreviewCamera::Side::Back : QcPreviewCamera::Side::Front);
+    m_camera.show(side == Side::Back ? QcPreviewCamera::Side::Back : QcPreviewCamera::Side::Front);
     emit viewChanged();
     redraw();
 }

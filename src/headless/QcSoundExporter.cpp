@@ -15,7 +15,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-QcStatus writeWav(const QString &path, const QcSampleBuffer &buffer)
+[[nodiscard]] QcStatus writeWav(const QString &path, const QcSampleBuffer &buffer)
 {
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
@@ -55,7 +55,7 @@ QString describe(const QString &name, const QcSampleBuffer &buffer)
 
 namespace QcSoundExporter {
 
-QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString &directory, quint64 musicSeed)
+[[nodiscard]] QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString &directory, quint64 musicSeed)
 {
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));

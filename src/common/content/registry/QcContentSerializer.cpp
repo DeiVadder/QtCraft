@@ -149,7 +149,7 @@ void writeSound(QDataStream &stream, const QcSoundDefinition &sound)
 // Reads a count-prefixed table; `readEntry()` reads and registers one entry and returns false on
 // corrupt data.
 template<typename ReadEntry>
-QcStatus readTable(QDataStream &stream, quint32 limit, const QString &tableError, const QString &entryError, ReadEntry readEntry)
+[[nodiscard]] QcStatus readTable(QDataStream &stream, quint32 limit, const QString &tableError, const QString &entryError, ReadEntry readEntry)
 {
     quint32 count = 0;
     if (!QcStreamLimits::readCount(stream, limit, count)) {
@@ -197,7 +197,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
            && QcBlockSerializer::plausibleFuel(item.fuelSeconds) && registry.registerItem(std::move(item));
 }
 
-QcStatus readItems(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readItems(QDataStream &stream, QcContentRegistry &registry)
 {
     qsizetype itemCount = 0;
     const QcStatus items = readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: item table"_s,
@@ -316,7 +316,7 @@ bool readTexture(QDataStream &stream, QcTextureDefinition &texture)
     return true;
 }
 
-QcStatus readTranslations(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readTranslations(QDataStream &stream, QcContentRegistry &registry)
 {
     quint32 languageCount = 0;
     if (!QcStreamLimits::readCount(stream, QcStreamLimits::maxDefinitions, languageCount)) {
@@ -445,7 +445,7 @@ bool readSound(QDataStream &stream, QcSoundDefinition &sound)
     return stream.status() == QDataStream::Ok && sound.problem().isEmpty();
 }
 
-QcStatus readMobs(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readMobs(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: mob table"_s, u"Corrupt content: mob %1"_s, [&] {
         QcMobDefinition definition;
@@ -457,7 +457,7 @@ QcStatus readMobs(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readRecipes(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readRecipes(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: recipe table"_s, u"Corrupt content: recipe %1"_s, [&] {
         QcRecipeDefinition definition;
@@ -469,7 +469,7 @@ QcStatus readRecipes(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readTextures(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readTextures(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: texture table"_s, u"Corrupt content: texture %1"_s, [&] {
         QcTextureDefinition definition;
@@ -481,7 +481,7 @@ QcStatus readTextures(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readPacks(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readPacks(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, 1024, u"Corrupt content: pack list"_s, u"Corrupt content: pack %1"_s, [&] {
         QcPackReference definition;
@@ -493,7 +493,7 @@ QcStatus readPacks(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readModels(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readModels(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: model table"_s, u"Corrupt content: model %1"_s, [&] {
         QcModelDefinition definition;
@@ -505,7 +505,7 @@ QcStatus readModels(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readAppearances(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readAppearances(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: appearance table"_s, u"Corrupt content: appearance %1"_s, [&] {
         QcAppearanceDefinition definition;
@@ -517,7 +517,7 @@ QcStatus readAppearances(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readSmeltingRecipes(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readSmeltingRecipes(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: smelting recipes"_s, u"Corrupt content: smelting recipe %1"_s, [&] {
         QcSmeltingRecipe definition;
@@ -529,7 +529,7 @@ QcStatus readSmeltingRecipes(QDataStream &stream, QcContentRegistry &registry)
     });
 }
 
-QcStatus readSounds(QDataStream &stream, QcContentRegistry &registry)
+[[nodiscard]] QcStatus readSounds(QDataStream &stream, QcContentRegistry &registry)
 {
     return readTable(stream, QcStreamLimits::maxDefinitions, u"Corrupt content: sound table"_s, u"Corrupt content: sound %1"_s, [&] {
         QcSoundDefinition definition;

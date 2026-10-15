@@ -402,7 +402,7 @@ void startNetworkRun(QcGameController &game, const AppOptions &options)
     if (options.hostLan) {
         auto opened = std::make_shared<bool>(false);
         QObject::connect(&game, &QcGameController::phaseChanged, multiplayer, [&game, multiplayer, port = *options.hostLan, opened] {
-            if (*opened || game.phase() != u"playing"_s) {
+            if (*opened || game.phase() != QcGameController::Phase::Playing) {
                 return;
             }
             *opened = true;
@@ -483,7 +483,7 @@ void prepareScriptedRun(const AppOptions &options, bool offscreen)
 
 // Shows the main window, or moves its content into an offscreen renderer (returned). The error
 // when offscreen rendering cannot start.
-QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow &window, QcGameController &game, const AppOptions &options,
+[[nodiscard]] QcResult<std::unique_ptr<QcOffscreenRender>> startWindowOrOffscreen(QQuickWindow &window, QcGameController &game, const AppOptions &options,
                                                                     bool offscreen)
 {
     if (options.background || offscreen) {

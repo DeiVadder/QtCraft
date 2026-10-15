@@ -36,7 +36,7 @@ private:
     void collect(const QJsonObject &request);
     // Turns towards the centre of the entity `request` names; fails the request and returns false
     // when there is no such entity nearby.
-    bool turnToEntity(const QJsonObject &request);
+    [[nodiscard]] bool turnToEntity(const QJsonObject &request);
     // Walks towards the nearest dropped item within `radius`; true when none is left.
     bool walkToNearestItem(double radius, bool timeUp);
 

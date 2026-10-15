@@ -12,6 +12,6 @@ class QcContentRegistry;
 namespace QcSoundExporter {
 
 // Returns one line per file: name, length in seconds and peak level.
-QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString &directory, quint64 musicSeed);
+[[nodiscard]] QcResult<QStringList> exportAll(const QcContentRegistry &content, const QString &directory, quint64 musicSeed);
 
 } // namespace QcSoundExporter

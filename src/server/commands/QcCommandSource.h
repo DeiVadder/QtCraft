@@ -34,7 +34,7 @@ public:
     // Key of the source's pending confirmation: the player's entity id, 0 for the console.
     quint32 id() const;
     // The block the player stands in, origin of ~ coordinates; std::nullopt for the console.
-    std::optional<QcBlockPos> origin() const;
+    [[nodiscard]] std::optional<QcBlockPos> origin() const;
 
     // `key` is marked with QT_TRANSLATE_NOOP("QcServerMessages", ...).
     void reply(const char *key, const QStringList &arguments = {}) const;

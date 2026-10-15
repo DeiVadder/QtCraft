@@ -77,7 +77,7 @@ private:
     };
 
     static QcSignalState decode(const QcContentRegistry &content, QcBlockId id);
-    static std::optional<DustLayout> dustLayout(const QcContentRegistry &content, quint32 type);
+    [[nodiscard]] static std::optional<DustLayout> dustLayout(const QcContentRegistry &content, quint32 type);
     // Notes where `property` sits in the layout; false when it is neither the strength nor a side.
     static bool place(DustLayout &layout, const QcBlockProperty &property, int stride);
 

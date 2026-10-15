@@ -12,8 +12,8 @@ class QcContentSerializer
 {
 public:
     static void write(const QcContentRegistry &content, QDataStream &stream);
-    static QcResult<QcContentRegistry> read(QDataStream &stream);
+    [[nodiscard]] static QcResult<QcContentRegistry> read(QDataStream &stream);
 
 private:
-    static QcStatus readBlocks(QDataStream &stream, QcContentRegistry &registry);
+    [[nodiscard]] static QcStatus readBlocks(QDataStream &stream, QcContentRegistry &registry);
 };

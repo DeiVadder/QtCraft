@@ -8,7 +8,7 @@
 // Parses structures (structures/*.json, decision E-219).
 namespace QcStructureParser {
 
-QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace);
 
 // "torch[attach=north]" with the block name qualified ("qtcraft:torch[attach=north]"); empty for
 // invalid names.

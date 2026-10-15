@@ -49,7 +49,7 @@ private:
     // The world in this process with the bot (or the console) on it.
     bool startLocal(const QCommandLineParser &parser, const QcServerConfig &config, int timeLimit,
                     const std::shared_ptr<const QcContentRegistry> &content);
-    void onJoined(QcClientSession *session, const std::optional<QString> &scriptFile);
+    void onJoined(std::unique_ptr<QcClientSession> session, const std::optional<QString> &scriptFile);
     void readStandardInput();
     // --console: standard input runs server commands (decision E-247); `timeLimit` 0 for none.
     // Without `stopAtEndOfInput` (--no-eof-stop) the server outlives its input.
@@ -60,17 +60,17 @@ private:
     // --server: a dedicated server without bot (decision E-255).
     bool startDedicated(const QCommandLineParser &parser, const QcModLoader::Result &content);
     // Starts (or restarts) server and bot session for a world; the control interface follows.
-    QcStatus startWorld(const QcServerConfig &config);
+    [[nodiscard]] QcStatus startWorld(const QcServerConfig &config);
     // Opens a world and switches the bot to it, replacing the running one only on success.
-    QcStatus openWorld(const QcServerConfig &config);
+    [[nodiscard]] QcStatus openWorld(const QcServerConfig &config);
     bool handleWorldCommand(const QJsonObject &request, QJsonObject &response);
     // --join: the handbook; world commands are refused.
     bool handleRemoteCommand(const QJsonObject &request, QJsonObject &response);
     QJsonArray worldList() const;
     // The configuration of a new world (`worldCreate`) or a listed one (`worldLoad`); sets the
     // response's folder.
-    QcResult<QcServerConfig> createdWorld(const QJsonObject &request, QJsonObject &response) const;
-    QcResult<QcServerConfig> listedWorld(const QJsonObject &request, QJsonObject &response) const;
+    [[nodiscard]] QcResult<QcServerConfig> createdWorld(const QJsonObject &request, QJsonObject &response) const;
+    [[nodiscard]] QcResult<QcServerConfig> listedWorld(const QJsonObject &request, QJsonObject &response) const;
     // The `handbook` command: categories, a category's entries, a search or one entry.
     void handleHandbookCommand(const QJsonObject &request, QJsonObject &response);
     const QcHandbook &handbook(const QString &language);
@@ -81,8 +81,8 @@ private:
     QcServerConfig m_baseConfig;
     QcServerConfig m_currentConfig;
     std::unique_ptr<QcWorldLibrary> m_library;
-    QcClientSession *m_session = nullptr;
-    QcControlInterface *m_control = nullptr;
+    std::unique_ptr<QcClientSession> m_session;
+    std::unique_ptr<QcControlInterface> m_control;
     QcStatsLog *m_statsLog = nullptr;
     QFile *m_output = nullptr;
     bool m_scriptMode = false;

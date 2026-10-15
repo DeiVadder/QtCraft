@@ -9,7 +9,7 @@
 // decision E-223).
 namespace QcWorldTypeParser {
 
-QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &packNamespace);
-QcResult<QcVoidDefinition> parseVoid(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcVoidDefinition> parseVoid(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcWorldTypeParser

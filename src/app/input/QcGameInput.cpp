@@ -58,6 +58,13 @@ QcGameInput::QcGameInput(QcGameController &game, const QcSessionParts &parts, Qc
     }
 }
 
+QcGameInput::~QcGameInput()
+{
+    if (QCoreApplication *application = QCoreApplication::instance()) {
+        application->removeEventFilter(this);
+    }
+}
+
 QcMouseCapture::Situation QcGameInput::situation() const
 {
     return {worldInput(), m_parts.window && m_parts.window->isActive(), m_backgroundRun, QGuiApplication::mouseButtons()};
@@ -112,7 +119,7 @@ void QcGameInput::applyFrame(QPointF mouseDelta, float frameSeconds)
     if (m_capture.captured() && !mouseDelta.isNull()) {
         m_parts.session->setIntent(QcMouseLook::apply(m_parts.session->intent(), mouseDelta, m_settings.mouseSensitivity(), m_settings.invertMouse()));
     }
-    if (m_game.inputEnabled() && m_game.phase() == u"playing"_s) {
+    if (m_game.inputEnabled() && m_game.phase() == QcGameController::Phase::Playing) {
         updateIntentFromKeys(frameSeconds);
     }
 }
@@ -276,7 +283,7 @@ bool QcGameInput::worldInput() const
 {
     // Overlays (inventory, pause menu, chat), the handbook and the death screen are QML items that
     // take keyboard and mouse themselves.
-    return m_parts.session && m_game.phase() == u"playing"_s && m_game.inputEnabled() && m_game.overlay().isEmpty()
+    return m_parts.session && m_game.phase() == QcGameController::Phase::Playing && m_game.inputEnabled() && m_game.overlay().isEmpty()
            && !m_game.handbook()->isOpen() && !m_parts.session->isDead();
 }
 

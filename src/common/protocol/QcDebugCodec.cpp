@@ -113,7 +113,7 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
     }
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::DebugSubscribe>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DebugSubscribe>, QDataStream &stream)
 {
     QcMsg::DebugSubscribe m;
     stream >> m.flags;
@@ -123,7 +123,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::DebugSubscribe>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ServerDebug>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ServerDebug>, QDataStream &stream)
 {
     QcMsg::ServerDebug m;
     for (std::size_t phase = 0; phase < m.phaseMeanMs.size(); ++phase) {

@@ -131,10 +131,10 @@ bool readConfig(const QCommandLineParser &parser, const Options &options, QcServ
 QString dataDirectory(const QCommandLineParser &parser, const Options &options);
 // The base game with the mods of --mods-dir, else of the data directory's mods folder (none with
 // --no-mods); std::nullopt (after printing the reason) when it cannot be loaded.
-std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options);
+[[nodiscard]] std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options);
 
 // The settings of --server: the file (made with the defaults when the default file is missing),
 // then QTCRAFT_SERVER_PASSWORD, then the options; std::nullopt (after printing why) when invalid.
-std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser, const Options &options);
+[[nodiscard]] std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser, const Options &options);
 
 } // namespace QcHeadlessOptions

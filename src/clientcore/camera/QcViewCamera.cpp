@@ -71,7 +71,7 @@ const char *name(QcCameraMode mode)
     return "first";
 }
 
-std::optional<QcCameraMode> fromName(const QString &text)
+[[nodiscard]] std::optional<QcCameraMode> fromName(const QString &text)
 {
     for (const QcCameraMode mode : {QcCameraMode::FirstPerson, QcCameraMode::Behind, QcCameraMode::Front, QcCameraMode::Side}) {
         if (text == QLatin1StringView(name(mode))) {

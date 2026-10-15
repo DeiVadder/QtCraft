@@ -6,6 +6,8 @@
 
 #include <QElapsedTimer>
 
+#include <memory>
+
 class QTcpSocket;
 class QTimer;
 
@@ -52,9 +54,9 @@ private:
     void fail(const QString &reason);
     // Emits closed() once, from the event loop.
     void announceClosed();
-    // Takes `socket` over: it closes after its queued bytes left and deletes itself, at the latest
-    // after `lingerMs` or when its thread ends.
-    static void lingerAndDelete(QTcpSocket *socket, int lingerMs);
+    // Takes `owned` over: it closes after its queued bytes left and deletes itself, at the latest
+    // after `lingerMs` or when its thread ends (deleteLater, since nobody owns it any more).
+    static void lingerAndDelete(std::unique_ptr<QTcpSocket> owned, int lingerMs);
 
     QTcpSocket *m_socket = nullptr;
     QTimer *m_timer = nullptr;

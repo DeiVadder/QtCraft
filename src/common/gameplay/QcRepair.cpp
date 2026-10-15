@@ -7,7 +7,7 @@
 
 namespace QcRepair {
 
-std::optional<QcItemStack> result(const QcContentRegistry &content, const QList<QcItemStack> &grid)
+[[nodiscard]] std::optional<QcItemStack> result(const QcContentRegistry &content, const QList<QcItemStack> &grid)
 {
     QList<QcItemStack> filled;
     for (const QcItemStack &cell : grid) {

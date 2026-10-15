@@ -57,7 +57,7 @@ public:
 
     static constexpr Limit limit(Kind kind) { return limits[size_t(kind)]; }
     // The bucket a client message pays into; std::nullopt for messages that are not limited here.
-    static std::optional<Kind> kindOf(const QcMessage &message);
+    [[nodiscard]] static std::optional<Kind> kindOf(const QcMessage &message);
     // The client messages that are deliberately not limited here: PlayerInput has its own budget,
     // Hello, Respawn and Disconnect are harmless, LoginResponse is accepted once before the client
     // plays (the connection limits of QcNetworkServer bound logins), DebugSubscribe is state (the latest one counts and

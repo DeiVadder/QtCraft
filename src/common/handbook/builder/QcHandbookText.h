@@ -39,7 +39,7 @@ public:
     QString dropNote(const QcItemDrop &drop) const;
 
     // A rule value (server rules and content values, see addContentValues()).
-    std::optional<double> rule(const QString &name) const;
+    [[nodiscard]] std::optional<double> rule(const QString &name) const;
     QString substituteRules(const QString &text, const QString &context);
     // A description with its placeholders filled; empty without a translation.
     QString description(const QString &key, const QString &context);

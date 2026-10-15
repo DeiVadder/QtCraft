@@ -71,7 +71,7 @@ public:
 private:
     // How well entry `index` matches the search words (lower is better, see search()); none when a
     // word is missing.
-    std::optional<int> matchRank(qsizetype index, const QString &query, const QStringList &words) const;
+    [[nodiscard]] std::optional<int> matchRank(qsizetype index, const QString &query, const QStringList &words) const;
 
     QString m_language;
     QList<Pack> m_packs;

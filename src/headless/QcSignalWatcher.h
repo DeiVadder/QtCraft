@@ -2,6 +2,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 class QSocketNotifier;
 
 // Turns the requests to end the process from outside (SIGTERM from a service manager or kill,
@@ -27,6 +29,6 @@ signals:
 private:
     void onRequest();
 
-    QSocketNotifier *m_notifier = nullptr;
+    std::unique_ptr<QSocketNotifier> m_notifier;
     bool m_watching = false;
 };

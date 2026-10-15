@@ -26,7 +26,7 @@ int resolutionOf(const QcTexturePackStack &packs, int maxResolution);
 
 // The texture of `definition` at `resolution`; unset with `problem` set when even the content's own
 // definition cannot be drawn.
-std::optional<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution, QString &problem);
+[[nodiscard]] std::optional<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution, QString &problem);
 
 // `image` scaled to `resolution` x `resolution`: pixel-exact when enlarging, averaged when shrinking.
 QImage toResolution(const QImage &image, int resolution);

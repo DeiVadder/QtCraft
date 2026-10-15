@@ -36,7 +36,7 @@ public:
     // Target levels for a listener whose eyes are at `eye`. Unloaded blocks count as air.
     static Levels targets(const QcBlockAccess &world, const QcVec3 &eye);
     // The nearest glowing liquid (lava) among the blocks sampled for water, if any.
-    static std::optional<QcBlockPos> nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye);
+    [[nodiscard]] static std::optional<QcBlockPos> nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye);
     // Chance per ambience sample that lava nearby pops.
     static constexpr double lavaPopChance = 0.35;
     // Moves `current` towards `target` by at most fadePerSecond * seconds per loop.

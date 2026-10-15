@@ -51,20 +51,20 @@ QcChunkPos regionOf(QcChunkPos chunk);
 // The file of `region` in `folder` with this extension: <folder>/r.<x>.<z>.<extension>.
 QString path(const QString &folder, QcChunkPos region, const QString &extension);
 // The region a file name names, if it is one (r.<x>.<z>.<extension>).
-std::optional<QcChunkPos> regionOfFile(const QString &fileName, const QString &extension);
+[[nodiscard]] std::optional<QcChunkPos> regionOfFile(const QString &fileName, const QString &extension);
 
 // Reads the index of the file of `region`; a chunk of another region, a slot twice or an entry
 // beyond the end of the file is damage. `version` must match: older development versions are
 // refused (decision E-356).
-QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView magic, quint16 version);
+[[nodiscard]] QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView magic, quint16 version);
 // One blob, checked against its crc.
-QcResult<QByteArray> readBlob(const QString &path, Entry entry);
+[[nodiscard]] QcResult<QByteArray> readBlob(const QString &path, Entry entry);
 // Every blob of the file in one read with the marks and checksum of its entry (rewriting a region
 // keeps the blobs that did not change, damaged ones included); `damaged` gets the chunks whose
 // bytes do not match their checksum.
-QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged = nullptr);
+[[nodiscard]] QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged = nullptr);
 // Writes a whole file at `path` (no staging; QcChunkStore stages and renames). Returns the index
 // of what was written.
-QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs);
+[[nodiscard]] QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs);
 
 } // namespace QcRegionFile

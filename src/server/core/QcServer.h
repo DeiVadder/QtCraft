@@ -56,14 +56,14 @@ public:
 
     // Opens or creates the world directory given in the config (no-op without one). Must succeed
     // before start(); fails with a readable message for damaged or mismatching saves.
-    QcStatus openWorld();
+    [[nodiscard]] QcStatus openWorld();
     // Writes all players, world info, changed chunks, entities, machines, chests and pending
     // updates. A failing part does not keep the others from being written; the first error is
     // returned. No-op without a world directory.
-    QcStatus save();
+    [[nodiscard]] QcStatus save();
     void start();
     // Saves, then disconnects every client; returns the result of saving.
-    QcStatus stop();
+    [[nodiscard]] QcStatus stop();
     // Where a client connects from. Local clients are those of the in-process host (single player:
     // the one who opened the world, who is the operator anyway); they join without a login and their
     // chat lines and commands are not rate limited (decision E-091, supplement). Everything else is

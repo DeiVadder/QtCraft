@@ -50,7 +50,7 @@ public:
     // Value of `property` in state `index` of `block`, empty when the block has no such property.
     static QString value(const QcBlockDefinition &block, quint32 index, const QString &property);
     // State index with `property` set to `value`; std::nullopt for unknown properties or values.
-    static std::optional<quint32> withValue(const QcBlockDefinition &block, quint32 index, const QString &property,
+    [[nodiscard]] static std::optional<quint32> withValue(const QcBlockDefinition &block, quint32 index, const QString &property,
                                             const QString &value);
     // "[a=x,b=y]" for blocks with properties, else empty.
     static QString describe(const QcBlockDefinition &block, quint32 index);

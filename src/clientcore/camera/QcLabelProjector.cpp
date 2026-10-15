@@ -84,7 +84,7 @@ bool hidesAt(const QcBlockAccess &world, QcBlockPos pos)
 }
 
 // `focal`: pixels per metre at a depth of one metre.
-std::optional<QcScreenLabel> project(const Candidate &candidate, const QMatrix4x4 &viewProjection, double focal, const QcLabelProjector::View &view)
+[[nodiscard]] std::optional<QcScreenLabel> project(const Candidate &candidate, const QMatrix4x4 &viewProjection, double focal, const QcLabelProjector::View &view)
 {
     const QcVec3 &p = candidate.label->position;
     const QVector4D clip = viewProjection * QVector4D(float(p.x), float(p.y), float(p.z), 1.0f);

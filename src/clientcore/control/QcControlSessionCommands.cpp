@@ -17,7 +17,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Overwrites the fields the request names: content names as strings, colours as "#rrggbb".
-std::optional<QString> readAppearance(const QJsonObject &request, QcAppearance &look)
+[[nodiscard]] std::optional<QString> readAppearance(const QJsonObject &request, QcAppearance &look)
 {
     for (const auto &[key, value] : {std::pair{u"outfit"_s, &look.outfit}, std::pair{u"hair"_s, &look.hair}, std::pair{u"cape"_s, &look.cape}}) {
         if (request.contains(key)) {

@@ -43,7 +43,7 @@ QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds);
 QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item);
 // The item in a figure's hand (world and preview): none for no item or one the content does not
 // know.
-std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item);
+[[nodiscard]] std::optional<QcEntityMesher::ItemLook> held(const QcContentRegistry &content, QcItemId item);
 
 // The state a block item is drawn in (icons, hand, dropped items): fences, walls and panes show a
 // piece of a run rather than a lone post.

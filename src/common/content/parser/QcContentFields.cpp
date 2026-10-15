@@ -96,7 +96,7 @@ QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonF
     return names;
 }
 
-std::optional<QString> stateValue(const QJsonValue &value)
+[[nodiscard]] std::optional<QString> stateValue(const QJsonValue &value)
 {
     if (value.isString()) {
         return value.toString();
@@ -107,7 +107,7 @@ std::optional<QString> stateValue(const QJsonValue &value)
     return std::nullopt;
 }
 
-std::optional<QcVec3> vectorField(const QJsonValue &value, double limit)
+[[nodiscard]] std::optional<QcVec3> vectorField(const QJsonValue &value, double limit)
 {
     const QJsonArray array = value.toArray();
     if (!value.isArray() || array.size() != 3 || !array.at(0).isDouble() || !array.at(1).isDouble() || !array.at(2).isDouble()) {
@@ -121,7 +121,7 @@ std::optional<QcVec3> vectorField(const QJsonValue &value, double limit)
     return vector;
 }
 
-std::optional<QcBoneRole> boneRoleFromName(const QString &name)
+[[nodiscard]] std::optional<QcBoneRole> boneRoleFromName(const QString &name)
 {
     static const QHash<QString, QcBoneRole> roles = {
         {u"none"_s, QcBoneRole::None},          {u"head"_s, QcBoneRole::Head},

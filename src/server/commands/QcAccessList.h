@@ -71,31 +71,31 @@ public:
     QStringList operators() const;
     // Each returns whether the list changed; an error when it changed but could not be written.
     // A known fingerprint binds the entry to that identity.
-    QcResult<bool> setOperator(const QString &name, bool isOperator, const QString &fingerprint = {});
+    [[nodiscard]] QcResult<bool> setOperator(const QString &name, bool isOperator, const QString &fingerprint = {});
 
     const Ban *ban(const QString &name) const;
     QList<Ban> bans() const { return m_bans.values(); }
     // Bans a name, or gives a banned name the new reason.
-    QcResult<bool> addBan(const Ban &ban);
-    QcResult<bool> removeBan(const QString &name);
+    [[nodiscard]] QcResult<bool> addBan(const Ban &ban);
+    [[nodiscard]] QcResult<bool> removeBan(const QString &name);
 
     bool whitelistEnabled() const { return m_whitelistEnabled; }
     bool isWhitelisted(const QString &name, const QString &fingerprint) const;
     QStringList whitelist() const;
-    QcResult<bool> setWhitelistEnabled(bool enabled);
-    QcResult<bool> setWhitelisted(const QString &name, bool listed, const QString &fingerprint = {});
+    [[nodiscard]] QcResult<bool> setWhitelistEnabled(bool enabled);
+    [[nodiscard]] QcResult<bool> setWhitelisted(const QString &name, bool listed, const QString &fingerprint = {});
 
     // A player logged in with this identity: entries of his name without a fingerprint get it.
-    QcResult<bool> bind(const QString &name, const QString &fingerprint);
+    [[nodiscard]] QcResult<bool> bind(const QString &name, const QString &fingerprint);
 
     // Why a player may not join: banned by name or fingerprint (operators too), or not on the
     // switched-on whitelist (operators pass it); the local player always may. The reason is a
     // translatable disconnect (QcChatText); std::nullopt when he may.
-    std::optional<QcMsg::Disconnect> refusal(const QString &name, const QString &fingerprint, bool local) const;
+    [[nodiscard]] std::optional<QcMsg::Disconnect> refusal(const QString &name, const QString &fingerprint, bool local) const;
 
 private:
-    QcStatus write() const;
-    QcResult<bool> written(bool changed) const;
+    [[nodiscard]] QcStatus write() const;
+    [[nodiscard]] QcResult<bool> written(bool changed) const;
     void read(const QString &path, QStringList &warnings);
     void openDamaged(const QString &path);
     static void readNames(const QJsonValue &value, QMap<QString, Entry> &names, const QString &list, QStringList &warnings);

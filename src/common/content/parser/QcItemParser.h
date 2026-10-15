@@ -8,6 +8,6 @@
 // Parses item definitions of content packs.
 namespace QcItemParser {
 
-QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcItemParser

@@ -22,12 +22,12 @@ struct QcDebugOptions
 
     // "off", "compact", "full".
     static QString levelName(Level level);
-    static std::optional<Level> levelFromName(const QString &name);
+    [[nodiscard]] static std::optional<Level> levelFromName(const QString &name);
     // Off, compact, full, off ... (the debug key).
     static Level nextLevel(Level level);
     // "chunkBorders", "hitboxes", "lightValues", "mobGoals", "remeshFlash".
     static QString visualId(Visual visual);
-    static std::optional<Visual> visualFromId(const QString &id);
+    [[nodiscard]] static std::optional<Visual> visualFromId(const QString &id);
 
     bool shows(Visual visual) const { return visuals[std::size_t(visual)]; }
     void set(Visual visual, bool on) { visuals[std::size_t(visual)] = on; }

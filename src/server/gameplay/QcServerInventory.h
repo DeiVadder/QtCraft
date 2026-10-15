@@ -63,8 +63,9 @@ private:
     };
 
     OpenSlots openSlots(QcServerClient &client);
-    // Writes the slot list back and sends it; false (and nothing changed) when the machine refuses.
-    bool applyOpenSlots(QcServerClient &client, const OpenSlots &open);
+    // Writes the slot list back and sends it; when the armour slots or the machine refuse, nothing
+    // changes and the client gets its unchanged slots again.
+    void applyOpenSlots(QcServerClient &client, const OpenSlots &open);
     // Whether the armour slots of the slot list hold only armour made for them.
     bool armourFits(const QList<QcItemStack> &combined) const;
     // The armour slot a shift-clicked stack goes to, or -1.

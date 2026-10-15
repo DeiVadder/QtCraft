@@ -14,7 +14,7 @@ class QcFlatGenerator : public QcWorldGenerator
 {
 public:
     // Block per height from y 0 up; an error for unknown blocks, bad counts or too many layers.
-    static QcResult<QList<QcBlockId>> parseLayers(const QString &preset, const QcContentRegistry &content);
+    [[nodiscard]] static QcResult<QList<QcBlockId>> parseLayers(const QString &preset, const QcContentRegistry &content);
 
     // An invalid `preset` falls back to the content's default with a warning; empty takes the default.
     QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset, QStringList *warnings = nullptr);

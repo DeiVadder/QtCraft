@@ -258,7 +258,8 @@ bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
         return false;
     }
 
-    access.take(shot.dispenser, shot.slot, 1);
+    // The shot's slot is the one aim() found filled, so taking from it cannot fail.
+    [[maybe_unused]] const bool taken = access.take(shot.dispenser, shot.slot, 1);
     if (stand) {
         stand->equipment.at(armour->slot) = shot.unit;
         m_state.entities().markStale(stand->id);
@@ -273,7 +274,8 @@ bool QcDispenserActions::equip(const Shot &shot, QcInventoryAccess &access)
 
 void QcDispenserActions::exchange(const Shot &shot, const QString &name, QcInventoryAccess &access)
 {
-    access.take(shot.dispenser, shot.slot, 1);
+    // The shot's slot is the one aim() found filled, so taking from it cannot fail.
+    [[maybe_unused]] const bool taken = access.take(shot.dispenser, shot.slot, 1);
     const std::optional<QcItemId> item = m_state.content().itemId(name);
     if (!item) {
         return;
@@ -282,15 +284,16 @@ void QcDispenserActions::exchange(const Shot &shot, const QString &name, QcInven
     const QcItemStack result{*item, 1, 0};
     QList<QcItemStack> stacks = access.slotsAt(shot.dispenser);
     if (stacks[shot.slot].count <= 0) {
-        // The emptied slot takes it.
-        access.put(shot.dispenser, shot.slot, result);
+        // The emptied slot takes it (it exists: the unit came from it).
+        [[maybe_unused]] const bool put = access.put(shot.dispenser, shot.slot, result);
         return;
     }
     QList<int> cells(stacks.size());
     std::ranges::iota(cells, 0);
     const int slot = access.slotFor(shot.dispenser, stacks, cells, result);
     if (slot >= 0) {
-        access.put(shot.dispenser, slot, result);
+        // slotFor() chose a slot of this dispenser, so it exists.
+        [[maybe_unused]] const bool put = access.put(shot.dispenser, slot, result);
     } else {
         Shot rest = shot;
         rest.unit = result;
@@ -302,7 +305,8 @@ void QcDispenserActions::exchange(const Shot &shot, const QString &name, QcInven
 void QcDispenserActions::throwItem(const Shot &shot, QcInventoryAccess &access)
 {
     if (shot.slot >= 0) {
-        access.take(shot.dispenser, shot.slot, 1);
+        // The shot's slot is the one aim() found filled, so taking from it cannot fail.
+        [[maybe_unused]] const bool taken = access.take(shot.dispenser, shot.slot, 1);
     }
 
     const QcFaceOffset offset = qcFaceOffset(shot.facing);

@@ -35,6 +35,7 @@ public:
 
     QcGameInput(QcGameController &game, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
                 QObject *parent = nullptr);
+    ~QcGameInput() override;
 
     bool mouseCaptured() const { return m_capture.captured(); }
     // Frees the mouse (window lost the focus, world closed); a click or the next step back from a

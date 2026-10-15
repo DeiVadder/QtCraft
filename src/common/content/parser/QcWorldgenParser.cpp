@@ -44,7 +44,7 @@ void parsePool(const QJsonObject &json, QcFeatureDefinition &feature, QcJsonFiel
 
 namespace QcWorldgenParser {
 
-QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"biome"_s, {}};
     QcBiomeDefinition biome;
@@ -112,7 +112,7 @@ QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &p
     return biome;
 }
 
-QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"feature"_s, {}};
     QcFeatureDefinition feature;
@@ -174,7 +174,7 @@ QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QStrin
     return feature;
 }
 
-QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"ore"_s, {}};
     QcOreDefinition ore;
@@ -202,7 +202,7 @@ QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packN
     return ore;
 }
 
-QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"terrain"_s, {}};
     QcTerrainSettings settings;

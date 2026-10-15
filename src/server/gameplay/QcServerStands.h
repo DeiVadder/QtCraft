@@ -46,7 +46,7 @@ public:
 
 private:
     // Where the player's view meets the stand's body, as a height on a full-size stand; nothing when it misses.
-    std::optional<double> aimedHeight(const QcServerClient &client, const QcArmourStand &stand) const;
+    [[nodiscard]] std::optional<double> aimedHeight(const QcServerClient &client, const QcArmourStand &stand) const;
     // Swaps the held stack with what the stand wears in `slot` (or holds, without a slot).
     void swapWithHand(QcServerClient &client, QcArmourStand &stand, std::optional<QcEquipmentSlot> slot);
     bool isFreeForStand(QcBlockPos feet) const;

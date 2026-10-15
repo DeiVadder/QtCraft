@@ -13,7 +13,7 @@ namespace QcCrafting {
 
 // Index of the recipe that a square grid (size x size, row-major) of stacks produces, if any.
 // Shaped recipes may sit anywhere in the grid and may be mirrored horizontally.
-std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size);
+[[nodiscard]] std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size);
 
 // Items a recipe consumes once, as ingredient (item name or "#tag") -> count; named items come
 // before tags, so a tag never takes an item a named ingredient needs.

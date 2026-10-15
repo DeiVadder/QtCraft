@@ -4,7 +4,7 @@
 
 using namespace Qt::StringLiterals;
 
-std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name)
+[[nodiscard]] std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name)
 {
     using Pattern = QcTextureSpec::Pattern;
     static const QHash<QString, Pattern> patterns = {

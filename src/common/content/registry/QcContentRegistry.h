@@ -42,10 +42,10 @@ public:
 
     // Registers a new block or replaces the definition of an existing one; returns its default state.
     // Replacing a block with a different number of states renumbers the states of later blocks.
-    QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
+    [[nodiscard]] QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
     // Registers or replaces a named shape; blocks that refer to it pick it up.
     // Fails when the shape has too many boxes or its blocks would exceed the state table's budget.
-    QcStatus registerShape(QcShapeDefinition shape);
+    [[nodiscard]] QcStatus registerShape(QcShapeDefinition shape);
     const QList<QcShapeDefinition> &shapes() const { return m_shapes; }
     const QcShapeDefinition *shape(const QString &name) const;
     // The shape a block uses: its named shape when registered, else its inline shape.
@@ -62,7 +62,7 @@ public:
     const QcBlockDefinition &block(QcBlockId id) const;
     const QcBlockState &state(QcBlockId id) const;
     // Default state of the named block.
-    std::optional<QcBlockId> blockId(const QString &name) const;
+    [[nodiscard]] std::optional<QcBlockId> blockId(const QString &name) const;
     const QList<QcBlockDefinition> &blocks() const { return m_blocks; }
     const QcBlockStateTable &stateTable() const { return m_states; }
     // Whether two states belong to the same block definition.
@@ -75,10 +75,10 @@ public:
     QString stateName(QcBlockId id) const;
     // Parses a state name. Unknown properties or values keep their defaults and are described in
     // `problems`, as does a missing closing bracket; std::nullopt for unknown blocks.
-    std::optional<QcBlockId> stateId(const QString &text, QStringList *problems = nullptr) const;
+    [[nodiscard]] std::optional<QcBlockId> stateId(const QString &text, QStringList *problems = nullptr) const;
 
     // Registers a new item or replaces an existing one (keeping its id). Ids start at 1.
-    QcResult<QcItemId> registerItem(QcItemDefinition definition);
+    [[nodiscard]] QcResult<QcItemId> registerItem(QcItemDefinition definition);
     // Gives every visible, non-liquid block without an item of the same name an item that places it.
     void createBlockItems();
     // Completes the content after all packs: generates building parts (QcPartGenerator), then block
@@ -94,7 +94,7 @@ public:
     bool isValidItem(QcItemId id) const { return id != qcNoItem && qsizetype(id) <= m_items.size(); }
     // Precondition: isValidItem(id).
     const QcItemDefinition &item(QcItemId id) const;
-    std::optional<QcItemId> itemId(const QString &name) const;
+    [[nodiscard]] std::optional<QcItemId> itemId(const QString &name) const;
     const QList<QcItemDefinition> &items() const { return m_items; }
 
     const QList<QcTextureDefinition> &textures() const { return m_textures; }
@@ -103,7 +103,7 @@ public:
     // Registers or replaces a mob type; mob type ids are indices into mobs().
     void registerMob(QcMobDefinition definition);
     const QList<QcMobDefinition> &mobs() const { return m_mobs; }
-    std::optional<int> mobIndex(const QString &name) const;
+    [[nodiscard]] std::optional<int> mobIndex(const QString &name) const;
 
     // Skeleton models and appearances (outfits, hair styles); replaced by name like mobs.
     void registerModel(QcModelDefinition definition);
@@ -115,7 +115,7 @@ public:
 
     void registerRecipe(QcRecipeDefinition definition);
     const QList<QcRecipeDefinition> &recipes() const { return m_recipes; }
-    std::optional<qsizetype> recipeIndex(const QString &name) const;
+    [[nodiscard]] std::optional<qsizetype> recipeIndex(const QString &name) const;
 
     // Smelting recipes, replaced by name like crafting recipes.
     void registerSmeltingRecipe(QcSmeltingRecipe recipe);
@@ -172,7 +172,7 @@ public:
 
     // Wire format used by the content sync message (QcContentSerializer).
     void writeTo(QDataStream &stream) const;
-    static QcResult<QcContentRegistry> readFrom(QDataStream &stream);
+    [[nodiscard]] static QcResult<QcContentRegistry> readFrom(QDataStream &stream);
 
 private:
     // Fills the block table of a received registry directly.

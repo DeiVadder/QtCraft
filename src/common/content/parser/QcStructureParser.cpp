@@ -19,7 +19,7 @@ using Structure = QcStructureDefinition;
 // Labels and creatures may sit a little outside the blocks (above a roof).
 constexpr double positionMargin = 4.0;
 
-std::optional<QcVec3> readPoint(const QJsonValue &value, const Structure &structure)
+[[nodiscard]] std::optional<QcVec3> readPoint(const QJsonValue &value, const Structure &structure)
 {
     const QJsonArray array = value.toArray();
     if (!value.isArray() || array.size() != 3 || !array[0].isDouble() || !array[1].isDouble() || !array[2].isDouble()) {
@@ -35,7 +35,7 @@ std::optional<QcVec3> readPoint(const QJsonValue &value, const Structure &struct
 }
 
 // A cell inside the structure.
-std::optional<QcBlockPos> readCell(const QJsonValue &value, const Structure &structure)
+[[nodiscard]] std::optional<QcBlockPos> readCell(const QJsonValue &value, const Structure &structure)
 {
     const std::optional<QcVec3> point = readPoint(value, structure);
     if (!point || point->x != std::floor(point->x) || point->y != std::floor(point->y) || point->z != std::floor(point->z)) {
@@ -181,7 +181,7 @@ void parseStands(const QJsonObject &json, Structure &structure, QcJsonFieldReade
     }
 }
 
-std::optional<Structure::Stack> readStack(const QJsonValue &value, const QString &packNamespace)
+[[nodiscard]] std::optional<Structure::Stack> readStack(const QJsonValue &value, const QString &packNamespace)
 {
     const QJsonObject object = value.toObject();
     const QString item = QcContentNames::qualify(object.value(u"item"_s).toString(), packNamespace);
@@ -261,7 +261,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
     return bracket < 0 ? name : name + text.mid(bracket);
 }
 
-QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"structure"_s, {}};
     Structure structure;

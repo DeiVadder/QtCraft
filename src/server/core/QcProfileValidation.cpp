@@ -58,7 +58,7 @@ bool hasMarkup(const QString &name)
     return std::ranges::any_of(markupCharacters, [&name](QChar character) { return name.contains(character); });
 }
 
-std::optional<QString> validPlayerName(const QString &requested)
+[[nodiscard]] std::optional<QString> validPlayerName(const QString &requested)
 {
     QString name = QcNameText::clean(requested, maxPlayerNameLength);
     const QList<uint> codePoints = name.toUcs4();

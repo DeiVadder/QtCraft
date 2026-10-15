@@ -62,7 +62,7 @@ QString dataDirectory(const QCommandLineParser &parser, const Options &options)
     return parser.isSet(options.data) ? parser.value(options.data) : QcDataRoot::path();
 }
 
-std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options)
+[[nodiscard]] std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options)
 {
     QStringList warnings;
     QString modsDirectory = parser.value(options.mods);
@@ -127,7 +127,7 @@ bool applyServerOptions(const QCommandLineParser &parser, const Options &options
 
 } // namespace
 
-std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser, const Options &options)
+[[nodiscard]] std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser, const Options &options)
 {
     const QString defaultPath = QDir(dataDirectory(parser, options)).filePath(QcServerSettings::fileName.toString());
     const QString path = parser.isSet(options.serverConfig) ? parser.value(options.serverConfig) : defaultPath;

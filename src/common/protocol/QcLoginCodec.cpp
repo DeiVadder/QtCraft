@@ -64,7 +64,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
     }
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::LoginChallenge>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LoginChallenge>, QDataStream &stream)
 {
     QcMsg::LoginChallenge m;
     stream >> m.serverName >> m.motd >> m.nonce >> m.salt >> m.passwordRequired >> m.identityKnown >> m.maxViewDistance;
@@ -84,7 +84,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::LoginChallenge>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::LoginResponse>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LoginResponse>, QDataStream &stream)
 {
     QcMsg::LoginResponse m;
     stream >> m.passwordProof >> m.identityProof >> m.identity >> m.viewDistance;
@@ -100,7 +100,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::LoginResponse>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream)
 {
     QcMsg::PlayerList m;
     quint32 count = 0;

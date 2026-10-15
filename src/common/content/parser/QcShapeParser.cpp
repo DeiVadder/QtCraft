@@ -137,7 +137,7 @@ void parseShapeBody(const QJsonObject &json, QcShapeDefinition &shape, QcJsonFie
     }
 }
 
-QcResult<QcShapeDefinition> parseShape(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcShapeDefinition> parseShape(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"shape"_s, {}};
     QcShapeDefinition shape;

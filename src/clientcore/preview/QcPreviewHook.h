@@ -23,5 +23,5 @@ struct QcPreviewHook
     bool isEmpty() const { return !animation && !side && !turn && !zoom && !gaze && !time; }
 
     // An unknown key or a value out of range is an error naming it.
-    static QcResult<QcPreviewHook> parse(const QString &text);
+    [[nodiscard]] static QcResult<QcPreviewHook> parse(const QString &text);
 };

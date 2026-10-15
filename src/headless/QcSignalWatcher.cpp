@@ -64,8 +64,8 @@ QcSignalWatcher::QcSignalWatcher(QObject *parent)
         watcher.store(nullptr);
         return;
     }
-    m_notifier = new QSocketNotifier(qintptr(signalSockets[1]), QSocketNotifier::Read, this);
-    connect(m_notifier, &QSocketNotifier::activated, this, &QcSignalWatcher::onRequest);
+    m_notifier = std::make_unique<QSocketNotifier>(qintptr(signalSockets[1]), QSocketNotifier::Read);
+    connect(m_notifier.get(), &QSocketNotifier::activated, this, &QcSignalWatcher::onRequest);
 
     struct sigaction action{};
     action.sa_handler = handleSignal;
@@ -86,7 +86,8 @@ QcSignalWatcher::~QcSignalWatcher()
 #else
     std::signal(SIGTERM, SIG_DFL);
     std::signal(SIGINT, SIG_DFL);
-    delete m_notifier;
+    // The notifier goes before the socket it watches is closed.
+    m_notifier.reset();
     ::close(signalSockets[0]);
     ::close(signalSockets[1]);
     signalSockets[0] = signalSockets[1] = -1;

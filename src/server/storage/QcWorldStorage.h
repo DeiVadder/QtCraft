@@ -87,22 +87,22 @@ public:
 
     const QString &directory() const { return m_directory; }
 
-    QcResult<QcWorldInfo> readInfo() const;
+    [[nodiscard]] QcResult<QcWorldInfo> readInfo() const;
     // The format version world.json names; 0 when it cannot be read.
     int storedFormatVersion() const;
-    QcStatus writeInfo(const QcWorldInfo &info) const;
+    [[nodiscard]] QcStatus writeInfo(const QcWorldInfo &info) const;
     // The contents of world.json for `info`.
     static QByteArray infoBytes(const QcWorldInfo &info);
 
     // Player files (QcPlayerStorage).
     static QString playerFileName(const QString &playerName) { return QcPlayerStorage::fileName(playerName); }
-    QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const
+    [[nodiscard]] QcResult<std::optional<QcPlayerData>> readPlayer(const QString &playerName, QStringList &warnings) const
     {
         return m_players.read(playerName, warnings);
     }
-    QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
+    [[nodiscard]] QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
     QByteArray playerBytes(const QcPlayerData &player) const { return m_players.bytes(player); }
-    QcResult<std::optional<QcPlayerData>> parsePlayer(const QString &playerName, const std::optional<QByteArray> &file, QStringList &warnings) const
+    [[nodiscard]] QcResult<std::optional<QcPlayerData>> parsePlayer(const QString &playerName, const std::optional<QByteArray> &file, QStringList &warnings) const
     {
         return m_players.parse(playerName, file, warnings);
     }
@@ -110,9 +110,9 @@ public:
     // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
     // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
     static constexpr quint32 maxStoredBlockUpdates = 4 * 1024 * 1024;
-    QcResult<QList<QcBlockPos>> readBlockUpdates() const;
+    [[nodiscard]] QcResult<QList<QcBlockPos>> readBlockUpdates() const;
     // The contents of blockupdates.qce for `positions` (none: no file).
-    static QcResult<std::optional<QByteArray>> blockUpdatesBytes(const QList<QcBlockPos> &positions);
+    [[nodiscard]] static QcResult<std::optional<QByteArray>> blockUpdatesBytes(const QList<QcBlockPos> &positions);
 
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionFile::regionOf(chunk); }
 

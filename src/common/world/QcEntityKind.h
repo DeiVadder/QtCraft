@@ -25,7 +25,7 @@ namespace QcEntityKinds {
 inline constexpr int count = 6;
 
 // The kind with this protocol value; nothing for values no kind has.
-std::optional<QcEntityKind> fromValue(quint8 value);
+[[nodiscard]] std::optional<QcEntityKind> fromValue(quint8 value);
 // A short English name for logs and dumps ("player", "creature", ...).
 QLatin1StringView name(QcEntityKind kind);
 

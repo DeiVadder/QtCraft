@@ -28,7 +28,7 @@ public:
     QcBlockPos toWorld(QcBlockPos local) const;
     QcVec3 toWorld(const QcVec3 &local) const;
     // The state a cell gets in the world, turned; std::nullopt keeps what is there.
-    std::optional<QcBlockId> worldBlock(QcBlockPos local) const;
+    [[nodiscard]] std::optional<QcBlockId> worldBlock(QcBlockPos local) const;
 
     // Writes the cells inside `chunk` (cells below or above the world are left out).
     void writeInto(QcChunk &chunk) const;

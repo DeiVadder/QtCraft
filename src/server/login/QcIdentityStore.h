@@ -48,12 +48,12 @@ public:
     bool isFull() const { return m_identities.size() >= maxEntries; }
     // Writes the file when identities were added since the last flush; an error when it could not
     // be written (the identities still count until the restart, the next addition tries again).
-    QcStatus flush();
+    [[nodiscard]] QcStatus flush();
     bool hasUnsavedChanges() const { return m_dirty; }
 
 private:
     void read(const QString &path, QStringList &warnings);
-    QcStatus write() const;
+    [[nodiscard]] QcStatus write() const;
 
     QString m_path;
     QByteArray m_salt;

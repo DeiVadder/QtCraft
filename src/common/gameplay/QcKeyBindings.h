@@ -80,7 +80,7 @@ public:
     static const QList<Action> &actions();
     // Stable id used in the settings file and placeholders, e.g. "cameraView", "hotbar1".
     static QString id(Action action);
-    static std::optional<Action> actionFromId(const QString &id);
+    [[nodiscard]] static std::optional<Action> actionFromId(const QString &id);
     // The pause key cannot be rebound.
     static bool isFixed(Action action) { return action == Action::Pause; }
     // Keys a player may bind: not Esc, not Backspace (clears), not "unknown", not Cmd on a Mac.
@@ -92,7 +92,7 @@ public:
     // Portable name of a key; empty for 0 or keys without a name.
     static QString keyName(int key);
     // Inverse of keyName(); std::nullopt for unknown names. "" gives 0 (no key).
-    static std::optional<int> keyFromName(const QString &name);
+    [[nodiscard]] static std::optional<int> keyFromName(const QString &name);
     static bool isFunctionKey(int key);
 
     int key(Action action, int slot) const;
@@ -100,10 +100,10 @@ public:
     QList<int> keys(Action action) const;
     bool matches(Action action, int key) const;
     // The first action (in table order) bound to `key`.
-    std::optional<Action> actionFor(int key) const;
+    [[nodiscard]] std::optional<Action> actionFor(int key) const;
     // The action of a key press with these modifiers. On a Mac a press with Cmd (Qt::ControlModifier)
     // triggers nothing, so Cmd+Q, Cmd+H, Cmd+W … keep their system meaning; Option and Control do.
-    std::optional<Action> actionForPress(int key, Qt::KeyboardModifiers modifiers) const;
+    [[nodiscard]] std::optional<Action> actionForPress(int key, Qt::KeyboardModifiers modifiers) const;
     // Binds `key` (0 clears) to the slot. A key used elsewhere is swapped: the other action gets the
     // key this slot had before, so no key ends up with two actions. Returns that change, if any.
     // Fixed actions and keys that are not bindable are refused (std::nullopt, nothing changes).

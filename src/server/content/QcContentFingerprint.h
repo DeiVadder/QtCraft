@@ -16,7 +16,7 @@ inline constexpr int maxPackFiles = 20'000;
 // Lower-case hex of the first 16 bytes of SHA-256 over the files the content loader reads from the
 // pack in `directory` (also a Qt resource directory; QcContentPackLoader::contentFiles): relative
 // path, size and contents, in the order of the sorted paths. Other files (.DS_Store, notes) do not count.
-QcResult<QString> hashOf(const QString &directory);
+[[nodiscard]] QcResult<QString> hashOf(const QString &directory);
 // The packs of `content` in load order: the base game and the loaded mods of `mods` (their
 // directories); a pack that cannot be hashed gets an empty hash.
 QList<QcPackFingerprint> of(const QcContentRegistry &content, const QList<QcModStatus> &mods);

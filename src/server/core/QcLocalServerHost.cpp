@@ -19,7 +19,7 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
     , m_thread(new QThread(this))
 {
     m_thread->setObjectName(u"QtCraft server"_s);
-    m_server = new QcServer(std::move(config), std::move(content), std::move(generator));
+    m_server = std::make_unique<QcServer>(std::move(config), std::move(content), std::move(generator));
 
     // Opened before the thread starts, so a damaged save is reported right here.
     if (const QcStatus opened = m_server->openWorld(); !opened) {
@@ -27,16 +27,15 @@ QcLocalServerHost::QcLocalServerHost(QcServerConfig config, std::shared_ptr<cons
         m_worldInUse = m_server->worldInUse();
         m_worldTooOld = m_server->worldTooOld();
         m_damagedFile = m_server->damagedFile();
-        delete m_server;
-        m_server = nullptr;
+        m_server.reset();
         return;
     }
 
-    connect(m_server, &QcServer::stopRequested, this, &QcLocalServerHost::stopRequested, Qt::QueuedConnection);
+    connect(m_server.get(), &QcServer::stopRequested, this, &QcLocalServerHost::stopRequested, Qt::QueuedConnection);
     m_server->moveToThread(m_thread);
     // Above the render and worker threads, so the ticks start on time (decision E-090).
     m_thread->start(QThread::HighPriority);
-    QMetaObject::invokeMethod(m_server, &QcServer::start, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(m_server.get(), &QcServer::start, Qt::QueuedConnection);
 }
 
 QcLocalServerHost::~QcLocalServerHost()
@@ -56,7 +55,7 @@ std::unique_ptr<QcTransport> QcLocalServerHost::connectClient()
 
     serverEnd->moveToThread(m_thread);
     if (m_pendingClients.push(std::move(serverEnd))) {
-        QMetaObject::invokeMethod(m_server, [this, server = m_server] { acceptPendingClients(server); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(m_server.get(), [this, server = m_server.get()] { acceptPendingClients(server); }, Qt::QueuedConnection);
     }
     return std::move(clientEnd);
 }
@@ -84,7 +83,7 @@ QcLocalServerHost::EntityCounts QcLocalServerHost::entityCounts()
     std::mutex mutex;
     EntityCounts result;
     { const std::scoped_lock lock(mutex); }
-    QcServer *server = m_server;
+    QcServer *server = m_server.get();
     QMetaObject::invokeMethod(
         server,
         [server, &result, &mutex] {
@@ -119,7 +118,7 @@ QcStatus QcLocalServerHost::save()
     QcStatus result;
     { const std::scoped_lock lock(mutex); }
 
-    QcServer *server = m_server;
+    QcServer *server = m_server.get();
     QMetaObject::invokeMethod(
         server,
         [server, &result, &mutex] {
@@ -142,7 +141,7 @@ QcResult<quint16> QcLocalServerHost::listen(const QcNetworkConfig &config, const
     std::mutex mutex;
     QcResult<quint16> result = qcError(QString());
     { const std::scoped_lock lock(mutex); }
-    QcServer *server = m_server;
+    QcServer *server = m_server.get();
     QMetaObject::invokeMethod(
         server,
         [this, server, &config, &login, &result, &mutex] {
@@ -150,12 +149,12 @@ QcResult<quint16> QcLocalServerHost::listen(const QcNetworkConfig &config, const
             if (login) {
                 server->setLoginSettings(*login);
             }
-            delete m_network;
-            m_network = new QcNetworkServer(*server, config, server);
+            // The old listener closes its port before the new one opens.
+            m_network.reset();
+            m_network = std::make_unique<QcNetworkServer>(*server, config);
             result = m_network->listen();
             if (!result) {
-                delete m_network;
-                m_network = nullptr;
+                m_network.reset();
             }
         },
         Qt::BlockingQueuedConnection);
@@ -172,11 +171,10 @@ void QcLocalServerHost::stopListening()
     }
 
     QMetaObject::invokeMethod(
-        m_server,
+        m_server.get(),
         [this] {
             m_server->disconnectRemoteClients();
-            delete m_network;
-            m_network = nullptr;
+            m_network.reset();
         },
         Qt::BlockingQueuedConnection);
     m_listeningPort = 0;
@@ -193,7 +191,7 @@ QStringList QcLocalServerHost::runConsoleCommand(const QString &line)
     QStringList replies;
     // Publishes the empty list to the server thread (ThreadSanitizer does not see Qt's handover).
     { const std::scoped_lock lock(mutex); }
-    QcServer *server = m_server;
+    QcServer *server = m_server.get();
     QMetaObject::invokeMethod(
         server,
         [server, &line, &replies, &mutex] {
@@ -212,21 +210,23 @@ QcStatus QcLocalServerHost::shutdown()
         return {};
     }
 
-    QcServer *server = m_server;
-    m_server = nullptr;
+    std::unique_ptr<QcServer> server = std::move(m_server);
+    QcServer *context = server.get();
 
+    // Taking the lock once publishes `server` and `result` to the server thread, which resets the
+    // pointer; this thread touches `server` again only after its final lock below.
     std::mutex mutex;
     QcStatus result;
     { const std::scoped_lock lock(mutex); }
 
     QMetaObject::invokeMethod(
-        server,
-        [this, server, &result, &mutex] {
+        context,
+        [this, &server, &result, &mutex] {
             const std::scoped_lock lock(mutex);
             result = server->stop();
-            // The listener is a child of the server and goes with it.
-            delete server;
-            m_network = nullptr;
+            // Both die in the server thread they live in, the listener first.
+            m_network.reset();
+            server.reset();
         },
         Qt::BlockingQueuedConnection);
 

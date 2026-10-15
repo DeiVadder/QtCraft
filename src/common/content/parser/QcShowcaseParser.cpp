@@ -16,7 +16,7 @@ using Showcase = QcShowcaseDefinition;
 // Room left above the ground for buildings and lookouts.
 constexpr int headroom = 64;
 
-std::optional<bool> optionalBoolean(const QJsonObject &json, const QString &key, QcJsonFieldReader &reader)
+[[nodiscard]] std::optional<bool> optionalBoolean(const QJsonObject &json, const QString &key, QcJsonFieldReader &reader)
 {
     const QJsonValue value = json.value(key);
     if (value.isUndefined()) {
@@ -126,7 +126,7 @@ void parseLayers(const QJsonObject &json, Showcase &showcase, QcJsonFieldReader 
 
 namespace QcShowcaseParser {
 
-QcResult<QcShowcaseDefinition> parseShowcase(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcShowcaseDefinition> parseShowcase(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"showcase"_s, {}};
     Showcase showcase;

@@ -41,7 +41,7 @@ public:
 
     // The item that stands for a block: the block's own item, else one that places it (seeds for a
     // crop), else its first drop.
-    static std::optional<QcItemId> itemForBlock(const QcContentRegistry &content, QcBlockId block);
+    [[nodiscard]] static std::optional<QcItemId> itemForBlock(const QcContentRegistry &content, QcBlockId block);
 
 private:
     // A stack of a known item within its limits; empty for unknown items and no count.

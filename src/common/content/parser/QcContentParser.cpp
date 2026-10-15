@@ -49,7 +49,7 @@ bool isDetail(const QJsonValue &value)
 
 namespace QcContentParser {
 
-QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"texture"_s, {}};
     QcTextureDefinition texture;
@@ -100,7 +100,7 @@ QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, co
     return texture;
 }
 
-QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
+[[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
 {
     // Clients take at most this many per language (QcContentSerializer); a larger file is refused
     // before its table is built (decision E-371).
@@ -118,7 +118,7 @@ QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json)
     return entries;
 }
 
-QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"handbook chapter"_s, {}};
     QcHandbookChapter chapter;

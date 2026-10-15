@@ -15,7 +15,7 @@ class QcClientWorld : public QcBlockAccess
 public:
     explicit QcClientWorld(std::shared_ptr<const QcContentRegistry> content);
 
-    std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
+    [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
     std::shared_ptr<const QcContentRegistry> sharedContent() const { return m_content; }

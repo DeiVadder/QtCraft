@@ -193,4 +193,4 @@ struct QcTextureSpec
     QHash<QChar, QColor> palette = {}; // NOLINT(readability-redundant-member-init): see above
 };
 
-std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name);
+[[nodiscard]] std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name);

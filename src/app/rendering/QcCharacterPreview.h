@@ -31,8 +31,8 @@ class QcCharacterPreview : public QQuickRhiItem
     Q_PROPERTY(QcPreviewSource *source READ source WRITE setSource NOTIFY sourceChanged FINAL)
     // "stand", "walk" or "mine".
     Q_PROPERTY(QString animation READ animation WRITE setAnimation NOTIFY animationChanged FINAL)
-    // "front" or "back": the side of the figure that faces the viewer.
-    Q_PROPERTY(QString side READ side NOTIFY viewChanged FINAL)
+    // The side of the figure that faces the viewer (CharacterPreview.Side.Front or Back).
+    Q_PROPERTY(QcCharacterPreview::Side side READ side NOTIFY viewChanged FINAL)
     // 0 shows the whole body, 1 the head.
     Q_PROPERTY(double zoom READ zoom WRITE setZoom NOTIFY viewChanged FINAL)
     // Mouse dragging and the wheel turn and zoom the figure.
@@ -44,13 +44,17 @@ class QcCharacterPreview : public QQuickRhiItem
     Q_PROPERTY(bool hasFigure READ hasFigure NOTIFY hasFigureChanged FINAL)
 
 public:
+    // QcPreviewCamera::Side for QML.
+    enum class Side { Front, Back };
+    Q_ENUM(Side)
+
     explicit QcCharacterPreview(QQuickItem *parent = nullptr);
 
     QcPreviewSource *source() const { return m_source; }
     void setSource(QcPreviewSource *source);
     QString animation() const { return QcPreviewPose::name(m_animation); }
     void setAnimation(const QString &animation);
-    QString side() const;
+    Side side() const;
     double zoom() const { return m_camera.zoom(); }
     void setZoom(double zoom);
     bool interactive() const { return m_interactive; }
@@ -61,8 +65,8 @@ public:
     void setPaused(bool paused);
     bool hasFigure() const { return m_mesh && !m_mesh->indices.isEmpty(); }
 
-    // Shows the figure straight from "front" or "back".
-    Q_INVOKABLE void showSide(const QString &side);
+    // Shows the figure straight from the front or the back.
+    Q_INVOKABLE void showSide(QcCharacterPreview::Side side);
     // The default view: turned a little, no zoom.
     Q_INVOKABLE void resetView();
 

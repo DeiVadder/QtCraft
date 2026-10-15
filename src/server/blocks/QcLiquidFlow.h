@@ -75,10 +75,10 @@ public:
     // The state of the liquid of `id` with the given level and falling flag.
     static QcBlockId stateWith(const QcContentRegistry &content, QcBlockId id, int level, bool falling);
     // What the liquid at `pos` turns into because it touches a liquid it reacts with.
-    static std::optional<QcBlockId> reaction(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+    [[nodiscard]] static std::optional<QcBlockId> reaction(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
     // The state a flowing (non-source) liquid at `pos` takes from its feeders, air without any;
     // std::nullopt while a neighbour that decides it is not loaded.
-    static std::optional<QcBlockId> fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+    [[nodiscard]] static std::optional<QcBlockId> fedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
     // Whether the liquid may flow into `pos` as `state` (air, replaceable or washable blocks, or a
     // weaker part of the same liquid).
     static bool canFlowInto(const QcBlockAccess &world, QcBlockPos pos, QcBlockId state);

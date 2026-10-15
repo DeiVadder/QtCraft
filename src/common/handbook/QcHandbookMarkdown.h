@@ -22,6 +22,6 @@ QList<File> files(const QcHandbook &handbook);
 QString fileName(const QString &category);
 QString anchor(const QString &entryId);
 // Writes files() into `directory` (created when missing); existing files of the same names are replaced.
-QcStatus write(const QcHandbook &handbook, const QString &directory);
+[[nodiscard]] QcStatus write(const QcHandbook &handbook, const QString &directory);
 
 } // namespace QcHandbookMarkdown

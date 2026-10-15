@@ -32,7 +32,7 @@ public:
     }
     // Block of the generator's own spawn platform; the server puts one under a spawn without any
     // ground (decision E-288). Without one it takes stone.
-    virtual std::optional<QcBlockId> platformBlock() const { return std::nullopt; }
+    [[nodiscard]] virtual std::optional<QcBlockId> platformBlock() const { return std::nullopt; }
     // Set up once when a world is created (rules, creatures, contents, updates; decision E-221).
     virtual QcWorldSetup setup() const { return {}; }
     // Labels floating in a chunk (decision E-222); the server sends them with the chunk.

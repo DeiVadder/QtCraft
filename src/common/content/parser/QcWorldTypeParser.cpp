@@ -25,7 +25,7 @@ QcWorldTypeRules parseRules(const QJsonObject &json, QcJsonFieldReader &reader, 
 
 namespace QcWorldTypeParser {
 
-QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &packNamespace)
 {
     Q_UNUSED(packNamespace);
     QcJsonFieldReader reader{json, u"flat world"_s, {}};
@@ -41,7 +41,7 @@ QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &pac
     return flat;
 }
 
-QcResult<QcVoidDefinition> parseVoid(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcVoidDefinition> parseVoid(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"void world"_s, {}};
     QcVoidDefinition empty;

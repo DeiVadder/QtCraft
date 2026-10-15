@@ -60,7 +60,7 @@ private:
     void defaultGamemode(const QcCommandContext &context);
     void locateBiome(const QcCommandContext &context);
     // Offset along z of the first column of `name` on the line at `dx` of the square ring `radius`.
-    std::optional<int> findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const;
+    [[nodiscard]] std::optional<int> findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const;
 
     QcServerState &m_state;
     Parts m_parts;

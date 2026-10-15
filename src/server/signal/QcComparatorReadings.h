@@ -21,7 +21,7 @@ public:
     static int fullness(const QcContentRegistry &content, const QList<QcItemStack> &stacks);
 
     // The reading of the block at `pos`, or nothing when the block is not readable.
-    std::optional<int> at(QcBlockPos pos) const;
+    [[nodiscard]] std::optional<int> at(QcBlockPos pos) const;
 
 private:
     int contentsAt(QcBlockPos pos) const;

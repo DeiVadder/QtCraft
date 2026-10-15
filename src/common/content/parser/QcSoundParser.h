@@ -8,6 +8,6 @@
 // Parses synthesized sound definitions of content packs.
 namespace QcSoundParser {
 
-QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcSoundParser

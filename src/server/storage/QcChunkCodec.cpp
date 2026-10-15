@@ -51,7 +51,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
     return qCompress(raw, 1);
 }
 
-QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+[[nodiscard]] QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
                                           QStringList &warnings, QSet<QString> &reported)
 {
     // qUncompress reads the expected size from the first four bytes; a damaged one could ask for

@@ -26,7 +26,7 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Dispenser, "dispenser"},
 }};
 
-std::optional<QcSignalKind> kindFromName(const QString &name)
+[[nodiscard]] std::optional<QcSignalKind> kindFromName(const QString &name)
 {
     for (const auto &[kind, text] : kindNames) {
         if (name == QLatin1StringView(text)) {

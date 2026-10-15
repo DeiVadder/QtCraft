@@ -50,7 +50,7 @@ QString invalid(const QString &key)
 
 // Operator names must be valid player names as they are (QcProfileValidation), not cleaned into
 // another name or into "Player".
-QcStatus readOperators(const QJsonObject &json, QStringList &operators)
+[[nodiscard]] QcStatus readOperators(const QJsonObject &json, QStringList &operators)
 {
     if (json.contains(u"operators"_s) && !json.value(u"operators"_s).isArray()) {
         return qcError(invalid(u"operators"_s));

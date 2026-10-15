@@ -85,7 +85,7 @@ private:
     // Puts what was kept of a chunk that entered the world back (QcServerWorld's arrival handler).
     void restore(QcChunkIo::Arrival &arrival);
     // The marks of a chunk for a group that is to load: loaded, waiting to be admitted or stored.
-    std::optional<quint16> marksForLoading(QcChunkPos pos) const;
+    [[nodiscard]] std::optional<quint16> marksForLoading(QcChunkPos pos) const;
     int groupLimit() const;
     // Takes these chunks out of the world and hands what was kept of them to the storage.
     void unload(const QSet<QcChunkPos> &chunks);

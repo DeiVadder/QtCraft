@@ -103,7 +103,7 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
     writePos(stream, m.pos);
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
     stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.yaw >> in.pitch;
@@ -113,7 +113,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
     return QcMsg::PlayerInput{in};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
 {
     QcMsg::PlayerState m;
     stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying;
@@ -123,21 +123,21 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::SelectHotbarSlot>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SelectHotbarSlot>, QDataStream &stream)
 {
     QcMsg::SelectHotbarSlot m;
     stream >> m.slot;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::MoveInventoryItem>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MoveInventoryItem>, QDataStream &stream)
 {
     QcMsg::MoveInventoryItem m;
     stream >> m.from >> m.to >> m.count;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::QuickMoveItem>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::QuickMoveItem>, QDataStream &stream)
 {
     QcMsg::QuickMoveItem m;
     stream >> m.slot;
@@ -149,7 +149,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::QuickMoveItem>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
 {
     QcMsg::InventoryState m;
     if (!readStacks(stream, m.stacks)) {
@@ -165,36 +165,36 @@ QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::TakeCraftingResult>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::TakeCraftingResult>, QDataStream &)
 {
     return QcMsg::TakeCraftingResult{};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::CraftRecipe>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CraftRecipe>, QDataStream &stream)
 {
     QcMsg::CraftRecipe m;
     stream >> m.recipe >> m.count;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::CloseCrafting>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseCrafting>, QDataStream &)
 {
     return QcMsg::CloseCrafting{};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ConsumeItem>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ConsumeItem>, QDataStream &)
 {
     return QcMsg::ConsumeItem{};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::OpenCrafting>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenCrafting>, QDataStream &stream)
 {
     QcMsg::OpenCrafting m;
     stream >> m.size;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PlayerHealth>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerHealth>, QDataStream &stream)
 {
     QcMsg::PlayerHealth m;
     stream >> m.health >> m.maxHealth >> m.dead;
@@ -204,12 +204,12 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerHealth>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::Respawn>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Respawn>, QDataStream &)
 {
     return QcMsg::Respawn{};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream)
 {
     QcMsg::SetAppearance m;
     if (!readAppearance(stream, m.appearance)) {
@@ -218,14 +218,14 @@ QcResult<QcMessage> decode(Tag<QcMsg::SetAppearance>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream)
 {
     QcMsg::DropItem m;
     stream >> m.wholeStack;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream)
 {
     QcMsg::PlayerFood m;
     stream >> m.food >> m.maxFood;
@@ -235,7 +235,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream)
 {
     quint8 value = 0;
     stream >> value;
@@ -246,7 +246,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream)
     return QcMsg::GameMode{*mode};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream)
 {
     QcMsg::CreativeItem m;
     stream >> m.slot;
@@ -261,7 +261,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream)
 {
     return QcMsg::PickBlock{readPos(stream)};
 }

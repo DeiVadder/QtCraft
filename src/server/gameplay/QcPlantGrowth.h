@@ -43,7 +43,7 @@ public:
     // One random tick of the block at `pos`; returns true when it changed the world.
     bool randomTick(const QcServerWorld &world, QcBlockPos pos, const SetBlock &setBlock);
     // The air block a plant at `pos` would grow into, if its column may grow now.
-    std::optional<QcBlockPos> growthTarget(const QcBlockAccess &world, QcBlockPos pos) const;
+    [[nodiscard]] std::optional<QcBlockPos> growthTarget(const QcBlockAccess &world, QcBlockPos pos) const;
     // Chance that a random tick of `block` grows it.
     double growthChance(QcBlockId block) const;
     const QcCropGrowth &crops() const { return m_crops; }

@@ -25,7 +25,7 @@ public:
     QcStructure(QString name, int sizeX, int sizeY, int sizeZ);
 
     // Unknown blocks fail; unknown state properties or values keep their defaults with a warning.
-    static QcResult<QcStructure> fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content,
+    [[nodiscard]] static QcResult<QcStructure> fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content,
                                                 QStringList *warnings = nullptr);
 
     const QString &name() const { return m_name; }
@@ -37,7 +37,7 @@ public:
     // Precondition: contains(x, y, z).
     void set(int x, int y, int z, QcBlockId state);
     // The state of a cell, std::nullopt where the structure keeps what is there (or outside it).
-    std::optional<QcBlockId> block(int x, int y, int z) const;
+    [[nodiscard]] std::optional<QcBlockId> block(int x, int y, int z) const;
     // Palette index of a cell (or QcStructureDefinition::keep); precondition: contains(x, y, z).
     qint16 paletteIndex(int x, int y, int z) const { return m_cells[cellIndex(x, y, z)]; }
     const QList<QcBlockId> &palette() const { return m_palette; }

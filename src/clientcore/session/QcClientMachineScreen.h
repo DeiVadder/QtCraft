@@ -27,7 +27,7 @@ public:
     void usedBlock() { m_closedLocally = false; }
 
     bool isOpen() const { return m_pos.has_value(); }
-    std::optional<QcBlockPos> pos() const { return m_pos; }
+    [[nodiscard]] std::optional<QcBlockPos> pos() const { return m_pos; }
     const QString &category() const { return m_category; }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }

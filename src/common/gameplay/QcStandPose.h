@@ -53,7 +53,7 @@ struct QcStandPose
 
     // Part names in commands: "head", "body", "left_arm", "right_arm", "left_leg", "right_leg".
     static QString partName(Part part);
-    static std::optional<Part> partFromName(const QString &name);
+    [[nodiscard]] static std::optional<Part> partFromName(const QString &name);
 };
 
 // Normalises one angle in degrees into (-180, 180]; non-finite values become 0.

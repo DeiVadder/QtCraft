@@ -70,7 +70,8 @@ void QcAudioEngine::start(bool enabled)
         return;
     }
 
-    m_output.start();
+    // Without an output device the game plays silently; start() logged why.
+    [[maybe_unused]] const bool started = m_output.start();
 }
 
 void QcAudioEngine::setContent(std::shared_ptr<const QcContentRegistry> content)

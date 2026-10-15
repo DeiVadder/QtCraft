@@ -196,8 +196,8 @@ Popup {
                 wrapMode: Text.Wrap
                 color: screen.failure.length > 0 && !screen.game.multiplayer.joining ? Theme.error : Theme.text
                 textFormat: Text.PlainText
-                text: screen.game.multiplayer.joinStage === "connecting" ? qsTr("Connecting to %1 …").arg(screen.game.multiplayer.lastAddress)
-                      : screen.game.multiplayer.joinStage === "loggingIn" ? qsTr("Logging in …")
+                text: screen.game.multiplayer.joinStage === NetworkClient.Stage.Connecting ? qsTr("Connecting to %1 …").arg(screen.game.multiplayer.lastAddress)
+                      : screen.game.multiplayer.joinStage === NetworkClient.Stage.LoggingIn ? qsTr("Logging in …")
                       : screen.failure.length > 0 ? qsTr("Could not join: %1").arg(screen.failure)
                       : ""
             }

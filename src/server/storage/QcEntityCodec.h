@@ -21,7 +21,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
 // The record of `chunk`. Unknown items, blocks, creatures and capes and armour that no longer fits
 // its slot are dropped with a warning (each unknown name once per world, through `reported`); damaged
 // or implausible data (an entity outside the chunk, values that cannot be) is an error.
-QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
+[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
                                 QSet<QString> &reported);
 
 } // namespace QcEntityCodec

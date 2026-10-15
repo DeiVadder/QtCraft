@@ -2,7 +2,7 @@
 
 namespace QcEntityKinds {
 
-std::optional<QcEntityKind> fromValue(quint8 value)
+[[nodiscard]] std::optional<QcEntityKind> fromValue(quint8 value)
 {
     if (value >= count) {
         return std::nullopt;

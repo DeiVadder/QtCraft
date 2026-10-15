@@ -115,7 +115,7 @@ QImage render(const QImage &top, const QImage &side, const QImage &tool, int siz
     return image;
 }
 
-QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory)
+[[nodiscard]] QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory)
 {
     const QString topName = u"qtcraft:grass_top"_s;
     const QString sideName = u"qtcraft:grass_side"_s;

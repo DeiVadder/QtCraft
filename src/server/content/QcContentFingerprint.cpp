@@ -17,7 +17,7 @@ Q_LOGGING_CATEGORY(lcFingerprint, "qtcraft.content")
 constexpr qsizetype hashBytes = 16;
 
 // The files the content loader reads, relative to the pack's directory.
-QcResult<QStringList> filesBelow(const QString &directory)
+[[nodiscard]] QcResult<QStringList> filesBelow(const QString &directory)
 {
     const QDir root(directory);
     QStringList files{u"pack.json"_s};
@@ -36,7 +36,7 @@ QcResult<QStringList> filesBelow(const QString &directory)
 
 namespace QcContentFingerprint {
 
-QcResult<QString> hashOf(const QString &directory)
+[[nodiscard]] QcResult<QString> hashOf(const QString &directory)
 {
     const QcResult<QStringList> files = filesBelow(directory);
     if (!files) {

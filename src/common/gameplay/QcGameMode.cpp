@@ -32,7 +32,7 @@ QLatin1StringView name(QcGameMode mode)
     return mode == QcGameMode::Creative ? "creative"_L1 : "survival"_L1;
 }
 
-std::optional<QcGameMode> parse(QStringView text)
+[[nodiscard]] std::optional<QcGameMode> parse(QStringView text)
 {
     const QString lower = text.trimmed().toString().toLower();
     if (lower == "survival"_L1 || lower == "s"_L1 || lower == "0"_L1) {
@@ -44,7 +44,7 @@ std::optional<QcGameMode> parse(QStringView text)
     return std::nullopt;
 }
 
-std::optional<QcGameMode> fromValue(quint8 value)
+[[nodiscard]] std::optional<QcGameMode> fromValue(quint8 value)
 {
     if (value >= quint8(count)) {
         return std::nullopt;

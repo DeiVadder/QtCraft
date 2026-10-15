@@ -45,7 +45,7 @@ QcMultiplayerController::QcMultiplayerController(QcGameController &game, QcSessi
     });
     connect(&game, &QcGameController::sessionStarted, this, &QcMultiplayerController::onSessionStarted);
     connect(&game, &QcGameController::phaseChanged, this, [this] {
-        if (m_game.phase() == u"menu"_s) {
+        if (m_game.phase() == QcGameController::Phase::Menu) {
             m_players->follow(nullptr);
             setNetworkGame(false);
         }
@@ -58,7 +58,7 @@ void QcMultiplayerController::onSessionStarted()
     emit lanPortChanged();
     // Without an in-process server the session belongs to a network game.
     setNetworkGame(!m_parts.server);
-    m_players->follow(m_parts.session);
+    m_players->follow(m_parts.session.get());
 }
 
 void QcMultiplayerController::setNetworkGame(bool networkGame)
@@ -74,17 +74,9 @@ bool QcMultiplayerController::joining() const
     return m_client->stage() != QcNetworkClient::Stage::Idle;
 }
 
-QString QcMultiplayerController::joinStage() const
+QcNetworkClient::Stage QcMultiplayerController::joinStage() const
 {
-    switch (m_client->stage()) {
-    case QcNetworkClient::Stage::Connecting:
-        return u"connecting"_s;
-    case QcNetworkClient::Stage::LoggingIn:
-        return u"loggingIn"_s;
-    case QcNetworkClient::Stage::Idle:
-        break;
-    }
-    return {};
+    return m_client->stage();
 }
 
 void QcMultiplayerController::join(const QString &address, const QString &playerName, const QString &password)
@@ -164,9 +156,9 @@ void QcMultiplayerController::cancelJoin()
 
 void QcMultiplayerController::onJoined()
 {
-    if (QcClientSession *session = m_client->takeSession()) {
+    if (std::unique_ptr<QcClientSession> session = m_client->takeSession()) {
         m_settings->rememberServer(m_lastAddress, session->login().serverName());
-        m_game.startRemoteSession(session);
+        m_game.startRemoteSession(std::move(session));
         emit joined();
     }
 }

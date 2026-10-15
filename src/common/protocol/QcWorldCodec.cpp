@@ -60,7 +60,7 @@ void encode(QDataStream &stream, const QcMsg::ChunkLabels &m)
     }
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream)
 {
     QcResult<std::shared_ptr<QcChunk>> chunk = QcProtocol::readChunk(stream);
     if (!chunk) {
@@ -69,7 +69,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream)
     return QcMsg::ChunkData{std::move(*chunk)};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream)
 {
     qint32 x = 0;
     qint32 z = 0;
@@ -77,7 +77,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream)
     return QcMsg::ChunkUnload{{x, z}};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream)
 {
     QcMsg::BlockUpdate m;
     m.pos = readPos(stream);
@@ -85,22 +85,22 @@ QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::StartMining>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::StartMining>, QDataStream &stream)
 {
     return QcMsg::StartMining{readPos(stream)};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::CancelMining>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CancelMining>, QDataStream &)
 {
     return QcMsg::CancelMining{};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::FinishMining>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::FinishMining>, QDataStream &stream)
 {
     return QcMsg::FinishMining{readPos(stream)};
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::UseItem>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::UseItem>, QDataStream &stream)
 {
     QcMsg::UseItem m;
     m.target = readPos(stream);
@@ -118,7 +118,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::UseItem>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::SoundEvent>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SoundEvent>, QDataStream &stream)
 {
     QcMsg::SoundEvent m;
     stream >> m.key >> m.position >> m.volume >> m.pitch;
@@ -134,7 +134,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::SoundEvent>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::ChunkLabels>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkLabels>, QDataStream &stream)
 {
     QcMsg::ChunkLabels m;
     qint32 x = 0;

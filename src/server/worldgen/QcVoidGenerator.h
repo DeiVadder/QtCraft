@@ -17,7 +17,7 @@ class QcVoidGenerator : public QcWorldGenerator
 public:
     // The content's settings with those `options` name; an error for unknown keys or blocks and
     // values out of range.
-    static QcResult<QcVoidDefinition> parseOptions(const QString &options, const QcContentRegistry &content);
+    [[nodiscard]] static QcResult<QcVoidDefinition> parseOptions(const QString &options, const QcContentRegistry &content);
     // The options naming all of `settings`' platform.
     static QString optionsOf(const QcVoidDefinition &settings);
 
@@ -27,7 +27,7 @@ public:
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override { return {0, m_platformY + 1, 0}; }
     bool isNaturalGround(QcBlockId block) const override { return block == m_platform && block != qcAirBlockId; }
-    std::optional<QcBlockId> platformBlock() const override
+    [[nodiscard]] std::optional<QcBlockId> platformBlock() const override
     {
         return m_platform != qcAirBlockId ? std::optional<QcBlockId>(m_platform) : std::nullopt;
     }

@@ -13,7 +13,7 @@ struct QcServerAddress
     QString host;
     quint16 port = defaultPort;
 
-    static QcResult<QcServerAddress> parse(const QString &text);
+    [[nodiscard]] static QcResult<QcServerAddress> parse(const QString &text);
     // "host:port", with brackets around IPv6 addresses.
     QString toString() const;
 };

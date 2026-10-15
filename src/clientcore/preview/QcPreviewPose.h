@@ -18,7 +18,7 @@ enum class Animation { Stand, Walk, Mine };
 
 // "stand", "walk", "mine".
 QString name(Animation animation);
-std::optional<Animation> fromName(const QString &name);
+[[nodiscard]] std::optional<Animation> fromName(const QString &name);
 
 // Length of one mining swing (as in the world, E-033) and the time from one swing to the next.
 inline constexpr double swingSeconds = 0.3;

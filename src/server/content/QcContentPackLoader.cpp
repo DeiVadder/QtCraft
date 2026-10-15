@@ -41,7 +41,7 @@ QcResult<QByteArray> QcContentPackLoader::readPackFile(const QString &path)
 
 namespace {
 
-QcResult<QJsonObject> readJsonObject(const QString &path)
+[[nodiscard]] QcResult<QJsonObject> readJsonObject(const QString &path)
 {
     const QcResult<QByteArray> data = QcContentPackLoader::readPackFile(path);
     if (!data) {
@@ -347,7 +347,7 @@ void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegi
 
 // Whether the new keys of a language file keep all languages within QcStreamLimits::maxTranslations
 // (decision E-371): checked per file, so a mod never builds a table that clients would refuse.
-bool fitsTranslationBudget(const QcContentRegistry &registry, const QString &language, const QHash<QString, QString> &entries)
+[[nodiscard]] bool fitsTranslationBudget(const QcContentRegistry &registry, const QString &language, const QHash<QString, QString> &entries)
 {
     qsizetype added = 0;
     for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {

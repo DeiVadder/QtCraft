@@ -62,4 +62,4 @@ struct QcArmourDefinition
 
 // Slot names used in data, commands and saved files: "head", "chest", "legs", "feet".
 QString qcEquipmentSlotName(QcEquipmentSlot slot);
-std::optional<QcEquipmentSlot> qcEquipmentSlotFromName(const QString &name);
+[[nodiscard]] std::optional<QcEquipmentSlot> qcEquipmentSlotFromName(const QString &name);

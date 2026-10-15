@@ -6,7 +6,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-QcResult<quint16> portOf(QStringView text)
+[[nodiscard]] QcResult<quint16> portOf(QStringView text)
 {
     bool ok = false;
     const uint port = text.toUInt(&ok);

@@ -13,7 +13,7 @@ namespace {
 
 constexpr std::array<QcBlockFace, 4> horizontal = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
 
-std::optional<QcBlockFace> faceFromName(const QString &name)
+[[nodiscard]] std::optional<QcBlockFace> faceFromName(const QString &name)
 {
     for (const QcBlockFace face : qcAllBlockFaces) {
         if (faceName(face) == name) {
@@ -161,7 +161,7 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
 }
 
 // A slab clicked on its open side, or placed into a slab of the other half, doubles up.
-std::optional<Placement> doubledSlab(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
+[[nodiscard]] std::optional<Placement> doubledSlab(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
                                      bool upper)
 {
     const QcContentRegistry &content = world.content();
@@ -187,7 +187,7 @@ std::optional<Placement> doubledSlab(const QcBlockAccess &world, QcBlockId state
 
 // `state` with facing, slab type, half and attach set from the view and the clicked face;
 // std::nullopt when one of the values is not allowed.
-std::optional<QcBlockId> orientedState(const QcContentRegistry &content, QcBlockId state, const QString &facing,
+[[nodiscard]] std::optional<QcBlockId> orientedState(const QcContentRegistry &content, QcBlockId state, const QString &facing,
                                        QcBlockFace face, bool upper)
 {
     const QcBlockDefinition &definition = content.block(state);
@@ -215,7 +215,7 @@ std::optional<QcBlockId> orientedState(const QcContentRegistry &content, QcBlock
 }
 
 // The lower half of a door at `target` with its hinge; std::nullopt without room for the upper half.
-std::optional<QcBlockId> doorState(const QcBlockAccess &world, QcBlockId state, QcBlockPos target, const QcVec3 &hit,
+[[nodiscard]] std::optional<QcBlockId> doorState(const QcBlockAccess &world, QcBlockId state, QcBlockPos target, const QcVec3 &hit,
                                    const QString &facing)
 {
     const QcContentRegistry &content = world.content();
@@ -233,7 +233,7 @@ std::optional<QcBlockId> doorState(const QcBlockAccess &world, QcBlockId state, 
 
 } // namespace
 
-std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
+[[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
 {
     const QcContentRegistry &content = world.content();
     if (!content.isValidBlock(block)) {
@@ -400,7 +400,7 @@ QcBlockPos otherDoorHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
     return pos.offset(0, world.content().property(id, u"half"_s) == u"top"_s ? -1 : 1, 0);
 }
 
-std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+[[nodiscard]] std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
 {
     const QcContentRegistry &content = world.content();
     const QcBlockDefinition &definition = content.block(id);

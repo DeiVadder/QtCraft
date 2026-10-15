@@ -24,10 +24,10 @@ const QcArmourDefinition *of(const QcContentRegistry &content, QcItemId item);
 bool fits(const QcContentRegistry &content, QcItemStack stack, QcEquipmentSlot slot);
 // The item an empty `slot` shows as a pale placeholder: the first armour item for it in content
 // order (mods included); nothing when the content has none.
-std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmentSlot slot);
+[[nodiscard]] std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmentSlot slot);
 // The item the HUD shows for armour points: the chest piece with the most points (the first of
 // equals in content order); nothing without chest armour.
-std::optional<QcItemId> pointsIcon(const QcContentRegistry &content);
+[[nodiscard]] std::optional<QcItemId> pointsIcon(const QcContentRegistry &content);
 // Sum of the armour points of the worn items.
 int points(const QcContentRegistry &content, const QcEquipment &equipment);
 // What is left of a hit of `damage` against `points` armour points.

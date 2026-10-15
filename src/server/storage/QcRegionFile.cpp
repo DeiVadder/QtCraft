@@ -47,7 +47,7 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
     return QDir(folder).filePath(u"r.%1.%2.%3"_s.arg(region.x).arg(region.z).arg(extension));
 }
 
-std::optional<QcChunkPos> regionOfFile(const QString &fileName, const QString &extension)
+[[nodiscard]] std::optional<QcChunkPos> regionOfFile(const QString &fileName, const QString &extension)
 {
     const QStringList parts = fileName.split(u'.');
     bool xOk = false;
@@ -63,7 +63,7 @@ std::optional<QcChunkPos> regionOfFile(const QString &fileName, const QString &e
     return region;
 }
 
-QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView magic, quint16 version)
+[[nodiscard]] QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView magic, quint16 version)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -114,7 +114,7 @@ QcResult<Index> readIndex(const QString &path, QcChunkPos region, QByteArrayView
     return index;
 }
 
-QcResult<QByteArray> readBlob(const QString &path, Entry entry)
+[[nodiscard]] QcResult<QByteArray> readBlob(const QString &path, Entry entry)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly) || !file.seek(entry.offset)) {
@@ -127,7 +127,7 @@ QcResult<QByteArray> readBlob(const QString &path, Entry entry)
     return data;
 }
 
-QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged)
+[[nodiscard]] QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcChunkPos> *damaged)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly) || file.size() > maxFileBytes) {
@@ -150,7 +150,7 @@ QcResult<QList<Blob>> readAll(const QString &path, const Index &index, QList<QcC
     return blobs;
 }
 
-QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs)
+[[nodiscard]] QcResult<Index> write(const QString &path, QByteArrayView magic, quint16 version, const QList<Blob> &blobs)
 {
     // In slot order, so the same chunks give the same file.
     QList<const Blob *> sorted;

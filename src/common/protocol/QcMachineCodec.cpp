@@ -26,7 +26,7 @@ void encode(QDataStream &stream, const QcMsg::MachineState &m)
 
 void encode(QDataStream &, QcMsg::CloseMachine) {}
 
-QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream)
 {
     QcMsg::OpenMachine m;
     m.pos = readPos(stream);
@@ -37,7 +37,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::OpenMachine>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream)
 {
     QcMsg::MachineState m;
     m.pos = readPos(stream);
@@ -60,7 +60,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::MachineState>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseMachine>, QDataStream &)
 {
     return QcMsg::CloseMachine{};
 }

@@ -35,7 +35,7 @@ public:
 private:
     // Restores a saved player; false when there is none (or no storage). Closes the connection
     // when the saved data cannot be read.
-    bool restore(QcServerClient &client);
+    [[nodiscard]] bool restore(QcServerClient &client);
     void sendWelcome(QcServerClient &client, bool rejoined);
     // The first problems found while opening the world (missing mods, unknown blocks).
     void sendOpenWarnings(QcServerClient &client) const;

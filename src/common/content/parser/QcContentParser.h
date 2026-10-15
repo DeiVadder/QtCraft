@@ -45,8 +45,8 @@ using QcWorldgenParser::parseTerrainSettings;
 using QcWorldTypeParser::parseFlat;
 using QcWorldTypeParser::parseVoid;
 
-QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
-QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
-QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
+[[nodiscard]] QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcContentParser

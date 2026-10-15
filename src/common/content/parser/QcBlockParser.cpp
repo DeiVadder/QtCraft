@@ -21,7 +21,7 @@ namespace {
 constexpr double minMachineSpeed = 0.01;
 constexpr double maxMachineSpeed = 100.0;
 
-std::optional<QcRenderLayer> renderLayerFromName(const QString &name)
+[[nodiscard]] std::optional<QcRenderLayer> renderLayerFromName(const QString &name)
 {
     if (name == u"opaque"_s) {
         return QcRenderLayer::Opaque;
@@ -498,7 +498,7 @@ void checkPartTextures(const QcBlockDefinition &block, QcJsonFieldReader &reader
 
 namespace QcBlockParser {
 
-QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"block"_s, {}};
     QcBlockDefinition block;

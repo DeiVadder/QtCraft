@@ -47,9 +47,9 @@ public:
     QList<Entry> list() const;
     // Creates the directory and world.json for a new world; returns the new entry. The generator's
     // setup runs when the world first opens.
-    QcResult<Entry> create(const QString &name, qint64 seed, const NewWorld &setup = {}) const;
+    [[nodiscard]] QcResult<Entry> create(const QString &name, qint64 seed, const NewWorld &setup = {}) const;
     // Deletes a world directory. Only plain folder names directly below the root are accepted.
-    QcStatus remove(const QString &folder) const;
+    [[nodiscard]] QcStatus remove(const QString &folder) const;
     QString directoryOf(const QString &folder) const;
 
 private:

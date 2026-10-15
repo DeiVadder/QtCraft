@@ -194,7 +194,7 @@ QList<File> files(const QcHandbook &handbook)
     return result;
 }
 
-QcStatus write(const QcHandbook &handbook, const QString &directory)
+[[nodiscard]] QcStatus write(const QcHandbook &handbook, const QString &directory)
 {
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));

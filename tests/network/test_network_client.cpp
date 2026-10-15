@@ -79,7 +79,7 @@ private slots:
         QCOMPARE(failed.count(), 0);
         QCOMPARE(stages.at(1).first().value<QcNetworkClient::Stage>(), QcNetworkClient::Stage::LoggingIn);
 
-        std::unique_ptr<QcClientSession> session(client.takeSession());
+        const std::unique_ptr<QcClientSession> session = client.takeSession();
         QVERIFY(session);
         QVERIFY(!client.takeSession());
         QCOMPARE(session->login().serverName(), u"Kiste"_s);
@@ -113,7 +113,7 @@ private slots:
         // With the right password the same client gets in.
         client.join(request(server->listeningPort(), u"Bob"_s, u"secret"_s));
         QVERIFY(joined.wait(timeoutMs));
-        delete client.takeSession();
+        QVERIFY(client.takeSession());
         QVERIFY(server->shutdown().has_value());
     }
 
@@ -177,7 +177,7 @@ private slots:
         QVERIFY(server);
         client.join(request(server->listeningPort(), u"Eve"_s));
         QVERIFY(joined.wait(timeoutMs));
-        delete client.takeSession();
+        QVERIFY(client.takeSession());
         QVERIFY(server->shutdown().has_value());
     }
 };

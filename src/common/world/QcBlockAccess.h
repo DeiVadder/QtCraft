@@ -14,7 +14,7 @@ public:
     virtual ~QcBlockAccess() = default;
 
     // std::nullopt when the chunk is not loaded. Positions above the world read air.
-    virtual std::optional<QcBlockId> blockAt(QcBlockPos pos) const = 0;
+    [[nodiscard]] virtual std::optional<QcBlockId> blockAt(QcBlockPos pos) const = 0;
     virtual const QcContentRegistry &content() const = 0;
     // Whether a block light source may lie within `reach` blocks of `pos`; worlds with chunk
     // palettes answer cheaply, the default always says yes.

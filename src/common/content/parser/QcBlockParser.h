@@ -8,6 +8,6 @@
 // Parses block definitions of content packs.
 namespace QcBlockParser {
 
-QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcBlockParser

@@ -100,7 +100,7 @@ void writeChunk(QDataStream &stream, const QcChunk &chunk)
     }
 }
 
-QcResult<std::shared_ptr<QcChunk>> readChunk(QDataStream &stream)
+[[nodiscard]] QcResult<std::shared_ptr<QcChunk>> readChunk(QDataStream &stream)
 {
     qint32 x = 0;
     qint32 z = 0;

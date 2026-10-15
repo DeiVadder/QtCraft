@@ -40,9 +40,9 @@ private:
     // Password, content and identity; sets the client's fingerprint, and `newIdentity` when the
     // name registers one.
     std::optional<QcMsg::Disconnect> verify(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity);
-    std::optional<QcMsg::Disconnect> verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity) const;
+    [[nodiscard]] std::optional<QcMsg::Disconnect> verifyIdentity(QcServerClient &client, const QcMsg::LoginResponse &response, QByteArray &newIdentity) const;
     // Bans, whitelist, the player limit and a player of the same name on the server.
-    std::optional<QcMsg::Disconnect> admission(const QcServerClient &client) const;
+    [[nodiscard]] std::optional<QcMsg::Disconnect> admission(const QcServerClient &client) const;
     void admit(QcServerClient &client, const QByteArray &newIdentity);
     // Derived once from the configured password and the world's salt (PBKDF2 costs time).
     const QByteArray &passwordKey();

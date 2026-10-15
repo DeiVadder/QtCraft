@@ -28,7 +28,7 @@ public:
     QcServerCrafting(QcServerState &state, QcServerInventory &inventory);
 
     // What the player's grid makes now (a recipe or a repair).
-    static std::optional<QcItemStack> resultOf(const QcContentRegistry &content, const QcServerClient &client);
+    [[nodiscard]] static std::optional<QcItemStack> resultOf(const QcContentRegistry &content, const QcServerClient &client);
 
     void takeCraftingResult(QcServerClient &client);
     void craftAll(QcServerClient &client);
@@ -45,7 +45,7 @@ private:
 
     // The grid of the current size as a size x size list, and the recipe it makes.
     static QList<QcItemStack> craftingView(const QcServerClient &client);
-    static std::optional<qsizetype> craftingMatch(const QcContentRegistry &content, const QcServerClient &client);
+    [[nodiscard]] static std::optional<qsizetype> craftingMatch(const QcContentRegistry &content, const QcServerClient &client);
     // Takes the crafting result once.
     CraftOutcome craftOnce(QcServerClient &client);
     // Takes the repair result (QcRepair) once.

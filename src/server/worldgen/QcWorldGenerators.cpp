@@ -19,7 +19,7 @@ bool isKnown(const QString &type)
     return types().contains(type);
 }
 
-QcStatus checkOptions(const QString &type, const QString &options, const QcContentRegistry &content)
+[[nodiscard]] QcStatus checkOptions(const QString &type, const QString &options, const QcContentRegistry &content)
 {
     if (!isKnown(type)) {
         return qcError(u"Unknown world type '%1' (%2)"_s.arg(type, types().join(u", "_s)));
@@ -46,7 +46,7 @@ QcStatus checkOptions(const QString &type, const QString &options, const QcConte
     return qcError(u"The world type '%1' takes no options"_s.arg(type));
 }
 
-QcResult<QString> optionsToStore(const QString &type, const QString &options, const QcContentRegistry &content)
+[[nodiscard]] QcResult<QString> optionsToStore(const QString &type, const QString &options, const QcContentRegistry &content)
 {
     if (const QcStatus checked = checkOptions(type, options, content); !checked) {
         return qcError(checked.error());

@@ -19,7 +19,7 @@ namespace QcAtlasTexture {
 QList<QImage> chain(const QList<QImage> &levels, int maxSize);
 
 // The first of `levels` within `maxSize` (or later) for which `creates` succeeds; unset when none does.
-std::optional<qsizetype> usableLevel(const QList<QImage> &levels, int maxSize, const std::function<bool(QSize)> &creates);
+[[nodiscard]] std::optional<qsizetype> usableLevel(const QList<QImage> &levels, int maxSize, const std::function<bool(QSize)> &creates);
 
 // The magenta tile drawn when the GPU takes no atlas at all.
 QImage placeholder();

@@ -27,7 +27,7 @@ private:
     void query(const QcCommandContext &context);
     // The chunks of the block columns from args[first] on: one column or two corners; nothing and a
     // reply when the words are no coordinates or the area is too large.
-    std::optional<QList<QcChunkPos>> area(const QcCommandContext &context, qsizetype first) const;
+    [[nodiscard]] std::optional<QList<QcChunkPos>> area(const QcCommandContext &context, qsizetype first) const;
 
     QcServerState &m_state;
 };

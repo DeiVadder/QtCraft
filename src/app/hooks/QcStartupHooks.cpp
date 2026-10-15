@@ -24,7 +24,7 @@ namespace {
 Q_LOGGING_CATEGORY(lcGame, "qtcraft.game")
 
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
-std::optional<int> delayOf(const QString &line, qsizetype space)
+[[nodiscard]] std::optional<int> delayOf(const QString &line, qsizetype space)
 {
     bool valid = false;
     const int delayMs = space > 1 ? QStringView(line).mid(1, space - 1).toInt(&valid) : 0;

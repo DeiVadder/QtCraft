@@ -42,7 +42,7 @@ void parseFamilyTranslations(const QJsonObject &json, QcPartFamily &family, QcJs
 }
 
 // Check the templates once with a stand-in material, so broken families fail at loading.
-QcStatus checkFamilyTemplates(const QcPartFamily &family, const QString &context, const QString &packNamespace)
+[[nodiscard]] QcStatus checkFamilyTemplates(const QcPartFamily &family, const QString &context, const QString &packNamespace)
 {
     QJsonObject sample = family.block;
     sample.insert(u"name"_s, u"qtcraft:sample_part"_s);
@@ -100,7 +100,7 @@ void parseMaterialBlock(const QJsonObject &json, QcMaterialDefinition &material,
 
 namespace QcMaterialParser {
 
-QcResult<QcPartFamily> parsePartFamily(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcPartFamily> parsePartFamily(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"part family"_s, {}};
     QcPartFamily family;
@@ -135,7 +135,7 @@ QcResult<QcPartFamily> parsePartFamily(const QJsonObject &json, const QString &p
     return family;
 }
 
-QcResult<QcMaterialDefinition> parseMaterial(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcMaterialDefinition> parseMaterial(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"material"_s, {}};
     QcMaterialDefinition material;

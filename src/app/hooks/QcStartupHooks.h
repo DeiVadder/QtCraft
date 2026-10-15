@@ -29,7 +29,7 @@ public:
     // The player's view direction when a world starts.
     QcPlayerInput initialIntent() const;
     void setSpawnColumn(int x, int z) { m_spawnColumn = std::array<int, 2>{x, z}; }
-    std::optional<std::array<int, 2>> spawnColumn() const { return m_spawnColumn; }
+    [[nodiscard]] std::optional<std::array<int, 2>> spawnColumn() const { return m_spawnColumn; }
     // Freezes the local player's pose ("walk", "sprint", "swing", "swim", "jump", "fall", "sneak", "death").
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
     QString forcedPose() const { return m_forcedPose; }

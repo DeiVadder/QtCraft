@@ -22,7 +22,7 @@ bool fits(const QcContentRegistry &content, QcItemStack stack, QcEquipmentSlot s
     return armour && armour->slot == slot && stack.count == 1;
 }
 
-std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmentSlot slot)
+[[nodiscard]] std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmentSlot slot)
 {
     for (const QcItemDefinition &item : content.items()) {
         if (item.armour && item.armour->slot == slot) {
@@ -32,7 +32,7 @@ std::optional<QcItemId> placeholder(const QcContentRegistry &content, QcEquipmen
     return std::nullopt;
 }
 
-std::optional<QcItemId> pointsIcon(const QcContentRegistry &content)
+[[nodiscard]] std::optional<QcItemId> pointsIcon(const QcContentRegistry &content)
 {
     const QcItemDefinition *best = nullptr;
     int bestPoints = -1;

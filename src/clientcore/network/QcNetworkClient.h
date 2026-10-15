@@ -6,7 +6,8 @@
 #include "QcSessionMessages.h"
 
 #include <QObject>
-#include <QPointer>
+
+#include <memory>
 
 class QcClientSession;
 class QcTcpConnector;
@@ -39,8 +40,8 @@ public:
     void cancel();
     Stage stage() const { return m_stage; }
     // The session after joined(): logged in, loading the world, its tick timer running. The caller
-    // takes it over (it has no parent); null before and once taken.
-    QcClientSession *takeSession();
+    // takes it over; null before and once taken.
+    std::unique_ptr<QcClientSession> takeSession();
 
 signals:
     void stageChanged(QcNetworkClient::Stage stage);
@@ -57,7 +58,9 @@ private:
 
     Request m_request;
     QcTcpConnector *m_connector = nullptr;
-    QPointer<QcClientSession> m_session;
+    // Deleted later, not at once, when the join ends: it may be the sender of the signal that
+    // ended it.
+    std::unique_ptr<QcClientSession> m_session;
     bool m_joined = false;
     Stage m_stage = Stage::Idle;
 };

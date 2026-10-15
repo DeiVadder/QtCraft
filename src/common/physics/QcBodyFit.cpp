@@ -72,7 +72,7 @@ bool overlapsBlocks(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::B
     return overlapsBlocks(world, QcPhysics::boxAt(feet, size.width, size.height), unloaded);
 }
 
-std::optional<QcVec3> clearFeet(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::BodySize size)
+[[nodiscard]] std::optional<QcVec3> clearFeet(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::BodySize size)
 {
     if (!overlapsBlocks(world, feet, size, Unloaded::Clear)) {
         return feet;

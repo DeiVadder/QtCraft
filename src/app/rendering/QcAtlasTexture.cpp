@@ -33,7 +33,7 @@ QList<QImage> chain(const QList<QImage> &levels, int maxSize)
     return chain;
 }
 
-std::optional<qsizetype> usableLevel(const QList<QImage> &levels, int maxSize, const std::function<bool(QSize)> &creates)
+[[nodiscard]] std::optional<qsizetype> usableLevel(const QList<QImage> &levels, int maxSize, const std::function<bool(QSize)> &creates)
 {
     const qsizetype first = std::max<qsizetype>(0, QcAtlasLayout::firstLevelWithin(levels, maxSize));
     for (qsizetype level = first; level < levels.size(); ++level) {

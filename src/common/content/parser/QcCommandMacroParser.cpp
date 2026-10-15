@@ -64,7 +64,7 @@ void parseLines(const QJsonObject &json, Macro &macro, QcJsonFieldReader &reader
 
 namespace QcCommandMacroParser {
 
-QcResult<QcCommandMacroDefinition> parseCommandMacro(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcCommandMacroDefinition> parseCommandMacro(const QJsonObject &json, const QString &packNamespace)
 {
     Q_UNUSED(packNamespace) // Players type the bare name; a later pack replaces an earlier macro.
     QcJsonFieldReader reader{json, u"command"_s, {}};

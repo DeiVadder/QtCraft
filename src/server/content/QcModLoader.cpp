@@ -338,7 +338,7 @@ QString dependencyProblem(const QcContentPackInfo &info, const QString &dependen
 }
 
 // Loads or fails the first pending mod (by id) that can be decided; false when all of them wait.
-bool decideNextPending(ResolveState &state)
+[[nodiscard]] bool decideNextPending(ResolveState &state)
 {
     QStringList ids = state.pending.keys();
     ids.sort();

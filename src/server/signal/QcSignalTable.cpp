@@ -8,7 +8,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-std::optional<QcBlockFace> faceNamed(const QString &name)
+[[nodiscard]] std::optional<QcBlockFace> faceNamed(const QString &name)
 {
     static const std::array<std::pair<QString, QcBlockFace>, 8> faces{{
         {u"north"_s, QcBlockFace::North},

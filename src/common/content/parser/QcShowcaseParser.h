@@ -8,6 +8,6 @@
 // Parses the showcase settings (worldgen/showcase.json, decision E-220).
 namespace QcShowcaseParser {
 
-QcResult<QcShowcaseDefinition> parseShowcase(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcShowcaseDefinition> parseShowcase(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcShowcaseParser

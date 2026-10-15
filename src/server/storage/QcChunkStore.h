@@ -65,7 +65,7 @@ public:
     // Finishes a save the journal names, removes staged files of a save that broke off and reads the
     // index of every region file. A damaged index or a file of an older version is an error naming
     // the file (damagedFile()).
-    QcStatus open();
+    [[nodiscard]] QcStatus open();
     // The kind and file (relative to the world directory) open() failed on; `journal`: the journal
     // of a save that broke off cannot be finished (damaged, or a staged file is lost).
     struct Damaged
@@ -80,7 +80,7 @@ public:
     QHash<QcChunkPos, Stored> catalog() const;
     // The data of a chunk: what waits to be written, else what is on disk. A blob that fails its
     // check is an error.
-    QcResult<Blobs> read(QcChunkPos chunk);
+    [[nodiscard]] QcResult<Blobs> read(QcChunkPos chunk);
     // Whether a kind of data of a chunk is on disk or waiting to be written.
     bool has(Kind kind, QcChunkPos chunk) const;
     // Hands over the data of a kind of a chunk for the next commit (none: the chunk has no data of
@@ -90,9 +90,9 @@ public:
     qsizetype pendingChunks() const;
     // Writes everything handed over and `files` as one save (see the class). On failure nothing
     // handed over is lost, the files included: it waits for the next commit.
-    QcStatus commit(const QList<WholeFile> &files);
+    [[nodiscard]] QcStatus commit(const QList<WholeFile> &files);
     // A whole file as the next commit writes it (waiting) or as it is on disk; none: no such file.
-    QcResult<std::optional<QByteArray>> readFile(const QString &name);
+    [[nodiscard]] QcResult<std::optional<QByteArray>> readFile(const QString &name);
     // Test hook: renames of a commit after this many fail (-1: none fail).
     void failRenamesAfter(int count) { m_renamesLeft = count; }
 
@@ -117,20 +117,20 @@ private:
     QString absolute(const QString &name) const;
     // Adds what is kept of `kind` to the catalog.
     void addToCatalog(Kind kind, QHash<QcChunkPos, Stored> &catalog) const;
-    QcStatus finishJournal();
+    [[nodiscard]] QcStatus finishJournal();
     void removeStaged() const;
-    QcStatus readIndexes();
+    [[nodiscard]] QcStatus readIndexes();
     // Stages the new file of `region` of `kind`; adds its step unless nothing changes.
-    QcStatus stageRegion(Kind kind, QcChunkPos region, QList<Step> &steps, QHash<QcChunkPos, QcRegionFile::Index> &written);
+    [[nodiscard]] QcStatus stageRegion(Kind kind, QcChunkPos region, QList<Step> &steps, QHash<QcChunkPos, QcRegionFile::Index> &written);
     // Stages every region with changes and the whole files; adds their steps.
-    QcStatus stageAll(QList<Step> &steps, std::array<QHash<QcChunkPos, QcRegionFile::Index>, kindCount> &written);
+    [[nodiscard]] QcStatus stageAll(QList<Step> &steps, std::array<QHash<QcChunkPos, QcRegionFile::Index>, kindCount> &written);
     // Notes size and checksum of the head of the file at `path` in `step`.
-    static QcStatus stamp(const QString &path, Step &step);
-    QcStatus writeJournal(const QList<Step> &steps) const;
-    QcStatus runSteps(const QList<Step> &steps);
+    [[nodiscard]] static QcStatus stamp(const QString &path, Step &step);
+    [[nodiscard]] QcStatus writeJournal(const QList<Step> &steps) const;
+    [[nodiscard]] QcStatus runSteps(const QList<Step> &steps);
     // After a commit broke off between its renames: finishes it from the journal and reads the
     // indexes again.
-    QcStatus reopenIfNeeded();
+    [[nodiscard]] QcStatus reopenIfNeeded();
 
     QString m_directory;
     std::array<QHash<QcChunkPos, QcRegionFile::Index>, kindCount> m_indexes;

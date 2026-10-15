@@ -41,14 +41,14 @@ ColumnLayout {
         Button {
             Layout.fillWidth: true
             text: qsTr("Front")
-            highlighted: panel.preview?.side === "front"
-            onClicked: panel.preview?.showSide("front")
+            highlighted: panel.preview?.side === CharacterPreview.Side.Front
+            onClicked: panel.preview?.showSide(CharacterPreview.Side.Front)
         }
         Button {
             Layout.fillWidth: true
             text: qsTr("Back")
-            highlighted: panel.preview?.side === "back"
-            onClicked: panel.preview?.showSide("back")
+            highlighted: panel.preview?.side === CharacterPreview.Side.Back
+            onClicked: panel.preview?.showSide(CharacterPreview.Side.Back)
         }
         Button {
             Layout.fillWidth: true

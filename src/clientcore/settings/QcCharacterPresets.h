@@ -24,7 +24,7 @@ public:
     void load(const QList<QcCharacterPreset> &presets);
 
     // The look of a row; none for a row that does not exist.
-    std::optional<QcAppearance> appearance(int row) const;
+    [[nodiscard]] std::optional<QcAppearance> appearance(int row) const;
     // A free place for another preset of the player.
     bool canSave() const { return m_saved.size() < QcCharacterProfile::maxPresets; }
     // Whether save(name) would succeed: a usable name and a free place or a preset of that name

@@ -35,7 +35,7 @@ private:
     QcArmourStand *target(const QcServerClient &client, const QString &word);
     QcArmourStand *standInView(const QcServerClient &client);
     // Where a summoned stand stands: three metres in front of the player, on the ground below.
-    std::optional<QcVec3> summonPosition(const QcServerClient &client) const;
+    [[nodiscard]] std::optional<QcVec3> summonPosition(const QcServerClient &client) const;
     static QString describe(const QcArmourStand &stand);
 
     QcServerState &m_state;

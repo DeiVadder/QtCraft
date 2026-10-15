@@ -28,6 +28,6 @@ File languages(const QStringList &ids);
 // Item names whose icons the pages of `handbook` show (entries, links, recipe cells), sorted.
 QStringList icons(const QcHandbook &handbook);
 // Writes `files` into `directory` (created when missing); existing files of the same names are replaced.
-QcStatus write(const QList<File> &files, const QString &directory);
+[[nodiscard]] QcStatus write(const QList<File> &files, const QString &directory);
 
 } // namespace QcHandbookWeb

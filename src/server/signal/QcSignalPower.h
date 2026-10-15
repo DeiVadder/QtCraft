@@ -20,7 +20,7 @@ public:
     QcSignalPower(const QcBlockAccess &world, const QcSignalTable &table);
 
     const QcSignalState &at(QcBlockPos pos) const;
-    std::optional<QcBlockId> blockAt(QcBlockPos pos) const { return m_world.blockAt(pos); }
+    [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const { return m_world.blockAt(pos); }
     const QcSignalTable &table() const { return m_table; }
 
     // Power the block `state` at `from` sends straight into the neighbouring cell towards `towards`.
@@ -41,7 +41,7 @@ public:
 
     // An unloaded chunk within two blocks of `pos` (what a component or dust there reads may lie in
     // it), if any: circuits wait for it instead of reading it as air (decision E-335).
-    std::optional<QcChunkPos> unloadedNear(QcBlockPos pos) const;
+    [[nodiscard]] std::optional<QcChunkPos> unloadedNear(QcBlockPos pos) const;
 
     // Cells beyond its six neighbours that the block `state` at `pos` powers: its strong target and
     // the blocks dust points at. Their neighbours notice when it changes.

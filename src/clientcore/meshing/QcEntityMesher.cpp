@@ -355,7 +355,7 @@ struct CapeSurfaces
     Surface edge;
 };
 
-std::optional<CapeSurfaces> capeSurfaces(const LayerPainter &paint, const QcAppearanceDefinition &cape)
+[[nodiscard]] std::optional<CapeSurfaces> capeSurfaces(const LayerPainter &paint, const QcAppearanceDefinition &cape)
 {
     const QcAppearanceLayer *outside = cape.layer(u"outside"_s);
     if (!outside) {

@@ -17,7 +17,7 @@ QString defaultPath()
     return QDir(QcDataRoot::path()).filePath(QString::fromLatin1(fileName));
 }
 
-QcResult<QByteArray> loadOrCreate(const QString &path)
+[[nodiscard]] QcResult<QByteArray> loadOrCreate(const QString &path)
 {
     QFile existing(path);
     if (existing.exists()) {

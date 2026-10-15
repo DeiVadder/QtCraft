@@ -27,7 +27,7 @@ public:
     void reset();
 
     // The block a standing entity stands on (its feet are on top of it); nullopt when not loaded.
-    static std::optional<QcBlockId> groundBelow(const QcVec3 &feet, const QcBlockAccess &world);
+    [[nodiscard]] static std::optional<QcBlockId> groundBelow(const QcVec3 &feet, const QcBlockAccess &world);
     // Step sound of the ground below `feet`, or an empty key when it makes none.
     static QString stepSound(const QcVec3 &feet, const QcBlockAccess &world);
 

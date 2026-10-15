@@ -45,7 +45,7 @@ public:
     void relocate(QcBlockPos from, QcBlockPos to);
     // The tick and priority of the first group of entries due at `now` or before (overdue ones
     // first), if any.
-    std::optional<std::pair<quint64, Priority>> nextGroup(quint64 now) const;
+    [[nodiscard]] std::optional<std::pair<quint64, Priority>> nextGroup(quint64 now) const;
     // Takes the entries of exactly that tick and priority.
     QList<QcBlockPos> takeGroup(quint64 due, Priority priority);
     qsizetype size() const { return m_byPos.size(); }

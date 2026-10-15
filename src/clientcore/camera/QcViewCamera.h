@@ -31,6 +31,6 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
 QcCameraMode next(QcCameraMode mode);
 const char *name(QcCameraMode mode);
 // "first", "behind", "front" or "side"; std::nullopt otherwise.
-std::optional<QcCameraMode> fromName(const QString &text);
+[[nodiscard]] std::optional<QcCameraMode> fromName(const QString &text);
 
 } // namespace QcViewCamera

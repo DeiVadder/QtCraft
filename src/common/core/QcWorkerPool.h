@@ -1,11 +1,13 @@
 #pragma once
 
-#include <QList>
+#include <QtGlobal>
 
 #include <condition_variable>
 #include <deque>
 #include <functional>
+#include <memory>
 #include <mutex>
+#include <vector>
 
 class QThread;
 
@@ -38,5 +40,5 @@ private:
     std::deque<std::function<void()>> m_jobs;
     int m_running = 0;
     bool m_stopping = false;
-    QList<QThread *> m_threads;
+    std::vector<std::unique_ptr<QThread>> m_threads;
 };

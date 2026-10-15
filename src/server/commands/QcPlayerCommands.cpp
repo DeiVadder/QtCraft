@@ -24,7 +24,7 @@ QString reasonOf(const QStringList &args, qsizetype first)
 
 // The cleaned player name of a command word; a word that names nobody (empty once cleaned, only
 // punctuation) gets an error instead of standing for "Player".
-std::optional<QString> nameOf(const QcCommandContext &context, const QString &word)
+[[nodiscard]] std::optional<QString> nameOf(const QcCommandContext &context, const QString &word)
 {
     const std::optional<QString> name = QcProfileValidation::validPlayerName(word);
     if (!name) {

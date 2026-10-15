@@ -20,6 +20,6 @@ bool overlapsBlocks(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::B
 // not loaded count as clear there, so a body at the edge of the loaded world stays), else one
 // metre up onto the top of the block it is in, a metre north, east, south or west, or a metre
 // down, never below y 0 (cells not loaded block these). Nothing when all of them are blocked.
-std::optional<QcVec3> clearFeet(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::BodySize size);
+[[nodiscard]] std::optional<QcVec3> clearFeet(const QcBlockAccess &world, const QcVec3 &feet, QcPhysics::BodySize size);
 
 } // namespace QcBodyFit

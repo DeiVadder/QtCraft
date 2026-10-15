@@ -27,6 +27,6 @@ QImage render(const QImage &top, const QImage &side, const QImage &tool, int siz
 
 // Renders the icon from the atlas textures qtcraft:grass_top, qtcraft:grass_side and
 // qtcraft:iron_pickaxe and writes every image of iconSetFiles() into `directory`.
-QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory);
+[[nodiscard]] QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory);
 
 } // namespace QcAppIcon

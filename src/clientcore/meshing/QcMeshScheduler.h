@@ -126,7 +126,7 @@ private:
     // Dirty sections not being meshed, nearest to the focus first.
     QList<quint64> nearestDirtyFirst() const;
     // Nullopt while a side neighbour of the chunk is missing.
-    std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
+    [[nodiscard]] std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
     void submitMesh(quint64 key, QcMeshInput input);
     // Records the time since the section's earliest unshown change, if any.
     void noteLatency(quint64 key);

@@ -12,9 +12,9 @@
 namespace QcProceduralTexture {
 
 // The spec of a definition; the error names the field that is wrong.
-QcResult<QcTextureSpec> spec(const QJsonObject &definition);
+[[nodiscard]] QcResult<QcTextureSpec> spec(const QJsonObject &definition);
 
 // The texture at `resolution` (a power of two from 16 to 512).
-QcResult<QImage> render(const QJsonObject &definition, int resolution);
+[[nodiscard]] QcResult<QImage> render(const QJsonObject &definition, int resolution);
 
 } // namespace QcProceduralTexture

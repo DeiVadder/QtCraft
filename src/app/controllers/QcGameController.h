@@ -46,7 +46,7 @@ class QcGameController : public QObject
     QML_NAMED_ELEMENT(GameController)
 
     Q_PROPERTY(QcWorldView *view READ view WRITE setView NOTIFY viewChanged FINAL)
-    Q_PROPERTY(QString phase READ phase NOTIFY phaseChanged FINAL)
+    Q_PROPERTY(QcGameController::Phase phase READ phase NOTIFY phaseChanged FINAL)
     Q_PROPERTY(QString statusText READ statusText NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
     Q_PROPERTY(QString overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
@@ -64,14 +64,18 @@ class QcGameController : public QObject
     Q_PROPERTY(QcMultiplayerController *multiplayer READ multiplayer CONSTANT FINAL)
 
 public:
+    // What the window shows: the main menu, the loading screen, the world, the error screen (a
+    // world that could not start or save; statusText says why) or the disconnect screen (the
+    // session ended, statusText says why). QML compares against GameController.Phase.Playing etc.
+    enum class Phase { Menu, Loading, Playing, Error, Disconnected };
+    Q_ENUM(Phase)
+
     explicit QcGameController(QObject *parent = nullptr);
     ~QcGameController() override;
 
     QcWorldView *view() const { return m_parts.view; }
     void setView(QcWorldView *view);
-    // "menu", "loading", "playing", "error" or "disconnected" (the session ended, statusText says
-    // why).
-    QString phase() const { return m_phase; }
+    Phase phase() const { return m_phase; }
     QString statusText() const { return m_statusText; }
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
@@ -85,19 +89,19 @@ public:
     void openChat(const QString &start);
     bool persistent() const { return !m_worldDirectory.isEmpty(); }
 
-    QcSettingsController *settings() const { return m_settings; }
-    QcWorldLibraryController *library() const { return m_library; }
-    QcPlayerController *player() const { return m_player; }
-    QcHudState *hud() const { return m_hud; }
-    QcHandbookController *handbook() const { return m_handbook; }
-    QcGameInput *input() const { return m_input; }
-    QcPreviewSource *preview() const { return m_preview; }
+    QcSettingsController *settings() const { return m_settings.get(); }
+    QcWorldLibraryController *library() const { return m_library.get(); }
+    QcPlayerController *player() const { return m_player.get(); }
+    QcHudState *hud() const { return m_hud.get(); }
+    QcHandbookController *handbook() const { return m_handbook.get(); }
+    QcGameInput *input() const { return m_input.get(); }
+    QcPreviewSource *preview() const { return m_preview.get(); }
     // Command line test hooks and the benchmark.
-    QcStartupHooks *startup() const { return m_startup; }
+    QcStartupHooks *startup() const { return m_startup.get(); }
     // Joining and hosting network games (decision E-251).
-    QcMultiplayerController *multiplayer() const { return m_multiplayer; }
+    QcMultiplayerController *multiplayer() const { return m_multiplayer.get(); }
     // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
-    void startRemoteSession(QcClientSession *session);
+    void startRemoteSession(std::unique_ptr<QcClientSession> session);
     // The mods that went into the content of the running world.
     const QList<QcModStatus> &loadedMods() const { return m_loadedMods; }
 
@@ -143,15 +147,15 @@ public:
     static QString damagedFileMessage(const QcServerPersistence::DamagedFile &damaged);
 
 private:
-    void setPhase(const QString &phase, const QString &status = {});
+    void setPhase(Phase phase, const QString &status = {});
     void attachWindow(QQuickWindow *window);
     // Ends the session and the server; returns the result of the final save.
-    QcStatus stopSession();
+    [[nodiscard]] QcStatus stopSession();
     // Name, seed, generator type and options of `world`; an empty directory runs it unsaved.
     void startWorld(const QString &directory, const QcWorldInfo &world);
     // Base game plus enabled mods for a new world; null (and the error phase) when it cannot load.
     std::shared_ptr<const QcContentRegistry> loadContent();
-    bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
+    [[nodiscard]] bool startServer(const std::shared_ptr<const QcContentRegistry> &content, const QcWorldInfo &world);
     // Wires the new session (m_parts.session) to meshes, HUD, sounds and screens.
     void beginSession();
     void connectSessionWorld();
@@ -169,23 +173,25 @@ private:
     // Seconds since the last frame (at most 0.1).
     float advanceFrameClocks();
 
+    // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
+    // in that order and die in the reverse one, before anything they refer to.
     QcSessionParts m_parts;
     QcItemIcons m_icons;
     // The atlas the world is drawn with (decision E-301).
     std::shared_ptr<const QcTextureAtlas> m_atlas;
-    QcAudioEngine *m_audio = nullptr;
-    QcWorldLibraryController *m_library = nullptr;
-    QcSettingsController *m_settings = nullptr;
-    QcPlayerController *m_player = nullptr;
-    QcHudState *m_hud = nullptr;
-    QcHandbookController *m_handbook = nullptr;
-    QcGameInput *m_input = nullptr;
-    QcPreviewSource *m_preview = nullptr;
-    QcBenchmarkRun *m_benchmark = nullptr;
-    QcStartupHooks *m_startup = nullptr;
-    QcMultiplayerController *m_multiplayer = nullptr;
+    std::unique_ptr<QcAudioEngine> m_audio;
+    std::unique_ptr<QcWorldLibraryController> m_library;
+    std::unique_ptr<QcSettingsController> m_settings;
+    std::unique_ptr<QcPlayerController> m_player;
+    std::unique_ptr<QcHudState> m_hud;
+    std::unique_ptr<QcHandbookController> m_handbook;
+    std::unique_ptr<QcGameInput> m_input;
+    std::unique_ptr<QcPreviewSource> m_preview;
+    std::unique_ptr<QcBenchmarkRun> m_benchmark;
+    std::unique_ptr<QcStartupHooks> m_startup;
+    std::unique_ptr<QcMultiplayerController> m_multiplayer;
     QcRenderBridge m_render;
-    QString m_phase = QStringLiteral("menu");
+    Phase m_phase = Phase::Menu;
     QString m_statusText;
     bool m_inputEnabled = true;
     QString m_overlay;
@@ -196,6 +202,6 @@ private:
     QElapsedTimer m_frameClock;
     // The player's feet as drawn in the latest frame (interpolated between ticks).
     QcVec3 m_drawnFeet;
-    QcStatsLog *m_statsLog = nullptr;
     QList<QcModStatus> m_loadedMods;
+    std::unique_ptr<QcStatsLog> m_statsLog;
 };

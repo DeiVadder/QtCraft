@@ -12,7 +12,7 @@ namespace {
 constexpr QDataStream::Version streamVersion = QDataStream::Qt_6_8;
 
 template<std::size_t... I>
-QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
+[[nodiscard]] QcResult<QcMessage> decodeByTag(quint16 tag, QDataStream &stream, std::index_sequence<I...>)
 {
     QcResult<QcMessage> result = qcError(u"Unknown message type %1"_s.arg(tag));
     const auto tryAlternative = [&]<std::size_t Index>() {
@@ -64,7 +64,7 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
     return clientMessage == (sender == Peer::Client);
 }
 
-QcResult<QcMessage> decode(const QByteArray &frame, Peer sender)
+[[nodiscard]] QcResult<QcMessage> decode(const QByteArray &frame, Peer sender)
 {
     if (frame.size() > maxFrameBytes) {
         return qcError(u"Frame too large"_s);

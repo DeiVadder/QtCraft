@@ -74,7 +74,7 @@ struct QcGameSettings
 
     // A missing or unreadable file gives the defaults.
     static QcGameSettings load(const QString &path);
-    QcStatus save(const QString &path) const;
+    [[nodiscard]] QcStatus save(const QString &path) const;
 
     friend bool operator==(const QcGameSettings &, const QcGameSettings &) = default;
 };

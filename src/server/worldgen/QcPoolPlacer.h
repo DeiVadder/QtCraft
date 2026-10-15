@@ -28,7 +28,7 @@ public:
 
 private:
     // The nearest cave floor at or below `start`: air standing on a block that holds liquid.
-    std::optional<int> caveFloor(const QcChunk &chunk, QcBlockPos start, int minY) const;
+    [[nodiscard]] std::optional<int> caveFloor(const QcChunk &chunk, QcBlockPos start, int minY) const;
     // Sinks a pool below the air block `floor` (chunk-local); `attempt` varies its radius.
     void sink(QcChunk &chunk, const Pool &pool, QcBlockPos floor, int attempt) const;
     // One layer of a bowl: its centre (at the layer's height), index from the top and radius.

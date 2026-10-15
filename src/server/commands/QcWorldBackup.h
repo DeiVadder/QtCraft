@@ -48,11 +48,11 @@ QString defaultRoot(const QString &worldDirectory);
 // Whether a label may be used: empty, or up to maxLabelLength letters, digits, '_' and '-'.
 bool isValidLabel(const QString &label);
 // Checks the request and freezes the world's files (in the server's thread, after saving).
-QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now);
+[[nodiscard]] QcResult<Snapshot> snapshot(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now);
 // Copies a snapshot into its target and removes the staging folder (any thread). On failure no
 // backup and no staging folder is left.
-QcResult<Summary> complete(const Snapshot &snapshot);
+[[nodiscard]] QcResult<Summary> complete(const Snapshot &snapshot);
 // Both in one go.
-QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now);
+[[nodiscard]] QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now);
 
 } // namespace QcWorldBackup

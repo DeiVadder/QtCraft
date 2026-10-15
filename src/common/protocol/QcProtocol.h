@@ -21,10 +21,10 @@ bool isSentBy(std::size_t messageIndex, Peer sender);
 QByteArray encode(const QcMessage &message);
 // Decodes a frame received from `sender`; message types that peer must not send are rejected
 // before their payload is read.
-QcResult<QcMessage> decode(const QByteArray &frame, Peer sender);
+[[nodiscard]] QcResult<QcMessage> decode(const QByteArray &frame, Peer sender);
 
 // Chunk encoding (palette plus run-length encoded indices per section), shared with persistence.
 void writeChunk(QDataStream &stream, const QcChunk &chunk);
-QcResult<std::shared_ptr<QcChunk>> readChunk(QDataStream &stream);
+[[nodiscard]] QcResult<std::shared_ptr<QcChunk>> readChunk(QDataStream &stream);
 
 } // namespace QcProtocol

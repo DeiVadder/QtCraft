@@ -29,7 +29,7 @@ QString qcEquipmentSlotName(QcEquipmentSlot slot)
     return QStringLiteral("feet");
 }
 
-std::optional<QcEquipmentSlot> qcEquipmentSlotFromName(const QString &name)
+[[nodiscard]] std::optional<QcEquipmentSlot> qcEquipmentSlotFromName(const QString &name)
 {
     for (const QcEquipmentSlot slot : {QcEquipmentSlot::Head, QcEquipmentSlot::Chest, QcEquipmentSlot::Legs, QcEquipmentSlot::Feet}) {
         if (qcEquipmentSlotName(slot) == name) {

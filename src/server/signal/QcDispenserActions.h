@@ -51,7 +51,7 @@ private:
     };
 
     // The shot of one dispenser, or nothing when it is empty or no dispenser.
-    std::optional<Shot> aim(QcBlockPos pos) const;
+    [[nodiscard]] std::optional<Shot> aim(QcBlockPos pos) const;
     // Droppers put their items into containers in front; returns the other shots.
     QList<Shot> insertDropped(const QList<Shot> &shots, QcInventoryAccess &access);
     // The filled item an empty one becomes when it takes `liquid`, or empty.

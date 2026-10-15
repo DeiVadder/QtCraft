@@ -42,7 +42,7 @@ bool readPos(QDataStream &stream, QcChunkPos chunk, QcBlockPos &pos)
 
 // Reads a list of `count` entries with `read`, which fails on damaged data; positions must not repeat.
 template<typename Read>
-bool readEntries(QDataStream &stream, quint32 limit, Read read)
+[[nodiscard]] bool readEntries(QDataStream &stream, quint32 limit, Read read)
 {
     quint32 count = 0;
     if (!QcStreamLimits::readCount(stream, limit, count)) {
@@ -261,7 +261,7 @@ QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &co
     return blob;
 }
 
-QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+[[nodiscard]] QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
                                      QStringList &warnings, QSet<QString> &reported)
 {
     QDataStream stream(blob);

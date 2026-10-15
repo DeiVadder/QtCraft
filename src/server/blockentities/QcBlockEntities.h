@@ -239,7 +239,7 @@ public:
     // (tests and checks).
     QList<QcChunkPos> chunks() const { return m_byChunk.keys(); }
     const ChunkIndex *chunkIndex(QcChunkPos pos) const;
-    std::optional<Chunk> chunk(QcChunkPos pos) const;
+    [[nodiscard]] std::optional<Chunk> chunk(QcChunkPos pos) const;
     // A chunk left the world (QcServerWorld::unloadChunk): containers that hold nothing and rest
     // and machines that are idle go; they come back with their blocks when the chunk arrives.
     void chunkLeft(QcChunkPos pos);

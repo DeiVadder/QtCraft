@@ -122,7 +122,7 @@ Item {
 
                 Image {
                     anchors.fill: parent
-                    source: hud.game.phase === "playing" && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
+                    source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
                     cache: false
                     sourceSize: Qt.size(20, 20)
                     smooth: false
@@ -137,7 +137,7 @@ Item {
                     Image {
                         width: plate.width
                         height: plate.height
-                        source: hud.game.phase === "playing" && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
+                        source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? "image://items/" + hud.game.player.armourIcon : ""
                         cache: false
                         sourceSize: Qt.size(20, 20)
                         smooth: false
@@ -223,7 +223,7 @@ Item {
                 Image {
                     anchors.fill: parent
                     // Icons exist once the content arrived; the provider is asked again then.
-                    source: hud.game.phase === "playing" ? "image://items/qtcraft:cooked_porkchop" : ""
+                    source: hud.game.phase === GameController.Phase.Playing ? "image://items/qtcraft:cooked_porkchop" : ""
                     cache: false
                     sourceSize: Qt.size(22, 22)
                     smooth: false
@@ -240,7 +240,7 @@ Item {
                         anchors.right: parent.right
                         width: drumstick.width
                         height: drumstick.height
-                        source: hud.game.phase === "playing" ? "image://items/qtcraft:cooked_porkchop" : ""
+                        source: hud.game.phase === GameController.Phase.Playing ? "image://items/qtcraft:cooked_porkchop" : ""
                         cache: false
                         sourceSize: Qt.size(22, 22)
                         smooth: false

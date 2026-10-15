@@ -2,6 +2,7 @@
 
 #include "QcLoginMessages.h"
 #include "QcMultiplayerSettings.h"
+#include "QcNetworkClient.h"
 #include "QcPlayerList.h"
 #include "QcResult.h"
 
@@ -14,7 +15,6 @@
 #include <optional>
 
 class QcGameController;
-class QcNetworkClient;
 class QcSettingsController;
 class QcWorldLibraryController;
 struct QcSessionParts;
@@ -28,8 +28,8 @@ class QcMultiplayerController : public QObject
     QML_ANONYMOUS
     // A join is under way (connecting or logging in).
     Q_PROPERTY(bool joining READ joining NOTIFY joiningChanged FINAL)
-    // "connecting", "loggingIn" or "" while no join is under way.
-    Q_PROPERTY(QString joinStage READ joinStage NOTIFY joiningChanged FINAL)
+    // NetworkClient.Stage.Connecting or LoggingIn; Idle while no join is under way.
+    Q_PROPERTY(QcNetworkClient::Stage joinStage READ joinStage NOTIFY joiningChanged FINAL)
     // The address of the last join (for "join again" after a disconnect).
     Q_PROPERTY(QString lastAddress READ lastAddress NOTIFY joiningChanged FINAL)
     // The port the running world listens on; 0 when it is not open to the network.
@@ -46,7 +46,7 @@ public:
                             const QcWorldLibraryController &library, QObject *parent = nullptr);
 
     bool joining() const;
-    QString joinStage() const;
+    QcNetworkClient::Stage joinStage() const;
     QString lastAddress() const { return m_lastAddress; }
     int lanPort() const { return m_lanPort; }
     bool networkGame() const { return m_networkGame; }
@@ -80,7 +80,7 @@ private:
     void onSessionStarted();
     void setNetworkGame(bool networkGame);
     // Id, version and hash of the packs this game would load, cached (decision E-277).
-    QcResult<QList<QcPackFingerprint>> contentPacks();
+    [[nodiscard]] QcResult<QList<QcPackFingerprint>> contentPacks();
 
     QcGameController &m_game;
     QcSessionParts &m_parts;

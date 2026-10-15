@@ -25,6 +25,6 @@ QString directory(const QString &applicationDirectory);
 // complete; on failure only that folder is removed. Linked mod folders and manifests, other links
 // and special files are skipped.
 // Returns the ids of the installed mods; an empty list when nothing was to be done.
-QcResult<QStringList> installDisabled(const QString &source, const QString &modsDirectory);
+[[nodiscard]] QcResult<QStringList> installDisabled(const QString &source, const QString &modsDirectory);
 
 } // namespace QcBundledMods

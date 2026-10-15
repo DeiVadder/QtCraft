@@ -20,49 +20,49 @@ ApplicationWindow {
 
         objectName: "game"
         view: worldView
-        inputEnabled: game.phase === "playing"
+        inputEnabled: game.phase === GameController.Phase.Playing
     }
 
     WorldView {
         id: worldView
 
         anchors.fill: parent
-        visible: game.phase === "playing" || game.phase === "loading"
+        visible: game.phase === GameController.Phase.Playing || game.phase === GameController.Phase.Loading
     }
 
     Hud {
         anchors.fill: parent
-        visible: game.phase === "playing" && !game.player.dead
+        visible: game.phase === GameController.Phase.Playing && !game.player.dead
         game: game
     }
 
     InventoryScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "inventory"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "inventory"
         game: game
     }
 
     CreativeScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "creative"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "creative"
         game: game
     }
 
     FurnaceScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "furnace"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "furnace"
         game: game
     }
 
     ChestScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "chest"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "chest"
         game: game
     }
 
     PauseMenu {
         anchors.fill: parent
-        visible: game.phase === "playing"
+        visible: game.phase === GameController.Phase.Playing
                  && ["pause", "settings", "controls", "debug", "texturepacks", "character", "lan"].includes(game.overlay)
         game: game
     }
@@ -70,42 +70,42 @@ ApplicationWindow {
     // While the player list key is held; over the world and the HUD, under the screens.
     PlayerListOverlay {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "" && game.input.playerListHeld
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "" && game.input.playerListHeld
         game: game
     }
 
     ChatOverlay {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.overlay === "chat"
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "chat"
         game: game
     }
 
     DeathScreen {
         anchors.fill: parent
-        visible: game.phase === "playing" && game.player.dead
+        visible: game.phase === GameController.Phase.Playing && game.player.dead
         game: game
     }
 
     MainMenu {
         anchors.fill: parent
-        visible: game.phase === "menu"
+        visible: game.phase === GameController.Phase.Menu
         game: game
         onQuitRequested: Qt.quit()
     }
 
     MessageScreen {
         anchors.fill: parent
-        visible: game.phase === "loading" || game.phase === "error"
+        visible: game.phase === GameController.Phase.Loading || game.phase === GameController.Phase.Error
         text: game.statusText
         // Loading a network server's world can be cancelled.
-        showBackButton: game.phase === "error" || game.multiplayer.networkGame
-        backText: game.phase === "error" ? qsTr("Back to menu") : qsTr("Cancel")
+        showBackButton: game.phase === GameController.Phase.Error || game.multiplayer.networkGame
+        backText: game.phase === GameController.Phase.Error ? qsTr("Back to menu") : qsTr("Cancel")
         onBackRequested: game.leaveGame()
     }
 
     DisconnectScreen {
         anchors.fill: parent
-        visible: game.phase === "disconnected"
+        visible: game.phase === GameController.Phase.Disconnected
         game: game
     }
 

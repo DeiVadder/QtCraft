@@ -2,7 +2,7 @@
 
 namespace QcBaseContent {
 
-QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &warnings)
+[[nodiscard]] QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &warnings)
 {
     QcResult<QcContentPackInfo> info = QcContentPackLoader::load(QString::fromLatin1(resourceDirectory), registry, warnings);
     if (info) {
@@ -11,7 +11,7 @@ QcResult<QcContentPackInfo> loadInto(QcContentRegistry &registry, QStringList &w
     return info;
 }
 
-QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings)
+[[nodiscard]] QcResult<std::shared_ptr<QcContentRegistry>> load(QStringList &warnings)
 {
     auto registry = std::make_shared<QcContentRegistry>();
     const QcResult<QcContentPackInfo> info = loadInto(*registry, warnings);

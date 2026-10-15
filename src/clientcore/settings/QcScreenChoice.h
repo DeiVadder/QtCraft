@@ -31,7 +31,7 @@ public:
     // `request`: "builtin" (the built-in panel; else a screen whose name says "built-in"; else the
     // primary screen), a screen index ("0", "1", ...) or a name (exact, else contained, ignoring
     // case; else the primary screen). Empty request or no screens: std::nullopt.
-    static std::optional<Result> choose(const QList<Screen> &screens, const QString &request);
+    [[nodiscard]] static std::optional<Result> choose(const QList<Screen> &screens, const QString &request);
     // A window of `size` centred on `available`, shrunk to fit inside it.
     static QRect placeInside(QRect available, QSize size);
 };

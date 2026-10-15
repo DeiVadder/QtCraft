@@ -49,14 +49,14 @@ struct QcServerSettings
     QStringList limitWarnings;
 
     // Reads a settings file; a missing file gives the defaults.
-    static QcResult<QcServerSettings> read(const QString &path);
-    static QcResult<QcServerSettings> fromJson(const QJsonObject &json);
+    [[nodiscard]] static QcResult<QcServerSettings> read(const QString &path);
+    [[nodiscard]] static QcResult<QcServerSettings> fromJson(const QJsonObject &json);
     QJsonObject toJson() const;
     // Writes the file (with every key, so it documents itself).
-    QcStatus write(const QString &path) const;
+    [[nodiscard]] QcStatus write(const QString &path) const;
 
     // The listener's address: the bind address, or Any.
-    QcResult<QHostAddress> address() const;
+    [[nodiscard]] QcResult<QHostAddress> address() const;
     // The values that concern the game server and the listener.
     void applyTo(QcServerConfig &config) const;
     QcNetworkConfig networkConfig() const;

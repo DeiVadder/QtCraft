@@ -16,6 +16,6 @@ inline constexpr char fileName[] = "player.key";
 QString defaultPath();
 // Reads the key; when the file does not exist, makes a new key and writes it. A damaged file is an
 // error (it is not replaced: the identity on every server hangs on it).
-QcResult<QByteArray> loadOrCreate(const QString &path);
+[[nodiscard]] QcResult<QByteArray> loadOrCreate(const QString &path);
 
 } // namespace QcPlayerKey

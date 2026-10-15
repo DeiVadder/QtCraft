@@ -30,7 +30,7 @@ bool hasMarkup(const QString &name);
 // maxPlayerNameLength code points cut between graphemes (QcNameText::clean); std::nullopt when no
 // letter, digit or symbol is left (empty, only spaces or punctuation) or when it holds one of
 // markupCharacters. Commands refuse such names, the login refuses names with markup characters.
-std::optional<QString> validPlayerName(const QString &requested);
+[[nodiscard]] std::optional<QString> validPlayerName(const QString &requested);
 // The same with "Player" for a name that names nobody (Hello).
 QString playerName(const QString &requested);
 

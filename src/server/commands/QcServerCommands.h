@@ -52,7 +52,7 @@ public:
 
     const QcCommandRegistry &registry() const { return m_registry; }
     // For C++ extensions (docs/Modding.md): adds a command; fails for taken names.
-    QcStatus add(QcCommandSpec spec) { return m_registry.add(std::move(spec)); }
+    [[nodiscard]] QcStatus add(QcCommandSpec spec) { return m_registry.add(std::move(spec)); }
 
 private:
     // Macros run their lines with `depth` 1 and cannot start further macros.

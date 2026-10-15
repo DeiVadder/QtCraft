@@ -11,7 +11,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Accepts #RRGGBB and #RRGGBBAA.
-std::optional<QColor> parseColor(const QJsonValue &value)
+[[nodiscard]] std::optional<QColor> parseColor(const QJsonValue &value)
 {
     const QString text = value.toString();
     if (!text.startsWith(u'#') || (text.size() != 7 && text.size() != 9)) {
@@ -38,7 +38,7 @@ std::optional<QColor> parseColor(const QJsonValue &value)
 
 namespace QcProceduralTexture {
 
-QcResult<QcTextureSpec> spec(const QJsonObject &definition)
+[[nodiscard]] QcResult<QcTextureSpec> spec(const QJsonObject &definition)
 {
     const std::optional<QcTextureSpec::Pattern> pattern = qcTexturePatternFromName(definition.value(u"pattern"_s).toString());
     const std::optional<QColor> primary = parseColor(definition.value(u"primary"_s));
@@ -61,7 +61,7 @@ QcResult<QcTextureSpec> spec(const QJsonObject &definition)
     return spec;
 }
 
-QcResult<QImage> render(const QJsonObject &definition, int resolution)
+[[nodiscard]] QcResult<QImage> render(const QJsonObject &definition, int resolution)
 {
     const QcResult<QcTextureSpec> parsed = spec(definition);
     if (!parsed) {

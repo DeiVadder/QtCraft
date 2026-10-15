@@ -15,7 +15,7 @@ QString qualified(const QString &name)
     return name.contains(u':') ? name : u"qtcraft:"_s + name;
 }
 
-std::optional<int> blockCoordinate(const QString &word, std::optional<int> origin)
+[[nodiscard]] std::optional<int> blockCoordinate(const QString &word, std::optional<int> origin)
 {
     // Read and added in 64 bits, so neither the words nor the sum can overflow before the limit
     // check.
@@ -35,7 +35,7 @@ std::optional<int> blockCoordinate(const QString &word, std::optional<int> origi
     return int(value);
 }
 
-std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype first, std::optional<QcBlockPos> origin)
+[[nodiscard]] std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype first, std::optional<QcBlockPos> origin)
 {
     if (words.size() < first + 3) {
         return std::nullopt;
@@ -52,7 +52,7 @@ std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype firs
 
 namespace {
 
-std::optional<double> pointCoordinate(const QString &word, std::optional<double> origin)
+[[nodiscard]] std::optional<double> pointCoordinate(const QString &word, std::optional<double> origin)
 {
     bool ok = false;
     if (!word.startsWith(u'~')) {
@@ -72,7 +72,7 @@ std::optional<double> pointCoordinate(const QString &word, std::optional<double>
 
 } // namespace
 
-std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::optional<QcVec3> origin)
+[[nodiscard]] std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::optional<QcVec3> origin)
 {
     if (words.size() < first + 3) {
         return std::nullopt;
@@ -87,7 +87,7 @@ std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::opti
     return QcVec3{*x, *y, *z};
 }
 
-std::optional<int> count(const QStringList &words, qsizetype index, int fallback, int low, int high)
+[[nodiscard]] std::optional<int> count(const QStringList &words, qsizetype index, int fallback, int low, int high)
 {
     if (words.size() <= index) {
         return fallback;
@@ -98,7 +98,7 @@ std::optional<int> count(const QStringList &words, qsizetype index, int fallback
     return ok && value >= low && value <= high ? std::optional<int>(value) : std::nullopt;
 }
 
-std::optional<bool> toggle(const QString &word)
+[[nodiscard]] std::optional<bool> toggle(const QString &word)
 {
     if (word == u"true"_s || word == u"on"_s) {
         return true;

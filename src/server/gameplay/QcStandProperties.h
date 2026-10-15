@@ -18,7 +18,7 @@ namespace QcStandProperties {
 
 // Applies one property (`args[0]`, then its values); false (and the stand partly unchanged) when
 // the property or a value is invalid.
-bool apply(const QcContentRegistry &content, QcArmourStand &stand, const QStringList &args);
+[[nodiscard]] bool apply(const QcContentRegistry &content, QcArmourStand &stand, const QStringList &args);
 // The same for a line of words ("pose head 10 0 0").
 bool applyLine(const QcContentRegistry &content, QcArmourStand &stand, const QString &line);
 // The armour items of a set (`qtcraft:iron`), else the one item of that name; empty when there is none.

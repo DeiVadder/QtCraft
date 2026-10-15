@@ -33,10 +33,10 @@ public:
     static constexpr QStringView lockFileName = u"session.lock";
 
     // Opens or creates the world directory given in the config (no-op without one).
-    QcStatus open();
+    [[nodiscard]] QcStatus open();
     // Writes everything and waits for it; the first error is returned (see QcServer::save). No-op
     // without storage.
-    QcStatus save();
+    [[nodiscard]] QcStatus save();
     // The same in the background (autosave, a player leaving): the tick does not wait for the disk;
     // results come from takeNewFailures().
     void saveInBackground();
@@ -52,7 +52,7 @@ public:
     // Waits until everything handed to the storage is written (tests, shutting down).
     void waitForStorage();
     bool hasStorage() const { return m_storage.has_value(); }
-    QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
+    [[nodiscard]] QcResult<std::optional<QcPlayerData>> readPlayer(const QString &name, QStringList &warnings) const;
     // Problems found while opening the world (missing mods, unknown blocks); it still opened.
     const QStringList &openWarnings() const { return m_openWarnings; }
     // Logs the warnings and keeps them for the players.
@@ -76,13 +76,13 @@ public:
 
 private:
     // Takes the world's lock file; fails when another server holds it.
-    QcStatus lockWorld();
-    QcStatus createInfo(const QcWorldStorage &storage);
+    [[nodiscard]] QcStatus lockWorld();
+    [[nodiscard]] QcStatus createInfo(const QcWorldStorage &storage);
     // Reads world.json; differences of the content packs are added to `warnings`.
-    QcStatus readInfo(const QcWorldStorage &storage, QStringList &warnings);
+    [[nodiscard]] QcStatus readInfo(const QcWorldStorage &storage, QStringList &warnings);
     // Opens the chunk storage (a journal of a save that broke off is finished) and hands it to the world.
-    QcStatus openChunks(const QString &directory);
-    QcStatus readBlockUpdates(const QcWorldStorage &storage);
+    [[nodiscard]] QcStatus openChunks(const QString &directory);
+    [[nodiscard]] QcStatus readBlockUpdates(const QcWorldStorage &storage);
     // Hands everything of a save to the storage, the players' files with the world's in one journal
     // (decision E-378); returns the id of the save and an error found while collecting.
     std::pair<quint64, QcStatus> submitSave();
@@ -90,7 +90,7 @@ private:
     QcChunkStore::WholeFile playerFile(const QcWorldStorage &storage, const QcServerClient &client) const;
     // Notes the result of a finished save (see takeNewFailure).
     void noteResult(const QcStatus &status);
-    QcResult<std::optional<QByteArray>> blockUpdateBytes() const;
+    [[nodiscard]] QcResult<std::optional<QByteArray>> blockUpdateBytes() const;
 
     QcServerState &m_state;
     QcServerBlocks &m_blocks;

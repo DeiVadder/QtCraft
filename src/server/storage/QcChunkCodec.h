@@ -19,7 +19,7 @@ namespace QcChunkCodec {
 QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content);
 // `chunk` is where the blob says it belongs; anything else is damage. `reported` holds the names
 // warned about so far, so each unknown name is reported once per world.
-QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
+[[nodiscard]] QcResult<std::shared_ptr<QcChunk>> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content,
                                           QStringList &warnings, QSet<QString> &reported);
 
 } // namespace QcChunkCodec

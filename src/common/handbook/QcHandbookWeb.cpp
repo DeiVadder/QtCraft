@@ -98,7 +98,7 @@ QStringList icons(const QcHandbook &handbook)
     return sorted;
 }
 
-QcStatus write(const QList<File> &files, const QString &directory)
+[[nodiscard]] QcStatus write(const QList<File> &files, const QString &directory)
 {
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));

@@ -106,7 +106,7 @@ public:
     void closeCrafting();
     // The machine screen the server opened (position, category, slots, progress); see machineOpen().
     bool machineOpen() const { return m_machine.isOpen(); }
-    std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
+    [[nodiscard]] std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
     QString machineCategory() const { return m_machine.category(); }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool containerOpen() const { return m_machine.isContainer(); }
@@ -125,7 +125,7 @@ public:
     // The mirror itself: its snapshot clock and buffering (decision E-271).
     QcClientEntities &entityMirror() { return m_entities; }
     // Entity under the crosshair when it is closer than any targeted block.
-    std::optional<quint32> targetEntity() const { return m_targetEntity; }
+    [[nodiscard]] std::optional<quint32> targetEntity() const { return m_targetEntity; }
     // Hits the targeted entity; returns false without one.
     bool attack();
     void respawn();

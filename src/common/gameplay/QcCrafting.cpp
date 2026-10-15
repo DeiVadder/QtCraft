@@ -131,7 +131,7 @@ void addShapedRequirements(QList<std::pair<QString, int>> &needed, const QcRecip
 
 } // namespace
 
-std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size)
+[[nodiscard]] std::optional<qsizetype> match(const QcContentRegistry &content, const QList<QcItemStack> &grid, int size)
 {
     if (grid.size() < qsizetype(size) * size) {
         return std::nullopt;

@@ -56,7 +56,7 @@ public:
 
     // Fails for invalid names, a missing handler or texts, and names or aliases that are taken.
     // Pointers from find() and commands() stay valid until the next add.
-    QcStatus add(QcCommandSpec spec);
+    [[nodiscard]] QcStatus add(QcCommandSpec spec);
     // For the game's own commands, whose names are known to be free: a failure is a programming
     // error and only logged.
     void addBuiltIn(QcCommandSpec spec);

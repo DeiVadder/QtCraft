@@ -49,7 +49,7 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
     stream << m.id;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
 {
     QcMsg::EntitySpawn m;
     quint8 kind = 0;
@@ -86,7 +86,7 @@ QcResult<QcMessage> decode(Tag<QcMsg::EntitySpawn>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream)
 {
     QcMsg::EntityMoves m;
     quint32 count = 0;
@@ -106,21 +106,21 @@ QcResult<QcMessage> decode(Tag<QcMsg::EntityMoves>, QDataStream &stream)
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::EntityRemove>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EntityRemove>, QDataStream &stream)
 {
     QcMsg::EntityRemove m;
     stream >> m.id >> m.died;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::AttackEntity>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AttackEntity>, QDataStream &stream)
 {
     QcMsg::AttackEntity m;
     stream >> m.id;
     return m;
 }
 
-QcResult<QcMessage> decode(Tag<QcMsg::UseEntity>, QDataStream &stream)
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::UseEntity>, QDataStream &stream)
 {
     QcMsg::UseEntity m;
     stream >> m.id;

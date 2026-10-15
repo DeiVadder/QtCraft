@@ -40,7 +40,7 @@ public:
 
     QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator);
 
-    std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
+    [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
 
@@ -68,7 +68,7 @@ public:
     void setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog);
     QcChunkIo *storage() const { return m_io; }
     // What the storage holds of a chunk, as far as the server knows (kept up to date by noteKept()).
-    std::optional<Stored> stored(QcChunkPos pos) const;
+    [[nodiscard]] std::optional<Stored> stored(QcChunkPos pos) const;
     qsizetype storedChunkCount() const { return m_catalog.size(); }
     QList<QcChunkPos> storedChunks() const { return m_catalog.keys(); }
     // Called with what was kept of every chunk that enters the world (read or generated).

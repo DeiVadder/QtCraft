@@ -13,7 +13,7 @@ namespace {
 
 // Copies the regular files and real directories below `from` into `to`; `files` counts all copied
 // files against QcBundledMods::maxFiles.
-QcStatus copyTree(const QString &from, const QString &to, int depth, int &files)
+[[nodiscard]] QcStatus copyTree(const QString &from, const QString &to, int depth, int &files)
 {
     if (depth > QcBundledMods::maxDepth) {
         return qcError(u"%1 is nested too deeply"_s.arg(from));
@@ -62,7 +62,7 @@ QString directory(const QString &applicationDirectory)
     return {};
 }
 
-QcResult<QStringList> installDisabled(const QString &source, const QString &modsDirectory)
+[[nodiscard]] QcResult<QStringList> installDisabled(const QString &source, const QString &modsDirectory)
 {
     if (source.isEmpty() || modsDirectory.isEmpty() || QFileInfo::exists(modsDirectory)) {
         return QStringList();

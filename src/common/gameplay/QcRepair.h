@@ -16,6 +16,6 @@ namespace QcRepair {
 inline constexpr double bonusShare = 0.05;
 
 // The repaired item for the grid cells, or nothing when they are no repair.
-std::optional<QcItemStack> result(const QcContentRegistry &content, const QList<QcItemStack> &grid);
+[[nodiscard]] std::optional<QcItemStack> result(const QcContentRegistry &content, const QList<QcItemStack> &grid);
 
 } // namespace QcRepair

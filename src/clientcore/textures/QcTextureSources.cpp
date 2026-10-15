@@ -17,7 +17,7 @@ namespace {
 // Content PNGs (mods) larger than this are refused before decoding (E-300 keeps the old limit).
 constexpr int maxContentPngSide = 128;
 
-QcResult<QImage> contentPng(const QcTextureDefinition &definition)
+[[nodiscard]] QcResult<QImage> contentPng(const QcTextureDefinition &definition)
 {
     // Read the size from the header first: a tiny file can describe a huge image.
     QBuffer buffer;
@@ -40,7 +40,7 @@ QcResult<QImage> contentPng(const QcTextureDefinition &definition)
 
 // What one pack has for the texture, at the pack's resolution.
 // Specs are painted at the pack's resolution, but never larger than the atlas tile.
-std::optional<QImage> fromPack(const QcTexturePack &pack, const QcTextureDefinition &definition, int tileSize)
+[[nodiscard]] std::optional<QImage> fromPack(const QcTexturePack &pack, const QcTextureDefinition &definition, int tileSize)
 {
     const auto image = pack.images.constFind(definition.name);
     if (image != pack.images.constEnd()) {
@@ -71,7 +71,7 @@ int resolutionOf(const QcTexturePackStack &packs, int maxResolution)
     return std::min(resolution, std::max(maxResolution, int(QcTextureSynthesizer::tileSize)));
 }
 
-std::optional<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution, QString &problem)
+[[nodiscard]] std::optional<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution, QString &problem)
 {
     for (const QcTexturePackRef &pack : packs) {
         if (const std::optional<QImage> image = fromPack(*pack, definition, resolution)) {

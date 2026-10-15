@@ -64,7 +64,7 @@ public:
     ~QcChunkIo();
 
     // Opens the store (before any request; see QcChunkStore::open) and returns what it holds.
-    QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> open();
+    [[nodiscard]] QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> open();
     const std::optional<QcChunkStore::Damaged> &damaged() const { return m_store.damaged(); }
     bool hasDirectory() const { return !m_store.directory().isEmpty(); }
 
@@ -76,7 +76,7 @@ public:
     Arrival readNow(QcChunkPos pos);
     // A whole file of the world (a player file) as the latest save handed it over or as it is on
     // disk; waits only for itself. Tick thread.
-    QcResult<std::optional<QByteArray>> readFileNow(const QString &name);
+    [[nodiscard]] QcResult<std::optional<QByteArray>> readFileNow(const QString &name);
     // Hands over what is kept of a chunk; it is written with the next save.
     void keep(Departure departure);
     // Hands over the chunks of a save and writes everything handed over so far with the whole files

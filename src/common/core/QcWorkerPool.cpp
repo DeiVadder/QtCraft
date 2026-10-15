@@ -9,10 +9,10 @@ using namespace Qt::StringLiterals;
 QcWorkerPool::QcWorkerPool(int threadCount)
 {
     for (int i = 0; i < std::max(1, threadCount); ++i) {
-        QThread *thread = QThread::create([this] { run(); });
+        std::unique_ptr<QThread> thread(QThread::create([this] { run(); }));
         thread->setObjectName(u"QtCraft worker %1"_s.arg(i));
-        m_threads.append(thread);
         thread->start();
+        m_threads.push_back(std::move(thread));
     }
 }
 
@@ -25,10 +25,10 @@ QcWorkerPool::~QcWorkerPool()
     }
     m_wake.notify_all();
 
-    for (QThread *thread : std::as_const(m_threads)) {
+    for (const std::unique_ptr<QThread> &thread : m_threads) {
         thread->wait();
-        delete thread;
     }
+    m_threads.clear();
 
     // Every worker released the mutex last when it returned. Taking it once more makes that
     // visible to ThreadSanitizer, which cannot see the join inside QThread::wait().

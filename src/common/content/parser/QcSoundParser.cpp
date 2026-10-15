@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-std::optional<QcSoundWave> waveFromName(const QString &name)
+[[nodiscard]] std::optional<QcSoundWave> waveFromName(const QString &name)
 {
     static const QHash<QString, QcSoundWave> waves = {
         {u"sine"_s, QcSoundWave::Sine},   {u"square"_s, QcSoundWave::Square}, {u"triangle"_s, QcSoundWave::Triangle},
@@ -53,7 +53,7 @@ QcSoundLayer parseLayer(QcJsonFieldReader &layerReader)
 
 namespace QcSoundParser {
 
-QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace)
+[[nodiscard]] QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace)
 {
     QcJsonFieldReader reader{json, u"sound"_s, {}};
     QcSoundDefinition sound;

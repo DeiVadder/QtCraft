@@ -31,7 +31,7 @@ namespace QcPistonPlanner {
 // The push of the piston at `base`: the line of blocks in front of it up to air or a block that
 // breaks. std::nullopt when it is longer than the push limit, holds an immovable block (bedrock,
 // an extended piston, a piston head) or reaches into an unloaded chunk or out of the world.
-std::optional<QcPistonPlan> extension(QcSignalPower power, QcBlockPos base, QcSignalState piston,
+[[nodiscard]] std::optional<QcPistonPlan> extension(QcSignalPower power, QcBlockPos base, QcSignalState piston,
                                       const QcSignalDefinition &definition);
 // Retracting: a sticky piston pulls the block two cells in front of it back into its head's cell
 // unless `letGo` (its extension had not finished: block spitting) or that block cannot move.

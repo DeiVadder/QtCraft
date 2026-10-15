@@ -139,7 +139,8 @@ int QcInventory::moveInto(QList<QcItemStack> &stacks, int from, const QList<int>
             const QcItemStack &target = stacks[to];
             const bool equal = !target.isEmpty() && target.item == stacks[from].item && target.damage == 0 && stacks[from].damage == 0;
             if (merging ? equal : target.isEmpty()) {
-                moveBetween(stacks, from, to, 0, content);
+                // Both indices are inside the list (checked above and by the caller).
+                [[maybe_unused]] const bool moved = moveBetween(stacks, from, to, 0, content);
             }
         }
     }

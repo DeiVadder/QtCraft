@@ -324,7 +324,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     return blob;
 }
 
-QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
+[[nodiscard]] QcResult<QcEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, const QcContentRegistry &content, QStringList &warnings,
                                 QSet<QString> &reported)
 {
     QDataStream stream(blob);

@@ -8,9 +8,9 @@
 // Parses the world generation definitions of content packs: biomes, features, ores and terrain.
 namespace QcWorldgenParser {
 
-QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
-QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
-QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);
-QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);
+[[nodiscard]] QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcWorldgenParser

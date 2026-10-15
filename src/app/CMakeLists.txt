@@ -9,6 +9,7 @@ qt_add_executable(qtcraft
     multiplayer/QcServerHistory.h multiplayer/QcServerHistory.cpp
     multiplayer/QcPlayerList.h multiplayer/QcPlayerList.cpp
     multiplayer/QcLanAddresses.h multiplayer/QcLanAddresses.cpp
+    multiplayer/QcNetworkClientForeign.h
     controllers/QcSessionParts.h
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp

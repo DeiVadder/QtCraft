@@ -72,7 +72,7 @@ private:
     float blockLightAt(QcBlockPos pos) const;
     QcEntityMesher::ModelLook playerLook(const QcAppearance &appearance) const;
     QcEntityPose localPose(double alpha) const;
-    std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
+    [[nodiscard]] std::optional<QcEntityMesher::ItemLook> heldLook(QcItemId item) const;
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
