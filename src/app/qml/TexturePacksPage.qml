@@ -66,6 +66,7 @@ ColumnLayout {
         clip: true
         spacing: 6
         model: page.packs.packs
+        ScrollBar.vertical: ThemedScrollBar {}
 
         delegate: Frame {
             id: packRow
@@ -73,7 +74,8 @@ ColumnLayout {
             required property var modelData
             required property int index
 
-            width: ListView.view.width
+            // A gutter on the right for the scroll bar.
+            width: ListView.view.width - 14
 
             RowLayout {
                 anchors.fill: parent

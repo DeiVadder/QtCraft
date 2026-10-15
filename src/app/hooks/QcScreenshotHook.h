@@ -11,6 +11,8 @@ class QQuickWindow;
 
 // Test hook: grabs the window after a number of rendered frames, saves it and quits the application.
 // Enabled through QTCRAFT_SCREENSHOT=<file.png> (and optionally QTCRAFT_SCREENSHOT_FRAMES=<n>).
+// With QTCRAFT_LAYOUT_CHECK=1 it logs, just before the picture, every shown item that reaches
+// outside the window (QcLayoutCheck) and a summary line "Layout check: <n> items outside the window".
 class QcScreenshotHook : public QObject
 {
     Q_OBJECT
@@ -31,6 +33,7 @@ public:
 
 private:
     void onFrameSwapped();
+    void logLayoutCheck() const;
 
     QPointer<QQuickWindow> m_window;
     std::function<QImage()> m_grabber;
@@ -38,4 +41,5 @@ private:
     int m_remainingFrames = 0;
     int m_holdCount = 0;
     bool m_done = false;
+    bool m_checkLayout = false;
 };

@@ -76,212 +76,226 @@ Popup {
             Layout.fillHeight: true
             onCurrentIndexChanged: controlsPage.cancelCapture()
 
-            GridLayout {
-                id: generalPage
+            // The general page scrolls in a window too low for all its rows.
+            Flickable {
+                id: generalScroll
 
-                columns: 3
-                columnSpacing: 12
-                rowSpacing: 10
+                implicitHeight: generalPage.implicitHeight
+                clip: true
+                contentWidth: width
+                contentHeight: generalPage.implicitHeight
+                boundsBehavior: Flickable.StopAtBounds
+                ScrollBar.vertical: ThemedScrollBar {}
 
-                Label {
-                    text: qsTr("View distance")
-                }
-                Slider {
-                    id: viewDistance
+                GridLayout {
+                    id: generalPage
 
-                    Layout.fillWidth: true
-                    from: 2
-                    to: 16
-                    stepSize: 1
-                    snapMode: Slider.SnapAlways
-                    value: screen.game.settings.viewDistance
-                    onMoved: screen.game.settings.viewDistance = value
-                }
-                Label {
-                    Layout.preferredWidth: 90
-                    text: qsTr("%n chunk(s)", "", viewDistance.value)
-                }
+                    // A gutter on the right for the scroll bar.
+                    width: generalScroll.width - 14
+                    columns: 3
+                    columnSpacing: 12
+                    rowSpacing: 10
 
-                Label {
-                    text: qsTr("Field of view")
-                }
-                Slider {
-                    id: fieldOfView
+                    Label {
+                        text: qsTr("View distance")
+                    }
+                    Slider {
+                        id: viewDistance
 
-                    Layout.fillWidth: true
-                    from: 50
-                    to: 110
-                    stepSize: 1
-                    value: screen.game.settings.fieldOfView
-                    onMoved: screen.game.settings.fieldOfView = value
-                }
-                Label {
-                    text: qsTr("%1°").arg(Math.round(fieldOfView.value))
-                }
+                        Layout.fillWidth: true
+                        from: 2
+                        to: 16
+                        stepSize: 1
+                        snapMode: Slider.SnapAlways
+                        value: screen.game.settings.viewDistance
+                        onMoved: screen.game.settings.viewDistance = value
+                    }
+                    Label {
+                        Layout.preferredWidth: 90
+                        text: qsTr("%n chunk(s)", "", viewDistance.value)
+                    }
 
-                // How much the view widens while sprinting (0 % keeps it still).
-                Label {
-                    text: qsTr("FOV effects")
-                }
-                Slider {
-                    id: fovEffects
+                    Label {
+                        text: qsTr("Field of view")
+                    }
+                    Slider {
+                        id: fieldOfView
 
-                    objectName: "fovEffects"
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 1
-                    stepSize: 0.05
-                    value: screen.game.settings.fovEffects
-                    onMoved: screen.game.settings.fovEffects = value
-                }
-                Label {
-                    text: qsTr("%1 %").arg(Math.round(fovEffects.value * 100))
-                }
+                        Layout.fillWidth: true
+                        from: 50
+                        to: 110
+                        stepSize: 1
+                        value: screen.game.settings.fieldOfView
+                        onMoved: screen.game.settings.fieldOfView = value
+                    }
+                    Label {
+                        text: qsTr("%1°").arg(Math.round(fieldOfView.value))
+                    }
 
-                Label {
-                    text: qsTr("Mouse sensitivity")
-                }
-                Slider {
-                    id: sensitivity
+                    // How much the view widens while sprinting (0 % keeps it still).
+                    Label {
+                        text: qsTr("FOV effects")
+                    }
+                    Slider {
+                        id: fovEffects
 
-                    Layout.fillWidth: true
-                    from: 0.02
-                    to: 1.0
-                    value: screen.game.settings.mouseSensitivity
-                    onMoved: screen.game.settings.mouseSensitivity = value
-                }
-                Label {
-                    text: sensitivity.value.toLocaleString(Qt.locale(), "f", 2)
-                }
+                        objectName: "fovEffects"
+                        Layout.fillWidth: true
+                        from: 0
+                        to: 1
+                        stepSize: 0.05
+                        value: screen.game.settings.fovEffects
+                        onMoved: screen.game.settings.fovEffects = value
+                    }
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(fovEffects.value * 100))
+                    }
 
-                CheckBox {
-                    Layout.columnSpan: 3
-                    text: qsTr("Invert mouse")
-                    checked: screen.game.settings.invertMouse
-                    onToggled: screen.game.settings.invertMouse = checked
-                }
+                    Label {
+                        text: qsTr("Mouse sensitivity")
+                    }
+                    Slider {
+                        id: sensitivity
 
-                CheckBox {
-                    Layout.columnSpan: 3
-                    text: qsTr("Show labels in the world (%1)").arg(screen.game.settings.keys.labels.labels)
-                    checked: screen.game.settings.showLabels
-                    onToggled: screen.game.settings.showLabels = checked
-                }
+                        Layout.fillWidth: true
+                        from: 0.02
+                        to: 1.0
+                        value: screen.game.settings.mouseSensitivity
+                        onMoved: screen.game.settings.mouseSensitivity = value
+                    }
+                    Label {
+                        text: sensitivity.value.toLocaleString(Qt.locale(), "f", 2)
+                    }
 
-                Label {
-                    text: qsTr("Master volume")
-                }
-                Slider {
-                    id: masterVolume
+                    CheckBox {
+                        Layout.columnSpan: 3
+                        text: qsTr("Invert mouse")
+                        checked: screen.game.settings.invertMouse
+                        onToggled: screen.game.settings.invertMouse = checked
+                    }
 
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 1
-                    value: screen.game.settings.audio.masterVolume
-                    onMoved: screen.game.settings.audio.masterVolume = value
-                }
-                Label {
-                    text: qsTr("%1 %").arg(Math.round(masterVolume.value * 100))
-                }
+                    CheckBox {
+                        Layout.columnSpan: 3
+                        text: qsTr("Show labels in the world (%1)").arg(screen.game.settings.keys.labels.labels)
+                        checked: screen.game.settings.showLabels
+                        onToggled: screen.game.settings.showLabels = checked
+                    }
 
-                Label {
-                    text: qsTr("Effects")
-                }
-                Slider {
-                    id: effectsVolume
+                    Label {
+                        text: qsTr("Master volume")
+                    }
+                    Slider {
+                        id: masterVolume
 
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 1
-                    value: screen.game.settings.audio.effectsVolume
-                    onMoved: screen.game.settings.audio.effectsVolume = value
-                }
-                Label {
-                    text: qsTr("%1 %").arg(Math.round(effectsVolume.value * 100))
-                }
+                        Layout.fillWidth: true
+                        from: 0
+                        to: 1
+                        value: screen.game.settings.audio.masterVolume
+                        onMoved: screen.game.settings.audio.masterVolume = value
+                    }
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(masterVolume.value * 100))
+                    }
 
-                Label {
-                    text: qsTr("Music")
-                }
-                Slider {
-                    id: musicVolume
+                    Label {
+                        text: qsTr("Effects")
+                    }
+                    Slider {
+                        id: effectsVolume
 
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 1
-                    value: screen.game.settings.audio.musicVolume
-                    onMoved: screen.game.settings.audio.musicVolume = value
-                }
-                Label {
-                    text: qsTr("%1 %").arg(Math.round(musicVolume.value * 100))
-                }
+                        Layout.fillWidth: true
+                        from: 0
+                        to: 1
+                        value: screen.game.settings.audio.effectsVolume
+                        onMoved: screen.game.settings.audio.effectsVolume = value
+                    }
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(effectsVolume.value * 100))
+                    }
 
-                Label {
-                    text: qsTr("Ambience")
-                }
-                Slider {
-                    id: ambientVolume
+                    Label {
+                        text: qsTr("Music")
+                    }
+                    Slider {
+                        id: musicVolume
 
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 1
-                    value: screen.game.settings.audio.ambientVolume
-                    onMoved: screen.game.settings.audio.ambientVolume = value
-                }
-                Label {
-                    text: qsTr("%1 %").arg(Math.round(ambientVolume.value * 100))
-                }
+                        Layout.fillWidth: true
+                        from: 0
+                        to: 1
+                        value: screen.game.settings.audio.musicVolume
+                        onMoved: screen.game.settings.audio.musicVolume = value
+                    }
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(musicVolume.value * 100))
+                    }
 
-                CheckBox {
-                    Layout.columnSpan: 3
-                    text: qsTr("Mute all sounds")
-                    checked: screen.game.settings.audio.muted
-                    onToggled: screen.game.settings.audio.muted = checked
-                }
+                    Label {
+                        text: qsTr("Ambience")
+                    }
+                    Slider {
+                        id: ambientVolume
 
-                Label {
-                    text: qsTr("View")
-                }
-                ComboBox {
-                    id: cameraBox
+                        Layout.fillWidth: true
+                        from: 0
+                        to: 1
+                        value: screen.game.settings.audio.ambientVolume
+                        onMoved: screen.game.settings.audio.ambientVolume = value
+                    }
+                    Label {
+                        text: qsTr("%1 %").arg(Math.round(ambientVolume.value * 100))
+                    }
 
-                    Layout.fillWidth: true
-                    Layout.columnSpan: 2
-                    textRole: "text"
-                    valueRole: "value"
-                    model: [
-                        { text: qsTr("First person"), value: "first" },
-                        { text: qsTr("Third person, behind"), value: "behind" },
-                        { text: qsTr("Third person, front"), value: "front" }
-                    ]
-                    onActivated: screen.game.settings.cameraMode = currentValue
-                }
+                    CheckBox {
+                        Layout.columnSpan: 3
+                        text: qsTr("Mute all sounds")
+                        checked: screen.game.settings.audio.muted
+                        onToggled: screen.game.settings.audio.muted = checked
+                    }
 
-                Label {
-                    text: qsTr("Language")
-                }
-                ComboBox {
-                    id: languageBox
+                    Label {
+                        text: qsTr("View")
+                    }
+                    ComboBox {
+                        id: cameraBox
 
-                    Layout.fillWidth: true
-                    Layout.columnSpan: 2
-                    textRole: "text"
-                    valueRole: "value"
-                    // Language names are shown in their own language.
-                    model: [
-                        { text: qsTr("System language"), value: "" },
-                        { text: "English", value: "en" },
-                        { text: "Deutsch", value: "de" }
-                    ]
-                    onActivated: screen.game.settings.language = currentValue
-                }
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 2
+                        textRole: "text"
+                        valueRole: "value"
+                        model: [
+                            { text: qsTr("First person"), value: "first" },
+                            { text: qsTr("Third person, behind"), value: "behind" },
+                            { text: qsTr("Third person, front"), value: "front" }
+                        ]
+                        onActivated: screen.game.settings.cameraMode = currentValue
+                    }
 
-                Label {
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
-                    text: qsTr("The view distance applies when a world is started.")
-                    wrapMode: Text.Wrap
-                    opacity: 0.7
+                    Label {
+                        text: qsTr("Language")
+                    }
+                    ComboBox {
+                        id: languageBox
+
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 2
+                        textRole: "text"
+                        valueRole: "value"
+                        // Language names are shown in their own language.
+                        model: [
+                            { text: qsTr("System language"), value: "" },
+                            { text: "English", value: "en" },
+                            { text: "Deutsch", value: "de" }
+                        ]
+                        onActivated: screen.game.settings.language = currentValue
+                    }
+
+                    Label {
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                        text: qsTr("The view distance applies when a world is started.")
+                        wrapMode: Text.Wrap
+                        opacity: 0.7
+                    }
                 }
             }
 

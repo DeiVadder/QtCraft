@@ -99,7 +99,7 @@ ColumnLayout {
         clip: true
         spacing: 2
         model: page.keys.rows
-        ScrollBar.vertical: ScrollBar {}
+        ScrollBar.vertical: ThemedScrollBar {}
 
         delegate: RowLayout {
             id: keyRow

@@ -1,12 +1,17 @@
 #include "QcScreenshotHook.h"
 
+#include "QcLayoutCheck.h"
+
 #include <QCoreApplication>
 #include <QImage>
 #include <QLoggingCategory>
+#include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
 
 #include <utility>
+
+using namespace Qt::StringLiterals;
 
 namespace {
 Q_LOGGING_CATEGORY(lcScreenshot, "qtcraft.screenshot")
@@ -33,7 +38,9 @@ QcScreenshotHook *QcScreenshotHook::createFromEnvironment(QQuickWindow *window, 
     if (!ok || frames <= 0) {
         frames = defaultFrameCount;
     }
-    return new QcScreenshotHook(window, filePath, frames, parent);
+    auto *hook = new QcScreenshotHook(window, filePath, frames, parent);
+    hook->m_checkLayout = qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1;
+    return hook;
 }
 
 void QcScreenshotHook::hold()
@@ -69,6 +76,9 @@ void QcScreenshotHook::onFrameSwapped()
     }
 
     m_done = true;
+    if (m_checkLayout) {
+        logLayoutCheck();
+    }
     const QImage image = m_grabber ? m_grabber() : m_window->grabWindow();
     if (image.isNull() || !image.save(m_filePath)) {
         qCCritical(lcScreenshot) << "Failed to save screenshot to" << m_filePath;
@@ -78,4 +88,14 @@ void QcScreenshotHook::onFrameSwapped()
 
     qCInfo(lcScreenshot) << "Saved screenshot to" << m_filePath;
     QTimer::singleShot(0, qApp, [] { QCoreApplication::quit(); });
+}
+
+void QcScreenshotHook::logLayoutCheck() const
+{
+    const QQuickItem *content = m_window->contentItem();
+    const QStringList outside = QcLayoutCheck::itemsOutside(*content, QRectF(QPointF(), content->size()));
+    for (const QString &item : outside) {
+        qCWarning(lcScreenshot).noquote() << "Outside the window:" << item;
+    }
+    qCInfo(lcScreenshot).noquote() << u"Layout check: %1 items outside the window %2x%3"_s.arg(outside.size()).arg(content->width()).arg(content->height());
 }

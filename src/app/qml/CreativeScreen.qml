@@ -93,14 +93,15 @@ SlotScreen {
                 id: items
 
                 objectName: "creativeItems"
-                Layout.preferredWidth: 8 * 54
+                // Eight columns and a gutter for the scroll bar.
+                Layout.preferredWidth: 8 * 54 + 12
                 Layout.preferredHeight: 6 * 54
                 cellWidth: 54
                 cellHeight: 54
                 clip: true
                 model: screen.catalogue
                 boundsBehavior: Flickable.StopAtBounds
-                ScrollBar.vertical: ScrollBar {}
+                ScrollBar.vertical: ThemedScrollBar {}
 
                 delegate: ItemSlot {
                     id: entry

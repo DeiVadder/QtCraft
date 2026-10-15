@@ -60,7 +60,8 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("QtCraft")
             color: Theme.text
-            font.pixelSize: 64
+            // Smaller in a low window, so the lists and the form keep their room.
+            font.pixelSize: menu.height < 760 ? 48 : 64
             font.bold: true
         }
 
@@ -173,11 +174,13 @@ Rectangle {
                 }
             }
 
+            // The new world's form scrolls when the window is too low for it; creating the world
+            // and the menu's other actions stay pinned below it.
             ColumnLayout {
                 Layout.fillWidth: false
+                Layout.fillHeight: true
                 Layout.preferredWidth: 320
                 Layout.maximumWidth: 320
-                Layout.alignment: Qt.AlignTop
                 spacing: 8
 
                 Label {
@@ -186,116 +189,142 @@ Rectangle {
                     font.pixelSize: 20
                 }
 
-                Label {
-                    text: qsTr("World name")
-                    color: Theme.text
-                }
+                Flickable {
+                    id: newWorldForm
 
-                TextField {
-                    id: worldName
-
+                    objectName: "newWorldForm"
                     Layout.fillWidth: true
-                    text: qsTr("New World")
-                    selectByMouse: true
-                }
+                    Layout.fillHeight: true
+                    Layout.preferredHeight: contentHeight
+                    Layout.maximumHeight: contentHeight
+                    Layout.minimumHeight: 64
+                    clip: true
+                    contentWidth: width
+                    contentHeight: formFields.implicitHeight
+                    boundsBehavior: Flickable.StopAtBounds
+                    ScrollBar.vertical: ThemedScrollBar {}
 
-                Label {
-                    text: qsTr("World type")
-                    color: Theme.text
-                }
+                    ColumnLayout {
+                        id: formFields
 
-                ComboBox {
-                    id: worldType
+                        // The column keeps a gutter on the right for the scroll bar.
+                        width: newWorldForm.width - 14
+                        spacing: 8
 
-                    objectName: "worldTypeChoice"
-                    Layout.fillWidth: true
-                    textRole: "text"
-                    valueRole: "value"
-                    model: [
-                        { value: "terrain", text: qsTr("Normal") },
-                        { value: "flat", text: qsTr("Flat") },
-                        { value: "void", text: qsTr("Void") },
-                        { value: "showcase", text: qsTr("Showcase") }
-                    ]
-                }
+                        Label {
+                            text: qsTr("World name")
+                            color: Theme.text
+                        }
 
-                Label {
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
-                    color: Theme.textSecondary
-                    text: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
-                          : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
-                          : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
-                          : qsTr("Hills, mountains, caves, oceans and biomes.")
-                }
+                        TextField {
+                            id: worldName
 
-                Label {
-                    visible: worldType.currentValue === "terrain"
-                    text: qsTr("Seed (number or text, empty for random)")
-                    color: Theme.text
-                }
+                            Layout.fillWidth: true
+                            text: qsTr("New World")
+                            selectByMouse: true
+                        }
 
-                TextField {
-                    id: seed
+                        Label {
+                            text: qsTr("World type")
+                            color: Theme.text
+                        }
 
-                    visible: worldType.currentValue === "terrain"
-                    Layout.fillWidth: true
-                    selectByMouse: true
-                }
+                        ComboBox {
+                            id: worldType
 
-                Label {
-                    visible: worldType.currentValue === "flat"
-                    text: qsTr("Layers from the bottom up (empty for the default)")
-                    color: Theme.text
-                }
+                            objectName: "worldTypeChoice"
+                            Layout.fillWidth: true
+                            textRole: "text"
+                            valueRole: "value"
+                            model: [
+                                { value: "terrain", text: qsTr("Normal") },
+                                { value: "flat", text: qsTr("Flat") },
+                                { value: "void", text: qsTr("Void") },
+                                { value: "showcase", text: qsTr("Showcase") }
+                            ]
+                        }
 
-                TextField {
-                    id: flatLayers
+                        Label {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            color: Theme.textSecondary
+                            text: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
+                                  : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
+                                  : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
+                                  : qsTr("Hills, mountains, caves, oceans and biomes.")
+                        }
 
-                    visible: worldType.currentValue === "flat"
-                    Layout.fillWidth: true
-                    selectByMouse: true
-                    placeholderText: visible ? menu.game.defaultFlatLayers() : ""
-                }
+                        Label {
+                            visible: worldType.currentValue === "terrain"
+                            text: qsTr("Seed (number or text, empty for random)")
+                            color: Theme.text
+                        }
 
-                Label {
-                    text: qsTr("Game mode")
-                    color: Theme.text
-                }
+                        TextField {
+                            id: seed
 
-                ComboBox {
-                    id: gameMode
+                            visible: worldType.currentValue === "terrain"
+                            Layout.fillWidth: true
+                            selectByMouse: true
+                        }
 
-                    objectName: "gameModeChoice"
-                    Layout.fillWidth: true
-                    textRole: "text"
-                    valueRole: "value"
-                    model: [
-                        { value: "survival", text: qsTr("Survival") },
-                        { value: "creative", text: qsTr("Creative") }
-                    ]
-                }
+                        Label {
+                            visible: worldType.currentValue === "flat"
+                            text: qsTr("Layers from the bottom up (empty for the default)")
+                            color: Theme.text
+                        }
 
-                Label {
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
-                    color: Theme.textSecondary
-                    text: gameMode.currentValue === "creative"
-                          ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
-                          : qsTr("Gather, craft and survive: health, hunger and creatures count.")
-                }
+                        TextField {
+                            id: flatLayers
 
-                CheckBox {
-                    id: keepInventory
+                            visible: worldType.currentValue === "flat"
+                            Layout.fillWidth: true
+                            selectByMouse: true
+                            placeholderText: visible ? menu.game.defaultFlatLayers() : ""
+                        }
 
-                    Layout.fillWidth: true
-                    checked: true
-                    text: qsTr("Keep inventory on death")
-                    palette.windowText: Theme.text
+                        Label {
+                            text: qsTr("Game mode")
+                            color: Theme.text
+                        }
+
+                        ComboBox {
+                            id: gameMode
+
+                            objectName: "gameModeChoice"
+                            Layout.fillWidth: true
+                            textRole: "text"
+                            valueRole: "value"
+                            model: [
+                                { value: "survival", text: qsTr("Survival") },
+                                { value: "creative", text: qsTr("Creative") }
+                            ]
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            color: Theme.textSecondary
+                            text: gameMode.currentValue === "creative"
+                                  ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
+                                  : qsTr("Gather, craft and survive: health, hunger and creatures count.")
+                        }
+
+                        CheckBox {
+                            id: keepInventory
+
+                            Layout.fillWidth: true
+                            checked: true
+                            text: qsTr("Keep inventory on death")
+                            palette.windowText: Theme.text
+                        }
+                    }
                 }
 
                 Button {
+                    objectName: "createWorldButton"
                     Layout.fillWidth: true
+                    Layout.rightMargin: 14
                     text: qsTr("Create and play")
                     highlighted: true
                     onClicked: menu.game.createWorld(worldName.text,
@@ -307,38 +336,54 @@ Rectangle {
                                                      })
                 }
 
+                GridLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 8
+                    Layout.rightMargin: 14
+                    columns: 2
+                    columnSpacing: 8
+                    rowSpacing: 8
+
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        text: qsTr("Multiplayer")
+                        onClicked: multiplayerScreen.open()
+                    }
+
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        text: qsTr("Settings")
+                        onClicked: settingsScreen.open()
+                    }
+
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        text: qsTr("Mods")
+                        onClicked: modsScreen.open()
+                    }
+
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
+                        onClicked: menu.game.handbook.open("")
+                    }
+
+                    Button {
+                        objectName: "quitButton"
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 2
+                        text: qsTr("Quit")
+                        onClicked: menu.quitRequested()
+                    }
+                }
+
+                // Keeps the column at the top when the window has room to spare.
                 Item {
-                    Layout.preferredHeight: 24
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Multiplayer")
-                    onClicked: multiplayerScreen.open()
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Settings")
-                    onClicked: settingsScreen.open()
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Mods")
-                    onClicked: modsScreen.open()
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Handbook (%1)").arg(menu.game.settings.keys.labels.handbook)
-                    onClicked: menu.game.handbook.open("")
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Quit")
-                    onClicked: menu.quitRequested()
+                    Layout.fillHeight: true
                 }
             }
         }
@@ -347,6 +392,7 @@ Rectangle {
     SettingsScreen {
         id: settingsScreen
 
+        objectName: "menuSettingsScreen"
         game: menu.game
         onClosed: menu.subScreenClosed()
     }
@@ -362,6 +408,7 @@ Rectangle {
     CharacterScreen {
         id: characterScreen
 
+        objectName: "menuCharacterScreen"
         game: menu.game
         onClosed: menu.subScreenClosed()
     }

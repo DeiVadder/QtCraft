@@ -304,7 +304,7 @@ Rectangle {
                     contentHeight: pageColumn.implicitHeight + 20
                     boundsBehavior: Flickable.StopAtBounds
 
-                    ScrollBar.vertical: ScrollBar {}
+                    ScrollBar.vertical: ThemedScrollBar {}
 
                     ColumnLayout {
                         id: pageColumn

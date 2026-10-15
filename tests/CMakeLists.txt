@@ -304,6 +304,10 @@ target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR
 if(NOT QC_SANITIZERS)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 120)
+    # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
+    # outside it, the Quit button included.
+    add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 240)
 endif()
 
 # Multiplayer (stage 25, decisions E-251 to E-256).

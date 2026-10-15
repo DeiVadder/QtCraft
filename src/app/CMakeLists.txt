@@ -1,6 +1,7 @@
 qt_add_executable(qtcraft
     main.cpp
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
+    hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
@@ -133,6 +134,7 @@ qt_add_qml_module(qtcraft
         qml/PlayerSlots.qml
         qml/SlotScreen.qml
         qml/HudLabel.qml
+        qml/ThemedScrollBar.qml
         qml/ThemedToolTip.qml
         qml/PauseMenu.qml
         qml/MainMenu.qml
