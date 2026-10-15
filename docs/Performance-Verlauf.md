@@ -1268,3 +1268,61 @@ Sichtbare Abschnitte, Dreiecke und Sektionspuffer in jedem Szenario gleich (z. B
 ### Fazit Etappe 33
 
 Serverlicht und Renderer-Vorsorge ändern das Bild nicht und kosten im Fenster keine Frame-Zeit und keine GPU-Zeit. Messbar sind die erwarteten Posten: Render-CPU +0,2 ms in gefrorenem Meer durch die getrennten Wasser-Listen (+56 % Zeichenaufrufe, alle Runden, absolut weit unter dem Ziel) und +0,1 ms Tick beim Erkunden durch das Licht ankommender Chunks auf dem Server. Keine unerklärte Regression. Die beiden Speicher-Befunde bleiben offen und unverändert.
+
+## Etappe 32 gerendert (nachgeholt, 2026-10-15)
+
+Nachgeholter Pflicht-Benchmark von Etappe 32 (Schienen und Loren, E-382 bis E-387; GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`) in temporären Worktrees: `9cd256d` (`dev` vor Etappe 32) gegen `285324f` (Etappe 32), Skripte aus `dev` `ff21ef6`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server` plus `showcase-rails showcase-rails_signal` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 21:14–21:16); im Fenster `@core` plus dieselben zwei Stationen (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 21:17–21:30). Last 1,8–3,5, belastet markiert 2 von 54 Fensterläufen (je einer `stand`) und 1 von 72 headless (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 22 min.
+
+**Szenarien:** Die Stationen `rails` (Schleife mit Lore, Rampe, Kolben) und `rails_signal` (Antriebs-, Melde- und Aktivierungsschienen, Trichter- und Kistenlore) laufen über das allgemeine `showcase-<demo>` (Haltepunkt `demo-rails` bzw. `demo-rails_signal` der Showcase-Tour des Builds); `9cd256d` kennt sie nicht und misst sie nicht (nur Werte von 32). Kein neues Szenario in `scripts/bench-common.sh`: Loren entstehen nur aus dem Lorenitem auf einer Schiene oder aus `minecarts` einer Struktur; `/summon` kennt keine Loren und die Szenen kennen keine Item-Benutzung, also gibt es ohne Code-Änderung weder „viele Loren im Bild“ noch eine Fahrt mit Kamera. Dafür bräuchte es z. B. `/summon minecart` oder einen Benchmark-Hook für Fahrten (offen).
+
+### Fenster: 32 gegen `9cd256d`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|
+| stand (6) | 116 / 117 | 14,8 → 14,2 | 1,74 → 1,68 | 1,85 → 1,81 | 1,10 → 1,07 | 0,486 → 0,470 | 0,651 → 0,712 (+9 %) | 442 → 444 | 347 → 347 |
+| sprint (6) | 118 / 117 | 13,6 → 15,2 (+12 %) | 2,06 → 2,02 | 1,92 → 1,94 | 1,18 → 1,20 | 0,480 → 0,494 | 0,751 → 0,768 | 554 → 555 | 388 → 389 |
+| showcase (6) | 115 / 116 | 15,7 → 15,4 | 0,687 → 0,697 | 1,31 → 1,32 | 0,568 → 0,570 | **0,410 → 0,547 (+33 %)** | **0,327 → 0,362 (+11 %)** | 321 → 325 | 152 → 148 |
+| crowd (6) | 118 / 117 | 14,3 → 14,5 | 2,30 → 2,30 | 1,58 → 1,59 | 1,25 → 1,26 | 0,946 → 0,943 | 0,951 → 0,946 | 448 → 449 | 346 → 345 |
+| showcase-rails (3) | – / 117 | 14,7 | 0,683 | 1,33 | 0,598 | 0,554 | 0,389 | 325 | 144 |
+| showcase-rails_signal (3) | – / 116 | 16,0 | 0,662 | 1,34 | 0,623 | 0,542 | 0,376 | 326 | 134 |
+
+Wesen und Entity-Vernetzung (Client, je Bild) und Lorenphase (Server):
+
+| Szenario | Wesen | Entity-Vernetzung Ø ms | Phase Loren Ø ms | Server-Block-Entities |
+|---|---:|---:|---:|---:|
+| stand / sprint / crowd | gleich (19 / 19 / 94) | gleich | 0 → 0,014 / 0,017 / 0,018 (ohne Loren) | – |
+| showcase | 4 → 10 | 0,065 → 0,198 | 0 → 0,030 | 85 → 44 |
+| showcase-rails | 13 | 0,207 | 0,030 | 78 |
+| showcase-rails_signal | 11 | 0,212 | 0,033 | 78 |
+
+`entity_problems` und `block_entity_problems` = 0, keine übersprungenen Ticks, Tick max höchstens 5,7 ms (sprint).
+
+### Headless: 32 gegen `9cd256d` (Tick, Mittel über 3 bzw. 6 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
+|---|---:|---:|---:|---|
+| crowd | 0,123 → 0,124 | 0,155 → 0,154 | 46,5 → 47,8 | Loren 0 → 0,0009 (ohne Loren) |
+| gravel-collapse | 0,478 → 0,475 | 1,33 → 1,33 | 68,4 → 69,3 | – |
+| farm / farm-seeds | 0,0070 → 0,0073 / 0,016 → 0,016 | – | 42,2 → 43,8 / 42,0 → 43,0 | – |
+| explore | 0,118 → 0,118 | 0,561 → 0,557 | 51,7 → 52,9 | Loren 0 → 0,0007 |
+| signal_components (6) | **0,0182 → 0,0220 (+21 %)** | 0,049 → 0,052 | 42,7 → 43,7 | Loren 0 → 0,0019, Signal 0,0061 → 0,0069 |
+| signal_machines (6) | 0,0230 → 0,0253 (+10 %) | 0,054 → 0,058 | 42,8 → 43,7 | Loren 0 → 0,0019, Signal 0,0090 → 0,0096 |
+| signal_farm (6) | **0,0158 → 0,0187 (+18 %)** | 0,044 → 0,047 | 42,9 → 43,8 | Loren 0 → 0,0019, Signal 0,0033 → 0,0041 |
+| rails | – → 0,0220 | 0,053 | 43,8 | Loren 0,0018, Signal 0,0069 |
+| rails_signal | – → 0,0250 | 0,054 | 43,6 | Loren 0,0019, Signal 0,0101 |
+
+**Bewertung:**
+
+- **Bild, GPU und Render-CPU unverändert** (alle `@core`-Szenarien innerhalb von 3 %); die Bahnstationen selbst kosten nicht mehr als der übrige Showcase (GPU 0,66–0,68 ms, Render-CPU 1,33–1,34 ms).
+- **GUI-CPU `showcase` +33 % (+0,14 ms), in allen 6 Runden** (32: 0,533–0,565, `9cd256d` 0,383–0,445): die Loren der neuen Stationen sind im Bild (Wesen 4 → 10), und die Entity-Vernetzung steigt um denselben Betrag (0,065 → 0,198 ms je Bild). Rund 0,02 ms je Lore und Bild, etwa das Drei- bis Vierfache eines Tiers in `crowd` (0,006 ms je Wesen), vermutlich durch die Blockmodelle der Kisten- und Trichterlore. Neuer Inhalt im Bild, absolut klein (GUI-CPU 0,55 ms); kein Handlungsbedarf, Ansatz bei vielen Loren: Lorenmodelle zwischenspeichern und nur die Lage neu setzen.
+- **Tick `showcase` im Fenster +11 % (+0,035 ms)**: die neue Phase Loren (0,030 ms) plus etwas Signal; vollständig zugeordnet, gewollt.
+- **Tick an den Signal-Stationen headless +10 bis +21 % (+0,002 bis +0,004 ms)**: Phase Loren (0,0019 ms, die Loren der benachbarten Bahnstationen sind geladen) und Signal +0,0006 bis +0,0008 ms (Antriebs- und Melderails der Bahnstationen in Reichweite). Die Szenen sind nicht mehr dieselben: Haltepunkte gleich, aber die Umgebung ist anders belegt (Server-Block-Entities 77/85 → 44, Bahnstationen nebenan). Absolut 0,004 ms je Tick von 50 ms; erklärt, keine Regression im eigentlichen Sinn.
+- **Phase Loren ohne Loren: headless 0,0007–0,0009 ms, im Fenster 0,014–0,018 ms** (stand, sprint, crowd). `QcServerMinecarts::tick` sammelt jeden Tick die Körper aller Wesen und Spieler (Lore anschieben) und ruft die Trichter-Loren auf, auch wenn es keine Lore gibt; ein früher Ausstieg ohne Loren spart das. Tick `stand` im Fenster +9 % (Runden überlappen: 0,62–0,70 gegen 0,67–0,76 ms) liegt zum Teil darin, der Rest ist Streuung; headless in den Szenen ohne Loren kein messbarer Unterschied.
+- **Frame p99 `sprint` +12 %**: GPU, Render- und GUI-CPU gleich, p99 zweigipflig (`9cd256d` 10,3–14,8, 32: 14,1–16,4 ms); in `stand` −4 %, in `showcase` −2 %. Streuung der verpassten VSyncs (bekannter Vorbehalt), keine Regression.
+- **Spitzen-RSS headless +0,9 bis +1,6 MB, im Fenster +0 bis +4 MB**: Inhalt und Code der Etappe (Loren, Schienen, Texturen).
+
+**Absolute Ziele (`docs/Performance.md`):** Bildrate 115–118 FPS (Ziel ≥ 60) und Frame-Kosten (8 Chunks höchstens 2,30 ms GPU in crowd, 1,94 ms Render-CPU in sprint) erfüllt. p99 ≤ 12,5 ms verfehlt (14,2–16,0 ms, externer Monitor; bekannter Vorbehalt wie in 31.3 und 33). Spitzenspeicher stand, showcase, crowd und die Bahnstationen 321–449 MB erfüllt; sprint 555 MB im 10-s-Lauf wie zuvor. Tick: kein Tick über 50 ms, keine übersprungenen Ticks.
+
+### Fazit Etappe 32
+
+Schienen und Loren kosten im Fenster keine GPU- und keine Render-CPU-Zeit. Messbar und vollständig zugeordnet: GUI-CPU +0,14 ms im Showcase durch die Vernetzung der sichtbaren Loren (rund 0,02 ms je Lore) und die neue Server-Phase Loren (0,03 ms im Fenster bei den Showcase-Loren, 0,015 ms auch ohne Loren). Keine unerklärte Regression. Offen: Szenario mit vielen Loren und einer Fahrt mit Kamera (braucht `/summon minecart` oder einen Hook), früher Ausstieg der Lorenphase ohne Loren.
