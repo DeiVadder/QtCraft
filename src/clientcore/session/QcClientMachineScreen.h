@@ -12,7 +12,8 @@
 class QcContentRegistry;
 
 // The machine or chest screen the server opened for the local player (OpenMachine, MachineState,
-// CloseMachine): where it is, its category (empty for a storage block), its slots and progress.
+// CloseMachine): where it is (or the container minecart it belongs to), its category (empty for a
+// storage block or cart), its slots and progress.
 // The GUI-free state behind QcClientSession's machine accessors.
 class QcClientMachineScreen
 {
@@ -28,6 +29,8 @@ public:
 
     bool isOpen() const { return m_pos.has_value(); }
     [[nodiscard]] std::optional<QcBlockPos> pos() const { return m_pos; }
+    // The container minecart (entity id) of the open screen, 0 for a block.
+    quint32 entity() const { return m_entity; }
     const QString &category() const { return m_category; }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }
@@ -40,6 +43,7 @@ private:
     Change update(const QcMsg::MachineState &machine, const QcContentRegistry *content);
 
     std::optional<QcBlockPos> m_pos;
+    quint32 m_entity = 0;
     // The player closed a screen and has not used a block since.
     bool m_closedLocally = false;
     QString m_category;

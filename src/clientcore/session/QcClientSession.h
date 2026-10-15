@@ -1,9 +1,11 @@
 #pragma once
 
+#include "QcClientDebugSubscription.h"
 #include "QcClientEntities.h"
 #include "QcClientGameMode.h"
 #include "QcClientLogin.h"
 #include "QcClientMachineScreen.h"
+#include "QcClientRiding.h"
 #include "QcClientSounds.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
@@ -14,7 +16,6 @@
 #include "QcMessages.h"
 #include "QcPlayerInput.h"
 #include "QcRaycast.h"
-#include "QcServerDebugMirror.h"
 
 #include <QHash>
 #include <QList>
@@ -84,6 +85,8 @@ public:
     double largestCorrection() const { return m_largestCorrection; }
     void resetCorrections() { m_largestCorrection = 0.0; }
     bool hasServerState() const { return m_hasServerState; }
+    // The minecart the player rides (decision E-382): no prediction then, the player sits in the cart.
+    const QcClientRiding &riding() const { return m_riding; }
 
     // Advances the client by one tick; normally driven by the internal timer.
     void tick();
@@ -107,6 +110,7 @@ public:
     // The machine screen the server opened (position, category, slots, progress); see machineOpen().
     bool machineOpen() const { return m_machine.isOpen(); }
     [[nodiscard]] std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
+    quint32 machineEntity() const { return m_machine.entity(); }
     QString machineCategory() const { return m_machine.category(); }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool containerOpen() const { return m_machine.isContainer(); }
@@ -165,15 +169,9 @@ public:
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
     quint64 labelGeneration() const { return m_labelGeneration; }
 
-    // Debug data to ask the server for (QcMsg::DebugSubscribe flags, 0 for none); sent at once when
-    // connected, otherwise with the welcome. What arrived is in serverDebug(). The base flags stay
-    // subscribed whatever setDebugSubscription() asks for (the statistics log of a headless game,
-    // which the control command `debug off` must not cut off).
-    void setDebugSubscription(quint8 flags);
-    void setDebugSubscriptionBase(quint8 flags);
-    // What the server is asked for: both together.
-    quint8 debugSubscription() const { return m_debugFlags | m_debugBaseFlags; }
-    const QcServerDebugMirror &serverDebug() const { return m_serverDebug; }
+    // The server's debug data: what is asked for and what arrived (QcClientDebugSubscription).
+    QcClientDebugSubscription &debug() { return m_debug; }
+    const QcClientDebugSubscription &debug() const { return m_debug; }
 
     // Recent sounds (server and own), oldest first, at most QcClientSounds::recentLimit; cleared by
     // clearRecentSounds() (control interface).
@@ -226,13 +224,13 @@ private:
     void closeWithError(const QString &reason);
     void setState(State state);
     void reconcile(const QcMsg::PlayerState &state);
+    // Moves the player on foot (or flying) by one tick of prediction, with landing and step sounds.
+    void stepOnFoot(const QcPlayerInput &input);
     void onClosed();
     void refreshTarget();
     void updateTargetAndMining();
     void cue(QcSoundCue cue);
     void updateSounds();
-    // Tells the server when the subscription differs from `before`.
-    void sendDebugSubscription(quint8 before);
 
     std::unique_ptr<QcConnection> m_connection;
     QString m_playerName;
@@ -270,6 +268,7 @@ private:
     double m_miningProgress = 0.0;
 
     QcClientEntities m_entities;
+    QcClientRiding m_riding;
     QcAppearance m_appearance;
     bool m_helloSent = false;
     bool m_appearancePending = false;
@@ -290,9 +289,7 @@ private:
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;
-    quint8 m_debugFlags = 0;
-    quint8 m_debugBaseFlags = 0;
-    QcServerDebugMirror m_serverDebug;
+    QcClientDebugSubscription m_debug;
     QcClientSounds m_sounds;
     int m_miningTicks = 0;
     QcClientGameMode m_gameMode;

@@ -15,7 +15,7 @@
 <context>
     <name>SettingsScreen</name>
     <message numerus="yes">
-        <location filename="../../../../../src/app/qml/SettingsScreen.qml" line="102"/>
+        <location filename="../../../../../src/app/qml/SettingsScreen.qml" line="115"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>
@@ -26,7 +26,7 @@
 <context>
     <name>TexturePacksPage</name>
     <message numerus="yes">
-        <location filename="../../../../../src/app/qml/TexturePacksPage.qml" line="145"/>
+        <location filename="../../../../../src/app/qml/TexturePacksPage.qml" line="147"/>
         <source>%n file(s) skipped or changed:</source>
         <translation type="unfinished">
             <numerusform></numerusform>

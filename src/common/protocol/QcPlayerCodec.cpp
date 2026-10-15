@@ -21,7 +21,8 @@ void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
 {
-    stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying;
+    stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying
+           << m.vehicle;
 }
 
 void encode(QDataStream &stream, QcMsg::SelectHotbarSlot m)
@@ -116,7 +117,8 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
 {
     QcMsg::PlayerState m;
-    stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying;
+    stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying
+        >> m.vehicle;
     if (!isFinite(m.motion.position) || !isFinite(m.motion.velocity)) {
         return qcError(u"Non-finite player state"_s);
     }

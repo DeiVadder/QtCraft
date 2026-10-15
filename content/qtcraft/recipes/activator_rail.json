@@ -1,0 +1,18 @@
+{
+    "name": "activator_rail",
+    "type": "shaped",
+    "pattern": [
+        "i|i",
+        "iti",
+        "i|i"
+    ],
+    "key": {
+        "i": "iron_ingot",
+        "|": "stick",
+        "t": "signal_torch"
+    },
+    "result": {
+        "item": "activator_rail",
+        "count": 6
+    }
+}

@@ -66,6 +66,12 @@ struct QcItemDefinition
     std::optional<QcArmourDefinition> armour;
     // Used on the top of a block, places an armour stand that drops this item again (decision E-238).
     bool placesStand = false;
+    // Used on a rail, places a minecart that drops this item again (decision E-382). Server side only.
+    bool placesCart = false;
+    // The block the placed cart carries (decision E-386): a container block (a chest) makes a
+    // container cart with the block's slots, a Signal Hopper a hopper cart; empty for a plain cart.
+    // Reaches the client, which draws the block in the cart and names the cart's screen.
+    QString cartBlock;
     // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
     // decision E-290). Server side only.
     bool tills = false;

@@ -51,6 +51,9 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"onGround"_s, motion.onGround);
     status.insert(u"inWater"_s, motion.inWater);
     status.insert(u"flying"_s, motion.flying);
+    // The minecart ridden (decision E-382) and the largest prediction correction since the session began.
+    status.insert(u"riding"_s, m_session.riding().isRiding() ? QJsonValue(qint64(m_session.riding().vehicle())) : QJsonValue());
+    status.insert(u"largestCorrection"_s, m_session.largestCorrection());
     status.insert(u"gameMode"_s, QString(QcGameModes::name(m_session.gameMode().mode())));
     status.insert(u"yaw"_s, m_session.intent().yaw);
     status.insert(u"pitch"_s, m_session.intent().pitch);

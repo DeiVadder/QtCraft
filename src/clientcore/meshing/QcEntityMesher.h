@@ -135,13 +135,22 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
 // A dropped item spinning slowly and bobbing; larger stacks show up to three copies.
 void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, const ItemFrame &frame, const UvLookup &uv);
 
-// A falling block: the block's look (ItemLook with `cube`) at full size standing on `position`.
-void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const QcVec3 &position, QcEntityLight light, const UvLookup &uv);
+// Where a block entity stands (its feet) and how large it is drawn.
+struct BlockPlacement
+{
+    QcVec3 position;
+    double size = 0.98;
+};
+
+// A falling block (0.98 m) or the block a cart carries: the block's look (ItemLook with `cube`).
+void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv);
 
 // The first-person right arm of `figure` with its held item, placed in front of the camera.
 void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv);
 
 // Fallback model for players when the content has no humanoid skeleton.
 const QList<QcMobPart> &playerParts();
+// The model of a minecart (decision E-382), facing north like other static parts.
+const QList<QcMobPart> &minecartParts();
 
 } // namespace QcEntityMesher

@@ -18,7 +18,7 @@ bool isBlockKind(QcEntityKind kind)
     return kind == QcEntityKind::FallingBlock || kind == QcEntityKind::MovingBlock;
 }
 
-// Whether the server sent a player, a stand, a known creature, a valid item or a valid falling or
+// Whether the server sent a player, a stand, a minecart, a known creature, a valid item or a valid falling or
 // moving block (the decoder already refused unknown kinds).
 bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
@@ -32,6 +32,7 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
         return content && content->isValidBlock(spawn.block) && spawn.block != qcAirBlockId;
     case QcEntityKind::Player:
     case QcEntityKind::ArmourStand:
+    case QcEntityKind::Minecart:
         return true;
     }
     return false;
@@ -51,7 +52,8 @@ QcStandPose standOf(const QcMsg::EntitySpawn &spawn)
 
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
-    const bool item = spawn.kind == QcEntityKind::Item;
+    // Items and minecarts (what the cart carries, decision E-386).
+    const bool item = spawn.kind == QcEntityKind::Item || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
 
     QcClientEntity entity;
     entity.item = item ? spawn.item : QcItemStack();
@@ -80,7 +82,8 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         return false;
     }
 
-    const bool item = spawn.kind == QcEntityKind::Item;
+    // Items and minecarts (what the cart carries, decision E-386).
+    const bool item = spawn.kind == QcEntityKind::Item || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
     // A known entity sent again changed its count (items) or look (players); keep its motion history.
     const auto known = m_entities.find(spawn.id);
     if (known != m_entities.end() && known->kind == spawn.kind && known->creatureType == creatureTypeOf(spawn)) {

@@ -240,6 +240,19 @@ void QcRenderBridge::appendStand(QcEntityMesh &mesh, const QcClientEntity &entit
                                 QcFigureLook::standBody(entity.stand, frame.seconds), placement, frame.uv);
 }
 
+void QcRenderBridge::appendCartLoad(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, const QcVec3 &position) const
+{
+    const std::optional<QcBlockId> block = entity.cartBlock(frame.content);
+    const std::optional<QcItemId> item = block ? frame.content.itemId(frame.content.block(*block).name) : std::nullopt;
+    if (!item) {
+        return;
+    }
+    // A block of 0.7 m standing on the floor of the cart.
+    constexpr double size = 0.7;
+    const QcVec3 floor = position + QcVec3{0.0, 0.18, 0.0};
+    QcEntityMesher::appendBlock(mesh, QcFigureLook::item(frame.content, *item), {floor, size}, entityLight(frame.world, floor), frame.uv);
+}
+
 void QcRenderBridge::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     const QcClientSession &session = *m_parts.session;
@@ -284,12 +297,17 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
         if (entity.isItem()) {
             QcEntityMesher::appendItem(*mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
                                        {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
+        } else if (entity.isMinecart()) {
+            const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
+            QcEntityMesher::appendParts(*mesh, QcEntityMesher::minecartParts(),
+                                        {position, lerpYaw(entity.previousYaw, entity.yaw, alpha), entityLight(frame.world, position), false}, uv);
+            appendCartLoad(*mesh, entity, frame, position);
         } else if (entity.isBlockEntity()) {
             QcEntityMesher::ItemLook look;
             look.cube = true;
             look.faces = frame.content.block(entity.block).faceTextures;
             const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
-            QcEntityMesher::appendBlock(*mesh, look, position, entityLight(frame.world, position), uv);
+            QcEntityMesher::appendBlock(*mesh, look, {position}, entityLight(frame.world, position), uv);
         } else {
             appendCreature(*mesh, entity, frame);
         }

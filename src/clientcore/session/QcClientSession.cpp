@@ -2,6 +2,7 @@
 
 #include "QcChatText.h"
 #include "QcConnection.h"
+#include "QcMinecartBody.h"
 #include "QcMining.h"
 #include "QcPhysics.h"
 #include "QcProtocol.h"
@@ -22,6 +23,9 @@ namespace {
 // The box the crosshair hits an entity in.
 QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entity)
 {
+    if (entity.isMinecart()) {
+        return QcPhysics::boxAt(entity.position, QcMinecartBody::width, QcMinecartBody::height);
+    }
     if (entity.isArmourStand()) {
         const double scale = entity.stand.small ? 0.5 : 1.0;
         return QcPhysics::boxAt(entity.position, QcStandPose::bodyWidth * scale, QcStandPose::bodyHeight * scale);
@@ -71,6 +75,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
                                                   [this](QcMessage &&message) { handleMessage(std::move(message)); });
     connect(m_connection.get(), &QcConnection::closed, this, &QcClientSession::onClosed);
     m_gameMode.setSender([this](const QcMessage &message) { m_connection->send(message); });
+    m_debug.setSender([this](const QcMessage &message) { m_connection->send(message); });
 
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(int(QcPhysics::tickDuration * 1000.0));
@@ -124,6 +129,7 @@ void QcClientSession::setState(State state)
 void QcClientSession::onClosed()
 {
     m_tickTimer->stop();
+    m_debug.closed();
     if (m_disconnectReason.isEmpty()) {
         m_disconnectReason = m_connection->lastError().isEmpty() ? u"Connection closed"_s : m_connection->lastError();
     }
@@ -184,7 +190,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         m_labels.insert(labels->pos, labels->labels);
         ++m_labelGeneration;
     } else if (const auto *debug = std::get_if<QcMsg::ServerDebug>(&message)) {
-        m_serverDebug.receive(*debug);
+        m_debug.receive(*debug);
     } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
         const QcBlockId previous = m_world ? m_world->blockAt(update->pos).value_or(qcAirBlockId) : qcAirBlockId;
         if (m_world && m_content->isValidBlock(update->block) && m_world->setBlock(update->pos, update->block)) {
@@ -298,9 +304,7 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
         m_appearancePending = false;
         m_connection->send(QcMsg::SetAppearance{m_appearance});
     }
-    if (debugSubscription() != 0) {
-        m_connection->send(QcMsg::DebugSubscribe{debugSubscription()});
-    }
+    m_debug.welcomed();
 }
 
 void QcClientSession::onContentSync(const QcMsg::ContentSync &sync)
@@ -358,13 +362,22 @@ void QcClientSession::reconcile(const QcMsg::PlayerState &state)
         return;
     }
 
-    // A player saved while flying flies on after joining (decision E-284).
-    if (!m_hasServerState) {
+    // A player saved while flying flies on after joining (decision E-284). The first state places
+    // the player in the world: it corrects no prediction.
+    const bool placed = !m_hasServerState;
+    if (placed) {
         m_gameMode.setFlightWanted(state.motion.flying);
     }
     m_lastAcknowledged = state.lastInputSequence;
     m_hasServerState = true;
     m_pendingInputs.removeIf([&state](const QcPlayerInput &input) { return input.sequence <= state.lastInputSequence; });
+    // A rider sits in the cart as the mirror shows it; getting in or out is a placement by the
+    // server, not a correction (decision E-382).
+    const bool gotInOrOut = m_riding.noteVehicle(state.vehicle);
+    if (m_riding.isRiding()) {
+        m_lastCorrection = 0.0;
+        return;
+    }
 
     QcEntityMotion replayed = state.motion;
     if (m_world) {
@@ -372,7 +385,7 @@ void QcClientSession::reconcile(const QcMsg::PlayerState &state)
             QcPhysics::stepPlayer(replayed, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
         }
     }
-    m_lastCorrection = (replayed.position - m_motion.position).length();
+    m_lastCorrection = gotInOrOut || placed ? 0.0 : (replayed.position - m_motion.position).length();
     m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
     m_motion = replayed;
 }
@@ -429,18 +442,10 @@ void QcClientSession::tick()
     input.sequence = m_nextSequence++;
     input.flying = m_gameMode.flightWanted();
     m_previousMotion = m_motion;
-    QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
-    m_gameMode.stepped(m_motion.flying);
-    m_lastStep = std::hypot(m_motion.position.x - m_previousMotion.position.x, m_motion.position.z - m_previousMotion.position.z);
-    m_walkDistance += m_lastStep;
-
-    if (m_motion.onGround && !m_previousMotion.onGround) {
-        m_landingTicks = 0;
-    }
-
-    const QList<QcSoundCue> steps = m_sounds.local().update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
-    for (const QcSoundCue &step : steps) {
-        cue(step);
+    if (m_riding.isRiding()) {
+        m_riding.follow(m_motion, m_entities);
+    } else {
+        stepOnFoot(input);
     }
 
     if (m_pendingInputs.size() >= maxPendingInputs) {
@@ -451,6 +456,22 @@ void QcClientSession::tick()
 
     updateTargetAndMining();
     emit ticked();
+}
+
+void QcClientSession::stepOnFoot(const QcPlayerInput &input)
+{
+    QcPhysics::stepPlayer(m_motion, input, *m_world, QcPhysics::tickDuration, m_gameMode.rules().mayFly);
+    m_gameMode.stepped(m_motion.flying);
+    m_lastStep = std::hypot(m_motion.position.x - m_previousMotion.position.x, m_motion.position.z - m_previousMotion.position.z);
+    m_walkDistance += m_lastStep;
+    if (m_motion.onGround && !m_previousMotion.onGround) {
+        m_landingTicks = 0;
+    }
+
+    const QList<QcSoundCue> steps = m_sounds.local().update(m_previousMotion, m_motion, m_intent.sneak, *m_world);
+    for (const QcSoundCue &step : steps) {
+        cue(step);
+    }
 }
 
 void QcClientSession::cue(QcSoundCue cue)
@@ -488,7 +509,7 @@ void QcClientSession::refreshTarget()
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : m_entities.all()) {
-        if (entity.isItem() || entity.isBlockEntity()) {
+        if (entity.isItem() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
             continue;
         }
 
@@ -535,6 +556,8 @@ QcEntityPose QcClientSession::localPose(double alpha) const
     pose.sneaking = m_intent.sneak && !m_motion.flying;
     pose.sprinting = m_intent.sprint && m_intent.forward > 0.0f && !m_intent.sneak;
     pose.flying = m_motion.flying;
+    pose.riding = m_riding.isRiding();
+    pose.sneaking = pose.sneaking && !pose.riding;
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
     pose.headPitch = m_intent.pitch;
     return pose;
@@ -555,6 +578,7 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
     pose.inWater = (entity.flags & QcMsg::InWater) != 0;
     pose.sneaking = (entity.flags & QcMsg::Sneaking) != 0;
     pose.sprinting = (entity.flags & QcMsg::Sprinting) != 0;
+    pose.riding = (entity.flags & QcMsg::Riding) != 0;
     pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
@@ -655,8 +679,11 @@ bool QcClientSession::useItem()
                              && (targetDefinition->opensCrafting || targetDefinition->machine.isMachine()
                                  || targetDefinition->containerSlots > 0 || targetDefinition->toggles
                                  || targetDefinition->signal.isUsable());
-    // An armour stand takes or gives armour and items, also with an empty hand.
-    if (m_targetEntity && m_entities.all().value(*m_targetEntity).isArmourStand()) {
+    // An armour stand takes or gives armour and items, also with an empty hand; a minecart takes the
+    // player in or opens its screen.
+    const QcClientEntity targeted = m_targetEntity ? m_entities.all().value(*m_targetEntity) : QcClientEntity();
+    if (m_targetEntity && (targeted.isArmourStand() || targeted.isMinecart())) {
+        m_machine.usedBlock();
         m_connection->send(QcMsg::UseEntity{*m_targetEntity});
         m_useTicks = 0;
         return true;
@@ -740,35 +767,5 @@ void QcClientSession::sendChat(const QString &text)
 {
     if (!text.trimmed().isEmpty()) {
         m_connection->send(QcMsg::ChatInput{text.trimmed()});
-    }
-}
-
-void QcClientSession::setDebugSubscription(quint8 flags)
-{
-    const quint8 before = debugSubscription();
-    m_debugFlags = flags;
-    sendDebugSubscription(before);
-}
-
-void QcClientSession::setDebugSubscriptionBase(quint8 flags)
-{
-    const quint8 before = debugSubscription();
-    m_debugBaseFlags = flags;
-    sendDebugSubscription(before);
-}
-
-void QcClientSession::sendDebugSubscription(quint8 before)
-{
-    const quint8 flags = debugSubscription();
-    if (flags == before) {
-        return;
-    }
-
-    if (flags == 0) {
-        m_serverDebug.clear();
-    }
-    // Before the welcome the server expects nothing but Hello; onWelcome() sends it then.
-    if (m_state == State::Loading || m_state == State::Playing) {
-        m_connection->send(QcMsg::DebugSubscribe{flags});
     }
 }

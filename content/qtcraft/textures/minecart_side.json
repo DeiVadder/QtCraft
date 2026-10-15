@@ -1,0 +1,8 @@
+{
+    "name": "minecart_side",
+    "pattern": "metal_block",
+    "primary": "#6c6c72",
+    "secondary": "#85858c",
+    "variation": 0.06,
+    "seed": 3203
+}

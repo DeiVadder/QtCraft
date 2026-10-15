@@ -7,6 +7,7 @@
 #include "QcPhysics.h"
 #include "QcProtocolCodec.h"
 #include "QcSaveFile.h"
+#include "QcStackReader.h"
 #include "QcStreamLimits.h"
 #include "QcWorldConstants.h"
 
@@ -69,7 +70,7 @@ public:
     bool read()
     {
         return entries([this] { return creature(); }) && entries([this] { return item(); }) && entries([this] { return falling(); })
-               && entries([this] { return stand(); });
+               && entries([this] { return stand(); }) && entries([this] { return minecart(); });
     }
 
 private:
@@ -226,6 +227,41 @@ private:
         return true;
     }
 
+    bool minecart()
+    {
+        QcEntityRecord::Ordered<QcMinecart> entry;
+        QcMinecart &cart = entry.entry;
+        readVec(m_stream, cart.motion.position);
+        readVec(m_stream, cart.motion.velocity);
+        m_stream >> cart.yaw >> cart.item >> entry.order;
+        // A container cart's slots (decision E-386) and whether a hopper cart pulls.
+        quint32 slotCount = 0;
+        if (!QcStreamLimits::readCount(m_stream, QcBlockDefinition::maxContainerSlots, slotCount)) {
+            return false;
+        }
+        QcStackReader stacks(m_content, m_path, m_warnings, &m_unknown);
+        cart.stacks.resize(slotCount);
+        for (QcItemStack &stack : cart.stacks) {
+            stack = stacks.read(m_stream);
+        }
+        m_stream >> cart.enabled;
+        const double y = cart.motion.position.y;
+        if (m_stream.status() != QDataStream::Ok || !inChunk(cart.motion.position) || !isFinite(cart.motion.velocity) || !std::isfinite(cart.yaw)
+            || y < QcWorld::voidLimitY || y > QcWorld::worldHeight + 64.0) {
+            return false;
+        }
+
+        // A cart whose item a mod took away still rolls, it only drops nothing.
+        if (!cart.item.isEmpty() && !m_content.itemId(cart.item)) {
+            warnOnce(u"item"_s, cart.item);
+            cart.item.clear();
+        }
+        cart.motion.velocity = clampedVelocity(cart.motion.velocity);
+        cart.yaw = qcNormalizedAngle(cart.yaw);
+        m_record.minecarts.append(entry);
+        return true;
+    }
+
     // What a stand wears or holds: one item, by name; unknown items are dropped with a warning.
     QcItemStack standStack()
     {
@@ -307,6 +343,16 @@ void writeRecord(QDataStream &stream, const QcEntityRecord &record, const QcCont
             QcSaveFile::writeStack(stream, stack, content);
         }
         stream << stand.cape << order;
+    }
+    stream << quint32(record.minecarts.size());
+    for (const auto &[cart, order] : record.minecarts) {
+        writeVec(stream, cart.motion.position);
+        writeVec(stream, cart.motion.velocity);
+        stream << cart.yaw << cart.item << order << quint32(cart.stacks.size());
+        for (const QcItemStack &stack : cart.stacks) {
+            QcSaveFile::writeStack(stream, stack, content);
+        }
+        stream << cart.enabled;
     }
 }
 

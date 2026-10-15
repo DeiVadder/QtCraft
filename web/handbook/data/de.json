@@ -11,6 +11,7 @@
                 "chapter:qtcraft:hunger",
                 "chapter:qtcraft:farming",
                 "chapter:qtcraft:signal",
+                "chapter:qtcraft:rails",
                 "chapter:qtcraft:health",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:creatures",
@@ -27,6 +28,8 @@
         {
             "entries": [
                 "block:qtcraft:farmland",
+                "block:qtcraft:activator_rail",
+                "block:qtcraft:powered_rail",
                 "block:qtcraft:birch_planks",
                 "block:qtcraft:birch_trapdoor",
                 "block:qtcraft:birch_wood",
@@ -179,6 +182,7 @@
                 "block:qtcraft:red_stained_glass",
                 "block:qtcraft:sand",
                 "block:qtcraft:sandstone",
+                "block:qtcraft:rail",
                 "block:qtcraft:mud",
                 "block:qtcraft:slime_block",
                 "block:qtcraft:snow_block",
@@ -189,6 +193,7 @@
                 "block:qtcraft:black_concrete",
                 "block:qtcraft:black_concrete_powder",
                 "block:qtcraft:black_stained_glass",
+                "block:qtcraft:detector_rail",
                 "block:qtcraft:signal_repeater",
                 "block:qtcraft:signal_observer",
                 "block:qtcraft:signal_ore",
@@ -333,6 +338,7 @@
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
                 "item:qtcraft:leather_scrap",
+                "item:qtcraft:minecart",
                 "item:qtcraft:magenta_dye",
                 "item:qtcraft:melon_seeds",
                 "item:qtcraft:orange_dye",
@@ -345,6 +351,8 @@
                 "item:qtcraft:black_dye",
                 "item:qtcraft:stick",
                 "item:qtcraft:clay_ball",
+                "item:qtcraft:hopper_minecart",
+                "item:qtcraft:chest_minecart",
                 "item:qtcraft:cyan_dye",
                 "item:qtcraft:unfired_lamp_shell",
                 "item:qtcraft:purple_dye",
@@ -1863,6 +1871,227 @@
             ],
             "text": "Kaltes flaches Land unter Schnee; sein Wasser gefriert.",
             "title": "Tundra"
+        },
+        "block:qtcraft:activator_rail": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Activator Rail",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:activator_rail"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,7"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,05 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Aktivierungsschiene"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); powered (false, true); shape (straight, ascending)"
+                }
+            ],
+            "icon": "qtcraft:activator_rail",
+            "id": "block:qtcraft:activator_rail",
+            "name": "qtcraft:activator_rail",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_torch",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_torch",
+                                    "text": "Signalfackel"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 6,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:activator_rail",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:activator_rail",
+                                "note": "",
+                                "target": "block:qtcraft:activator_rail",
+                                "text": "Aktivierungsschiene"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Schiene, die auf Loren wirkt, solange sie Strom bekommt: Der Fahrer steigt aus, eine Trichterlore hört auf zu ziehen; ohne Strom lässt sie Trichterloren wieder ziehen. Der Strom läuft eine Reihe von ihnen entlang, acht Schienen weit. Sie macht keine Kurven.",
+            "title": "Aktivierungsschiene"
         },
         "block:qtcraft:allium": {
             "category": "blocks",
@@ -9664,6 +9893,12 @@
                             "note": "",
                             "target": "block:qtcraft:signal_hopper",
                             "text": "Signaltrichter"
+                        },
+                        {
+                            "icon": "qtcraft:chest_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:chest_minecart",
+                            "text": "Truhenlore"
                         }
                     ],
                     "recipes": [
@@ -13397,6 +13632,222 @@
             ],
             "text": "Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.",
             "title": "Toter Busch"
+        },
+        "block:qtcraft:detector_rail": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Detector Rail",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:detector_rail"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,7"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,05 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Sensorschiene"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); powered (false, true); shape (straight, ascending)"
+                }
+            ],
+            "icon": "qtcraft:detector_rail",
+            "id": "block:qtcraft:detector_rail",
+            "name": "qtcraft:detector_rail",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:stone_pressure_plate",
+                                    "note": "",
+                                    "target": "block:qtcraft:stone_pressure_plate",
+                                    "text": "Steindruckplatte"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signalstaub"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 6,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:detector_rail",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:detector_rail",
+                                "note": "",
+                                "target": "block:qtcraft:detector_rail",
+                                "text": "Sensorschiene"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Schiene, die ein Signal gibt, solange eine Lore auf ihr steht, wie eine Druckplatte. Ein Signalkomparator dahinter liest, wie voll eine Truhen- oder Trichterlore auf ihr ist. Sie macht keine Kurven.",
+            "title": "Sensorschiene"
         },
         "block:qtcraft:diamond_block": {
             "category": "blocks",
@@ -33217,6 +33668,222 @@
             "text": "Wächst aus einer Kartoffel auf Ackerboden in vier Stufen. Reife Pflanzen geben zwei bis vier Kartoffeln.",
             "title": "Kartoffelpflanze"
         },
+        "block:qtcraft:powered_rail": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Powered Rail",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:powered_rail"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,7"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,05 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Antriebsschiene"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); powered (false, true); shape (straight, ascending)"
+                }
+            ],
+            "icon": "qtcraft:powered_rail",
+            "id": "block:qtcraft:powered_rail",
+            "name": "qtcraft:powered_rail",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:signal_dust",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_dust",
+                                    "text": "Signalstaub"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Goldbarren"
+                                }
+                            ],
+                            "count": 6,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:powered_rail",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:powered_rail",
+                                "note": "",
+                                "target": "block:qtcraft:powered_rail",
+                                "text": "Antriebsschiene"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Schiene, die Loren beschleunigt, solange sie Signal-Dust-Strom bekommt, und sie bremst und anhält, solange nicht. Der Strom läuft eine Reihe Antriebsschienen entlang, acht Schienen weit. Eine Lore, die vor einem Block auf ihr steht, fährt von ihm weg an. Sie macht keine Kurven.",
+            "title": "Antriebsschiene"
+        },
         "block:qtcraft:pumpkin": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -34686,6 +35353,217 @@
             ],
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Violetter Teppich"
+        },
+        "block:qtcraft:rail": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Rail",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:rail"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "0,7"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "1,05 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,09 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Schiene"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fest",
+                    "links": [
+                    ],
+                    "value": "nein"
+                },
+                {
+                    "label": "Braucht Halt",
+                    "links": [
+                    ],
+                    "value": "einen festen Block darunter"
+                },
+                {
+                    "label": "Wird von Flüssigkeiten weggespült",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); shape (straight, ascending, curve)"
+                }
+            ],
+            "icon": "qtcraft:rail",
+            "id": "block:qtcraft:rail",
+            "name": "qtcraft:rail",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:stick",
+                                    "note": "",
+                                    "target": "item:qtcraft:stick",
+                                    "text": "Stock"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 16,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:rail",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:rail",
+                                "note": "",
+                                "target": "block:qtcraft:rail",
+                                "text": "Schiene"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Gleis für Loren. Sie braucht einen festen Block darunter, verbindet sich mit den Schienen daneben und steigt einen Block zu einer höheren Schiene an.",
+            "title": "Schiene"
         },
         "block:qtcraft:red_concrete": {
             "category": "blocks",
@@ -37823,10 +38701,22 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Antriebsschiene"
+                        },
+                        {
                             "icon": "qtcraft:chunk_loader",
                             "note": "",
                             "target": "block:qtcraft:chunk_loader",
                             "text": "Chunk-Lader"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Sensorschiene"
                         },
                         {
                             "icon": "qtcraft:signal_repeater",
@@ -38045,6 +38935,20 @@
                     ],
                     "text": "",
                     "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:hopper_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:hopper_minecart",
+                            "text": "Trichterlore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
                 },
                 {
                     "links": [
@@ -39207,6 +40111,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Aktivierungsschiene"
+                        },
                         {
                             "icon": "qtcraft:signal_repeater",
                             "note": "",
@@ -44604,6 +45514,20 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Sensorschiene"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
                             "icon": "qtcraft:golden_pickaxe",
                             "note": "Stufe 1",
                             "target": "item:qtcraft:golden_pickaxe",
@@ -49512,6 +50436,126 @@
             "text": "",
             "title": "Mehrspieler"
         },
+        "chapter:qtcraft:rails": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Rails and Minecarts",
+            "facts": [
+            ],
+            "icon": "qtcraft:rail",
+            "id": "chapter:qtcraft:rails",
+            "name": "qtcraft:rails",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Schienen brauchen einen festen Block darunter. Eine Schiene verbindet sich von selbst mit den Schienen neben ihr: ein Nachbar ergibt ein gerades Stück, das auf ihn zeigt, zwei im rechten Winkel eine Kurve, eine Reihe aus drei oder vier bleibt gerade (eine Abzweigung knickt sie nicht). Liegt neben einer Schiene eine Schiene einen Block höher, steigt sie zu ihr an; so steigt und fällt ein Gleis Block für Block. Wo die Nachbarn nichts entscheiden, läuft eine neue Schiene in deine Blickrichtung. Schienen verhalten sich in jeder Richtung gleich.",
+                    "title": "Gleise legen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises bleibt sie stehen. Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter rutscht aus. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.",
+                    "title": "Loren"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Benutze eine Lore, um einzusteigen, und schleiche, um auszusteigen; du landest neben ihr. Während der Fahrt schiebt die Vorwärtstaste die Lore in Blickrichtung an. Der Server bewegt Lore und Fahrer, so sehen alle dieselbe Fahrt.",
+                    "title": "Fahren"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Ein Signalkolben schiebt eine Lore vor seinem Kopf oder vor dem Block, den er bewegt, wie jeden anderen Körper; schiebt er eine Reihe Schienen, wandern Schienen und Lore darauf mit. Ein Fahrer bleibt in der Lore.",
+                    "title": "Kolben und Loren"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Drei Schienen arbeiten mit Signal Dust. Eine Antriebsschiene beschleunigt eine Lore, solange sie Strom bekommt, bis zur Höchstgeschwindigkeit, und bremst sie ohne Strom bis zum Stillstand; eine Lore, die auf einer Antriebsschiene mit einem Block an einem Ende steht, fährt von dem Block weg an. Eine Sensorschiene gibt ein Signal, solange eine Lore auf ihr steht; ein Signalkomparator dahinter liest den Inhalt einer Truhen- oder Trichterlore auf ihr. Eine Aktivierungsschiene mit Strom lässt den Fahrer aussteigen und hält eine Trichterlore vom Ziehen ab; ohne Strom lässt sie Trichterloren wieder ziehen. Strom an einer Antriebs- oder Aktivierungsschiene läuft die Reihe der Schienen derselben Art entlang, acht Schienen weit, auch über Steigungen, und vergeht mit ihm. Diese Schienen machen keine Kurven: Wo zwei Schienen über Eck zusammentreffen, behalten sie ihre Richtung. Alles verhält sich in jeder Richtung gleich.",
+                    "title": "Antriebs-, Sensor- und Aktivierungsschienen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Truhenlore trägt eine Truhe: Benutze sie, um ihren Bildschirm wie bei einer Truhe zu öffnen. Eine Trichterlore trägt einen Signaltrichter und zieht Gegenstände einzeln aus einem Behälter über ihrer Schiene oder sammelt Gegenstände auf ihrer Schiene auf; zwischen zwei Gegenständen ruht sie wie ein Trichter. Ein Signaltrichter unter einer Schiene nimmt die Gegenstände einzeln aus einer Truhen- oder Trichterlore über ihm und gibt sie weiter; Signaltrichter können Schienen tragen. Zerbrochen lässt eine Lore sich selbst und ihren Inhalt fallen. Loren behalten ihren Inhalt, wenn ihr Chunk gespeichert oder entladen wird.",
+                    "title": "Truhen- und Trichterloren"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Schiene"
+                        },
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Antriebsschiene"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Sensorschiene"
+                        },
+                        {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Aktivierungsschiene"
+                        },
+                        {
+                            "icon": "qtcraft:minecart",
+                            "note": "",
+                            "target": "item:qtcraft:minecart",
+                            "text": "Lore"
+                        },
+                        {
+                            "icon": "qtcraft:chest_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:chest_minecart",
+                            "text": "Truhenlore"
+                        },
+                        {
+                            "icon": "qtcraft:hopper_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:hopper_minecart",
+                            "text": "Trichterlore"
+                        },
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signalkolben"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Schienen und Loren"
+        },
         "chapter:qtcraft:rules": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -53229,6 +54273,75 @@
             "text": "Verkohltes Holz: Brennstoff so gut wie Kohle und Teil von Fackeln.",
             "title": "Holzkohle"
         },
+        "item:qtcraft:chest_minecart": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Minecart with Chest",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chest_minecart"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:chest_minecart",
+            "id": "item:qtcraft:chest_minecart",
+            "name": "qtcraft:chest_minecart",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:chest",
+                                    "note": "",
+                                    "target": "block:qtcraft:chest",
+                                    "text": "Truhe"
+                                },
+                                {
+                                    "icon": "qtcraft:minecart",
+                                    "note": "",
+                                    "target": "item:qtcraft:minecart",
+                                    "text": "Lore"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:chest_minecart",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:chest_minecart",
+                                "note": "",
+                                "target": "item:qtcraft:chest_minecart",
+                                "text": "Truhenlore"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Eine Lore mit einer Truhe aus 27 Plätzen. Benutze sie, um hineinzusehen; fahren kann man in ihr nicht. Ein Signaltrichter unter ihrer Schiene leert sie, und zerbrochen lässt sie sich selbst und ihren Inhalt fallen.",
+            "title": "Truhenlore"
+        },
         "item:qtcraft:clay_ball": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -56054,6 +57167,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Antriebsschiene"
+                        },
+                        {
                             "icon": "qtcraft:golden_axe",
                             "note": "",
                             "target": "item:qtcraft:golden_axe",
@@ -57950,6 +59069,75 @@
             "text": "Aus Kaktus im Ofen.",
             "title": "Grüner Farbstoff"
         },
+        "item:qtcraft:hopper_minecart": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Minecart with Signal Hopper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:hopper_minecart"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:hopper_minecart",
+            "id": "item:qtcraft:hopper_minecart",
+            "name": "qtcraft:hopper_minecart",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:signal_hopper",
+                                    "note": "",
+                                    "target": "block:qtcraft:signal_hopper",
+                                    "text": "Signaltrichter"
+                                },
+                                {
+                                    "icon": "qtcraft:minecart",
+                                    "note": "",
+                                    "target": "item:qtcraft:minecart",
+                                    "text": "Lore"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:hopper_minecart",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:hopper_minecart",
+                                "note": "",
+                                "target": "item:qtcraft:hopper_minecart",
+                                "text": "Trichterlore"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                }
+            ],
+            "text": "Eine Lore mit einem Signaltrichter: Sie zieht Gegenstände aus einem Behälter über ihrer Schiene und sammelt Gegenstände auf ihrem Weg auf, einen je Trichterschritt. Eine eingeschaltete Aktivierungsschiene hält sie davon ab, bis sie über eine ausgeschaltete fährt. Ein Signaltrichter unter ihrer Schiene leert sie.",
+            "title": "Trichterlore"
+        },
         "item:qtcraft:iron_axe": {
             "category": "tools",
             "categoryTitle": "Werkzeuge und Rüstung",
@@ -58750,6 +59938,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Aktivierungsschiene"
+                        },
+                        {
                             "icon": "qtcraft:bucket",
                             "note": "",
                             "target": "item:qtcraft:bucket",
@@ -58838,6 +60032,24 @@
                             "note": "",
                             "target": "block:qtcraft:iron_door",
                             "text": "Eisentür"
+                        },
+                        {
+                            "icon": "qtcraft:minecart",
+                            "note": "",
+                            "target": "item:qtcraft:minecart",
+                            "text": "Lore"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Schiene"
+                        },
+                        {
+                            "icon": "qtcraft:detector_rail",
+                            "note": "",
+                            "target": "block:qtcraft:detector_rail",
+                            "text": "Sensorschiene"
                         },
                         {
                             "icon": "qtcraft:signal_piston",
@@ -61285,6 +62497,114 @@
             "text": "Ein saftiger Bissen; neun ergeben wieder eine ganze Melone.",
             "title": "Melonenscheibe"
         },
+        "item:qtcraft:minecart": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Minecart",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:minecart"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:minecart",
+            "id": "item:qtcraft:minecart",
+            "name": "qtcraft:minecart",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:minecart",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:minecart",
+                                "note": "",
+                                "target": "item:qtcraft:minecart",
+                                "text": "Lore"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:hopper_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:hopper_minecart",
+                            "text": "Trichterlore"
+                        },
+                        {
+                            "icon": "qtcraft:chest_minecart",
+                            "note": "",
+                            "target": "item:qtcraft:chest_minecart",
+                            "text": "Truhenlore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                }
+            ],
+            "text": "Setze sie auf eine Schiene und steig mit Benutzen ein; schleiche, um auszusteigen. Sie rollt auf dem Gleis weiter, bergab schneller; während der Fahrt schiebt die Vorwärtstaste sie an. Ein Schlag zerbricht sie.",
+            "title": "Lore"
+        },
         "item:qtcraft:mushroom_stew": {
             "category": "food",
             "categoryTitle": "Nahrung",
@@ -62684,6 +64004,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:activator_rail",
+                            "note": "",
+                            "target": "block:qtcraft:activator_rail",
+                            "text": "Aktivierungsschiene"
+                        },
+                        {
+                            "icon": "qtcraft:powered_rail",
+                            "note": "",
+                            "target": "block:qtcraft:powered_rail",
+                            "text": "Antriebsschiene"
+                        },
+                        {
                             "icon": "qtcraft:birch_fence",
                             "note": "",
                             "target": "block:qtcraft:birch_fence",
@@ -62874,6 +64206,12 @@
                             "note": "",
                             "target": "item:qtcraft:armor_stand",
                             "text": "Rüstungsständer"
+                        },
+                        {
+                            "icon": "qtcraft:rail",
+                            "note": "",
+                            "target": "block:qtcraft:rail",
+                            "text": "Schiene"
                         },
                         {
                             "icon": "qtcraft:signal_torch",

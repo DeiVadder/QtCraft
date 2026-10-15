@@ -147,6 +147,25 @@ void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinit
     }
 }
 
+// Minecarts (decisions E-382, E-386): a carried block nothing defines makes a plain cart, and a
+// structure's cart of an item that places no cart is left out.
+void checkCartReferences(const QcContentRegistry &content, QStringList &warnings)
+{
+    for (const QcItemDefinition &definition : content.items()) {
+        if (!definition.cartBlock.isEmpty() && !content.blockId(definition.cartBlock)) {
+            warnings.append(u"item %1: carries unknown block '%2'"_s.arg(definition.name, definition.cartBlock));
+        }
+    }
+    for (const QcStructureDefinition &structure : content.structures()) {
+        for (const QcStructureDefinition::Cart &cart : structure.minecarts) {
+            const std::optional<QcItemId> item = content.itemId(cart.item);
+            if (!item || !content.item(*item).placesCart) {
+                warnings.append(u"structure %1: '%2' is no minecart"_s.arg(structure.name, cart.item));
+            }
+        }
+    }
+}
+
 // Names a definition refers to that no pack provides; such entries stay inert (a recipe never
 // matches, a drop is not given) but deserve a warning for the mod author.
 void checkReferences(const QcContentRegistry &content, QStringList &warnings)
@@ -168,6 +187,7 @@ void checkReferences(const QcContentRegistry &content, QStringList &warnings)
     for (const QcBlockDefinition &block : content.blocks()) {
         checkBlockReferences(content, block, warnings);
     }
+    checkCartReferences(content, warnings);
 
     for (const QcItemDefinition &definition : content.items()) {
         if (!knowsTexture(content, definition.texture)) {

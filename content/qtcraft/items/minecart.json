@@ -1,0 +1,6 @@
+{
+    "name": "minecart",
+    "texture": "minecart",
+    "maxStack": 1,
+    "placesCart": true
+}

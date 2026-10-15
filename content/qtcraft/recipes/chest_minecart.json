@@ -1,0 +1,11 @@
+{
+    "name": "chest_minecart",
+    "type": "shapeless",
+    "ingredients": [
+        "chest",
+        "minecart"
+    ],
+    "result": {
+        "item": "chest_minecart"
+    }
+}

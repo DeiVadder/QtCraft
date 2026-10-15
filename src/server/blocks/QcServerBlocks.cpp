@@ -2,6 +2,7 @@
 
 #include "QcBlockRules.h"
 #include "QcBlockUpdateQueue.h"
+#include "QcRails.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 
@@ -39,6 +40,13 @@ bool QcServerBlocks::setQuietly(QcBlockPos pos, QcBlockId block)
     }
 
     m_updates.queueNeighbours(pos, block != qcAirBlockId);
+    // Rails one block higher or lower beside a rail connect across the slope, where that rail's own
+    // neighbours let it meet them (decision E-382).
+    if (QcRails::isRail(m_state.content(), before) || QcRails::isRail(m_state.content(), block)) {
+        for (const QcBlockPos near : QcRails::shapeNeighbours(pos)) {
+            m_updates.queue(near);
+        }
+    }
     // Circuits nearby look at the change in the next signal step (decision E-335).
     m_state.circuits().noteChange(m_state.world(), pos, before, block);
     return true;

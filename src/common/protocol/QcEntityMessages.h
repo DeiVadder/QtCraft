@@ -1,7 +1,7 @@
 #pragma once
 
 // Protocol messages about entities: creatures, other players, dropped items, falling and sliding
-// blocks and armour stands.
+// blocks, armour stands and minecarts.
 // Part of the QcMessage variant (QcMessages.h).
 
 #include "QcAppearance.h"
@@ -30,6 +30,8 @@ enum EntityFlag : quint8 {
     Young = 32,
     // An animal in love after feeding: hearts above it.
     InLove = 64,
+    // A player sitting in a minecart (decision E-382).
+    Riding = 128,
 };
 
 inline constexpr double youngScale = 0.5;

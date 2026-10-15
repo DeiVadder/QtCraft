@@ -1,0 +1,18 @@
+{
+    "name": "detector_rail",
+    "type": "shaped",
+    "pattern": [
+        "i i",
+        "ipi",
+        "isi"
+    ],
+    "key": {
+        "i": "iron_ingot",
+        "p": "stone_pressure_plate",
+        "s": "signal_dust"
+    },
+    "result": {
+        "item": "detector_rail",
+        "count": 6
+    }
+}

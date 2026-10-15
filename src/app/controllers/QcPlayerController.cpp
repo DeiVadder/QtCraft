@@ -218,6 +218,14 @@ void QcPlayerController::nameOpenMachine()
     const QcClientSession &session = *m_parts.session;
     const auto content = session.content();
     const std::optional<QcBlockPos> pos = session.machinePos();
+    if (session.machineEntity() != 0) {
+        // A container cart: named after its item, its rows as long as those of the block it carries.
+        const QcClientEntity cart = session.entities().value(session.machineEntity());
+        const std::optional<QcBlockId> carried = cart.cartBlock(*content);
+        m_machineLabel = content->isValidItem(cart.item.item) ? content->translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
+        m_containerColumns = carried ? content->block(*carried).containerColumns : 9;
+        return;
+    }
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
     m_machineLabel = block ? content->translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
     m_containerColumns = block ? content->block(*block).containerColumns : 9;

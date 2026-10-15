@@ -358,7 +358,7 @@ void QcHeadlessGame::onJoined(std::unique_ptr<QcClientSession> session, const st
         QCoreApplication::exit(QcHeadlessJoin::exitConnectionLost);
     });
     if (m_statsLog) {
-        m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+        m_session->debug().setBaseFlags(QcMsg::DebugSubscribe::stats);
     }
 
     if (!startControl(scriptFile)) {
@@ -561,7 +561,7 @@ QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
     }
     m_session = std::make_unique<QcClientSession>(m_server->connectClient(), u"Bot"_s);
     if (m_statsLog) {
-        m_session->setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+        m_session->debug().setBaseFlags(QcMsg::DebugSubscribe::stats);
     }
     connect(m_session.get(), &QcClientSession::disconnected, this, [](const QString &reason) {
         printError(u"disconnected: "_s + reason);

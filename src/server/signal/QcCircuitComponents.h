@@ -4,6 +4,7 @@
 #include "QcCircuitPlan.h"
 #include "QcCircuitState.h"
 #include "QcComparatorReadings.h"
+#include "QcRails.h"
 #include "QcSignalPower.h"
 
 #include <QSet>
@@ -26,7 +27,10 @@
 // - a Signal Observer turns on 2 ticks after the block in front of it changed and off 2 ticks later;
 // - a Signal Hopper is locked while it gets any power;
 // - a Signal Dispenser or dropper notes rising power (also quasi-connectivity, like a piston) and
-//   ejects an item 4 ticks later (decision E-345).
+//   ejects an item 4 ticks later (decision E-345);
+// - a rail slot (powered and activator rails) is powered at once while it or a rail of the same block
+//   within its reach along the line gets power; a change at one rail decides all rails within reach
+//   of it (decision E-384).
 class QcCircuitComponents
 {
 public:
@@ -50,11 +54,15 @@ public:
         bool quasiConnectivity = true;
         // Pistons that already extended (bit 1) or retracted (bit 2) in this tick.
         const QHash<QcBlockPos, quint8> &pistonActs;
-        // Plates something lies on in this tick, and those a player or creature stands on.
+        // Plates something lies on in this tick, those a player or creature stands on and those a
+        // minecart stands on.
         const QSet<QcBlockPos> &pressedByAnything;
         const QSet<QcBlockPos> &pressedByLiving;
+        const QSet<QcBlockPos> &pressedByCarts;
         // What comparators read from containers and readable blocks.
         const QcComparatorReadings &readings;
+        // The tracks of rails (the lines of powered and activator rails).
+        const QcRails::Table &rails;
     };
 
     static constexpr quint8 extendedThisTick = 1;
@@ -102,6 +110,8 @@ private:
     void switchObserver(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactHopper(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
     void reactDispenser(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const;
+    // Decides every rail of the line within reach of the rail at `pos`.
+    void reactRail(QcBlockPos pos, QcBlockId block, QcCircuitPlan &plan) const;
 
     const QcSignalTable &table() const { return m_context.power.table(); }
     const QcSignalDefinition &definition(QcBlockId block) const;

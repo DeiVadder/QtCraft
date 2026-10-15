@@ -50,6 +50,7 @@ public:
         } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
             acknowledged = state->lastInputSequence;
+            vehicle = state->vehicle;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
             viewDistanceGranted = welcome->viewDistance;
@@ -78,6 +79,7 @@ public:
             gameMode = mode->mode;
         } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
             openMachine = machine->pos;
+            openMachineEntity = machine->entity;
             machineCategory = machine->category;
             machineClosed = false;
         } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
@@ -153,8 +155,9 @@ public:
     quint32 entityId = 0;
     qint32 viewDistanceGranted = -1;
     QcEntityMotion motion;
-    // The latest input the server acknowledged (PlayerState).
+    // The latest input the server acknowledged and the minecart ridden (PlayerState).
     quint32 acknowledged = 0;
+    quint32 vehicle = 0;
     // Messages received in all, and the WorldTime and EntityMoves among them.
     int messageCount = 0;
     int timeMessages = 0;
@@ -183,6 +186,8 @@ public:
     // The game mode the server reported last (decision E-282); empty before the first.
     std::optional<QcGameMode> gameMode;
     std::optional<QcBlockPos> openMachine;
+    // The container minecart of the open screen, 0 for a block.
+    quint32 openMachineEntity = 0;
     QString machineCategory;
     QList<QcItemStack> machineStacks;
     float machineBurn = 0.0f;

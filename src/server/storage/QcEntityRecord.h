@@ -4,6 +4,7 @@
 #include "QcChunkPos.h"
 #include "QcFallingBlock.h"
 #include "QcItemEntityManager.h"
+#include "QcMinecart.h"
 #include "QcMobManager.h"
 
 #include <QList>
@@ -36,11 +37,16 @@ struct QcEntityRecord
     QList<Ordered<QcFallingBlock>> fallingBlocks;
     // Armour stands; the id is not saved.
     QList<Ordered<QcArmourStand>> stands;
+    // Minecarts with their motion; the id and the rider are not saved.
+    QList<Ordered<QcMinecart>> minecarts;
     // The chunk got its group of animals already (decision E-086); kept with the chunk.
     bool populated = false;
 
     // No entities; a populated chunk still keeps its record.
-    bool isEmpty() const { return creatures.isEmpty() && items.isEmpty() && fallingBlocks.isEmpty() && stands.isEmpty(); }
+    bool isEmpty() const
+    {
+        return creatures.isEmpty() && items.isEmpty() && fallingBlocks.isEmpty() && stands.isEmpty() && minecarts.isEmpty();
+    }
 };
 
 

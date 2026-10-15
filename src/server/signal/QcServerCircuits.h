@@ -6,6 +6,7 @@
 #include "QcDispenserActions.h"
 #include "QcServerHoppers.h"
 #include "QcPistonMover.h"
+#include "QcRails.h"
 #include "QcSignalTable.h"
 
 #include <QHash>
@@ -56,6 +57,11 @@ public:
 private:
     void finishMoves();
     void pressPlates();
+    // Comparators behind detector rails read again where the container cart they read changed
+    // (QcComparatorReading::Carts): another cart arrived or left while the rail stayed pressed.
+    void noteCartReadings(QHash<QcBlockPos, quint32> readings);
+    // The bodies that press the plate `plate` in this tick (QcSignalDefinition::detectsItems, detectsCarts).
+    const QSet<QcBlockPos> &pressedSet(QcBlockId plate) const;
     // Runs steps of changes while more than `reserve` of the budget is left.
     void settle(qsizetype reserve);
     // The changes of the next step, at most `limit` (at least the minimum step), without those next to
@@ -96,4 +102,8 @@ private:
     QHash<QcBlockPos, quint8> m_pistonActs;
     QSet<QcBlockPos> m_pressedByAnything;
     QSet<QcBlockPos> m_pressedByLiving;
+    QSet<QcBlockPos> m_pressedByCarts;
+    // The container cart with the lowest id in each plate cell in the latest tick (what a comparator reads).
+    QHash<QcBlockPos, quint32> m_cartReadings;
+    QcRails::Table m_rails;
 };

@@ -77,6 +77,9 @@ void QcCircuitComponents::react(QcBlockPos pos, QcCircuitPlan &plan)
     case QcSignalKind::Dispenser:
         reactDispenser(pos, *block, state, plan);
         break;
+    case QcSignalKind::Rail:
+        reactRail(pos, *block, plan);
+        break;
     default:
         break;
     }
@@ -344,7 +347,10 @@ void QcCircuitComponents::reactHead(QcBlockPos pos, QcSignalState state, QcCircu
 
 void QcCircuitComponents::releasePlate(QcBlockPos pos, QcBlockId block, QcSignalState state, QcCircuitPlan &plan) const
 {
-    const QSet<QcBlockPos> &pressed = definition(block).detectsItems ? m_context.pressedByAnything : m_context.pressedByLiving;
+    const QcSignalDefinition &signal = definition(block);
+    const QSet<QcBlockPos> &pressed = signal.detectsCarts ? m_context.pressedByCarts
+                                      : signal.detectsItems ? m_context.pressedByAnything
+                                                            : m_context.pressedByLiving;
     if (pressed.contains(pos)) {
         plan.schedules.append({pos, plateCheckTicks, Priority::Release});
     } else if (state.on) {
@@ -457,5 +463,33 @@ void QcCircuitComponents::reactDispenser(QcBlockPos pos, QcBlockId block, QcSign
         plan.schedules.append({pos, dispenserDelayTicks, Priority::Diode});
     } else if (!powered && state.on) {
         plan.writes.insert(pos, table().withFlag(block, u"triggered"_s, false));
+    }
+}
+
+void QcCircuitComponents::reactRail(QcBlockPos pos, QcBlockId block, QcCircuitPlan &plan) const
+{
+    // A rail is powered while a rail of its line within its reach (itself included) gets power from
+    // outside. Only that power counts, never the `powered` state of the rails, so a line never keeps
+    // itself on. The rails within reach of this one may change with the power here, so all of them
+    // are decided now from the line twice as long (decision E-384).
+    const int reach = definition(block).railReach;
+    const QcRails::Line line = QcRails::lineOf(m_context.power.world(), m_context.rails, pos, 2 * reach);
+    const qsizetype count = line.cells.size();
+    plan.work += count;
+    QList<int> fed(count + 1);
+    for (qsizetype i = 0; i < count; ++i) {
+        fed[i + 1] = fed[i] + (m_context.power.input(line.cells[i]) > 0 ? 1 : 0);
+    }
+
+    const qsizetype first = std::max<qsizetype>(0, line.index - reach);
+    const qsizetype last = std::min<qsizetype>(count - 1, line.index + reach);
+    for (qsizetype i = first; i <= last; ++i) {
+        const qsizetype from = std::max<qsizetype>(0, i - reach);
+        const qsizetype to = std::min<qsizetype>(count - 1, i + reach);
+        const bool powered = fed[to + 1] - fed[from] > 0;
+        const QcBlockId rail = m_context.power.blockAt(line.cells[i]).value_or(qcAirBlockId);
+        if (table().at(rail).on != powered) {
+            plan.writes.insert(line.cells[i], table().withFlag(rail, u"powered"_s, powered));
+        }
     }
 }

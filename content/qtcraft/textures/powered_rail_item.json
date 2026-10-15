@@ -1,0 +1,8 @@
+{
+    "name": "powered_rail_item",
+    "pattern": "rail",
+    "primary": "#ecc430",
+    "secondary": "#6b4f2c",
+    "variation": 0.06,
+    "seed": 3204
+}

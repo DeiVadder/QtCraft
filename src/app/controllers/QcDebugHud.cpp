@@ -80,7 +80,7 @@ void QcDebugHud::syncSubscription() const
     const QcDebugSettings &debug = *m_settings.debug();
     const bool stats = m_statsLogging || debug.levelValue() == QcDebugOptions::Level::Full;
     const quint8 flags = (stats ? QcMsg::DebugSubscribe::stats : 0) | (debug.mobGoals() ? QcMsg::DebugSubscribe::all : 0);
-    m_parts.session->setDebugSubscription(flags);
+    m_parts.session->debug().setFlags(flags);
 }
 
 QList<QcRenderSample> QcDebugHud::recordFrame(qint64 entityNs, qint64 previewNs, bool benchmarkRunning)
@@ -139,7 +139,7 @@ void QcDebugHud::updateText(const QcVec3 &feet)
         general = QcDebugText::general(data).join(u'\n');
         timings = QcDebugText::timings(data).join(u'\n');
         m_frameGraph = toReals(m_frames.intervalHistory());
-        m_tickGraph = toReals(m_parts.session->serverDebug().tickHistory());
+        m_tickGraph = toReals(m_parts.session->debug().mirror().tickHistory());
     } else {
         QcDebugSnapshot data;
         data.frame = m_frames.frame(*m_parts.meshes, 0, QcFrameMonitor::Reader::Display);

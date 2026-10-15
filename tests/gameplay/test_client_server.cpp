@@ -196,17 +196,17 @@ private slots:
     {
         auto host = makeHost(m_content, 2);
         QcClientSession session(host->connectClient(), u"Tester"_s);
-        session.setDebugSubscriptionBase(QcMsg::DebugSubscribe::stats);
+        session.debug().setBaseFlags(QcMsg::DebugSubscribe::stats);
         session.start();
-        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing && session.serverDebug().latest(), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing && session.debug().mirror().latest(), timeoutMs);
         QTRY_VERIFY_WITH_TIMEOUT(session.playerMotion().onGround, timeoutMs);
 
         // Switching the requested part off keeps the base: the server data keeps coming.
-        session.setDebugSubscription(QcMsg::DebugSubscribe::all);
-        session.setDebugSubscription(0);
-        QCOMPARE(session.debugSubscription(), QcMsg::DebugSubscribe::stats);
-        const quint64 seen = session.serverDebug().latest()->tick;
-        QTRY_VERIFY_WITH_TIMEOUT(session.serverDebug().latest() && session.serverDebug().latest()->tick > seen, timeoutMs);
+        session.debug().setFlags(QcMsg::DebugSubscribe::all);
+        session.debug().setFlags(0);
+        QCOMPARE(session.debug().flags(), QcMsg::DebugSubscribe::stats);
+        const quint64 seen = session.debug().mirror().latest()->tick;
+        QTRY_VERIFY_WITH_TIMEOUT(session.debug().mirror().latest() && session.debug().mirror().latest()->tick > seen, timeoutMs);
 
         // The snapshot names light and block of the position it is given (the drawn one), here
         // three blocks down in the ground, where no sky light reaches.

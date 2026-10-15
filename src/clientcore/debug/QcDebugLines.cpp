@@ -2,6 +2,7 @@
 
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
+#include "QcMinecartBody.h"
 #include "QcSectionKey.h"
 #include "QcWorldConstants.h"
 
@@ -24,6 +25,9 @@ std::pair<double, double> bodySize(const QcClientEntity &entity, const QcContent
     }
     if (entity.isBlockEntity()) {
         return {0.98, 0.98};
+    }
+    if (entity.isMinecart()) {
+        return {QcMinecartBody::width, QcMinecartBody::height};
     }
     if (const QcMobDefinition *creature = entity.creature(content)) {
         return {creature->width, creature->height};

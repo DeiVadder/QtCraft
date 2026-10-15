@@ -22,6 +22,7 @@ public:
     const QcSignalState &at(QcBlockPos pos) const;
     [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const { return m_world.blockAt(pos); }
     const QcSignalTable &table() const { return m_table; }
+    const QcBlockAccess &world() const { return m_world; }
 
     // Power the block `state` at `from` sends straight into the neighbouring cell towards `towards`.
     static int directPower(QcSignalState state, QcBlockFace towards);

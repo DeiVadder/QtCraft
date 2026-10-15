@@ -33,6 +33,7 @@ qt_add_library(qc_server STATIC
     storage/QcRegionFile.h storage/QcRegionFile.cpp
     storage/QcStackReader.h storage/QcStackReader.cpp
     blocks/QcBlockRules.h blocks/QcBlockRules.cpp
+    blocks/QcRails.h blocks/QcRails.cpp
     blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
     blocks/QcServerFallingBlocks.h blocks/QcServerFallingBlocks.cpp
     blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
@@ -52,6 +53,7 @@ qt_add_library(qc_server STATIC
     entities/QcItemEntity.h
     entities/QcFallingBlock.h
     entities/QcArmourStand.h
+    entities/QcMinecart.h
     entities/QcMovingBlock.h
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     content/QcContentPackLoader.h content/QcContentPackLoader.cpp
@@ -64,8 +66,13 @@ qt_add_library(qc_server STATIC
     gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
     gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
+    gameplay/QcMinecartHoppers.h gameplay/QcMinecartHoppers.cpp
+    gameplay/QcMinecartCollisions.h gameplay/QcMinecartCollisions.cpp
+    gameplay/QcMinecartManager.h gameplay/QcMinecartManager.cpp
+    gameplay/QcMinecartMotion.h gameplay/QcMinecartMotion.cpp
     gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
     gameplay/QcServerStands.h gameplay/QcServerStands.cpp
+    gameplay/QcServerMinecarts.h gameplay/QcServerMinecarts.cpp
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp

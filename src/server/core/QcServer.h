@@ -25,6 +25,7 @@
 #include "QcServerItems.h"
 #include "QcServerLogin.h"
 #include "QcServerMachines.h"
+#include "QcServerMinecarts.h"
 #include "QcServerPersistence.h"
 #include "QcServerPlants.h"
 #include "QcServerSounds.h"
@@ -87,6 +88,8 @@ public:
     QcLiquidFlow &liquids() { return m_state.liquids(); }
     QcFallingBlockManager &fallingBlocks() { return m_state.entities().fallingBlocks(); }
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
+    QcMinecartManager &carts() { return m_state.entities().minecarts(); }
+    QcServerMinecarts &minecarts() { return m_minecarts; }
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits() { return m_circuits; }
     QcCircuitState &circuitState() { return m_state.circuits(); }
@@ -234,6 +237,7 @@ private:
     QcPlayerHealth m_health;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
+    QcServerMinecarts m_minecarts;
     QcServerAnimals m_animals;
     QcServerPlants m_plants;
     QcServerInteraction m_interaction;

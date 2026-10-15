@@ -10,7 +10,8 @@ using namespace Qt::StringLiterals;
 // once their chunks are loaded around a player, and each shows what it is about after some ticks:
 // lit lamps, an opened door, dust shapes, a burnt-out clock, a waiting and an updated BUD piston, a
 // spat block, a closed and an open piston door, a pushed chest with its contents and armour stand,
-// a long wire.
+// a long wire; the rails station of stage 32.2 (a cart kept going by powered rails lights a lamp at
+// a detector rail, carts unloaded into chests by hoppers under the rails).
 class TestSignalShowcase : public QcServerTestFixture
 {
     Q_OBJECT
@@ -233,6 +234,36 @@ private slots:
         }
         const int wheat = harvested(demo);
         QVERIFY2(wheat > 0, qPrintable(QString::number(wheat)));
+    }
+
+    void railStationRunsByItself()
+    {
+        const QString demo = u"demo-rails_signal"_s;
+        visit(demo);
+        QCOMPARE(property(demo, 6, 1, 1, u"powered"_s), u"true"_s);
+        QCOMPARE(property(demo, 1, 1, 3, u"powered"_s), u"true"_s);
+        QCOMPARE(property(demo, 10, 1, 5, u"powered"_s), u"true"_s);
+
+        // The cart goes round and round: the lamp at the detector rail lights each time.
+        int flashes = 0;
+        bool lit = false;
+        for (int tick = 0; tick < 400; ++tick) {
+            idle(1);
+            const bool now = block(demo, 2, 1, 6) == u"signal_lamp_lit"_s;
+            flashes += now && !lit ? 1 : 0;
+            lit = now;
+        }
+        QVERIFY2(flashes >= 3, qPrintable(QString::number(flashes)));
+
+        // The hoppers under the rails filled their chests from the carts.
+        for (const int x : {3, 8}) {
+            const QcBlockEntities::Container *chest = m_server->blockEntities().container(origin(demo).offset(x, 0, 11));
+            int count = 0;
+            for (const QcItemStack &stack : chest ? chest->stacks : QList<QcItemStack>()) {
+                count += stack.count;
+            }
+            QVERIFY2(count > 5, qPrintable(u"chest at %1: %2"_s.arg(x).arg(count)));
+        }
     }
 };
 

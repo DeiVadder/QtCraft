@@ -1,3 +1,4 @@
+#include "QcClientDebugSubscription.h"
 #include "QcClientWorld.h"
 #include "QcDebugJson.h"
 #include "QcDebugLines.h"
@@ -96,6 +97,28 @@ class TestDebugReport : public QObject
     Q_OBJECT
 
 private slots:
+    void debugSubscriptionGoesOutOnlyWhileWelcomed()
+    {
+        QcClientDebugSubscription subscription;
+        QList<quint8> sent;
+        subscription.setSender([&sent](const QcMessage &message) { sent.append(std::get<QcMsg::DebugSubscribe>(message).flags); });
+
+        // Before the welcome nothing goes out; the welcome sends what is wanted.
+        subscription.setFlags(QcMsg::DebugSubscribe::all);
+        QVERIFY(sent.isEmpty());
+        subscription.welcomed();
+        QCOMPARE(sent, QList<quint8>{QcMsg::DebugSubscribe::all});
+        subscription.setFlags(0);
+        QCOMPARE(sent, (QList<quint8>{QcMsg::DebugSubscribe::all, 0}));
+
+        // After the connection closed, changes stay with the client.
+        subscription.closed();
+        subscription.setFlags(QcMsg::DebugSubscribe::stats);
+        subscription.setBaseFlags(QcMsg::DebugSubscribe::all);
+        QCOMPARE(sent.size(), 2);
+        QCOMPARE(subscription.flags(), QcMsg::DebugSubscribe::all);
+    }
+
     void skyLightReachesUnderARoofFromItsEdge()
     {
         const auto content = lampContent();

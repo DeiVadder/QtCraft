@@ -1,6 +1,7 @@
 #include "QcBlockRules.h"
 
 #include "QcContentRegistry.h"
+#include "QcRails.h"
 
 #include <algorithm>
 #include <cmath>
@@ -284,7 +285,9 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
         return std::nullopt;
     }
 
-    state = connectedState(world, target, *oriented);
+    // A rail lies along the rails around it, else along the player's view (decision E-382).
+    state = definition.rail ? QcRails::shapedState(world, target, *oriented, faceFromName(lookDirection(aim.yaw)))
+                            : connectedState(world, target, *oriented);
     // A door's upper half does not exist yet: the lower one only needs the floor.
     const bool supported = definition.door ? hasSolidFace(world, target.offset(0, -1, 0), QcBlockFace::Up)
                                            : isSupported(world, target, state);
@@ -302,6 +305,9 @@ QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
         return id;
     }
     const QcBlockDefinition &definition = content.block(id);
+    if (definition.rail) {
+        return QcRails::shapedState(world, pos, id, std::nullopt);
+    }
     if (definition.connectsTo.isEmpty()) {
         return id;
     }
@@ -351,7 +357,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         }
 
         if (definition.groundBlocks.isEmpty() && definition.groundLiquid.isEmpty()) {
-            return hasSolidFace(world, below, QcBlockFace::Up);
+            return hasSolidFace(world, below, QcBlockFace::Up) || (content.isValidBlock(*ground) && content.block(*ground).supportsAbove);
         }
 
         if (!content.isValidBlock(*ground)) {

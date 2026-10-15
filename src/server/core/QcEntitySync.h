@@ -21,6 +21,8 @@ public:
     static constexpr double itemViewDistance = 32.0;
     // Item moves smaller than this are not sent (items bobbing on water).
     static constexpr double itemMoveThreshold = 0.02;
+    // Minecarts send moves only while they move (decision E-382).
+    static constexpr double cartMoveThreshold = 1e-6;
 
     explicit QcEntitySync(QcServerState &state);
 

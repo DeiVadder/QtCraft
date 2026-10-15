@@ -1,0 +1,151 @@
+{
+    "name": "rails_signal",
+    "showcase": {
+        "order": 87
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "S": "stone",
+        "e": "rail[facing=east,shape=straight]",
+        "n": "rail[facing=north,shape=straight]",
+        "1": "rail[facing=east,shape=curve]",
+        "2": "rail[facing=south,shape=curve]",
+        "3": "rail[facing=west,shape=curve]",
+        "4": "rail[facing=north,shape=curve]",
+        "E": "powered_rail[facing=east,shape=straight,powered=true]",
+        "D": "detector_rail[facing=east,shape=straight,powered=false]",
+        "u": "rail[facing=east,shape=ascending]",
+        "w": "rail[facing=west,shape=ascending]",
+        "l": "lever[attach=floor,powered=true]",
+        "L": "signal_lamp",
+        "h": "signal_hopper[facing=south]",
+        "C": "chest[facing=north]",
+        "c": "chest[facing=north]",
+        "N": "powered_rail[facing=north,shape=straight,powered=true]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPhPPPPhPPPPP",
+            "PPPCPPPPCPPPPP",
+            "PPPPPPPPPPPPPP"
+        ],
+        [
+            "......l.......",
+            ".1EEEEEEEEEE2.",
+            ".N..........N.",
+            "lN..........Nl",
+            ".N..........N.",
+            ".4DEEuSSwEEE3.",
+            "..L.l.....l...",
+            "..............",
+            "..............",
+            "..............",
+            ".eeeeeeeeeeee.",
+            "..............",
+            ".............."
+        ],
+        [
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "......ee......",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "...c..........",
+            "..............",
+            ".............."
+        ]
+    ],
+    "minecarts": [
+        [
+            5,
+            1,
+            5
+        ],
+        {
+            "at": [
+                3,
+                1,
+                10
+            ],
+            "item": "hopper_minecart"
+        },
+        {
+            "at": [
+                8,
+                1,
+                10
+            ],
+            "item": "chest_minecart"
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                3,
+                2,
+                10
+            ],
+            "items": [
+                {
+                    "item": "cobblestone",
+                    "count": 64
+                },
+                {
+                    "item": "stick",
+                    "count": 32
+                }
+            ]
+        },
+        {
+            "at": [
+                8,
+                1,
+                10
+            ],
+            "items": [
+                {
+                    "item": "oak_planks",
+                    "count": 64
+                },
+                {
+                    "item": "torch",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                6.5,
+                3.0,
+                3.5
+            ],
+            "text": "structure.qtcraft.rails_signal.loop"
+        },
+        {
+            "at": [
+                6.5,
+                3.0,
+                9.5
+            ],
+            "text": "structure.qtcraft.rails_signal.hoppers"
+        }
+    ]
+}

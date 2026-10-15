@@ -16,6 +16,7 @@
 #include "QcServerInventory.h"
 #include "QcServerPlants.h"
 #include "QcServerSounds.h"
+#include "QcServerMinecarts.h"
 #include "QcServerStands.h"
 #include "QcServerState.h"
 #include "QcSoundKeys.h"
@@ -107,7 +108,8 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
-    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)) {
+    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.stands.place(client, message)
+        || m_parts.minecarts.place(client, message)) {
         return;
     }
     placeHeld(client, message, held);

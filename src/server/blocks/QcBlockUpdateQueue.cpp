@@ -1,6 +1,7 @@
 #include "QcBlockUpdateQueue.h"
 
 #include "QcBlockRules.h"
+#include "QcRails.h"
 #include "QcServerState.h"
 
 #include <QLoggingCategory>
@@ -13,8 +14,8 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcBlockUpdates, "qtcraft.server")
 
-// Only blocks whose state depends on the horizontal neighbour: connections, wall mounts, flowing
-// liquids and blocks that harden next to another one.
+// Only blocks whose state depends on the horizontal neighbour: connections, rails, wall mounts,
+// flowing liquids and blocks that harden next to another one.
 bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
 {
     if (!content.isValidBlock(id)) {
@@ -22,7 +23,7 @@ bool reactsToNeighbour(const QcContentRegistry &content, QcBlockId id)
     }
 
     const QcBlockDefinition &definition = content.block(id);
-    return !definition.connectsTo.isEmpty() || definition.support == QcBlockSupport::Attached
+    return !definition.connectsTo.isEmpty() || definition.rail || definition.support == QcBlockSupport::Attached
            || (definition.liquid && definition.flow.flows()) || !definition.hardensWith.isEmpty();
 }
 
@@ -245,6 +246,38 @@ void QcBlockUpdateQueue::queueSectionBorder(BorderScan &scan, int sectionIndex)
             }
 
             queue(pos);
+        }
+    }
+    queueInnerRails(scan, sectionIndex);
+}
+
+void QcBlockUpdateQueue::queueInnerRails(const BorderScan &scan, int sectionIndex)
+{
+    // A rail one column further in whose rail one block higher or lower in the border column has
+    // neighbours across the border (QcRails::shapeNeighbours); lone rails (the showcase's podiums)
+    // are left alone.
+    const QcContentRegistry &content = m_state.content();
+    const QcChunkSection &section = scan.chunk.section(sectionIndex);
+    if (std::ranges::none_of(section.palette(), [&content](QcBlockId id) { return QcRails::isRail(content, id); })) {
+        return;
+    }
+
+    const QcFaceOffset offset = qcFaceOffset(scan.towards);
+    constexpr int inner = QcWorld::chunkSize - 2;
+    for (int y = 0; y < QcWorld::sectionHeight; ++y) {
+        for (int along = 0; along < QcWorld::chunkSize; ++along) {
+            const int x = offset.dx != 0 ? (offset.dx > 0 ? inner : 1) : along;
+            const int z = offset.dz != 0 ? (offset.dz > 0 ? inner : 1) : along;
+            if (!QcRails::isRail(content, section.block(x, y, z))) {
+                continue;
+            }
+            const QcBlockPos pos{scan.chunkPos.x * QcWorld::chunkSize + x, sectionIndex * QcWorld::sectionHeight + y,
+                                 scan.chunkPos.z * QcWorld::chunkSize + z};
+            const QcBlockPos outer = pos.offset(offset.dx, 0, offset.dz);
+            const auto railAt = [&](QcBlockPos at) { return QcRails::isRail(content, m_state.world().blockAt(at).value_or(qcAirBlockId)); };
+            if (railAt(outer.offset(0, 1, 0)) || railAt(outer.offset(0, -1, 0))) {
+                queue(pos);
+            }
         }
     }
 }

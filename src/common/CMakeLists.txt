@@ -29,6 +29,7 @@ qt_add_library(qc_common STATIC
     core/QcTickPhase.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
+    world/QcMinecartBody.h
     world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp

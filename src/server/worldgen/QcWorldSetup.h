@@ -10,13 +10,14 @@
 
 // What a world generator puts into a new world once, when the world is created (decision E-221):
 // the world's rules and what its structures bring along, in world coordinates: creatures, contents
-// of chests and machines, block updates to run (liquids flow, sand falls) and saplings that grow.
+// of chests and machines, minecarts, block updates to run (liquids flow, sand falls) and saplings that grow.
 // The server applies it before the first player joins and records that in world.json.
 struct QcWorldSetup
 {
     using Mob = QcStructureDefinition::Mob;
     using Stand = QcStructureDefinition::Stand;
     using Contents = QcStructureDefinition::Contents;
+    using Cart = QcStructureDefinition::Cart;
 
     // Seconds into the day the world starts at (QcDayCycle), else the usual morning.
     std::optional<double> timeOfDay;
@@ -28,6 +29,8 @@ struct QcWorldSetup
     QList<Contents> contents;
     QList<QcBlockPos> updates;
     QList<QcBlockPos> growing;
+    // Minecarts on rails (decisions E-382, E-386).
+    QList<Cart> minecarts;
 
     // Only the rules of a world type (flat, void).
     static QcWorldSetup fromRules(const QcWorldTypeRules &rules)

@@ -1,0 +1,103 @@
+{
+    "name": "rails",
+    "showcase": {
+        "order": 86
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "S": "stone",
+        "e": "rail[facing=east,shape=straight]",
+        "n": "rail[facing=north,shape=straight]",
+        "1": "rail[facing=east,shape=curve]",
+        "2": "rail[facing=south,shape=curve]",
+        "3": "rail[facing=west,shape=curve]",
+        "4": "rail[facing=north,shape=curve]",
+        "u": "rail[facing=east,shape=ascending]",
+        "w": "rail[facing=west,shape=ascending]",
+        "l": "lever[attach=floor,powered=false]",
+        "p": "signal_piston[facing=east]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPP"
+        ],
+        [
+            "..............",
+            ".1eeeeeeeeee2.",
+            ".n..........n.",
+            ".n..........n.",
+            ".n..........n.",
+            ".n..........n.",
+            ".n..........n.",
+            ".n..........n.",
+            ".4eeuSSSSwee3.",
+            "..............",
+            "..............",
+            "lpeeeeee......",
+            ".............."
+        ],
+        [
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            "..............",
+            ".....eeee.....",
+            "..............",
+            "..............",
+            "..............",
+            ".............."
+        ]
+    ],
+    "minecarts": [
+        [
+            3,
+            1,
+            1
+        ],
+        [
+            6,
+            2,
+            8
+        ],
+        [
+            2,
+            1,
+            11
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                6.5,
+                4.0,
+                4.5
+            ],
+            "text": "structure.qtcraft.rails.loop"
+        },
+        {
+            "at": [
+                4.5,
+                3.0,
+                11.5
+            ],
+            "text": "structure.qtcraft.rails.piston"
+        }
+    ]
+}

@@ -56,6 +56,8 @@ private:
 
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
+    // The block a container or hopper cart carries, inside the cart standing at `position`.
+    void appendCartLoad(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, const QcVec3 &position) const;
     // An armour stand in its pose with what it wears and holds (decision E-238).
     void appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement, const EntityFrame &frame) const;
     // How the local player moves for the cape: its velocity, or the forced pose's movement.

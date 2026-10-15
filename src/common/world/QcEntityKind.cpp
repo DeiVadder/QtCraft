@@ -25,6 +25,8 @@ QLatin1StringView name(QcEntityKind kind)
         return QLatin1StringView("armour stand");
     case QcEntityKind::MovingBlock:
         return QLatin1StringView("moving block");
+    case QcEntityKind::Minecart:
+        return QLatin1StringView("minecart");
     }
     return QLatin1StringView("unknown");
 }

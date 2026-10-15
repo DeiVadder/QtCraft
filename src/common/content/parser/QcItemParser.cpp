@@ -68,6 +68,14 @@ namespace QcItemParser {
     item.bottles = reader.boolean(u"bottles"_s, false);
     item.emptiesTo = reader.name(u"emptiesTo"_s, packNamespace);
     item.placesStand = reader.boolean(u"placesStand"_s, false);
+    item.placesCart = reader.boolean(u"placesCart"_s, false);
+    if (item.placesStand && item.placesCart) {
+        reader.fail(u"an item places either an armour stand or a minecart"_s);
+    }
+    item.cartBlock = reader.name(u"cartBlock"_s, packNamespace);
+    if (!item.cartBlock.isEmpty() && !item.placesCart) {
+        reader.fail(u"only an item that places a minecart has a 'cartBlock'"_s);
+    }
     item.tills = reader.boolean(u"tills"_s, false);
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);

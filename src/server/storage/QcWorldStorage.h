@@ -19,12 +19,14 @@
 #include <memory>
 
 // Metadata of a saved world (world.json). Format 5 (stage 31.3) keeps chunks in indexed region files
-// read on demand, saved as one through a journal (decision E-373); worlds of older development
-// versions are refused, not converted (decision E-356, QtCraft has not been released).
+// read on demand, saved as one through a journal (decision E-373); format 6 (stage 32.1) saves
+// minecarts with the entities of their chunk (decision E-382), format 7 (stage 32.2) also the slots of
+// container carts (decision E-386). Worlds of older development versions
+// are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 5;
-    static constexpr int oldestFormatVersion = 5;
+    static constexpr int formatVersion = 7;
+    static constexpr int oldestFormatVersion = 7;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;

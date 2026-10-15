@@ -74,6 +74,8 @@ private:
             return u"stand"_s;
         case QcEntityKind::MovingBlock:
             return u"moving"_s;
+        case QcEntityKind::Minecart:
+            return u"minecart"_s;
         case QcEntityKind::Creature:
             break;
         }

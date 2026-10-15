@@ -57,6 +57,7 @@ QcServerCircuits::QcServerCircuits(QcServerState &state, QcServerSounds &sounds,
     , m_mover(state, blocks, sounds, m_table)
     , m_dispensers(state, blocks, sounds, m_table)
     , m_hoppers(state, m_table)
+    , m_rails(state.content())
 {
 }
 
@@ -144,44 +145,76 @@ void QcServerCircuits::pressPlates()
 {
     m_pressedByAnything.clear();
     m_pressedByLiving.clear();
+    m_pressedByCarts.clear();
+    QHash<QcBlockPos, quint32> readings;
     const QcSectionMarks &marks = m_state.world().marks();
     if (marks.isEmpty(QcBlockTrait::Plate)) {
+        noteCartReadings(readings);
         return;
     }
 
-    const auto note = [this, &marks](const QcVec3 &feet, bool living) {
+    const auto note = [this, &marks, &readings](const QcEntity &body) {
         --m_budget;
-        const QcBlockPos cell = QcPhysics::blockContaining(feet);
+        const QcBlockPos cell = QcPhysics::blockContaining(body.motion.position);
         if (!cell.isInsideWorldHeight() || (marks.sectionsOf(cell.chunk(), QcBlockTrait::Plate) & (1U << unsigned(cell.y / QcWorld::sectionHeight))) == 0) {
             return;
         }
         const std::optional<QcBlockId> block = m_state.world().blockAt(cell);
         if (block && m_table.at(*block).kind == QcSignalKind::Plate) {
             m_pressedByAnything.insert(cell);
-            if (living) {
+            if (body.kind == QcEntityKind::Player || body.kind == QcEntityKind::Creature) {
                 m_pressedByLiving.insert(cell);
+            }
+            if (body.kind == QcEntityKind::Minecart) {
+                m_pressedByCarts.insert(cell);
+            }
+            if (body.kind == QcEntityKind::Minecart && !body.as<QcMinecart>().stacks.isEmpty()) {
+                const quint32 reading = readings.value(cell, body.id);
+                readings.insert(cell, std::min(reading, body.id));
             }
         }
     };
 
-    // Players and creatures press every plate, items and stands those that detect items; falling
-    // blocks press none.
+    // Players and creatures press every plate, items, stands and carts those that detect items,
+    // only carts a detector rail; falling blocks press none.
     std::as_const(m_state.entities()).forEachBody([&note](const QcEntity &body) {
         if (body.kind != QcEntityKind::FallingBlock) {
-            note(body.motion.position, body.kind == QcEntityKind::Player || body.kind == QcEntityKind::Creature);
+            note(body);
         }
     });
+
+    noteCartReadings(std::move(readings));
 
     QcCircuitPlan plan;
     for (const QcBlockPos &cell : std::as_const(m_pressedByAnything)) {
         const QcBlockId block = m_state.world().blockAt(cell).value_or(qcAirBlockId);
-        const bool counts = m_table.content().block(block).signal.detectsItems || m_pressedByLiving.contains(cell);
-        if (counts && !m_table.at(block).on) {
+        if (pressedSet(block).contains(cell) && !m_table.at(block).on) {
             plan.writes.insert(cell, m_table.withFlag(block, u"powered"_s, true));
             plan.schedules.append({cell, QcCircuitComponents::plateCheckTicks, QcSignalSchedule::Priority::Release});
         }
     }
     apply(plan);
+}
+
+void QcServerCircuits::noteCartReadings(QHash<QcBlockPos, quint32> readings)
+{
+    const auto changed = [this](const QHash<QcBlockPos, quint32> &now, const QHash<QcBlockPos, quint32> &then) {
+        for (auto it = now.cbegin(); it != now.cend(); ++it) {
+            if (then.value(it.key()) != it.value()) {
+                m_state.circuits().noteContents(m_state.world(), it.key());
+            }
+        }
+    };
+    changed(readings, m_cartReadings);
+    // Cells the last container cart left.
+    changed(m_cartReadings, readings);
+    m_cartReadings = std::move(readings);
+}
+
+const QSet<QcBlockPos> &QcServerCircuits::pressedSet(QcBlockId plate) const
+{
+    const QcSignalDefinition &signal = m_table.content().block(plate).signal;
+    return signal.detectsCarts ? m_pressedByCarts : signal.detectsItems ? m_pressedByAnything : m_pressedByLiving;
 }
 
 void QcServerCircuits::settle(qsizetype reserve)
@@ -236,6 +269,11 @@ void QcServerCircuits::collectAround(const QcCircuitState::Change &change, std::
 {
     for (const QcBlockFace face : qcAllBlockFaces) {
         components.push_back(qcNeighbour(change.pos, face));
+    }
+    // A rail slot's line goes on up and down slopes: the rails one higher or lower beside it look too.
+    if (m_table.at(change.before).kind == QcSignalKind::Rail || m_table.at(change.after).kind == QcSignalKind::Rail) {
+        const std::array<QcBlockPos, 8> slopes = QcRails::slopeNeighbours(change.pos);
+        components.insert(components.end(), slopes.begin(), slopes.end());
     }
 
     // A new strength of dust changes no other wire: dust takes no power from blocks dust powers, and
@@ -312,9 +350,9 @@ void QcServerCircuits::runWave(qsizetype limit)
         plan.writes.insert(change.pos, change.state);
     }
 
-    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities());
+    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
     QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.clock().tick(), m_state.info().quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving, readings});
+                                   m_pressedByAnything, m_pressedByLiving, m_pressedByCarts, readings, m_rails});
     for (const QcBlockPos &pos : components) {
         if (const std::optional<QcChunkPos> missing = power.unloadedNear(pos)) {
             if (m_table.at(m_state.world().blockAt(pos).value_or(qcAirBlockId)).kind != QcSignalKind::None) {
@@ -358,9 +396,9 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
     positions.resize(std::min(positions.size(), room));
 
     const QcSignalPower power(m_state.world(), m_table);
-    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities());
+    const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts());
     QcCircuitComponents reactions({power, m_state.blockEntities(), m_state.clock().tick(), m_state.info().quasiConnectivity, m_pistonActs,
-                                   m_pressedByAnything, m_pressedByLiving, readings});
+                                   m_pressedByAnything, m_pressedByLiving, m_pressedByCarts, readings, m_rails});
     QcCircuitPlan plan;
     for (const QcBlockPos &pos : std::as_const(positions)) {
         // Next to an unloaded chunk the component waits for it and then looks again.

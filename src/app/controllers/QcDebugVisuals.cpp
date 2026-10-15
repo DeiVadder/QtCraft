@@ -31,7 +31,7 @@ void QcDebugVisuals::update(QcDebugOptions options, double alpha, const QcVec3 &
         lines.addHitboxes(*m_parts.session, alpha);
     }
     if (options.shows(V::MobGoals)) {
-        if (const std::optional<QcMsg::ServerDebug> &server = m_parts.session->serverDebug().latest()) {
+        if (const std::optional<QcMsg::ServerDebug> &server = m_parts.session->debug().mirror().latest()) {
             lines.addMobGoals(*m_parts.session, server->goals, alpha);
         }
     }

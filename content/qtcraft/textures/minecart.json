@@ -1,0 +1,8 @@
+{
+    "name": "minecart",
+    "pattern": "minecart",
+    "primary": "#7d7d82",
+    "secondary": "#3c3c40",
+    "variation": 0.06,
+    "seed": 3202
+}

@@ -1,6 +1,9 @@
 #include "QcServerSetup.h"
 
 #include "QcBlockUpdateQueue.h"
+#include "QcMinecartMotion.h"
+#include "QcPhysics.h"
+#include "QcRails.h"
 #include "QcServerState.h"
 #include "QcStandProperties.h"
 
@@ -75,6 +78,45 @@ void placeStand(QcServerState &state, const QcWorldSetup::Stand &setup)
     }
 }
 
+// A minecart of the setup standing in the middle of its rail.
+void placeMinecart(QcServerState &state, const QcWorldSetup::Cart &setup)
+{
+    const QcBlockPos cell = setup.at;
+    const std::optional<QcRails::Track> track = QcRails::trackOf(state.content(), blockAt(state, cell));
+    const std::optional<QcItemId> item = state.content().itemId(setup.item);
+    if (!track || !item || !state.content().item(*item).placesCart) {
+        qCWarning(lcSetup) << "World setup: no rail or no cart item for a minecart at" << cell.x << cell.y << cell.z << setup.item;
+        return;
+    }
+
+    QcMinecart cart = state.entities().minecarts().fromItem(state.content().item(*item).name);
+    cart.id = state.entities().newId();
+    const QcVec3 from = QcRails::endPoint(cell, track->ends[0]);
+    const QcVec3 to = QcRails::endPoint(cell, track->ends[1]);
+    cart.motion.position = (from + to) * 0.5;
+    cart.motion.onGround = true;
+    cart.yaw = QcMinecartMotion::yawAlong(to - from);
+    if (!state.entities().minecarts().add(cart)) {
+        qCWarning(lcSetup) << "World setup: too many minecarts";
+    }
+}
+
+// Contents at a rail with a container cart go into the cart (decision E-386); true when they did.
+bool fillCart(QcServerState &state, const QcWorldSetup::Contents &contents)
+{
+    for (QcMinecart &cart : state.entities().minecarts().editableAll()) {
+        if (cart.stacks.isEmpty() || QcPhysics::blockContaining(cart.motion.position) != contents.at) {
+            continue;
+        }
+        const QList<QcItemStack> stacks = stacksOf(state, contents.items);
+        for (qsizetype i = 0; i < stacks.size() && i < cart.stacks.size(); ++i) {
+            cart.stacks[i] = stacks[i];
+        }
+        return true;
+    }
+    return false;
+}
+
 } // namespace
 
 namespace QcServerSetup {
@@ -100,8 +142,13 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
         placeStand(state, stand);
     }
 
+    for (const QcWorldSetup::Cart &cart : setup.minecarts) {
+        placeMinecart(state, cart);
+    }
     for (const QcWorldSetup::Contents &contents : setup.contents) {
-        fill(state, contents);
+        if (!fillCart(state, contents)) {
+            fill(state, contents);
+        }
     }
     for (const QcBlockPos &pos : setup.growing) {
         state.plants().saplingPlaced(state.blockEntities(), pos, blockAt(state, pos));

@@ -1,0 +1,7 @@
+{
+    "name": "chest_minecart",
+    "texture": "chest_minecart",
+    "maxStack": 1,
+    "placesCart": true,
+    "cartBlock": "chest"
+}

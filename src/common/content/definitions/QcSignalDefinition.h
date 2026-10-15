@@ -36,9 +36,12 @@ enum class QcSignalKind : quint8 {
     // On rising power ejects one item after a short delay: uses it (`usesItems`, dispenser) or
     // throws it (dropper); both put it into a container in front.
     Dispenser,
+    // Stage 32.2 (decision E-384). A rail slot (powered and activator rails): powered while it gets
+    // power or while a rail of the same block at most `railReach` rails along its line gets power.
+    Rail,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Dispenser) + 1;
+inline constexpr int qcSignalKindCount = int(QcSignalKind::Rail) + 1;
 
 // What a Signal Comparator reads from a block behind it (decision E-343).
 enum class QcComparatorReading : quint8 {
@@ -47,6 +50,9 @@ enum class QcComparatorReading : quint8 {
     Contents,
     // The index of the value of a state property, scaled to 0..15.
     Property,
+    // The fullness of a container minecart on the block (a detector rail, decision E-385); without
+    // one the comparator takes the block's power as usual.
+    Carts,
 };
 
 // How a block reacts to being pushed by a piston.
@@ -66,6 +72,7 @@ struct QcSignalDefinition
     static constexpr int maxPower = 15;
     static constexpr int maxPulseTicks = 1200;
     static constexpr int maxPushLimit = 64;
+    static constexpr int maxRailReach = 64;
 
     QcSignalKind kind = QcSignalKind::None;
     // Strength a source emits (levers, buttons, plates, torches, repeaters).
@@ -76,6 +83,10 @@ struct QcSignalDefinition
     int offDelayTicks = 4;
     // Plates: any entity (items, armour stands) presses it, not only players and creatures.
     bool detectsItems = true;
+    // Plates: only minecarts press it (a detector rail, decision E-385).
+    bool detectsCarts = false;
+    // Rail slots: how many rails of the same block along the line pass power on.
+    int railReach = 8;
     // Pistons.
     bool sticky = false;
     int pushLimit = 12;

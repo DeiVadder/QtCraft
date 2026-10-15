@@ -343,6 +343,50 @@ void parseFlow(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldRea
     reader.adopt(flowReader);
 }
 
+// A rail needs the states its track is made of (decision E-382): the direction it faces and its
+// shape; a rail without the shape `curve` never bends (decision E-384). A rail that acts on carts
+// needs its `powered` state and never bends.
+void checkRailStates(const QcBlockDefinition &block, QcJsonFieldReader &reader)
+{
+    const QcBlockProperty *facing = block.property(u"facing"_s);
+    const QcBlockProperty *shape = block.property(u"shape"_s);
+    const QStringList sides{u"north"_s, u"east"_s, u"south"_s, u"west"_s};
+    const QStringList shapes{u"straight"_s, u"ascending"_s};
+    const bool facingOk = facing && std::ranges::all_of(sides, [facing](const QString &side) { return facing->values.contains(side); });
+    const bool shapeOk = shape && std::ranges::all_of(shapes, [shape](const QString &value) { return shape->values.contains(value); });
+    if (!facingOk || !shapeOk) {
+        reader.fail(u"a rail needs the states 'facing' (north, east, south, west) and 'shape' (straight, ascending and optionally curve)"_s);
+    }
+    if (block.solid || block.liquid) {
+        reader.fail(u"a rail can be neither solid nor a liquid"_s);
+    }
+    const QcBlockProperty *powered = block.property(u"powered"_s);
+    const bool poweredOk = powered && powered->values.contains(u"true"_s) && powered->values.contains(u"false"_s);
+    if (block.railAction != QcRailAction::None && !poweredOk) {
+        reader.fail(u"a rail with 'railAction' needs the state 'powered' (true, false)"_s);
+    }
+    // Power runs along a straight line of rails (QcRails::lineOf); a ring of curves shorter than the
+    // line it reads would be cut at an arbitrary place.
+    if (block.railAction != QcRailAction::None && shape && shape->values.contains(u"curve"_s)) {
+        reader.fail(u"a rail with 'railAction' cannot have the shape 'curve'"_s);
+    }
+}
+
+void parseRailAction(QcBlockDefinition &block, QcJsonFieldReader &reader)
+{
+    const QString action = reader.string(u"railAction"_s, u"none"_s);
+    if (action == u"boost"_s) {
+        block.railAction = QcRailAction::Boost;
+    } else if (action == u"activate"_s) {
+        block.railAction = QcRailAction::Activate;
+    } else if (action != u"none"_s) {
+        reader.fail(u"'railAction' must be none, boost or activate"_s);
+    }
+    if (block.railAction != QcRailAction::None && !block.rail) {
+        reader.fail(u"only a rail has a 'railAction'"_s);
+    }
+}
+
 void parseBehaviourFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
 {
     block.contactDamage = reader.number(u"contactDamage"_s, 0.0, 0.0, 100.0);
@@ -350,6 +394,12 @@ void parseBehaviourFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
     block.falls = reader.boolean(u"falls"_s, false);
     if (block.falls && (block.liquid || !block.solid)) {
         reader.fail(u"only solid blocks can fall"_s);
+    }
+    block.rail = reader.boolean(u"rail"_s, false);
+    parseRailAction(block, reader);
+    block.supportsAbove = reader.boolean(u"supportsAbove"_s, false);
+    if (block.rail) {
+        checkRailStates(block, reader);
     }
 }
 

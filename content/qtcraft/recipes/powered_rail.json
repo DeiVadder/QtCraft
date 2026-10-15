@@ -1,0 +1,18 @@
+{
+    "name": "powered_rail",
+    "type": "shaped",
+    "pattern": [
+        "g g",
+        "g|g",
+        "gsg"
+    ],
+    "key": {
+        "g": "gold_ingot",
+        "|": "stick",
+        "s": "signal_dust"
+    },
+    "result": {
+        "item": "powered_rail",
+        "count": 6
+    }
+}

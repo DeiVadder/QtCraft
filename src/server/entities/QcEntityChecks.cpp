@@ -4,6 +4,9 @@
 #include "QcEntityRecords.h"
 
 #include <QHash>
+#include <QSet>
+
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -40,6 +43,9 @@ void checkIdsAndTables(const QcEntities &entities, QStringList &problems)
     for (const QcMovingBlock &moving : entities.movingBlocks().all()) {
         note(moving, QcEntityKind::MovingBlock);
     }
+    for (const QcMinecart &cart : entities.minecarts().all()) {
+        note(cart, QcEntityKind::Minecart);
+    }
     // Every client that became a player, also one that is dead or leaving.
     for (const std::unique_ptr<QcServerClient> &client : entities.clients()) {
         if (client->id != 0) {
@@ -62,12 +68,34 @@ void checkChunks(const QList<QcEntityRecord::Ordered<Entry>> &entries, QcChunkPo
     }
 }
 
+// Every rider is a player who plays and lives, in one cart only (decision E-382).
+void checkRiders(const QcEntities &entities, QStringList &problems)
+{
+    QSet<quint32> riders;
+    for (const QcMinecart &cart : entities.minecarts().all()) {
+        if (cart.rider == 0) {
+            continue;
+        }
+        const bool player = std::ranges::any_of(entities.clients(), [&cart](const std::unique_ptr<QcServerClient> &client) {
+            return client->id == cart.rider && client->state == QcServerClient::State::Playing && !client->dead;
+        });
+        if (!player) {
+            problems.append(u"minecart %1 is ridden by %2, who is no living player"_s.arg(cart.id).arg(cart.rider));
+        }
+        if (riders.contains(cart.rider)) {
+            problems.append(u"player %1 rides two minecarts"_s.arg(cart.rider));
+        }
+        riders.insert(cart.rider);
+    }
+}
+
 } // namespace
 
 QStringList problems(const QcEntities &entities)
 {
     QStringList problems;
     checkIdsAndTables(entities, problems);
+    checkRiders(entities, problems);
 
     const QHash<QcChunkPos, QcEntityRecord> saved = QcEntityRecords::collect(entities);
     for (const QcEntityRecord &record : saved) {
@@ -76,6 +104,7 @@ QStringList problems(const QcEntities &entities)
         checkChunks(record.fallingBlocks, record.chunk, "falling block", [](const QcFallingBlock &falling) { return falling.motion.position; },
                     problems);
         checkChunks(record.stands, record.chunk, "armour stand", [](const QcArmourStand &stand) { return stand.motion.position; }, problems);
+        checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }, problems);
     }
     return problems;
 }

@@ -24,7 +24,7 @@ T roundTrip(const T &message)
 
 // The entity messages of the protocol (stage 31.2, decision E-365): every kind with what it carries
 // (a creature's type, the block of falling and sliding blocks, the armour and pose of stands and
-// players), and unknown kinds or creature types refused by the decoder.
+// players, minecarts and riders), and unknown kinds or creature types refused by the decoder.
 class TestEntityProtocol : public QObject
 {
     Q_OBJECT
@@ -55,7 +55,7 @@ private slots:
         QcMsg::EntitySpawn creature;
         creature.kind = QcEntityKind::Creature;
         creature.creatureType = 2;
-        for (const quint8 bad : {quint8(QcEntityKinds::count), quint8(7), quint8(255)}) {
+        for (const quint8 bad : {quint8(QcEntityKinds::count), quint8(8), quint8(255)}) {
             QByteArray frame = valid;
             frame[kindOffset] = char(bad);
             const bool decoded = QcProtocol::decode(frame, QcProtocol::Peer::Server).has_value();
@@ -109,7 +109,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.kind = QcEntityKind::Player;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 33u);
+        QCOMPARE(QcProtocol::version, 35u);
     }
 
     void blockEntitiesCarryTheirBlock()
@@ -128,6 +128,34 @@ private slots:
         QCOMPARE(movingCopy.kind, QcEntityKind::MovingBlock);
         QCOMPARE(movingCopy.block, 4242u);
         QCOMPARE(movingCopy.position, moving.position);
+    }
+
+    void minecartsAndRidersRoundTrip()
+    {
+        // A minecart is kind 6 (protocol 34, decision E-382): its spawn carries its place and yaw only.
+        QcMsg::EntitySpawn cart{12, QcEntityKind::Minecart, QString(), {3.5, 64.0, -7.5}, 90.0f, 0.0, {}, {}, 0.0f, QcMsg::OnGround, qcNoItem};
+        QCOMPARE(quint8(QcEntityKind::Minecart), quint8(6));
+        const QcMsg::EntitySpawn cartCopy = roundTrip(cart);
+        QCOMPARE(cartCopy.kind, QcEntityKind::Minecart);
+        QCOMPARE(cartCopy.position, cart.position);
+        QCOMPARE(cartCopy.yaw, 90.0f);
+        QCOMPARE(QcEntityKinds::name(QcEntityKind::Minecart), QLatin1StringView("minecart"));
+
+        // A rider's state names the cart; a rider of others shows the Riding flag (the last bit).
+        QcMsg::PlayerState state;
+        state.lastInputSequence = 41;
+        state.motion.position = {3.5, 63.65, -7.5};
+        state.vehicle = 12;
+        const QcMsg::PlayerState stateCopy = roundTrip(state);
+        QCOMPARE(stateCopy.vehicle, 12u);
+        QCOMPARE(stateCopy.lastInputSequence, 41u);
+        QCOMPARE(stateCopy.motion.position, state.motion.position);
+        state.vehicle = 0;
+        QCOMPARE(roundTrip(state).vehicle, 0u);
+        QcMsg::EntityMove move{7, {}, 0.0f, 20.0, false, 0.0f, QcMsg::Riding, qcNoItem};
+        QcMsg::EntityMoves moves{{move}, 5};
+        QCOMPARE(roundTrip(moves).moves.constFirst().flags, quint8(QcMsg::Riding));
+        QCOMPARE(int(QcMsg::Riding), 128);
     }
 };
 

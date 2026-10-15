@@ -4,6 +4,7 @@
 #include "QcArmourStandManager.h"
 #include "QcFallingBlockManager.h"
 #include "QcItemEntityManager.h"
+#include "QcMinecartManager.h"
 #include "QcMobManager.h"
 #include "QcMovingBlocks.h"
 #include "QcPhysics.h"
@@ -20,7 +21,7 @@
 // The entity register of a world (decision E-364): every entity is a QcEntity of one kind and lives
 // in the table of its kind, which also carries the kind's own behaviour (QcMobManager: creature AI
 // and spawning; QcItemEntityManager: items falling, merging and ageing; QcFallingBlockManager;
-// QcArmourStandManager; QcMovingBlocks). Players are the clients of the server and are only visited
+// QcArmourStandManager; QcMovingBlocks; QcMinecartManager: carts on rails). Players are the clients of the server and are only visited
 // here. What exists once for all kinds lives in this class: ids, visiting every entity in a fixed
 // order, the chunk an entity belongs to and whether it rests there, the box of a
 // body, moving a body from outside (pistons), knowing which clients must hear of an entity again.
@@ -49,11 +50,13 @@ public:
     const QcArmourStandManager &stands() const { return m_stands; }
     QcMovingBlocks &movingBlocks() { return m_moving; }
     const QcMovingBlocks &movingBlocks() const { return m_moving; }
+    QcMinecartManager &minecarts() { return m_carts; }
+    const QcMinecartManager &minecarts() const { return m_carts; }
     // The clients, whose players are entities too (only playing, living ones are visited).
     const Clients &clients() const { return m_clients; }
 
     // Every entity in a fixed order: creatures, players (those playing and alive), falling blocks,
-    // sliding blocks, items, armour stands; each kind in the order of its table. `visit` takes a
+    // sliding blocks, items, armour stands, minecarts; each kind in the order of its table. `visit` takes a
     // QcEntity and must not add or remove entities.
     template<typename Visit>
     void forEach(Visit &&visit)
@@ -107,7 +110,8 @@ public:
     // kind the content does not know.
     [[nodiscard]] std::optional<QcAabb> boxOf(const QcEntity &entity) const;
     // Moves a body by `delta` from outside its own motion (a piston pushed it); its kind takes note:
-    // the player gets his new position, an item stops resting, a stand is sent again.
+    // the player gets his new position, an item stops resting, a stand is sent again. A player who
+    // rides a minecart stays in it: only the cart moves (decision E-382).
     void displace(QcEntity &entity, const QcVec3 &delta) const;
     // Whether any of `boxes` (world space) overlaps a living body: a playing player or a creature.
     bool overlapsLiving(const QList<QcAabb> &boxes) const;
@@ -149,11 +153,13 @@ private:
             each(self.m_moving.all());
             each(self.m_items.items());
             each(self.m_stands.stands());
+            each(self.m_carts.all());
         } else {
             each(self.m_falling.editableAll());
             each(self.m_moving.editableAll());
             each(self.m_items.editableItems());
             each(self.m_stands.editableStands());
+            each(self.m_carts.editableAll());
         }
     }
 
@@ -165,6 +171,7 @@ private:
     QcFallingBlockManager m_falling;
     QcArmourStandManager m_stands;
     QcMovingBlocks m_moving;
+    QcMinecartManager m_carts;
     QSet<quint32> m_died;
     // The loadedEpoch of the last settle; none before the first.
     std::optional<quint64> m_settledEpoch;

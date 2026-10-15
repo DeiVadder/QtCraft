@@ -1,0 +1,23 @@
+{
+    "name": "rails",
+    "order": 79,
+    "icon": "rail",
+    "sections": [
+        "track",
+        "carts",
+        "riding",
+        "pistons",
+        "signal",
+        "containers"
+    ],
+    "related": [
+        "rail",
+        "powered_rail",
+        "detector_rail",
+        "activator_rail",
+        "minecart",
+        "chest_minecart",
+        "hopper_minecart",
+        "signal_piston"
+    ]
+}

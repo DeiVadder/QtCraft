@@ -6,6 +6,7 @@
 #include "QcContentPackLoader.h"
 #include "QcDayCycle.h"
 #include "QcServerBlocks.h"
+#include "QcServerMinecarts.h"
 #include "QcPlayerRecords.h"
 #include "QcServerState.h"
 
@@ -235,7 +236,14 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
     // Only joined players are saved, and their names are never empty (QcProfileValidation).
     Q_ASSERT(client.joined && !client.name.isEmpty());
     int lost = 0;
-    const QcPlayerData player = QcPlayerRecords::of(client, m_state.content(), lost);
+    QcPlayerData player = QcPlayerRecords::of(client, m_state.content(), lost);
+    // A rider is saved where he would get out: the seat lies inside the block under the rail, and the
+    // rider is not saved with the cart (decision E-383).
+    if (const QcMinecart *cart = m_state.entities().minecarts().ridden(client.id)) {
+        player.motion.position = QcServerMinecarts::exitSpot(m_state.world(), *cart);
+        player.motion.velocity = {};
+        player.motion.onGround = false;
+    }
     if (lost > 0) {
         qCWarning(lcPersistence) << "Inventory of" << client.name << "is full:" << lost << "items from the crafting grid were not saved";
     }

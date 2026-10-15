@@ -166,7 +166,9 @@ struct QcTextureSpec
         // a comparator's slab (primary) with three torch spots and a wire (secondary), an observer's
         // face (primary) with a slit of eyes (secondary), its back with the output spot (secondary),
         // its side with an arrow, and the fronts of dispenser and dropper: a stone face (primary)
-        // with a round mouth or a narrow slot (secondary).
+        // with a round mouth or a narrow slot (secondary). Rail: two iron rails (primary) on wooden
+        // sleepers (secondary), as an item icon; minecart: an open iron tub (primary) with a dark inside
+        // and wheels (secondary), as an item icon (decision E-382).
         Hopper,
         HopperTop,
         HopperItem,
@@ -176,6 +178,8 @@ struct QcTextureSpec
         ObserverSide,
         Dispenser,
         Dropper,
+        Rail,
+        Minecart,
     };
 
     // Emblem only: up to 16 rows of up to 16 characters, top row first.

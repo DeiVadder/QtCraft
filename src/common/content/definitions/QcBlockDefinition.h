@@ -48,6 +48,11 @@ enum class QcFacingRule : quint8 {
     Into,
 };
 
+// What a rail does to the minecarts on it (decision E-384): a powered rail speeds them up while it
+// is powered and brakes them while it is not; an activator rail acts on them while it is powered
+// (the rider gets out, a hopper cart stops pulling) and lets a hopper cart pull again while it is not.
+enum class QcRailAction : quint8 { None, Boost, Activate };
+
 // What happens to a block when it makes a sound.
 enum class QcBlockSoundAction : quint8 {
     Break,
@@ -185,6 +190,14 @@ struct QcBlockDefinition
     bool washable = false;
     // Without a block below it falls as an entity and lands again (sand, gravel). Server side only.
     bool falls = false;
+    // A rail (decision E-382): minecarts roll along it; its states `facing` and `shape` follow from
+    // the rails around it (QcRails). Server side only.
+    bool rail = false;
+    // What the rail does to carts (`"railAction"`: boost, activate); such rails have a `powered` state.
+    QcRailAction railAction = QcRailAction::None;
+    // Its top carries blocks that need support below although the top face is not full (rails on a
+    // Signal Hopper, decision E-386). Server side only.
+    bool supportsAbove = false;
     // Blocks it may stand on (plants); empty: any full solid top face. Server side only.
     QStringList groundBlocks;
     // A liquid that must touch the ground block from a side (sugar cane: water), unless the ground is

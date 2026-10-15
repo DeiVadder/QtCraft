@@ -69,6 +69,7 @@ private slots:
         QCOMPARE(limits.leafChecksPerTick, 64);
         QCOMPARE(limits.leafPendingChecks, 16384);
         QCOMPARE(limits.maxArmourStands, 4096);
+        QCOMPARE(limits.maxMinecarts, 4096);
         QCOMPARE(limits.movingBlocksShown, 4096);
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
@@ -77,7 +78,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(41));
+        QCOMPARE(keys.size(), qsizetype(42));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

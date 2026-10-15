@@ -1,0 +1,8 @@
+{
+    "name": "signal_rail_lit",
+    "pattern": "metal_block",
+    "primary": "#e8402c",
+    "secondary": "#ff9a7a",
+    "variation": 0.05,
+    "seed": 3203
+}

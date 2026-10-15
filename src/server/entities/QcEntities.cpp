@@ -10,6 +10,7 @@ QcEntities::QcEntities(const std::shared_ptr<const QcContentRegistry> &content, 
     , m_creatures(content, seed)
     , m_items(content, seed)
     , m_falling(content)
+    , m_carts(*content)
 {
 }
 
@@ -20,6 +21,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_creatures.setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
+    m_carts.setLimit(qsizetype(limits.maxMinecarts));
 }
 
 namespace {
@@ -56,6 +58,7 @@ QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64
     settleList(m_falling.editableAll());
     settleList(m_items.editableItems());
     settleList(m_stands.editableStands());
+    settleList(m_carts.editableAll());
     return strays;
 }
 
@@ -79,6 +82,8 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcPhysics::boxAt(feet, QcFallingBlockManager::size, QcFallingBlockManager::size);
     case QcEntityKind::ArmourStand:
         return QcArmourStandManager::bodyOf(entity.as<QcArmourStand>());
+    case QcEntityKind::Minecart:
+        return QcMinecartManager::bodyOf(entity.as<QcMinecart>());
     case QcEntityKind::MovingBlock:
         break;
     }
@@ -87,6 +92,10 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
 
 void QcEntities::displace(QcEntity &entity, const QcVec3 &delta) const
 {
+    if (entity.kind == QcEntityKind::Player && m_carts.ridden(entity.id)) {
+        return;
+    }
+
     entity.motion.position += delta;
     switch (entity.kind) {
     case QcEntityKind::Player:

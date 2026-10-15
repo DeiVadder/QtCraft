@@ -54,9 +54,15 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.hurt = player.hurtThisTick;
         now.pitch = player.pitch;
         now.flags = flagsOf(player.motion, player.swung, player.sneaking, player.sprinting);
+        if (m_state.entities().minecarts().ridden(player.id)) {
+            now.flags = quint8((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
+        }
         now.held = held.isEmpty() ? qcNoItem : held.item;
         break;
     }
+    case QcEntityKind::Minecart:
+        now.yaw = entity.yaw;
+        break;
     case QcEntityKind::MovingBlock:
         now.position = QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), m_state.clock().tick());
         break;
@@ -104,6 +110,12 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     case QcEntityKind::Creature:
         spawn.creatureType = entity.as<QcCreature>().type;
         break;
+    case QcEntityKind::Minecart:
+        // The cart's item tells what it carries (QcItemDefinition::cartBlock).
+        if (const std::optional<QcItemId> item = m_state.content().itemId(entity.as<QcMinecart>().item)) {
+            spawn.item = {*item, 1, 0};
+        }
+        break;
     }
     return spawn;
 }
@@ -141,6 +153,13 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
             *known = {count, now.position};
             client.connection->send(spawnOf(entity, now));
         } else if ((known->position - now.position).length() > itemMoveThreshold) {
+            known->position = now.position;
+            pass.moves.moves.append(now);
+        }
+        break;
+    case QcEntityKind::Minecart:
+        // A cart standing still sends nothing.
+        if ((known->position - now.position).length() > cartMoveThreshold) {
             known->position = now.position;
             pass.moves.moves.append(now);
         }

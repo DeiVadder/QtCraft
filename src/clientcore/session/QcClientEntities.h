@@ -72,9 +72,10 @@ private:
 template<typename Cue>
 void QcClientEntities::stepSounds(const QcClientWorld &world, Cue &&cue)
 {
-    // Other creatures' steps, from how far they moved; items do not step.
+    // Other creatures' steps, from how far they moved; items, carts and riders do not step.
     for (QcClientEntity &entity : m_entities) {
-        if (entity.isItem() || entity.isBlockEntity() || (entity.flags & QcMsg::OnGround) == 0) {
+        const bool riding = (entity.flags & QcMsg::Riding) != 0;
+        if (entity.isItem() || entity.isBlockEntity() || entity.isMinecart() || riding || (entity.flags & QcMsg::OnGround) == 0) {
             entity.sinceStep = 0.0;
             continue;
         }

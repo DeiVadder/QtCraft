@@ -211,6 +211,10 @@ private slots:
         QTest::newRow("render") << QByteArray(R"({"name":"x","render":"shiny","textures":{"all":"x"}})") << u"'render'"_s;
         QTest::newRow("no textures") << QByteArray(R"({"name":"x"})") << u"'textures'"_s;
         QTest::newRow("missing face") << QByteArray(R"({"name":"x","textures":{"top":"a"}})") << u"every face"_s;
+        QTest::newRow("bending rail that acts")
+            << QByteArray(R"({"name":"r","solid":false,"rail":true,"railAction":"boost","states":{"facing":["north","east","south","west"],)"
+                          R"("shape":["straight","ascending","curve"],"powered":[false,true]},"textures":{"all":"x"}})")
+            << u"cannot have the shape 'curve'"_s;
         QTest::newRow("drop count") << QByteArray(R"({"name":"x","drops":[{"item":"y","count":0}],"textures":{"all":"x"}})")
                                     << u"count"_s;
     }

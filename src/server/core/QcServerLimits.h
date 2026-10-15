@@ -75,8 +75,10 @@ struct QcServerLimits
     qint64 leafDecaysPerTick = 8;
     qint64 leafChecksPerTick = 64;
     qint64 leafPendingChecks = 16384;
-    // Armour stands in the world (E-238) and blocks shown sliding behind pistons (E-337).
+    // Armour stands in the world (E-238), minecarts in the world (E-382; placing more is refused) and
+    // blocks shown sliding behind pistons (E-337).
     qint64 maxArmourStands = 4096;
+    qint64 maxMinecarts = 4096;
     qint64 movingBlocksShown = 4096;
     // Loading and unloading chunks (stage 31.3, decisions E-374 to E-377): chunks a circuit group may
     // span before it falls back to waiting at the edge; chunks unloaded per tick (whole groups are

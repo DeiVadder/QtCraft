@@ -24,6 +24,7 @@ constexpr std::array<std::pair<QcSignalKind, const char *>, qcSignalKindCount - 
     {QcSignalKind::Observer, "observer"},
     {QcSignalKind::Hopper, "hopper"},
     {QcSignalKind::Dispenser, "dispenser"},
+    {QcSignalKind::Rail, "rail"},
 }};
 
 [[nodiscard]] std::optional<QcSignalKind> kindFromName(const QString &name)
@@ -96,6 +97,8 @@ QList<std::pair<QString, QStringList>> requiredStates(QcSignalKind kind)
         return {{u"facing"_s, {u"down"_s, u"north"_s, u"east"_s, u"south"_s, u"west"_s}}, {u"enabled"_s, booleans}};
     case QcSignalKind::Dispenser:
         return {{u"facing"_s, allSides}, {u"triggered"_s, booleans}};
+    case QcSignalKind::Rail:
+        return {{u"powered"_s, booleans}};
     case QcSignalKind::Lamp:
     case QcSignalKind::None:
         return {};
@@ -124,10 +127,12 @@ void parseKindFields(QcSignalDefinition &signal, QcJsonFieldReader &reader, cons
     signal.offDelayTicks = reader.integer(u"offDelayTicks"_s, 4, 0, QcSignalDefinition::maxPulseTicks);
 
     const QString detects = reader.string(u"detects"_s, u"all"_s);
-    if (detects != u"all"_s && detects != u"living"_s) {
-        reader.fail(u"'detects' must be all or living"_s);
+    if (detects != u"all"_s && detects != u"living"_s && detects != u"carts"_s) {
+        reader.fail(u"'detects' must be all, living or carts"_s);
     }
     signal.detectsItems = detects == u"all"_s;
+    signal.detectsCarts = detects == u"carts"_s;
+    signal.railReach = reader.integer(u"reach"_s, 8, 0, QcSignalDefinition::maxRailReach);
 
     signal.sticky = reader.boolean(u"sticky"_s, false);
     signal.pushLimit = reader.integer(u"pushLimit"_s, 12, 1, QcSignalDefinition::maxPushLimit);
@@ -144,6 +149,14 @@ void parseReading(QcBlockDefinition &block, QcJsonFieldReader &reader)
     const QJsonValue value = reader.json.value(u"comparator"_s);
     QcSignalDefinition &signal = block.signal;
     if (value.isUndefined()) {
+        return;
+    }
+    if (value.isString() && value.toString() == u"carts"_s) {
+        if (!block.rail) {
+            reader.fail(u"'comparator': \"carts\" needs a rail"_s);
+            return;
+        }
+        signal.reading = QcComparatorReading::Carts;
         return;
     }
     if (value.isString() && value.toString() == u"contents"_s) {
@@ -165,7 +178,7 @@ void parseReading(QcBlockDefinition &block, QcJsonFieldReader &reader)
         signal.readProperty = property;
         return;
     }
-    reader.fail(u"'comparator' must be \"contents\" or an object with 'property'"_s);
+    reader.fail(u"'comparator' must be \"contents\", \"carts\" or an object with 'property'"_s);
 }
 
 void checkKind(const QcBlockDefinition &block, QcJsonFieldReader &reader)

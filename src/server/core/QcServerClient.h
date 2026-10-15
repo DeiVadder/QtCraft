@@ -102,6 +102,8 @@ struct QcServerClient : QcEntity
     struct Screen
     {
         std::optional<QcBlockPos> open;
+        // A container minecart (entity id) instead of a block; `open` is unset then.
+        quint32 cart = 0;
         std::optional<QcMsg::MachineState> sent;
     };
 

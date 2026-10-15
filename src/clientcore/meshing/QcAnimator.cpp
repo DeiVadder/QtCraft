@@ -78,6 +78,13 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         bone(result, QcBoneRole::LeftArm) = {stride * amplitude * 0.8, -3.0 - idle};
     }
 
+    if (pose.riding) {
+        // Sitting: the legs forward and a little apart, the arms resting.
+        bone(result, QcBoneRole::RightLeg) = {80.0, 8.0};
+        bone(result, QcBoneRole::LeftLeg) = {80.0, -8.0};
+        bone(result, QcBoneRole::RightArm) = {20.0, 5.0 + idle};
+        bone(result, QcBoneRole::LeftArm) = {20.0, -5.0 - idle};
+    }
     if (pose.armsForward) {
         bone(result, QcBoneRole::RightArm) = {90.0 + stride * amplitude * 0.15, 0.0};
         bone(result, QcBoneRole::LeftArm) = {90.0 - stride * amplitude * 0.15, 0.0};

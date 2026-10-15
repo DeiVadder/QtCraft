@@ -455,6 +455,25 @@ const QList<QcMobPart> &playerParts()
     return model;
 }
 
+const QList<QcMobPart> &minecartParts()
+{
+    // An open iron tub on four wheels, as long as a block along its track (z) and as wide as its body.
+    static const QString side = u"qtcraft:minecart_side"_s;
+    static const QString wheel = u"qtcraft:coal_block"_s;
+    static const QList<QcMobPart> model = {
+        {{-0.45, 0.1, -0.6}, {0.45, 0.18, 0.6}, side},
+        {{-0.49, 0.18, -0.6}, {-0.41, 0.65, 0.6}, side},
+        {{0.41, 0.18, -0.6}, {0.49, 0.65, 0.6}, side},
+        {{-0.41, 0.18, -0.6}, {0.41, 0.65, -0.52}, side},
+        {{-0.41, 0.18, 0.52}, {0.41, 0.65, 0.6}, side},
+        {{-0.47, 0.0, -0.45}, {-0.39, 0.16, -0.25}, wheel},
+        {{0.39, 0.0, -0.45}, {0.47, 0.16, -0.25}, wheel},
+        {{-0.47, 0.0, 0.25}, {-0.39, 0.16, 0.45}, wheel},
+        {{0.39, 0.0, 0.25}, {0.47, 0.16, 0.45}, wheel},
+    };
+    return model;
+}
+
 void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placement &placement, const UvLookup &uv)
 {
     const Turn turn(placement.yaw);
@@ -533,12 +552,11 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     }
 }
 
-void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const QcVec3 &position, QcEntityLight light, const UvLookup &uv)
+void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv)
 {
-    // The item cube scaled up to a block of 0.98 m, centred above the feet position.
-    constexpr double size = 0.98;
-    const double scale = size / itemCubeSize;
-    const QcVec3 centre = position + QcVec3{0.0, size * 0.5, 0.0};
+    // The item cube scaled up to a block of `size` metres, centred above the feet position.
+    const double scale = placement.size / itemCubeSize;
+    const QcVec3 centre = placement.position + QcVec3{0.0, placement.size * 0.5, 0.0};
     emitItem(mesh, look, [&](const QcVec3 &p) { return centre + p * scale; }, light, uv);
 }
 

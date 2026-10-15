@@ -14,12 +14,13 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::OpenMachine &m)
 {
     writePos(stream, m.pos);
-    stream << m.category;
+    stream << m.category << m.entity;
 }
 
 void encode(QDataStream &stream, const QcMsg::MachineState &m)
 {
     writePos(stream, m.pos);
+    stream << m.entity;
     writeStacks(stream, m.stacks);
     stream << m.burn << m.progress;
 }
@@ -30,7 +31,7 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
 {
     QcMsg::OpenMachine m;
     m.pos = readPos(stream);
-    stream >> m.category;
+    stream >> m.category >> m.entity;
     if (m.category.size() > 64) {
         return qcError(u"Invalid machine category"_s);
     }
@@ -41,6 +42,7 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
 {
     QcMsg::MachineState m;
     m.pos = readPos(stream);
+    stream >> m.entity;
     quint32 count = 0;
     if (!QcStreamLimits::readCount(stream, QcMsg::MachineState::maxSlots, count) || count == 0) {
         return qcError(u"Corrupt machine state"_s);

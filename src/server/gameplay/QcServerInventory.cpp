@@ -22,7 +22,7 @@ namespace {
 // Inventory, the usable part of the grid and the open machine or chest form one slot space;
 // other grid cells and block slots without an open block are invalid.
 bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities::Machine *machine,
-                  const QcBlockEntities::Container *container)
+                  const std::optional<QcBlockScreens::OpenContainer> &container)
 {
     if (slot < QcServerInventory::craftingGridSlot) {
         return QcInventory::isValidSlot(slot);
@@ -33,7 +33,7 @@ bool isUsableSlot(const QcServerClient &client, int slot, const QcBlockEntities:
 
     if (slot >= QcServerInventory::machineSlot && slot < QcServerInventory::equipmentSlot) {
         return (machine && slot < QcServerInventory::machineSlot + QcMachineRules::slotCount)
-               || (container && slot < QcServerInventory::machineSlot + container->stacks.size());
+               || (container && slot < QcServerInventory::machineSlot + container->stacks->size());
     }
 
     const int cell = slot - QcServerInventory::craftingGridSlot;
@@ -71,7 +71,7 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
     if (open.machine) {
         open.combined.append(QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end()));
     } else if (open.container) {
-        open.combined.append(open.container->stacks);
+        open.combined.append(*open.container->stacks);
     }
     // The armour slots follow at their own numbers; the cells between them stay unusable.
     open.combined.resize(equipmentSlot);
@@ -88,7 +88,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     }
 
     // Only an inventory whose slots really change tells comparators and hoppers.
-    const QList<QcItemStack> before = open.container ? open.container->stacks
+    const QList<QcItemStack> before = open.container ? *open.container->stacks
                                       : open.machine ? QList<QcItemStack>(open.machine->stacks.begin(), open.machine->stacks.end())
                                                      : QList<QcItemStack>();
     if (open.machine) {
@@ -107,7 +107,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     }
     client.crafting.grid = open.combined.mid(QcInventory::slotCount, 9);
     if (open.container) {
-        open.container->stacks = open.combined.mid(machineSlot, open.container->stacks.size());
+        *open.container->stacks = open.combined.mid(machineSlot, open.container->stacks->size());
     }
     QcEquipment equipment;
     std::ranges::copy(open.combined.mid(equipmentSlot, QcEquipment::slotCount), equipment.stacks.begin());
@@ -116,10 +116,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
     send(client);
     // Everyone looking into this machine or chest sees the change; comparators and hoppers too.
     if (open.container) {
-        m_screens.sendToViewers(open.container->pos);
-        if (open.container->stacks != before) {
-            m_state.noteContents(open.container->pos);
-        }
+        m_screens.containerChanged(*open.container, *open.container->stacks != before);
     }
     if (open.machine) {
         m_screens.sendToViewers(open.machine->pos);
@@ -155,7 +152,7 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     }
 
     QcQuickMove::Situation situation;
-    situation.containerSlots = open.container ? int(open.container->stacks.size()) : 0;
+    situation.containerSlots = open.container ? int(open.container->stacks->size()) : 0;
     situation.machineOpen = open.machine != nullptr;
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined[move.slot]);
     if (open.machine) {

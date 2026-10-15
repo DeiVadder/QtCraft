@@ -21,7 +21,18 @@ using namespace Qt::StringLiterals;
 // eef0382); since chunks leave the world (stage 31.3) it is compared with
 // tests/data/block-entity-compare-31-3.txt, whose only differences to that one are the deliberate
 // ones of decision E-374 (the waits of a chunk stand still while it is away, a returning chunk is
-// looked at along its borders); the dump lists what chunks that are not loaded keep, too. With
+// looked at along its borders); the dump lists what chunks that are not loaded keep, too. New
+// content changes it: stage 32.1 (decision E-382) added two items, which the showcase's chests list,
+// and the rails station, which moves the stations after it (their positions, and the timers and
+// counts of circuits the run reaches at another moment); it was written again then, and again in
+// stage 32.2 (decisions E-384 to E-387: five new items and the station of signal rails and container
+// carts, whose chests and carts fill as the run passes, with the same kind of shifts). Checked in
+// the review of stage 32: with both new stations built after all other areas and left out of the
+// tour, the dump equals the one before stage 32 but for the new items in the item chests, so the
+// changed furnace, burnout, sapling and stick values come from the tour reaching the later
+// stations 80 ticks later (the stations stay where their order puts them). One difference remains
+// in that run: the chest at 140 65 -26 holds the same 58 sticks, split 27/31 instead of 36/22
+// between its slots; which change of stage 32.2 moves them is not found yet. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture
@@ -104,6 +115,8 @@ private:
             return -4;
         case QcEntityKind::MovingBlock:
             return -5;
+        case QcEntityKind::Minecart:
+            return -6;
         }
         return 0;
     }

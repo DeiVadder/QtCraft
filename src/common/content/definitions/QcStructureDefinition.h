@@ -52,6 +52,14 @@ struct QcStructureDefinition
         QList<Stack> items;
     };
 
+    // A minecart on the rail at `at`, placed from `item` (a chest or hopper cart takes the `contents`
+    // whose `at` is its rail, decision E-386).
+    struct Cart
+    {
+        QcBlockPos at;
+        QString item;
+    };
+
     struct Label
     {
         QcVec3 at;
@@ -77,6 +85,8 @@ struct QcStructureDefinition
     QList<Label> labels;
     QList<QcBlockPos> updates;
     QList<QcBlockPos> growing;
+    // Minecarts standing on rails when the world is made (decision E-382).
+    QList<Cart> minecarts;
     // Shown as a demo in the showcase world, in the order of `showcaseOrder` (then name).
     bool showcase = false;
     int showcaseOrder = 0;

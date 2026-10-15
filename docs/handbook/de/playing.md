@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -207,6 +207,36 @@ Schaltungen laufen auf dem Server; alle sehen dieselben Zustände. Hebel, Knöpf
 **Siehe auch**
 
 [Signalstaub](blocks.md#block-qtcraft-signal_dust), [Signalerz](blocks.md#block-qtcraft-signal_ore), [Signalfackel](blocks.md#block-qtcraft-signal_torch), [Hebel](blocks.md#block-qtcraft-lever), [Steinknopf](blocks.md#block-qtcraft-stone_button), [Eichenholzdruckplatte](blocks.md#block-qtcraft-oak_pressure_plate), [Signal-Repeater](blocks.md#block-qtcraft-signal_repeater), [Signallampe](blocks.md#block-qtcraft-signal_lamp), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Klebriger Signalkolben](blocks.md#block-qtcraft-sticky_signal_piston), [Signaltrichter](blocks.md#block-qtcraft-signal_hopper), [Signalkomparator](blocks.md#block-qtcraft-signal_comparator), [Signalbeobachter](blocks.md#block-qtcraft-signal_observer), [Signalspender](blocks.md#block-qtcraft-signal_dispenser), [Signalwerfer](blocks.md#block-qtcraft-signal_dropper)
+
+### <a id="chapter-qtcraft-rails"></a>Schienen und Loren
+
+**Gleise legen**
+
+Schienen brauchen einen festen Block darunter. Eine Schiene verbindet sich von selbst mit den Schienen neben ihr: ein Nachbar ergibt ein gerades Stück, das auf ihn zeigt, zwei im rechten Winkel eine Kurve, eine Reihe aus drei oder vier bleibt gerade (eine Abzweigung knickt sie nicht). Liegt neben einer Schiene eine Schiene einen Block höher, steigt sie zu ihr an; so steigt und fällt ein Gleis Block für Block. Wo die Nachbarn nichts entscheiden, läuft eine neue Schiene in deine Blickrichtung. Schienen verhalten sich in jeder Richtung gleich.
+
+**Loren**
+
+Benutze eine Lore auf einer Schiene, um sie aufzusetzen. Eine Lore rollt auf dem Gleis weiter, durch Kurven und über Steigungen: bergab wird sie schneller, bergauf langsamer und rollt vielleicht zurück, und in der Ebene verliert sie langsam an Fahrt (eine besetzte viel langsamer als eine leere). Am Ende eines Gleises bleibt sie stehen. Loren, die aufeinander treffen, geben ihre Fahrt weiter; wer gegen eine Lore läuft, schiebt sie an. Eine Lore ohne Schiene darunter rutscht aus. Ein Schlag zerbricht eine Lore; sie lässt sich selbst fallen.
+
+**Fahren**
+
+Benutze eine Lore, um einzusteigen, und schleiche, um auszusteigen; du landest neben ihr. Während der Fahrt schiebt die Vorwärtstaste die Lore in Blickrichtung an. Der Server bewegt Lore und Fahrer, so sehen alle dieselbe Fahrt.
+
+**Kolben und Loren**
+
+Ein Signalkolben schiebt eine Lore vor seinem Kopf oder vor dem Block, den er bewegt, wie jeden anderen Körper; schiebt er eine Reihe Schienen, wandern Schienen und Lore darauf mit. Ein Fahrer bleibt in der Lore.
+
+**Antriebs-, Sensor- und Aktivierungsschienen**
+
+Drei Schienen arbeiten mit Signal Dust. Eine Antriebsschiene beschleunigt eine Lore, solange sie Strom bekommt, bis zur Höchstgeschwindigkeit, und bremst sie ohne Strom bis zum Stillstand; eine Lore, die auf einer Antriebsschiene mit einem Block an einem Ende steht, fährt von dem Block weg an. Eine Sensorschiene gibt ein Signal, solange eine Lore auf ihr steht; ein Signalkomparator dahinter liest den Inhalt einer Truhen- oder Trichterlore auf ihr. Eine Aktivierungsschiene mit Strom lässt den Fahrer aussteigen und hält eine Trichterlore vom Ziehen ab; ohne Strom lässt sie Trichterloren wieder ziehen. Strom an einer Antriebs- oder Aktivierungsschiene läuft die Reihe der Schienen derselben Art entlang, acht Schienen weit, auch über Steigungen, und vergeht mit ihm. Diese Schienen machen keine Kurven: Wo zwei Schienen über Eck zusammentreffen, behalten sie ihre Richtung. Alles verhält sich in jeder Richtung gleich.
+
+**Truhen- und Trichterloren**
+
+Eine Truhenlore trägt eine Truhe: Benutze sie, um ihren Bildschirm wie bei einer Truhe zu öffnen. Eine Trichterlore trägt einen Signaltrichter und zieht Gegenstände einzeln aus einem Behälter über ihrer Schiene oder sammelt Gegenstände auf ihrer Schiene auf; zwischen zwei Gegenständen ruht sie wie ein Trichter. Ein Signaltrichter unter einer Schiene nimmt die Gegenstände einzeln aus einer Truhen- oder Trichterlore über ihm und gibt sie weiter; Signaltrichter können Schienen tragen. Zerbrochen lässt eine Lore sich selbst und ihren Inhalt fallen. Loren behalten ihren Inhalt, wenn ihr Chunk gespeichert oder entladen wird.
+
+**Siehe auch**
+
+[Schiene](blocks.md#block-qtcraft-rail), [Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Sensorschiene](blocks.md#block-qtcraft-detector_rail), [Aktivierungsschiene](blocks.md#block-qtcraft-activator_rail), [Lore](items.md#item-qtcraft-minecart), [Truhenlore](items.md#item-qtcraft-chest_minecart), [Trichterlore](items.md#item-qtcraft-hopper_minecart), [Signalkolben](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="chapter-qtcraft-health"></a>Gesundheit und Schaden
 

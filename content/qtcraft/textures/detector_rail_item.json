@@ -1,0 +1,8 @@
+{
+    "name": "detector_rail_item",
+    "pattern": "rail",
+    "primary": "#8c8c8c",
+    "secondary": "#9a9a9a",
+    "variation": 0.06,
+    "seed": 3205
+}

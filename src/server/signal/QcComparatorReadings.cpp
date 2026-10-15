@@ -1,12 +1,14 @@
 #include "QcComparatorReadings.h"
 
 #include "QcBlockEntities.h"
+#include "QcMinecartManager.h"
 
 #include <cmath>
 
-QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities)
+QcComparatorReadings::QcComparatorReadings(const QcBlockAccess &world, const QcBlockEntities &entities, const QcMinecartManager &carts)
     : m_world(world)
     , m_entities(entities)
+    , m_carts(carts)
 {
 }
 
@@ -50,6 +52,11 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
         }
         const auto index = property->values.indexOf(content.property(*block, signal.readProperty));
         return int(std::max<qsizetype>(0, index) * 15 / (property->values.size() - 1));
+    }
+    case QcComparatorReading::Carts: {
+        // The container cart with the lowest id: the same cart whatever the order of the table.
+        const QList<const QcMinecart *> carts = m_carts.containersIn(pos);
+        return carts.isEmpty() ? std::nullopt : std::optional<int>(fullness(content, carts.constFirst()->stacks));
     }
     case QcComparatorReading::None:
         break;

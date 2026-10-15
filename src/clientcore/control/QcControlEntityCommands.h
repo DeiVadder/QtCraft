@@ -9,8 +9,8 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands about entities: listing them, attacking or using an item on a creature, and
-// collecting dropped items.
+// Control commands about entities: listing them, attacking or using an item on a creature,
+// collecting dropped items, and riding minecarts.
 class QcControlEntityCommands
 {
 public:
@@ -34,6 +34,9 @@ private:
     // Why the use of the held item on the entity did not catch or feed it; empty when it did.
     QString useEntityError(quint32 entityId, UseBefore before) const;
     void collect(const QJsonObject &request);
+    // Gets into the minecart `request` names, or out of the one ridden (decision E-382).
+    void ride(const QJsonObject &request);
+    void leave(const QJsonObject &request);
     // Turns towards the centre of the entity `request` names; fails the request and returns false
     // when there is no such entity nearby.
     [[nodiscard]] bool turnToEntity(const QJsonObject &request);

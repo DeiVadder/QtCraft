@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -207,6 +207,36 @@ Circuits run on the server; everyone sees the same states. Levers, buttons and r
 **See also**
 
 [Signal Dust](blocks.md#block-qtcraft-signal_dust), [Signal ore](blocks.md#block-qtcraft-signal_ore), [Signal Torch](blocks.md#block-qtcraft-signal_torch), [Lever](blocks.md#block-qtcraft-lever), [Stone button](blocks.md#block-qtcraft-stone_button), [Oak pressure plate](blocks.md#block-qtcraft-oak_pressure_plate), [Signal Repeater](blocks.md#block-qtcraft-signal_repeater), [Signal Lamp](blocks.md#block-qtcraft-signal_lamp), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Sticky Signal Piston](blocks.md#block-qtcraft-sticky_signal_piston), [Signal Hopper](blocks.md#block-qtcraft-signal_hopper), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer), [Signal Dispenser](blocks.md#block-qtcraft-signal_dispenser), [Signal Dropper](blocks.md#block-qtcraft-signal_dropper)
+
+### <a id="chapter-qtcraft-rails"></a>Rails and Minecarts
+
+**Laying track**
+
+Rails need a solid block below them. A rail joins the rails beside it on its own: one neighbour makes a straight piece that points at it, two at a right angle make a curve, a line of three or four keeps the straight line (a branch does not bend it). A rail with a rail one block higher beside it rises towards it, so a track climbs and descends one block at a time. Where the neighbours decide nothing, a new rail runs the way you look. Rails behave the same in every direction.
+
+**Minecarts**
+
+Use a minecart on a rail to set it down. A cart keeps rolling along the track, round curves and over slopes: downhill it speeds up, uphill it slows down and may roll back, and it slowly loses speed on the flat (a ridden cart much more slowly than an empty one). At the end of a track it stops. Carts that run into each other pass their speed on; walking into a cart pushes it. A cart without rails under it slides to a stop. One hit breaks a cart; it drops itself.
+
+**Riding**
+
+Use a cart to get in and sneak to get out; you land beside it. While you ride, the forward key pushes the cart along the way you look. The server moves the cart and its rider, so everyone sees you ride the same way.
+
+**Pistons and carts**
+
+A Signal Piston pushes a cart in front of its head or in front of the block it moves, like any other body; a piston pushing a line of rails moves the rails and the cart on them. A rider stays in the cart.
+
+**Powered, detector and activator rails**
+
+Three rails work with Signal Dust. A powered rail speeds a cart up while it gets power, up to the top speed, and brakes it to a stop while it does not; a cart standing on a powered rail with a block at one end starts away from the block. A detector rail gives a signal while a cart is on it; a Signal Comparator behind it reads the contents of a chest or hopper cart on it. An activator rail with power puts the rider out and stops a hopper cart pulling; without power it lets hopper carts pull again. Power given to one powered or activator rail passes along the line of rails of the same kind for eight rails, also up and down slopes, and goes when the power goes. These rails do not bend: where two rails meet at a corner they keep their line. Everything works the same in every direction.
+
+**Chest and hopper carts**
+
+A chest cart carries a chest: use it to open its screen like a chest. A hopper cart carries a Signal Hopper and pulls one item at a time from a container above its rail, or picks up items lying on its rail; it rests between items like a hopper. A Signal Hopper under a rail takes the items out of a chest or hopper cart standing above it, one at a time, and passes them on; Signal Hoppers can carry rails. Broken, a cart drops itself and what it carried. Carts keep their contents when their chunk is saved or unloaded.
+
+**See also**
+
+[Rail](blocks.md#block-qtcraft-rail), [Powered Rail](blocks.md#block-qtcraft-powered_rail), [Detector Rail](blocks.md#block-qtcraft-detector_rail), [Activator Rail](blocks.md#block-qtcraft-activator_rail), [Minecart](items.md#item-qtcraft-minecart), [Minecart with Chest](items.md#item-qtcraft-chest_minecart), [Minecart with Signal Hopper](items.md#item-qtcraft-hopper_minecart), [Signal Piston](blocks.md#block-qtcraft-signal_piston)
 
 ### <a id="chapter-qtcraft-health"></a>Health and damage
 

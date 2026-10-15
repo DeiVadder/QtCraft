@@ -1,0 +1,8 @@
+{
+    "name": "activator_rail_item",
+    "pattern": "rail",
+    "primary": "#8c8c8c",
+    "secondary": "#c0392b",
+    "variation": 0.06,
+    "seed": 3206
+}

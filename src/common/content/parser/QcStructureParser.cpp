@@ -247,6 +247,23 @@ void parseCells(const QJsonObject &json, const QString &key, QList<QcBlockPos> &
     }
 }
 
+// "minecarts": [x, y, z] for a plain cart or {"at": [x, y, z], "item": "chest_minecart"}.
+void parseCarts(const QJsonObject &json, Structure &structure, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    const QJsonArray entries = extraArray(json, u"minecarts"_s, reader);
+    for (const auto &entry : entries) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcBlockPos> cell = readCell(entry.isObject() ? object.value(u"at"_s) : entry, structure);
+        const QString item = QcContentNames::qualify(entry.isObject() ? object.value(u"item"_s).toString(u"qtcraft:minecart"_s) : u"qtcraft:minecart"_s,
+                                                     packNamespace);
+        if (!cell || item.isEmpty()) {
+            reader.fail(u"'minecarts' entries must be [x, y, z] cells inside the structure or objects with 'at' and 'item'"_s);
+            return;
+        }
+        structure.minecarts.append({*cell, item});
+    }
+}
+
 } // namespace
 
 namespace QcStructureParser {
@@ -288,6 +305,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
         parseLabels(json, structure, reader);
         parseCells(json, u"updates"_s, structure.updates, structure, reader);
         parseCells(json, u"growing"_s, structure.growing, structure, reader);
+        parseCarts(json, structure, reader, packNamespace);
     }
 
     if (!reader.ok()) {

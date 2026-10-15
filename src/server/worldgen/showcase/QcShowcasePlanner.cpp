@@ -243,6 +243,9 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     for (const QcBlockPos &pos : structure.updates) {
         m_plan.setup.updates.append(placement.toWorld(pos));
     }
+    for (const QcStructureDefinition::Cart &cart : structure.minecarts) {
+        m_plan.setup.minecarts.append({placement.toWorld(cart.at), cart.item});
+    }
     for (const QcBlockPos &pos : structure.growing) {
         m_plan.setup.growing.append(placement.toWorld(pos));
     }

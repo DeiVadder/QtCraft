@@ -48,6 +48,7 @@ public:
     QList<Label> labels;
     QList<QcBlockPos> updates;
     QList<QcBlockPos> growing;
+    QList<QcStructureDefinition::Cart> minecarts;
 
 private:
     qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(m_sizeX) * (z + qsizetype(m_sizeZ) * y); }

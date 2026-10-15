@@ -20,6 +20,7 @@ std::optional<QcClientMachineScreen::Change> QcClientMachineScreen::handle(const
         return Change::None;
     }
     m_pos.reset();
+    m_entity = 0;
     return Change::Closed;
 }
 
@@ -31,6 +32,7 @@ QcClientMachineScreen::Change QcClientMachineScreen::open(const QcMsg::OpenMachi
     }
 
     m_pos = open.pos;
+    m_entity = open.entity;
     m_category = open.category;
     m_slots = QList<QcItemStack>(open.category.isEmpty() ? 0 : QcMsg::MachineState::slotCount);
     m_burn = 0.0;
@@ -44,7 +46,9 @@ QcClientMachineScreen::Change QcClientMachineScreen::update(const QcMsg::Machine
     const bool known = std::ranges::all_of(machine.stacks, [content](QcItemStack stack) {
         return stack.isEmpty() || (content && content->isValidItem(stack.item));
     });
-    if (m_pos != machine.pos || !known) {
+    // A cart's screen is known by its entity, a block's by its position.
+    const bool same = m_entity != 0 ? machine.entity == m_entity : machine.entity == 0 && m_pos == machine.pos;
+    if (!m_pos || !same || !known) {
         return Change::None;
     }
 
@@ -61,6 +65,7 @@ bool QcClientMachineScreen::closeLocally()
     }
 
     m_pos.reset();
+    m_entity = 0;
     m_closedLocally = true;
     return true;
 }

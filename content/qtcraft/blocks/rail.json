@@ -1,0 +1,38 @@
+{
+    "name": "rail",
+    "sound": "stone",
+    "shape": "rail",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.7,
+    "tool": "pickaxe",
+    "support": "below",
+    "washable": true,
+    "rail": true,
+    "signal": {
+        "movable": "push"
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "shape": [
+            "straight",
+            "ascending",
+            "curve"
+        ]
+    },
+    "itemTexture": "rail_item",
+    "textures": {
+        "all": "iron_block",
+        "slots": {
+            "iron": "iron_block",
+            "wood": "oak_planks",
+            "bed": "gravel"
+        }
+    }
+}

@@ -11,6 +11,7 @@ class QcServerBlocks;
 class QcServerCircuits;
 class QcServerCrafting;
 class QcServerInventory;
+class QcServerMinecarts;
 class QcServerPlants;
 class QcServerSounds;
 class QcServerStands;
@@ -38,6 +39,7 @@ public:
         QcServerCrafting &crafting;
         QcBlockScreens &screens;
         QcServerStands &stands;
+        QcServerMinecarts &minecarts;
         QcServerAnimals &animals;
         QcServerPlants &plants;
         QcPlayerHealth &health;

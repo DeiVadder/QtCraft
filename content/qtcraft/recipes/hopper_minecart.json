@@ -1,0 +1,11 @@
+{
+    "name": "hopper_minecart",
+    "type": "shapeless",
+    "ingredients": [
+        "signal_hopper",
+        "minecart"
+    ],
+    "result": {
+        "item": "hopper_minecart"
+    }
+}

@@ -155,7 +155,40 @@ QColor paintDropper(const QcTextureSpec &spec, int x, int y, QColor color)
     return paintMouth(spec, x, y, color, false);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 13> painters = {{
+// Two iron rails (primary) running up the tile over four wooden sleepers (secondary).
+QColor paintRail(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool rail = x == 3 || x == 4 || x == 11 || x == 12;
+    const bool sleeper = y % 4 == 1 || y % 4 == 2;
+    if (rail) {
+        return x == 4 || x == 12 ? scaled(color, 0.8) : color;
+    }
+    if (sleeper && x >= 1 && x <= 14) {
+        return varied(spec, spec.secondary, x, y, 11);
+    }
+    return clear();
+}
+
+// An open iron tub seen from the side and a little from above (primary): a dark inside (secondary)
+// within its rim and two wheels (secondary) below.
+QColor paintMinecart(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool wheel = y >= 12 && y <= 14 && ((x >= 3 && x <= 5) || (x >= 10 && x <= 12));
+    if (wheel) {
+        return scaled(spec.secondary, 0.8);
+    }
+    if (y < 4 || y > 11 || x < 1 || x > 14) {
+        return clear();
+    }
+    const bool inside = y >= 5 && y <= 6 && x >= 2 && x <= 13;
+    if (inside) {
+        return spec.secondary;
+    }
+    const bool rim = y == 4 || x == 1 || x == 14;
+    return rim ? scaled(color, 1.15) : varied(spec, color, x, y, 13);
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
     {Pattern::Dust, paintDust},
     {Pattern::Lever, paintLever},
     {Pattern::Repeater, paintRepeater},
@@ -169,6 +202,8 @@ constexpr std::array<std::pair<Pattern, Painter>, 13> painters = {{
     {Pattern::ObserverSide, paintObserverSide},
     {Pattern::Dispenser, paintDispenser},
     {Pattern::Dropper, paintDropper},
+    {Pattern::Rail, paintRail},
+    {Pattern::Minecart, paintMinecart},
 }};
 
 } // namespace

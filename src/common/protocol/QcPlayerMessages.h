@@ -22,11 +22,14 @@ struct PlayerInput
     QcPlayerInput input;
 };
 
-// Server -> client: authoritative state of the receiving player.
+// Server -> client: authoritative state of the receiving player. `vehicle` is the minecart the
+// player rides (entity id, 0 for none, decision E-382): while it is set the server moves the player
+// with the cart and the client shows the player where it shows the cart, without predicting.
 struct PlayerState
 {
     quint32 lastInputSequence = 0;
     QcEntityMotion motion;
+    quint32 vehicle = 0;
 };
 
 struct SelectHotbarSlot

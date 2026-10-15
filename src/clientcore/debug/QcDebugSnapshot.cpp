@@ -97,7 +97,7 @@ QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const s
     snapshot.pitch = session.intent().pitch;
     snapshot.memoryMb = QcProcessMemory::currentMb();
     snapshot.peakMemoryMb = QcProcessMemory::peakMb();
-    snapshot.server = session.serverDebug().latest();
+    snapshot.server = session.debug().mirror().latest();
 
     const QcClientWorld *world = session.world();
     if (!world) {

@@ -69,6 +69,8 @@ private:
 
     void queueBorderUpdates(QcChunkPos chunkPos, QcBlockFace towards);
     void queueSectionBorder(BorderScan &scan, int sectionIndex);
+    // The rails one column inside the border of a section (their shape can depend on blocks across it).
+    void queueInnerRails(const BorderScan &scan, int sectionIndex);
     // Whether a still liquid source on the border can neither flow across nor react there.
     bool stillSourceStays(BorderScan &scan, QcBlockId block, QcBlockPos pos) const;
 

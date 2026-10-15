@@ -26,7 +26,11 @@ void QcHudState::updateTarget()
     const std::optional<quint32> targetEntity = session.targetEntity();
     QString targetLabel;
     m_targetName.clear();
-    if (targetEntity) {
+    if (targetEntity && session.entities().value(*targetEntity).isMinecart()) {
+        const QcItemStack item = session.entities().value(*targetEntity).item;
+        const QString key = content.isValidItem(item.item) ? content.item(item.item).translationKey : u"item.qtcraft.minecart"_s;
+        targetLabel = content.translate(key, m_settings.contentLanguage());
+    } else if (targetEntity) {
         const QcClientEntity entity = session.entities().value(*targetEntity);
         const QcMobDefinition *creature = entity.creature(content);
         targetLabel = creature ? content.translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;

@@ -1,0 +1,45 @@
+{
+    "name": "detector_rail",
+    "sound": "stone",
+    "shape": "signal_rail",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.7,
+    "tool": "pickaxe",
+    "support": "below",
+    "washable": true,
+    "rail": true,
+    "signal": {
+        "movable": "push",
+        "type": "plate",
+        "detects": "carts",
+        "comparator": "carts"
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "shape": [
+            "straight",
+            "ascending"
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "detector_rail_item",
+    "textures": {
+        "all": "iron_block",
+        "slots": {
+            "iron": "iron_block",
+            "lit": "signal_rail_lit",
+            "wood": "stone",
+            "bed": "gravel"
+        }
+    }
+}

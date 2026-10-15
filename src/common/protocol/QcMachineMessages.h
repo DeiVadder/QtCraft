@@ -17,6 +17,8 @@ struct OpenMachine
 {
     QcBlockPos pos;
     QString category;
+    // A container minecart (entity id, decision E-386) instead of the block at `pos`; 0 for a block.
+    quint32 entity = 0;
 };
 
 // Server -> client: contents and progress of the open machine. `stacks` are input, fuel and output;
@@ -28,6 +30,8 @@ struct MachineState
     static constexpr int maxSlots = 54;
 
     QcBlockPos pos;
+    // The container minecart of the screen (OpenMachine::entity); 0 for a block.
+    quint32 entity = 0;
     QList<QcItemStack> stacks;
     float burn = 0.0f;
     float progress = 0.0f;

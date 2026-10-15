@@ -9,9 +9,9 @@
 #include <QStringList>
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
-// E-373): persistent creatures, dropped items and waiting drops, falling blocks, armour stands, and
-// whether the chunk already got its animals. Items, blocks, creatures, armour and capes are stored by
-// name.
+// E-373): persistent creatures, dropped items and waiting drops, falling blocks, armour stands,
+// minecarts (E-382), and whether the chunk already got its animals. Items, blocks, creatures, armour
+// and capes are stored by name.
 namespace QcEntityCodec {
 
 // Entries of one kind in one chunk at most; a valid world never comes close.

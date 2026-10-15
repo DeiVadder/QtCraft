@@ -1,0 +1,14 @@
+{
+    "name": "minecart",
+    "type": "shaped",
+    "pattern": [
+        "i i",
+        "iii"
+    ],
+    "key": {
+        "i": "iron_ingot"
+    },
+    "result": {
+        "item": "minecart"
+    }
+}

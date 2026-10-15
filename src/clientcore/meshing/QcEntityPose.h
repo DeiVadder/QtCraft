@@ -13,6 +13,8 @@ struct QcEntityPose
     bool sprinting = false;
     // Flying in creative mode (decision E-284); only the local player's view uses it so far.
     bool flying = false;
+    // Sitting in a minecart (decision E-382): the legs point forward.
+    bool riding = false;
     // 0..1 while the right arm swings (mining, attacking, using), negative otherwise.
     double swingProgress = -1.0;
     // 0..1 while the entity recoils from a hit, negative otherwise.

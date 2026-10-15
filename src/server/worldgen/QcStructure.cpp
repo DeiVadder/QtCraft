@@ -49,6 +49,7 @@ QcResult<QcStructure> QcStructure::fromDefinition(const QcStructureDefinition &d
     structure.labels = definition.labels;
     structure.updates = definition.updates;
     structure.growing = definition.growing;
+    structure.minecarts = definition.minecarts;
     return structure;
 }
 

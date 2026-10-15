@@ -46,7 +46,8 @@ QcBlockFace opposite(QcBlockFace face);
 [[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
 
 // `id` with its connection properties recomputed from the neighbours (unchanged for blocks that do
-// not connect). Sides towards unloaded chunks keep their current value.
+// not connect); rails take their track from the rails around them (QcRails::shapedState). Sides
+// towards unloaded chunks keep their current value.
 QcBlockId connectedState(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
 // Whether the block at `pos` (in state `id`) still has its support.

@@ -2,6 +2,7 @@
 
 #include "QcBlockPos.h"
 #include "QcBlockEntities.h"
+#include "QcBlockScreens.h"
 #include "QcItemStack.h"
 #include "QcMachineRules.h"
 #include "QcMessages.h"
@@ -58,7 +59,7 @@ private:
     struct OpenSlots
     {
         QcBlockEntities::Machine *machine = nullptr;
-        QcBlockEntities::Container *container = nullptr;
+        std::optional<QcBlockScreens::OpenContainer> container;
         QList<QcItemStack> combined;
     };
 

@@ -43,9 +43,10 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_health(m_state, m_sounds, m_inventory)
     , m_gameModes(m_state, m_inventory, m_crafting)
     , m_stands(m_state, m_sounds, m_inventory)
+    , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_animals(m_state, m_sounds, m_inventory)
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_animals, m_plants, m_health, m_circuits})
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits})
     , m_items(m_state, m_sounds, m_inventory)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health)
@@ -263,11 +264,11 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
         m_interaction.useItem(client, *use);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
-        if (!m_stands.hit(client, attack->id)) {
+        if (!m_stands.hit(client, attack->id) && !m_minecarts.hit(client, attack->id)) {
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!m_stands.use(client, useEntity->id)) {
+        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
@@ -398,6 +399,13 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.strafe = std::clamp(input.strafe, -1.0f, 1.0f);
     input.pitch = std::clamp(input.pitch, -90.0f, 90.0f);
     input.yaw = std::fmod(input.yaw, 360.0f);
+
+    // A rider does not move: the cart carries the player (decision E-382).
+    if (m_minecarts.steer(client, input)) {
+        client.input.lastSequence = input.sequence;
+        client.stateDirty = true;
+        return;
+    }
 
     const bool wasOnGround = client.motion.onGround;
     const bool wasInWater = client.motion.inWater;
@@ -542,6 +550,8 @@ void QcServer::simulate()
     m_phases.lap(Phase::Plants);
     m_fallingBlocks.tick();
     m_phases.lap(Phase::FallingBlocks);
+    m_minecarts.tick();
+    m_phases.lap(Phase::Minecarts);
     m_machines.tick();
     m_screens.update();
     m_phases.lap(Phase::Machines);
@@ -635,7 +645,7 @@ void QcServer::updateClient(Client &client, ClientSync sync)
     }
 
     if (client.stateDirty) {
-        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion});
+        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion, m_minecarts.vehicleOf(client)});
         client.stateDirty = false;
     }
 }
@@ -648,6 +658,8 @@ void QcServer::removeClosedClients()
             // Only a player who was on the list changes it; refused logins do not.
             m_state.notePlayerListChanged();
             m_crafting.returnCraftingGrid(*client);
+            // A rider gets out first, so he is saved standing beside the cart.
+            m_minecarts.leave(*client);
             m_commands.playerLeft(client->id);
             leaving = true;
         }

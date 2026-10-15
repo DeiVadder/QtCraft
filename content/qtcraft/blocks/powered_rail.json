@@ -1,0 +1,44 @@
+{
+    "name": "powered_rail",
+    "sound": "stone",
+    "shape": "signal_rail",
+    "render": "cutout",
+    "solid": false,
+    "lightOpacity": 0,
+    "hardness": 0.7,
+    "tool": "pickaxe",
+    "support": "below",
+    "washable": true,
+    "rail": true,
+    "railAction": "boost",
+    "signal": {
+        "movable": "push",
+        "type": "rail"
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west"
+        ],
+        "shape": [
+            "straight",
+            "ascending"
+        ],
+        "powered": [
+            false,
+            true
+        ]
+    },
+    "itemTexture": "powered_rail_item",
+    "textures": {
+        "all": "gold_block",
+        "slots": {
+            "iron": "gold_block",
+            "lit": "signal_rail_lit",
+            "wood": "spruce_planks",
+            "bed": "gravel"
+        }
+    }
+}

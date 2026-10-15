@@ -247,6 +247,7 @@ qc_add_test(test_void_zone SOURCES gameplay/test_void_zone.cpp QcServerTestFixtu
 qc_add_test(test_farming_server SOURCES gameplay/test_farming_server.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_cart_content SOURCES content/test_cart_content.cpp LIBRARIES qc_server)
 qc_add_test(test_sound_content SOURCES content/test_sound_content.cpp LIBRARIES qc_server)
 target_compile_definitions(test_sound_content PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_sound_synthesis SOURCES sound/test_sound_synthesis.cpp LIBRARIES qc_clientcore)
@@ -269,6 +270,9 @@ qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServe
 qc_add_test(test_signal_bodies SOURCES gameplay/test_signal_bodies.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_signal_showcase SOURCES world/test_signal_showcase.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_signal_pistons SOURCES gameplay/test_signal_pistons.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_minecarts SOURCES gameplay/test_minecarts.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_minecart_riders SOURCES gameplay/test_minecart_riders.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_rail_layouts SOURCES gameplay/test_rail_layouts.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_hoppers SOURCES gameplay/test_signal_hoppers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entity_compare SOURCES gameplay/test_block_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/block-entity-compare-31-3.txt")
@@ -278,6 +282,9 @@ qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixt
 qc_add_test(test_chunk_unloading SOURCES gameplay/test_chunk_unloading.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcBlockEntityDump.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_entity_model SOURCES gameplay/test_entity_model.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_entity_measure SOURCES gameplay/test_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_signal_rails SOURCES gameplay/test_signal_rails.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_cart_containers SOURCES gameplay/test_cart_containers.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_minecart_measure SOURCES gameplay/test_minecart_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entities SOURCES gameplay/test_block_entities.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_block_entity_storage SOURCES world/test_block_entity_storage.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_block_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
@@ -390,6 +397,9 @@ add_dependencies(test_creative_bots qtcraft-headless)
 qc_add_test(test_signal_bots SOURCES network/test_signal_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_signal_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_signal_bots qtcraft-headless)
+qc_add_test(test_minecart_bots SOURCES network/test_minecart_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 300)
+target_compile_definitions(test_minecart_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
+add_dependencies(test_minecart_bots qtcraft-headless)
 qc_add_test(test_machine_bots SOURCES network/test_machine_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_machine_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_machine_bots qtcraft-headless)
@@ -406,7 +416,7 @@ set(qc_concurrency_tests
     test_terrain_generator test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
     test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
-    test_machine_bots test_headless_cli scenario_headless_walk_and_jump
+    test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure)
@@ -419,7 +429,7 @@ set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Measures how punctually the server's tick timer fires; that needs a machine without other tests.
 set_tests_properties(test_tick_scheduler PROPERTIES RUN_SERIAL TRUE)
-set_tests_properties(test_creative_bots test_signal_bots test_machine_bots PROPERTIES PROCESSORS 3)
+set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380; test_headless_cli about 210 s, test_mods, test_signal_network,
