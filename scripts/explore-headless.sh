@@ -9,7 +9,8 @@
 # The data directory is a temporary folder, removed at the end. Respect the benchmark lock
 # (~/.cache/qtcraft/bench.lock) like every measurement. It runs in real time (the bot waits in client
 # ticks); for the cost of the server's ticks use QTCRAFT_EXPLORE_MEASURE=300 tests/test_explore_measure,
-# which flies the same way as fast as the server ticks (docs/Performance.md).
+# which flies the same way as fast as the server ticks, or SCENARIOS=explore scripts/bench-headless.sh
+# for an A/B of builds (docs/Performance.md).
 
 set -eu
 

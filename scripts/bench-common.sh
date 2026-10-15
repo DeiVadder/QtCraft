@@ -1,5 +1,6 @@
-# Shared by bench.sh, profile.sh and perf-check.sh (sourced, not run). Defines the benchmark
-# scenarios and how one run of the game is started.
+# Shared by bench.sh, bench-ab.sh, bench-headless.sh, profile.sh and perf-check.sh (sourced, not
+# run). Defines the benchmark scenarios (scene_of: world, spawn, look and chat lines, the same for
+# the game and for the headless measurement) and how one run of the game is started (run_game).
 #
 # Scenarios:
 #   stand    - standing still at the spawn
@@ -77,11 +78,13 @@
 #              terrain (teleports every 250 ms, so the speed does not depend on the physics): chunk
 #              generation, arrival and unloading for the whole run. Tick lateness, memory and the
 #              chunk phases over time come from STATS lines (STATS=<ms>, see below)
-#   explore  - the long exploration flight (stage 31.3): the flight above, and once a second a 3 x 3
-#              glass platform at y 70 below the player, as a player who builds along the way: every
-#              chunk passed is changed and has to be saved and unloaded once out of view (memory,
-#              unloading, background saving). Meant for long runs (e.g. 600 s) with STATS=5000; the
-#              same flight headless: scripts/explore-headless.sh
+#   explore  - the exploration flight (stage 31.3): the flight above, but at EXPLORE_STEP metres
+#              every 250 ms (default 10: 40 m/s), and once a second a 3 x 3 glass platform at y 70
+#              below the player, as a player who builds along the way: every chunk passed is changed
+#              and has to be saved and unloaded once out of view (memory, unloading, background
+#              saving). In the window 75 s with STATS=5000 (15 points of the memory curve, 3 km of
+#              new terrain; EXPLORE_STEP=5 and 300 s is the flight of the stage 31.3 measurements);
+#              its server side headless: scripts/bench-headless.sh (decision E-388)
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
@@ -242,10 +245,11 @@ farm_chat() {
 
 # Prints the chat lines of a flight scenario, one per line. Usage: flight_chat terrain|explore|showcase <seconds>
 # Creative mode (no fall damage, nothing attacks); from three seconds in a teleport every 250 ms moves
-# the player 5 m on (20 m/s; a teleport also stops the fall in between). terrain flies east from the
-# spawn at y 200; showcase flies laps of 80 s at y 110 around the square of corners (-130, 50) and
-# (270, -350), which holds the whole showcase world (x 0 to 160, z -260 to 10) with 110 m to spare
-# on every side, more than the view distance of 8 chunks: every chunk leaves and comes back once a lap.
+# the player 5 m on (20 m/s; explore: EXPLORE_STEP m, default 10; a teleport also stops the fall in
+# between). terrain and explore fly east from the spawn at y 200; showcase flies laps of 80 s at
+# y 110 around the square of corners (-130, 50) and (270, -350), which holds the whole showcase world
+# (x 0 to 160, z -260 to 10) with 110 m to spare on every side, more than the view distance of
+# 8 chunks: every chunk leaves and comes back once a lap.
 flight_chat() {
     echo "/gamemode creative"
     echo "/time set day"
@@ -255,8 +259,10 @@ flight_chat() {
         if [ "$1" = explore ] && [ $((step % 4)) -eq 0 ]; then
             echo "@$at /fill ~-1 70 ~-1 ~1 70 ~1 glass"
         fi
-        if [ "$1" = terrain ] || [ "$1" = explore ]; then
+        if [ "$1" = terrain ]; then
             echo "@$at /tp ~5 200 ~"
+        elif [ "$1" = explore ]; then
+            echo "@$at /tp ~${EXPLORE_STEP:-10} 200 ~"
         else
             # 320 steps a lap, 80 along each side.
             side=$(((step % 320) / 80))
@@ -356,12 +362,142 @@ stress_clock() {
     echo "/setblock ~$x ~ ~$((z + 1)) signal_repeater[facing=north,delay=4]"
 }
 
-# The camera stop "demo-<demo>" of the showcase tour as "x z yaw pitch", from the qtcraft-headless
-# of the build of app $1 (empty when the build has no such demo). Usage: showcase_stop <app> <demo>
+# The qtcraft-headless of the build of app $1 (the qtcraft executable of a build directory).
+headless_of() {
+    echo "${1%/app/qtcraft.app/Contents/MacOS/qtcraft}/headless/qtcraft-headless"
+}
+
+# The camera stop "demo-<demo>" of the showcase tour as "x z yaw pitch", from qtcraft-headless $1
+# (empty when the build has no such demo). Usage: showcase_stop <qtcraft-headless> <demo>
 showcase_stop() {
-    headless="${1%/app/qtcraft.app/Contents/MacOS/qtcraft}/headless/qtcraft-headless"
-    [ -x "$headless" ] || return 0
-    "$headless" --showcase-tour --no-mods 2>/dev/null | awk -v name="demo-$2" '$1 == name { print $2, $3, $4, $5; exit }'
+    [ -x "$1" ] || return 0
+    "$1" --showcase-tour --no-mods 2>/dev/null | awk -v name="demo-$2" '$1 == name { print $2, $3, $4, $5; exit }'
+}
+
+# Writes the chat lines of a scenario (one per line, "@<ms> " before a timed one) to stdout.
+# Usage: scene_chat <scenario without prefix> <seconds> <armour>
+scene_chat() {
+    case "$1" in
+    light)
+        printf '%s\n' "/time set night" "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
+        ;;
+    liquids)
+        # The second fill is larger than a /fill without /confirm may be (stage 24, decision E-245);
+        # builds before stage 24 answer /confirm as an unknown command.
+        printf '%s\n' "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air" "/confirm"
+        ;;
+    farm) farm_chat sprint "$2" ;;
+    farm-seeds) farm_chat seeds "$2" ;;
+    glass) glass_chat "$GLASS_WALLS" "$GLASS_LAMPS" "$GLASS_TOGGLES" "$2" ;;
+    glass-full) glass_chat "$GLASS_FULL_WALLS" "$GLASS_FULL_LAMPS" "$GLASS_FULL_TOGGLES" "$2" ;;
+    crowd)
+        printf '%s\n' "/time set day" "/summon qtcraft:pig 16" "/summon qtcraft:pig 16" "/summon qtcraft:zombie 16" "/summon qtcraft:slime 8"
+        for item in $CROWD_ITEMS; do
+            echo "/spawnitem qtcraft:$item 1"
+        done
+        if [ "$3" = crowd ]; then
+            i=0
+            while [ "$i" -lt 40 ]; do
+                echo "/summon armor_stand equip=diamond cape=green_cape arms"
+                i=$((i + 1))
+            done
+            echo "/summon qtcraft:caped_mannequin 8"
+        fi
+        ;;
+    inventory) printf '%s\n' "/give iron_pickaxe 1" "/give oak_planks 64" "/give torch 32" ;;
+    furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
+    signal-stress) signal_stress_chat ;;
+    flight) flight_chat terrain "$2" ;;
+    explore) flight_chat explore "$2" ;;
+    showcase-flight) flight_chat showcase "$2" ;;
+    liquid-fill) liquid_fill_chat "$2" ;;
+    gravel-collapse) echo "@2000 /fill ~2 ~-4 ~ ~2 ~-1 ~ air" ;;
+    esac
+    if [ "$3" = walk ]; then
+        echo "/equip diamond"
+    fi
+}
+
+# Sets the scene of a scenario: what the game (run_game) and the headless measurement
+# (scripts/bench-headless.sh) start. Usage: scene_of <qtcraft-headless> <scenario> <seconds> <chat file>
+# Sets SCENE_WORLD (terrain, flat, void or showcase), SCENE_LAYERS (layers of a flat world or empty),
+# SCENE_SPAWN ("x,z" or empty), SCENE_LOOK ("yaw,pitch"), SCENE_WALK (movement of the game's
+# benchmark: stand, walk, sprint, light, liquids), SCENE_ARMOUR (crowd, walk or empty) and
+# SCENE_WINDOW (options only the game knows: overlay, handbook page, camera), and writes the chat
+# lines to the chat file. Returns 1 (with a note on stderr) when the build has no such showcase demo.
+scene_of() {
+    scenario=$2
+    requested=$2
+    SCENE_WORLD=${WORLD_TYPE:-}
+    SCENE_LAYERS=
+    SCENE_SPAWN=
+    SCENE_LOOK=45,-10
+    SCENE_WALK=stand
+    SCENE_ARMOUR=
+    SCENE_WINDOW=
+    case "$scenario" in
+    flat-* | void-*)
+        SCENE_WORLD=${scenario%%-*}
+        scenario=${scenario#*-}
+        ;;
+    esac
+    case "$scenario" in
+    armour-crowd)
+        SCENE_ARMOUR=crowd
+        SCENE_WORLD=${SCENE_WORLD:-flat}
+        scenario=crowd
+        ;;
+    armour-walk)
+        SCENE_ARMOUR=walk
+        scenario=walk
+        ;;
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress)
+        SCENE_WORLD=flat
+        ;;
+    esac
+    case "$scenario" in
+    showcase | showcase-flight)
+        SCENE_WORLD=showcase
+        SCENE_SPAWN=40,-19
+        SCENE_LOOK=345,-8
+        [ "$scenario" = showcase-flight ] && SCENE_LOOK=270,-20
+        ;;
+    showcase-*)
+        stop=$(showcase_stop "$1" "${scenario#showcase-}")
+        if [ -z "$stop" ]; then
+            echo "Scenario $requested: this build has no showcase demo ${scenario#showcase-}; no run" >&2
+            return 1
+        fi
+        # shellcheck disable=SC2086
+        set -- $stop "$@"
+        SCENE_WORLD=showcase
+        SCENE_SPAWN="$1,$2"
+        SCENE_LOOK="$3,$4"
+        shift 4
+        ;;
+    esac
+    if [ "$SCENE_WORLD" = void ]; then
+        case "$scenario" in
+        sprint | walk | crowd)
+            echo "Scenario $requested needs ground; running it in the flat world instead of the void world" >&2
+            SCENE_WORLD=flat
+            ;;
+        esac
+    fi
+    SCENE_WORLD=${SCENE_WORLD:-terrain}
+    case "$scenario" in
+    sprint | walk | light | liquids) SCENE_WALK=$scenario ;;
+    furnace)
+        SCENE_LOOK=0,-89
+        SCENE_WINDOW="--overlay furnace"
+        ;;
+    signal-stress) SCENE_LOOK=0,-25 ;;
+    gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;
+    inventory) SCENE_WINDOW="--overlay inventory" ;;
+    handbook) SCENE_WINDOW="--handbook block:qtcraft:stone" ;;
+    esac
+    [ "$SCENE_ARMOUR" = walk ] && SCENE_WINDOW="--camera behind"
+    scene_chat "$scenario" "$3" "$SCENE_ARMOUR" >"$4"
 }
 
 # Runs one benchmark of the game.
@@ -370,154 +506,26 @@ showcase_stop() {
 # after RUN_LIMIT seconds (default: its length plus 120 s).
 run_game() {
     app=$1
-    scenario=$2
-    requested=$2
     seconds=$3
     view=$4
     data=$5
     log=$6
+    chat="$log.chat"
+    scene_of "$(headless_of "$app")" "$2" "$seconds" "$chat" || return 0
     shift 6
     wrapper="$*"
-    look=45,-10
-    walk=stand
-    world=${WORLD_TYPE:-}
-    case "$scenario" in
-    flat-* | void-*)
-        world=${scenario%%-*}
-        scenario=${scenario#*-}
-        ;;
-    esac
-    armour=
-    case "$scenario" in
-    armour-crowd)
-        armour=crowd
-        world=${world:-flat}
-        scenario=crowd
-        ;;
-    armour-walk)
-        armour=walk
-        scenario=walk
-        ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress)
-        world=flat
-        ;;
-    esac
-    stop=
-    case "$scenario" in
-    showcase-flight) ;;
-    showcase-*)
-        stop=$(showcase_stop "$app" "${scenario#showcase-}")
-        if [ -z "$stop" ]; then
-            echo "Scenario $requested: this build has no showcase demo ${scenario#showcase-}; no run" >&2
-            return 0
-        fi
-        ;;
-    esac
-    if [ "$world" = void ]; then
-        case "$scenario" in
-        sprint | walk | crowd)
-            echo "Scenario $requested needs ground; running it in the flat world instead of the void world" >&2
-            world=flat
-            ;;
-        esac
+    if [ "$SCENE_WORLD" = showcase ]; then
+        set -- --showcase --view-distance "$view" --spawn "$SCENE_SPAWN" --look "$SCENE_LOOK"
+    else
+        set -- --play --seed 42 --view-distance "$view" --look "$SCENE_LOOK"
+        [ "$SCENE_WORLD" = terrain ] || set -- "$@" --world-type "$SCENE_WORLD"
+        [ -z "$SCENE_LAYERS" ] || set -- "$@" --flat-layers "$SCENE_LAYERS"
     fi
-    case "$scenario" in
-    sprint | walk) walk=$scenario ;;
-    light | liquids) walk=$scenario ;;
-    furnace) look=0,-89 ;;
-    esac
-    set -- --play --seed 42 --view-distance "$view" --look "$look"
-    if [ "$scenario" = showcase ]; then
-        set -- --showcase --view-distance "$view" --spawn 40,-19 --look 345,-8
-    elif [ -n "$stop" ]; then
-        # shellcheck disable=SC2086
-        set -- $stop
-        set -- --showcase --view-distance "$view" --spawn "$1,$2" --look "$3,$4"
-    elif [ "$scenario" = showcase-flight ]; then
-        set -- --showcase --view-distance "$view" --spawn 40,-19 --look 270,-20
-    elif [ -n "$world" ]; then
-        set -- "$@" --world-type "$world"
-    fi
-    case "$scenario" in
-    light)
-        set -- "$@" --chat "/time set night" --chat "/fill ~-11 ~-1 ~-11 ~11 ~-1 ~11 stone" --chat "/fill ~-11 ~ ~-11 ~11 ~4 ~11 air"
-        ;;
-    liquids)
-        # The second fill is larger than a /fill without /confirm may be (stage 24, decision E-245);
-        # builds before stage 24 answer /confirm as an unknown command.
-        set -- "$@" --chat "/fill ~-18 ~-1 ~-18 ~18 ~-1 ~18 stone" --chat "/fill ~-18 ~ ~-18 ~18 ~6 ~18 air" --chat "/confirm"
-        ;;
-    farm | farm-seeds)
-        if [ "$scenario" = farm ]; then
-            chat=$(farm_chat sprint "$seconds")
-        else
-            chat=$(farm_chat seeds "$seconds")
-        fi
-        while IFS= read -r line; do
-            set -- "$@" --chat "$line"
-        done <<EOF
-$chat
-EOF
-        ;;
-    glass | glass-full)
-        if [ "$scenario" = glass ]; then
-            chat=$(glass_chat "$GLASS_WALLS" "$GLASS_LAMPS" "$GLASS_TOGGLES" "$seconds")
-        else
-            chat=$(glass_chat "$GLASS_FULL_WALLS" "$GLASS_FULL_LAMPS" "$GLASS_FULL_TOGGLES" "$seconds")
-        fi
-        while IFS= read -r line; do
-            set -- "$@" --chat "$line"
-        done <<EOF
-$chat
-EOF
-        ;;
-    crowd)
-        set -- "$@" --chat "/time set day" --chat "/summon qtcraft:pig 16" --chat "/summon qtcraft:pig 16" \
-            --chat "/summon qtcraft:zombie 16" --chat "/summon qtcraft:slime 8"
-        for item in $CROWD_ITEMS; do
-            set -- "$@" --chat "/spawnitem qtcraft:$item 1"
-        done
-        if [ "$armour" = crowd ]; then
-            i=0
-            while [ "$i" -lt 40 ]; do
-                set -- "$@" --chat "/summon armor_stand equip=diamond cape=green_cape arms"
-                i=$((i + 1))
-            done
-            set -- "$@" --chat "/summon qtcraft:caped_mannequin 8"
-        fi
-        ;;
-    inventory)
-        set -- "$@" --chat "/give iron_pickaxe 1" --chat "/give oak_planks 64" --chat "/give torch 32" --overlay inventory
-        ;;
-    furnace)
-        set -- "$@" --chat "/give iron_ore 5" --chat "/give coal 2" --chat "/setblock ~ ~-1 ~ furnace" --overlay furnace
-        ;;
-    handbook)
-        set -- "$@" --handbook block:qtcraft:stone
-        ;;
-    flight | explore | showcase-flight | liquid-fill | signal-stress)
-        if [ "$scenario" = signal-stress ]; then
-            chat=$(signal_stress_chat)
-            set -- "$@" --look 0,-25
-        elif [ "$scenario" = flight ]; then
-            chat=$(flight_chat terrain "$seconds")
-        elif [ "$scenario" = explore ]; then
-            chat=$(flight_chat explore "$seconds")
-        elif [ "$scenario" = showcase-flight ]; then
-            chat=$(flight_chat showcase "$seconds")
-        else
-            chat=$(liquid_fill_chat "$seconds")
-        fi
-        while IFS= read -r line; do
-            set -- "$@" --chat "$line"
-        done <<EOF
-$chat
-EOF
-        ;;
-    gravel-collapse)
-        set -- "$@" --flat-layers "3*gravel,grass_block" --chat "@2000 /fill ~2 ~-4 ~ ~2 ~-1 ~ air"
-        ;;
-    esac
+    while IFS= read -r line; do
+        set -- "$@" --chat "$line"
+    done <"$chat"
+    # shellcheck disable=SC2086
+    set -- "$@" $SCENE_WINDOW
     # Sound is mixed as in a normal game but muted, so runs stay quiet. GPU timestamps
     # (QSG_RHI_PROFILE) give the GPU time per frame. The window opens on the built-in display
     # (QTCRAFT_SCREEN overrides it) and stays in the background: no focus, no captured mouse.
@@ -528,9 +536,8 @@ EOF
     if [ -n "${DEBUG_DISPLAY:-}" ]; then
         printf '[debug]\nlevel=%s\n' "$DEBUG_DISPLAY" >>"$data/settings.ini"
     fi
-    if [ "$armour" = walk ]; then
+    if [ "$SCENE_ARMOUR" = walk ]; then
         printf '[character]\ncape=qtcraft:green_cape\n' >>"$data/settings.ini"
-        set -- "$@" --camera behind --chat "/equip diamond"
     fi
     # Benchmarks measure the real window, never offscreen (E-229; the game refuses that anyway).
     # A run during which the screen was locked rendered no or too few frames: it is repeated (at most
@@ -539,7 +546,7 @@ EOF
     while :; do
         wait_for_screen || return 1
         # shellcheck disable=SC2086
-        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_BENCHMARK_PACK_SWITCH="${PACK_SWITCH:-}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QTCRAFT_STATS="${STATS:-}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$walk" \
+        env QTCRAFT_OFFSCREEN=0 QTCRAFT_TEXTURE_PACKS="${TEXTURE_PACKS:-none}" QTCRAFT_BENCHMARK_PACK_SWITCH="${PACK_SWITCH:-}" QTCRAFT_PREVIEW_ACTIVE="${PREVIEW_ACTIVE:-0}" QTCRAFT_STATS="${STATS:-}" QSG_RHI_PROFILE=1 QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$data" QTCRAFT_BENCHMARK="$seconds" QTCRAFT_BENCHMARK_SCENARIO="$SCENE_WALK" \
             perl -e 'alarm shift; exec @ARGV or die' "${RUN_LIMIT:-$((seconds + 120))}" $wrapper "$app" "$@" >"$log" 2>&1
         if ! screen_locked || [ "$attempt" -ge 3 ]; then
             break

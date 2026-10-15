@@ -46,6 +46,10 @@ qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_serv
 add_test(NAME script_bench_ab_args
     COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_bench_ab_args.sh ${PROJECT_SOURCE_DIR}/scripts/bench-ab.sh)
 set_tests_properties(script_bench_ab_args PROPERTIES TIMEOUT 60)
+# The decision of the adaptive benchmark rounds on canned result files (decision E-388); runs no game.
+add_test(NAME script_bench_adaptive
+    COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_bench_adaptive.sh ${PROJECT_SOURCE_DIR}/scripts/bench-adaptive.sh)
+set_tests_properties(script_bench_adaptive PROPERTIES TIMEOUT 60)
 
 add_test(NAME scenario_headless_walk_and_jump
     COMMAND qtcraft-headless --script ${CMAKE_CURRENT_SOURCE_DIR}/scenarios/walk-and-jump.jsonl --time-limit 60)
@@ -282,6 +286,8 @@ qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_ser
 target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
 qc_add_test(test_world_open_measure SOURCES gameplay/test_world_open_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_explore_measure SOURCES gameplay/test_explore_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+# The server side of a benchmark scenario without a window (scripts/bench-headless.sh, decision E-388).
+qc_add_test(test_scenario_measure SOURCES gameplay/test_scenario_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_block_entity_measure SOURCES gameplay/test_block_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_simulation_limits SOURCES gameplay/test_simulation_limits.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_network)
 qc_add_test(test_signal_hopper_edges SOURCES gameplay/test_signal_hopper_edges.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -403,7 +409,7 @@ set(qc_concurrency_tests
     test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
-    test_explore_measure)
+    test_explore_measure test_scenario_measure)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are

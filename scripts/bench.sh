@@ -2,7 +2,8 @@
 # Per-stage performance check: runs fixed scenarios several times in the release build at view
 # distance 8 and prints the median of each value. Not part of ctest; never run it in parallel with
 # builds or tests, the machine load would distort the numbers.
-# Usage: scripts/bench.sh [runs] [seconds]   (SCENARIOS="liquids" runs a subset)
+# Usage: scripts/bench.sh [runs] [seconds]   (default 3 runs of 10 s; SCENARIOS="liquids" or
+# SCENARIOS=@core runs a subset, groups: scripts/bench-groups.sh)
 #
 # Scenarios: see scripts/bench-common.sh. VIEW=12 measures another view distance, KEYS="..." other
 # values of the BENCH line (among them the server tick phases tick_<phase>_avg_ms and _max_ms,
@@ -13,10 +14,12 @@ set -u
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
 RUNS=${1:-3}
-SECONDS_PER_RUN=${2:-20}
+SECONDS_PER_RUN=${2:-10}
 APP=build/release/src/app/qtcraft.app/Contents/MacOS/qtcraft
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-bench.XXXXXX") || exit 2
 
+. "$PROJECT_DIR/scripts/bench-groups.sh"
+SCENARIO_LIST=$(expand_scenarios "${SCENARIOS:-stand sprint crowd light liquids showcase flat-crowd flat-liquids}") || exit 2
 . "$PROJECT_DIR/scripts/bench-common.sh"
 
 limited 300 cmake --preset release >/dev/null 2>&1 || exit 1
@@ -33,7 +36,7 @@ for key in $KEYS; do
     printf ' %18s' "$key"
 done
 printf '\n'
-for scenario in ${SCENARIOS:-stand sprint crowd light liquids showcase flat-crowd flat-liquids}; do
+for scenario in $SCENARIO_LIST; do
     results="$WORK/$scenario.results"
     : >"$results"
     i=1
