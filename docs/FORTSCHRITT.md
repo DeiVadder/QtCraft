@@ -98,6 +98,60 @@ Wiederaufnahme-Dokument: Ein frischer Agent ohne Chatverlauf liest zuerst dieses
 
 Die Etappentabelle ist nach der Reihenfolge der Arbeit sortiert; die Nummern sind feste Kennungen (E-350, `QtCraft-Agent-Auftrag.md` Abschnitt 3 „Vorgehen“), ein späterer Einschub bekommt die nächste freie Nummer.
 
+## Arbeitspakete der offenen Etappen
+
+Geschätzt vom Hauptagenten am 2026-10-15 nach der Regel „Arbeitspakete höchstens eine halbe Sitzung“ (`QtCraft-Agent-Auftrag.md`, Abschnitt 3; Richtwert ≤ 400 000 Token je Paket). S/M/L: klein (≈ 150–250 k), mittel (≈ 250–350 k), groß (≈ 350–400 k). Reihenfolge innerhalb einer Etappe wie aufgeführt; Pakete einer Etappe hängen meist voneinander ab.
+
+| Etappe | Paket | Inhalt | Größe |
+|---|---|---|---|
+| 31.3 | – | Folgepunkte aus dem Benchmark, voller Verify, Merge | S |
+| 49 | 49 | Besitz im Typ, Zustände als Enum, `[[nodiscard]]` | M |
+| 32 | 32.1 | Schienen (normal, Kurven, Steigungen), Lore als Entity-Art, Spieler fahren, Kolben schieben Loren | L |
+| 32 | 32.2 | Angetriebene, Detektor- und Aktivierungsschienen, Kisten- und Trichter-Lore, Showcase, Handbuch | M |
+| 33 | 33.1 | Block- und Himmelslicht pro Section auf dem Server, gemeinsamer Code mit dem Client oder Übertragung, Nutzer (Spawn, Pflanzen) umstellen, Benchmark | L |
+| 33 | 33.2 | Renderer-Vorsorge für 45 (Durchlauf-Liste, Vertex-Platz, Wasser als eigene Liste, Licht shader-lesbar) | M |
+| 34 | 34.1 | Feuer-Block, Ausbreitung über eigene Warteschlange, Garantien gegen Weltbrand, `fireSpread`, Pflicht-Test großer Wald | L |
+| 34 | 34.2 | Zündquellen (Feuerzeug, Lava), Brennen und Schaden für Spieler und Wesen, Creative, Showcase, Benchmark Waldbrand | M |
+| 35 | 35.1 | Wetter-Zustand, `/weather`, `weatherCycle`, Speichern und Synchronisieren, Darstellung (Partikel, Himmel, Nebel, Klänge), Benchmark Gewitter | L |
+| 35 | 35.2 | Auswirkungen: Feuer löschen, nasser Acker, Schneeschicht, Blitze innerhalb der Feuer-Garantien | M |
+| 36 | 36 | Erfahrungskugeln, Stufen, HUD, `/xp`, Speichern; Lapislazuli-Erz, Item, Block, Rezepte | M |
+| 37 | 37.1a | Wegfindung: A* mit Budget und Cache, Abgründe und Wasser meiden, Ausweichen, Nahkampf mit Sichtlinie | L |
+| 37 | 37.1b | Gestapelte Mobs: Zellenraster-Schub, KI-Stufen nach Dichte, Grenzen | M |
+| 37 | 37.2a | Dorf-Generierung: Dorf-Zustand (Mittelpunkt, Betten, Arbeitsplätze), Häuser, Wege, Felder, Beleuchtung; Stile Ebene und Wüste, Rückfall-Stil | L |
+| 37 | 37.2b | Dorfbewohner: Modelle und Kleidung je Biom, Berufe, Tagesablauf (arbeiten, schlafen) | L |
+| 37 | 37.2c | Handel: Angebote aus Daten, Trading-UI, Währungs-Item, Berufsstufen mit Erfahrung | M |
+| 37 | 37.3 | Vermehrung der Dorfbewohner, Golem-Spawn-Regel, weitere Stile (Taiga, Savanne, Schnee), Baumhaus-Dorf prüfen | M |
+| 52 | 52.1 | Projektile als Entity-Art, Bogen und Pfeile, Skelett-Bogenschütze | L |
+| 52 | 52.2 | Spinnen und Höhlenspinnen (Klettern, Gift als erster Status-Effekt), Silberfische und befallener Stein | M |
+| 52 | 52.3 | Enderman (Teleport, Blöcke tragen, Blickkontakt), Enderperle | M |
+| 52 | 52.4 | Kühe (Melken, Milch-Eimer), Fische (Schwärme, Fisch-Eimer), Angel falls machbar | M |
+| 52 | 52.5 | Zähmen als Verhalten (Besitz, Folgen, Sitzen, Teleport zum Besitzer): Wölfe und Hunde, Ozelots und Katzen | L |
+| 52 | 52.6 | Eisengolem (bauen, Dorf beschützen, an 37.3 anbinden) | S |
+| 38 | 38.1 | Monster-Spawner, Verlies-Raum, Gänge zu nahen Höhlen | M |
+| 38 | 38.2 | Minenschächte mit Ebenen, Treppenhäusern, Brücken, Oberflächen-Zugängen | L |
+| 51 | 51.1 | Wüstentempel (mit Chance Mittelpunkt eines Wüstendorfs), Sandgolem (Wache, Zerfall bei Wasser, Neuspawn als Sandquelle) | L |
+| 51 | 51.2 | Sprengstoff und Explosionen (Grenzen, Spielregel), Küstentürme mit Sprengfalle | L |
+| 51 | 51.3 | Dschungeltempel, Hexenhütte (Hexe entscheiden) | M |
+| 51 | 51.4 | Ruine um kaputten Portalrahmen (Weinender Obsidian), Brunnen und Oasen | S |
+| 46 | 46.1a | Bestandsaufnahme Client und Plan zur Neugliederung (Entscheidung) | S |
+| 46 | 46.1b | Umbau nach Zuständigkeit (reines Refactoring, ggf. in mehreren Paketen je Bereich) | L |
+| 46 | 46.2 | Session-Tick auf eigenem Thread (vorher messen) | L |
+| 40 | 40.1 | SDL3 als Submodule, Gamepad-Backend mit virtuellem Controller, Steuerung im Spiel (Sticks, Trigger, analoges Laufen) | L |
+| 40 | 40.2 | Hotbar mit Radialmenü, Fokus-Navigation in allen Bildschirmen, Bildschirmtastatur | L |
+| 40 | 40.3 | Einstellungen und Profile, Tastensymbole je Controller, Anschließen/Trennen, Handbuch, Screenshots | M |
+| 41 | 41.1 | Zaubertisch mit Vorschau nach Bücherregalen, Verzauberungen aus Daten | L |
+| 41 | 41.2a | Amboss: Reparieren, Kombinieren, Umbenennen, Kosten, Abnutzung, fallender Amboss | M |
+| 41 | 41.2b | BUD-Varianten der Signal-Bauteile über den Amboss | S |
+| 47 | 47 | Feinschliff Darstellung (Beschriftungen, anisotrope Filterung, Arm, Mindesthelligkeit, Laub) | M |
+| 45 | 45.1a | HDR, Tonemapping, Bloom, Höhennebel | L |
+| 45 | 45.1b | Weiches Licht/SSAO, bewegtes Licht (gehaltene Fackel, Glühwürmchen) | L |
+| 45 | 45.2 | Sonnenschatten | L |
+| 45 | 45.3 | Wasser | L |
+| 45 | 45.4 | Material-Kanäle | L |
+| 50 | 50 | Logging-Kategorien zentral, mehr `Q_ASSERT`, Detach-freie Lesezugriffe, Kleinigkeiten | M |
+| 39 | 39.1 | Lizenz, SPDX-Köpfe, Drittlizenzen, Marken, Repo-Hygiene | M |
+| 39 | 39.2 | Name (vorher fragen), Hörtest einarbeiten, Windows-Build, Abschluss | M |
+
 ## Alte und neue Etappen-Nummern
 
 Umstellung am 2026-10-13 (Auftrag des Menschen „Architektur-Umbau und neue Etappen-Nummerierung“, E-350). Abgeschlossene Etappen behalten ihre Namen; Git-Historie, Branches und Commits sind nicht umgeschrieben. Nur die nie begonnenen geplanten Nummern wurden neu vergeben.
