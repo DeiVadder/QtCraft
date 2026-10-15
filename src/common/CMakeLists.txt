@@ -141,6 +141,10 @@ qt_add_library(qc_common STATIC
     content/definitions/QcWorldgenDefinitions.h
     core/QcWorkerPool.h core/QcWorkerPool.cpp
     core/QcWorldConstants.h
+    core/QcSectionKey.h
+    light/QcLightTable.h light/QcLightTable.cpp
+    light/QcLightNibbles.h
+    light/QcLightEngine.h light/QcLightEngine.cpp
 )
 qc_configure_target(qc_common)
 # Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
@@ -149,6 +153,7 @@ target_include_directories(qc_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/auth
     ${CMAKE_CURRENT_SOURCE_DIR}/world
+    ${CMAKE_CURRENT_SOURCE_DIR}/light
     ${CMAKE_CURRENT_SOURCE_DIR}/physics
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/protocol

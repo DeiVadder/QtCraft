@@ -2,6 +2,7 @@
 #include "QcContentRegistry.h"
 #include "QcTextureAtlas.h"
 
+#include <QMap>
 #include <QTest>
 #include <QVector3D>
 
@@ -334,10 +335,12 @@ private slots:
         chunk->setBlock(5, 1, 5, f.stone);
         const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
 
-        // Two water blocks: 12 faces, minus 2 shared, minus the bottom of the block above stone.
-        QCOMPARE(quadCount(mesh.translucentIndices), 9);
+        // Two water blocks: 12 faces, minus 2 shared, minus the bottom of the block above stone. Water
+        // has lists of its own, apart from the other translucent faces (decision E-390).
+        QCOMPARE(quadCount(mesh.waterIndices), 9);
+        QVERIFY(mesh.translucentIndices.isEmpty());
         float highest = 0.0f;
-        for (const QcBlockVertex &v : mesh.translucentVertices) {
+        for (const QcBlockVertex &v : mesh.waterVertices) {
             highest = std::max(highest, v.y);
         }
         QCOMPARE(highest, 3.0f - QcChunkMesher::liquidSurfaceDrop);
@@ -380,10 +383,10 @@ private slots:
 
         // Source: top, north, south, west and the step above the lower flow on its east side;
         // flow: top, north, south, east (its west side is below the source's surface).
-        QCOMPARE(quadCount(mesh.translucentIndices), 9);
+        QCOMPARE(quadCount(mesh.waterIndices), 9);
         const float low = 2.0f + table->entry(flowing).liquidHeight;
         int stepCorners = 0;
-        for (const QcBlockVertex &v : mesh.translucentVertices) {
+        for (const QcBlockVertex &v : mesh.waterVertices) {
             QVERIFY(v.y <= 2.0f + full);
             // The step quad lies in the plane x = 6 between the two surfaces.
             if (v.x == 6.0f && v.z >= 5.0f && v.z <= 6.0f && (v.y == low || v.y == 2.0f + full)) {
@@ -396,10 +399,90 @@ private slots:
         chunk->setBlock(5, 3, 5, falling);
         const QcChunkMesh covered = QcChunkMesher::mesh(in);
         float highest = 0.0f;
-        for (const QcBlockVertex &v : covered.translucentVertices) {
+        for (const QcBlockVertex &v : covered.waterVertices) {
             highest = std::max(highest, v.y);
         }
         QCOMPARE(highest, 3.0f + full);
+    }
+
+    // Water next to glass: each in its own list; every vertex names its face and its material
+    // (decision E-390), crosses have no face.
+    void verticesCarryNormalAndMaterial()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(5, 2, 5, f.water);
+        chunk->setBlock(6, 2, 5, f.glass);
+        chunk->setBlock(8, 2, 5, f.stone);
+        chunk->setBlock(10, 2, 5, f.leaves);
+        chunk->setBlock(12, 2, 5, f.sapling);
+        const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
+
+        // Glass and water do not hide each other.
+        QCOMPARE(quadCount(mesh.waterIndices), 6);
+        QCOMPARE(quadCount(mesh.translucentIndices), 6);
+        for (const QcBlockVertex &v : mesh.waterVertices) {
+            QCOMPARE(v.material(), QcSurfaceMaterial::Water);
+            QVERIFY(v.normal().has_value());
+        }
+        for (const QcBlockVertex &v : mesh.translucentVertices) {
+            QCOMPARE(v.material(), QcSurfaceMaterial::Translucent);
+        }
+
+        QMap<QcSurfaceMaterial, int> materials;
+        for (qsizetype i = 0; i < mesh.opaqueVertices.size(); i += 4) {
+            const QcBlockVertex &first = mesh.opaqueVertices[i];
+            ++materials[first.material()];
+            if (first.material() == QcSurfaceMaterial::Plant) {
+                QVERIFY(!first.normal());
+                continue;
+            }
+            // The normal is the face's direction: all four corners lie in its plane.
+            const QcBlockFace face = *first.normal();
+            const QcFaceOffset offset = qcFaceOffset(face);
+            for (qsizetype k = i; k < i + 4; ++k) {
+                QCOMPARE(mesh.opaqueVertices[k].normal(), std::optional<QcBlockFace>(face));
+                QCOMPARE(mesh.opaqueVertices[k].x * float(offset.dx), first.x * float(offset.dx));
+                QCOMPARE(mesh.opaqueVertices[k].y * float(offset.dy), first.y * float(offset.dy));
+                QCOMPARE(mesh.opaqueVertices[k].z * float(offset.dz), first.z * float(offset.dz));
+            }
+        }
+        QCOMPARE(materials.value(QcSurfaceMaterial::Solid), 6);
+        QCOMPARE(materials.value(QcSurfaceMaterial::Cutout), 6);
+        QCOMPARE(materials.value(QcSurfaceMaterial::Plant), 4);
+
+        // The surface byte does not disturb the light bytes.
+        QcBlockVertex vertex;
+        vertex.setSkyLight(0.4f);
+        vertex.setSurface(QcBlockFace::North, QcSurfaceMaterial::Emissive);
+        QCOMPARE(vertex.normal(), std::optional<QcBlockFace>(QcBlockFace::North));
+        QCOMPARE(vertex.material(), QcSurfaceMaterial::Emissive);
+        QCOMPARE(vertex.light[QcBlockVertex::skyLightIndex], QcBlockVertex::pack(0.4f));
+        QCOMPARE(QcBlockVertex().normal(), std::nullopt);
+    }
+
+    // Water, glass and water again in cell order: the runs keep that order for drawing water and
+    // glass in turn (decision E-390); all water before all glass needs no runs.
+    void translucentRunsKeepTheMeshersOrder()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(2, 2, 5, f.water);
+        chunk->setBlock(4, 2, 5, f.glass);
+        chunk->setBlock(6, 2, 5, f.water);
+        const QcChunkMesh mixed = QcChunkMesher::mesh(f.input(chunk));
+        QCOMPARE(mixed.translucentRuns, (QList<quint32>{36, 36, 36}));
+        QCOMPARE(mixed.waterIndices.size(), 72);
+
+        chunk->setBlock(2, 2, 5, f.glass);
+        chunk->setBlock(6, 2, 5, f.glass);
+        chunk->setBlock(4, 2, 5, f.water);
+        QCOMPARE(QcChunkMesher::mesh(f.input(chunk)).translucentRuns, (QList<quint32>{0, 36, 36, 36}));
+
+        chunk->setBlock(6, 2, 5, qcAirBlockId);
+        chunk->setBlock(2, 2, 5, qcAirBlockId);
+        chunk->setBlock(4, 3, 5, f.glass);
+        QVERIFY(QcChunkMesher::mesh(f.input(chunk)).translucentRuns.isEmpty());
     }
 
     void cutoutBlocksKeepFacesBetweenEachOther()

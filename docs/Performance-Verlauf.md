@@ -1156,3 +1156,115 @@ Profil (`sample`, signal_farm, je 30 s): `unloadUnneeded` 16 → 1 Proben bei 82
 **4. Client-Sync +0,007–0,009 ms:** 31.3 ändert im Client-Abgleich nur das Anfordern fehlender Chunks (`QcChunkStreaming::stream` über `QcChunkLoading::request`, das je fehlendem Chunk und Tick die Gruppe suchte; jetzt nur beim ersten Mal) und die Umwandlungen `as<T>()` in `QcEntitySync` (im Release ohne Kosten). Nachher an den Stationen 0,020 → 0,018 und 0,026 → 0,019 ms; der Rest der Differenz zu `dev` ist nicht zuzuordnen.
 
 **Messweise:** Die Erkundungsflüge in Echtzeit (je rund 9,5 min) wurden nach zwei Läufen abgebrochen; Tick-Kosten werden jetzt mit `test_explore_measure` ohne Echtzeit gemessen (oben).
+
+## Etappe 33.1: Licht auf dem Server, headless Messung (2026-10-15)
+
+Release (`RelWithDebInfo`): `dev` `b236bb7` in einem temporären Worktree gegen `feature/33-server-light`, ohne Fenster und ohne Echtzeit (E-388). Der Server hält jetzt Block- und Himmelslicht aller geladenen Chunks (E-389).
+
+**Szenarien** (`scripts/bench-headless.sh`, 3 verschränkte Runden à 60 s Spielzeit, Mittel [Spanne]; `light` mit dem Fackelring des Spiel-Benchmarks als Chat-Zeilen, neu in dieser Etappe):
+
+| Szenario | | Tick Ø (ms) | Tick p99 (ms) | Tick max (ms) | Phase | Spitzen-RSS (MB) |
+|---|---|---:|---:|---:|---|---:|
+| `light` | dev | 0,078 [0,076–0,080] | 0,104 | 0,134–0,180 | messages 0,0020 | 48,3 |
+| | neu | 0,079 [0,076–0,083] | 0,109 | 0,117–0,205 | messages 0,0120 (Licht bei `/setblock`) | 50,8 |
+| `gravel-collapse` | dev | 0,489 [0,481–0,502] | 1,375 | 1,46–1,59 | blockUpdates 0,030 | 70,3 |
+| | neu | 0,488 [0,478–0,494] | 1,386 | 1,53–2,96 | blockUpdates 0,035 | 70,4 |
+| `explore` | dev | 0,120 [0,119–0,121] | 0,558 | 0,61–0,73 | chunkLoading 0,016 / max 0,29 | 52,8 |
+| | neu | 0,162 [0,161–0,163] | 0,792 | 1,06–1,12 | chunkLoading 0,036 / max 0,74 | 55,9 |
+
+Eine erste Fassung, die das Licht ankommender Chunks ganz im Tick berechnete, kostete in `explore` Tick Ø 0,322 ms, p99 2,25 ms, max 2,7 ms (chunkLoading Ø 0,17, max 2,5 ms); seitdem berechnet der Hintergrund (Generator-Threads, I/O-Thread) das Licht eines Chunks für sich, der Tick verbindet nur noch die Ränder.
+
+**Licht je Chunk** (`QTCRAFT_LIGHT_MEASURE=full build/release/tests/test_light_measure`: 17 × 17 Chunks des Geländes mit Seed 42, jeder Schritt einzeln gemessen):
+
+| | Ø (ms) | max (ms) |
+|---|---:|---:|
+| Chunk ankommend, nur Blocklicht (was der Client rechnet) | 0,025 | 0,195 |
+| Chunk ankommend, Block- und Himmelslicht im Tick | 0,077 | 0,281 |
+| davon im Hintergrund: eigenes Licht des Chunks (`prepare`) | 0,063 | 0,198 |
+| im Tick: Ränder verbinden | 0,012 | 0,086 |
+| Chunk entladen | 0,016 | 0,100 |
+| `QcServerWorld::setBlock` mit Lichtnachführung (4000 zufällige Änderungen) | 0,008 | 0,114 |
+| Lichtabfrage aus der Engine / Flutung auf Anfrage (früher fürs Spawnen) | < 0,001 / 0,363 | 0,001 / 0,563 |
+
+**Speicher:** 8,2 KB je geladenem Chunk (Spalte rund 1 KB, Abschnitte mit Zellen 2 KiB je Kanal); von 4624 Abschnitten haben 524 Blocklicht- und 482 Himmelslicht-Zellen, die übrigen sind einheitlich dunkel oder voll vom Himmel beleuchtet und belegen nichts. Bei 306 geladenen Chunks (Sicht 8) rund 2,5 MB, passend zum Mehr an Spitzen-RSS (+2,5 MB in `light`, +3,1 MB in `explore`).
+
+**Bewertung:** Neuberechnung beim Laden ist schnell genug (0,06 ms im Hintergrund je Chunk gegen mehrere Millisekunden für das Erzeugen), also wird nichts gespeichert. `light` und `gravel-collapse` ändern den Tick nicht messbar. `explore` +35 % Tick Ø und +0,4 ms Spitze headless, das Verbinden der Ränder und das Entladen; headless sind die Werte rund zehnmal kleiner als im Fenster (E-388). Gerendert nachzuholen (Hauptsitzung): `@light` und `@core` A/B, `explore` mit `STATS=5000` (Tick-Spitzen beim Fliegen).
+
+## Etappe 33.2: Renderer-Vorsorge, headless Messung (2026-10-15)
+
+Release (`RelWithDebInfo`), `QTCRAFT_MESH_MEASURE=full build/release/tests/test_mesh_measure`: 15 × 15 Chunks des Geländes mit Seed 42 je Gebiet (Land um den Ursprung, Küste um Chunk (52, 26)), jeder Abschnitt einzeln vernetzt (mit Blocklicht-Schnappschüssen wie im Client), Puffergrößen wie der Renderer sie hochlädt (16-Bit-Indizes, wo sie passen). Je 3 Läufe vor (`c670ff4`) und nach den Änderungen (E-390):
+
+| Gebiet | | vernetzte Abschnitte | Vernetzen Ø (ms) | max (ms) | Sektionspuffer (MB) |
+|---|---|---:|---|---:|---:|
+| Land | vorher | 1046 | 0,665 / 0,686 / 0,682 | 1,41–1,53 | 74,57 |
+| | nachher | 1046 | 0,659 / 0,699 / 0,680 | 1,41–1,45 | 74,57 |
+| Küste | vorher | 884 | 0,654 / 0,625 / 0,629 | 1,02–1,15 | 40,52 |
+| | nachher | 884 | 0,607 / 0,639 / 0,635 | 1,00–1,06 | 40,52 |
+
+Der Vertex bleibt 24 Byte (Normale und Materialklasse im freien Byte), die Wasser-Listen teilen nur auf, was vorher in der durchsichtigen Liste lag (Küste: 121 824 Wasser-Vertices = 7,7 % aller Vertices, 3,1 MB; Land 1528). Abschnitte mit abwechselnd Wasser und Glas (Läufe, mehr Draw-Calls): 0 in beiden Gebieten. Das Licht der eigenen Zellen (Himmelslicht kopiert, Blocklicht geteilt) ändert die Vernetzungszeit nicht messbar. Licht-Pool auf der GPU, falls ein Schritt es liest (heute keiner): Land 691 von 1046 Abschnitten mit Platz (5,4 MB), Küste 660 von 884 (5,2 MB). Gerendert nachzuholen (Hauptsitzung): `@core` A/B (Draw-Calls, GPU, Render-CPU), dazu ein Szenario mit Wasser.
+
+Nach der Prüfung (E-391: Licht im Netz nur, wenn der Plan es liest), gleiche Messung, je 3 Läufe:
+
+| Gebiet | vernetzte Abschnitte | Vernetzen Ø (ms) | max (ms) | Sektionspuffer (MB) |
+|---|---:|---|---:|---:|
+| Land | 1046 | 0,666 / 0,682 / 0,698 | 1,46–1,60 | 74,57 |
+| Küste | 884 | 0,611 / 0,611 / 0,639 | 1,06–1,11 | 40,52 |
+
+Innerhalb der Streuung der Messung davor (das Weglassen der Himmelslicht-Kopie ist nicht messbar). Mit `QTCRAFT_SECTION_LIGHT=1`: Land 691 Plätze (5,4 MB), Küste 660 (5,2 MB), wie zuvor. Der gerenderte Benchmark braucht zusätzlich ein Szenario in gefrorenem Gelände (Eis über Wasser: zwei Listen je Abschnitt).
+
+## Etappe 33 gerendert (2026-10-15)
+
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`): `dev` `b236bb7` in einem temporären Worktree gegen `feature/33-server-light` (`3ec2476` plus das neue Szenario `frozen`, `01effba`). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server @light` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 19:22–19:25); im Fenster `@core @light frozen` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 19:25–19:48), `explore` 3 Runden à 75 s mit `STATS=5000`, sprint 2 Runden à 20 s bei 8 und bei 16 Chunks (19:49–20:00). Last 2–4, belastet markiert 10 von 90 Läufen der Hauptreihe und je einer in explore und sprint; ohne sie ändert sich keine Aussage. Wanduhr aller Messreihen samt Builds rund 40 min.
+
+**Neues Szenario `frozen`** (`scripts/bench-common.sh`): Stehen am Tag auf dem gefrorenen Meer der Tundra (Seed 42, `--spawn -325,-300 --look 270,-15`), Eis über Wasser bis zum Horizont. Jeder Abschnitt mit Wasser unter Eis zeichnet seit E-390 zwei Listen (Wasser, Durchsichtiges). Ein `SCENE_SPAWN` gilt im Fenster jetzt in jeder Welt (vorher nur in der Showcase-Welt). Wasser mit Glas zeigen `showcase` (Glasgehege, Wasser in Glas) und `glass`/`glass-full` (Eis, kein Wasser). **Bild:** Offscreen-Screenshots von `frozen` in beiden Ständen unterscheiden sich in 135 von 3,7 Mio. Pixeln (Toleranz 3 %; Wolken, Hand), also gleich.
+
+### Fenster: 33 gegen `b236bb7`
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|
+| stand (3) | 117 / 117 | 14,9 → 14,8 | 1,74 → 1,65 | 1,71 → 1,71 | 1,02 → 1,04 | 0,450 → 0,439 | 0,577 → 0,567 | 443 → 442 | 347 → 347 |
+| sprint (6) | 117 / 116 | 14,2 → 15,4 (+8 %) | 1,98 → 2,03 | 1,75 → 1,82 (+4 %) | 1,09 → 1,14 | 0,456 → 0,453 | 0,688 → 0,642 | 554 → 554 | 388 → 388 |
+| showcase (3) | 117 / 117 | 15,5 → 15,7 | 0,701 → 0,675 | 1,25 → 1,25 | 0,540 → 0,546 | 0,535 → 0,523 | 0,363 → 0,358 | 325 → 327 | **148 → 180 (+22 %)** |
+| crowd (6) | 118 / 117 | 14,4 → 14,6 | 2,21 → 2,25 | 1,41 → 1,48 (+5 %) | 1,11 → 1,16 | 0,849 → 0,847 | 0,849 → 0,803 | 449 → 448 | 345 → 345 |
+| light (6) | 117 / 117 | 15,3 → 15,4 | 1,47 → 1,45 | 1,66 → 1,66 | 0,958 → 0,984 | 0,568 → 0,548 | 0,566 → 0,540 | 450 → 451 | 346 → 346 |
+| glass (6) | 117 / 118 | 14,8 → 13,9 | 1,86 → 1,87 | 1,72 → 1,72 | 1,00 → 1,01 | 0,525 → 0,515 | 0,626 → 0,578 | 454 → 453 | 349 → 349 |
+| glass-full (3) | 118 / 117 | 14,2 → 14,9 | 1,81 → 1,84 | 1,71 → 1,74 | 0,990 → 1,04 | 0,524 → 0,519 | 0,576 → 0,553 | 453 → 453 | 349 → 349 |
+| void-light (6) | 117 / 117 | 15,3 → 15,0 | 0,655 → 0,672 | 0,916 → 0,940 | 0,132 → 0,140 | 0,405 → 0,420 | 0,111 → 0,111 | 255 → 257 | 4 → 4 |
+| **frozen** (6) | 118 / 117 | 14,9 → 15,5 | 1,48 → 1,49 | **1,73 → 1,94 (+12 %)** | **1,06 → 1,30 (+23 %)** | 0,370 → 0,363 | 0,267 → 0,206 | 400 → 400 | **406 → 634 (+56 %)** |
+| explore, 75 s (3) | 117 / 117 | 15,6 → 15,5 | 0,587 → 0,589 | 0,760 → 0,753 | – | 0,400 → 0,396 | **0,749 → 0,846 (+13 %)** | 555 → 554 | 42 → 45 |
+| sprint, 20 s (2) | 117 / 118 | 14,7 → 14,4 | 2,14 → 2,07 | 1,85 → 1,86 | – | 0,475 → 0,469 | 0,758 → 0,752 | 609 → 608 | 400 → 400 |
+| sprint, 16 Chunks, 20 s (2) | 118 / 119 | 13,7 → 14,6 | 2,95 → 2,85 | 2,46 → 2,51 | – | 0,311 → 0,298 | 0,916 → 0,901 | 1391 → 1393 | 1430 → 1433 |
+
+Sichtbare Abschnitte, Dreiecke und Sektionspuffer in jedem Szenario gleich (z. B. frozen 306 Abschnitte, 344 300 Dreiecke, 65,2 MB). `entity_problems` und `block_entity_problems` = 0, keine übersprungenen Ticks, Tick max höchstens 5,6 ms (explore).
+
+### Headless: 33 gegen `b236bb7` (Tick, Mittel über 3 bzw. 6 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
+|---|---:|---:|---:|---|
+| crowd | 0,128 → 0,131 (+2 %) | 0,161 → 0,167 | 47,5 → 49,9 | – |
+| gravel-collapse | 0,493 → 0,494 | 1,40 → 1,43 | 69,5 → 70,7 | – |
+| farm / farm-seeds | 0,007 → 0,007 / 0,016 → 0,016 | – | 42,5 → 43,6 | – |
+| explore | 0,119 → 0,161 (+35 %) | 0,571 → 0,813 | 52,6 → 55,8 | Chunk-Laden 0,016 → 0,036, Streaming 0,048 → 0,074 |
+| signal_components | 0,0220 → 0,0248 (+13 %) | 0,052 → 0,091 | 43,4 → 44,3 | Signal 0,0069 → 0,0096 (max 0,05 → 0,10) |
+| signal_machines | 0,0257 → 0,0285 (+11 %) | 0,059 → 0,091 | 43,3 → 44,2 | Signal 0,0096 → 0,0124 (max 0,06 → 0,12) |
+| signal_farm | 0,0193 → 0,0218 (+13 %) | 0,049 → 0,094 | 43,7 → 44,5 | Signal 0,0042 → 0,0065 (max 0,05 → 0,17) |
+| light | 0,079 → 0,082 (+3 %) | 0,104 → 0,107 | 47,8 → 50,5 | Nachrichten 0,0019 → 0,0120 (Licht bei `/setblock`) |
+| glass / glass-full | 0,080 → 0,080 / 0,079 → 0,080 | 0,106 → 0,107 | 48,0 → 50,4 | – |
+| void-light | 0,004 → 0,004 | – | – | – |
+
+**Bewertung:**
+
+- **Bild unverändert, Frame-Zeit und GPU überall innerhalb von 3 %.** GPU in `frozen` 1,48 → 1,49 ms trotz 228 Zeichenaufrufen mehr.
+- **Draw-Calls nur dort mehr, wo Wasser und andere durchscheinende Flächen in einem Abschnitt liegen:** `frozen` +228 (+56 %), `showcase` +32 (Wasser in Glas, Glasgehege am Wasser); alle übrigen Szenarien gleich (sprint ±2 aus dem Streaming). Wie in E-390 (3) erwartet.
+- **Render-CPU `frozen` +12 % (Welt-Renderer +0,24 ms), in allen 6 Runden** (33: 1,82–2,01 ms, `dev` 1,64–1,80 ms). Ursache sind die zusätzlichen Zeichenaufrufe (rund 1 µs je Aufruf; Dreiecke, Abschnitte, Puffer und Uploads gleich); die Pipeline wechselt nicht (E-391). Kein Profil nötig: die Szenario-Statistik ordnet den Zuwachs vollständig zu. Absolut 1,94 ms gegen das Ziel 4 ms, Frame-Zeit unverändert. Abhilfe, falls nötig: Wasser und Eis eines Abschnitts in einen Puffer mit zwei Bereichen legen (ein Puffer, zwei Aufrufe ohne Neubindung) oder sie in der klassischen Darstellung wieder gemeinsam vernetzen; für Etappe 45 bleibt die Trennung gewollt. In `showcase` (+32 Aufrufe) nicht messbar.
+- **Render-CPU sprint +4 % und crowd +5 %**: ohne mehr Draw-Calls, Runden überlappen (crowd 33: 1,31–1,59, `dev` 1,35–1,53), in der 20-s-Reihe sprint +0,5 %; Streuung.
+- **Tick `explore` im Fenster +13 % (0,75 → 0,85 ms), headless +35 %**: das Serverlicht ankommender und entladener Chunks (Ränder verbinden, Entladen; Phasen Chunk-Laden und Streaming), wie in der headless Messung von 33.1 (E-389); +0,1 ms je Tick von 50 ms, Tick max 3,4–4,3 → 5,1–5,6 ms. Gewollt.
+- **Tick an den Signal-Stationen headless +11 bis +13 %, p99 +50 bis +90 %**: Lampen und Fackeln, die schalten, führen jetzt das Serverlicht nach (Phase Signal +0,0025 ms Ø, Spitzen 0,1–0,17 ms). Absolut 0,003 ms je Tick; gewollt (E-389).
+- **Spitzen-RSS headless +1 bis +3 MB**: Licht der geladenen Chunks (8,2 KB je Chunk, E-389); im Fenster nicht messbar.
+- Tick Ø im Fenster in den übrigen Szenarien −2 bis −8 %, in `frozen` −23 %: gleiche Arbeit (headless gleich), Lage des Server-Threads; keine Aussage.
+
+**Absolute Ziele (`docs/Performance.md`):** Bildrate 116–119 FPS (Ziel ≥ 60) und Frame-Kosten (8 Chunks höchstens 2,25 ms GPU in crowd, 1,94 ms Render-CPU in frozen; 16 Chunks 2,85 ms GPU) erfüllt. p99 ≤ 12,5 ms im Median verfehlt (15,0 ms bei beiden Ständen, 45 von 45 bzw. 43 von 45 Läufen der Hauptreihe darüber, externer Monitor angeschlossen), Frame-Kosten-p99 klein: verpasste VSyncs von außerhalb des Spiels, wie in 31.3 (bekannter Vorbehalt). **Spitzenspeicher:** stand, showcase, crowd, light, glass, frozen, explore 255–555 MB erfüllt; **sprint 8 Chunks (20 s) 607–610 MB** (10-s-Sprint 554 MB) und **sprint 16 Chunks 1 390–1 394 MB** weiter verfehlt (offene Befunde, Anteil des Clients; durch 33 nicht verändert: `dev` 609 / 1 391 MB). Tick: kein Tick über 50 ms, keine übersprungenen Ticks.
+
+### Fazit Etappe 33
+
+Serverlicht und Renderer-Vorsorge ändern das Bild nicht und kosten im Fenster keine Frame-Zeit und keine GPU-Zeit. Messbar sind die erwarteten Posten: Render-CPU +0,2 ms in gefrorenem Meer durch die getrennten Wasser-Listen (+56 % Zeichenaufrufe, alle Runden, absolut weit unter dem Ziel) und +0,1 ms Tick beim Erkunden durch das Licht ankommender Chunks auf dem Server. Keine unerklärte Regression. Die beiden Speicher-Befunde bleiben offen und unverändert.

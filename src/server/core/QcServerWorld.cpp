@@ -1,6 +1,7 @@
 #include "QcServerWorld.h"
 
 #include "QcLightVolume.h"
+#include "QcLightTable.h"
 
 #include <QLoggingCategory>
 #include <QThread>
@@ -20,6 +21,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     , m_links(*m_content)
     , m_loaders(*m_content)
     , m_blockEntities(m_content)
+    , m_light(std::make_shared<const QcLightTable>(*m_content), {})
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
 {
@@ -40,6 +42,12 @@ void QcServerWorld::setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog)
 {
     m_io = io;
     m_catalog = std::move(catalog);
+    if (m_io) {
+        // Only the immutable light table goes to the I/O thread, which may outlive the world.
+        m_io->setPreparation([table = m_light.sharedTable()](Arrival &arrival) {
+            arrival.light = QcLightEngine(table, {}).prepare(*arrival.blocks);
+        });
+    }
 }
 
 std::optional<QcServerWorld::Stored> QcServerWorld::stored(QcChunkPos pos) const
@@ -62,6 +70,7 @@ void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
     m_generationPool.submit([this, pos, kept = std::move(kept)]() mutable {
         kept.pos = pos;
         kept.blocks = m_generator->generate(pos);
+        kept.light = m_light.prepare(*kept.blocks);
         m_generated.push(std::move(kept));
     });
 }
@@ -115,9 +124,10 @@ std::vector<QcServerWorld::Arrival> QcServerWorld::collectArrivals()
     return ready;
 }
 
-void QcServerWorld::insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk)
+void QcServerWorld::insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk, const std::shared_ptr<QcLightEngine::Prepared> &light)
 {
     m_chunks.insert(pos, chunk);
+    m_light.addChunk(*chunk, light);
     ++m_loadedEpoch;
     noteSections(pos, *m_chunks.value(pos));
     m_newlyLoaded.append(pos);
@@ -130,7 +140,7 @@ void QcServerWorld::admit(Arrival &&arrival)
     if (m_chunks.contains(pos)) {
         return;
     }
-    insert(pos, arrival.blocks);
+    insert(pos, arrival.blocks, arrival.light);
     if (m_catalog.value(pos).has(QcChunkStore::Kind::Blocks)) {
         m_differs.insert(pos);
     }
@@ -226,6 +236,7 @@ std::shared_ptr<const QcChunk> QcServerWorld::remove(QcChunkPos pos)
         return nullptr;
     }
     Q_ASSERT(!m_blockEntities.chunkIndex(pos));
+    m_light.removeChunk(pos);
     ++m_loadedEpoch;
     forgetSections(pos);
     m_differs.remove(pos);
@@ -239,7 +250,10 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
     if (m_differs.contains(pos)) {
         return;
     }
-    if (m_chunks.remove(pos)) {
+    // The light engine lets go of the chunk's column first, while the chunk still exists.
+    if (m_chunks.contains(pos)) {
+        m_light.removeChunk(pos);
+        m_chunks.remove(pos);
         ++m_loadedEpoch;
     }
     forgetSections(pos);
@@ -249,6 +263,7 @@ void QcServerWorld::unloadChunk(QcChunkPos pos)
 std::shared_ptr<QcChunk> QcServerWorld::takeChunk(QcChunkPos pos)
 {
     std::shared_ptr<QcChunk> chunk = m_chunks.take(pos);
+    m_light.removeChunk(pos);
     ++m_loadedEpoch;
     m_changed.remove(pos);
     m_differs.remove(pos);
@@ -263,7 +278,9 @@ bool QcServerWorld::regenerateChunk(QcChunkPos pos)
         return false;
     }
 
+    m_light.removeChunk(pos);
     *it = m_generator->generate(pos);
+    m_light.addChunk(**it);
     forgetSections(pos);
     m_blockEntities.forgetChunk(pos);
     noteSections(pos, **it);
@@ -291,6 +308,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
 
     const QcBlockId before = (*it)->block(pos.localX(), pos.y, pos.localZ());
     (*it)->setBlock(pos.localX(), pos.y, pos.localZ(), block);
+    m_light.changeBlock(pos, before, **it);
     m_marks.noteBlock(pos, block);
     m_hoppers.noteBlock(pos, block);
     m_links.noteBlock(pos, before, block);
@@ -306,7 +324,7 @@ void QcServerWorld::adoptStoredChunks(const QHash<QcChunkPos, std::shared_ptr<Qc
 {
     for (auto it = chunks.constBegin(); it != chunks.constEnd(); ++it) {
         m_pending.remove(it.key());
-        insert(it.key(), it.value());
+        insert(it.key(), it.value(), nullptr);
         m_changed.insert(it.key());
         m_differs.insert(it.key());
     }

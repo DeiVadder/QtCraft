@@ -166,6 +166,27 @@ float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlo
     return (1.0f - QcBlockRenderTable::liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
 }
 
+// Liquids first (the water list and its later pipeline), then light sources, then the layer.
+QcSurfaceMaterial materialOf(const Entry &entry)
+{
+    if (entry.liquid) {
+        return entry.layer == QcRenderLayer::Translucent ? QcSurfaceMaterial::Water : QcSurfaceMaterial::Liquid;
+    }
+    if (entry.lightLevel > 0) {
+        return QcSurfaceMaterial::Emissive;
+    }
+    switch (entry.layer) {
+    case QcRenderLayer::Translucent:
+        return QcSurfaceMaterial::Translucent;
+    case QcRenderLayer::Cutout:
+        return QcSurfaceMaterial::Cutout;
+    case QcRenderLayer::Invisible:
+    case QcRenderLayer::Opaque:
+        break;
+    }
+    return QcSurfaceMaterial::Solid;
+}
+
 Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcBlockId id)
 {
     const QcBlockState &state = content.state(id);
@@ -182,6 +203,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     entry.lightOpacity = state.lightOpacity;
     entry.lightBlockedFaces = state.lightBlockedFaces;
     entry.lightLevel = block.lightLevel;
+    entry.material = materialOf(entry);
     for (const QcBlockFace face : qcAllBlockFaces) {
         entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));
     }
@@ -221,6 +243,7 @@ bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace fac
 }
 
 QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const QcTextureAtlas &atlas)
+    : m_lightTable(std::make_shared<const QcLightTable>(content))
 {
     m_entries.reserve(content.stateCount());
     for (qsizetype id = 0; id < content.stateCount(); ++id) {

@@ -15,6 +15,7 @@ qt_add_library(qc_clientcore STATIC
     settings/QcKeyControls.h settings/QcKeyControls.cpp
     settings/QcKeyLabels.h settings/QcKeyLabels.cpp
     light/QcChunkLight.h
+    light/QcSectionLight.h light/QcSectionLight.cpp
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
@@ -77,7 +78,6 @@ qt_add_library(qc_clientcore STATIC
     sound/QcSampleBuffer.h
     settings/QcScreenChoice.h settings/QcScreenChoice.cpp
     settings/QcUiPalette.h settings/QcUiPalette.cpp
-    meshing/QcSectionKey.h
     sound/QcSoundBank.h sound/QcSoundBank.cpp
     sound/QcSoundCue.h
     sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp

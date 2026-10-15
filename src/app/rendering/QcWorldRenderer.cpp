@@ -62,9 +62,12 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     Q_UNUSED(commandBuffer);
     if (m_rhi != rhi()) {
         m_meshes.clear();
+        m_lightPool.reset();
+        m_plan = QcFramePlan::selected();
         m_sectionBytes = 0;
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_waterPipeline.reset();
         m_entityPipeline.reset();
         m_handPipeline.reset();
         m_outlinePipeline.reset();
@@ -94,6 +97,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
     if (!m_pipelineRenderPass || !m_pipelineRenderPass->isCompatible(renderTarget()->renderPassDescriptor())) {
         m_opaquePipeline.reset();
         m_translucentPipeline.reset();
+        m_waterPipeline.reset();
         m_entityPipeline.reset();
         m_handPipeline.reset();
         m_outlinePipeline.reset();
@@ -156,6 +160,7 @@ void QcWorldRenderer::ensureAtlasTexture(QRhiResourceUpdateBatch *updates)
     m_bindings.reset();
     m_opaquePipeline.reset();
     m_translucentPipeline.reset();
+    m_waterPipeline.reset();
     m_entityPipeline.reset();
     m_handPipeline.reset();
     m_uploadedAtlasVersion = m_atlasVersion;
@@ -228,6 +233,7 @@ void QcWorldRenderer::createPipelines()
     const QShader opaqueFragmentShader = loadShader(u":/shaders/block_opaque.frag.qsb"_s, lcRenderer());
     m_opaquePipeline = createBlockPipeline(vertexShader, opaqueFragmentShader, inputLayout, false);
     m_translucentPipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, true);
+    m_waterPipeline = createBlockPipeline(vertexShader, fragmentShader, inputLayout, true);
 
     const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s, lcRenderer());
     m_entityPipeline = QcRenderPipelines::createEntityPipeline(m_rhi, renderTarget(), m_bindings.get(),
@@ -358,6 +364,7 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
 {
     if (m_clearAllMeshes) {
         m_meshes.clear();
+        m_lightPool.reset();
         m_sectionBytes = 0;
         m_clearAllMeshes = false;
     }
@@ -371,6 +378,7 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
 
     for (auto &[key, mesh] : m_meshUploads) {
         release(key);
+        uploadSectionLight(updates, key, mesh.get());
         if (!mesh) {
             continue;
         }
@@ -378,12 +386,14 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
         GpuMesh gpuMesh;
         gpuMesh.opaque = createBuffers(updates, mesh->opaqueVertices, mesh->opaqueIndices);
         gpuMesh.translucent = createBuffers(updates, mesh->translucentVertices, mesh->translucentIndices);
+        gpuMesh.water = createBuffers(updates, mesh->waterVertices, mesh->waterIndices);
         gpuMesh.underside = createBuffers(updates, mesh->undersideVertices, mesh->undersideIndices);
+        gpuMesh.translucentRuns = mesh->translucentRuns;
 
         QVector3D low(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
                       std::numeric_limits<float>::max());
         QVector3D high = -low;
-        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices, &mesh->undersideVertices}) {
+        for (const QList<QcBlockVertex> *list : {&mesh->opaqueVertices, &mesh->translucentVertices, &mesh->waterVertices, &mesh->undersideVertices}) {
             for (const QcBlockVertex &vertex : *list) {
                 low = QVector3D(std::min(low.x(), vertex.x), std::min(low.y(), vertex.y), std::min(low.z(), vertex.z));
                 high = QVector3D(std::max(high.x(), vertex.x), std::max(high.y(), vertex.y), std::max(high.z(), vertex.z));
@@ -399,6 +409,24 @@ void QcWorldRenderer::uploadPendingMeshes(QRhiResourceUpdateBatch *updates)
     }
 
     m_meshUploads.clear();
+}
+
+void QcWorldRenderer::uploadSectionLight(QRhiResourceUpdateBatch *updates, quint64 key, const QcChunkMesh *mesh)
+{
+    if (!m_plan.sectionLight || !QcSectionLightPool::isSupported(m_rhi)) {
+        return;
+    }
+    if (!mesh) {
+        m_lightPool.release(key);
+        return;
+    }
+
+    const int pages = m_lightPool.pageCount();
+    m_lightPool.update(m_rhi, updates, key, mesh->light);
+    if (m_lightPool.pageCount() != pages) {
+        qCInfo(lcRenderer).nospace() << "Section light: " << m_lightPool.pageCount() << " pages, " << m_lightPool.usedSlots()
+                                     << " slots used, " << m_lightPool.sections() << " sections, " << m_lightPool.bytes() / 1024 << " KiB";
+    }
 }
 
 void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
@@ -421,7 +449,7 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
 {
     ensureAtlasTexture(updates);
     // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn.
-    if (m_atlasTexture && (!m_opaquePipeline || !m_translucentPipeline)) {
+    if (m_atlasTexture && (!m_opaquePipeline || !m_translucentPipeline || !m_waterPipeline)) {
         createPipelines();
     }
     if (!m_outlinePipeline) {
@@ -460,36 +488,99 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     updates->updateDynamicBuffer(m_frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
 
-void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers)
+void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers, quint32 firstIndex, quint32 count)
 {
     if (buffers.indexCount == 0) {
         return;
     }
 
+    const quint32 drawn = count > 0 ? count : buffers.indexCount;
     const QRhiCommandBuffer::VertexInput input(buffers.vertices.get(), 0);
     commandBuffer->setVertexInput(0, 1, &input, buffers.indices.get(), 0, buffers.indexFormat);
-    commandBuffer->drawIndexed(buffers.indexCount);
+    commandBuffer->drawIndexed(drawn, 1, firstIndex);
     ++m_sample.drawCalls;
-    m_sample.indicesDrawn += buffers.indexCount;
+    m_sample.indicesDrawn += drawn;
 }
 
-void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const QList<const GpuMesh *> &visible)
+void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
     // Back-to-front by section centre so overlapping translucent sections blend correctly; only
-    // the sections with translucent faces take part.
+    // the sections with translucent faces (or water, when it is drawn here) take part.
+    const bool withWater = m_plan.waterWithTranslucent();
     const QVector3D eye = m_camera.position;
     QList<std::pair<float, const GpuMesh *>> translucent;
-    for (const GpuMesh *mesh : visible) {
-        if (mesh->translucent.indexCount > 0) {
-            translucent.append({((mesh->boundsMin + mesh->boundsMax) * 0.5f - eye).lengthSquared(), mesh});
+    for (const GpuMesh *mesh : view.visible) {
+        if (mesh->translucent.indexCount > 0 || (withWater && mesh->water.indexCount > 0)) {
+            translucent.append({(mesh->centre() - eye).lengthSquared(), mesh});
         }
     }
     std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<float, const GpuMesh *>::first);
 
-    commandBuffer->setGraphicsPipeline(m_translucentPipeline.get());
-    commandBuffer->setShaderResources();
+    // The pipeline changes only where a section's water and its other faces meet, and only while the
+    // water pipeline differs from the translucent one; today they are alike, so the step binds one
+    // pipeline for the whole frame.
+    QRhiGraphicsPipeline *const water = waterPipelineInTranslucent();
+    const QRhiGraphicsPipeline *current = nullptr;
+    const std::function<void(QRhiGraphicsPipeline *)> use = [&](QRhiGraphicsPipeline *pipeline) {
+        if (pipeline != current) {
+            commandBuffer->setGraphicsPipeline(pipeline);
+            commandBuffer->setShaderResources();
+            current = pipeline;
+        }
+    };
     for (const auto &[distance, mesh] : std::as_const(translucent)) {
-        drawBuffers(commandBuffer, mesh->translucent);
+        if (withWater && !mesh->translucentRuns.isEmpty()) {
+            drawTranslucentRuns(*mesh, use, commandBuffer);
+            continue;
+        }
+        if (withWater && mesh->water.indexCount > 0) {
+            use(water);
+            drawBuffers(commandBuffer, mesh->water);
+        }
+        if (mesh->translucent.indexCount > 0) {
+            use(m_translucentPipeline.get());
+            drawBuffers(commandBuffer, mesh->translucent);
+        }
+    }
+}
+
+void QcWorldRenderer::drawTranslucentRuns(const GpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
+                                          QRhiCommandBuffer *commandBuffer)
+{
+    // Runs alternate between water (even) and the other translucent faces (odd).
+    std::array<quint32, 2> next = {0, 0};
+    for (qsizetype run = 0; run < mesh.translucentRuns.size(); ++run) {
+        const quint32 count = mesh.translucentRuns[run];
+        if (count == 0) {
+            continue;
+        }
+        const auto kind = std::size_t(run % 2);
+        use(kind == 0 ? waterPipelineInTranslucent() : m_translucentPipeline.get());
+        drawBuffers(commandBuffer, kind == 0 ? mesh.water : mesh.translucent, next[kind], count);
+        next[kind] += count;
+    }
+}
+
+QRhiGraphicsPipeline *QcWorldRenderer::waterPipelineInTranslucent() const
+{
+    return m_waterLikeTranslucent ? m_translucentPipeline.get() : m_waterPipeline.get();
+}
+
+void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view)
+{
+    const QVector3D eye = m_camera.position;
+    QList<std::pair<float, const GpuMesh *>> water;
+    for (const GpuMesh *mesh : view.visible) {
+        if (mesh->water.indexCount > 0) {
+            water.append({(mesh->centre() - eye).lengthSquared(), mesh});
+        }
+    }
+    std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, const GpuMesh *>::first);
+
+    commandBuffer->setGraphicsPipeline(m_waterPipeline.get());
+    commandBuffer->setShaderResources();
+    for (const auto &[distance, mesh] : std::as_const(water)) {
+        drawBuffers(commandBuffer, mesh->water);
     }
 }
 
@@ -511,41 +602,101 @@ void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
     }
 }
 
-void QcWorldRenderer::drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4x4 &viewProjection, QSize outputSize)
+QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjection) const
 {
-    commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
-    m_skyRenderer.draw(commandBuffer);
-
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
-    // The underside of the world faces down from y = 0: from above it is always turned away.
-    const bool belowWorld = m_camera.position.y() < 0.0f;
-    QList<const GpuMesh *> visible;
-    visible.reserve(m_meshes.size());
+    FrameView view;
+    view.belowWorld = m_camera.position.y() < 0.0f;
+    view.visible.reserve(qsizetype(m_meshes.size()));
     for (const auto &[key, mesh] : m_meshes) {
-        const bool drawable = mesh.opaque.indexCount > 0 || mesh.translucent.indexCount > 0 || belowWorld;
+        const bool drawable = mesh.opaque.indexCount > 0 || mesh.translucent.indexCount > 0 || mesh.water.indexCount > 0 || view.belowWorld;
         if (drawable && QcFrustum::intersectsBox(planes, mesh.boundsMin, mesh.boundsMax)) {
-            visible.append(&mesh);
+            view.visible.append(&mesh);
         }
     }
-    m_sample.visibleSections = int(visible.size());
+    return view;
+}
 
+void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view)
+{
     commandBuffer->setGraphicsPipeline(m_opaquePipeline.get());
     commandBuffer->setShaderResources();
-    for (const GpuMesh *mesh : std::as_const(visible)) {
+    for (const GpuMesh *mesh : view.visible) {
         drawBuffers(commandBuffer, mesh->opaque);
-        if (belowWorld) {
+        if (view.belowWorld) {
             drawBuffers(commandBuffer, mesh->underside);
         }
     }
+}
+
+void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
+{
     if (m_entityBuffers.indexCount > 0 && m_entityPipeline) {
         commandBuffer->setGraphicsPipeline(m_entityPipeline.get());
         commandBuffer->setShaderResources();
         drawBuffers(commandBuffer, m_entityBuffers);
     }
+}
 
-    drawTranslucent(commandBuffer, visible);
-    m_sample.drawCalls += m_debugLineRenderer.draw(commandBuffer) ? 1 : 0;
-    drawOutlineAndHand(commandBuffer);
+void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pass, const FrameView &view)
+{
+    switch (pass) {
+    case QcRenderPass::Sky:
+        m_skyRenderer.draw(commandBuffer);
+        break;
+    case QcRenderPass::Opaque:
+        drawOpaque(commandBuffer, view);
+        break;
+    case QcRenderPass::Entities:
+        drawEntities(commandBuffer);
+        break;
+    case QcRenderPass::Water:
+        drawWater(commandBuffer, view);
+        break;
+    case QcRenderPass::Translucent:
+        drawTranslucent(commandBuffer, view);
+        break;
+    case QcRenderPass::Overlay:
+        m_sample.drawCalls += m_debugLineRenderer.draw(commandBuffer) ? 1 : 0;
+        drawOutlineAndHand(commandBuffer);
+        break;
+    case QcRenderPass::Shadow:
+    case QcRenderPass::PostProcess:
+        // Steps of the realistic mode (stage 45); their targets are not drawn yet (drawPlan).
+        break;
+    }
+}
+
+void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates, const FrameView &view, QSize outputSize)
+{
+    const QVector3D horizon = m_sky.horizon;
+    const bool ready = m_opaquePipeline && m_translucentPipeline && m_waterPipeline;
+    const QList<QcFramePlan::Group> groups = m_plan.groups();
+    for (const QcFramePlan::Group &group : groups) {
+        // Shadow maps and the offscreen scene come with the realistic mode (stage 45).
+        if (group.target != QcRenderTarget::Output) {
+            if (!m_warnedTarget) {
+                qCWarning(lcRenderer) << "Render target" << int(group.target) << "is not supported; its steps are skipped";
+                m_warnedTarget = true;
+            }
+            continue;
+        }
+
+        // The uploads of the frame go with the first render pass.
+        commandBuffer->beginPass(renderTarget(), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
+        updates = nullptr;
+        if (ready) {
+            commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
+            for (const QcRenderPass pass : group.passes) {
+                drawPass(commandBuffer, pass, view);
+            }
+        }
+        commandBuffer->endPass();
+    }
+
+    if (updates) {
+        commandBuffer->resourceUpdate(updates);
+    }
 }
 
 void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
@@ -569,12 +720,9 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     m_skyRenderer.prepare(m_rhi, renderTarget(), updates,
                           {m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * viewRotation, m_sky, m_camera.position});
 
-    const QVector3D horizon = m_sky.horizon;
-    commandBuffer->beginPass(renderTarget(), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
-    if (m_opaquePipeline && m_translucentPipeline) {
-        drawWorld(commandBuffer, viewProjection, outputSize);
-    }
-    commandBuffer->endPass();
+    const FrameView view = cull(viewProjection);
+    m_sample.visibleSections = int(view.visible.size());
+    drawPlan(commandBuffer, updates, view, outputSize);
 
     if (m_collectSamples) {
         m_sample.sections = int(m_meshes.size());

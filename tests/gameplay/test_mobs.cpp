@@ -626,8 +626,10 @@ private slots:
                 }
             }
 
-            const int light = QcLightVolume::blockLightAt(*world, QcPhysics::blockContaining(surface(*world, 2, 2)));
-            if (torches != (light >= 9)) {
+            // The server's light engine gives the same block light as a flood fill on demand.
+            const QcBlockPos spot = QcPhysics::blockContaining(surface(*world, 2, 2));
+            const int light = world->blockLight(spot);
+            if (torches != (light >= 9) || light != QcLightVolume::blockLightAt(*world, spot)) {
                 return -1;
             }
 

@@ -2,6 +2,7 @@
 
 #include "QcLightPassage.h"
 #include "QcLightVolume.h"
+#include "QcSectionLight.h"
 
 namespace {
 
@@ -110,8 +111,41 @@ public:
         return light ? light->level(lx - cx * QcWorld::chunkSize, y, lz - cz * QcWorld::chunkSize) : 0;
     }
 
+    // The section's own cells of both channels for shaders that read light per cell (decision
+    // E-390): block light shares the snapshot of the input when there is one, sky light (and block
+    // light flooded here) is copied out of the volume.
+    QcSectionLight sectionLight(int sectionIndex) const
+    {
+        const int baseY = sectionIndex * QcWorld::sectionHeight;
+        std::shared_ptr<const QcLightNibbles> blockCells;
+        if (m_input.hasBlockLight) {
+            const auto &chunk = m_input.blockLight[4];
+            blockCells = chunk ? chunk->sections[std::size_t(sectionIndex)] : nullptr;
+        } else {
+            blockCells = copyCells(baseY, [this](int x, int y, int z) { return block(x, y, z); });
+        }
+
+        const auto skyCells = copyCells(baseY, [this](int x, int y, int z) { return m_levels[index(x + QcWorld::chunkSize, y, z + QcWorld::chunkSize)]; });
+        return QcSectionLight::fromChannels(std::move(blockCells), skyCells);
+    }
+
 private:
     qsizetype index(int x, int y, int z) const { return (qsizetype(y - m_minY) * extent + z) * extent + x; }
+
+    // The levels of the section starting at `baseY`, read cell by cell (chunk-local coordinates).
+    template<typename Level>
+    static std::shared_ptr<const QcLightNibbles> copyCells(int baseY, Level level)
+    {
+        auto cells = std::make_shared<QcLightNibbles>();
+        for (int y = 0; y < QcWorld::sectionHeight; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    cells->setLevel(QcChunkSection::index(x, y, z), int(level(x, baseY + y, z)));
+                }
+            }
+        }
+        return cells;
+    }
 
     // Highest cell of the column that sky light coming straight down does not reach; everything
     // above it is fully lit (QcLightPassage::skyStop).
@@ -271,11 +305,36 @@ struct QuadLight
     float block = 0.0f;
 };
 
-// Vertex and index lists of one render layer of the mesh.
+// Vertex and index lists of one render layer of the mesh. Water and the other translucent faces
+// also note the order in which they alternate (QcChunkMesh::translucentRuns; `runKind` 0: water,
+// 1: other translucent faces).
 struct Output
 {
     QList<QcBlockVertex> &vertices;
     QList<quint32> &indices;
+    QList<quint32> *runs = nullptr;
+    int runKind = 0;
+};
+
+// Six more indices of the kind `kind` in the runs: the last run grows or a new one starts (the
+// first run is water, possibly empty).
+void noteRun(QList<quint32> &runs, int kind)
+{
+    if (runs.isEmpty() && kind == 1) {
+        runs.append(0);
+    }
+    if (!runs.isEmpty() && (runs.size() - 1) % 2 == kind) {
+        runs.back() += 6;
+    } else {
+        runs.append(6);
+    }
+}
+
+// Normal and material written into the surface byte of a quad's vertices (decision E-390).
+struct Surface
+{
+    std::optional<QcBlockFace> normal;
+    QcSurfaceMaterial material = QcSurfaceMaterial::Solid;
 };
 
 // A visible block being meshed: its render entry, chunk-local cell and world position.
@@ -286,16 +345,20 @@ struct PlacedBlock
     QcBlockPos world;
 };
 
-void appendQuad(Output out, const std::array<QcBlockVertex, 4> &corners, bool flipDiagonal)
+void appendQuad(const Output &out, const std::array<QcBlockVertex, 4> &corners, bool flipDiagonal, Surface surface)
 {
     const auto base = quint32(out.vertices.size());
-    for (const QcBlockVertex &vertex : corners) {
+    for (QcBlockVertex vertex : corners) {
+        vertex.setSurface(surface.normal, surface.material);
         out.vertices.append(vertex);
     }
     if (flipDiagonal) {
         out.indices.append({base + 1, base + 2, base + 3, base + 1, base + 3, base});
     } else {
         out.indices.append({base, base + 1, base + 2, base, base + 2, base + 3});
+    }
+    if (out.runs) {
+        noteRun(*out.runs, out.runKind);
     }
 }
 
@@ -325,16 +388,18 @@ std::array<QcBlockVertex, 4> crossSide(const QcBlockRenderTable::Cross &cross, s
 }
 
 // Two quads along the diagonals of `cross`, each with a front and a back side so back-face culling
-// keeps both visible.
-void appendCross(Output out, const QcBlockRenderTable::Cross &cross, QcBlockPos pos, QuadLight light)
+// keeps both visible. Without a normal; plants unless the block's material says more (light sources).
+void appendCross(const Output &out, const QcBlockRenderTable::Cross &cross, QcBlockPos pos, QuadLight light, QcSurfaceMaterial material)
 {
+    const bool plant = material == QcSurfaceMaterial::Solid || material == QcSurfaceMaterial::Cutout;
+    const Surface surface{std::nullopt, plant ? QcSurfaceMaterial::Plant : material};
     const auto &[x0, y0, z0, x1, y1, z1] = cross.box;
     const std::array<std::array<float, 4>, 2> diagonals = {{{x0, z0, x1, z1}, {x0, z1, x1, z0}}};
     for (const auto &[ax, az, bx, bz] : diagonals) {
         for (const bool back : {false, true}) {
             const std::array<std::array<float, 2>, 2> ends = back ? std::array<std::array<float, 2>, 2>{{{bx, bz}, {ax, az}}}
                                                                    : std::array<std::array<float, 2>, 2>{{{ax, az}, {bx, bz}}};
-            appendQuad(out, crossSide(cross, ends, pos, light), false);
+            appendQuad(out, crossSide(cross, ends, pos, light), false, surface);
         }
     }
 }
@@ -354,6 +419,7 @@ public:
     }
 
     const QcBlockRenderTable &table() const { return m_table; }
+    const Lighting &lighting() const { return m_light; }
 
     void appendBlock(const Entry &entry, Cell cell)
     {
@@ -373,11 +439,14 @@ private:
     static constexpr float maxLevel = float(Lighting::maxLevel);
 
     // `open` is the cell the face looks into; an opaque face looking below the world goes to the
-    // underside lists.
+    // underside lists, translucent liquids to the water lists.
     Output outputFor(const Entry &entry, Cell open)
     {
+        if (entry.material == QcSurfaceMaterial::Water) {
+            return {m_mesh.waterVertices, m_mesh.waterIndices, &m_mesh.translucentRuns, 0};
+        }
         if (entry.layer == QcRenderLayer::Translucent) {
-            return {m_mesh.translucentVertices, m_mesh.translucentIndices};
+            return {m_mesh.translucentVertices, m_mesh.translucentIndices, &m_mesh.translucentRuns, 1};
         }
         if (open.y < 0) {
             return {m_mesh.undersideVertices, m_mesh.undersideIndices};
@@ -435,7 +504,8 @@ private:
         const float ownSky = float(m_light.sky(x, y, z));
         const float ownBlock = float(m_light.block(x, y, z));
         for (const QcBlockRenderTable::Cross &cross : block.entry.crosses) {
-            appendCross(outputFor(block.entry, block.cell), cross, block.world, {0.9f, ownSky / maxLevel, ownBlock / maxLevel});
+            appendCross(outputFor(block.entry, block.cell), cross, block.world, {0.9f, ownSky / maxLevel, ownBlock / maxLevel},
+                        block.entry.material);
         }
         for (const QcBlockRenderTable::Quad &quad : block.entry.quads) {
             appendShapeQuad(block, quad, ownSky, ownBlock);
@@ -472,7 +542,7 @@ private:
             vertex.u = quad.uvs[corner][0];
             vertex.v = quad.uvs[corner][1];
         }
-        appendQuad(outputFor(block.entry, quad.boundary ? open : block.cell), corners, false);
+        appendQuad(outputFor(block.entry, quad.boundary ? open : block.cell), corners, false, {quad.face, block.entry.material});
     }
 
     // Values of the full face, interpolated at the corners of the part `quad`.
@@ -572,7 +642,8 @@ private:
         }
 
         // Split along the brighter diagonal so occlusion gradients stay symmetric.
-        appendQuad(outputFor(block.entry, open), corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3]);
+        appendQuad(outputFor(block.entry, open), corners, values.ao[0] + values.ao[2] < values.ao[1] + values.ao[3],
+                   {face, block.entry.material});
     }
 
     const QcBlockRenderTable &m_table;
@@ -606,6 +677,13 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
                 mesher.appendBlock(table.entry(section.block(x, ly, z)), {x, baseY + ly, z});
             }
         }
+    }
+    if (input.sectionLight && !mesh.isEmpty()) {
+        mesh.light = mesher.lighting().sectionLight(input.sectionIndex);
+    }
+    // All water before all other translucent faces (or only one of them) is the plain order.
+    if (mesh.translucentRuns.size() <= 2) {
+        mesh.translucentRuns.clear();
     }
     return mesh;
 }

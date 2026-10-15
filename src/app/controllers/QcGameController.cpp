@@ -4,6 +4,7 @@
 #include "QcBenchmarkRun.h"
 #include "QcBlockRenderTable.h"
 #include "QcDebugJson.h"
+#include "QcFramePlan.h"
 #include "QcLocalServerHost.h"
 #include "QcMeshScheduler.h"
 #include "QcModLoader.h"
@@ -335,6 +336,8 @@ void QcGameController::beginSession()
 {
     m_parts.session->setCameraMode(m_settings->cameraModeValue());
     m_parts.meshes = std::make_unique<QcMeshScheduler>();
+    // The meshes carry the light of their cells only for a frame plan that reads it.
+    m_parts.meshes->setSectionLight(QcFramePlan::selected().sectionLight);
     m_parts.session->setIntent(m_startup->initialIntent());
     m_render.setForcedPose(m_startup->forcedPose());
     m_hud->debug()->syncSubscription();

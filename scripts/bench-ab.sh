@@ -321,10 +321,15 @@ EOF
 # The server side of one scenario without a window and without real time (tests/gameplay/
 # test_scenario_measure.cpp, decision E-388): the scene of scripts/bench-common.sh, <seconds> of game
 # time after 3 s of warm-up. Scenarios that move the player or need the game's own benchmark actions
-# (walk, sprint, light, liquids) or a screen (inventory, furnace, handbook) have no headless form.
+# (walk, sprint, liquids) or a screen (inventory, furnace, handbook) have no headless form; light
+# gets the game's torch ring as timed chat lines (light_ring_chat).
 # Usage: run_headless <build dir> <scenario> <seconds> <log>. Prints the BENCH line.
 run_headless() {
     scene_of "$1/src/headless/qtcraft-headless" "$2" "$3" "$4.chat" || return 0
+    if [ "$SCENE_WALK" = light ]; then
+        light_ring_chat "$3" >>"$4.chat"
+        SCENE_WALK=stand
+    fi
     if [ "$SCENE_WALK" != stand ] || [ -n "$SCENE_WINDOW" ]; then
         echo "Scenario $2 moves the player or needs the window; no headless run" >&2
         return 0

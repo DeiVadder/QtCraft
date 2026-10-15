@@ -9,6 +9,7 @@
 #include "QcChunkLinks.h"
 #include "QcChunkLoaders.h"
 #include "QcContentRegistry.h"
+#include "QcLightEngine.h"
 #include "QcMailbox.h"
 #include "QcSectionMarks.h"
 #include "QcWorkerPool.h"
@@ -43,6 +44,12 @@ public:
     [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }
     bool mayHaveLightSourceNear(QcBlockPos pos, int reach) const override;
+
+    // Block and sky light of the loaded chunks (decision E-389), kept in step with every block set
+    // here and every chunk that enters or leaves the world.
+    const QcLightEngine &light() const { return m_light; }
+    int blockLight(QcBlockPos pos) const { return m_light.blockLight(pos); }
+    int skyLight(QcBlockPos pos) const { return m_light.skyLight(pos); }
 
     // Sections of the loaded chunks that may hold blocks with a trait (decision E-359): contact
     // damage (QcContactDamage), growing plants, circuit components (block changes far from any
@@ -149,7 +156,8 @@ private:
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
     // Forgets what was derived from a chunk that left the world or is generated again.
     void forgetSections(QcChunkPos pos);
-    void insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk);
+    // `light`: the chunk's own light prepared in the background (null: computed here).
+    void insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk, const std::shared_ptr<QcLightEngine::Prepared> &light);
     void generateInBackground(QcChunkPos pos, Arrival kept);
 
     std::shared_ptr<const QcContentRegistry> m_content;
@@ -160,6 +168,8 @@ private:
     QcChunkLoaders m_loaders;
     QcBlockEntities m_blockEntities;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;
+    // Reads the chunks of m_chunks in place (told about every replaced copy).
+    QcLightEngine m_light;
     // Chunks under way, with the number of their latest request.
     QHash<QcChunkPos, quint64> m_pending;
     quint64 m_nextRequest = 1;

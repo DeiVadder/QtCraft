@@ -197,6 +197,7 @@ set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_server)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp LIBRARIES qc_server TIMEOUT 600)
@@ -258,6 +259,7 @@ qc_add_test(test_sound_events SOURCES sound/test_sound_events.cpp LIBRARIES qc_s
 qc_add_test(test_audio_output SOURCES sound/test_audio_output.cpp LIBRARIES qc_audio qc_server TIMEOUT 60)
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_block_light SOURCES world/test_block_light.cpp QcTestWorld.h LIBRARIES qc_common)
+qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_common TIMEOUT 600)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 300)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 180)
@@ -295,6 +297,10 @@ qc_add_test(test_world_open_measure SOURCES gameplay/test_world_open_measure.cpp
 qc_add_test(test_explore_measure SOURCES gameplay/test_explore_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 # The server side of a benchmark scenario without a window (scripts/bench-headless.sh, decision E-388).
 qc_add_test(test_scenario_measure SOURCES gameplay/test_scenario_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+# Headless measurement of the server light (stage 33.1); QTCRAFT_LIGHT_MEASURE=full for the recorded sizes.
+qc_add_test(test_light_measure SOURCES gameplay/test_light_measure.cpp LIBRARIES qc_server TIMEOUT 300)
+# Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
+qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_block_entity_measure SOURCES gameplay/test_block_entity_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_simulation_limits SOURCES gameplay/test_simulation_limits.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_network)
 qc_add_test(test_signal_hopper_edges SOURCES gameplay/test_signal_hopper_edges.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -326,6 +332,14 @@ add_dependencies(test_shader_variants qtcraft)
 qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcPreviewAtlasCache.cpp
             ${PROJECT_SOURCE_DIR}/src/app/rendering/QcAtlasTexture.cpp LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate)
 target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+# The per-cell light of the sections (decision E-390): mesher, texels and the GPU pool, uploaded and
+# read back on an offscreen QRhi (Metal; skipped without a device).
+qc_add_test(test_section_light SOURCES client/test_section_light.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcSectionLightPool.cpp
+            LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate)
+target_include_directories(test_section_light PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+# The steps of a frame of the world renderer and their GPU render passes (decision E-390).
+qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES Qt::Core)
+target_include_directories(test_frame_plan PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
 
 # QML load test of the character screen in the real game, offscreen (decision E-240). Not under
 # sanitizers: the whole game with its render thread is too slow there for the time limit.
@@ -419,7 +433,7 @@ set(qc_concurrency_tests
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot test_chunk_store test_chunk_unloading test_chunk_tools
-    test_explore_measure test_scenario_measure)
+    test_explore_measure test_scenario_measure test_server_light)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -432,9 +446,10 @@ set_tests_properties(test_tick_scheduler PROPERTIES RUN_SERIAL TRUE)
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
-# parallel TSan run (E-380; test_headless_cli about 210 s, test_mods, test_signal_network,
+# parallel TSan run (E-380; test_light_engine about 200 s alone, test_headless_cli and test_server_light about 210 s, test_mods, test_signal_network,
 # test_scenarios, test_mobs and test_block_light_engine 100-125 s, test_server_login 85 s), so a
 # machine that builds beside the run does not turn a slow run into a failure.
 set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
+set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_scenarios test_mods test_signal_network PROPERTIES COST 80)

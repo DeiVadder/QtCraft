@@ -49,6 +49,8 @@ qt_add_executable(qtcraft
     rendering/QcGraphItem.h rendering/QcGraphItem.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcRenderSample.h
+    rendering/QcFramePlan.h
+    rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
     hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp

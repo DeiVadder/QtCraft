@@ -1,7 +1,6 @@
 #include "QcMobManager.h"
 
 #include "QcDayCycle.h"
-#include "QcLightVolume.h"
 #include "QcMobSteering.h"
 #include "QcMobUpkeep.h"
 #include "QcNoise.h"
@@ -457,9 +456,9 @@ bool QcMobManager::ruleAllows(const QcServerWorld &world, SpawnPlace &place, Spa
         }
     }
     // The light only matters for mobs that shun it.
-    if (rule.maxLight < QcLightVolume::maxLevel) {
+    if (rule.maxLight < QcLightEngine::maxLevel) {
         if (!place.light) {
-            place.light = QcLightVolume::blockLightAt(world, {place.x, place.floorY + 1, place.z});
+            place.light = world.blockLight({place.x, place.floorY + 1, place.z});
         }
         return *place.light <= rule.maxLight;
     }

@@ -350,6 +350,7 @@ std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world
     input.sectionIndex = address.section;
     input.renderTable = m_renderTable;
     input.hasBlockLight = m_lightEngine != nullptr;
+    input.sectionLight = m_sectionLight;
     return input;
 }
 

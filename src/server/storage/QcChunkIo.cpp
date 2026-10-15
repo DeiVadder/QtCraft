@@ -96,6 +96,9 @@ void QcChunkIo::read(QcChunkPos pos, quint64 request)
     auto job = [this, pos, request] {
         Arrival arrival = readChunk(pos);
         arrival.request = request;
+        if (m_prepare && arrival.blocks && arrival.error.isEmpty()) {
+            m_prepare(arrival);
+        }
         m_arrivals.push(std::move(arrival));
     };
     bool behind = false;

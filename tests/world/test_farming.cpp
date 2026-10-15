@@ -202,10 +202,17 @@ private slots:
     {
         const auto world = makeWorld();
         plantRow(*world, "wheat_crop", wetZ, true);
-        // A stone roof two blocks above the plants keeps the sky out.
-        for (int x = firstX - 2; x < firstX + rowLength + 2; ++x) {
-            for (int z = wetZ - 2; z <= wetZ + 3; ++z) {
-                QVERIFY(world->setBlock({x, groundY + 3, z}, id("stone")));
+        // A stone roof two blocks above the plants, walls around them and a floor below (the row
+        // floats high above the terrain) keep the sky out; without walls sky light comes in from
+        // the sides, as the client draws it.
+        for (int x = firstX - 3; x <= firstX + rowLength + 2; ++x) {
+            for (int z = wetZ - 3; z <= wetZ + 4; ++z) {
+                const bool wall = x == firstX - 3 || x == firstX + rowLength + 2 || z == wetZ - 3 || z == wetZ + 4;
+                for (int y = groundY - 1; y <= groundY + 3; ++y) {
+                    if (wall || y == groundY - 1 || y == groundY + 3) {
+                        QVERIFY(world->setBlock({x, y, z}, id("stone")));
+                    }
+                }
             }
         }
         QCOMPARE(QcCropGrowth::plantLightAt(*world, {firstX, groundY + 1, wetZ}), 0);
@@ -231,10 +238,26 @@ private slots:
         QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 15);
         QVERIFY(world->setBlock(pos.offset(0, 5, 0), id("glass")));
         QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 15);
-        QVERIFY(world->setBlock(pos.offset(0, 6, 0), id("oak_leaves")));
-        QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 15 - m_content->state(id("oak_leaves")).lightOpacity);
+        // A single block above leaves the sky light from the sides (one step: 14).
         QVERIFY(world->setBlock(pos.offset(0, 40, 0), id("dirt")));
-        QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 0);
+        QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 14);
+        QVERIFY(world->setBlock(pos.offset(0, 40, 0), qcAirBlockId));
+
+        // A wide canopy of leaves right above dims by their opacity and one step down; a wide roof
+        // high above leaves the light from 7 blocks away at the sides (15 - 7).
+        const int leaves = m_content->state(id("oak_leaves")).lightOpacity;
+        for (int dx = -6; dx <= 6; ++dx) {
+            for (int dz = -6; dz <= 6; ++dz) {
+                QVERIFY(world->setBlock(pos.offset(dx, 1, dz), id("oak_leaves")));
+            }
+        }
+        QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 15 - std::max(1, leaves) - 1);
+        for (int dx = -6; dx <= 6; ++dx) {
+            for (int dz = -6; dz <= 6; ++dz) {
+                QVERIFY(world->setBlock(pos.offset(dx, 40, dz), id("dirt")));
+            }
+        }
+        QCOMPARE(QcCropGrowth::plantLightAt(*world, pos), 8);
     }
 
     void ripeStemsPutOneFruitOnSuitableGround()

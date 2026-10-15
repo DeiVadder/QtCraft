@@ -2,7 +2,9 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoord;
-// x: face shading and ambient occlusion, y: sky light, z: block light (unsigned normalised bytes).
+// x: face shading and ambient occlusion, y: sky light, z: block light (unsigned normalised bytes);
+// w: the surface byte (decision E-390: normal in the low three bits, material class in the high five),
+// not read here.
 layout(location = 2) in vec4 light;
 
 layout(location = 0) out vec2 vTexCoord;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcChunkSection.h"
+#include "QcLightNibbles.h"
 #include "QcWorldConstants.h"
 
 #include <QtGlobal>
@@ -9,10 +10,10 @@
 #include <memory>
 
 // Block light levels (0..15) of one chunk as immutable section snapshots; a missing section is dark.
-// QcBlockLightEngine produces them, the mesher and the entity lighting read them.
+// QcBlockLightEngine produces them (from the shared QcLightEngine), the mesher and the entity lighting read them.
 struct QcChunkLight
 {
-    using Section = std::array<quint8, QcWorld::blocksPerSection>;
+    using Section = QcLightNibbles;
 
     std::array<std::shared_ptr<const Section>, QcWorld::sectionCount> sections;
 
@@ -24,6 +25,6 @@ struct QcChunkLight
         }
 
         const std::shared_ptr<const Section> &section = sections[std::size_t(y / QcWorld::sectionHeight)];
-        return section ? (*section)[std::size_t(QcChunkSection::index(x, y % QcWorld::sectionHeight, z))] : 0;
+        return section ? section->level(QcChunkSection::index(x, y % QcWorld::sectionHeight, z)) : 0;
     }
 };

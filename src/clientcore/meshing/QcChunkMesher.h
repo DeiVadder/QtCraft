@@ -20,6 +20,9 @@ struct QcMeshInput
     // it (`hasBlockLight` false) the mesher floods the sources around the section itself.
     std::array<std::shared_ptr<const QcChunkLight>, 9> blockLight;
     bool hasBlockLight = false;
+    // Whether the mesh carries the light of the section's cells (QcChunkMesh::light) for a frame
+    // plan that reads it (QcFramePlan::sectionLight); without it the mesher skips the copy.
+    bool sectionLight = false;
 };
 
 // Builds the triangle mesh of one chunk section from the boxes of every block state: hidden faces

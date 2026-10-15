@@ -13,7 +13,8 @@
 #   into its checkout (as the measure tests of stage 31.3 were).
 #   <rounds>: auto (default, adaptive 3 to 6), <min>-<max> or a number; <game seconds>: default 60.
 #   SCENARIOS: default @server (crowd gravel-collapse farm farm-seeds explore and the signal stations
-#   of the showcase; scripts/bench-groups.sh). Walk, sprint, light, liquids and the screens have no
+#   of the showcase; scripts/bench-groups.sh). Light runs with the game's torch ring as timed chat
+#   lines (light_ring_chat in scripts/bench-common.sh). Walk, sprint, liquids and the screens have no
 #   headless form and are skipped with a note. KEYS for the adaptive decision: default tick_avg_ms
 #   tick_p99_ms peak_rss_mb. STATS=<ms> writes SAMPLE lines (memory, chunks, creatures) every
 #   <ms> / 1000 game seconds into each run's log (the memory curve of explore). VIEW, WORLD_TYPE,

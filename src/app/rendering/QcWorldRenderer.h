@@ -5,8 +5,10 @@
 #include "QcBlockPos.h"
 #include "QcChunkMesh.h"
 #include "QcEntityMesh.h"
+#include "QcFramePlan.h"
 #include "QcRenderSample.h"
 #include "QcDebugLineRenderer.h"
+#include "QcSectionLightPool.h"
 #include "QcSkyRenderer.h"
 
 #include <QColor>
@@ -17,11 +19,13 @@
 #include <rhi/qrhi.h>
 
 #include <array>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <unordered_map>
 
-// Render-thread side of QcWorldView. Owns all GPU resources.
+// Render-thread side of QcWorldView. Owns all GPU resources. A frame is the list of steps of the
+// render mode (QcFramePlan, decision E-390), drawn in order into their targets.
 class QcWorldRenderer : public QQuickRhiItemRenderer
 {
 public:
@@ -46,12 +50,24 @@ private:
     {
         GpuBuffers opaque;
         GpuBuffers translucent;
+        GpuBuffers water;
         // Faces towards the void below the world, drawn only from below y = 0 (QcChunkMesh).
         GpuBuffers underside;
+        // Water and other translucent faces in the mesher's order (QcChunkMesh::translucentRuns).
+        QList<quint32> translucentRuns;
         QVector3D boundsMin;
         QVector3D boundsMax;
-        // GPU bytes of all three lists (section buffer statistics).
-        quint64 bytes() const { return opaque.bytes() + translucent.bytes() + underside.bytes(); }
+        // GPU bytes of all four lists (section buffer statistics).
+        quint64 bytes() const { return opaque.bytes() + translucent.bytes() + water.bytes() + underside.bytes(); }
+        QVector3D centre() const { return (boundsMin + boundsMax) * 0.5f; }
+    };
+
+    // What the steps of one frame share: the sections in view and where the camera is.
+    struct FrameView
+    {
+        QList<const GpuMesh *> visible;
+        // The underside of the world faces down from y = 0: from above it is always turned away.
+        bool belowWorld = false;
     };
 
     void createPipelines();
@@ -63,16 +79,34 @@ private:
     void uploadEntityMesh(QRhiResourceUpdateBatch *updates, const QcEntityMesh *mesh, GpuBuffers &buffers);
     void ensureAtlasTexture(QRhiResourceUpdateBatch *updates);
     void uploadPendingMeshes(QRhiResourceUpdateBatch *updates);
+    // The light of a received section into the pool, when the plan's steps read it.
+    void uploadSectionLight(QRhiResourceUpdateBatch *updates, quint64 key, const QcChunkMesh *mesh);
     // Benchmark: CPU time of the render thread since the last frame and the GPU time.
     void startSample(QRhiCommandBuffer *commandBuffer);
     // Atlas, pipelines and the uploads of this frame.
     void prepareResources(QRhiResourceUpdateBatch *updates);
     void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize);
-    // Visible sections, entities, translucent faces, outline and hand, in this order.
-    void drawWorld(QRhiCommandBuffer *commandBuffer, const QMatrix4x4 &viewProjection, QSize outputSize);
-    void drawTranslucent(QRhiCommandBuffer *commandBuffer, const QList<const GpuMesh *> &visible);
+    // The sections inside the view frustum.
+    FrameView cull(const QMatrix4x4 &viewProjection) const;
+    // The steps of the plan, one GPU render pass per target.
+    void drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates, const FrameView &view, QSize outputSize);
+    void drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pass, const FrameView &view);
+    void drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view);
+    void drawEntities(QRhiCommandBuffer *commandBuffer);
+    // Back to front by section centre; with the plan's water drawn here too, the water of a section
+    // comes right before its other translucent faces.
+    void drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view);
+    // The water lists alone, back to front, with the water pipeline (a plan with a Water step).
+    void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
-    void drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers);
+    // `count` indices from `firstIndex`, all of them when `count` is 0.
+    void drawBuffers(QRhiCommandBuffer *commandBuffer, const GpuBuffers &buffers, quint32 firstIndex = 0, quint32 count = 0);
+    // The pipeline the translucent step draws the water lists with: the translucent one as long as
+    // the water pipeline does the same (m_waterLikeTranslucent), so alternating draws need no switch.
+    QRhiGraphicsPipeline *waterPipelineInTranslucent() const;
+    // The water and translucent faces of one section in the mesher's order, switching pipelines.
+    void drawTranslucentRuns(const GpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
+                             QRhiCommandBuffer *commandBuffer);
     GpuBuffers createBuffers(QRhiResourceUpdateBatch *updates, const QList<QcBlockVertex> &vertices,
                              const QList<quint32> &indices);
 
@@ -83,6 +117,11 @@ private:
     std::unique_ptr<QRhiShaderResourceBindings> m_bindings;
     std::unique_ptr<QRhiGraphicsPipeline> m_opaquePipeline;
     std::unique_ptr<QRhiGraphicsPipeline> m_translucentPipeline;
+    // The water lists; today the same shaders and blending as m_translucentPipeline.
+    std::unique_ptr<QRhiGraphicsPipeline> m_waterPipeline;
+    // m_waterPipeline has the shaders, blending and resources of m_translucentPipeline. A water
+    // pipeline of its own (stage 45.3) sets this to false where it is created.
+    bool m_waterLikeTranslucent = true;
     std::unique_ptr<QRhiShaderResourceBindings> m_outlineBindings;
     std::unique_ptr<QRhiGraphicsPipeline> m_outlinePipeline;
     std::unique_ptr<QRhiBuffer> m_outlineVertices;
@@ -97,6 +136,11 @@ private:
     GpuBuffers m_handBuffers;
     // Kept to detect render-target changes that make the pipelines incompatible.
     std::unique_ptr<QRhiRenderPassDescriptor> m_pipelineRenderPass;
+
+    QcFramePlan m_plan = QcFramePlan::classic();
+    // Per-cell light of the sections, filled only when m_plan.sectionLight is set.
+    QcSectionLightPool m_lightPool;
+    bool m_warnedTarget = false;
 
     std::unordered_map<quint64, GpuMesh> m_meshes;
     QList<std::pair<quint64, std::shared_ptr<const QcChunkMesh>>> m_meshUploads;

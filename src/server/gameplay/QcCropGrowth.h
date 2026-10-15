@@ -43,8 +43,8 @@ public:
     // same level or one above (searched from the centre outwards). Unknown when none was found but
     // part of the area is not loaded: soil at a chunk border then waits instead of drying.
     Water waterNear(const QcBlockAccess &world, QcBlockPos pos, const QcSoilDefinition &soil) const;
-    // Light at `pos` for plants: the brighter of block light and sky light, where sky light is 15
-    // less the opacity of the blocks above in its column (no light from the sides).
+    // Light at `pos` for plants: the brighter of block light and sky light of the world's light
+    // engine (decision E-389; sky light at full strength whatever the time of day).
     static int plantLightAt(const QcServerWorld &world, QcBlockPos pos);
 
     // The state of soil block `soil` freshly made at `pos` (a tilled block): wet when water is near.

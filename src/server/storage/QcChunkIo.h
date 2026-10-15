@@ -5,6 +5,7 @@
 #include "QcChunkStore.h"
 #include "QcContentRegistry.h"
 #include "QcEntityRecord.h"
+#include "QcLightEngine.h"
 #include "QcMailbox.h"
 #include "QcWorkerPool.h"
 
@@ -40,6 +41,8 @@ public:
         quint16 marks = 0;
         QStringList warnings;
         QString error;
+        // The chunk's own light, computed in the background (QcLightEngine::prepare; may be null).
+        std::shared_ptr<QcLightEngine::Prepared> light;
     };
 
     // What is kept of a chunk that leaves the world or is saved: its blocks when they changed since
@@ -68,6 +71,10 @@ public:
     const std::optional<QcChunkStore::Damaged> &damaged() const { return m_store.damaged(); }
     bool hasDirectory() const { return !m_store.directory().isEmpty(); }
 
+    // Called on the I/O thread with every chunk read in the background that has blocks, before it is
+    // handed over (the world prepares its light). Set before the first read.
+    using Preparation = std::function<void(Arrival &arrival)>;
+    void setPreparation(Preparation prepare) { m_prepare = std::move(prepare); }
     // Reads a chunk in the background; the result comes from takeArrivals(). A read goes before the
     // writing work waiting in the queue unless the chunk itself is among it.
     void read(QcChunkPos pos, quint64 request);
@@ -98,6 +105,7 @@ private:
     void store(const Departure &departure);
 
     std::shared_ptr<const QcContentRegistry> m_content;
+    Preparation m_prepare;
     // Used only by the thread of m_pool once it runs (and by open() before).
     QcChunkStore m_store;
     // Unknown names reported so far (one warning per world and name).

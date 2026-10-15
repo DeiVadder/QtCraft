@@ -57,6 +57,9 @@ public:
 
     void setRenderTable(std::shared_ptr<const QcBlockRenderTable> table);
     void setFocus(const QcVec3 &position) { m_focus = position; }
+    // Whether meshes carry the light of their cells (QcMeshInput::sectionLight); for the sections
+    // meshed from then on.
+    void setSectionLight(bool on) { m_sectionLight = on; }
 
     void chunkLoaded(const QcClientWorld &world, QcChunkPos pos);
     void chunkUnloaded(QcChunkPos pos);
@@ -148,6 +151,7 @@ private:
     QSet<QcChunkPos> m_loadedChunks;
     QcVec3 m_focus;
     int m_maxJobsInFlight = 1;
+    bool m_sectionLight = false;
     QcMailbox<Result> m_results;
     // Block light per chunk as published by the engine; present once the chunk's light is known.
     QHash<QcChunkPos, std::shared_ptr<const QcChunkLight>> m_light;

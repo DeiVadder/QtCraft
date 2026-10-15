@@ -1,11 +1,14 @@
 #pragma once
 
 #include "QcBlockDefinition.h"
+#include "QcBlockVertex.h"
+#include "QcLightTable.h"
 
 #include <QList>
 #include <QRectF>
 
 #include <array>
+#include <memory>
 
 class QcContentRegistry;
 class QcTextureAtlas;
@@ -65,6 +68,9 @@ public:
         int lightLevel = 0;
         // Faces light cannot cross (QcLightPassage bits; covered faces of partial shapes).
         quint8 lightBlockedFaces = 0;
+        // Surface class of the faces and quads in the vertices (crosses are QcSurfaceMaterial::Plant
+        // unless the block is liquid, translucent or emissive).
+        QcSurfaceMaterial material = QcSurfaceMaterial::Solid;
 
         // Whether light passes differently after a change from `other` to this entry.
         bool lightDiffers(const Entry &other) const
@@ -89,6 +95,8 @@ public:
     const Entry &entry(QcBlockId id) const;
     qsizetype size() const { return m_entries.size(); }
     bool hasLightSources() const { return m_hasLightSources; }
+    // How the states treat light, as the light engine reads it (the same values as the entries).
+    const std::shared_ptr<const QcLightTable> &lightTable() const { return m_lightTable; }
 
     // The axes (0 = x, 1 = y, 2 = z) along which side rectangles of a face are measured.
     static std::pair<int, int> axes(QcBlockFace face);
@@ -99,4 +107,5 @@ private:
     QList<Entry> m_entries;
     Entry m_invisible;
     bool m_hasLightSources = false;
+    std::shared_ptr<const QcLightTable> m_lightTable = std::make_shared<const QcLightTable>();
 };

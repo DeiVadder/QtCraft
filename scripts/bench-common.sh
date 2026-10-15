@@ -85,6 +85,11 @@
 #              saving). In the window 75 s with STATS=5000 (15 points of the memory curve, 3 km of
 #              new terrain; EXPLORE_STEP=5 and 300 s is the flight of the stage 31.3 measurements);
 #              its server side headless: scripts/bench-headless.sh (decision E-388)
+#   frozen   - standing by day on the frozen sea of the tundra north-west of the spawn (seed 42,
+#              spawn -325,-300), looking west over the ice (water under it, open sea in the
+#              distance on the left): sections with water under ice draw the water list and the
+#              translucent list (decision E-390), the case with the most extra draw calls in
+#              generated terrain (stage 33 and newer; older builds stand there too)
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
@@ -418,6 +423,24 @@ scene_chat() {
     fi
 }
 
+# The torch ring of the game's light benchmark (QcBenchmarkRun::startTorchRing) as timed chat lines
+# for the headless measurement: from the end of the 3 s warm-up every 250 ms one of twelve places on
+# a circle of 9 m around the player gets a torch, the next step takes it away again.
+# Usage: light_ring_chat <seconds>
+light_ring_chat() {
+    awk -v seconds="$1" 'BEGIN {
+        pi = atan2(0, -1)
+        for (step = 0; 3000 + step * 250 < (seconds + 3) * 1000; step++) {
+            index_ = int(step / 2) % 12
+            angle = index_ * 2 * pi / 12
+            x = cos(angle) * 9; z = sin(angle) * 9
+            x = (x < 0) ? -int(-x + 0.5) : int(x + 0.5)
+            z = (z < 0) ? -int(-z + 0.5) : int(z + 0.5)
+            printf "@%d /setblock ~%d ~ ~%d %s\n", 3000 + step * 250, x, z, (step % 2 == 0) ? "torch" : "air"
+        }
+    }'
+}
+
 # Sets the scene of a scenario: what the game (run_game) and the headless measurement
 # (scripts/bench-headless.sh) start. Usage: scene_of <qtcraft-headless> <scenario> <seconds> <chat file>
 # Sets SCENE_WORLD (terrain, flat, void or showcase), SCENE_LAYERS (layers of a flat world or empty),
@@ -456,6 +479,10 @@ scene_of() {
         ;;
     esac
     case "$scenario" in
+    frozen)
+        SCENE_SPAWN=-325,-300
+        SCENE_LOOK=270,-15
+        ;;
     showcase | showcase-flight)
         SCENE_WORLD=showcase
         SCENE_SPAWN=40,-19
@@ -520,6 +547,7 @@ run_game() {
         set -- --play --seed 42 --view-distance "$view" --look "$SCENE_LOOK"
         [ "$SCENE_WORLD" = terrain ] || set -- "$@" --world-type "$SCENE_WORLD"
         [ -z "$SCENE_LAYERS" ] || set -- "$@" --flat-layers "$SCENE_LAYERS"
+        [ -z "$SCENE_SPAWN" ] || set -- "$@" --spawn "$SCENE_SPAWN"
     fi
     while IFS= read -r line; do
         set -- "$@" --chat "$line"

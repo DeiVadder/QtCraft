@@ -1,6 +1,5 @@
 #include "QcCropGrowth.h"
 
-#include "QcLightVolume.h"
 #include "QcServerWorld.h"
 
 #include <algorithm>
@@ -202,25 +201,5 @@ QcBlockId QcCropGrowth::freshSoil(const QcBlockAccess &world, QcBlockPos pos, Qc
 
 int QcCropGrowth::plantLightAt(const QcServerWorld &world, QcBlockPos pos)
 {
-    const int blockLight = QcLightVolume::blockLightAt(world, pos);
-    const std::shared_ptr<const QcChunk> chunk = world.chunk(pos.chunk());
-    if (!chunk) {
-        return blockLight;
-    }
-
-    const QcContentRegistry &content = world.content();
-    int sky = QcBlockDefinition::maxLightLevel;
-    for (int y = pos.y + 1; y < QcWorld::worldHeight && sky > blockLight;) {
-        if (chunk->section(y / QcWorld::sectionHeight).isEmpty()) {
-            y = (y / QcWorld::sectionHeight + 1) * QcWorld::sectionHeight;
-            continue;
-        }
-
-        const QcBlockId above = chunk->block(pos.localX(), y, pos.localZ());
-        if (above != qcAirBlockId && content.isValidBlock(above)) {
-            sky -= content.state(above).opaque ? QcBlockDefinition::maxLightLevel : content.state(above).lightOpacity;
-        }
-        ++y;
-    }
-    return std::max({blockLight, sky, 0});
+    return std::max(world.blockLight(pos), world.skyLight(pos));
 }
