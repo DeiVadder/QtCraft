@@ -9,6 +9,10 @@
 # --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
 #                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
 #                    a stage. Before the merge the full run checks every test under TSan.
+# Every test step runs ctest in parallel (decision E-380): QC_TEST_JOBS jobs, by default the number
+# of cores minus two. The script runs at normal priority; work beside it (the next stage in its own
+# worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
+# ~/.cache/qtcraft/bench.lock exists.
 # Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
@@ -24,6 +28,14 @@ SANITIZERS="asan tsan"
 SANITIZERS_GIVEN=0
 SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
 BASE_BRANCH=${QC_VERIFY_BASE:-dev}
+BENCH_LOCK="$HOME/.cache/qtcraft/bench.lock"
+
+cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
+TEST_JOBS=${QC_TEST_JOBS:-$((cores - 2))}
+case "$TEST_JOBS" in
+'' | *[!0-9]*) echo "QC_TEST_JOBS must be a positive number, not '$TEST_JOBS'" >&2 && exit 2 ;;
+esac
+[ "$TEST_JOBS" -ge 1 ] || TEST_JOBS=1
 
 usage() {
     echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
@@ -81,6 +93,12 @@ if [ "$MODE" = quick ] && [ "$SANITIZERS_GIVEN" -eq 0 ]; then
     SANITIZERS=""
 fi
 
+if [ -e "$BENCH_LOCK" ]; then
+    echo "benchmark lock $BENCH_LOCK exists ($(cat "$BENCH_LOCK/owner" 2>/dev/null)); no verify run while it is held" >&2
+    exit 2
+fi
+echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS)"
+
 failures=""
 timings=""
 total_start=$(date +%s)
@@ -105,8 +123,9 @@ limited() {
 
 run_tests() {
     preset=$1
-    # The TSan suite alone takes about 40 minutes by now (stage 29.2); allow an hour per step.
-    set -- --preset "$preset"
+    # The serial TSan suite took about 40 minutes (stage 43); an hour per step leaves room for a
+    # machine that is busy beside the run.
+    set -- --preset "$preset" --parallel "$TEST_JOBS"
     if [ -n "$TEST_REGEX" ]; then
         set -- "$@" -R "$TEST_REGEX"
     fi

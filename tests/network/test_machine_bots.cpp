@@ -193,7 +193,7 @@ private slots:
 
         joinAndWait(m_alice);
         joinAndWait(m_bob);
-        QVERIFY(console(u"op Alice"_s, u"Alice"_s));
+        QVERIFY(console(u"op Alice"_s, u"Alice is an operator"_s));
         const QJsonArray position = m_alice.request(command(u"status"_s)).value(u"position"_s).toArray();
         m_x = int(std::floor(position[0].toDouble()));
         m_y = int(std::floor(position[1].toDouble()));

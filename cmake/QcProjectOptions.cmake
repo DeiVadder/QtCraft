@@ -36,7 +36,8 @@ function(qc_configure_target target)
     target_link_libraries(${target} PRIVATE qc_project_options)
 endfunction()
 
-# Adds a QtTest executable registered with CTest.
+# Adds a QtTest executable registered with CTest. Every test gets its own data directory
+# (build/<preset>/test-data/<name>) so that tests can run in parallel (`ctest -j`, decision E-380).
 function(qc_add_test name)
     cmake_parse_arguments(PARSE_ARGV 1 ARG "" "TIMEOUT" "SOURCES;LIBRARIES")
     qt_add_executable(${name} ${ARG_SOURCES})
@@ -49,5 +50,5 @@ function(qc_add_test name)
     endif()
     set_tests_properties(${name} PROPERTIES
         TIMEOUT ${ARG_TIMEOUT}
-        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${name}")
 endfunction()

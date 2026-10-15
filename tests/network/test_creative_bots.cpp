@@ -99,7 +99,7 @@ private slots:
 
         joinAndWait(m_alice);
         joinAndWait(m_bob);
-        QVERIFY(console(u"op Alice"_s, u"Alice"_s));
+        QVERIFY(console(u"op Alice"_s, u"Alice is an operator"_s));
     }
 
     void cleanupTestCase()

@@ -67,7 +67,8 @@ public:
     QVariantList packs() const;
     QString status() const { return m_status; }
     QStringList notices() const { return m_notices; }
-    bool busy() const { return m_atlasBuild.isRunning(); }
+    // A build runs or its result has not been handled yet (the watcher reports it through the event loop).
+    bool busy() const { return m_building; }
     QString userDirectory() const;
     // Changes with every change of the selection or content (tests).
     quint64 generation() const { return m_generation; }
@@ -114,6 +115,7 @@ private:
     quint64 m_generation = 1;
     // A change arrived while a build was running: build again when it ends.
     bool m_buildAgain = false;
+    bool m_building = false;
     QString m_status;
     QStringList m_notices;
     QStringList m_selectionNotices;

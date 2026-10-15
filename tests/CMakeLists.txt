@@ -40,7 +40,7 @@ qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_server)
-qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 
 # Argument checks of the A/B benchmark script (settings per label, decision E-332); runs no game.
 add_test(NAME script_bench_ab_args
@@ -55,8 +55,9 @@ add_test(NAME scenario_headless_unknown_command_fails
         -DEXPECTED_EXIT_CODE=1
         "-DEXPECTED_OUTPUT=Unknown command 'teleport'"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-set_tests_properties(scenario_headless_walk_and_jump scenario_headless_unknown_command_fails PROPERTIES TIMEOUT 90
-    ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+foreach(test scenario_headless_walk_and_jump scenario_headless_unknown_command_fails)
+    set_tests_properties(${test} PROPERTIES TIMEOUT 90 ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${test}")
+endforeach()
 
 # Command line errors of the game itself end it before a window opens.
 add_test(NAME app_unknown_world_type_fails
@@ -71,8 +72,10 @@ add_test(NAME app_flat_layers_need_flat_world_fails
         -DEXPECTED_EXIT_CODE=1
         "-DEXPECTED_ERROR=--flat-layers needs --world-type flat"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-set_tests_properties(app_unknown_world_type_fails app_flat_layers_need_flat_world_fails PROPERTIES TIMEOUT 60
-    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+foreach(test app_unknown_world_type_fails app_flat_layers_need_flat_world_fails)
+    set_tests_properties(${test} PROPERTIES TIMEOUT 60
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${test}")
+endforeach()
 
 # Offscreen rendering (E-229): the platform without windows shows the main menu and the error screen
 # without crashing, and a scripted run draws the world without a shown window.
@@ -89,8 +92,15 @@ add_test(NAME app_offscreen_platform_error_screen_fails
         -DEXPECTED_EXIT_CODE=1
         "-DEXPECTED_ERROR=Invalid layer '3\\*nonsense'"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-set_tests_properties(app_offscreen_platform_menu_screenshot app_offscreen_platform_error_screen_fails PROPERTIES TIMEOUT 60
-    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-menu.png;QTCRAFT_SCREENSHOT_FRAMES=10")
+# Each test writes its own screenshot: the error screen's file is not the one the menu test checks.
+foreach(test app_offscreen_platform_menu_screenshot app_offscreen_platform_error_screen_fails)
+    set(shot offscreen-menu.png)
+    if(test STREQUAL app_offscreen_platform_error_screen_fails)
+        set(shot offscreen-error.png)
+    endif()
+    set_tests_properties(${test} PROPERTIES TIMEOUT 60
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${test};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/${shot};QTCRAFT_SCREENSHOT_FRAMES=10")
+endforeach()
 # A picture of the world is far larger than one of the bare HUD over the background (about 50 kB).
 add_test(NAME app_offscreen_world_screenshot
     COMMAND ${CMAKE_COMMAND}
@@ -101,7 +111,7 @@ add_test(NAME app_offscreen_world_screenshot
         "-DFORBIDDEN_ERROR=Cannot open shader|Cannot create graphics pipeline|Cannot create entity pipeline"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_world_screenshot PROPERTIES TIMEOUT 120
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_world_screenshot;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 
 # The full debug display with every visualisation and the debug options page load without QML
 # errors, binding loops or other warnings of the QML files (decision E-225).
@@ -113,7 +123,7 @@ add_test(NAME app_offscreen_debug_display_qml
         "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read)"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_debug_display_qml PROPERTIES TIMEOUT 120
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-debug;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-debug.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_debug_display_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-debug.png;QTCRAFT_SCREENSHOT_FRAMES=60")
 # The character previews (decision E-231): the main menu's profile card, the character screen with
 # its presets and the inventory load without QML errors or binding loops, with the --preview hook,
 # and the previews of the character screen and the inventory draw the figure.
@@ -126,7 +136,7 @@ add_test(NAME app_offscreen_character_preview_qml
         "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_character_preview_qml PROPERTIES TIMEOUT 120
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-preview;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-preview.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_character_preview_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-preview.png;QTCRAFT_SCREENSHOT_FRAMES=60")
 # Armour (decisions E-234, E-238): the inventory with the armour slots, the HUD's armour bar and an
 # armour stand with a name load without QML errors, and the inventory's preview draws the armour.
 add_test(NAME app_offscreen_armour_qml
@@ -138,7 +148,7 @@ add_test(NAME app_offscreen_armour_qml
         "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_armour_qml PROPERTIES TIMEOUT 120
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-armour;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-armour.png;QTCRAFT_SCREENSHOT_FRAMES=90")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_armour_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-armour.png;QTCRAFT_SCREENSHOT_FRAMES=90")
 add_test(NAME app_preview_hook_refused
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--preview;animation=dance;--screen;builtin;--background;--no-audio"
@@ -146,7 +156,7 @@ add_test(NAME app_preview_hook_refused
         "-DEXPECTED_ERROR=Invalid --preview setting 'animation=dance'"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_preview_hook_refused PROPERTIES TIMEOUT 60
-    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_preview_hook_refused")
 # Offscreen runs are screenshot runs: a benchmark (frame times of the real window) and a run
 # without a screenshot (nothing would end it) are refused at once.
 add_test(NAME app_offscreen_benchmark_refused
@@ -156,7 +166,7 @@ add_test(NAME app_offscreen_benchmark_refused
         "-DEXPECTED_ERROR=Benchmarks measure the real window"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_benchmark_refused PROPERTIES TIMEOUT 60
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_BENCHMARK=5;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-refused.png")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_BENCHMARK=5;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_benchmark_refused;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-refused.png")
 add_test(NAME app_offscreen_without_screenshot_refused
     COMMAND ${CMAKE_COMMAND} -E env --unset=QTCRAFT_SCREENSHOT --unset=QTCRAFT_BENCHMARK ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--no-audio"
@@ -164,9 +174,9 @@ add_test(NAME app_offscreen_without_screenshot_refused
         "-DEXPECTED_ERROR=An offscreen run needs QTCRAFT_SCREENSHOT"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT 60
-    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_without_screenshot_refused")
 
-qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 240)
+qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 480)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                     QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_headless_cli qtcraft-headless)
@@ -179,7 +189,7 @@ add_test(NAME scenario_headless_failure_then_quit
         -DEXPECTED_EXIT_CODE=1
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90
-    ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data")
+    ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/scenario_headless_failure_then_quit")
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_server)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
@@ -206,13 +216,13 @@ qc_add_test(test_armour_stands SOURCES gameplay/test_armour_stands.cpp QcServerT
 qc_add_test(test_quick_move SOURCES gameplay/test_quick_move.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_items_and_saves SOURCES gameplay/test_server_items_and_saves.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_limits SOURCES gameplay/test_server_limits.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_creature_summons SOURCES gameplay/test_creature_summons.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_body_fit SOURCES gameplay/test_body_fit.cpp LIBRARIES qc_server TIMEOUT 60)
 qc_add_test(test_survival_scenario SOURCES gameplay/test_survival_scenario.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_crafting SOURCES content/test_crafting.cpp LIBRARIES qc_common)
 qc_add_test(test_armour SOURCES content/test_armour.cpp LIBRARIES qc_server)
-qc_add_test(test_mods SOURCES content/test_mods.cpp LIBRARIES qc_server)
+qc_add_test(test_mods SOURCES content/test_mods.cpp LIBRARIES qc_server TIMEOUT 300)
 target_compile_definitions(test_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 # Headless measurement of the translations (stage 43); QTCRAFT_TRANSLATION_MEASURE=full for the recorded sizes.
 qc_add_test(test_translation_measure SOURCES content/test_translation_measure.cpp LIBRARIES qc_server TIMEOUT 300)
@@ -244,11 +254,11 @@ qc_add_test(test_audio_output SOURCES sound/test_audio_output.cpp LIBRARIES qc_a
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_block_light SOURCES world/test_block_light.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 300)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
-qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server)
+qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_circuits SOURCES gameplay/test_signal_circuits.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -312,7 +322,7 @@ endif()
 
 # Multiplayer (stage 25, decisions E-251 to E-256).
 qc_add_test(test_login_protocol SOURCES network/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)
-qc_add_test(test_server_login SOURCES network/test_server_login.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_server_login SOURCES network/test_server_login.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_tcp_transport SOURCES network/test_tcp_transport.cpp LIBRARIES qc_network Qt::Network)
 qc_add_test(test_network_game SOURCES network/test_network_game.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 240)
@@ -347,7 +357,7 @@ if(NOT QC_SANITIZERS)
             "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
             -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
     set_tests_properties(app_offscreen_multiplayer_menu_qml PROPERTIES TIMEOUT 120
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-multiplayer;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_multiplayer_menu_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=60")
     add_test(NAME app_offscreen_open_to_lan_qml
         COMMAND ${CMAKE_COMMAND}
             "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--host-lan;0;--overlay;@1000 lan;--overlay;@2000 ;--overlay;@2500 players;--no-mods;--no-audio"
@@ -357,7 +367,7 @@ if(NOT QC_SANITIZERS)
             "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
             -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
     set_tests_properties(app_offscreen_open_to_lan_qml PROPERTIES TIMEOUT 120
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LAN_BIND=127.0.0.1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data-lan;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lan.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LAN_BIND=127.0.0.1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_open_to_lan_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-lan.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 endif()
 # Bot clients in their own processes on a dedicated server process (stage 25b, decision E-270).
 qc_add_test(test_multiplayer_bots SOURCES network/test_multiplayer_bots.cpp QcBotProcess.h LIBRARIES qc_server TIMEOUT 600)
@@ -389,3 +399,20 @@ set(qc_concurrency_tests
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit
     app_offscreen_world_screenshot)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
+
+# Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
+# chosen by the system, and screenshots have names of their own. Tests that start several processes
+# reserve as many job slots as they keep busy; the longest tests carry a cost so that a fresh build
+# directory starts them first (later runs use the measured times in Testing/Temporary).
+set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
+# Measures how punctually the server's tick timer fires; that needs a machine without other tests.
+set_tests_properties(test_tick_scheduler PROPERTIES RUN_SERIAL TRUE)
+set_tests_properties(test_creative_bots test_signal_bots test_machine_bots PROPERTIES PROCESSORS 3)
+set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
+# Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
+# parallel TSan run (E-380; test_headless_cli about 210 s, test_mods, test_signal_network,
+# test_scenarios, test_mobs and test_block_light_engine 100-125 s, test_server_login 85 s), so a
+# machine that builds beside the run does not turn a slow run into a failure.
+set_tests_properties(test_terrain_generator PROPERTIES COST 190)
+set_tests_properties(test_headless_cli PROPERTIES COST 160)
+set_tests_properties(test_scenarios test_mods test_signal_network PROPERTIES COST 80)

@@ -186,6 +186,7 @@ void QcTexturePackController::startBuild()
         return;
     }
 
+    m_building = true;
     m_atlasBuild.setFuture(QtConcurrent::run(&QcTextureStackBuild::run, request()));
     emit statusChanged();
 }
@@ -193,6 +194,7 @@ void QcTexturePackController::startBuild()
 void QcTexturePackController::onBuilt()
 {
     const QcTextureStackBuild::Result result = m_atlasBuild.result();
+    m_building = false;
     if (m_buildAgain) {
         m_buildAgain = false;
         startBuild();

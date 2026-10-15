@@ -236,7 +236,7 @@ private slots:
         QVERIFY(bob().request(command(u"status"_s))[u"worldTime"_s].toDouble() < 200.0);
 
         // The console makes Alice an operator, bound to her identity; everyone's list shows it.
-        QVERIFY(console(u"op Alice"_s, u"Alice"_s));
+        QVERIFY(console(u"op Alice"_s, u"Alice is an operator"_s));
         pollOthers(nullptr, command(u"players"_s), [](const QJsonObject &answer) {
             const QJsonArray players = answer[u"players"_s].toArray();
             return std::ranges::all_of(players, [](const auto &player) {
