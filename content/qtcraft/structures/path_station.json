@@ -1,0 +1,27 @@
+{
+    "name": "path_station",
+    "showcase": { "order": 72 },
+    "palette": {
+        "P": "polished_stone",
+        "G": "glass",
+        ".": "air",
+        "F": "oak_fence",
+        "B": "stone_bricks"
+    },
+    "layers": [
+        ["PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP PPPPPPPPP", "PPPPPPPPPPPPPPP          ", "PPPPPPPPPPPPPPP          "],
+        ["GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GG           GG GGGGGGGGG", "GG           GG G       G", "GGFFFFFFFFFF GG G BBBBB G", "GG           GG G BBBBB G", "GG           GG G BBBBB G", "GG FFFFFFFFFFGG G BBBBB G", "GG           GG G BBBBB G", "GGFFFFFFFFFFFGG G       G", "GG           GG GGGGGGGGG", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          "],
+        ["GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GG           GG GGGGGGGGG", "GG           GG G       G", "GG           GG G BBBBB G", "GG           GG G BBBBB G", "GG           GG G BBBBB G", "GG           GG G BBBBB G", "GG           GG G BBBBB G", "GG           GG G       G", "GG           GG GGGGGGGGG", "GGG.........GGG          ", "GGG.........GGG          "],
+        ["GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GG           GG          ", "GG           GG          ", "GG           GG   BBBBB  ", "GG           GG   BBBBB  ", "GG           GG   BBBBB  ", "GG           GG   BBBBB  ", "GG           GG   BBBBB  ", "GG           GG          ", "GG           GG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          "],
+        ["GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG   BBBBB  ", "GGGGGGGGGGGGGGG   BBBBB  ", "GGGGGGGGGGGGGGG   BBBBB  ", "GGGGGGGGGGGGGGG   BBBBB  ", "GGGGGGGGGGGGGGG   BBBBB  ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          ", "GGGGGGGGGGGGGGG          "]
+    ],
+    "mobs": [
+        { "mob": "zombie", "at": [7.5, 1.0, 2.5] },
+        { "mob": "pig", "at": [19.5, 5.0, 5.5] },
+        { "mob": "pig", "at": [21.5, 5.0, 7.5] }
+    ],
+    "labels": [
+        { "at": [7.5, 5.6, 12.5], "text": "showcase.path.maze" },
+        { "at": [20.5, 6.2, 10.5], "text": "showcase.path.cliff" }
+    ]
+}

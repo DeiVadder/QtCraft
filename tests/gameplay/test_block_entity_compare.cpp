@@ -38,7 +38,10 @@ using namespace Qt::StringLiterals;
 // item chests and the fire pit station, which moves the areas after it (the furnace, burnout,
 // sapling and hopper values of the tour's stations change with when the tour reaches them); the
 // piston chains of the four rotations are unchanged. Stage 36 (decision E-398) wrote it again for
-// the three lapis lazuli items, which shift the item chests and nothing else. With
+// the three lapis lazuli items, which shift the item chests and nothing else. Stage 37.1 (decision
+// E-401) wrote it again for the path finding station, which moves the areas after it: the
+// positions, the stored chunks and the furnace, burnout, sapling, cooldown and hopper values of the
+// tour's stations change with where they stand and when the tour reaches them. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture

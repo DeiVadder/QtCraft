@@ -1,3 +1,4 @@
+#include "QcMobSteering.h"
 #include "QcPhaseWindow.h"
 #include "QcServerTestFixture.h"
 #include "QcTickPhaseTimer.h"
@@ -197,7 +198,8 @@ private slots:
 
         m_client->connection.send(QcMsg::DebugSubscribe{QcMsg::DebugSubscribe::all});
         pump();
-        ticks(2);
+        // Within one look for players (QcMobSteering::sightCheckTicks) the zombie sees the player.
+        ticks(QcMobSteering::sightCheckTicks + 2);
         QVERIFY(!m_client->debugMessages.isEmpty());
         const QList<QcMsg::MobGoal> goals = m_client->debugMessages.constLast().goals;
         const auto chase = std::ranges::find(goals, chaser, &QcMsg::MobGoal::entityId);

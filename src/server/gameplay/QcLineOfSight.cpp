@@ -83,6 +83,12 @@ bool reaches(const QcBlockAccess &fullWorld, const QcVec3 &eye, const QcAabb &bo
     return false;
 }
 
+bool seesPoint(const QcBlockAccess &world, const QcVec3 &eye, const QcVec3 &point)
+{
+    const WithoutEyeCell withoutEyeCell(world, cellOf(eye));
+    return reachesPoint(withoutEyeCell, eye, point, std::nullopt);
+}
+
 QcAabb blockBox(QcBlockPos pos)
 {
     const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};

@@ -7,6 +7,10 @@
 #   walk     - walking straight ahead (no sprint), streaming new chunks slowly
 #   sprint   - sprinting and jumping straight ahead, streaming new chunks
 #   crowd    - standing among summoned mobs (humanoid zombies included) and dropped items
+#   horde    - standing by day on a stone pillar 4 blocks high at the spawn of the terrain world,
+#              seen by 64 zombies (the summon limit) summoned 14 m away in four directions: they
+#              path through the hills to the pillar, cannot reach the player and crowd at its foot
+#              (path searches with partial paths and back-off, separation, sight rays; stage 37.1)
 #   light    - standing on a cleared stone floor while torches appear and vanish around the player
 #              four times a second (block light and remeshing in the background)
 #   liquids  - standing on a cleared stone floor while water and lava sources appear above it and
@@ -505,6 +509,16 @@ scene_chat() {
             echo "/summon qtcraft:caped_mannequin 8"
         fi
         ;;
+    horde)
+        # Pillar under the player, then four groups of 16 zombies dropped from 8 m above the pillar
+        # top, 14 m east, west, south and north of it; the player ends on the pillar.
+        printf '%s\n' "/time set day" "/fill ~ ~ ~ ~ ~3 ~ stone" "/tp ~ ~4 ~"
+        for offset in 14,0 -14,0 0,14 0,-14; do
+            dx=${offset%,*}
+            dz=${offset#*,}
+            printf '%s\n' "/tp ~$dx ~8 ~$dz" "/summon qtcraft:zombie 16" "/tp ~$((-dx)) ~-8 ~$((-dz))"
+        done
+        ;;
     inventory) printf '%s\n' "/give iron_pickaxe 1" "/give oak_planks 64" "/give torch 32" ;;
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
@@ -609,7 +623,7 @@ scene_of() {
     esac
     if [ "$SCENE_WORLD" = void ]; then
         case "$scenario" in
-        sprint | walk | crowd)
+        sprint | walk | crowd | horde)
             echo "Scenario $requested needs ground; running it in the flat world instead of the void world" >&2
             SCENE_WORLD=flat
             ;;

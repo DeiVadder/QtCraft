@@ -1602,3 +1602,121 @@ Keine übersprungenen Ticks, Tick max höchstens 4,8 ms. GPU stand zweigipflig w
 ### Fazit Etappe 36
 
 Erfahrung kostet ohne Kugeln nichts Messbares: `@core` innerhalb von 6 % (Median-GPU stand +7 %, bekannt zweigipflig), `@server` innerhalb von 2 % (p99 4 %), Stopp-Proben und ruhende Öfen ohne Preis. Mit rund 250 Kugeln im Blick kostet das Zeichnen 0,22 ms GUI-CPU (Entity-Vernetzung) bei unveränderter Bildrate, der Server 0,02 ms je Tick headless. Keine Regression über 10 %; alle Ziele erfüllt.
+
+## Etappe 37.1a: Wegfindung der Wesen (headless, 2026-10-16)
+
+Release (`RelWithDebInfo`), `QTCRAFT_PATH_MEASURE=1 build/release/tests/test_mob_path_measure` (E-400; Ticks von Hand, keine Echtzeit, rund 3 s Wanduhr für alle Fälle). Gemessen ist `QcMobManager::tick` (die Phase Wesen) je Tick, 200 Ticks nach 20 zum Anlaufen, Mittel über drei verschränkte Läufe gegen `fcb436b` (dieselbe Messdatei im Stand vor der Wegfindung, verschränkt: alt, neu, alt, neu …; Last 4–9). 200 bzw. 1000 Zombies 8–20 m um einen Spieler, der einen Kreis von 4 m mit 2 m/s geht. Fälle: **hills** – Testgelände mit Hügeln und See; **maze** – flache Welt mit Räumen von 3 × 3 Zellen hinter 3 Blöcke hohen Wänden, die Hälfte der Wandstücke mit einer Lücke (Sackgassen, abgeschlossene Taschen); **closed** – derselbe Irrgarten, der Spieler in einem geschlossenen Glasraum (niemand erreicht ihn, jede Suche läuft bis zu ihrem Knotenbudget). „gerade“: dieselbe Szene mit `pathNodesPerTick` 0 (Wegfindung aus, Wesen gehen gerade aufs Ziel; Ausweichen und Sichtlinie bleiben).
+
+| Fall | Zombies | vorher Ø ms | nachher Ø ms | nachher gerade Ø ms | nachher max ms | Knoten je Tick | Suchen in 220 Ticks |
+|---|---|---|---|---|---|---|---|
+| hills | 200 | 0,196 | 0,264 | 0,243 | 0,49 | 50 | 1990 |
+| hills | 1000 | 0,971 | 1,313 | 1,192 | 2,21 | 275 | 9766 |
+| maze | 200 | 0,217 | 0,274 | 0,262 | 0,88 | 110 | 1773 |
+| maze | 1000 | 1,078 | 1,452 | 1,381 | 2,56 | 529 | 8345 |
+| closed | 200 | 0,228 | 0,841 | 0,273 | 1,39 | 2493 | 1328 |
+| closed | 1000 | 1,134 | 2,239 | 1,473 | 2,57 | 3783 | 2013 |
+
+Spannen über die drei Läufe höchstens ±3 %.
+
+**Bewertung:**
+
+- **Das Budget hält:** Im schlimmsten Fall (closed, 1000) laufen 3783 von 4096 Knoten je Tick (eine Suche startet nur, wenn ihre 512 Knoten noch hineinpassen); die Wartenden kommen der Reihe nach dran. Ein Knoten kostet rund 0,2 µs (closed 1000: +0,77 ms für 3783 Knoten gegenüber gerade). Mit dem Zurückweichen (1, 2, 4, 8 s) suchen 1000 Zombies vor dem Glasraum in 11 s rund 2000-mal, nicht 220 000-mal.
+- **Erreichbare Beute ist billig:** Wege über offenes Gelände und durch den Irrgarten brauchen wenige Knoten (die gewichtete Schätzung führt gerade aus); 1000 Zombies, die einem gehenden Spieler folgen, suchen rund 44-mal je Tick mit zusammen 275–529 Knoten, +0,07–0,12 ms gegenüber gerade.
+- **Ohne Suche +20–30 %:** Ausweichen (`QcMobSeparation`: Sortieren der Gehenden, drei Bereichssuchen je Wesen, im Gedränge höchstens 32 angesehen), die Prüfung, ob ein Schub über eine Kante führt, die Sichtlinie im Nahkampf und mehr Bewegung (geschobene Wesen gehen statt zu stehen) kosten bei 1000 Zombies im Gedränge um den Spieler +0,2–0,34 ms. Das Gedränge ersetzt 37.1b (ein Schub je Zelle, KI-Stufen nach Dichte).
+- **Absolut:** Selbst 1000 Zombies im schlimmsten Fall brauchen 2,2 ms Ø und 2,6 ms höchstens von 50 ms je Tick; die Obergrenzen für natürlich erscheinende Feinde (8 je Spieler) liegen weit darunter. Kein Fenster- oder `@server`-Benchmark gelaufen (beim Etappen-Benchmark von 37.1 nachholen; `@server` crowd hat 56 Wesen).
+
+## Etappe 37.1b: Gedränge der Wesen (headless, 2026-10-16)
+
+Release (`RelWithDebInfo`), `QTCRAFT_CROWD_MEASURE=1 build/release/tests/test_mob_crowd_measure` (E-401; Ticks von Hand, keine Echtzeit, unter 1 s Wanduhr für alle Fälle). Gemessen ist `QcMobManager::tick` (die Phase Wesen) je Tick, beim Fall mit Gedränge-Schaden einschließlich des Schadens (wie `QcServerCreatures` mit `maxEntityCramming` 24); drei verschränkte Läufe gegen `1445968` (Stand 37.1a, dieselbe Messdatei, die ohne `QcMobCrowd` nur die Schnittstelle von 37.1a nutzt; Last 11–22). Fälle: **cell** – 1000 Zombies in einer Zelle von 1 × 1 hinter drei Blöcken Stein, der Spieler fünf Blöcke daneben (unsichtbar), 200 Ticks nach 20 zum Anlaufen, Regel aus; **cell-cramming** – dasselbe mit Regel 24; **spread** – 1000 Zombies auf 80 × 80 Blöcken flacher Welt um einen Spieler, der einen Kreis von 4 m geht (Regel 24); **farm** – vier Zombies je Sekunde fallen einen Schacht von 20 Blöcken in eine Zelle von 1 × 1, 60 s (1200 Ticks, alle gemessen), der Spieler wartet 10 Blöcke daneben hinter Stein.
+
+| Fall | vorher Ø ms | nachher Ø ms | vorher max ms | nachher max ms | Wesen am Ende vorher → nachher | Suchen vorher → nachher | Stufen am Ende voll/gedrosselt/aus |
+|---|---|---|---|---|---|---|---|
+| cell | 0,829 | 0,778 (−6 %) | 1,10 | 0,90 | 1000 → 1000 | 4000 → 0 | 0/0/1000 |
+| cell-cramming | 0,827 | 0,102 (−88 %) | 1,07 | 1,74 | 1000 → 24 | 4000 → 0 | 0/0/24 |
+| spread | 1,005 | 1,027 (+2 %) | 1,24 | 1,27 | 1000 → 891 | 3373 → 2783 | 791/71/29 |
+| farm | 0,099 | 0,021 (−79 %) | 0,27 | 0,06 | 240 → 28 | 1521 → 139 | 4/0/25 |
+
+Spannen über die drei Läufe höchstens ±3 %. Die Messung der Wegfindung (`test_mob_path_measure`, alle Fälle aus 37.1a) liegt im selben verschränkten Vergleich gegen `1445968` innerhalb von ±2 % (closed 1000: 2,21 → 2,25 ms; hills 1000: 1,31 → 1,31 ms).
+
+**Bewertung:**
+
+- **Ein Gedränge sucht nicht mehr:** 1000 Zombies in einer Zelle stellten in 37.1a jeder alle paar Sekunden eine Suche an (4000 in 220 Ticks, jede mit vollem Budget, weil kein Weg aus der Zelle führt); jetzt ist ihre KI aus (keine Suche, kein Ziel, keine Sichtlinie). Übrig bleiben Physik (rund 0,45 ms: jeder Körper wird geschoben und stößt an die Wände) und das Zellenraster; daher nur −6 % ohne Regel. Der Schub ist in einer vollen Zelle nutzlos, aber verlangt (Schwerkraft, Strömung, Schaden, Schub); ein Ruhen geschobener Körper wäre der nächste Schritt, falls Farmen ohne Gedränge-Schaden je teuer werden.
+- **Mit Gedränge-Schaden schrumpft die Zelle auf 24:** Die Höchstzeit (1,7 ms) ist der Tick, in dem die ersten Gruppen sterben (Entfernen aus der Liste); danach kostet die Zelle fast nichts.
+- **Verteilt unverändert:** 1000 verteilte Zombies laufen fast alle mit voller KI (eine Sichtprüfung mit einem Strahl alle zehn Ticks, statt jeden Tick den nächsten Spieler ohne Sicht zu nehmen); die Zombies, die sich beim Spieler drängen, werden gedrosselt oder sterben am Gedränge (109).
+- **Farm:** Eine typische Fallschacht-Farm hält ihre Zelle bei 24 Zombies und braucht ein Fünftel der Zeit; ohne Regel wären es wie vorher 240 Zombies mit KI aus statt mit voller KI.
+- **Kein Fenster- oder `@server`-Benchmark gelaufen** (beim Etappen-Benchmark von 37.1 nachholen, zusammen mit 37.1a).
+
+## Etappe 37.1: Nachbesserungen nach der Prüfung (headless, 2026-10-16)
+
+Release (`RelWithDebInfo`), `QTCRAFT_CROWD_MEASURE=1 build/release/tests/test_mob_crowd_measure` und `QTCRAFT_PATH_MEASURE=1 build/release/tests/test_mob_path_measure` (E-402; Ticks von Hand, keine Echtzeit, zusammen rund 5 s Wanduhr je Lauf); drei verschränkte Läufe gegen `6c9dc5d` (Stand vor den Nachbesserungen, nur die Messziele gebaut, mit derselben Messdatei; deren Gedränge-Schaden bildet ohne `QcMobCramming` den damaligen `QcServerCreatures` nach: jedes Wesen nachschlagen, dann die Phase prüfen, dann über die Id verwunden). Last 7–14. Neuer Fall **cell-refill**: wie cell-cramming, aber vor jedem Tick wird die Zelle wieder auf 1000 Zombies aufgefüllt (ein Spawner ohne Ende, rund 1000 Gedrängte in jedem Tick).
+
+| Fall | vorher Ø ms | nachher Ø ms | vorher max ms | nachher max ms |
+|---|---|---|---|---|
+| cell | 0,775 | 0,762 (−2 %) | 0,91 | 0,98 |
+| cell-cramming | 0,113 | 0,092 (−18 %) | 1,92 | 1,40 |
+| cell-refill | 1,036 | 0,892 (−14 %) | 2,46 | 2,05 |
+| spread | 1,030 | 1,005 (−2 %) | 1,26 | 1,34 |
+| farm | 0,021 | 0,021 (0 %) | 0,09 | 0,10 |
+
+| Wegfindung | Zombies | vorher Ø ms | nachher Ø ms | Knoten je Tick | Suchen in 220 Ticks |
+|---|---|---|---|---|---|
+| hills | 200 | 0,261 | 0,260 | 41 → 40 | 1546 → 1614 |
+| hills | 1000 | 1,333 | 1,325 | 213 → 229 | 6215 → 6385 |
+| maze | 200 | 0,239 | 0,237 | 53 → 55 | 529 → 550 |
+| maze | 1000 | 1,341 | 1,316 | 331 → 316 | 2478 → 2552 |
+| closed | 200 | 0,416 | 0,364 (−13 %) | 788 → 546 | 545 → 455 |
+| closed | 1000 | 2,005 | 1,917 (−4 %) | 3054 → 2789 | 2332 → 2271 |
+
+Spannen über die drei Läufe höchstens ±4 %; die Fälle „gerade“ (ohne Wegfindung) liegen innerhalb von ±2 %.
+
+**Bewertung:**
+
+- **Gedränge-Schaden:** Das Nachschlagen jedes Gedrängten vor der Phasenprüfung (linear in der Liste) kostete bei rund 1000 Gedrängten je Tick etwa 0,15 ms; jetzt wird nur jedes vierte über seinen Index gefunden. Die Höchstzeit fällt im Tick der ersten Tode (1,9 → 1,4 ms).
+- **Wegfindung:** Die neuen Zellarten, Höhen in Achteln und Fälle in tiefes Wasser ändern die Kosten nicht messbar. Vor dem Glasraum (closed) suchen Zombies seltener, weil ein bewegtes Ziel das Zurückweichen nicht mehr umgeht (−13 % bei 200).
+- **Kein Fenster- oder `@server`-Benchmark gelaufen** (beim Etappen-Benchmark von 37.1 nachholen).
+
+## Etappe 37.1 (Wegfindung und gestapelte Mobs)
+
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `8d714f0` in einem temporären Worktree gegen `feature/37-1-pathfinding` `b9a8733` (Nachbesserungen E-402 eingeschlossen; die Messung lief mit `4e50e00`, das nur das neue Szenario ergänzt). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` plus `flat-crowd` und `horde` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 06:46–06:48; farm-seeds, explore, signal_farm und flat-crowd 6 Runden, sonst 3); im Fenster `@core` plus `horde` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 06:48–07:07). Last 2,1–14,5, belastet markiert 10 von 60 Fensterläufen, verteilt auf beide Stände. Wanduhr samt Builds und Aufbau des Szenarios rund 25 min.
+
+**Neues Szenario `horde`** (`scripts/bench-common.sh`): Gelände von Seed 42 am Spawn, Tag; der Spieler steht auf einer Steinsäule von 4 Blöcken, 64 Zombies (die Grenze `summonLimit`) werden in vier Gruppen 14 m östlich, westlich, südlich und nördlich 8 m über der Säulenspitze gerufen (per `/tp` hin und zurück). Sie sehen den Spieler, suchen Wege durch die Hügel zur Säule, erreichen ihn nie (Teilwege, Zurückweichen) und drängen sich an ihrem Fuß (Schub, Sichtstrahlen). Auf `dev` laufen sie gerade auf den Spieler zu. Rund 140 Wesen samt natürlichen Tieren. Mehr als 64 gerufene Wesen gehen per Chat nicht (`summonLimit` steht nur in `world.json`/`server.json`); den Fall mit 200 und 1000 Zombies und die Farm-Zelle decken `test_mob_path_measure` und `test_mob_crowd_measure` ab (oben, 37.1a/b und Nachbesserungen; Knoten je Tick: hills 1000 rund 230, closed 1000 rund 2800 von 4096).
+
+**Showcase verschoben:** Die neue Station `path_station` verschiebt die Bereiche wieder; im Blick des Szenarios `showcase` stehen jetzt 14 statt 25 Entities beim Client (der Server hat 13 statt 10 Wesen: Zombie und zwei Schweine der Station), 158 statt 153 Draw-Calls. Die Werte von `showcase` sind darum nur eingeschränkt vergleichbar.
+
+### Fenster: 37.1 gegen `8d714f0` (`@core` und `horde`, 6 Runden à 10 s)
+
+| Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung Ø / p99 ms | Tick Ø ms | Phase Wesen Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| stand | 120 / 120 | 10,9 → 9,9 | 1,83 → 1,91 (+4 %) | 1,60 → 1,54 | 0,978 → 0,927 | 0,424 → 0,397 | 0,138 → 0,135 / 0,31 gleich | 0,592 → 0,651 | 0,451 → 0,519 | 449 → 450 | 347 → 347 |
+| sprint | 120 / 120 | 10,9 → 10,1 | 2,12 → 2,14 | 1,60 → 1,57 | 1,01 → 0,985 | 0,413 → 0,416 | 0,130 → 0,132 / 0,27 → 0,28 | 0,566 → 0,685 | 0,425 → 0,536 | 561 → 561 | 388 → 388 |
+| showcase | 120 / 120 | 10,2 → 10,4 | 0,594 → 0,624 (+5 %) | 1,13 → 1,09 | 0,519 → 0,508 | 0,647 → 0,559 (−14 %) | 0,327 → 0,226 / 0,64 → 0,47 | 0,339 → 0,389 | 0,063 → 0,100 | 333 → 335 | 153 → 158 |
+| crowd | 120 / 120 | 10,1 → 11,2 (Median 10,2 → 10,4) | 2,57 → 2,47 (−4 %) | 1,38 → 1,34 | 1,07 → 1,02 | 0,821 → 0,811 | 0,501 → 0,494 / 1,00 → 0,99 | 0,846 → 0,999 | 0,666 → 0,817 | 455 → 456 | 346 → 345 |
+| horde | 120 / 120 | 10,4 → 11,3 (Median 10,3 → 10,4) | 1,94 → 1,81 (−7 %) | 1,38 → 1,37 | 1,01 → 0,856 | 1,01 → 0,926 (−8 %) | 0,711 → 0,649 / 1,56 → 1,21 | 0,797 → 0,928 | 0,634 → 0,796 | 459 → 458 | 343 → 344 |
+
+Keine übersprungenen Ticks, Tick max höchstens 5,0 ms. Frame Ø 8,33–8,65 ms in allen Läufen.
+
+### Headless: 37.1 gegen `8d714f0` (Tick, Mittel über 3 bzw. 6 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Tick max ms | Phase Wesen Ø / max ms | Wesen | Spitzen-RSS MB |
+|---|---:|---:|---:|---|---:|---:|
+| crowd | 0,135 → 0,162 (+20 %) | 0,183 → 0,251 (+37 %) | 0,26 → 0,33 | 0,119 → 0,146 / 0,23 → 0,30 | 122 | 50,6 → 50,7 |
+| flat-crowd | 0,0527 → 0,0598 (+14 %) | 0,075 → 0,087 (+16 %) | 0,11 → 0,12 | 0,0407 → 0,0480 / 0,088 → 0,100 | 56 → 54 | 42,5 → 42,8 |
+| horde | 0,142 → 0,169 (+19 %) | 0,194 → 0,391 (+102 %) | 0,27 → 0,69 | 0,126 → 0,154 / 0,24 → 0,68 | 125 → 118 | 50,5 → 51,7 |
+| explore | 0,177 → 0,194 (+10 %) | 0,872 → 0,891 (+2 %) | 1,20 → 1,26 | 0,051 → 0,067 / 0,14 → 0,26 | 58 | 56,3 → 57,2 |
+| gravel-collapse | 0,497 → 0,491 | 1,42 → 1,43 | 1,72 → 1,62 | – | 0 | 71,1 → 70,9 |
+| farm / farm-seeds | 0,0070 → 0,0073 / 0,0170 → 0,0173 | 0,014 → 0,015 / 0,053 → 0,055 | – | – | 0 | 44,2 → 44,4 / 43,8 → 43,6 |
+| signal_components / machines / farm | 0,030 → 0,035 / 0,029 → 0,035 / 0,031 → 0,035 | 0,095 → 0,112 / 0,103 → 0,106 / 0,095 → 0,109 | 0,20–0,21 gleich | 0,009 → 0,013 / 0,006 → 0,013 / 0,009 → 0,013 | 10 → 13 (7 → 13) | 44,9–45,4 |
+
+Spannen je Stand höchstens 13 %. Client-Sync, Streaming und die übrigen Phasen gleich.
+
+**Bewertung:**
+
+- **Fensterwerte innerhalb von 10 %, nichts zu orten außer p99:** GPU, Render-CPU, GUI-CPU, Entity-Vernetzung, Draw-Calls und Spitzenspeicher in stand, sprint, crowd und horde −8 bis +4 %. Frame p99 crowd +11 % und horde +8 % im Mittel kommen je von einem einzelnen Lauf mit 16,4 bzw. 16,6 ms (beide als belastet markiert, GPU-p99 dort 3,1 bzw. 2,5 ms wie in den anderen Läufen): verpasste VSyncs von außerhalb des Spiels, Median +2 %. Showcase GPU +5 % (alle sechs Läufe 0,62 statt 0,59 ms) und GUI-CPU −14 % (Entity-Vernetzung −31 %) folgen der verschobenen Showcase (mehr Geometrie, weniger Entities im Blick), keine Regression.
+- **Server: die Wegfindung kostet, wie erwartet, rund 20 % in Mob-Szenen:** crowd +0,027 ms je Tick headless (Phase Wesen +0,027 ms: Wegsuchen, Zellenraster für den Schub, Sichtstrahlen alle 10 Ticks, Sichtlinie im Nahkampf), horde +0,027 ms im Mittel, p99 +0,2 ms und max 0,69 ms (Ticks, in denen viele der 64 Zombies zugleich suchen; das Budget von 4096 Knoten deckelt das). Im Fenster crowd 0,85 → 1,00 ms und sprint 0,57 → 0,69 ms Tick Ø (Phase Wesen +0,15 bzw. +0,11 ms, natürliche Tiere wandern jetzt über Wege), bei Spannen von 30–60 % je Stand. Die Signal-Stationen der Showcase steigen um 0,005 ms, weil die neue Station drei Wesen mehr in die geladenen Chunks bringt (Phase Wesen 0,009 → 0,013 ms, Signal gleich). Das entspricht den Kostenmessungen von E-400 bis E-402 (200 Zombies hills +0,07 ms, rund 0,2 µs je Knoten) und ist neue Arbeit, keine Regression; absolut höchstens 1 ms Tick Ø und 5 ms Tick max von 50 ms.
+- **Gedränge:** crowd und horde halten ihre Wesen (keine Zelle über 24, kein Gedränge-Schaden); die Zellen mit 1000 Zombies und die Fallschacht-Farm sind in den headless Messungen oben bewertet (Farm −79 %, Zelle mit Regel −88 %).
+
+**Absolute Ziele (`docs/Performance.md`, 8 Chunks):** Bildrate 120 FPS (Frame Ø 8,33–8,65 ms; Ziel ≥ 60), Frame-Kosten höchstens 2,69 ms (GPU crowd, einzelner Lauf; Mittel höchstens 2,57 ms; Ziel ≤ 4 ms) und p99 ≤ 12,5 ms im Median (10,3 ms über 60 Läufe; 4 Läufe über 12,5 ms, verteilt auf beide Stände, verpasste VSyncs bei Last) erfüllt. Spitzenspeicher stand, showcase, crowd, horde 331–459 MB, sprint (10 s) 561 MB, alle unter 600 MB; die offenen Befunde sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen, durch 37.1 nicht berührt. Tick: kein Tick über 50 ms (Fenster höchstens 5,0 ms, headless 2,1 ms), keine übersprungenen Ticks.
+
+### Fazit Etappe 37.1
+
+Wegfindung und Gedränge kosten im Bild nichts: alle Fenster-Schlüssel innerhalb von 10 % (p99-Ausreißer einzelner belasteter Läufe, Median +2 %), Showcase durch die neue Station verschoben. Der Server zahlt in Mob-Szenen rund 20 % mehr Tick (0,03 ms headless, 0,1–0,15 ms im Fenster) für Wegsuchen, Schub und Sichtstrahlen, gedeckelt durch das Knotenbudget; Farmen und dichte Zellen werden dagegen deutlich billiger. Alle Ziele erfüllt.

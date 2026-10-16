@@ -17,6 +17,7 @@
 # look the diamond set and the cape from behind, standing and walking (the cape over the chest plate).
 # The creative mode (stage 26) has its stops at the sky platform: flying with the widened view and
 # the creative inventory. The weather (stage 35) has its stops at the trees: rain and a thunderstorm.
+# Path finding (stage 37.1) has a stop at its station with the creatures' goals shown.
 # Renders offscreen (no window, independent of the display, decision E-229), silent, with its
 # settings and world in a temporary directory that is removed at the end.
 # Usage: scripts/showcase-tour.sh [out-dir] [build-dir]
@@ -133,6 +134,11 @@ while read -r name x z yaw pitch; do
             --chat "@500 /tick sprint 200"
         shoot "weather-thunder" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --chat "/weather thunder" \
             --chat "@500 /tick sprint 200"
+        ;;
+    demo-path_station-near)
+        # Path finding (stage 37.1, E-400, E-401): the goals of the zombie in the maze and the pigs.
+        shoot "path-goals" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display compact \
+            --debug-show mobGoals
         ;;
     creatures-near)
         shoot "debug-visuals" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display compact \

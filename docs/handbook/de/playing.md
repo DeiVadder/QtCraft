@@ -348,7 +348,7 @@ Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf
 
 **Obergrenzen**
 
-Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist.
+Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.
 
 **Siehe auch**
 
@@ -401,7 +401,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -436,7 +436,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …); `/gamerule maxEntityCramming [0-4096]`: Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0 nie)
 - `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen

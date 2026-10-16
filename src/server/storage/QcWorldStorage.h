@@ -75,6 +75,10 @@ struct QcWorldInfo
     // one stay loaded (0: none, 1: the spawn chunk, 2: 3 x 3 chunks …).
     int spawnChunkRadius = 0;
     static constexpr int maxSpawnChunkRadius = 16;
+    // Game rule (decision E-401): creatures in one block cell beyond this many take cramming damage,
+    // as in the reference (0: never).
+    int maxEntityCramming = 24;
+    static constexpr int maxEntityCrammingLimit = 4096;
     // Chunks kept loaded by /forceload (decision E-377), in the order they were added.
     QList<QcChunkPos> forcedChunks;
     // Every chunk loader block of the world in the order they were placed (decision E-377).

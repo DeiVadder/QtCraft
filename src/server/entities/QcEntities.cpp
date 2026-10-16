@@ -20,6 +20,8 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_falling.setMaxFalling(qsizetype(limits.fallingBlocks));
     m_items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
     m_creatures.setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
+    m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
+    m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));

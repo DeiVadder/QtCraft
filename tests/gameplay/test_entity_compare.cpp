@@ -18,7 +18,10 @@ using namespace Qt::StringLiterals;
 // tick gives the entities as the server keeps them and every spawn, move and removal the client got.
 // The dump must equal the one the code before the entity model wrote
 // (tests/data/entity-compare-before-31-2.txt, from this test in its first version), plus the one
-// move an item or cart sends in the tick it comes to rest (its stop sample, decision E-399). With
+// move an item or cart sends in the tick it comes to rest (its stop sample, decision E-399), with the
+// creatures walking their paths and the zombie no longer striking the player through the floor
+// (path finding and melee with a line of sight, decision E-400) and hunters that pick only players
+// they see and wander until then (decision E-401). With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there; QTCRAFT_COMPARE_WORLD=<dir> keeps a
 // copy of the saved world.
 class TestEntityCompare : public QcMachineFixture

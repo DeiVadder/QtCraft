@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcEntity.h"
+#include "QcMobPath.h"
 #include "QcVec3.h"
 
 // A creature (decision E-364): a mob of the content's definitions (`type` indexes them) with its
@@ -32,8 +33,15 @@ struct QcCreature : QcEntity
     bool persistent = false;
     // Spawned by a rule for the night only: leaves by day like night creatures.
     bool nightRule = false;
-    // Entity id of the player it chases this tick; 0 for none (debug display of goals).
+    // Entity id of the player it chases; 0 for none. It chases a player it sees and keeps chasing for
+    // `targetMemory` seconds after it lost sight of them (decision E-401).
     quint32 chasing = 0;
+    double targetMemory = 0.0;
+    // The speed it decided on when it last thought: a throttled creature in a crowd coasts along its
+    // path at it between its thoughts (decisions E-401, E-402).
+    double lastSpeed = 0.0;
+    // Its goal and the path there (decision E-400); not saved, a loaded creature finds a new one.
+    QcMobPath path;
     // Breeding (decision E-293): seconds left in love, until it may breed again and until a
     // young one grows up (> 0: young).
     double love = 0.0;

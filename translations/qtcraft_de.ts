@@ -431,12 +431,12 @@
 <context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="381"/>
+        <location filename="../src/app/qml/Hud.qml" line="385"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="383"/>
+        <location filename="../src/app/qml/Hud.qml" line="387"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
@@ -1947,21 +1947,28 @@
         <translation type="vanished">Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;, /equip &lt;Rüstung|Satz|clear&gt;, /armorstand &lt;nearest|looking|Id&gt; &lt;Eigenschaft&gt; [Werte], /summon armor_stand [Eigenschaft=Wert …]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="385"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="391"/>
         <source>%1 is %2</source>
         <translation>%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="366"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="394"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="415"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="400"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="421"/>
         <location filename="../src/server/commands/QcServerCommands.cpp" line="122"/>
         <location filename="../src/server/commands/QcWeatherCommands.cpp" line="88"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="398"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="359"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="396"/>
+        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="404"/>
         <source>%1 is now %2</source>
         <translation>%1 ist jetzt %2</translation>
     </message>
@@ -2087,7 +2094,7 @@
         <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="435"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="441"/>
         <source>The console must name a player: /gamemode &lt;mode&gt; &lt;player&gt;</source>
         <translation>Die Konsole muss einen Spieler nennen: /gamemode &lt;Modus&gt; &lt;Spieler&gt;</translation>
     </message>
@@ -2154,22 +2161,22 @@
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="361"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="366"/>
         <source>%1 is true</source>
         <translation>%1 ist wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="361"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="366"/>
         <source>%1 is false</source>
         <translation>%1 ist falsch</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="376"/>
         <source>%1 is now true</source>
         <translation>%1 ist jetzt wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="376"/>
         <source>%1 is now false</source>
         <translation>%1 ist jetzt falsch</translation>
     </message>
@@ -2178,13 +2185,13 @@
         <translation type="vanished">Spielmodus von %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="421"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="462"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="427"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="468"/>
         <source>Unknown game mode %1; use survival or creative</source>
         <translation>Unbekannter Spielmodus %1; möglich sind survival und creative</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="429"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="435"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
         <location filename="../src/server/commands/QcExperienceCommands.cpp" line="54"/>
         <source>No player named %1 is online</source>
@@ -2200,11 +2207,8 @@
         <translation>Spielmodus von %1: Überleben</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="354"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="390"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16]</translation>
+        <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16]</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="180"/>
@@ -2333,12 +2337,12 @@
         <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="486"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="492"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="492"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="498"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
@@ -2360,7 +2364,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="110"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="407"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="413"/>
         <source>Usage: /gamemode [survival|creative] [player]</source>
         <translation>Verwendung: /gamemode [survival|creative] [Spieler]</translation>
     </message>

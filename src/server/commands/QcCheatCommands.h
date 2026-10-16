@@ -17,6 +17,7 @@ class QcServerMinecarts;
 class QcServerStands;
 struct QcMobDefinition;
 struct QcServerClient;
+struct QcWorldInfo;
 class QcServerState;
 
 // Commands that bend the rules for operators (decision E-243): items, creatures, health and food,
@@ -58,7 +59,8 @@ private:
     void heal(const QcCommandContext &context);
     void time(const QcCommandContext &context) const;
     void gamerule(const QcCommandContext &context);
-    void spawnChunkRadius(const QcCommandContext &context);
+    // A game rule that is a number from 0 to `highest`.
+    void numberRule(const QcCommandContext &context, int highest, int QcWorldInfo::*rule);
     void gamemode(const QcCommandContext &context);
     void setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode);
     void defaultGamemode(const QcCommandContext &context);

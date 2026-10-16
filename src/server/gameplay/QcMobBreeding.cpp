@@ -1,6 +1,7 @@
 #include "QcMobBreeding.h"
 
 #include "QcLineOfSight.h"
+#include "QcMobNavigator.h"
 #include "QcPhysics.h"
 
 #include <algorithm>
@@ -77,8 +78,8 @@ QList<QcMobBreeding::Birth> QcMobBreeding::tick(const QcBlockAccess &world, QcMo
 
 void QcMobBreeding::approachPartners(QList<QcCreature> &mobs) const
 {
-    // Animals in love walk towards the nearest other one of their kind in love (through the
-    // wandering of QcMobManager, which keeps a direction until its timer runs out).
+    // Animals in love walk towards the nearest other one of their kind in love (as the goal of their
+    // wandering, QcMobBehaviour, which keeps it until its timer runs out).
     for (QcCreature &mob : mobs) {
         if (mob.dormant || mob.love <= 0.0 || mob.fleeTimer > 0.0) {
             continue;
@@ -96,6 +97,11 @@ void QcMobBreeding::approachPartners(QList<QcCreature> &mobs) const
         if (nearest) {
             const QcVec3 towards = nearest->motion.position - mob.motion.position;
             mob.wanderDirection = best > closeEnough ? QcVec3{towards.x, 0.0, towards.z}.normalized() : QcVec3{};
+            if (best > closeEnough) {
+                QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Wander, nearest->motion.position, 0);
+            } else {
+                mob.path.clear();
+            }
             mob.wanderTimer = 0.5;
         }
     }

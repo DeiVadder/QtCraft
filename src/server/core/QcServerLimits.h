@@ -74,6 +74,18 @@ struct QcServerLimits
     qint64 hostileCreaturesPerPlayer = 8;
     qint64 passiveCreaturesPerPlayer = 6;
     qint64 ambientCreaturesPerPlayer = 10;
+    // Path finding of creatures (E-400): nodes all searches expand per tick (0 switches path finding
+    // off: creatures walk straight at their goals), nodes one search expands at most and waypoints a
+    // path keeps at most (a creature at the end of a cut path searches on from there).
+    qint64 pathNodesPerTick = 4096;
+    qint64 pathNodesPerSearch = 512;
+    qint64 pathLength = 64;
+    // Crowds of creatures (E-401): from this many awake walkers in one block cell they think only
+    // every 4th to 10th tick (no path searches, the last goal stays), from `crowdIdle` on their AI is
+    // off (gravity, currents, damage and the push of the crowd only). Blows against an adjacent
+    // player stay in both.
+    qint64 crowdThrottled = 8;
+    qint64 crowdIdle = 24;
     // Breeding (E-293): animals of a kind within 3 x 3 chunks, bred animals of a kind in the world.
     qint64 breedingCrowd = 24;
     qint64 bredPerKind = 256;

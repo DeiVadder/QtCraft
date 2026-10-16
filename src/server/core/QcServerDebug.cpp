@@ -116,9 +116,12 @@ void QcServerDebug::addGoals(const QcServerClient &client, QcMsg::ServerDebug &m
         });
         if (chased != m_state.clients().end()) {
             message.goals.append({mob.id, Kind::Chase, (*chased)->motion.position});
-        } else if (mob.wanderDirection.length() > 0.0) {
-            const Kind kind = mob.fleeTimer > 0.0 ? Kind::Flee : Kind::Wander;
-            message.goals.append({mob.id, kind, mob.motion.position + mob.wanderDirection.normalized() * goalLookAhead});
+        } else if (mob.path.hasGoal()) {
+            const Kind kind = mob.path.purpose == QcMobPath::Purpose::Flee ? Kind::Flee : Kind::Wander;
+            message.goals.append({mob.id, kind, mob.path.goal});
+        } else if (m_state.content().mobs()[mob.type].flying && mob.wanderDirection.length() > 0.0) {
+            // Flyers drift without a goal: where they head shortly.
+            message.goals.append({mob.id, Kind::Wander, mob.motion.position + mob.wanderDirection.normalized() * goalLookAhead});
         }
     }
 }

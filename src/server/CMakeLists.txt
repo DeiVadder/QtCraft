@@ -98,6 +98,16 @@ qt_add_library(qc_server STATIC
     gameplay/QcMobManager.h gameplay/QcMobManager.cpp
     gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
     gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
+    gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
+    gameplay/QcMobCrowd.h gameplay/QcMobCrowd.cpp
+    gameplay/QcMobCramming.h gameplay/QcMobCramming.cpp
+    pathing/QcMobNavigator.h pathing/QcMobNavigator.cpp
+    pathing/QcMobPath.h
+    pathing/QcPathCells.h pathing/QcPathCells.cpp
+    pathing/QcPathFinder.h pathing/QcPathFinder.cpp
+    pathing/QcPathPlanner.h pathing/QcPathPlanner.cpp
+    pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
+    pathing/QcPathWindow.h pathing/QcPathWindow.cpp
     gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     storage/QcSaveFile.h storage/QcSaveFile.cpp
     storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
@@ -204,6 +214,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
     ${CMAKE_CURRENT_SOURCE_DIR}/weather
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
+    ${CMAKE_CURRENT_SOURCE_DIR}/pathing
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
     ${CMAKE_CURRENT_SOURCE_DIR}/blockentities
     ${CMAKE_CURRENT_SOURCE_DIR}/entities

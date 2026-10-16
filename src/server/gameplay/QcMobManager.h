@@ -4,6 +4,7 @@
 #include "QcChunkPos.h"
 #include "QcContentRegistry.h"
 #include "QcCreature.h"
+#include "QcMobCrowd.h"
 #include "QcEntityMotion.h"
 #include "QcPhysics.h"
 
@@ -17,10 +18,13 @@
 #include <optional>
 
 class QcChunk;
+class QcMobBehaviour;
+class QcPathPlanner;
 class QcServerWorld;
 
-// Creatures on the server: spawning by time of day, place and data definitions, a small behaviour
-// model (wander, chase, attack, flee when hurt for passive mobs), damage and despawning. Peaceful
+// Creatures on the server: spawning by time of day, place and data definitions, their behaviour
+// (QcMobBehaviour: wander, chase along paths, attack, flee when hurt for passive mobs), damage and
+// despawning. Peaceful
 // animals (not hostile, ambient or flying) are persistent (decision E-086): a share of newly generated chunks gets a group of them,
 // they never despawn, rest while their chunk is not loaded and are saved with the world. Other
 // creatures are not saved; they appear again around the players.
@@ -79,8 +83,20 @@ public:
     };
 
     QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
+    ~QcMobManager();
     // Creatures spawning by themselves around one player at most, by kind.
     void setCaps(int hostile, int passive, int ambient);
+    // Budgets of the path searches (QcServerLimits pathNodesPerTick, pathNodesPerSearch, pathLength).
+    void setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength);
+    // The path searches of the creatures (budget use, tests and debug).
+    const QcPathPlanner &paths() const;
+    // Thresholds of the AI tiers in crowds (QcServerLimits crowdThrottled, crowdIdle; decision E-401).
+    void setCrowdLimits(qint64 throttled, qint64 idle);
+    // What the creatures did in the last tick: crowds, tiers, paths (tests, measurements).
+    const QcMobBehaviour &behaviour() const { return *m_behaviour; }
+    // The creatures that stood in a cell with more than `limit` creatures at the start of the last
+    // tick (game rule maxEntityCramming; 0: none).
+    QList<QcMobCrowd::Crammed> crammed(int limit) const;
 
     // Advances all mobs by one tick and returns the hits they dealt to players.
     QList<PlayerHit> tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime, double dt,
@@ -90,6 +106,10 @@ public:
     // Damage without a source (lava): no knockback, no fleeing. Returns true when the mob died and
     // was removed.
     bool hurt(quint32 mobId, double amount);
+    // The same, returning the mob's drops when it died (cramming, decision E-401).
+    std::optional<QList<QcItemDrop>> wound(quint32 mobId, double amount);
+    // The same for the mob at `index` in mobs(); a death removes it from the list.
+    std::optional<QList<QcItemDrop>> woundAt(qsizetype index, double amount);
     // Removes a mob without a death (caught); false when there is none.
     bool remove(quint32 mobId);
     // Spawns a mob directly (commands, tests); returns its id.
@@ -192,15 +212,11 @@ private:
     // Weighted choice by spawn weight for a `random` value in [0, 1).
     int pickAnimal(const QList<int> &candidates, double random) const;
 
-    void think(QcCreature &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits);
-    // Walking about, standing still or fleeing when hurt.
-    QcPhysics::Steering wander(QcCreature &mob, const QcMobDefinition &definition, double dt);
-    // Drifting flight without gravity at a few metres above the ground.
-    void fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
-
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
     QRandomGenerator m_random;
+    // Uses m_random, so it comes after it.
+    std::unique_ptr<QcMobBehaviour> m_behaviour;
     QList<QcCreature> m_mobs;
     int m_hostileCap = hostileCapPerPlayer;
     int m_passiveCap = passiveCapPerPlayer;

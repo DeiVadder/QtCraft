@@ -1,7 +1,7 @@
 #include "QcMobManager.h"
 
 #include "QcDayCycle.h"
-#include "QcMobSteering.h"
+#include "QcMobBehaviour.h"
 #include "QcMobUpkeep.h"
 #include "QcNoise.h"
 #include "QcPhysics.h"
@@ -20,7 +20,6 @@ namespace {
 
 constexpr double spawnInterval = 1.0;
 constexpr int spawnAttemptsPerPlayer = 4;
-constexpr double fleeSeconds = 4.0;
 
 // Mobs never spawn on or in a block that hurts on contact (magma) or holds bodies inside (cobwebs);
 // the block fields decide, so mod blocks follow the same rule.
@@ -96,10 +95,33 @@ QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, qui
     : m_content(std::move(content))
     , m_seed(seed)
     , m_random(quint32(seed ^ (seed >> 32)))
+    , m_behaviour(std::make_unique<QcMobBehaviour>(m_content, m_random))
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.append(definition.spawnRules());
     }
+}
+
+QcMobManager::~QcMobManager() = default;
+
+void QcMobManager::setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength)
+{
+    m_behaviour->setPathLimits(nodesPerTick, nodesPerSearch, pathLength);
+}
+
+const QcPathPlanner &QcMobManager::paths() const
+{
+    return m_behaviour->paths();
+}
+
+void QcMobManager::setCrowdLimits(qint64 throttled, qint64 idle)
+{
+    m_behaviour->setCrowdLimits(throttled, idle);
+}
+
+QList<QcMobCrowd::Crammed> QcMobManager::crammed(int limit) const
+{
+    return m_behaviour->crowd().crammed(limit);
 }
 
 const QcCreature *QcMobManager::find(quint32 id) const
@@ -145,7 +167,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
 
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     if (!definition.hostile) {
-        mob.fleeTimer = fleeSeconds;
+        mob.fleeTimer = QcMobBehaviour::fleeSeconds;
         mob.wanderDirection = away;
     }
 
@@ -161,18 +183,35 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
 
 bool QcMobManager::hurt(quint32 mobId, double amount)
 {
+    return wound(mobId, amount).has_value();
+}
+
+std::optional<QList<QcItemDrop>> QcMobManager::wound(quint32 mobId, double amount)
+{
     const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
-    if (it == m_mobs.end() || it->hurtTimer > 0.0) {
-        return false;
+    if (it == m_mobs.end()) {
+        return std::nullopt;
+    }
+    return woundAt(it - m_mobs.begin(), amount);
+}
+
+std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double amount)
+{
+    const auto it = m_mobs.begin() + index;
+    if (it->hurtTimer > 0.0) {
+        return std::nullopt;
     }
     it->health -= amount;
     it->hurtTimer = hurtInvulnerability;
     it->hurtThisTick = true;
     if (it->health > 0.0) {
-        return false;
+        return std::nullopt;
     }
+
+    // Young animals leave nothing behind (decision E-293).
+    QList<QcItemDrop> drops = it->isYoung() ? QList<QcItemDrop>() : m_content->mobs()[it->type].drops;
     m_mobs.erase(it);
-    return true;
+    return drops;
 }
 
 bool QcMobManager::remove(quint32 mobId)
@@ -187,11 +226,8 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
         mob.attackedThisTick = false;
-        // Mobs rest where they are while their chunk is not loaded (QcEntities::settle).
-        if (!mob.dormant) {
-            think(mob, world, players, dt, hits);
-        }
     }
+    m_behaviour->tick(m_mobs, world, players, dt, hits);
 
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
@@ -207,111 +243,6 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
         }
     }
     return hits;
-}
-
-void QcMobManager::think(QcCreature &mob, QcServerWorld &world, const QList<PlayerView> &players, double dt, QList<PlayerHit> &hits)
-{
-    const QcMobDefinition &definition = m_content->mobs()[mob.type];
-    mob.hurtTimer = std::max(0.0, mob.hurtTimer - dt);
-    mob.attackCooldown = std::max(0.0, mob.attackCooldown - dt);
-    mob.fleeTimer = std::max(0.0, mob.fleeTimer - dt);
-    if (definition.flying) {
-        fly(mob, definition, world, dt);
-        return;
-    }
-
-    QcMobUpkeep::leaveBlocks(mob, definition, world);
-    mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
-    const PlayerView *target = definition.hostile ? QcMobSteering::nearestTarget(mob, definition, players) : nullptr;
-    mob.chasing = target ? target->entityId : 0;
-    QcPhysics::Steering steering = target ? QcMobSteering::chase(mob, definition, *target, hits) : wander(mob, definition, dt);
-
-    // While knocked back the mob does not steer.
-    if (mob.hurtTimer > hurtInvulnerability * 0.5) {
-        steering.wish = {};
-    }
-    const bool jump = mob.motion.inWater || (mob.blockedLastTick && steering.wish.length() > 0.0);
-    const QcPhysics::MoveResult move =
-        QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{steering.wish, steering.speed, jump},
-                              QcPhysics::BodySize{definition.width, definition.height}, world, QcPhysics::tickDuration);
-    mob.blockedLastTick = move.blockedX || move.blockedZ;
-}
-
-QcPhysics::Steering QcMobManager::wander(QcCreature &mob, const QcMobDefinition &definition, double dt)
-{
-    QcPhysics::Steering steering{{}, definition.walkSpeed};
-    mob.wanderTimer -= dt;
-    if (mob.fleeTimer > 0.0) {
-        steering.wish = mob.wanderDirection;
-        steering.speed = definition.chaseSpeed;
-    } else if (mob.wanderTimer <= 0.0) {
-        // Half of the time stand still, otherwise walk somewhere for a few seconds.
-        mob.wanderTimer = 2.0 + m_random.bounded(5.0);
-        if (m_random.bounded(2) == 0) {
-            mob.wanderDirection = {};
-        } else {
-            const double angle = m_random.bounded(2.0 * std::numbers::pi);
-            mob.wanderDirection = {std::sin(angle), 0.0, -std::cos(angle)};
-        }
-    }
-
-    if (mob.fleeTimer <= 0.0) {
-        steering.wish = mob.wanderDirection;
-    }
-    if (steering.wish.length() > 0.0) {
-        mob.yaw = QcMobSteering::yawTowards(steering.wish);
-    }
-    return steering;
-}
-
-void QcMobManager::fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)
-{
-    mob.wanderTimer -= dt;
-    if (mob.wanderTimer <= 0.0 || mob.blockedLastTick) {
-        mob.wanderTimer = 1.0 + m_random.bounded(3.0);
-        const double angle = m_random.bounded(2.0 * std::numbers::pi);
-        mob.wanderDirection = {std::sin(angle), m_random.bounded(1.0) - 0.5, -std::cos(angle)};
-    }
-
-    // A flyer stuck in a block (summoned into a hill) rises out of it.
-    const QcBlockPos centre = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, definition.height * 0.5, 0.0});
-    if (QcPhysics::isSolidAt(world, centre) && world.blockAt(centre)) {
-        mob.motion.position.y = centre.y + 1.0;
-        mob.motion.velocity = {};
-        return;
-    }
-
-    // Height above the first solid or liquid block below (at most a few metres down).
-    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
-    double height = flyMaxHeight + 1.0;
-    for (int down = 0; down <= int(flyMaxHeight) + 1; ++down) {
-        const QcBlockPos below = feet.offset(0, -down, 0);
-        if (QcPhysics::isSolidAt(world, below) || QcPhysics::isLiquidAt(world, below)) {
-            height = mob.motion.position.y - (below.y + 1.0);
-            break;
-        }
-    }
-
-    QcVec3 wish = mob.wanderDirection;
-    if (height < flyMinHeight) {
-        wish.y = 0.6;
-    } else if (height > flyMaxHeight) {
-        wish.y = -0.6;
-    }
-
-    const double blend = std::min(1.0, 4.0 * dt);
-    mob.motion.velocity += (wish * definition.walkSpeed - mob.motion.velocity) * blend;
-
-    const QcPhysics::MoveResult move =
-        QcPhysics::moveBox(QcPhysics::boxAt(mob.motion.position, definition.width, definition.height), mob.motion.velocity * dt, world);
-    mob.motion.position += move.applied;
-    mob.motion.onGround = false;
-    mob.motion.inWater = false;
-    mob.blockedLastTick = move.blockedX || move.blockedY || move.blockedZ;
-
-    if (QcVec3{mob.motion.velocity.x, 0.0, mob.motion.velocity.z}.length() > 0.05) {
-        mob.yaw = QcMobSteering::yawTowards({mob.motion.velocity.x, 0.0, mob.motion.velocity.z});
-    }
 }
 
 void QcMobManager::trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bool night, const QList<PlayerView> &players,

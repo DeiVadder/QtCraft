@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 47> table{{
+constexpr std::array<QcServerLimits::Field, 52> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -42,7 +42,15 @@ constexpr std::array<QcServerLimits::Field, 47> table{{
     {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
     {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
     {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},
-    {"breedingCrowd", "animals of a kind within 3 x 3 chunks that still breed", 2, 1024, &QcServerLimits::breedingCrowd},
+    {"pathNodesPerTick", "path search nodes of all creatures per tick (0: creatures walk straight at their goals)", 0, 1 << 20,
+     &QcServerLimits::pathNodesPerTick},
+    {"pathNodesPerSearch", "path search nodes of one search", 16, 65536, &QcServerLimits::pathNodesPerSearch},
+    {"pathLength", "waypoints a creature's path keeps", 8, 256, &QcServerLimits::pathLength},
+    {"crowdThrottled", "creatures in one block cell from which they think only every 4th to 10th tick", 2, 4096,
+     &QcServerLimits::crowdThrottled},
+    {"crowdIdle", "creatures in one block cell from which their AI is off (gravity, push and blows at an adjacent player only)", 2,
+     4096, &QcServerLimits::crowdIdle},
+    {"breedingCrowd","animals of a kind within 3 x 3 chunks that still breed", 2, 1024, &QcServerLimits::breedingCrowd},
     {"bredPerKind", "bred animals of a kind in the world", 0, 65536, &QcServerLimits::bredPerKind},
     {"randomTicksPerSection", "random ticks per marked section and tick", 0, 64, &QcServerLimits::randomTicksPerSection},
     {"leafDecaysPerTick", "leaves decaying per tick", 1, 4096, &QcServerLimits::leafDecaysPerTick},

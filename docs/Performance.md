@@ -209,6 +209,8 @@ Zielprüfung Etappe 33 (gerendert, 2026-10-15, 8 und 16 Chunks): Bildrate (116�
 
 Zielprüfung Etappe 35 (gerendert, 2026-10-16, 8 Chunks, `@core` und `@weather`): Bildrate (120 FPS), Frame-Kosten (höchstens 2,65 ms GPU in crowd; in Regen, Schnee, Gewitter und Waldbrand im Gewitter höchstens 1,85 ms GPU und 1,83 ms Render-CPU) und p99 ≤ 12,5 ms (alle 96 Läufe 9,2–10,5 ms, externer Monitor angeschlossen) erfüllt. Spitzenspeicher stand, showcase, crowd und die Wetter-Szenen 332–457 MB, sprint (10 s) 560 MB erfüllt; sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen (Befunde oben, durch 35 nicht berührt). Kein Tick über 50 ms, keine übersprungenen Ticks. Referenzwerte unverändert.
 
+Zielprüfung Etappe 37.1 (gerendert, 2026-10-16, 8 Chunks, `@core` und das neue Szenario `horde`): Bildrate (120 FPS), Frame-Kosten (höchstens 2,69 ms GPU in crowd) und p99 ≤ 12,5 ms im Median (10,3 ms über 60 Läufe, 4 Ausreißer bei Last auf beiden Ständen) erfüllt. Spitzenspeicher stand, showcase, crowd, horde 331–459 MB, sprint (10 s) 561 MB erfüllt; sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen (Befunde oben, durch 37.1 nicht berührt). Kein Tick über 50 ms (höchstens 5,0 ms), keine übersprungenen Ticks. Referenzwerte unverändert.
+
 ## Regressionsschutz
 
 `scripts/perf-check.sh [seconds]` baut das Release-Preset, misst stand, sprint und crowd bei 8 Chunks je einmal und scheitert, wenn ein Wert seine Grenze überschreitet: Frame Ø ≤ 16,7 ms (60 FPS), p99 ≤ 25 ms, GUI-CPU ≤ 4 ms, Render-CPU ≤ 6 ms, GPU ≤ 6 ms, Tick Ø ≤ 5 ms, Spitzenspeicher ≤ 600 MB, Meshing pro Sektion ≤ 5 ms. Die Grenzen liegen beim 3- bis 10-Fachen der Messwerte, damit die Tageslast der Maschine die Prüfung nicht scheitern lässt; nicht Teil von `ctest`.

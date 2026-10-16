@@ -123,7 +123,7 @@ void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or changes the time of day (a day lasts 600 s)."),
                          .run = [this](const QcCommandContext &context) { time(context); }});
     registry.addBuiltIn({.name = u"gamerule"_s, .permission = QcPermission::Player, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16]"),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows a game rule; operators change it."),
                          .run = [this](const QcCommandContext &context) { gamerule(context); }});
     registry.addBuiltIn({.name = u"locatebiome"_s, .permission = QcPermission::Player, .needsPlayer = true, .minArguments = 1,
@@ -334,7 +334,8 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
 {
     // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221;
     // randomTicks, decision E-295; quasiConnectivity, decision E-338; fireSpread, decision E-392;
-    // weatherCycle, decision E-395).
+    // weatherCycle, decision E-395; the numbers spawnChunkRadius, decision E-377, and
+    // maxEntityCramming, decision E-401).
     using Rule = std::pair<QStringView, bool QcWorldInfo::*>;
     const std::array<Rule, 7> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
                                      {u"daylightCycle", &QcWorldInfo::daylightCycle},
@@ -345,13 +346,17 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
                                      {u"weatherCycle", &QcWorldInfo::weatherCycle}}};
     const QStringList &args = context.args;
     if (args[0] == u"spawnChunkRadius"_s) {
-        spawnChunkRadius(context);
+        numberRule(context, QcWorldInfo::maxSpawnChunkRadius, &QcWorldInfo::spawnChunkRadius);
+        return;
+    }
+    if (args[0] == u"maxEntityCramming"_s) {
+        numberRule(context, QcWorldInfo::maxEntityCrammingLimit, &QcWorldInfo::maxEntityCramming);
         return;
     }
     const auto rule = std::ranges::find(rules, QStringView(args[0]), &Rule::first);
     const std::optional<bool> wanted = args.size() >= 2 ? QcCommandArguments::toggle(args[1]) : std::nullopt;
     if (rule == rules.end() || (args.size() >= 2 && !wanted)) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16]"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096]"));
         return;
     }
 
@@ -375,27 +380,28 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
     }
 }
 
-void QcCheatCommands::spawnChunkRadius(const QcCommandContext &context)
+void QcCheatCommands::numberRule(const QcCommandContext &context, int highest, int QcWorldInfo::*rule)
 {
-    // The chunks around the spawn that stay loaded (decision E-377): 0 none, 1 the spawn chunk, 2 the
-    // 3 x 3 around it and so on.
+    // spawnChunkRadius: the chunks around the spawn that stay loaded (decision E-377): 0 none, 1 the
+    // spawn chunk, 2 the 3 x 3 around it and so on. maxEntityCramming: creatures in one block cell
+    // beyond which they take damage (decision E-401), 0 off.
     const QStringList &args = context.args;
-    int &radius = m_state.info().spawnChunkRadius;
+    int &value = m_state.info().*rule;
     if (args.size() == 1) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is %2"), {args[0], QString::number(radius)});
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is %2"), {args[0], QString::number(value)});
         return;
     }
-    const std::optional<int> wanted = QcCommandArguments::count(args, 1, -1, 0, QcWorldInfo::maxSpawnChunkRadius);
+    const std::optional<int> wanted = QcCommandArguments::count(args, 1, -1, 0, highest);
     if (!wanted || args.size() != 2) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16]"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096]"));
         return;
     }
     if (!context.source.may(QcPermission::Operator)) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Only operators can use /%1"), {u"gamerule"_s});
         return;
     }
-    radius = *wanted;
-    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now %2"), {args[0], QString::number(radius)});
+    value = *wanted;
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now %2"), {args[0], QString::number(value)});
 }
 
 void QcCheatCommands::gamemode(const QcCommandContext &context)

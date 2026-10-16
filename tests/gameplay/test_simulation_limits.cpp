@@ -77,6 +77,13 @@ private slots:
         QCOMPARE(limits.maxMinecarts, 4096);
         QCOMPARE(limits.movingBlocksShown, 4096);
         QCOMPARE(limits.experienceOrbs, 1024);
+        // Path finding of creatures (stage 37.1, decision E-400).
+        QCOMPARE(limits.pathNodesPerTick, 4096);
+        QCOMPARE(limits.pathNodesPerSearch, 512);
+        QCOMPARE(limits.pathLength, 64);
+        // Crowds of creatures (stage 37.1, decision E-401).
+        QCOMPARE(limits.crowdThrottled, 8);
+        QCOMPARE(limits.crowdIdle, 24);
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
         for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
@@ -84,7 +91,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(47));
+        QCOMPARE(keys.size(), qsizetype(52));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

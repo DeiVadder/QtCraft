@@ -68,6 +68,11 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `hostileCreaturesPerPlayer` | 8 | 0 – 256 | Hostile creatures spawning by themselves around one player |
 | `passiveCreaturesPerPlayer` | 6 | 0 – 256 | Passive creatures spawning by themselves around one player |
 | `ambientCreaturesPerPlayer` | 10 | 0 – 256 | Ambient creatures (fireflies) spawning around one player |
+| `pathNodesPerTick` | 4096 | 0 – 1048576 | Nodes all path searches of creatures expand per tick; searches beyond wait for the next tick, first come first served; 0 switches path finding off and creatures walk straight at their goals (E-400) |
+| `pathNodesPerSearch` | 512 | 16 – 65536 | Nodes one path search expands at most (a wandering creature a quarter); a goal out of reach gives a path to the closest cell reached (E-400) |
+| `pathLength` | 64 | 8 – 256 | Waypoints a creature's path keeps; at the end of a cut path it searches on (E-400) |
+| `crowdThrottled` | 8 | 2 – 4096 | Awake walking creatures in one block cell from which each thinks only every 4th to 10th tick (more often the fewer), without path searches, keeping its last goal and steering in between; fewer think fully (E-401) |
+| `crowdIdle` | 24 | 2 – 4096 | Creatures in one block cell from which their AI is off: only gravity, currents, damage and the push of the crowd. In both crowd tiers a hostile creature still strikes a player in melee, so a knot of them is no safe place (E-401) |
 | `breedingCrowd` | 24 | 2 – 1024 | Animals of a kind within 3 × 3 chunks above which no young are born (E-293) |
 | `bredPerKind` | 256 | 0 – 65536 | Bred animals of a kind in the world at most |
 | `randomTicksPerSection` | 3 | 0 – 64 | Random ticks per marked section and tick (growing plants, crops, soil, E-289); more makes plants grow faster, 0 stops them like the game rule `randomTicks` |

@@ -33,6 +33,7 @@ void readGameRules(const QJsonObject &rules, QcWorldInfo &info)
     info.quasiConnectivity = rules.value(u"quasiConnectivity"_s).toBool(true);
     info.weatherCycle = rules.value(u"weatherCycle"_s).toBool(true);
     info.spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, QcWorldInfo::maxSpawnChunkRadius);
+    info.maxEntityCramming = std::clamp(rules.value(u"maxEntityCramming"_s).toInt(24), 0, QcWorldInfo::maxEntityCrammingLimit);
 }
 
 // The chunk loader blocks and the forced chunks of world.json; entries out of range are left out.
@@ -158,7 +159,8 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                                                         {u"fireSpread"_s, info.fireSpread},
                                                         {u"quasiConnectivity"_s, info.quasiConnectivity},
                                                         {u"weatherCycle"_s, info.weatherCycle},
-                                                        {u"spawnChunkRadius"_s, info.spawnChunkRadius}}}};
+                                                        {u"spawnChunkRadius"_s, info.spawnChunkRadius},
+                                                        {u"maxEntityCramming"_s, info.maxEntityCramming}}}};
     json.insert(u"weather"_s, QcWeatherCycle::toJson(info.weather));
     if (!info.limits.isEmpty()) {
         json.insert(u"limits"_s, info.limits);

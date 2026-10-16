@@ -348,7 +348,7 @@ Creatures appear 20–48 m away from players: peaceful animals on grass by day, 
 
 **Limits**
 
-Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around.
+Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.
 
 **See also**
 
@@ -401,7 +401,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). **maxEntityCramming** (a number, 24 by default, like the reference): creatures in one block cell beyond this many take damage until no more than that are left, and drop their loot; 0 switches it off. Mob farms use it to kill what drops into a cell of one block. Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -436,7 +436,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …); `/gamerule maxEntityCramming [0-4096]`: creatures in one block cell beyond which they take damage (0 never)
 - `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
