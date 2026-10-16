@@ -9,11 +9,18 @@
 # --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
 #                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
 #                    a stage. Before the merge the full run checks every test under TSan.
+# --changed:         with --quick or --tsan-concurrent (alone it means --quick --changed): every test
+#                    step runs only the tests whose inputs changed since they last passed in that build
+#                    directory: relinked executables, files named on their command line or in
+#                    REQUIRED_FILES, and runtime data (content, translations, shaders, test data, CMake
+#                    files; a change there runs all). scripts/verify-tests.py selects and keeps the
+#                    stamps in build/<preset>/.verify-test-stamps.json (decision E-405). Every run
+#                    records the tests that passed, so a run without --changed also renews the stamps.
 # Every test step runs ctest in parallel (decision E-380): QC_TEST_JOBS jobs, by default the number
 # of cores minus two. The script runs at normal priority; work beside it (the next stage in its own
 # worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
 # ~/.cache/qtcraft/bench.lock exists.
-# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
+# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
 
@@ -24,6 +31,7 @@ MODE=full
 MODE_GIVEN=""
 TEST_REGEX=""
 TSAN_LABEL=""
+CHANGED=0
 SANITIZERS="asan tsan"
 SANITIZERS_GIVEN=0
 SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
@@ -38,7 +46,7 @@ esac
 [ "$TEST_JOBS" -ge 1 ] || TEST_JOBS=1
 
 usage() {
-    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
+    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
     exit 2
 }
 
@@ -56,6 +64,9 @@ while [ $# -gt 0 ]; do
         MODE=quick
         MODE_GIVEN="$MODE_GIVEN tsan-concurrent"
         TSAN_LABEL=concurrency
+        ;;
+    --changed)
+        CHANGED=1
         ;;
     --tests)
         [ $# -ge 2 ] || usage
@@ -87,6 +98,14 @@ if [ -n "$TSAN_LABEL" ]; then
     fi
     SANITIZERS=tsan
     SANITIZERS_GIVEN=1
+fi
+
+# --changed belongs to the levels during a stage; the full run before the merge runs every test.
+if [ "$CHANGED" -eq 1 ]; then
+    case "$MODE_GIVEN" in
+    *full*) usage ;;
+    esac
+    MODE=quick
 fi
 
 if [ "$MODE" = quick ] && [ "$SANITIZERS_GIVEN" -eq 0 ]; then
@@ -121,18 +140,57 @@ limited() {
     perl -e 'alarm shift; exec @ARGV or die' "$@"
 }
 
+# Prints the ctest regex of the tests to run with --changed (empty: none); fails when the selection
+# cannot be made, and the caller then runs every test.
+select_changed() {
+    preset=$1
+    label=$2
+    set -- select --build-dir "build/$preset" --changed
+    if [ -n "$TEST_REGEX" ]; then
+        set -- "$@" --regex "$TEST_REGEX"
+    fi
+    if [ -n "$label" ]; then
+        set -- "$@" --label "$label"
+    fi
+    python3 scripts/verify-tests.py "$@"
+}
+
 run_tests() {
     preset=$1
+    label=""
+    if [ "$preset" = tsan ] && [ -n "$TSAN_LABEL" ]; then
+        label=$TSAN_LABEL
+    fi
     # The serial TSan suite took about 40 minutes (stage 43); an hour per step leaves room for a
     # machine that is busy beside the run.
     set -- --preset "$preset" --parallel "$TEST_JOBS"
-    if [ -n "$TEST_REGEX" ]; then
-        set -- "$@" -R "$TEST_REGEX"
+    rm -f "build/$preset/.verify-test-pending.json"
+
+    selection=""
+    if [ "$CHANGED" -eq 1 ] && selection=$(select_changed "$preset" "$label"); then
+        if [ -z "$selection" ]; then
+            echo "no test of build/$preset changed since it last passed: 0 tests run"
+            return 0
+        fi
+        set -- "$@" -R "$selection"
+    else
+        [ "$CHANGED" -eq 1 ] && echo "test selection failed, running every test" >&2
+        python3 scripts/verify-tests.py select --build-dir "build/$preset"
+        if [ -n "$TEST_REGEX" ]; then
+            set -- "$@" -R "$TEST_REGEX"
+        fi
+        if [ -n "$label" ]; then
+            set -- "$@" -L "$label"
+        fi
     fi
-    if [ "$preset" = tsan ] && [ -n "$TSAN_LABEL" ]; then
-        set -- "$@" -L "$TSAN_LABEL"
-    fi
-    limited 3600 ctest "$@"
+
+    # The JUnit report tells which tests passed; only those get new stamps.
+    junit="$PROJECT_DIR/build/$preset/Testing/verify-junit.xml"
+    rm -f "$junit"
+    limited 3600 ctest "$@" --output-junit "$junit"
+    status=$?
+    python3 scripts/verify-tests.py record --build-dir "build/$preset" --junit "$junit"
+    return $status
 }
 
 build_and_test() {
@@ -211,10 +269,14 @@ if [ -n "$failures" ]; then
     echo "FAILED:$failures"
     exit 1
 fi
+selected=""
+if [ "$CHANGED" -eq 1 ]; then
+    selected=", changed tests only"
+fi
 if [ -n "$TSAN_LABEL" ]; then
-    echo "ALL GREEN (quick, TSan on label $TSAN_LABEL)"
+    echo "ALL GREEN (quick, TSan on label $TSAN_LABEL$selected)"
 elif [ "$MODE" = quick ]; then
-    echo "ALL GREEN (quick)"
+    echo "ALL GREEN (quick$selected)"
 else
     echo "ALL GREEN (screenshot: $SCREENSHOT)"
 fi

@@ -465,3 +465,13 @@ set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
 set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_scenarios test_mods test_signal_network PROPERTIES COST 80)
+
+# Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
+# again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
+# tests that read sources compare against the folder. Runtime data (content, translations, mods,
+# test data) selects every test anyway.
+set_tests_properties(test_headless_cli test_dedicated_server test_multiplayer_bots test_creative_bots
+    test_signal_bots test_minecart_bots test_machine_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
+set_tests_properties(test_ui_palette PROPERTIES
+    REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
+set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
