@@ -25,12 +25,13 @@
 // minecarts with the entities of their chunk (decision E-382), format 7 (stage 32.2) also the slots of
 // container carts (decision E-386), format 8 (stage 34) burning fires with their chunk (decision E-392), format 9 (stage 36) experience orbs
 // with their chunk, the experience stored in furnaces and players' experience (decision E-398), format 10
-// (stage 37.2) generates villages and keeps their state in villages.json (decision E-403). Worlds
+// (stage 37.2) generates villages and keeps their state in villages.json (decision E-403), format 11
+// (stage 37.2b) saves villagers with their home, workstation and profession (decision E-411). Worlds
 // of older development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 10;
-    static constexpr int oldestFormatVersion = 10;
+    static constexpr int formatVersion = 11;
+    static constexpr int oldestFormatVersion = 11;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;

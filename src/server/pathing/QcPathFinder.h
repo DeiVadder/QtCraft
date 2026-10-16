@@ -36,7 +36,8 @@ struct QcPathResult
 // A* over the cells a creature can stand in (QcPathTerrain), bounded by a node budget and by the
 // window around the start (QcPathWindow). Moves: the four sides (a step up of at most
 // QcPathRules::climbHeight with room to jump, level, or a drop of at most QcPathRules::maxDrop,
-// deeper only into deep water), and the diagonals between two free sides on the same level. Costs:
+// deeper only into deep water), up and down along a ladder (a creature that climbs), and the diagonals between two free sides
+// on the same level. Costs:
 // distance, a little for climbing and dropping, much for water (a walker), magma floors and cobwebs,
 // a little beside walls, so paths keep to open cells, and more beside fire and lava. The
 // heuristic is weighted (1.25): paths are at most a quarter longer than the shortest, for far fewer
@@ -55,7 +56,7 @@ private:
         QcBlockPos to;
         float cost = 0.0f;
     };
-    using Moves = std::array<Move, 8>;
+    using Moves = std::array<Move, 10>;
 
     // Where a creature at `feet` (falling, in deep water) can start from: its cell, a few below or
     // two above.
@@ -63,6 +64,8 @@ private:
     // Moves from a node; returns how many were written.
     int expand(QcBlockPos at, QcPathRules rules, Moves &moves);
     std::optional<Move> sideStep(QcBlockPos at, QcPathStand here, QcBlockPos side, QcPathRules rules);
+    // Up and down a ladder the feet are on: to the ladder cell above, to the cell below.
+    int climb(QcBlockPos at, QcPathRules rules, Moves &moves, int count);
     // Fire or lava in the side cell or below it (a side that cannot be entered).
     bool dangerous(QcBlockPos side);
     // The best of the visited nodes (closest to the goal) and the cells from the start to it.

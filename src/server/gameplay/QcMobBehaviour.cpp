@@ -13,6 +13,7 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     : m_content(std::move(content))
     , m_random(random)
     , m_paths(*m_content)
+    , m_villagers(m_content, m_random, m_paths)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
@@ -24,15 +25,16 @@ void QcMobBehaviour::setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, q
     m_paths.setLimits(nodesPerTick, nodesPerSearch, pathLength);
 }
 
-void QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players, double dt,
+void QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players, Clock clock,
                           QList<QcMobManager::PlayerHit> &hits)
 {
     m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[std::size_t(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
+    m_villagers.startTick();
     m_tiers = {};
     ++m_tick;
 
-    const Tick tick{world, players, dt, hits};
+    const Tick tick{world, players, clock.dt, hits, mobs, clock.worldTime};
     for (qsizetype i = 0; i < mobs.size(); ++i) {
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
@@ -49,6 +51,11 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const Tick &tick)
     mob.attackCooldown = std::max(0.0, mob.attackCooldown - tick.dt);
     mob.fleeTimer = std::max(0.0, mob.fleeTimer - tick.dt);
     mob.targetMemory = std::max(0.0, mob.targetMemory - tick.dt);
+    // A villager in its bed lies still until it gets up (decision E-411).
+    if (definition.villager && mob.villager.sleeping && m_villagers.rest(mob, villagerContext(mob, tick))) {
+        ++m_tiers.full;
+        return;
+    }
     if (definition.flying) {
         ++m_tiers.full;
         fly(mob, definition, tick.world, tick.dt);
@@ -74,6 +81,14 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const Tick &tick)
     }
     case QcMobCrowd::Tier::Idle:
         ++m_tiers.idle;
+        // Villagers still think in the slowest turn and keep to their path in between: a crowd that
+        // met at the bell goes home at night.
+        if (definition.villager) {
+            const int interval = QcMobSteering::sightCheckTicks;
+            steering = (m_tick + mob.id) % quint64(interval) == 0 ? think(mob, definition, tick, interval)
+                                                                  : withoutThinking(mob, definition, tick, true);
+            break;
+        }
         steering = withoutThinking(mob, definition, tick, false);
         break;
     }
@@ -86,6 +101,13 @@ QcPhysics::Steering QcMobBehaviour::think(QcCreature &mob, const QcMobDefinition
     // Every creature looks once in sightCheckTicks, staggered by its id: one thinking every
     // `thinkTicks` (at most sightCheckTicks) looks at its thought in the first `thinkTicks` of them.
     const bool mayPlan = thinkTicks <= 1;
+    // Villagers follow their routine (in a crowd in turns, update(); QcVillagerBehaviour budgets
+    // their decisions).
+    if (definition.villager) {
+        const QcPhysics::Steering steering = m_villagers.think(mob, definition, villagerContext(mob, tick));
+        mob.lastSpeed = steering.speed;
+        return steering;
+    }
     const bool looks = (m_tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
     const QcMobManager::PlayerView *target =
         definition.hostile ? QcMobSteering::chooseTarget(mob, definition, tick.players, tick.world, looks) : nullptr;
@@ -148,10 +170,20 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
         steering.wish = {};
     }
     const bool jump = mob.motion.inWater || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0);
+    const bool wasOnGround = mob.motion.onGround;
+    // Feet in water (also while floating with the body above the surface).
+    const bool wading = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0}));
+    // A swimmer at the shore, its body above the surface, leaps onto the bank as from the ground:
+    // swimming up never lifts its feet onto a bank level with the water.
+    if (mob.blockedLastTick && wading && !mob.motion.inWater && steering.wish.length() > 0.0) {
+        mob.motion.velocity.y = std::max(mob.motion.velocity.y, QcPhysics::jumpVelocity);
+    }
     const QcPhysics::MoveResult move =
         QcPhysics::stepEntity(mob.motion, QcPhysics::Steering{steering.wish, steering.speed, jump},
                               QcPhysics::BodySize{definition.width, definition.height}, world, QcPhysics::tickDuration);
-    mob.blockedLastTick = move.blockedX || move.blockedZ;
+    // Only a wall met while walking on the ground or swimming (the shore) is jumped at: one met in
+    // the air or on landing (a head under a door's lintel) would keep it jumping.
+    mob.blockedLastTick = (move.blockedX || move.blockedZ) && ((wasOnGround && mob.motion.onGround) || wading);
 }
 
 QcPhysics::Steering QcMobBehaviour::chase(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,

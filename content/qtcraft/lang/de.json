@@ -500,5 +500,19 @@
     "structure.qtcraft.village_swamp_house_large_b": "Doppelhütte (Sumpf)",
     "structure.qtcraft.village_swamp_garden": "Hochbeet (Sumpf)",
     "structure.qtcraft.village_swamp_fisher_hut": "Fischerhütte (Sumpf)",
-    "structure.qtcraft.village_swamp_herb_hut": "Kräuterhütte (Sumpf)"
+    "structure.qtcraft.village_swamp_herb_hut": "Kräuterhütte (Sumpf)",
+    "mob.qtcraft.villager": "Dorfbewohner",
+    "profession.qtcraft.farmer": "Bauer",
+    "profession.qtcraft.smith": "Schmied",
+    "profession.qtcraft.fisher": "Fischer",
+    "profession.qtcraft.unemployed": "Ohne Beruf",
+    "appearance.qtcraft.villager_tunic": "Dorfkittel",
+    "appearance.qtcraft.villager_robe": "Wüstengewand",
+    "appearance.qtcraft.villager_coat": "Pelzbesetzter Mantel",
+    "appearance.qtcraft.villager_smock": "Kittel mit Watstiefeln",
+    "appearance.qtcraft.villager_straw_hat": "Strohhut",
+    "appearance.qtcraft.villager_fisher_hat": "Südwester",
+    "appearance.qtcraft.villager_headwrap": "Kopftuch",
+    "appearance.qtcraft.villager_fur_hat": "Pelzmütze",
+    "appearance.qtcraft.villager_reed_hat": "Schilfhut"
 }

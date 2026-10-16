@@ -1,0 +1,8 @@
+{
+    "name": "villager_smock",
+    "pattern": "noise",
+    "primary": "#f4f4f4",
+    "secondary": "#dadada",
+    "variation": 0.1,
+    "seed": 7503
+}

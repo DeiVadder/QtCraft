@@ -1,0 +1,8 @@
+{
+    "name": "villager_oilskin",
+    "pattern": "noise",
+    "primary": "#e8c02c",
+    "secondary": "#d0a820",
+    "variation": 0.08,
+    "seed": 7512
+}

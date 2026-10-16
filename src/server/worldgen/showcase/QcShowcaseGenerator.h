@@ -21,6 +21,9 @@ public:
     QcWorldSetup setup() const override { return m_plan.setup; }
     QList<QcWorldLabel> labelsIn(QcChunkPos pos) const override { return m_plan.labelsByChunk.value(pos); }
 
+    // The row of the village area whose buildings and road reach into the chunk (the rows lie
+    // further apart than a chunk).
+    [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     const QcShowcasePlan &plan() const { return m_plan; }
 
 private:

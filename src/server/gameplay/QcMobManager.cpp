@@ -32,10 +32,11 @@ bool keepsSpawnsAway(const QcBlockDefinition &block)
 // A group stands on these neighbouring columns.
 constexpr std::array<std::pair<int, int>, 4> groupOffsets{{{0, 0}, {1, 0}, {0, 1}, {1, 1}}};
 
-// Peaceful walkers: the persistent kind (flying creatures stay ordinary).
+// Peaceful walkers: the persistent kind (flying creatures stay ordinary; villagers live in their
+// villages, decision E-411).
 bool isAnimal(const QcMobDefinition &definition)
 {
-    return !definition.hostile && !definition.ambient && !definition.flying;
+    return !definition.hostile && !definition.ambient && !definition.flying && !definition.villager;
 }
 
 bool nearAnyPlayer(const QcVec3 &position, const QList<QcMobManager::PlayerView> &players)
@@ -147,6 +148,14 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     mob.motion.position = position;
     mob.health = m_content->mobs()[type].maxHealth;
     mob.yaw = float(m_random.bounded(360.0));
+    // A villager always has a profession, the unemployed one at first (decision E-411); it lives
+    // on with the world. Its look comes from its id, not from the random sequence of the creatures
+    // (one moving in beside a bed gets the bed's look, spawnVillagers).
+    if (m_content->mobs()[type].villager) {
+        mob.villager.profession = m_content->villagerSettings().unemployed;
+        mob.villager.look = quint32(qcMixSeed(m_seed, 4101 + quint64(id)));
+        mob.persistent = true;
+    }
     m_mobs.append(mob);
     return id;
 }
@@ -178,6 +187,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(quint32 mobId, double amou
 
     // Young animals leave nothing behind (decision E-293).
     QList<QcItemDrop> drops = mob.isYoung() ? QList<QcItemDrop>() : definition.drops;
+    depart(mob);
     m_mobs.erase(it);
     return drops;
 }
@@ -211,13 +221,20 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
 
     // Young animals leave nothing behind (decision E-293).
     QList<QcItemDrop> drops = it->isYoung() ? QList<QcItemDrop>() : m_content->mobs()[it->type].drops;
+    depart(*it);
     m_mobs.erase(it);
     return drops;
 }
 
 bool QcMobManager::remove(quint32 mobId)
 {
-    return m_mobs.removeIf([mobId](const QcCreature &mob) { return mob.id == mobId; }) > 0;
+    const auto it = std::ranges::find(m_mobs, mobId, &QcCreature::id);
+    if (it == m_mobs.end()) {
+        return false;
+    }
+    depart(*it);
+    m_mobs.erase(it);
+    return true;
 }
 
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
@@ -228,11 +245,17 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
         mob.hurtThisTick = false;
         mob.attackedThisTick = false;
     }
-    m_behaviour->tick(m_mobs, world, players, dt, hits);
+    m_behaviour->tick(m_mobs, world, players, {worldTime, dt}, hits);
 
     // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
-    m_mobs.removeIf([&](const QcCreature &mob) { return QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night); });
+    m_mobs.removeIf([&](const QcCreature &mob) {
+        const bool despawns = QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night);
+        if (despawns) {
+            depart(mob);
+        }
+        return despawns;
+    });
 
     m_spawnTimer += dt;
     if (m_naturalSpawning && m_spawnTimer >= spawnInterval) {
@@ -271,10 +294,11 @@ QcMobManager::NearbyCounts QcMobManager::countNear(const QcVec3 &centre) const
     // Animals spawn naturally only where none is awake around the player: most come with new chunks.
     NearbyCounts counts;
     for (const QcCreature &mob : m_mobs) {
-        if (mob.dormant) {
+        const QcMobDefinition &kind = m_content->mobs()[mob.type];
+        // Villagers live in their villages and take no room from the creatures around players.
+        if (mob.dormant || kind.villager) {
             continue;
         }
-        const QcMobDefinition &kind = m_content->mobs()[mob.type];
         counts.animalsNear = counts.animalsNear || (isAnimal(kind) && (mob.motion.position - centre).length() < animalSearchDistance);
         if ((mob.motion.position - centre).length() < spawnRadiusMax + 16.0) {
             counts.of(kind) += 1;
@@ -502,10 +526,20 @@ bool QcMobManager::spawnsInChunk(int type, QcChunkPos pos, double chance, int ru
     return qcPositionRandom(qcMixSeed(m_seed, 5000 + kind + quint64(rule) * 7919), pos.x, 0, pos.z) < chance;
 }
 
-void QcMobManager::populateChunk(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId)
+void QcMobManager::populateChunk(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId)
 {
-    // Chunks seen while creatures do not spawn get their animals when they load again later.
-    if (!m_naturalSpawning || m_populated.contains(pos)) {
+    // Chunks seen while creatures do not spawn get their animals when they load again later; a
+    // village that is always lived in (the showcase's rows) gets residents for its free beds anyway,
+    // each time a chunk of it arrives.
+    checkVillageClaims(world, pos);
+    if (!m_naturalSpawning) {
+        if (world.chunk(pos)) {
+            spawnVillagers(world, pos, nextEntityId, true);
+            spawnWaitingVillagers(world, pos, nextEntityId, true);
+        }
+        return;
+    }
+    if (m_populated.contains(pos)) {
         return;
     }
     const std::shared_ptr<const QcChunk> chunk = world.chunk(pos);
@@ -514,6 +548,8 @@ void QcMobManager::populateChunk(const QcServerWorld &world, QcChunkPos pos, con
     }
     m_populated.insert(pos);
     spawnVillageMobs(world, pos, nextEntityId);
+    spawnVillagers(world, pos, nextEntityId, false);
+    spawnWaitingVillagers(world, pos, nextEntityId, false);
     const quint64 seed = qcMixSeed(m_seed, 4000);
     const auto random = [&](int salt) { return qcPositionRandom(seed, pos.x, salt, pos.z); };
     if (random(0) >= chunkAnimalChance) {
@@ -615,7 +651,10 @@ int QcMobManager::pickAnimal(const QList<int> &candidates, double random) const
 
 QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
 {
-    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred};
+    // Only villagers have a profession (QcMobManager::spawn).
+    const std::optional<QcVillagerRecord> villager =
+        mob.villager.profession.isEmpty() ? std::nullopt : std::optional<QcVillagerRecord>(mob.villager);
+    return {mob.type, mob.motion.position, mob.yaw, mob.health, mob.breedCooldown, mob.growUp, mob.bred, villager};
 }
 
 QList<QcMobManager::Stored> QcMobManager::persistentMobs() const
@@ -648,6 +687,18 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.breedCooldown = std::max(0.0, stored.breedCooldown);
         mob.growUp = std::max(0.0, stored.growUp);
         mob.bred = stored.bred;
+        if (m_content->mobs()[stored.type].villager) {
+            static_cast<QcVillagerRecord &>(mob.villager) = stored.villager.value_or(QcVillagerRecord{});
+            // A profession the content no longer has (a mod was removed): unemployed.
+            if (!m_content->villagerSettings().profession(mob.villager.profession)) {
+                mob.villager.profession = m_content->villagerSettings().unemployed;
+            }
+            // Its chunk may be newer than villages.json: no new villager gets its name.
+            QcVillage *village = m_villages && mob.villager.village != 0 ? m_villages->find(mob.villager.village) : nullptr;
+            if (village && QcVillagerHomes::noteName(*village, mob.villager.name)) {
+                m_villages->noteChanged();
+            }
+        }
         m_mobs.append(mob);
     }
 }

@@ -1,0 +1,17 @@
+{
+    "name": "mob.villager.hurt",
+    "volume": 0.7,
+    "variants": 2,
+    "pitchVariation": 0.1,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.2,
+            "frequency": 330,
+            "endFrequency": 220,
+            "attack": 0.005,
+            "curve": 1.8,
+            "lowpass": 1600
+        }
+    ]
+}

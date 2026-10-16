@@ -538,6 +538,12 @@ void QcVillagePlanner::addPiece(Layout &layout, const QcVillageStyle::Blueprint 
     for (const QcStructure::Mob &mob : structure->mobs) {
         layout.plan.mobs.append({mob.mob, placed.toWorld(mob.at)});
     }
+    if (blueprint.fields) {
+        const QList<QcBlockPos> crops = QcVillageFields::cropCells(*structure, m_content);
+        for (const QcBlockPos &cell : crops) {
+            layout.plan.fields.insert(placed.toWorld(cell));
+        }
+    }
     if (!layout.style->overWater) {
         addThresholds(layout, placed);
     }

@@ -53,9 +53,11 @@ struct QcVillage
     int maxZ = 0;
     QList<Spot> beds;
     QList<Spot> workstations;
-    // Villagers that live here (stage 37.2b) and its iron golems (stage 37.3).
+    // Villagers that live here (decision E-411) and its iron golems (stage 37.3).
     int population = 0;
     int golems = 0;
+    // The number in the name of the next villager (QcVillagerRecord::name), so names stay unique.
+    int nextVillager = 1;
 
     bool operator==(const QcVillage &) const = default;
 
@@ -65,6 +67,16 @@ struct QcVillage
                && pos.z <= maxZ + reach;
     }
     qsizetype freeBeds() const;
+    // The bed or workstation at `at`, if listed.
+    static Spot *spotAt(QList<Spot> &spots, QcBlockPos at)
+    {
+        for (Spot &spot : spots) {
+            if (spot.at == at) {
+                return &spot;
+            }
+        }
+        return nullptr;
+    }
 
     QJsonObject toJson() const;
     // std::nullopt for an entry that is not plausible (a box wider than `limits.extent` among them);

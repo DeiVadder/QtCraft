@@ -79,7 +79,7 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
     }
     // A ladder's board leaves room for a body in its cell; a pane or bars in the middle do not.
     if (thin) {
-        return make(block.climbable ? Kind::Open : Kind::Wall, flags);
+        return make(block.climbable ? Kind::Ladder : Kind::Wall, flags);
     }
     return top <= 0.5 ? lowCell(top, flags) : make(Kind::Solid, flags);
 }

@@ -110,6 +110,8 @@ QMap<QString, double> values()
         {u"fire.total"_s, double(QcServerLimits{}.fires)},
         {u"village.beds"_s, double(QcServerLimits{}.villageBeds)},
         {u"village.workstations"_s, double(QcServerLimits{}.villageWorkstations)},
+        {u"villagers.perVillage"_s, double(QcServerLimits{}.villagersPerVillage)},
+        {u"villagers.fleeDistance"_s, QcVillagerSettings{}.fleeDistance},
         {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
         {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},

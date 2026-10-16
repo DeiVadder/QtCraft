@@ -77,7 +77,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     for (const QcMobPart &part : mob.parts) {
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture;
     }
-    stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.ambientSound << mob.hurtSound << mob.deathSound
+    stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.villager << mob.ambientSound << mob.hurtSound << mob.deathSound
            << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem << quint32(mob.breeding.food.size());
     for (const QString &food : mob.breeding.food) {
         stream << food;
@@ -231,7 +231,7 @@ bool readMob(QDataStream &stream, QcMobDefinition &mob)
     }
 
     qint32 glow = 0;
-    stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
+    stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.villager >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
         >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
     mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
     // What it eats for breeding, so the client knows to use it on the creature (decision E-293).

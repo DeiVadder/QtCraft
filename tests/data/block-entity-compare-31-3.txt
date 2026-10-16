@@ -59,7 +59,8 @@ item qtcraft:wheat_seedsx2/0 at 94.520 64.938 -44.359
 item qtcraft:wheat_seedsx3/0 at 95.996 65.000 -44.475
 item qtcraft:wheatx2/0 at 94.025 64.938 -44.444
 == showcase client
-client block updates 658 bf1e61d8ebcfbd3fc090ec2717cba2e4ea2dd2d5
+client block updates 627 2f44b550ac22db7daf651542d7c53f0a50691b72
+client entities of kind 6: 7
 == showcase regions
 chunk -1 -1 ade1b49d6a365ed26583a2a3fb5d26c4dba7866d
 chunk -1 0 ade1b49d6a365ed26583a2a3fb5d26c4dba7866d
@@ -72,26 +73,24 @@ chunk 1 -2 c0b5c5e593d4de5bee4560b9e4fab6a1f3f6d9af
 chunk 1 -3 4b745a841d98a993c0d47731f4a3de4d85a0188c
 chunk 1 -4 0628c2e1d86e31f24c30b94e1433a0134938a508
 chunk 2 -1 b38b8ea37d87bd01af2bf72de6acd32e72a49511
-chunk 2 -20 65b814d37c6b12a9f60b411387c03f4c2077a8dd
+chunk 2 -25 be5f3f29749d3c3fc46fafd71c0a1fa495a3ec1e
 chunk 2 -3 e0ee8c731a4c3aa3337a73185d018334e9bd6521
 chunk 3 -1 cd0d517a281ba53c94bd098f40e9b01d8e4e96c1
-chunk 3 -18 d9b7a0ff238f65490c054d14f9567c5603726a02
+chunk 3 -19 9f3b01d1dfea562c5ee6feeb62ab4f9a0b4837df
+chunk 3 -22 4250657b00cc83f1790c13b4d8467be8b561d01e
 chunk 3 -3 a004d945c293189b5a6ca307b9a47dd89183eeb1
 chunk 3 -4 b4b8983c25765570ffce1361248507d0891d1b41
 chunk 4 -1 5a4640980c2e23da783a5276fd1ef462a4d1d718
 chunk 4 -2 6994ae3c29cf6bd8d015330442935cb2a22f4b4e
 chunk 4 -4 e64a1de79d597efa792a34c7ba942194b5842c6d
 chunk 5 -1 4525afb517088c0c4812666df56652d3bb7e9bc6
-chunk 5 -19 1dadb7a4f32bca27c68a527d2f4b980de1533765
 chunk 5 -2 789af4c65bb800408f7f6e0bbe6d2efd9d6986fa
+chunk 5 -20 37607f1980d0d1a0203e7ac51c5742fa0be64bdc
+chunk 5 -22 d7dfa87986c6809da7d2d762c8abe8b3dce0a266
 chunk 5 -3 b3fff1ce53002dea83d114e1eb44ec23fdad9d46
-chunk 6 -18 2fd24c1155214d22adcb7062aa0a866e3c55f769
-chunk 6 -19 3069256d25315217f416c7c22b0abe969a773beb
 chunk 6 -2 164a7b41c9e39c2c23a25757307949a8e7c34e7c
-chunk 6 -21 282ad0abdbd73f0c5b4093ae5502e6c97db74883
-chunk 6 -22 dbd0916b0073197215f9841a4af2b490a3f8f0f8
+chunk 6 -20 643e8b259311622956493bad5d87084e427bcf04
 chunk 6 -3 3179a8647a69656b2d4fe1daaa15b1f0eb1a5589
-chunk 7 -19 ad1b5893d940544495e96640648d51fbd6ec589b
 chunk 7 -2 bad2d5b84c0d16bcab57f90efcfbbab6b018f38f
 chunk 8 -3 a933a825f97d58813b347172135f4909c8cca972
 chunk 8 -4 def13e42bff9bcd7f3aea1b5b84544c685f4ee56
@@ -200,7 +199,7 @@ cooldown 138 63 -44: +6
 cooldown 56 63 -46: +6
 cooldown 56 63 -47: +6
 cooldown 56 63 -48: +2
-machine 96 64 -7: qtcraft:iron_orex15/0 qtcraft:coalx7/0 qtcraft:iron_ingotx1/0 burn 67.450000/80.000000 progress 2.550000
+machine 96 64 -7: qtcraft:iron_orex15/0 qtcraft:coalx7/0 qtcraft:iron_ingotx1/0 burn 67.400000/80.000000 progress 2.600000
 powered 93 64 -30
 powered 96 64 -30
 sapling 10 64 -65: 178.971649

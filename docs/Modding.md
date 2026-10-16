@@ -74,6 +74,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `villages/` | village style | The pieces, roads, lamp posts and block swaps of the villages of some biomes (E-403); see Villages below. |
 | `worldgen/showcase.json` | – | Settings of the showcase world: ground, time of day, podium blocks, block categories (replaces the earlier one). |
 | `worldgen/villages.json` | – | Where villages go and which blocks are workstations (E-403, replaces the earlier one); see Villages below. |
+| `villagers.json` | – | The villagers (E-411, replaces the earlier one, server side only): their creature, professions, daily routine, default look; see Villagers below. |
 | `worldgen/flat.json`, `worldgen/void.json` | – | Flat world: default layer `preset` (`"bedrock,59*stone,3*dirt,grass_block"`); void world: `platform`, `platformRadius`, `platformY`; both `timeOfDay`, `daylightCycle`, `mobSpawning` (E-223; replace the earlier ones). |
 | `weather.json` | – | What the weather does (decision E-396; replaces the earlier one, missing keys keep the defaults; server side only): `lightning` with `meanSeconds` (10: one strike per player on average every that many seconds of a thunderstorm, 0.5–3600), `damage` (5, 0–100, players through their armour), `radius` (3, 0–8: blocks to each side and below the struck cell, six above), `burnSeconds` (8, 0–60: the struck bodies burn), `sparks` (2, 0–8: fires a strike may light at and right around the struck cell, each a spark with all limits of fire and none while fire does not spread); `snow` with `layer` (`snow_layer`: the block snow leaves on top of opaque blocks with a full top face under the open sky; it must be a block of this or an earlier pack that is not opaque, no liquid and has `"support": "below"`, else the whole file is refused with a warning, decision E-397) and `columnsPerTick` (4, 0–64: random columns within 48 blocks of each player looked at per tick while it snows). The values in the handbook are those of the base game. |
 
@@ -465,6 +466,36 @@ Every floor (layer 0 of every piece) and every road lies at one height, `height`
 The **settings** (`worldgen/villages.json`, a later pack replaces them): `spacing` (128–4096, default 384: the edge of the square regions, at most one village each), `chance` (0–1, that a region tries to have one), `attempts` (1–32: places tried for the centre), `radius` (16 to spacing / 2 − 16: how far pieces and roads reach from the centre), `maxHeightSpread` (largest height difference of the ground around the centre), `maxPieceSlope` (under one piece), `lampSpacing` (blocks between lamp posts), `bell` (the meeting point block) and `workstations` (block name → kind of work, e.g. `"composter": "farmer"`, both qualified with the pack's namespace like other names, so the kind is `qtcraft:farmer`; the base game counts composters (farmer), furnaces (smith) and barrels (fisher)). A biome gets villages with `"villages": true`.
 
 A block with `"bed": true` is two blocks long like a door is two high: it needs the states `facing` (`north`, `east`, `south`, `west`) and `part` (`foot`, `head`), else the block is rejected; placed from the foot, the head goes one block further in `facing`; breaking either half takes the other one, and only the foot drops the item.
+
+### Villagers (stage 37.2b)
+
+Villagers (decision E-411) are creatures of a kind with `"villager": true` (a `skeleton` is required, they are peaceful walkers; they never spawn by themselves, give them `"spawn": {"weight": 0}`). When a chunk of a village is seen for the first time, a villager of the kind named in `villagers.json` moves into every free bed whose head lies in it, up to the server limits `villagersPerVillage` and `villagers`. It claims the bed and, when it finds a free one, a workstation, opens wooden doors (blocks with `toggles` and an `open` state; iron doors without `toggles` stay shut) and is drawn in the look the server gives it, not in its `outfit`.
+
+`villagers.json` (a later pack replaces it):
+
+```json
+{
+    "mob": "villager",
+    "unemployed": "unemployed",
+    "professions": [
+        { "name": "farmer", "workstation": "farmer", "hat": "villager_straw_hat", "tendsCrops": true,
+          "layers": { "torso": { "texture": "villager_farmer_apron", "tint": "none" } } },
+        { "name": "unemployed" }
+    ],
+    "routine": [ { "from": 0.0, "do": "wander" }, { "from": 0.04, "do": "work" }, { "from": 0.53, "do": "sleep" } ],
+    "fleeDistance": 10,
+    "shelterFromRain": true,
+    "look": { "outfit": "villager_tunic", "hair": ["short_hair", ""], "skin": ["#d8a07a"], "hairColor": ["#4a3020"],
+              "shirt": ["#3a7bc8"], "pants": ["#34406a"] }
+}
+```
+
+- `professions` (1–32): `name`, `workstation` (a kind of `worldgen/villages.json`'s `workstations`, qualified like there; none for the unemployed, each kind at most once), `layers` (slots of the outfit replaced for this profession, written like an outfit's layers: an apron on the `torso`), `hat` (a hair-kind appearance worn instead of the style's hair) and `tendsCrops` (harvests the ripe crops within 8 blocks of its workstation inside the village and plants them again in one step; the harvest counts as the villager's produce, no items drop). `unemployed` names the profession without a workstation; an unemployed villager takes the profession of the free workstation it claims, and one that loses its workstation before it has any experience is unemployed again.
+- `routine` (1–24 steps): from `from` (a share of the day: 0 sunrise, 0.25 noon, 0.5 sunset, 0.75 midnight) on the villagers do `do` until the next step, the last step lasting into the first of the next day: `wander` (stroll near home), `work` (at the workstation), `meet` (at the village's bell), `home` (by the bed) or `sleep` (in the bed; a villager gets up when it is hurt, its bed is gone or the routine says so).
+- `fleeDistance` (0–32): villagers run home from hostile creatures this close; `shelterFromRain`: they go home while it rains at the village's middle.
+- `look`: the default look (an `outfit`, hair styles to choose from, an empty name for none, and lists of `skin`, `hairColor`, `shirt` and `pants` colours as `"#rrggbb"`, at most 16 each). A village style dresses its villagers in its own look with `"villagers": { ... }` in the same form; empty lists take the default look's. Each villager draws one of every list from its own seed. For every look and every profession with `layers` the server registers the joined outfit `<outfit>@<profession>` (not playable), which the clients receive with the other appearances.
+
+The base game has farmers (composter, apron and straw hat), smiths (furnace, leather apron) and fishers (barrel, oilskin vest and hat) and the looks of the plains (tunic), desert (robe and headwrap), taiga (fur coat and hat) and swamp (smock, waders and reed hat). Trading (stage 37.2c) and breeding (stage 37.3) build on a villager's profession, level, experience and produce, which are saved with it.
 
 ### Commands (stage 24)
 

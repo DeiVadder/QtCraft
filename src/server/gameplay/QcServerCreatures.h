@@ -1,12 +1,15 @@
 #pragma once
 
+#include "QcServerVillagers.h"
+
 class QcPlayerHealth;
 class QcServerSounds;
 class QcServerState;
 
 // The creatures in the server tick (decision E-367): their behaviour and spawning (QcMobManager) with
 // what they need to know about the players, the blows they deal to players, their ambient sounds and
-// the damage of crammed cells (game rule maxEntityCramming, decision E-401).
+// the damage of crammed cells (game rule maxEntityCramming, decision E-401) and what villagers do to
+// the world (QcServerVillagers, decision E-411).
 class QcServerCreatures
 {
 public:
@@ -15,9 +18,11 @@ public:
     // Hurt and death sounds of cramming per tick at most (a farm crams hundreds at once).
     static constexpr int crammingSoundsPerTick = 8;
 
-    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health);
+    QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
 
     void tick();
+    // A player used the creature `id`: a villager turns to them (QcServerVillagers::talk).
+    bool talk(const QcServerClient &client, quint32 id) { return m_villagers.talk(client, id); }
 
 private:
     void playAmbientSounds(double dt);
@@ -28,4 +33,5 @@ private:
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcPlayerHealth &m_health;
+    QcServerVillagers m_villagers;
 };

@@ -22,6 +22,8 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_creatures.setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
+    m_creatures.setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},
+                                  {int(limits.villagerThoughtsPerTick), int(limits.villagerRoutesPerTick), int(limits.villagerHarvestsPerTick)});
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));
@@ -75,11 +77,14 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcPhysics::boxAt(feet, QcPhysics::playerWidth, QcPhysics::playerHeight);
     case QcEntityKind::Creature: {
         const QList<QcMobDefinition> &definitions = m_content->mobs();
-        const int type = entity.as<QcCreature>().type;
-        if (type < 0 || type >= definitions.size()) {
+        const QcCreature &creature = entity.as<QcCreature>();
+        if (creature.type < 0 || creature.type >= definitions.size()) {
             return std::nullopt;
         }
-        return QcPhysics::boxAt(feet, definitions[type].width, definitions[type].height);
+        const QcMobDefinition &definition = definitions[creature.type];
+        // A villager asleep lies in its bed (decision E-411).
+        return creature.villager.sleeping ? QcPhysics::lyingBoxAt(feet, creature.yaw, definition.width, definition.height)
+                                          : QcPhysics::boxAt(feet, definition.width, definition.height);
     }
     case QcEntityKind::Item:
         return QcPhysics::boxAt(feet, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize);

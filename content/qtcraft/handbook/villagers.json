@@ -1,0 +1,23 @@
+{
+    "name": "villagers",
+    "order": 84,
+    "icon": "bed",
+    "sections": [
+        "homes",
+        "professions",
+        "routine",
+        "ways",
+        "mods"
+    ],
+    "related": [
+        "villager",
+        "bed",
+        "bell",
+        "composter",
+        "furnace",
+        "barrel",
+        "oak_door",
+        "iron_door",
+        "wheat_crop"
+    ]
+}

@@ -16,6 +16,7 @@
                 "chapter:qtcraft:fire",
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:villages",
+                "chapter:qtcraft:villagers",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -450,6 +451,7 @@
         },
         {
             "entries": [
+                "mob:qtcraft:villager",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
                 "mob:qtcraft:firefly",
@@ -52972,6 +52974,124 @@
             "text": "",
             "title": "Texturpakete"
         },
+        "chapter:qtcraft:villagers": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Villagers",
+            "facts": [
+            ],
+            "icon": "qtcraft:bed",
+            "id": "chapter:qtcraft:villagers",
+            "name": "qtcraft:villagers",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.",
+                    "title": "Zuhause"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Handel kommt mit einer späteren Version: Bis dahin dreht sich ein Bewohner, den du benutzt, zu dir und grüßt.",
+                    "title": "Berufe"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Nach Sonnenaufgang schlendern die Bewohner umher, dann gehen sie zur Arbeit. Gegen Mittag treffen sie sich an der Glocke und arbeiten am Nachmittag weiter. Gegen Abend schlendern sie noch einmal, bei Sonnenuntergang gehen sie nach Hause, und nachts liegen sie bis zum Morgen in ihren Betten. Wer im Bett verletzt wird, steht auf. Regnet es im Dorf, gehen alle nach Hause. Monster im Umkreis von 10 Blöcken lassen die Bewohner nach Hause rennen; wer getroffen wird, rennt ebenfalls davon. Sie lassen sich verletzen wie Tiere und wehren sich nicht.",
+                    "title": "Der Tag eines Dorfbewohners"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Dorfbewohner öffnen Holztüren auf ihrem Weg und schließen sie hinter sich; Eisentüren bleiben für sie zu. Ein langer Weg durchs Dorf, etwa über die Stege eines Sumpfdorfs, führt in Abschnitten entlang der Straßen, so finden die Bewohner aus jeder Ecke ihres Dorfs nach Hause.",
+                    "title": "Türen und lange Wege"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "`villagers.json` nennt das Wesen, das in Dörfern lebt, die Berufe (die Arbeitsplatz-Art aus `worldgen/villages.json`, Schichten über der Kleidung, einen Hut, ob er Felder bestellt), den Tagesablauf als Schritte durch den Tag (wander, work, meet, home, sleep) und das Standard-Aussehen. Ein Dorf-Stil kleidet seine Bewohner mit `villagers` in seiner Datei: eine Kleidung, Frisuren und Hüte zur Wahl und Listen von Haut-, Haar-, Hemd- und Hosenfarben.",
+                    "title": "Dorfbewohner in Mods"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:villager",
+                            "text": "Dorfbewohner"
+                        },
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bett"
+                        },
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "",
+                            "target": "block:qtcraft:bell",
+                            "text": "Glocke"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Komposter"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Ofen"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Fass"
+                        },
+                        {
+                            "icon": "qtcraft:oak_door",
+                            "note": "",
+                            "target": "block:qtcraft:oak_door",
+                            "text": "Eichentür"
+                        },
+                        {
+                            "icon": "qtcraft:iron_door",
+                            "note": "",
+                            "target": "block:qtcraft:iron_door",
+                            "text": "Eisentür"
+                        },
+                        {
+                            "icon": "qtcraft:wheat_crop",
+                            "note": "",
+                            "target": "block:qtcraft:wheat_crop",
+                            "text": "Weizenpflanze"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Dorfbewohner"
+        },
         "chapter:qtcraft:villages": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -53013,7 +53133,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Die Dorfbewohner einer späteren Version beanspruchen je ein Bett und einen Arbeitsplatz, und neue Dorfbewohner brauchen freie Betten. Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.",
+                    "text": "Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.",
                     "title": "Betten und Arbeitsplätze"
                 },
                 {
@@ -70526,6 +70646,64 @@
             ],
             "text": "Ein hüpfender Klumpen, schwach, aber hartnäckig. Unter der Erde lebt er tief unten und nur in manchen Chunks, den Slime-Chunks; nachts kommt er auch in Sümpfen heraus.",
             "title": "Schleim"
+        },
+        "mob:qtcraft:villager": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Villager",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:villager"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "friedlich: wandert, flieht bei Treffern"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "20 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 1,9 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,4 m/s beim Gehen, 3 m/s auf der Flucht"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:villager",
+            "name": "qtcraft:villager",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm seinen Beruf gibt. Tagsüber arbeitet er, trifft die anderen an der Glocke, geht abends nach Hause und schläft nachts in seinem Bett. Er öffnet Holztüren und schließt sie hinter sich, flieht vor Monstern nach Hause und kämpft nie.",
+            "title": "Dorfbewohner"
         },
         "mob:qtcraft:zombie": {
             "category": "creatures",

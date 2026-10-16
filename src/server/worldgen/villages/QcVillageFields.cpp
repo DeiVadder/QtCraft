@@ -51,6 +51,19 @@ bool hasCrops(const QcStructure &structure, const QcContentRegistry &content)
     return false;
 }
 
+QList<QcBlockPos> cropCells(const QcStructure &structure, const QcContentRegistry &content)
+{
+    QList<QcBlockPos> cells;
+    const int layer = structure.sizeX() * structure.sizeZ();
+    for (int cell = 0; cell < layer * structure.sizeY(); ++cell) {
+        const QcBlockPos local{cell % structure.sizeX(), cell / layer, cell % layer / structure.sizeX()};
+        if (isCrop(structure, content, local.x, local.y, local.z)) {
+            cells.append(local);
+        }
+    }
+    return cells;
+}
+
 std::shared_ptr<const QcStructure> plant(const QcStructure &structure, const QList<QcVillageStyle::Crop> &crops,
                                          const QcContentRegistry &content, const std::function<double()> &random)
 {

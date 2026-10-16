@@ -3,6 +3,7 @@
 #include "QcClientSession.h"
 #include "QcContentRegistry.h"
 #include "QcMinecartBody.h"
+#include "QcPhysics.h"
 #include "QcSectionKey.h"
 #include "QcWorldConstants.h"
 
@@ -112,8 +113,8 @@ void QcDebugLines::addHitboxes(const QcClientSession &session, double alpha)
     for (const QcClientEntity &entity : session.entities()) {
         const QcVec3 at = lerp(entity.previousPosition, entity.position, alpha);
         const auto [width, height] = bodySize(entity, *content);
-        const double half = width / 2.0;
-        addBox({{at.x - half, at.y, at.z - half}, {at.x + half, at.y + height, at.z + half}}, hitboxColor);
+        const bool lying = (entity.flags & QcMsg::Sleeping) != 0;
+        addBox(lying ? QcPhysics::lyingBoxAt(at, entity.yaw, width, height) : QcPhysics::boxAt(at, width, height), hitboxColor);
 
         if (!entity.isItem() && !entity.isBlockEntity()) {
             // Yaw 0 looks north (-Z), 90 east (+X).

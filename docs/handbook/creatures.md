@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Firefly](#mob-qtcraft-firefly) · [Mannequin](#mob-qtcraft-mannequin) · [Pig](#mob-qtcraft-pig) · [Sheep](#mob-qtcraft-sheep) · [Slime](#mob-qtcraft-slime) · [Villager](#mob-qtcraft-villager) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -154,6 +154,20 @@ All biomes.
 at night; up to y 70; block light up to 7
 
 [Swamp](biomes.md#biome-qtcraft-swamp), [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt)
+
+### <a id="mob-qtcraft-villager"></a>Villager
+
+Lives in a village with a bed of its own and, with luck, a workstation that gives it its profession. It works by day, meets the others at the bell, goes home in the evening and sleeps in its bed at night. It opens wooden doors and shuts them behind it, runs home from monsters and never fights.
+
+| | |
+|---|---|
+| ID | `qtcraft:villager` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.9 m tall |
+| Speed | 1.4 m/s walking, 3 m/s fleeing |
+| Appears | never by itself (/summon, showcase world) |
+| Drops | nothing |
 
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 

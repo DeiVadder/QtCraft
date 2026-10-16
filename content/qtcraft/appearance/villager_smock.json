@@ -1,0 +1,35 @@
+{
+    "name": "villager_smock",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "villager_smock",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "sleeve",
+            "tint": "shirt"
+        },
+        "hand": {
+            "texture": "arm_skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "villager_waders",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "villager_waders",
+            "tint": "none"
+        }
+    }
+}

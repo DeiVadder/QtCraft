@@ -500,5 +500,19 @@
     "structure.qtcraft.village_swamp_house_large_b": "Double hut (swamp)",
     "structure.qtcraft.village_swamp_garden": "Raised field (swamp)",
     "structure.qtcraft.village_swamp_fisher_hut": "Fisher's hut (swamp)",
-    "structure.qtcraft.village_swamp_herb_hut": "Herb hut (swamp)"
+    "structure.qtcraft.village_swamp_herb_hut": "Herb hut (swamp)",
+    "mob.qtcraft.villager": "Villager",
+    "profession.qtcraft.farmer": "Farmer",
+    "profession.qtcraft.smith": "Smith",
+    "profession.qtcraft.fisher": "Fisher",
+    "profession.qtcraft.unemployed": "Unemployed",
+    "appearance.qtcraft.villager_tunic": "Villager's tunic",
+    "appearance.qtcraft.villager_robe": "Desert robe",
+    "appearance.qtcraft.villager_coat": "Fur-trimmed coat",
+    "appearance.qtcraft.villager_smock": "Smock with waders",
+    "appearance.qtcraft.villager_straw_hat": "Straw hat",
+    "appearance.qtcraft.villager_fisher_hat": "Oilskin hat",
+    "appearance.qtcraft.villager_headwrap": "Headwrap",
+    "appearance.qtcraft.villager_fur_hat": "Fur hat",
+    "appearance.qtcraft.villager_reed_hat": "Reed hat"
 }

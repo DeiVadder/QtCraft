@@ -1,6 +1,7 @@
 #include "QcShowcaseGenerator.h"
 
 #include "QcShowcasePlanner.h"
+#include "QcVillagePlan.h"
 
 QcShowcaseGenerator::QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content, QStringList *warnings)
     : m_content(std::move(content))
@@ -25,4 +26,14 @@ std::shared_ptr<QcChunk> QcShowcaseGenerator::generate(QcChunkPos pos) const
         m_plan.placements[index].writeInto(*chunk);
     }
     return chunk;
+}
+
+std::shared_ptr<const QcVillagePlan> QcShowcaseGenerator::villageFor(QcChunkPos pos) const
+{
+    for (const std::shared_ptr<const QcVillagePlan> &village : m_plan.villages) {
+        if (village->overlaps(pos, 0)) {
+            return village;
+        }
+    }
+    return nullptr;
 }

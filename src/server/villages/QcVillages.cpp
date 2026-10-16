@@ -77,6 +77,15 @@ const QcVillage *QcVillages::nearest(QcBlockPos pos, double reach) const
     return best;
 }
 
+qsizetype QcVillages::population() const
+{
+    qsizetype total = 0;
+    for (const QcVillage &village : m_villages) {
+        total += village.population;
+    }
+    return total;
+}
+
 QList<QcVillage> QcVillages::villages() const
 {
     std::map<qint64, QcVillage> ordered;

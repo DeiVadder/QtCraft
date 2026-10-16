@@ -10,6 +10,7 @@
 #include "QcSaveFile.h"
 #include "QcStackReader.h"
 #include "QcStreamLimits.h"
+#include "QcVillagerCodec.h"
 #include "QcWorldConstants.h"
 
 #include <QIODevice>
@@ -112,7 +113,15 @@ private:
         QcMobManager::Stored &mob = entry.entry;
         m_stream >> name;
         readVec(m_stream, mob.position);
-        m_stream >> mob.yaw >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred >> entry.order;
+        bool villager = false;
+        m_stream >> mob.yaw >> mob.health >> mob.breedCooldown >> mob.growUp >> mob.bred >> entry.order >> villager;
+        // A villager's home, work and profession (decision E-411).
+        if (villager) {
+            mob.villager = QcVillagerCodec::read(m_stream);
+            if (!mob.villager) {
+                return false;
+            }
+        }
         const bool finite = std::isfinite(mob.yaw) && std::isfinite(mob.health) && std::isfinite(mob.breedCooldown) && std::isfinite(mob.growUp);
         if (m_stream.status() != QDataStream::Ok || !finite || !inChunk(mob.position) || mob.breedCooldown > maxBreedingSeconds
             || mob.growUp > maxBreedingSeconds) {
@@ -338,7 +347,10 @@ void writeRecord(QDataStream &stream, const QcEntityRecord &record, const QcCont
     for (const auto &[mob, order] : record.creatures) {
         stream << content.mobs()[mob.type].name;
         writeVec(stream, mob.position);
-        stream << mob.yaw << mob.health << mob.breedCooldown << mob.growUp << mob.bred << order;
+        stream << mob.yaw << mob.health << mob.breedCooldown << mob.growUp << mob.bred << order << mob.villager.has_value();
+        if (mob.villager) {
+            QcVillagerCodec::write(stream, *mob.villager);
+        }
     }
     stream << quint32(record.items.size());
     for (const auto &[drop, order] : record.items) {

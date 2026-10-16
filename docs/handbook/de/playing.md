@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -320,7 +320,7 @@ Jedes Dorf hat seinen eigenen Grundriss: eine lange Hauptstraße durch die Mitte
 
 **Betten und Arbeitsplätze**
 
-Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Die Dorfbewohner einer späteren Version beanspruchen je ein Bett und einen Arbeitsplatz, und neue Dorfbewohner brauchen freie Betten. Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
+Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Dorfbewohner beanspruchen je ein Bett und einen Arbeitsplatz (siehe Dorfbewohner). Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
 
 **Dörfer in Mods**
 
@@ -329,6 +329,32 @@ Ein Stil ist eine Datei in `villages/`: die Biome, in denen er baut, der Brunnen
 **Siehe auch**
 
 [Glocke](blocks.md#block-qtcraft-bell), [Bett](blocks.md#block-qtcraft-bed), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Laterne](blocks.md#block-qtcraft-lantern), [Ebene](biomes.md#biome-qtcraft-plains), [Wüste](biomes.md#biome-qtcraft-desert), [Taiga](biomes.md#biome-qtcraft-taiga), [Sumpf](biomes.md#biome-qtcraft-swamp), [Schlamm](blocks.md#block-qtcraft-mud)
+
+### <a id="chapter-qtcraft-villagers"></a>Dorfbewohner
+
+**Zuhause**
+
+Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.
+
+**Berufe**
+
+Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Handel kommt mit einer späteren Version: Bis dahin dreht sich ein Bewohner, den du benutzt, zu dir und grüßt.
+
+**Der Tag eines Dorfbewohners**
+
+Nach Sonnenaufgang schlendern die Bewohner umher, dann gehen sie zur Arbeit. Gegen Mittag treffen sie sich an der Glocke und arbeiten am Nachmittag weiter. Gegen Abend schlendern sie noch einmal, bei Sonnenuntergang gehen sie nach Hause, und nachts liegen sie bis zum Morgen in ihren Betten. Wer im Bett verletzt wird, steht auf. Regnet es im Dorf, gehen alle nach Hause. Monster im Umkreis von 10 Blöcken lassen die Bewohner nach Hause rennen; wer getroffen wird, rennt ebenfalls davon. Sie lassen sich verletzen wie Tiere und wehren sich nicht.
+
+**Türen und lange Wege**
+
+Dorfbewohner öffnen Holztüren auf ihrem Weg und schließen sie hinter sich; Eisentüren bleiben für sie zu. Ein langer Weg durchs Dorf, etwa über die Stege eines Sumpfdorfs, führt in Abschnitten entlang der Straßen, so finden die Bewohner aus jeder Ecke ihres Dorfs nach Hause.
+
+**Dorfbewohner in Mods**
+
+`villagers.json` nennt das Wesen, das in Dörfern lebt, die Berufe (die Arbeitsplatz-Art aus `worldgen/villages.json`, Schichten über der Kleidung, einen Hut, ob er Felder bestellt), den Tagesablauf als Schritte durch den Tag (wander, work, meet, home, sleep) und das Standard-Aussehen. Ein Dorf-Stil kleidet seine Bewohner mit `villagers` in seiner Datei: eine Kleidung, Frisuren und Hüte zur Wahl und Listen von Haut-, Haar-, Hemd- und Hosenfarben.
+
+**Siehe auch**
+
+[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Bett](blocks.md#block-qtcraft-bed), [Glocke](blocks.md#block-qtcraft-bell), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Eichentür](blocks.md#block-qtcraft-oak_door), [Eisentür](blocks.md#block-qtcraft-iron_door), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 

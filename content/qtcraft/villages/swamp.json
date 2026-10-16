@@ -42,5 +42,34 @@
         { "structure": "village_swamp_garden", "weight": 3, "max": 3 },
         { "structure": "village_swamp_fisher_hut", "weight": 2, "max": 1 },
         { "structure": "village_swamp_herb_hut", "weight": 2, "max": 1 }
-    ]
+    ],
+    "villagers": {
+        "outfit": "villager_smock",
+        "hair": [
+            "villager_reed_hat",
+            "villager_reed_hat",
+            "long_hair",
+            ""
+        ],
+        "skin": [
+            "#d8a07a",
+            "#b07850",
+            "#c8b090",
+            "#8a5a3a"
+        ],
+        "hairColor": [
+            "#2a2a1a",
+            "#3a3020",
+            "#5a5a40"
+        ],
+        "shirt": [
+            "#6a7a4a",
+            "#5a6a5a",
+            "#7a6a4a",
+            "#4a5a4a"
+        ],
+        "pants": [
+            "#3b4a32"
+        ]
+    }
 }

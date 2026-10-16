@@ -119,6 +119,14 @@ struct QcServerLimits
     qint64 villages = 4096;
     qint64 villageBeds = 64;
     qint64 villageWorkstations = 64;
+    // Villagers (decision E-411): living in one village and in the world at most (no villager spawns
+    // beyond), villagers deciding what to do per tick (the others keep their goal a tick longer),
+    // legs of long walks planned per tick and crops farmers harvest per tick.
+    qint64 villagersPerVillage = 32;
+    qint64 villagers = 1024;
+    qint64 villagerThoughtsPerTick = 64;
+    qint64 villagerRoutesPerTick = 8;
+    qint64 villagerHarvestsPerTick = 4;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

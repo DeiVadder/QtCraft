@@ -8,7 +8,7 @@
 struct QcMobDefinition;
 
 // How a creature moves through the cells (decision E-400): its height in cells, how far it drops,
-// whether it swims and whether it opens doors.
+// whether it swims, opens doors, climbs ladders and jumps into deep water.
 struct QcPathRules
 {
     // Drops deeper than this are refused (the reference's 3; creatures take no fall damage yet, the
@@ -24,9 +24,16 @@ struct QcPathRules
     int maxDrop = defaultMaxDrop;
     // Water costs a walker much (it is used only without a dry way); a swimmer moves through it freely.
     bool swims = false;
-    // Closed doors and gates block unless the creature opens them; the villagers of stage 37.2 will
-    // set this and open the doors on their path (the hook is QcMobNavigator's door step).
+    // Closed doors and gates block unless the creature opens them: villagers do (decision E-411) and
+    // open the doors on their path when QcMobNavigator reports them.
     bool opensDoors = false;
+    // A creature that climbs holds on to a ladder (a place to stand) and goes up and down along it
+    // (villagers, decision E-411); to the others a ladder's cell is open like air
+    // (QcPathTerrain::kindOf).
+    bool climbsLadders = false;
+    // Drops deeper than maxDrop, down to waterDrop, into deep water. Villagers keep to their
+    // boardwalks and jetties instead of jumping off them (decision E-411).
+    bool divesIntoWater = true;
 
     static QcPathRules of(const QcMobDefinition &definition);
 };
@@ -50,6 +57,13 @@ struct QcPathStand
 // of QcPathGrid, or the world directly through QcPathDirectCells).
 namespace QcPathTerrain {
 
+// The kind of a cell to a creature: a ladder is open like air to one that does not climb.
+inline QcPathCell::Kind kindOf(quint8 cell, QcPathRules rules)
+{
+    const QcPathCell::Kind kind = QcPathCell::kindOf(cell);
+    return kind == QcPathCell::Kind::Ladder && !rules.climbsLadders ? QcPathCell::Kind::Open : kind;
+}
+
 // Whether a body part may be in the cell: open, water, a door the creature opens; the feet also on a
 // low block. A cell above a fence is blocked by the fence's box.
 template<typename Cells>
@@ -59,6 +73,7 @@ bool passable(Cells &cells, QcBlockPos pos, QcPathRules rules, bool feet)
     switch (kind) {
     case QcPathCell::Kind::Open:
     case QcPathCell::Kind::Water:
+    case QcPathCell::Kind::Ladder:
         break;
     case QcPathCell::Kind::Low:
         if (!feet) {
@@ -90,13 +105,13 @@ bool clearAbove(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
 }
 
 // Whether the creature can stand with its feet in `feet`: a floor below (or a low block in the
-// cell, or the surface of water) and room for the body.
+// cell, the surface of water or a ladder it holds on to) and room for the body.
 template<typename Cells>
 QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 {
     QcPathStand stand;
     const quint8 here = cells.cell(feet);
-    const QcPathCell::Kind kind = QcPathCell::kindOf(here);
+    const QcPathCell::Kind kind = kindOf(here, rules);
     if (!passable(cells, feet, rules, true)) {
         return stand;
     }
@@ -112,7 +127,7 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
             return stand;
         }
         stand.water = true;
-    } else if (QcPathCell::kindOf(below) == QcPathCell::Kind::Solid) {
+    } else if (kind == QcPathCell::Kind::Ladder || QcPathCell::kindOf(below) == QcPathCell::Kind::Solid) {
         stand.hurts = (below & QcPathCell::hurtsFlag) != 0;
     } else {
         return stand;
@@ -132,11 +147,11 @@ bool deepWater(Cells &cells, QcBlockPos cell)
 }
 
 // Whether a body that falls `drop` blocks into `landing`, a cell it can stand in, lands safely: at
-// most QcPathRules::maxDrop, or into deep water.
+// most QcPathRules::maxDrop, or into deep water (QcPathRules::divesIntoWater).
 template<typename Cells>
 bool safeLanding(Cells &cells, QcBlockPos landing, int drop, QcPathRules rules)
 {
-    return drop <= rules.maxDrop || deepWater(cells, landing);
+    return drop <= rules.maxDrop || (rules.divesIntoWater && deepWater(cells, landing));
 }
 
 } // namespace QcPathTerrain

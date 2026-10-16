@@ -1,0 +1,8 @@
+{
+    "name": "villager_waders",
+    "pattern": "noise",
+    "primary": "#3b4a32",
+    "secondary": "#2e3a28",
+    "variation": 0.08,
+    "seed": 7505
+}

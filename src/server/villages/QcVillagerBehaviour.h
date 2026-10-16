@@ -1,0 +1,174 @@
+#pragma once
+
+#include "QcCreature.h"
+#include "QcMobNavigator.h"
+#include "QcPathTerrain.h"
+#include "QcPhysics.h"
+#include "QcVillagerHomes.h"
+#include "QcVillagerRoads.h"
+
+#include <QHash>
+#include <QList>
+#include <QRandomGenerator>
+
+#include <functional>
+#include <memory>
+
+class QcContentRegistry;
+class QcPathPlanner;
+class QcServerWorld;
+struct QcMobDefinition;
+struct QcVillagePlan;
+
+// What villagers do (decision E-411), called by QcMobBehaviour for creatures of a villager kind.
+// Every decideTicks ticks (staggered, at most `thoughtsPerTick` villagers per tick) a villager
+// checks its claims, claims a free bed and workstation, looks out for hostile creatures and picks
+// its goal from the routine of villagers.json by the time of day: its workstation (farmers tend the
+// ripe crops of the village fields around it), the meeting point, a stroll near home, its bed. In between it walks its
+// path there (QcMobNavigator), on long walks in legs along the village roads (QcVillagerRoads),
+// opens the wooden doors on its path and closes them behind it, and lies down in its bed at night.
+// It flees home from hostile creatures and whoever hurt it, and goes home when it rains. What it
+// does to the world (doors, crops) waits in actions() for QcServerVillagers.
+class QcVillagerBehaviour
+{
+public:
+    static constexpr int decideTicks = 20;
+    // How close a villager comes to its workstation, bed, a crop or a door to use it.
+    static constexpr double reach = 1.6;
+    // Farmers look for ripe crops this far (horizontally) around their workstation.
+    static constexpr int cropRadius = 8;
+    // A farmer that found no ripe crop looks again after this many decisions; a villager the roads
+    // had no leg for asks them again after this many ticks.
+    static constexpr int cropLookDecisions = 5;
+    static constexpr int legRetryTicks = 40;
+    // Strolls go this far from home; the meeting gathers within this many cells of the bell.
+    static constexpr double strollDistance = 8.0;
+    static constexpr int meetCloseEnough = 3;
+    // Seconds a villager stands facing a player who used it (the trading hook, stage 37.2c).
+    static constexpr double talkSeconds = 4.0;
+
+    // Something a villager does to the world, carried out by the server (QcServerVillagers).
+    struct Action
+    {
+        enum class Kind : quint8 { OpenDoor, CloseDoor, Harvest };
+        Kind kind = Kind::OpenDoor;
+        QcBlockPos pos;
+        quint32 villager = 0;
+    };
+
+    // Budgets per tick (QcServerLimits villagerThoughtsPerTick, villagerRoutesPerTick,
+    // villagerHarvestsPerTick).
+    struct Limits
+    {
+        int thoughtsPerTick = 64;
+        int routesPerTick = 8;
+        int harvestsPerTick = 4;
+    };
+
+    // What one tick of all villagers shares.
+    struct Context
+    {
+        QcServerWorld &world;
+        const QList<QcCreature> &mobs;
+        double worldTime = 0.0;
+        double dt = 0.0;
+        QcPathRules rules;
+    };
+
+    QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry> content, QRandomGenerator &random, QcPathPlanner &planner);
+
+    void setLimits(Limits limits) { m_limits = limits; }
+    const Limits &limits() const { return m_limits; }
+    // Whether it rains on the top of the column of a block (QcServerWeather::isRainingAt there); without
+    // one it never rains.
+    void setRainCheck(std::function<bool(QcBlockPos)> check) { m_rains = std::move(check); }
+    QcVillagerRoads &roads() { return m_roads; }
+
+    // A new tick: the budgets start again.
+    void startTick();
+    // A sleeping villager stays in its bed (no physics) until the routine wakes it, it is hurt or
+    // its bed is gone; then it stands up beside the bed. Whether it still sleeps.
+    bool rest(QcCreature &mob, const Context &context);
+    // One tick of an awake villager: decides when due and walks.
+    QcPhysics::Steering think(QcCreature &mob, const QcMobDefinition &definition, const Context &context);
+    // A villager leaves the world for good (died, removed): the door it opened is closed behind
+    // it. One whose chunk unloads leaves its door as it is.
+    void leave(const QcCreature &mob);
+    // What the villagers did to the world since the last call.
+    QList<Action> takeActions() { return std::exchange(m_actions, {}); }
+    // Villagers that decided in the last tick (tests, measurements).
+    int thoughtsLastTick() const { return m_thoughts; }
+
+private:
+    // Claims, danger, the activity and the goal.
+    void decide(QcCreature &mob, const Context &context);
+    // Flees from the nearest hostile creature within fleeDistance (hostiles()).
+    void lookOut(QcCreature &mob, const Context &context);
+    std::optional<QcVec3> nearestHostile(const QcVec3 &at, const Context &context);
+    // The awake hostile creatures of this tick by the column of 16 × 16 blocks they stand in,
+    // gathered at the first look of the tick.
+    const QHash<QcChunkPos, QList<QcVec3>> &hostiles(const Context &context);
+    // The goal of the activity: a cell and how close counts as there; none to stand.
+    struct Goal
+    {
+        QcBlockPos cell;
+        int closeEnough = 1;
+        QcMobPath::Purpose purpose = QcMobPath::Purpose::Errand;
+    };
+    std::optional<Goal> goalOf(QcCreature &mob, const Context &context);
+    std::optional<Goal> strollGoal(const QcCreature &mob, const Context &context);
+    // A farmer at work keeps its crop or looks for one (not after every decision while there is
+    // none); others drop it.
+    void lookForCrops(QcVillager &villager, const Context &context) const;
+    // A ripe crop near the farmer's workstation on its village's fields (QcVillagePlan::fields), if
+    // any; crops a player planted elsewhere in the village are not its to harvest.
+    std::optional<QcBlockPos> ripeCropNear(const QcVillager &villager, const Context &context) const;
+    bool isRipe(QcBlockId block) const;
+    // Walks to the goal, in legs when it lies far; flees when it must.
+    QcPhysics::Steering walk(QcCreature &mob, const QcMobDefinition &definition, const Context &context);
+    // The cell to search a path to now: the goal, or the leg towards it.
+    QcBlockPos legTowards(QcCreature &mob, QcBlockPos target, const Context &context);
+    // The road cell on land a villager in water swims to first when it has no path from there
+    // (QcVillager::shore); none while it has a path or stands on dry ground.
+    std::optional<QcBlockPos> wayOutOfWater(QcCreature &mob, const Context &context);
+    // Opens the door on the path ahead and closes the one it went through.
+    void useDoors(QcCreature &mob, const QcMobNavigator::Navigation &navigation);
+    // One door, one villager at a time: of the villagers in a doorway or within doorQueue of a door
+    // on their next waypoint, one goes through (the one in the doorway, else the one already going,
+    // else the nearest, as of the last tick); the others wait, stepping back out of the doorway where
+    // the ground allows. The steering of one that waits.
+    std::optional<QcPhysics::Steering> waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation, const Context &context);
+    // The door it stands in (`inside`), else a door, open or closed, on its next waypoint.
+    std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation, const Context &context,
+                                        bool &inside) const;
+    // A waiting villager steps back and aside to doorStepBack from the door, facing it.
+    QcPhysics::Steering stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const Context &context) const;
+    // Lies down, harvests or faces its workstation once there.
+    void arrive(QcCreature &mob, const Context &context);
+    void lieDown(QcCreature &mob, const Context &context);
+    std::shared_ptr<const QcVillagePlan> planOf(const QcVillager &villager, const Context &context) const;
+
+    std::shared_ptr<const QcContentRegistry> m_content;
+    QRandomGenerator &m_random;
+    QcPathPlanner &m_planner;
+    QcVillagerRoads m_roads;
+    Limits m_limits;
+    std::function<bool(QcBlockPos)> m_rains;
+    QList<Action> m_actions;
+    // Ripe crop states, indexed by QcBlockId.
+    std::vector<bool> m_ripe;
+    // Who goes through a door first: the villager nearest to it, of the last tick and of this one.
+    struct Passer
+    {
+        quint32 id = 0;
+        double distance = 0.0;
+        bool before(Passer other) const { return distance < other.distance || (distance == other.distance && id < other.id); }
+    };
+    QHash<QcBlockPos, Passer> m_doorways;
+    QHash<QcBlockPos, Passer> m_nextDoorways;
+    QHash<QcChunkPos, QList<QcVec3>> m_hostiles;
+    bool m_hostilesGathered = false;
+    int m_thoughts = 0;
+    int m_routes = 0;
+    int m_harvests = 0;
+};

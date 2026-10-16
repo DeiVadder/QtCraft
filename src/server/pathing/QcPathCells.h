@@ -14,8 +14,7 @@ class QcContentRegistry;
 namespace QcPathCell {
 
 enum class Kind : quint8 {
-    // No collision box (air, plants, torches, open doors, gates and trapdoors), or only a board at
-    // the side that leaves room for a body (ladders).
+    // No collision box (air, plants, torches, open doors, gates and trapdoors).
     Open,
     // Collision only in the lower half (bottom slabs, carpets, snow layers, closed bottom
     // trapdoors): a body stands in the cell, on top of it (liftOf).
@@ -37,6 +36,10 @@ enum class Kind : quint8 {
     // Collision over less than half of the cell's ground that leaves no room for a body (panes,
     // iron bars, closed iron doors that only a signal opens): never passable, never a floor.
     Wall,
+    // A ladder: its board at the side leaves room for a body, which holds on to it (a place to
+    // stand) and climbs up and down along it, if the creature climbs (QcPathRules::climbsLadders;
+    // otherwise it is open).
+    Ladder,
 };
 
 // Flags beside the kind: the block hurts bodies touching it (a floor of magma), it slows bodies

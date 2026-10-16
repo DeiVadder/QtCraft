@@ -171,6 +171,9 @@ public:
     const QList<QcVillageStyleDefinition> &villageStyles() const { return m_villageStyles; }
     void setVillageSettings(QcVillageSettings settings) { m_villageSettings = std::move(settings); }
     const QcVillageSettings &villageSettings() const { return m_villageSettings; }
+    // Villagers (decision E-411, server side only): professions, routine, default look.
+    void setVillagerSettings(QcVillagerSettings settings) { m_villagerSettings = std::move(settings); }
+    const QcVillagerSettings &villagerSettings() const { return m_villagerSettings; }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -237,6 +240,7 @@ private:
     QList<QcVillageStyleDefinition> m_villageStyles;
     QHash<QString, qsizetype> m_villageStyleIndex;
     QcVillageSettings m_villageSettings;
+    QcVillagerSettings m_villagerSettings;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

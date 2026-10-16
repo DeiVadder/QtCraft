@@ -200,7 +200,11 @@ void QcRenderBridge::appendCreature(QcEntityMesh &mesh, const QcClientEntity &en
 
     QcEntityPose pose = QcClientSession::poseOf(entity, frame.alpha);
     QcEntityMesher::ModelLook look;
-    if (creature && !creature->skeleton.isEmpty()) {
+    if (creature && creature->villager) {
+        // Villagers wear the look the server gave them (decision E-411).
+        look = playerLook(entity.appearance);
+        look.scale = creature->height / QcEntityMesher::modelHeight * placement.scale;
+    } else if (creature && !creature->skeleton.isEmpty()) {
         const QcMobDefinition &definition = *creature;
         look.model = frame.content.model(definition.skeleton);
         look.outfit = frame.content.appearance(definition.outfit);

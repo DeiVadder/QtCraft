@@ -13,10 +13,15 @@ namespace {
 
 // Waypoints checked every tick ahead of the creature.
 constexpr std::size_t checkedAhead = 2;
-// A waypoint is not reached while the feet are this far below it (still climbing).
+// A waypoint is not reached while the feet are this far below it (still climbing), or, on a ladder
+// or above the top of one the path goes down, this far above it (still going down).
 constexpr double climbSlack = 0.6;
+constexpr double descendSlack = 0.9;
 // Jumps only start this close to a higher waypoint.
 constexpr double jumpDistance = 1.3;
+// How far a floor may lie below the top of its cell (dirt paths, farmland, soul sand) and still
+// count as the floor of the cell above: a creature on it is in that cell and does not jump to it.
+constexpr double floorSink = 0.2;
 // How far ahead safeStep looks for ground.
 constexpr double stepLookAhead = 0.7;
 
@@ -54,6 +59,17 @@ QcPhysics::Steering towards(const QcCreature &mob, const QcVec3 &point, double s
     return {delta.normalized(), speed};
 }
 
+// Whether the path goes on straight down from its waypoint `index` (a ladder).
+bool downwards(const QcMobPath &path, std::size_t index)
+{
+    if (index + 1 >= path.cells.size()) {
+        return false;
+    }
+    const QcBlockPos here = path.cells[index];
+    const QcBlockPos next = path.cells[index + 1];
+    return next.x == here.x && next.z == here.z && next.y < here.y;
+}
+
 // Passes the waypoints the creature reached and measures its progress towards the next.
 void follow(QcCreature &mob)
 {
@@ -61,7 +77,7 @@ void follow(QcCreature &mob)
     while (path.next < path.cells.size()) {
         const QcBlockPos waypoint = path.cells[path.next];
         if (horizontalDistance(mob.motion.position, centreOf(waypoint)) >= arriveDistance
-            || mob.motion.position.y < waypoint.y - climbSlack) {
+            || mob.motion.position.y < waypoint.y - climbSlack || ((mob.motion.climbing || downwards(path, path.next)) && mob.motion.position.y > waypoint.y + descendSlack)) {
             break;
         }
         ++path.next;
@@ -108,21 +124,38 @@ bool needsSearch(const QcCreature &mob, const QcPathPlanner &planner, const QcBl
            || (path.finished() && !path.reachesGoal);
 }
 
-// The steering along a planned path: to the next waypoint, then to the goal itself if the path gets there.
-QcPhysics::Steering along(const QcCreature &mob, double speed)
+// What one steering looks at, and whether it may ask for a path.
+struct Context
+{
+    QcPathPlanner &planner;
+    const QcBlockAccess &world;
+    QcPathRules rules;
+    bool mayPlan = true;
+};
+
+// The steering along a planned path: to the next waypoint, then to the goal itself if the path gets
+// there, as long as the step keeps to safe ground (the goal may lie beyond an edge, the path ends
+// within its closeEnough).
+QcPhysics::Steering along(const QcCreature &mob, double speed, const Context &context)
 {
     const QcMobPath &path = mob.path;
     if (!path.planned) {
         return {{}, speed};
     }
     if (path.next >= path.cells.size()) {
-        return path.reachesGoal ? towards(mob, path.goal, speed) : QcPhysics::Steering{{}, speed};
+        const QcPhysics::Steering last = path.reachesGoal ? towards(mob, path.goal, speed) : QcPhysics::Steering{{}, speed};
+        return safeStep(mob, last.wish, context.world, context.planner.cells(), context.rules) ? last : QcPhysics::Steering{{}, speed};
     }
 
     const QcBlockPos waypoint = path.cells[path.next];
     QcPhysics::Steering steering = towards(mob, centreOf(waypoint), speed);
-    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.01, 0.0});
+    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, floorSink, 0.0});
     steering.jump = waypoint.y > feet.y && horizontalDistance(mob.motion.position, centreOf(waypoint)) < jumpDistance;
+
+    // Down a ladder straight to the waypoint's level: pushing sideways on it would climb it.
+    if (mob.motion.climbing && waypoint.y < feet.y) {
+        steering.wish = {};
+    }
     return steering;
 }
 
@@ -139,15 +172,6 @@ std::optional<QcBlockPos> doorAhead(const QcMobPath &path, const QcBlockAccess &
     }
     return waypoint;
 }
-
-// What one steering looks at, and whether it may ask for a path.
-struct Context
-{
-    QcPathPlanner &planner;
-    const QcBlockAccess &world;
-    QcPathRules rules;
-    bool mayPlan = true;
-};
 
 Navigation navigate(QcCreature &mob, double speed, const Context &context)
 {
@@ -169,7 +193,7 @@ Navigation navigate(QcCreature &mob, double speed, const Context &context)
         context.planner.request(mob);
     }
 
-    return {along(mob, speed), context.rules.opensDoors ? doorAhead(path, context.world, context.planner.cells()) : std::nullopt};
+    return {along(mob, speed, context), context.rules.opensDoors ? doorAhead(path, context.world, context.planner.cells()) : std::nullopt};
 }
 
 } // namespace

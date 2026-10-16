@@ -1,0 +1,114 @@
+{
+    "mob": "villager",
+    "unemployed": "unemployed",
+    "professions": [
+        {
+            "name": "farmer",
+            "workstation": "farmer",
+            "hat": "villager_straw_hat",
+            "tendsCrops": true,
+            "layers": {
+                "torso": {
+                    "texture": "villager_farmer_apron",
+                    "tint": "none"
+                }
+            }
+        },
+        {
+            "name": "smith",
+            "workstation": "smith",
+            "layers": {
+                "torso": {
+                    "texture": "villager_smith_apron",
+                    "tint": "none"
+                }
+            }
+        },
+        {
+            "name": "fisher",
+            "workstation": "fisher",
+            "hat": "villager_fisher_hat",
+            "layers": {
+                "torso": {
+                    "texture": "villager_fisher_vest",
+                    "tint": "none"
+                }
+            }
+        },
+        {
+            "name": "unemployed"
+        }
+    ],
+    "routine": [
+        {
+            "from": 0.0,
+            "do": "wander"
+        },
+        {
+            "from": 0.04,
+            "do": "work"
+        },
+        {
+            "from": 0.26,
+            "do": "meet"
+        },
+        {
+            "from": 0.31,
+            "do": "work"
+        },
+        {
+            "from": 0.43,
+            "do": "wander"
+        },
+        {
+            "from": 0.48,
+            "do": "home"
+        },
+        {
+            "from": 0.53,
+            "do": "sleep"
+        },
+        {
+            "from": 0.98,
+            "do": "home"
+        }
+    ],
+    "fleeDistance": 10,
+    "shelterFromRain": true,
+    "look": {
+        "outfit": "villager_tunic",
+        "hair": [
+            "short_hair",
+            "long_hair",
+            "cap",
+            ""
+        ],
+        "skin": [
+            "#f0c8a0",
+            "#d8a07a",
+            "#b07850",
+            "#8a5a3a",
+            "#5e3c26"
+        ],
+        "hairColor": [
+            "#2a1a10",
+            "#4a3020",
+            "#7a5030",
+            "#c09050",
+            "#909090"
+        ],
+        "shirt": [
+            "#3a7bc8",
+            "#a83a3a",
+            "#5a8a3a",
+            "#c8a03a",
+            "#7a5aa8"
+        ],
+        "pants": [
+            "#34406a",
+            "#4a3a2a",
+            "#3a3a3a",
+            "#5a4a34"
+        ]
+    }
+}

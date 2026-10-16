@@ -1822,3 +1822,47 @@ Erzeugung je Chunk (`test_village_measure`, Release, `QTCRAFT_VILLAGE_MEASURE=1`
 **Absolute Ziele (`docs/Performance.md`):** kein Tick über 50 ms (headless höchstens 1,67 ms in gravel-collapse, 1,64 ms im Erkundungsflug), keine übersprungenen Ticks (headless ohne Echtzeit). Bildrate, Frame-Kosten, p99 und Spitzenspeicher des ganzen Spiels werden nur im Fenster geprüft.
 
 **Offen:** die gerenderte Messung von 37.2a (`@core` im Fenster plus eine Szene mit Dörfern in Sicht: Vernetzung und GPU der Häuser, Wege und Felder, `explore` mit `STATS=5000` für die Speicherkurve), sobald der Mensch Fensterläufe freigibt.
+
+## Etappe 37.2b (Dorfbewohner) headless (2026-10-16)
+
+Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, Seed 42, drei Aufrufe nacheinander, Rechner mit Last 7–15 anderer Sitzungen): die Dörfer nächst dem Ursprung mit allen Chunks geladen, ein Bewohner in jedem Bett und sonst kein Wesen, ein ganzer Tag ab Sonnenaufgang (12 000 Ticks, so schnell der Server kann) mit Spaziergang, Arbeit, Treffen, Heimweg und Schlaf; danach derselbe Tag auf denselben Chunks ohne Bewohner. Werte je Tick über den ganzen Server-Tick.
+
+| Szene | Bewohner | Chunks | Tick Ø ms mit / ohne | Tick p99 ms mit / ohne | Tick max ms mit | im Bett um Mitternacht |
+|---|---:|---:|---|---|---:|---:|
+| ein Dorf (Sumpf, 555 −214) | 20 | 57 | 0,027–0,028 / 0,002 | 0,156–0,161 / 0,005 | 0,63–0,65 | 10 |
+| zehn Dörfer | 159 | 325 | 0,170–0,173 / 0,006–0,008 | 0,524–0,535 / 0,012–0,014 | 1,45–1,57 | 146 |
+
+**Bewertung:** Ein Bewohner kostet im Mittel rund 1,0–1,3 µs je Tick (20 Bewohner +0,025 ms, 159 Bewohner +0,165 ms), linear in ihrer Zahl; die Spitzen (p99, max) kommen von den Entscheidungen mit Wegsuche (höchstens `villagerThoughtsPerTick` je Tick) und bleiben bei zehn Dörfern unter 1,6 ms von 50 ms. Bei 1024 Bewohnern (Grenze `villagers`) wären rund 1,1 ms Tick Ø zu erwarten. Die erste Messung zeigte einen Fehler: Die 20 Bewohner des Sumpfdorfs trafen sich an der Glocke, bildeten ein Gedränge und dachten als gedrosselte Wesen nie wieder, so blieben sie die ganze Nacht beim Treffen (um Mitternacht 0 von 20 im Bett, bei zehn Dörfern 102 von 159). Seitdem denken Bewohner im Gedränge in ihrem Takt weiter (`QcMobBehaviour::update`, `test_villagers::aCrowdAtTheBellStillFollowsTheRoutine`); die Kosten blieben gleich (vorher 0,025 / 0,167 ms Tick Ø). Damals offen: 10 der 20 Sumpf-Bewohner liegen um Mitternacht noch nicht im Bett (Wege über die Stege, nicht untersucht).
+
+Nach den Nachbesserungen der Prüfung (E-411, 2026-10-16; Release, ein Aufruf, Rechner unter Last): ein Dorf 20 Bewohner 0,0245 ms Tick Ø (p99 0,190, max 0,670) gegen 0,0024 ohne; zehn Dörfer 159 Bewohner 0,168 ms (p99 0,558, max 1,59) gegen 0,0094. Um Mitternacht im Bett: Sumpfdorf über den ganzen Tag 17 von 20 (vorher 10), ab Tagesanteil 0,2 20 von 20 (Test `theSwampVillageSleepsAtMidnight`, vorher 9), zehn Dörfer 159 von 159. Kosten unverändert im Rahmen der Streuung.
+
+Nach den letzten Nachbesserungen (E-411 (8)–(12), (14): Türen nacheinander, Sprung aus dem Wasser ans Ufer, Raster für `lookOut`, Felder im Plan; Release, zwei Aufrufe, Rechner unter Last): ein Dorf 20 Bewohner 0,021–0,022 ms Tick Ø (p99 0,160–0,174, max 0,57–0,64) gegen 0,002–0,003 ohne; zehn Dörfer 159 Bewohner 0,167–0,173 ms (p99 0,539–0,568, max 1,57–1,76) gegen 0,007–0,009. Um Mitternacht im Bett: Sumpfdorf über den ganzen Tag 20 von 20 (vorher 17), zehn Dörfer 159 von 159. Kosten unverändert im Rahmen der Streuung.
+
+### Etappenende 37.2b: A/B gegen `dev` (headless, 2026-10-16)
+
+Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur einmal hochladen; betrifft nur den Renderer, headless nicht messbar): Kandidat `deb1e72` gegen `dev` (`a5a7860`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden. Erste Reihe `@server`, `horde` und `@light` mit Runden `auto`; zweite Reihe mit 6 festen Runden für die Szenen mit Wesen (crowd, horde, light, glass-full, explore, signal_farm). Rechner mit Last 3–5,5. Kein Fensterlauf (der Mensch arbeitet am Rechner). Werte: Mittel `dev` → Kandidat.
+
+| Szenario | Tick Ø ms (1. / 2. Reihe) | Tick p99 ms | Tick max ms | Phase Wesen Ø ms (1. / 2. Reihe) | Wesen | Spitzen-RSS MB |
+|---|---|---|---|---|---:|---:|
+| crowd | 0,170 → 0,208 (+22 %) / 0,171 → 0,174 (+2 %) | 0,266 → 0,300 / 0,265 → 0,262 | 0,38 → 0,37 / 0,33 → 0,36 | 0,153 → 0,190 / 0,153 → 0,157 | 122 | 53,2 → 53,2 |
+| horde | 0,179 → 0,220 (+23 %) / 0,182 → 0,179 (−2 %) | 0,413 → 0,438 / 0,423 → 0,418 | 0,71 → 0,81 / 0,68 → 0,80 (+15 / +18 %) | 0,163 → 0,204 / 0,166 → 0,163; max 0,62–0,74 → 0,72–0,86 | 118–121 | 53,2 → 53,5 |
+| gravel-collapse | 0,511 → 0,510 (−0 %) | 1,46 → 1,47 | 1,63 → 1,67 | fallende Blöcke 0,309 → 0,310 | 0 | 72,5 → 73,0 |
+| farm / farm-seeds | 0,0077 → 0,0080 / 0,018 → 0,018 | 0,015 → 0,015 / 0,058 → 0,056 | – | – | 0 | 45,9 → 46,0 / 45,0 → 45,2 |
+| explore (60 s) | 0,209 → 0,227 (+8 %) / 0,208 → 0,210 (+1 %) | 0,961 → 0,979 / 0,961 → 0,964 | 1,31 → 1,32 / 1,27 → 1,46 (ein Lauf 2,07) | 0,072 → 0,089 / 0,072 → 0,072 | 57 | 59,0 → 59,5 |
+| signal_components / machines | 0,0377 → 0,0412 (+9 %) / 0,0360 → 0,0392 (+9 %) | 0,113 → 0,123 / 0,111 → 0,121 | 0,20 → 0,22 / 0,21 → 0,24 | 0,014 → 0,016 / 0,013 → 0,015 | 13 → 14 | 47,0–47,3 → 48,1–48,3 |
+| signal_farm | 0,0370 → 0,0395 (+7 %) / 0,0368 → 0,0397 (+8 %) | 0,116 → 0,119 / 0,115 → 0,119 | 0,22 gleich | 0,013 → 0,015 / 0,013 → 0,015 | 13 → 14 | 46,8–47,1 → 48,0 |
+| light / glass / glass-full | 0,103 → 0,124 / 0,102 → 0,128 / 0,103 → 0,128 (+20 bis +25 %); 2. Reihe light 0,102 → 0,103, glass-full 0,102 → 0,103 (+1 %) | 0,17 → 0,20 / 0,17 → 0,17 | 0,22–0,25 → 0,26–0,27 / 0,22–0,23 → 0,24–0,25 | 0,092 → 0,114–0,118 / 0,092 → 0,093 | 75 | 53,3–53,7 → 53,7–54,3 |
+| void-light | 0,004 → 0,004 | 0,0087 → 0,0083 | – | – | 0 | 31,7 → 32,1 |
+
+**Bewertung:**
+
+- **Keine Regression über 10 % im Tick Ø, die sich wiederholt.** Die erste Reihe zeigte in allen Szenen mit vielen Wesen +20 bis +25 % (crowd, horde, light, glass, glass-full), jedes Mal nur in der Phase Wesen bei gleich vielen Wesen. Die zweite Reihe mit 6 festen Runden: −2 bis +2 %. Es ist derselbe zweigipflige Verlauf der Phase Wesen wie bei 37.2a (rund 0,09 oder 0,115 ms in light/glass, 0,15 oder 0,19–0,21 ms in crowd/horde): Innerhalb einer Reihe landen die Läufe eines Builds fast alle auf demselben Gipfel (erste Reihe: Kandidat 5 von 6 oben, `dev` 6 von 6 unten). Auch ein einzelner 3000-s-Lauf von `horde` je Build unter `sample` (0,115 → 0,129 ms, +12 %) zeigt keine einzelne neue Funktion. Die Anteile am Tick bleiben gleich (Wesen 80 → 81 %, `QcServerWorld::blockAt` 33 %, Wegsuche 7–8 %), nur das Bewegen (`QcPhysics::stepEntity`/`moveBox`) steigt leicht von 54 auf 57 %. Neu im Bewegen sind der zweite, niedrige Stufenversuch (`lowStepHeight`, 0,125) für ein Wesen an einer Wand, das die volle Stufe nicht schafft (bis zu drei weitere `moveBox`), und der Wasser-Test an den Füßen in `QcMobBehaviour::walk`. Keine Ursache für +20 %; Streuung zwischen Reihen, kein Befund.
+- **horde: Tick max +0,1 ms, wiederholt.** In beiden Reihen liegt das Maximum der Phase Wesen beim Kandidaten bei 0,72–0,86 ms statt 0,61–0,74 ms (Tick max +15 / +18 %), bei unverändertem Tick Ø und p99. Das ist ein einzelner Tick unter 1 200, in dem viele der Zombies am Pfeiler gleichzeitig entscheiden und gehen. Naheliegend sind der zweite Stufenversuch an der Wand (die Zombies drängen gegen den Pfeiler) und die Sprungregel, die eine Wand nur noch am Boden oder im Wasser zählt. Ohne Code-Änderung nicht weiter getrennt. Absolut 0,8 ms von 50 ms, weit unter dem Ziel.
+- **Signal-Stationen +7 bis +9 % durch ein Wesen mehr.** Der Kandidat hat in allen drei Stationen in jedem Lauf 14 statt 13 Wesen. Die Phase Wesen steigt um rund 0,002 ms; Signal und alle anderen Phasen bleiben gleich (+1 bis +5 %). Das wiederholt sich (signal_farm in der zweiten Reihe +8 %), ist aber die Arbeit eines zusätzlichen Wesens in der Sicht: Wahrscheinlich ein Bewohner aus dem Dorfbereich der Vorführwelt, der beim ersten Laden seines Chunks einzieht. Absolut 0,04 ms Tick Ø.
+- **explore (60 s):** Tick Ø +1 bis +8 % (Phase Wesen auch hier zweigipflig). In der zweiten Reihe hatte ein Lauf des Kandidaten 2,07 ms Tick max (Chunk-Laden 1,06 ms), die übrigen 1,27–1,46 ms wie `dev`. Kein Dorf liegt auf dem 60-s-Flug. Dass ein ankommender Dorf-Chunk jetzt Bewohner einziehen lässt, zeigt erst der 300-s-Flug, der hier nicht gemessen wurde (bei 37.2a: Chunk-Laden max +0,2 ms durch die Dorf-Chunks).
+- **Speicher +0,3 bis +1,2 MB** (Bewohner-Inhalt: `villagers.json`, die verbundene Kleidung je Aussehen und Beruf).
+- **Kosten der Bewohner selbst:** Die stehen oben (`test_villager_measure`): 1,0–1,3 µs je Bewohner und Tick, zehn Dörfer mit 159 Bewohnern 0,17 ms Tick Ø, max unter 1,8 ms. Nicht neu gemessen.
+
+**Absolute Ziele (`docs/Performance.md`):** Kein Tick über 50 ms (headless höchstens 2,07 ms, ein Lauf im Erkundungsflug, sonst 1,67 ms in gravel-collapse). Keine übersprungenen Ticks (headless ohne Echtzeit).
+
+**Offen:** Die gerenderte Messung (`@core` im Fenster plus eine Szene mit Dorf und Bewohnern in Sicht: Vernetzung und Animation der Bewohner, Kleidung, E-413) folgt nach Etappe 37, zusammen mit der von 37.2a, sobald der Mensch Fensterläufe freigibt.

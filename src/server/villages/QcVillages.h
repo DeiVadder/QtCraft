@@ -51,8 +51,12 @@ public:
     void restore(const QList<QcVillage> &villages);
     // The village of a generator plan, its spots cut to the limits.
     QcVillage fromPlan(const QcVillagePlan &plan) const;
-    // Counts every change (saving writes villages.json only after one).
+    // Counts every change (saving writes villages.json only after one); villagers claiming spots
+    // or leaving (QcVillagerHomes) count theirs.
     quint64 changes() const { return m_changes; }
+    void noteChanged() { ++m_changes; }
+    // Villagers living in all villages (QcVillage::population).
+    qsizetype population() const;
 
 private:
     void add(const QcVillage &village);

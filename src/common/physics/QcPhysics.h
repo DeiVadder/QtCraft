@@ -55,6 +55,12 @@ struct MoveResult
 };
 
 QcAabb boxAt(const QcVec3 &feet, double width, double height);
+// A body lying on its back (a sleeping villager, decision E-411) turns around this height above its
+// feet: its feet end up this far ahead of `feet` in the direction it faces, its head behind.
+inline constexpr double lyingPivot = 0.15;
+// The box of a body of `width` and `height` lying on its back around `feet` and facing `yaw` (along
+// an axis, as beds lie): its length behind the feet, its width across, half its width high.
+QcAabb lyingBoxAt(const QcVec3 &feet, float yaw, double width, double height);
 
 // True when the block blocks movement. Unloaded chunks inside the world's height are solid so
 // nothing falls through missing data; the void below the world is open (decision E-288).

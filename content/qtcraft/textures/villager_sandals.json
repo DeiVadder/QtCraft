@@ -1,0 +1,8 @@
+{
+    "name": "villager_sandals",
+    "pattern": "noise",
+    "primary": "#a0784a",
+    "secondary": "#8a643c",
+    "variation": 0.1,
+    "seed": 7506
+}

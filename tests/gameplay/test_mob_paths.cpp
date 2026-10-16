@@ -1,5 +1,7 @@
 #include "QcBaseContent.h"
 #include "QcPathFinder.h"
+#include "QcPhysics.h"
+#include "QcPlayerInput.h"
 #include "QcTestWorld.h"
 
 #include <QTest>
@@ -246,8 +248,9 @@ private slots:
         using Kind = QcPathCell::Kind;
         const auto kind = [this](const QString &name) { return QcPathCell::kindOf(m_cells.of(block(name))); };
         const auto lift = [this](const QString &name) { return QcPathCell::liftOf(m_cells.of(block(name))); };
-        // A ladder's board leaves room for a body; panes and bars do not, and neither is a floor.
-        QCOMPARE(kind(u"ladder[attach=north]"_s), Kind::Open);
+        // A ladder's board leaves room for a body, which holds on to it; panes and bars do not, and
+        // neither is a floor.
+        QCOMPARE(kind(u"ladder[attach=north]"_s), Kind::Ladder);
         QCOMPARE(kind(u"glass_pane[north=true,south=true]"_s), Kind::Wall);
         QCOMPARE(kind(u"glass_pane"_s), Kind::Wall);
         QCOMPARE(kind(u"iron_bars[east=true,west=true]"_s), Kind::Wall);
@@ -274,7 +277,8 @@ private slots:
     {
         auto world = makeWorld();
         // A ledge of stone four high with a shaft of one cell down its middle, a ladder on the
-        // shaft's north wall: the opening is no floor to walk over, and five blocks down are too deep.
+        // shaft's north wall: the opening is no floor to walk over, and five blocks down are too deep
+        // (a creature may hold on to the ladder's top to cross it).
         world->fillBox({-10, 1, -10}, {10, 4, 10}, block(u"stone"_s));
         world->fillBox({0, -1, 0}, {0, 4, 0}, qcAirBlockId);
         world->fillBox({0, -1, 0}, {0, 4, 0}, block(u"ladder[attach=north]"_s));
@@ -282,7 +286,64 @@ private slots:
         QVERIFY(path.reachesGoal);
         verifySteps(*world, {-3, 5, 0}, path);
         QVERIFY(!contains(path, {0, 5, 0}));
-        QVERIFY(std::ranges::none_of(path.cells, [](QcBlockPos cell) { return cell.y < 5; }));
+        QVERIFY(std::ranges::none_of(path.cells, [](QcBlockPos cell) { return cell.y < 4; }));
+    }
+
+    void upAndDownALadder()
+    {
+        auto world = makeWorld();
+        // A ledge four high, a ladder on its west face from the floor to the top: up it to the
+        // ledge and down it again; without the ladder the ledge is out of reach.
+        m_rules.climbsLadders = true;
+        world->fillBox({1, 1, -30}, {30, 4, 30}, block(u"stone"_s));
+        world->fillBox({0, 1, 0}, {0, 4, 0}, block(u"ladder[attach=east]"_s));
+        const QcPathResult up = find(*world, {-4, 1, 0}, {4, 5, 0});
+        QVERIFY(up.reachesGoal);
+        QVERIFY(contains(up, {0, 2, 0}) && contains(up, {0, 4, 0}));
+        const QcPathResult down = find(*world, {4, 5, 0}, {-4, 1, 0});
+        QVERIFY(down.reachesGoal);
+        QVERIFY(contains(down, {0, 4, 0}));
+
+        world->fillBox({0, 1, 0}, {0, 4, 0}, qcAirBlockId);
+        QVERIFY(!find(*world, {-4, 1, 0}, {4, 5, 0}).reachesGoal);
+    }
+
+    void onlyClimbersGoUpALadder()
+    {
+        auto world = makeWorld();
+        // The ledge of upAndDownALadder: to a creature that does not climb (a zombie) the ladder is
+        // air, no place to stand and no way up.
+        world->fillBox({1, 1, -30}, {30, 4, 30}, block(u"stone"_s));
+        world->fillBox({0, 1, 0}, {0, 4, 0}, block(u"ladder[attach=east]"_s));
+        QVERIFY(!m_rules.climbsLadders);
+        const QcPathResult up = find(*world, {-4, 1, 0}, {4, 5, 0});
+        QVERIFY(!up.reachesGoal);
+        QVERIFY(std::ranges::none_of(up.cells, [](QcBlockPos cell) { return cell.y > 1; }));
+        QcPathDirectCells cells(*world, m_cells);
+        QVERIFY(!QcPathTerrain::standAt(cells, {0, 3, 0}, m_rules).ok);
+
+        // A zombie's own rules, a villager's.
+        const QcMobDefinition &zombie = m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)];
+        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)];
+        QVERIFY(!QcPathRules::of(zombie).climbsLadders);
+        QVERIFY(QcPathRules::of(villager).climbsLadders);
+        m_rules = QcPathRules::of(zombie);
+        QVERIFY(!find(*world, {-4, 1, 0}, {4, 5, 0}).reachesGoal);
+        m_rules = QcPathRules::of(villager);
+        QVERIFY(find(*world, {-4, 1, 0}, {4, 5, 0}).reachesGoal);
+    }
+
+    void villagersDoNotJumpIntoDeepWater()
+    {
+        auto world = makeWorld();
+        // The tower beside the pool of dropsDeepOnlyIntoDeepWater: a villager keeps off the jump.
+        world->fillBox({-10, 1, -10}, {3, 8, 10}, block(u"stone"_s));
+        world->fillBox({4, 1, -10}, {10, 2, 10}, block(u"water"_s));
+        world->fillBox({11, 1, -10}, {11, 3, 10}, block(u"stone"_s));
+        m_rules.divesIntoWater = false;
+        const QcPathResult path = find(*world, {0, 9, 0}, {8, 2, 0});
+        QVERIFY(!path.reachesGoal);
+        QVERIFY(std::ranges::all_of(path.cells, [](QcBlockPos cell) { return cell.y == 9; }));
     }
 
     void walksPastALadderOnAWall()
@@ -297,6 +358,41 @@ private slots:
         const QcPathResult path = find(*world, {0, 1, 0}, {8, 1, 0});
         QVERIFY(path.reachesGoal);
         QVERIFY(contains(path, {4, 1, 0}));
+    }
+
+    void bodiesStepFromADirtPathThroughADoor()
+    {
+        // A dirt path (a sixteenth below the top of its cell) up to an open door in a wall: the
+        // full step lifts the head into the lintel, the low step of 0.125 still gets a player and
+        // a creature from the path onto the stone in the doorway, without a jump.
+        auto world = makeWorld();
+        world->fillBox({-30, 0, -30}, {-1, 0, 30}, block(u"dirt_path"_s));
+        world->fillBox({0, 1, -30}, {0, 3, 30}, block(u"stone"_s));
+        world->fillBox({0, 1, 0}, {0, 1, 0}, block(u"oak_door[facing=east,half=bottom,open=true,hinge=left]"_s));
+        world->fillBox({0, 2, 0}, {0, 2, 0}, block(u"oak_door[facing=east,half=top,open=true,hinge=left]"_s));
+        const double onPath = 1.0 - 1.0 / 16.0;
+
+        QcEntityMotion player;
+        player.position = {-2.5, onPath, 0.5};
+        QcPlayerInput east;
+        east.yaw = 90.0f;
+        east.forward = 1.0f;
+        for (int tick = 0; tick < 40; ++tick) {
+            QcPhysics::stepPlayer(player, east, *world, QcPhysics::tickDuration, false);
+            QVERIFY(player.position.y < 1.2);
+        }
+        QVERIFY(player.position.x > 1.5);
+
+        // A villager (1.9 high; a body 1.95 high does not fit under the lintel from the path).
+        const QcMobDefinition &villager = m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)];
+        QcEntityMotion mob;
+        mob.position = {-2.5, onPath, 0.5};
+        const QcPhysics::Steering steering{{1.0, 0.0, 0.0}, villager.walkSpeed, false};
+        for (int tick = 0; tick < 60; ++tick) {
+            QcPhysics::stepEntity(mob, steering, QcPhysics::BodySize{villager.width, villager.height}, *world, QcPhysics::tickDuration);
+            QVERIFY(mob.position.y < 1.2);
+        }
+        QVERIFY(mob.position.x > 1.5);
     }
 
     void trapdoorsAndIronDoors()

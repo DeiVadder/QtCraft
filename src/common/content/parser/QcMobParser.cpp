@@ -382,6 +382,10 @@ namespace QcMobParser {
         parseBreeding(mob, nested, packNamespace);
     });
     parseMobModel(json, mob, reader, packNamespace);
+    mob.villager = reader.boolean(u"villager"_s, false);
+    if (reader.ok() && mob.villager && (mob.skeleton.isEmpty() || mob.hostile || mob.flying || mob.ambient)) {
+        reader.fail(u"villagers need a 'skeleton' and are peaceful walkers"_s);
+    }
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
     mob.experience = QcContentFields::parseExperience(u"experience"_s, reader);
     parseMobSounds(json, mob, reader, packNamespace);

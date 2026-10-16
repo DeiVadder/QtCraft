@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -320,7 +320,7 @@ Every village has its own street plan: one long main street through the middle w
 
 **Beds and workstations**
 
-The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. The villagers of a later version will claim a bed and a workstation each, and new villagers will need free beds. A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
+The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
 
 **Villages in mods**
 
@@ -329,6 +329,32 @@ A style is a file in `villages/`: the biomes it builds in, the well, the lamp po
 **See also**
 
 [Bell](blocks.md#block-qtcraft-bell), [Bed](blocks.md#block-qtcraft-bed), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Lantern](blocks.md#block-qtcraft-lantern), [Plains](biomes.md#biome-qtcraft-plains), [Desert](biomes.md#biome-qtcraft-desert), [Taiga](biomes.md#biome-qtcraft-taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Mud](blocks.md#block-qtcraft-mud)
+
+### <a id="chapter-qtcraft-villagers"></a>Villagers
+
+**Homes**
+
+When the part of a village with a bed is seen for the first time, a villager moves into every free bed, up to 32 in one village. Each one claims its bed and keeps it; break the bed and the villager looks for another free one. Villagers stay in the world for good: they wait while their part of the world is not loaded and are saved with it. Their clothes follow the style of their village: tunics on the plains, robes and headwraps in the desert, fur in the taiga, smocks and waders with reed hats in the swamp, each villager with its own colours.
+
+**Professions**
+
+A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Trading comes with a later version: for now a villager you use turns to you and greets you.
+
+**A villager's day**
+
+After sunrise villagers stroll about, then go to work. Around noon they meet at the bell and go back to work in the afternoon. Towards evening they stroll once more, at sunset they go home, and at night they lie in their beds until morning. A villager in bed gets up when it is hurt. When it rains in the village, everyone goes home. Monsters within 10 blocks send villagers running home; one that is hit runs away too. They can be hurt like animals and do not fight back.
+
+**Doors and long ways**
+
+Villagers open wooden doors on their way and close them behind them; iron doors stay shut for them. A long way through the village, say across the boardwalks of a swamp village, goes along the roads in stages, so villagers find their way home from every corner of their village.
+
+**Villagers in mods**
+
+`villagers.json` names the creature that lives in villages, the professions (the workstation kind from `worldgen/villages.json`, layers laid over the outfit, a hat, whether it tends crops), the daily routine as steps through the day (wander, work, meet, home, sleep) and the default look. A village style dresses its villagers with `villagers` in its file: an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours.
+
+**See also**
+
+[Villager](creatures.md#mob-qtcraft-villager), [Bed](blocks.md#block-qtcraft-bed), [Bell](blocks.md#block-qtcraft-bell), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Oak door](blocks.md#block-qtcraft-oak_door), [Iron door](blocks.md#block-qtcraft-iron_door), [Wheat crop](blocks.md#block-qtcraft-wheat_crop)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 

@@ -1,5 +1,7 @@
 #include "QcContentRegistry.h"
 
+#include "QcVillagerOutfits.h"
+
 #include "QcContentNames.h"
 #include "QcContentSerializer.h"
 #include "QcPartGenerator.h"
@@ -324,6 +326,7 @@ QStringList QcContentRegistry::finish()
         warnings.append(u"block '%1': %2; it takes no part in circuits"_s.arg(name, problem));
     }
     createBlockItems();
+    warnings.append(QcVillagerOutfits::generate(*this));
     return warnings;
 }
 

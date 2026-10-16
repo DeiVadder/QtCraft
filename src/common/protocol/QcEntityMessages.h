@@ -34,6 +34,8 @@ enum EntityFlag : quint16 {
     Riding = 128,
     // On fire (decision E-393): flames around the body.
     Burning = 256,
+    // A villager lying in its bed (decision E-411): drawn on its back.
+    Sleeping = 512,
 };
 
 inline constexpr double youngScale = 0.5;
@@ -52,7 +54,8 @@ struct EntitySpawn
     double health = 0.0;
     // The stack of an item entity; empty for the other kinds.
     QcItemStack item;
-    // Players: their chosen look; armour stands: only its cape counts (decision E-239).
+    // Players: their chosen look; villagers: the look the server gives them (decision E-411); armour
+    // stands: only its cape counts (decision E-239).
     QcAppearance appearance;
     // View pitch in degrees, EntityFlag bits and the item in the right hand.
     float pitch = 0.0f;

@@ -35,7 +35,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     }
 
     const QcBlockPos origin{anchor.x, anchor.y, anchor.z - depth + 1};
-    return {u"items"_s, u"showcase.area.items"_s, std::move(structure), origin};
+    return {u"items"_s, u"showcase.area.items"_s, std::move(structure), origin, {}};
 }
 
 } // namespace QcShowcaseItemArea

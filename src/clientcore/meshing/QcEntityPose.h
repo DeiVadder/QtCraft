@@ -15,6 +15,8 @@ struct QcEntityPose
     bool flying = false;
     // Sitting in a minecart (decision E-382): the legs point forward.
     bool riding = false;
+    // Lying on the back in a bed (a sleeping villager, decision E-411).
+    bool sleeping = false;
     // 0..1 while the right arm swings (mining, attacking, using), negative otherwise.
     double swingProgress = -1.0;
     // 0..1 while the entity recoils from a hit, negative otherwise.

@@ -15,6 +15,8 @@ inline constexpr double ripeChance = 0.5;
 
 // Whether the structure has crop cells.
 bool hasCrops(const QcStructure &structure, const QcContentRegistry &content);
+// The crop cells of the structure (local cells).
+QList<QcBlockPos> cropCells(const QcStructure &structure, const QcContentRegistry &content);
 
 // A copy of `structure` with its crop cells planted from `crops` (not empty); `random` yields
 // values in [0, 1).

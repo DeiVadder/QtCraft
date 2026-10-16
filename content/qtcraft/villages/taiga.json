@@ -66,5 +66,34 @@
         "oak_door": "spruce_door",
         "white_wool_carpet": "brown_wool_carpet",
         "poppy": "fern"
+    },
+    "villagers": {
+        "outfit": "villager_coat",
+        "hair": [
+            "villager_fur_hat",
+            "long_hair",
+            "short_hair"
+        ],
+        "skin": [
+            "#f4d8c0",
+            "#f0c8a0",
+            "#d8a07a"
+        ],
+        "hairColor": [
+            "#e0c890",
+            "#c09050",
+            "#7a5030",
+            "#a04a20"
+        ],
+        "shirt": [
+            "#6a3a2a",
+            "#3a4a3a",
+            "#5a4a3a",
+            "#2a3a5a"
+        ],
+        "pants": [
+            "#3a3a3a",
+            "#4a3a2a"
+        ]
     }
 }

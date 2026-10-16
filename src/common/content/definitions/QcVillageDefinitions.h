@@ -1,5 +1,7 @@
 #pragma once
 
+#include "QcVillagerDefinitions.h"
+
 #include <QHash>
 #include <QList>
 #include <QString>
@@ -197,6 +199,8 @@ struct QcVillageStyleDefinition
     // Block name -> block name, applied to every piece of the style (states keep their properties
     // where the new block has them), so a mod can add a style from the same houses.
     QHash<QString, QString> palette;
+    // What its villagers wear (decision E-411); unset: the default look of villagers.json.
+    QcVillagerLook villagers;
 };
 
 struct QcVillageSettings

@@ -7,6 +7,8 @@
 #include "QcServer.h"
 #include "QcShowcaseGenerator.h"
 #include "QcTestTerrainGenerator.h"
+#include "QcVillagePlan.h"
+#include "QcVillages.h"
 #include "QcWorldGenerators.h"
 #include "QcWorldLibrary.h"
 
@@ -144,6 +146,7 @@ private slots:
         QTemporaryDir directory;
         const int mobs = expectedMobs();
         QVERIFY(mobs >= m_content->mobs().size());
+        qsizetype residents = 0;
         {
             std::unique_ptr<QcServer> server = makeServer(directory.path());
             QVERIFY(server->openWorld());
@@ -156,7 +159,9 @@ private slots:
             // A clear sky that stays (decision E-395).
             QCOMPARE(server->weather().state().kind, QcWeatherKind::Clear);
             QCOMPARE(server->weather().state().rain, 0.0f);
-            QCOMPARE(server->mobs().mobs().size(), mobs);
+            // Besides them, residents of the village rows in the chunks loaded so far (decision E-411).
+            residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.villager.village != 0; });
+            QCOMPARE(server->mobs().mobs().size() - residents, mobs);
             QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcCreature::persistent));
             QVERIFY(!server->mobs().naturalSpawning());
 
@@ -188,7 +193,7 @@ private slots:
         QCOMPARE(again->mobs().mobs().size(), 0);
         QCOMPARE(again->worldTime(), 150.0);
         QVERIFY(again->stop());
-        QCOMPARE(stored(directory.path()).first, mobs);
+        QCOMPARE(stored(directory.path()).first, mobs + residents);
     }
 
     void setupCountsAsDoneOnlyOnceSaved()
@@ -275,9 +280,10 @@ private slots:
     void worldsOfOtherFormatsAreRefused()
     {
         // world.json of format 1 (before the showcase), 2 (before stage 31.1), 3 (before stage
-        // 31.2) and 9 (before the villages of stage 37.2): a world of an older development version
-        // is refused, not converted (decision E-356), and nothing is written.
-        for (const int version : {1, 2, 3, 9}) {
+        // 31.2), 9 (before the villages of stage 37.2) and 10 (before the villagers of stage 37.2b):
+        // a world of an older development version is refused, not converted (decision E-356), and
+        // nothing is written.
+        for (const int version : {1, 2, 3, 9, 10}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
@@ -397,6 +403,50 @@ private slots:
         const QcBlockPos column{int(std::floor(planned->position.x)), 0, int(std::floor(planned->position.z))};
         QVERIFY(client.chunkLabels.value(column.chunk()).contains(*planned));
         QVERIFY(server.stop());
+    }
+
+    // Each row of the village area is a village of its own, and residents move into all its beds
+    // although creatures do not spawn in the showcase (decision E-411).
+    void villageRowsAreLivedIn()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = QcShowcaseGenerator(m_content).plan().villages;
+        QCOMPARE(plans.size(), m_content->villageStyles().size());
+        for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
+            const QcChunkPos low = QcBlockPos{plan->minX, 0, plan->minZ}.chunk();
+            const QcChunkPos high = QcBlockPos{plan->maxX, 0, plan->maxZ}.chunk();
+            for (int x = low.x; x <= high.x; ++x) {
+                for (int z = low.z; z <= high.z; ++z) {
+                    server->world().loadChunk({x, z});
+                }
+            }
+        }
+        server->tick();
+        server->tick();
+
+        for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
+            const QcVillage *village = server->world().villages().find(plan->id);
+            QVERIFY2(village, qPrintable(plan->style));
+            QCOMPARE(village->style, plan->style);
+            QVERIFY2(!village->beds.isEmpty(), qPrintable(plan->style));
+            QCOMPARE(village->population, village->beds.size());
+            // Only the row's own: no podium of another area, no spot of another row.
+            const auto inRow = [&plan](const QcVillage::Spot &spot) { return plan->covers(spot.at.x, spot.at.z, 0); };
+            QVERIFY(std::ranges::all_of(village->beds, inRow));
+            QVERIFY(std::ranges::all_of(village->workstations, inRow));
+            QVERIFY(std::ranges::all_of(village->beds, [](const QcVillage::Spot &bed) { return !bed.claimedBy.isEmpty(); }));
+            const auto residents = std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
+                return mob.villager.village == plan->id && mob.villager.style == plan->style;
+            });
+            QCOMPARE(residents, village->population);
+            // Its fields are the crop cells of its pieces (what its farmers harvest).
+            QVERIFY2(!plan->fields.isEmpty(), qPrintable(plan->style));
+            for (const QcBlockPos &field : plan->fields) {
+                QVERIFY2(m_content->block(*server->world().blockAt(field)).crop.isCrop(), qPrintable(plan->style));
+            }
+        }
     }
 
     void noCreatureSpawnsByItselfWithoutTheRule()

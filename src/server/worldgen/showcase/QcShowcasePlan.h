@@ -8,6 +8,10 @@
 #include <QList>
 #include <QString>
 
+#include <memory>
+
+struct QcVillagePlan;
+
 // A fixed camera position of the screenshot tour through the showcase world: the player stands on
 // top of the column (x, z) and looks along yaw and pitch (degrees, QcCamera conventions).
 struct QcShowcaseTourStop
@@ -44,6 +48,8 @@ struct QcShowcasePlan
     QcWorldSetup setup;
     QcBlockPos spawn;
     QList<QcShowcaseTourStop> tour;
+    // The rows of the village area, each a village of its own (decision E-411).
+    QList<std::shared_ptr<const QcVillagePlan>> villages;
 
     int groundTop() const { return int(groundColumn.size()) - 1; }
     qsizetype labelCount() const;

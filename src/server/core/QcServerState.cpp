@@ -17,6 +17,8 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
     , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
 {
+    // Villagers claim beds and workstations in the village state (decision E-411).
+    m_entities.creatures().setVillages(&m_world.villages());
     applyLimits();
 }
 

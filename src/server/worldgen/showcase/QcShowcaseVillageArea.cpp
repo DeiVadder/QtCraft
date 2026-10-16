@@ -1,5 +1,8 @@
 #include "QcShowcaseVillageArea.h"
 
+#include "QcVillage.h"
+#include "QcVillageFields.h"
+#include "QcVillagePlan.h"
 #include "QcVillageStyles.h"
 
 #include <algorithm>
@@ -8,9 +11,14 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Blocks between two buildings of a row, and between a row's road and the next row.
+// Blocks between two buildings of a row, and between a row's road and the next row: each row is a
+// village of its own (decision E-411), and a village lists the beds and workstations up to
+// QcVillage::reach around its area, so the rows lie further apart than that from each other.
 constexpr int pieceGap = 2;
-constexpr int rowGap = 3;
+constexpr int rowGap = 2 * QcVillage::reach + 1;
+// Ground in front of the first row: the areas south of the village area lie beyond its first
+// village's reach (their podiums hold beds and workstations).
+constexpr int frontGap = QcVillage::reach + 1;
 
 // The buildings of a style in the order they are shown: well, lamp post, every blueprint of every
 // kind with all its optional parts (decision E-404).
@@ -68,6 +76,42 @@ void copyPiece(QcStructure &area, const QcStructure &piece, int x, int front)
     }
 }
 
+// The village of a row in world coordinates (`origin`: the area's): its road, its bounds from the
+// road to the deepest building, and the well's bell (else the well's ground) as the meeting point.
+// Its beds and workstations come from scanning the chunks; residents move in even though creatures
+// do not spawn in the showcase (QcVillagePlan::alwaysLivedIn).
+// Where a row lies in the area: its width, the local z of its road and its depth north of the road.
+struct RowSpan
+{
+    int width = 0;
+    int road = 0;
+    int depth = 0;
+};
+
+std::shared_ptr<QcVillagePlan> planOf(const QcVillageStyle &style, qint64 id, QcBlockPos origin, RowSpan row)
+{
+    const int width = row.width;
+    const int road = row.road;
+    auto plan = std::make_shared<QcVillagePlan>();
+    plan->id = id;
+    plan->style = style.name;
+    plan->alwaysLivedIn = true;
+    plan->minX = origin.x;
+    plan->maxX = origin.x + width - 1;
+    plan->minZ = origin.z + road - row.depth;
+    plan->maxZ = origin.z + road;
+    for (int x = 0; x < width; ++x) {
+        plan->roads.append({origin.x + x, origin.y, origin.z + road});
+    }
+
+    // The well is the first piece, from local x 1 with its south edge on the row's front.
+    const QcVillageStyle::Blueprint &well = style.centre.first();
+    const QcBlockPos wellOrigin{origin.x + 1, origin.y, origin.z + road - well.structure()->sizeZ()};
+    plan->centre = well.bell ? wellOrigin.offset(well.bell->x, well.bell->y, well.bell->z)
+                             : wellOrigin.offset(well.structure()->sizeX() / 2, 1, well.structure()->sizeZ() / 2);
+    return plan;
+}
+
 } // namespace
 
 namespace QcShowcaseVillageArea {
@@ -82,7 +126,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     const QcVillageStyles styles(context.content, nullptr);
     QList<std::pair<const QcVillageStyle *, QList<std::shared_ptr<const QcStructure>>>> rows;
     int width = 1;
-    int depth = 0;
+    int depth = frontGap;
     int height = 2;
     for (const QcVillageStyleDefinition &definition : context.content.villageStyles()) {
         const QcVillageStyle *style = styles.named(definition.name);
@@ -98,25 +142,36 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         rows.append({style, std::move(pieces)});
     }
 
+    // One row of ground behind the last row instead of a full gap.
+    depth -= rows.isEmpty() ? 0 : rowGap - 1;
+
     auto area = std::make_shared<QcStructure>(u"showcase/villages"_s, width, height, std::max(1, depth));
+    const QcBlockPos origin{anchor.x, anchor.y, anchor.z - area->sizeZ() + 1};
+    QList<std::shared_ptr<const QcVillagePlan>> villages;
     // Rows from the south (the visitors' side) to the north; each road lies south of its row.
-    int road = area->sizeZ() - 1;
+    int road = area->sizeZ() - 1 - frontGap;
     for (const auto &[style, pieces] : std::as_const(rows)) {
+        const std::shared_ptr<QcVillagePlan> plan = planOf(*style, villages.size() + 1, origin, {width, road, rowDepth(pieces)});
         for (int x = 0; x < width; ++x) {
             area->set(x, 0, road, style->roads.front().block);
         }
         int x = 1;
         for (const std::shared_ptr<const QcStructure> &piece : pieces) {
             copyPiece(*area, *piece, x, road - 1);
+            const QcBlockPos pieceOrigin = origin.offset(x, 0, road - piece->sizeZ());
+            const QList<QcBlockPos> crops = QcVillageFields::cropCells(*piece, context.content);
+            for (const QcBlockPos &cell : crops) {
+                plan->fields.insert(pieceOrigin.offset(cell.x, cell.y, cell.z));
+            }
             area->labels.append({{x + piece->sizeX() / 2.0, double(piece->sizeY()) + 1.5, road + 0.5}, titleOf(*piece),
                                  style->name.mid(style->name.indexOf(u':') + 1), false});
             x += piece->sizeX() + pieceGap;
         }
+        villages.append(plan);
         road -= rowDepth(pieces) + 1 + rowGap;
     }
 
-    const QcBlockPos origin{anchor.x, anchor.y, anchor.z - area->sizeZ() + 1};
-    return {u"villages"_s, u"showcase.area.villages"_s, std::move(area), origin};
+    return {u"villages"_s, u"showcase.area.villages"_s, std::move(area), origin, std::move(villages)};
 }
 
 } // namespace QcShowcaseVillageArea

@@ -1,0 +1,29 @@
+{
+    "name": "mob.villager.ambient",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.15,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.32,
+            "frequency": 210,
+            "endFrequency": 260,
+            "attack": 0.03,
+            "curve": 1.4,
+            "lowpass": 1200,
+            "tremoloRate": 9,
+            "tremoloDepth": 0.25
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.22,
+            "frequency": 250,
+            "endFrequency": 190,
+            "start": 0.3,
+            "attack": 0.02,
+            "curve": 1.6,
+            "lowpass": 1200
+        }
+    ]
+}

@@ -236,6 +236,7 @@ qc_add_test(test_mob_navigation SOURCES gameplay/test_mob_navigation.cpp LIBRARI
 qc_add_test(test_mob_crowds SOURCES gameplay/test_mob_crowds.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_mob_path_measure SOURCES gameplay/test_mob_path_measure.cpp LIBRARIES qc_server)
 qc_add_test(test_mob_crowd_measure SOURCES gameplay/test_mob_crowd_measure.cpp LIBRARIES qc_server)
+qc_add_test(test_villager_measure SOURCES gameplay/test_villager_measure.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_creature_summons SOURCES gameplay/test_creature_summons.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_body_fit SOURCES gameplay/test_body_fit.cpp LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_survival_scenario SOURCES gameplay/test_survival_scenario.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
@@ -279,6 +280,8 @@ qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES q
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_villager_walks SOURCES gameplay/test_villager_walks.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
 qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 600)

@@ -1,0 +1,26 @@
+{
+    "name": "villager_fur_hat",
+    "kind": "hair",
+    "playable": false,
+    "layers": {
+        "hat": {
+            "texture": "villager_fur",
+            "tint": "none"
+        }
+    },
+    "boxes": [
+        {
+            "from": [
+                -0.25,
+                1.66,
+                -0.25
+            ],
+            "to": [
+                0.25,
+                1.9,
+                0.25
+            ],
+            "slot": "hat"
+        }
+    ]
+}

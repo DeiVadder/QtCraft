@@ -1,0 +1,35 @@
+{
+    "name": "villager_robe",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "villager_robe",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "villager_robe",
+            "tint": "shirt"
+        },
+        "hand": {
+            "texture": "arm_skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "villager_robe",
+            "tint": "shirt"
+        },
+        "shoes": {
+            "texture": "villager_sandals",
+            "tint": "none"
+        }
+    }
+}

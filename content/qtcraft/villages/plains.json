@@ -58,5 +58,39 @@
             "jetty": { "deck": "oak_planks", "post": "oak_log", "width": 3, "over": 5 }
         },
         { "structure": "village_plains_tower", "max": 1, "minRoadLength": 200 }
-    ]
+    ],
+    "villagers": {
+        "outfit": "villager_tunic",
+        "hair": [
+            "short_hair",
+            "long_hair",
+            "cap",
+            ""
+        ],
+        "skin": [
+            "#f0c8a0",
+            "#d8a07a",
+            "#c08860",
+            "#a06a46"
+        ],
+        "hairColor": [
+            "#2a1a10",
+            "#4a3020",
+            "#7a5030",
+            "#c09050",
+            "#909090"
+        ],
+        "shirt": [
+            "#3a6aa8",
+            "#a84a3a",
+            "#5a7a3a",
+            "#8a6a3a",
+            "#6a5a8a"
+        ],
+        "pants": [
+            "#3a4466",
+            "#4a3a2a",
+            "#4a4a4a"
+        ]
+    }
 }

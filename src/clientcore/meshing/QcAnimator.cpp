@@ -19,6 +19,9 @@ constexpr double sprintAmplitude = 55.0;
 constexpr double hipHeight = 0.7;
 // How far the head turns aside against the body.
 constexpr double maxHeadYaw = 80.0;
+// Lying on the back turns the body around this height above the feet: the back rests just above
+// the place the entity stands on (the top of its bed); the server's box of a lying body follows it.
+constexpr double sleepPivot = QcPhysics::lyingPivot;
 
 double smooth(double t)
 {
@@ -29,6 +32,18 @@ double smooth(double t)
 BoneRotation &bone(BodyPose &pose, QcBoneRole role)
 {
     return pose.bones[std::size_t(role)];
+}
+
+// On the back around a point just above the feet, the limbs straight, the head on the pillow;
+// only the breath (`idle`) moves the arms.
+void lieOnBack(BodyPose &result, double idle)
+{
+    result.bones = {};
+    bone(result, QcBoneRole::RightArm).roll = 4.0 + idle * 0.3;
+    bone(result, QcBoneRole::LeftArm).roll = -4.0 - idle * 0.3;
+    result.bodyPivot = {0.0, sleepPivot, 0.0};
+    result.bodyPitch = -90.0;
+    result.bodyLift = 0.0;
 }
 
 } // namespace
@@ -115,6 +130,9 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     // The head follows the view pitch: looking up tilts its top backwards, looking down forwards.
     bone(result, QcBoneRole::Head).pitch = std::clamp(double(pose.headPitch), -80.0, 80.0);
     bone(result, QcBoneRole::Head).yaw = std::clamp(double(pose.headYaw), -maxHeadYaw, maxHeadYaw);
+    if (pose.sleeping) {
+        lieOnBack(result, idle);
+    }
     if (pose.deathProgress >= 0.0) {
         // Topple sideways around the feet.
         result.bodyPivot = {};

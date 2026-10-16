@@ -178,6 +178,8 @@ private slots:
         int fieldsWithPaths = 0;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
             const QList<QcBlockId> planted = cropsOf(*plan);
+            // The plan lists every crop cell as its fields (what its farmers harvest, decision E-411).
+            QCOMPARE(plan->fields.size(), planted.size());
             for (const QcBlockId block : planted) {
                 ++crops[nameOf(block)];
                 const QcBlockProperty *stages = m_content->block(block).property(u"age"_s);

@@ -5,6 +5,7 @@
 #include <QJsonArray>
 
 #include <algorithm>
+#include <limits>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -80,7 +81,8 @@ QJsonObject QcVillage::toJson() const
             {u"beds"_s, spotsJson(beds)},
             {u"workstations"_s, spotsJson(workstations)},
             {u"population"_s, population},
-            {u"golems"_s, golems}};
+            {u"golems"_s, golems},
+            {u"nextVillager"_s, nextVillager}};
 }
 
 std::optional<QcVillage> QcVillage::fromJson(const QJsonObject &json, const ReadLimits &limits)
@@ -108,5 +110,6 @@ std::optional<QcVillage> QcVillage::fromJson(const QJsonObject &json, const Read
     village.workstations = readSpots(json.value(u"workstations"_s), village, limits.workstations);
     village.population = std::clamp(json.value(u"population"_s).toInt(), 0, maxPopulation);
     village.golems = std::clamp(json.value(u"golems"_s).toInt(), 0, maxPopulation);
+    village.nextVillager = std::clamp(json.value(u"nextVillager"_s).toInt(1), 1, std::numeric_limits<int>::max() - 1);
     return village;
 }

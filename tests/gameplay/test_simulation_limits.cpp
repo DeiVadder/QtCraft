@@ -84,6 +84,12 @@ private slots:
         // Crowds of creatures (stage 37.1, decision E-401).
         QCOMPARE(limits.crowdThrottled, 8);
         QCOMPARE(limits.crowdIdle, 24);
+        // Villagers (stage 37.2b, decision E-411).
+        QCOMPARE(limits.villagersPerVillage, 32);
+        QCOMPARE(limits.villagers, 1024);
+        QCOMPARE(limits.villagerThoughtsPerTick, 64);
+        QCOMPARE(limits.villagerRoutesPerTick, 8);
+        QCOMPARE(limits.villagerHarvestsPerTick, 4);
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
         for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
@@ -91,7 +97,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(55));
+        QCOMPARE(keys.size(), qsizetype(60));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

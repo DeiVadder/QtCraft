@@ -32,7 +32,7 @@ inline constexpr double arriveDistance = 0.35;
 inline constexpr int fullCheckTicks = 20;
 
 // What to do this tick: the steering, and a closed door on the path (only for creatures that open
-// doors, QcPathRules::opensDoors: the villagers of stage 37.2 will open it here).
+// doors, QcPathRules::opensDoors: villagers open it, QcVillagerBehaviour).
 struct Navigation
 {
     QcPhysics::Steering steering;

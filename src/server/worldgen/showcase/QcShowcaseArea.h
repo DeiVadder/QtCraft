@@ -9,6 +9,8 @@
 #include <functional>
 #include <memory>
 
+struct QcVillagePlan;
+
 // What every area of the showcase world is built from: the content, the settings and the blocks
 // they name, resolved once (decision E-220).
 struct QcShowcaseContext
@@ -32,6 +34,8 @@ struct QcShowcaseArea
     QString title;
     std::shared_ptr<const QcStructure> structure;
     QcBlockPos origin;
+    // The villages it shows, in world coordinates (the village area's rows, decision E-411).
+    QList<std::shared_ptr<const QcVillagePlan>> villages;
 };
 
 // Builds an area whose south west corner on the ground is `anchor` (x: west edge, y: ground top,

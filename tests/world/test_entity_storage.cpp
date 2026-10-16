@@ -98,7 +98,7 @@ private:
     QcEntityRecord::Ordered<QcMobManager::Stored> creature(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
                                                            quint32 order) const
     {
-        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true}, order};
+        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt}, order};
     }
 
     QcEntityRecord::Ordered<QcFallingBlock> falling(const QcContentRegistry &content, const QString &name, const QcVec3 &at,

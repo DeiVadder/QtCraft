@@ -61,6 +61,7 @@ qt_add_library(qc_server STATIC
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
+    storage/QcVillagerCodec.h storage/QcVillagerCodec.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
@@ -96,7 +97,8 @@ qt_add_library(qc_server STATIC
     content/QcModLoader.h content/QcModLoader.cpp
     content/QcModStatus.h
     gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
-    gameplay/QcMobManager.h gameplay/QcMobManager.cpp
+    gameplay/QcMobManager.h gameplay/QcMobManager.cpp gameplay/QcMobManagerVillagers.cpp
+    gameplay/QcServerVillagers.h gameplay/QcServerVillagers.cpp
     gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
     gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
     gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
@@ -171,6 +173,11 @@ qt_add_library(qc_server STATIC
     worldgen/QcWorldSetup.h
     villages/QcVillage.h villages/QcVillage.cpp
     villages/QcVillages.h villages/QcVillages.cpp
+    villages/QcVillager.h
+    villages/QcVillagerBehaviour.h villages/QcVillagerBehaviour.cpp
+    villages/QcVillagerHomes.h villages/QcVillagerHomes.cpp
+    villages/QcVillagerLooks.h villages/QcVillagerLooks.cpp
+    villages/QcVillagerRoads.h villages/QcVillagerRoads.cpp
     worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
     worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
     worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp

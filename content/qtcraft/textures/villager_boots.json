@@ -1,0 +1,8 @@
+{
+    "name": "villager_boots",
+    "pattern": "noise",
+    "primary": "#4a3424",
+    "secondary": "#3a281a",
+    "variation": 0.1,
+    "seed": 7507
+}

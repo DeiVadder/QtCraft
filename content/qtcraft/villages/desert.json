@@ -49,5 +49,34 @@
             "jetty": { "deck": "birch_planks", "post": "birch_log", "width": 3, "over": 5 }
         },
         { "structure": "village_desert_tower", "max": 1, "minRoadLength": 200 }
-    ]
+    ],
+    "villagers": {
+        "outfit": "villager_robe",
+        "hair": [
+            "villager_headwrap",
+            "villager_headwrap",
+            "short_hair"
+        ],
+        "skin": [
+            "#c08860",
+            "#a06a46",
+            "#8a5a3a",
+            "#6a4430"
+        ],
+        "hairColor": [
+            "#1a1410",
+            "#2a1a10",
+            "#4a3020"
+        ],
+        "shirt": [
+            "#e8d8b0",
+            "#d8b880",
+            "#c89860",
+            "#e0e0d8",
+            "#b85a3a"
+        ],
+        "pants": [
+            "#d8c8a0"
+        ]
+    }
 }

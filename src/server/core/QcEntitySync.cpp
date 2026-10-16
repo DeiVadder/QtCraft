@@ -1,6 +1,7 @@
 #include "QcEntitySync.h"
 
 #include "QcServerState.h"
+#include "QcVillagerLooks.h"
 
 #include <algorithm>
 
@@ -40,7 +41,8 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     switch (entity.kind) {
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
-        const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0));
+        const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
+                                         | (creature.villager.sleeping ? QcMsg::Sleeping : 0));
         now.yaw = creature.yaw;
         now.health = creature.health;
         now.hurt = creature.hurtThisTick;
@@ -112,9 +114,14 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
         spawn.appearance.cape = stand.cape;
         break;
     }
-    case QcEntityKind::Creature:
-        spawn.creatureType = entity.as<QcCreature>().type;
+    case QcEntityKind::Creature: {
+        const auto &creature = entity.as<QcCreature>();
+        spawn.creatureType = creature.type;
+        if (m_state.content().mobs()[creature.type].villager) {
+            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.villager);
+        }
         break;
+    }
     case QcEntityKind::ExperienceOrb:
         break;
     case QcEntityKind::Minecart:

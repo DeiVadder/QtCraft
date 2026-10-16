@@ -85,6 +85,16 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
 {
     const double level = at.y + here.lift();
 
+    // Level, or half a block up or down (slabs); a ladder's cell beside is entered at its foot.
+    const QcPathStand beside = QcPathTerrain::standAt(m_window, side, rules);
+    if (beside.ok) {
+        const double rise = side.y + beside.lift() - level;
+        if (rise > 0.0 && !QcPathTerrain::clearAbove(m_window, at, rise + here.lift(), rules)) {
+            return std::nullopt;
+        }
+        return Move{side, 1.0f + standCost(beside, rules)};
+    }
+
     // Up a block: only with room above the current cell for the jump.
     const QcPathStand above = QcPathTerrain::standAt(m_window, side.offset(0, 1, 0), rules);
     if (above.ok) {
@@ -93,16 +103,6 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
             return std::nullopt;
         }
         return Move{side.offset(0, 1, 0), 1.0f + climbCost + standCost(above, rules)};
-    }
-
-    // Level, or half a block up or down (slabs).
-    const QcPathStand beside = QcPathTerrain::standAt(m_window, side, rules);
-    if (beside.ok) {
-        const double rise = side.y + beside.lift() - level;
-        if (rise > 0.0 && !QcPathTerrain::clearAbove(m_window, at, rise + here.lift(), rules)) {
-            return std::nullopt;
-        }
-        return Move{side, 1.0f + standCost(beside, rules)};
     }
 
     // Down: the body passes the edge at its height, then falls to the first floor below (deeper
@@ -143,6 +143,8 @@ int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
         flat[i] = move->to == side && sameLevelAs(QcPathTerrain::standAt(m_window, side, rules), here);
     }
 
+    count = climb(at, rules, moves, count);
+
     // Diagonals only between two free sides on the same level: no cutting corners.
     for (std::size_t a = 0; a < 2; ++a) {
         for (std::size_t b = 2; b < 4; ++b) {
@@ -159,6 +161,25 @@ int QcPathFinder::expand(QcBlockPos at, QcPathRules rules, Moves &moves)
 
     for (int i = 0; i < count; ++i) {
         moves[std::size_t(i)].cost += sideCost;
+    }
+    return count;
+}
+
+int QcPathFinder::climb(QcBlockPos at, QcPathRules rules, Moves &moves, int count)
+{
+    if (QcPathTerrain::kindOf(m_window.cell(at), rules) != QcPathCell::Kind::Ladder) {
+        return count;
+    }
+
+    // The top of a ladder is left sideways (sideStep, a step up of a block).
+    const QcBlockPos up = at.offset(0, 1, 0);
+    if (QcPathTerrain::kindOf(m_window.cell(up), rules) == QcPathCell::Kind::Ladder && QcPathTerrain::standAt(m_window, up, rules).ok) {
+        moves[std::size_t(count++)] = Move{up, 1.0f + climbCost};
+    }
+    const QcBlockPos down = at.offset(0, -1, 0);
+    const QcPathStand below = QcPathTerrain::standAt(m_window, down, rules);
+    if (below.ok) {
+        moves[std::size_t(count++)] = Move{down, 1.0f + standCost(below, rules)};
     }
     return count;
 }

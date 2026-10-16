@@ -3,6 +3,7 @@
 #include "QcContentNames.h"
 #include "QcJsonFieldReader.h"
 #include "QcVillageLayoutParser.h"
+#include "QcVillagerParser.h"
 
 #include <QJsonArray>
 
@@ -262,6 +263,7 @@ QcResult<QcVillageStyleDefinition> parseVillageStyle(const QJsonObject &json, co
     style.layouts = QcVillageLayoutParser::read(json, reader);
     readGround(style, packNamespace, reader);
     style.palette = nameMap(json, u"palette"_s, packNamespace, QcVillageStyleDefinition::maxPaletteEntries, reader);
+    style.villagers = QcVillagerParser::readLook(u"villagers"_s, packNamespace, reader);
     if (style.centre.isEmpty()) {
         reader.fail(u"'centre' is required"_s);
     }

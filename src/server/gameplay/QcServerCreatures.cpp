@@ -7,10 +7,11 @@
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 
-QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health)
+QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks)
     : m_state(state)
     , m_sounds(sounds)
     , m_health(health)
+    , m_villagers(state, sounds, blocks)
 {
 }
 
@@ -26,6 +27,7 @@ void QcServerCreatures::tick()
 
     const QList<QcMobManager::PlayerHit> hits =
         m_state.entities().creatures().tick(m_state.world(), players, m_state.info().worldTime, dt, [this] { return m_state.entities().newId(); });
+    m_villagers.apply();
     playAmbientSounds(dt);
     applyCramming();
 

@@ -2,9 +2,23 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
+
+### <a id="mob-qtcraft-villager"></a>Dorfbewohner
+
+Lebt in einem Dorf mit eigenem Bett und, mit Glück, einem Arbeitsplatz, der ihm seinen Beruf gibt. Tagsüber arbeitet er, trifft die anderen an der Glocke, geht abends nach Hause und schläft nachts in seinem Bett. Er öffnet Holztüren und schließt sie hinter sich, flieht vor Monstern nach Hause und kämpft nie.
+
+| | |
+|---|---|
+| ID | `qtcraft:villager` |
+| Verhalten | friedlich: wandert, flieht bei Treffern |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,9 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 3 m/s auf der Flucht |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Beute | nichts |
 
 ### <a id="mob-qtcraft-mannequin"></a>Gliederpuppe
 

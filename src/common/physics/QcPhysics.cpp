@@ -79,6 +79,21 @@ QcAabb boxAt(const QcVec3 &feet, double width, double height)
     return {{feet.x - half, feet.y, feet.z - half}, {feet.x + half, feet.y + height, feet.z + half}};
 }
 
+QcAabb lyingBoxAt(const QcVec3 &feet, float yaw, double width, double height)
+{
+    // Yaw 0 faces north (-Z), 90 east (+X).
+    const double radians = qDegreesToRadians(double(yaw));
+    const QcVec3 forward{std::round(std::sin(radians)), 0.0, std::round(-std::cos(radians))};
+    const QcVec3 footEnd = feet + forward * lyingPivot;
+    const QcVec3 headEnd = feet - forward * (height - lyingPivot);
+
+    const double half = width * 0.5;
+    const double acrossX = forward.x == 0.0 ? half : 0.0;
+    const double acrossZ = forward.z == 0.0 ? half : 0.0;
+    return {{std::min(footEnd.x, headEnd.x) - acrossX, feet.y, std::min(footEnd.z, headEnd.z) - acrossZ},
+            {std::max(footEnd.x, headEnd.x) + acrossX, feet.y + half, std::max(footEnd.z, headEnd.z) + acrossZ}};
+}
+
 bool isSolidAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     if (pos.y < 0) {
@@ -257,25 +272,32 @@ void applyAirVertical(QcEntityMotion &motion, const Steering &steering, BodySize
     }
 }
 
+// A low lift for a step under a low ceiling: from a dirt path or farmland (a sixteenth lower) up
+// to a full block through a door, whose lintel stops the full step.
+constexpr double lowStepHeight = 0.125;
+
 // Walking into something low (a slab, a stair step): tries the same move lifted by up to stepHeight
-// and keeps it in `move` when it gets further.
+// (or lowStepHeight when the full lift gets no further) and keeps it in `move` when it gets further.
 void tryStepUp(MoveResult &move, QcEntityMotion &motion, BodySize size, const QcBlockAccess &world, double dt)
 {
     const QcAabb start = boxAt(motion.position, size.width, size.height);
-    const MoveResult up = moveBox(start, {0.0, stepHeight, 0.0}, world);
-    const QcAabb raised = start.moved(up.applied);
-    const MoveResult across = moveBox(raised, {motion.velocity.x * dt, 0.0, motion.velocity.z * dt}, world);
-    const QcAabb moved = raised.moved(across.applied);
-    const MoveResult down = moveBox(moved, {0.0, -up.applied.y, 0.0}, world);
-
     const double plain = std::hypot(move.applied.x, move.applied.z);
-    const double stepped = std::hypot(across.applied.x, across.applied.z);
-    if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
-        move.applied = up.applied + across.applied + down.applied;
-        move.blockedX = across.blockedX;
-        move.blockedZ = across.blockedZ;
-        move.blockedY = true;
-        motion.velocity.y = std::min(motion.velocity.y, 0.0);
+    for (const double lift : {stepHeight, lowStepHeight}) {
+        const MoveResult up = moveBox(start, {0.0, lift, 0.0}, world);
+        const QcAabb raised = start.moved(up.applied);
+        const MoveResult across = moveBox(raised, {motion.velocity.x * dt, 0.0, motion.velocity.z * dt}, world);
+        const QcAabb moved = raised.moved(across.applied);
+        const MoveResult down = moveBox(moved, {0.0, -up.applied.y, 0.0}, world);
+
+        const double stepped = std::hypot(across.applied.x, across.applied.z);
+        if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
+            move.applied = up.applied + across.applied + down.applied;
+            move.blockedX = across.blockedX;
+            move.blockedZ = across.blockedZ;
+            move.blockedY = true;
+            motion.velocity.y = std::min(motion.velocity.y, 0.0);
+            return;
+        }
     }
 }
 

@@ -1,0 +1,8 @@
+{
+    "name": "villager_farmer_apron",
+    "pattern": "noise",
+    "primary": "#b89a5e",
+    "secondary": "#a4864e",
+    "variation": 0.1,
+    "seed": 7508
+}

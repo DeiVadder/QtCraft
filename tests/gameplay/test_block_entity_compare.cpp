@@ -50,6 +50,17 @@ using namespace Qt::StringLiterals;
 // it again for the swamp row of the village area (a deeper area: three more stored chunks, one fewer
 // at its old edge), nothing else changes. The review fixes of 37.2a (decision E-409) wrote it again
 // for the smithy's inner door, turned to face through its partition: one chunk of the village area.
+// Stage 37.2b (decision E-411) wrote it again for the villager's pen in the creature area: the area is
+// 6 blocks wider, so the tour stops 3 blocks further east there and 6 blocks further east at the two
+// areas after it (armour, first block category), which changes when the chunks around the observer
+// clock at 68 64 -49 come and go; the clock pulses fewer times while the client watches (client
+// block updates 658 -> 619). Blocks and block entities are unchanged. Checked: without the pen the
+// dump equals the one before; with the pen but no villager in it, it equals this one. It was written
+// again when each row of the village area became a village of its own with residents (rows 33
+// blocks apart, 17 blocks of ground in front of the first): other stored chunks of the village
+// area, the residents the client sees there (creature kind 6) and the doors they open and close in
+// the client's block updates (619 -> 627); after reopening, the furnace at 96 64 -7 burns two ticks
+// instead of one before its chunk leaves (the player then stands in the deeper village area).
 // With QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture

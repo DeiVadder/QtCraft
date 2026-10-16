@@ -3,6 +3,7 @@
 #include "QcEntity.h"
 #include "QcMobPath.h"
 #include "QcVec3.h"
+#include "QcVillager.h"
 
 // A creature (decision E-364): a mob of the content's definitions (`type` indexes them) with its
 // health, behaviour timers and breeding state. QcMobManager moves and spawns them.
@@ -51,6 +52,9 @@ struct QcCreature : QcEntity
     bool bred = false;
     // Came by /summon (counted against QcServerLimits::summonLimit); not saved.
     bool summoned = false;
+    // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411); unused for
+    // other kinds.
+    QcVillager villager;
 
     bool isYoung() const { return growUp > 0.0; }
 };

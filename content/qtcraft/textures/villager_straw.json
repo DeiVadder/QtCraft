@@ -1,0 +1,8 @@
+{
+    "name": "villager_straw",
+    "pattern": "noise",
+    "primary": "#e0c46a",
+    "secondary": "#c8aa52",
+    "variation": 0.14,
+    "seed": 7511
+}

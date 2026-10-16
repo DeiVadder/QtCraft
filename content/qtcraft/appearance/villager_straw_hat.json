@@ -1,0 +1,39 @@
+{
+    "name": "villager_straw_hat",
+    "kind": "hair",
+    "playable": false,
+    "layers": {
+        "hat": {
+            "texture": "villager_straw",
+            "tint": "none"
+        }
+    },
+    "boxes": [
+        {
+            "from": [
+                -0.24,
+                1.74,
+                -0.24
+            ],
+            "to": [
+                0.24,
+                1.92,
+                0.24
+            ],
+            "slot": "hat"
+        },
+        {
+            "from": [
+                -0.42,
+                1.73,
+                -0.42
+            ],
+            "to": [
+                0.42,
+                1.76,
+                0.42
+            ],
+            "slot": "hat"
+        }
+    ]
+}

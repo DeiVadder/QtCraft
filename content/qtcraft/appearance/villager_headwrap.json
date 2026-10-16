@@ -1,0 +1,39 @@
+{
+    "name": "villager_headwrap",
+    "kind": "hair",
+    "playable": false,
+    "layers": {
+        "hat": {
+            "texture": "villager_headwrap",
+            "tint": "none"
+        }
+    },
+    "boxes": [
+        {
+            "from": [
+                -0.24,
+                1.62,
+                -0.24
+            ],
+            "to": [
+                0.24,
+                1.86,
+                0.24
+            ],
+            "slot": "hat"
+        },
+        {
+            "from": [
+                -0.09,
+                1.38,
+                0.225
+            ],
+            "to": [
+                0.09,
+                1.64,
+                0.27
+            ],
+            "slot": "hat"
+        }
+    ]
+}

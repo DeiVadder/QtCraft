@@ -16,6 +16,7 @@
                 "chapter:qtcraft:fire",
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:villages",
+                "chapter:qtcraft:villagers",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -456,6 +457,7 @@
                 "mob:qtcraft:pig",
                 "mob:qtcraft:sheep",
                 "mob:qtcraft:slime",
+                "mob:qtcraft:villager",
                 "mob:qtcraft:zombie"
             ],
             "id": "creatures",
@@ -52972,6 +52974,124 @@
             "text": "",
             "title": "Texture packs"
         },
+        "chapter:qtcraft:villagers": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Villagers",
+            "facts": [
+            ],
+            "icon": "qtcraft:bed",
+            "id": "chapter:qtcraft:villagers",
+            "name": "qtcraft:villagers",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "When the part of a village with a bed is seen for the first time, a villager moves into every free bed, up to 32 in one village. Each one claims its bed and keeps it; break the bed and the villager looks for another free one. Villagers stay in the world for good: they wait while their part of the world is not loaded and are saved with it. Their clothes follow the style of their village: tunics on the plains, robes and headwraps in the desert, fur in the taiga, smocks and waders with reed hats in the swamp, each villager with its own colours.",
+                    "title": "Homes"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Trading comes with a later version: for now a villager you use turns to you and greets you.",
+                    "title": "Professions"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "After sunrise villagers stroll about, then go to work. Around noon they meet at the bell and go back to work in the afternoon. Towards evening they stroll once more, at sunset they go home, and at night they lie in their beds until morning. A villager in bed gets up when it is hurt. When it rains in the village, everyone goes home. Monsters within 10 blocks send villagers running home; one that is hit runs away too. They can be hurt like animals and do not fight back.",
+                    "title": "A villager's day"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Villagers open wooden doors on their way and close them behind them; iron doors stay shut for them. A long way through the village, say across the boardwalks of a swamp village, goes along the roads in stages, so villagers find their way home from every corner of their village.",
+                    "title": "Doors and long ways"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "`villagers.json` names the creature that lives in villages, the professions (the workstation kind from `worldgen/villages.json`, layers laid over the outfit, a hat, whether it tends crops), the daily routine as steps through the day (wander, work, meet, home, sleep) and the default look. A village style dresses its villagers with `villagers` in its file: an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours.",
+                    "title": "Villagers in mods"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:villager",
+                            "text": "Villager"
+                        },
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Furnace"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Barrel"
+                        },
+                        {
+                            "icon": "qtcraft:oak_door",
+                            "note": "",
+                            "target": "block:qtcraft:oak_door",
+                            "text": "Oak door"
+                        },
+                        {
+                            "icon": "qtcraft:iron_door",
+                            "note": "",
+                            "target": "block:qtcraft:iron_door",
+                            "text": "Iron door"
+                        },
+                        {
+                            "icon": "qtcraft:wheat_crop",
+                            "note": "",
+                            "target": "block:qtcraft:wheat_crop",
+                            "text": "Wheat crop"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Villagers"
+        },
         "chapter:qtcraft:villages": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -53013,7 +53133,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. The villagers of a later version will claim a bed and a workstation each, and new villagers will need free beds. A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.",
+                    "text": "The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. Villagers claim a bed and a workstation each (see Villagers). A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.",
                     "title": "Beds and workstations"
                 },
                 {
@@ -70526,6 +70646,64 @@
             ],
             "text": "A bouncing blob, weak but persistent. Underground it lives deep down and only in some chunks, the slime chunks; at night it also comes out in swamps.",
             "title": "Slime"
+        },
+        "mob:qtcraft:villager": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Villager",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:villager"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "peaceful: wanders, flees when hurt"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 1.9 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.4 m/s walking, 3 m/s fleeing"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself (/summon, showcase world)"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                }
+            ],
+            "icon": "",
+            "id": "mob:qtcraft:villager",
+            "name": "qtcraft:villager",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Lives in a village with a bed of its own and, with luck, a workstation that gives it its profession. It works by day, meets the others at the bell, goes home in the evening and sleeps in its bed at night. It opens wooden doors and shuts them behind it, runs home from monsters and never fights.",
+            "title": "Villager"
         },
         "mob:qtcraft:zombie": {
             "category": "creatures",

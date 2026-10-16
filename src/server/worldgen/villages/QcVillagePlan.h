@@ -4,6 +4,7 @@
 #include "QcVillageStyles.h"
 
 #include <QList>
+#include <QSet>
 #include <QString>
 
 // One village as the world generator builds it (decision E-403): a pure function of the seed, the
@@ -120,7 +121,13 @@ struct QcVillagePlan
     Wetland wetland;
     QList<Spot> beds;
     QList<Spot> workstations;
+    // The crop cells of its pieces in the world: its fields, the only crops its farmers harvest
+    // (decision E-411).
+    QSet<QcBlockPos> fields;
     QList<Mob> mobs;
+    // Residents move into its free beds even while creatures do not spawn (the rows of the showcase
+    // world, decision E-411); other villages get theirs only with the creatures.
+    bool alwaysLivedIn = false;
 
     bool covers(int x, int z, int margin) const
     {

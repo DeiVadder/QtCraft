@@ -10,7 +10,9 @@
 // finds it within the tick's budget.
 struct QcMobPath
 {
-    enum class Purpose : quint8 { None, Chase, Wander, Flee };
+    // Errand: a villager going to its bed, workstation, meeting point or a crop (decision E-411);
+    // searched with the full budget, unlike a wanderer.
+    enum class Purpose : quint8 { None, Chase, Wander, Flee, Errand };
 
     // The goal: a point, why the creature goes there, and how close counts as there (cells).
     Purpose purpose = Purpose::None;

@@ -1,0 +1,39 @@
+{
+    "name": "villager_fisher_hat",
+    "kind": "hair",
+    "playable": false,
+    "layers": {
+        "hat": {
+            "texture": "villager_oilskin",
+            "tint": "none"
+        }
+    },
+    "boxes": [
+        {
+            "from": [
+                -0.245,
+                1.7,
+                -0.245
+            ],
+            "to": [
+                0.245,
+                1.88,
+                0.245
+            ],
+            "slot": "hat"
+        },
+        {
+            "from": [
+                -0.33,
+                1.68,
+                -0.33
+            ],
+            "to": [
+                0.33,
+                1.71,
+                0.42
+            ],
+            "slot": "hat"
+        }
+    ]
+}

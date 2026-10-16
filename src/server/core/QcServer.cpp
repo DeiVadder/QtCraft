@@ -53,7 +53,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
-    , m_creatures(m_state, m_sounds, m_health)
+    , m_creatures(m_state, m_sounds, m_health, m_blocks)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
     , m_lightning(m_state, m_sounds, m_health, m_ignition)
@@ -89,6 +89,10 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_fire.setRainCheck(rainsOn);
     m_burning.setRainCheck(rainsOn);
     m_state.growth().setRainCheck(rainsOn);
+    // Villagers ask about a column: rain on its top, below the snow line of high air.
+    m_state.entities().creatures().villagers().setRainCheck([this](QcBlockPos pos) {
+        return m_weather.isRainingAt({pos.x, m_weather.columnTop(pos.x, pos.z) + 1, pos.z});
+    });
     m_weather.setStrikeHook([this](QcBlockPos pos) { m_lightning.strike(pos); });
 }
 
@@ -289,7 +293,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)) {
+        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id) && !m_creatures.talk(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {

@@ -1,0 +1,52 @@
+{
+    "name": "villager_reed_hat",
+    "kind": "hair",
+    "playable": false,
+    "layers": {
+        "hat": {
+            "texture": "villager_reed",
+            "tint": "none"
+        }
+    },
+    "boxes": [
+        {
+            "from": [
+                -0.4,
+                1.74,
+                -0.4
+            ],
+            "to": [
+                0.4,
+                1.77,
+                0.4
+            ],
+            "slot": "hat"
+        },
+        {
+            "from": [
+                -0.22,
+                1.77,
+                -0.22
+            ],
+            "to": [
+                0.22,
+                1.84,
+                0.22
+            ],
+            "slot": "hat"
+        },
+        {
+            "from": [
+                -0.1,
+                1.84,
+                -0.1
+            ],
+            "to": [
+                0.1,
+                1.91,
+                0.1
+            ],
+            "slot": "hat"
+        }
+    ]
+}

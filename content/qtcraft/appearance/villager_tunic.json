@@ -1,0 +1,35 @@
+{
+    "name": "villager_tunic",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "skin",
+            "tint": "skin"
+        },
+        "face": {
+            "texture": "face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "tunic",
+            "tint": "shirt"
+        },
+        "sleeve": {
+            "texture": "sleeve",
+            "tint": "shirt"
+        },
+        "hand": {
+            "texture": "arm_skin",
+            "tint": "skin"
+        },
+        "legs": {
+            "texture": "villager_trousers",
+            "tint": "pants"
+        },
+        "shoes": {
+            "texture": "shoes",
+            "tint": "none"
+        }
+    }
+}

@@ -175,17 +175,18 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
     files += filesIn(root.filePath(u"textures"_s), u"*.png"_s);
     if (!QFileInfo(root.filePath(u"worldgen"_s)).isSymLink()) {
-        for (const char *name : {"terrain.json", "showcase.json", "flat.json", "void.json"}) {
+        for (const char *name : {"terrain.json", "showcase.json", "flat.json", "void.json", "villages.json"}) {
             files.append(root.filePath(u"worldgen/"_s + QString::fromLatin1(name)));
         }
     }
     files.append(root.filePath(u"weather.json"_s));
+    files.append(root.filePath(u"villagers.json"_s));
 
     // Only what exists as a regular file is read.
     files.removeIf([](const QString &path) {
@@ -371,6 +372,9 @@ QString unfitSnowLayer(const QcContentRegistry &registry, const QString &name)
 
 void loadWeatherSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
 {
+    if (auto villagers = readSettingsFile(root, u"villagers.json"_s, packId, warnings, QcContentParser::parseVillagerSettings)) {
+        registry.setVillagerSettings(std::move(*villagers));
+    }
     auto weather = readSettingsFile(root, u"weather.json"_s, packId, warnings, QcContentParser::parseWeather);
     if (!weather) {
         return;
