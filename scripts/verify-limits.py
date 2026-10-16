@@ -12,6 +12,19 @@ work instead of first in the TSan step of the full verify:
   - more than COST_SECONDS in debug without a COST property: ctest then starts the test late in a
     fresh build directory, and it becomes the tail of the TSan step.
 
+Tests labelled `realtime` (tests/CMakeLists.txt) mostly wait for timers, links with latency or
+other processes: their CPU time is under a quarter of their wall time in debug, and TSan slows
+them down far less (measured 2026-10-16 in a parallel TSan run: 1.2-3.5 x their debug time,
+test_survival_scenario 48 -> 56 s, test_latency 28 -> 54 s, test_multiplayer_bots 17 -> 61 s).
+For them the factor is REALTIME_FACTOR (about twice the typical TSan slowdown), and the COST
+threshold grows by FACTOR / REALTIME_FACTOR, so it stands for the same TSan time.
+
+A single debug time says little on a busy machine (another session building beside the run made
+every test 2-2.5 x slower in one run). So every run adds its times to <build dir>/
+.verify-test-times.json, which keeps the last HISTORY times per test, and the check uses the
+smallest of them: one slow run under load does not warn, a test that really got slower warns
+once its recent runs are all slow.
+
 Warnings only, never a failure: debug times in a parallel run vary with the load beside it, and
 the person reading the warning decides (set TIMEOUT/COST in tests/CMakeLists.txt or make the
 test lighter). Prints nothing when every limit fits.
@@ -22,12 +35,17 @@ Usage: scripts/verify-limits.py --build-dir <dir> --junit <report.xml>
 import argparse
 import json
 import math
+import os
 import subprocess
 import sys
 import xml.etree.ElementTree as ElementTree
 
 FACTOR = 15
 COST_SECONDS = 15
+REALTIME_LABEL = "realtime"
+REALTIME_FACTOR = 5
+HISTORY = 5
+TIMES_FILE = ".verify-test-times.json"
 # ctest's limit for a test without TIMEOUT (CTEST_TEST_TIMEOUT / DART_TESTING_TIMEOUT default).
 DEFAULT_TIMEOUT = 1500
 
@@ -60,6 +78,24 @@ def run_times(junit):
     return times
 
 
+def recent_times(build_dir, times):
+    """Adds this run's times to the history of the build directory; the smallest recent time per test."""
+    path = os.path.join(build_dir, TIMES_FILE)
+    try:
+        with open(path, encoding="utf-8") as file:
+            history = json.load(file)
+    except (OSError, ValueError):
+        history = {}
+
+    for name, seconds in times.items():
+        history[name] = (history.get(name, []) + [round(seconds, 2)])[-HISTORY:]
+    temporary = path + ".tmp"
+    with open(temporary, "w", encoding="utf-8") as file:
+        json.dump(history, file, indent=1, sort_keys=True)
+    os.replace(temporary, path)
+    return {name: min(history[name]) for name in times}
+
+
 def round_up(value, step):
     return int(math.ceil(value / step) * step)
 
@@ -70,15 +106,19 @@ def warnings(times, properties):
     for name, seconds in sorted(times.items(), key=lambda item: -item[1]):
         values = properties.get(name, {})
         timeout = float(values.get("TIMEOUT", DEFAULT_TIMEOUT))
+        factor = REALTIME_FACTOR if REALTIME_LABEL in values.get("LABELS", []) else FACTOR
+        cost_seconds = COST_SECONDS * FACTOR / factor
         problems = []
-        if timeout < FACTOR * seconds:
-            problems.append(f"TIMEOUT {timeout:.0f} s < {FACTOR} x debug time, "
-                            f"suggest TIMEOUT {round_up(FACTOR * seconds, 30)}")
-        if seconds > COST_SECONDS and "COST" not in values:
+        if timeout < factor * seconds:
+            problems.append(f"TIMEOUT {timeout:.0f} s < {factor} x debug time, "
+                            f"suggest TIMEOUT {round_up(factor * seconds, 30)}")
+        if seconds > cost_seconds and "COST" not in values:
             # The existing COST entries are about half the test's parallel TSan time in seconds.
-            problems.append(f"over {COST_SECONDS} s without COST, suggest COST {round_up(seconds * 4, 10)}")
+            problems.append(f"over {cost_seconds:.0f} s without COST, "
+                            f"suggest COST {round_up(seconds * factor / 4, 10)}")
         if problems:
-            lines.append(f"LIMIT WARNING {name}: debug {seconds:.1f} s; " + "; ".join(problems))
+            lines.append(f"LIMIT WARNING {name}: debug {seconds:.1f} s (fastest of the last {HISTORY} runs); "
+                         + "; ".join(problems))
     return lines
 
 
@@ -91,7 +131,8 @@ def main():
     times = run_times(arguments.junit)
     if not times:
         return
-    for line in warnings(times, test_properties(arguments.build_dir)):
+    smallest = recent_times(arguments.build_dir, times)
+    for line in warnings(smallest, test_properties(arguments.build_dir)):
         print(line)
 
 

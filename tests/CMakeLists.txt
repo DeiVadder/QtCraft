@@ -41,7 +41,7 @@ qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_server)
-qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 600)
+qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 750)
 
 # Argument checks of the A/B benchmark script (settings per label, decision E-332); runs no game.
 add_test(NAME script_bench_ab_args
@@ -277,7 +277,7 @@ qc_add_test(test_block_light SOURCES world/test_block_light.cpp QcTestWorld.h LI
 qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_common TIMEOUT 900)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
-qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
@@ -328,7 +328,7 @@ qc_add_test(test_simulation_limits SOURCES gameplay/test_simulation_limits.cpp Q
 qc_add_test(test_signal_hopper_edges SOURCES gameplay/test_signal_hopper_edges.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_dispensers SOURCES gameplay/test_signal_dispensers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_readers SOURCES gameplay/test_signal_readers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_world_details SOURCES world/test_world_details.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_handbook SOURCES content/test_handbook.cpp LIBRARIES qc_server)
 target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods"
@@ -367,7 +367,7 @@ target_include_directories(test_frame_plan PRIVATE ${PROJECT_SOURCE_DIR}/src/app
 # sanitizers: the whole game with its render thread is too slow there for the time limit.
 if(NOT QC_SANITIZERS)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 120)
+    set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 300 COST 40)
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>)
@@ -387,7 +387,7 @@ qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTes
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 240)
 qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
-qc_add_test(test_void_client SOURCES network/test_void_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
+qc_add_test(test_void_client SOURCES network/test_void_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.
@@ -484,6 +484,20 @@ set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_weather test_fire PROPERTIES COST 140)
 set_tests_properties(test_scenarios test_mods test_signal_network test_server_light PROPERTIES COST 80)
 set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
+set_tests_properties(test_mobs test_weather_effects test_block_light_engine PROPERTIES COST 80)
+set_tests_properties(test_world_details PROPERTIES COST 70)
+set_tests_properties(test_block_entity_compare PROPERTIES COST 60)
+set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
+set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency
+    test_creative_client test_multiplayer_bots PROPERTIES COST 30)
+
+# Tests that mostly wait in real time (timers, links with latency, bot processes): in debug their
+# CPU time is under a quarter of their wall time, and TSan slows them 1.2-3.5 x instead of 7-10 x.
+# The limit check after the debug tests (scripts/verify-limits.py, decision E-412) measures them
+# with a smaller factor. A new test that mostly waits belongs here.
+set_property(TEST test_interpolation test_latency test_creative_client test_void_client
+    test_survival_scenario test_multiplayer_bots test_creative_bots test_signal_bots
+    test_minecart_bots test_machine_bots APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
