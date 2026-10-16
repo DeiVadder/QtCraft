@@ -8,7 +8,10 @@
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
 # --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
 #                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
-#                    a stage. Before the merge the full run checks every test under TSan.
+#                    a stage. Before the merge the full run checks every test under TSan. With
+#                    --changed its TSan step also runs every other test whose own inputs changed
+#                    (relinked, or a new or edited test file on the branch); a change of runtime data
+#                    alone selects only the label there (decision E-412).
 # --changed:         with --quick or --tsan-concurrent (alone it means --quick --changed): every test
 #                    step runs only the tests whose inputs changed since they last passed in that build
 #                    directory: relinked executables, files named on their command line or in
@@ -16,6 +19,11 @@
 #                    files; a change there runs all). scripts/verify-tests.py selects and keeps the
 #                    stamps in build/<preset>/.verify-test-stamps.json (decision E-405). Every run
 #                    records the tests that passed, so a run without --changed also renews the stamps.
+# After the debug test step every mode compares each test's time with its TIMEOUT and COST and
+# warns about limits that would be too tight under TSan (scripts/verify-limits.py, E-412); the
+# warnings are repeated at the end and do not fail the run.
+# On macOS the script runs under `caffeinate -i` (it starts itself once more), so the machine does
+# not sleep during a run; arguments and exit code pass through.
 # Every test step runs ctest in parallel (decision E-380): QC_TEST_JOBS jobs, by default the number
 # of cores minus two. The script runs at normal priority; work beside it (the next stage in its own
 # worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
@@ -23,6 +31,10 @@
 # Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
 
 set -u
+
+if [ -z "${QC_VERIFY_CAFFEINATED:-}" ] && command -v caffeinate >/dev/null 2>&1; then
+    QC_VERIFY_CAFFEINATED=1 exec caffeinate -i /bin/sh "$0" "$@"
+fi
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
@@ -120,6 +132,7 @@ echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS)"
 
 failures=""
 timings=""
+limit_warnings=""
 total_start=$(date +%s)
 
 step() {
@@ -142,6 +155,7 @@ limited() {
 
 # Prints the ctest regex of the tests to run with --changed (empty: none); fails when the selection
 # cannot be made, and the caller then runs every test.
+# A TSan label with --changed widens to every test whose own inputs changed (--broad-label).
 select_changed() {
     preset=$1
     label=$2
@@ -150,7 +164,7 @@ select_changed() {
         set -- "$@" --regex "$TEST_REGEX"
     fi
     if [ -n "$label" ]; then
-        set -- "$@" --label "$label"
+        set -- "$@" --broad-label "$label"
     fi
     python3 scripts/verify-tests.py "$@"
 }
@@ -190,7 +204,19 @@ run_tests() {
     limited 3600 ctest "$@" --output-junit "$junit"
     status=$?
     python3 scripts/verify-tests.py record --build-dir "build/$preset" --junit "$junit"
+    if [ "$preset" = debug ]; then
+        check_limits "$junit"
+    fi
     return $status
+}
+
+# Warns about tests whose TIMEOUT or COST does not fit their debug time (E-412); never fails.
+check_limits() {
+    found=$(python3 scripts/verify-limits.py --build-dir build/debug --junit "$1")
+    [ -n "$found" ] || return 0
+    echo "$found"
+    limit_warnings="$limit_warnings
+$found"
 }
 
 build_and_test() {
@@ -263,6 +289,9 @@ else
 fi
 
 echo "== timings ($MODE)$timings"
+if [ -n "$limit_warnings" ]; then
+    echo "== test limits too tight for TSan (warning only; set TIMEOUT/COST in tests/CMakeLists.txt or lighten the test)$limit_warnings"
+fi
 printf '%-24s %6ss\n' "total" "$(($(date +%s) - total_start))"
 
 if [ -n "$failures" ]; then
@@ -273,7 +302,9 @@ selected=""
 if [ "$CHANGED" -eq 1 ]; then
     selected=", changed tests only"
 fi
-if [ -n "$TSAN_LABEL" ]; then
+if [ -n "$TSAN_LABEL" ] && [ "$CHANGED" -eq 1 ]; then
+    echo "ALL GREEN (quick, changed tests only; TSan on label $TSAN_LABEL and changed tests)"
+elif [ -n "$TSAN_LABEL" ]; then
     echo "ALL GREEN (quick, TSan on label $TSAN_LABEL$selected)"
 elif [ "$MODE" = quick ]; then
     echo "ALL GREEN (quick$selected)"

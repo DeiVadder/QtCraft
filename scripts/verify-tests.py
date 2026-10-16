@@ -19,10 +19,20 @@ again next time. Without a stamp file every test runs.
   select  writes the current fingerprints to <build dir>/.verify-test-pending.json and, with
           --changed, prints the ctest regex of the selected tests on stdout (empty: none) and the
           reasons on stderr. Without --changed it only writes the pending fingerprints.
-  record  copies the pending fingerprints of the tests the JUnit report shows as passed into the
-          stamp file.
+  record  copies the pending fingerprints of the tests the JUnit report shows as passed (and of
+          the adopted tests, see below) into the stamp file.
+
+--broad-label <l> (the TSan step of --tsan-concurrent --changed, decision E-412) widens the
+selection beyond the label without running every test under TSan: tests with label <l> are
+selected as with --label; every other test only when its own inputs changed since it last passed
+(relinked binary, changed script) or, without a stamp, when a test source named after it
+(tests/**/<name>.*) differs from the base branch (QC_VERIFY_BASE, default dev): a new or edited
+test. A change of runtime data alone does not select them. Tests without a stamp and without such
+a change are adopted: they do not run, and their current fingerprints become their stamps, so the
+next relink selects them. That keeps the first run in a fresh build directory at the label.
 
 Usage: scripts/verify-tests.py select --build-dir <dir> [--changed] [--regex <re>] [--label <l>]
+                                      [--broad-label <l>]
        scripts/verify-tests.py record --build-dir <dir> --junit <report.xml>
 """
 
@@ -140,13 +150,46 @@ def test_inputs(test, build_dir):
     return sorted(set(inputs))
 
 
+def has_label(test, label):
+    return label in test["properties"].get("LABELS", [])
+
+
 def matches(name, test, regex, label):
     """Whether a test passes the --regex and --label filters of the run."""
     if regex and not re.search(regex, name):
         return False
-    if label and label not in test["properties"].get("LABELS", []):
+    if label and not has_label(test, label):
         return False
     return True
+
+
+def branch_test_names():
+    """Stems of the files below tests/ that differ from the base branch (committed or not)."""
+    base = os.environ.get("QC_VERIFY_BASE", "dev")
+    commands = [["git", "diff", "--name-only", f"{base}...HEAD", "--", "tests"],
+                ["git", "diff", "--name-only", "HEAD", "--", "tests"],
+                ["git", "ls-files", "--others", "--exclude-standard", "--", "tests"]]
+    names = set()
+    for command in commands:
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+        for path in result.stdout.split():
+            names.add(os.path.splitext(os.path.basename(path))[0])
+    return names
+
+
+def broad_reason(name, test, current, stamp, context):
+    """Reason to run a test outside the broad label, or None; adopts unchanged tests without a stamp."""
+    label, branch_names, adopted = context
+    if has_label(test, label):
+        return reason(current, stamp)
+    if stamp is None:
+        if name in branch_names:
+            return "new or edited on this branch"
+        adopted.append(name)
+        return None
+    if stamp.get("inputs") != current["inputs"]:
+        return "relinked or inputs changed"
+    return None
 
 
 def read_json(path, default):
@@ -194,10 +237,10 @@ def changed_data_paths(old, new):
     return named
 
 
-def report(selected, considered, stamps, data_now):
+def report(selected, considered, stamps, data_now, broad):
     """Prints the selection and its reasons on stderr."""
     out = sys.stderr
-    if not stamps.get("tests"):
+    if not stamps.get("tests") and not broad:
         print(f"verify --changed: no stamps in this build directory, running all {len(considered)} tests", file=out)
         return
 
@@ -219,7 +262,8 @@ def select(arguments):
     tests = load_tests(build_dir)
     data_now = snapshot(runtime_data_paths())
     current = fingerprints(tests, build_dir, digest(data_now))
-    write_json(os.path.join(build_dir, PENDING), {"tests": current, "data_files": data_now})
+    pending = {"tests": current, "data_files": data_now}
+    write_json(os.path.join(build_dir, PENDING), pending)
     if not arguments.changed:
         return
 
@@ -228,12 +272,24 @@ def select(arguments):
     considered = [name for name, test in tests.items()
                   if matches(name, test, arguments.regex, arguments.label)]
     selected = []
+    adopted = []
+    context = None
+    if arguments.broad_label:
+        context = (arguments.broad_label, branch_test_names(), adopted)
     for name in sorted(considered):
-        why = reason(current[name], known.get(name))
+        if context:
+            why = broad_reason(name, tests[name], current[name], known.get(name), context)
+        else:
+            why = reason(current[name], known.get(name))
         if why:
             selected.append((name, why))
 
-    report(selected, considered, stamps, data_now)
+    report(selected, considered, stamps, data_now, bool(arguments.broad_label))
+    if adopted:
+        pending["adopted"] = adopted
+        write_json(os.path.join(build_dir, PENDING), pending)
+        print(f"verify --changed: {len(adopted)} test(s) outside label {arguments.broad_label} without a stamp "
+              "adopted as unchanged (they run after their next relink)", file=sys.stderr)
     if selected:
         print("^(" + "|".join(re.escape(name) for name, _ in selected) + ")$")
 
@@ -264,12 +320,13 @@ def record(arguments):
     stamps = read_json(stamps_path, {})
     known = stamps.setdefault("tests", {})
     passed = [name for name in passed_tests(arguments.junit) if name in pending["tests"]]
-    for name in passed:
+    adopted = pending.get("adopted", [])
+    for name in passed + adopted:
         known[name] = pending["tests"][name]
-    if passed:
+    if passed or adopted:
         stamps["data_files"] = pending["data_files"]
         write_json(stamps_path, stamps)
-    print(f"verify: recorded {len(passed)} passed test(s) in {STAMPS}", file=sys.stderr)
+    print(f"verify: recorded {len(passed)} passed and {len(adopted)} adopted test(s) in {STAMPS}", file=sys.stderr)
 
 
 def main():
@@ -279,6 +336,7 @@ def main():
     parser.add_argument("--changed", action="store_true")
     parser.add_argument("--regex", default="")
     parser.add_argument("--label", default="")
+    parser.add_argument("--broad-label", default="")
     parser.add_argument("--junit", default="")
     arguments = parser.parse_args()
     if arguments.command == "select":
