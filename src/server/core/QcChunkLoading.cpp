@@ -406,7 +406,7 @@ QcChunkLoading::NeededInputs QcChunkLoading::neededInputs() const
 
 void QcChunkLoading::unloadUnneeded()
 {
-    QcServerWorld &world = m_state.world();
+    const QcServerWorld &world = m_state.world();
     if (m_state.config().keepChunksLoaded) {
         return;
     }
@@ -426,15 +426,28 @@ void QcChunkLoading::unloadUnneeded()
             candidates.insert(pos);
         }
     }
+    // A signal on its way finishes before its chunk leaves (decision E-410); a pass that kept one
+    // is not settled, the next tick looks again.
+    const bool holding = holdPassingSignals(candidates);
+    m_circuitChunks = circuitChunks();
     if (candidates.isEmpty()) {
-        m_settled = std::move(inputs);
+        if (!holding) {
+            m_settled = std::move(inputs);
+        }
         return;
     }
 
+    const QSet<QcChunkPos> leaving = leavingGroups(candidates);
+    if (leaving.isEmpty() && !holding) {
+        m_settled = std::move(inputs);
+    }
+    unload(leaving);
+}
+
+QSet<QcChunkPos> QcChunkLoading::leavingGroups(const QSet<QcChunkPos> &candidates)
+{
     // A group leaves only as a whole, when none of its chunks is needed (decision E-375).
-    const auto loadedMarks = [&world](QcChunkPos chunk) -> std::optional<quint16> {
-        return world.chunk(chunk) ? std::optional<quint16>(world.links().marksOf(chunk)) : std::nullopt;
-    };
+    const auto loadedMarks = [this](QcChunkPos chunk) { return this->loadedMarks(chunk); };
     const qsizetype budget = qsizetype(m_state.config().limits.chunkUnloadsPerTick);
     QSet<QcChunkPos> decided;
     QSet<QcChunkPos> leaving;
@@ -461,10 +474,76 @@ void QcChunkLoading::unloadUnneeded()
             }
         }
     }
-    if (leaving.isEmpty()) {
-        m_settled = std::move(inputs);
+    return leaving;
+}
+
+std::optional<quint16> QcChunkLoading::loadedMarks(QcChunkPos chunk) const
+{
+    const QcServerWorld &world = m_state.world();
+    return world.chunk(chunk) ? std::optional<quint16>(world.links().marksOf(chunk)) : std::nullopt;
+}
+
+QSet<QcChunkPos> QcChunkLoading::circuitChunks() const
+{
+    QSet<QcChunkPos> kept = waitingSignalChunks();
+    const QList<QcChunkPos> tickets = m_tickets.chunks();
+    for (const QcChunkPos &chunk : tickets) {
+        kept.insert(chunk);
     }
-    unload(leaving);
+
+    QSet<QcChunkPos> chunks = kept;
+    for (const QcChunkPos &chunk : std::as_const(kept)) {
+        if (!m_state.world().chunk(chunk)) {
+            continue;
+        }
+        const QcChunkGroups::Group group = QcChunkGroups::of(chunk, [this](QcChunkPos pos) { return loadedMarks(pos); }, groupLimit());
+        if (!group.oversize) {
+            chunks.unite(QSet<QcChunkPos>(group.chunks.cbegin(), group.chunks.cend()));
+        }
+    }
+    return chunks;
+}
+
+bool QcChunkLoading::holdPassingSignals(QSet<QcChunkPos> &candidates)
+{
+    // A chunk the circuits kept until this tick without a ticket of its own (with the group of one,
+    // or held by a signal that waited there) would take a signal that runs on now into storage
+    // halfway, and nothing would bring it back. It stays while the signal passes (changes,
+    // scheduled ticks, block updates the switched components caused), at most as long as a ticket
+    // lasts, so a clock does not keep its chunk for ever. Chunks a player leaves behind go as they
+    // are; their machines resume when they come back (decision E-374).
+    if (candidates.isEmpty()) {
+        m_passingSince.clear();
+        return false;
+    }
+    QSet<QcChunkPos> passing = chunksWithSignals();
+    for (const QList<QcBlockPos> &updates : {m_updates.playerUpdates(), m_updates.commandUpdates()}) {
+        for (const QcBlockPos &pos : updates) {
+            passing.insert(pos.chunk());
+        }
+    }
+
+    const quint64 now = m_state.clock().tick();
+    const quint64 limit = quint64(m_state.config().limits.chunkTicketTicks);
+    const QcSignalSchedule &schedule = m_state.blockEntities().schedule();
+    QHash<QcChunkPos, quint64> since;
+    bool holding = false;
+    const QList<QcChunkPos> ordered = sorted(candidates);
+    for (const QcChunkPos &chunk : ordered) {
+        const bool forCircuits = m_circuitChunks.contains(chunk) || m_passingSince.contains(chunk);
+        if (!forCircuits || (!passing.contains(chunk) && !schedule.hasEntriesIn(chunk))) {
+            continue;
+        }
+
+        const quint64 start = m_passingSince.value(chunk, now);
+        since.insert(chunk, start);
+        if (now - start < limit) {
+            candidates.remove(chunk);
+            holding = true;
+        }
+    }
+    m_passingSince = std::move(since);
+    return holding;
 }
 
 void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
@@ -497,6 +576,8 @@ void QcChunkLoading::unload(const QSet<QcChunkPos> &chunks)
         departure.marks = world.links().marksOf(pos);
         const bool quarantined = world.isQuarantined(pos);
         departure.blocks = world.remove(pos);
+        // Back in the world, a signal it took along is held again for a ticket's time (E-410).
+        m_passingSince.remove(pos);
         ++m_unloaded;
         if (!quarantined && world.storage()) {
             world.noteKept(departure);

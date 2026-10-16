@@ -87,6 +87,8 @@ private:
     // The marks of a chunk for a group that is to load: loaded, waiting to be admitted or stored.
     [[nodiscard]] std::optional<quint16> marksForLoading(QcChunkPos pos) const;
     int groupLimit() const;
+    // The candidates whose whole group may leave, at most chunkUnloadsPerTick.
+    QSet<QcChunkPos> leavingGroups(const QSet<QcChunkPos> &candidates);
     // Takes these chunks out of the world and hands what was kept of them to the storage.
     void unload(const QSet<QcChunkPos> &chunks);
     // The chunks around a player and what was sent to him.
@@ -102,6 +104,15 @@ private:
     QSet<QcChunkPos> chunksWithSignals() const;
     // The chunks of signals that wait for a chunk on its way (they stay, decision E-376).
     QSet<QcChunkPos> waitingSignalChunks() const;
+    // Takes the chunks loaded for circuits that a signal passes through (changes, scheduled ticks,
+    // block updates) out of `candidates` for at most the time of a ticket (decision E-410); true
+    // when it kept one.
+    bool holdPassingSignals(QSet<QcChunkPos> &candidates);
+    // The chunks loaded for circuits: those with tickets or a waiting signal and the loaded groups
+    // around them.
+    QSet<QcChunkPos> circuitChunks() const;
+    // The marks of a loaded chunk, none for one that is not loaded (groups of the loaded world).
+    std::optional<quint16> loadedMarks(QcChunkPos chunk) const;
 
     // What the needed chunks and the groups depend on: while it stays the same and the last pass let
     // no chunk leave, the next one would let none leave either and is skipped.
@@ -143,6 +154,10 @@ private:
     QSet<QcChunkPos> m_oversizeWarned;
     qsizetype m_oversizeGroups = 0;
     quint64 m_unloaded = 0;
+    // Unneeded chunks a signal passes through, since the tick they are held for it (E-410).
+    QHash<QcChunkPos, quint64> m_passingSince;
+    // circuitChunks() at the last pass: a chunk the circuits kept until this tick may hold a signal.
+    QSet<QcChunkPos> m_circuitChunks;
     // The inputs of the last pass that let no chunk leave.
     std::optional<NeededInputs> m_settled;
     // The current tick has simulated (or none started yet).

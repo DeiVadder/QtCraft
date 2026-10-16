@@ -31,10 +31,16 @@ struct Motion
     // Speed over 100 ms windows against the true speed: the largest and smallest ratio.
     double fastestRatio = 0.0;
     double slowestRatio = 1e9;
+    // Longest time between two frames: how long the process doing the sampling stood still.
+    double longestFrameGapMs = 0.0;
 
     QString describe() const
     {
-        return u"backward %1, stall %2 ms, speed x%3..x%4"_s.arg(backwardJumps).arg(longestStallMs).arg(slowestRatio, 0, 'f', 2).arg(fastestRatio, 0, 'f', 2);
+        return u"backward %1, stall %2 ms, speed x%3..x%4, frame gap %5 ms"_s.arg(backwardJumps)
+            .arg(longestStallMs)
+            .arg(slowestRatio, 0, 'f', 2)
+            .arg(fastestRatio, 0, 'f', 2)
+            .arg(longestFrameGapMs);
     }
 };
 
@@ -57,6 +63,7 @@ public:
             const auto [ms, x] = m_samples[i];
             const double previous = m_samples[i - 1].second;
             motion.backwardJumps += x < previous - 1e-9 ? 1 : 0;
+            motion.longestFrameGapMs = std::max(motion.longestFrameGapMs, ms - m_samples[i - 1].first);
             if (x > previous + 1e-9) {
                 stillSince = ms;
             }
@@ -406,8 +413,11 @@ private slots:
             return recorder.result();
         };
 
-        // Real time on a busy machine (sanitizer builds, parallel test runs) can delay the frame
-        // timer itself; the best of three walks counts, like the tick punctuality test.
+        // Real time on a busy machine can delay the frame timer, and the walker's inputs then cross
+        // the server's ticks unevenly (two in one tick, none in the next): the walk itself stutters
+        // and a late snapshot after a double step is extrapolated too far (E-271, limits). The test
+        // runs alone (RUN_SERIAL, E-410), the best of three walks counts, and the longest gap between
+        // frames is reported.
         Motion buffered = measure(true);
         for (int attempt = 1; attempt < 3 && buffered.backwardJumps > 0; ++attempt) {
             buffered = measure(true);

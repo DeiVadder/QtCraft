@@ -455,6 +455,9 @@ set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Measures how punctually the server's tick timer fires; that needs a machine without other tests.
 set_tests_properties(test_tick_scheduler PROPERTIES RUN_SERIAL TRUE)
+# A walker, a watcher and the server in real time: next to other tests the walker's inputs cross the
+# server's ticks unevenly and the walk itself stutters, which is not what it measures (E-410).
+set_tests_properties(test_interpolation PROPERTIES RUN_SERIAL TRUE)
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a

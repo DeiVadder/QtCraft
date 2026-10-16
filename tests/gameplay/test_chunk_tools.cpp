@@ -61,6 +61,31 @@ private:
         return block && m_content->property(*block, u"open"_s) == u"true"_s;
     }
 
+    // A lever in `chunk` (no player near), dust eastwards and at the chunk's last column a repeater of
+    // the longest delay that powers an iron door in the next chunk; returns the door.
+    QcBlockPos lineIntoNextChunk(QcChunkPos chunk)
+    {
+        const QcBlockPos lever{chunk.x * 16 + 8, m_origin.y, chunk.z * 16 + 8};
+        const QcBlockPos door = lever.offset(8, 0, 0);
+        m_server->world().loadChunk(chunk);
+        m_server->world().loadChunk(door.chunk());
+        for (int x = -1; x <= 9; ++x) {
+            for (int z = -1; z <= 1; ++z) {
+                putAt(lever.offset(x, -1, z), id("qtcraft:stone"));
+                for (int y = 0; y < 3; ++y) {
+                    putAt(lever.offset(x, y, z), qcAirBlockId);
+                }
+            }
+        }
+        putAt(lever, state(u"lever[attach=floor]"_s));
+        for (int x = 1; x <= 7; ++x) {
+            putAt(lever.offset(x, 0, 0), state(x == 7 ? u"signal_repeater[facing=east,delay=4]"_s : u"signal_dust"_s));
+        }
+        putAt(door, state(u"iron_door[facing=west]"_s));
+        putAt(door.offset(0, 1, 0), state(u"iron_door[facing=west,half=top]"_s));
+        return door;
+    }
+
 private slots:
     void cleanup()
     {
@@ -141,6 +166,37 @@ private slots:
         }
         QVERIFY(m_server->chunkLoading().tickets().refused() > 0);
         QVERIFY2(isOpen(door), "the door did not open");
+    }
+
+    // A chunk a waiting signal kept loaded, without a ticket of its own, stays while the signal runs
+    // on once the chunk it waited for came (here 8 ticks in a repeater), and leaves after that
+    // (decision E-410). Before, it left in the very tick the wait ended and took the signal along;
+    // under load that made aRefusedTicketIsAskedForAgain fail now and then.
+    void aChunkKeepsTheSignalThatStopsWaitingInIt()
+    {
+        QcServerConfig config;
+        config.limits.chunkGroupLimit = 1;
+        buildArea(config);
+        const QcChunkPos chunk = at(400, 0, 6).chunk();
+        const QcBlockPos door = lineIntoNextChunk(chunk);
+        for (int tick = 0; tick < 2000 && (m_server->world().chunk(chunk) || m_server->world().chunk(door.chunk()) || m_server->chunkLoading().tickets().count() > 0); ++tick) {
+            ticks(1);
+        }
+        QVERIFY(!m_server->world().chunk(chunk) && !m_server->world().chunk(door.chunk()));
+
+        // Only the lever's chunk comes back; the dust at its edge waits for the door's chunk, which
+        // gets a ticket and is read in the background.
+        m_server->world().loadChunk(chunk);
+        QVERIFY(m_server->circuits().use(QcBlockPos{chunk.x * 16 + 8, m_origin.y, chunk.z * 16 + 8}));
+        for (int tick = 0; tick < 2000 && !isOpen(door) && (m_server->world().chunk(chunk) || m_server->world().chunk(door.chunk())); ++tick) {
+            ticks(1);
+        }
+        QVERIFY2(isOpen(door), "the signal left with its chunk");
+
+        for (int tick = 0; tick < 2000 && m_server->world().chunk(chunk); ++tick) {
+            ticks(1);
+        }
+        QVERIFY(!m_server->world().chunk(chunk));
     }
 
     // A ticket weighs the chunks of the group it loads, so the limit bounds the chunks tickets keep
