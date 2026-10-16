@@ -1,0 +1,44 @@
+{
+    "name": "village_swamp_hall",
+    "palette": {
+        ".": "air",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "G": "brown_stained_glass",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "h": "hay_block",
+        "x": "spruce_fence",
+        "t": "torch[attach=floor]",
+        "l": "lantern[attach=ceiling]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]",
+        "e": "spruce_stairs[facing=east,half=bottom]",
+        "w": "spruce_stairs[facing=west,half=bottom]",
+        "n": "spruce_stairs[facing=north,half=bottom]",
+        "s": "spruce_stairs[facing=south,half=bottom]",
+        "k": "spruce_slab[type=bottom]",
+        "E": "bell",
+        "Y": "hay_block"
+    },
+    "layers": [
+        ["LPPPPPPPPPPPL", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "PPPPPPPPPPPPP", "LPPPPPPPPPPPL"],
+        ["L...........L", ".............", ".............", "...LPPPPPL...", "...PTk.kHP...", "...P.....P...", "...PY...YP...", "...P.....P...", "...P.....P...", "...LPPDPPL...", ".............", ".........xEx.", "L...........L"],
+        ["L...........L", ".............", ".............", "...LPGPGPL...", "...P.....P...", "...G.....G...", "...P.....P...", "...G.....G...", "...P.....P...", "...LPGUGPL...", ".............", ".........x.x.", "L...........L"],
+        ["t...........t", ".............", ".............", "...LPPPPPL...", "...P.....P...", "...P.....P...", "...P.....P...", "...P.....P...", "...P.....P...", "...LPPPPPL...", ".............", ".........kkk.", "t...........t"],
+        [".............", ".............", ".............", "...LPPPPPL...", "...P.....P...", "...P.l.l.P...", "...P.....P...", "...P..l..P...", "...P.....P...", "...LPPPPPL...", ".............", ".............", "............."],
+        ["             ", "             ", "  sssssssss  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  ePPPPPPPw  ", "  nnnnnnnnn  ", "             ", "             "],
+        ["             ", "             ", "             ", "   sssssss   ", "   ePPPPPw   ", "   ePPPPPw   ", "   ePPPPPw   ", "   ePPPPPw   ", "   ePPPPPw   ", "   nnnnnnn   ", "             ", "             ", "             "],
+        ["             ", "             ", "             ", "             ", "    sssss    ", "    ePPPw    ", "    ePPPw    ", "    ePPPw    ", "    nnnnn    ", "             ", "             ", "             ", "             "],
+        ["             ", "             ", "             ", "             ", "             ", "     sss     ", "     ePw     ", "     nnn     ", "             ", "             ", "             ", "             ", "             "],
+        ["             ", "             ", "             ", "             ", "             ", "             ", "      h      ", "             ", "             ", "             ", "             ", "             ", "             "],
+        ["             ", "             ", "             ", "             ", "             ", "             ", "      L      ", "             ", "             ", "             ", "             ", "             ", "             "],
+        ["             ", "             ", "             ", "             ", "             ", "             ", "      t      ", "             ", "             ", "             ", "             ", "             ", "             "]
+    ],
+    "choices": {
+        "roof": [
+            {},
+            {"spruce_stairs": "oak_stairs", "spruce_slab": "oak_slab"}
+        ]
+    }
+}

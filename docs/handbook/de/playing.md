@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -132,7 +132,7 @@ Eine Hacke macht aus Gras oder Erde mit Luft darüber Ackerboden; jeder bestellt
 
 **Feldfrüchte**
 
-Weizenkörner, Karotten oder Kartoffeln auf Ackerboden pflanzen. Feldfrüchte wachsen in Stufen auf Zufallsticks (jeder Block bekommt etwa alle 68 s einen), solange ihr Chunk geladen ist; Zeit, in der die Welt geschlossen ist, zählt nicht. Auf nassem Ackerboden wachsen sie doppelt so schnell und brauchen Licht von mindestens 9, vom Himmel oder von Lampen. Reife Pflanzen geben beim Abbauen die Ernte, unreife nur die Saat zurück. Körner kommen aus hohem Gras, Karotten und Kartoffeln von wilden Pflanzen in Ebenen, Wäldern und Taiga und ab und zu von Zombies.
+Weizenkörner, Karotten oder Kartoffeln auf Ackerboden pflanzen. Feldfrüchte wachsen in Stufen auf Zufallsticks (jeder Block bekommt etwa alle 68 s einen), solange ihr Chunk geladen ist; Zeit, in der die Welt geschlossen ist, zählt nicht. Auf nassem Ackerboden wachsen sie doppelt so schnell und brauchen Licht von mindestens 9, vom Himmel oder von Lampen. Reife Pflanzen geben beim Abbauen die Ernte, unreife nur die Saat zurück. Körner kommen aus hohem Gras. Wachsenden Weizen, Karotten und Kartoffeln gibt es nur auf den Feldern der Dörfer: Dort eine reife Pflanze ernten gibt die ersten Karotten und Kartoffeln (ab und zu lässt auch ein Zombie eine fallen).
 
 **Kürbisse und Melonen**
 
@@ -304,6 +304,32 @@ Regen löscht die Feuer, auf die er fällt, früher oder später (je älter das 
 
 [Schneeblock](blocks.md#block-qtcraft-snow_block), [Schneeschicht](blocks.md#block-qtcraft-snow_layer), [Eis](blocks.md#block-qtcraft-ice), [Ackerboden](blocks.md#block-qtcraft-farmland), [Feuer](blocks.md#block-qtcraft-fire)
 
+### <a id="chapter-qtcraft-villages"></a>Dörfer
+
+**Dörfer finden**
+
+Dörfer stehen auf flachem Land in Ebenen, Wüsten, Taiga und Tundra und auf Stelzen in den nassen Teilen der Sümpfe, nie im Meer, in Bergen oder Wäldern. Die Welt ist in quadratische Bereiche geteilt (im Grundspiel 384 Blöcke), ein Bereich hat höchstens ein Dorf, etwa einen halben Bereich vom nächsten entfernt. Wo ein Dorf steht, hängt nur vom Seed ab: Eine Welt mit demselben Seed hat ihre Dörfer an denselben Stellen. Operatoren finden das nächste mit `/locate village`; `/village` zeigt seinen Zustand.
+
+**Stile**
+
+Jedes Biom baut in seinem eigenen Stil. Dörfer der Ebene sind aus Eiche und Bruchstein mit Satteldächern aus Treppen, einem Brunnen mit Glocke in der Mitte, Hauptwegen aus Bruchstein oder Kies, Nebenwegen aus Trampelpfad und Laternenpfählen. Wüstendörfer sind aus Sandstein und Terrakotta mit flachen Dächern, Hauptwegen aus Terrakotta oder gestampftem Schlamm, die sich vom Sand abheben, Nebenwegen aus geschnittenem Sandstein und Feldern mit Zuckerrohr am Wasser. Taiga-Dörfer sind die Häuser der Ebene aus Fichte. Sumpfdörfer stehen auf Stelzen aus dunkler Fichte im Wasser: Hütten mit Strohdächern, eine Versammlungshalle mit der Glocke auf einer großen Plattform in der Mitte, eine Fischerhütte, eine Kräuterhütte mit Pilzen und Hochbeete, alle verbunden durch Stege auf einer Höhe über dem Wasser, mit Treppen hinunter, wo ein Steg trockenes Land erreicht. Um sie herum ist der Sumpf flaches Wasser über Schlamm. Ein Biom mit Dörfern, aber ohne eigenen Stil baut im Stil der Ebene.
+
+**Gebäude**
+
+Jedes Dorf hat seinen eigenen Grundriss: eine lange Hauptstraße durch die Mitte mit Seitenwegen, vier Wege vom Brunnen nach allen Seiten, drei als T oder zwei als L, eine Ringstraße um einen Platz mit dem Brunnen oder Wege in allen Winkeln, die abknicken; manche Wege schlängeln sich an den Hängen entlang. Schräge Wege verlaufen als Treppenlinie, und die Häuser an ihnen haben einen Vorplatz zum Weg. Wege enden an Wasser und steilen Hängen. An ihnen stehen kleine und große Häuser mit Betten, Felder mit Weizen, Karotten und Kartoffeln, reif und noch wachsend, mit Wasser und Wegen zwischen den Reihen, eine Schmiede mit Öfen und eine Kirche oder ein Tempel, jeweils mit der Tür zum Weg. Jede Art von Haus gibt es in mehreren Bauweisen, und kein Haus muss dem anderen gleichen: Wände aus Eiche, Birke oder Fichte, Dächer aus Holz, Bruchstein oder Ziegeln, ein Schornstein, Blumen vor der Tür, ein Schuppen daneben, in der Wüste Terrakotta in verschiedenen Farben. Manche Dörfer haben ein Tiergehege mit einem Paar Schweine oder Schafe; ein Dorf nahe am Wasser hat eine Fischerhütte mit einem Steg hinaus aufs Wasser; große Dörfer haben einen steinernen Wachturm, höher als jedes Haus, mit einer Leiter hinauf zu den Zinnen. Wo ein Hauptweg eine Geländestufe von einem Block hinaufführt, macht eine Stufe daraus eine Treppe. Laternen erhellen die Häuser innen und Laternenpfähle die Wege, damit dort keine Monster erscheinen. Auf unebenem Boden stehen die Häuser auf einem Fundament, und das Gelände über ihnen ist abgetragen.
+
+**Betten und Arbeitsplätze**
+
+Die Welt merkt sich jedes Dorf: seine Mitte, sein Gebiet, seine Betten und seine Arbeitsplätze (Komposter: Bauer, Ofen: Schmied, Fass: Fischer). Betten und Arbeitsplätze, die du in einem Dorf setzt oder abbaust, zählen sofort. Die Dorfbewohner einer späteren Version beanspruchen je ein Bett und einen Arbeitsplatz, und neue Dorfbewohner brauchen freie Betten. Ein Dorf führt höchstens 64 Betten und 64 Arbeitsplätze; die Server-Grenzen `villageBeds`, `villageWorkstations` und `villages` ändern das.
+
+**Dörfer in Mods**
+
+Ein Stil ist eine Datei in `villages/`: die Biome, in denen er baut, der Brunnen, der Laternenpfahl, die Gebäudearten mit Gewicht und Höchstzahl, jede mit einer oder mehreren Bauweisen, die Grundrisse (Hauptstraße, Kreuz, T, L, Ringstraße, verzweigte Wege, geschwungen oder gerade), die Beläge für Haupt- und Nebenwege (einer je Dorf gewählt, mit einer Stufe für Absätze), die Feldfrüchte der Felder, den Block für das Fundament und eine Palette, die Blöcke der Häuser austauscht. Eine Art kann Regeln haben: eine Chance je Dorf, eine Mindestgröße des Dorfs (Länge aller Wege) oder Wasser in Reichweite (dann bekommt sie einen Steg). Ein Stil kann auf Stelzen über dem Wasser stehen, mit Stegen als Wegen und dem Sumpf um ihn herum zu flachem Wasser über Schlamm geformt. Die Häuser sind gewöhnliche Strukturen; `choices` (Blocktausch, eine Option je Haus) und optionale `parts` mit einer Chance (Schornstein, Blumen, Schuppen) machen jedes Haus anders. Ein Mod kann einen Stil für sein eigenes Biom hinzufügen, aus den Häusern des Grundspiels mit einer anderen Palette einen neuen Stil bauen oder neue Bauweisen hinzufügen.
+
+**Siehe auch**
+
+[Glocke](blocks.md#block-qtcraft-bell), [Bett](blocks.md#block-qtcraft-bed), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Laterne](blocks.md#block-qtcraft-lantern), [Ebene](biomes.md#biome-qtcraft-plains), [Wüste](biomes.md#biome-qtcraft-desert), [Taiga](biomes.md#biome-qtcraft-taiga), [Sumpf](biomes.md#biome-qtcraft-swamp), [Schlamm](blocks.md#block-qtcraft-mud)
+
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
 **Wenn du stirbst**
@@ -417,6 +443,7 @@ Die meisten Befehle sind für **Operatoren**. Im Einzelspieler bist du immer Ope
 
 - `/list`: wer online ist
 - `/locatebiome <Biom>`: wo der nächste Ort eines Bioms liegt
+- `/locate village`: wo das nächste Dorf ist (Operatoren); `/village [<x> <z>]`: sein Zustand als JSON, mit Betten und Arbeitsplätzen
 - `/kick <Spieler> [Grund]`: einen Spieler trennen (er darf wiederkommen)
 - `/ban <Spieler> [Grund]`, `/unban <Spieler>`, `/banlist`: einen Namen aus dieser Welt aussperren
 - `/whitelist on|off|list|add <Spieler>|remove <Spieler>`: mit eingeschalteter Whitelist kommen nur gelistete Spieler und Operatoren herein; eine Sperre gilt auch für Operatoren

@@ -8,10 +8,12 @@
 #include "QcServerBlocks.h"
 #include "QcServerMinecarts.h"
 #include "QcPlayerRecords.h"
+#include "QcSaveFile.h"
 #include "QcServerState.h"
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QLockFile>
 #include <QLoggingCategory>
 
@@ -87,6 +89,7 @@ QcStatus QcServerPersistence::open()
     if (const QcStatus read = readBlockUpdates(storage); !read) {
         return read;
     }
+    restoreVillages(storage);
 
     qCInfo(lcPersistence) << "Opened world" << m_state.info().name << "with" << m_state.world().storedChunkCount() << "stored chunks";
     return {};
@@ -118,6 +121,35 @@ QcStatus QcServerPersistence::openChunks(const QString &directory)
     }
     m_state.world().setStorage(m_io.get(), std::move(*catalog));
     return {};
+}
+
+void QcServerPersistence::restoreVillages(const QcWorldStorage &storage)
+{
+    QcVillages &villages = m_state.world().villages();
+    const QcVillages::Limits &limits = villages.limits();
+    // A plan never leaves its region, so no village is wider than a region.
+    const QcVillage::ReadLimits read{m_state.content().villageSettings().spacing, limits.beds, limits.workstations};
+    const QcResult<QList<QcVillage>> stored = storage.readVillages(read);
+    if (stored) {
+        villages.restore(*stored);
+        m_villagesSaved = villages.changes();
+        return;
+    }
+
+    // The villages follow from the generator's plans again as their chunks load; what only the file
+    // knew (claims, population) starts over. The next save writes a new file.
+    villages.restore({});
+    m_villagesSaved.reset();
+    const QString path = QDir(m_state.config().worldDirectory).filePath(QString::fromLatin1(QcWorldStorage::villagesFileName));
+    const QString copy = QcSaveFile::keepAside(path);
+    if (copy.isEmpty()) {
+        noteWarnings({u"%1; the villages start anew from the world generator, and the file could not be kept aside: the next save replaces it"_s.arg(
+            stored.error())});
+        return;
+    }
+    QFile::remove(path);
+    noteWarnings({u"%1; the villages start anew from the world generator, the damaged file was kept as %2"_s.arg(stored.error(),
+                                                                                                               QFileInfo(copy).fileName())});
 }
 
 QcStatus QcServerPersistence::createInfo(const QcWorldStorage &storage)
@@ -260,6 +292,12 @@ std::pair<quint64, QcStatus> QcServerPersistence::submitSave()
     m_state.info().lastPlayed = QDateTime::currentDateTimeUtc();
     m_state.info().chunkLoaders = m_state.world().loaders().loaders();
     QList<QcChunkStore::WholeFile> files{{QString::fromLatin1(QcWorldStorage::infoFileName), QcWorldStorage::infoBytes(m_state.info())}};
+    // villages.json only after a change since it was last written.
+    const quint64 villageChanges = m_state.world().villages().changes();
+    if (m_villagesSaved != villageChanges) {
+        files.append({QString::fromLatin1(QcWorldStorage::villagesFileName), QcWorldStorage::villagesBytes(m_state.world().villages().villages())});
+        m_villagesSaved = villageChanges;
+    }
     const QcResult<std::optional<QByteArray>> updates = blockUpdateBytes();
     if (updates) {
         files.append({QString::fromLatin1(QcWorldStorage::blockUpdatesFileName), *updates});
@@ -287,6 +325,8 @@ void QcServerPersistence::noteResult(const QcStatus &status)
     if (!m_failing) {
         m_newFailure = status;
     }
+    // What the failed save held may be missing on disk: the next save writes villages.json again.
+    m_villagesSaved.reset();
     m_failing = true;
     qCWarning(lcPersistence) << "Saving failed:" << status.error();
 }

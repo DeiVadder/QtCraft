@@ -1,0 +1,8 @@
+{
+    "name": "bell",
+    "pattern": "metal_block",
+    "primary": "#d8a828",
+    "secondary": "#fff0a0",
+    "variation": 0.05,
+    "seed": 4104
+}

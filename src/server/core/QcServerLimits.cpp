@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 52> table{{
+constexpr std::array<QcServerLimits::Field, 55> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -68,6 +68,9 @@ constexpr std::array<QcServerLimits::Field, 52> table{{
     {"forcedChunks", "chunks kept loaded by /forceload", 0, 65536, &QcServerLimits::forcedChunks},
     {"chunkLoadersPerPlayer", "chunk loaders a player may place", 0, 1024, &QcServerLimits::chunkLoadersPerPlayer},
     {"chunkLoaders", "chunk loaders that work in the world", 0, 65536, &QcServerLimits::chunkLoaders},
+    {"villages", "villages the world keeps", 0, 65536, &QcServerLimits::villages},
+    {"villageBeds", "beds listed per village", 0, 1024, &QcServerLimits::villageBeds},
+    {"villageWorkstations", "workstations listed per village", 0, 1024, &QcServerLimits::villageWorkstations},
 }};
 
 } // namespace

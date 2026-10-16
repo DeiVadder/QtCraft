@@ -3,6 +3,7 @@
 #include "QcTerrainColumnGrid.h"
 #include "QcTerrainMath.h"
 #include "QcTreeShape.h"
+#include "QcVillageGenerator.h"
 
 #include <algorithm>
 #include <array>
@@ -72,9 +73,20 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_terraceNoise(qcMixSeed(quint64(seed), 13))
     , m_overhangNoise(qcMixSeed(quint64(seed), 16))
 {
+    m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed, warnings);
 }
 
 QcTerrainGenerator::~QcTerrainGenerator() = default;
+
+std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::villageFor(QcChunkPos pos) const
+{
+    return m_villages->planFor(pos);
+}
+
+std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::nearestVillage(QcBlockPos from, int reach) const
+{
+    return m_villages->nearest(from, reach);
+}
 
 QString QcTerrainGenerator::biomeName(int index) const
 {
@@ -443,12 +455,17 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
     placeFeature(chunk, feature, {x, top + 1, z}, qcPositionRandom(feature.seed, x, 1, z));
 }
 
-void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved) const
+void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved,
+                                       const QcVillagePlan *village) const
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
     for (int z = baseZ - featureMargin; z < baseZ + QcWorld::chunkSize + featureMargin; ++z) {
         for (int x = baseX - featureMargin; x < baseX + QcWorld::chunkSize + featureMargin; ++x) {
+            // Trees reach featureMargin blocks from their trunk: none grows into a village.
+            if (village && village->covers(x, z, featureMargin)) {
+                continue;
+            }
             placeFeatureInColumn(chunk, columns, carved, x, z);
         }
     }
@@ -468,8 +485,15 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     const QList<bool> carved = carvedColumns(*chunk, columns);
     placeOres(*chunk);
     m_pools.placeInCaves(*chunk);
-    placeFeatures(*chunk, columns, carved);
-    m_pools.placeOnSurface(*chunk, columns, *this);
+    // The village of the chunk's region: no features or surface pools there, its pieces last.
+    const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
+    placeFeatures(*chunk, columns, carved, village.get());
+    if (!village || !village->overlaps(pos, featureMargin)) {
+        m_pools.placeOnSurface(*chunk, columns, *this);
+    }
+    if (village) {
+        m_villages->build(*chunk, *village);
+    }
 
     for (int i = 0; i < QcWorld::sectionCount; ++i) {
         chunk->section(i).compact();

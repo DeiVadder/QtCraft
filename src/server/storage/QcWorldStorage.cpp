@@ -256,3 +256,39 @@ QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
     }
     return positions;
 }
+
+QcResult<QList<QcVillage>> QcWorldStorage::readVillages(const QcVillage::ReadLimits &limits) const
+{
+    const QString path = QDir(m_directory).filePath(QString::fromLatin1(villagesFileName));
+    QFile file(path);
+    if (!file.exists()) {
+        return QList<QcVillage>();
+    }
+    if (!file.open(QIODevice::ReadOnly)) {
+        return qcError(u"%1 cannot be read"_s.arg(path));
+    }
+
+    QJsonParseError error;
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
+    if (error.error != QJsonParseError::NoError || !document.isObject()) {
+        return qcError(u"%1 is damaged: %2"_s.arg(path, error.errorString()));
+    }
+
+    QList<QcVillage> villages;
+    const QJsonArray entries = document.object().value(u"villages"_s).toArray();
+    for (const auto &entry : entries) {
+        if (std::optional<QcVillage> village = QcVillage::fromJson(entry.toObject(), limits)) {
+            villages.append(std::move(*village));
+        }
+    }
+    return villages;
+}
+
+QByteArray QcWorldStorage::villagesBytes(const QList<QcVillage> &villages)
+{
+    QJsonArray array;
+    for (const QcVillage &village : villages) {
+        array.append(village.toJson());
+    }
+    return QJsonDocument(QJsonObject{{u"formatVersion"_s, 1}, {u"villages"_s, array}}).toJson(QJsonDocument::Indented);
+}

@@ -447,10 +447,6 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 | Size | 4–4 blocks |
 | Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
 
-**In biomes**
-
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (0.2 % of columns), [Plains](biomes.md#biome-qtcraft-plains) (0.3 % of columns)
-
 ### <a id="feature-qtcraft-wild_potatoes"></a>Wild potatoes
 
 | | |
@@ -460,7 +456,3 @@ Every world is generated from its seed: hills and plains by biome, caves below, 
 | Blocks | [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) |
 | Size | 4–4 blocks |
 | Grows on | [Grass block](blocks.md#block-qtcraft-grass_block) |
-
-**In biomes**
-
-[Forest](biomes.md#biome-qtcraft-forest) (0.2 % of columns), [Taiga](biomes.md#biome-qtcraft-taiga) (0.3 % of columns)

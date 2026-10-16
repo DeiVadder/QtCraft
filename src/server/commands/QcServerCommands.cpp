@@ -52,6 +52,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_ticks(state, std::move(parts.ticks))
     , m_chunks(state)
     , m_weather(state, parts.weather)
+    , m_villages(state)
     , m_experience(state)
 {
     addBuiltIns();
@@ -62,6 +63,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_ticks.addTo(m_registry);
     m_chunks.addTo(m_registry);
     m_weather.addTo(m_registry);
+    m_villages.addTo(m_registry);
     m_experience.addTo(m_registry);
 }
 

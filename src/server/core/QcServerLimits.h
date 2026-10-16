@@ -115,6 +115,10 @@ struct QcServerLimits
     qint64 forcedChunks = 256;
     qint64 chunkLoadersPerPlayer = 4;
     qint64 chunkLoaders = 64;
+    // Villages (decision E-403): villages the world keeps, beds and workstations listed per village.
+    qint64 villages = 4096;
+    qint64 villageBeds = 64;
+    qint64 villageWorkstations = 64;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

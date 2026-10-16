@@ -126,9 +126,15 @@ double placeShow(QcStructure &structure, const QcShowcaseContext &context, QcBlo
     }
 
     const QString attach = content.property(state, u"attach"_s);
+    const QString facing = content.property(state, u"facing"_s);
     const std::array<std::tuple<QString, int, int>, 4> sides{
         {{u"north"_s, 0, -1}, {u"east"_s, 1, 0}, {u"south"_s, 0, 1}, {u"west"_s, -1, 0}}};
     for (const auto &[side, dx, dz] : sides) {
+        // A bed's head lies beside its foot in the facing direction, on a podium of its own.
+        if (block.bed && facing == side) {
+            structure.set(x + dx, podiumY, z + dz, context.podium);
+            structure.set(x + dx, shownY, z + dz, content.withProperty(state, u"part"_s, u"head"_s));
+        }
         if (attach == side) {
             structure.set(x + dx, shownY, z + dz, context.podium);
         }
@@ -184,6 +190,10 @@ QList<QcBlockId> shownStates(const QcContentRegistry &content, quint32 type)
     for (int index = 0; index < table.stateCount(type); ++index) {
         const QcBlockId state = first + quint32(index);
         if (block.door && half && content.property(state, u"half"_s) != half->values.value(0)) {
+            continue;
+        }
+        // A bed shows its foot with the head beside it, like a door its lower half with the upper.
+        if (block.bed && content.property(state, u"part"_s) == u"head"_s) {
             continue;
         }
         const auto differs = [&](const QcBlockProperty &property) { return content.property(state, property.name) != content.property(first, property.name); };

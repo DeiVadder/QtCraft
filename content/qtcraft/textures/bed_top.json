@@ -1,0 +1,8 @@
+{
+    "name": "bed_top",
+    "pattern": "speckle",
+    "primary": "#a02828",
+    "secondary": "#8a1e1e",
+    "variation": 0.06,
+    "seed": 4101
+}

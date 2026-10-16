@@ -16,7 +16,7 @@ class QcServerState;
 // Plants in the server tick: growing saplings and decaying leaves (QcPlantManager), random ticks of
 // plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth), items that plant
 // themselves (despawning saplings, seeds lying on free soil; decision E-294), and players tilling
-// soil with a hoe (decision E-290).
+// soil with a hoe (decision E-290) and making paths with a shovel (decision E-406).
 class QcServerPlants
 {
 public:
@@ -35,6 +35,10 @@ public:
     // but the bottom, with air above, within reach. False when the click is no tilling (then other
     // uses of the item may follow).
     bool till(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
+    // Flattens the clicked block into a path when the held item `flattens` and the block has
+    // `flattensInto` (decision E-406): only on its top face, with air above, within reach. False when
+    // the click is no flattening.
+    bool flatten(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
 
 private:
     // Puts a despawning sapling item into the ground when there is room.

@@ -57,10 +57,15 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 // powder next to water), std::nullopt otherwise.
 [[nodiscard]] std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
-// Whether the other half of the door at `pos` is there (or not loaded).
-bool hasDoorPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+// The block `id` at `pos` turns into while an opaque full block lies on it (its `coveredInto`: a
+// dirt path becoming dirt, decision E-406), std::nullopt otherwise.
+[[nodiscard]] std::optional<QcBlockId> covered(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
-// The other half of a door in state `id` at `pos`.
-QcBlockPos otherDoorHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+// Whether the other half of the door or bed at `pos` is there (or not loaded).
+bool hasPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
+
+// The other half of a door (above or below) or a bed (the head lies in the foot's `facing`
+// direction) in state `id` at `pos`.
+QcBlockPos otherHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id);
 
 } // namespace QcBlockRules

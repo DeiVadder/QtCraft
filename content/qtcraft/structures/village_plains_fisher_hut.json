@@ -1,0 +1,43 @@
+{
+    "name": "village_plains_fisher_hut",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "e": "oak_stairs[facing=east,half=bottom]",
+        "w": "oak_stairs[facing=west,half=bottom]",
+        "k": "oak_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "R": "barrel[facing=south]",
+        "H": "chest[facing=south]"
+    },
+    "layers": [
+        ["CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"],
+        ["LPPPL", "PbfRP", "P...P", "P..HP", "LPDPL"],
+        ["LPGPL", "G...G", "P...P", "G...G", "LPUPL"],
+        ["LPPPL", "P...P", "P.l.P", "P...P", "LPPPL"],
+        ["ePPPw", "ePPPw", "ePPPw", "ePPPw", "ePPPw"],
+        [" ePw ", " ePw ", " ePw ", " ePw ", " ePw "],
+        ["  k  ", "  k  ", "  k  ", "  k  ", "  k  "],
+        ["     ", "     ", "     ", "     ", "     "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"oak_planks": "birch_planks", "oak_log": "birch_log"},
+            {"oak_planks": "spruce_planks", "oak_log": "spruce_log"}
+        ],
+        "roof": [
+            {},
+            {"oak_stairs": "spruce_stairs", "oak_slab": "spruce_slab"},
+            {"oak_stairs": "cobblestone_stairs", "oak_slab": "cobblestone_slab"},
+            {"oak_stairs": "brick_stairs", "oak_slab": "brick_slab"}
+        ]
+    }
+}

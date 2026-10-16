@@ -1,0 +1,21 @@
+{
+    "name": "village_plains_farm_b",
+    "palette": {
+        ".": "air",
+        "L": "oak_log",
+        "K": "composter",
+        "~": "water",
+        "W": "farmland[moist=true]",
+        "P": "dirt_path",
+        "1": "wheat_crop[age=7]",
+        "2": "wheat_crop[age=4]",
+        "3": "carrot_crop[age=3]",
+        "4": "potato_crop[age=2]",
+        "Y": "hay_block"
+    },
+    "layers": [
+        ["LLLLLLLLLLL", "LWWWWWWWWWL", "L~~~~~~~~~L", "LWWWWWWWWWL", "LPPPPPPPPPL", "LWWWWPWWWWL", "L~~~~P~~~~L", "LWWWWPWWWWL", "LLLLLPLLLLL"],
+        ["K.........Y", " 121212121 ", "           ", " 343434343 ", "...........", " 1212.3434 ", "     .     ", " 3434.1212 ", "..........."],
+        ["...........", "           ", "           ", "           ", "...........", "     .     ", "     .     ", "     .     ", "..........."]
+    ]
+}

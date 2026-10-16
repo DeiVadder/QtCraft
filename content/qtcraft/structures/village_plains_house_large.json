@@ -1,0 +1,56 @@
+{
+    "name": "village_plains_house_large",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "n": "oak_stairs[facing=north,half=bottom]",
+        "s": "oak_stairs[facing=south,half=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "F": "bed[facing=north,part=foot]",
+        "B": "bed[facing=north,part=head]",
+        "T": "crafting_table",
+        "R": "barrel[facing=south]",
+        "H": "chest[facing=south]",
+        "J": "white_wool_carpet",
+        "M": "bookshelf"
+    },
+    "layers": [
+        ["CCCCCCCCC", "CPPPPPPPC", "CPPPPPPPC", "CPPPPPPPC", "CPPPPPPPC", "CPPPPPPPC", "CPPPPPPPC", "CCCCCCCCC"],
+        ["LCCCCCCCL", "CB.B.B.RC", "CF.F.F.HC", "C......TC", "C..JJJ..C", "CM.JJJ..C", "CM......C", "LCCCDCCCL"],
+        ["LPGPPPGPL", "P.......P", "G.......G", "P.......P", "P.......P", "G.......G", "P.......P", "LPGPUPGPL"],
+        ["LPPPPPPPL", "P.......P", "P.......P", "P.l.....P", "P.....l.P", "P.......P", "P.......P", "LPPPPPPPL"],
+        ["sssssssss", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "nnnnnnnnn"],
+        ["         ", "sssssssss", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "nnnnnnnnn", "         "],
+        ["         ", "         ", "sssssssss", "PPPPPPPPP", "PPPPPPPPP", "nnnnnnnnn", "         ", "         "],
+        ["         ", "         ", "         ", "sssssssss", "nnnnnnnnn", "         ", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "         ", "         ", "         ", "         "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"oak_planks": "birch_planks", "oak_log": "birch_log"},
+            {"oak_planks": "spruce_planks", "oak_log": "spruce_log"}
+        ],
+        "roof": [
+            {},
+            {"oak_stairs": "spruce_stairs", "oak_slab": "spruce_slab"},
+            {"oak_stairs": "cobblestone_stairs", "oak_slab": "cobblestone_slab"},
+            {"oak_stairs": "brick_stairs", "oak_slab": "brick_slab"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "chimney", "chance": 0.6, "at": [7, 6, 3],
+            "layers": [
+                ["C"],
+                ["C"],
+                ["C"]
+            ]
+        }
+    ]
+}

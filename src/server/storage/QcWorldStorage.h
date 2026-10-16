@@ -7,6 +7,7 @@
 #include "QcContentRegistry.h"
 #include "QcGameMode.h"
 #include "QcPlayerStorage.h"
+#include "QcVillage.h"
 #include "QcRegionFile.h"
 #include "QcResult.h"
 #include "QcWeatherCycle.h"
@@ -23,12 +24,13 @@
 // read on demand, saved as one through a journal (decision E-373); format 6 (stage 32.1) saves
 // minecarts with the entities of their chunk (decision E-382), format 7 (stage 32.2) also the slots of
 // container carts (decision E-386), format 8 (stage 34) burning fires with their chunk (decision E-392), format 9 (stage 36) experience orbs
-// with their chunk, the experience stored in furnaces and players' experience (decision E-398). Worlds
+// with their chunk, the experience stored in furnaces and players' experience (decision E-398), format 10
+// (stage 37.2) generates villages and keeps their state in villages.json (decision E-403). Worlds
 // of older development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 9;
-    static constexpr int oldestFormatVersion = 9;
+    static constexpr int formatVersion = 10;
+    static constexpr int oldestFormatVersion = 10;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;
@@ -98,6 +100,7 @@ public:
     static constexpr int regionSize = QcRegionFile::regionSize;
     static constexpr auto infoFileName = "world.json";
     static constexpr auto blockUpdatesFileName = "blockupdates.qce";
+    static constexpr auto villagesFileName = "villages.json";
 
     QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content);
 
@@ -129,6 +132,12 @@ public:
     [[nodiscard]] QcResult<QList<QcBlockPos>> readBlockUpdates() const;
     // The contents of blockupdates.qce for `positions` (none: no file).
     [[nodiscard]] static QcResult<std::optional<QByteArray>> blockUpdatesBytes(const QList<QcBlockPos> &positions);
+
+    // The villages of the world (villages.json, decision E-403); empty without error when none was
+    // saved yet; an error when the file cannot be read or is no JSON object. Entries that are not
+    // plausible are left out, spot lists cut to their limits (QcVillage::fromJson).
+    [[nodiscard]] QcResult<QList<QcVillage>> readVillages(const QcVillage::ReadLimits &limits) const;
+    static QByteArray villagesBytes(const QList<QcVillage> &villages);
 
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionFile::regionOf(chunk); }
 

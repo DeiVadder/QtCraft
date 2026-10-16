@@ -128,8 +128,111 @@ private slots:
                                         << u"'labels' entries"_s;
         QTest::newRow("count too high") << text("{\"name\": \"a\", \"palette\": {\"#\": \"chest\"}, \"layers\": [[\"#\"]], \"contents\": [{\"at\": [0, 0, 0], \"items\": [{\"item\": \"coal\", \"count\": 65}]}]}")
                                         << u"count"_s;
+        QTest::newRow("part outside") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"parts\": [{\"at\": [0, 0, 0], \"layers\": [[\"##\"]]}]}")
+                                      << u"outside the structure"_s;
+        QTest::newRow("part without at") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"parts\": [{\"layers\": [[\"#\"]]}]}")
+                                         << u"'at'"_s;
+        QTest::newRow("empty choice") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"choices\": {\"x\": []}}")
+                                      << u"1 to 16 options"_s;
+        QTest::newRow("bad option") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"#\"]], \"choices\": {\"x\": [{\"stone\": 3}]}}")
+                                    << u"name -> name"_s;
         const QString wide(65, u'#');
         QTest::newRow("too wide") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"%1\"]]}").arg(wide) << u"at most 64"_s;
+    }
+
+    void parsesVariation()
+    {
+        // Choices swap names in every option, parts are cells over the structure (decision E-404).
+        const QcResult<QcStructureDefinition> parsed = QcContentParser::parseStructure(
+            json("{ \"name\": \"hut\", \"palette\": { \"#\": \"stone\", \"C\": \"cobblestone\" }, \"layers\": [ [\"##\"], [\"  \"] ], "
+                 "\"choices\": { \"rock\": [ {}, { \"stone\": \"bricks\" } ] }, \"parts\": [ { \"name\": \"top\", \"chance\": 0.25, \"at\": [1, 1, 0], \"layers\": [[\"C\"]] } ] }"),
+            u"qtcraft"_s);
+        QVERIFY2(parsed, qPrintable(parsed.error()));
+        const QcStructureDefinition &hut = *parsed;
+        QCOMPARE(hut.choices.size(), 1);
+        QCOMPARE(hut.choices[0].name, u"rock"_s);
+        QCOMPARE(hut.choices[0].options.size(), 2);
+        QVERIFY(hut.choices[0].options[0].isEmpty());
+        QCOMPARE(hut.choices[0].options[1].value(u"qtcraft:stone"_s), u"qtcraft:bricks"_s);
+        QCOMPARE(hut.parts.size(), 1);
+        QCOMPARE(hut.parts[0].chance, 0.25);
+        QCOMPARE(hut.parts[0].cells[hut.cellIndex(1, 1, 0)], qint16(1));
+        QCOMPARE(hut.parts[0].cells[hut.cellIndex(0, 1, 0)], QcStructureDefinition::keep);
+        QCOMPARE(hut.cells[hut.cellIndex(1, 1, 0)], QcStructureDefinition::keep);
+    }
+
+    void parsesVillagePieceRules()
+    {
+        // A kind with several blueprints and rules (decision E-404); a single "structure" still works.
+        const QcResult<QcVillageStyleDefinition> parsed = QcContentParser::parseVillageStyle(
+            json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structures\": [ { \"structure\": \"a\", \"weight\": 3 }, { \"structure\": \"b\" } ], \"weight\": 2 }, "
+                 "{ \"structure\": \"hut\", \"max\": 1, \"chance\": 0.5, \"minRoadLength\": 120, \"water\": 10, \"jetty\": { \"deck\": \"spruce_planks\", \"width\": 2, \"over\": 3 } } ] }"),
+            u"mod"_s);
+        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QCOMPARE(parsed->pieces.size(), 2);
+        const QcVillagePiece &houses = parsed->pieces[0];
+        QCOMPARE(houses.blueprints.size(), 2);
+        QCOMPARE(houses.blueprints[0].structure, u"mod:a"_s);
+        QCOMPARE(houses.blueprints[0].weight, 3);
+        QCOMPARE(houses.blueprints[1].weight, 1);
+        QVERIFY(!houses.hasRules());
+        const QcVillagePiece &hut = parsed->pieces[1];
+        QCOMPARE(hut.blueprints.size(), 1);
+        QCOMPARE(hut.chance, 0.5);
+        QCOMPARE(hut.minRoadLength, 120);
+        QCOMPARE(hut.water, 10);
+        QCOMPARE(hut.jetty.deck, u"mod:spruce_planks"_s);
+        // Unnamed blocks default to the base game's oak; widths are odd.
+        QCOMPARE(hut.jetty.post, u"qtcraft:oak_log"_s);
+        QCOMPARE(hut.jetty.width, 3);
+        QCOMPARE(hut.jetty.over, 3);
+        QVERIFY(hut.hasRules());
+
+        const QcResult<QcVillageStyleDefinition> broken = QcContentParser::parseVillageStyle(
+            json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structures\": [] } ] }"), u"mod"_s);
+        QVERIFY(!broken);
+    }
+
+    void parsesVillageLayouts()
+    {
+        // Street plans with their parameters over the kind's defaults (decision E-408).
+        const QcResult<QcVillageStyleDefinition> parsed = QcContentParser::parseVillageStyle(
+            json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structure\": \"a\" } ], \"layouts\": [ "
+                 "{ \"kind\": \"street\", \"weight\": 3, \"winding\": 0.5, \"branches\": { \"every\": 12, \"length\": [0.2, 0.4] } }, "
+                 "{ \"kind\": \"tree\", \"arms\": [3, 4], \"bends\": 1, \"diagonals\": false }, { \"kind\": \"plaza\", \"ring\": [10, 12] } ] }"),
+            u"mod"_s);
+        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QCOMPARE(parsed->layouts.size(), 3);
+        const QcVillageLayout &street = parsed->layouts[0];
+        QCOMPARE(street.kind, QcVillageLayout::Kind::Street);
+        QCOMPARE(street.weight, 3);
+        QCOMPARE(street.winding, 0.5);
+        QCOMPARE(street.branchEvery, 12);
+        QCOMPARE(street.branchLength.min, 0.2);
+        QCOMPARE(street.branchLength.max, 0.4);
+        // The street's own defaults where the entry says nothing.
+        QCOMPARE(street.armLength.min, 0.8);
+        QCOMPARE(street.branchChance, 0.8);
+        const QcVillageLayout &tree = parsed->layouts[1];
+        QCOMPARE(tree.arms.min, 3);
+        QCOMPARE(tree.arms.max, 4);
+        QCOMPARE(tree.bends.min, 1);
+        QCOMPARE(tree.bends.max, 1);
+        QVERIFY(!tree.diagonals);
+        QCOMPARE(parsed->layouts[2].ring.min, 10);
+
+        // Without layouts the default mix of all six kinds.
+        const QcResult<QcVillageStyleDefinition> plain =
+            QcContentParser::parseVillageStyle(json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structure\": \"a\" } ] }"), u"mod"_s);
+        QVERIFY(plain);
+        QCOMPARE(plain->layouts.size(), 6);
+
+        for (const char *layouts : {"[]", "[ { \"kind\": \"star\" } ]", "[ { \"kind\": \"tree\", \"arms\": [4, 2] } ]",
+                                    "[ { \"kind\": \"tree\", \"arms\": [2, 9] } ]", "[ { \"kind\": \"cross\", \"winding\": 2 } ]", "{}"}) {
+            const QString text = u"{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structure\": \"a\" } ], \"layouts\": %1 }"_s.arg(
+                QLatin1StringView(layouts));
+            QVERIFY2(!QcContentParser::parseVillageStyle(QJsonDocument::fromJson(text.toUtf8()).object(), u"mod"_s), layouts);
+        }
     }
 
     void rejectsBrokenStructures()

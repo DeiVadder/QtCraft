@@ -1,0 +1,27 @@
+{
+    "name": "villages",
+    "order": 83,
+    "icon": "bell",
+    "sections": [
+        "finding",
+        "styles",
+        "buildings",
+        "state",
+        "mods"
+    ],
+    "related": [
+        "bell",
+        "bed",
+        "composter",
+        "furnace",
+        "barrel",
+        "farmland",
+        "wheat_crop",
+        "lantern",
+        "plains",
+        "desert",
+        "taiga",
+        "swamp",
+        "mud"
+    ]
+}

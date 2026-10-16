@@ -5,6 +5,7 @@
     "baseHeight": 68,
     "heightVariation": 7,
     "surface": "grass_block",
+    "villages": true,
     "subsurface": "dirt",
     "underwater": "sand",
     "beach": "sand",
@@ -40,10 +41,6 @@
         {
             "feature": "pumpkin_patch",
             "density": 0.0015
-        },
-        {
-            "feature": "wild_carrots",
-            "density": 0.003
         }
     ]
 }

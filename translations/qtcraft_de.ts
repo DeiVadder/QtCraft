@@ -1867,58 +1867,58 @@
         <translation type="vanished">Cheats sind auf diesem Server abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="71"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="73"/>
         <source>Usage: /help [command]</source>
         <translation>Verwendung: /help [Befehl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="72"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="74"/>
         <source>Lists the commands you may use, or explains one.</source>
         <translation>Listet die Befehle, die du verwenden darfst, oder erklärt einen.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="75"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="77"/>
         <source>Usage: /confirm</source>
         <translation>Verwendung: /confirm</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="76"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="78"/>
         <source>Runs the destructive command you started last.</source>
         <translation>Führt den zuletzt begonnenen zerstörenden Befehl aus.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="79"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="81"/>
         <source>Usage: /cancel</source>
         <translation>Verwendung: /cancel</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="80"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="82"/>
         <source>Drops the command waiting for /confirm.</source>
         <translation>Verwirft den Befehl, der auf /confirm wartet.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="121"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="123"/>
         <source>Only the server console can use /%1</source>
         <translation>Nur die Server-Konsole darf /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="140"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="188"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="142"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="190"/>
         <source>Unknown command: %1</source>
         <translation>Unbekannter Befehl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="149"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="151"/>
         <source>Only players can use /%1</source>
         <translation>Nur Spieler können /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="205"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="207"/>
         <source>Commands: %1</source>
         <translation>Befehle: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="206"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="208"/>
         <source>Type /help &lt;command&gt; for its usage</source>
         <translation>/help &lt;Befehl&gt; zeigt seine Verwendung</translation>
     </message>
@@ -1955,7 +1955,7 @@
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="400"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="421"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="122"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="124"/>
         <location filename="../src/server/commands/QcWeatherCommands.cpp" line="88"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
@@ -2621,18 +2621,18 @@
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="188"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="189"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="97"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="196"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="197"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="202"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="203"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="115"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -3266,6 +3266,39 @@
         <location filename="../src/server/commands/QcExperienceCommands.cpp" line="102"/>
         <source>%1 has experience level %2 and %3 of %4 points towards the next (%5 points in all)</source>
         <translation>%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="21"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="48"/>
+        <source>Usage: /locate village</source>
+        <translation>Verwendung: /locate village</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="22"/>
+        <source>Finds the nearest village.</source>
+        <translation>Findet das nächste Dorf.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="25"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="75"/>
+        <source>Usage: /village [&lt;x&gt; &lt;z&gt;]</source>
+        <translation>Verwendung: /village [&lt;x&gt; &lt;z&gt;]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="26"/>
+        <source>Shows the state of the nearest village as JSON.</source>
+        <translation>Zeigt den Zustand des nächsten Dorfs als JSON.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="54"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="81"/>
+        <source>No village within %1 blocks</source>
+        <translation>Kein Dorf im Umkreis von %1 Blöcken</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="59"/>
+        <source>Village (%1, %2) at %3 %4 %5, %6 blocks away</source>
+        <translation>Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt</translation>
     </message>
 </context>
 <context>

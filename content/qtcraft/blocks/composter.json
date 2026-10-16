@@ -1,0 +1,16 @@
+{
+    "name": "composter",
+    "sound": "wood",
+    "hardness": 0.6,
+    "tool": "axe",
+    "textures": {
+        "side": "composter_side",
+        "top": "composter_top",
+        "bottom": "oak_planks"
+    },
+    "fuelSeconds": 15,
+    "flammable": {
+        "ignite": 5,
+        "burn": 20
+    }
+}

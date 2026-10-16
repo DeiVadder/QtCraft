@@ -108,6 +108,8 @@ QMap<QString, double> values()
         {u"fire.spreadRadius"_s, double(QcServerLimits{}.fireSpreadRadius)},
         {u"fire.perChunk"_s, double(QcServerLimits{}.firesPerChunk)},
         {u"fire.total"_s, double(QcServerLimits{}.fires)},
+        {u"village.beds"_s, double(QcServerLimits{}.villageBeds)},
+        {u"village.workstations"_s, double(QcServerLimits{}.villageWorkstations)},
         {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
         {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},

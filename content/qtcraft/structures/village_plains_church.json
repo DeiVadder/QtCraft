@@ -1,0 +1,35 @@
+{
+    "name": "village_plains_church",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "s": "oak_stairs[facing=south,half=bottom]",
+        "e": "oak_stairs[facing=east,half=bottom]",
+        "w": "oak_stairs[facing=west,half=bottom]",
+        "h": "oak_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "I": "stone_bricks",
+        "M": "bookshelf"
+    },
+    "layers": [
+        ["CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC"],
+        ["LCCCCCL", "C.MIM.C", "C.....C", "C.....C", "C.....C", "Css.ssC", "C.....C", "Css.ssC", "C.....C", "Css.ssC", "C.....C", "LCCDCCL"],
+        ["LPPPPPL", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "P.....P", "LPPUPPL"],
+        ["LPPGPPL", "P.....P", "P.....P", "G.....G", "P.....P", "P.....P", "G.....G", "P.....P", "P.....P", "G.....G", "P.....P", "LPPPPPL"],
+        ["LPPGPPL", "P.....P", "P.....P", "G.....G", "P.....P", "P.....P", "G.....G", "P.....P", "P.....P", "G.....G", "P.....P", "LPPGPPL"],
+        ["LPPPPPL", "P.....P", "P.....P", "P..l..P", "P.....P", "P.....P", "P.....P", "P.....P", "P..l..P", "P.....P", "P.....P", "LPPPPPL"],
+        ["ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw", "ePPPPPw"],
+        [" ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw ", " ePPPw "],
+        ["  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  ", "  ePw  "],
+        ["   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   ", "   h   "],
+        ["       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       ", "       "]
+    ]
+}

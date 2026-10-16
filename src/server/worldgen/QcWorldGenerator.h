@@ -6,6 +6,8 @@
 
 #include <memory>
 
+struct QcVillagePlan;
+
 // Produces the unmodified terrain of a chunk from the world seed. Implementations must be
 // deterministic and safe to call from several threads at once.
 class QcWorldGenerator
@@ -35,6 +37,20 @@ public:
     [[nodiscard]] virtual std::optional<QcBlockId> platformBlock() const { return std::nullopt; }
     // Set up once when a world is created (rules, creatures, contents, updates; decision E-221).
     virtual QcWorldSetup setup() const { return {}; }
+    // The village of the region that holds a chunk (decision E-403); null without one or for
+    // generators without villages.
+    [[nodiscard]] virtual std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const
+    {
+        Q_UNUSED(pos);
+        return nullptr;
+    }
+    // The village whose centre lies nearest to `from`, at most about `reach` blocks away.
+    [[nodiscard]] virtual std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const
+    {
+        Q_UNUSED(from);
+        Q_UNUSED(reach);
+        return nullptr;
+    }
     // Labels floating in a chunk (decision E-222); the server sends them with the chunk.
     virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const
     {

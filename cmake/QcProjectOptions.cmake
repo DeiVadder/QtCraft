@@ -38,6 +38,9 @@ endfunction()
 
 # Adds a QtTest executable registered with CTest. Every test gets its own data directory
 # (build/<preset>/test-data/<name>) so that tests can run in parallel (`ctest -j`, decision E-380).
+# The time limit holds for the whole test and, through QTEST_FUNCTION_TIMEOUT, for each test
+# function: QtTest's own five minutes per function would otherwise end a slow function of a test
+# with a longer limit in a parallel sanitizer run (decision E-410).
 function(qc_add_test name)
     cmake_parse_arguments(PARSE_ARGV 1 ARG "" "TIMEOUT" "SOURCES;LIBRARIES")
     qt_add_executable(${name} ${ARG_SOURCES})
@@ -48,7 +51,8 @@ function(qc_add_test name)
     if(NOT ARG_TIMEOUT)
         set(ARG_TIMEOUT 120)
     endif()
+    math(EXPR function_timeout_ms "${ARG_TIMEOUT} * 1000")
     set_tests_properties(${name} PROPERTIES
         TIMEOUT ${ARG_TIMEOUT}
-        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${name}")
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${name};QTEST_FUNCTION_TIMEOUT=${function_timeout_ms}")
 endfunction()

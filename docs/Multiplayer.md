@@ -92,6 +92,9 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `forcedChunks` | 256 | 0 – 65536 | Chunks kept loaded by `/forceload`; each also keeps its circuit group (up to `chunkGroupLimit` chunks) (E-377) |
 | `chunkLoadersPerPlayer` | 4 | 0 – 1024 | Chunk loader blocks a player may place (E-377) |
 | `chunkLoaders` | 64 | 0 – 65536 | Chunk loader blocks that work in the world, the first placed first; each also keeps its circuit group (E-377) |
+| `villages` | 4096 | 0 – 65536 | Villages the world keeps in `villages.json`; further ones are generated but not tracked (E-403) |
+| `villageBeds` | 64 | 0 – 1024 | Beds listed per village (E-403) |
+| `villageWorkstations` | 64 | 0 – 1024 | Workstations listed per village (E-403) |
 
 Observers and dispensers have no bounds of their own: their pulses and shots are scheduled ticks inside the signal budget.
 

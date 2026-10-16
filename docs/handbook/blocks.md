@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bedrock](#block-qtcraft-bedrock) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
+**QtCraft:** [Activator Rail](#block-qtcraft-activator_rail) · [Allium](#block-qtcraft-allium) · [Barrel](#block-qtcraft-barrel) · [Bed](#block-qtcraft-bed) · [Bedrock](#block-qtcraft-bedrock) · [Bell](#block-qtcraft-bell) · [Birch door](#block-qtcraft-birch_door) · [Birch leaves](#block-qtcraft-birch_leaves) · [Birch log](#block-qtcraft-birch_log) · [Birch planks](#block-qtcraft-birch_planks) · [Birch sapling](#block-qtcraft-birch_sapling) · [Birch trapdoor](#block-qtcraft-birch_trapdoor) · [Birch wood](#block-qtcraft-birch_wood) · [Black concrete](#block-qtcraft-black_concrete) · [Black concrete powder](#block-qtcraft-black_concrete_powder) · [Black stained glass](#block-qtcraft-black_stained_glass) · [Black stained glass pane](#block-qtcraft-black_stained_glass_pane) · [Black terracotta](#block-qtcraft-black_terracotta) · [Black wool](#block-qtcraft-black_wool) · [Block of coal](#block-qtcraft-coal_block) · [Block of diamond](#block-qtcraft-diamond_block) · [Block of gold](#block-qtcraft-gold_block) · [Block of iron](#block-qtcraft-iron_block) · [Block of lapis lazuli](#block-qtcraft-lapis_block) · [Blue concrete](#block-qtcraft-blue_concrete) · [Blue concrete powder](#block-qtcraft-blue_concrete_powder) · [Blue orchid](#block-qtcraft-blue_orchid) · [Blue stained glass](#block-qtcraft-blue_stained_glass) · [Blue stained glass pane](#block-qtcraft-blue_stained_glass_pane) · [Blue terracotta](#block-qtcraft-blue_terracotta) · [Blue wool](#block-qtcraft-blue_wool) · [Bookshelf](#block-qtcraft-bookshelf) · [Bricks](#block-qtcraft-bricks) · [Brown concrete](#block-qtcraft-brown_concrete) · [Brown concrete powder](#block-qtcraft-brown_concrete_powder) · [Brown mushroom](#block-qtcraft-brown_mushroom) · [Brown stained glass](#block-qtcraft-brown_stained_glass) · [Brown stained glass pane](#block-qtcraft-brown_stained_glass_pane) · [Brown terracotta](#block-qtcraft-brown_terracotta) · [Brown wool](#block-qtcraft-brown_wool) · [Cactus](#block-qtcraft-cactus) · [Carrot crop](#block-qtcraft-carrot_crop) · [Chest](#block-qtcraft-chest) · [Chunk Loader](#block-qtcraft-chunk_loader) · [Clay](#block-qtcraft-clay) · [Coal ore](#block-qtcraft-coal_ore) · [Cobblestone](#block-qtcraft-cobblestone) · [Cobweb](#block-qtcraft-cobweb) · [Composter](#block-qtcraft-composter) · [Cornflower](#block-qtcraft-cornflower) · [Crafting table](#block-qtcraft-crafting_table) · [Cut sandstone](#block-qtcraft-cut_sandstone) · [Cyan concrete](#block-qtcraft-cyan_concrete) · [Cyan concrete powder](#block-qtcraft-cyan_concrete_powder) · [Cyan stained glass](#block-qtcraft-cyan_stained_glass) · [Cyan stained glass pane](#block-qtcraft-cyan_stained_glass_pane) · [Cyan terracotta](#block-qtcraft-cyan_terracotta) · [Cyan wool](#block-qtcraft-cyan_wool) · [Dandelion](#block-qtcraft-dandelion) · [Dead bush](#block-qtcraft-dead_bush) · [Detector Rail](#block-qtcraft-detector_rail) · [Diamond ore](#block-qtcraft-diamond_ore) · [Dirt](#block-qtcraft-dirt) · [Dirt path](#block-qtcraft-dirt_path) · [Farmland](#block-qtcraft-farmland) · [Fern](#block-qtcraft-fern) · [Fire](#block-qtcraft-fire) · [Firefly glass](#block-qtcraft-firefly_glass) · [Furnace](#block-qtcraft-furnace) · [Glass](#block-qtcraft-glass) · [Glass pane](#block-qtcraft-glass_pane) · [Gold ore](#block-qtcraft-gold_ore) · [Grass block](#block-qtcraft-grass_block) · [Gravel](#block-qtcraft-gravel) · [Gray concrete](#block-qtcraft-gray_concrete) · [Gray concrete powder](#block-qtcraft-gray_concrete_powder) · [Gray stained glass](#block-qtcraft-gray_stained_glass) · [Gray stained glass pane](#block-qtcraft-gray_stained_glass_pane) · [Gray terracotta](#block-qtcraft-gray_terracotta) · [Gray wool](#block-qtcraft-gray_wool) · [Green concrete](#block-qtcraft-green_concrete) · [Green concrete powder](#block-qtcraft-green_concrete_powder) · [Green stained glass](#block-qtcraft-green_stained_glass) · [Green stained glass pane](#block-qtcraft-green_stained_glass_pane) · [Green terracotta](#block-qtcraft-green_terracotta) · [Green wool](#block-qtcraft-green_wool) · [Hay bale](#block-qtcraft-hay_block) · [Ice](#block-qtcraft-ice) · [Iron bars](#block-qtcraft-iron_bars) · [Iron door](#block-qtcraft-iron_door) · [Iron ore](#block-qtcraft-iron_ore) · [Iron trapdoor](#block-qtcraft-iron_trapdoor) · [Ladder](#block-qtcraft-ladder) · [Lantern](#block-qtcraft-lantern) · [Lapis lazuli ore](#block-qtcraft-lapis_ore) · [Lever](#block-qtcraft-lever) · [Light blue concrete](#block-qtcraft-light_blue_concrete) · [Light blue concrete powder](#block-qtcraft-light_blue_concrete_powder) · [Light blue stained glass](#block-qtcraft-light_blue_stained_glass) · [Light blue stained glass pane](#block-qtcraft-light_blue_stained_glass_pane) · [Light blue terracotta](#block-qtcraft-light_blue_terracotta) · [Light blue wool](#block-qtcraft-light_blue_wool) · [Light gray concrete](#block-qtcraft-light_gray_concrete) · [Light gray concrete powder](#block-qtcraft-light_gray_concrete_powder) · [Light gray stained glass](#block-qtcraft-light_gray_stained_glass) · [Light gray stained glass pane](#block-qtcraft-light_gray_stained_glass_pane) · [Light gray terracotta](#block-qtcraft-light_gray_terracotta) · [Light gray wool](#block-qtcraft-light_gray_wool) · [Lily of the valley](#block-qtcraft-lily_of_the_valley) · [Lime concrete](#block-qtcraft-lime_concrete) · [Lime concrete powder](#block-qtcraft-lime_concrete_powder) · [Lime stained glass](#block-qtcraft-lime_stained_glass) · [Lime stained glass pane](#block-qtcraft-lime_stained_glass_pane) · [Lime terracotta](#block-qtcraft-lime_terracotta) · [Lime wool](#block-qtcraft-lime_wool) · [Magenta concrete](#block-qtcraft-magenta_concrete) · [Magenta concrete powder](#block-qtcraft-magenta_concrete_powder) · [Magenta stained glass](#block-qtcraft-magenta_stained_glass) · [Magenta stained glass pane](#block-qtcraft-magenta_stained_glass_pane) · [Magenta terracotta](#block-qtcraft-magenta_terracotta) · [Magenta wool](#block-qtcraft-magenta_wool) · [Magma block](#block-qtcraft-magma_block) · [Melon](#block-qtcraft-melon) · [Melon stem](#block-qtcraft-melon_stem) · [Mine lamp](#block-qtcraft-mine_lamp) · [Mud](#block-qtcraft-mud) · [Mud bricks](#block-qtcraft-mud_bricks) · [Oak button](#block-qtcraft-oak_button) · [Oak door](#block-qtcraft-oak_door) · [Oak leaves](#block-qtcraft-oak_leaves) · [Oak log](#block-qtcraft-oak_log) · [Oak planks](#block-qtcraft-oak_planks) · [Oak pressure plate](#block-qtcraft-oak_pressure_plate) · [Oak sapling](#block-qtcraft-oak_sapling) · [Oak trapdoor](#block-qtcraft-oak_trapdoor) · [Oak wood](#block-qtcraft-oak_wood) · [Obsidian](#block-qtcraft-obsidian) · [Orange concrete](#block-qtcraft-orange_concrete) · [Orange concrete powder](#block-qtcraft-orange_concrete_powder) · [Orange stained glass](#block-qtcraft-orange_stained_glass) · [Orange stained glass pane](#block-qtcraft-orange_stained_glass_pane) · [Orange terracotta](#block-qtcraft-orange_terracotta) · [Orange wool](#block-qtcraft-orange_wool) · [Packed ice](#block-qtcraft-packed_ice) · [Packed mud](#block-qtcraft-packed_mud) · [Pink concrete](#block-qtcraft-pink_concrete) · [Pink concrete powder](#block-qtcraft-pink_concrete_powder) · [Pink stained glass](#block-qtcraft-pink_stained_glass) · [Pink stained glass pane](#block-qtcraft-pink_stained_glass_pane) · [Pink terracotta](#block-qtcraft-pink_terracotta) · [Pink wool](#block-qtcraft-pink_wool) · [Piston head](#block-qtcraft-signal_piston_head) · [Polished stone](#block-qtcraft-polished_stone) · [Poppy](#block-qtcraft-poppy) · [Potato crop](#block-qtcraft-potato_crop) · [Powered Rail](#block-qtcraft-powered_rail) · [Pumpkin](#block-qtcraft-pumpkin) · [Pumpkin stem](#block-qtcraft-pumpkin_stem) · [Purple concrete](#block-qtcraft-purple_concrete) · [Purple concrete powder](#block-qtcraft-purple_concrete_powder) · [Purple stained glass](#block-qtcraft-purple_stained_glass) · [Purple stained glass pane](#block-qtcraft-purple_stained_glass_pane) · [Purple terracotta](#block-qtcraft-purple_terracotta) · [Purple wool](#block-qtcraft-purple_wool) · [Rail](#block-qtcraft-rail) · [Red concrete](#block-qtcraft-red_concrete) · [Red concrete powder](#block-qtcraft-red_concrete_powder) · [Red mushroom](#block-qtcraft-red_mushroom) · [Red stained glass](#block-qtcraft-red_stained_glass) · [Red stained glass pane](#block-qtcraft-red_stained_glass_pane) · [Red terracotta](#block-qtcraft-red_terracotta) · [Red wool](#block-qtcraft-red_wool) · [Sand](#block-qtcraft-sand) · [Sandstone](#block-qtcraft-sandstone) · [Signal Comparator](#block-qtcraft-signal_comparator) · [Signal Dispenser](#block-qtcraft-signal_dispenser) · [Signal Dropper](#block-qtcraft-signal_dropper) · [Signal Dust](#block-qtcraft-signal_dust) · [Signal Hopper](#block-qtcraft-signal_hopper) · [Signal Lamp](#block-qtcraft-signal_lamp) · [Signal Lamp (lit)](#block-qtcraft-signal_lamp_lit) · [Signal Observer](#block-qtcraft-signal_observer) · [Signal ore](#block-qtcraft-signal_ore) · [Signal Piston](#block-qtcraft-signal_piston) · [Signal Repeater](#block-qtcraft-signal_repeater) · [Signal Torch](#block-qtcraft-signal_torch) · [Signal Torch (off)](#block-qtcraft-signal_torch_off) · [Slime block](#block-qtcraft-slime_block) · [Small torch](#block-qtcraft-small_torch) · [Smooth sandstone](#block-qtcraft-smooth_sandstone) · [Snow block](#block-qtcraft-snow_block) · [Snow layer](#block-qtcraft-snow_layer) · [Spruce door](#block-qtcraft-spruce_door) · [Spruce leaves](#block-qtcraft-spruce_leaves) · [Spruce log](#block-qtcraft-spruce_log) · [Spruce planks](#block-qtcraft-spruce_planks) · [Spruce sapling](#block-qtcraft-spruce_sapling) · [Spruce trapdoor](#block-qtcraft-spruce_trapdoor) · [Spruce wood](#block-qtcraft-spruce_wood) · [Sticky Signal Piston](#block-qtcraft-sticky_signal_piston) · [Stone](#block-qtcraft-stone) · [Stone bricks](#block-qtcraft-stone_bricks) · [Stone button](#block-qtcraft-stone_button) · [Stone pressure plate](#block-qtcraft-stone_pressure_plate) · [Sugar cane](#block-qtcraft-sugar_cane) · [Tall grass](#block-qtcraft-tall_grass) · [Terracotta](#block-qtcraft-terracotta) · [Torch](#block-qtcraft-torch) · [Wheat crop](#block-qtcraft-wheat_crop) · [White concrete](#block-qtcraft-white_concrete) · [White concrete powder](#block-qtcraft-white_concrete_powder) · [White stained glass](#block-qtcraft-white_stained_glass) · [White stained glass pane](#block-qtcraft-white_stained_glass_pane) · [White terracotta](#block-qtcraft-white_terracotta) · [White wool](#block-qtcraft-white_wool) · [Wild carrots](#block-qtcraft-wild_carrots) · [Wild potatoes](#block-qtcraft-wild_potatoes) · [Yellow concrete](#block-qtcraft-yellow_concrete) · [Yellow concrete powder](#block-qtcraft-yellow_concrete_powder) · [Yellow stained glass](#block-qtcraft-yellow_stained_glass) · [Yellow stained glass pane](#block-qtcraft-yellow_stained_glass_pane) · [Yellow terracotta](#block-qtcraft-yellow_terracotta) · [Yellow wool](#block-qtcraft-yellow_wool)
 
 ## QtCraft
 
@@ -95,6 +95,36 @@ Holds as much as a chest and fits in a single block row next to others.
 
 [Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
 
+### <a id="block-qtcraft-bed"></a>Bed
+
+Two blocks long: placed from the foot, the head lies one block further in the direction you look; breaking either half takes the bed. Villages count every bed head inside them; later villagers sleep in them.
+
+| | |
+|---|---|
+| ID | `qtcraft:bed` |
+| Hardness | 0.2 |
+| Breaking by hand | 0.3 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.05 s: [Diamond axe](tools.md#item-qtcraft-diamond_axe) |
+| Drops | [Bed](#block-qtcraft-bed) |
+| Light blocked | 0 of 15 |
+| Flammable | catches fire 20, burns away 30 (0 to 100) |
+| Sound | wood |
+| States | facing (north, east, south, west); part (foot, head) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Any wool](tags.md#tag-qtcraft-wool) | [Any wool](tags.md#tag-qtcraft-wool) | [Any wool](tags.md#tag-qtcraft-wool) | [Bed](#block-qtcraft-bed) |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
 ### <a id="block-qtcraft-bedrock"></a>Bedrock
 
 The unbreakable floor of the world.
@@ -104,6 +134,36 @@ The unbreakable floor of the world.
 | ID | `qtcraft:bedrock` |
 | Hardness | unbreakable |
 | Sound | stone |
+
+### <a id="block-qtcraft-bell"></a>Bell
+
+Hangs over the meeting point in the middle of every village.
+
+| | |
+|---|---|
+| ID | `qtcraft:bell` |
+| Hardness | 5 |
+| Breaking by hand | 7.5 s |
+| Tool | Pickaxe (faster, not needed) |
+| Breaking with the best tool | 0.63 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
+| Drops | [Bell](#block-qtcraft-bell) |
+| Light blocked | 0 of 15 |
+| Needs support | a solid block below |
+| Sound | stone |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Bell](#block-qtcraft-bell) |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+| [Gold ingot](items.md#item-qtcraft-gold_ingot) | · | [Gold ingot](items.md#item-qtcraft-gold_ingot) |  |
+
+**Faster with**
+
+[Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4)
 
 ### <a id="block-qtcraft-birch_door"></a>Birch door
 
@@ -227,7 +287,7 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Birch door](#block-qtcraft-birch_door), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Birch trapdoor](#block-qtcraft-birch_trapdoor), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Birch door](#block-qtcraft-birch_door), [Birch fence](parts.md#block-qtcraft-birch_fence), [Birch fence gate](parts.md#block-qtcraft-birch_fence_gate), [Birch slab](parts.md#block-qtcraft-birch_slab), [Birch stairs](parts.md#block-qtcraft-birch_stairs), [Birch trapdoor](#block-qtcraft-birch_trapdoor), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
@@ -476,7 +536,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black carpet](parts.md#block-qtcraft-black_wool_carpet), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black carpet](parts.md#block-qtcraft-black_wool_carpet), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-coal_block"></a>Block of coal
 
@@ -829,7 +889,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue carpet](parts.md#block-qtcraft-blue_wool_carpet), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue carpet](parts.md#block-qtcraft-blue_wool_carpet), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-bookshelf"></a>Bookshelf
 
@@ -1080,7 +1140,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown carpet](parts.md#block-qtcraft-brown_wool_carpet), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown carpet](parts.md#block-qtcraft-brown_wool_carpet), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-cactus"></a>Cactus
 
@@ -1327,6 +1387,36 @@ Found in caves. Anything caught in it moves at a quarter of its speed and sinks 
 
 [Cobweb veins](worldgen.md#ore-qtcraft-cobweb) (y 10–50)
 
+### <a id="block-qtcraft-composter"></a>Composter
+
+A wooden bin at the fields of villages. It is the farmers' workstation.
+
+| | |
+|---|---|
+| ID | `qtcraft:composter` |
+| Hardness | 0.6 |
+| Breaking by hand | 0.9 s |
+| Tool | Axe (faster, not needed) |
+| Breaking with the best tool | 0.08 s: [Golden axe](tools.md#item-qtcraft-golden_axe) |
+| Drops | [Composter](#block-qtcraft-composter) |
+| Flammable | catches fire 5, burns away 20 (0 to 100) |
+| Burns as fuel | 15 s: [Fuels](tables.md#table-fuels) |
+| Sound | wood |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Any planks](tags.md#tag-qtcraft-planks) | · | [Any planks](tags.md#tag-qtcraft-planks) | [Composter](#block-qtcraft-composter) |
+| [Any planks](tags.md#tag-qtcraft-planks) | · | [Any planks](tags.md#tag-qtcraft-planks) |  |
+| [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) | [Any planks](tags.md#tag-qtcraft-planks) |  |
+
+**Faster with**
+
+[Golden axe](tools.md#item-qtcraft-golden_axe) (level 1), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (level 1), [Stone axe](tools.md#item-qtcraft-stone_axe) (level 2), [Iron axe](tools.md#item-qtcraft-iron_axe) (level 3), [Diamond axe](tools.md#item-qtcraft-diamond_axe) (level 4)
+
 ### <a id="block-qtcraft-cornflower"></a>Cornflower
 
 A blue flower of the plains; gives blue dye.
@@ -1568,7 +1658,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan carpet](parts.md#block-qtcraft-cyan_wool_carpet), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan carpet](parts.md#block-qtcraft-cyan_wool_carpet), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-dandelion"></a>Dandelion
 
@@ -1687,6 +1777,7 @@ Plain earth below the grass.
 | Breaking with the best tool | 0.06 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Dirt](#block-qtcraft-dirt) |
 | Hoe makes | [Farmland](#block-qtcraft-farmland) |
+| Shovel makes | [Dirt path](#block-qtcraft-dirt_path) |
 | Sound | earth |
 
 **Used in**
@@ -1695,7 +1786,7 @@ Plain earth below the grass.
 
 **Dropped by**
 
-[Farmland](#block-qtcraft-farmland), [Grass block](#block-qtcraft-grass_block)
+[Dirt path](#block-qtcraft-dirt_path), [Farmland](#block-qtcraft-farmland), [Grass block](#block-qtcraft-grass_block)
 
 **Faster with**
 
@@ -1708,6 +1799,27 @@ Plain earth below the grass.
 **Creatures appearing on it**
 
 [Slime](creatures.md#mob-qtcraft-slime), [Zombie](creatures.md#mob-qtcraft-zombie)
+
+### <a id="block-qtcraft-dirt_path"></a>Dirt path
+
+A trodden path, a little lower than the ground beside it. Villages lay their side roads with it; a shovel used on the top of grass or dirt makes one (each path wears the shovel a little, not in creative mode). It drops dirt, a hoe turns it into farmland, and a solid block placed on it presses it back into dirt.
+
+| | |
+|---|---|
+| ID | `qtcraft:dirt_path` |
+| Hardness | 0.65 |
+| Breaking by hand | 0.98 s |
+| Tool | Shovel (faster, not needed) |
+| Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
+| Drops | [Dirt](#block-qtcraft-dirt) |
+| Light blocked | 0 of 15 |
+| Hoe makes | [Farmland](#block-qtcraft-farmland) |
+| Under a solid block becomes | [Dirt](#block-qtcraft-dirt) |
+| Sound | grass and plants |
+
+**Faster with**
+
+[Golden shovel](tools.md#item-qtcraft-golden_shovel) (level 1), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (level 1), [Stone shovel](tools.md#item-qtcraft-stone_shovel) (level 2), [Iron shovel](tools.md#item-qtcraft-iron_shovel) (level 3), [Diamond shovel](tools.md#item-qtcraft-diamond_shovel) (level 4)
 
 ### <a id="block-qtcraft-farmland"></a>Farmland
 
@@ -2074,6 +2186,7 @@ Earth covered with grass, the surface of most land.
 | Breaking with the best tool | 0.08 s: [Golden shovel](tools.md#item-qtcraft-golden_shovel) |
 | Drops | [Dirt](#block-qtcraft-dirt) |
 | Hoe makes | [Farmland](#block-qtcraft-farmland) |
+| Shovel makes | [Dirt path](#block-qtcraft-dirt_path) |
 | Sound | grass and plants |
 
 **Faster with**
@@ -2278,7 +2391,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray carpet](parts.md#block-qtcraft-gray_wool_carpet), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray carpet](parts.md#block-qtcraft-gray_wool_carpet), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-green_concrete"></a>Green concrete
 
@@ -2439,7 +2552,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green carpet](parts.md#block-qtcraft-green_wool_carpet), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green carpet](parts.md#block-qtcraft-green_wool_carpet), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-hay_block"></a>Hay bale
 
@@ -2907,7 +3020,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue carpet](parts.md#block-qtcraft-light_blue_wool_carpet), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue carpet](parts.md#block-qtcraft-light_blue_wool_carpet), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-light_gray_concrete"></a>Light gray concrete
 
@@ -3068,7 +3181,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray carpet](parts.md#block-qtcraft-light_gray_wool_carpet), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray carpet](parts.md#block-qtcraft-light_gray_wool_carpet), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-lily_of_the_valley"></a>Lily of the valley
 
@@ -3254,7 +3367,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime carpet](parts.md#block-qtcraft-lime_wool_carpet), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime carpet](parts.md#block-qtcraft-lime_wool_carpet), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-magenta_concrete"></a>Magenta concrete
 
@@ -3415,7 +3528,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta carpet](parts.md#block-qtcraft-magenta_wool_carpet), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta carpet](parts.md#block-qtcraft-magenta_wool_carpet), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-magma_block"></a>Magma block
 
@@ -3755,7 +3868,7 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak button](#block-qtcraft-oak_button), [Oak door](#block-qtcraft-oak_door), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak pressure plate](#block-qtcraft-oak_pressure_plate), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Oak button](#block-qtcraft-oak_button), [Oak door](#block-qtcraft-oak_door), [Oak fence](parts.md#block-qtcraft-oak_fence), [Oak fence gate](parts.md#block-qtcraft-oak_fence_gate), [Oak pressure plate](#block-qtcraft-oak_pressure_plate), [Oak slab](parts.md#block-qtcraft-oak_slab), [Oak stairs](parts.md#block-qtcraft-oak_stairs), [Oak trapdoor](#block-qtcraft-oak_trapdoor), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
@@ -4057,7 +4170,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange carpet](parts.md#block-qtcraft-orange_wool_carpet), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange carpet](parts.md#block-qtcraft-orange_wool_carpet), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-packed_ice"></a>Packed ice
 
@@ -4280,7 +4393,7 @@ Soft, quiet and burnable; dye any wool with a dye.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink carpet](parts.md#block-qtcraft-pink_wool_carpet), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink carpet](parts.md#block-qtcraft-pink_wool_carpet), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-signal_piston_head"></a>Piston head
 
@@ -4626,7 +4739,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple carpet](parts.md#block-qtcraft-purple_wool_carpet), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-rail"></a>Rail
 
@@ -4844,7 +4957,7 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red carpet](parts.md#block-qtcraft-red_wool_carpet), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red carpet](parts.md#block-qtcraft-red_wool_carpet), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 ### <a id="block-qtcraft-sand"></a>Sand
 
@@ -5569,7 +5682,7 @@ Building wood; any planks fit recipes that ask for planks.
 
 **Used in**
 
-[Barrel](#block-qtcraft-barrel) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Spruce door](#block-qtcraft-spruce_door), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Spruce trapdoor](#block-qtcraft-spruce_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
+[Barrel](#block-qtcraft-barrel) (Any planks), [Bed](#block-qtcraft-bed) (Any planks), [Bookshelf](#block-qtcraft-bookshelf) (Any planks), [Bowl](items.md#item-qtcraft-bowl) (Any planks), [Chest](#block-qtcraft-chest) (Any planks), [Composter](#block-qtcraft-composter) (Any planks), [Crafting table](#block-qtcraft-crafting_table) (Any planks), [Signal Piston](#block-qtcraft-signal_piston) (Any planks), [Spruce door](#block-qtcraft-spruce_door), [Spruce fence](parts.md#block-qtcraft-spruce_fence), [Spruce fence gate](parts.md#block-qtcraft-spruce_fence_gate), [Spruce slab](parts.md#block-qtcraft-spruce_slab), [Spruce stairs](parts.md#block-qtcraft-spruce_stairs), [Spruce trapdoor](#block-qtcraft-spruce_trapdoor), [Stick](items.md#item-qtcraft-stick) (Any planks), [Wooden axe](tools.md#item-qtcraft-wooden_axe) (Any planks), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe) (Any planks), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (Any planks), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel) (Any planks), [Wooden sword](tools.md#item-qtcraft-wooden_sword) (Any planks)
 
 **Faster with**
 
@@ -6143,7 +6256,7 @@ Soft block from sheep; dye any wool with a dye to colour it.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [White carpet](parts.md#block-qtcraft-white_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [White carpet](parts.md#block-qtcraft-white_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
 
 **Dropped by**
 
@@ -6151,7 +6264,7 @@ Soft block from sheep; dye any wool with a dye to colour it.
 
 ### <a id="block-qtcraft-wild_carrots"></a>Wild carrots
 
-Wild plants in plains and birch forests; the first carrots for a field.
+Wild carrots do not grow in the base world: carrots come from the fields of villages. Mods (and later oases) can place them with the feature of the same name.
 
 | | |
 |---|---|
@@ -6165,13 +6278,9 @@ Wild plants in plains and birch forests; the first carrots for a field.
 | Washed away by liquids | yes |
 | Sound | grass and plants |
 
-**Found in**
-
-[Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Wild carrots), [Plains](biomes.md#biome-qtcraft-plains) (Wild carrots)
-
 ### <a id="block-qtcraft-wild_potatoes"></a>Wild potatoes
 
-Wild plants in taiga and forests; the first potatoes for a field.
+Wild potatoes do not grow in the base world: potatoes come from the fields of villages. Mods (and later oases) can place them with the feature of the same name.
 
 | | |
 |---|---|
@@ -6184,10 +6293,6 @@ Wild plants in taiga and forests; the first potatoes for a field.
 | Needs support | stands only on: [Grass block](#block-qtcraft-grass_block), [Dirt](#block-qtcraft-dirt) |
 | Washed away by liquids | yes |
 | Sound | grass and plants |
-
-**Found in**
-
-[Forest](biomes.md#biome-qtcraft-forest) (Wild potatoes), [Taiga](biomes.md#biome-qtcraft-taiga) (Wild potatoes)
 
 ### <a id="block-qtcraft-yellow_concrete"></a>Yellow concrete
 
@@ -6348,4 +6453,4 @@ Wool coloured with a dye. Two wool make three carpets.
 
 **Used in**
 
-[Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow carpet](parts.md#block-qtcraft-yellow_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)
+[Bed](#block-qtcraft-bed) (Any wool), [Black wool](#block-qtcraft-black_wool) (Any wool), [Blue wool](#block-qtcraft-blue_wool) (Any wool), [Brown wool](#block-qtcraft-brown_wool) (Any wool), [Cyan wool](#block-qtcraft-cyan_wool) (Any wool), [Gray wool](#block-qtcraft-gray_wool) (Any wool), [Green wool](#block-qtcraft-green_wool) (Any wool), [Light blue wool](#block-qtcraft-light_blue_wool) (Any wool), [Light gray wool](#block-qtcraft-light_gray_wool) (Any wool), [Lime wool](#block-qtcraft-lime_wool) (Any wool), [Magenta wool](#block-qtcraft-magenta_wool) (Any wool), [Orange wool](#block-qtcraft-orange_wool) (Any wool), [Pink wool](#block-qtcraft-pink_wool) (Any wool), [Purple wool](#block-qtcraft-purple_wool) (Any wool), [Red wool](#block-qtcraft-red_wool) (Any wool), [Yellow carpet](parts.md#block-qtcraft-yellow_wool_carpet), [Yellow wool](#block-qtcraft-yellow_wool) (Any wool)

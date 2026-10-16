@@ -6,6 +6,7 @@
 #include "QcNoise.h"
 #include "QcPhysics.h"
 #include "QcServerWorld.h"
+#include "QcVillagePlan.h"
 #include "QcWorldConstants.h"
 
 #include <QHash>
@@ -512,6 +513,7 @@ void QcMobManager::populateChunk(const QcServerWorld &world, QcChunkPos pos, con
         return;
     }
     m_populated.insert(pos);
+    spawnVillageMobs(world, pos, nextEntityId);
     const quint64 seed = qcMixSeed(m_seed, 4000);
     const auto random = [&](int salt) { return qcPositionRandom(seed, pos.x, salt, pos.z); };
     if (random(0) >= chunkAnimalChance) {
@@ -546,6 +548,21 @@ void QcMobManager::populateChunk(const QcServerWorld &world, QcChunkPos pos, con
         }
         spawn(chosen, {pos.x * QcWorld::chunkSize + x + 0.5, double(y + 1), pos.z * QcWorld::chunkSize + z + 0.5}, nextEntityId(),
               false, true);
+    }
+}
+
+void QcMobManager::spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId)
+{
+    const std::shared_ptr<const QcVillagePlan> village = world.generator().villageFor(pos);
+    if (!village) {
+        return;
+    }
+    for (const QcVillagePlan::Mob &mob : village->mobs) {
+        const std::optional<int> type = m_content->mobIndex(mob.mob);
+        const QcBlockPos cell{int(std::floor(mob.at.x)), int(std::floor(mob.at.y)), int(std::floor(mob.at.z))};
+        if (type && cell.chunk() == pos) {
+            spawn(*type, mob.at, nextEntityId(), false, true);
+        }
     }
 }
 

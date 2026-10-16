@@ -1,0 +1,14 @@
+{
+    "name": "bell",
+    "sound": "stone",
+    "shape": "bell",
+    "render": "cutout",
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "support": "below",
+    "textures": {
+        "all": "bell"
+    }
+}

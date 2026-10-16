@@ -77,6 +77,7 @@ namespace QcWorldgenParser {
     biome.frozenWaterBlock = reader.name(u"frozenWater"_s, packNamespace);
     biome.snowLine = reader.integer(u"snowLine"_s, 0, 0, QcWorld::worldHeight);
     biome.snowBlock = reader.name(u"snow"_s, packNamespace);
+    biome.villages = reader.boolean(u"villages"_s, false);
 
     if (biome.surfaceBlock.isEmpty()) {
         reader.fail(u"'surface' is required"_s);

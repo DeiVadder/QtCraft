@@ -1,0 +1,77 @@
+{
+    "name": "village_desert_tower",
+    "palette": {
+        ".": "air",
+        "C": "sandstone",
+        "I": "cut_sandstone",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "a": "ladder[attach=north]",
+        "o": "lantern[attach=floor]",
+        "n": "sandstone_stairs[facing=south,half=top]",
+        "s": "sandstone_stairs[facing=north,half=top]",
+        "w": "sandstone_stairs[facing=east,half=top]",
+        "e": "sandstone_stairs[facing=west,half=top]",
+        "F": "oak_fence",
+        "R": "orange_wool"
+    },
+    "layers": [
+        ["IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII"],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C..oC.", ".CCDCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CCUCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CC.CC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CC.CC.", "......."],
+        [".......", ".IIIII.", ".I.a.I.", ".I...I.", ".I...I.", ".IIIII.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".nnnnn.", "wCCCCCe", "wC.a.Ce", "wC...Ce", "wC...Ce", "wCCCCCe", ".sssss."],
+        ["IIIIIII", "IIIIIII", "IIIaIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII"],
+        ["C.C.C.C", ".o...o.", "C.....C", ".......", "C.....C", ".o...o.", "C.C.C.C"],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."]
+    ],
+    "choices": {
+        "stone": [
+            {},
+            {
+                "sandstone": "smooth_sandstone",
+                "sandstone_stairs": "smooth_sandstone_stairs"
+            }
+        ],
+        "flag": [
+            {},
+            {
+                "orange_wool": "red_wool"
+            },
+            {
+                "orange_wool": "cyan_wool"
+            }
+        ]
+    },
+    "parts": [
+        {
+            "name": "flag",
+            "chance": 0.5,
+            "at": [
+                3,
+                13,
+                3
+            ],
+            "layers": [
+                [
+                    "F "
+                ],
+                [
+                    "F "
+                ],
+                [
+                    "FR"
+                ]
+            ]
+        }
+    ]
+}

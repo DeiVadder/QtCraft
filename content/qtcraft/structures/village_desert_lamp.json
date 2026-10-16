@@ -1,0 +1,15 @@
+{
+    "name": "village_desert_lamp",
+    "palette": {
+        "C": "cut_sandstone",
+        "o": "lantern[attach=floor]",
+        "w": "sandstone_wall"
+    },
+    "layers": [
+        [" "],
+        ["w"],
+        ["w"],
+        ["C"],
+        ["o"]
+    ]
+}

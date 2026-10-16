@@ -54,6 +54,9 @@ void QcBlockSimulation::processUpdate(QcBlockPos pos, QcBlockId block)
     // Concrete powder hardens in water before it could fall on (decision E-208).
     if (const std::optional<QcBlockId> hard = QcBlockRules::hardened(m_state.world(), pos, block)) {
         m_blocks.setAndBroadcast(pos, *hard);
+    } else if (const std::optional<QcBlockId> pressed = QcBlockRules::covered(m_state.world(), pos, block)) {
+        // A path under a solid block becomes plain dirt (decision E-406).
+        m_blocks.setAndBroadcast(pos, *pressed);
     } else if (QcFallingBlockManager::shouldFall(m_state.world(), pos)) {
         m_falling.start(pos, block);
     } else if (QcLiquidFlow::flows(content, block)) {
@@ -71,9 +74,9 @@ void QcBlockSimulation::processUpdate(QcBlockPos pos, QcBlockId block)
         // Fire whose ground or fuel went away goes out at once (decision E-392).
         m_blocks.setAndBroadcast(pos, qcAirBlockId);
     } else if (!QcBlockRules::isSupported(m_state.world(), pos, block)) {
-        // A door half without its partner was cut off by a command or a removed mod: the item
-        // went with the other half.
-        const bool lone = content.block(block).door && !QcBlockRules::hasDoorPartner(m_state.world(), pos, block);
+        // A door or bed half without its partner was cut off by a command or a removed mod: the
+        // item went with the other half.
+        const bool lone = (content.block(block).door || content.block(block).bed) && !QcBlockRules::hasPartner(m_state.world(), pos, block);
         m_blocks.breakBlock(pos, !lone);
     } else if (const QcBlockId connected = QcBlockRules::connectedState(m_state.world(), pos, block); connected != block) {
         m_blocks.setAndBroadcast(pos, connected);

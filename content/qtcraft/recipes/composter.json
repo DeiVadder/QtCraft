@@ -1,0 +1,15 @@
+{
+    "name": "composter",
+    "type": "shaped",
+    "pattern": [
+        "P P",
+        "P P",
+        "PPP"
+    ],
+    "key": {
+        "P": "#planks"
+    },
+    "result": {
+        "item": "composter"
+    }
+}

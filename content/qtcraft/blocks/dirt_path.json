@@ -1,0 +1,20 @@
+{
+    "name": "dirt_path",
+    "sound": "grass",
+    "shape": "path",
+    "opaque": false,
+    "hardness": 0.65,
+    "tool": "shovel",
+    "drops": [
+        {
+            "item": "dirt"
+        }
+    ],
+    "textures": {
+        "top": "dirt_path_top",
+        "bottom": "dirt",
+        "side": "dirt_path_side"
+    },
+    "tillsInto": "farmland",
+    "coveredInto": "dirt"
+}

@@ -108,7 +108,7 @@ Tills grass and dirt into farmland and lasts very long.
 | Mining speed | × 8 |
 | Durability | 1561 uses |
 | Attack damage | 1 health point |
-| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Dirt path](blocks.md#block-qtcraft-dirt_path), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -172,7 +172,7 @@ Mines stone and ores.
 
 ### <a id="item-qtcraft-diamond_shovel"></a>Diamond shovel
 
-Digs earth, sand and gravel faster.
+Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.
 
 | | |
 |---|---|
@@ -182,6 +182,7 @@ Digs earth, sand and gravel faster.
 | Mining speed | × 8 |
 | Durability | 1561 uses |
 | Attack damage | 3.5 health points |
+| Makes paths from | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -316,7 +317,7 @@ Tills grass and dirt into farmland, but wears out quickly.
 | Mining speed | × 12 |
 | Durability | 32 uses |
 | Attack damage | 1 health point |
-| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Dirt path](blocks.md#block-qtcraft-dirt_path), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -390,6 +391,7 @@ Very fast but soft: it wears out after a few uses and only mines what wood can.
 | Mining speed | × 12 |
 | Durability | 32 uses |
 | Attack damage | 2 health points |
+| Makes paths from | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -524,7 +526,7 @@ Tills grass and dirt into farmland; lasts long.
 | Mining speed | × 6 |
 | Durability | 250 uses |
 | Attack damage | 1 health point |
-| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Dirt path](blocks.md#block-qtcraft-dirt_path), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -588,7 +590,7 @@ Mines stone and ores.
 
 ### <a id="item-qtcraft-iron_shovel"></a>Iron shovel
 
-Digs earth, sand and gravel faster.
+Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.
 
 | | |
 |---|---|
@@ -598,6 +600,7 @@ Digs earth, sand and gravel faster.
 | Mining speed | × 6 |
 | Durability | 250 uses |
 | Attack damage | 3 health points |
+| Makes paths from | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -755,7 +758,7 @@ Tills grass and dirt into farmland; lasts longer than wood.
 | Mining speed | × 4 |
 | Durability | 131 uses |
 | Attack damage | 1 health point |
-| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Dirt path](blocks.md#block-qtcraft-dirt_path), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -796,7 +799,7 @@ Mines stone and ores.
 
 ### <a id="item-qtcraft-stone_shovel"></a>Stone shovel
 
-Digs earth, sand and gravel faster.
+Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.
 
 | | |
 |---|---|
@@ -806,6 +809,7 @@ Digs earth, sand and gravel faster.
 | Mining speed | × 4 |
 | Durability | 131 uses |
 | Attack damage | 2.5 health points |
+| Makes paths from | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -875,7 +879,7 @@ Tills grass and dirt into farmland. Each tilled block wears it a little.
 | Durability | 59 uses |
 | Attack damage | 1 health point |
 | Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
-| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
+| Tills | [Dirt](blocks.md#block-qtcraft-dirt), [Dirt path](blocks.md#block-qtcraft-dirt_path), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 
@@ -917,7 +921,7 @@ Mines stone and ores.
 
 ### <a id="item-qtcraft-wooden_shovel"></a>Wooden shovel
 
-Digs earth, sand and gravel faster.
+Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.
 
 | | |
 |---|---|
@@ -928,6 +932,7 @@ Digs earth, sand and gravel faster.
 | Durability | 59 uses |
 | Attack damage | 2 health points |
 | Burns as fuel | 10 s: [Fuels](tables.md#table-fuels) |
+| Makes paths from | [Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block) |
 
 **How to make it**
 

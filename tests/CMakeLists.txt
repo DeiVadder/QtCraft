@@ -38,10 +38,10 @@ qc_add_test(test_game_mode_protocol SOURCES gameplay/test_game_mode_protocol.cpp
 qc_add_test(test_physics SOURCES world/test_physics.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_flight SOURCES world/test_flight.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_client_server SOURCES gameplay/test_client_server.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_server)
-qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_scenarios SOURCES gameplay/test_scenarios.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 600)
 
 # Argument checks of the A/B benchmark script (settings per label, decision E-332); runs no game.
 add_test(NAME script_bench_ab_args
@@ -115,7 +115,7 @@ add_test(NAME app_offscreen_world_screenshot
         -DEXPECTED_MIN_SIZE=200000
         "-DFORBIDDEN_ERROR=Cannot open shader|Cannot create graphics pipeline|Cannot create entity pipeline"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-set_tests_properties(app_offscreen_world_screenshot PROPERTIES TIMEOUT 120
+set_tests_properties(app_offscreen_world_screenshot PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_world_screenshot;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-world.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 
 # The full debug display with every visualisation and the debug options page load without QML
@@ -181,7 +181,7 @@ add_test(NAME app_offscreen_without_screenshot_refused
 set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT 60
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_without_screenshot_refused")
 
-qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 480)
+qc_add_test(test_headless_cli SOURCES gameplay/test_headless_cli.cpp TIMEOUT 800)
 target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                     QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 add_dependencies(test_headless_cli qtcraft-headless)
@@ -198,16 +198,24 @@ set_tests_properties(scenario_headless_failure_then_quit PROPERTIES TIMEOUT 90
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_server)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 450)
+qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp LIBRARIES qc_server TIMEOUT 900)
 qc_add_test(test_world_storage SOURCES world/test_world_storage.cpp LIBRARIES qc_server)
 qc_add_test(test_persistence SOURCES world/test_persistence.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_interaction SOURCES world/test_interaction.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_world_library SOURCES world/test_world_library.cpp LIBRARIES qc_server)
 target_compile_definitions(test_world_library PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
 qc_add_test(test_structures SOURCES world/test_structures.cpp LIBRARIES qc_server)
+qc_add_test(test_village_generation SOURCES world/test_village_generation.cpp world/QcVillageTestUtil.h LIBRARIES qc_server)
+qc_add_test(test_village_variety SOURCES world/test_village_variety.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_village_fields SOURCES world/test_village_fields.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_village_layouts SOURCES world/test_village_layouts.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_village_bounds SOURCES world/test_village_bounds.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_village_swamp SOURCES world/test_village_swamp.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
+# Headless measurement of village generation (stage 37.2); QTCRAFT_VILLAGE_MEASURE=1 for the recorded sizes.
+qc_add_test(test_village_measure SOURCES world/test_village_measure.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
@@ -222,18 +230,18 @@ qc_add_test(test_armour_stands SOURCES gameplay/test_armour_stands.cpp QcServerT
 qc_add_test(test_quick_move SOURCES gameplay/test_quick_move.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_items_and_saves SOURCES gameplay/test_server_items_and_saves.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_server_limits SOURCES gameplay/test_server_limits.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_mob_paths SOURCES gameplay/test_mob_paths.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_mob_navigation SOURCES gameplay/test_mob_navigation.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_mob_crowds SOURCES gameplay/test_mob_crowds.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_mob_path_measure SOURCES gameplay/test_mob_path_measure.cpp LIBRARIES qc_server)
 qc_add_test(test_mob_crowd_measure SOURCES gameplay/test_mob_crowd_measure.cpp LIBRARIES qc_server)
 qc_add_test(test_creature_summons SOURCES gameplay/test_creature_summons.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_body_fit SOURCES gameplay/test_body_fit.cpp LIBRARIES qc_server TIMEOUT 60)
+qc_add_test(test_body_fit SOURCES gameplay/test_body_fit.cpp LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_survival_scenario SOURCES gameplay/test_survival_scenario.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_crafting SOURCES content/test_crafting.cpp LIBRARIES qc_common)
 qc_add_test(test_armour SOURCES content/test_armour.cpp LIBRARIES qc_server)
-qc_add_test(test_mods SOURCES content/test_mods.cpp LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_mods SOURCES content/test_mods.cpp LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_mods PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 # Headless measurement of the translations (stage 43); QTCRAFT_TRANSLATION_MEASURE=full for the recorded sizes.
 qc_add_test(test_translation_measure SOURCES content/test_translation_measure.cpp LIBRARIES qc_server TIMEOUT 300)
@@ -252,6 +260,7 @@ qc_add_test(test_hunger SOURCES gameplay/test_hunger.cpp LIBRARIES qc_server)
 qc_add_test(test_creative_mode SOURCES gameplay/test_creative_mode.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_void_zone SOURCES gameplay/test_void_zone.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_farming_server SOURCES gameplay/test_farming_server.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_dirt_paths SOURCES gameplay/test_dirt_paths.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARIES qc_server)
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_cart_content SOURCES content/test_cart_content.cpp LIBRARIES qc_server)
@@ -265,13 +274,14 @@ qc_add_test(test_sound_events SOURCES sound/test_sound_events.cpp LIBRARIES qc_s
 qc_add_test(test_audio_output SOURCES sound/test_audio_output.cpp LIBRARIES qc_audio qc_server TIMEOUT 60)
 qc_add_test(test_shapes SOURCES content/test_shapes.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_block_light SOURCES world/test_block_light.cpp QcTestWorld.h LIBRARIES qc_common)
-qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_common TIMEOUT 600)
+qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_common TIMEOUT 900)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 300)
+qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
-qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_signal_network SOURCES gameplay/test_signal_network.cpp QcTestWorld.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_signal_circuits SOURCES gameplay/test_signal_circuits.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -287,9 +297,9 @@ target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOL
 qc_add_test(test_entity_compare SOURCES gameplay/test_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/entity-compare-before-31-2.txt")
 qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
-qc_add_test(test_fire SOURCES gameplay/test_fire.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
-qc_add_test(test_weather SOURCES gameplay/test_weather.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_weather_effects SOURCES gameplay/test_weather_effects.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_fire SOURCES gameplay/test_fire.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 900)
+qc_add_test(test_weather SOURCES gameplay/test_weather.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 900)
+qc_add_test(test_weather_effects SOURCES gameplay/test_weather_effects.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_experience SOURCES gameplay/test_experience.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_experience_sources SOURCES gameplay/test_experience_sources.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fire_sources SOURCES gameplay/test_fire_sources.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
@@ -439,7 +449,7 @@ add_dependencies(test_machine_bots qtcraft-headless)
 set(qc_concurrency_tests
     test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
     test_interpolation test_client_server test_scenarios test_survival_scenario test_persistence
-    test_terrain_generator test_world_backup test_world_maintenance test_audio_output
+    test_terrain_generator test_village_generation test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
     test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
@@ -461,13 +471,19 @@ set_tests_properties(test_interpolation PROPERTIES RUN_SERIAL TRUE)
 set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
-# parallel TSan run (E-380; test_light_engine about 200 s alone, test_headless_cli and test_server_light about 210 s, test_mods, test_signal_network,
-# test_scenarios, test_mobs and test_block_light_engine 100-125 s, test_server_login 85 s), so a
-# machine that builds beside the run does not turn a slow run into a failure.
+# parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
+# together (known costs first), or where the next stage builds beside the run: test_light_engine
+# 425 s, test_terrain_generator 410 s, test_weather and test_fire 400 s, test_headless_cli 390 s,
+# test_server_light 295 s, test_mobs, test_weather_effects and test_scenarios 270-280 s, test_mods
+# 265 s, test_signal_network 255 s, test_block_light_engine 225 s; next to other tests about half
+# of that. So a machine that builds beside the run does not turn a slow run into a failure.
+# QtTest's limit per test function follows the test's limit (qc_add_test).
 set_tests_properties(test_terrain_generator PROPERTIES COST 190)
 set_tests_properties(test_headless_cli PROPERTIES COST 160)
 set_tests_properties(test_light_engine PROPERTIES COST 150)
-set_tests_properties(test_scenarios test_mods test_signal_network PROPERTIES COST 80)
+set_tests_properties(test_weather test_fire PROPERTIES COST 140)
+set_tests_properties(test_scenarios test_mods test_signal_network test_server_light PROPERTIES COST 80)
+set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;

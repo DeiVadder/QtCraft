@@ -1,0 +1,21 @@
+{
+    "name": "village_swamp_garden",
+    "palette": {
+        ".": "air",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "~": "water",
+        "W": "farmland[moist=true]",
+        "K": "composter",
+        "1": "potato_crop[age=3]",
+        "2": "carrot_crop[age=2]",
+        "3": "wheat_crop[age=3]",
+        "t": "torch[attach=floor]"
+    },
+    "layers": [
+        ["PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"],
+        ["LLLLLLL", "LWWWWWL", "LWWWWWL", "L~~~~~L", "LWWWWWL", "LLLLLLL", "LK....L"],
+        [".......", " 12312 ", " 23123 ", "       ", " 31231 ", ".......", "t.....t"],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."]
+    ]
+}

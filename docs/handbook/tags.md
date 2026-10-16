@@ -44,7 +44,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Barrel](blocks.md#block-qtcraft-barrel), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Chest](blocks.md#block-qtcraft-chest), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Stick](items.md#item-qtcraft-stick), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
+[Barrel](blocks.md#block-qtcraft-barrel), [Bed](blocks.md#block-qtcraft-bed), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Bowl](items.md#item-qtcraft-bowl), [Chest](blocks.md#block-qtcraft-chest), [Composter](blocks.md#block-qtcraft-composter), [Crafting table](blocks.md#block-qtcraft-crafting_table), [Signal Piston](blocks.md#block-qtcraft-signal_piston), [Stick](items.md#item-qtcraft-stick), [Wooden axe](tools.md#item-qtcraft-wooden_axe), [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe), [Wooden shovel](tools.md#item-qtcraft-wooden_shovel), [Wooden sword](tools.md#item-qtcraft-wooden_sword)
 
 ### <a id="tag-qtcraft-terracotta"></a>Any terracotta
 
@@ -72,7 +72,7 @@ Recipes that ask for this group take any of its items.
 
 **Used in**
 
-[Black wool](blocks.md#block-qtcraft-black_wool), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Brown wool](blocks.md#block-qtcraft-brown_wool), [Cyan wool](blocks.md#block-qtcraft-cyan_wool), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Green wool](blocks.md#block-qtcraft-green_wool), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool), [Lime wool](blocks.md#block-qtcraft-lime_wool), [Magenta wool](blocks.md#block-qtcraft-magenta_wool), [Orange wool](blocks.md#block-qtcraft-orange_wool), [Pink wool](blocks.md#block-qtcraft-pink_wool), [Purple wool](blocks.md#block-qtcraft-purple_wool), [Red wool](blocks.md#block-qtcraft-red_wool), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
+[Bed](blocks.md#block-qtcraft-bed), [Black wool](blocks.md#block-qtcraft-black_wool), [Blue wool](blocks.md#block-qtcraft-blue_wool), [Brown wool](blocks.md#block-qtcraft-brown_wool), [Cyan wool](blocks.md#block-qtcraft-cyan_wool), [Gray wool](blocks.md#block-qtcraft-gray_wool), [Green wool](blocks.md#block-qtcraft-green_wool), [Light blue wool](blocks.md#block-qtcraft-light_blue_wool), [Light gray wool](blocks.md#block-qtcraft-light_gray_wool), [Lime wool](blocks.md#block-qtcraft-lime_wool), [Magenta wool](blocks.md#block-qtcraft-magenta_wool), [Orange wool](blocks.md#block-qtcraft-orange_wool), [Pink wool](blocks.md#block-qtcraft-pink_wool), [Purple wool](blocks.md#block-qtcraft-purple_wool), [Red wool](blocks.md#block-qtcraft-red_wool), [Yellow wool](blocks.md#block-qtcraft-yellow_wool)
 
 ### <a id="tag-qtcraft-coals"></a>Coal or charcoal
 

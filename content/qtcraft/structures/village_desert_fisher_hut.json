@@ -1,0 +1,46 @@
+{
+    "name": "village_desert_fisher_hut",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "S": "sandstone",
+        "M": "smooth_sandstone",
+        "O": "orange_terracotta",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "o": "lantern[attach=floor]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "c": "crafting_table",
+        "h": "hay_block",
+        "H": "chest[facing=south]",
+        "a": "sand",
+        "d": "dead_bush",
+        "x": "cactus",
+        "R": "barrel[facing=south]"
+    },
+    "layers": [
+        ["MMMMM", "MMMMM", "MMMMM", "MMMMM", "MMMMM"],
+        ["CSSSC", "SbfRS", "S...S", "S..HS", "CSDSC"],
+        ["CS.SC", ".....", "S...S", ".....", "CSUSC"],
+        ["OOOOO", "O...O", "O.l.O", "O...O", "OOOOO"],
+        ["CCCCC", "CMMMC", "CMMMC", "CMMMC", "CCCCC"],
+        ["kkkkk", "k   k", "k   k", "k   k", "kkkkk"]
+    ],
+    "choices": {
+        "terracotta": [
+            {},
+            {"orange_terracotta": "red_terracotta", "terracotta": "red_terracotta"},
+            {"orange_terracotta": "yellow_terracotta", "terracotta": "yellow_terracotta"},
+            {"orange_terracotta": "white_terracotta", "terracotta": "white_terracotta"},
+            {"orange_terracotta": "light_blue_terracotta", "terracotta": "light_blue_terracotta"}
+        ],
+        "door": [
+            {},
+            {"oak_door": "spruce_door"},
+            {"oak_door": "birch_door"}
+        ]
+    }
+}

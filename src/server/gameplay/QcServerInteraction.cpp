@@ -109,8 +109,9 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
-    if (m_parts.plants.till(client, message.target, message.face, held) || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message)
-        || m_parts.minecarts.place(client, message)) {
+    const bool reshaped = m_parts.plants.till(client, message.target, message.face, held)
+                          || m_parts.plants.flatten(client, message.target, message.face, held);
+    if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)) {
         return;
     }
     placeHeld(client, message, held);
@@ -204,13 +205,14 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
         return false;
     }
 
-    // Nobody, player or mob, may end up inside what is placed (both halves of a door).
+    // Nobody, player or mob, may end up inside what is placed (both halves of a door or bed).
     QList<QcAabb> boxes;
     const QcVec3 corner{double(target.x), double(target.y), double(target.z)};
+    const QcBlockPos other = QcBlockRules::otherHalf(m_state.world(), target, state);
     for (const QcAabb &box : content.state(state).collision) {
         boxes.append(box.moved(corner));
-        if (placedDefinition.door) {
-            boxes.append(box.moved(corner + QcVec3{0.0, 1.0, 0.0}));
+        if (placedDefinition.door || placedDefinition.bed) {
+            boxes.append(box.moved(corner + QcVec3{double(other.x - target.x), double(other.y - target.y), double(other.z - target.z)}));
         }
     }
 
@@ -224,6 +226,9 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     m_parts.blocks.setAndBroadcast(target, state);
     if (placedDefinition.door) {
         m_parts.blocks.setAndBroadcast(target.offset(0, 1, 0), content.withProperty(state, u"half"_s, u"top"_s));
+    }
+    if (placedDefinition.bed) {
+        m_parts.blocks.setAndBroadcast(QcBlockRules::otherHalf(m_state.world(), target, state), content.withProperty(state, u"part"_s, u"head"_s));
     }
 
     // Setting the block made its chest, machine or sapling timer (QcServerBlocks::setQuietly); a chunk

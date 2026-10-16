@@ -8,6 +8,7 @@
 #include "QcPendingCommands.h"
 #include "QcPlayerCommands.h"
 #include "QcTickCommands.h"
+#include "QcVillageCommands.h"
 #include "QcWeatherCommands.h"
 #include "QcWorldCommands.h"
 
@@ -79,5 +80,6 @@ private:
     QcTickCommands m_ticks;
     QcChunkCommands m_chunks;
     QcWeatherCommands m_weather;
+    QcVillageCommands m_villages;
     QcExperienceCommands m_experience;
 };

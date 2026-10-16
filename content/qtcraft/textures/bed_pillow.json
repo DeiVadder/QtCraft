@@ -1,0 +1,8 @@
+{
+    "name": "bed_pillow",
+    "pattern": "speckle",
+    "primary": "#f0f0f0",
+    "secondary": "#dcdcdc",
+    "variation": 0.05,
+    "seed": 4103
+}

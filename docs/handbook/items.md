@@ -506,7 +506,7 @@ Smelted gold.
 
 **Used in**
 
-[Block of gold](blocks.md#block-qtcraft-gold_block), [Gold nugget](#item-qtcraft-gold_nugget), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden boots](tools.md#item-qtcraft-golden_boots), [Golden chestplate](tools.md#item-qtcraft-golden_chestplate), [Golden helmet](tools.md#item-qtcraft-golden_helmet), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden leggings](tools.md#item-qtcraft-golden_leggings), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Powered Rail](blocks.md#block-qtcraft-powered_rail)
+[Bell](blocks.md#block-qtcraft-bell), [Block of gold](blocks.md#block-qtcraft-gold_block), [Gold nugget](#item-qtcraft-gold_nugget), [Golden axe](tools.md#item-qtcraft-golden_axe), [Golden boots](tools.md#item-qtcraft-golden_boots), [Golden chestplate](tools.md#item-qtcraft-golden_chestplate), [Golden helmet](tools.md#item-qtcraft-golden_helmet), [Golden hoe](tools.md#item-qtcraft-golden_hoe), [Golden leggings](tools.md#item-qtcraft-golden_leggings), [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe), [Golden shovel](tools.md#item-qtcraft-golden_shovel), [Golden sword](tools.md#item-qtcraft-golden_sword), [Powered Rail](blocks.md#block-qtcraft-powered_rail)
 
 ### <a id="item-qtcraft-gold_nugget"></a>Gold nugget
 

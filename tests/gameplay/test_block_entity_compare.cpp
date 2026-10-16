@@ -41,8 +41,16 @@ using namespace Qt::StringLiterals;
 // the three lapis lazuli items, which shift the item chests and nothing else. Stage 37.1 (decision
 // E-401) wrote it again for the path finding station, which moves the areas after it: the
 // positions, the stored chunks and the furnace, burnout, sapling, cooldown and hopper values of the
-// tour's stations change with where they stand and when the tour reaches them. With
-// QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
+// tour's stations change with where they stand and when the tour reaches them. Stage 37.2a
+// (decision E-403) wrote it again for the bed, bell and composter (new podiums, the bed with its
+// head, three new items in the item chests), which move the areas after the block categories, with
+// the same kind of changes in the tour's station values; the village area comes last. Stage 37.2a2
+// (decision E-404) wrote it again for the wider village rows (every blueprint with its parts): five
+// more stored chunks of the village area, nothing else changes. Stage 37.2a4 (decision E-407) wrote
+// it again for the swamp row of the village area (a deeper area: three more stored chunks, one fewer
+// at its old edge), nothing else changes. The review fixes of 37.2a (decision E-409) wrote it again
+// for the smithy's inner door, turned to face through its partition: one chunk of the village area.
+// With QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture
 {

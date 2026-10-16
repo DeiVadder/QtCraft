@@ -71,7 +71,9 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `commands/` | command macro | A chat and console command made of other commands; see below. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 | `structures/` | structure | Buildings from block layers with creatures, armour stands, contents, labels; a `showcase` entry makes it a demo of the showcase world; see below. |
+| `villages/` | village style | The pieces, roads, lamp posts and block swaps of the villages of some biomes (E-403); see Villages below. |
 | `worldgen/showcase.json` | – | Settings of the showcase world: ground, time of day, podium blocks, block categories (replaces the earlier one). |
+| `worldgen/villages.json` | – | Where villages go and which blocks are workstations (E-403, replaces the earlier one); see Villages below. |
 | `worldgen/flat.json`, `worldgen/void.json` | – | Flat world: default layer `preset` (`"bedrock,59*stone,3*dirt,grass_block"`); void world: `platform`, `platformRadius`, `platformY`; both `timeOfDay`, `daylightCycle`, `mobSpawning` (E-223; replace the earlier ones). |
 | `weather.json` | – | What the weather does (decision E-396; replaces the earlier one, missing keys keep the defaults; server side only): `lightning` with `meanSeconds` (10: one strike per player on average every that many seconds of a thunderstorm, 0.5–3600), `damage` (5, 0–100, players through their armour), `radius` (3, 0–8: blocks to each side and below the struck cell, six above), `burnSeconds` (8, 0–60: the struck bodies burn), `sparks` (2, 0–8: fires a strike may light at and right around the struck cell, each a spark with all limits of fire and none while fire does not spread); `snow` with `layer` (`snow_layer`: the block snow leaves on top of opaque blocks with a full top face under the open sky; it must be a block of this or an earlier pack that is not opaque, no liquid and has `"support": "below"`, else the whole file is refused with a warning, decision E-397) and `columnsPerTick` (4, 0–64: random columns within 48 blocks of each player looked at per tick while it snows). The values in the handbook are those of the base game. |
 
@@ -102,6 +104,8 @@ Farming (stage 27, decisions E-289 to E-294; all server side only):
 - `"crop"` makes a block ripen in stages on the same random ticks: `property` (default `age`; a state property with at least two values, the last one is ripe), `averageSeconds` (1–86400, default 1200, from the first to the ripe stage on wet soil), `dryFactor` (0–1, default 0.5, pace on dry soil or other ground), `minLight` (0–15, default 9), `plantChance` (0–1, default 0: a dropped item placing this crop that rests on free soil plants one of its stack with this chance once a second). With `fruit` (a block), `fruitSeconds` (default 300) and `fruitGround` (block names) a ripe crop is a stem that puts its fruit onto a free neighbour with that ground, one at a time. Crops need `"support": "below"` (usually `"ground": ["farmland"]`), must not be solid and cannot also have `growth`. Draw the stages with a shape whose parts are conditioned on the stage; a part's `texture` slot also applies to its `crosses`.
 - `"soil"` makes a block farmland: `property` (default `moist`, last value wet, first dry), `water` (default `qtcraft:water`), `reach` (0–8, default 4), `revertsTo` (required, another block).
 - `"tillsInto": "farmland"` on a block and `"tills": true` on an item (the hoes) turn the block into that soil when the item is used on it.
+- `"flattensInto": "dirt_path"` on a block and `"flattens": true` on an item (the shovels, decision E-406) turn the block into that path when the item is used on its top with air above, wearing the item by one (not in creative mode). `"coveredInto": "dirt"` on a block turns it into that block at its next block update while an opaque full block lies on it (the dirt path).
+- The base world grows wheat, carrots and potatoes only in the fields of villages (decision E-406; the style's `crops`); the plant features `wild_carrots` and `wild_potatoes` stay in the content for mods (a biome lists them under `features`) and later oases, but no base biome places them. Tall grass still drops wheat seeds.
 - `"ignites": true` on an item (flint and steel, decision E-393) lights fire in the cell in front of the clicked face where fire may stand (a spark with the limits of fire), wearing the item by one per fire (except in creative mode); with `"dispense": "ignite"` a dispenser does the same in front of it. Such an item neither places, tills, scoops nor bottles.
 - A drop may carry `"when": {"age": "7"}` (like shape conditions): it only drops from those states.
 - A block drop may carry `"maxCount"` (0–64): it drops between `count` and `maxCount` items, chosen evenly (lapis lazuli ore: 4 to 9; decision E-398).
@@ -377,6 +381,91 @@ A structure (`structures/<name>.json`, decision E-219) is a building made of blo
 
 `worldgen/showcase.json`: `timeOfDay` (seconds after sunrise, 150 = noon), `layers` (`{"block", "depth"}` from the bottom up), `podium`, `enclosure`, `container` (blocks), `lookout` (a structure placed in front of every area), `rowWidth` (metres) and `categories` (`{"name", "translation", "match"}`; `match` may hold `liquid`, `part`, `light`, `plant`, `functional`, `falls` (true/false) and the lists `render`, `tool`, `nameContains`; a block goes to the first category whose conditions all hold, else to the last one).
 
+### Villages (stage 37.2)
+
+Villages (decision E-403) are built from structures and two kinds of data files. A **style** (`villages/<name>.json`) says how a village of some biomes looks:
+
+```json
+{
+    "name": "desert",
+    "biomes": ["desert"],
+    "centre": "village_desert_well",
+    "lamp": "village_desert_lamp",
+    "path": [
+        { "block": "terracotta", "step": "sandstone_slab" },
+        { "block": "packed_mud", "step": "mud_bricks_slab" }
+    ],
+    "branchPath": { "block": "cut_sandstone", "step": "sandstone_slab" },
+    "crops": [
+        { "block": "wheat_crop", "weight": 2 },
+        { "block": "potato_crop", "weight": 2 },
+        "carrot_crop"
+    ],
+    "foundation": "sandstone",
+    "pieces": [
+        {
+            "structures": [
+                { "structure": "village_desert_house_small", "weight": 2 },
+                { "structure": "village_desert_house_small_b" }
+            ],
+            "weight": 5
+        },
+        { "structure": "village_desert_temple", "weight": 2, "max": 1 },
+        { "structure": "village_desert_pen", "max": 1, "chance": 0.4 },
+        {
+            "structure": "village_desert_fisher_hut", "max": 1, "water": 12,
+            "jetty": { "deck": "birch_planks", "post": "birch_log", "width": 3, "over": 5 }
+        },
+        { "structure": "village_desert_tower", "max": 1, "minRoadLength": 200 }
+    ],
+    "layouts": [
+        { "kind": "plaza", "weight": 3, "exits": [2, 3] },
+        { "kind": "street", "weight": 2, "winding": 0.15 },
+        { "kind": "tree", "arms": [2, 4], "bends": [1, 2] }
+    ],
+    "palette": { "oak_door": "spruce_door" }
+}
+```
+
+`biomes`: the biomes built in this style; `fallback: true` makes it the style of every biome with villages that no style names (the base game's `plains`). `centre` (required): the meeting point in the middle, its centre on the village centre; the bell inside it is the meeting point. `lamp`: a lamp post set along the roads (optional). `path`: the surface of the roads from the centre (default gravel), `branchPath` of the roads branching off them (default `path`); each is one surface or a list of up to 8 (decision E-406), and a village takes one per rank, by `weight` (1–1000, default 1), so two villages of a style may have different roads. A surface is a block name or an object with `block` and optionally `weight` and `step` (a slab): the step is laid on a road cell next to a road cell one block higher, so a road over a terrace step reads as a stair (steps of two blocks stay as they are; a road ends at higher ones). Where a branch meets its road, the road keeps its surface. `crops` (up to 16, decision E-406): the crops of the fields, each a block name or `{ "block", "weight" }`; every crop cell of every piece of the style (a block with `crop`) is planted with one of them, one crop per row (a run of crop cells along x in one layer of the structure), each plant ripe with a chance of one half and else at an earlier stage. Without `crops` the pieces keep the crops they are written with. A mod adds a seed to the villages of a base style by replacing the style (a later pack replaces a style of the same name) with its crop in the list, or adds a style of its own. A crop that is no block with `crop` is left out with a warning. `foundation`: fills the ground under a piece where it lies lower than the floor (default cobblestone). `pieces` (1–32): the kinds of buildings, each with a relative `weight` (1–1000) and an optional `max` per village (0–64, 0 = no limit), and either one `structure` or up to 16 blueprints in `structures` (`structure` with its own `weight` among the blueprints, default 1); every building of the kind is one of its blueprints, chosen by weight (decision E-404), so a mod adds a house variant by adding a blueprint. **Rules** make a kind conditional (E-404): `chance` (0–1, default 1: drawn once per village), `minRoadLength` (0–4096: only in villages whose roads are at least this many blocks long together, measured along their middle lines: the village's size, decision E-408; the base game's watchtower needs 200, about one village in ten) and `water` (1–32: only beside the end of a road with water at most this many blocks straight on, with a `jetty` from the road end over the ground to the water and `over` (1–16, default 4) blocks out over it, just above the water, `width` 1–5 (odd, default 1), `deck` and `post` blocks (default oak planks and log; posts under the edges reach down to the ground, and the style's palette applies)). Kinds with rules are placed first, each up to its `max` (at least one), on a random free spot along the roads; the weighted filling never takes them. `palette` (up to 64 entries): block name → block name, applied to every structure of the style (states keep their properties where the new block has them), so a mod makes a new style from existing houses (the base game's `taiga` is the plains houses in spruce). `layouts` (1–16, decision E-408): the street plans of the style's villages, one chosen per village by `weight` (1–1000); without the field a mix of all six kinds (street 3, cross 2, T 2, L 1, plaza 1, tree 2). `kind` (required) is one of `cross` (four roads from the centre, one to each side), `street` (one long main road through the centre, along an axis or a diagonal, with side roads), `t` (three roads: two opposite, one across), `l` (two roads at a right angle), `plaza` (a ring road around a square with the centre and a side road from the centre to the ring, roads out from the ring, each leaving its side of the ring off the middle by up to half the ring's distance so that they never line up into a cross; houses stand outside the ring, the square stays open; a ring that water or a steep step would cut makes the village a cross) or `tree` (`arms` roads from the centre at random angles, the first on a diagonal, each bending `bends` times by 45 degrees). Roads are three blocks wide and run in eight directions; diagonal roads are staircases of cells, and houses at them face the road along the nearer axis with a forecourt of side road three blocks wide from their door to the road. Parameters (each kind has its own defaults): `armLength` (a share of `radius`, 0.2–1, the length of a road from the centre or from the ring), `branches` (`chance` 0–1 per spot, `every` 0–64 blocks between spots along a road, 0 for one spot at 50–70 % of it; `length` a share of the radius), `arms` (2–5), `bends` (0–2), `ring` (8–20 blocks from the centre to the ring's middle line) and `exits` (1–4); a range is a number or `[low, high]`, drawn per village. `winding` (0–1): the chance per village that its roads wind with the terrain, turning by 45 degrees every 6 to 11 blocks towards the flatter neighbouring direction (at random on level ground), at most 45 degrees off their heading. `diagonals` (default true): false keeps every road on the axes and switches winding off. A style over water never lays diagonal or winding roads (a house's front lies along a boardwalk). A later pack replaces a style of the same name; a style without a known centre, foundation or at least one known surface per road rank is left out with a warning (unknown surfaces and steps are skipped with one), unknown pieces are skipped.
+
+A **piece** is an ordinary structure (see above) built for a road on its south side: the door is in the last row of the first layers, layer 0 is the floor that replaces the ground's top block, and the planner turns the piece in quarter turns so the door faces the road (states turn along, so stairs keep their slope). Where the ground is lower than the floor, the foundation fills it (up to 16 blocks); above the footprint the terrain is cleared. Beds (blocks with `"bed": true`, their head), workstations and the bell inside a piece are listed in the village's state, and the creatures in its `mobs` (an animal pen's pair) appear, persistent like natural animals, when their chunk is first seen. The other extras of a structure (`contents`, `stands`, `labels`, `minecarts`, `updates`, `growing`) are left out in villages, with a warning when the style is loaded: chests and furnaces of a piece stand empty, saplings are only planted. Every outer door gets a doorstep at the floor's height in front of it (the ground there is levelled and laid as side road), so the door opens onto walkable ground.
+
+**Variation inside a blueprint** (decision E-404): where a village places a structure, two optional fields make each building different, drawn per building from the seed (the same world builds the same houses). `choices` is an object of named choices (up to 8), each a list of 1–16 options, one taken per building, all equally likely (list an option twice to make it likelier); an option is an object of name swaps like the style's palette, applied to the structure's block names (states kept) and to its creatures' names, `{}` keeps the structure as written. The style's palette is applied first, so a taiga style that turns oak into spruce keeps its spruce even where a choice would turn oak into birch. `parts` (up to 16) are optional pieces of the building, each with a `name`, a `chance` (0–1, default 0.5), its north west bottom corner `at` ([x, y, z] inside the structure) and `layers` like the structure's own, in its palette (a space keeps the structure's cell); the structure's size must already hold them (a chimney on the ridge, flowers in a front row of grass, a shed beside the house):
+
+```json
+"choices": {
+    "wood": [ {}, { "oak_planks": "birch_planks", "oak_log": "birch_log" } ],
+    "animal": [ {}, { "pig": "sheep" } ]
+},
+"parts": [
+    { "name": "chimney", "chance": 0.5, "at": [5, 5, 2], "layers": [ ["C"], ["C"], ["C"] ] }
+]
+```
+
+Elsewhere (the showcase world, other structures) a structure is placed as written; the showcase's village rows show every blueprint with all its parts.
+
+**Villages over water** (decision E-407): `"ground": "water"` (default `"land"`) makes a style stand on stilts, like the base game's `swamp`:
+
+```json
+{
+    "name": "swamp",
+    "biomes": ["swamp"],
+    "ground": "water",
+    "stilts": { "post": "spruce_log", "stair": "spruce_stairs", "height": 4, "spacing": 3, "maxDepth": 8, "water": 0.06 },
+    "wetland": { "depth": 1, "margin": 4, "fray": 3, "blend": 4, "bottom": "mud" },
+    "path": "spruce_planks",
+    "branchPath": "spruce_slab[type=top]",
+    ...
+}
+```
+
+Every floor (layer 0 of every piece) and every road lies at one height, `height` (2–8, default 3) blocks above the water surface (the block below the sea level). A place carries stilts where its ground lies at most at that height and at most `maxDepth` (0–16, default 5) blocks below the water surface. A centre needs at least 60 % of the ground around it carrying stilts and at least `water` (0–1, default 0.25) of it under water; of the places tried in a region, the wettest one that fits wins. Pieces stand on `post` blocks (default spruce log) every `spacing` (1–8, default 3) cells and at their far edges, down to the bottom, instead of a foundation; their floors join the road directly (no strip of ground between them), and a piece is only placed where its whole front lies along the road. Roads are **boardwalks**: the road surfaces (`path`, `branchPath`; here a surface may be a block state such as a top slab, as may a `step`) at the floor height with posts on a world grid every `spacing` cells; they end where the ground cannot carry them. Where a boardwalk ends on dry land, `stair` blocks (default spruce stairs, facing up) lead down to the ground, one block per cell. The optional `wetland` shapes the ground around the village: within `margin` (0–12, default 4) blocks of its pieces and boardwalks, plus up to `fray` (0–8, default 3) more where a noise bends the edge, the ground lies `depth` (1–4, default 1) blocks below the water surface with a `bottom` block (default mud), deeper water filled up to it; over the next `blend` (1–8, default 4) blocks it rises back to the terrain; the stairs and a strip beyond them stay as they are (the way to land). No trees or plants grow in that area. Villagers walk the boardwalks; creatures do not climb ladders on paths (decision E-402), so a style over water reaches land by stairs.
+
+The **settings** (`worldgen/villages.json`, a later pack replaces them): `spacing` (128–4096, default 384: the edge of the square regions, at most one village each), `chance` (0–1, that a region tries to have one), `attempts` (1–32: places tried for the centre), `radius` (16 to spacing / 2 − 16: how far pieces and roads reach from the centre), `maxHeightSpread` (largest height difference of the ground around the centre), `maxPieceSlope` (under one piece), `lampSpacing` (blocks between lamp posts), `bell` (the meeting point block) and `workstations` (block name → kind of work, e.g. `"composter": "farmer"`, both qualified with the pack's namespace like other names, so the kind is `qtcraft:farmer`; the base game counts composters (farmer), furnaces (smith) and barrels (fisher)). A biome gets villages with `"villages": true`.
+
+A block with `"bed": true` is two blocks long like a door is two high: it needs the states `facing` (`north`, `east`, `south`, `west`) and `part` (`foot`, `head`), else the block is rejected; placed from the foot, the head goes one block further in `facing`; breaking either half takes the other one, and only the foot drops the item.
+
 ### Commands (stage 24)
 
 Mods cannot run code, so they add commands as **macros** (decision E-248): `commands/kit.json`
@@ -434,7 +523,7 @@ Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory,
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, structures, showcase settings, textures, sounds and translations; depend on other mods.
+Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, structures, village styles and settings, showcase settings, textures, sounds and translations; depend on other mods.
 
 Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen, every storage block the chest screen, state rules are the fixed ones above), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 

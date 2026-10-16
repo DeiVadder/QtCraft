@@ -1,0 +1,52 @@
+{
+    "name": "village_desert_house_large",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "S": "sandstone",
+        "M": "smooth_sandstone",
+        "T": "terracotta",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "F": "bed[facing=north,part=foot]",
+        "B": "bed[facing=north,part=head]",
+        "c": "crafting_table",
+        "R": "barrel[facing=south]",
+        "H": "chest[facing=south]",
+        "o": "furnace[facing=south]",
+        "J": "orange_wool_carpet",
+        "L": "lantern[attach=floor]"
+    },
+    "layers": [
+        ["MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM", "MMMMMMMMM"],
+        ["CSSSSSSSC", "SB.B..SoS", "SF.F...HS", "S.......S", "S..JJJ..S", "S..JJJ..S", "SR.....cS", "CSSSDSSSC"],
+        ["CT.TTT.TC", "T.......T", ".........", "T.......T", "T.......T", ".........", "T.......T", "CT.TUT.TC"],
+        ["CSSSSSSSC", "S.......S", "S.......S", "S.......S", "S.l...l.S", "S.......S", "S.......S", "CSSSSSSSC"],
+        ["CCCCCCCCC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CCCCCCCCC"],
+        ["kkkkkkkkk", "k       k", "k       k", "k       k", "k       k", "k       k", "k       k", "kkkkkkkkk"]
+    ],
+    "choices": {
+        "terracotta": [
+            {},
+            {"orange_terracotta": "red_terracotta", "terracotta": "red_terracotta"},
+            {"orange_terracotta": "yellow_terracotta", "terracotta": "yellow_terracotta"},
+            {"orange_terracotta": "white_terracotta", "terracotta": "white_terracotta"},
+            {"orange_terracotta": "light_blue_terracotta", "terracotta": "light_blue_terracotta"}
+        ],
+        "door": [
+            {},
+            {"oak_door": "spruce_door"},
+            {"oak_door": "birch_door"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "roof_lamps", "chance": 0.5, "at": [2, 5, 2],
+            "layers": [
+                ["L   L", "     ", "     ", "L   L"]
+            ]
+        }
+    ]
+}

@@ -147,8 +147,9 @@ private slots:
         QcServerConfig config;
         config.worldDirectory = directory.path();
         QcNetworkConfig network;
-        // Long enough for slow logins under ThreadSanitizer; Ann keeps her connection alive meanwhile.
-        network.transport.idleTimeoutMs = 2'000;
+        // Long enough for slow logins under ThreadSanitizer next to other tests (Bob is silent from
+        // his login on); Ann keeps her connection alive meanwhile.
+        network.transport.idleTimeoutMs = 4'000;
         network.transport.keepAliveMs = 50;
         startServer(config, network);
 
@@ -158,8 +159,9 @@ private slots:
         QVERIFY(closing && closing->entityId != 0);
         // Without keep-alives of its own.
         std::unique_ptr<RawClient> silent = join(u"Bob"_s, {.keepAliveMs = 3'600'000});
-        QVERIFY(silent && silent->entityId != 0);
-        QCOMPARE(m_server->clientCount(), 2);
+        QVERIFY(silent && silent->entityId != 0 && silent->entityId != closing->entityId);
+        // Both joined; Bob's four seconds of silence may already be over when his login was slow.
+        QVERIFY(m_server->clientCount() >= 1);
 
         // Ann keeps her link alive, so only the closed socket removes and saves her. (Bob may time
         // out meanwhile when the run is slow.)

@@ -1720,3 +1720,105 @@ Spannen je Stand höchstens 13 %. Client-Sync, Streaming und die übrigen Phasen
 ### Fazit Etappe 37.1
 
 Wegfindung und Gedränge kosten im Bild nichts: alle Fenster-Schlüssel innerhalb von 10 % (p99-Ausreißer einzelner belasteter Läufe, Median +2 %), Showcase durch die neue Station verschoben. Der Server zahlt in Mob-Szenen rund 20 % mehr Tick (0,03 ms headless, 0,1–0,15 ms im Fenster) für Wegsuchen, Schub und Sichtstrahlen, gedeckelt durch das Knotenbudget; Farmen und dichte Zellen werden dagegen deutlich billiger. Alle Ziele erfüllt.
+
+## Etappe 37.2a: Dorf-Generierung (headless, 2026-10-16)
+
+Messprogramm `test_village_measure` (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42, je Wert das Beste aus 3 Läufen, drei Aufrufe nacheinander): Chunks um das Dorf bei 2067 237 erzeugt, einmal mit den Dörfern des Grundspiels, einmal mit derselben Welt ohne Dörfer (Dorf-Chance 0); dazu die Planung der Bereiche um einen Punkt, wie `/village` und `/locate village` sie auf dem Server-Thread machen (bis 13 × 13 Bereiche im Umkreis von 2048 Blöcken).
+
+| Messung | mit Dörfern | ohne Dörfer | Änderung |
+|---|---|---|---|
+| 32 × 32 Chunks um das Dorf, ms je Chunk | 0,569 / 0,574 / 0,571 | 0,568 / 0,570 / 0,570 | +0,1 / +0,8 / +0,2 % |
+| 8 × 8 Chunks des Dorfs, ms je Chunk | 0,567 / 0,554 / 0,555 | 0,579 / 0,565 / 0,563 | −2,1 / −1,9 / −1,4 % |
+| Nächstes Dorf im Umkreis von 2048 Blöcken, erste Suche | 8,8 / 8,4 / 8,5 ms | – | – |
+| dieselbe Suche, Bereiche schon geplant | 0,002 / 0,001 / 0,001 ms | – | – |
+
+**Bewertung:** Dörfer kosten die Weltgenerierung nichts Messbares. Der Plan eines Bereichs (rund 0,05 ms, aus dem Gelände-Rauschen) entsteht einmal und liegt im Zwischenspeicher; das Schreiben der Häuser und Wege wiegt das Weglassen der Bäume und Pflanzen in den Dorf-Spalten auf (die Chunks des Dorfs selbst sind 1–2 % schneller). Die erste Suche nach dem nächsten Dorf kostet auf dem Server-Thread rund 9 ms (169 Bereiche) und ist danach frei; sie läuft nur auf Befehl eines Operators.
+
+## Etappe 37.2a2: Dorf-Vielfalt (headless, 2026-10-16)
+
+Messprogramm `test_village_measure` wie bei 37.2a (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42, je Wert das Beste aus 3 Läufen, drei Aufrufe nacheinander); das Dorf bei 2067 237 hat jetzt ein Tiergehege und eine Fischerhütte mit Steg. Der Rechner war von anderen Sitzungen belastet (Last 20–22); eine erste Serie unter noch höherer Last lag bei 0,69–0,80 ms je Chunk für beide Welten und ist verworfen.
+
+| Messung | mit Dörfern | ohne Dörfer | Änderung |
+|---|---|---|---|
+| 32 × 32 Chunks um das Dorf, ms je Chunk | 0,586 / 0,578 / 0,581 | 0,578 / 0,581 / 0,586 | +1,4 / −0,5 / −0,8 % |
+| 8 × 8 Chunks des Dorfs, ms je Chunk | 0,565 / 0,559 / 0,571 | 0,586 / 0,574 / 0,635 | −3,5 / −2,6 / −10,1 % |
+| Nächstes Dorf im Umkreis von 2048 Blöcken, erste Suche | 10,6 / 10,5 / 10,5 ms | – | – |
+| dieselbe Suche, Bereiche schon geplant | 0,002 / 0,002 / 0,002 ms | – | – |
+
+**Bewertung:** Die Erzeugung je Chunk bleibt bei rund 0,58 ms und mit Dörfern gleich teuer wie ohne. Die Planung wird teurer, weil jedes Gebäude mit Wahl oder optionalen Teilen seine eigene Struktur bekommt (Kopie der Zellen, Betten und Arbeitsplätze neu gesucht) und die Regeln Plätze und Stege prüfen: die erste Suche über 169 Bereiche rund 10,5 statt 8,5 ms (unter Last gemessen, also eher weniger), weiterhin nur auf Befehl eines Operators und danach aus dem Zwischenspeicher.
+
+## Etappe 37.2a4: Sumpf-Dorf (headless, 2026-10-16)
+
+Messprogramm `test_village_measure` (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42, je Wert das Beste aus 3 Läufen, drei Aufrufe nacheinander), neu mit dem ersten Sumpf-Dorf um den Ursprung (563 −204: Stelzen, Stege, Treppen und das geformte Sumpfland, E-407). Rechner von anderen Sitzungen belastet (Last 10–13).
+
+| Messung | mit Dörfern | ohne Dörfer | Änderung |
+|---|---|---|---|
+| Ebene: 32 × 32 Chunks um das Dorf bei 2067 237, ms je Chunk | 0,574 / 0,570 / 0,574 | 0,574 / 0,570 / 0,578 | ±0,0 / ±0,0 / −0,7 % |
+| Ebene: 8 × 8 Chunks des Dorfs | 0,564 / 0,564 / 0,562 | 0,563 / 0,567 / 0,572 | +0,1 / −0,7 / −1,7 % |
+| Sumpf: 32 × 32 Chunks um das Dorf bei 563 −204 | 0,584 / 0,583 / 0,589 | 0,580 / 0,576 / 0,583 | +0,8 / +1,1 / +1,0 % |
+| Sumpf: 8 × 8 Chunks des Dorfs | 0,607 / 0,609 / 0,610 | 0,568 / 0,573 / 0,579 | +6,9 / +6,3 / +5,5 % |
+| Nächstes Dorf im Umkreis von 2048 Blöcken, erste Suche | 13,4 / 13,5 / 13,7 ms | – | – |
+| dieselbe Suche, Bereiche schon geplant | 0,002 / 0,002 / 0,002 ms | – | – |
+
+**Bewertung:** Dörfer der Ebene unverändert. Die Chunks eines Sumpf-Dorfs kosten rund 0,035 ms mehr (+6 %): das Sumpfland rechnet je Spalte des Dorfs die Gelände-Höhe und den Abstand zu Häusern und Stegen, dazu kommen die Pfosten und rund 500 Stegzellen; über die 32 × 32 Chunks um das Dorf bleibt es bei rund 1 %. Die erste Suche nach dem nächsten Dorf steigt von 10,5 auf 13,5 ms, weil ein Bereich mit einer nassen Mitte alle seine Versuche prüft (die nasseste gewinnt) und Sumpf-Dörfer dazukommen; sie läuft nur auf Befehl eines Operators, danach ist sie frei.
+
+## Etappe 37.2a5: Dorf-Grundrisse (headless, 2026-10-16)
+
+Messprogramm `test_village_measure` (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42, je Wert das Beste aus 3 Läufen, drei Aufrufe nacheinander). Vorher-Werte auf demselben Zweig vor der Änderung (Last 2), Nachher-Werte unter Last 7–12 einer anderen Sitzung; die Welt ohne Dörfer zeigt, wie stark die Last allein wirkt (+4–6 %). Die Ebene-Mitte liegt jetzt bei 2067 243 (Glocke, der Brunnen ist anders gedreht), das Sumpf-Dorf bei 555 −214 (eine Hauptstraße).
+
+| Messung | vorher mit / ohne Dörfer | nachher mit / ohne Dörfer |
+|---|---|---|
+| Ebene: 32 × 32 Chunks um das Dorf, ms je Chunk | 0,530–0,541 / 0,529–0,541 | 0,560–0,562 / 0,559–0,563 (±0,4 %) |
+| Ebene: 8 × 8 Chunks des Dorfs | 0,520–0,536 / 0,522–0,547 | 0,552–0,556 / 0,553–0,558 (−0,4 bis +0,1 %) |
+| Sumpf: 32 × 32 Chunks um das Dorf | 0,546–0,561 / 0,545–0,558 | 0,590–0,593 / 0,588 (+0,3 bis +0,8 %) |
+| Sumpf: 8 × 8 Chunks des Dorfs | 0,568–0,576 / 0,542–0,550 | 0,605–0,611 / 0,583–0,585 (+3,4 bis +4,7 %) |
+| Nächstes Dorf im Umkreis von 2048 Blöcken, erste Suche | 12,5 / 12,7 / 13,0 ms | 14,2 / 14,3 / 14,2 ms |
+| dieselbe Suche, Bereiche schon geplant | 0,002 ms | 0,002 ms |
+
+**Bewertung:** Die Erzeugung je Chunk bleibt mit und ohne Dörfer gleich teuer; das Sumpf-Dorf kostet wie bisher einige Prozent in seinen eigenen Chunks. Die erste Suche steigt um rund 1,3 ms (+10 %), davon ein Teil Last (die Chunks ohne Dörfer wurden um 5 % langsamer): Wege werden Zelle für Zelle gelegt und in einer Menge gemerkt, geschwungene Wege lesen das Gelände voraus, Häuser an Diagonalen suchen ihren Abstand und Vorplatz. Die Suche läuft nur auf Befehl eines Operators, danach aus dem Zwischenspeicher.
+
+## Etappe 37.2a: Nachbesserungen nach der Prüfung der Dorf-Generierung (headless, 2026-10-16)
+
+Messprogramm `test_village_measure` (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42, je Wert das Beste aus 3 Läufen, drei Aufrufe nacheinander), Rechner unter Last 10–12 anderer Sitzungen. Neu: der Speicher der Pläne (`memoryOfThePlans`, E-409), gezählt als Heap der Listen nach ihrer Kapazität und der Strukturen, die nur der Plan hält (die Grundbaupläne der Stile zählen nicht), über die 25 × 25 Bereiche um den Ursprung.
+
+| Messung | 37.2a5 | nachher mit / ohne Dörfer |
+|---|---|---|
+| Ebene: 32 × 32 Chunks um das Dorf, ms je Chunk | 0,560–0,562 / 0,559–0,563 | 0,559–0,566 / 0,562–0,567 (−1,4 bis +0,7 %) |
+| Ebene: 8 × 8 Chunks des Dorfs | 0,552–0,556 / 0,553–0,558 | 0,550–0,563 / 0,560–0,564 (−2,5 bis +0,4 %) |
+| Sumpf: 32 × 32 Chunks um das Dorf | 0,590–0,593 / 0,588 | 0,593–0,602 / 0,591–0,596 (−0,4 bis +1,8 %) |
+| Sumpf: 8 × 8 Chunks des Dorfs | 0,605–0,611 / 0,583–0,585 | 0,615–0,628 / 0,578–0,588 (+6,4 bis +6,9 %) |
+| Nächstes Dorf im Umkreis von 2048 Blöcken, erste Suche | 14,2 / 14,3 / 14,2 ms | 15,2 / 15,3 / 14,9 ms |
+| Speicher je Dorf-Plan (Mittel / größter) | – (vor `squeeze`: 35,4 / 61,1 KB) | 33,4 / 53,6 KB: Strukturen 22,1, Platzierungen 2,5, Wegzellen 7,2, Rest 1,5 KB |
+| Voller Zwischenspeicher (512 Bereiche, 105 Dörfer in 625 Bereichen) | – | rund 2,8 MB, höchstens rund 28 MB |
+
+**Bewertung:** Die Erzeugung je Chunk bleibt gleich; das Sumpf-Dorf kostet in seinen eigenen Chunks unter der Last etwas mehr als zuvor gemessen (die Welt ohne Dörfer streut um 2 %). Die erste Suche wird rund 1 ms (+7 %) teurer: Straßendörfer tragen mehr Häuser (Nebenstraßen alle 12 Blöcke, ein Haus wird nach einem Fehlversuch schon einen Block weiter versucht), und Häuser an Diagonalen suchen ihre Türen für den Vorplatz. Ein Plan hält im Mittel rund 33 KB, vor allem die abgewandelten Gebäude und die Wegzellen; `squeeze` am Ende der Planung spart rund 12 %. Ein voller Zwischenspeicher von 512 Bereichen bleibt bei wenigen MB, `cachedPlans` bleibt (die Suche von `/locate village` braucht 169 Bereiche).
+
+## Etappe 37.2a (Dorf-Generierung) headless (2026-10-16)
+
+Etappenende 37.2a–a5 samt E-410 (ein durchlaufendes Signal hält seinen Chunk, `QcChunkLoading::holdPassingSignals`): Kandidat `a14fbbc` gegen `dev` (`1ef69d8`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden, Runden `auto`; Rechner mit Last 3–5 anderer Sitzungen. Zur Ortung zusätzlich ein Stand nur mit E-410 (`dd19ef4`, `dev` plus die Fehlerbehebung) und ein Kandidat mit den wilden Karotten und Kartoffeln zurück in den Biomen. Kein Fensterlauf (der Mensch arbeitet am Rechner).
+
+| Szenario | Tick Ø ms | Tick p99 ms | Tick max ms | auffällige Phase Ø ms | Wesen | Spitzen-RSS MB |
+|---|---:|---:|---:|---|---:|---:|
+| crowd | 0,165 → 0,168 (+2 %) | 0,255 → 0,253 | 0,34 → 0,31 | Wesen 0,149 → 0,151 | 121 | 51,4 → 53,3 |
+| gravel-collapse | 0,509 → 0,504 (−1 %) | 1,45 → 1,46 | 1,61 → 1,67 | fallende Blöcke 0,309 → 0,306 | 0 | 70,9 → 72,5 |
+| farm / farm-seeds | 0,0080 → 0,0080 / 0,0177 → 0,0177 | 0,014 → 0,015 / 0,057 → 0,055 | – | – | 0 | 44,3 → 45,8 / 44,0 → 44,9 |
+| explore (60 s) | 0,201 → 0,202 (+0,5 %) | 0,935 → 0,947 | 1,30 → 1,27 | Chunk-Laden 0,0416 → 0,0421 | 54 | 57,0 → 59,3 |
+| explore (300 s, 3 Runden) | 0,196 → 0,197 (+0,7 %) | 0,976 → 0,987 | 1,29 → 1,48 (+15 %) | Chunk-Laden 0,047 → 0,048, max 0,82 → 1,00 | 54 | 60,5 → 61,7 |
+| explore (300 s, 4 Runden, dev / nur E-410 / Kandidat) | 0,200 / 0,201 / 0,216 | 0,983 / 0,993 / 1,027 | 1,35 / 1,37 / 1,57 | Chunk-Laden max 0,84 / 0,89 / 1,06; Wesen 0,060 / 0,059 / 0,073 | 54–55 | 59,8 / 59,3 / 62,0 |
+| signal_components / machines / farm (Wiederholung, 6 Runden) | 0,0373 → 0,0368 / 0,0363 → 0,0365 / 0,0368 → 0,0368 | 0,118 → 0,114 / 0,113 → 0,110 / 0,116 → 0,114 | 0,18–0,22 gleich | Signal 0,014 gleich | 13 | 45,4–45,9 → 47,0–47,7 |
+| light / glass / glass-full (`@light`, zweite Reihe, 6 Runden) | 0,126 → 0,101 / 0,129 → 0,103 / 0,124 → 0,103 | 0,208 → 0,174 / 0,214 → 0,172 / 0,197 → 0,173 | – | Wesen 0,116 → 0,091 (−21 %) | 75–76 | 52,1–52,4 → 53,6–53,7 |
+| void-light | 0,0042 → 0,0040 | 0,0082 → 0,0072 | – | – | 0 | 30,9 → 31,8 |
+
+Erzeugung je Chunk (`test_village_measure`, Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein Thread, Seed 42): Ebene 32 × 32 Chunks um das Dorf 0,559 mit / 0,564 ms ohne Dörfer (−0,9 %), 8 × 8 Chunks des Dorfs 0,549 / 0,538 (+2,1 %); Sumpf 32 × 32 0,599 / 0,596 (+0,4 %), 8 × 8 0,616 / 0,591 (+4,3 %); erste Suche des nächsten Dorfs 14,9 ms; 33,4 KB je Plan. Wie in den Nachbesserungen oben.
+
+**Bewertung:**
+
+- **Keine Regression über 10 % im Tick Ø.** Die erste `@server`-Reihe zeigte signal_farm +10 % (Phase Wesen 0,013 → 0,017 ms bei gleich vielen Wesen), die erste `@light`-Reihe light +25 % und glass +28 % (Phase Wesen 0,088 → 0,113 ms). Wiederholt mit 6 festen Runden: Signal-Stationen −1 bis +0,5 %, light und glass jetzt −20 % (dev langsam). Die Phase Wesen dieser Szenen ist zweigipflig (rund 0,09 oder 0,115 ms in light/glass), und innerhalb einer Reihe landen alle Läufe eines Stands auf demselben Gipfel, welcher, wechselt von Reihe zu Reihe; der Code der Wesen je Tick ist unverändert (nur `QcMobManager::spawnVillageMobs` beim ersten Laden eines Chunks), und mit den wilden Feldfrüchten zurück in den Biomen bleibt das Bild gleich (light dev 0,101 / Kandidat 0,101 / mit Feldfrüchten 0,101 ms). Streuung der Reihe, kein Befund. Ebenso Phase Wesen im 300-s-Erkundungsflug (+22 % in der Dreierreihe, ±0 % in der Reihe davor).
+- **Erkundungsflug: Tick max +0,2 ms durch die Dorf-Chunks.** In beiden 300-s-Reihen liegt das Maximum der Phase Chunk-Laden bei jedem Lauf des Kandidaten bei 0,99–1,10 ms statt 0,78–0,89 ms; der Stand nur mit E-410 liegt bei 0,85–0,93 ms (+6 %, in der Streuung). Ursache sind die Dörfer am Flugweg (x 4801 und 9410 bei Seed 42 innerhalb der Sicht): kommt ein Dorf-Chunk an, legt `QcVillages::noteChunk` das Dorf an und durchsucht den Chunk nach Betten und Arbeitsplätzen (`rescan`), und `QcMobManager::populateChunk` setzt die Tiere der Gehege. Absolut 1,6 ms Tick max von 50 ms; Tick Ø und p99 bleiben innerhalb von 1–4 %. Im 60-s-Flug (2,4 km, kein Dorf in Sicht) kein Unterschied.
+- **E-410 kostet nichts Messbares:** Chunk-Laden Ø 0,0484 → 0,0491 ms (+1,4 %) im Flug, der ständig Chunks entlädt; die Signal-Stationen unverändert.
+- **Speicher +1,5 bis +2,3 MB** in jedem Szenario (Inhalt der Dörfer: Stile, Baupläne, Grundrisse; im Flug zusätzlich die Pläne im Zwischenspeicher).
+- Ein eigenes headless Szenario durch ein Dorf wurde nicht angelegt (Szenen stehen in `scripts/bench-common.sh`, nicht Teil dieser Messung); der 300-s-Erkundungsflug kreuzt bei Seed 42 zwei Dörfer, und `test_village_measure` misst die Erzeugung der Dorf-Chunks direkt.
+
+**Absolute Ziele (`docs/Performance.md`):** kein Tick über 50 ms (headless höchstens 1,67 ms in gravel-collapse, 1,64 ms im Erkundungsflug), keine übersprungenen Ticks (headless ohne Echtzeit). Bildrate, Frame-Kosten, p99 und Spitzenspeicher des ganzen Spiels werden nur im Fenster geprüft.
+
+**Offen:** die gerenderte Messung von 37.2a (`@core` im Fenster plus eine Szene mit Dörfern in Sicht: Vernetzung und GPU der Häuser, Wege und Felder, `explore` mit `STATS=5000` für die Speicherkurve), sobald der Mensch Fensterläufe freigibt.

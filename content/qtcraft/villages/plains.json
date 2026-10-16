@@ -1,0 +1,62 @@
+{
+    "name": "plains",
+    "biomes": ["plains"],
+    "fallback": true,
+    "centre": "village_plains_well",
+    "lamp": "village_plains_lamp",
+    "path": [
+        { "block": "cobblestone", "step": "cobblestone_slab" },
+        { "block": "gravel", "step": "cobblestone_slab" }
+    ],
+    "branchPath": "dirt_path",
+    "crops": [
+        { "block": "wheat_crop", "weight": 3 },
+        { "block": "carrot_crop", "weight": 2 },
+        { "block": "potato_crop", "weight": 2 }
+    ],
+    "foundation": "cobblestone",
+    "layouts": [
+        { "kind": "street", "weight": 3, "winding": 0.2 },
+        { "kind": "cross", "weight": 2 },
+        { "kind": "t", "weight": 2, "winding": 0.15 },
+        { "kind": "l", "weight": 1, "winding": 0.15 },
+        { "kind": "plaza", "weight": 1 },
+        { "kind": "tree", "weight": 2, "winding": 0.15 }
+    ],
+    "pieces": [
+        {
+            "structures": [
+                { "structure": "village_plains_house_small", "weight": 2 },
+                { "structure": "village_plains_house_small_b", "weight": 2 },
+                { "structure": "village_plains_house_small_c", "weight": 2 }
+            ],
+            "weight": 5
+        },
+        {
+            "structures": [
+                { "structure": "village_plains_house_large" },
+                { "structure": "village_plains_house_large_b" }
+            ],
+            "weight": 3,
+            "max": 4
+        },
+        {
+            "structures": [
+                { "structure": "village_plains_farm" },
+                { "structure": "village_plains_farm_b" }
+            ],
+            "weight": 4,
+            "max": 5
+        },
+        { "structure": "village_plains_smithy", "weight": 2, "max": 1 },
+        { "structure": "village_plains_church", "weight": 2, "max": 1 },
+        { "structure": "village_plains_pen", "max": 1, "chance": 0.5 },
+        {
+            "structure": "village_plains_fisher_hut",
+            "max": 1,
+            "water": 12,
+            "jetty": { "deck": "oak_planks", "post": "oak_log", "width": 3, "over": 5 }
+        },
+        { "structure": "village_plains_tower", "max": 1, "minRoadLength": 200 }
+    ]
+}

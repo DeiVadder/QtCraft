@@ -367,7 +367,7 @@ Geschmolzenes Gold.
 
 **Wird verwendet für**
 
-[Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings), [Goldblock](blocks.md#block-qtcraft-gold_block), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldhelm](tools.md#item-qtcraft-golden_helmet), [Goldnugget](#item-qtcraft-gold_nugget), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Goldstiefel](tools.md#item-qtcraft-golden_boots)
+[Antriebsschiene](blocks.md#block-qtcraft-powered_rail), [Glocke](blocks.md#block-qtcraft-bell), [Goldaxt](tools.md#item-qtcraft-golden_axe), [Goldbeinschutz](tools.md#item-qtcraft-golden_leggings), [Goldblock](blocks.md#block-qtcraft-gold_block), [Goldbrustplatte](tools.md#item-qtcraft-golden_chestplate), [Goldhacke](tools.md#item-qtcraft-golden_hoe), [Goldhelm](tools.md#item-qtcraft-golden_helmet), [Goldnugget](#item-qtcraft-gold_nugget), [Goldschaufel](tools.md#item-qtcraft-golden_shovel), [Goldschwert](tools.md#item-qtcraft-golden_sword), [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe), [Goldstiefel](tools.md#item-qtcraft-golden_boots)
 
 ### <a id="item-qtcraft-gold_nugget"></a>Goldnugget
 

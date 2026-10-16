@@ -1,0 +1,69 @@
+{
+    "name": "village_desert_house_large_b",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "S": "sandstone",
+        "M": "smooth_sandstone",
+        "O": "orange_terracotta",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "o": "lantern[attach=floor]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "c": "crafting_table",
+        "h": "hay_block",
+        "H": "chest[facing=south]",
+        "a": "sand",
+        "d": "dead_bush",
+        "x": "cactus",
+        "R": "barrel[facing=south]",
+        "J": "orange_wool_carpet",
+        "A": "ladder[attach=west]",
+        "w": "white_wool",
+        "F": "oak_fence"
+    },
+    "layers": [
+        ["MMMMMMM", "MMMMMMM", "MMMMMMM", "MMMMMMM", "MMMMMMM", "MMMMMMM", "MMMMMMM"],
+        ["CSSSSSC", "SR..HcS", "S.....S", "S..J..S", "S.....S", "SA....S", "CSSDSSC"],
+        ["CS.S.SC", "S.....S", ".......", "S.....S", ".......", "SA....S", "CSSUSSC"],
+        ["OOOOOOO", "O.....O", "O.l...O", "O.....O", "O...l.O", "OA....O", "OOOOOOO"],
+        ["CCCCCCC", "CMMMMMC", "CMMMMMC", "CMMMMMC", "CMMMMMC", "CAMMMMC", "CCCCCCC"],
+        ["CSSSCkk", "Sbf.S.k", "S...S.k", "Sbf.S.k", "CSDSC.k", "k.....k", "kkkkkkk"],
+        ["CS.SC..", "S...S..", ".......", "S...S..", "CSUSC..", ".......", "......."],
+        ["OOOOO..", "O...O..", "O.l.O..", "O...O..", "OOOOO..", ".......", "......."],
+        ["CCCCC..", "CMMMC..", "CMMMC..", "CMMMC..", "CCCCC..", ".......", "......."],
+        ["kkkkk  ", "k   k  ", "k   k  ", "k   k  ", "kkkkk  ", "       ", "       "]
+    ],
+    "choices": {
+        "terracotta": [
+            {},
+            {"orange_terracotta": "red_terracotta", "terracotta": "red_terracotta"},
+            {"orange_terracotta": "yellow_terracotta", "terracotta": "yellow_terracotta"},
+            {"orange_terracotta": "white_terracotta", "terracotta": "white_terracotta"},
+            {"orange_terracotta": "light_blue_terracotta", "terracotta": "light_blue_terracotta"}
+        ],
+        "door": [
+            {},
+            {"oak_door": "spruce_door"},
+            {"oak_door": "birch_door"}
+        ],
+        "cloth": [
+            {},
+            {"white_wool": "red_wool"},
+            {"white_wool": "blue_wool"},
+            {"white_wool": "yellow_wool"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "awning", "chance": 0.6, "at": [5, 6, 5],
+            "layers": [
+                [" F", " F"],
+                ["ww", "ww"]
+            ]
+        }
+    ]
+}

@@ -77,6 +77,9 @@ struct QcItemDefinition
     // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
     // decision E-290). Server side only.
     bool tills = false;
+    // Used on the top of a block with `flattensInto` (grass, dirt), turns it into that block (a
+    // shovel making a dirt path, decision E-406). Server side only.
+    bool flattens = false;
     // Used on a block face, lights fire in the cell in front of it and wears by one (flint and
     // steel, decision E-393). Also reaches the client (the creative inventory files it under tools).
     bool ignites = false;

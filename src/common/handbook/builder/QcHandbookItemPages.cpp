@@ -56,6 +56,19 @@ void addUseFacts(const QcHandbookContext &context, const QcItemDefinition &item,
     }
 }
 
+// The fact `label` linking every block whose `into` field names a block (what a hoe tills, what a
+// shovel flattens).
+Fact blocksTurnedBy(const QcHandbookContext &context, const QString &label, QString QcBlockDefinition::*into)
+{
+    Fact fact{context.text.label(label), {}, {}};
+    for (const QcBlockDefinition &block : context.content.blocks()) {
+        if (!(block.*into).isEmpty()) {
+            fact.links.append(context.links.blockLink(block.name));
+        }
+    }
+    return fact;
+}
+
 // What the item places, empties to and scoops up, and its tags.
 void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item, QList<Fact> &facts)
 {
@@ -69,13 +82,10 @@ void addLinkFacts(const QcHandbookContext &context, const QcItemDefinition &item
         facts.append({text.label(u"fact.emptiesTo"_s), {}, {links.itemLink(item.emptiesTo)}});
     }
     if (item.tills) {
-        Fact tills{text.label(u"fact.tills"_s), {}, {}};
-        for (const QcBlockDefinition &block : context.content.blocks()) {
-            if (!block.tillsInto.isEmpty()) {
-                tills.links.append(links.blockLink(block.name));
-            }
-        }
-        facts.append(std::move(tills));
+        facts.append(blocksTurnedBy(context, u"fact.tills"_s, &QcBlockDefinition::tillsInto));
+    }
+    if (item.flattens) {
+        facts.append(blocksTurnedBy(context, u"fact.flattens"_s, &QcBlockDefinition::flattensInto));
     }
 
     if (item.scoops) {

@@ -1,0 +1,14 @@
+{
+    "name": "village_swamp_lamp",
+    "palette": {
+        ".": "air",
+        "L": "spruce_log",
+        "t": "torch[attach=floor]"
+    },
+    "layers": [
+        ["L"],
+        ["L"],
+        ["L"],
+        ["t"]
+    ]
+}

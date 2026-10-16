@@ -1,0 +1,68 @@
+{
+    "name": "village_plains_house_small_b",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "g": "grass_block",
+        "e": "oak_stairs[facing=east,half=bottom]",
+        "w": "oak_stairs[facing=west,half=bottom]",
+        "k": "oak_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]",
+        "r": "poppy",
+        "x": "oak_fence[east=true,west=true]"
+    },
+    "layers": [
+        ["CCCCC", "CPPPC", "CPPPC", "CPPPC", "CPPPC", "CPPPC", "CCCCC", "ggCgg"],
+        ["LPPPL", "PbfTP", "P...P", "P...P", "P..HP", "P...P", "LPDPL", "....."],
+        ["LPGPL", "P...P", "G...G", "P...P", "G...G", "P...P", "LGUGL", "     "],
+        ["LPPPL", "P...P", "P...P", "P.l.P", "P...P", "P...P", "LPPPL", "     "],
+        ["ePPPw", "ePPPw", "ePPPw", "ePPPw", "ePPPw", "ePPPw", "ePPPw", "     "],
+        [" ePw ", " ePw ", " ePw ", " ePw ", " ePw ", " ePw ", " ePw ", "     "],
+        ["  k  ", "  k  ", "  k  ", "  k  ", "  k  ", "  k  ", "  k  ", "     "],
+        ["     ", "     ", "     ", "     ", "     ", "     ", "     ", "     "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"oak_planks": "birch_planks", "oak_log": "birch_log"},
+            {"oak_planks": "spruce_planks", "oak_log": "spruce_log"}
+        ],
+        "roof": [
+            {},
+            {"oak_stairs": "spruce_stairs", "oak_slab": "spruce_slab"},
+            {"oak_stairs": "cobblestone_stairs", "oak_slab": "cobblestone_slab"},
+            {"oak_stairs": "brick_stairs", "oak_slab": "brick_slab"}
+        ],
+        "flowers": [
+            {},
+            {"poppy": "dandelion"},
+            {"poppy": "cornflower"},
+            {"poppy": "allium"},
+            {"poppy": "lily_of_the_valley"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "chimney", "chance": 0.5, "at": [2, 6, 1],
+            "layers": [
+                ["C"],
+                ["C"]
+            ]
+        },
+        {
+            "name": "flowers", "chance": 0.6, "at": [0, 1, 7],
+            "layers": [
+                ["rr rr"]
+            ]
+        }
+    ]
+}

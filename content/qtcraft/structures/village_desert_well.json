@@ -1,0 +1,21 @@
+{
+    "name": "village_desert_well",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "M": "smooth_sandstone",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "~": "water",
+        "E": "bell",
+        "w": "sandstone_wall"
+    },
+    "layers": [
+        ["MMMMMMM", "MMMMMMM", "MM~~~MM", "MM~~~MM", "MM~~~MM", "MMMMMMM", "MMMMMMM"],
+        ["E......", ".CCCCC.", ".C...C.", ".C...C.", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".w...w.", ".......", ".......", ".......", ".w...w.", "......."],
+        [".......", ".w...w.", ".......", "...l...", ".......", ".w...w.", "......."],
+        [".......", ".kkkkk.", ".kkkkk.", ".kkCkk.", ".kkkkk.", ".kkkkk.", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."]
+    ]
+}

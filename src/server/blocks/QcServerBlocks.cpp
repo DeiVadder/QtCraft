@@ -83,22 +83,23 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     const QcBlockDefinition &definition = content.block(*previous);
     // A slab broken out of a double slab drops both halves.
     const bool doubleSlab = content.property(*previous, u"type"_s) == u"double"_s;
-    const bool pairedDoor = definition.door && QcBlockRules::hasDoorPartner(m_state.world(), pos, *previous);
+    const bool paired = (definition.door || definition.bed) && QcBlockRules::hasPartner(m_state.world(), pos, *previous);
 
     setAndBroadcast(pos, qcAirBlockId);
     if (m_state.world().blockAt(pos) != qcAirBlockId) {
         return;
     }
 
-    if (pairedDoor) {
-        breakBlock(QcBlockRules::otherDoorHalf(m_state.world(), pos, *previous), drops);
+    if (paired) {
+        breakBlock(QcBlockRules::otherHalf(m_state.world(), pos, *previous), drops);
     }
 
     m_sounds.playBlock(definition, QcBlockSoundAction::Break, pos);
 
-    // The upper half of a door drops nothing: the lower half carries the door item.
-    const bool doorTop = definition.door && content.property(*previous, u"half"_s) == u"top"_s;
-    if (drops && !doorTop) {
+    // The upper half of a door and the head of a bed drop nothing: the other half carries the item.
+    const bool secondHalf = (definition.door && content.property(*previous, u"half"_s) == u"top"_s)
+                            || (definition.bed && content.property(*previous, u"part"_s) == u"head"_s);
+    if (drops && !secondHalf) {
         dropBlockItems(*previous, pos);
         if (doubleSlab) {
             dropBlockItems(*previous, pos);

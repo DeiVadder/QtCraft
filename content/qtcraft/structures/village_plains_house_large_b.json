@@ -1,0 +1,72 @@
+{
+    "name": "village_plains_house_large_b",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "g": "grass_block",
+        "n": "oak_stairs[facing=north,half=bottom]",
+        "s": "oak_stairs[facing=south,half=bottom]",
+        "k": "oak_slab[type=bottom]",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]",
+        "a": "ladder[attach=north]",
+        "J": "white_wool_carpet",
+        "M": "bookshelf",
+        "Y": "hay_block",
+        "K": "composter"
+    },
+    "layers": [
+        ["CCCCCCCggg", "CPPPPPCggg", "CPPPPPCggg", "CPPPPPCggg", "CPPPPPCggg", "CPPPPPCggg", "CCCCCCCggg"],
+        ["LCCCCCL   ", "CTH..aC   ", "C.....C   ", "C.....C   ", "C.JJJ.C   ", "CM....C   ", "LCCDCCL   "],
+        ["LCGCGCL   ", "C....aC   ", "G.....G   ", "C.....C   ", "G.....G   ", "C.....C   ", "LCGUGCL   "],
+        ["LCCCCCL   ", "C....aC   ", "C.l...C   ", "C.....C   ", "C.....C   ", "C.....C   ", "LCCCCCL   "],
+        ["LPPPPPL   ", "PPPPPaP   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "LPPPPPL   "],
+        ["LPPPPPL   ", "Pbf...P   ", "P.....P   ", "Pbf...P   ", "P.....P   ", "P..H..P   ", "LPPPPPL   "],
+        ["LPGPGPL   ", "P.....P   ", "G.....G   ", "P.....P   ", "G.....G   ", "P.....P   ", "LPGPGPL   "],
+        ["LPPPPPL   ", "P.....P   ", "P.....P   ", "P..l..P   ", "P.....P   ", "P.....P   ", "LPPPPPL   "],
+        ["sssssss   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "nnnnnnn   "],
+        ["          ", "sssssss   ", "PPPPPPP   ", "PPPPPPP   ", "PPPPPPP   ", "nnnnnnn   ", "          "],
+        ["          ", "          ", "sssssss   ", "PPPPPPP   ", "nnnnnnn   ", "          ", "          "],
+        ["          ", "          ", "          ", "kkkkkkk   ", "          ", "          ", "          "],
+        ["          ", "          ", "          ", "          ", "          ", "          ", "          "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"oak_planks": "birch_planks", "oak_log": "birch_log"},
+            {"oak_planks": "spruce_planks", "oak_log": "spruce_log"}
+        ],
+        "roof": [
+            {},
+            {"oak_stairs": "spruce_stairs", "oak_slab": "spruce_slab"},
+            {"oak_stairs": "cobblestone_stairs", "oak_slab": "cobblestone_slab"},
+            {"oak_stairs": "brick_stairs", "oak_slab": "brick_slab"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "chimney", "chance": 0.5, "at": [1, 10, 3],
+            "layers": [
+                ["C"],
+                ["C"],
+                ["C"]
+            ]
+        },
+        {
+            "name": "shed", "chance": 0.6, "at": [7, 1, 1],
+            "layers": [
+                ["PPL", "Y.P", "K.P", "..P", "..L"],
+                ["PPL", "..P", "..P", "..P", "..L"],
+                ["kkk", "kkk", "kkk", "kkk", "kkk"]
+            ]
+        }
+    ]
+}

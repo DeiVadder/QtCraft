@@ -12,6 +12,7 @@
 #include "QcFireQueue.h"
 #include "QcLightEngine.h"
 #include "QcMailbox.h"
+#include "QcVillages.h"
 #include "QcSectionMarks.h"
 #include "QcWorkerPool.h"
 #include "QcWorldGenerator.h"
@@ -72,6 +73,9 @@ public:
     // Chunk loader blocks of the world, loaded or not (decision E-377).
     QcChunkLoaders &loaders() { return m_loaders; }
     const QcChunkLoaders &loaders() const { return m_loaders; }
+    // The villages of the world, loaded or not (decision E-403).
+    QcVillages &villages() { return *m_villages; }
+    const QcVillages &villages() const { return *m_villages; }
     // The circuit marks of a chunk: of a loaded one as it is, of another one as stored.
     quint16 linkMarksOf(QcChunkPos pos) const;
 
@@ -171,6 +175,8 @@ private:
     QcBlockIndex m_hoppers;
     QcChunkLinks m_links;
     QcChunkLoaders m_loaders;
+    // Refers to the generator, which lives as long as the world.
+    std::unique_ptr<QcVillages> m_villages;
     QcBlockEntities m_blockEntities;
     QcFireQueue m_fires;
     QHash<QcChunkPos, std::shared_ptr<QcChunk>> m_chunks;

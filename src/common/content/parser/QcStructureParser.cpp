@@ -3,6 +3,7 @@
 #include "QcContentFields.h"
 #include "QcContentNames.h"
 #include "QcJsonFieldReader.h"
+#include "QcStructureVariationParser.h"
 
 #include <QJsonArray>
 #include <QHash>
@@ -306,6 +307,7 @@ QString qualifiedStateName(const QString &text, const QString &packNamespace)
         parseCells(json, u"updates"_s, structure.updates, structure, reader);
         parseCells(json, u"growing"_s, structure.growing, structure, reader);
         parseCarts(json, structure, reader, packNamespace);
+        QcStructureVariationParser::parseVariation(json, keys, structure, reader, packNamespace);
     }
 
     if (!reader.ok()) {

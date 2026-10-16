@@ -158,3 +158,22 @@ bool QcServerPlants::till(QcServerClient &client, QcBlockPos target, QcBlockFace
     return true;
 }
 
+bool QcServerPlants::flatten(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held)
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(target);
+    if (!held || !held->flattens || !clicked || !content.isValidBlock(*clicked) || content.block(*clicked).flattensInto.isEmpty()) {
+        return false;
+    }
+
+    const std::optional<QcBlockId> path = content.blockId(content.block(*clicked).flattensInto);
+    const bool open = m_state.world().blockAt(target.offset(0, 1, 0)) == qcAirBlockId;
+    if (!path || face != QcBlockFace::Up || !open || !QcLineOfSight::isWithinReach(client, target)) {
+        return false;
+    }
+
+    m_blocks.setAndBroadcast(target, *path);
+    m_sounds.playBlock(content.block(*path), QcBlockSoundAction::Place, target);
+    m_inventory.wearHeld(client);
+    return true;
+}

@@ -1,0 +1,8 @@
+{
+    "name": "composter_top",
+    "pattern": "farmland",
+    "primary": "#5a4426",
+    "secondary": "#3e5a24",
+    "variation": 0.1,
+    "seed": 4106
+}

@@ -6,6 +6,7 @@
 #include "QcShowcaseCreatureArea.h"
 #include "QcShowcaseItemArea.h"
 #include "QcShowcaseTreeArea.h"
+#include "QcShowcaseVillageArea.h"
 
 #include <QDebug>
 #include <QtMath>
@@ -153,6 +154,10 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
     }
 
     builders.append([context](QcBlockPos anchor) { return QcShowcaseItemArea::build(context, anchor); });
+    // Last, so the village rows (wide and tall) move no other area.
+    if (QcShowcaseVillageArea::hasStyles(m_content)) {
+        builders.append([context](QcBlockPos anchor) { return QcShowcaseVillageArea::build(context, anchor); });
+    }
     return builders;
 }
 

@@ -170,6 +170,10 @@ struct QcBlockDefinition
     bool toggles = false;
     // Two blocks tall: placed, opened and broken together; `half` tells bottom from top.
     bool door = false;
+    // Two blocks long: placed and broken together, the head in the `facing` direction of the foot;
+    // `part` tells foot from head. Villages count them (QcVillages). Server side only (not
+    // synchronised).
+    bool bed = false;
     QcFacingRule facingRule = QcFacingRule::Away;
     QcBlockSupport support = QcBlockSupport::None;
     // Connection group this block belongs to and the groups whose members (and full solid blocks)
@@ -222,6 +226,12 @@ struct QcBlockDefinition
     QcSoilDefinition soil;
     // Block it turns into when an item that `tills` (a hoe) is used on it, empty for none. Server side only.
     QString tillsInto;
+    // Block it turns into when an item that `flattens` (a shovel) is used on its top, empty for none
+    // (decision E-406). Server side only.
+    QString flattensInto;
+    // Block it turns into at its next block update while an opaque full block lies on it (a dirt path
+    // becoming dirt, decision E-406), empty for none. Server side only.
+    QString coveredInto;
     // Part in Signal Dust circuits (decision E-333); the kind reaches the client (usable blocks), the
     // rest is server side only.
     QcSignalDefinition signal;

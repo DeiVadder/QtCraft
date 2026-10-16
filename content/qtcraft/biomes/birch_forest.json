@@ -32,10 +32,6 @@
         {
             "feature": "lily_of_the_valley",
             "density": 0.008
-        },
-        {
-            "feature": "wild_carrots",
-            "density": 0.002
         }
     ]
 }

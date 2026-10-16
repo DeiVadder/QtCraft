@@ -1,0 +1,23 @@
+{
+    "name": "village_desert_farm",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "K": "composter",
+        "~": "water",
+        "W": "farmland[moist=true]",
+        "s": "sand",
+        "1": "wheat_crop[age=7]",
+        "2": "wheat_crop[age=4]",
+        "3": "carrot_crop[age=3]",
+        "4": "potato_crop[age=2]",
+        "u": "sugar_cane",
+        "h": "hay_block"
+    },
+    "layers": [
+        ["CCCCCCCCC", "CWWWWWWWC", "CsWWWWWsC", "C~~~~~~~C", "CsWWWWWsC", "CWWWWWWWC", "CCCCCCCCC"],
+        ["K.......h", " 1432143 ", " u14321u ", "         ", " u32143u ", " 1432143 ", "         "],
+        [".........", "         ", " u     u ", "         ", " u     u ", "         ", "         "],
+        [".........", "         ", "         ", "         ", "         ", "         ", "         "]
+    ]
+}

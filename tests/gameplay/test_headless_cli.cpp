@@ -14,6 +14,9 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 30000;
+// The longest wait for one answer: beyond the minute `waitUntilReady` gives the world itself, so
+// the program's own answer arrives first even when a TSan run starts many tests at once.
+constexpr int answerTimeoutMs = 90000;
 
 bool copyDirectory(const QString &from, const QString &to)
 {
@@ -42,7 +45,7 @@ private:
     QJsonObject ask(const QByteArray &line)
     {
         m_process.write(line + '\n');
-        if (!m_process.canReadLine() && !QTest::qWaitFor([this] { return m_process.canReadLine(); }, timeoutMs)) {
+        if (!m_process.canReadLine() && !QTest::qWaitFor([this] { return m_process.canReadLine(); }, answerTimeoutMs)) {
             qWarning("no response to %s", line.constData());
             return {};
         }

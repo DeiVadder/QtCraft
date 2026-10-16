@@ -1,0 +1,28 @@
+{
+    "name": "village_desert_temple",
+    "palette": {
+        ".": "air",
+        "C": "cut_sandstone",
+        "S": "sandstone",
+        "M": "smooth_sandstone",
+        "O": "orange_terracotta",
+        "Y": "yellow_terracotta",
+        "T": "terracotta",
+        "k": "smooth_sandstone_slab[type=bottom]",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "G": "glass",
+        "l": "lantern[attach=ceiling]"
+    },
+    "layers": [
+        ["CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC"],
+        ["CSSSSSSSC", "S..OTO..S", "S.......S", "S.......S", "S.......S", "S.......S", "S.......S", "S.......S", "CSSSDSSSC"],
+        ["CSSSSSSSC", "S.......S", ".........", "S.......S", "S.......S", "S.......S", ".........", "S.......S", "CSSSUSSSC"],
+        ["COOOOOOOC", "O.......O", "O.......O", "O.......O", "O.......O", "O.......O", "O.......O", "O.......O", "COOOOOOOC"],
+        ["CYYYYYYYC", "Y.......Y", "Y.......Y", "Y.......Y", "Y.......Y", "Y.......Y", "Y.......Y", "Y.......Y", "CYYYGYYYC"],
+        ["CSSSSSSSC", "S.......S", "S...l...S", "S.......S", "S...l...S", "S.......S", "S.......S", "S.......S", "CSSSSSSSC"],
+        ["CCCCCCCCC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CMMMMMMMC", "CCCCCCCCC"],
+        ["kkkkkkkkk", "k       k", "k       k", "k  CCC  k", "k  C.C  k", "k  CCC  k", "k       k", "k       k", "kkkkkkkkk"],
+        ["         ", "         ", "         ", "   kkk   ", "   kkk   ", "   kkk   ", "         ", "         ", "         "]
+    ]
+}

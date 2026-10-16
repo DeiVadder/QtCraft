@@ -53,6 +53,9 @@ struct QcBiomeDefinition
     // Surface above this height uses `snowBlock` (0 disables).
     int snowLine = 0;
     QString snowBlock;
+    // Villages may be built here (decision E-403), in the style that names the biome or else the
+    // fallback style. Server side only.
+    bool villages = false;
     QList<QcFeaturePlacement> features;
 };
 

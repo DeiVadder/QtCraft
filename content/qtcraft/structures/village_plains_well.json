@@ -1,0 +1,20 @@
+{
+    "name": "village_plains_well",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "l": "lantern[attach=ceiling]",
+        "k": "cobblestone_slab[type=bottom]",
+        "x": "oak_fence",
+        "~": "water",
+        "E": "bell"
+    },
+    "layers": [
+        ["CCCCCCC", "CCCCCCC", "CC~~~CC", "CC~~~CC", "CC~~~CC", "CCCCCCC", "CCCCCCC"],
+        ["E......", ".CCCCC.", ".C...C.", ".C...C.", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".x...x.", ".......", ".......", ".......", ".x...x.", "......."],
+        [".......", ".x...x.", ".......", "...l...", ".......", ".x...x.", "......."],
+        [".......", ".kkkkk.", ".kkkkk.", ".kkCkk.", ".kkkkk.", ".kkkkk.", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."]
+    ]
+}

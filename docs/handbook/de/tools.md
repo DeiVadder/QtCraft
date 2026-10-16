@@ -87,7 +87,7 @@ Macht Gras und Erde zu Ackerboden und hält sehr lange.
 | Abbaugeschwindigkeit | × 8 |
 | Haltbarkeit | 1561 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
-| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Trampelpfad](blocks.md#block-qtcraft-dirt_path), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -123,7 +123,7 @@ Die stärkste Rüstung; sie hält am längsten.
 
 ### <a id="item-qtcraft-diamond_shovel"></a>Diamantschaufel
 
-Gräbt Erde, Sand und Kies schneller.
+Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.
 
 | | |
 |---|---|
@@ -133,6 +133,7 @@ Gräbt Erde, Sand und Kies schneller.
 | Abbaugeschwindigkeit | × 8 |
 | Haltbarkeit | 1561 Benutzungen |
 | Angriffsschaden | 3,5 Lebenspunkte |
+| Macht Wege aus | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -295,7 +296,7 @@ Macht Gras und Erde zu Ackerboden; hält lange.
 | Abbaugeschwindigkeit | × 6 |
 | Haltbarkeit | 250 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
-| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Trampelpfad](blocks.md#block-qtcraft-dirt_path), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -331,7 +332,7 @@ Solide Rüstung aus Eisenplatten, die übliche Wahl.
 
 ### <a id="item-qtcraft-iron_shovel"></a>Eisenschaufel
 
-Gräbt Erde, Sand und Kies schneller.
+Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.
 
 | | |
 |---|---|
@@ -341,6 +342,7 @@ Gräbt Erde, Sand und Kies schneller.
 | Abbaugeschwindigkeit | × 6 |
 | Haltbarkeit | 250 Benutzungen |
 | Angriffsschaden | 3 Lebenspunkte |
+| Macht Wege aus | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -503,7 +505,7 @@ Macht Gras und Erde zu Ackerboden, nutzt sich aber schnell ab.
 | Abbaugeschwindigkeit | × 12 |
 | Haltbarkeit | 32 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
-| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Trampelpfad](blocks.md#block-qtcraft-dirt_path), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -549,6 +551,7 @@ Sehr schnell, aber weich: nach wenigen Einsätzen verbraucht und nur so stark wi
 | Abbaugeschwindigkeit | × 12 |
 | Haltbarkeit | 32 Benutzungen |
 | Angriffsschaden | 2 Lebenspunkte |
+| Macht Wege aus | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -667,7 +670,7 @@ Macht Gras und Erde zu Ackerboden. Jeder bestellte Block nutzt sie etwas ab.
 | Haltbarkeit | 59 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
 | Brennt als Brennstoff | 10 s: [Brennstoffe](tables.md#table-fuels) |
-| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Trampelpfad](blocks.md#block-qtcraft-dirt_path), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -681,7 +684,7 @@ Macht Gras und Erde zu Ackerboden. Jeder bestellte Block nutzt sie etwas ab.
 
 ### <a id="item-qtcraft-wooden_shovel"></a>Holzschaufel
 
-Gräbt Erde, Sand und Kies schneller.
+Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.
 
 | | |
 |---|---|
@@ -692,6 +695,7 @@ Gräbt Erde, Sand und Kies schneller.
 | Haltbarkeit | 59 Benutzungen |
 | Angriffsschaden | 2 Lebenspunkte |
 | Brennt als Brennstoff | 10 s: [Brennstoffe](tables.md#table-fuels) |
+| Macht Wege aus | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -878,7 +882,7 @@ Macht Gras und Erde zu Ackerboden; hält länger als Holz.
 | Abbaugeschwindigkeit | × 4 |
 | Haltbarkeit | 131 Benutzungen |
 | Angriffsschaden | 1 Lebenspunkt |
-| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Bestellt | [Erde](blocks.md#block-qtcraft-dirt), [Trampelpfad](blocks.md#block-qtcraft-dirt_path), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 
@@ -892,7 +896,7 @@ Macht Gras und Erde zu Ackerboden; hält länger als Holz.
 
 ### <a id="item-qtcraft-stone_shovel"></a>Steinschaufel
 
-Gräbt Erde, Sand und Kies schneller.
+Gräbt Erde, Sand und Kies schneller. Auf die Oberseite von Gras oder Erde benutzt, macht sie einen Trampelpfad.
 
 | | |
 |---|---|
@@ -902,6 +906,7 @@ Gräbt Erde, Sand und Kies schneller.
 | Abbaugeschwindigkeit | × 4 |
 | Haltbarkeit | 131 Benutzungen |
 | Angriffsschaden | 2,5 Lebenspunkte |
+| Macht Wege aus | [Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
 **Herstellung**
 

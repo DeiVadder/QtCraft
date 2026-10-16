@@ -1,0 +1,35 @@
+{
+    "name": "village_desert_pen",
+    "palette": {
+        ".": "air",
+        "g": "sand",
+        "~": "water",
+        "Y": "hay_block",
+        "a": "oak_fence[east=true,south=true]",
+        "b": "oak_fence[west=true,south=true]",
+        "c": "oak_fence[east=true,north=true]",
+        "d": "oak_fence[west=true,north=true]",
+        "h": "oak_fence[east=true,west=true]",
+        "v": "oak_fence[north=true,south=true]",
+        "G": "oak_fence_gate[facing=north]"
+    },
+    "layers": [
+        ["ggggggggg", "ggggggggg", "gg~gggggg", "ggggggggg", "ggggggggg", "ggggggggg", "ggggggggg"],
+        ["ahhhhhhhb", "v......Yv", "v.......v", "v.......v", "v.......v", "v.......v", "chhhGhhhd"],
+        [".........", ".........", ".........", ".........", ".........", ".........", "........."]
+    ],
+    "choices": {
+        "animal": [
+            {},
+            {"pig": "sheep"}
+        ],
+        "wood": [
+            {},
+            {"oak_fence": "birch_fence", "oak_fence_gate": "birch_fence_gate"}
+        ]
+    },
+    "mobs": [
+        {"mob": "pig", "at": [2.5, 1.0, 4.5]},
+        {"mob": "pig", "at": [5.5, 1.0, 3.5]}
+    ]
+}

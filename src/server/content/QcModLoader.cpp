@@ -138,9 +138,11 @@ void checkBlockReferences(const QcContentRegistry &content, const QcBlockDefinit
         warnings.append(u"block %1: unknown machine sound '%2'"_s.arg(block.name, block.machine.sound));
     }
 
-    // Farming (decisions E-289 to E-291): such blocks never bear fruit, revert or get tilled.
+    // Farming (decisions E-289 to E-291) and paths (E-406): such blocks never bear fruit, revert, get
+    // tilled or flattened.
     for (const auto &[field, name] : {std::pair{u"fruit"_s, block.crop.fruit}, std::pair{u"soil revertsTo"_s, block.soil.revertsTo},
-                                      std::pair{u"tillsInto"_s, block.tillsInto}}) {
+                                      std::pair{u"tillsInto"_s, block.tillsInto}, std::pair{u"flattensInto"_s, block.flattensInto},
+                                      std::pair{u"coveredInto"_s, block.coveredInto}}) {
         if (!name.isEmpty() && !content.blockId(name)) {
             warnings.append(u"block %1: unknown %2 '%3'"_s.arg(block.name, field, name));
         }

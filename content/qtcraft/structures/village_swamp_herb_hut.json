@@ -1,0 +1,38 @@
+{
+    "name": "village_swamp_herb_hut",
+    "palette": {
+        ".": "air",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "G": "brown_stained_glass",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "h": "hay_block",
+        "x": "spruce_fence",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "k": "spruce_slab[type=bottom]",
+        "K": "composter",
+        "d": "dirt",
+        "M": "brown_mushroom",
+        "m": "red_mushroom",
+        "Y": "hay_block"
+    },
+    "layers": [
+        ["PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"],
+        ["LPPPLdd", "PbfKP.d", "P...P.d", "PY..P..", "LPDPL.."],
+        ["LPGPLMm", "G...P.M", "P...G.m", "G...P..", "LPUPL.."],
+        ["LPPPLxx", "P...P..", "P.l.P..", "P...P..", "LPPPL.."],
+        ["kkkkkkk", "kkkkkkk", "kkkkkkk", "kkkkkkk", "kkkkkk "],
+        ["       ", " hhh   ", " hhh   ", " hhh   ", "       "],
+        ["       ", "       ", "  h    ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"spruce_planks": "oak_planks"}
+        ]
+    }
+}

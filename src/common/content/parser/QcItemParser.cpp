@@ -82,9 +82,10 @@ namespace QcItemParser {
         reader.fail(u"only an item that places a minecart has a 'cartBlock'"_s);
     }
     item.tills = reader.boolean(u"tills"_s, false);
+    item.flattens = reader.boolean(u"flattens"_s, false);
     item.ignites = reader.boolean(u"ignites"_s, false);
-    if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.scoops || item.bottles)) {
-        reader.fail(u"an item that 'ignites' neither places, tills, scoops nor bottles"_s);
+    if (item.ignites && (!item.placesBlock.isEmpty() || item.tills || item.flattens || item.scoops || item.bottles)) {
+        reader.fail(u"an item that 'ignites' neither places, tills, flattens, scoops nor bottles"_s);
     }
     reader.nestedObject(u"armour"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
         item.armour = QcArmourParser::parseArmour(object, packNamespace, item.name, nested);

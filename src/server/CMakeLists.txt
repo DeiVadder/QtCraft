@@ -88,6 +88,7 @@ qt_add_library(qc_server STATIC
     weather/QcServerWeather.h weather/QcServerWeather.cpp
     weather/QcLightningStrike.h weather/QcLightningStrike.cpp
     weather/QcSnowfall.h weather/QcSnowfall.cpp
+    commands/QcVillageCommands.h commands/QcVillageCommands.cpp
     commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
     commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
@@ -168,6 +169,20 @@ qt_add_library(qc_server STATIC
     worldgen/QcFlatGenerator.h worldgen/QcFlatGenerator.cpp
     worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
     worldgen/QcWorldSetup.h
+    villages/QcVillage.h villages/QcVillage.cpp
+    villages/QcVillages.h villages/QcVillages.cpp
+    worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
+    worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
+    worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp
+    worldgen/villages/QcJettyPlanner.h worldgen/villages/QcJettyPlanner.cpp
+    worldgen/villages/QcBoardwalkPlanner.h worldgen/villages/QcBoardwalkPlanner.cpp
+    worldgen/villages/QcWetlandShaper.h worldgen/villages/QcWetlandShaper.cpp
+    worldgen/villages/QcVillagePlan.h
+    worldgen/villages/QcVillagePlanner.h worldgen/villages/QcVillagePlanner.cpp worldgen/villages/QcVillagePlannerLayouts.cpp
+    worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
+    worldgen/villages/QcVillageFields.h worldgen/villages/QcVillageFields.cpp
+    worldgen/villages/QcVillageRoads.h worldgen/villages/QcVillageRoads.cpp
+    worldgen/villages/QcVillageStyles.h worldgen/villages/QcVillageStyles.cpp
     worldgen/showcase/QcShowcaseArea.h
     worldgen/showcase/QcShowcaseArmourArea.h worldgen/showcase/QcShowcaseArmourArea.cpp
     worldgen/showcase/QcShowcaseBlockArea.h worldgen/showcase/QcShowcaseBlockArea.cpp
@@ -178,6 +193,7 @@ qt_add_library(qc_server STATIC
     worldgen/showcase/QcShowcasePlan.h
     worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
     worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
+    worldgen/showcase/QcShowcaseVillageArea.h worldgen/showcase/QcShowcaseVillageArea.cpp
     signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
     signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
     signal/QcDispenserActions.h signal/QcDispenserActions.cpp
@@ -198,7 +214,10 @@ qc_configure_target(qc_server)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
 set(qc_worldgen_sources
     worldgen/QcCaveCarver.cpp worldgen/QcNoise.cpp worldgen/QcPoolPlacer.cpp worldgen/QcTerrainColumnGrid.cpp
-    worldgen/QcTerrainDefinitions.cpp worldgen/QcTerrainGenerator.cpp worldgen/QcTreeShape.cpp)
+    worldgen/QcTerrainDefinitions.cpp worldgen/QcTerrainGenerator.cpp worldgen/QcTreeShape.cpp
+    worldgen/villages/QcBoardwalkPlanner.cpp worldgen/villages/QcJettyPlanner.cpp worldgen/villages/QcVillagePlanner.cpp
+    worldgen/villages/QcVillagePlannerLayouts.cpp worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
+    worldgen/villages/QcWetlandShaper.cpp)
 if(MSVC)
     set_source_files_properties(${qc_worldgen_sources} PROPERTIES COMPILE_OPTIONS /fp:precise)
 else()
@@ -222,5 +241,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/storage
     ${CMAKE_CURRENT_SOURCE_DIR}/content
     ${CMAKE_CURRENT_SOURCE_DIR}/worldgen
-    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/showcase)
+    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/showcase
+    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/villages
+    ${CMAKE_CURRENT_SOURCE_DIR}/villages)
 target_link_libraries(qc_server PUBLIC qc_common qc_network qc_base_content Qt::Core Qt::Concurrent)

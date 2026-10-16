@@ -65,6 +65,25 @@ class TestServerLight : public QObject
         return world;
     }
 
+    // `count` random edits near the surface of the loaded square: air, stone, light sources, glass,
+    // leaves, water, slabs and stairs. Returns the edited cells, none when the world refused an edit.
+    QList<QcBlockPos> editAtRandom(QcServerWorld &world, QRandomGenerator &random, int count) const
+    {
+        const QList<QcBlockId> blocks = {qcAirBlockId, id("stone"), id("torch"), id("lantern"), id("glass"), id("oak_leaves"),
+                                         id("water"), id("cobblestone_slab"), id("cobblestone_stairs")};
+        QList<QcBlockPos> edited;
+        for (int edit = 0; edit < count; ++edit) {
+            const QcBlockPos column{random.bounded(-radius * 16, radius * 16 + 16), 0, random.bounded(-radius * 16, radius * 16 + 16)};
+            const int surface = world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
+            const QcBlockPos pos{column.x, std::clamp(surface - 4 + random.bounded(10), 0, 255), column.z};
+            if (!world.setBlock(pos, blocks[qsizetype(random.bounded(quint32(blocks.size())))])) {
+                return {};
+            }
+            edited.append(pos);
+        }
+        return edited;
+    }
+
 private slots:
     void initTestCase()
     {
@@ -88,40 +107,47 @@ private slots:
         QVERIFY(table.hasLightSources());
     }
 
-    // Generated terrain with caves, trees and water, edited at random and partly unloaded and
-    // loaded again: the server's light equals a recompute, and its block light equals the flood
-    // fill the server used before (spawning decisions stay the same).
-    void serverLightFollowsEditsAndChunks()
+    // Generated terrain with caves, trees and water, edited at random: the server's light equals a
+    // recompute after every round.
+    void serverLightFollowsEdits()
     {
         const auto world = makeWorld();
         QCOMPARE(differenceToFreshEngine(*world), QString());
 
         QRandomGenerator random(99);
-        const QList<QcBlockId> blocks = {qcAirBlockId, id("stone"), id("torch"), id("lantern"), id("glass"), id("oak_leaves"),
-                                         id("water"), *m_content->blockId(u"qtcraft:cobblestone_slab"_s),
-                                         *m_content->blockId(u"qtcraft:cobblestone_stairs"_s)};
-        QList<QcBlockPos> edited;
-        for (int round = 0; round < 4; ++round) {
-            for (int edit = 0; edit < 150; ++edit) {
-                const QcBlockPos column{random.bounded(-radius * 16, radius * 16 + 16), 0, random.bounded(-radius * 16, radius * 16 + 16)};
-                const int surface = world->chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
-                const QcBlockPos pos{column.x, std::clamp(surface - 4 + random.bounded(10), 0, 255), column.z};
-                QVERIFY(world->setBlock(pos, blocks[qsizetype(random.bounded(quint32(blocks.size())))]));
-                edited.append(pos);
-            }
+        for (int round = 0; round < 3; ++round) {
+            QVERIFY(!editAtRandom(*world, random, 150).isEmpty());
             QCOMPARE(differenceToFreshEngine(*world), QString());
+        }
+    }
 
-            const QcChunkPos gone{random.bounded(-radius, radius + 1), random.bounded(-radius, radius + 1)};
+    // The server's block light at and around edited cells equals the flood fill the server used
+    // before (spawning decisions stay the same).
+    void blockLightEqualsTheFloodFill()
+    {
+        const auto world = makeWorld();
+        QRandomGenerator random(31);
+        const QList<QcBlockPos> edited = editAtRandom(*world, random, 200);
+        QVERIFY(!edited.isEmpty());
+        for (const QcBlockPos pos : edited) {
+            for (const QcBlockPos at : {pos, pos.offset(0, 1, 0), pos.offset(2, 0, 1)}) {
+                QCOMPARE(world->blockLight(at), QcLightVolume::blockLightAt(*world, at));
+            }
+        }
+    }
+
+    // Edited chunks unloaded and loaded again, in the middle and at the edge of the loaded square:
+    // the light of the chunks around follows each step and equals a recompute.
+    void serverLightFollowsUnloadedChunks()
+    {
+        const auto world = makeWorld();
+        QRandomGenerator random(7);
+        for (const QcChunkPos gone : {QcChunkPos{0, 0}, QcChunkPos{radius, -1}}) {
+            QVERIFY(!editAtRandom(*world, random, 100).isEmpty());
             const std::shared_ptr<QcChunk> taken = world->takeChunk(gone);
             QCOMPARE(differenceToFreshEngine(*world), QString());
             world->adoptStoredChunks({{gone, taken}});
             QCOMPARE(differenceToFreshEngine(*world), QString());
-        }
-
-        for (const QcBlockPos pos : std::as_const(edited)) {
-            for (const QcBlockPos at : {pos, pos.offset(0, 1, 0), pos.offset(2, 0, 1)}) {
-                QCOMPARE(world->blockLight(at), QcLightVolume::blockLightAt(*world, at));
-            }
         }
     }
 

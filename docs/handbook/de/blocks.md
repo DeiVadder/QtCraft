@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
+**QtCraft:** [Ackerboden](#block-qtcraft-farmland) · [Aktivierungsschiene](#block-qtcraft-activator_rail) · [Antriebsschiene](#block-qtcraft-powered_rail) · [Bett](#block-qtcraft-bed) · [Birkenbretter](#block-qtcraft-birch_planks) · [Birkenfalltür](#block-qtcraft-birch_trapdoor) · [Birkenholz](#block-qtcraft-birch_wood) · [Birkenlaub](#block-qtcraft-birch_leaves) · [Birkensetzling](#block-qtcraft-birch_sapling) · [Birkenstamm](#block-qtcraft-birch_log) · [Birkentür](#block-qtcraft-birch_door) · [Blaue Glasscheibe](#block-qtcraft-blue_stained_glass_pane) · [Blaue Orchidee](#block-qtcraft-blue_orchid) · [Blaue Terrakotta](#block-qtcraft-blue_terracotta) · [Blaue Wolle](#block-qtcraft-blue_wool) · [Blauer Beton](#block-qtcraft-blue_concrete) · [Blaues Betonpulver](#block-qtcraft-blue_concrete_powder) · [Blaues Glas](#block-qtcraft-blue_stained_glass) · [Braune Glasscheibe](#block-qtcraft-brown_stained_glass_pane) · [Braune Terrakotta](#block-qtcraft-brown_terracotta) · [Braune Wolle](#block-qtcraft-brown_wool) · [Brauner Beton](#block-qtcraft-brown_concrete) · [Brauner Pilz](#block-qtcraft-brown_mushroom) · [Braunes Betonpulver](#block-qtcraft-brown_concrete_powder) · [Braunes Glas](#block-qtcraft-brown_stained_glass) · [Bruchstein](#block-qtcraft-cobblestone) · [Bücherregal](#block-qtcraft-bookshelf) · [Chunk-Lader](#block-qtcraft-chunk_loader) · [Diamantblock](#block-qtcraft-diamond_block) · [Diamanterz](#block-qtcraft-diamond_ore) · [Eichenbretter](#block-qtcraft-oak_planks) · [Eichenfalltür](#block-qtcraft-oak_trapdoor) · [Eichenholz](#block-qtcraft-oak_wood) · [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate) · [Eichenholzknopf](#block-qtcraft-oak_button) · [Eichenlaub](#block-qtcraft-oak_leaves) · [Eichensetzling](#block-qtcraft-oak_sapling) · [Eichenstamm](#block-qtcraft-oak_log) · [Eichentür](#block-qtcraft-oak_door) · [Eis](#block-qtcraft-ice) · [Eisenblock](#block-qtcraft-iron_block) · [Eisenerz](#block-qtcraft-iron_ore) · [Eisenfalltür](#block-qtcraft-iron_trapdoor) · [Eisengitter](#block-qtcraft-iron_bars) · [Eisentür](#block-qtcraft-iron_door) · [Erde](#block-qtcraft-dirt) · [Fackel](#block-qtcraft-torch) · [Farn](#block-qtcraft-fern) · [Fass](#block-qtcraft-barrel) · [Feuer](#block-qtcraft-fire) · [Fichtenbretter](#block-qtcraft-spruce_planks) · [Fichtenfalltür](#block-qtcraft-spruce_trapdoor) · [Fichtenholz](#block-qtcraft-spruce_wood) · [Fichtennadeln](#block-qtcraft-spruce_leaves) · [Fichtensetzling](#block-qtcraft-spruce_sapling) · [Fichtenstamm](#block-qtcraft-spruce_log) · [Fichtentür](#block-qtcraft-spruce_door) · [Gelbe Glasscheibe](#block-qtcraft-yellow_stained_glass_pane) · [Gelbe Terrakotta](#block-qtcraft-yellow_terracotta) · [Gelbe Wolle](#block-qtcraft-yellow_wool) · [Gelber Beton](#block-qtcraft-yellow_concrete) · [Gelbes Betonpulver](#block-qtcraft-yellow_concrete_powder) · [Gelbes Glas](#block-qtcraft-yellow_stained_glass) · [Geschnittener Sandstein](#block-qtcraft-cut_sandstone) · [Gestampfter Schlamm](#block-qtcraft-packed_mud) · [Glas](#block-qtcraft-glass) · [Glasscheibe](#block-qtcraft-glass_pane) · [Glatter Sandstein](#block-qtcraft-smooth_sandstone) · [Glattstein](#block-qtcraft-polished_stone) · [Glocke](#block-qtcraft-bell) · [Glühwürmchenglas](#block-qtcraft-firefly_glass) · [Goldblock](#block-qtcraft-gold_block) · [Golderz](#block-qtcraft-gold_ore) · [Grasblock](#block-qtcraft-grass_block) · [Graue Glasscheibe](#block-qtcraft-gray_stained_glass_pane) · [Graue Terrakotta](#block-qtcraft-gray_terracotta) · [Graue Wolle](#block-qtcraft-gray_wool) · [Grauer Beton](#block-qtcraft-gray_concrete) · [Graues Betonpulver](#block-qtcraft-gray_concrete_powder) · [Graues Glas](#block-qtcraft-gray_stained_glass) · [Grundgestein](#block-qtcraft-bedrock) · [Grüne Glasscheibe](#block-qtcraft-green_stained_glass_pane) · [Grüne Terrakotta](#block-qtcraft-green_terracotta) · [Grüne Wolle](#block-qtcraft-green_wool) · [Grüner Beton](#block-qtcraft-green_concrete) · [Grünes Betonpulver](#block-qtcraft-green_concrete_powder) · [Grünes Glas](#block-qtcraft-green_stained_glass) · [Hebel](#block-qtcraft-lever) · [Hellblaue Glasscheibe](#block-qtcraft-light_blue_stained_glass_pane) · [Hellblaue Terrakotta](#block-qtcraft-light_blue_terracotta) · [Hellblaue Wolle](#block-qtcraft-light_blue_wool) · [Hellblauer Beton](#block-qtcraft-light_blue_concrete) · [Hellblaues Betonpulver](#block-qtcraft-light_blue_concrete_powder) · [Hellblaues Glas](#block-qtcraft-light_blue_stained_glass) · [Hellgraue Glasscheibe](#block-qtcraft-light_gray_stained_glass_pane) · [Hellgraue Terrakotta](#block-qtcraft-light_gray_terracotta) · [Hellgraue Wolle](#block-qtcraft-light_gray_wool) · [Hellgrauer Beton](#block-qtcraft-light_gray_concrete) · [Hellgraues Betonpulver](#block-qtcraft-light_gray_concrete_powder) · [Hellgraues Glas](#block-qtcraft-light_gray_stained_glass) · [Hellgrüne Glasscheibe](#block-qtcraft-lime_stained_glass_pane) · [Hellgrüne Terrakotta](#block-qtcraft-lime_terracotta) · [Hellgrüne Wolle](#block-qtcraft-lime_wool) · [Hellgrüner Beton](#block-qtcraft-lime_concrete) · [Hellgrünes Betonpulver](#block-qtcraft-lime_concrete_powder) · [Hellgrünes Glas](#block-qtcraft-lime_stained_glass) · [Hohes Gras](#block-qtcraft-tall_grass) · [Kaktus](#block-qtcraft-cactus) · [Karottenpflanze](#block-qtcraft-carrot_crop) · [Kartoffelpflanze](#block-qtcraft-potato_crop) · [Kies](#block-qtcraft-gravel) · [Klebriger Signalkolben](#block-qtcraft-sticky_signal_piston) · [Kleine Fackel](#block-qtcraft-small_torch) · [Kohleblock](#block-qtcraft-coal_block) · [Kolbenkopf](#block-qtcraft-signal_piston_head) · [Komposter](#block-qtcraft-composter) · [Kornblume](#block-qtcraft-cornflower) · [Kürbis](#block-qtcraft-pumpkin) · [Kürbisstängel](#block-qtcraft-pumpkin_stem) · [Lapislazuliblock](#block-qtcraft-lapis_block) · [Lapislazulierz](#block-qtcraft-lapis_ore) · [Laterne](#block-qtcraft-lantern) · [Lehmziegel](#block-qtcraft-mud_bricks) · [Leiter](#block-qtcraft-ladder) · [Löwenzahn](#block-qtcraft-dandelion) · [Magentafarbene Glasscheibe](#block-qtcraft-magenta_stained_glass_pane) · [Magentafarbene Terrakotta](#block-qtcraft-magenta_terracotta) · [Magentafarbene Wolle](#block-qtcraft-magenta_wool) · [Magentafarbener Beton](#block-qtcraft-magenta_concrete) · [Magentafarbenes Betonpulver](#block-qtcraft-magenta_concrete_powder) · [Magentafarbenes Glas](#block-qtcraft-magenta_stained_glass) · [Magmablock](#block-qtcraft-magma_block) · [Maiglöckchen](#block-qtcraft-lily_of_the_valley) · [Melone](#block-qtcraft-melon) · [Melonenstängel](#block-qtcraft-melon_stem) · [Minenlampe](#block-qtcraft-mine_lamp) · [Mohn](#block-qtcraft-poppy) · [Obsidian](#block-qtcraft-obsidian) · [Ofen](#block-qtcraft-furnace) · [Orangefarbene Glasscheibe](#block-qtcraft-orange_stained_glass_pane) · [Orangefarbene Terrakotta](#block-qtcraft-orange_terracotta) · [Orangefarbene Wolle](#block-qtcraft-orange_wool) · [Orangefarbener Beton](#block-qtcraft-orange_concrete) · [Orangefarbenes Betonpulver](#block-qtcraft-orange_concrete_powder) · [Orangefarbenes Glas](#block-qtcraft-orange_stained_glass) · [Packeis](#block-qtcraft-packed_ice) · [Rosafarbene Glasscheibe](#block-qtcraft-pink_stained_glass_pane) · [Rosafarbene Terrakotta](#block-qtcraft-pink_terracotta) · [Rosafarbene Wolle](#block-qtcraft-pink_wool) · [Rosafarbener Beton](#block-qtcraft-pink_concrete) · [Rosafarbenes Betonpulver](#block-qtcraft-pink_concrete_powder) · [Rosafarbenes Glas](#block-qtcraft-pink_stained_glass) · [Rote Glasscheibe](#block-qtcraft-red_stained_glass_pane) · [Rote Terrakotta](#block-qtcraft-red_terracotta) · [Rote Wolle](#block-qtcraft-red_wool) · [Roter Beton](#block-qtcraft-red_concrete) · [Roter Pilz](#block-qtcraft-red_mushroom) · [Rotes Betonpulver](#block-qtcraft-red_concrete_powder) · [Rotes Glas](#block-qtcraft-red_stained_glass) · [Sand](#block-qtcraft-sand) · [Sandstein](#block-qtcraft-sandstone) · [Schiene](#block-qtcraft-rail) · [Schlamm](#block-qtcraft-mud) · [Schleimblock](#block-qtcraft-slime_block) · [Schneeblock](#block-qtcraft-snow_block) · [Schneeschicht](#block-qtcraft-snow_layer) · [Schwarze Glasscheibe](#block-qtcraft-black_stained_glass_pane) · [Schwarze Terrakotta](#block-qtcraft-black_terracotta) · [Schwarze Wolle](#block-qtcraft-black_wool) · [Schwarzer Beton](#block-qtcraft-black_concrete) · [Schwarzes Betonpulver](#block-qtcraft-black_concrete_powder) · [Schwarzes Glas](#block-qtcraft-black_stained_glass) · [Sensorschiene](#block-qtcraft-detector_rail) · [Signal-Repeater](#block-qtcraft-signal_repeater) · [Signalbeobachter](#block-qtcraft-signal_observer) · [Signalerz](#block-qtcraft-signal_ore) · [Signalfackel](#block-qtcraft-signal_torch) · [Signalfackel (aus)](#block-qtcraft-signal_torch_off) · [Signalkolben](#block-qtcraft-signal_piston) · [Signalkomparator](#block-qtcraft-signal_comparator) · [Signallampe](#block-qtcraft-signal_lamp) · [Signallampe (an)](#block-qtcraft-signal_lamp_lit) · [Signalspender](#block-qtcraft-signal_dispenser) · [Signalstaub](#block-qtcraft-signal_dust) · [Signaltrichter](#block-qtcraft-signal_hopper) · [Signalwerfer](#block-qtcraft-signal_dropper) · [Spinnennetz](#block-qtcraft-cobweb) · [Stein](#block-qtcraft-stone) · [Steindruckplatte](#block-qtcraft-stone_pressure_plate) · [Steinknopf](#block-qtcraft-stone_button) · [Steinkohle](#block-qtcraft-coal_ore) · [Steinziegel](#block-qtcraft-stone_bricks) · [Strohballen](#block-qtcraft-hay_block) · [Terrakotta](#block-qtcraft-terracotta) · [Ton](#block-qtcraft-clay) · [Toter Busch](#block-qtcraft-dead_bush) · [Trampelpfad](#block-qtcraft-dirt_path) · [Truhe](#block-qtcraft-chest) · [Türkise Glasscheibe](#block-qtcraft-cyan_stained_glass_pane) · [Türkise Terrakotta](#block-qtcraft-cyan_terracotta) · [Türkise Wolle](#block-qtcraft-cyan_wool) · [Türkiser Beton](#block-qtcraft-cyan_concrete) · [Türkises Betonpulver](#block-qtcraft-cyan_concrete_powder) · [Türkises Glas](#block-qtcraft-cyan_stained_glass) · [Violette Glasscheibe](#block-qtcraft-purple_stained_glass_pane) · [Violette Terrakotta](#block-qtcraft-purple_terracotta) · [Violette Wolle](#block-qtcraft-purple_wool) · [Violetter Beton](#block-qtcraft-purple_concrete) · [Violettes Betonpulver](#block-qtcraft-purple_concrete_powder) · [Violettes Glas](#block-qtcraft-purple_stained_glass) · [Weizenpflanze](#block-qtcraft-wheat_crop) · [Weiße Glasscheibe](#block-qtcraft-white_stained_glass_pane) · [Weiße Terrakotta](#block-qtcraft-white_terracotta) · [Weiße Wolle](#block-qtcraft-white_wool) · [Weißer Beton](#block-qtcraft-white_concrete) · [Weißes Betonpulver](#block-qtcraft-white_concrete_powder) · [Weißes Glas](#block-qtcraft-white_stained_glass) · [Werkbank](#block-qtcraft-crafting_table) · [Wilde Karotten](#block-qtcraft-wild_carrots) · [Wilde Kartoffeln](#block-qtcraft-wild_potatoes) · [Ziegel](#block-qtcraft-bricks) · [Zierlauch](#block-qtcraft-allium) · [Zuckerrohr](#block-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -94,6 +94,36 @@ Schiene, die Loren beschleunigt, solange sie Signal-Dust-Strom bekommt, und sie 
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-bed"></a>Bett
+
+Zwei Blöcke lang: Gesetzt wird das Fußende, das Kopfende liegt einen Block weiter in Blickrichtung; wer eine Hälfte abbaut, nimmt das ganze Bett. Dörfer zählen jedes Kopfende in ihrem Gebiet; später schlafen Dorfbewohner darin.
+
+| | |
+|---|---|
+| ID | `qtcraft:bed` |
+| Härte | 0,2 |
+| Abbauen mit der Hand | 0,3 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,05 s: [Diamantaxt](tools.md#item-qtcraft-diamond_axe) |
+| Beute | [Bett](#block-qtcraft-bed) |
+| Lichtdämpfung | 0 von 15 |
+| Brennbar | fängt Feuer 20, brennt ab 30 (0 bis 100) |
+| Klang | Holz |
+| Zustände | facing (north, east, south, west); part (foot, head) |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Beliebige Wolle](tags.md#tag-qtcraft-wool) | [Bett](#block-qtcraft-bed) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
+
 ### <a id="block-qtcraft-birch_planks"></a>Birkenbretter
 
 Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
@@ -125,7 +155,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Birkenfalltür](#block-qtcraft-birch_trapdoor), [Birkenstufe](parts.md#block-qtcraft-birch_slab), [Birkentreppe](parts.md#block-qtcraft-birch_stairs), [Birkentür](#block-qtcraft-birch_door), [Birkenzaun](parts.md#block-qtcraft-birch_fence), [Birkenzauntor](parts.md#block-qtcraft-birch_fence_gate), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -414,7 +444,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Blauer Teppich](parts.md#block-qtcraft-blue_wool_carpet), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Blauer Teppich](parts.md#block-qtcraft-blue_wool_carpet), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-blue_concrete"></a>Blauer Beton
 
@@ -575,7 +605,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Brauner Teppich](parts.md#block-qtcraft-brown_wool_carpet), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Brauner Teppich](parts.md#block-qtcraft-brown_wool_carpet), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-brown_concrete"></a>Brauner Beton
 
@@ -868,7 +898,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Eichenfalltür](#block-qtcraft-oak_trapdoor), [Eichenholzdruckplatte](#block-qtcraft-oak_pressure_plate), [Eichenholzknopf](#block-qtcraft-oak_button), [Eichenstufe](parts.md#block-qtcraft-oak_slab), [Eichentreppe](parts.md#block-qtcraft-oak_stairs), [Eichentür](#block-qtcraft-oak_door), [Eichenzaun](parts.md#block-qtcraft-oak_fence), [Eichenzauntor](parts.md#block-qtcraft-oak_fence_gate), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1311,6 +1341,7 @@ Einfache Erde unter dem Gras.
 | Abbauen mit dem besten Werkzeug | 0,06 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
 | Beute | [Erde](#block-qtcraft-dirt) |
 | Hacke macht daraus | [Ackerboden](#block-qtcraft-farmland) |
+| Schaufel macht daraus | [Trampelpfad](#block-qtcraft-dirt_path) |
 | Klang | Erde |
 
 **Wird verwendet für**
@@ -1319,7 +1350,7 @@ Einfache Erde unter dem Gras.
 
 **Droppt aus**
 
-[Ackerboden](#block-qtcraft-farmland), [Grasblock](#block-qtcraft-grass_block)
+[Ackerboden](#block-qtcraft-farmland), [Grasblock](#block-qtcraft-grass_block), [Trampelpfad](#block-qtcraft-dirt_path)
 
 **Schneller mit**
 
@@ -1467,7 +1498,7 @@ Bauholz; alle Bretter passen in Rezepte, die Bretter verlangen.
 
 **Wird verwendet für**
 
-[Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
+[Bett](#block-qtcraft-bed) (Beliebige Bretter), [Bücherregal](#block-qtcraft-bookshelf) (Beliebige Bretter), [Fass](#block-qtcraft-barrel) (Beliebige Bretter), [Fichtenfalltür](#block-qtcraft-spruce_trapdoor), [Fichtenstufe](parts.md#block-qtcraft-spruce_slab), [Fichtentreppe](parts.md#block-qtcraft-spruce_stairs), [Fichtentür](#block-qtcraft-spruce_door), [Fichtenzaun](parts.md#block-qtcraft-spruce_fence), [Fichtenzauntor](parts.md#block-qtcraft-spruce_fence_gate), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Beliebige Bretter), [Holzhacke](tools.md#item-qtcraft-wooden_hoe) (Beliebige Bretter), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Beliebige Bretter), [Holzschwert](tools.md#item-qtcraft-wooden_sword) (Beliebige Bretter), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Beliebige Bretter), [Komposter](#block-qtcraft-composter) (Beliebige Bretter), [Schüssel](items.md#item-qtcraft-bowl) (Beliebige Bretter), [Signalkolben](#block-qtcraft-signal_piston) (Beliebige Bretter), [Stock](items.md#item-qtcraft-stick) (Beliebige Bretter), [Truhe](#block-qtcraft-chest) (Beliebige Bretter), [Werkbank](#block-qtcraft-crafting_table) (Beliebige Bretter)
 
 **Schneller mit**
 
@@ -1731,7 +1762,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Gelber Teppich](parts.md#block-qtcraft-yellow_wool_carpet), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Gelber Teppich](parts.md#block-qtcraft-yellow_wool_carpet), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-yellow_concrete"></a>Gelber Beton
 
@@ -2002,6 +2033,36 @@ Im Ofen geglätteter Stein.
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
 
+### <a id="block-qtcraft-bell"></a>Glocke
+
+Hängt über dem Treffpunkt in der Mitte jedes Dorfs.
+
+| | |
+|---|---|
+| ID | `qtcraft:bell` |
+| Härte | 5 |
+| Abbauen mit der Hand | 7,5 s |
+| Werkzeug | Spitzhacke (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,63 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
+| Beute | [Glocke](#block-qtcraft-bell) |
+| Lichtdämpfung | 0 von 15 |
+| Braucht Halt | einen festen Block darunter |
+| Klang | Stein |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Glocke](#block-qtcraft-bell) |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+| [Goldbarren](items.md#item-qtcraft-gold_ingot) | · | [Goldbarren](items.md#item-qtcraft-gold_ingot) |  |
+
+**Schneller mit**
+
+[Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
 ### <a id="block-qtcraft-firefly_glass"></a>Glühwürmchenglas
 
 Glas mit einem Glühwürmchen darin. Es schimmert schwach: genug zur Orientierung, zu wenig gegen Monster.
@@ -2107,6 +2168,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 | Abbauen mit dem besten Werkzeug | 0,08 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
 | Beute | [Erde](#block-qtcraft-dirt) |
 | Hacke macht daraus | [Ackerboden](#block-qtcraft-farmland) |
+| Schaufel macht daraus | [Trampelpfad](#block-qtcraft-dirt_path) |
 | Klang | Gras und Pflanzen |
 
 **Schneller mit**
@@ -2204,7 +2266,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grauer Teppich](parts.md#block-qtcraft-gray_wool_carpet), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grauer Teppich](parts.md#block-qtcraft-gray_wool_carpet), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-gray_concrete"></a>Grauer Beton
 
@@ -2375,7 +2437,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Grüner Teppich](parts.md#block-qtcraft-green_wool_carpet), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Grüner Teppich](parts.md#block-qtcraft-green_wool_carpet), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-green_concrete"></a>Grüner Beton
 
@@ -2562,7 +2624,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellblauer Teppich](parts.md#block-qtcraft-light_blue_wool_carpet), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellblauer Teppich](parts.md#block-qtcraft-light_blue_wool_carpet), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-light_blue_concrete"></a>Hellblauer Beton
 
@@ -2723,7 +2785,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrauer Teppich](parts.md#block-qtcraft-light_gray_wool_carpet), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrauer Teppich](parts.md#block-qtcraft-light_gray_wool_carpet), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-light_gray_concrete"></a>Hellgrauer Beton
 
@@ -2884,7 +2946,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Hellgrüner Teppich](parts.md#block-qtcraft-lime_wool_carpet), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Hellgrüner Teppich](parts.md#block-qtcraft-lime_wool_carpet), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-lime_concrete"></a>Hellgrüner Beton
 
@@ -3194,6 +3256,36 @@ Der Kopf eines ausgefahrenen Kolbens.
 **Schneller mit**
 
 [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) (Stufe 1), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe) (Stufe 1), [Steinspitzhacke](tools.md#item-qtcraft-stone_pickaxe) (Stufe 2), [Eisenspitzhacke](tools.md#item-qtcraft-iron_pickaxe) (Stufe 3), [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) (Stufe 4)
+
+### <a id="block-qtcraft-composter"></a>Komposter
+
+Ein Holzkasten an den Feldern der Dörfer. Er ist der Arbeitsplatz der Bauern.
+
+| | |
+|---|---|
+| ID | `qtcraft:composter` |
+| Härte | 0,6 |
+| Abbauen mit der Hand | 0,9 s |
+| Werkzeug | Axt (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,08 s: [Goldaxt](tools.md#item-qtcraft-golden_axe) |
+| Beute | [Komposter](#block-qtcraft-composter) |
+| Brennbar | fängt Feuer 5, brennt ab 20 (0 bis 100) |
+| Brennt als Brennstoff | 15 s: [Brennstoffe](tables.md#table-fuels) |
+| Klang | Holz |
+
+**Herstellung**
+
+*Werkbank (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | · | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Komposter](#block-qtcraft-composter) |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | · | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+| [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) | [Beliebige Bretter](tags.md#tag-qtcraft-planks) |  |
+
+**Schneller mit**
+
+[Goldaxt](tools.md#item-qtcraft-golden_axe) (Stufe 1), [Holzaxt](tools.md#item-qtcraft-wooden_axe) (Stufe 1), [Steinaxt](tools.md#item-qtcraft-stone_axe) (Stufe 2), [Eisenaxt](tools.md#item-qtcraft-iron_axe) (Stufe 3), [Diamantaxt](tools.md#item-qtcraft-diamond_axe) (Stufe 4)
 
 ### <a id="block-qtcraft-cornflower"></a>Kornblume
 
@@ -3538,7 +3630,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Magentafarbener Teppich](parts.md#block-qtcraft-magenta_wool_carpet), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Magentafarbener Teppich](parts.md#block-qtcraft-magenta_wool_carpet), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-magenta_concrete"></a>Magentafarbener Beton
 
@@ -4054,7 +4146,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Orangefarbener Teppich](parts.md#block-qtcraft-orange_wool_carpet), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Orangefarbener Teppich](parts.md#block-qtcraft-orange_wool_carpet), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-orange_concrete"></a>Orangefarbener Beton
 
@@ -4243,7 +4335,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rosafarbener Teppich](parts.md#block-qtcraft-pink_wool_carpet), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rosafarbener Teppich](parts.md#block-qtcraft-pink_wool_carpet), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-pink_concrete"></a>Rosafarbener Beton
 
@@ -4404,7 +4496,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Roter Teppich](parts.md#block-qtcraft-red_wool_carpet), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Roter Teppich](parts.md#block-qtcraft-red_wool_carpet), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-red_concrete"></a>Roter Beton
 
@@ -4850,7 +4942,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Schwarzer Teppich](parts.md#block-qtcraft-black_wool_carpet), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Schwarzer Teppich](parts.md#block-qtcraft-black_wool_carpet), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-black_concrete"></a>Schwarzer Beton
 
@@ -5650,6 +5742,27 @@ Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.
 
 [Wüste](biomes.md#biome-qtcraft-desert) (Tote Büsche)
 
+### <a id="block-qtcraft-dirt_path"></a>Trampelpfad
+
+Ein festgetretener Weg, etwas niedriger als der Boden daneben. Dörfer legen ihre Nebenwege damit an; eine Schaufel, auf die Oberseite von Gras oder Erde benutzt, macht einen (jeder Weg nutzt die Schaufel etwas ab, im Kreativmodus nicht). Er lässt Erde fallen, eine Hacke macht Ackerboden daraus, und ein fester Block darauf drückt ihn wieder zu Erde zusammen.
+
+| | |
+|---|---|
+| ID | `qtcraft:dirt_path` |
+| Härte | 0,65 |
+| Abbauen mit der Hand | 0,98 s |
+| Werkzeug | Schaufel (schneller, nicht nötig) |
+| Abbauen mit dem besten Werkzeug | 0,08 s: [Goldschaufel](tools.md#item-qtcraft-golden_shovel) |
+| Beute | [Erde](#block-qtcraft-dirt) |
+| Lichtdämpfung | 0 von 15 |
+| Hacke macht daraus | [Ackerboden](#block-qtcraft-farmland) |
+| Unter einem festen Block wird es zu | [Erde](#block-qtcraft-dirt) |
+| Klang | Gras und Pflanzen |
+
+**Schneller mit**
+
+[Goldschaufel](tools.md#item-qtcraft-golden_shovel) (Stufe 1), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel) (Stufe 1), [Steinschaufel](tools.md#item-qtcraft-stone_shovel) (Stufe 2), [Eisenschaufel](tools.md#item-qtcraft-iron_shovel) (Stufe 3), [Diamantschaufel](tools.md#item-qtcraft-diamond_shovel) (Stufe 4)
+
 ### <a id="block-qtcraft-chest"></a>Truhe
 
 Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.
@@ -5769,7 +5882,7 @@ Weich, leise und brennbar; jede Wolle lässt sich mit Farbstoff umfärben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Türkiser Teppich](parts.md#block-qtcraft-cyan_wool_carpet), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Türkiser Teppich](parts.md#block-qtcraft-cyan_wool_carpet), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle)
 
 ### <a id="block-qtcraft-cyan_concrete"></a>Türkiser Beton
 
@@ -5930,7 +6043,7 @@ Mit einem Farbstoff gefärbte Wolle. Zwei Wolle ergeben drei Teppiche.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Violetter Teppich](parts.md#block-qtcraft-purple_wool_carpet)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Violetter Teppich](parts.md#block-qtcraft-purple_wool_carpet)
 
 ### <a id="block-qtcraft-purple_concrete"></a>Violetter Beton
 
@@ -6112,7 +6225,7 @@ Weicher Block vom Schaf; jede Wolle lässt sich mit einem Farbstoff färben.
 
 **Wird verwendet für**
 
-[Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Weißer Teppich](parts.md#block-qtcraft-white_wool_carpet)
+[Bett](#block-qtcraft-bed) (Beliebige Wolle), [Blaue Wolle](#block-qtcraft-blue_wool) (Beliebige Wolle), [Braune Wolle](#block-qtcraft-brown_wool) (Beliebige Wolle), [Gelbe Wolle](#block-qtcraft-yellow_wool) (Beliebige Wolle), [Graue Wolle](#block-qtcraft-gray_wool) (Beliebige Wolle), [Grüne Wolle](#block-qtcraft-green_wool) (Beliebige Wolle), [Hellblaue Wolle](#block-qtcraft-light_blue_wool) (Beliebige Wolle), [Hellgraue Wolle](#block-qtcraft-light_gray_wool) (Beliebige Wolle), [Hellgrüne Wolle](#block-qtcraft-lime_wool) (Beliebige Wolle), [Magentafarbene Wolle](#block-qtcraft-magenta_wool) (Beliebige Wolle), [Orangefarbene Wolle](#block-qtcraft-orange_wool) (Beliebige Wolle), [Rosafarbene Wolle](#block-qtcraft-pink_wool) (Beliebige Wolle), [Rote Wolle](#block-qtcraft-red_wool) (Beliebige Wolle), [Schwarze Wolle](#block-qtcraft-black_wool) (Beliebige Wolle), [Türkise Wolle](#block-qtcraft-cyan_wool) (Beliebige Wolle), [Violette Wolle](#block-qtcraft-purple_wool) (Beliebige Wolle), [Weißer Teppich](parts.md#block-qtcraft-white_wool_carpet)
 
 **Droppt aus**
 
@@ -6225,7 +6338,7 @@ Gefärbtes Glas; wie Glas zerbricht es ohne Drop.
 
 ### <a id="block-qtcraft-wild_carrots"></a>Wilde Karotten
 
-Wilde Pflanzen in Ebenen und Birkenwäldern; die ersten Karotten für ein Feld.
+Wilde Karotten wachsen in der Welt des Grundspiels nicht: Karotten kommen von den Feldern der Dörfer. Mods (und später Oasen) können sie mit dem gleichnamigen Feature setzen.
 
 | | |
 |---|---|
@@ -6239,13 +6352,9 @@ Wilde Pflanzen in Ebenen und Birkenwäldern; die ersten Karotten für ein Feld.
 | Wird von Flüssigkeiten weggespült | ja |
 | Klang | Gras und Pflanzen |
 
-**Kommt vor in**
-
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Wilde Karotten), [Ebene](biomes.md#biome-qtcraft-plains) (Wilde Karotten)
-
 ### <a id="block-qtcraft-wild_potatoes"></a>Wilde Kartoffeln
 
-Wilde Pflanzen in Taiga und Wäldern; die ersten Kartoffeln für ein Feld.
+Wilde Kartoffeln wachsen in der Welt des Grundspiels nicht: Kartoffeln kommen von den Feldern der Dörfer. Mods (und später Oasen) können sie mit dem gleichnamigen Feature setzen.
 
 | | |
 |---|---|
@@ -6258,10 +6367,6 @@ Wilde Pflanzen in Taiga und Wäldern; die ersten Kartoffeln für ein Feld.
 | Braucht Halt | steht nur auf: [Grasblock](#block-qtcraft-grass_block), [Erde](#block-qtcraft-dirt) |
 | Wird von Flüssigkeiten weggespült | ja |
 | Klang | Gras und Pflanzen |
-
-**Kommt vor in**
-
-[Taiga](biomes.md#biome-qtcraft-taiga) (Wilde Kartoffeln), [Wald](biomes.md#biome-qtcraft-forest) (Wilde Kartoffeln)
 
 ### <a id="block-qtcraft-bricks"></a>Ziegel
 

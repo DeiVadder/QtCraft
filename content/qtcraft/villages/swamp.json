@@ -1,0 +1,46 @@
+{
+    "name": "swamp",
+    "biomes": ["swamp"],
+    "ground": "water",
+    "stilts": { "post": "spruce_log", "stair": "spruce_stairs", "height": 4, "spacing": 3, "maxDepth": 8, "water": 0.06 },
+    "wetland": { "depth": 1, "margin": 4, "fray": 3, "blend": 4, "bottom": "mud" },
+    "centre": "village_swamp_hall",
+    "lamp": "village_swamp_lamp",
+    "path": "spruce_planks",
+    "branchPath": "spruce_slab[type=top]",
+    "crops": [
+        { "block": "potato_crop", "weight": 3 },
+        { "block": "carrot_crop", "weight": 2 },
+        { "block": "wheat_crop", "weight": 1 }
+    ],
+    "foundation": "spruce_planks",
+    "layouts": [
+        { "kind": "street", "weight": 2 },
+        { "kind": "t", "weight": 2 },
+        { "kind": "l", "weight": 2 },
+        { "kind": "tree", "weight": 2, "arms": [2, 4], "bends": [1, 1] },
+        { "kind": "cross", "weight": 1 },
+        { "kind": "plaza", "weight": 1 }
+    ],
+    "pieces": [
+        {
+            "structures": [
+                { "structure": "village_swamp_hut", "weight": 2 },
+                { "structure": "village_swamp_hut_b", "weight": 2 },
+                { "structure": "village_swamp_hut_c", "weight": 2 }
+            ],
+            "weight": 6
+        },
+        {
+            "structures": [
+                { "structure": "village_swamp_house_large" },
+                { "structure": "village_swamp_house_large_b" }
+            ],
+            "weight": 3,
+            "max": 3
+        },
+        { "structure": "village_swamp_garden", "weight": 3, "max": 3 },
+        { "structure": "village_swamp_fisher_hut", "weight": 2, "max": 1 },
+        { "structure": "village_swamp_herb_hut", "weight": 2, "max": 1 }
+    ]
+}

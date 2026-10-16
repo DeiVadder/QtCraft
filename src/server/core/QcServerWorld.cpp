@@ -20,6 +20,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     , m_generator(std::move(generator))
     , m_links(*m_content)
     , m_loaders(*m_content)
+    , m_villages(std::make_unique<QcVillages>(*m_content, *m_generator))
     , m_blockEntities(m_content)
     , m_light(std::make_shared<const QcLightTable>(*m_content), {})
     // Leave cores for the GUI, render, server and meshing threads.
@@ -183,6 +184,7 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     m_hoppers.noteChunk(pos, chunk);
     m_links.noteChunk(chunk);
     m_loaders.noteChunk(chunk);
+    m_villages->noteChunk(chunk);
     m_blockEntities.chunkArrived(chunk, m_marks.sectionsOf(pos, QcBlockTrait::BlockEntity));
     m_fires.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Fire));
 }
@@ -320,6 +322,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     m_hoppers.noteBlock(pos, block);
     m_links.noteBlock(pos, before, block);
     m_loaders.noteBlock(pos, before, block);
+    m_villages->noteBlock(pos, before, block);
     m_blockEntities.placed(pos, before, block);
     m_fires.noteBlock(pos, before, block);
 

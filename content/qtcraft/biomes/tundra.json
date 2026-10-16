@@ -5,6 +5,7 @@
     "baseHeight": 68,
     "heightVariation": 9,
     "surface": "snow_block",
+    "villages": true,
     "subsurface": "dirt",
     "underwater": "gravel",
     "beach": "snow_block",

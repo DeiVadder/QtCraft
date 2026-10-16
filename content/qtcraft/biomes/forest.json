@@ -48,10 +48,6 @@
         {
             "feature": "melon_patch",
             "density": 0.0012
-        },
-        {
-            "feature": "wild_potatoes",
-            "density": 0.002
         }
     ]
 }

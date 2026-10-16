@@ -28,6 +28,7 @@ void QcServerState::applyLimits()
     m_world.blockEntities().setLimits({qsizetype(limits.maxContainers), qsizetype(limits.maxMachines), qsizetype(limits.maxSaplings)});
     m_liquids.setMaxPlanned(qsizetype(limits.liquidPlannedSteps));
     m_world.fires().setLimits({qsizetype(limits.firesPerChunk), qsizetype(limits.fires)});
+    m_world.villages().setLimits({qsizetype(limits.villages), qsizetype(limits.villageBeds), qsizetype(limits.villageWorkstations)});
     m_entities.applyLimits(limits);
     m_growth.setRandomTicksPerSection(int(limits.randomTicksPerSection));
     m_plants.setLeafLimits(limits.leafDecaysPerTick, limits.leafChecksPerTick, limits.leafPendingChecks);

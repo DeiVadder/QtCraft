@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -132,7 +132,7 @@ Use a hoe on grass or dirt with air above it to make farmland; every tilled bloc
 
 **Crops**
 
-Plant wheat seeds, carrots or potatoes on farmland. Crops grow in stages on random ticks (each block gets one about every 68 s) while their chunk is loaded; time while the world is closed does not count. They grow twice as fast on wet farmland and need light of at least 9, from the sky or from lamps. Break a ripe crop for the harvest; an unripe one only gives back what was planted. Seeds come from tall grass, carrots and potatoes from wild plants in plains, forests and taiga, and now and then from zombies.
+Plant wheat seeds, carrots or potatoes on farmland. Crops grow in stages on random ticks (each block gets one about every 68 s) while their chunk is loaded; time while the world is closed does not count. They grow twice as fast on wet farmland and need light of at least 9, from the sky or from lamps. Break a ripe crop for the harvest; an unripe one only gives back what was planted. Seeds come from tall grass. Growing wheat, carrots and potatoes are found only in the fields of villages: harvest a ripe plant there for your first carrots and potatoes (a zombie now and then drops one too).
 
 **Pumpkins and melons**
 
@@ -304,6 +304,32 @@ Rain puts out the fires it falls on, sooner or later (the older the fire, the so
 
 [Snow block](blocks.md#block-qtcraft-snow_block), [Snow layer](blocks.md#block-qtcraft-snow_layer), [Ice](blocks.md#block-qtcraft-ice), [Farmland](blocks.md#block-qtcraft-farmland), [Fire](blocks.md#block-qtcraft-fire)
 
+### <a id="chapter-qtcraft-villages"></a>Villages
+
+**Finding villages**
+
+Villages stand on flat land in plains, deserts, taiga and tundra, and on stilts in the wet parts of swamps; never in oceans, mountains or forests. The world is divided into square regions (384 blocks in the base game), and a region holds at most one village, about half a region away from the next. Where a village goes depends only on the seed, so a world of the same seed has its villages in the same places. Operators find the nearest one with `/locate village`; `/village` shows its state.
+
+**Styles**
+
+Each biome builds in its own style. Plains villages are made of oak and cobblestone with pitched roofs of stairs, a well with a bell in the middle, main roads of cobblestone or gravel, side roads of dirt path and lamp posts. Desert villages are made of sandstone and terracotta with flat roofs, main roads of terracotta or packed mud that stand out against the sand, side roads of cut sandstone and fields with sugar cane by the water. Taiga villages are the plains houses in spruce. Swamp villages stand in the water on stilts of dark spruce: huts with thatched roofs, a meeting hall with the bell on a large platform in the middle, a fisher's hut, a herb hut with mushrooms and raised fields, all joined by boardwalks at one height above the water, with stairs down where a boardwalk reaches dry land. Around them the swamp is shallow water over mud. A biome that has villages but no style of its own builds in the plains style.
+
+**Buildings**
+
+Every village has its own street plan: one long main street through the middle with side streets, four roads from the well to all sides, three in a T or two in an L, a ring road around a square with the well, or roads at all angles that bend; some roads wind along the slopes. Diagonal roads run as staircases, and the houses at them have a forecourt to the road. Roads stop at water and steep slopes. Along them stand small and large houses with beds, fields of wheat, carrots and potatoes, ripe and still growing, with water and paths between the rows, a smithy with furnaces and a church or temple, each with its door to the road. Every kind of house comes in several designs, and no two houses need to look alike: walls of oak, birch or spruce, roofs of wood, cobblestone or brick, a chimney, flowers in front, a shed beside, terracotta in different colours in the desert. Some villages have an animal pen with a pair of pigs or sheep; a village near water has a fisher's hut with a jetty out over the water; large villages have a stone watchtower, taller than every house, with a ladder up to its battlements. Where a main road climbs a terrace by one block, a slab makes the step. Lanterns light the houses inside and lamp posts the roads, so no monsters spawn in them. Houses rest on a foundation where the ground is uneven, and the ground above them is cleared.
+
+**Beds and workstations**
+
+The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. The villagers of a later version will claim a bed and a workstation each, and new villagers will need free beds. A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.
+
+**Villages in mods**
+
+A style is a file in `villages/`: the biomes it builds in, the well, the lamp post, the kinds of buildings with weights and maximum counts, each with one or several designs, the street plans (main street, cross, T, L, ring road, branching roads, winding or straight), the road surfaces for main roads and side roads (one chosen per village, with an optional slab for steps), the crops of the fields and the foundation block and a palette that swaps blocks of the houses. A kind can have rules: a chance per village, a smallest village size (the length of all its roads) or water within reach (then it gets a jetty). A style can stand over water on stilts, with boardwalks for roads and the swamp around it shaped into shallow water over mud. The houses are ordinary structures; `choices` (block swaps, one option per house) and optional `parts` with a chance (chimney, flowers, shed) make every house different. A mod can add a style for its own biome, a new style from the base game's houses with another palette, or new house designs.
+
+**See also**
+
+[Bell](blocks.md#block-qtcraft-bell), [Bed](blocks.md#block-qtcraft-bed), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Lantern](blocks.md#block-qtcraft-lantern), [Plains](biomes.md#biome-qtcraft-plains), [Desert](biomes.md#biome-qtcraft-desert), [Taiga](biomes.md#biome-qtcraft-taiga), [Swamp](biomes.md#biome-qtcraft-swamp), [Mud](blocks.md#block-qtcraft-mud)
+
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
 **When you die**
@@ -417,6 +443,7 @@ Most commands are for **operators**. In single player you are always an operator
 
 - `/list`: who is online
 - `/locatebiome <biome>`: where the nearest place of a biome is
+- `/locate village`: where the nearest village is (operators); `/village [<x> <z>]`: its state as JSON, with beds and workstations
 - `/kick <player> [reason]`: disconnect a player (he may come back)
 - `/ban <player> [reason]`, `/unban <player>`, `/banlist`: keep a name out of this world
 - `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too

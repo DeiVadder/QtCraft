@@ -23,7 +23,7 @@ bool QcOpeners::toggle(QcBlockPos pos, QcBlockId block)
     const QcBlockDefinition &definition = content.block(block);
     QList<std::pair<QcBlockPos, QcBlockId>> changes{{pos, content.withProperty(block, u"open"_s, open)}};
     if (definition.door) {
-        const QcBlockPos other = QcBlockRules::otherDoorHalf(m_state.world(), pos, block);
+        const QcBlockPos other = QcBlockRules::otherHalf(m_state.world(), pos, block);
         const std::optional<QcBlockId> partner = m_state.world().blockAt(other);
         if (partner && content.isSameBlock(*partner, block)) {
             changes.append({other, content.withProperty(*partner, u"open"_s, open)});

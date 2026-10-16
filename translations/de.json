@@ -613,5 +613,11 @@
     "Gave %1 experience levels to %2": "%2 hat %1 Erfahrungsstufen bekommen",
     "Gave %1 experience points to %2": "%2 hat %1 Erfahrungspunkte bekommen",
     "Level %1 of %2 holds at most %3 points; use levels or /xp add": "Stufe %1 von %2 fasst höchstens %3 Punkte; nimm Stufen oder /xp add",
-    "%1 has experience level %2 and %3 of %4 points towards the next (%5 points in all)": "%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)"
+    "%1 has experience level %2 and %3 of %4 points towards the next (%5 points in all)": "%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)",
+    "Usage: /locate village": "Verwendung: /locate village",
+    "Finds the nearest village.": "Findet das nächste Dorf.",
+    "Usage: /village [<x> <z>]": "Verwendung: /village [<x> <z>]",
+    "Shows the state of the nearest village as JSON.": "Zeigt den Zustand des nächsten Dorfs als JSON.",
+    "No village within %1 blocks": "Kein Dorf im Umkreis von %1 Blöcken",
+    "Village (%1, %2) at %3 %4 %5, %6 blocks away": "Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt"
 }

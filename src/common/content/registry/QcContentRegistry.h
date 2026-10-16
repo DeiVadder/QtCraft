@@ -18,6 +18,7 @@
 #include "QcStructureDefinition.h"
 #include "QcCommandMacroDefinition.h"
 #include "QcTextureDefinition.h"
+#include "QcVillageDefinitions.h"
 #include "QcWeatherDefinition.h"
 #include "QcWorldgenDefinitions.h"
 #include "QcWorldTypeDefinitions.h"
@@ -164,6 +165,12 @@ public:
     // What the weather does to the world (server side only); a later pack replaces it.
     void setWeather(QcWeatherDefinition weather) { m_weather = std::move(weather); }
     const QcWeatherDefinition &weather() const { return m_weather; }
+    // Village styles and settings (decision E-403, server side only): styles replaced by name, the
+    // settings by a later pack.
+    void registerVillageStyle(QcVillageStyleDefinition style);
+    const QList<QcVillageStyleDefinition> &villageStyles() const { return m_villageStyles; }
+    void setVillageSettings(QcVillageSettings settings) { m_villageSettings = std::move(settings); }
+    const QcVillageSettings &villageSettings() const { return m_villageSettings; }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -227,6 +234,9 @@ private:
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
     QcWeatherDefinition m_weather;
+    QList<QcVillageStyleDefinition> m_villageStyles;
+    QHash<QString, qsizetype> m_villageStyleIndex;
+    QcVillageSettings m_villageSettings;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

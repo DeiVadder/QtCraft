@@ -2,6 +2,8 @@
 #include "QcClientSession.h"
 #include "QcControlInterface.h"
 #include "QcLocalServerHost.h"
+#include "QcPhysics.h"
+#include "QcRaycast.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcTransport.h"
 
@@ -82,6 +84,45 @@ private:
             total += slot.value(u"item"_s).toString() == item ? slot.value(u"count"_s).toInt() : 0;
         }
         return total;
+    }
+
+    // The single creature within eight metres as the client shows it, or nothing.
+    std::optional<QJsonObject> onlyCreatureNearby()
+    {
+        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        return around.size() == 1 ? std::optional(around.first().toObject()) : std::nullopt;
+    }
+
+    // Waits until the client shows the creature still at one place for two ticks and returns it.
+    std::optional<QJsonObject> settledCreature()
+    {
+        std::optional<QJsonObject> creature;
+        const bool settled = QTest::qWaitFor(
+            [&] {
+                const std::optional<QJsonObject> before = onlyCreatureNearby();
+                request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+                creature = onlyCreatureNearby();
+                return before && creature && before->value(u"position"_s) == creature->value(u"position"_s);
+            },
+            timeoutMs);
+        return settled ? creature : std::nullopt;
+    }
+
+    // The ground cell beyond `body` (a body of `width` at `centre`) along `direction` whose column
+    // the body does not reach, so a block may be placed above it.
+    static QcBlockPos groundCellBeyond(const QcVec3 &centre, const QcVec3 &direction, double width, int groundY)
+    {
+        const double half = width / 2.0;
+        for (double distance = 1.0;; distance += 0.25) {
+            const QcVec3 at = centre + direction * distance;
+            const int x = int(std::floor(at.x));
+            const int z = int(std::floor(at.z));
+            const bool apartX = x >= centre.x + half || x + 1 <= centre.x - half;
+            const bool apartZ = z >= centre.z + half || z + 1 <= centre.z - half;
+            if (apartX || apartZ) {
+                return {x, groundY, z};
+            }
+        }
     }
 
 private slots:
@@ -443,29 +484,38 @@ private slots:
         chat(u"/fill ~-6 ~ ~-6 ~6 ~6 ~6 air"_s);
         chat(u"/gamerule mobSpawning false"_s);
         request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 270}, {u"pitch"_s, 0}});
-        chat(u"/summon pig"_s);
         chat(u"/give dirt 1"_s);
         QVERIFY(select(u"qtcraft:dirt"_s));
-        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 6}});
-        // The pig (landed after the summon) stands still in a frozen world, between the player and
-        // the aimed block.
+        // In a frozen world the pig gets exactly the ticks that are stepped, however slow the
+        // machine (in real time a slow client gave it seconds to walk off). It lands within them
+        // and may still take a step; the aimed cell below allows for that.
         chat(u"/tick freeze"_s);
-
-        // Aim at the ground block one metre beyond the pig, as seen from the player.
+        chat(u"/summon pig"_s);
+        chat(u"/tick step 10"_s);
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
-        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
-        QCOMPARE(around.size(), 1);
-        const QJsonArray at = around.first().toObject().value(u"position"_s).toArray();
-        const QcVec3 pig{at.at(0).toDouble(), at.at(1).toDouble(), at.at(2).toDouble()};
-        const QcVec3 beyond = pig + QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized();
-        const int x = int(std::floor(beyond.x));
-        const int y = int(std::floor(feet.y)) - 1;
-        const int z = int(std::floor(beyond.z));
-        const QJsonObject used = request({{u"cmd"_s, u"use"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
+        const auto landed = [&] {
+            const std::optional<QJsonObject> creature = onlyCreatureNearby();
+            return creature && position(*creature).y == feet.y;
+        };
+        QVERIFY(QTest::qWaitFor(landed, timeoutMs));
+        const std::optional<QJsonObject> settled = settledCreature();
+        QVERIFY(settled);
+
+        // Aim at the ground beyond the pig, as seen from the player, in a column the pig's body
+        // leaves free (a block is never placed into a creature).
+        const QcVec3 pig = position(*settled);
+        const std::shared_ptr<const QcContentRegistry> content = m_session->content();
+        const double width = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)].width;
+        const QcBlockPos ground = groundCellBeyond(pig, QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized(), width, int(std::floor(feet.y)) - 1);
+        const QcVec3 face{ground.x + 0.5, ground.y + 1.0, ground.z + 0.5};
+        QVERIFY((face - (feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0})).length() < QcRaycast::playerReach);
+        const QJsonObject used = request({{u"cmd"_s, u"use"_s}, {u"x"_s, ground.x}, {u"y"_s, ground.y}, {u"z"_s, ground.z}, {u"face"_s, u"up"_s}});
         QVERIFY2(used.value(u"ok"_s).toBool(), QJsonDocument(used).toJson().constData());
-        QCOMPARE(used.value(u"targetEntity"_s).toInteger(), around.first().toObject().value(u"id"_s).toInteger());
-        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
-        QCOMPARE(request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + 1}, {u"z"_s, z}}).value(u"block"_s).toString(), u"qtcraft:dirt"_s);
+        QCOMPARE(used.value(u"targetEntity"_s).toInteger(), settled->value(u"id"_s).toInteger());
+
+        // The server's answer arrives when it arrives; under load that is many ticks later.
+        const auto placed = [&] { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, ground.x}, {u"y"_s, ground.y + 1}, {u"z"_s, ground.z}}).value(u"block"_s).toString(); };
+        QVERIFY(QTest::qWaitFor([&] { return placed() == u"qtcraft:dirt"_s; }, timeoutMs));
         chat(u"/tick unfreeze"_s);
     }
 

@@ -6,5 +6,6 @@
     "attackDamage": 2.5,
     "tool": "shovel",
     "toolLevel": 2,
-    "toolSpeed": 4.0
+    "toolSpeed": 4.0,
+    "flattens": true
 }

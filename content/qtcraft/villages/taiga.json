@@ -1,0 +1,70 @@
+{
+    "name": "taiga",
+    "biomes": ["taiga"],
+    "centre": "village_plains_well",
+    "lamp": "village_plains_lamp",
+    "path": [
+        { "block": "cobblestone", "step": "cobblestone_slab" },
+        { "block": "gravel", "step": "cobblestone_slab" }
+    ],
+    "branchPath": "dirt_path",
+    "crops": [
+        { "block": "wheat_crop", "weight": 2 },
+        { "block": "carrot_crop", "weight": 1 },
+        { "block": "potato_crop", "weight": 3 }
+    ],
+    "foundation": "cobblestone",
+    "layouts": [
+        { "kind": "tree", "weight": 3, "winding": 0.5 },
+        { "kind": "street", "weight": 2, "winding": 0.5 },
+        { "kind": "l", "weight": 2, "winding": 0.4 },
+        { "kind": "t", "weight": 1, "winding": 0.3 },
+        { "kind": "cross", "weight": 1 }
+    ],
+    "pieces": [
+        {
+            "structures": [
+                { "structure": "village_plains_house_small", "weight": 2 },
+                { "structure": "village_plains_house_small_b", "weight": 2 },
+                { "structure": "village_plains_house_small_c", "weight": 2 }
+            ],
+            "weight": 5
+        },
+        {
+            "structures": [
+                { "structure": "village_plains_house_large" },
+                { "structure": "village_plains_house_large_b" }
+            ],
+            "weight": 3,
+            "max": 4
+        },
+        {
+            "structures": [
+                { "structure": "village_plains_farm" },
+                { "structure": "village_plains_farm_b" }
+            ],
+            "weight": 3,
+            "max": 4
+        },
+        { "structure": "village_plains_smithy", "weight": 2, "max": 1 },
+        { "structure": "village_plains_pen", "max": 1, "chance": 0.5 },
+        {
+            "structure": "village_plains_fisher_hut",
+            "max": 1,
+            "water": 12,
+            "jetty": { "deck": "oak_planks", "post": "oak_log", "width": 3, "over": 5 }
+        },
+        { "structure": "village_plains_tower", "max": 1, "minRoadLength": 200 }
+    ],
+    "palette": {
+        "oak_planks": "spruce_planks",
+        "oak_log": "spruce_log",
+        "oak_stairs": "spruce_stairs",
+        "oak_slab": "spruce_slab",
+        "oak_fence": "spruce_fence",
+        "oak_fence_gate": "spruce_fence_gate",
+        "oak_door": "spruce_door",
+        "white_wool_carpet": "brown_wool_carpet",
+        "poppy": "fern"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "composter_side",
+    "pattern": "barrel_side",
+    "primary": "#7c5a30",
+    "secondary": "#4a3418",
+    "variation": 0.08,
+    "seed": 4105
+}

@@ -51,12 +51,16 @@ qt_add_library(qc_common STATIC
     content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
     content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
     content/parser/QcStructureParser.h content/parser/QcStructureParser.cpp
+    content/parser/QcStructureVariationParser.h content/parser/QcStructureVariationParser.cpp
     content/definitions/QcShowcaseDefinition.h
     content/definitions/QcStructureDefinition.h
     content/definitions/QcWorldTypeDefinitions.h
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
     content/definitions/QcWeatherDefinition.h
+    content/definitions/QcVillageDefinitions.h
     content/parser/QcWeatherParser.h content/parser/QcWeatherParser.cpp
+    content/parser/QcVillageLayoutParser.h content/parser/QcVillageLayoutParser.cpp
+    content/parser/QcVillageParser.h content/parser/QcVillageParser.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp

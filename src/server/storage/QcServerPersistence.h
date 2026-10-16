@@ -83,6 +83,9 @@ private:
     // Opens the chunk storage (a journal of a save that broke off is finished) and hands it to the world.
     [[nodiscard]] QcStatus openChunks(const QString &directory);
     [[nodiscard]] QcStatus readBlockUpdates(const QcWorldStorage &storage);
+    // Reads villages.json; a damaged one is kept aside as villages.json.damaged with a warning and the
+    // villages start empty, refilled from the plans as their chunks load.
+    void restoreVillages(const QcWorldStorage &storage);
     // Hands everything of a save to the storage, the players' files with the world's in one journal
     // (decision E-378); returns the id of the save and an error found while collecting.
     std::pair<quint64, QcStatus> submitSave();
@@ -105,6 +108,9 @@ private:
     std::unique_ptr<QLockFile> m_lock;
     bool m_worldInUse = false;
     bool m_worldTooOld = false;
+    // The change count of the villages (QcVillages::changes) last handed to a save; none: write
+    // villages.json with the next save.
+    std::optional<quint64> m_villagesSaved;
     DamagedFile m_damagedFile;
     QStringList m_openWarnings;
 };

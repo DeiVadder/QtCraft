@@ -1,0 +1,33 @@
+{
+    "name": "village_plains_smithy",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "oak_planks",
+        "L": "oak_log",
+        "G": "glass",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "d": "oak_door[facing=east,half=bottom]",
+        "u": "oak_door[facing=east,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "F": "bed[facing=north,part=foot]",
+        "B": "bed[facing=north,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]",
+        "O": "furnace[facing=south]",
+        "S": "cobblestone_stairs[facing=north,half=bottom]",
+        "Z": "cobblestone_stairs[facing=south,half=bottom]",
+        "I": "stone_bricks"
+    },
+    "layers": [
+        ["CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC"],
+        ["LCCCCCCCL", "CB.HPOOIC", "CF..P...C", "C...d..TC", "C...P...C", "C...P...C", "LCDCC...L"],
+        ["LCGCCCCCL", "C...P...C", "G...P...C", "C...u...C", "C...P...C", "C...P...C", "LCUCC...L"],
+        ["LCCCCCCCL", "C...P...C", "C...P...C", "C.l.P.l.C", "C...P...C", "C...P...C", "LCCCC...L"],
+        ["ZZZZZZZZZ", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "PPPPPPPPP", "SSSSSSSSS"],
+        ["         ", "ZZZZZZZZZ", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "SSSSSSSSS", "         "],
+        ["         ", "         ", "ZZZZZZZZZ", "CCCCCCCCC", "SSSSSSSSS", "         ", "         "],
+        ["         ", "         ", "         ", "         ", "         ", "         ", "         "]
+    ]
+}

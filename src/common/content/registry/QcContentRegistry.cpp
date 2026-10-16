@@ -427,6 +427,11 @@ void QcContentRegistry::registerOre(QcOreDefinition definition)
     registerByName(m_ores, m_oreIndex, std::move(definition));
 }
 
+void QcContentRegistry::registerVillageStyle(QcVillageStyleDefinition style)
+{
+    registerByName(m_villageStyles, m_villageStyleIndex, std::move(style));
+}
+
 void QcContentRegistry::registerStructure(QcStructureDefinition structure)
 {
     registerByName(m_structures, m_structureIndex, std::move(structure));

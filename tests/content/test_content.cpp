@@ -215,6 +215,10 @@ private slots:
             << QByteArray(R"({"name":"r","solid":false,"rail":true,"railAction":"boost","states":{"facing":["north","east","south","west"],)"
                           R"("shape":["straight","ascending","curve"],"powered":[false,true]},"textures":{"all":"x"}})")
             << u"cannot have the shape 'curve'"_s;
+        QTest::newRow("bed without states") << QByteArray(R"({"name":"b","bed":true,"textures":{"all":"x"}})") << u"a bed needs"_s;
+        QTest::newRow("bed without horizontal facing")
+            << QByteArray(R"({"name":"b","bed":true,"states":{"facing":["up","down"],"part":["foot","head"]},"textures":{"all":"x"}})")
+            << u"a bed needs"_s;
         QTest::newRow("drop count") << QByteArray(R"({"name":"x","drops":[{"item":"y","count":0}],"textures":{"all":"x"}})")
                                     << u"count"_s;
     }

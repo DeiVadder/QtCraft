@@ -6,6 +6,7 @@
     "heightVariation": 10,
     "terraceHeight": 5,
     "surface": "sand",
+    "villages": true,
     "subsurface": "sand",
     "subsurfaceDepth": 4,
     "underwater": "sand",

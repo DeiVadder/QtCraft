@@ -1,0 +1,15 @@
+{
+    "name": "village_plains_lamp",
+    "palette": {
+        "L": "oak_log",
+        "x": "oak_fence",
+        "o": "lantern[attach=floor]"
+    },
+    "layers": [
+        [" "],
+        ["x"],
+        ["x"],
+        ["L"],
+        ["o"]
+    ]
+}

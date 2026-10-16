@@ -3,6 +3,7 @@
 #include "QcBlockPos.h"
 #include "QcVec3.h"
 
+#include <QHash>
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -22,6 +23,10 @@ struct QcStructureDefinition
     static constexpr int maxItemsPerContainer = 54;
     // Palette index of a cell that keeps what is there.
     static constexpr qint16 keep = -1;
+    // Choices, options of one choice and optional parts each (decision E-404).
+    static constexpr int maxChoices = 8;
+    static constexpr int maxOptions = 16;
+    static constexpr int maxParts = 16;
 
     struct Mob
     {
@@ -70,6 +75,26 @@ struct QcStructureDefinition
         bool heading = false;
     };
 
+    // A choice of the village planner (decision E-404): one of the options is taken per placed copy,
+    // each as likely as the others. An option swaps names (qualified name -> qualified name) in the
+    // palette's block names (states keep their properties) and in the creatures' names; an empty
+    // option keeps the structure as it is.
+    struct Choice
+    {
+        QString name;
+        QList<QHash<QString, QString>> options;
+    };
+
+    // An optional part of the village planner (decision E-404): cells in the structure's palette
+    // written over its own cells with `chance` per placed copy (keep: the structure's own cell).
+    struct Part
+    {
+        QString name;
+        double chance = 0.5;
+        // Palette index per cell like `cells`.
+        QList<qint16> cells;
+    };
+
     QString name;
     QString translationKey;
     int sizeX = 0;
@@ -87,6 +112,9 @@ struct QcStructureDefinition
     QList<QcBlockPos> growing;
     // Minecarts standing on rails when the world is made (decision E-382).
     QList<Cart> minecarts;
+    // Variation where villages place the structure; elsewhere it is placed as it is.
+    QList<Choice> choices;
+    QList<Part> parts;
     // Shown as a demo in the showcase world, in the order of `showcaseOrder` (then name).
     bool showcase = false;
     int showcaseOrder = 0;

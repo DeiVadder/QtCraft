@@ -117,12 +117,25 @@ void parseStates(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldR
     }
 }
 
+// Whether the block has the state property `name` with all of `values`.
+bool hasValues(const QcBlockDefinition &block, const QString &name, const QStringList &values)
+{
+    const auto property = std::ranges::find(block.properties, name, &QcBlockProperty::name);
+    return property != block.properties.cend() && std::ranges::all_of(values, [&](const QString &value) { return property->values.contains(value); });
+}
+
 void parsePlacementFields(QcBlockDefinition &block, QcJsonFieldReader &reader)
 {
     block.lightLevel = reader.integer(u"light"_s, 0, 0, QcBlockDefinition::maxLightLevel);
     block.climbable = reader.boolean(u"climbable"_s, false);
     block.toggles = reader.boolean(u"toggles"_s, false);
     block.door = reader.boolean(u"door"_s, false);
+    block.bed = reader.boolean(u"bed"_s, false);
+    // A bed is placed as two halves along its facing: without both it could never be placed.
+    if (block.bed && (!hasValues(block, u"part"_s, {u"foot"_s, u"head"_s})
+                      || !hasValues(block, u"facing"_s, {u"north"_s, u"east"_s, u"south"_s, u"west"_s}))) {
+        reader.fail(u"a bed needs the states 'part' (foot, head) and 'facing' (north, east, south, west)"_s);
+    }
 
     const QString facing = reader.string(u"facing"_s, u"away"_s);
     if (facing == u"toward"_s) {
@@ -497,6 +510,8 @@ void parseFarming(QcBlockDefinition &block, QcJsonFieldReader &reader, const QSt
         QcFarmingParser::parseSoil(block, nested, packNamespace);
     });
     block.tillsInto = reader.name(u"tillsInto"_s, packNamespace);
+    block.flattensInto = reader.name(u"flattensInto"_s, packNamespace);
+    block.coveredInto = reader.name(u"coveredInto"_s, packNamespace);
     if (block.crop.isCrop() && block.growth.grows()) {
         reader.fail(u"a block grows either upwards ('growth') or in stages ('crop')"_s);
     }

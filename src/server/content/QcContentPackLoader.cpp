@@ -301,6 +301,8 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcHandbookChapter chapter) { registry.registerHandbookChapter(std::move(chapter)); });
     loadDefinitions(root.filePath(u"structures"_s), packId, warnings, QcContentParser::parseStructure,
                     [&registry](QcStructureDefinition structure) { registry.registerStructure(std::move(structure)); });
+    loadDefinitions(root.filePath(u"villages"_s), packId, warnings, QcContentParser::parseVillageStyle,
+                    [&registry](QcVillageStyleDefinition style) { registry.registerVillageStyle(std::move(style)); });
     loadDefinitions(root.filePath(u"commands"_s), packId, warnings, QcContentParser::parseCommandMacro,
                     [&registry](QcCommandMacroDefinition macro) { registry.registerCommandMacro(std::move(macro)); });
 }
@@ -342,6 +344,9 @@ void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegi
     }
     if (auto flat = readSettingsFile(root, u"worldgen/flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
         registry.setFlatWorld(std::move(*flat));
+    }
+    if (auto villages = readSettingsFile(root, u"worldgen/villages.json"_s, packId, warnings, QcContentParser::parseVillageSettings)) {
+        registry.setVillageSettings(std::move(*villages));
     }
     if (auto empty = readSettingsFile(root, u"worldgen/void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
         registry.setVoidWorld(std::move(*empty));

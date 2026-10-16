@@ -121,7 +121,8 @@ public:
     bool naturalSpawning() const { return m_naturalSpawning; }
 
     // Gives a chunk seen for the first time its group of animals (chunkAnimalChance, decided by the
-    // seed) and remembers it; later calls for the same chunk do nothing. The chunk must be loaded.
+    // seed) and the creatures of the village pieces in it (an animal pen's pair, decision E-404), and
+    // remembers it; later calls for the same chunk do nothing. The chunk must be loaded.
     void populateChunk(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
     bool isPopulated(QcChunkPos pos) const { return m_populated.contains(pos); }
     const QSet<QcChunkPos> &populatedChunks() const { return m_populated; }
@@ -209,6 +210,8 @@ private:
                      const std::function<quint32()> &nextEntityId);
     // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
     QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
+    // The persistent creatures of the village plan whose spot lies in the chunk.
+    void spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
     // Weighted choice by spawn weight for a `random` value in [0, 1).
     int pickAnimal(const QList<int> &candidates, double random) const;
 

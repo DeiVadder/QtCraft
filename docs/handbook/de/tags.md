@@ -20,7 +20,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Bücherregal](blocks.md#block-qtcraft-bookshelf), [Fass](blocks.md#block-qtcraft-barrel), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Schüssel](items.md#item-qtcraft-bowl), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
+[Bett](blocks.md#block-qtcraft-bed), [Bücherregal](blocks.md#block-qtcraft-bookshelf), [Fass](blocks.md#block-qtcraft-barrel), [Holzaxt](tools.md#item-qtcraft-wooden_axe), [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Holzschaufel](tools.md#item-qtcraft-wooden_shovel), [Holzschwert](tools.md#item-qtcraft-wooden_sword), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Komposter](blocks.md#block-qtcraft-composter), [Schüssel](items.md#item-qtcraft-bowl), [Signalkolben](blocks.md#block-qtcraft-signal_piston), [Stock](items.md#item-qtcraft-stick), [Truhe](blocks.md#block-qtcraft-chest), [Werkbank](blocks.md#block-qtcraft-crafting_table)
 
 ### <a id="tag-qtcraft-terracotta"></a>Beliebige Terrakotta
 
@@ -48,7 +48,7 @@ Rezepte, die diese Gruppe verlangen, nehmen jedes ihrer Items.
 
 **Wird verwendet für**
 
-[Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool)
+[Bett](blocks.md#block-qtcraft-bed), [Blaue Wolle](blocks.md#block-qtcraft-blue_wool), [Braune Wolle](blocks.md#block-qtcraft-brown_wool), [Gelbe Wolle](blocks.md#block-qtcraft-yellow_wool), [Graue Wolle](blocks.md#block-qtcraft-gray_wool), [Grüne Wolle](blocks.md#block-qtcraft-green_wool), [Hellblaue Wolle](blocks.md#block-qtcraft-light_blue_wool), [Hellgraue Wolle](blocks.md#block-qtcraft-light_gray_wool), [Hellgrüne Wolle](blocks.md#block-qtcraft-lime_wool), [Magentafarbene Wolle](blocks.md#block-qtcraft-magenta_wool), [Orangefarbene Wolle](blocks.md#block-qtcraft-orange_wool), [Rosafarbene Wolle](blocks.md#block-qtcraft-pink_wool), [Rote Wolle](blocks.md#block-qtcraft-red_wool), [Schwarze Wolle](blocks.md#block-qtcraft-black_wool), [Türkise Wolle](blocks.md#block-qtcraft-cyan_wool), [Violette Wolle](blocks.md#block-qtcraft-purple_wool)
 
 ### <a id="tag-qtcraft-chunk_loaders"></a>Beliebiger Chunk-Lader
 

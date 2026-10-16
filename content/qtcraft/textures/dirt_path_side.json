@@ -1,0 +1,8 @@
+{
+    "name": "dirt_path_side",
+    "pattern": "grass_side",
+    "primary": "#86603f",
+    "secondary": "#97794a",
+    "variation": 0.1,
+    "seed": 3708
+}

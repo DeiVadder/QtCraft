@@ -1,0 +1,15 @@
+{
+    "name": "bell",
+    "type": "shaped",
+    "pattern": [
+        "GGG",
+        "GGG",
+        "G G"
+    ],
+    "key": {
+        "G": "gold_ingot"
+    },
+    "result": {
+        "item": "bell"
+    }
+}

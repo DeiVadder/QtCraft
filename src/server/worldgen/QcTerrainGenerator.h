@@ -15,6 +15,7 @@
 #include <optional>
 
 class QcTerrainColumnGrid;
+class QcVillageGenerator;
 
 // Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity
 // and ruggedness, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
@@ -36,6 +37,9 @@ public:
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }
     bool isNaturalGround(QcBlockId block) const override { return m_definitions.naturalGround.contains(block); }
+    [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
+    [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
+    const QcVillageGenerator &villages() const { return *m_villages; }
 
     Column column(int x, int z) const;
     // Top block of the unmodified terrain at a column (before caves and features).
@@ -46,6 +50,8 @@ public:
     // True where a cave carves the terrain (independent of the surface).
     bool isCave(int x, int y, int z) const;
     int seaLevel() const { return m_definitions.seaLevel; }
+    // The block the sea and lakes are filled with.
+    QcBlockId waterBlock() const { return m_definitions.water; }
 
 private:
     using Biome = QcTerrainDefinitions::Biome;
@@ -70,7 +76,8 @@ private:
     void growVein(const Ore &ore, int vein, QcChunkPos pos, QList<QcBlockPos> &cells) const;
     void placeVein(QcChunk &chunk, const Ore &ore, const QList<QcBlockPos> &cells) const;
     // `carved`: per column of the chunk (z * chunkSize + x), whether caves removed its top block.
-    void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved) const;
+    // Columns under and around `village` (may be null) get none.
+    void placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, const QcVillagePlan *village) const;
     void placeFeatureInColumn(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved, int x, int z) const;
     // The first feature of the column's biome that grows there by density, patches and shore.
     [[nodiscard]] std::optional<int> chosenFeature(const Column &column, int x, int z, bool shore) const;
@@ -85,6 +92,8 @@ private:
     QcTerrainDefinitions m_definitions;
     QcCaveCarver m_caves;
     QcPoolPlacer m_pools;
+    // Created in the constructor's body: it reads the terrain columns.
+    std::unique_ptr<QcVillageGenerator> m_villages;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

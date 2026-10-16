@@ -1,0 +1,40 @@
+{
+    "name": "village_swamp_house_large_b",
+    "palette": {
+        ".": "air",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "G": "brown_stained_glass",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "h": "hay_block",
+        "x": "spruce_fence",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]",
+        "k": "spruce_slab[type=bottom]"
+    },
+    "layers": [
+        ["PPPPPPPPPPP", "PPPPPPPPPPP", "PPPPPPPPPPP", "PPPPPPPPPPP", "PPPPPPPPPPP", "PPPPPPPPPPP"],
+        ["LPPPL.LPPPL", "PbfHP.PbfTP", "P...P.P...P", "P...P.P...P", "LPDPL.LPDPL", "x.........x"],
+        ["LPGPL.LPGPL", "G...P.P...G", "P...P.P...P", "G...P.P...G", "LPUPL.LPUPL", "x.........x"],
+        ["LPPPLxLPPPL", "P...P.P...P", "P.l.P.P.l.P", "P...PlP...P", "LPPPLxLPPPL", "x.........x"],
+        ["hhhhhkhhhhh", "hhhhhkhhhhh", "hhhhhkhhhhh", "hhhhhkhhhhh", "hhhhhkhhhhh", "           "],
+        ["           ", " hhh   hhh ", " hhh   hhh ", " hhh   hhh ", "           ", "           "],
+        ["           ", "           ", "  h     h  ", "           ", "           ", "           "],
+        ["           ", "           ", "           ", "           ", "           ", "           "]
+    ],
+    "choices": {
+        "wood": [
+            {},
+            {"spruce_planks": "oak_planks"}
+        ],
+        "roof": [
+            {},
+            {"hay_block": "spruce_planks"},
+            {"hay_block": "brown_wool"}
+        ]
+    }
+}

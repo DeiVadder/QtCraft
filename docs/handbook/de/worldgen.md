@@ -418,10 +418,6 @@ In jedem Chunk dieser Biome versucht.
 | Größe | 4–4 Blöcke |
 | Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
 
-**In Biomen**
-
-[Birkenwald](biomes.md#biome-qtcraft-birch_forest) (0,2 % der Säulen), [Ebene](biomes.md#biome-qtcraft-plains) (0,3 % der Säulen)
-
 ### <a id="feature-qtcraft-wild_potatoes"></a>Wilde Kartoffeln
 
 | | |
@@ -431,10 +427,6 @@ In jedem Chunk dieser Biome versucht.
 | Blöcke | [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) |
 | Größe | 4–4 Blöcke |
 | Wächst auf | [Grasblock](blocks.md#block-qtcraft-grass_block) |
-
-**In Biomen**
-
-[Taiga](biomes.md#biome-qtcraft-taiga) (0,3 % der Säulen), [Wald](biomes.md#biome-qtcraft-forest) (0,2 % der Säulen)
 
 ### <a id="feature-qtcraft-allium"></a>Zierlauch
 

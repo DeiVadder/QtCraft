@@ -13,5 +13,6 @@
         "bottom": "dirt",
         "side": "grass_side"
     },
-    "tillsInto": "farmland"
+    "tillsInto": "farmland",
+    "flattensInto": "dirt_path"
 }

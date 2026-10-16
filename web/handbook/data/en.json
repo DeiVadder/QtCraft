@@ -15,6 +15,7 @@
                 "chapter:qtcraft:health",
                 "chapter:qtcraft:fire",
                 "chapter:qtcraft:weather",
+                "chapter:qtcraft:villages",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -33,7 +34,9 @@
                 "block:qtcraft:activator_rail",
                 "block:qtcraft:allium",
                 "block:qtcraft:barrel",
+                "block:qtcraft:bed",
                 "block:qtcraft:bedrock",
+                "block:qtcraft:bell",
                 "block:qtcraft:birch_door",
                 "block:qtcraft:birch_leaves",
                 "block:qtcraft:birch_log",
@@ -76,6 +79,7 @@
                 "block:qtcraft:coal_ore",
                 "block:qtcraft:cobblestone",
                 "block:qtcraft:cobweb",
+                "block:qtcraft:composter",
                 "block:qtcraft:cornflower",
                 "block:qtcraft:crafting_table",
                 "block:qtcraft:cut_sandstone",
@@ -90,6 +94,7 @@
                 "block:qtcraft:detector_rail",
                 "block:qtcraft:diamond_ore",
                 "block:qtcraft:dirt",
+                "block:qtcraft:dirt_path",
                 "block:qtcraft:farmland",
                 "block:qtcraft:fern",
                 "block:qtcraft:fire",
@@ -650,12 +655,6 @@
                             "note": "16 % of columns",
                             "target": "feature:qtcraft:tall_grass",
                             "text": "Tall grass"
-                        },
-                        {
-                            "icon": "qtcraft:wild_carrots",
-                            "note": "0.2 % of columns",
-                            "target": "feature:qtcraft:wild_carrots",
-                            "text": "Wild carrots"
                         }
                     ],
                     "recipes": [
@@ -990,12 +989,6 @@
                             "note": "15 % of columns",
                             "target": "feature:qtcraft:tall_grass",
                             "text": "Tall grass"
-                        },
-                        {
-                            "icon": "qtcraft:wild_potatoes",
-                            "note": "0.2 % of columns",
-                            "target": "feature:qtcraft:wild_potatoes",
-                            "text": "Wild potatoes"
                         }
                     ],
                     "recipes": [
@@ -1336,12 +1329,6 @@
                             "note": "30 % of columns",
                             "target": "feature:qtcraft:tall_grass",
                             "text": "Tall grass"
-                        },
-                        {
-                            "icon": "qtcraft:wild_carrots",
-                            "note": "0.3 % of columns",
-                            "target": "feature:qtcraft:wild_carrots",
-                            "text": "Wild carrots"
                         }
                     ],
                     "recipes": [
@@ -1552,7 +1539,7 @@
                     "title": "Creatures"
                 }
             ],
-            "text": "Low wet land with clay, sugar cane and, at night, fireflies.",
+            "text": "Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand on stilts in the water.",
             "title": "Swamp"
         },
         "biome:qtcraft:taiga": {
@@ -1694,12 +1681,6 @@
                             "note": "8 % of columns",
                             "target": "feature:qtcraft:tall_grass",
                             "text": "Tall grass"
-                        },
-                        {
-                            "icon": "qtcraft:wild_potatoes",
-                            "note": "0.3 % of columns",
-                            "target": "feature:qtcraft:wild_potatoes",
-                            "text": "Wild potatoes"
                         }
                     ],
                     "recipes": [
@@ -2442,6 +2423,197 @@
             "text": "Holds as much as a chest and fits in a single block row next to others.",
             "title": "Barrel"
         },
+        "block:qtcraft:bed": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Bed",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bed"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.2"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.3 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "value": "0.05 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 20, burns away 30 (0 to 100)"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west); part (foot, head)"
+                }
+            ],
+            "icon": "qtcraft:bed",
+            "id": "block:qtcraft:bed",
+            "name": "qtcraft:bed",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:black_wool",
+                                    "note": "",
+                                    "target": "tag:qtcraft:wool",
+                                    "text": "Any wool"
+                                },
+                                {
+                                    "icon": "qtcraft:black_wool",
+                                    "note": "",
+                                    "target": "tag:qtcraft:wool",
+                                    "text": "Any wool"
+                                },
+                                {
+                                    "icon": "qtcraft:black_wool",
+                                    "note": "",
+                                    "target": "tag:qtcraft:wool",
+                                    "text": "Any wool"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bed",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:bed",
+                                "note": "",
+                                "target": "block:qtcraft:bed",
+                                "text": "Bed"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "Two blocks long: placed from the foot, the head lies one block further in the direction you look; breaking either half takes the bed. Villages count every bed head inside them; later villagers sleep in them.",
+            "title": "Bed"
+        },
         "block:qtcraft:bedrock": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -2475,6 +2647,204 @@
             ],
             "text": "The unbreakable floor of the world.",
             "title": "Bedrock"
+        },
+        "block:qtcraft:bell": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Bell",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:bell"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "7.5 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                    ],
+                    "value": "a solid block below"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:bell",
+            "id": "block:qtcraft:bell",
+            "name": "qtcraft:bell",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:gold_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:gold_ingot",
+                                    "text": "Gold ingot"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:bell",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:bell",
+                                "note": "",
+                                "target": "block:qtcraft:bell",
+                                "text": "Bell"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "Hangs over the meeting point in the middle of every village.",
+            "title": "Bell"
         },
         "block:qtcraft:birch_door": {
             "category": "blocks",
@@ -3614,6 +3984,12 @@
                             "text": "Barrel"
                         },
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:birch_door",
                             "note": "",
                             "target": "block:qtcraft:birch_door",
@@ -3666,6 +4042,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:chest",
                             "text": "Chest"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
                         },
                         {
                             "icon": "qtcraft:crafting_table",
@@ -5656,6 +6038,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool_carpet",
                             "note": "",
                             "target": "block:qtcraft:black_wool_carpet",
@@ -6975,6 +7363,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -9335,6 +9729,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -11850,6 +12250,205 @@
             "text": "Found in caves. Anything caught in it moves at a quarter of its speed and sinks slowly; breaking it gives string.",
             "title": "Cobweb"
         },
+        "block:qtcraft:composter": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Composter",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:composter"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.6"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.9 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Axe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        }
+                    ],
+                    "value": "0.08 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 5, burns away 20 (0 to 100)"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "wood"
+                }
+            ],
+            "icon": "qtcraft:composter",
+            "id": "block:qtcraft:composter",
+            "name": "qtcraft:composter",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "tag:qtcraft:planks",
+                                    "text": "Any planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:composter",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:composter",
+                                "note": "",
+                                "target": "block:qtcraft:composter",
+                                "text": "Composter"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_axe",
+                            "text": "Golden axe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_axe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_axe",
+                            "text": "Wooden axe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_axe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_axe",
+                            "text": "Stone axe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_axe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_axe",
+                            "text": "Iron axe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_axe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_axe",
+                            "text": "Diamond axe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A wooden bin at the fields of villages. It is the farmers' workstation.",
+            "title": "Composter"
+        },
         "block:qtcraft:cornflower": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -13276,6 +13875,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -14367,6 +14972,18 @@
                     "value": ""
                 },
                 {
+                    "label": "Shovel makes",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
                     "label": "Sound",
                     "links": [
                     ],
@@ -14395,6 +15012,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
                         {
                             "icon": "qtcraft:farmland",
                             "note": "",
@@ -14530,6 +15153,144 @@
             ],
             "text": "Plain earth below the grass.",
             "title": "Dirt"
+        },
+        "block:qtcraft:dirt_path": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Dirt path",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:dirt_path"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0.65"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.98 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Shovel (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_shovel",
+                            "note": "",
+                            "target": "item:qtcraft:golden_shovel",
+                            "text": "Golden shovel"
+                        }
+                    ],
+                    "value": "0.08 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Hoe makes",
+                    "links": [
+                        {
+                            "icon": "qtcraft:farmland",
+                            "note": "",
+                            "target": "block:qtcraft:farmland",
+                            "text": "Farmland"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Under a solid block becomes",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "grass and plants"
+                }
+            ],
+            "icon": "qtcraft:dirt_path",
+            "id": "block:qtcraft:dirt_path",
+            "name": "qtcraft:dirt_path",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_shovel",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_shovel",
+                            "text": "Golden shovel"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_shovel",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_shovel",
+                            "text": "Wooden shovel"
+                        },
+                        {
+                            "icon": "qtcraft:stone_shovel",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_shovel",
+                            "text": "Stone shovel"
+                        },
+                        {
+                            "icon": "qtcraft:iron_shovel",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_shovel",
+                            "text": "Iron shovel"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_shovel",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_shovel",
+                            "text": "Diamond shovel"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A trodden path, a little lower than the ground beside it. Villages lay their side roads with it; a shovel used on the top of grass or dirt makes one (each path wears the shovel a little, not in creative mode). It drops dirt, a hoe turns it into farmland, and a solid block placed on it presses it back into dirt.",
+            "title": "Dirt path"
         },
         "block:qtcraft:farmland": {
             "category": "blocks",
@@ -16576,6 +17337,18 @@
                     "value": ""
                 },
                 {
+                    "label": "Shovel makes",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
                     "label": "Sound",
                     "links": [
                     ],
@@ -17922,6 +18695,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -19113,6 +19892,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -22628,6 +23413,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -23819,6 +24610,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -25140,6 +25937,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -26331,6 +27134,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -29612,6 +30421,12 @@
                             "text": "Barrel"
                         },
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:bookshelf",
                             "note": "Any planks",
                             "target": "block:qtcraft:bookshelf",
@@ -29628,6 +30443,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:chest",
                             "text": "Chest"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
                         },
                         {
                             "icon": "qtcraft:crafting_table",
@@ -31949,6 +32770,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -33500,6 +34327,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -36069,6 +36902,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -37581,6 +38420,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
@@ -43810,6 +44655,12 @@
                             "text": "Barrel"
                         },
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:bookshelf",
                             "note": "Any planks",
                             "target": "block:qtcraft:bookshelf",
@@ -43826,6 +44677,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:chest",
                             "text": "Chest"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "Any planks",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
                         },
                         {
                             "icon": "qtcraft:crafting_table",
@@ -48907,6 +49764,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -49257,28 +50120,8 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "Wild carrots",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "Wild carrots",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Found in"
-                }
             ],
-            "text": "Wild plants in plains and birch forests; the first carrots for a field.",
+            "text": "Wild carrots do not grow in the base world: carrots come from the fields of villages. Mods (and later oases) can place them with the feature of the same name.",
             "title": "Wild carrots"
         },
         "block:qtcraft:wild_potatoes": {
@@ -49371,28 +50214,8 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "Wild potatoes",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "Wild potatoes",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Found in"
-                }
             ],
-            "text": "Wild plants in taiga and forests; the first potatoes for a field.",
+            "text": "Wild potatoes do not grow in the base world: potatoes come from the fields of villages. Mods (and later oases) can place them with the feature of the same name.",
             "title": "Wild potatoes"
         },
         "block:qtcraft:yellow_concrete": {
@@ -50341,6 +51164,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "Any wool",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:black_wool",
                             "note": "Any wool",
                             "target": "block:qtcraft:black_wool",
@@ -50776,7 +51605,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- `/list`: who is online\n- `/locatebiome <biome>`: where the nearest place of a biome is\n- `/kick <player> [reason]`: disconnect a player (he may come back)\n- `/ban <player> [reason]`, `/unban <player>`, `/banlist`: keep a name out of this world\n- `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too\n- `/op [player]`, `/deop <player>`: operator rights; `/op` alone lists the operators\n- `/tp <x> <y> <z>`, `/tp <player>`, `/tp <player> <x> <y> <z>`, `/tp <player> <target player>`: teleport\nOperators, bans and the whitelist are saved with the world. The host of a world cannot be kicked, banned or lose his rights.",
+                    "text": "- `/list`: who is online\n- `/locatebiome <biome>`: where the nearest place of a biome is\n- `/locate village`: where the nearest village is (operators); `/village [<x> <z>]`: its state as JSON, with beds and workstations\n- `/kick <player> [reason]`: disconnect a player (he may come back)\n- `/ban <player> [reason]`, `/unban <player>`, `/banlist`: keep a name out of this world\n- `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too\n- `/op [player]`, `/deop <player>`: operator rights; `/op` alone lists the operators\n- `/tp <x> <y> <z>`, `/tp <player>`, `/tp <player> <x> <y> <z>`, `/tp <player> <target player>`: teleport\nOperators, bans and the whitelist are saved with the world. The host of a world cannot be kicked, banned or lose his rights.",
                     "title": "Players"
                 },
                 {
@@ -51194,7 +52023,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Plant wheat seeds, carrots or potatoes on farmland. Crops grow in stages on random ticks (each block gets one about every 68 s) while their chunk is loaded; time while the world is closed does not count. They grow twice as fast on wet farmland and need light of at least 9, from the sky or from lamps. Break a ripe crop for the harvest; an unripe one only gives back what was planted. Seeds come from tall grass, carrots and potatoes from wild plants in plains, forests and taiga, and now and then from zombies.",
+                    "text": "Plant wheat seeds, carrots or potatoes on farmland. Crops grow in stages on random ticks (each block gets one about every 68 s) while their chunk is loaded; time while the world is closed does not count. They grow twice as fast on wet farmland and need light of at least 9, from the sky or from lamps. Break a ripe crop for the harvest; an unripe one only gives back what was planted. Seeds come from tall grass. Growing wheat, carrots and potatoes are found only in the fields of villages: harvest a ripe plant there for your first carrots and potatoes (a zombie now and then drops one too).",
                     "title": "Crops"
                 },
                 {
@@ -52142,6 +52971,148 @@
             ],
             "text": "",
             "title": "Texture packs"
+        },
+        "chapter:qtcraft:villages": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Villages",
+            "facts": [
+            ],
+            "icon": "qtcraft:bell",
+            "id": "chapter:qtcraft:villages",
+            "name": "qtcraft:villages",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Villages stand on flat land in plains, deserts, taiga and tundra, and on stilts in the wet parts of swamps; never in oceans, mountains or forests. The world is divided into square regions (384 blocks in the base game), and a region holds at most one village, about half a region away from the next. Where a village goes depends only on the seed, so a world of the same seed has its villages in the same places. Operators find the nearest one with `/locate village`; `/village` shows its state.",
+                    "title": "Finding villages"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Each biome builds in its own style. Plains villages are made of oak and cobblestone with pitched roofs of stairs, a well with a bell in the middle, main roads of cobblestone or gravel, side roads of dirt path and lamp posts. Desert villages are made of sandstone and terracotta with flat roofs, main roads of terracotta or packed mud that stand out against the sand, side roads of cut sandstone and fields with sugar cane by the water. Taiga villages are the plains houses in spruce. Swamp villages stand in the water on stilts of dark spruce: huts with thatched roofs, a meeting hall with the bell on a large platform in the middle, a fisher's hut, a herb hut with mushrooms and raised fields, all joined by boardwalks at one height above the water, with stairs down where a boardwalk reaches dry land. Around them the swamp is shallow water over mud. A biome that has villages but no style of its own builds in the plains style.",
+                    "title": "Styles"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Every village has its own street plan: one long main street through the middle with side streets, four roads from the well to all sides, three in a T or two in an L, a ring road around a square with the well, or roads at all angles that bend; some roads wind along the slopes. Diagonal roads run as staircases, and the houses at them have a forecourt to the road. Roads stop at water and steep slopes. Along them stand small and large houses with beds, fields of wheat, carrots and potatoes, ripe and still growing, with water and paths between the rows, a smithy with furnaces and a church or temple, each with its door to the road. Every kind of house comes in several designs, and no two houses need to look alike: walls of oak, birch or spruce, roofs of wood, cobblestone or brick, a chimney, flowers in front, a shed beside, terracotta in different colours in the desert. Some villages have an animal pen with a pair of pigs or sheep; a village near water has a fisher's hut with a jetty out over the water; large villages have a stone watchtower, taller than every house, with a ladder up to its battlements. Where a main road climbs a terrace by one block, a slab makes the step. Lanterns light the houses inside and lamp posts the roads, so no monsters spawn in them. Houses rest on a foundation where the ground is uneven, and the ground above them is cleared.",
+                    "title": "Buildings"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "The world remembers every village: its middle, its area, its beds and its workstations (composter: farmer, furnace: smith, barrel: fisher). Beds and workstations you place or break inside a village count at once. The villagers of a later version will claim a bed and a workstation each, and new villagers will need free beds. A village lists at most 64 beds and 64 workstations; the server limits `villageBeds`, `villageWorkstations` and `villages` change that.",
+                    "title": "Beds and workstations"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A style is a file in `villages/`: the biomes it builds in, the well, the lamp post, the kinds of buildings with weights and maximum counts, each with one or several designs, the street plans (main street, cross, T, L, ring road, branching roads, winding or straight), the road surfaces for main roads and side roads (one chosen per village, with an optional slab for steps), the crops of the fields and the foundation block and a palette that swaps blocks of the houses. A kind can have rules: a chance per village, a smallest village size (the length of all its roads) or water within reach (then it gets a jetty). A style can stand over water on stilts, with boardwalks for roads and the swamp around it shaped into shallow water over mud. The houses are ordinary structures; `choices` (block swaps, one option per house) and optional `parts` with a chance (chimney, flowers, shed) make every house different. A mod can add a style for its own biome, a new style from the base game's houses with another palette, or new house designs.",
+                    "title": "Villages in mods"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        },
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Furnace"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Barrel"
+                        },
+                        {
+                            "icon": "qtcraft:farmland",
+                            "note": "",
+                            "target": "block:qtcraft:farmland",
+                            "text": "Farmland"
+                        },
+                        {
+                            "icon": "qtcraft:wheat_crop",
+                            "note": "",
+                            "target": "block:qtcraft:wheat_crop",
+                            "text": "Wheat crop"
+                        },
+                        {
+                            "icon": "qtcraft:lantern",
+                            "note": "",
+                            "target": "block:qtcraft:lantern",
+                            "text": "Lantern"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Swamp"
+                        },
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Villages"
         },
         "chapter:qtcraft:weather": {
             "category": "playing",
@@ -54209,26 +55180,6 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.2 % of columns",
-                            "target": "biome:qtcraft:birch_forest",
-                            "text": "Birch Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.3 % of columns",
-                            "target": "biome:qtcraft:plains",
-                            "text": "Plains"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
             ],
             "text": "",
             "title": "Wild carrots"
@@ -54287,26 +55238,6 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.2 % of columns",
-                            "target": "biome:qtcraft:forest",
-                            "text": "Forest"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "0.3 % of columns",
-                            "target": "biome:qtcraft:taiga",
-                            "text": "Taiga"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "In biomes"
-                }
             ],
             "text": "",
             "title": "Wild potatoes"
@@ -57092,6 +58023,12 @@
                             "text": "Dirt"
                         },
                         {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "block:qtcraft:grass_block",
@@ -57964,6 +58901,24 @@
                     "links": [
                     ],
                     "value": "3.5 health points"
+                },
+                {
+                    "label": "Makes paths from",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
                 }
             ],
             "icon": "qtcraft:diamond_shovel",
@@ -58020,7 +58975,7 @@
                     "title": "How to make it"
                 }
             ],
-            "text": "Digs earth, sand and gravel faster.",
+            "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
             "title": "Diamond shovel"
         },
         "item:qtcraft:diamond_sword": {
@@ -58691,6 +59646,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bell",
+                            "note": "",
+                            "target": "block:qtcraft:bell",
+                            "text": "Bell"
+                        },
                         {
                             "icon": "qtcraft:gold_block",
                             "note": "",
@@ -59390,6 +60351,12 @@
                             "note": "",
                             "target": "block:qtcraft:dirt",
                             "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -60198,6 +61165,24 @@
                     "links": [
                     ],
                     "value": "2 health points"
+                },
+                {
+                    "label": "Makes paths from",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
                 }
             ],
             "icon": "qtcraft:golden_shovel",
@@ -61203,6 +62188,12 @@
                             "note": "",
                             "target": "block:qtcraft:dirt",
                             "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -62497,6 +63488,24 @@
                     "links": [
                     ],
                     "value": "3 health points"
+                },
+                {
+                    "label": "Makes paths from",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
                 }
             ],
             "icon": "qtcraft:iron_shovel",
@@ -62553,7 +63562,7 @@
                     "title": "How to make it"
                 }
             ],
-            "text": "Digs earth, sand and gravel faster.",
+            "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
             "title": "Iron shovel"
         },
         "item:qtcraft:iron_sword": {
@@ -66088,6 +67097,12 @@
                             "text": "Dirt"
                         },
                         {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "block:qtcraft:grass_block",
@@ -66799,6 +67814,24 @@
                     "links": [
                     ],
                     "value": "2.5 health points"
+                },
+                {
+                    "label": "Makes paths from",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
                 }
             ],
             "icon": "qtcraft:stone_shovel",
@@ -66855,7 +67888,7 @@
                     "title": "How to make it"
                 }
             ],
-            "text": "Digs earth, sand and gravel faster.",
+            "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
             "title": "Stone shovel"
         },
         "item:qtcraft:stone_sword": {
@@ -67798,6 +68831,12 @@
                             "text": "Dirt"
                         },
                         {
+                            "icon": "qtcraft:dirt_path",
+                            "note": "",
+                            "target": "block:qtcraft:dirt_path",
+                            "text": "Dirt path"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "block:qtcraft:grass_block",
@@ -68497,6 +69536,24 @@
                         }
                     ],
                     "value": "10 s"
+                },
+                {
+                    "label": "Makes paths from",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
                 }
             ],
             "icon": "qtcraft:wooden_shovel",
@@ -68553,7 +69610,7 @@
                     "title": "How to make it"
                 }
             ],
-            "text": "Digs earth, sand and gravel faster.",
+            "text": "Digs earth, sand and gravel faster. Used on the top of grass or dirt it makes a dirt path.",
             "title": "Wooden shovel"
         },
         "item:qtcraft:wooden_sword": {
@@ -70497,6 +71554,12 @@
                             "text": "Chest"
                         },
                         {
+                            "icon": "qtcraft:composter",
+                            "note": "15 s",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        },
+                        {
                             "icon": "qtcraft:crafting_table",
                             "note": "15 s",
                             "target": "block:qtcraft:crafting_table",
@@ -71997,6 +73060,12 @@
                             "text": "Barrel"
                         },
                         {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
+                        {
                             "icon": "qtcraft:bookshelf",
                             "note": "",
                             "target": "block:qtcraft:bookshelf",
@@ -72013,6 +73082,12 @@
                             "note": "",
                             "target": "block:qtcraft:chest",
                             "text": "Chest"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
                         },
                         {
                             "icon": "qtcraft:crafting_table",
@@ -72328,6 +73403,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:bed",
+                            "note": "",
+                            "target": "block:qtcraft:bed",
+                            "text": "Bed"
+                        },
                         {
                             "icon": "qtcraft:black_wool",
                             "note": "",

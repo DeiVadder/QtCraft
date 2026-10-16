@@ -1,0 +1,46 @@
+{
+    "name": "village_swamp_fisher_hut",
+    "palette": {
+        ".": "air",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "G": "brown_stained_glass",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "h": "hay_block",
+        "x": "spruce_fence",
+        "l": "lantern[attach=ceiling]",
+        "o": "lantern[attach=floor]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "H": "chest[facing=south]",
+        "k": "spruce_slab[type=bottom]",
+        "R": "barrel[facing=south]"
+    },
+    "layers": [
+        ["PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"],
+        ["LPPPLxx", "PbfRP.x", "P...P.x", "PH..P.x", "LPDPL.."],
+        ["LPGPLo.", "G...P..", "P...G..", "G...P..", "LPUPL.."],
+        ["LPPPL..", "P...P..", "P.l.P..", "P...P..", "LPPPL.."],
+        ["hhhhh  ", "hhhhh  ", "hhhhh  ", "hhhhh  ", "hhhhh  "],
+        ["       ", " hhh   ", " hhh   ", " hhh   ", "       "],
+        ["       ", "       ", "  h    ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       "]
+    ],
+    "choices": {
+        "roof": [
+            {},
+            {"hay_block": "spruce_planks"},
+            {"hay_block": "brown_wool"}
+        ]
+    },
+    "parts": [
+        {
+            "name": "rack", "chance": 0.6, "at": [6, 2, 1],
+            "layers": [
+                ["x", "x", "x"],
+                ["k", "k", "k"]
+            ]
+        }
+    ]
+}

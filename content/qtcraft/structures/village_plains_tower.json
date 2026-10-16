@@ -1,0 +1,78 @@
+{
+    "name": "village_plains_tower",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "I": "stone_bricks",
+        "D": "oak_door[facing=north,half=bottom]",
+        "U": "oak_door[facing=north,half=top]",
+        "a": "ladder[attach=north]",
+        "o": "lantern[attach=floor]",
+        "n": "cobblestone_stairs[facing=south,half=top]",
+        "s": "cobblestone_stairs[facing=north,half=top]",
+        "w": "cobblestone_stairs[facing=east,half=top]",
+        "e": "cobblestone_stairs[facing=west,half=top]",
+        "F": "oak_fence",
+        "R": "red_wool"
+    },
+    "layers": [
+        ["IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII"],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C..oC.", ".CCDCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CCUCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CC.CC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".C...C.", ".C...C.", ".CC.CC.", "......."],
+        [".......", ".IIIII.", ".I.a.I.", ".I...I.", ".I...I.", ".IIIII.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".......", ".CCCCC.", ".C.a.C.", ".......", ".C...C.", ".CCCCC.", "......."],
+        [".nnnnn.", "wCCCCCe", "wC.a.Ce", "wC...Ce", "wC...Ce", "wCCCCCe", ".sssss."],
+        ["IIIIIII", "IIIIIII", "IIIaIII", "IIIIIII", "IIIIIII", "IIIIIII", "IIIIIII"],
+        ["C.C.C.C", ".o...o.", "C.....C", ".......", "C.....C", ".o...o.", "C.C.C.C"],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."],
+        [".......", ".......", ".......", ".......", ".......", ".......", "......."]
+    ],
+    "choices": {
+        "stone": [
+            {},
+            {
+                "cobblestone": "stone_bricks",
+                "stone_bricks": "cobblestone",
+                "cobblestone_stairs": "stone_bricks_stairs"
+            }
+        ],
+        "flag": [
+            {},
+            {
+                "red_wool": "blue_wool"
+            },
+            {
+                "red_wool": "yellow_wool"
+            }
+        ]
+    },
+    "parts": [
+        {
+            "name": "flag",
+            "chance": 0.5,
+            "at": [
+                3,
+                13,
+                3
+            ],
+            "layers": [
+                [
+                    "F "
+                ],
+                [
+                    "F "
+                ],
+                [
+                    "FR"
+                ]
+            ]
+        }
+    ]
+}

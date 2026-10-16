@@ -232,6 +232,31 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
     return state;
 }
 
+// The foot of a bed at `target` whose head goes one block further in `facing`; std::nullopt
+// without room or floor for the head.
+[[nodiscard]] std::optional<QcBlockId> bedState(const QcBlockAccess &world, QcBlockId state, QcBlockPos target, const QString &facing)
+{
+    const QcFaceOffset ahead = qcFaceOffset(faceFromName(facing).value_or(QcBlockFace::North));
+    const QcBlockPos head = target.offset(ahead.dx, 0, ahead.dz);
+    if (!replaceableAt(world, head) || !hasSolidFace(world, head.offset(0, -1, 0), QcBlockFace::Up)
+        || !assign(world.content(), state, u"part"_s, u"foot"_s)) {
+        return std::nullopt;
+    }
+    return state;
+}
+
+// A door half needs its partner and the lower one a floor; a bed half only its partner (the floor
+// is checked when it is placed).
+bool pairSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+{
+    if (!hasPartner(world, pos, id)) {
+        return false;
+    }
+    const QcContentRegistry &content = world.content();
+    const bool top = content.property(id, u"half"_s) == u"top"_s;
+    return content.block(id).bed || top || !world.blockAt(pos.offset(0, -1, 0)) || hasSolidFace(world, pos.offset(0, -1, 0), QcBlockFace::Up);
+}
+
 } // namespace
 
 [[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim)
@@ -280,6 +305,9 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
     if (oriented && definition.door) {
         oriented = doorState(world, *oriented, target, aim.hit, facing);
     }
+    if (oriented && definition.bed) {
+        oriented = bedState(world, *oriented, target, facing);
+    }
 
     if (!oriented) {
         return std::nullopt;
@@ -288,9 +316,10 @@ QString facingFor(const QcBlockDefinition &definition, float yaw, float pitch, Q
     // A rail lies along the rails around it, else along the player's view (decision E-382).
     state = definition.rail ? QcRails::shapedState(world, target, *oriented, faceFromName(lookDirection(aim.yaw)))
                             : connectedState(world, target, *oriented);
-    // A door's upper half does not exist yet: the lower one only needs the floor.
-    const bool supported = definition.door ? hasSolidFace(world, target.offset(0, -1, 0), QcBlockFace::Up)
-                                           : isSupported(world, target, state);
+    // A door's upper half and a bed's head do not exist yet: the lower half and the foot only need
+    // the floor.
+    const bool supported = definition.door || definition.bed ? hasSolidFace(world, target.offset(0, -1, 0), QcBlockFace::Up)
+                                                             : isSupported(world, target, state);
     if (!supported) {
         return std::nullopt;
     }
@@ -337,12 +366,8 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     }
 
     const QcBlockDefinition &definition = content.block(id);
-    if (definition.door) {
-        if (!hasDoorPartner(world, pos, id)) {
-            return false;
-        }
-        const bool top = content.property(id, u"half"_s) == u"top"_s;
-        return top || !world.blockAt(pos.offset(0, -1, 0)) || hasSolidFace(world, pos.offset(0, -1, 0), QcBlockFace::Up);
+    if (definition.door || definition.bed) {
+        return pairSupported(world, pos, id);
     }
 
     switch (definition.support) {
@@ -389,21 +414,28 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
     return true;
 }
 
-bool hasDoorPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+bool hasPartner(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
 {
     const QcContentRegistry &content = world.content();
-    const std::optional<QcBlockId> partner = world.blockAt(otherDoorHalf(world, pos, id));
+    const std::optional<QcBlockId> partner = world.blockAt(otherHalf(world, pos, id));
     if (!partner) {
         return true;
     }
 
-    return content.isValidBlock(*partner) && content.isSameBlock(*partner, id)
-           && content.property(*partner, u"half"_s) != content.property(id, u"half"_s);
+    const QString part = content.block(id).bed ? u"part"_s : u"half"_s;
+    return content.isValidBlock(*partner) && content.isSameBlock(*partner, id) && content.property(*partner, part) != content.property(id, part)
+           && (!content.block(id).bed || content.property(*partner, u"facing"_s) == content.property(id, u"facing"_s));
 }
 
-QcBlockPos otherDoorHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+QcBlockPos otherHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
 {
-    return pos.offset(0, world.content().property(id, u"half"_s) == u"top"_s ? -1 : 1, 0);
+    const QcContentRegistry &content = world.content();
+    if (content.block(id).bed) {
+        const QcFaceOffset ahead = qcFaceOffset(faceFromName(content.property(id, u"facing"_s)).value_or(QcBlockFace::North));
+        const int sign = content.property(id, u"part"_s) == u"head"_s ? -1 : 1;
+        return pos.offset(sign * ahead.dx, 0, sign * ahead.dz);
+    }
+    return pos.offset(0, content.property(id, u"half"_s) == u"top"_s ? -1 : 1, 0);
 }
 
 [[nodiscard]] std::optional<QcBlockId> hardened(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
@@ -422,6 +454,18 @@ QcBlockPos otherDoorHalf(const QcBlockAccess &world, QcBlockPos pos, QcBlockId i
         }
     }
     return std::nullopt;
+}
+
+[[nodiscard]] std::optional<QcBlockId> covered(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
+{
+    const QcContentRegistry &content = world.content();
+    const QcBlockDefinition &definition = content.block(id);
+    const std::optional<QcBlockId> into = definition.coveredInto.isEmpty() ? std::nullopt : content.blockId(definition.coveredInto);
+    const std::optional<QcBlockId> above = world.blockAt(pos.offset(0, 1, 0));
+    if (!into || !above || !content.isValidBlock(*above) || !content.state(*above).opaque) {
+        return std::nullopt;
+    }
+    return into;
 }
 
 } // namespace QcBlockRules

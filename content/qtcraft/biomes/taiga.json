@@ -6,6 +6,7 @@
     "heightVariation": 20,
     "terraceHeight": 4,
     "surface": "grass_block",
+    "villages": true,
     "subsurface": "dirt",
     "underwater": "gravel",
     "beach": "gravel",
@@ -36,10 +37,6 @@
         {
             "feature": "pumpkin_patch",
             "density": 0.0015
-        },
-        {
-            "feature": "wild_potatoes",
-            "density": 0.003
         }
     ]
 }
