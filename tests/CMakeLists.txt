@@ -359,6 +359,17 @@ target_include_directories(test_preview_atlas_cache PRIVATE ${PROJECT_SOURCE_DIR
 qc_add_test(test_section_light SOURCES client/test_section_light.cpp ${PROJECT_SOURCE_DIR}/src/app/rendering/QcSectionLightPool.cpp
             LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate)
 target_include_directories(test_section_light PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)
+# The world renderer uploads each section once per frame, however often it changed since the last
+# one (decision E-413): rendered through a QQuickRenderControl offscreen (Metal; skipped without a device).
+set(qc_world_renderer_dir ${PROJECT_SOURCE_DIR}/src/app/rendering)
+qc_add_test(test_world_renderer_uploads SOURCES client/test_world_renderer_uploads.cpp
+            ${qc_world_renderer_dir}/QcWorldView.cpp ${qc_world_renderer_dir}/QcWorldRenderer.cpp
+            ${qc_world_renderer_dir}/QcSkyRenderer.cpp ${qc_world_renderer_dir}/QcDebugLineRenderer.cpp
+            ${qc_world_renderer_dir}/QcPrecipitationRenderer.cpp ${qc_world_renderer_dir}/QcRenderPipelines.cpp
+            ${qc_world_renderer_dir}/QcAtlasTexture.cpp ${qc_world_renderer_dir}/QcSectionLightPool.cpp
+            ${PROJECT_SOURCE_DIR}/src/app/hooks/QcThreadCpuClock.cpp
+            LIBRARIES qc_clientcore Qt::Gui Qt::GuiPrivate Qt::Quick)
+target_include_directories(test_world_renderer_uploads PRIVATE ${qc_world_renderer_dir} ${PROJECT_SOURCE_DIR}/src/app/hooks)
 # The steps of a frame of the world renderer and their GPU render passes (decision E-390).
 qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES Qt::Core)
 target_include_directories(test_frame_plan PRIVATE ${PROJECT_SOURCE_DIR}/src/app/rendering)

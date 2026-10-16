@@ -131,8 +131,9 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
         m_meshUploads.clear();
     }
 
+    // A section updated several times since the last frame takes only its latest mesh.
     for (QcWorldView::MeshUpdate &update : view->m_pendingMeshUpdates) {
-        m_meshUploads.append({update.key, std::move(update.mesh)});
+        m_meshUploads.insert_or_assign(update.key, std::move(update.mesh));
     }
     view->m_pendingMeshUpdates.clear();
 

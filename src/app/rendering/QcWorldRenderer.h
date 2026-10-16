@@ -144,7 +144,10 @@ private:
     bool m_warnedTarget = false;
 
     std::unordered_map<quint64, GpuMesh> m_meshes;
-    QList<std::pair<quint64, std::shared_ptr<const QcChunkMesh>>> m_meshUploads;
+    // The latest mesh of each section changed since the last frame (null: removed). One entry per
+    // section: a second upload of a section in the same resource update batch would release the
+    // buffers of the first while the batch still refers to them (decision E-413).
+    std::unordered_map<quint64, std::shared_ptr<const QcChunkMesh>> m_meshUploads;
     bool m_clearAllMeshes = false;
 
     QcCamera m_camera;
