@@ -34,6 +34,8 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
     case QcEntityKind::ArmourStand:
     case QcEntityKind::Minecart:
         return true;
+    case QcEntityKind::ExperienceOrb:
+        return spawn.health > 0.0;
     }
     return false;
 }
@@ -93,6 +95,8 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
         known->stand = standOf(spawn);
         known->held = spawn.held;
         known->name = spawn.name;
+        // An orb sent again grew by merging.
+        known->health = spawn.health;
         if (known->isArmourStand()) {
             // A stand turned by a command; it never moves otherwise.
             known->yaw = known->previousYaw = spawn.yaw;
@@ -142,7 +146,7 @@ void QcClientEntities::remove(QcMsg::EntityRemove removed)
 {
     m_tracks.remove(removed.id);
     QcClientEntity gone = m_entities.take(removed.id);
-    if (removed.died && gone.id == removed.id && !gone.isItem()) {
+    if (removed.died && gone.id == removed.id && !gone.isItem() && !gone.isExperienceOrb()) {
         gone.deathTicks = 0;
         gone.previousPosition = gone.position;
         m_dying.insert(gone.id, gone);

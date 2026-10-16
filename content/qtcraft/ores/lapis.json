@@ -1,0 +1,9 @@
+{
+    "name": "lapis",
+    "replaces": "stone",
+    "block": "lapis_ore",
+    "minY": 2,
+    "maxY": 34,
+    "veinsPerChunk": 2,
+    "veinSize": 7
+}

@@ -281,7 +281,7 @@ void QcRenderBridge::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &fr
     }
     QcEntityMesher::appendModel(mesh, {look, held ? &*held : nullptr, &armour}, body,
                                 {feet, double(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
-    if (session.burning()) {
+    if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
     }
 }
@@ -312,6 +312,8 @@ void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
         if (entity.isItem()) {
             QcEntityMesher::appendItem(*mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
                                        {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
+        } else if (entity.isExperienceOrb()) {
+            QcEntityMesher::appendOrb(*mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
         } else if (entity.isMinecart()) {
             const QcVec3 position = lerp(entity.previousPosition, entity.position, alpha);
             QcEntityMesher::appendParts(*mesh, QcEntityMesher::minecartParts(),

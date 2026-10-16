@@ -22,12 +22,13 @@
 // Metadata of a saved world (world.json). Format 5 (stage 31.3) keeps chunks in indexed region files
 // read on demand, saved as one through a journal (decision E-373); format 6 (stage 32.1) saves
 // minecarts with the entities of their chunk (decision E-382), format 7 (stage 32.2) also the slots of
-// container carts (decision E-386), format 8 (stage 34) burning fires with their chunk (decision E-392). Worlds of older development versions
-// are refused, not converted (decision E-356, QtCraft has not been released).
+// container carts (decision E-386), format 8 (stage 34) burning fires with their chunk (decision E-392), format 9 (stage 36) experience orbs
+// with their chunk, the experience stored in furnaces and players' experience (decision E-398). Worlds
+// of older development versions are refused, not converted (decision E-356, QtCraft has not been released).
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 8;
-    static constexpr int oldestFormatVersion = 8;
+    static constexpr int formatVersion = 9;
+    static constexpr int oldestFormatVersion = 9;
     static constexpr auto defaultGenerator = "terrain";
 
     QString name;

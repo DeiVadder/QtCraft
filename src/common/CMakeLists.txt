@@ -69,6 +69,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcArmourDefinition.h
     content/definitions/QcMaterialDefinition.h
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
+    gameplay/QcExperience.h gameplay/QcExperience.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
     physics/QcEntityMotion.h
     handbook/QcHandbook.h handbook/QcHandbook.cpp
@@ -106,6 +107,7 @@ qt_add_library(qc_common STATIC
     content/definitions/QcLiquidDefinition.h
     content/definitions/QcLiquidReaction.h
     content/definitions/QcMachineDefinition.h
+    content/definitions/QcExperienceDrop.h
     core/QcMailbox.h
     protocol/QcMessages.h
     protocol/QcEntityMessages.h

@@ -48,6 +48,7 @@ struct EntitySpawn
     QString name;
     QcVec3 position;
     float yaw = 0.0f;
+    // Players and creatures: their health; experience orbs: their value (decision E-398).
     double health = 0.0;
     // The stack of an item entity; empty for the other kinds.
     QcItemStack item;

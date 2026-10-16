@@ -104,6 +104,8 @@ Farming (stage 27, decisions E-289 to E-294; all server side only):
 - `"tillsInto": "farmland"` on a block and `"tills": true` on an item (the hoes) turn the block into that soil when the item is used on it.
 - `"ignites": true` on an item (flint and steel, decision E-393) lights fire in the cell in front of the clicked face where fire may stand (a spark with the limits of fire), wearing the item by one per fire (except in creative mode); with `"dispense": "ignite"` a dispenser does the same in front of it. Such an item neither places, tills, scoops nor bottles.
 - A drop may carry `"when": {"age": "7"}` (like shape conditions): it only drops from those states.
+- A block drop may carry `"maxCount"` (0–64): it drops between `count` and `maxCount` items, chosen evenly (lapis lazuli ore: 4 to 9; decision E-398).
+- **Experience (decision E-398, server side only):** `"experience"` is a whole number of points or `[min, max]` (0–100000) for an even choice. On a block, mining it with a tool that gets its drops gives that much as experience orbs (ores: coal `[0, 2]`, diamond `[3, 7]`, lapis lazuli `[2, 5]`, Signal Dust ore `[1, 5]`); on a mob, a player killing it does (zombie 5, pig and sheep `[1, 3]`); `breeding.experience` is what a pair gives when a young one is born (default `[1, 7]`). Smelting recipes take `"experience"` per item smelted (0–100, may be fractional, e.g. 0.7 for iron); the furnace gathers it until a player takes from the output, a fraction becomes one more point with its chance.
 - A peaceful creature may carry `"breeding": {"food": ["carrot"], "loveSeconds": 30, "cooldownSeconds": 300, "growUpSeconds": 1200, "partnerDistance": 8}` (the food list also reaches clients).
 
 ```json
@@ -141,7 +143,7 @@ Furnaces and other machines come from data too. A block with a `machine` object 
 |-------|---------|
 | `machine.category` | Recipe category the machine works on (default `smelting`, the base furnace). Plain names without namespace (lower-case letters, digits, `_`, `-`, `.`, at most 64 characters), so a mod can add recipes to the base furnace by using `smelting`. |
 | `machine.speed` | 0.01–100 (default 1): seconds of recipe work per second; fuel burns at the same rate. A block cannot be a crafting table and a machine. |
-| `smelting`: `input`, `result` (`item`, `count` 1–64), `seconds` (0.05–3600, default 10), `category` | Per category and input the first recipe in load order counts; a later one is reported as a warning. To change a base recipe, reuse its name. |
+| `smelting`: `input`, `result` (`item`, `count` 1–64), `seconds` (0.05–3600, default 10), `experience` (0–100 per item, default 0, server side only, E-398), `category` | Per category and input the first recipe in load order counts; a later one is reported as a warning. To change a base recipe, reuse its name. |
 | `fuelSeconds` (items and blocks) | 0–100000, default 0 (no fuel). Base values: coal and charcoal 80, wood 15, wooden tools 10, sticks and saplings 5. |
 | `food` (items) | Food points restored when eaten, whole points up to 20 (larger values fill the bar). |
 

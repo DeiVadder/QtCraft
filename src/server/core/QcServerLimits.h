@@ -68,6 +68,8 @@ struct QcServerLimits
     qint64 itemsAwake = 512;
     qint64 itemsQueued = 1024;
     qint64 itemsTotal = 4096;
+    // Experience orbs in the world (E-398); beyond, dropped experience joins the nearest orb.
+    qint64 experienceOrbs = 1024;
     // Creatures that spawn by themselves per player, by kind.
     qint64 hostileCreaturesPerPlayer = 8;
     qint64 passiveCreaturesPerPlayer = 6;

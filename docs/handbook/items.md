@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Book](#item-qtcraft-book) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Melon seeds](#item-qtcraft-melon_seeds) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Orange dye](#item-qtcraft-orange_dye) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Red dye](#item-qtcraft-red_dye) · [Slimeball](#item-qtcraft-slimeball) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -64,6 +64,12 @@ Made from cornflowers.
 | 1 | → |
 |---|---|
 | [Cornflower](blocks.md#block-qtcraft-cornflower) | 2 × [Blue dye](#item-qtcraft-blue_dye) |
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Lapis lazuli](#item-qtcraft-lapis_lazuli) | [Blue dye](#item-qtcraft-blue_dye) |
 
 **Used in**
 
@@ -632,6 +638,31 @@ A ninth of an iron ingot, for small metal parts like lanterns.
 **Used in**
 
 [Iron ingot](#item-qtcraft-iron_ingot), [Lantern](blocks.md#block-qtcraft-lantern), [Signal Comparator](blocks.md#block-qtcraft-signal_comparator), [Signal Observer](blocks.md#block-qtcraft-signal_observer)
+
+### <a id="item-qtcraft-lapis_lazuli"></a>Lapis lazuli
+
+A blue stone from deep ores. It makes blue dye; traders and enchanting will want it.
+
+| | |
+|---|---|
+| ID | `qtcraft:lapis_lazuli` |
+| Stack size | 64 |
+
+**How to make it**
+
+*Crafting grid, any arrangement*
+
+| 1 | → |
+|---|---|
+| [Block of lapis lazuli](blocks.md#block-qtcraft-lapis_block) | 9 × [Lapis lazuli](#item-qtcraft-lapis_lazuli) |
+
+**Used in**
+
+[Block of lapis lazuli](blocks.md#block-qtcraft-lapis_block), [Blue dye](#item-qtcraft-blue_dye)
+
+**Dropped by**
+
+[Lapis lazuli ore](blocks.md#block-qtcraft-lapis_ore) (4–9×)
 
 ### <a id="item-qtcraft-lava_bucket"></a>Lava bucket
 

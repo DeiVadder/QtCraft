@@ -3,10 +3,15 @@
 #include <algorithm>
 #include <utility>
 
-bool QcBlockEntities::Machine::isIdle() const
+bool QcBlockEntities::Machine::isCold() const
 {
     return std::ranges::all_of(stacks, [](QcItemStack stack) { return stack.isEmpty(); }) && burnRemaining <= 0.0
            && burnSeconds <= 0.0 && progress <= 0.0;
+}
+
+bool QcBlockEntities::Machine::isIdle() const
+{
+    return isCold() && experience <= 0.0;
 }
 
 QcBlockEntities::QcBlockEntities(std::shared_ptr<const QcContentRegistry> content)
@@ -113,7 +118,7 @@ void QcBlockEntities::placedMachine(QcBlockPos pos, QcBlockId after)
 
     const auto it = m_machines.constFind(pos);
     if (it != m_machines.constEnd()) {
-        spill(pos, QList<QcItemStack>(it->stacks.begin(), it->stacks.end()));
+        spill(pos, QList<QcItemStack>(it->stacks.begin(), it->stacks.end()), it->experience);
         removeMachine(pos);
     }
 }
@@ -174,11 +179,11 @@ void QcBlockEntities::placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId a
     }
 }
 
-void QcBlockEntities::spill(QcBlockPos pos, QList<QcItemStack> stacks)
+void QcBlockEntities::spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience)
 {
     stacks.removeIf([](QcItemStack stack) { return stack.isEmpty(); });
-    if (!stacks.isEmpty()) {
-        m_spills.append({pos, std::move(stacks)});
+    if (!stacks.isEmpty() || experience > 0.0) {
+        m_spills.append({pos, std::move(stacks), experience});
     }
 }
 

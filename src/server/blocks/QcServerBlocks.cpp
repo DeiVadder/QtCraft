@@ -3,6 +3,7 @@
 #include "QcBlockRules.h"
 #include "QcBlockUpdateQueue.h"
 #include "QcRails.h"
+#include "QcServerExperience.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 
@@ -66,6 +67,8 @@ void QcServerBlocks::dropSpills()
     const QList<QcBlockEntities::Spill> spills = m_state.blockEntities().takeSpills();
     for (const QcBlockEntities::Spill &spill : spills) {
         dropStacks(spill.stacks, spill.pos);
+        QcServerExperience::drop(m_state, QcServerExperience::takeWhole(m_state, spill.experience),
+                                 {spill.pos.x + 0.5, spill.pos.y + 0.5, spill.pos.z + 0.5});
     }
 }
 
@@ -118,9 +121,13 @@ void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos)
             continue;
         }
         if (const std::optional<QcItemId> item = m_state.content().itemId(drop.item)) {
-            m_state.entities().items().spawnScattered({*item, drop.count, 0}, centre, m_state.entities().newId());
+            const int extra = drop.mostCount() > drop.count ? int(m_state.random().bounded(quint32(drop.mostCount() - drop.count + 1))) : 0;
+            m_state.entities().items().spawnScattered({*item, drop.count + extra, 0}, centre, m_state.entities().newId());
         }
     }
+
+    // Ores give experience with their drops (decision E-398).
+    QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, content.block(block).experience), centre);
 }
 
 void QcServerBlocks::dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos)

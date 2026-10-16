@@ -5,6 +5,7 @@
 #include "QcAppearance.h"
 #include "QcEquipment.h"
 #include "QcGameMode.h"
+#include "QcExperience.h"
 #include "QcHunger.h"
 #include "QcInventory.h"
 #include "QcMessages.h"
@@ -68,13 +69,15 @@ struct QcServerClient : QcEntity
     };
 
     // What the client has been told about the world: chunks streamed around the player within
-    // `distance`, entities it knows (with the stack count of an item and the position of its last
-    // move, QcEntitySync), known entities whose spawn data changed and must be sent again, and the
-    // debug data it subscribed to (QcMsg::DebugSubscribe) and when that was last sent.
+    // `distance`, entities it knows (with the stack count of an item, the position of its last
+    // move and whether that move came in the last tick, QcEntitySync), known entities whose spawn
+    // data changed and must be sent again, and the debug data it subscribed to
+    // (QcMsg::DebugSubscribe) and when that was last sent.
     struct SentEntity
     {
         int count = 0;
         QcVec3 position;
+        bool moving = false;
     };
     struct View
     {
@@ -166,4 +169,8 @@ struct QcServerClient : QcEntity
     bool hurtThisTick = false;
     // The weather last sent to the client (QcServerWeather); none before the first message.
     std::optional<QcMsg::Weather> sentWeather;
+    // Experience (QcServerExperience, decision E-398) and what the client last got of it; none before
+    // the first message.
+    QcExperience experience;
+    std::optional<QcExperience> sentExperience;
 };

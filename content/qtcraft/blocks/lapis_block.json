@@ -1,0 +1,10 @@
+{
+    "name": "lapis_block",
+    "sound": "stone",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 2,
+    "textures": {
+        "all": "lapis_block"
+    }
+}

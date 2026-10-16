@@ -1,5 +1,7 @@
 #pragma once
 
+#include "QcExperienceDrop.h"
+
 #include <QString>
 #include <QStringList>
 
@@ -53,6 +55,9 @@ struct QcBreedingDefinition
     double cooldownSeconds = 300.0;
     double growUpSeconds = 1200.0;
     double partnerDistance = 8.0;
+    // Experience points a pair gives as orbs when a young one is born (the reference's 1 to 7,
+    // decision E-398). Server side only.
+    QcExperienceDrop experience{1, 7};
 
     bool breeds() const { return !food.isEmpty(); }
 };

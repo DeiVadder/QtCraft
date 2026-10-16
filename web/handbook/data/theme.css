@@ -28,6 +28,7 @@
     --qc-crosshair: rgba(255, 255, 255, 0.878);
     --qc-progress: rgba(255, 255, 255, 1.000);
     --qc-health: rgba(224, 40, 40, 1.000);
+    --qc-experience: rgba(128, 255, 32, 1.000);
     --qc-flame: rgba(224, 80, 16, 1.000);
     --qc-flameCore: rgba(255, 224, 96, 1.000);
     --qc-durabilityGood: rgba(64, 208, 64, 1.000);

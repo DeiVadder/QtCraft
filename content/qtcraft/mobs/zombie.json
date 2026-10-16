@@ -44,5 +44,6 @@
             "item": "potato",
             "chance": 0.025
         }
-    ]
+    ],
+    "experience": 5
 }

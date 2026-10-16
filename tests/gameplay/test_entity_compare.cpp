@@ -17,7 +17,8 @@ using namespace Qt::StringLiterals;
 // kind of body in four rotations, and a world saved with entities in motion and opened again. Each
 // tick gives the entities as the server keeps them and every spawn, move and removal the client got.
 // The dump must equal the one the code before the entity model wrote
-// (tests/data/entity-compare-before-31-2.txt, from this test in its first version). With
+// (tests/data/entity-compare-before-31-2.txt, from this test in its first version), plus the one
+// move an item or cart sends in the tick it comes to rest (its stop sample, decision E-399). With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there; QTCRAFT_COMPARE_WORLD=<dir> keeps a
 // copy of the saved world.
 class TestEntityCompare : public QcMachineFixture
@@ -76,6 +77,8 @@ private:
             return u"moving"_s;
         case QcEntityKind::Minecart:
             return u"minecart"_s;
+        case QcEntityKind::ExperienceOrb:
+            return u"orb"_s;
         case QcEntityKind::Creature:
             break;
         }

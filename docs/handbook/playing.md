@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -317,6 +317,28 @@ Nothing holds you below the bottom of the world: through a hole in the bedrock o
 **Dropped items**
 
 Items on the ground vanish after 300 s while their area is loaded. Items you throw can be picked up again after 2 s.
+
+### <a id="chapter-qtcraft-experience"></a>Experience
+
+**Experience orbs**
+
+Mining ores (coal, diamond, lapis lazuli, Signal Dust ore), killing creatures, smelting in a furnace and breeding animals give experience as small glowing orbs. Orbs fly to the nearest player within 8 blocks and are collected with a chime; a furnace keeps the experience of what it smelted until a player takes the result. Orbs close together merge into one, and they vanish after 300 s while their area is loaded. A world holds at most 1024 orbs; beyond that new experience joins the nearest orb, so nothing is lost.
+
+**Levels**
+
+Experience fills the green bar above the hotbar; when it is full you reach the next level, shown by the number in the middle, with a fanfare. Each level costs more than the one before: 7 points for the first, 17 for level 5, 37 for level 15 and 112 for level 30. Levels are what traders and enchanting will ask for.
+
+**Experience and death**
+
+When you die you drop 7 points per level as orbs, at most 100 points; the rest is lost and you start again at level 0. With the game rule keepInventory you keep your experience, and so do players in creative mode.
+
+**The /xp command**
+
+Operators change experience with /xp add <player> <amount> [points|levels] (a negative amount takes away), /xp set <player> <amount> [points|levels] and /xp query <player>.
+
+**See also**
+
+[Lapis lazuli ore](blocks.md#block-qtcraft-lapis_ore), [Furnace](blocks.md#block-qtcraft-furnace)
 
 ### <a id="chapter-qtcraft-creatures"></a>Creatures
 

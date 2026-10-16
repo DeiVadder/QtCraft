@@ -75,6 +75,14 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                 {u"distance"_s, distance}};
     }
 
+    if (entity.isExperienceOrb()) {
+        return {{u"id"_s, qint64(entity.id)},
+                {u"type"_s, u"experienceOrb"_s},
+                {u"value"_s, int(entity.health)},
+                {u"position"_s, QcControlReports::vectorJson(entity.position)},
+                {u"distance"_s, distance}};
+    }
+
     if (entity.isBlockEntity()) {
         return {{u"id"_s, qint64(entity.id)},
                 {u"type"_s, entity.isMovingBlock() ? u"movingBlock"_s : u"fallingBlock"_s},

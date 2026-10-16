@@ -73,6 +73,11 @@ void collectInto(const QcEntities &entities, QHash<QcChunkPos, QcEntityRecord> &
             recordOf(records, chunk).minecarts.append({cart, cart.id});
         }
     }
+    for (const QcExperienceOrb &orb : entities.orbs().orbs()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(orb); wanted(chunk)) {
+            recordOf(records, chunk).orbs.append({orb, orb.id});
+        }
+    }
 }
 
 } // namespace
@@ -97,6 +102,7 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.creatures().editableMobs().removeIf(gone);
     entities.stands().editableStands().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
+    entities.orbs().editableOrbs().removeIf(gone);
     entities.movingBlocks().editableAll().removeIf(gone);
     return records;
 }
@@ -125,6 +131,9 @@ QStringList apply(const QcEntityRecord &record, QcEntities &entities)
     }
     if (const qsizetype dropped = entities.minecarts().adopt(carts); dropped > 0) {
         warnings.append(u"%1 minecarts beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.minecarts().limit()));
+    }
+    if (const qsizetype merged = entities.orbs().adopt(inOrder(record.orbs), newId); merged > 0) {
+        warnings.append(u"%1 experience orbs beyond the limit of %2 joined the nearest orb"_s.arg(merged).arg(entities.orbs().limit()));
     }
     return warnings;
 }

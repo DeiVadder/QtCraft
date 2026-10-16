@@ -211,6 +211,28 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     return true;
 }
 
+void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
+{
+    switch (change) {
+    case QcClientVitals::Change::Health:
+        if (m_vitals.isDead()) {
+            // A player comes back from death on the ground.
+            m_miningRequested = false;
+            m_gameMode.setFlightWanted(false);
+        }
+        emit healthChanged();
+        break;
+    case QcClientVitals::Change::Food:
+        emit foodChanged();
+        break;
+    case QcClientVitals::Change::Experience:
+        emit experienceChanged();
+        break;
+    case QcClientVitals::Change::None:
+        break;
+    }
+}
+
 bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 {
     if (const auto *playerState = std::get_if<QcMsg::PlayerState>(&message)) {
@@ -224,17 +246,8 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
         emit craftingOpened(open->size);
     } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
         emit chatReceived(QcChatText::display(*chat));
-    } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
-        m_health = *health;
-        if (m_health.dead) {
-            // A player comes back from death on the ground.
-            m_miningRequested = false;
-            m_gameMode.setFlightWanted(false);
-        }
-        emit healthChanged();
-    } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
-        m_food = *food;
-        emit foodChanged();
+    } else if (const QcClientVitals::Change change = m_vitals.apply(message); change != QcClientVitals::Change::None) {
+        onVitalsChanged(change);
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
         emit gameModeChanged();
@@ -436,7 +449,7 @@ void QcClientSession::tick()
 
     updateSounds();
 
-    if (m_health.dead) {
+    if (m_vitals.isDead()) {
         // Nothing to simulate until the server respawns the player.
         emit ticked();
         return;
@@ -518,7 +531,7 @@ void QcClientSession::refreshTarget()
     m_targetEntity.reset();
     double nearest = m_target ? m_target->distance : attackReach;
     for (const QcClientEntity &entity : m_entities.all()) {
-        if (entity.isItem() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
+        if (entity.isItem() || entity.isExperienceOrb() || entity.isBlockEntity() || entity.id == m_riding.vehicle()) {
             continue;
         }
 
@@ -534,7 +547,7 @@ void QcClientSession::refreshTarget()
 
 bool QcClientSession::attack()
 {
-    if (m_state != State::Playing || m_health.dead || !m_targetEntity) {
+    if (m_state != State::Playing || m_vitals.isDead() || !m_targetEntity) {
         return false;
     }
 
@@ -598,7 +611,7 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
 
 bool QcClientSession::dropItem(bool wholeStack)
 {
-    if (m_state != State::Playing || m_health.dead || m_inventory.selectedStack().isEmpty()) {
+    if (m_state != State::Playing || m_vitals.isDead() || m_inventory.selectedStack().isEmpty()) {
         return false;
     }
     m_connection->send(QcMsg::DropItem{wholeStack});
@@ -607,7 +620,7 @@ bool QcClientSession::dropItem(bool wholeStack)
 
 void QcClientSession::respawn()
 {
-    if (m_health.dead) {
+    if (m_vitals.isDead()) {
         m_connection->send(QcMsg::Respawn{});
     }
 }
@@ -674,7 +687,7 @@ void QcClientSession::updateTargetAndMining()
 
 bool QcClientSession::useItem()
 {
-    if (m_state != State::Playing || m_health.dead) {
+    if (m_state != State::Playing || m_vitals.isDead()) {
         return false;
     }
 

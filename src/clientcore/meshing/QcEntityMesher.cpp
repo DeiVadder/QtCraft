@@ -552,6 +552,23 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     }
 }
 
+void appendOrb(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemFrame &frame, const UvLookup &uv)
+{
+    // From 0.2 m for one point up to half a metre for the biggest orbs.
+    const double size = std::clamp(0.2 + 0.03 * std::log2(std::max(1.0, entity.health)), 0.2, 0.5);
+    const QcVec3 position = entity.previousPosition + (entity.position - entity.previousPosition) * frame.alpha;
+    const double yaw = std::fmod(frame.seconds * 140.0 + (entity.id % 360) * 37.0, 360.0);
+    const double bob = 0.05 + 0.04 * std::sin(frame.seconds * 5.0 + entity.id);
+    const QcVec3 origin = position + QcVec3{0.0, bob, 0.0};
+    // Orbs shine by themselves, like a torch.
+    const QcEntityLight light{frame.light.sky, 1.0f};
+
+    for (const double angle : {0.0, 90.0}) {
+        const Turn turn(yaw + angle);
+        emitSprite(mesh, size, [&](const QcVec3 &p) { return origin + turn(p); }, uv(QString::fromLatin1(orbTexture)), light);
+    }
+}
+
 void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv)
 {
     // The item cube scaled up to a block of `size` metres, centred above the feet position.

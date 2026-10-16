@@ -4,5 +4,6 @@
     "result": {
         "item": "stone"
     },
-    "seconds": 10
+    "seconds": 10,
+    "experience": 0.1
 }

@@ -4,6 +4,7 @@
 #include "QcCheatCommands.h"
 #include "QcChunkCommands.h"
 #include "QcCommandRegistry.h"
+#include "QcExperienceCommands.h"
 #include "QcPendingCommands.h"
 #include "QcPlayerCommands.h"
 #include "QcTickCommands.h"
@@ -78,4 +79,5 @@ private:
     QcTickCommands m_ticks;
     QcChunkCommands m_chunks;
     QcWeatherCommands m_weather;
+    QcExperienceCommands m_experience;
 };

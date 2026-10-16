@@ -1,0 +1,10 @@
+{
+    "name": "blue_dye_from_lapis_lazuli",
+    "type": "shapeless",
+    "ingredients": [
+        "lapis_lazuli"
+    ],
+    "result": {
+        "item": "blue_dye"
+    }
+}

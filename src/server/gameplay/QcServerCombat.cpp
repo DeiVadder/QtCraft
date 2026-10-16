@@ -2,6 +2,7 @@
 
 #include "QcLineOfSight.h"
 #include "QcPhysics.h"
+#include "QcServerExperience.h"
 #include "QcServerInventory.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
@@ -41,6 +42,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     const QcItemDefinition *held = m_state.heldItem(client);
     const double damage = held ? held->attackDamage : 1.0;
     const QcVec3 lootPosition = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+    // Young animals give neither loot nor experience (like the reference); read before the hit
+    // removes a dead creature.
+    const bool young = mob->isYoung();
 
     // Hits during the short invulnerability after a hit do nothing, and make no sound.
     const bool vulnerable = mob->hurtTimer <= 0.0;
@@ -64,8 +68,12 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     }
 
     if (drops) {
-        // Like block drops (decision E-028) the loot falls where the mob died.
+        // Like block drops (decision E-028) the loot falls where the mob died; only a grown
+        // creature a player killed gives experience (decisions E-398, E-399).
         dropLoot(m_state, *drops, lootPosition);
+        if (!young) {
+            QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, definition.experience), lootPosition);
+        }
     }
 }
 

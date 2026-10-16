@@ -1,0 +1,26 @@
+{
+    "name": "player.experience",
+    "volume": 0.35,
+    "pitchVariation": 0.35,
+    "range": 8,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.09,
+            "frequency": 1800,
+            "endFrequency": 2600,
+            "attack": 0.002,
+            "curve": 2
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.12,
+            "frequency": 2700,
+            "endFrequency": 3100,
+            "start": 0.03,
+            "attack": 0.002,
+            "curve": 3,
+            "gain": 0.4
+        }
+    ]
+}

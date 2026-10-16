@@ -453,5 +453,8 @@
     "structure.qtcraft.signal_machines.collectors": "Hoppers under a slab, farmland and a carpet",
     "structure.qtcraft.signal_farm": "Automatic wheat farm",
     "structure.qtcraft.signal_farm.field": "Ripe wheat pours the water, the same signal later takes it back; seeds plant themselves",
-    "structure.qtcraft.signal_farm.collector": "The harvest drifts into hoppers"
+    "structure.qtcraft.signal_farm.collector": "The harvest drifts into hoppers",
+    "block.qtcraft.lapis_ore": "Lapis lazuli ore",
+    "block.qtcraft.lapis_block": "Block of lapis lazuli",
+    "item.qtcraft.lapis_lazuli": "Lapis lazuli"
 }

@@ -16,6 +16,7 @@
                 "chapter:qtcraft:fire",
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:death",
+                "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
                 "chapter:qtcraft:creative",
@@ -50,6 +51,7 @@
                 "block:qtcraft:diamond_block",
                 "block:qtcraft:gold_block",
                 "block:qtcraft:iron_block",
+                "block:qtcraft:lapis_block",
                 "block:qtcraft:blue_concrete",
                 "block:qtcraft:blue_concrete_powder",
                 "block:qtcraft:blue_orchid",
@@ -118,6 +120,7 @@
                 "block:qtcraft:iron_trapdoor",
                 "block:qtcraft:ladder",
                 "block:qtcraft:lantern",
+                "block:qtcraft:lapis_ore",
                 "block:qtcraft:lever",
                 "block:qtcraft:light_blue_concrete",
                 "block:qtcraft:light_blue_concrete_powder",
@@ -341,6 +344,7 @@
                 "item:qtcraft:green_dye",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
+                "item:qtcraft:lapis_lazuli",
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
                 "item:qtcraft:leather_scrap",
@@ -485,6 +489,7 @@
                 "ore:qtcraft:gold",
                 "ore:qtcraft:gravel_pocket",
                 "ore:qtcraft:iron",
+                "ore:qtcraft:lapis",
                 "feature:qtcraft:lava_lake",
                 "feature:qtcraft:lava_pool",
                 "feature:qtcraft:lily_of_the_valley",
@@ -21094,6 +21099,321 @@
             ],
             "text": "An iron lantern around a torch flame; the brightest light you can build.",
             "title": "Lantern"
+        },
+        "block:qtcraft:lapis_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of lapis lazuli",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.56 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:lapis_block",
+            "id": "block:qtcraft:lapis_block",
+            "name": "qtcraft:lapis_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:lapis_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:lapis_block",
+                                "note": "",
+                                "target": "block:qtcraft:lapis_block",
+                                "text": "Block of lapis lazuli"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_lazuli",
+                            "note": "",
+                            "target": "item:qtcraft:lapis_lazuli",
+                            "text": "Lapis lazuli"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine pieces of lapis lazuli packed into a block; crafting it back gives all nine.",
+            "title": "Block of lapis lazuli"
+        },
+        "block:qtcraft:lapis_ore": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Lapis lazuli ore",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_ore"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 2 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.56 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_lazuli",
+                            "note": "4–9×",
+                            "target": "item:qtcraft:lapis_lazuli",
+                            "text": "Lapis lazuli"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:lapis_ore",
+            "id": "block:qtcraft:lapis_ore",
+            "name": "qtcraft:lapis_ore",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "y 2–34",
+                            "target": "ore:qtcraft:lapis",
+                            "text": "Lapis lazuli ore veins"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Found in"
+                }
+            ],
+            "text": "Deep blue flecks in the stone, rarely above height 30. Needs a pickaxe of level 2 or better and gives several pieces of lapis lazuli and some experience.",
+            "title": "Lapis lazuli ore"
         },
         "block:qtcraft:lava": {
             "category": "liquids",
@@ -50781,6 +51101,74 @@
             "text": "",
             "title": "Death and respawn"
         },
+        "chapter:qtcraft:experience": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Experience",
+            "facts": [
+            ],
+            "icon": "qtcraft:lapis_lazuli",
+            "id": "chapter:qtcraft:experience",
+            "name": "qtcraft:experience",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Mining ores (coal, diamond, lapis lazuli, Signal Dust ore), killing creatures, smelting in a furnace and breeding animals give experience as small glowing orbs. Orbs fly to the nearest player within 8 blocks and are collected with a chime; a furnace keeps the experience of what it smelted until a player takes the result. Orbs close together merge into one, and they vanish after 300 s while their area is loaded. A world holds at most 1024 orbs; beyond that new experience joins the nearest orb, so nothing is lost.",
+                    "title": "Experience orbs"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Experience fills the green bar above the hotbar; when it is full you reach the next level, shown by the number in the middle, with a fanfare. Each level costs more than the one before: 7 points for the first, 17 for level 5, 37 for level 15 and 112 for level 30. Levels are what traders and enchanting will ask for.",
+                    "title": "Levels"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "When you die you drop 7 points per level as orbs, at most 100 points; the rest is lost and you start again at level 0. With the game rule keepInventory you keep your experience, and so do players in creative mode.",
+                    "title": "Experience and death"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Operators change experience with /xp add <player> <amount> [points|levels] (a negative amount takes away), /xp set <player> <amount> [points|levels] and /xp query <player>.",
+                    "title": "The /xp command"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Furnace"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Experience"
+        },
         "chapter:qtcraft:farming": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -54332,6 +54720,33 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapis lazuli"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:blue_dye_from_lapis_lazuli",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:blue_dye",
+                                "note": "",
+                                "target": "item:qtcraft:blue_dye",
+                                "text": "Blue dye"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
                         }
                     ],
                     "text": "",
@@ -57038,6 +57453,12 @@
                             "text": "Block of iron"
                         },
                         {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        },
+                        {
                             "icon": "qtcraft:blue_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:blue_concrete",
@@ -57204,6 +57625,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:iron_trapdoor",
                             "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
                         },
                         {
                             "icon": "qtcraft:light_blue_concrete",
@@ -61559,6 +61986,12 @@
                             "text": "Block of iron"
                         },
                         {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        },
+                        {
                             "icon": "qtcraft:blue_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:blue_concrete",
@@ -61725,6 +62158,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:iron_trapdoor",
                             "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
                         },
                         {
                             "icon": "qtcraft:light_blue_concrete",
@@ -62203,6 +62642,103 @@
             ],
             "text": "A weapon: deals more damage to creatures.",
             "title": "Iron sword"
+        },
+        "item:qtcraft:lapis_lazuli": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Lapis lazuli",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_lazuli"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:lapis_lazuli",
+            "id": "item:qtcraft:lapis_lazuli",
+            "name": "qtcraft:lapis_lazuli",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:lapis_block",
+                                    "text": "Block of lapis lazuli"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:lapis_lazuli_from_lapis_block",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:lapis_lazuli",
+                                "note": "",
+                                "target": "item:qtcraft:lapis_lazuli",
+                                "text": "Lapis lazuli"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        },
+                        {
+                            "icon": "qtcraft:blue_dye",
+                            "note": "",
+                            "target": "item:qtcraft:blue_dye",
+                            "text": "Blue dye"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "4–9×",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "A blue stone from deep ores. It makes blue dye; traders and enchanting will want it.",
+            "title": "Lapis lazuli"
         },
         "item:qtcraft:lava_bucket": {
             "category": "items",
@@ -65770,6 +66306,12 @@
                             "text": "Block of iron"
                         },
                         {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Block of lapis lazuli"
+                        },
+                        {
                             "icon": "qtcraft:blue_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:blue_concrete",
@@ -65924,6 +66466,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:iron_trapdoor",
                             "text": "Iron trapdoor"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "level 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
                         },
                         {
                             "icon": "qtcraft:light_blue_concrete",
@@ -69544,6 +70092,64 @@
             "text": "",
             "title": "Iron ore veins"
         },
+        "ore:qtcraft:lapis": {
+            "category": "worldgen",
+            "categoryTitle": "World generation",
+            "englishTitle": "Lapis lazuli ore veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapis lazuli ore"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Replaces",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Heights",
+                    "links": [
+                    ],
+                    "value": "y 2–34"
+                },
+                {
+                    "label": "Veins",
+                    "links": [
+                    ],
+                    "value": "2 per chunk, up to 7 blocks each"
+                }
+            ],
+            "icon": "qtcraft:lapis_ore",
+            "id": "ore:qtcraft:lapis",
+            "name": "qtcraft:lapis",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Lapis lazuli ore veins"
+        },
         "ore:qtcraft:magma": {
             "category": "worldgen",
             "categoryTitle": "World generation",
@@ -71069,7 +71675,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Chunk Loader, Iron ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of gold, Diamond ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of gold, Diamond ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {
@@ -71931,6 +72537,12 @@
                             "note": "y 5–72",
                             "target": "ore:qtcraft:iron",
                             "text": "Iron ore veins"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "y 2–34",
+                            "target": "ore:qtcraft:lapis",
+                            "text": "Lapis lazuli ore veins"
                         },
                         {
                             "icon": "qtcraft:magma_block",

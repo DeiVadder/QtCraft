@@ -73,6 +73,10 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         now.held = stand.held.isEmpty() ? qcNoItem : stand.held.item;
         break;
     }
+    case QcEntityKind::ExperienceOrb:
+        // The client draws an orb by its value (decision E-398).
+        now.health = entity.as<QcExperienceOrb>().value;
+        break;
     case QcEntityKind::Item:
     case QcEntityKind::FallingBlock:
         break;
@@ -111,6 +115,8 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     case QcEntityKind::Creature:
         spawn.creatureType = entity.as<QcCreature>().type;
         break;
+    case QcEntityKind::ExperienceOrb:
+        break;
     case QcEntityKind::Minecart:
         // The cart's item tells what it carries (QcItemDefinition::cartBlock).
         if (const std::optional<QcItemId> item = m_state.content().itemId(entity.as<QcMinecart>().item)) {
@@ -124,8 +130,10 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
 void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
 {
     QcServerClient &client = pass.client;
-    const bool item = entity.kind == QcEntityKind::Item;
-    if (&entity == &client || entity.dormant || (item && entity.as<QcItemEntity>().surplus)) {
+    // Items and orbs: small, many, seen from closer and sent again when their count or value changed.
+    const bool orb = entity.kind == QcEntityKind::ExperienceOrb;
+    const bool item = entity.kind == QcEntityKind::Item || orb;
+    if (&entity == &client || entity.dormant || (item && !orb && entity.as<QcItemEntity>().surplus)) {
         return;
     }
 
@@ -139,7 +147,7 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
     const QcMsg::EntityMove now = seen(entity);
 
     pass.visible.insert(entity.id);
-    const int count = item ? entity.as<QcItemEntity>().stack.count : 0;
+    const int count = orb ? entity.as<QcExperienceOrb>().value : item ? entity.as<QcItemEntity>().stack.count : 0;
     const auto known = client.view.known.find(entity.id);
     if (known == client.view.known.end()) {
         client.view.known.insert(entity.id, {count, now.position});
@@ -149,21 +157,18 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
 
     switch (entity.kind) {
     case QcEntityKind::Item:
+    case QcEntityKind::ExperienceOrb:
         // Sent again when the count changed, moved only when the position did.
         if (known->count != count) {
-            *known = {count, now.position};
+            *known = {count, now.position, false};
             client.connection->send(spawnOf(entity, now));
-        } else if ((known->position - now.position).length() > itemMoveThreshold) {
-            known->position = now.position;
-            pass.moves.moves.append(now);
+        } else {
+            sendChangedMove(pass, *known, now, itemMoveThreshold);
         }
         break;
     case QcEntityKind::Minecart:
         // A cart standing still sends nothing.
-        if ((known->position - now.position).length() > cartMoveThreshold) {
-            known->position = now.position;
-            pass.moves.moves.append(now);
-        }
+        sendChangedMove(pass, *known, now, cartMoveThreshold);
         break;
     case QcEntityKind::ArmourStand:
         // Stands send no moves: a spawn when they changed or were pushed.
@@ -178,6 +183,22 @@ void QcEntitySync::consider(Pass &pass, const QcEntity &entity) const
         }
         pass.moves.moves.append(now);
         break;
+    }
+}
+
+void QcEntitySync::sendChangedMove(Pass &pass, QcServerClient::SentEntity &known, const QcMsg::EntityMove &now, double threshold)
+{
+    if ((known.position - now.position).length() > threshold) {
+        known = {known.count, now.position, true};
+        pass.moves.moves.append(now);
+        return;
+    }
+
+    // Came to rest: one more move where it stays (a stop sample), so the client ends its motion
+    // there instead of continuing the last step past the newest snapshot (QcSnapshotBuffer).
+    if (known.moving) {
+        known = {known.count, now.position, false};
+        pass.moves.moves.append(now);
     }
 }
 

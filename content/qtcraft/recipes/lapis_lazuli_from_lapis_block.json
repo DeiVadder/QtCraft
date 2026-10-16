@@ -1,0 +1,11 @@
+{
+    "name": "lapis_lazuli_from_lapis_block",
+    "type": "shapeless",
+    "ingredients": [
+        "lapis_block"
+    ],
+    "result": {
+        "item": "lapis_lazuli",
+        "count": 9
+    }
+}

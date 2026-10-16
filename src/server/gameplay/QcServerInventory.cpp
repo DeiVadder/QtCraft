@@ -4,6 +4,7 @@
 #include "QcPhysics.h"
 #include "QcQuickMove.h"
 #include "QcServerCrafting.h"
+#include "QcServerExperience.h"
 #include "QcBlockScreens.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
@@ -14,6 +15,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -97,8 +99,15 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
             m_screens.send(client, true);
             return;
         }
+        // A player taking from the output gets the experience the machine gathered (decision E-398).
+        const auto countOf = [](QcItemStack stack) { return stack.isEmpty() ? 0 : stack.count; };
+        const bool tookOutput = countOf(open.combined[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
             open.machine->stacks[std::size_t(slot)] = open.combined[machineSlot + slot];
+        }
+        if (tookOutput) {
+            const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
+            QcServerExperience::drop(m_state, points, client.motion.position + QcVec3{0.0, 0.5, 0.0});
         }
     }
 

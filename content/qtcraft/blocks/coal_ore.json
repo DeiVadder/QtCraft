@@ -9,6 +9,10 @@
             "item": "coal"
         }
     ],
+    "experience": [
+        0,
+        2
+    ],
     "textures": {
         "all": "coal_ore"
     }

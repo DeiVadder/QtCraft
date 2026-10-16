@@ -405,6 +405,36 @@ private slots:
         QCOMPARE(m_server->items().items().size(), 1);
     }
 
+    // Experience orbs leave with their chunk and come back with it during the session; beyond the
+    // limit the returning orbs join the nearest one, so no point is lost (decisions E-398, E-399).
+    void orbsLeaveWithTheirChunkAndJoinBeyondTheLimit()
+    {
+        buildArea();
+        const QList<std::pair<QcBlockPos, int>> placed{{at(2, 0, 2), 4}, {at(6, 0, 2), 5}, {at(2, 0, 6), 6}};
+        for (const auto &[cell, value] : placed) {
+            QcExperienceOrb orb;
+            orb.id = m_nextId++;
+            orb.value = value;
+            orb.motion.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+            QVERIFY(m_server->orbs().add(orb));
+        }
+        ticks(20);
+        QCOMPARE(m_server->orbs().totalPoints(), 15);
+
+        teleport(away());
+        ticks(1);
+        QVERIFY(m_server->orbs().orbs().isEmpty());
+        m_server->orbs().setLimit(1);
+        ticks(10);
+
+        teleport(m_feet);
+        loadAround(at(areaSize / 2, 0, areaSize / 2));
+        ticks(1);
+        QCOMPARE(m_server->orbs().orbs().size(), 1);
+        QCOMPARE(m_server->orbs().totalPoints(), 15);
+        QVERIFY(QcEntityChecks::problems(m_server->entities()).isEmpty());
+    }
+
     // /regenerate reaches a changed chunk that is not loaded: it is read, generated again and the
     // stored copy is replaced (decision E-374).
     void regeneratingAStoredChunkThatIsNotLoaded()

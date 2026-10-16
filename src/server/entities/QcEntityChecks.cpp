@@ -46,6 +46,9 @@ void checkIdsAndTables(const QcEntities &entities, QStringList &problems)
     for (const QcMinecart &cart : entities.minecarts().all()) {
         note(cart, QcEntityKind::Minecart);
     }
+    for (const QcExperienceOrb &orb : entities.orbs().orbs()) {
+        note(orb, QcEntityKind::ExperienceOrb);
+    }
     // Every client that became a player, also one that is dead or leaving.
     for (const std::unique_ptr<QcServerClient> &client : entities.clients()) {
         if (client->id != 0) {
@@ -105,6 +108,7 @@ QStringList problems(const QcEntities &entities)
                     problems);
         checkChunks(record.stands, record.chunk, "armour stand", [](const QcArmourStand &stand) { return stand.motion.position; }, problems);
         checkChunks(record.minecarts, record.chunk, "minecart", [](const QcMinecart &cart) { return cart.motion.position; }, problems);
+        checkChunks(record.orbs, record.chunk, "experience orb", [](const QcExperienceOrb &orb) { return orb.motion.position; }, problems);
     }
     return problems;
 }

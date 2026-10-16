@@ -52,6 +52,7 @@ qt_add_library(qc_server STATIC
     entities/QcCreature.h
     entities/QcItemEntity.h
     entities/QcFallingBlock.h
+    entities/QcExperienceOrb.h
     entities/QcArmourStand.h
     entities/QcMinecart.h
     entities/QcMovingBlock.h
@@ -71,6 +72,8 @@ qt_add_library(qc_server STATIC
     gameplay/QcMinecartManager.h gameplay/QcMinecartManager.cpp
     gameplay/QcMinecartMotion.h gameplay/QcMinecartMotion.cpp
     gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
+    gameplay/QcExperienceOrbManager.h gameplay/QcExperienceOrbManager.cpp
+    gameplay/QcServerExperience.h gameplay/QcServerExperience.cpp
     gameplay/QcServerStands.h gameplay/QcServerStands.cpp
     gameplay/QcServerMinecarts.h gameplay/QcServerMinecarts.cpp
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
@@ -86,6 +89,7 @@ qt_add_library(qc_server STATIC
     weather/QcLightningStrike.h weather/QcLightningStrike.cpp
     weather/QcSnowfall.h weather/QcSnowfall.cpp
     commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
+    commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     content/QcModLoader.h content/QcModLoader.cpp

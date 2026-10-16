@@ -50,6 +50,8 @@ enum class Role {
     Crosshair,
     Progress,
     Health,
+    // The experience bar and level in the HUD (decision E-398).
+    Experience,
     Flame,
     FlameCore,
     DurabilityGood,

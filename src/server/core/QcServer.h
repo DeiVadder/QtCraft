@@ -19,6 +19,7 @@
 #include "QcServerCombat.h"
 #include "QcServerCommands.h"
 #include "QcServerCrafting.h"
+#include "QcServerExperience.h"
 #include "QcServerCreatures.h"
 #include "QcServerFallingBlocks.h"
 #include "QcServerDebug.h"
@@ -106,6 +107,9 @@ public:
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
     QcMinecartManager &carts() { return m_state.entities().minecarts(); }
     QcServerMinecarts &minecarts() { return m_minecarts; }
+    // Experience orbs and the players' experience (decision E-398).
+    QcExperienceOrbManager &orbs() { return m_state.entities().orbs(); }
+    QcServerExperience &experience() { return m_experience; }
     // Signal Dust circuits (decision E-335).
     QcServerCircuits &circuits() { return m_circuits; }
     QcCircuitState &circuitState() { return m_state.circuits(); }
@@ -261,6 +265,7 @@ private:
     QcServerPlants m_plants;
     QcServerInteraction m_interaction;
     QcServerItems m_items;
+    QcServerExperience m_experience;
     QcServerCombat m_combat;
     QcServerCreatures m_creatures;
     QcEnvironmentDamage m_environment;

@@ -26,6 +26,9 @@ class QcPlayerController : public QObject
     Q_PROPERTY(bool burning READ burning NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
     Q_PROPERTY(int maxFood READ maxFood NOTIFY foodChanged FINAL)
+    // Experience (decision E-398): the level and the share of the way to the next one (0..1).
+    Q_PROPERTY(int experienceLevel READ experienceLevel NOTIFY experienceChanged FINAL)
+    Q_PROPERTY(double experienceProgress READ experienceProgress NOTIFY experienceChanged FINAL)
     // Armour points of what the player wears (0..20 count, decision E-234).
     Q_PROPERTY(int armour READ armour NOTIFY craftingChanged FINAL)
     Q_PROPERTY(int maxArmour READ maxArmour CONSTANT FINAL)
@@ -56,6 +59,8 @@ public:
     bool burning() const;
     int food() const;
     int maxFood() const;
+    int experienceLevel() const;
+    double experienceProgress() const;
     int armour() const;
     static int maxArmour();
     static int equipmentFirstRow() { return QcInventoryModel::equipmentFirstRow; }
@@ -101,6 +106,7 @@ signals:
     void contentChanged();
     void healthChanged();
     void foodChanged();
+    void experienceChanged();
     void machineChanged();
     void craftingChanged();
     void gameModeChanged();

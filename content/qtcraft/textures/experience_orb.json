@@ -1,0 +1,8 @@
+{
+    "name": "experience_orb",
+    "pattern": "lump",
+    "primary": "#a8f02a",
+    "secondary": "#f4ff7a",
+    "variation": 0.12,
+    "seed": 3601
+}

@@ -16,9 +16,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-// Version 4: position and motion, view, health, inventory, food, armour, game mode, flight and the
-// kept inventory of the other mode. Files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 4;
+// Version 5: position and motion, view, health, inventory, food, armour, game mode, flight, the
+// kept inventory of the other mode and the experience (level and points, decision E-398). Files of older development versions are refused (decision E-356).
+constexpr quint16 playerVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
 QString sanitizedPlayerName(const QString &name)
@@ -84,6 +84,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     stream << quint8(player.gameMode) << m.flying << qint32(player.keptInventory.selectedHotbarSlot());
     writeSlots(stream, player.keptInventory);
     writeEquipment(stream, player.keptEquipment);
+    stream << qint32(player.experience.level()) << qint32(player.experience.points());
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 
@@ -154,6 +155,10 @@ QcResult<std::optional<QcPlayerData>> QcPlayerStorage::parse(const QString &play
     if (!readGameMode(stream, file, player, warnings)) {
         return qcError(u"%1 is damaged (game mode)"_s.arg(file));
     }
+    qint32 level = 0;
+    qint32 points = 0;
+    stream >> level >> points;
+    player.experience = QcExperience(level, points);
 
     if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(player)) {
         return qcError(u"%1 is damaged"_s.arg(file));

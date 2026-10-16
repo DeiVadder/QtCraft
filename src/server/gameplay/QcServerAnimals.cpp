@@ -3,6 +3,7 @@
 #include "QcLineOfSight.h"
 #include "QcPhysics.h"
 #include "QcServerCombat.h"
+#include "QcServerExperience.h"
 #include "QcServerInventory.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
@@ -59,5 +60,7 @@ void QcServerAnimals::tick()
             young->bred = true;
         }
         m_sounds.play(m_state.content().mobs()[birth.type].ambientSound, birth.position);
+        // The parents' reward, as in the reference (decision E-398).
+        QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, m_state.content().mobs()[birth.type].breeding.experience), birth.position);
     }
 }

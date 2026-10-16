@@ -116,6 +116,7 @@ const QcSmeltingRecipe *QcMachineRules::finishItems(Machine &machine, const QcMa
         const QcItemId result = m_content->itemId(recipe->resultItem).value_or(qcNoItem);
         QcItemStack &output = machine.stacks[outputSlot];
         output = {result, (output.isEmpty() ? 0 : output.count) + recipe->resultCount, 0};
+        machine.experience = std::min(Machine::maxExperience, machine.experience + recipe->experience);
 
         QcItemStack &input = machine.stacks[inputSlot];
         if (--input.count <= 0) {
@@ -177,9 +178,10 @@ void QcMachineRules::tick(QcBlockEntities &entities, const QcBlockAccess &world,
                           QList<QcBlockPos> *slotsChanged) const
 {
     entities.forEachMachine([&](Machine &machine) {
-        // An empty, cold machine has nothing to do (generated furnaces, decision E-369); its step
-        // would change nothing, so it costs no block lookup.
-        if (machine.isIdle()) {
+        // An empty, cold machine has nothing to do (generated furnaces, decision E-369; also one
+        // that only keeps gathered experience, E-399); its step would change nothing, so it costs
+        // no block lookup.
+        if (machine.isCold()) {
             return;
         }
 

@@ -29,6 +29,7 @@ struct QcClientEntity
     QcVec3 previousPosition;
     float yaw = 0.0f;
     float previousYaw = 0.0f;
+    // Players and creatures: their health; experience orbs: their value (decision E-398).
     double health = 0.0;
     // Client ticks left for the hurt flash.
     int hurtTicks = 0;
@@ -62,6 +63,7 @@ struct QcClientEntity
     bool isBlockEntity() const { return isFallingBlock() || isMovingBlock(); }
     bool isArmourStand() const { return kind == QcEntityKind::ArmourStand; }
     bool isMinecart() const { return kind == QcEntityKind::Minecart; }
+    bool isExperienceOrb() const { return kind == QcEntityKind::ExperienceOrb; }
     // The block a minecart carries (its item's cartBlock, decision E-386); nothing for a plain cart.
     std::optional<QcBlockId> cartBlock(const QcContentRegistry &content) const
     {

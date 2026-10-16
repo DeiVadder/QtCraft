@@ -51,6 +51,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits, m_ignition})
     , m_items(m_state, m_sounds, m_inventory)
+    , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health)
     , m_environment(m_state, m_sounds, m_health)
@@ -570,6 +571,7 @@ void QcServer::simulate()
     m_environment.applySuffocation();
     m_phases.lap(Phase::Mobs);
     m_plants.plantItems(m_items.tick());
+    m_experience.tick();
     m_phases.lap(Phase::Items);
     m_plants.tick();
     m_animals.tick();

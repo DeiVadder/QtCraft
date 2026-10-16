@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Melonen](#feature-qtcraft-melon_patch) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
+**QtCraft:** [Birke](#feature-qtcraft-birch_tree) · [Blaue Orchideen](#feature-qtcraft-blue_orchid) · [Braune Pilze](#feature-qtcraft-brown_mushroom) · [Diamanterz-Vorkommen](#ore-qtcraft-diamond) · [Eiche](#feature-qtcraft-oak_tree) · [Eisenerz-Vorkommen](#ore-qtcraft-iron) · [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) · [Farne](#feature-qtcraft-fern) · [Fichte](#feature-qtcraft-spruce_tree) · [Gelände](#world-terrain) · [Golderz-Vorkommen](#ore-qtcraft-gold) · [Hohes Gras](#feature-qtcraft-tall_grass) · [Kaktus](#feature-qtcraft-cactus) · [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) · [Kornblumen](#feature-qtcraft-cornflower) · [Kürbisse](#feature-qtcraft-pumpkin_patch) · [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) · [Lavabecken](#feature-qtcraft-lava_pool) · [Lavasee](#feature-qtcraft-lava_lake) · [Löwenzahn](#feature-qtcraft-dandelion) · [Magmablock-Vorkommen](#ore-qtcraft-magma) · [Maiglöckchen](#feature-qtcraft-lily_of_the_valley) · [Melonen](#feature-qtcraft-melon_patch) · [Mohn](#feature-qtcraft-poppy) · [Rote Pilze](#feature-qtcraft-red_mushroom) · [Schneedecke](#feature-qtcraft-snow_layer) · [Signalerz-Vorkommen](#ore-qtcraft-signal) · [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) · [Steinkohle-Vorkommen](#ore-qtcraft-coal) · [Ton-Vorkommen](#ore-qtcraft-clay_pocket) · [Tote Büsche](#feature-qtcraft-dead_bush) · [Wilde Karotten](#feature-qtcraft-wild_carrots) · [Wilde Kartoffeln](#feature-qtcraft-wild_potatoes) · [Zierlauch](#feature-qtcraft-allium) · [Zuckerrohr](#feature-qtcraft-sugar_cane)
 
 ## QtCraft
 
@@ -137,7 +137,7 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 
 **Erzadern**
 
-[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Magmablock-Vorkommen](#ore-qtcraft-magma) (y 5–24), [Signalerz-Vorkommen](#ore-qtcraft-signal) (y 2–16), [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) (y 10–50), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
+[Diamanterz-Vorkommen](#ore-qtcraft-diamond) (y 2–16), [Eisenerz-Vorkommen](#ore-qtcraft-iron) (y 5–72), [Erde-Vorkommen](#ore-qtcraft-dirt_pocket) (y 20–100), [Golderz-Vorkommen](#ore-qtcraft-gold) (y 5–32), [Kies-Vorkommen](#ore-qtcraft-gravel_pocket) (y 5–100), [Lapislazulierz-Vorkommen](#ore-qtcraft-lapis) (y 2–34), [Magmablock-Vorkommen](#ore-qtcraft-magma) (y 5–24), [Signalerz-Vorkommen](#ore-qtcraft-signal) (y 2–16), [Spinnennetz-Vorkommen](#ore-qtcraft-cobweb) (y 10–50), [Steinkohle-Vorkommen](#ore-qtcraft-coal) (y 5–110), [Ton-Vorkommen](#ore-qtcraft-clay_pocket) (y 40–70)
 
 **Biome**
 
@@ -218,6 +218,16 @@ Jede Welt entsteht aus ihrem Seed: Hügel und Ebenen je nach Biom, darunter Höh
 **In Biomen**
 
 [Ebene](biomes.md#biome-qtcraft-plains) (0,15 % der Säulen), [Taiga](biomes.md#biome-qtcraft-taiga) (0,15 % der Säulen)
+
+### <a id="ore-qtcraft-lapis"></a>Lapislazulierz-Vorkommen
+
+| | |
+|---|---|
+| ID | `qtcraft:lapis` |
+| Block | [Lapislazulierz](blocks.md#block-qtcraft-lapis_ore) |
+| Ersetzt | [Stein](blocks.md#block-qtcraft-stone) |
+| Höhen | y 2–34 |
+| Adern | 2 pro Chunk, je bis 7 Blöcke |
 
 ### <a id="feature-qtcraft-lava_pool"></a>Lavabecken
 

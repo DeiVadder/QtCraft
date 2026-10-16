@@ -41,6 +41,7 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor crosshair MEMBER m_crosshair CONSTANT FINAL)
     Q_PROPERTY(QColor progress MEMBER m_progress CONSTANT FINAL)
     Q_PROPERTY(QColor health MEMBER m_health CONSTANT FINAL)
+    Q_PROPERTY(QColor experience MEMBER m_experience CONSTANT FINAL)
     Q_PROPERTY(QColor flame MEMBER m_flame CONSTANT FINAL)
     Q_PROPERTY(QColor flameCore MEMBER m_flameCore CONSTANT FINAL)
     Q_PROPERTY(QColor durabilityGood MEMBER m_durabilityGood CONSTANT FINAL)
@@ -93,6 +94,7 @@ private:
     QColor m_crosshair = QcUiPalette::color(QcUiPalette::Role::Crosshair);
     QColor m_progress = QcUiPalette::color(QcUiPalette::Role::Progress);
     QColor m_health = QcUiPalette::color(QcUiPalette::Role::Health);
+    QColor m_experience = QcUiPalette::color(QcUiPalette::Role::Experience);
     QColor m_flame = QcUiPalette::color(QcUiPalette::Role::Flame);
     QColor m_flameCore = QcUiPalette::color(QcUiPalette::Role::FlameCore);
     QColor m_durabilityGood = QcUiPalette::color(QcUiPalette::Role::DurabilityGood);

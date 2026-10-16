@@ -46,12 +46,12 @@ void QcPlayerController::clearSlot(int row) const
 
 double QcPlayerController::health() const
 {
-    return m_parts.session ? m_parts.session->health() : 0.0;
+    return m_parts.session ? m_parts.session->vitals().health() : 0.0;
 }
 
 double QcPlayerController::maxHealth() const
 {
-    return m_parts.session ? m_parts.session->maxHealth() : 20.0;
+    return m_parts.session ? m_parts.session->vitals().maxHealth() : 20.0;
 }
 
 bool QcPlayerController::dead() const
@@ -61,17 +61,27 @@ bool QcPlayerController::dead() const
 
 bool QcPlayerController::burning() const
 {
-    return m_parts.session && m_parts.session->burning();
+    return m_parts.session && m_parts.session->vitals().burning();
 }
 
 int QcPlayerController::food() const
 {
-    return m_parts.session ? m_parts.session->food() : QcItemDefinition::maxFood;
+    return m_parts.session ? m_parts.session->vitals().food() : QcItemDefinition::maxFood;
 }
 
 int QcPlayerController::maxFood() const
 {
-    return m_parts.session ? m_parts.session->maxFood() : QcItemDefinition::maxFood;
+    return m_parts.session ? m_parts.session->vitals().maxFood() : QcItemDefinition::maxFood;
+}
+
+int QcPlayerController::experienceLevel() const
+{
+    return m_parts.session ? m_parts.session->vitals().experienceLevel() : 0;
+}
+
+double QcPlayerController::experienceProgress() const
+{
+    return m_parts.session ? m_parts.session->vitals().experienceProgress() : 0.0;
 }
 
 double QcPlayerController::machineBurn() const

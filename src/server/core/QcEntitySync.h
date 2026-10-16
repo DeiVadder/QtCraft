@@ -1,11 +1,11 @@
 #pragma once
 
 #include "QcMessages.h"
+#include "QcServerClient.h"
 
 #include <QList>
 
 struct QcEntity;
-struct QcServerClient;
 class QcServerState;
 
 // Tells each client about the entities near it (decision E-364), the same way for every kind: a
@@ -41,6 +41,9 @@ private:
     // What the client sees of the entity now, as a move (also the base of its spawn).
     QcMsg::EntityMove seen(const QcEntity &entity) const;
     QcMsg::EntitySpawn spawnOf(const QcEntity &entity, const QcMsg::EntityMove &now) const;
+    // Items, orbs and carts: a move when the entity moved more than `threshold` since the last one
+    // sent, and one more in the tick it stopped.
+    static void sendChangedMove(Pass &pass, QcServerClient::SentEntity &known, const QcMsg::EntityMove &now, double threshold);
     void removeUnseen(Pass &pass) const;
 
     QcServerState &m_state;

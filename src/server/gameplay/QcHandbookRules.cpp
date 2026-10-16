@@ -4,6 +4,8 @@
 #include "QcBodyBurning.h"
 #include "QcChunkRegeneration.h"
 #include "QcDayCycle.h"
+#include "QcExperience.h"
+#include "QcExperienceOrbManager.h"
 #include "QcFireQueue.h"
 #include "QcFireRules.h"
 #include "QcServerLimits.h"
@@ -113,6 +115,11 @@ QMap<QString, double> values()
         {u"void.interval"_s, QcPlayerHealth::voidDamageIntervalTicks * QcPhysics::tickDuration},
         {u"items.despawnSeconds"_s, QcItemEntityManager::despawnSeconds},
         {u"items.thrownPickupDelay"_s, QcItemEntityManager::thrownPickupDelay},
+        {u"experience.despawnSeconds"_s, QcExperienceOrbManager::despawnSeconds},
+        {u"experience.attractRange"_s, QcExperienceOrbManager::attractRange},
+        {u"experience.deathPerLevel"_s, double(QcExperience::deathPointsPerLevel)},
+        {u"experience.deathMax"_s, double(QcExperience::maxDeathPoints)},
+        {u"experience.orbLimit"_s, double(QcServerLimits{}.experienceOrbs)},
         {u"mobs.hostileCap"_s, QcMobManager::hostileCapPerPlayer},
         {u"mobs.passiveCap"_s, QcMobManager::passiveCapPerPlayer},
         {u"mobs.ambientCap"_s, QcMobManager::ambientCapPerPlayer},

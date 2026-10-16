@@ -3,6 +3,7 @@
 #include "QcArmour.h"
 #include "QcChatText.h"
 #include "QcPhysics.h"
+#include "QcServerExperience.h"
 #include "QcServerInventory.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
@@ -111,6 +112,10 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
     // are removed at once by the item manager (decision E-288).
     if (!m_state.info().keepInventory && !QcGameModes::rules(client.gameMode).itemCatalogue) {
         m_inventory.dropAll(client);
+        // Experience by the reference's rule: 7 points per level, at most 100, as orbs; the rest is
+        // lost and the player comes back with none (decision E-398).
+        QcServerExperience::drop(m_state, client.experience.deathDrop(), client.motion.position + QcVec3{0.0, 0.5, 0.0});
+        client.experience = {};
     }
 }
 

@@ -16,4 +16,8 @@ struct QcSmeltingRecipe
     int resultCount = 1;
     // Burning time per item at machine speed 1.
     double seconds = 10.0;
+    // Experience points per item smelted, gathered in the machine until a player takes the output
+    // (decision E-398). Server side only.
+    double experience = 0.0;
+    static constexpr double maxExperience = 100.0;
 };

@@ -10,7 +10,7 @@
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
 // E-373): persistent creatures, dropped items and waiting drops, falling blocks, armour stands,
-// minecarts (E-382), and whether the chunk already got its animals. Items, blocks, creatures, armour
+// minecarts (E-382), experience orbs (E-398), and whether the chunk already got its animals. Items, blocks, creatures, armour
 // and capes are stored by name.
 namespace QcEntityCodec {
 

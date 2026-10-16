@@ -4,5 +4,6 @@
     "result": {
         "item": "leather_scrap"
     },
-    "seconds": 15
+    "seconds": 15,
+    "experience": 0.1
 }

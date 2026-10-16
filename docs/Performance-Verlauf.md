@@ -1529,3 +1529,76 @@ Keine übersprungenen Ticks, kein Tick über 3 ms. Die Teilchenzahl steht nicht 
 ### Fazit Etappe 35
 
 Wetter kostet bei klarem Himmel nichts Messbares: `@core` innerhalb von 6 %, die Phase Wetter 0,002–0,005 ms, Renderer und Shader ohne Preis. Regen und Schnee bei vollem Budget bleiben bei 120 FPS und p99 um 10 ms; sie kosten 0,07–0,21 ms GUI-CPU, unter 0,1 ms GPU (Median) und 6–11 MB. Die Schneedecke lässt rund 50 Abschnitte je Sekunde neu vernetzen, ohne Einfluss auf die Bildzeit. Keine Regression über 10 % in `@core` oder `@server`; die Abweichungen in den Wetter-Szenen sind die Kosten der neuen Funktion gegenüber klarem Wetter.
+
+## Etappe 36: Erfahrungskugeln (headless, 2026-10-16)
+
+Release (`RelWithDebInfo`), `QTCRAFT_EXPERIENCE_MEASURE=full build/release/tests/test_experience measureManyOrbs` (Ticks von Hand, keine Echtzeit, rund 0,1 s Wanduhr je Lauf; Grenze `experienceOrbs` für die Messung 4096; Last 8). Phase Items je Tick (Items und Kugeln; Items gab es keine), je Fall 200 Ticks, Spanne über drei Läufe. Fälle: **farm** – 1000 Kugeln zu 1 Punkt auf der Tötungsstelle einer Mob-Farm (200 Zombies × 5 Punkte auf 0,5 × 0,5 m), 10 m vom Spieler, also ohne Anziehung; **collect** – der Spieler steht danach in der Stelle und sammelt; **spread** – 900 Kugeln im Abstand von 1,5 m über die geladenen Chunks verteilt (nichts verschmilzt, die nahen fliegen zum Spieler).
+
+| Fall | Kugeln vorher → nachher | Items Ø ms | Items max ms |
+|---|---|---|---|
+| farm | 1000 → 1 | 0,016–0,019 | 0,47–0,56 |
+| collect | 1 → 0 | 0,0001 | 0,005–0,006 |
+| spread | 900 → 831 | 0,173–0,182 | 0,73–0,82 |
+
+**Bewertung:**
+
+- **Verschmelzen hält die Farm klein:** Im ersten Verschmelz-Tick (nach 10 Ticks) werden aus 1000 Kugeln eine mit 1000 Punkten; die Spitze von 0,5 ms ist der erste Tick, in dem alle 1000 noch fallen. Danach kostet die ruhende Kugel nichts. Ohne Verschmelzen bliebe es beim Fall spread: rund 0,2 µs je Kugel und Tick (Ruhe-Prüfung, nächster Spieler), Spitze 0,8 ms beim Fallen. Die Grenze von 1024 Kugeln (Standard) deckelt diesen Fall; mehr Erfahrung geht in die nächste Kugel.
+- **Einsammeln:** eine Kugel je Spieler alle 2 Ticks (wie im Vorbild); 1000 nicht verschmolzene Kugeln bräuchten 100 s, verschmolzen ist die Farm in einem Tick abgeholt.
+- **Ohne Kugeln** kehrt die Kugel-Phase sofort zurück; je Tick bleibt der Vergleich der Erfahrung jedes Spielers mit der zuletzt gesendeten (`QcServerExperience::sendChanges`). Kein Fenster- oder `@server`-Benchmark gelaufen (nicht nötig für diese Phase; beim Merge mit dem Etappen-Benchmark nachholen, falls gewünscht).
+
+## Etappe 36 (Erfahrung und Lapislazuli)
+
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `51e331d` in einem temporären Worktree gegen `feature/36-experience` `ffae444` (Nachbesserungen E-399 eingeschlossen). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` (`bench-headless.sh`, adaptiv, alle Szenarien nach 3 Runden fertig, 60 Spielsekunden, 03:46–03:48); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 03:49–04:02); das neue Szenario `orbs` headless (6 Runden, 20 Spielsekunden) und im Fenster (3 Runden à 10 s, 04:07–04:10). Last 2,3–9,5 (einmal 9,5 nach einem stand-Lauf), belastet markiert 7 von 48 Läufen der `@core`-Reihe, verteilt auf beide Stände; ohne sie ändert sich keine Aussage. Wanduhr samt Builds und Aufbau des Szenarios rund 30 min.
+
+**Neues Szenario `orbs`** (`scripts/bench-common.sh`): flache Welt, 15 Reihen zu 20 Öfen im Abstand von 3 m nördlich des Spielers, je ein Trichter darüber (4 Eisenerz) und daneben (1 Kohle), der Spieler wirft die Stapel per `/tp` und `/spawnitem` darauf (rund 2100 Zeilen); `/tick sprint 1000` schmilzt, nach 2 s räumt `/fill` die Reihen: jeder Ofen gibt seine Erfahrung (4 × 0,7) als Kugel frei und verschüttet seine Barren. Rund 300 Kugeln in 3 m Abstand (keine verschmilzt) und 300 Items; der Spieler schaut von einem Block 14 m hoch darauf (keine Kugel im Umkreis von 8 m, alle ruhen) und steigt nach der halben Laufzeit in die Mitte des Felds hinab, die Kugeln im Umkreis fliegen zu ihm (eine je 2 Ticks). Auf `dev` läuft dieselbe Szene ohne Kugeln (der Ofen sammelt dort keine Erfahrung); der Vergleich zeigt also die Kosten der Kugeln. Ein erster Entwurf mit Trichterketten (ein Trichterband je Reihe) bewegte keine Items und wurde verworfen; die Ursache ist nicht untersucht (Trichter-Budget oder Aufwecken bei rund 2300 Trichtern, kein Befund dieser Etappe).
+
+### Fenster: 36 gegen `51e331d` (`@core`, 6 Runden à 10 s)
+
+| Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Phase Items Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| stand | 120 / 120 | 9,84 → 10,0 | 1,70 → 1,81 (+6 %) | 1,55 → 1,58 | 0,973 → 0,980 | 0,452 → 0,441 | 0,141 → 0,145 | 0,547 → 0,580 (+6 %) | 0,0045 → 0,0047 | 447 → 449 | 347 → 347 |
+| sprint | 120 / 120 | 10,0 → 10,0 | 2,23 → 2,17 (−3 %) | 1,64 → 1,58 (−3 %) | 1,03 → 0,989 | 0,424 → 0,413 | 0,137 → 0,131 | 0,652 → 0,619 (−5 %) | 0,0042 → 0,0041 | 558 → 559 | 388 → 388 |
+| showcase | 120 / 120 | 10,1 → 10,0 | 0,594 → 0,592 | 1,15 → 1,13 | 0,542 → 0,518 | 0,702 → 0,724 (+3 %) | 0,337 → 0,354 (+5 %) | 0,340 → 0,321 (−6 %) | 0,0097 → 0,0091 | 333 → 333 | 153 → 153 |
+| crowd | 120 / 120 | 10,0 → 10,0 | 2,61 → 2,57 | 1,30 → 1,30 | 1,02 → 1,02 | 0,844 → 0,826 | 0,515 → 0,506 | 0,817 → 0,819 | 0,0126 → 0,0131 | 453 → 454 | 345 → 345 |
+
+Keine übersprungenen Ticks, Tick max höchstens 4,8 ms. GPU stand zweigipflig wie in den Etappen davor (Läufe 1,57–2,15 gegen 1,58–1,99 ms, Median 1,65 → 1,77 ms, +7 %); Tick Ø im Fenster mit Spannen von 40–70 % je Stand (Schlaf zwischen den Ticks), bewertet headless.
+
+### Headless: 36 gegen `51e331d` (`@server`, je 3 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
+|---|---:|---:|---:|---|
+| crowd | 0,132 → 0,135 (+2 %) | 0,186 → 0,185 | 50,3 → 50,2 | Wesen 0,117 → 0,119, Items 0,001 gleich, Client-Sync 0,0100 → 0,0102 |
+| gravel-collapse | 0,493 → 0,497 | 1,44 → 1,42 | 71,1 → 71,0 | Client-Sync 0,150 gleich |
+| farm / farm-seeds | 0,0073 gleich / 0,0170 → 0,0173 | 0,015 gleich / 0,053 → 0,055 | 44,4 → 44,3 / 44,0 → 43,5 | Items (farm-seeds, 150 Stapel) 0,0064 → 0,0065, Client-Sync 0,0042 → 0,0043 |
+| explore | 0,181 → 0,181 | 0,906 → 0,895 | 56,6 → 56,4 | Streaming 0,081 gleich, Wesen 0,052 gleich |
+| signal_components / machines / farm | 0,031 / 0,028 / 0,031 gleich | 0,100 / 0,098 → 0,101 / 0,100 → 0,099 | 44,7–44,9 | Maschinen 0,0003 gleich, Items 0,0004–0,0005 |
+
+### Kugeln (`orbs`; `dev` = dieselbe Szene ohne Kugeln)
+
+| | Fenster (3 Runden à 10 s) | headless (6 Runden, 20 Spielsekunden) |
+|---|---|---|
+| Entities beim Client am Ende | 304 → 548 (rund 245 Kugeln nach dem Einsammeln) | – |
+| FPS / Frame Ø / p99 ms | 120 / 8,34 → 8,33 / 9,37 → 9,37 | – |
+| GPU Ø ms | 0,408 → 0,421 (+3 %) | – |
+| Render-CPU / Welt-Renderer ms | 1,14 → 1,10 / 0,402 → 0,401 | – |
+| GUI-CPU Ø ms | **0,845 → 1,065 (+0,22)** [0,83–0,87 → 1,00–1,17] | – |
+| Entity-Vernetzung Ø / p99 ms | **0,483 → 0,684 (+0,20)** / 1,17 → 1,43 | – |
+| Tick Ø / max ms | 0,226 → 0,290 / 0,92 → 1,09 | 0,0245 → 0,0412 (+0,017) / p99 0,095 → 0,165 |
+| Phase Items Ø / max ms | 0,083 → 0,117 / 0,43 → 0,56 | 0,0134 → 0,0230 / 0,093 → 0,151 |
+| Phase Client-Sync Ø / max ms | – | 0,0062 → 0,0123 / 0,14 → 0,26 |
+| Spitzenspeicher MB | 586 → 587 | 45,1 → 45,5 |
+| Draw-Calls | 52 → 52 | – |
+
+**Bewertung:**
+
+- **`@core` und `@server` innerhalb von 10 %:** im Fenster kein Schlüssel über +6 % (GPU stand +6 % bei zweigipfligen Läufen, Median +7 %; Tick Ø stand +6 % bei 46 % Spanne, headless gleich), Draw-Calls und Spitzenspeicher gleich (+0 bis +2 MB). Headless Tick Ø −1 bis +2 %, p99 −1 bis +4 %.
+- **Kugel-Phase ohne Kugeln:** Phase Items in allen `@server`-Szenarien gleich (crowd 0,001 ms, farm-seeds mit 150 Stapeln 0,0064 → 0,0065 ms); `sendChanges` (Vergleich der Erfahrung je Spieler) ist nicht messbar.
+- **Stopp-Proben in der Entity-Sync (E-399):** Phase Client-Sync in crowd (24 Items, 56 Wesen) 0,0100 → 0,0102 ms, farm-seeds 0,0042 → 0,0043 ms, gravel-collapse (fallende Blöcke) gleich: eine Nachricht je Landung kostet nichts Messbares.
+- **Ofen mit Erfahrung ruht (E-399):** Phase Maschinen in den Signal-Stationen (Trichter, Sortierer, Öfen) 0,0003 ms gleich; im Szenario `orbs` mit 300 Öfen 0,0007 ms (`dev`) gegen 0,0007 ms.
+- **Kosten der Kugeln (neue Funktion, keine Regression):** rund 245 sichtbare Kugeln kosten im Fenster **0,22 ms GUI-CPU**, fast ganz Entity-Vernetzung (+0,20 ms, rund 0,8 µs je Kugel und Bild; die 300 Items derselben Szene kosten rund 1,6 µs je Item); GPU +3 %, Render-CPU und Draw-Calls gleich (Kugeln liegen im Entity-Puffer, kein eigener Draw-Call). Bildrate und p99 unverändert. Server: headless +0,017 ms je Tick (Phase Items +0,010 ms, davon das Einsammeln in der zweiten Hälfte, Client-Sync +0,006 ms für die Bewegungen fliegender Kugeln), im Fenster +0,064 ms Tick Ø. Ruhende Kugeln ohne Spieler im Umkreis kosten fast nichts (headless-Messung `measureManyOrbs` oben: rund 0,2 µs je wache Kugel); der Rest ist Anziehen, Einsammeln und Senden.
+
+**Absolute Ziele (`docs/Performance.md`, 8 Chunks):** Bildrate 120 FPS (Ziel ≥ 60), Frame-Kosten höchstens 2,75 ms (GPU crowd, einzelner Lauf; Mittel höchstens 2,61 ms; Ziel ≤ 4 ms) und p99 ≤ 12,5 ms (alle 54 Fensterläufe 9,3–10,4 ms) erfüllt. Spitzenspeicher stand, showcase, crowd 333–454 MB, sprint (10 s) 559 MB, orbs 587 MB, alle unter 600 MB; die offenen Befunde sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen, durch 36 nicht berührt. Tick: kein Tick über 50 ms (höchstens 4,8 ms), keine übersprungenen Ticks.
+
+### Fazit Etappe 36
+
+Erfahrung kostet ohne Kugeln nichts Messbares: `@core` innerhalb von 6 % (Median-GPU stand +7 %, bekannt zweigipflig), `@server` innerhalb von 2 % (p99 4 %), Stopp-Proben und ruhende Öfen ohne Preis. Mit rund 250 Kugeln im Blick kostet das Zeichnen 0,22 ms GUI-CPU (Entity-Vernetzung) bei unveränderter Bildrate, der Server 0,02 ms je Tick headless. Keine Regression über 10 %; alle Ziele erfüllt.

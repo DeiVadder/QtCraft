@@ -285,6 +285,8 @@ qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixt
 qc_add_test(test_fire SOURCES gameplay/test_fire.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_weather SOURCES gameplay/test_weather.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_weather_effects SOURCES gameplay/test_weather_effects.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_experience SOURCES gameplay/test_experience.cpp QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_experience_sources SOURCES gameplay/test_experience_sources.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fire_sources SOURCES gameplay/test_fire_sources.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_chunk_unloading SOURCES gameplay/test_chunk_unloading.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcBlockEntityDump.h LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_entity_model SOURCES gameplay/test_entity_model.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

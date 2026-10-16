@@ -144,6 +144,16 @@ struct PlayerFood
     qint32 maxFood = 0;
 };
 
+// Server -> client: the receiving player's experience (decision E-398): his level and the points
+// towards the next one, which needs `pointsForNext` (QcExperience::pointsForNext, sent so the
+// client needs no curve).
+struct PlayerExperience
+{
+    qint32 level = 0;
+    qint32 points = 0;
+    qint32 pointsForNext = 7;
+};
+
 // Server -> client: the receiving player's game mode (decision E-282), after the welcome and with
 // every change. The client derives the rules from it (QcGameModes::rules).
 struct GameMode

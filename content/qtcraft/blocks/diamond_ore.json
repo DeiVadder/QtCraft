@@ -9,6 +9,10 @@
             "item": "diamond"
         }
     ],
+    "experience": [
+        3,
+        7
+    ],
     "textures": {
         "all": "diamond_ore"
     }

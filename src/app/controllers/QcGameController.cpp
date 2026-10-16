@@ -494,6 +494,7 @@ void QcGameController::connectSessionPlayer()
     connect(session, &QcClientSession::inventoryChanged, m_player.get(), &QcPlayerController::updateInventory);
     connect(session, &QcClientSession::craftingOpened, this, [this] { setOverlay(u"inventory"_s); });
     connect(session, &QcClientSession::foodChanged, m_player.get(), &QcPlayerController::foodChanged);
+    connect(session, &QcClientSession::experienceChanged, m_player.get(), &QcPlayerController::experienceChanged);
     connect(session, &QcClientSession::gameModeChanged, m_player.get(), &QcPlayerController::gameModeChanged);
     // An operator changed the mode while the creative inventory was open: the usual one instead.
     connect(session, &QcClientSession::gameModeChanged, this, [this] {

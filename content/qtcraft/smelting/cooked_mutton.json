@@ -4,5 +4,6 @@
     "result": {
         "item": "cooked_mutton"
     },
-    "seconds": 10
+    "seconds": 10,
+    "experience": 0.35
 }

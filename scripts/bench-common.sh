@@ -110,6 +110,16 @@
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
+#   orbs     - experience orbs (stage 36, decision E-398): a flat world with 15 rows of 20 furnaces
+#              3 m apart north of the player, each with a hopper above it and one beside it; the
+#              player drops 4 iron ore on the one and a coal on the other (about 2100 lines at the
+#              start), a /tick sprint of 1000 ticks smelts, two seconds in /fill clears the rows:
+#              every furnace frees its experience (4 x 0.7) as an orb where it stood (about 300
+#              orbs, too far apart to join) and spills its ingots (about 300 items). The player
+#              looks down from a block 14 m up (no orb within 8 m: they rest); halfway through the
+#              run he steps down into the middle of the field and the orbs within 8 m fly to him
+#              (one collected every 2 ticks). Builds before stage 36 smelt and spill the same
+#              without orbs, so an A/B shows their cost. Always flat
 #
 # TEXTURE_PACKS=<ids> runs with these texture packs (QTCRAFT_TEXTURE_PACKS, stage 28, decision E-304),
 # highest priority first, e.g. builtin:qtcraft_hd_32, builtin:qtcraft_hd_64, builtin:qtcraft_hd_128,
@@ -392,6 +402,47 @@ forest_fire_chat() {
     }'
 }
 
+# Prints the chat lines of the orbs scenario, one per line (see the scenario above). Coordinates are
+# relative to the player, who moves (/tp) to drop the stacks 2 m ahead (looking north) onto the
+# hoppers; the awk script keeps track of where he stands. Rows r = 0..14 at z = -4 - 3 r, furnaces at
+# x = 4, 7, ..., 61 and y + 0, each with a hopper above it (input) and one east of it (fuel).
+# Usage: orbs_chat <seconds>
+orbs_chat() {
+    echo "/time set day"
+    awk -v seconds="$1" '
+    function at(x, y, z) { return sprintf("~%d ~%d ~%d", x - px, y - py, z - pz) }
+    function put(x, y, z, block) { printf "/setblock %s %s\n", at(x, y, z), block }
+    function tp(x, y, z) { printf "/tp %s\n", at(x, y, z); px = x; py = y; pz = z }
+    BEGIN {
+        rows = 15; columns = 20
+        for (r = 0; r < rows; r++) {
+            for (i = 0; i < columns; i++) {
+                x = 4 + 3 * i; z = -4 - 3 * r
+                put(x, 0, z, "furnace")
+                put(x, 1, z, "signal_hopper[facing=down]")
+                put(x + 1, 0, z, "signal_hopper[facing=west]")
+            }
+        }
+        for (r = 0; r < rows; r++) {
+            for (i = 0; i < columns; i++) {
+                x = 4 + 3 * i; z = -4 - 3 * r
+                tp(x, 2, z + 2)
+                print "/spawnitem iron_ore 4"
+                tp(x + 1, 1, z + 2)
+                print "/spawnitem coal 1"
+            }
+        }
+        put(33, 13, 4, "stone")
+        tp(33, 14, 4)
+        print "/tick sprint 1000"
+        for (r = 0; r < rows; r++) {
+            z = -4 - 3 * r
+            printf "@2000 /fill %s %s air\n", at(4, 0, z), at(62, 1, z)
+        }
+        printf "@%d /tp %s\n", 3000 + seconds * 500, at(33, 0, -25)
+    }'
+}
+
 # One repeater clock of signal-stress at x $1, z $2 driving two blocks $3 (pistons get stone on top).
 stress_clock() {
     x=$1
@@ -458,6 +509,7 @@ scene_chat() {
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
     forest-fire) forest_fire_chat ;;
+    orbs) orbs_chat "$2" ;;
     forest-fire-storm)
         printf '%s\n' "/gamerule weatherCycle false" "/weather thunder" "/tick sprint 200"
         forest_fire_chat
@@ -526,7 +578,7 @@ scene_of() {
         SCENE_ARMOUR=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm | orbs)
         SCENE_WORLD=flat
         ;;
     esac
@@ -572,6 +624,7 @@ scene_of() {
         ;;
     signal-stress) SCENE_LOOK=0,-25 ;;
     forest-fire | forest-fire-storm) SCENE_LOOK=0,-35 ;;
+    orbs) SCENE_LOOK=0,-40 ;;
     gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;
     inventory) SCENE_WINDOW="--overlay inventory" ;;
     handbook) SCENE_WINDOW="--handbook block:qtcraft:stone" ;;

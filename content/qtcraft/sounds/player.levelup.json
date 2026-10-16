@@ -1,0 +1,40 @@
+{
+    "name": "player.levelup",
+    "volume": 0.5,
+    "pitchVariation": 0.0,
+    "range": 12,
+    "layers": [
+        {
+            "wave": "triangle",
+            "duration": 0.18,
+            "frequency": 523,
+            "attack": 0.004,
+            "curve": 2
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.18,
+            "frequency": 659,
+            "start": 0.12,
+            "attack": 0.004,
+            "curve": 2
+        },
+        {
+            "wave": "triangle",
+            "duration": 0.45,
+            "frequency": 784,
+            "start": 0.24,
+            "attack": 0.004,
+            "curve": 2
+        },
+        {
+            "wave": "sine",
+            "duration": 0.45,
+            "frequency": 1568,
+            "start": 0.24,
+            "attack": 0.004,
+            "curve": 3,
+            "gain": 0.25
+        }
+    ]
+}

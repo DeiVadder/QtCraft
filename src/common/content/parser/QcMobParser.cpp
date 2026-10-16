@@ -217,6 +217,7 @@ void parseBreeding(QcMobDefinition &mob, QcJsonFieldReader &breedingReader, cons
     breeding.cooldownSeconds = breedingReader.number(u"cooldownSeconds"_s, 300.0, 0.0, 86400.0);
     breeding.growUpSeconds = breedingReader.number(u"growUpSeconds"_s, 1200.0, 1.0, 86400.0);
     breeding.partnerDistance = breedingReader.number(u"partnerDistance"_s, 8.0, 0.5, 32.0);
+    breeding.experience = QcContentFields::parseExperience(u"experience"_s, breedingReader, breeding.experience);
     if (breedingReader.ok() && breeding.food.isEmpty()) {
         breedingReader.fail(u"needs 'food'"_s);
     }
@@ -382,6 +383,7 @@ namespace QcMobParser {
     });
     parseMobModel(json, mob, reader, packNamespace);
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
+    mob.experience = QcContentFields::parseExperience(u"experience"_s, reader);
     parseMobSounds(json, mob, reader, packNamespace);
 
     if (!reader.ok()) {

@@ -2,6 +2,7 @@
 
 #include "QcArmour.h"
 #include "QcArmourStandManager.h"
+#include "QcExperienceOrbManager.h"
 #include "QcFallingBlockManager.h"
 #include "QcNameText.h"
 #include "QcPhysics.h"
@@ -70,7 +71,7 @@ public:
     bool read()
     {
         return entries([this] { return creature(); }) && entries([this] { return item(); }) && entries([this] { return falling(); })
-               && entries([this] { return stand(); }) && entries([this] { return minecart(); });
+               && entries([this] { return stand(); }) && entries([this] { return minecart(); }) && entries([this] { return orb(); });
     }
 
 private:
@@ -262,6 +263,27 @@ private:
         return true;
     }
 
+    bool orb()
+    {
+        QcEntityRecord::Ordered<QcExperienceOrb> entry;
+        QcExperienceOrb &orb = entry.entry;
+        qint32 value = 0;
+        readVec(m_stream, orb.motion.position);
+        readVec(m_stream, orb.motion.velocity);
+        m_stream >> value >> orb.age >> orb.pickupDelay >> entry.order;
+        if (m_stream.status() != QDataStream::Ok || !inChunk(orb.motion.position) || !isFinite(orb.motion.velocity) || !std::isfinite(orb.age)
+            || !std::isfinite(orb.pickupDelay) || value <= 0) {
+            return false;
+        }
+
+        orb.value = value;
+        orb.motion.velocity = clampedVelocity(orb.motion.velocity);
+        orb.age = std::clamp(orb.age, 0.0, QcExperienceOrbManager::despawnSeconds);
+        orb.pickupDelay = std::clamp(orb.pickupDelay, 0.0, QcExperienceOrbManager::pickupDelay);
+        m_record.orbs.append(entry);
+        return true;
+    }
+
     // What a stand wears or holds: one item, by name; unknown items are dropped with a warning.
     QcItemStack standStack()
     {
@@ -353,6 +375,12 @@ void writeRecord(QDataStream &stream, const QcEntityRecord &record, const QcCont
             QcSaveFile::writeStack(stream, stack, content);
         }
         stream << cart.enabled;
+    }
+    stream << quint32(record.orbs.size());
+    for (const auto &[orb, order] : record.orbs) {
+        writeVec(stream, orb.motion.position);
+        writeVec(stream, orb.motion.velocity);
+        stream << qint32(orb.value) << orb.age << orb.pickupDelay << order;
     }
 }
 

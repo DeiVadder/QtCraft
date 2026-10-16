@@ -16,6 +16,7 @@
                 "chapter:qtcraft:fire",
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:death",
+                "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
                 "chapter:qtcraft:world",
                 "chapter:qtcraft:creative",
@@ -145,6 +146,8 @@
                 "block:qtcraft:cornflower",
                 "block:qtcraft:pumpkin",
                 "block:qtcraft:pumpkin_stem",
+                "block:qtcraft:lapis_block",
+                "block:qtcraft:lapis_ore",
                 "block:qtcraft:lantern",
                 "block:qtcraft:mud_bricks",
                 "block:qtcraft:ladder",
@@ -341,6 +344,7 @@
                 "item:qtcraft:coal",
                 "item:qtcraft:coal_chunk",
                 "item:qtcraft:pumpkin_seeds",
+                "item:qtcraft:lapis_lazuli",
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
                 "item:qtcraft:leather_scrap",
@@ -484,6 +488,7 @@
                 "ore:qtcraft:gravel_pocket",
                 "feature:qtcraft:cornflower",
                 "feature:qtcraft:pumpkin_patch",
+                "ore:qtcraft:lapis",
                 "feature:qtcraft:lava_pool",
                 "feature:qtcraft:lava_lake",
                 "feature:qtcraft:dandelion",
@@ -21094,6 +21099,321 @@
             ],
             "text": "Eine Eisenlaterne um eine Fackelflamme; das hellste Licht, das sich bauen lässt.",
             "title": "Laterne"
+        },
+        "block:qtcraft:lapis_block": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Block of lapis lazuli",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_block"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 2 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "0,56 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Lapislazuliblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:lapis_block",
+            "id": "block:qtcraft:lapis_block",
+            "name": "qtcraft:lapis_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                },
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:lapis_block",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:lapis_block",
+                                "note": "",
+                                "target": "block:qtcraft:lapis_block",
+                                "text": "Lapislazuliblock"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_lazuli",
+                            "note": "",
+                            "target": "item:qtcraft:lapis_lazuli",
+                            "text": "Lapislazuli"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Neun Stücke Lapislazuli zu einem Block gepresst; zurückgecraftet gibt er alle neun.",
+            "title": "Lapislazuliblock"
+        },
+        "block:qtcraft:lapis_ore": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Lapis lazuli ore",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_ore"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 2 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "0,56 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_lazuli",
+                            "note": "4–9×",
+                            "target": "item:qtcraft:lapis_lazuli",
+                            "text": "Lapislazuli"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:lapis_ore",
+            "id": "block:qtcraft:lapis_ore",
+            "name": "qtcraft:lapis_ore",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "y 2–34",
+                            "target": "ore:qtcraft:lapis",
+                            "text": "Lapislazulierz-Vorkommen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Tiefblaue Flecken im Stein, selten über Höhe 30. Braucht eine Spitzhacke der Stufe 2 oder besser und gibt mehrere Stücke Lapislazuli und etwas Erfahrung.",
+            "title": "Lapislazulierz"
         },
         "block:qtcraft:lava": {
             "category": "liquids",
@@ -50781,6 +51101,74 @@
             "text": "",
             "title": "Tod und Wiederbeleben"
         },
+        "chapter:qtcraft:experience": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Experience",
+            "facts": [
+            ],
+            "icon": "qtcraft:lapis_lazuli",
+            "id": "chapter:qtcraft:experience",
+            "name": "qtcraft:experience",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Erze abbauen (Kohle, Diamant, Lapislazuli, Signal-Dust-Erz), Wesen besiegen, im Ofen schmelzen und Tiere züchten gibt Erfahrung als kleine leuchtende Kugeln. Kugeln fliegen zum nächsten Spieler im Umkreis von 8 Blöcken und werden mit einem hellen Klang eingesammelt; ein Ofen behält die Erfahrung des Geschmolzenen, bis ein Spieler das Ergebnis herausnimmt. Kugeln nahe beieinander verschmelzen zu einer, und sie verschwinden nach 300 s, solange ihre Gegend geladen ist. Eine Welt hält höchstens 1024 Kugeln; darüber hinaus geht neue Erfahrung in die nächste Kugel, damit nichts verloren geht.",
+                    "title": "Erfahrungskugeln"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Erfahrung füllt die grüne Leiste über der Schnellleiste; ist sie voll, erreichst du mit einer Fanfare die nächste Stufe, die als Zahl in der Mitte steht. Jede Stufe kostet mehr als die vorige: 7 Punkte für die erste, 17 für Stufe 5, 37 für Stufe 15 und 112 für Stufe 30. Stufen verlangen später Händler und die Verzauberung.",
+                    "title": "Stufen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Stirbst du, lässt du 7 Punkte je Stufe als Kugeln fallen, höchstens 100 Punkte; der Rest ist verloren und du beginnst wieder bei Stufe 0. Mit der Spielregel keepInventory behältst du deine Erfahrung, ebenso Spieler im Kreativmodus.",
+                    "title": "Erfahrung und Tod"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine negative Menge zieht ab), /xp set <Spieler> <Menge> [points|levels] und /xp query <Spieler>.",
+                    "title": "Der Befehl /xp"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Ofen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Erfahrung"
+        },
         "chapter:qtcraft:farming": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -54332,6 +54720,33 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 1
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_lazuli",
+                                    "note": "",
+                                    "target": "item:qtcraft:lapis_lazuli",
+                                    "text": "Lapislazuli"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:blue_dye_from_lapis_lazuli",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:blue_dye",
+                                "note": "",
+                                "target": "item:qtcraft:blue_dye",
+                                "text": "Blauer Farbstoff"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
                         }
                     ],
                     "text": "",
@@ -57234,6 +57649,18 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:coal_block",
                             "text": "Kohleblock"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Lapislazuliblock"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
                         },
                         {
                             "icon": "qtcraft:mud_bricks",
@@ -61757,6 +62184,18 @@
                             "text": "Kohleblock"
                         },
                         {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Lapislazuliblock"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
+                        },
+                        {
                             "icon": "qtcraft:mud_bricks",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mud_bricks",
@@ -62203,6 +62642,103 @@
             ],
             "text": "Eine Waffe: richtet mehr Schaden an Wesen an.",
             "title": "Eisenschwert"
+        },
+        "item:qtcraft:lapis_lazuli": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Lapis lazuli",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis_lazuli"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:lapis_lazuli",
+            "id": "item:qtcraft:lapis_lazuli",
+            "name": "qtcraft:lapis_lazuli",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:lapis_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:lapis_block",
+                                    "text": "Lapislazuliblock"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:lapis_lazuli_from_lapis_block",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:lapis_lazuli",
+                                "note": "",
+                                "target": "item:qtcraft:lapis_lazuli",
+                                "text": "Lapislazuli"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_dye",
+                            "note": "",
+                            "target": "item:qtcraft:blue_dye",
+                            "text": "Blauer Farbstoff"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Lapislazuliblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "4–9×",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Ein blauer Stein aus tiefen Erzen. Er ergibt blauen Farbstoff; Händler und Verzauberung werden ihn haben wollen.",
+            "title": "Lapislazuli"
         },
         "item:qtcraft:lava_bucket": {
             "category": "items",
@@ -65956,6 +66492,18 @@
                             "text": "Kohleblock"
                         },
                         {
+                            "icon": "qtcraft:lapis_block",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_block",
+                            "text": "Lapislazuliblock"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "Stufe 2",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
+                        },
+                        {
                             "icon": "qtcraft:mud_bricks",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mud_bricks",
@@ -69544,6 +70092,64 @@
             "text": "",
             "title": "Eisenerz-Vorkommen"
         },
+        "ore:qtcraft:lapis": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Lapis lazuli ore veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lapis"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "",
+                            "target": "block:qtcraft:lapis_ore",
+                            "text": "Lapislazulierz"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Ersetzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Höhen",
+                    "links": [
+                    ],
+                    "value": "y 2–34"
+                },
+                {
+                    "label": "Adern",
+                    "links": [
+                    ],
+                    "value": "2 pro Chunk, je bis 7 Blöcke"
+                }
+            ],
+            "icon": "qtcraft:lapis_ore",
+            "id": "ore:qtcraft:lapis",
+            "name": "qtcraft:lapis",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Lapislazulierz-Vorkommen"
+        },
         "ore:qtcraft:magma": {
             "category": "worldgen",
             "categoryTitle": "Weltgenerierung",
@@ -71069,7 +71675,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian",
+                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian",
                     "title": "Spitzhacke"
                 },
                 {
@@ -71913,6 +72519,12 @@
                             "note": "y 5–100",
                             "target": "ore:qtcraft:gravel_pocket",
                             "text": "Kies-Vorkommen"
+                        },
+                        {
+                            "icon": "qtcraft:lapis_ore",
+                            "note": "y 2–34",
+                            "target": "ore:qtcraft:lapis",
+                            "text": "Lapislazulierz-Vorkommen"
                         },
                         {
                             "icon": "qtcraft:magma_block",

@@ -1,0 +1,8 @@
+{
+    "name": "lapis_lazuli",
+    "pattern": "gem",
+    "primary": "#2a52be",
+    "secondary": "#5a82e8",
+    "variation": 0.1,
+    "seed": 3603
+}

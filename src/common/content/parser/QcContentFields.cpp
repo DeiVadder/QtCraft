@@ -133,4 +133,26 @@ QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonF
     return it == roles.constEnd() ? std::nullopt : std::optional<QcBoneRole>(*it);
 }
 
+QcExperienceDrop parseExperience(const QString &key, QcJsonFieldReader &reader, QcExperienceDrop fallback)
+{
+    const QJsonValue value = reader.json.value(key);
+    if (value.isUndefined()) {
+        return fallback;
+    }
+
+    const auto valid = [](double points) { return std::isfinite(points) && points >= 0.0 && points <= maxExperience && std::floor(points) == points; };
+    if (value.isDouble() && valid(value.toDouble())) {
+        return {int(value.toDouble()), int(value.toDouble())};
+    }
+
+    const QJsonArray range = value.toArray();
+    if (value.isArray() && range.size() == 2 && range[0].isDouble() && range[1].isDouble() && valid(range[0].toDouble())
+        && valid(range[1].toDouble()) && range[0].toDouble() <= range[1].toDouble()) {
+        return {int(range[0].toDouble()), int(range[1].toDouble())};
+    }
+
+    reader.fail(u"'%1' must be a whole number or [min, max] of whole numbers in 0..%2"_s.arg(key).arg(maxExperience));
+    return fallback;
+}
+
 } // namespace QcContentFields

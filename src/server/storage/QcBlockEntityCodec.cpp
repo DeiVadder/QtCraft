@@ -115,14 +115,15 @@ private:
         for (QcItemStack &stack : machine.stacks) {
             stack = m_stacks.read(m_stream);
         }
-        m_stream >> machine.burnRemaining >> machine.burnSeconds >> machine.progress;
+        m_stream >> machine.burnRemaining >> machine.burnSeconds >> machine.progress >> machine.experience;
         if (m_stream.status() != QDataStream::Ok || !std::isfinite(machine.burnRemaining) || !std::isfinite(machine.burnSeconds)
-            || !std::isfinite(machine.progress)) {
+            || !std::isfinite(machine.progress) || !std::isfinite(machine.experience)) {
             return false;
         }
         machine.burnSeconds = std::clamp(machine.burnSeconds, 0.0, maxSeconds);
         machine.burnRemaining = std::clamp(machine.burnRemaining, 0.0, machine.burnSeconds);
         machine.progress = std::clamp(machine.progress, 0.0, maxSeconds);
+        machine.experience = std::clamp(machine.experience, 0.0, QcBlockEntities::Machine::maxExperience);
         machine.progressItem = machine.stacks[QcBlockEntities::Machine::inputSlot].item;
         m_record.machines.append(machine);
         return fresh(m_machines, machine.pos);
@@ -257,7 +258,7 @@ QByteArray encode(const QcBlockEntityRecord &record, const QcContentRegistry &co
         for (const QcItemStack &stack : machine.stacks) {
             QcSaveFile::writeStack(stream, stack, content);
         }
-        stream << machine.burnRemaining << machine.burnSeconds << machine.progress;
+        stream << machine.burnRemaining << machine.burnSeconds << machine.progress << machine.experience;
     }
     stream << quint32(record.saplings.size());
     for (const QcBlockEntities::Sapling &sapling : record.saplings) {

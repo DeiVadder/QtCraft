@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 46> table{{
+constexpr std::array<QcServerLimits::Field, 47> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -38,6 +38,7 @@ constexpr std::array<QcServerLimits::Field, 46> table{{
     {"itemsAwake", "dropped items awake in loaded chunks", 16, 65536, &QcServerLimits::itemsAwake},
     {"itemsQueued", "dropped items waiting to appear", 16, 1 << 20, &QcServerLimits::itemsQueued},
     {"itemsTotal", "dropped items in the world", 64, 1 << 20, &QcServerLimits::itemsTotal},
+    {"experienceOrbs", "experience orbs in the world (beyond, experience joins the nearest orb)", 16, 1 << 20, &QcServerLimits::experienceOrbs},
     {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
     {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
     {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},

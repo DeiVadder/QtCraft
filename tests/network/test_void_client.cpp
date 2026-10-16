@@ -99,7 +99,7 @@ private:
     // for the death, its message and the respawn.
     void expectDeathInTheVoid(int delayMs, int jitterMs)
     {
-        QTRY_VERIFY_WITH_TIMEOUT(m_session->health() < m_session->maxHealth(), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(m_session->vitals().health() < m_session->vitals().maxHealth(), timeoutMs);
         QVERIFY(QcWorld::isInVoid(m_session->playerMotion().position.y));
         // The answers to the inputs up to the first hit arrive; the player dies only 2 s later.
         QTest::qWait(2 * (delayMs + jitterMs) + 200);

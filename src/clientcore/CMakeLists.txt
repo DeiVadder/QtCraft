@@ -34,6 +34,7 @@ qt_add_library(qc_clientcore STATIC
     session/QcClientLogin.h session/QcClientLogin.cpp
     network/QcNetworkClient.h network/QcNetworkClient.cpp
     session/QcClientSession.h session/QcClientSession.cpp
+    session/QcClientVitals.h session/QcClientVitals.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp

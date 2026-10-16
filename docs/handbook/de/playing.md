@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -317,6 +317,28 @@ Unter dem Boden der Welt hält dich nichts: Durch ein Loch im Grundgestein oder 
 **Fallengelassene Items**
 
 Items am Boden verschwinden nach 300 s, solange ihre Gegend geladen ist. Geworfene Items kannst du nach 2 s wieder aufheben.
+
+### <a id="chapter-qtcraft-experience"></a>Erfahrung
+
+**Erfahrungskugeln**
+
+Erze abbauen (Kohle, Diamant, Lapislazuli, Signal-Dust-Erz), Wesen besiegen, im Ofen schmelzen und Tiere züchten gibt Erfahrung als kleine leuchtende Kugeln. Kugeln fliegen zum nächsten Spieler im Umkreis von 8 Blöcken und werden mit einem hellen Klang eingesammelt; ein Ofen behält die Erfahrung des Geschmolzenen, bis ein Spieler das Ergebnis herausnimmt. Kugeln nahe beieinander verschmelzen zu einer, und sie verschwinden nach 300 s, solange ihre Gegend geladen ist. Eine Welt hält höchstens 1024 Kugeln; darüber hinaus geht neue Erfahrung in die nächste Kugel, damit nichts verloren geht.
+
+**Stufen**
+
+Erfahrung füllt die grüne Leiste über der Schnellleiste; ist sie voll, erreichst du mit einer Fanfare die nächste Stufe, die als Zahl in der Mitte steht. Jede Stufe kostet mehr als die vorige: 7 Punkte für die erste, 17 für Stufe 5, 37 für Stufe 15 und 112 für Stufe 30. Stufen verlangen später Händler und die Verzauberung.
+
+**Erfahrung und Tod**
+
+Stirbst du, lässt du 7 Punkte je Stufe als Kugeln fallen, höchstens 100 Punkte; der Rest ist verloren und du beginnst wieder bei Stufe 0. Mit der Spielregel keepInventory behältst du deine Erfahrung, ebenso Spieler im Kreativmodus.
+
+**Der Befehl /xp**
+
+Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine negative Menge zieht ab), /xp set <Spieler> <Menge> [points|levels] und /xp query <Spieler>.
+
+**Siehe auch**
+
+[Lapislazulierz](blocks.md#block-qtcraft-lapis_ore), [Ofen](blocks.md#block-qtcraft-furnace)
 
 ### <a id="chapter-qtcraft-creatures"></a>Wesen
 

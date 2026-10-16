@@ -76,6 +76,8 @@ public:
             openedCrafting = open->size;
         } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
             this->food = food->food;
+        } else if (const auto *experience = std::get_if<QcMsg::PlayerExperience>(&message)) {
+            this->experience = *experience;
         } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
             gameMode = mode->mode;
         } else if (const auto *machine = std::get_if<QcMsg::OpenMachine>(&message)) {
@@ -191,6 +193,8 @@ public:
     // The player is on fire (decision E-393).
     bool burning = false;
     int food = -1;
+    // The experience the server reported last (decision E-398); empty before the first.
+    std::optional<QcMsg::PlayerExperience> experience;
     // The game mode the server reported last (decision E-282); empty before the first.
     std::optional<QcGameMode> gameMode;
     std::optional<QcBlockPos> openMachine;

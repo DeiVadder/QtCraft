@@ -431,12 +431,12 @@
 <context>
     <name>Hud</name>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="342"/>
+        <location filename="../src/app/qml/Hud.qml" line="381"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Hud.qml" line="344"/>
+        <location filename="../src/app/qml/Hud.qml" line="383"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
@@ -1494,7 +1494,7 @@
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="651"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="652"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -1867,58 +1867,58 @@
         <translation type="vanished">Cheats sind auf diesem Server abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="69"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="71"/>
         <source>Usage: /help [command]</source>
         <translation>Verwendung: /help [Befehl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="70"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="72"/>
         <source>Lists the commands you may use, or explains one.</source>
         <translation>Listet die Befehle, die du verwenden darfst, oder erklärt einen.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="73"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="75"/>
         <source>Usage: /confirm</source>
         <translation>Verwendung: /confirm</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="74"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="76"/>
         <source>Runs the destructive command you started last.</source>
         <translation>Führt den zuletzt begonnenen zerstörenden Befehl aus.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="77"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="79"/>
         <source>Usage: /cancel</source>
         <translation>Verwendung: /cancel</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="78"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="80"/>
         <source>Drops the command waiting for /confirm.</source>
         <translation>Verwirft den Befehl, der auf /confirm wartet.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="119"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="121"/>
         <source>Only the server console can use /%1</source>
         <translation>Nur die Server-Konsole darf /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="138"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="186"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="140"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="188"/>
         <source>Unknown command: %1</source>
         <translation>Unbekannter Befehl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="147"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="149"/>
         <source>Only players can use /%1</source>
         <translation>Nur Spieler können /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="203"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="205"/>
         <source>Commands: %1</source>
         <translation>Befehle: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="204"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="206"/>
         <source>Type /help &lt;command&gt; for its usage</source>
         <translation>/help &lt;Befehl&gt; zeigt seine Verwendung</translation>
     </message>
@@ -1955,7 +1955,7 @@
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="366"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="394"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="415"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="120"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="122"/>
         <location filename="../src/server/commands/QcWeatherCommands.cpp" line="88"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
@@ -2186,6 +2186,7 @@
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="429"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="54"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
     </message>
@@ -2561,22 +2562,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="155"/>
+        <location filename="../src/server/core/QcServer.cpp" line="166"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="350"/>
+        <location filename="../src/server/core/QcServer.cpp" line="361"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="380"/>
+        <location filename="../src/server/core/QcServer.cpp" line="391"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="584"/>
+        <location filename="../src/server/core/QcServer.cpp" line="597"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -2601,17 +2602,17 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="599"/>
+        <location filename="../src/server/core/QcServer.cpp" line="612"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="106"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="107"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="107"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="108"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
@@ -3071,7 +3072,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="190"/>
+        <location filename="../src/server/core/QcServer.cpp" line="201"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
@@ -3231,6 +3232,36 @@
         <location filename="../src/server/commands/QcWeatherCommands.cpp" line="104"/>
         <source>The weather changes in %1 s</source>
         <translation>Das Wetter wechselt in %1 s</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="14"/>
+        <source>Usage: /xp &lt;add|set|query&gt; &lt;player&gt; [amount] [points|levels]</source>
+        <translation>Verwendung: /xp &lt;add|set|query&gt; &lt;Spieler&gt; [Menge] [points|levels]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="31"/>
+        <source>Adds to, sets or shows the experience of a player, in points or levels.</source>
+        <translation>Erhöht, setzt oder zeigt die Erfahrung eines Spielers, in Punkten oder Stufen.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="73"/>
+        <source>Gave %1 experience levels to %2</source>
+        <translation>%2 hat %1 Erfahrungsstufen bekommen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="76"/>
+        <source>Gave %1 experience points to %2</source>
+        <translation>%2 hat %1 Erfahrungspunkte bekommen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="92"/>
+        <source>Level %1 of %2 holds at most %3 points; use levels or /xp add</source>
+        <translation>Stufe %1 von %2 fasst höchstens %3 Punkte; nimm Stufen oder /xp add</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcExperienceCommands.cpp" line="102"/>
+        <source>%1 has experience level %2 and %3 of %4 points towards the next (%5 points in all)</source>
+        <translation>%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)</translation>
     </message>
 </context>
 <context>

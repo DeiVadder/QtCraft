@@ -1,0 +1,8 @@
+{
+    "name": "lapis_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#2a52be",
+    "variation": 0.08,
+    "seed": 3602
+}

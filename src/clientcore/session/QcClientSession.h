@@ -7,6 +7,7 @@
 #include "QcClientMachineScreen.h"
 #include "QcClientRiding.h"
 #include "QcClientSounds.h"
+#include "QcClientVitals.h"
 #include "QcClientWeather.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
@@ -154,13 +155,9 @@ public:
     static constexpr int deathTicks = QcClientEntities::deathTicks;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
-    int food() const { return m_food.food; }
-    int maxFood() const { return m_food.maxFood; }
-    double health() const { return m_health.health; }
-    double maxHealth() const { return m_health.maxHealth; }
-    // The player is on fire (decision E-393): the HUD shows flames at the edge of the view.
-    bool burning() const { return m_health.burning; }
-    bool isDead() const { return m_health.dead; }
+    // Health, food and experience as the server last reported them.
+    const QcClientVitals &vitals() const { return m_vitals; }
+    bool isDead() const { return m_vitals.isDead(); }
     // Seconds of world time, advanced locally between server updates while the time of day runs, by
     // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
     double worldTime() const { return m_worldTime.time; }
@@ -197,6 +194,7 @@ signals:
     void inventoryChanged();
     void healthChanged();
     void foodChanged();
+    void experienceChanged();
     void machineOpened();
     // Contents or progress of the open machine changed.
     void machineChanged();
@@ -222,6 +220,8 @@ private:
     void onContentSync(const QcMsg::ContentSync &sync);
     void onChunkData(const QcMsg::ChunkData &chunkData);
     void onInventoryState(const QcMsg::InventoryState &inventory);
+    // Health, food or experience changed (QcClientVitals::apply).
+    void onVitalsChanged(QcClientVitals::Change change);
     // Closes the connection; `reason` is reported as the disconnect reason.
     void closeWithError(const QString &reason);
     void setState(State state);
@@ -285,9 +285,8 @@ private:
     QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
     QcClientMachineScreen m_machine;
-    // The latest food, health and world time from the server.
-    QcMsg::PlayerFood m_food{QcItemDefinition::maxFood, QcItemDefinition::maxFood};
-    QcMsg::PlayerHealth m_health{20.0, 20.0, false};
+    QcClientVitals m_vitals;
+    // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
     QHash<QcChunkPos, QList<QcWorldLabel>> m_labels;
     quint64 m_labelGeneration = 0;

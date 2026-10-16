@@ -219,7 +219,8 @@ void parseDrops(const QJsonObject &json, QcBlockDefinition &block, QcJsonFieldRe
         const QJsonObject dropJson = entry.toObject();
         QcJsonFieldReader dropReader{dropJson, reader.context, {}};
         const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
-                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0), QcShapeParser::parseConditions(dropJson, dropReader)};
+                              dropReader.number(u"chance"_s, 1.0, 0.0, 1.0), QcShapeParser::parseConditions(dropJson, dropReader),
+                              dropReader.integer(u"maxCount"_s, 0, 0, 64)};
         if (!dropReader.ok() || drop.item.isEmpty()) {
             reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
             break;
@@ -603,6 +604,7 @@ namespace QcBlockParser {
         parseMachine(block, nested, packNamespace);
     });
     parseDrops(json, block, reader, packNamespace);
+    block.experience = QcContentFields::parseExperience(u"experience"_s, reader);
     reader.nestedObject(u"sapling"_s, [&block, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         parseSapling(object, block, nested, packNamespace);
     });

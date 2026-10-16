@@ -1,0 +1,15 @@
+{
+    "name": "experience",
+    "order": 91,
+    "icon": "lapis_lazuli",
+    "sections": [
+        "orbs",
+        "levels",
+        "death",
+        "commands"
+    ],
+    "related": [
+        "lapis_ore",
+        "furnace"
+    ]
+}

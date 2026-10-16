@@ -135,6 +135,13 @@ void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::Bod
 // A dropped item spinning slowly and bobbing; larger stacks show up to three copies.
 void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, const ItemFrame &frame, const UvLookup &uv);
 
+// The texture of experience orbs, by its full content name (the base pack's "experience_orb").
+inline constexpr auto orbTexture = "qtcraft:experience_orb";
+
+// An experience orb (decision E-398): the glowing orbTexture as two crossed sprites, larger for
+// larger values, turning and bobbing faster than items.
+void appendOrb(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemFrame &frame, const UvLookup &uv);
+
 // Where a block entity stands (its feet) and how large it is drawn.
 struct BlockPlacement
 {

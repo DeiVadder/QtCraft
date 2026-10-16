@@ -287,6 +287,46 @@ private slots:
         QVERIFY(QTest::qWaitFor([&] { return !request({{u"cmd"_s, u"status"_s}}).value(u"burning"_s).toBool(); }, timeoutMs));
     }
 
+    // Experience as a bot gets it (decision E-398): mine a diamond ore with a pickaxe, collect the
+    // orbs it gives, check the level and points, then let an operator command add levels.
+    void experienceThroughTheInterface()
+    {
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give diamond_pickaxe 1"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return countOf(u"qtcraft:diamond_pickaxe"_s) == 1; }, timeoutMs));
+        QVERIFY(select(u"qtcraft:diamond_pickaxe"_s));
+        const QJsonObject before = request({{u"cmd"_s, u"status"_s}});
+        QCOMPARE(before.value(u"experienceLevel"_s).toInt(), 0);
+        QCOMPARE(before.value(u"experiencePoints"_s).toInt(), 0);
+        QCOMPARE(before.value(u"experienceForNext"_s).toInt(), 7);
+
+        const QcVec3 feet = position(before);
+        const int x = int(std::floor(feet.x)) + 1;
+        const int y = int(std::floor(feet.y));
+        const int z = int(std::floor(feet.z));
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~1 ~ ~ diamond_ore"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString() == u"qtcraft:diamond_ore"_s; }, timeoutMs));
+        const QJsonObject mined = request({{u"cmd"_s, u"mine"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}});
+        QVERIFY2(mined.value(u"ok"_s).toBool(), QJsonDocument(mined).toJson().constData());
+
+        // The orbs fly to the bot: 3 to 7 points, so at least level 0 with 3 points.
+        QJsonObject status;
+        QVERIFY(QTest::qWaitFor(
+            [&] {
+                status = request({{u"cmd"_s, u"status"_s}});
+                return status.value(u"experienceLevel"_s).toInt() > 0 || status.value(u"experiencePoints"_s).toInt() >= 3;
+            },
+            timeoutMs));
+        const int total = status.value(u"experienceLevel"_s).toInt() * 7 + status.value(u"experiencePoints"_s).toInt();
+        QVERIFY2(total >= 3 && total <= 7, QJsonDocument(status).toJson().constData());
+
+        request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/xp add Bot 30 levels"_s}});
+        QVERIFY(QTest::qWaitFor([&] { return request({{u"cmd"_s, u"status"_s}}).value(u"experienceLevel"_s).toInt() >= 30; }, timeoutMs));
+        const QJsonObject levelled = request({{u"cmd"_s, u"status"_s}});
+        const int level = levelled.value(u"experienceLevel"_s).toInt();
+        QCOMPARE(level, 30 + status.value(u"experienceLevel"_s).toInt());
+        QCOMPARE(levelled.value(u"experienceForNext"_s).toInt(), 112 + (level - 30) * 9);
+    }
+
     // Farming as a bot plays it (decisions E-289 to E-293): till, plant, let a sped-up day ripen the
     // wheat, harvest, eat, and feed two pigs until a young one appears.
     void farmingThroughTheInterface()

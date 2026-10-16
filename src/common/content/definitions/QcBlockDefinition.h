@@ -13,6 +13,7 @@
 #include <QList>
 #include <QString>
 
+#include <algorithm>
 #include <array>
 
 // Runtime block id: index into the registry, assigned at registration. Never persisted;
@@ -74,6 +75,12 @@ struct QcItemDrop
     // Block drops only: states that drop it (every condition holds); empty for all states. Server side
     // only (crops drop their harvest only when ripe, decision E-289).
     QList<QcShapeCondition> when = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
+    // Block drops only: more than `count` items, chosen evenly between `count` and this (lapis lazuli
+    // drops 4 to 9); 0 for exactly `count`. A later fortune enchantment raises it.
+    int maxCount = 0;
+
+    // The most items this drop gives.
+    int mostCount() const { return std::max(count, maxCount); }
 };
 
 // A block that grows into a tree feature after a random time (saplings).
@@ -132,6 +139,9 @@ struct QcBlockDefinition
     // Minimum tool tier for drops; 0 means hand works.
     int toolLevel = 0;
     QList<QcItemDrop> drops;
+    // Experience points mining it gives as orbs, with a tool that gets its drops (ores; decision
+    // E-398). Server side only.
+    QcExperienceDrop experience;
     // Using the block opens the 3 x 3 crafting grid instead of placing against it.
     bool opensCrafting = false;
     // Using the block opens its machine screen (furnace).

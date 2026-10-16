@@ -4,5 +4,6 @@
     "result": {
         "item": "brick"
     },
-    "seconds": 10
+    "seconds": 10,
+    "experience": 0.3
 }

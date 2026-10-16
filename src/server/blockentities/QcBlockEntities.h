@@ -54,8 +54,15 @@ public:
         // input starts over.
         double progress = 0.0;
         QcItemId progressItem = qcNoItem;
+        // Experience of the items smelted since a player last took the output (decision E-398), at
+        // most maxExperience; it comes out as orbs when a player takes from the output slot.
+        double experience = 0.0;
+        static constexpr double maxExperience = 100000.0;
 
-        // Nothing in it and nothing burning or in progress: the same as a new one.
+        // Nothing in it and nothing burning or in progress: nothing to simulate (gathered
+        // experience waits without a step).
+        bool isCold() const;
+        // Cold and without gathered experience: the same as a new one (removed, not saved).
         bool isIdle() const;
     };
 
@@ -96,11 +103,13 @@ public:
         bool isEmpty() const { return containers.isEmpty() && machines.isEmpty() && saplings.isEmpty() && memories.isEmpty(); }
     };
 
-    // Contents that left the world with their block, to be dropped as items at `pos`.
+    // Contents that left the world with their block, to be dropped as items at `pos`, and the
+    // experience a machine had gathered, to be dropped as orbs (decision E-398).
     struct Spill
     {
         QcBlockPos pos;
         QList<QcItemStack> stacks;
+        double experience = 0.0;
     };
 
     // Entries of a kind in the whole world at most (QcServerLimits): placing beyond is refused,
@@ -262,7 +271,7 @@ private:
     QcSignalKind kindOf(QcBlockId block) const;
     // A block state that holds no entry of any kind (no container, machine or sapling).
     bool isPlain(QcBlockId block) const { return std::size_t(block) < m_plain.size() && m_plain[std::size_t(block)]; }
-    void spill(QcBlockPos pos, QList<QcItemStack> stacks);
+    void spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience = 0.0);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     Limits m_limits;

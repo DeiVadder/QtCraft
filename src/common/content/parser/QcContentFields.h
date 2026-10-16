@@ -1,5 +1,6 @@
 #pragma once
 
+#include "QcExperienceDrop.h"
 #include "QcModelDefinition.h"
 #include "QcVec3.h"
 
@@ -34,5 +35,10 @@ QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonF
 [[nodiscard]] std::optional<QcVec3> vectorField(const QJsonValue &value, double limit = 8.0);
 // Bone roles of skeleton models: "none", "head", "body", "right_arm", "left_arm", "right_leg", "left_leg".
 [[nodiscard]] std::optional<QcBoneRole> boneRoleFromName(const QString &name);
+
+// Experience points at `key` (decision E-398): a number, or [min, max] for an even choice between
+// them, each in 0..maxExperience; missing: `fallback`.
+inline constexpr int maxExperience = 100000;
+QcExperienceDrop parseExperience(const QString &key, QcJsonFieldReader &reader, QcExperienceDrop fallback = {});
 
 } // namespace QcContentFields

@@ -1,6 +1,8 @@
 #include "QcAlphaCoverage.h"
 #include "QcBaseContent.h"
+#include "QcClientEntity.h"
 #include "QcContentRegistry.h"
+#include "QcEntityMesher.h"
 #include "QcProceduralTexture.h"
 #include "QcTextureAtlas.h"
 #include "QcTextureDetail.h"
@@ -648,6 +650,32 @@ private slots:
         const QcTextureAtlas atlas = QcTextureAtlas::build(**content, {*storybook});
         QCOMPARE(atlas.tileSize(), 32);
         QCOMPARE(atlas.sources().value(u"builtin:storybook_32"_s), (*storybook)->images.size());
+    }
+
+    // Experience orbs ask the atlas for a texture it has, not for the missing tile (decision E-399).
+    void experienceOrbsUseTheirOwnTile()
+    {
+        QStringList warnings;
+        const auto content = QcBaseContent::load(warnings);
+        QVERIFY(content.has_value());
+        const QcTextureAtlas atlas = QcTextureAtlas::build(**content);
+        QStringList asked;
+        const QcEntityMesher::UvLookup uv = [&](const QString &texture) {
+            asked.append(texture);
+            return atlas.uv(texture);
+        };
+        QcClientEntity orb;
+        orb.kind = QcEntityKind::ExperienceOrb;
+        orb.health = 7.0;
+        QcEntityMesh mesh;
+        QcEntityMesher::appendOrb(mesh, orb, {1.0, 0.0, 1.0f}, uv);
+
+        QVERIFY(!mesh.vertices.isEmpty());
+        QVERIFY(!asked.isEmpty());
+        const QRectF missing = atlas.uv(QString::fromLatin1(QcTextureAtlas::missingTextureName));
+        for (const QString &texture : std::as_const(asked)) {
+            QVERIFY2(atlas.uv(texture) != missing, qPrintable(texture));
+        }
     }
 
 private:

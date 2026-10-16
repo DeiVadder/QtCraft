@@ -177,6 +177,7 @@ namespace QcRecipeParser {
     }
 
     recipe.seconds = reader.number(u"seconds"_s, recipe.seconds, QcSmeltingRecipe::minSeconds, QcSmeltingRecipe::maxSeconds);
+    recipe.experience = reader.number(u"experience"_s, 0.0, 0.0, QcSmeltingRecipe::maxExperience);
     const QJsonValue result = json.value(u"result"_s);
     const QJsonObject resultJson = result.toObject();
     QcJsonFieldReader resultReader{resultJson, reader.context + u" result"_s, {}};

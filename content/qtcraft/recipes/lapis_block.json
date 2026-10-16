@@ -1,0 +1,15 @@
+{
+    "name": "lapis_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "lapis_lazuli"
+    },
+    "result": {
+        "item": "lapis_block"
+    }
+}

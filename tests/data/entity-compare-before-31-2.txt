@@ -279,6 +279,7 @@ move 2000000 at -3.119438 80.000000 -3.241595 yaw 124.176842 health 10.000000 hu
 move 2000001 at 2.459139 80.000000 2.459139 yaw -45.000000 health 20.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000002 at -0.500000 80.000000 4.500000 yaw 21.480433 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 6 at -1.500000 81.150000 -1.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
+move 2000003 at 6.536590 80.000000 -0.296341 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 move 900003 at 0.500000 76.650000 0.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 == scene tick 10
 creature 2 qtcraft:sheep at 27.109856 -8.000000 3.513266 velocity 0.999763 0.000000 0.021748 yaw 91.246178 health 8.000000 dormant 0 young 0
@@ -2360,6 +2361,7 @@ move 4 at 19.444744 73.100000 -2.236264 yaw -148.294464 health 8.000000 hurt 0 p
 move 5 at 20.500000 72.000000 -2.500000 yaw 62.573818 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000005 at -2.540000 80.000000 -5.500000 yaw 205.938797 health 10.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000007 at 4.694279 82.000000 2.420278 yaw 67.689331 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
+move 900004 at -3.375000 80.000000 -2.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 move 900005 at 4.500000 82.290000 -3.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 == pistons turns 0 tick 2
 creature 2 qtcraft:sheep at 26.859915 -8.000000 3.507829 velocity 0.999763 0.000000 0.021748 yaw 91.246178 health 8.000000 dormant 0 young 0
@@ -2478,6 +2480,7 @@ move 4 at 19.444744 73.100000 -2.236264 yaw -148.294464 health 8.000000 hurt 0 p
 move 5 at 20.500000 72.000000 -2.500000 yaw 62.573818 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000008 at 5.500000 80.000000 -2.540000 yaw 205.938797 health 10.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000010 at -2.305721 82.000000 4.420278 yaw 67.689331 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
+move 900006 at 2.500000 80.000000 -3.375000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 move 900007 at 3.500000 82.290000 4.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 == pistons turns 1 tick 2
 creature 2 qtcraft:sheep at 3.507829 -8.000000 -12.859915 velocity 0.999763 0.000000 0.021748 yaw 91.246178 health 8.000000 dormant 0 young 0
@@ -2596,6 +2599,7 @@ move 4 at 19.444744 73.100000 -2.236264 yaw -148.294464 health 8.000000 hurt 0 p
 move 5 at 20.500000 72.000000 -2.500000 yaw 62.573818 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000011 at 2.540000 80.000000 5.500000 yaw 205.938797 health 10.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000013 at -4.305721 82.000000 -2.579722 yaw 67.689331 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
+move 900008 at 3.375000 80.000000 2.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 move 900009 at -4.500000 82.290000 3.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 == pistons turns 2 tick 2
 creature 2 qtcraft:sheep at -12.859915 -8.000000 10.492171 velocity 0.999763 0.000000 0.021748 yaw 91.246178 health 8.000000 dormant 0 young 0
@@ -2714,6 +2718,7 @@ move 4 at 19.444744 73.100000 -2.236264 yaw -148.294464 health 8.000000 hurt 0 p
 move 5 at 20.500000 72.000000 -2.500000 yaw 62.573818 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000014 at -5.500000 80.000000 2.540000 yaw 205.938797 health 10.000000 hurt 0 pitch 0.000000 flags 2 held -
 move 2000016 at 2.694279 82.000000 -4.579722 yaw 67.689331 health 8.000000 hurt 0 pitch 0.000000 flags 2 held -
+move 900010 at -2.500000 80.000000 3.375000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 move 900011 at -3.500000 82.290000 -4.500000 yaw 0.000000 health 0.000000 hurt 0 pitch 0.000000 flags 0 held -
 == pistons turns 3 tick 2
 creature 2 qtcraft:sheep at 10.492171 -8.000000 26.859915 velocity 0.999763 0.000000 0.021748 yaw 91.246178 health 8.000000 dormant 0 young 0

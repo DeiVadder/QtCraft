@@ -66,12 +66,15 @@ QJsonObject QcControlReports::playerStatus() const
 
     insertTarget(status);
 
-    status.insert(u"health"_s, m_session.health());
-    status.insert(u"maxHealth"_s, m_session.maxHealth());
-    status.insert(u"burning"_s, m_session.burning());
+    status.insert(u"health"_s, m_session.vitals().health());
+    status.insert(u"maxHealth"_s, m_session.vitals().maxHealth());
+    status.insert(u"burning"_s, m_session.vitals().burning());
     status.insert(u"dead"_s, m_session.isDead());
-    status.insert(u"food"_s, m_session.food());
-    status.insert(u"maxFood"_s, m_session.maxFood());
+    status.insert(u"food"_s, m_session.vitals().food());
+    status.insert(u"maxFood"_s, m_session.vitals().maxFood());
+    status.insert(u"experienceLevel"_s, m_session.vitals().experienceLevel());
+    status.insert(u"experiencePoints"_s, m_session.vitals().experiencePoints());
+    status.insert(u"experienceForNext"_s, m_session.vitals().experienceForNext());
     status.insert(u"worldTime"_s, m_session.worldTime());
     status.insert(u"night"_s, QcDayCycle::isNight(m_session.worldTime()));
     status.insert(u"weather"_s, weatherJson());

@@ -142,8 +142,10 @@ bool readDrops(QDataStream &stream, QList<QcItemDrop> &drops)
     for (quint32 i = 0; i < dropCount; ++i) {
         QcItemDrop drop;
         qint32 count = 0;
-        stream >> drop.item >> count >> drop.chance;
+        qint32 maxCount = 0;
+        stream >> drop.item >> count >> drop.chance >> maxCount;
         drop.count = count;
+        drop.maxCount = maxCount;
         drops.append(drop);
     }
 
@@ -290,7 +292,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
 
     stream << quint32(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
-        stream << drop.item << qint32(drop.count) << drop.chance;
+        stream << drop.item << qint32(drop.count) << drop.chance << qint32(drop.maxCount);
     }
 
     const QcSaplingDefinition &sapling = block.sapling;

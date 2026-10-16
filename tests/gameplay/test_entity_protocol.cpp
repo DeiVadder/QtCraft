@@ -109,7 +109,15 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.kind = QcEntityKind::Player;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 38u);
+
+        // An experience orb carries its value (decision E-398).
+        QcMsg::EntitySpawn orb;
+        orb.id = 77;
+        orb.kind = QcEntityKind::ExperienceOrb;
+        orb.health = 37.0;
+        QCOMPARE(roundTrip(orb).kind, QcEntityKind::ExperienceOrb);
+        QCOMPARE(roundTrip(orb).health, 37.0);
+        QCOMPARE(QcProtocol::version, 39u);
     }
 
     void blockEntitiesCarryTheirBlock()

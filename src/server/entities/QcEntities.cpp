@@ -11,6 +11,7 @@ QcEntities::QcEntities(const std::shared_ptr<const QcContentRegistry> &content, 
     , m_items(content, seed)
     , m_falling(content)
     , m_carts(*content)
+    , m_orbs(seed)
 {
 }
 
@@ -22,6 +23,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));
+    m_orbs.setLimit(qsizetype(limits.experienceOrbs));
 }
 
 namespace {
@@ -59,6 +61,7 @@ QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64
     settleList(m_items.editableItems());
     settleList(m_stands.editableStands());
     settleList(m_carts.editableAll());
+    settleList(m_orbs.editableOrbs());
     return strays;
 }
 
@@ -84,6 +87,8 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcArmourStandManager::bodyOf(entity.as<QcArmourStand>());
     case QcEntityKind::Minecart:
         return QcMinecartManager::bodyOf(entity.as<QcMinecart>());
+    case QcEntityKind::ExperienceOrb:
+        return QcPhysics::boxAt(feet, QcExperienceOrbManager::size, QcExperienceOrbManager::size);
     case QcEntityKind::MovingBlock:
         break;
     }
@@ -104,6 +109,9 @@ void QcEntities::displace(QcEntity &entity, const QcVec3 &delta) const
         break;
     case QcEntityKind::Item:
         entity.as<QcItemEntity>().resting = false;
+        break;
+    case QcEntityKind::ExperienceOrb:
+        entity.as<QcExperienceOrb>().resting = false;
         break;
     case QcEntityKind::ArmourStand:
         // Stands send no moves, only spawns.

@@ -62,6 +62,9 @@ struct QcMobDefinition
     // Skeleton mobs that walk with their arms stretched forward (zombies).
     bool armsForward = false;
     QList<QcItemDrop> drops;
+    // Experience points a creature killed by a player gives as orbs (decision E-398). Server side
+    // only.
+    QcExperienceDrop experience;
     // Sounds: now and then while alive, when hit and when killed; empty names are silent.
     QString ambientSound;
     QString hurtSound;

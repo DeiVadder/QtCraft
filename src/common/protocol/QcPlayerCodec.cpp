@@ -1,6 +1,7 @@
 // Payloads of the player messages (QcPlayerMessages.h): input and state, inventory, crafting,
 // health, food and appearance.
 
+#include "QcExperience.h"
 #include "QcInventory.h"
 #include "QcProtocolCodec.h"
 
@@ -86,6 +87,11 @@ void encode(QDataStream &stream, QcMsg::DropItem m)
 void encode(QDataStream &stream, QcMsg::PlayerFood m)
 {
     stream << m.food << m.maxFood;
+}
+
+void encode(QDataStream &stream, QcMsg::PlayerExperience m)
+{
+    stream << m.level << m.points << m.pointsForNext;
 }
 
 void encode(QDataStream &stream, QcMsg::GameMode m)
@@ -233,6 +239,16 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
     stream >> m.food >> m.maxFood;
     if (m.maxFood < 0 || m.maxFood > 1000 || m.food < 0 || m.food > m.maxFood) {
         return qcError(u"Invalid food value"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerExperience>, QDataStream &stream)
+{
+    QcMsg::PlayerExperience m;
+    stream >> m.level >> m.points >> m.pointsForNext;
+    if (m.level < 0 || m.level > QcExperience::maxLevel || m.pointsForNext <= 0 || m.points < 0 || m.points >= m.pointsForNext) {
+        return qcError(u"Invalid experience"_s);
     }
     return m;
 }

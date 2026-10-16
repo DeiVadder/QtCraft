@@ -37,7 +37,8 @@ using namespace Qt::StringLiterals;
 // 34.2 (decision E-393) wrote it again: three new items (flint, flint and steel, the hay bale) in the
 // item chests and the fire pit station, which moves the areas after it (the furnace, burnout,
 // sapling and hopper values of the tour's stations change with when the tour reaches them); the
-// piston chains of the four rotations are unchanged. With
+// piston chains of the four rotations are unchanged. Stage 36 (decision E-398) wrote it again for
+// the three lapis lazuli items, which shift the item chests and nothing else. With
 // QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
 // are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture
@@ -122,6 +123,8 @@ private:
             return -5;
         case QcEntityKind::Minecart:
             return -6;
+        case QcEntityKind::ExperienceOrb:
+            return -7;
         }
         return 0;
     }

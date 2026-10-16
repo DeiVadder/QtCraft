@@ -76,6 +76,7 @@ private slots:
         QCOMPARE(limits.maxArmourStands, 4096);
         QCOMPARE(limits.maxMinecarts, 4096);
         QCOMPARE(limits.movingBlocksShown, 4096);
+        QCOMPARE(limits.experienceOrbs, 1024);
         // Every field is in the table once, with its default inside its range.
         QSet<QString> keys;
         for (const QcServerLimits::Field &field : QcServerLimits::fields()) {
@@ -83,7 +84,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(46));
+        QCOMPARE(keys.size(), qsizetype(47));
         QStringList warnings;
         QCOMPARE(QcServerLimits::fromJson({}, u"server.json"_s, &warnings), limits);
         QVERIFY(warnings.isEmpty());

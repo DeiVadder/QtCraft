@@ -3,6 +3,7 @@
 #include "QcContentRegistry.h"
 #include "QcEntityMotion.h"
 #include "QcEquipment.h"
+#include "QcExperience.h"
 #include "QcGameMode.h"
 #include "QcInventory.h"
 #include "QcResult.h"
@@ -31,11 +32,13 @@ struct QcPlayerData
     QcGameMode gameMode = QcGameMode::Survival;
     QcInventory keptInventory;
     QcEquipment keptEquipment;
+    // Level and points (decision E-398).
+    QcExperience experience;
 };
 
 // The player files of a world directory (players/<name>-<hash>.qcp, decision E-093): position,
 // view, inventory and armour, health and food, the game mode with the kept inventory of the other
-// mode. Items are stored by name; unknown items are dropped with a warning.
+// mode, the experience. Items are stored by name; unknown items are dropped with a warning.
 class QcPlayerStorage
 {
 public:

@@ -453,5 +453,8 @@
     "structure.qtcraft.signal_machines.collectors": "Trichter unter Stufe, Ackerboden und Teppich",
     "structure.qtcraft.signal_farm": "Automatische Weizenfarm",
     "structure.qtcraft.signal_farm.field": "Reifer Weizen gießt das Wasser, dasselbe Signal holt es später zurück; Saat pflanzt sich selbst",
-    "structure.qtcraft.signal_farm.collector": "Die Ernte treibt in Trichter"
+    "structure.qtcraft.signal_farm.collector": "Die Ernte treibt in Trichter",
+    "block.qtcraft.lapis_ore": "Lapislazulierz",
+    "block.qtcraft.lapis_block": "Lapislazuliblock",
+    "item.qtcraft.lapis_lazuli": "Lapislazuli"
 }

@@ -62,5 +62,9 @@
             "item": "slimeball",
             "count": 1
         }
+    ],
+    "experience": [
+        1,
+        4
     ]
 }

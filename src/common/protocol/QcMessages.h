@@ -25,4 +25,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::SoundEvent, QcMsg::UseEntity, QcMsg::QuickMoveItem, QcMsg::ChunkLabels,
                                QcMsg::DebugSubscribe, QcMsg::ServerDebug, QcMsg::LoginChallenge,
                                QcMsg::LoginResponse, QcMsg::PlayerList, QcMsg::GameMode, QcMsg::CreativeItem,
-                               QcMsg::PickBlock, QcMsg::Weather, QcMsg::Lightning>;
+                               QcMsg::PickBlock, QcMsg::Weather, QcMsg::Lightning,
+                               QcMsg::PlayerExperience>;

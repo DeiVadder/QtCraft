@@ -187,14 +187,57 @@ Item {
         }
     }
 
+    // The experience bar over the hotbar with the level centred just above it (decisions E-398,
+    // E-399); creative players gather experience too but see no bar, as in the reference.
+    Rectangle {
+        id: experienceBar
+
+        objectName: "experienceBar"
+        anchors.left: hotbar.left
+        anchors.right: hotbar.right
+        anchors.bottom: hotbar.top
+        anchors.bottomMargin: 4
+        height: 7
+        visible: !hud.game.player.creative
+        color: Theme.slotBorder
+        border.color: Theme.textOutline
+        border.width: 1
+
+        Rectangle {
+            x: 1
+            y: 1
+            width: (parent.width - 2) * Math.max(0, Math.min(1, hud.game.player.experienceProgress))
+            height: parent.height - 2
+            color: Theme.experience
+        }
+    }
+
+    // The level in a line of its own between the bar and the hearts and food above it, so it never
+    // touches them; the line keeps its height when the level is 0 and the number is hidden.
+    Text {
+        id: experienceLevel
+
+        objectName: "experienceLevel"
+        anchors.horizontalCenter: experienceBar.horizontalCenter
+        anchors.bottom: experienceBar.top
+        anchors.bottomMargin: 1
+        visible: experienceBar.visible && hud.game.player.experienceLevel > 0
+        text: hud.game.player.experienceLevel
+        color: Theme.experience
+        style: Text.Outline
+        styleColor: Theme.textOutline
+        font.pixelSize: 15
+        font.bold: true
+    }
+
     // Ten hearts, two health points each; a heart is half full for an odd remainder. Creative
     // players neither lose health nor get hungry: no hearts, no food.
     Row {
         id: hearts
 
         anchors.left: hotbar.left
-        anchors.bottom: hotbar.top
-        anchors.bottomMargin: 6
+        anchors.bottom: experienceLevel.top
+        anchors.bottomMargin: 1
         spacing: 2
         visible: !hud.game.player.creative
 
@@ -242,8 +285,8 @@ Item {
     Row {
         objectName: "foodBar"
         anchors.right: hotbar.right
-        anchors.bottom: hotbar.top
-        anchors.bottomMargin: 6
+        anchors.bottom: experienceLevel.top
+        anchors.bottomMargin: 1
         spacing: 2
         visible: !hud.game.player.creative
         layoutDirection: Qt.RightToLeft

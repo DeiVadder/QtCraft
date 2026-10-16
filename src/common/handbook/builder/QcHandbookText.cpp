@@ -94,7 +94,9 @@ QString QcHandbookText::toolName(const QString &tool) const
 QString QcHandbookText::dropNote(const QcItemDrop &drop) const
 {
     QStringList parts;
-    if (drop.count != 1) {
+    if (drop.mostCount() > drop.count) {
+        parts.append(label(u"unit.count"_s).arg(u"%1–%2"_s.arg(drop.count).arg(drop.mostCount())));
+    } else if (drop.count != 1) {
         parts.append(label(u"unit.count"_s).arg(drop.count));
     }
     if (drop.chance < 1.0) {

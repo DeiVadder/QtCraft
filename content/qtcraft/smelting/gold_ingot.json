@@ -4,5 +4,6 @@
     "result": {
         "item": "gold_ingot"
     },
-    "seconds": 10
+    "seconds": 10,
+    "experience": 1.0
 }
