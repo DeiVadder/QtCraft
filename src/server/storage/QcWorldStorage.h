@@ -9,6 +9,7 @@
 #include "QcPlayerStorage.h"
 #include "QcRegionFile.h"
 #include "QcResult.h"
+#include "QcWeatherCycle.h"
 
 #include <QDateTime>
 #include <QHash>
@@ -50,6 +51,11 @@ struct QcWorldInfo
     // Game rule: pistons that allow it are also powered through the block above them, noticed only
     // with a block update next to them (quasi-connectivity, decision E-338).
     bool quasiConnectivity = true;
+    // Game rule: the weather changes by itself (decision E-395); off, it stays as it is until
+    // /weather changes it.
+    bool weatherCycle = true;
+    // The weather and its course (world.json "weather"; a world without it begins with a clear spell).
+    QcWeatherState weather;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether
     // its one-time setup has run.
     QString generator = QString::fromLatin1(defaultGenerator);

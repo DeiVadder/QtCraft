@@ -164,4 +164,6 @@ struct QcServerClient : QcEntity
     int voidTicks = 0;
     // Set when damage was taken; reported to other clients in this tick's sync.
     bool hurtThisTick = false;
+    // The weather last sent to the client (QcServerWeather); none before the first message.
+    std::optional<QcMsg::Weather> sentWeather;
 };

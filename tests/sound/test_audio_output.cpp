@@ -81,7 +81,8 @@ private slots:
         QSignalSpy ready(&engine, &QcAudioEngine::bankReady);
         QStringList warnings;
         engine.setContent(*QcBaseContent::load(warnings));
-        QVERIFY(ready.wait(5000));
+        // Rendering the bank takes about 4 s under the thread sanitizer with other tests running.
+        QVERIFY(ready.wait(30000));
         QVERIFY(engine.isBankReady());
 
         const auto voices = [&engine] {

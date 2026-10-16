@@ -171,7 +171,9 @@ bool QcCropGrowth::tickSoil(const QcServerWorld &world, QcBlockPos pos, QcBlockI
     }
 
     const int wettest = int(values->values.size()) - 1;
-    const Water water = waterNear(world, pos, soil);
+    // Rain on the cell above wets it like water near it.
+    const bool rained = m_rainsOn && m_rainsOn(pos.offset(0, 1, 0));
+    const Water water = rained ? Water::Near : waterNear(world, pos, soil);
     if (water == Water::Unknown) {
         return false;
     }

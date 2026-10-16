@@ -17,6 +17,9 @@
 #              showcase-signal_machines showcase-signal_farm: the default
 #   farm       farm farm-seeds
 #   fire       forest-fire: fire steps, burning blocks and light (stage 34.2; both scripts)
+#   weather    rain snow thunderstorm forest-fire-storm: precipitation particles, sky, fog and
+#              lightning in the window; the weather phase, strikes, snow and rain on fires headless
+#              (stage 35)
 # Every group works in both scripts; the window groups also say which server scenes to measure
 # headless for a change of that kind (e.g. @liquids headless for the flow steps).
 
@@ -34,6 +37,7 @@ scenario_group() {
     server) echo "crowd gravel-collapse farm farm-seeds explore showcase-signal_components showcase-signal_machines showcase-signal_farm" ;;
     farm) echo "farm farm-seeds" ;;
     fire) echo "forest-fire" ;;
+    weather) echo "rain snow thunderstorm forest-fire-storm" ;;
     *) return 1 ;;
     esac
 }
@@ -46,7 +50,7 @@ expand_scenarios() {
         case "$word" in
         @*)
             members=$(scenario_group "${word#@}") || {
-                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm, fire)" >&2
+                echo "unknown scenario group: $word (core, world, light, liquids, entities, signal, ui, memory, server, farm, fire, weather)" >&2
                 return 1
             }
             ;;

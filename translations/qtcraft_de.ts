@@ -1153,6 +1153,11 @@
         <translation>Wesen</translation>
     </message>
     <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="32"/>
+        <source>Weather</source>
+        <translation>Wetter</translation>
+    </message>
+    <message>
         <location filename="../src/clientcore/debug/QcDebugText.cpp" line="33"/>
         <source>Items</source>
         <translation>Items</translation>
@@ -1862,58 +1867,58 @@
         <translation type="vanished">Cheats sind auf diesem Server abgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="67"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="69"/>
         <source>Usage: /help [command]</source>
         <translation>Verwendung: /help [Befehl]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="68"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="70"/>
         <source>Lists the commands you may use, or explains one.</source>
         <translation>Listet die Befehle, die du verwenden darfst, oder erklärt einen.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="71"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="73"/>
         <source>Usage: /confirm</source>
         <translation>Verwendung: /confirm</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="72"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="74"/>
         <source>Runs the destructive command you started last.</source>
         <translation>Führt den zuletzt begonnenen zerstörenden Befehl aus.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="75"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="77"/>
         <source>Usage: /cancel</source>
         <translation>Verwendung: /cancel</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="76"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="78"/>
         <source>Drops the command waiting for /confirm.</source>
         <translation>Verwirft den Befehl, der auf /confirm wartet.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="117"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="119"/>
         <source>Only the server console can use /%1</source>
         <translation>Nur die Server-Konsole darf /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="136"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="184"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="138"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="186"/>
         <source>Unknown command: %1</source>
         <translation>Unbekannter Befehl: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="145"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="147"/>
         <source>Only players can use /%1</source>
         <translation>Nur Spieler können /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="201"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="203"/>
         <source>Commands: %1</source>
         <translation>Befehle: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="202"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="204"/>
         <source>Type /help &lt;command&gt; for its usage</source>
         <translation>/help &lt;Befehl&gt; zeigt seine Verwendung</translation>
     </message>
@@ -1942,20 +1947,21 @@
         <translation type="vanished">Befehle: /help, /give &lt;Item&gt; [Anzahl], /save, /time set &lt;day|night|Sekunden&gt;, /time add &lt;Sekunden&gt;, /summon &lt;Wesen&gt; [Anzahl], /kill, /heal, /gamerule &lt;keepInventory|daylightCycle|mobSpawning&gt; [true|false], /spawnitem &lt;Item&gt; [Anzahl], /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;[Zustände], /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (~ für relative Koordinaten), /feed [Nahrung], /locatebiome &lt;Biom&gt;, /equip &lt;Rüstung|Satz|clear&gt;, /armorstand &lt;nearest|looking|Id&gt; &lt;Eigenschaft&gt; [Werte], /summon armor_stand [Eigenschaft=Wert …]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="383"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="385"/>
         <source>%1 is %2</source>
         <translation>%1 ist %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="364"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="392"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="413"/>
-        <location filename="../src/server/commands/QcServerCommands.cpp" line="118"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="366"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="394"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="415"/>
+        <location filename="../src/server/commands/QcServerCommands.cpp" line="120"/>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="88"/>
         <source>Only operators can use /%1</source>
         <translation>Nur Operatoren dürfen /%1 verwenden</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="396"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="398"/>
         <source>%1 is now %2</source>
         <translation>%1 ist jetzt %2</translation>
     </message>
@@ -2081,7 +2087,7 @@
         <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|quasiConnectivity&gt; [true|false]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="433"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="435"/>
         <source>The console must name a player: /gamemode &lt;mode&gt; &lt;player&gt;</source>
         <translation>Die Konsole muss einen Spieler nennen: /gamemode &lt;Modus&gt; &lt;Spieler&gt;</translation>
     </message>
@@ -2148,22 +2154,22 @@
         <translation>Die Zeit ist jetzt %1 s (Tag)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="359"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="361"/>
         <source>%1 is true</source>
         <translation>%1 ist wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="359"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="361"/>
         <source>%1 is false</source>
         <translation>%1 ist falsch</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="369"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
         <source>%1 is now true</source>
         <translation>%1 ist jetzt wahr</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="369"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="371"/>
         <source>%1 is now false</source>
         <translation>%1 ist jetzt falsch</translation>
     </message>
@@ -2172,13 +2178,13 @@
         <translation type="vanished">Spielmodus von %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="419"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="460"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="421"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="462"/>
         <source>Unknown game mode %1; use survival or creative</source>
         <translation>Unbekannter Spielmodus %1; möglich sind survival und creative</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="427"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="429"/>
         <location filename="../src/server/commands/QcPlayerCommands.cpp" line="135"/>
         <source>No player named %1 is online</source>
         <translation>Kein Spieler namens %1 ist online</translation>
@@ -2191,6 +2197,13 @@
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="35"/>
         <source>Game mode of %1: survival</source>
         <translation>Spielmodus von %1: Überleben</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="354"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="390"/>
+        <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle&gt; [true|false] | spawnChunkRadius [0-16]</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="180"/>
@@ -2319,12 +2332,12 @@
         <translation type="vanished">Verwendung: /setblock &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;Block&gt;, /fill &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;Block&gt; (höchstens %1 Blöcke; der Block darf Zustände tragen: name[eigenschaft=wert,...]) in geladenen Chunks</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="484"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="486"/>
         <source>%1 at %2 %3</source>
         <translation>%1 bei %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="490"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="492"/>
         <source>No %1 within %2 blocks</source>
         <translation>Kein %1 im Umkreis von %2 Blöcken</translation>
     </message>
@@ -2346,7 +2359,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="110"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="405"/>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="407"/>
         <source>Usage: /gamemode [survival|creative] [player]</source>
         <translation>Verwendung: /gamemode [survival|creative] [Spieler]</translation>
     </message>
@@ -2366,11 +2379,8 @@
         <translation>Zeigt oder setzt den Spielmodus von Spielern, die zum ersten Mal beitreten.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="126"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="352"/>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="388"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity&gt; [true|false] | spawnChunkRadius [0-16]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity&gt; [true|false] | spawnChunkRadius [0-16]</translation>
+        <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity&gt; [true|false] | spawnChunkRadius [0-16]</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="273"/>
@@ -2551,22 +2561,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="150"/>
+        <location filename="../src/server/core/QcServer.cpp" line="155"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="345"/>
+        <location filename="../src/server/core/QcServer.cpp" line="350"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="375"/>
+        <location filename="../src/server/core/QcServer.cpp" line="380"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="577"/>
+        <location filename="../src/server/core/QcServer.cpp" line="584"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -2591,7 +2601,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="592"/>
+        <location filename="../src/server/core/QcServer.cpp" line="599"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3061,7 +3071,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="185"/>
+        <location filename="../src/server/core/QcServer.cpp" line="190"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
@@ -3169,6 +3179,58 @@
         <location filename="../src/server/gameplay/QcServerMinecarts.cpp" line="127"/>
         <source>Too many minecarts in the world (at most %1)</source>
         <translation>Zu viele Loren in der Welt (höchstens %1)</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="20"/>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="26"/>
+        <source>The weather is clear</source>
+        <translation>Das Wetter ist klar</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="22"/>
+        <source>It is raining</source>
+        <translation>Es regnet</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="24"/>
+        <source>A thunderstorm is raging</source>
+        <translation>Ein Gewitter tobt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="33"/>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="39"/>
+        <source>Set the weather to clear for %1 s</source>
+        <translation>Wetter für %1 s auf klar gesetzt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="35"/>
+        <source>Set the weather to rain for %1 s</source>
+        <translation>Wetter für %1 s auf Regen gesetzt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="37"/>
+        <source>Set the weather to thunder for %1 s</source>
+        <translation>Wetter für %1 s auf Gewitter gesetzt</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="42"/>
+        <source>Usage: /weather [clear|rain|thunder] [seconds]</source>
+        <translation>Verwendung: /weather [clear|rain|thunder] [Sekunden]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="62"/>
+        <source>Shows the weather; operators set it, for a number of seconds or as long as it would last.</source>
+        <translation>Zeigt das Wetter; Operatoren setzen es, für eine Zahl von Sekunden oder so lange, wie es dauern würde.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="95"/>
+        <source>weatherCycle is false: the weather stays until it is set again</source>
+        <translation>weatherCycle ist false: Das Wetter bleibt, bis es neu gesetzt wird</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcWeatherCommands.cpp" line="104"/>
+        <source>The weather changes in %1 s</source>
+        <translation>Das Wetter wechselt in %1 s</translation>
     </message>
 </context>
 <context>

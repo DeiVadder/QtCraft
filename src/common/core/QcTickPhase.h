@@ -19,6 +19,8 @@ enum class QcTickPhase : quint8 {
     Liquids,
     // Fire taking its steps from its own queue (decision E-392).
     Fire,
+    // The weather's course, lightning and the weather sent to the players (decision E-395).
+    Weather,
     // Players' health and hunger, creature behaviour, spawning and despawning, contact damage.
     Mobs,
     Items,
@@ -42,7 +44,7 @@ inline constexpr int count = int(QcTickPhase::Messages) + 1;
 inline constexpr int inTick = count - 1;
 
 inline constexpr std::array<const char *, count> ids{"players", "saving",   "chunkLoading",  "blockUpdates", "signal",
-                                                     "liquids", "fire", "mobs",     "items",         "plants",       "fallingBlocks",
+                                                     "liquids", "fire", "weather", "mobs",     "items",         "plants",       "fallingBlocks",
                                                      "minecarts", "machines", "streaming", "clientSync",  "messages"};
 
 constexpr const char *id(QcTickPhase phase)

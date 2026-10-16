@@ -71,6 +71,39 @@ QcSkyState at(double worldTime)
     return sky;
 }
 
+QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash)
+{
+    rain = std::clamp(rain, 0.0, 1.0);
+    thunder = std::clamp(thunder, 0.0, 1.0);
+    flash = std::clamp(flash, 0.0, 1.0);
+    if (rain <= 0.0 && thunder <= 0.0 && flash <= 0.0) {
+        return sky;
+    }
+
+    // Grey of the same brightness, darker with the rain and darker still in a thunderstorm.
+    const auto overcastColour = [rain, thunder](QVector3D colour, double darkening) {
+        const float grey = 0.3f * colour.x() + 0.59f * colour.y() + 0.11f * colour.z();
+        const QVector3D target = QVector3D(grey, grey, grey * 1.06f) * float(darkening * (1.0 - 0.45 * thunder));
+        return mix(colour, target, rain * 0.85);
+    };
+    sky.zenith = overcastColour(sky.zenith, 0.55);
+    sky.horizon = overcastColour(sky.horizon, 0.72);
+    sky.cloudColor = overcastColour(sky.cloudColor, 0.62);
+    sky.glow *= float(1.0 - rain);
+    sky.stars *= 1.0 - rain;
+    sky.overcast = rain;
+    sky.fogScale = 1.0 - 0.45 * rain - 0.15 * thunder;
+    sky.daylight = std::max(QcDayCycle::minimumDaylight, sky.daylight * (1.0 - 0.3 * rain - 0.2 * thunder));
+
+    // A flash lights the clouds and the land, most of all by night.
+    const QVector3D flashColour(0.82f, 0.86f, 1.0f);
+    sky.zenith = mix(sky.zenith, flashColour * 0.7f, flash * 0.6);
+    sky.horizon = mix(sky.horizon, flashColour * 0.8f, flash * 0.6);
+    sky.cloudColor = mix(sky.cloudColor, flashColour, flash * 0.7);
+    sky.daylight = sky.daylight + (1.0 - sky.daylight) * flash * 0.75;
+    return sky;
+}
+
 QcSkyState seenFrom(QcSkyState sky, double eyeY)
 {
     if (eyeY >= 0.0) {

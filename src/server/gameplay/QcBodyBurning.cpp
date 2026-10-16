@@ -37,6 +37,15 @@ bool QcBodyBurning::inWater(const QcVec3 &feet, double height) const
     return false;
 }
 
+bool QcBodyBurning::rainsOn(const QcVec3 &feet) const
+{
+    // The cell above the feet: a body on farmland, a slab, a carpet or stairs has its feet in the
+    // cell of that block, which is the top of the column, so rain never falls on that cell, but it
+    // reaches the body when it falls on the cell above. Rain on the cell above means nothing covers
+    // the body from above, whatever its height (decision E-397).
+    return m_rainsOn && m_rainsOn(QcPhysics::blockContaining(feet).offset(0, 1, 0));
+}
+
 int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double height) const
 {
     const QcVec3 &feet = body.motion.position;
@@ -44,7 +53,7 @@ int QcBodyBurning::burnTicksAfter(const QcEntity &body, double width, double hei
     if (body.burnTicks <= 0 && touch.alightTicks <= 0) {
         return 0;
     }
-    if (inWater(feet, height) || (m_rainsOn && m_rainsOn(QcPhysics::blockContaining(feet)))) {
+    if (inWater(feet, height) || rainsOn(feet)) {
         return 0;
     }
     return std::max(body.burnTicks - 1, touch.alightTicks);

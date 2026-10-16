@@ -96,6 +96,17 @@
 #              fireSpread on (stage 34.2): fire steps, burning blocks, block updates and light on the
 #              server, remeshing and block light on the client, until it burns out (about 80 s).
 #              About 1100 /fill lines at the start. Always flat
+#   rain     - standing by day at the spawn of the terrain world (seed 42) in rain at full strength
+#              (stage 35, decision E-395): /weather rain, then /tick sprint 200 fades it fully in
+#              before the measurement; rain particles (QcPrecipitationField), the overcast sky,
+#              closer fog and the rain loop. Older builds answer /weather as an unknown command
+#   snow     - the same on the frozen sea of the tundra (the frozen scenario's place): snowflakes
+#   thunderstorm - the rain scenario as a thunderstorm (/weather thunder): darker sky and, on average
+#              every 10 s, lightning near the player (flash, delayed thunder)
+#   forest-fire-storm - the forest-fire scenario in a thunderstorm at full strength (stage 35.2,
+#              decision E-396): rain puts out the fires under the open sky and keeps fire from
+#              spreading into it, lightning strikes and lights sparks; fire steps with the rain check,
+#              strikes and snow on the server. Always flat
 #   showcase-flight - the same flight in laps of 80 s around a 400 m square that covers the whole
 #              showcase world and its surroundings, so every chunk leaves view and comes back once
 #              a lap: whether block entities and memory stay bounded (runs of one and three laps)
@@ -447,6 +458,12 @@ scene_chat() {
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
     forest-fire) forest_fire_chat ;;
+    forest-fire-storm)
+        printf '%s\n' "/gamerule weatherCycle false" "/weather thunder" "/tick sprint 200"
+        forest_fire_chat
+        ;;
+    rain | snow) printf '%s\n' "/time set day" "/gamerule weatherCycle false" "/weather rain" "/tick sprint 200" ;;
+    thunderstorm) printf '%s\n' "/time set day" "/gamerule weatherCycle false" "/weather thunder" "/tick sprint 200" ;;
     flight) flight_chat terrain "$2" ;;
     explore) flight_chat explore "$2" ;;
     showcase-flight) flight_chat showcase "$2" ;;
@@ -509,12 +526,12 @@ scene_of() {
         SCENE_ARMOUR=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm)
         SCENE_WORLD=flat
         ;;
     esac
     case "$scenario" in
-    frozen)
+    frozen | snow)
         SCENE_SPAWN=-325,-300
         SCENE_LOOK=270,-15
         ;;
@@ -554,7 +571,7 @@ scene_of() {
         SCENE_WINDOW="--overlay furnace"
         ;;
     signal-stress) SCENE_LOOK=0,-25 ;;
-    forest-fire) SCENE_LOOK=0,-35 ;;
+    forest-fire | forest-fire-storm) SCENE_LOOK=0,-35 ;;
     gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;
     inventory) SCENE_WINDOW="--overlay inventory" ;;
     handbook) SCENE_WINDOW="--handbook block:qtcraft:stone" ;;

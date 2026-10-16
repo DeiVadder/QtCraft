@@ -7,6 +7,7 @@
 #include "QcClientMachineScreen.h"
 #include "QcClientRiding.h"
 #include "QcClientSounds.h"
+#include "QcClientWeather.h"
 #include "QcClientWorld.h"
 #include "QcEntityMotion.h"
 #include "QcEntityPose.h"
@@ -148,11 +149,8 @@ public:
     // Pose of a mirrored entity from its server state and client timers.
     static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
 
-    // Animation lengths in ticks.
+    // Animation lengths in ticks; those of the hand are QcHandTimers'.
     static constexpr int swingTicks = QcClientEntities::swingTicks;
-    static constexpr int useTicks = 5;
-    static constexpr int switchTicks = 6;
-    static constexpr int landingTicks = 6;
     static constexpr int deathTicks = QcClientEntities::deathTicks;
     // Throws one item (or the whole stack) of the selected hotbar slot; false when there is none.
     bool dropItem(bool wholeStack);
@@ -167,6 +165,8 @@ public:
     // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
     double worldTime() const { return m_worldTime.time; }
     double timeSpeed() const { return m_worldTime.speed; }
+    // The weather as shown: strengths, climate, lightning flashes (decision E-395).
+    const QcClientWeather &weather() const { return m_weather; }
     // Labels in the loaded chunks (E-222) and a number that changes whenever a chunk's labels arrived.
     const QHash<QcChunkPos, QList<QcWorldLabel>> &labels() const { return m_labels; }
     quint64 labelGeneration() const { return m_labelGeneration; }
@@ -293,6 +293,7 @@ private:
     quint64 m_labelGeneration = 0;
     QcClientDebugSubscription m_debug;
     QcClientSounds m_sounds;
+    QcClientWeather m_weather;
     int m_miningTicks = 0;
     QcClientGameMode m_gameMode;
 };

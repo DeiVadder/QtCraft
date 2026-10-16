@@ -27,7 +27,7 @@ struct NearestGlowingLiquid
 
 } // namespace
 
-QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 &eye)
+QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 &eye, double rain)
 {
     const QcContentRegistry &content = world.content();
     const auto definitionAt = [&](QcBlockPos pos) -> const QcBlockDefinition * {
@@ -49,11 +49,14 @@ QcAmbience::Levels QcAmbience::targets(const QcBlockAccess &world, const QcVec3 
     const double openWind = 0.3 + 0.7 * height;
     if (ceiling == 0) {
         levels.wind = float(openWind);
+        levels.rain = float(rain);
     } else if (ceiling < caveCeiling) {
-        // Under a roof or a tree: the wind is still heard, muffled.
+        // Under a roof or a tree: the wind and the rain are still heard, muffled.
         levels.wind = float(openWind * 0.3);
+        levels.rain = float(rain * rainUnderRoof);
     } else {
         levels.cave = float(0.5 + 0.5 * std::clamp(double(ceiling - caveCeiling) / 8.0, 0.0, 1.0));
+        levels.rain = float(rain * rainInCave);
     }
 
     const QcBlockDefinition *atHead = definitionAt(head);
@@ -95,5 +98,5 @@ QcAmbience::Levels QcAmbience::approach(Levels current, Levels target, double se
 {
     const auto step = float(std::max(0.0, seconds) * fadePerSecond);
     const auto move = [step](float from, float to) { return from < to ? std::min(to, from + step) : std::max(to, from - step); };
-    return {move(current.wind, target.wind), move(current.cave, target.cave), move(current.water, target.water)};
+    return {move(current.wind, target.wind), move(current.cave, target.cave), move(current.water, target.water), move(current.rain, target.rain)};
 }

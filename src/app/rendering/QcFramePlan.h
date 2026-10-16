@@ -19,6 +19,8 @@ enum class QcRenderPass {
     Water,
     // Translucent section faces (glass, ice), back to front.
     Translucent,
+    // Rain and snow around the camera (decision E-395), over everything the weather falls in front of.
+    Weather,
     // Debug lines, the outline of the targeted block and the hand.
     Overlay,
     // Effects over the finished picture (tonemapping, bloom, fog; realistic mode).
@@ -49,7 +51,9 @@ struct QcFramePlan
     // faces, light only from the vertices.
     static QcFramePlan classic()
     {
-        return {{QcRenderPass::Sky, QcRenderPass::Opaque, QcRenderPass::Entities, QcRenderPass::Translucent, QcRenderPass::Overlay}, false};
+        return {{QcRenderPass::Sky, QcRenderPass::Opaque, QcRenderPass::Entities, QcRenderPass::Translucent, QcRenderPass::Weather,
+                 QcRenderPass::Overlay},
+                false};
     }
 
     // The plan of this run: today's mode; QTCRAFT_SECTION_LIGHT=1 also uploads the per-cell light of

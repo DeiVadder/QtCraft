@@ -584,7 +584,7 @@
     "Chunks: %1 stored, %2 arriving, %3 not yet saved · forced %4 · loaders %5": "Chunks: %1 gespeichert, %2 unterwegs, %3 noch nicht gesichert · erzwungen %4 · Lader %5",
     "Groups: %1 (largest %2, here %3, too large %4) · tickets %5 (refused %6)": "Gruppen: %1 (größte %2, hier %3, zu groß %4) · Lade-Tickets %5 (abgelehnt %6)",
     "The file %1 of this world is damaged. Moved out of the world folder, it lets the world open with the chunks saved in it generated anew; their changes are lost.": "Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sie die Welt öffnen, mit den darin gespeicherten Chunks neu erzeugt; ihre Änderungen gehen verloren.",
-    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false] | spawnChunkRadius [0-16]",
+    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16]": "Verwendung: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false] | spawnChunkRadius [0-16]",
     "Chunks: %1 loaded, %2 stored; players: %3": "Chunks: %1 geladen, %2 gespeichert; Spieler: %3",
     "You have placed as many chunk loaders as you may (%1)": "Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)",
     "Usage: /forceload <add|remove> <x> <z> [<x2> <z2>] | remove all | query [<x> <z>]": "Verwendung: /forceload <add|remove> <x> <z> [<x2> <z2>] | remove all | query [<x> <z>]",
@@ -596,5 +596,16 @@
     "Chunk %1 is not forced": "Chunk %1 wird nicht erzwungen",
     "%1 forced chunks: %2": "%1 erzwungene Chunks: %2",
     "%1 is %2": "%1 ist %2",
-    "%1 is now %2": "%1 ist jetzt %2"
+    "%1 is now %2": "%1 ist jetzt %2",
+    "Weather": "Wetter",
+    "The weather is clear": "Das Wetter ist klar",
+    "It is raining": "Es regnet",
+    "A thunderstorm is raging": "Ein Gewitter tobt",
+    "Set the weather to clear for %1 s": "Wetter für %1 s auf klar gesetzt",
+    "Set the weather to rain for %1 s": "Wetter für %1 s auf Regen gesetzt",
+    "Set the weather to thunder for %1 s": "Wetter für %1 s auf Gewitter gesetzt",
+    "Usage: /weather [clear|rain|thunder] [seconds]": "Verwendung: /weather [clear|rain|thunder] [Sekunden]",
+    "Shows the weather; operators set it, for a number of seconds or as long as it would last.": "Zeigt das Wetter; Operatoren setzen es, für eine Zahl von Sekunden oder so lange, wie es dauern würde.",
+    "weatherCycle is false: the weather stays until it is set again": "weatherCycle ist false: Das Wetter bleibt, bis es neu gesetzt wird",
+    "The weather changes in %1 s": "Das Wetter wechselt in %1 s"
 }

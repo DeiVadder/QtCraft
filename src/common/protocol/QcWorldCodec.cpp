@@ -1,5 +1,5 @@
 // Payloads of the world messages (QcWorldMessages.h): chunks, block changes, mining, using items on
-// blocks and sounds.
+// blocks, sounds and the weather.
 
 #include "QcProtocolCodec.h"
 
@@ -154,6 +154,39 @@ void encode(QDataStream &stream, const QcMsg::ChunkLabels &m)
             return qcError(u"Invalid label"_s);
         }
         m.labels.append(label);
+    }
+    return m;
+}
+
+void encode(QDataStream &stream, QcMsg::Weather m)
+{
+    stream << m.rain << m.thunder << m.climate.dry << qint16(m.climate.snowFrom);
+}
+
+void encode(QDataStream &stream, const QcMsg::Lightning &m)
+{
+    stream << m.position;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Weather>, QDataStream &stream)
+{
+    QcMsg::Weather m;
+    qint16 snowFrom = 0;
+    stream >> m.rain >> m.thunder >> m.climate.dry >> snowFrom;
+    m.climate.snowFrom = snowFrom;
+    // Written as negated range checks so that NaN fails them too.
+    if (!(m.rain >= 0.0f && m.rain <= 1.0f) || !(m.thunder >= 0.0f && m.thunder <= 1.0f)) {
+        return qcError(u"Invalid weather"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Lightning>, QDataStream &stream)
+{
+    QcMsg::Lightning m;
+    stream >> m.position;
+    if (!isFinite(m.position)) {
+        return qcError(u"Invalid lightning"_s);
     }
     return m;
 }

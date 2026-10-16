@@ -21,6 +21,9 @@
 #include "QcServer.h"
 #include "QcPlayerHealth.h"
 #include "QcServerPlants.h"
+#include "QcServerWeather.h"
+#include "QcWeatherCycle.h"
+#include "QcWeatherDefinition.h"
 #include "QcWorldCommands.h"
 #include "QcWorldConstants.h"
 
@@ -30,9 +33,34 @@ using namespace Qt::StringLiterals;
 
 namespace QcHandbookRules {
 
-QMap<QString, double> values()
+namespace {
+
+// The rules of the weather (decisions E-395, E-396).
+QMap<QString, double> weatherValues()
 {
     return {
+        {u"weather.clearMinutesMin"_s, QcWeatherCycle::minClearTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.clearMinutesMax"_s, QcWeatherCycle::maxClearTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.rainMinutesMin"_s, QcWeatherCycle::minRainTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.rainMinutesMax"_s, QcWeatherCycle::maxRainTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.thunderMinutesMin"_s, QcWeatherCycle::minThunderTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.thunderMinutesMax"_s, QcWeatherCycle::maxThunderTicks * QcPhysics::tickDuration / 60.0},
+        {u"weather.thunderChance"_s, QcWeatherCycle::thunderChance},
+        {u"weather.fadeSeconds"_s, QcWeatherCycle::fadeTicks * QcPhysics::tickDuration},
+        {u"weather.snowHeight"_s, QcWeather::snowHeight},
+        // The values of the base game; a pack's weather.json may change them.
+        {u"weather.strikeSeconds"_s, QcWeatherDefinition{}.lightning.meanSeconds},
+        {u"weather.strikeDamage"_s, QcWeatherDefinition{}.lightning.damage},
+        {u"weather.strikeRadius"_s, double(QcWeatherDefinition{}.lightning.radius)},
+        {u"weather.strikeReach"_s, QcServerWeather::strikeReach},
+    };
+}
+
+} // namespace
+
+QMap<QString, double> values()
+{
+    QMap<QString, double> rules{
         {u"day.length"_s, QcDayCycle::dayLength},
         {u"day.halfLength"_s, QcDayCycle::dayLength / 2.0},
         {u"player.maxHealth"_s, QcServer::playerMaxHealth},
@@ -100,6 +128,8 @@ QMap<QString, double> values()
         {u"commands.maxRegenerate"_s, double(QcChunkRegeneration::maxChunks)},
         {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
+    rules.insert(weatherValues());
+    return rules;
 }
 
 } // namespace QcHandbookRules

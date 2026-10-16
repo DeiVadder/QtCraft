@@ -184,6 +184,42 @@ private slots:
         QVERIFY(registry.texture(u"testpack:good"_s));
     }
 
+    // weather.json names its snow layer: a block of the pack that is not opaque and needs support
+    // below; anything else is refused with a warning and the weather settings stay as they were.
+    void weatherRefusesAnUnfitSnowLayer_data()
+    {
+        QTest::addColumn<QByteArray>("layer");
+        QTest::addColumn<bool>("accepted");
+        QTest::newRow("powder") << QByteArray("powder") << true;
+        QTest::newRow("missing block") << QByteArray("nothing") << false;
+        QTest::newRow("opaque block") << QByteArray("stone") << false;
+        QTest::newRow("no support") << QByteArray("glass") << false;
+    }
+
+    void weatherRefusesAnUnfitSnowLayer()
+    {
+        QFETCH(QByteArray, layer);
+        QFETCH(bool, accepted);
+        QTemporaryDir dir;
+        QVERIFY(QDir(dir.path()).mkpath(u"blocks"_s));
+        writeFile(dir.filePath(u"pack.json"_s), R"({"id":"testpack","version":"1.0"})");
+        writeFile(dir.filePath(u"blocks/powder.json"_s),
+                  R"({"name":"powder","opaque":false,"support":"below","textures":{"all":"powder"}})");
+        writeFile(dir.filePath(u"blocks/stone.json"_s), R"({"name":"stone","support":"below","textures":{"all":"stone"}})");
+        writeFile(dir.filePath(u"blocks/glass.json"_s), R"({"name":"glass","opaque":false,"textures":{"all":"glass"}})");
+        writeFile(dir.filePath(u"weather.json"_s), R"({"lightning": {"damage": 2}, "snow": {"layer": ")" + layer + R"("}})");
+
+        QcContentRegistry registry;
+        QStringList warnings;
+        QVERIFY(QcContentPackLoader::load(dir.path(), registry, warnings).has_value());
+        QCOMPARE(warnings.isEmpty(), accepted);
+        QCOMPARE(registry.weather().snow.layer, accepted ? u"testpack:powder"_s : QcWeatherDefinition{}.snow.layer);
+        QCOMPARE(registry.weather().lightning.damage, accepted ? 2.0 : QcWeatherDefinition{}.lightning.damage);
+        if (!accepted) {
+            QVERIFY2(warnings.constFirst().contains(u"snow layer"_s), qPrintable(warnings.join(u'\n')));
+        }
+    }
+
     void manifestErrorsFailThePack_data()
     {
         QTest::addColumn<QByteArray>("manifest");

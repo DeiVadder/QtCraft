@@ -40,6 +40,8 @@ private:
     int burnTicksAfter(const QcEntity &body, double width, double height) const;
     // Whether water (a liquid that sets nothing alight) fills a cell of the body's feet or middle.
     bool inWater(const QcVec3 &feet, double height) const;
+    // Whether rain falls on the body standing at `feet` (the rain check on the cell above the feet).
+    bool rainsOn(const QcVec3 &feet) const;
     // Whether the burn damage falls due in this tick for the body (spread over the ticks by id).
     bool damageDue(const QcEntity &body) const;
     void tickPlayer(QcServerClient &client);

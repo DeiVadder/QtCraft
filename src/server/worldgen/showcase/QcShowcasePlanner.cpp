@@ -182,6 +182,8 @@ QcShowcasePlan QcShowcasePlanner::build()
     m_plan.setup.randomTicks = false;
     // Fire on show burns where it is and never reaches the stations (decision E-392).
     m_plan.setup.fireSpread = false;
+    // The sky stays clear for the screenshots of the tour (decision E-395).
+    m_plan.setup.weatherCycle = false;
     m_plan.setup.mobSpawning = false;
 
     Cursor cursor;

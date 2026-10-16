@@ -26,6 +26,8 @@ struct QcWorldSetup
     bool randomTicks = true;
     // Game rule fireSpread (decision E-392).
     bool fireSpread = true;
+    // Game rule weatherCycle (decision E-395).
+    bool weatherCycle = true;
     QList<Mob> mobs;
     QList<Stand> stands;
     QList<Contents> contents;

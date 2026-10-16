@@ -43,6 +43,7 @@ void QcDebugLineRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResou
     for (qsizetype i = 0; i + 1 < lines->size(); i += 2) {
         const QcDebugLineVertex &a = lines->at(i);
         const QcDebugLineVertex &b = lines->at(i + 1);
+        // The shader widens by `side` times three pixels.
         const auto corner = [](QcDebugLineVertex end, QcDebugLineVertex other, float side) {
             return Corner{{end.x, end.y, end.z}, {other.x, other.y, other.z}, side, {end.rgba[0], end.rgba[1], end.rgba[2], end.rgba[3]}};
         };

@@ -35,6 +35,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_blocks(m_state, m_sounds, m_blockUpdates)
     , m_fallingBlocks(m_state, m_sounds, m_blockUpdates, m_blocks)
     , m_fire(m_state, m_blocks, m_sounds)
+    , m_weather(m_state)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks, m_fallingBlocks)
     , m_circuits(m_state, m_sounds, m_blocks)
     , m_screens(m_state)
@@ -54,6 +55,8 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_creatures(m_state, m_sounds, m_health)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
+    , m_lightning(m_state, m_sounds, m_health, m_ignition)
+    , m_snowfall(m_state, m_blocks, m_weather)
     , m_entitySync(m_state)
     , m_chunkLoading(m_state, m_blocks, m_blockUpdates)
     , m_chunkStreaming(m_state, m_chunkLoading)
@@ -61,8 +64,12 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_commands(m_state, {m_blocks, m_blockUpdates,
                            {m_inventory, m_health, m_stands, m_gameModes, m_minecarts, [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
-                           {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }}})
-    , m_join(m_state, {m_persistence, m_inventory, m_health, m_gameModes, m_chunkStreaming, [this](Client &client) { sendTime(client); }})
+                           {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }},
+                           m_weather})
+    , m_join(m_state, {m_persistence, m_inventory, m_health, m_gameModes, m_chunkStreaming, [this](Client &client) {
+                           sendTime(client);
+                           m_weather.sendTo(client);
+                       }})
     , m_login(m_state, [this](Client &client) { m_join.join(client); })
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
@@ -74,6 +81,14 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     m_circuits.setIgnite([this](QcBlockPos pos) { return m_ignition.strike(pos); });
     m_blockSimulation.setIgnition(&m_ignition);
     m_circuits.setEquipPlayer([this](QcServerClient &client, const QcEquipment &equipment) { m_inventory.equipmentWorn(client, equipment, false); });
+
+    // What the weather does (decision E-396): rain puts out fires and burning bodies and wets soil,
+    // lightning hurts and lights fires.
+    const auto rainsOn = [this](QcBlockPos pos) { return m_weather.isRainingAt(pos); };
+    m_fire.setRainCheck(rainsOn);
+    m_burning.setRainCheck(rainsOn);
+    m_state.growth().setRainCheck(rainsOn);
+    m_weather.setStrikeHook([this](QcBlockPos pos) { m_lightning.strike(pos); });
 }
 
 QcServer::~QcServer()
@@ -543,6 +558,9 @@ void QcServer::simulate()
     m_phases.lap(Phase::Liquids);
     m_fire.tick();
     m_phases.lap(Phase::Fire);
+    m_weather.tick();
+    m_snowfall.tick();
+    m_phases.lap(Phase::Weather);
     m_health.tick();
     m_interaction.swingWhileMining();
     m_stands.tick();

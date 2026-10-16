@@ -244,6 +244,8 @@ private slots:
         QVERIFY(!setup.mobSpawning);
         // Every crop stage and soil state on show stays (decision E-295).
         QVERIFY(!setup.randomTicks);
+        // The sky stays clear (decision E-395).
+        QVERIFY(!setup.weatherCycle);
 
         QSet<QString> mobs;
         for (const QcWorldSetup::Mob &mob : setup.mobs) {

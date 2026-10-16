@@ -401,6 +401,12 @@ const QcSoundDefinition *QcContentRegistry::sound(const QString &name) const
     return it == m_soundIndex.constEnd() ? nullptr : &m_sounds[*it];
 }
 
+const QcBiomeDefinition *QcContentRegistry::biome(const QString &name) const
+{
+    const auto it = m_biomeIndex.constFind(name);
+    return it == m_biomeIndex.constEnd() ? nullptr : &m_biomes[*it];
+}
+
 void QcContentRegistry::registerBiome(QcBiomeDefinition definition)
 {
     registerByName(m_biomes, m_biomeIndex, std::move(definition));

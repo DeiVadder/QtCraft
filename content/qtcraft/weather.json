@@ -1,0 +1,13 @@
+{
+    "lightning": {
+        "meanSeconds": 10,
+        "damage": 5,
+        "radius": 3,
+        "burnSeconds": 8,
+        "sparks": 2
+    },
+    "snow": {
+        "layer": "snow_layer",
+        "columnsPerTick": 4
+    }
+}

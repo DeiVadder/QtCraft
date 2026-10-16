@@ -1,7 +1,7 @@
 #version 440
 
-// One corner of a debug line drawn as a screen-aligned quad of lineWidth pixels: the quad's two
-// ends are `position` and `other`; `side` (-1 or 1) picks the edge this corner lies on.
+// One corner of a line drawn as a screen-aligned quad of lineWidth pixels: the quad's two ends are
+// `position` and `other`; the sign of `side` picks the edge this corner lies on.
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 other;
 layout(location = 2) in float side;

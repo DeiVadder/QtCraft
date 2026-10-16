@@ -8,7 +8,7 @@
 
 ### <a id="block-qtcraft-farmland"></a>Ackerboden
 
-Bestellte Erde für Feldfrüchte. Wasser in bis zu vier Blöcken Entfernung hält ihn nass, und auf nassem Ackerboden wachsen Pflanzen doppelt so schnell. Ohne Wasser und Pflanzen trocknet er aus und wird wieder zu Erde.
+Bestellte Erde für Feldfrüchte. Wasser in bis zu vier Blöcken Entfernung hält ihn nass, und auf nassem Ackerboden wachsen Pflanzen doppelt so schnell. Auch Regen, der auf ihn fällt, macht ihn nass. Ohne Wasser, Regen und Pflanzen trocknet er aus und wird wieder zu Erde.
 
 | | |
 |---|---|
@@ -4681,7 +4681,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 ### <a id="block-qtcraft-snow_layer"></a>Schneeschicht
 
-Eine dünne Schneedecke, die einen Block darunter braucht.
+Eine dünne Schneedecke, die einen Block darunter braucht. Sie legt sich von selbst, wo unter offenem Himmel Schnee fällt.
 
 | | |
 |---|---|

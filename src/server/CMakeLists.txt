@@ -81,6 +81,11 @@ qt_add_library(qc_server STATIC
     blocks/QcFireRules.h blocks/QcFireRules.cpp
     blocks/QcServerFire.h blocks/QcServerFire.cpp
     blocks/QcFireIgnition.h blocks/QcFireIgnition.cpp
+    weather/QcWeatherCycle.h weather/QcWeatherCycle.cpp
+    weather/QcServerWeather.h weather/QcServerWeather.cpp
+    weather/QcLightningStrike.h weather/QcLightningStrike.cpp
+    weather/QcSnowfall.h weather/QcSnowfall.cpp
+    commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     content/QcModLoader.h content/QcModLoader.cpp
@@ -193,6 +198,7 @@ target_include_directories(qc_server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/login
     ${CMAKE_CURRENT_SOURCE_DIR}/network
     ${CMAKE_CURRENT_SOURCE_DIR}/blocks
+    ${CMAKE_CURRENT_SOURCE_DIR}/weather
     ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
     ${CMAKE_CURRENT_SOURCE_DIR}/machines
     ${CMAKE_CURRENT_SOURCE_DIR}/blockentities

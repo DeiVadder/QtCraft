@@ -28,6 +28,8 @@ public:
     QJsonObject machineJson() const;
     // Recent sound cues with their loudness and side as heard now, and the ambience levels.
     QJsonObject soundsJson() const;
+    // The weather where the player stands (decision E-395).
+    QJsonObject weatherJson() const;
 
 private:
     void insertTarget(QJsonObject &status) const;

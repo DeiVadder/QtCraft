@@ -17,13 +17,16 @@ class QcServerWorld;
 // Random-tick rules of farming (decisions E-289 to E-291), called by QcPlantGrowth for blocks with
 // `crop` or `soil`. A crop advances one stage with a chance that gives its `averageSeconds` from the
 // first to the ripe stage on wet soil (times `dryFactor` elsewhere) and only in enough light; a ripe
-// crop with a fruit (stems) puts that fruit onto a free neighbouring cell. Soil turns wet near water,
-// dries step by step without it and reverts (to dirt) when dry and bare or covered by a full block.
+// crop with a fruit (stems) puts that fruit onto a free neighbouring cell. Soil turns wet near water
+// or in the rain (the cell above it under the open rain, setRainCheck, decision E-396), dries step by
+// step without either and reverts (to dirt) when dry and bare or covered by a full block.
 class QcCropGrowth
 {
 public:
     // Sets a block and tells the clients; returns false when it could not be set.
     using SetBlock = std::function<bool(QcBlockPos pos, QcBlockId block)>;
+    // Whether rain falls on a position (weather).
+    using RainCheck = std::function<bool(QcBlockPos pos)>;
 
     // `randomTickSeconds`: average seconds between two random ticks of one block.
     QcCropGrowth(std::shared_ptr<const QcContentRegistry> content, double randomTickSeconds);
@@ -47,6 +50,8 @@ public:
     // engine (decision E-389; sky light at full strength whatever the time of day).
     static int plantLightAt(const QcServerWorld &world, QcBlockPos pos);
 
+    void setRainCheck(RainCheck check) { m_rainsOn = std::move(check); }
+
     // The state of soil block `soil` freshly made at `pos` (a tilled block): wet when water is near.
     QcBlockId freshSoil(const QcBlockAccess &world, QcBlockPos pos, QcBlockId soil) const;
 
@@ -63,6 +68,7 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content;
     double m_randomTickSeconds = 1.0;
+    RainCheck m_rainsOn;
     // Horizontal offsets within each reach (0..maxReach), nearest first.
     std::array<std::vector<std::pair<int, int>>, 9> m_ringOffsets;
 };

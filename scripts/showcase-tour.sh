@@ -16,7 +16,7 @@
 # front and the inventory with the armour slots, the preview and the HUD's armour bar; with the caped
 # look the diamond set and the cape from behind, standing and walking (the cape over the chest plate).
 # The creative mode (stage 26) has its stops at the sky platform: flying with the widened view and
-# the creative inventory.
+# the creative inventory. The weather (stage 35) has its stops at the trees: rain and a thunderstorm.
 # Renders offscreen (no window, independent of the display, decision E-229), silent, with its
 # settings and world in a temporary directory that is removed at the end.
 # Usage: scripts/showcase-tour.sh [out-dir] [build-dir]
@@ -125,6 +125,14 @@ while read -r name x z yaw pitch; do
             --overlay "@1500 fly" --chat "@2500 /tp ~ ~14 ~" --pose flysprint
         shoot "creative-inventory" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --game-mode creative \
             --overlay "@1500 creative" --overlay "@2500 text:creativeSearch=planks"
+        ;;
+    trees)
+        # Weather (stage 35, E-395): the showcase stays clear (weatherCycle off); /weather sets
+        # it and a short sprint fades it fully in.
+        shoot "weather-rain" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --chat "/weather rain" \
+            --chat "@500 /tick sprint 200"
+        shoot "weather-thunder" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --chat "/weather thunder" \
+            --chat "@500 /tick sprint 200"
         ;;
     creatures-near)
         shoot "debug-visuals" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --debug-display compact \

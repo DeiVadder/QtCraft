@@ -30,6 +30,8 @@ qt_add_library(qc_common STATIC
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
     world/QcMinecartBody.h
+    world/QcWeather.h world/QcWeather.cpp
+    world/QcPrecipitationTable.h world/QcPrecipitationTable.cpp
     world/QcWorldLabel.h world/QcWorldLabel.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
@@ -53,6 +55,8 @@ qt_add_library(qc_common STATIC
     content/definitions/QcStructureDefinition.h
     content/definitions/QcWorldTypeDefinitions.h
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
+    content/definitions/QcWeatherDefinition.h
+    content/parser/QcWeatherParser.h content/parser/QcWeatherParser.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp

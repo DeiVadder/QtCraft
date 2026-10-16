@@ -9,6 +9,7 @@
 #include "QcEntitySync.h"
 #include "QcEnvironmentDamage.h"
 #include "QcFireIgnition.h"
+#include "QcLightningStrike.h"
 #include "QcMessages.h"
 #include "QcPlayerHealth.h"
 #include "QcPlayerJoin.h"
@@ -22,6 +23,8 @@
 #include "QcServerFallingBlocks.h"
 #include "QcServerDebug.h"
 #include "QcServerFire.h"
+#include "QcServerWeather.h"
+#include "QcSnowfall.h"
 #include "QcServerGameModes.h"
 #include "QcServerInteraction.h"
 #include "QcServerInventory.h"
@@ -96,6 +99,10 @@ public:
     // Flint and steel, dispensers and lava lighting fire (decision E-393).
     QcFireIgnition &ignition() { return m_ignition; }
     QcBodyBurning &burning() { return m_burning; }
+    // The weather, where it rains and snows, and lightning (decision E-395).
+    QcServerWeather &weather() { return m_weather; }
+    const QcLightningStrike &lightning() const { return m_lightning; }
+    const QcSnowfall &snowfall() const { return m_snowfall; }
     QcArmourStandManager &stands() { return m_state.entities().stands(); }
     QcMinecartManager &carts() { return m_state.entities().minecarts(); }
     QcServerMinecarts &minecarts() { return m_minecarts; }
@@ -238,6 +245,7 @@ private:
     QcServerBlocks m_blocks;
     QcServerFallingBlocks m_fallingBlocks;
     QcServerFire m_fire;
+    QcServerWeather m_weather;
     QcBlockSimulation m_blockSimulation;
     QcServerCircuits m_circuits;
     QcBlockScreens m_screens;
@@ -257,6 +265,8 @@ private:
     QcServerCreatures m_creatures;
     QcEnvironmentDamage m_environment;
     QcBodyBurning m_burning;
+    QcLightningStrike m_lightning;
+    QcSnowfall m_snowfall;
     QcEntitySync m_entitySync;
     QcChunkLoading m_chunkLoading;
     QcChunkStreaming m_chunkStreaming;

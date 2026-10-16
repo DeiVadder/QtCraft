@@ -7,6 +7,7 @@
 #include "QcBlockPos.h"
 #include "QcChunk.h"
 #include "QcVec3.h"
+#include "QcWeather.h"
 #include "QcWorldLabel.h"
 
 #include <QString>
@@ -80,6 +81,26 @@ struct SoundEvent
     // Loudness relative to the sound's own (louder sounds also carry further) and playback speed.
     float volume = 1.0f;
     float pitch = 1.0f;
+};
+
+// Server -> client: the weather as this player sees it (decision E-395). `rain` and `thunder` are
+// the strengths in 0..1, fading in and out; `climate` is where the player stands: dry, or rain
+// below `climate.snowFrom` and snow from there up. Sent on joining, while the strengths change and
+// when the player walks into another climate.
+struct Weather
+{
+    float rain = 0.0f;
+    float thunder = 0.0f;
+    QcWeather::Climate climate;
+
+    friend bool operator==(const Weather &, const Weather &) = default;
+};
+
+// Server -> client: lightning struck at `position` (the top of the column it hit). The client lights
+// up the sky and plays the thunder after the time the sound takes to reach it.
+struct Lightning
+{
+    QcVec3 position;
 };
 
 } // namespace QcMsg

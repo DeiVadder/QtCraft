@@ -707,6 +707,7 @@ void QcGameController::onFrame()
     const QList<QcRenderSample> renderSamples = m_hud->debug()->recordFrame(entityNs, previewNs, m_benchmark->isRunning());
     m_benchmark->recordGuiFrame(m_hud->debug()->lastGuiCpuMs(), entityNs, previewNs, renderSamples);
     m_render.updateSky(alpha);
+    m_render.updateWeather(eye, frameSeconds);
     m_hud->updateTimeOfDay(alpha);
     m_render.updateSelection();
     m_hud->updateTarget();

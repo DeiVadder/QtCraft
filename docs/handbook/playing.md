@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Death and respawn](#chapter-qtcraft-death) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -272,11 +272,37 @@ Fire spreads at most 12 blocks from the spark it began with, so a single spark n
 
 **Burning players and creatures**
 
-Whoever walks into fire or lava catches fire and keeps burning for a while after stepping out (fire 8 seconds, lava 15; see the block pages). While burning, a player or creature loses 1 health every 1 second; armour takes part of it like any blow. Water puts the flames out at once. Players in creative mode do not burn. Items that fall into fire or lava burn up.
+Whoever walks into fire or lava catches fire and keeps burning for a while after stepping out (fire 8 seconds, lava 15; see the block pages). While burning, a player or creature loses 1 health every 1 second; armour takes part of it like any blow. Water puts the flames out at once, and so does rain falling on you. Players in creative mode do not burn. Items that fall into fire or lava burn up.
 
 **See also**
 
 [Fire](blocks.md#block-qtcraft-fire), [Flint and steel](items.md#item-qtcraft-flint_and_steel), [Flint](items.md#item-qtcraft-flint), [Lava](liquids.md#block-qtcraft-lava), [Magma block](blocks.md#block-qtcraft-magma_block), [Oak log](blocks.md#block-qtcraft-oak_log), [Oak leaves](blocks.md#block-qtcraft-oak_leaves), [White wool](blocks.md#block-qtcraft-white_wool), [Bookshelf](blocks.md#block-qtcraft-bookshelf), [Block of coal](blocks.md#block-qtcraft-coal_block), [Hay bale](blocks.md#block-qtcraft-hay_block)
+
+### <a id="chapter-qtcraft-weather"></a>Weather
+
+**Clear, rain and thunderstorms**
+
+The weather is the same in the whole world. A clear spell lasts 5 to 25 minutes; then it rains for 2.5 to 10 minutes, or, with a chance of 25 in 100, a thunderstorm rages for 2 to 6 minutes; after that it clears up again. Rain and thunder come and go over 10 seconds: clouds cover the sky, it grows darker, the fog comes closer and the sky lights the land less. Each world has its own course of weather, given by its seed.
+
+**Rain and snow**
+
+Rain and snow fall only where the sky is open: not under a roof, a tree or an overhang. In cold biomes (taiga, tundra) it snows instead of raining, and in every other biome it snows from 150 blocks up (in the mountains from their snow line). In the desert it stays dry, although the sky darkens there too. You hear the rain around you, muffled under a roof.
+
+**Thunderstorms**
+
+In a thunderstorm lightning strikes now and then within 48 blocks of a player, on average every 10 seconds per player, only where it rains (not into snow or the desert). The flash lights up the sky at once; the thunder follows as late as sound needs for the distance: about three seconds per kilometre. A strike hurts everyone within 3 blocks by 5 health (armour takes part of it) and sets them alight; it may light a few fires where it strikes, but only while fire spreads (`fireSpread`) and within the limits of fire.
+
+**What rain and snow do**
+
+Rain puts out the fires it falls on, sooner or later (the older the fire, the sooner), and fire does not spread into the rain; fire on a magma block burns on. It also puts out burning players and creatures, and it keeps farmland under the open sky wet like water nearby. It never fills the world with water. Where it snows, a thin snow cover settles bit by bit on the tops of solid blocks under the open sky, not under a roof, on ice, glass or leaves, and only one layer per spot. Snow does not melt again.
+
+**Changing the weather**
+
+`/weather` shows the weather. Operators set it with `/weather clear`, `/weather rain` or `/weather thunder`, for a number of seconds (`/weather rain 120`) or as long as the course of the world says. With the game rule **weatherCycle** off (`/gamerule weatherCycle false`) the weather stays as it is until it is set again; the showcase world starts that way, with a clear sky.
+
+**See also**
+
+[Snow block](blocks.md#block-qtcraft-snow_block), [Snow layer](blocks.md#block-qtcraft-snow_layer), [Ice](blocks.md#block-qtcraft-ice), [Farmland](blocks.md#block-qtcraft-farmland), [Fire](blocks.md#block-qtcraft-fire)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 
@@ -353,7 +379,7 @@ Survival and creative each have their own inventory and armour. Changing the mod
 
 **Game rules**
 
-**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
+**keepInventory**: keep the inventory on death (chosen when creating a world). **daylightCycle**: the time of day runs. **mobSpawning**: creatures appear by themselves. **randomTicks**: plants, crops and farmland change by themselves (off in the showcase world). **quasiConnectivity**: pistons also react to power at the block above them, but only after a block update next to them (on by default). **weatherCycle**: the weather changes by itself (off in the showcase world). Show a rule with `/gamerule <rule>`; operators change it with `/gamerule <rule> true|false`. The chapter Commands lists every command.
 
 ### <a id="chapter-qtcraft-commands"></a>Commands
 
@@ -388,7 +414,8 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 **Time and ticks**
 
 - `/time [set day|night|<seconds>]`, `/time add <seconds>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: the chunks around the spawn that stay loaded (0 none, 1 the spawn chunk, 2 the 3 × 3 around it …)
+- `/weather [clear|rain|thunder] [seconds]`: shows the weather; operators set it, for that many seconds or as long as it would last
 - `/gamemode [survival|creative] [player]`: shows or changes the game mode, `/defaultgamemode [mode]`: the mode of new players
 - `/tick freeze` and `/tick unfreeze`: the world stands still (time of day, creatures, liquids, plants, machines, hunger), players keep moving; `/tick step [ticks]` moves a frozen world on
 - `/tick rate <1..100>` or `/tick rate reset` (20 per second): how fast the world runs

@@ -7,12 +7,14 @@
 #include "QcPendingCommands.h"
 #include "QcPlayerCommands.h"
 #include "QcTickCommands.h"
+#include "QcWeatherCommands.h"
 #include "QcWorldCommands.h"
 
 #include <QString>
 
 class QcBlockUpdateQueue;
 class QcServerBlocks;
+class QcServerWeather;
 struct QcCommandMacroDefinition;
 struct QcServerClient;
 class QcServerState;
@@ -32,6 +34,7 @@ public:
         QcCheatCommands::Parts cheats;
         QcWorldCommands::Parts world;
         QcTickCommands::Parts ticks;
+        QcServerWeather &weather;
     };
 
     QcServerCommands(QcServerState &state, Parts parts);
@@ -74,4 +77,5 @@ private:
     QcWorldCommands m_world;
     QcTickCommands m_ticks;
     QcChunkCommands m_chunks;
+    QcWeatherCommands m_weather;
 };

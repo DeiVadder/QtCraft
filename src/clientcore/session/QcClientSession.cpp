@@ -200,6 +200,10 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
         cue({sound->key, sound->position, sound->volume, sound->pitch, QcSoundCue::Origin::Server, m_tickCount});
     } else if (const auto *time = std::get_if<QcMsg::WorldTime>(&message)) {
         m_worldTime = *time;
+    } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
+        m_weather.receive(*weather);
+    } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
+        m_weather.lightning(*strike, m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, m_tickCount);
     } else {
         return false;
     }
@@ -414,9 +418,9 @@ void QcClientSession::tick()
     };
 
     advance(m_swingTicks, swingTicks);
-    advance(m_useTicks, useTicks);
-    advance(m_switchTicks, switchTicks);
-    advance(m_landingTicks, landingTicks);
+    advance(m_useTicks, QcHandTimers::useTicks);
+    advance(m_switchTicks, QcHandTimers::switchTicks);
+    advance(m_landingTicks, QcHandTimers::landingTicks);
 
     const QcItemStack &held = m_inventory.selectedStack();
     const QcItemId heldItem = held.isEmpty() ? qcNoItem : held.item;
@@ -485,7 +489,12 @@ void QcClientSession::updateSounds()
 {
     m_entities.stepSounds(*m_world, [this](const QcSoundCue &step) { cue(step); });
     const QcVec3 eye = m_motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    m_sounds.updateAmbience(*m_world, eye, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
+    const double rain = m_weather.rainAt(int(std::floor(eye.y)));
+    m_sounds.updateAmbience(*m_world, eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
+    const QList<QcSoundCue> thunder = m_weather.tick(m_tickCount);
+    for (const QcSoundCue &sound : thunder) {
+        cue(sound);
+    }
 }
 
 void QcClientSession::refreshTarget()
@@ -566,7 +575,8 @@ QcEntityPose QcClientSession::localPose(double alpha) const
 QcHandTimers QcClientSession::handTimers(double alpha) const
 {
     const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
-    return {progress(m_switchTicks, switchTicks), progress(m_landingTicks, landingTicks), progress(m_useTicks, useTicks)};
+    return {progress(m_switchTicks, QcHandTimers::switchTicks), progress(m_landingTicks, QcHandTimers::landingTicks),
+            progress(m_useTicks, QcHandTimers::useTicks)};
 }
 
 QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)

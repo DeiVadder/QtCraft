@@ -153,6 +153,9 @@ private slots:
             server->tick();
             server->tick();
             QCOMPARE(server->worldTime(), 150.0);
+            // A clear sky that stays (decision E-395).
+            QCOMPARE(server->weather().state().kind, QcWeatherKind::Clear);
+            QCOMPARE(server->weather().state().rain, 0.0f);
             QCOMPARE(server->mobs().mobs().size(), mobs);
             QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcCreature::persistent));
             QVERIFY(!server->mobs().naturalSpawning());
@@ -176,6 +179,8 @@ private slots:
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"daylightCycle"_s).toBool(true), false);
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"mobSpawning"_s).toBool(true), false);
         QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"randomTicks"_s).toBool(true), false);
+        QCOMPARE(info.value(u"gameRules"_s).toObject().value(u"weatherCycle"_s).toBool(true), false);
+        QCOMPARE(info.value(u"weather"_s).toObject().value(u"kind"_s).toString(), u"clear"_s);
 
         // Opened again, nothing is set up twice.
         std::unique_ptr<QcServer> again = makeServer(directory.path());

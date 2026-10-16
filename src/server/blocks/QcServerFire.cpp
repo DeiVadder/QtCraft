@@ -19,12 +19,19 @@ constexpr int catchBonus = 54;
 constexpr int catchAgeBonus = 30;
 constexpr quint32 catchDivisor = 100;
 
+// Rain puts out a fire it falls on with (rainBase + rainPerAge × age) in 100 per step, like the
+// reference game with its age (QcFireRules::chanceAge).
+constexpr quint32 rainBase = 20;
+constexpr quint32 rainPerAge = 3;
+constexpr quint32 rainDivisor = 100;
+
 // What the dice decide, so that no two decisions of a step share a number.
 enum Salt : quint32 {
     BurnSalt = 10,
     BecomesFireSalt = 20,
     CatchSalt = 30,
     ChildAgeSalt = 40,
+    RainSalt = 70,
 };
 
 } // namespace
@@ -148,7 +155,7 @@ void QcServerFire::step(QcFireQueue::Fire fire, quint64 now)
         fires.drop(fire.pos);
         return;
     }
-    if (!QcFireRules::canStay(world, m_table, fire.pos) || (m_rainsOn && m_rainsOn(fire.pos))) {
+    if (!QcFireRules::canStay(world, m_table, fire.pos)) {
         putOut(fire.pos);
         return;
     }
@@ -156,6 +163,11 @@ void QcServerFire::step(QcFireQueue::Fire fire, quint64 now)
     if (fire.eternal) {
         fire.due = dice(fire.pos, fire.age).nextStep(now);
         fires.plan(fire);
+        return;
+    }
+    if (rainPutsOut(fire)) {
+        ++m_numbers.rainedOut;
+        putOut(fire.pos);
         return;
     }
 
@@ -174,6 +186,16 @@ void QcServerFire::step(QcFireQueue::Fire fire, quint64 now)
     // place; a block update puts it out then).
     fire.due = dice(fire.pos, fire.age).nextStep(now);
     fires.plan(fire);
+}
+
+bool QcServerFire::rainPutsOut(const QcFireQueue::Fire &fire) const
+{
+    if (!m_rainsOn || !m_rainsOn(fire.pos)) {
+        return false;
+    }
+
+    const quint32 chance = rainBase + rainPerAge * quint32(QcFireRules::chanceAge(fire.age));
+    return dice(fire.pos, fire.age).roll(fire.pos, RainSalt, rainDivisor) < chance;
 }
 
 void QcServerFire::burnNeighbours(const QcFireQueue::Fire &fire, QcBlockId block, quint64 now)
@@ -236,6 +258,10 @@ bool QcServerFire::light(QcBlockPos pos, const QcFireQueue::Fire &parent, QcBloc
 {
     QcFireQueue &fires = m_state.world().fires();
     const bool eternal = onEternalGround(pos);
+    // Fire does not spread into the rain.
+    if (!eternal && m_rainsOn && m_rainsOn(pos)) {
+        return false;
+    }
     if (!eternal && !fires.hasRoom(pos.chunk())) {
         ++m_numbers.refused;
         return false;

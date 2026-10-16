@@ -1,5 +1,7 @@
 qt_add_library(qc_clientcore STATIC
     sound/QcAmbience.h sound/QcAmbience.cpp
+    weather/QcClientWeather.h weather/QcClientWeather.cpp
+    weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
     meshing/QcAnimator.h meshing/QcAnimator.cpp
     meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
     meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
@@ -124,6 +126,7 @@ target_include_directories(qc_clientcore PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/preview
     ${CMAKE_CURRENT_SOURCE_DIR}/sound
     ${CMAKE_CURRENT_SOURCE_DIR}/session
+    ${CMAKE_CURRENT_SOURCE_DIR}/weather
     ${CMAKE_CURRENT_SOURCE_DIR}/network
     ${CMAKE_CURRENT_SOURCE_DIR}/settings)
 target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)

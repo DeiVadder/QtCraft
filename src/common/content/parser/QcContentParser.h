@@ -13,6 +13,7 @@
 #include "QcSoundParser.h"
 #include "QcStructureParser.h"
 #include "QcTextureDefinition.h"
+#include "QcWeatherParser.h"
 #include "QcWorldgenParser.h"
 #include "QcWorldTypeParser.h"
 
@@ -44,6 +45,7 @@ using QcWorldgenParser::parseOre;
 using QcWorldgenParser::parseTerrainSettings;
 using QcWorldTypeParser::parseFlat;
 using QcWorldTypeParser::parseVoid;
+using QcWeatherParser::parseWeather;
 
 [[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 [[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);

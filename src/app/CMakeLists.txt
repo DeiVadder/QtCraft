@@ -48,6 +48,7 @@ qt_add_executable(qtcraft
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcGraphItem.h rendering/QcGraphItem.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
+    rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
     rendering/QcRenderSample.h
     rendering/QcFramePlan.h
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
@@ -165,6 +166,8 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/outline.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/debugline.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/debugline.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/precipitation.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/precipitation.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert

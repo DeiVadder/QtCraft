@@ -24,8 +24,12 @@ struct QcSkyState
     double cloudOffsetX = 0.0;
     double cloudOffsetZ = 0.0;
     QVector3D cloudColor;
-    // Sky light factor of the block shaders (QcDayCycle::daylight).
+    // Sky light factor of the block shaders (QcDayCycle::daylight, less in rain, more in a flash).
     double daylight = 1.0;
+    // How much of the sky the clouds cover beyond the fair-weather clouds: 0 clear, 1 overcast.
+    double overcast = 0.0;
+    // Factor on the fog's distances: 1 clear, smaller in rain (the fog comes closer).
+    double fogScale = 1.0;
 
     // Fog colour: the horizon, so terrain at the fog's end has the colour of the sky behind it.
     QVector3D fogColor() const { return horizon; }
@@ -42,5 +46,10 @@ QcSkyState at(double worldTime);
 // The sky seen from `eyeY`: below the world it fades to black, which it reaches at
 // QcWorld::voidLimitY; fog, clouds, glow and stars fade with it (decision E-288).
 QcSkyState seenFrom(QcSkyState sky, double eyeY);
+// The sky under the weather (decision E-395): rain (0..1) greys and darkens the dome, covers it with
+// clouds, hides stars and the dusk glow, brings the fog closer and takes sky light away; thunder
+// (0..1) darkens it further; a lightning flash (0..1) lights everything up for a moment. Only the
+// shaders' factors change, so no section is meshed again.
+QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash);
 
 } // namespace QcSky

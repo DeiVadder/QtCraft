@@ -18,6 +18,7 @@
 #include "QcStructureDefinition.h"
 #include "QcCommandMacroDefinition.h"
 #include "QcTextureDefinition.h"
+#include "QcWeatherDefinition.h"
 #include "QcWorldgenDefinitions.h"
 #include "QcWorldTypeDefinitions.h"
 
@@ -139,6 +140,8 @@ public:
     void registerHandbookChapter(QcHandbookChapter chapter);
     const QList<QcHandbookChapter> &handbookChapters() const { return m_handbookChapters; }
     const QList<QcBiomeDefinition> &biomes() const { return m_biomes; }
+    // The biome named `name`; null when there is none.
+    const QcBiomeDefinition *biome(const QString &name) const;
     const QList<QcFeatureDefinition> &features() const { return m_features; }
     const QList<QcOreDefinition> &ores() const { return m_ores; }
     const QcTerrainSettings &terrainSettings() const { return m_terrain; }
@@ -158,6 +161,9 @@ public:
     const QcFlatDefinition &flatWorld() const { return m_flatWorld; }
     void setVoidWorld(QcVoidDefinition empty) { m_voidWorld = std::move(empty); }
     const QcVoidDefinition &voidWorld() const { return m_voidWorld; }
+    // What the weather does to the world (server side only); a later pack replaces it.
+    void setWeather(QcWeatherDefinition weather) { m_weather = std::move(weather); }
+    const QcWeatherDefinition &weather() const { return m_weather; }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -220,6 +226,7 @@ private:
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
+    QcWeatherDefinition m_weather;
     QList<QcHandbookChapter> m_handbookChapters;
     QHash<QString, qsizetype> m_handbookChapterIndex;
     QList<QcPackReference> m_packs;

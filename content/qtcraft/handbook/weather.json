@@ -1,0 +1,19 @@
+{
+    "name": "weather",
+    "order": 82,
+    "icon": "snow_block",
+    "sections": [
+        "kinds",
+        "where",
+        "thunder",
+        "effects",
+        "changing"
+    ],
+    "related": [
+        "snow_block",
+        "snow_layer",
+        "ice",
+        "farmland",
+        "fire"
+    ]
+}

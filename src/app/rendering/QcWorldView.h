@@ -6,6 +6,7 @@
 #include "QcChunkMesh.h"
 #include "QcDebugLines.h"
 #include "QcEntityMesh.h"
+#include "QcPrecipitationField.h"
 #include "QcRenderSample.h"
 #include "QcSky.h"
 #include "QcDayCycle.h"
@@ -58,6 +59,9 @@ public:
     void setFogRange(float start, float end);
     // Debug visualisations for this frame (decision E-225); null or empty draws none.
     void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines);
+    // Rain and snow for this frame, one instance per particle (QcPrecipitationField); null or empty
+    // draws none.
+    void setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops);
 
     qsizetype meshCount() const { return m_meshKeys.size(); }
 
@@ -84,6 +88,7 @@ private:
     std::shared_ptr<const QcEntityMesh> m_entityMesh;
     std::shared_ptr<const QcEntityMesh> m_handMesh;
     std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
+    std::shared_ptr<const QList<QcPrecipitationDrop>> m_precipitation;
     bool m_collectRenderSamples = false;
     QList<QcRenderSample> m_renderSamples;
 };

@@ -19,7 +19,7 @@ private slots:
         QCOMPARE(groups.size(), 1);
         QCOMPARE(groups[0].target, QcRenderTarget::Output);
         const QList<QcRenderPass> expected = {QcRenderPass::Sky, QcRenderPass::Opaque, QcRenderPass::Entities, QcRenderPass::Translucent,
-                                              QcRenderPass::Overlay};
+                                              QcRenderPass::Weather, QcRenderPass::Overlay};
         QCOMPARE(groups[0].passes, expected);
     }
 
@@ -36,7 +36,7 @@ private slots:
         QCOMPARE(groups[0].target, QcRenderTarget::ShadowMap);
         QCOMPARE(groups[0].passes, QList<QcRenderPass>{QcRenderPass::Shadow});
         QCOMPARE(groups[1].target, QcRenderTarget::Scene);
-        QCOMPARE(groups[1].passes.size(), 6);
+        QCOMPARE(groups[1].passes.size(), 7);
         QCOMPARE(groups[1].passes[4], QcRenderPass::Translucent);
         QCOMPARE(groups[2].target, QcRenderTarget::Output);
         QCOMPARE(groups[2].passes, QList<QcRenderPass>{QcRenderPass::PostProcess});

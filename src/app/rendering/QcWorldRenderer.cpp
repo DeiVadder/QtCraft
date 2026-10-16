@@ -83,6 +83,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_pipelineRenderPass.reset();
         m_skyRenderer.reset();
         m_debugLineRenderer.reset();
+        m_precipitationRenderer.reset();
         m_uploadedAtlasVersion = 0;
         m_atlasTried = false;
         m_rhi = rhi();
@@ -103,6 +104,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
         m_outlinePipeline.reset();
         m_skyRenderer.reset();
         m_debugLineRenderer.reset();
+        m_precipitationRenderer.reset();
     }
 }
 
@@ -114,6 +116,7 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     m_entityMesh = view->m_entityMesh;
     m_handMesh = view->m_handMesh;
     m_debugLines = view->m_debugLines;
+    m_precipitation = view->m_precipitation;
     m_sky = view->m_sky;
     m_fogStart = view->m_fogStart;
     m_fogEnd = view->m_fogEnd;
@@ -477,8 +480,9 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.fogColor[1] = fog.y();
     uniforms.fogColor[2] = fog.z();
     uniforms.fogColor[3] = 1.0f;
-    uniforms.params[0] = m_fogStart;
-    uniforms.params[1] = m_fogEnd;
+    // Rain brings the fog closer (QcSkyState::fogScale); the far plane stays where the clear fog ends.
+    uniforms.params[0] = m_fogStart * float(m_sky.fogScale);
+    uniforms.params[1] = m_fogEnd * float(0.5 + 0.5 * m_sky.fogScale);
     uniforms.params[2] = float(m_sky.daylight);
     uniforms.params[3] = minimumLight;
     uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
@@ -656,6 +660,9 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
     case QcRenderPass::Translucent:
         drawTranslucent(commandBuffer, view);
         break;
+    case QcRenderPass::Weather:
+        m_sample.drawCalls += m_precipitationRenderer.draw(commandBuffer) ? 1 : 0;
+        break;
     case QcRenderPass::Overlay:
         m_sample.drawCalls += m_debugLineRenderer.draw(commandBuffer) ? 1 : 0;
         drawOutlineAndHand(commandBuffer);
@@ -714,6 +721,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
         m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewMatrix();
     uploadFrameUniforms(updates, viewProjection, outputSize);
     m_debugLineRenderer.prepare(m_rhi, renderTarget(), updates, m_frameUniforms.get(), m_debugLines);
+    m_precipitationRenderer.prepare(m_rhi, renderTarget(), updates, m_frameUniforms.get(), m_precipitation);
     // The sky is seen from the camera's position: the same view without the translation.
     QMatrix4x4 viewRotation = m_camera.viewMatrix();
     viewRotation.setColumn(3, QVector4D(0.0f, 0.0f, 0.0f, 1.0f));

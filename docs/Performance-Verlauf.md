@@ -1432,3 +1432,100 @@ Keine übersprungenen Ticks, kein Tick über 3 ms.
 ### Fazit Etappe 34
 
 Feuer kostet ohne Brand nichts Messbares: neue Phase Feuer 0,001–0,002 ms, Brennen je Körper und 16-Bit-Flags in crowd innerhalb von 2 %, die Lorenphase ohne Loren ist mit dem frühen Ausstieg praktisch fort (−95 %). Ein Waldbrand mit über 2000 Feuern bleibt bei 117 FPS; Client-Neuvernetzung und Licht laufen im Hintergrund mit Ø 13 ms Verzögerung, der Server-Tick steigt auf Ø 0,3 ms, Spitze 2,4 ms. Die Abweichungen über 10 % (GUI-CPU im Showcase, Tick an zwei Signal-Stationen) kommen vom verschobenen Layout der Showcase-Welt, nicht vom Code; keine unerklärte Regression.
+
+## Etappe 35.1: Wetter (headless, 2026-10-15)
+
+Release (`RelWithDebInfo`), `SCENARIOS="thunderstorm rain crowd" scripts/bench-headless.sh <Datei> 3 60 new=build/release` (keine Echtzeit, 0,25 s Wanduhr je Lauf; nur der neue Stand, die Szenarien gibt es auf `dev` nicht). Neue Tick-Phase Wetter bei voller Stärke (Regen bzw. Gewitter mit Blitzen, ein Spieler): Ø 0,0000–0,0001 ms, max 0,000–0,005 ms; Tick Ø thunderstorm 0,082–0,085 ms, rain 0,082–0,084 ms, crowd 0,127–0,134 ms (Phase Wetter dort 0).
+
+Client, `QTCRAFT_WEATHER_MEASURE=1 build/release/tests/test_weather_client measureField` (Release, 3000 Frames, volles Budget von 3000 Teilchen unter offenem Himmel): Regen 0,046 ms GUI-CPU je Frame (Fortschreiben und Segmente, 6000 Vertices), Schnee 0,091 ms (12 000 Vertices, zwei Striche je Flocke). Der Render-Thread macht daraus Ecken (36 Byte, sechs je Segment): rund 0,65 MB (Regen) bzw. 1,3 MB (Schnee) Upload je Frame in einem dynamischen Puffer, ein Zeichenaufruf. Bildzeiten und GPU im Fenster sind nachzuholen (Hauptsitzung: `SCENARIOS=@weather` mit `scripts/bench-ab.sh`, Vergleich gegen `stand` bei klarem Wetter).
+
+## Etappe 35.2: Auswirkungen des Wetters (headless, 2026-10-16)
+
+Release (`RelWithDebInfo`), `SCENARIOS="forest-fire-storm forest-fire thunderstorm rain snow" scripts/bench-headless.sh <Datei> 3 90 new=build/release` (keine Echtzeit, unter 1 s Wanduhr je Lauf; nur der neue Stand). Neues Szenario `forest-fire-storm`: der Waldbrand von `forest-fire` in einem Gewitter bei voller Stärke (Gruppe `@weather`). Werte als Spanne der drei Runden.
+
+| Szenario | Tick Ø ms | Tick max ms | Feuer Ø / max ms | Wetter Ø / max ms | Block-Updates Ø ms |
+|---|---|---|---|---|---|
+| forest-fire (klar) | 0,284–0,287 | 1,43–1,48 | 0,206–0,208 / 1,40–1,42 | 0 / 0 | 0,058 |
+| forest-fire-storm | 0,179–0,181 | 0,79–0,81 | 0,144–0,146 / 0,76–0,77 | 0,0011 / 0,22–0,25 | 0,019 |
+| thunderstorm | 0,083–0,085 | 0,21–0,24 | 0,0004 / 0,13–0,14 | 0,0021 / 0,12–0,13 | 0,0001 |
+| rain | 0,082–0,083 | 0,14–0,15 | 0 / 0 | 0,0016–0,0017 / 0,04–0,06 | 0 |
+| snow | 0,024 | 0,066–0,068 | 0 / 0 | 0,0022 / 0,04–0,05 | 0,0003 |
+
+**Bewertung:**
+
+- **Regen über dem Waldbrand macht ihn billiger:** Die Feuer in den Kronen (offener Himmel) erlöschen nach wenigen Schritten, in den Regen breitet sich nichts aus; Phase Feuer −30 %, Block-Updates −68 %, Tick-Spitze halbiert. Die Regen-Prüfung je Feuer-Schritt (`isRainingAt`: Säulen-Oberkante aus dem Chunk, abwärts über nicht leere Abschnitte) fällt nicht ins Gewicht; ein Zwischenspeicher der Oberkanten auf dem Server ist nicht nötig.
+- **Phase Wetter 0,0001 → 0,0016–0,0022 ms** bei Niederschlag: der Schneefall sieht je Spieler und Tick vier Säulen an (Oberkante, Klima, Niederschlag), auch wo es regnet (eine Säule im Gebirge kann über der Schneegrenze liegen). Rund 0,5 µs je Säule, unabhängig von der Weltgröße.
+- **Blitze:** Spitzen der Phase Wetter 0,12–0,25 ms im Tick eines Einschlags mit Zündung (Feuer setzen, Block-Update, Licht); im Mittel alle 200 Ticks.
+
+## Etappe 35, Nachbesserungen (E-397, 2026-10-16)
+
+Client, `QTCRAFT_WEATHER_MEASURE=1 build/release/tests/test_weather_client measureField` (Release, 3000 Frames, 3000 Teilchen): Regen 0,039 ms GUI-CPU je Frame (vorher 0,047), Schnee 0,066 ms (vorher 0,088); Upload je Frame 48 000 Byte in beiden Fällen (vorher 576 000 bzw. 1 152 000 Byte, dazu das Aufblähen im Render-Thread). Server, `SCENARIOS="thunderstorm snow" scripts/bench-headless.sh <Datei> 3 30 new=build/release` (Last 5,3): Phase Wetter Ø 0,0023–0,0024 ms (Gewitter) bzw. 0,0026–0,0027 ms (Schnee), vorher 0,0021 bzw. 0,0022 – im Rahmen der Last; ein Mersenne-Twister je Tick neu gesetzt hatte 0,0068 bzw. 0,0050 ms gekostet (verworfen zugunsten eines splitmix64-Stroms).
+
+## Etappe 35 (Wetter)
+
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `17c54d4` in einem temporären Worktree gegen `feature/35-weather` `75f1954`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @weather` (`bench-headless.sh`, adaptiv 3 → 6 Runden, 60 Spielsekunden, 01:32–01:35); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 01:36–01:49) und `@weather` (ebenso, 01:49–02:01). Last 3,0–6,0, belastet markiert 3 von 48 Läufen der `@core`-Reihe (stand), 1 von 48 der `@weather`-Reihe, headless 1 von 72 (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 32 min.
+
+**Wetter-Szenarien auf `dev`:** `dev` kennt `/weather` und `/gamerule weatherCycle` nicht (unbekannter Befehl), `/tick sprint 200` läuft trotzdem. `rain` und `thunderstorm` sind auf `dev` also `stand` bei klarem Wetter (gleicher Ort, gleicher Blick), `snow` die klare Tundra, `forest-fire-storm` der Waldbrand von `forest-fire` bei klarem Wetter. Der Vergleich zeigt die Kosten des Wetters, keine Regression.
+
+### Fenster: 35 gegen `17c54d4` (`@core`, klares Wetter)
+
+| Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Phase Wetter Ø ms | Spitzenspeicher MB | Draw-Calls |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| stand (6) | 120 / 120 | 9,83 → 9,89 | 1,75 → 1,75 | 1,57 → 1,58 | 0,974 → 0,987 | 0,433 → 0,445 (+3 %) | 0,151 → 0,145 | 0,638 → 0,610 | – → 0,003 | 445 → 447 | 347 → 347 |
+| sprint (6) | 120 / 120 | 10,1 → 10,1 | 2,08 → 2,20 (+6 %) | 1,68 → 1,73 (+3 %) | 1,10 → 1,13 | 0,459 → 0,463 | 0,134 → 0,141 | 0,596 → 0,614 (+3 %) | – → 0,005 | 556 → 560 | 388 → 388 |
+| showcase (6) | 120 / 120 | 10,0 → 10,2 | 0,594 → 0,594 | 1,18 → 1,13 (−4 %) | 0,558 → 0,507 | 0,708 → 0,687 | 0,351 → 0,360 | 0,375 → 0,367 | – → 0,002 | 329 → 332 | 153 → 153 |
+| crowd (6) | 120 / 120 | 9,96 → 10,0 | 2,57 → 2,65 (+3 %) | 1,45 → 1,40 (−3 %) | 1,14 → 1,13 | 0,898 → 0,892 | 0,524 → 0,522 | 0,890 → 0,929 (+4 %) | – → 0,003 | 451 → 453 | 345 → 345 |
+
+Keine übersprungenen Ticks, Tick max höchstens 3,9 ms (crowd, beide Stände). Bei klarem Wetter zeichnet der Regen-Renderer nichts (Draw-Calls gleich); die Tick-Phase Wetter kostet im Fenster 0,002–0,005 ms. Spitzenspeicher +2 bis +4 MB (+1 %).
+
+### Fenster: Wetter (`@weather`, 6 Runden à 10 s; `dev` = dieselbe Szene bei klarem Wetter)
+
+| | rain | snow | thunderstorm | forest-fire-storm |
+|---|---|---|---|---|
+| FPS / Frame Ø ms | 120 / 8,33 → 8,33 | 120 / 8,35 → 8,34 | 120 / 8,33 → 8,33 | 120 / 8,35 → 8,34 |
+| Frame p99 ms | 9,83 → 9,86 | 9,81 → 10,0 | 9,98 → 10,0 | 9,97 → 9,97 |
+| GPU Ø ms (Median) | 1,60 → 1,85 [1,64–2,35] (1,60 → 1,67) | 1,50 → 1,48 | 1,89 → 1,76 (1,92 → 1,65) | 1,18 → 1,40 [1,20–1,85] (1,17 → 1,30) |
+| Render-CPU Ø / p99 ms | 1,55 → 1,59 / 2,36 → 2,43 | 1,83 → 1,70 / 2,82 → 2,91 | 1,71 → 1,57 / 2,50 → 2,43 | 1,28 → 1,25 / 1,99 → 2,05 |
+| GUI-CPU Ø / p99 ms | **0,479 → 0,601** / 0,80 → 1,00 | **0,363 → 0,569** / 0,71 → 0,96 | 0,532 → 0,606 / 0,92 → 1,00 | **0,344 → 0,490** / 0,72 → 0,95 |
+| Upload Ø ms | 0,017 → 0,023 | 0,010 → 0,055 | 0,021 → 0,024 | 0,016 → 0,026 |
+| Neu vernetzte Abschnitte / Mesh-Jobs in 10 s | 0 → 21 / 21 | **0 → 495 / 471** | 0 → 39 / 35 | 263 → 543 / 195 → 407 |
+| Mesh-Rückstau max / Änderung bis Mesh Ø, max ms | – → 4 / 7,7, 10 | – → 12 / 7,4, 14 [8–25] | – → 11 / 10,8, 16 [11–33] | 106 → 105 / 17,4 → 13,1, 44 → 44 |
+| Tick Ø / max ms | 0,537 → 0,533 / 1,6 → 1,1 | 0,207 → 0,192 / 0,67 → 0,46 | 0,739 → 0,657 / 1,8 → 1,8 | 0,143 → 0,199 / 1,4 → 1,5 |
+| Phase Wetter Ø / max ms | – → 0,024 / 0,09 | – → 0,037 / 0,16 [0,08–0,35] | – → 0,035 / 0,69 [0,34–1,21] | – → 0,015 / 0,47 |
+| Phase Feuer Ø / max ms | 0,001 | 0,001 | 0,002 / 0,09 → 0,08 | 0,050 → 0,086 / 1,3 → 1,4 |
+| Spitzenspeicher MB | 445 → 452 (+6) | 401 → 413 (+11) | 446 → 457 (+11) | 378 → 387 (+9) |
+| Draw-Calls | 347 → 348 | 634 → 635 | 347 → 348 | 120 → 116 |
+
+Keine übersprungenen Ticks, kein Tick über 3 ms. Die Teilchenzahl steht nicht in der BENCH-Zeile; nach `/tick sprint 200` herrscht volle Stärke, also das volle Budget von 3000 Teilchen (E-395), gezeichnet in einem Aufruf (Draw-Calls +1).
+
+### Headless: 35 gegen `17c54d4` (Tick, Mittel über 3 bzw. 6 Runden)
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
+|---|---:|---:|---:|---|
+| crowd | 0,134 → 0,132 | 0,194 → 0,189 | 50,4 → 50,6 | Wesen 0,118 → 0,117, Wetter 0,0001 |
+| gravel-collapse | 0,494 → 0,495 | 1,46 → 1,43 | 70,8 → 71,1 | Block-Updates 0,036 gleich, Wetter 0,0001 |
+| farm / farm-seeds | 0,0073 → 0,0070 / 0,0170 → 0,0173 | 0,015 → 0,015 / 0,056 → 0,055 | 44,0 → 44,7 / 44,0 → 44,2 | Pflanzen gleich, Wetter 0,0002 / 0 |
+| explore | 0,177 → 0,177 | 0,863 → 0,878 | 56,5 → 56,5 | Streaming, Chunk-Laden, Wesen gleich, Wetter 0,0003 |
+| signal_components / machines / farm | 0,031 → 0,031 / 0,028 → 0,028 / 0,030 → 0,031 | 0,099 → 0,100 / 0,097 → 0,097 / 0,095 → 0,098 | 44,6 → 44,7 / 44,7 → 44,9 / 44,4 → 44,7 | Signal gleich, Wetter 0 |
+| rain (6) | 0,087 → 0,090 (+3 %) | 0,133 → 0,140 (+6 %) | 50,4 → 50,9 | Wetter 0,0023 (max 0,08) |
+| snow (6) | **0,0227 → 0,0262 (+15 %)** | 0,040 → 0,044 (+11 %) | 47,3 → 48,1 | Wetter 0,0028 (max 0,05), Block-Updates 0 → 0,0004 |
+| thunderstorm (6) | 0,087 → 0,092 (+6 %) | **0,129 → 0,198 (+53 %)** | 50,5 → 51,3 | Wetter 0,0028 (max 0,20–0,25), Feuer 0 → 0,0013 (max 0,16) |
+| forest-fire-storm | 0,271 → 0,191 (−29 %) | 0,740 → 0,559 (−24 %) | 45,7 → 46,0 | Feuer 0,183 → 0,152, Block-Updates 0,067 → 0,022, Pflanzen 0,018 → 0,013, Wetter 0,0012 (max 0,16) |
+
+**Bewertung:**
+
+- **`@core` innerhalb von 10 %, kein Schlüssel über +6 %** (GPU sprint +6 % mit überlappenden Runden 1,84–2,49 gegen 1,80–2,59; Draw-Calls und Dreiecke überall gleich). Die neue Tick-Phase Wetter kostet bei klarem Wetter 0,002–0,005 ms im Fenster und ≤ 0,0003 ms headless, der Regen-Renderer ohne Teilchen nichts Messbares, Himmels-Shader und neuer Frame-Schritt Weather ändern GPU und Render-CPU nicht. Headless `@server` überall innerhalb von ±3 % (Tick Ø) bzw. ±3 % (p99).
+- **Kosten des Wetters im Fenster (keine Regression, erwartet):**
+  - **GUI-CPU +0,07 bis +0,21 ms** (Regen +0,12, Gewitter +0,07, Schnee +0,21, Waldbrand im Gewitter +0,15): Teilchenfeld fortschreiben und Instanzen füllen (laut `measureField` 0,039 ms Regen, 0,066 ms Schnee), dazu Klima, Himmel und Blitz; beim Schnee außerdem die Neuvernetzung der Schneedecke (siehe unten). Absolut höchstens 0,61 ms.
+  - **GPU:** Mittel Regen +15 %, Waldbrand im Gewitter +18 %, aber bimodal: je zwei von sechs Läufen bei 2,1–2,4 bzw. 1,5–1,8 ms, die übrigen nahe `dev`; im Median +0,07 ms (Regen, +5 %) bzw. +0,12 ms (Waldbrand, +10 %). Gewitter (dieselbe Szene wie Regen) im Mittel −7 %, im Median −14 %, hier lagen die Ausreißer bei `dev`. Der Regen kostet die GPU also unter 0,1 ms; die Mittel spiegeln die Taktstufen der GPU. Schnee −2 %.
+  - **Render-CPU** unverändert (−8 bis +3 %), Upload Ø ≤ 0,06 ms je Bild.
+  - **Schneedecke (M8 in E-397): 495 neu vernetzte Abschnitte in 10 s** (471 Mesh-Jobs, Ø 1,9 ms im Hintergrund, Rückstau höchstens 12, Änderung bis Mesh Ø 7,4 ms, max 8–25 ms). Rund 50 Abschnitte je Sekunde bei vier Schichten je Tick: fast jede Schicht trifft einen anderen Abschnitt bzw. dessen Nachbarn. Bildzeit und Render-CPU bleiben gleich (Frame Ø 8,34 ms, p99 10,0 ms); Upload Ø 0,010 → 0,055 ms. Im Regen werden 21 Abschnitte neu vernetzt, im Gewitter 39 (dazu 3 Licht-Jobs): vermutlich Schneeschichten in Säulen über der Schneegrenze bzw. in kaltem Klima im Umkreis von 48 Blöcken, im Gewitter zusätzlich Einschläge und Funken; nicht einzeln gezählt.
+  - **Spitzenspeicher +6 bis +11 MB** (+1,5 bis +3 %).
+  - **Waldbrand im Gewitter, Fenster Tick Ø +39 % und Phase Feuer +73 %, headless −29 %:** kein Widerspruch. Auf `dev` frisst der klare Brand während `/tick sprint 200` vor der Messung schneller um sich und ist in den gemessenen 10 s schon über seiner Spitze (Phase Feuer 0,05 ms), im Regen brennt er langsamer und länger, dazu zünden Blitze (Neuvernetzung 263 → 543 Abschnitte, Licht-Jobs 53 → 81). Headless über 60 Spielsekunden ist der Regen-Brand billiger (Feuer −17 %, Block-Updates −67 %), wie in 35.2 gemessen.
+- **Headless Wetter-Szenarien:** `snow` +15 % Tick Ø (+0,0035 ms: Schneefall 0,0028 ms, Block-Updates der gesetzten Schichten 0,0004 ms), `thunderstorm` p99 +53 % (+0,07 ms: Ticks mit Einschlag und Zündung, Phase Wetter max 0,20–0,25 ms, Feuer max 0,16 ms). Erwartete Kosten der neuen Funktion, absolut unter 0,3 ms je Tick von 50 ms; keine Regression.
+
+**Absolute Ziele (`docs/Performance.md`, 8 Chunks):** Bildrate 120 FPS (Ziel ≥ 60), Frame-Kosten höchstens 2,65 ms (GPU crowd; in den Wetter-Szenen höchstens 1,85 ms GPU und 1,83 ms Render-CPU; Ziel ≤ 4 ms) und p99 ≤ 12,5 ms (alle 96 Fensterläufe 9,2–10,5 ms, diesmal auch ohne Ausreißer) erfüllt. Spitzenspeicher stand, showcase, crowd und alle Wetter-Szenen 332–457 MB, sprint (10 s) 560 MB unter 600 MB erfüllt; die offenen Befunde sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen, durch 35 nicht berührt. Tick: kein Tick über 50 ms (höchstens 3,9 ms), keine übersprungenen Ticks.
+
+### Fazit Etappe 35
+
+Wetter kostet bei klarem Himmel nichts Messbares: `@core` innerhalb von 6 %, die Phase Wetter 0,002–0,005 ms, Renderer und Shader ohne Preis. Regen und Schnee bei vollem Budget bleiben bei 120 FPS und p99 um 10 ms; sie kosten 0,07–0,21 ms GUI-CPU, unter 0,1 ms GPU (Median) und 6–11 MB. Die Schneedecke lässt rund 50 Abschnitte je Sekunde neu vernetzen, ohne Einfluss auf die Bildzeit. Keine Regression über 10 % in `@core` oder `@server`; die Abweichungen in den Wetter-Szenen sind die Kosten der neuen Funktion gegenüber klarem Wetter.

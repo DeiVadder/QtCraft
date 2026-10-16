@@ -17,11 +17,11 @@ bool QcClientSounds::record(QcSoundCue &cue, quint64 tick)
     return true;
 }
 
-void QcClientSounds::updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, quint64 tick,
+void QcClientSounds::updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, double rain, quint64 tick,
                                     const std::function<void(const QcSoundCue &)> &play)
 {
     if (tick % ambienceTicks == 1) {
-        m_ambienceTarget = QcAmbience::targets(world, eye);
+        m_ambienceTarget = QcAmbience::targets(world, eye, rain);
 
         // A fixed pseudo-random sequence over the samples keeps sessions reproducible.
         const quint64 sample = tick / ambienceTicks;

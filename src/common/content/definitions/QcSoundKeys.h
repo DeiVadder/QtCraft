@@ -19,6 +19,9 @@ inline constexpr auto uiClick = "qtcraft:ui.click";
 inline constexpr auto ambientWind = "qtcraft:ambient.wind";
 inline constexpr auto ambientCave = "qtcraft:ambient.cave";
 inline constexpr auto ambientWater = "qtcraft:ambient.water";
+// Rain falling around the listener and thunder after lightning (decision E-395).
+inline constexpr auto ambientRain = "qtcraft:ambient.rain";
+inline constexpr auto weatherThunder = "qtcraft:weather.thunder";
 inline constexpr auto mobHurt = "qtcraft:mob.generic.hurt";
 inline constexpr auto mobDeath = "qtcraft:mob.generic.death";
 inline constexpr auto machineActive = "qtcraft:machine.furnace";

@@ -185,6 +185,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
             files.append(root.filePath(u"worldgen/"_s + QString::fromLatin1(name)));
         }
     }
+    files.append(root.filePath(u"weather.json"_s));
 
     // Only what exists as a regular file is read.
     files.removeIf([](const QString &path) {
@@ -304,14 +305,16 @@ void loadLaterDefinitions(const QDir &root, const QString &packId, QcContentRegi
                     [&registry](QcCommandMacroDefinition macro) { registry.registerCommandMacro(std::move(macro)); });
 }
 
-// worldgen/<file>: one settings object of the pack, parsed; std::nullopt (with a warning when it
-// is broken) when there is none.
+// <file> (relative to the pack, e.g. worldgen/terrain.json): one settings object of the pack,
+// parsed; std::nullopt (with a warning when it is broken) when there is none. Neither the file nor
+// its folder may be a symbolic link.
 template<typename Parse>
-auto readWorldgenFile(const QDir &root, const QString &file, const QString &packId, QStringList &warnings, Parse parse)
+auto readSettingsFile(const QDir &root, const QString &file, const QString &packId, QStringList &warnings, Parse parse)
     -> std::optional<typename std::invoke_result_t<Parse, const QJsonObject &, const QString &>::value_type>
 {
-    const QString path = root.filePath(u"worldgen/"_s + file);
-    if (QFileInfo(root.filePath(u"worldgen"_s)).isSymLink() || !QFileInfo::exists(path)) {
+    const QString path = root.filePath(file);
+    const QString folder = QFileInfo(file).path();
+    if ((folder != u"."_s && QFileInfo(root.filePath(folder)).isSymLink()) || QFileInfo(path).isSymLink() || !QFileInfo::exists(path)) {
         return std::nullopt;
     }
 
@@ -331,18 +334,47 @@ auto readWorldgenFile(const QDir &root, const QString &file, const QString &pack
 
 void loadWorldgenSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
 {
-    if (auto terrain = readWorldgenFile(root, u"terrain.json"_s, packId, warnings, QcContentParser::parseTerrainSettings)) {
+    if (auto terrain = readSettingsFile(root, u"worldgen/terrain.json"_s, packId, warnings, QcContentParser::parseTerrainSettings)) {
         registry.setTerrainSettings(std::move(*terrain));
     }
-    if (auto showcase = readWorldgenFile(root, u"showcase.json"_s, packId, warnings, QcContentParser::parseShowcase)) {
+    if (auto showcase = readSettingsFile(root, u"worldgen/showcase.json"_s, packId, warnings, QcContentParser::parseShowcase)) {
         registry.setShowcase(std::move(*showcase));
     }
-    if (auto flat = readWorldgenFile(root, u"flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
+    if (auto flat = readSettingsFile(root, u"worldgen/flat.json"_s, packId, warnings, QcContentParser::parseFlat)) {
         registry.setFlatWorld(std::move(*flat));
     }
-    if (auto empty = readWorldgenFile(root, u"void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
+    if (auto empty = readSettingsFile(root, u"worldgen/void.json"_s, packId, warnings, QcContentParser::parseVoid)) {
         registry.setVoidWorld(std::move(*empty));
     }
+}
+
+// Why the block `name` cannot be the snow layer, or an empty string when it can: it must be a block
+// of this or an earlier pack that is not opaque, no liquid and needs support below (QcSnowfall
+// puts it on the top of a column, decision E-397).
+QString unfitSnowLayer(const QcContentRegistry &registry, const QString &name)
+{
+    const std::optional<QcBlockId> id = registry.blockId(name);
+    if (!id) {
+        return u"snow layer %1 is not a block"_s.arg(name);
+    }
+    const QcBlockDefinition &block = registry.block(*id);
+    if (block.opaque || block.liquid || block.support != QcBlockSupport::Below) {
+        return u"snow layer %1 must be a block that is not opaque, no liquid and needs support below"_s.arg(name);
+    }
+    return {};
+}
+
+void loadWeatherSettings(const QDir &root, const QString &packId, QcContentRegistry &registry, QStringList &warnings)
+{
+    auto weather = readSettingsFile(root, u"weather.json"_s, packId, warnings, QcContentParser::parseWeather);
+    if (!weather) {
+        return;
+    }
+    if (const QString unfit = unfitSnowLayer(registry, weather->snow.layer); !unfit.isEmpty()) {
+        warnings.append(u"%1: %2"_s.arg(root.filePath(u"weather.json"_s), unfit));
+        return;
+    }
+    registry.setWeather(std::move(*weather));
 }
 
 // Whether the new keys of a language file keep all languages within QcStreamLimits::maxTranslations
@@ -403,6 +435,7 @@ QcResult<QcContentPackInfo> QcContentPackLoader::load(const QString &directory, 
     loadBlocks(root, info->id, registry, warnings);
     loadLaterDefinitions(root, info->id, registry, warnings);
     loadWorldgenSettings(root, info->id, registry, warnings);
+    loadWeatherSettings(root, info->id, registry, warnings);
     loadTranslations(root, registry, warnings);
 
     return info;

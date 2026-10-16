@@ -5,9 +5,10 @@
 
 #include <optional>
 
-// Levels (0..1) of the three ambience loops, chosen from the surroundings with simple rules:
+// Levels (0..1) of the four ambience loops, chosen from the surroundings with simple rules:
 // wind under the open sky (stronger up high), a cave rumble under a thick rock ceiling, water
-// when water blocks are near. The loops cross-fade by moving the levels gradually. Glowing liquids
+// when water blocks are near, rain while it rains where the listener is (muffled under a roof,
+// faint in a cave). The loops cross-fade by moving the levels gradually. Glowing liquids
 // (lava) are no water: they pop now and then instead.
 class QcAmbience
 {
@@ -17,6 +18,7 @@ public:
         float wind = 0.0f;
         float cave = 0.0f;
         float water = 0.0f;
+        float rain = 0.0f;
 
         friend bool operator==(const Levels &, const Levels &) = default;
     };
@@ -33,8 +35,13 @@ public:
     // Level change per second when fading towards a new target.
     static constexpr double fadePerSecond = 0.5;
 
-    // Target levels for a listener whose eyes are at `eye`. Unloaded blocks count as air.
-    static Levels targets(const QcBlockAccess &world, const QcVec3 &eye);
+    // Share of the rain heard under a roof and in a cave.
+    static constexpr double rainUnderRoof = 0.45;
+    static constexpr double rainInCave = 0.08;
+
+    // Target levels for a listener whose eyes are at `eye`, while rain of strength `rain` (0..1;
+    // 0 where it snows or stays dry) falls there. Unloaded blocks count as air.
+    static Levels targets(const QcBlockAccess &world, const QcVec3 &eye, double rain = 0.0);
     // The nearest glowing liquid (lava) among the blocks sampled for water, if any.
     [[nodiscard]] static std::optional<QcBlockPos> nearestGlowingLiquid(const QcBlockAccess &world, const QcVec3 &eye);
     // Chance per ambience sample that lava nearby pops.

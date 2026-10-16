@@ -1678,7 +1678,7 @@ Plain earth below the grass.
 
 ### <a id="block-qtcraft-farmland"></a>Farmland
 
-Tilled earth for crops. Water within four blocks keeps it wet, and crops grow twice as fast on wet farmland. Without water and crops it dries out and turns back into dirt.
+Tilled earth for crops. Water within four blocks keeps it wet, and crops grow twice as fast on wet farmland. Rain falling on it wets it too. Without water, rain and crops it dries out and turns back into dirt.
 
 | | |
 |---|---|
@@ -5361,7 +5361,7 @@ Packed snow of cold mountains and tundra.
 
 ### <a id="block-qtcraft-snow_layer"></a>Snow layer
 
-A thin cover of snow that needs a block below.
+A thin cover of snow that needs a block below. It settles by itself where snow falls under the open sky.
 
 | | |
 |---|---|

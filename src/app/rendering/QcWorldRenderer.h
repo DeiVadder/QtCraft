@@ -8,6 +8,7 @@
 #include "QcFramePlan.h"
 #include "QcRenderSample.h"
 #include "QcDebugLineRenderer.h"
+#include "QcPrecipitationRenderer.h"
 #include "QcSectionLightPool.h"
 #include "QcSkyRenderer.h"
 
@@ -155,6 +156,9 @@ private:
     QcSkyRenderer m_skyRenderer;
     QcDebugLineRenderer m_debugLineRenderer;
     std::shared_ptr<const QList<QcDebugLineVertex>> m_debugLines;
+    // Rain and snow, one instance per particle (decisions E-395, E-397).
+    QcPrecipitationRenderer m_precipitationRenderer;
+    std::shared_ptr<const QList<QcPrecipitationDrop>> m_precipitation;
     float m_fogStart = 80.0f;
     float m_fogEnd = 128.0f;
 

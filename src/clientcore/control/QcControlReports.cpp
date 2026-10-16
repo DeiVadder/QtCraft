@@ -10,6 +10,7 @@
 #include <QMetaEnum>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -73,6 +74,7 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"maxFood"_s, m_session.maxFood());
     status.insert(u"worldTime"_s, m_session.worldTime());
     status.insert(u"night"_s, QcDayCycle::isNight(m_session.worldTime()));
+    status.insert(u"weather"_s, weatherJson());
 
     if (const std::optional<quint32> entity = m_session.targetEntity()) {
         status.insert(u"targetEntity"_s, qint64(*entity));
@@ -87,6 +89,23 @@ QJsonObject QcControlReports::playerStatus() const
     }
 
     return status;
+}
+
+QJsonObject QcControlReports::weatherJson() const
+{
+    const QcClientWeather &weather = m_session.weather();
+    const int eyeY = int(std::floor(m_session.playerMotion().position.y + QcPhysics::playerEyeHeight));
+    const QcPrecipitation falling = weather.precipitationAt(eyeY);
+    QString precipitation = u"none"_s;
+    if (falling != QcPrecipitation::None) {
+        precipitation = falling == QcPrecipitation::Snow ? u"snow"_s : u"rain"_s;
+    }
+    return {{u"rain"_s, weather.rain()},
+            {u"thunder"_s, weather.thunder()},
+            {u"precipitation"_s, precipitation},
+            {u"dry"_s, weather.climate().dry},
+            {u"snowFrom"_s, weather.climate().snowFrom},
+            {u"strikes"_s, qint64(weather.strikes())}};
 }
 
 void QcControlReports::insertTarget(QJsonObject &status) const
@@ -200,5 +219,5 @@ QJsonObject QcControlReports::soundsJson() const
 
     const QcAmbience::Levels &ambience = m_session.ambience();
     return {{u"sounds"_s, sounds},
-            {u"ambience"_s, QJsonObject{{u"wind"_s, ambience.wind}, {u"cave"_s, ambience.cave}, {u"water"_s, ambience.water}}}};
+            {u"ambience"_s, QJsonObject{{u"wind"_s, ambience.wind}, {u"cave"_s, ambience.cave}, {u"water"_s, ambience.water}, {u"rain"_s, ambience.rain}}}};
 }

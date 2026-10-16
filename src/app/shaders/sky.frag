@@ -106,9 +106,11 @@ vec3 addClouds(vec3 color, vec3 dir)
     float distance = height / dir.y;
     vec2 point = (sky.camera.xz + dir.xz * distance + sky.params.zw) / cloudCell;
     float density = noise2(point) * 0.65 + noise2(point * 2.7 + 3.1) * 0.35;
-    float cover = smoothstep(0.58, 0.70, density);
-    float fade = 1.0 - smoothstep(300.0, 1200.0, distance);
-    return mix(color, sky.cloudColor.rgb, cover * fade * 0.85);
+    // cloudColor.w: how overcast the weather makes the sky (0 fair-weather clouds, 1 closed cover).
+    float overcast = sky.cloudColor.w;
+    float cover = smoothstep(mix(0.58, 0.12, overcast), mix(0.70, 0.42, overcast), density);
+    float fade = 1.0 - smoothstep(mix(300.0, 900.0, overcast), 1200.0, distance);
+    return mix(color, sky.cloudColor.rgb, cover * fade * mix(0.85, 0.97, overcast));
 }
 
 void main()

@@ -16,11 +16,12 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcAudioEngine, "qtcraft.audio")
 
-const std::array<QString, 3> &ambienceKeys()
+const std::array<QString, 4> &ambienceKeys()
 {
-    static const std::array<QString, 3> keys = {QString::fromLatin1(QcSoundKeys::ambientWind),
+    static const std::array<QString, 4> keys = {QString::fromLatin1(QcSoundKeys::ambientWind),
                                                 QString::fromLatin1(QcSoundKeys::ambientCave),
-                                                QString::fromLatin1(QcSoundKeys::ambientWater)};
+                                                QString::fromLatin1(QcSoundKeys::ambientWater),
+                                                QString::fromLatin1(QcSoundKeys::ambientRain)};
     return keys;
 }
 
@@ -178,7 +179,7 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
         return;
     }
 
-    const std::array<float, 3> values = {levels.wind, levels.cave, levels.water};
+    const std::array<float, 4> values = {levels.wind, levels.cave, levels.water, levels.rain};
     for (std::size_t i = 0; i < values.size(); ++i) {
         const QcSoundBank::Entry *entry = m_bank->find(ambienceKeys()[i]);
         if (!entry) {

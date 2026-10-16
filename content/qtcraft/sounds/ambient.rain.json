@@ -1,0 +1,39 @@
+{
+    "name": "ambient.rain",
+    "bus": "ambient",
+    "volume": 0.6,
+    "loop": true,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 6.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 6000,
+            "highpass": 900,
+            "tremoloRate": 0.33,
+            "tremoloDepth": 0.15
+        },
+        {
+            "wave": "crackle",
+            "duration": 6.0,
+            "density": 900,
+            "lowpass": 7000,
+            "highpass": 1800,
+            "attack": 0.0,
+            "curve": 0,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "duration": 6.0,
+            "attack": 0.0,
+            "curve": 0,
+            "lowpass": 700,
+            "highpass": 120,
+            "tremoloRate": 0.1666,
+            "tremoloDepth": 0.4,
+            "gain": 0.35
+        }
+    ]
+}

@@ -47,6 +47,8 @@ public:
     // Chance that a random tick of `block` grows it.
     double growthChance(QcBlockId block) const;
     const QcCropGrowth &crops() const { return m_crops; }
+    // Rain wets soil (QcCropGrowth::setRainCheck).
+    void setRainCheck(QcCropGrowth::RainCheck check) { m_crops.setRainCheck(std::move(check)); }
 
 private:
     bool mayHoldPlants(const QcChunkSection &section) const;

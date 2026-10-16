@@ -60,6 +60,7 @@ Seit E-388 misst jede Etappe ihre Werte dort, wo sie entstehen:
 | `@server` | crowd gravel-collapse farm farm-seeds explore und die drei Signal-Stationen | Standard von `bench-headless.sh`: Server-Tick jeder Etappe |
 | `@farm` | farm farm-seeds | Pflanzen, Items, Selbstpflanzen |
 | `@fire` | forest-fire | Feuer: Schritte, abbrennende Blöcke, Licht und Neuvernetzung eines Waldbrands (headless und im Fenster, E-393) |
+| `@weather` | rain snow thunderstorm forest-fire-storm | Wetter: Regen- und Schneepartikel, bedeckter Himmel, Nebel, Blitze im Fenster; headless die Tick-Phase Wetter mit Schneefall und Blitzen, Regen über einem Waldbrand (E-395, E-396) |
 
 Typischer Etappen-Plan: headless `@server` plus die Gruppe der Änderung (z. B. `@signal`), im Fenster `@core` plus die Gruppe der Änderung, wenn sie das Bild betrifft; Texturpakete wie bisher über `:TEXTURE_PACKS=` auf `@core`.
 
@@ -205,6 +206,8 @@ Zielprüfung Etappe 43 (gerendert, 2026-10-14, 8 und 16 Chunks): Bildrate, Frame
 Zielprüfung Etappe 31.3 (gerendert, 2026-10-15, 8 und 16 Chunks): Bildrate (117–119 FPS) und Frame-Kosten (8 Chunks höchstens 2,2 ms GPU in crowd, 16 Chunks 2,9 ms) erfüllt; p99 ≤ 12,5 ms diesmal auch im Median verfehlt: 14,5 ms über die 72 Läufe der Hauptreihe (48 über 12,5 ms, bei beiden Ständen gleich verteilt, schon ab dem ersten Lauf und vor dem Anschluss eines externen Monitors), Frame-Kosten-p99 höchstens 3,3 ms in jedem Lauf: verpasste VSyncs von außerhalb des Spiels, der bekannte Vorbehalt „nur auf ruhigem Desktop“; Etappe 43 lag am Vortag bei 11,0 ms. Kein Befund des Spiels, bei der nächsten Messung beobachten. Spitzenspeicher: stand, showcase, crowd und die Signal-Stationen 318–453 MB erfüllt; sprint 8 Chunks 607–613 MB und sprint 16 Chunks 1 390 MB weiter verfehlt (Befunde oben, durch 31.3 nicht verändert, Anteil des Clients). Tick-Ziele: kein Tick über 50 ms außer einem einzelnen Stillstand von 86 ms in einem von sechs Erkundungsflügen (ganzer Prozess, Bild 505 ms; Folgeaufgabe in `docs/Performance-Verlauf.md`), keine übersprungenen Ticks. Referenzwerte unverändert.
 
 Zielprüfung Etappe 33 (gerendert, 2026-10-15, 8 und 16 Chunks): Bildrate (116–119 FPS) und Frame-Kosten (8 Chunks höchstens 2,25 ms GPU in crowd und 1,94 ms Render-CPU im neuen Szenario frozen, 16 Chunks 2,85 ms) erfüllt; p99 im Median 15,0 ms bei beiden Ständen (externer Monitor angeschlossen, Vorbehalt wie in 31.3). Spitzenspeicher: sprint 8 Chunks (20 s) 607–610 MB und sprint 16 Chunks 1 390–1 394 MB weiter verfehlt (Befunde oben, durch 33 nicht verändert), alle übrigen Szenarien höchstens 555 MB. Kein Tick über 50 ms, keine übersprungenen Ticks. Referenzwerte unverändert.
+
+Zielprüfung Etappe 35 (gerendert, 2026-10-16, 8 Chunks, `@core` und `@weather`): Bildrate (120 FPS), Frame-Kosten (höchstens 2,65 ms GPU in crowd; in Regen, Schnee, Gewitter und Waldbrand im Gewitter höchstens 1,85 ms GPU und 1,83 ms Render-CPU) und p99 ≤ 12,5 ms (alle 96 Läufe 9,2–10,5 ms, externer Monitor angeschlossen) erfüllt. Spitzenspeicher stand, showcase, crowd und die Wetter-Szenen 332–457 MB, sprint (10 s) 560 MB erfüllt; sprint 20 s (8 Chunks) und 16 Chunks nicht neu gemessen (Befunde oben, durch 35 nicht berührt). Kein Tick über 50 ms, keine übersprungenen Ticks. Referenzwerte unverändert.
 
 ## Regressionsschutz
 

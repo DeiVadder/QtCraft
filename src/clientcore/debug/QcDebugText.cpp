@@ -29,7 +29,7 @@ constexpr std::array<const char *, QcTickPhases::count> tickPhaseNames{
     QT_TRANSLATE_NOOP("QcDebugText", "Chunk loading"),  QT_TRANSLATE_NOOP("QcDebugText", "Block updates"),
     QT_TRANSLATE_NOOP("QcDebugText", "Signal Dust"),
     QT_TRANSLATE_NOOP("QcDebugText", "Liquids"),        QT_TRANSLATE_NOOP("QcDebugText", "Fire"),
-    QT_TRANSLATE_NOOP("QcDebugText", "Creatures"),
+    QT_TRANSLATE_NOOP("QcDebugText", "Weather"),        QT_TRANSLATE_NOOP("QcDebugText", "Creatures"),
     QT_TRANSLATE_NOOP("QcDebugText", "Items"),          QT_TRANSLATE_NOOP("QcDebugText", "Plant growth"),
     QT_TRANSLATE_NOOP("QcDebugText", "Falling blocks"), QT_TRANSLATE_NOOP("QcDebugText", "Minecarts"),
     QT_TRANSLATE_NOOP("QcDebugText", "Machines"),

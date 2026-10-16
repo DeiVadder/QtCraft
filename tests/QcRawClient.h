@@ -128,6 +128,11 @@ public:
             worldTime = time->time;
             timeRunning = time->running;
             timeSpeed = time->speed;
+        } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
+            ++weatherMessages;
+            this->weather = *weather;
+        } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
+            lightning.append(strike->position);
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
             ++entityMoveMessages;
             for (const QcMsg::EntityMove &move : moves->moves) {
@@ -209,6 +214,10 @@ public:
     // Labels per chunk and the last world time.
     QHash<QcChunkPos, QList<QcWorldLabel>> chunkLabels;
     double worldTime = -1.0;
+    // The latest weather, how many Weather messages came and where lightning struck (decision E-395).
+    std::optional<QcMsg::Weather> weather;
+    int weatherMessages = 0;
+    QList<QcVec3> lightning;
     bool timeRunning = true;
     // Server ticks per client tick for the time of day (decision E-249).
     double timeSpeed = 1.0;

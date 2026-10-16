@@ -17,7 +17,7 @@
 #include <memory>
 
 // Everything the graphical client hears: sound cues placed around the listener, UI sounds, the
-// three ambience loops and the background music. Lives in the GUI thread; rendering the sound bank
+// four ambience loops and the background music. Lives in the GUI thread; rendering the sound bank
 // and music pieces happens on worker threads, so no frame ever waits for synthesis.
 class QcAudioEngine : public QObject
 {
@@ -76,7 +76,7 @@ private:
     QTimer m_musicTimer;
     bool m_musicEnabled = false;
     QcAudioMixer::VoiceId m_musicVoice = 0;
-    std::array<QcAudioMixer::VoiceId, 3> m_ambienceVoices{};
+    std::array<QcAudioMixer::VoiceId, 4> m_ambienceVoices{};
     QcAmbience::Levels m_ambience;
     QRandomGenerator m_random;
     QSet<QString> m_warned;

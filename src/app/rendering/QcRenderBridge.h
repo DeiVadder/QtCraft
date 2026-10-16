@@ -5,11 +5,13 @@
 #include "QcEntityMesher.h"
 #include "QcFovEffect.h"
 #include "QcPhysics.h"
+#include "QcPrecipitationField.h"
 #include "QcViewCamera.h"
 
 #include <QElapsedTimer>
 #include <QString>
 
+#include <array>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -40,8 +42,11 @@ public:
     void updateEntities(double alpha, QcCameraMode mode);
     // The first-person arm with the held item; hidden in the other camera modes.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
-    // After placeCamera: below the world the sky darkens with the camera height.
+    // After placeCamera: the sky of the time of day under the weather and a lightning flash; below
+    // the world it darkens with the camera height.
     void updateSky(double alpha);
+    // Rain and snow around the eye, advanced by `frameSeconds` (decision E-395).
+    void updateWeather(const QcVec3 &eye, double frameSeconds);
     void updateSelection();
 
 private:
@@ -87,6 +92,10 @@ private:
     QcCapeTracker m_capes;
     QcFovEffect m_fov;
     QElapsedTimer m_capeClock;
+    QcPrecipitationField m_precipitation{QcPrecipitationField::selectedBudget()};
+    // Lists of drops handed to the view: the view keeps the latest, the renderer the one it last
+    // copied, so a third is always free to be filled again and a frame allocates nothing (E-397).
+    std::array<std::shared_ptr<QList<QcPrecipitationDrop>>, 3> m_dropLists;
     // Vertex and index count of the last entity mesh.
     std::pair<qsizetype, qsizetype> m_entityMeshSize;
 };

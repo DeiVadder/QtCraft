@@ -95,3 +95,11 @@ void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> 
         update();
     }
 }
+
+void QcWorldView::setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops)
+{
+    if (drops || m_precipitation) {
+        m_precipitation = std::move(drops);
+        update();
+    }
+}

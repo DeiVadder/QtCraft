@@ -374,8 +374,38 @@ void QcRenderBridge::updateHandMesh(double alpha, const QcVec3 &eye)
 
 void QcRenderBridge::updateSky(double alpha)
 {
-    const QcSkyState sky = QcSky::at(m_parts.session->worldTime() + alpha * QcPhysics::tickDuration);
+    const QcClientSession &session = *m_parts.session;
+    const QcClientWeather &weather = session.weather();
+    QcSkyState sky = QcSky::at(session.worldTime() + alpha * QcPhysics::tickDuration);
+    sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(double(session.tickCount()) + alpha));
     m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
+}
+
+void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
+{
+    const QcClientSession &session = *m_parts.session;
+    if (!session.world()) {
+        return;
+    }
+
+    m_precipitation.update(*session.world(), session.weather(), eye, frameSeconds);
+    if (m_precipitation.particles().isEmpty()) {
+        m_parts.view->setPrecipitation(nullptr);
+        return;
+    }
+
+    // A list neither the view nor the renderer holds any more: they copy the pointer only while the
+    // GUI thread waits in the renderer's synchronize(), so nobody can take it while it is filled.
+    const auto slot = std::ranges::find_if(m_dropLists, [](const auto &list) { return !list || list.use_count() == 1; });
+    std::shared_ptr<QList<QcPrecipitationDrop>> drops = slot != m_dropLists.end() ? *slot : nullptr;
+    if (!drops) {
+        drops = std::make_shared<QList<QcPrecipitationDrop>>();
+        if (slot != m_dropLists.end()) {
+            *slot = drops;
+        }
+    }
+    m_precipitation.fillDrops(session.weather().rain(), *drops);
+    m_parts.view->setPrecipitation(std::move(drops));
 }
 
 void QcRenderBridge::updateSelection()

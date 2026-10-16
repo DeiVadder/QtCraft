@@ -25,9 +25,10 @@ public:
     const QList<QcSoundCue> &recent() const { return m_recent; }
     void clearRecent() { m_recent.clear(); }
 
-    // Fades the ambience levels towards the surroundings of `eye`, sampled again every
-    // ambienceTicks; then nearby lava may pop (a cue for `play`).
-    void updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, quint64 tick, const std::function<void(const QcSoundCue &)> &play);
+    // Fades the ambience levels towards the surroundings of `eye` with rain of strength `rain`
+    // falling there, sampled again every ambienceTicks; then nearby lava may pop (a cue for `play`).
+    void updateAmbience(const QcBlockAccess &world, const QcVec3 &eye, double rain, quint64 tick,
+                        const std::function<void(const QcSoundCue &)> &play);
     const QcAmbience::Levels &ambience() const { return m_ambience; }
 
     // The player's steps, landings and swimming.

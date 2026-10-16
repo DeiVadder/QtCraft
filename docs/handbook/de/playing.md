@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -272,11 +272,37 @@ Feuer breitet sich höchstens 12 Blöcke vom Funken aus, mit dem es begann; ein 
 
 **Brennende Spieler und Wesen**
 
-Wer in Feuer oder Lava gerät, fängt Feuer und brennt nach dem Herausgehen noch eine Weile weiter (Feuer 8 Sekunden, Lava 15; siehe die Blockseiten). Solange ein Spieler oder Wesen brennt, verliert es alle 1 Sekunde 1 Gesundheit; Rüstung fängt einen Teil davon ab wie bei jedem Schlag. Wasser löscht die Flammen sofort. Spieler im Kreativmodus brennen nicht. Items, die in Feuer oder Lava fallen, verbrennen.
+Wer in Feuer oder Lava gerät, fängt Feuer und brennt nach dem Herausgehen noch eine Weile weiter (Feuer 8 Sekunden, Lava 15; siehe die Blockseiten). Solange ein Spieler oder Wesen brennt, verliert es alle 1 Sekunde 1 Gesundheit; Rüstung fängt einen Teil davon ab wie bei jedem Schlag. Wasser löscht die Flammen sofort, ebenso Regen, der auf dich fällt. Spieler im Kreativmodus brennen nicht. Items, die in Feuer oder Lava fallen, verbrennen.
 
 **Siehe auch**
 
 [Feuer](blocks.md#block-qtcraft-fire), [Feuerzeug](items.md#item-qtcraft-flint_and_steel), [Feuerstein](items.md#item-qtcraft-flint), [Lava](liquids.md#block-qtcraft-lava), [Magmablock](blocks.md#block-qtcraft-magma_block), [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Eichenlaub](blocks.md#block-qtcraft-oak_leaves), [Weiße Wolle](blocks.md#block-qtcraft-white_wool), [Bücherregal](blocks.md#block-qtcraft-bookshelf), [Kohleblock](blocks.md#block-qtcraft-coal_block), [Strohballen](blocks.md#block-qtcraft-hay_block)
+
+### <a id="chapter-qtcraft-weather"></a>Wetter
+
+**Klar, Regen und Gewitter**
+
+Das Wetter ist in der ganzen Welt dasselbe. Klares Wetter hält 5 bis 25 Minuten; dann regnet es 2,5 bis 10 Minuten oder, mit einer Chance von 25 zu 100, tobt 2 bis 6 Minuten ein Gewitter; danach klart es wieder auf. Regen und Donner kommen und gehen über 10 Sekunden: Wolken bedecken den Himmel, es wird dunkler, der Nebel rückt näher und der Himmel erhellt das Land weniger. Jede Welt hat ihren eigenen Wetterverlauf, bestimmt durch ihren Seed.
+
+**Regen und Schnee**
+
+Regen und Schnee fallen nur, wo der Himmel offen ist: nicht unter einem Dach, einem Baum oder einem Überhang. In kalten Biomen (Taiga, Tundra) schneit es statt zu regnen, und in allen anderen Biomen schneit es ab 150 Blöcken Höhe (im Gebirge ab seiner Schneegrenze). In der Wüste bleibt es trocken, auch wenn sich der Himmel dort ebenfalls verdunkelt. Den Regen hörst du um dich herum, unter einem Dach gedämpft.
+
+**Gewitter**
+
+Bei Gewitter schlägt ab und zu ein Blitz bis zu 48 Blöcke von einem Spieler entfernt ein, im Mittel alle 10 Sekunden je Spieler, nur wo es regnet (nicht in Schnee oder Wüste). Der Blitz erhellt sofort den Himmel; der Donner folgt so spät, wie der Schall für die Entfernung braucht: etwa drei Sekunden je Kilometer. Ein Einschlag kostet alle im Umkreis von 3 Blöcken 5 Gesundheit (Rüstung fängt einen Teil ab) und setzt sie in Brand; er kann dort, wo er einschlägt, ein paar Feuer entzünden, aber nur solange Feuer sich ausbreitet (`fireSpread`) und innerhalb der Grenzen des Feuers.
+
+**Was Regen und Schnee bewirken**
+
+Regen löscht die Feuer, auf die er fällt, früher oder später (je älter das Feuer, desto früher), und Feuer breitet sich nicht in den Regen aus; Feuer auf einem Magmablock brennt weiter. Er löscht auch brennende Spieler und Wesen und hält Ackerboden unter offenem Himmel nass wie Wasser in der Nähe. Er füllt die Welt nie mit Wasser. Wo es schneit, legt sich nach und nach eine dünne Schneedecke auf die Oberseiten fester Blöcke unter offenem Himmel, nicht unter einem Dach, auf Eis, Glas oder Laub und je Stelle nur eine Schicht. Schnee schmilzt nicht wieder.
+
+**Das Wetter ändern**
+
+`/weather` zeigt das Wetter. Operatoren setzen es mit `/weather clear`, `/weather rain` oder `/weather thunder`, für eine Zahl von Sekunden (`/weather rain 120`) oder so lange, wie der Verlauf der Welt sagt. Mit der Spielregel **weatherCycle** aus (`/gamerule weatherCycle false`) bleibt das Wetter, wie es ist, bis es neu gesetzt wird; die Showcase-Welt beginnt so, mit klarem Himmel.
+
+**Siehe auch**
+
+[Schneeblock](blocks.md#block-qtcraft-snow_block), [Schneeschicht](blocks.md#block-qtcraft-snow_layer), [Eis](blocks.md#block-qtcraft-ice), [Ackerboden](blocks.md#block-qtcraft-farmland), [Feuer](blocks.md#block-qtcraft-fire)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 
@@ -353,7 +379,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Spielregeln**
 
-**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
+**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.
 
 ### <a id="chapter-qtcraft-commands"></a>Befehle
 
@@ -388,7 +414,8 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 **Zeit und Ticks**
 
 - `/time [set day|night|<Sekunden>]`, `/time add <Sekunden>`
-- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)
+- `/gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle> [true|false]`; `/gamerule spawnChunkRadius [0-16]`: die Chunks um den Spawn, die geladen bleiben (0 keine, 1 der Spawn-Chunk, 2 die 3 × 3 darum …)
+- `/weather [clear|rain|thunder] [Sekunden]`: zeigt das Wetter; Operatoren setzen es, für so viele Sekunden oder so lange, wie es dauern würde
 - `/gamemode [survival|creative] [Spieler]`: zeigt oder ändert den Spielmodus, `/defaultgamemode [Modus]`: der Modus neuer Spieler
 - `/tick freeze` und `/tick unfreeze`: die Welt steht still (Tageszeit, Wesen, Flüssigkeiten, Pflanzen, Maschinen, Hunger), Spieler bewegen sich weiter; `/tick step [Ticks]` lässt eine eingefrorene Welt weiterlaufen
 - `/tick rate <1..100>` oder `/tick rate reset` (20 pro Sekunde): wie schnell die Welt läuft

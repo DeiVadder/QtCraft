@@ -7,8 +7,8 @@
 
 #include <memory>
 
-// Draws the debug visualisations (QcDebugLines, decision E-225) as coloured lines in one draw call,
-// depth-tested against the world but not writing depth, after the translucent faces. Each segment
+// Draws coloured line segments in one draw call, depth-tested against the world but not writing
+// depth, in the overlay step: the debug visualisations (QcDebugLines, decision E-225). Each segment
 // becomes a quad three pixels wide (hardware lines are one pixel on Metal, too thin on high
 // resolution screens). Render thread only; costs nothing while there are no lines.
 class QcDebugLineRenderer

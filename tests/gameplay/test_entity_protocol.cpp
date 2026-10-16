@@ -109,7 +109,7 @@ private slots:
         QcMsg::EntitySpawn player = spawn;
         player.kind = QcEntityKind::Player;
         QCOMPARE(roundTrip(player).stand, QcStandPose());
-        QCOMPARE(QcProtocol::version, 37u);
+        QCOMPARE(QcProtocol::version, 38u);
     }
 
     void blockEntitiesCarryTheirBlock()
