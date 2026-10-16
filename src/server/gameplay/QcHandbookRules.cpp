@@ -23,6 +23,7 @@
 #include "QcServer.h"
 #include "QcPlayerHealth.h"
 #include "QcServerPlants.h"
+#include "QcServerTrading.h"
 #include "QcServerWeather.h"
 #include "QcWeatherCycle.h"
 #include "QcWeatherDefinition.h"
@@ -36,6 +37,24 @@ using namespace Qt::StringLiterals;
 namespace QcHandbookRules {
 
 namespace {
+
+// The rules of villages, villagers and trading (decisions E-403, E-411, E-414).
+QMap<QString, double> villageValues()
+{
+    return {
+        {u"village.beds"_s, double(QcServerLimits{}.villageBeds)},
+        {u"village.workstations"_s, double(QcServerLimits{}.villageWorkstations)},
+        {u"villagers.perVillage"_s, double(QcServerLimits{}.villagersPerVillage)},
+        {u"villagers.fleeDistance"_s, QcVillagerSettings{}.fleeDistance},
+        {u"trading.restocksPerDay"_s, double(QcTradingSettings{}.restocksPerDay)},
+        {u"trading.offersPerLevel"_s, double(QcTradingSettings{}.offersPerLevel)},
+        {u"trading.apprentice"_s, double(QcTradingSettings{}.levels.value(1))},
+        {u"trading.journeyman"_s, double(QcTradingSettings{}.levels.value(2))},
+        {u"trading.expert"_s, double(QcTradingSettings{}.levels.value(3))},
+        {u"trading.master"_s, double(QcTradingSettings{}.levels.value(4))},
+        {u"trading.maxRepeats"_s, double(QcServerTrading::maxRepeats)},
+    };
+}
 
 // The rules of the weather (decisions E-395, E-396).
 QMap<QString, double> weatherValues()
@@ -108,10 +127,6 @@ QMap<QString, double> values()
         {u"fire.spreadRadius"_s, double(QcServerLimits{}.fireSpreadRadius)},
         {u"fire.perChunk"_s, double(QcServerLimits{}.firesPerChunk)},
         {u"fire.total"_s, double(QcServerLimits{}.fires)},
-        {u"village.beds"_s, double(QcServerLimits{}.villageBeds)},
-        {u"village.workstations"_s, double(QcServerLimits{}.villageWorkstations)},
-        {u"villagers.perVillage"_s, double(QcServerLimits{}.villagersPerVillage)},
-        {u"villagers.fleeDistance"_s, QcVillagerSettings{}.fleeDistance},
         {u"fire.burnDamage"_s, QcBodyBurning::burnDamage},
         {u"fire.burnInterval"_s, QcBodyBurning::burnIntervalTicks * QcPhysics::tickDuration},
         {u"void.depth"_s, -QcWorld::voidLimitY},
@@ -140,6 +155,7 @@ QMap<QString, double> values()
         {u"commands.maxRemoveRadius"_s, QcWorldCommands::maxRemoveRadius},
     };
     rules.insert(weatherValues());
+    rules.insert(villageValues());
     return rules;
 }
 

@@ -1,0 +1,8 @@
+{
+    "name": "emerald_block",
+    "pattern": "metal_block",
+    "primary": "#1fb850",
+    "secondary": "#9cf5b8",
+    "variation": 0.05,
+    "seed": 7603
+}

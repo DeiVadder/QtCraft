@@ -37,7 +37,9 @@ std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &messag
                            || std::holds_alternative<QcMsg::CloseCrafting>(message)
                            || std::holds_alternative<QcMsg::CloseMachine>(message)
                            || std::holds_alternative<QcMsg::CreativeItem>(message)
-                           || std::holds_alternative<QcMsg::PickBlock>(message);
+                           || std::holds_alternative<QcMsg::PickBlock>(message)
+                           || std::holds_alternative<QcMsg::Trade>(message)
+                           || std::holds_alternative<QcMsg::CloseTrade>(message);
     return inventory ? std::optional<Kind>(Kind::Inventory) : std::nullopt;
 }
 

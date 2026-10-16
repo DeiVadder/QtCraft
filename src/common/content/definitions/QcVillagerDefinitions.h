@@ -1,6 +1,7 @@
 #pragma once
 
 #include "QcAppearanceDefinition.h"
+#include "QcTradeDefinitions.h"
 
 #include <QList>
 #include <QString>
@@ -64,7 +65,7 @@ struct QcVillagerRoutineStep
 
 // The villagers of all villages (villagers.json, decision E-411; server side only): the creature
 // kind they are, their professions, the daily routine, the default look of styles without their
-// own and how they keep away from danger.
+// own, how they keep away from danger and how they trade.
 struct QcVillagerSettings
 {
     static constexpr int maxRoutineSteps = 24;
@@ -81,6 +82,7 @@ struct QcVillagerSettings
     double fleeDistance = 10.0;
     // Villagers go home when it rains in the village (at its meeting point's column).
     bool shelterFromRain = true;
+    QcTradingSettings trading;
 
     const QcVillagerProfession *profession(const QString &name) const
     {

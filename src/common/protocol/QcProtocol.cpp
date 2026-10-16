@@ -45,7 +45,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
     const auto is = [messageIndex]<typename T>() {
         return messageIndex == QcMessage(T{}).index();
     };
-    if (is.template operator()<QcMsg::Disconnect>() || is.template operator()<QcMsg::CloseMachine>()) {
+    if (is.template operator()<QcMsg::Disconnect>() || is.template operator()<QcMsg::CloseMachine>()
+        || is.template operator()<QcMsg::CloseTrade>()) {
         return true;
     }
 
@@ -60,7 +61,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::CloseCrafting>() || is.template operator()<QcMsg::ConsumeItem>()
                                || is.template operator()<QcMsg::DropItem>() || is.template operator()<QcMsg::SetAppearance>()
                                || is.template operator()<QcMsg::DebugSubscribe>() || is.template operator()<QcMsg::LoginResponse>()
-                               || is.template operator()<QcMsg::CreativeItem>() || is.template operator()<QcMsg::PickBlock>();
+                               || is.template operator()<QcMsg::CreativeItem>() || is.template operator()<QcMsg::PickBlock>()
+                               || is.template operator()<QcMsg::Trade>();
     return clientMessage == (sender == Peer::Client);
 }
 

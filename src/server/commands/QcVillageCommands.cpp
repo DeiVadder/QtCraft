@@ -6,6 +6,7 @@
 
 #include <QJsonDocument>
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -25,6 +26,49 @@ void QcVillageCommands::addTo(QcCommandRegistry &registry)
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /village [<x> <z>]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows the state of the nearest village as JSON."),
                          .run = [this](const QcCommandContext &context) { village(context); }});
+    registry.addBuiltIn({.name = u"profession"_s, .needsPlayer = true, .minArguments = 1,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /profession <profession> [level]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Gives the nearest villager a profession and trading level."),
+                         .run = [this](const QcCommandContext &context) { profession(context); }});
+}
+
+void QcVillageCommands::profession(const QcCommandContext &context)
+{
+    const QcVillagerSettings &settings = m_state.content().villagerSettings();
+    const QString name = context.args[0].contains(u':') ? context.args[0] : u"qtcraft:"_s + context.args[0];
+    bool numeric = context.args.size() < 2;
+    const int level = context.args.size() < 2 ? 1 : context.args[1].toInt(&numeric);
+    if (!settings.profession(name) || !numeric || level < 1 || level > QcVillagerRecord::maxLevel || context.args.size() > 2) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /profession <profession> [level]"));
+        return;
+    }
+
+    QcCreature *nearest = nullptr;
+    double best = professionReach;
+    for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
+        const double distance = (mob.motion.position - context.player().motion.position).length();
+        if (m_state.content().mobs()[mob.type].villager && distance <= best) {
+            nearest = &mob;
+            best = distance;
+        }
+    }
+    if (!nearest) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No villager within %1 blocks"), {QString::number(professionReach)});
+        return;
+    }
+
+    // Experience at the level's start (at least 1: a villager with experience keeps its profession
+    // without a workstation), so it levels on from there.
+    const QcTradingSettings &trading = settings.trading;
+    nearest->villager.profession = name;
+    nearest->villager.level = level;
+    nearest->villager.experience = std::max(1, trading.levels.value(level - 1));
+    // Its offers follow at once; an open trading screen shows them with the next tick.
+    nearest->villager.offers.clear();
+    m_state.entities().creatures().villagers().trades().sync(nearest->villager);
+    nearest->villager.lookChanged = true;
+    context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Villager %1 is now %2 of level %3"),
+                  {QString::number(nearest->id), name, QString::number(level)});
 }
 
 std::optional<QcVillageCommands::Found> QcVillageCommands::nearest(QcBlockPos from) const

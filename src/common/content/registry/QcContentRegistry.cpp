@@ -435,6 +435,11 @@ void QcContentRegistry::registerVillageStyle(QcVillageStyleDefinition style)
     registerByName(m_villageStyles, m_villageStyleIndex, std::move(style));
 }
 
+void QcContentRegistry::registerTradeSet(QcTradeSet set)
+{
+    registerByName(m_tradeSets, m_tradeSetIndex, std::move(set));
+}
+
 void QcContentRegistry::registerStructure(QcStructureDefinition structure)
 {
     registerByName(m_structures, m_structureIndex, std::move(structure));

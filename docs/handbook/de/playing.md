@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Kreativmodus](#chapter-qtcraft-creative) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -338,7 +338,7 @@ Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes 
 
 **Berufe**
 
-Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Handel kommt mit einer späteren Version: Bis dahin dreht sich ein Bewohner, den du benutzt, zu dir und grüßt.
+Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).
 
 **Der Tag eines Dorfbewohners**
 
@@ -355,6 +355,44 @@ Dorfbewohner öffnen Holztüren auf ihrem Weg und schließen sie hinter sich; Ei
 **Siehe auch**
 
 [Dorfbewohner](creatures.md#mob-qtcraft-villager), [Bett](blocks.md#block-qtcraft-bed), [Glocke](blocks.md#block-qtcraft-bell), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel), [Eichentür](blocks.md#block-qtcraft-oak_door), [Eisentür](blocks.md#block-qtcraft-iron_door), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop)
+
+### <a id="chapter-qtcraft-trading"></a>Handel
+
+**Das Handelsfenster**
+
+Benutze einen Dorfbewohner mit Beruf, um sein Handelsfenster zu öffnen. Links stehen seine Angebote: was du zahlst, was du bekommst und wie oft er es noch verkauft, bevor er seine Waren auffüllt. Wähle ein Angebot, dann zeigen große Felder Preis und Ergebnis; ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie dein Inventar bezahlt (höchstens 64-mal). Der Preis kommt aus deinem Inventar; was nicht hineinpasst, fällt dir vor die Füße. Solange das Fenster offen ist, steht der Dorfbewohner still und schaut dich an, und nur du kannst mit ihm handeln. Das Fenster schließt, wenn du weggehst, ein Monster näherkommt oder jemand den Dorfbewohner schlägt (er läuft nach Hause); nachts im Bett handeln Dorfbewohner nicht. Dorfbewohner ohne Beruf schauen dich nur an.
+
+**Stufen und Erfahrung**
+
+Jeder Handel gibt dem Dorfbewohner Erfahrung; der grüne Balken unter seinem Namen zeigt den Weg zur nächsten Stufe. Ein Neuling wird mit 10 Erfahrung Lehrling, mit 70 Geselle, mit 150 Experte und mit 250 Meister. Mit jeder Stufe kommen 2 Angebote dieser Stufe hinzu, einmal gewählt und für immer behalten, so dass zwei Dorfbewohner eines Berufs Verschiedenes anbieten können. Auch du bekommst Erfahrung: Jeder Handel lässt ein paar Erfahrungskugeln fallen, mehr bei den Angeboten höherer Stufen.
+
+**Auffüllen und Preise**
+
+Ein Angebot lässt sich nur eine begrenzte Zahl von Malen handeln. In der Arbeitszeit füllt ein Dorfbewohner an seinem Arbeitsplatz alle Angebote auf, bis zu 2-mal am Tag. Ein Angebot, das vor dem Auffüllen ausverkauft war, ist gefragt: Das Erste, was es verlangt, kostet beim nächsten Mal etwas mehr, höchstens das Doppelte des üblichen Preises. Angebote, die nicht ausverkauft waren, werden bei jedem Auffüllen um eine Stufe wieder billiger.
+
+**Der Bauer**
+
+Kauft Weizen, Kartoffeln und Karotten (Neuling), Kürbisse (Lehrling) und Melonen (Geselle) für einen Smaragd. Verkauft Brot, Äpfel, Kürbiskuchen, Ofenkartoffeln, Zucker, Heuballen und Melonenkerne, als Meister auch Pilzsuppe und eine Diamanthacke.
+
+**Der Schmied**
+
+Kauft Kohle und Eisenbarren (Neuling), Goldbarren (Lehrling), Lapislazuli (Geselle) und Diamanten (Experte). Verkauft Eisennuggets, Eisenspitzhacken und -äxte, einen Eisenhelm und einen Eisenbrustpanzer, ein Diamantschwert, als Meister auch eine Diamantspitzhacke und einzelne Diamanten.
+
+**Der Fischer**
+
+Kauft Faden und Kohle (Neuling), Zuckerrohr (Lehrling), Schleimbälle (Geselle) und Leder (Experte). Füllt deinen Eimer für einen Smaragd mit Wasser, verkauft Laternen, gebratenes Hammelfleisch und Glühwürmchen im Glas, als Meister auch Schleimblöcke und Diamantstiefel.
+
+**Smaragde**
+
+Smaragde sind das Geld der Dorfbewohner. Du verdienst sie, indem du Waren verkaufst, oder baust sie ab: Smaragderz liegt selten und in sehr kleinen Adern tief im Stein und braucht eine Eisenspitzhacke oder besser. Neun Smaragde ergeben einen Smaragdblock und zurück.
+
+**Angebote in Mods**
+
+Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab der es angeboten wird, ein oder zwei Preise und ein Ergebnis (Item und Anzahl), wie oft es bis zum nächsten Auffüllen gehandelt werden kann (`maxUses`), die Erfahrung für den Dorfbewohner und für den Spieler und den Preisanstieg bei Nachfrage. Eine Datei mit anderem Namen fügt dem Beruf Angebote hinzu, eine mit dem Namen der Datei eines früheren Pakets ersetzt sie. Die Erfahrung je Stufe, die Zahl der Angebote je Stufe und das Auffüllen pro Tag stehen unter `trading` in `villagers.json`.
+
+**Siehe auch**
+
+[Dorfbewohner](creatures.md#mob-qtcraft-villager), [Smaragd](items.md#item-qtcraft-emerald), [Smaragderz](blocks.md#block-qtcraft-emerald_ore), [Smaragdblock](blocks.md#block-qtcraft-emerald_block), [Komposter](blocks.md#block-qtcraft-composter), [Ofen](blocks.md#block-qtcraft-furnace), [Fass](blocks.md#block-qtcraft-barrel)
 
 ### <a id="chapter-qtcraft-death"></a>Tod und Wiederbeleben
 

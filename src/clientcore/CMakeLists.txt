@@ -31,9 +31,10 @@ qt_add_library(qc_clientcore STATIC
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
     session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
+    session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientLogin.h session/QcClientLogin.cpp
     network/QcNetworkClient.h network/QcNetworkClient.cpp
-    session/QcClientSession.h session/QcClientSession.cpp
+    session/QcClientSession.h session/QcClientSession.cpp session/QcClientSessionScreens.cpp
     session/QcClientVitals.h session/QcClientVitals.cpp
     session/QcClientSounds.h session/QcClientSounds.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
@@ -71,6 +72,7 @@ qt_add_library(qc_clientcore STATIC
     control/QcControlInterface.h control/QcControlInterface.cpp
     control/QcControlInventoryCommands.h control/QcControlInventoryCommands.cpp
     control/QcControlMachineCommands.h control/QcControlMachineCommands.cpp
+    control/QcControlTradeCommands.h control/QcControlTradeCommands.cpp
     control/QcControlMovementCommands.h control/QcControlMovementCommands.cpp
     control/QcControlReports.h control/QcControlReports.cpp
     control/QcControlSessionCommands.h control/QcControlSessionCommands.cpp

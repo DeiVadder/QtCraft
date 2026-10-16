@@ -78,6 +78,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     connect(m_connection.get(), &QcConnection::closed, this, &QcClientSession::onClosed);
     m_gameMode.setSender([this](const QcMessage &message) { m_connection->send(message); });
     m_debug.setSender([this](const QcMessage &message) { m_connection->send(message); });
+    m_trading.setSender([this](const QcMessage &message) { m_connection->send(message); });
 
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setInterval(int(QcPhysics::tickDuration * 1000.0));
@@ -147,7 +148,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
     }
 
     if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
-        && !handleEntityMessage(message) && !handleMachineMessage(message)) {
+        && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }
 }
@@ -272,29 +273,6 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
         m_entities.remove(*removed);
     } else {
         return false;
-    }
-    return true;
-}
-
-bool QcClientSession::handleMachineMessage(const QcMessage &message)
-{
-    const std::optional<QcClientMachineScreen::Change> change = m_machine.handle(message, m_content.get());
-    if (!change) {
-        return false;
-    }
-
-    switch (*change) {
-    case QcClientMachineScreen::Change::Opened:
-        emit machineOpened();
-        break;
-    case QcClientMachineScreen::Change::Changed:
-        emit machineChanged();
-        break;
-    case QcClientMachineScreen::Change::Closed:
-        emit machineClosed();
-        break;
-    case QcClientMachineScreen::Change::None:
-        break;
     }
     return true;
 }
@@ -706,10 +684,13 @@ bool QcClientSession::useItem()
                                  || targetDefinition->containerSlots > 0 || targetDefinition->toggles
                                  || targetDefinition->signal.isUsable());
     // An armour stand takes or gives armour and items, also with an empty hand; a minecart takes the
-    // player in or opens its screen.
+    // player in or opens its screen; a villager opens its trading screen (decision E-414).
     const QcClientEntity targeted = m_targetEntity ? m_entities.all().value(*m_targetEntity) : QcClientEntity();
-    if (m_targetEntity && (targeted.isArmourStand() || targeted.isMinecart())) {
+    const QcMobDefinition *targetedCreature = m_targetEntity ? targeted.creature(*m_content) : nullptr;
+    const bool trades = targetedCreature && targetedCreature->villager && !m_intent.sneak;
+    if (m_targetEntity && (targeted.isArmourStand() || targeted.isMinecart() || trades)) {
         m_machine.usedBlock();
+        m_trading.usedEntity();
         m_connection->send(QcMsg::UseEntity{*m_targetEntity});
         m_useTicks = 0;
         return true;
@@ -745,48 +726,6 @@ bool QcClientSession::useItem()
     m_connection->send(QcMsg::UseItem{m_target->block, m_target->face, {clamp01(hit.x), clamp01(hit.y), clamp01(hit.z)}});
     m_useTicks = 0;
     return true;
-}
-
-void QcClientSession::takeCraftingResult()
-{
-    m_connection->send(QcMsg::TakeCraftingResult{});
-}
-
-void QcClientSession::craftRecipe(const QString &recipe, int count)
-{
-    m_connection->send(QcMsg::CraftRecipe{recipe, count});
-}
-
-void QcClientSession::closeCrafting()
-{
-    m_connection->send(QcMsg::CloseCrafting{});
-}
-
-void QcClientSession::closeMachine()
-{
-    if (!m_machine.closeLocally()) {
-        return;
-    }
-
-    m_connection->send(QcMsg::CloseMachine{});
-    emit machineClosed();
-}
-
-void QcClientSession::selectHotbarSlot(int slot)
-{
-    m_inventory.setSelectedHotbarSlot(slot);
-    m_connection->send(QcMsg::SelectHotbarSlot{m_inventory.selectedHotbarSlot()});
-    emit inventoryChanged();
-}
-
-void QcClientSession::moveInventoryItem(int from, int to, int count)
-{
-    m_connection->send(QcMsg::MoveInventoryItem{from, to, count});
-}
-
-void QcClientSession::quickMoveItem(int slot)
-{
-    m_connection->send(QcMsg::QuickMoveItem{slot});
 }
 
 void QcClientSession::sendChat(const QString &text)

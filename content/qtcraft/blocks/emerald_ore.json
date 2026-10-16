@@ -1,0 +1,19 @@
+{
+    "name": "emerald_ore",
+    "sound": "stone",
+    "hardness": 3.0,
+    "tool": "pickaxe",
+    "toolLevel": 3,
+    "drops": [
+        {
+            "item": "emerald"
+        }
+    ],
+    "experience": [
+        3,
+        7
+    ],
+    "textures": {
+        "all": "emerald_ore"
+    }
+}

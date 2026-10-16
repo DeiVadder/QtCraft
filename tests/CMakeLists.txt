@@ -281,6 +281,8 @@ qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp L
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_trading SOURCES gameplay/test_trading.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_trade_offers SOURCES gameplay/test_trade_offers.cpp LIBRARIES qc_server qc_clientcore)
 qc_add_test(test_villager_walks SOURCES gameplay/test_villager_walks.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.

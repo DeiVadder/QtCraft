@@ -34,7 +34,7 @@ A block that needs a tool drops its items only when mined with that kind of tool
 
 - Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta
 - Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore
-- Level 3 needed for: Block of diamond, Block of gold, Diamond ore, Gold ore, Obsidian
+- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian
 
 [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) (level 1, × 12, 32 uses), [Wooden pickaxe](tools.md#item-qtcraft-wooden_pickaxe) (level 1, × 2, 59 uses), [Stone pickaxe](tools.md#item-qtcraft-stone_pickaxe) (level 2, × 4, 131 uses), [Iron pickaxe](tools.md#item-qtcraft-iron_pickaxe) (level 3, × 6, 250 uses), [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) (level 4, × 8, 1561 uses)
 

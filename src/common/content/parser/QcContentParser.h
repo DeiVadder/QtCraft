@@ -13,6 +13,7 @@
 #include "QcSoundParser.h"
 #include "QcStructureParser.h"
 #include "QcTextureDefinition.h"
+#include "QcTradeParser.h"
 #include "QcVillageParser.h"
 #include "QcVillagerParser.h"
 #include "QcWeatherParser.h"
@@ -51,6 +52,7 @@ using QcWeatherParser::parseWeather;
 using QcVillageParser::parseVillageSettings;
 using QcVillageParser::parseVillageStyle;
 using QcVillagerParser::parseVillagerSettings;
+using QcTradeParser::parseTradeSet;
 
 [[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
 [[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);

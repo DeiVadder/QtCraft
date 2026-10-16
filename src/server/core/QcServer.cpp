@@ -54,6 +54,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
     , m_creatures(m_state, m_sounds, m_health, m_blocks)
+    , m_trading(m_state, m_sounds, m_inventory, m_screens)
     , m_environment(m_state, m_sounds, m_health)
     , m_burning(m_state, m_sounds, m_health)
     , m_lightning(m_state, m_sounds, m_health, m_ignition)
@@ -293,7 +294,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id) && !m_creatures.talk(client, useEntity->id)) {
+        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id) && !m_trading.open(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }
     } else if (std::holds_alternative<QcMsg::Respawn>(message)) {
@@ -337,6 +338,10 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_health.consume(client);
     } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
         m_screens.close(client, false);
+    } else if (const auto *trade = std::get_if<QcMsg::Trade>(&message)) {
+        m_trading.trade(client, *trade);
+    } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
+        m_trading.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
         m_inventory.dropItem(client, *drop);
     } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {
@@ -586,6 +591,7 @@ void QcServer::simulate()
     m_phases.lap(Phase::Minecarts);
     m_machines.tick();
     m_screens.update();
+    m_trading.update();
     m_phases.lap(Phase::Machines);
 }
 

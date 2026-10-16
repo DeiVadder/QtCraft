@@ -49,6 +49,8 @@ private:
     void sendContainer(QcServerClient &client, const OpenContainer &container, bool force);
     // Whether the player can still reach what the screen shows.
     bool canReach(const QcServerClient &client) const;
+    // A block's or cart's screen opening closes the player's trading screen (one screen at a time).
+    void endTrade(QcServerClient &client);
 
     QcServerState &m_state;
 };

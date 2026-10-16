@@ -55,7 +55,7 @@ void QcControlMachineCommands::openMachine(const QJsonObject &request)
 
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(openTicks),
                      [this, startTick, used, pos]() mutable {
-                         if (session().machinePos() == pos) {
+                         if (session().machine().pos() == pos) {
                              return true;
                          }
 
@@ -84,7 +84,7 @@ void QcControlMachineCommands::openMachine(const QJsonObject &request)
 void QcControlMachineCommands::fillMachine(const QJsonObject &request)
 {
     // Moves the first inventory stack of the item into the machine through the normal slot moves.
-    if (!session().machineOpen() || !session().content()) {
+    if (!session().machine().isOpen() || !session().content()) {
         m_context.fail(request, u"No machine is open"_s);
         return;
     }
@@ -116,12 +116,12 @@ void QcControlMachineCommands::fillMachine(const QJsonObject &request)
 
 void QcControlMachineCommands::takeOutput(const QJsonObject &request)
 {
-    if (!session().machineOpen() || !session().content()) {
+    if (!session().machine().isOpen() || !session().content()) {
         m_context.fail(request, u"No machine is open"_s);
         return;
     }
 
-    const QcItemStack output = session().machineSlots().value(2);
+    const QcItemStack output = session().machine().stacks().value(2);
     if (output.isEmpty()) {
         m_context.fail(request, u"The output is empty"_s);
         return;

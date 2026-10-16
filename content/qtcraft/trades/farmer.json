@@ -1,0 +1,239 @@
+{
+    "name": "farmer",
+    "profession": "farmer",
+    "offers": [
+        {
+            "level": 1,
+            "costs": [
+                {
+                    "item": "wheat",
+                    "count": 20
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 16,
+            "villagerExperience": 2,
+            "playerExperience": 1,
+            "demand": 2
+        },
+        {
+            "level": 1,
+            "costs": [
+                {
+                    "item": "potato",
+                    "count": 26
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 16,
+            "villagerExperience": 2,
+            "playerExperience": 1,
+            "demand": 2
+        },
+        {
+            "level": 1,
+            "costs": [
+                {
+                    "item": "carrot",
+                    "count": 22
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 16,
+            "villagerExperience": 2,
+            "playerExperience": 1,
+            "demand": 2
+        },
+        {
+            "level": 1,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "bread",
+                "count": 6
+            },
+            "maxUses": 16,
+            "villagerExperience": 2,
+            "playerExperience": 1
+        },
+        {
+            "level": 2,
+            "costs": [
+                {
+                    "item": "pumpkin",
+                    "count": 6
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 12,
+            "villagerExperience": 10,
+            "playerExperience": 5,
+            "demand": 1
+        },
+        {
+            "level": 2,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "pumpkin_pie",
+                "count": 4
+            },
+            "maxUses": 12,
+            "villagerExperience": 10,
+            "playerExperience": 5
+        },
+        {
+            "level": 2,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "apple",
+                "count": 4
+            },
+            "maxUses": 16,
+            "villagerExperience": 10,
+            "playerExperience": 5
+        },
+        {
+            "level": 3,
+            "costs": [
+                {
+                    "item": "melon",
+                    "count": 4
+                }
+            ],
+            "result": {
+                "item": "emerald",
+                "count": 1
+            },
+            "maxUses": 12,
+            "villagerExperience": 20,
+            "playerExperience": 10,
+            "demand": 1
+        },
+        {
+            "level": 3,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "baked_potato",
+                "count": 6
+            },
+            "maxUses": 12,
+            "villagerExperience": 20,
+            "playerExperience": 10
+        },
+        {
+            "level": 3,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 1
+                }
+            ],
+            "result": {
+                "item": "sugar",
+                "count": 8
+            },
+            "maxUses": 12,
+            "villagerExperience": 20,
+            "playerExperience": 10
+        },
+        {
+            "level": 4,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 2
+                }
+            ],
+            "result": {
+                "item": "hay_block",
+                "count": 1
+            },
+            "maxUses": 12,
+            "villagerExperience": 30,
+            "playerExperience": 15
+        },
+        {
+            "level": 4,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 3
+                },
+                {
+                    "item": "wheat_seeds",
+                    "count": 8
+                }
+            ],
+            "result": {
+                "item": "melon_seeds",
+                "count": 4
+            },
+            "maxUses": 12,
+            "villagerExperience": 30,
+            "playerExperience": 15
+        },
+        {
+            "level": 5,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 6
+                }
+            ],
+            "result": {
+                "item": "diamond_hoe",
+                "count": 1
+            },
+            "maxUses": 3,
+            "villagerExperience": 30,
+            "playerExperience": 30
+        },
+        {
+            "level": 5,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 2
+                }
+            ],
+            "result": {
+                "item": "mushroom_stew",
+                "count": 2
+            },
+            "maxUses": 12,
+            "villagerExperience": 30,
+            "playerExperience": 30
+        }
+    ]
+}

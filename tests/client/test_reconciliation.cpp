@@ -250,14 +250,14 @@ private slots:
         session.start(QcClientSession::TickMode::Manual);
         QTRY_VERIFY_WITH_TIMEOUT(session.state() == QcClientSession::State::Playing, timeoutMs);
         server.send(QcMsg::OpenMachine{{2, 64, 0}, u"smelting"_s});
-        QTRY_VERIFY_WITH_TIMEOUT(session.machineOpen(), timeoutMs);
+        QTRY_VERIFY_WITH_TIMEOUT(session.machine().isOpen(), timeoutMs);
         session.closeMachine();
-        QVERIFY(!session.machineOpen());
+        QVERIFY(!session.machine().isOpen());
 
         // The answer to a second click, sent before the server saw the close.
         server.send(QcMsg::OpenMachine{{2, 64, 0}, u"smelting"_s});
         QTest::qWait(100);
-        QVERIFY(!session.machineOpen());
+        QVERIFY(!session.machine().isOpen());
     }
 };
 

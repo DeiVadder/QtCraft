@@ -3,6 +3,7 @@
 #include "QcContentFields.h"
 #include "QcContentNames.h"
 #include "QcMobParser.h"
+#include "QcTradeParser.h"
 
 #include <QJsonArray>
 
@@ -183,6 +184,7 @@ QcResult<QcVillagerSettings> parseVillagerSettings(const QJsonObject &json, cons
     settings.look = readLook(u"look"_s, packNamespace, reader);
     settings.fleeDistance = reader.number(u"fleeDistance"_s, settings.fleeDistance, 0.0, 32.0);
     settings.shelterFromRain = reader.boolean(u"shelterFromRain"_s, settings.shelterFromRain);
+    settings.trading = QcTradeParser::readTradingSettings(reader);
     if (reader.ok() && (settings.mob.isEmpty() || !settings.look.isSet())) {
         reader.fail(u"needs a 'mob' and a 'look'"_s);
     }

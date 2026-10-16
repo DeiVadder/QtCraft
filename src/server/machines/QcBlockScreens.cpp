@@ -50,6 +50,7 @@ void QcBlockScreens::openCart(QcServerClient &client, const QcMinecart &cart)
     if (cart.stacks.isEmpty()) {
         return;
     }
+    endTrade(client);
     client.screen.open.reset();
     client.screen.cart = cart.id;
     client.screen.sent.reset();
@@ -99,6 +100,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
             return;
         }
 
+        endTrade(client);
         client.screen.open = pos;
         client.screen.sent.reset();
         client.connection->send(QcMsg::OpenMachine{pos, {}});
@@ -117,10 +119,23 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
+    endTrade(client);
     client.screen.open = pos;
     client.screen.sent.reset();
     client.connection->send(QcMsg::OpenMachine{pos, definition->category});
     send(client, true);
+}
+
+void QcBlockScreens::endTrade(QcServerClient &client)
+{
+    if (client.screen.trading == 0) {
+        return;
+    }
+
+    // QcServerTrading::update releases the villager, whose trader no longer trades with it.
+    client.screen.trading = 0;
+    client.screen.sentTrade.reset();
+    client.connection->send(QcMsg::CloseTrade{});
 }
 
 void QcBlockScreens::close(QcServerClient &client, bool notify)

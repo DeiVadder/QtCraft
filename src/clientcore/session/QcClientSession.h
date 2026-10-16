@@ -7,6 +7,7 @@
 #include "QcClientMachineScreen.h"
 #include "QcClientRiding.h"
 #include "QcClientSounds.h"
+#include "QcClientTrading.h"
 #include "QcClientVitals.h"
 #include "QcClientWeather.h"
 #include "QcClientWorld.h"
@@ -109,17 +110,12 @@ public:
     void takeCraftingResult();
     void craftRecipe(const QString &recipe, int count = 1);
     void closeCrafting();
-    // The machine screen the server opened (position, category, slots, progress); see machineOpen().
-    bool machineOpen() const { return m_machine.isOpen(); }
-    [[nodiscard]] std::optional<QcBlockPos> machinePos() const { return m_machine.pos(); }
-    quint32 machineEntity() const { return m_machine.entity(); }
-    QString machineCategory() const { return m_machine.category(); }
-    // The open screen belongs to a storage block (chest) rather than a machine.
-    bool containerOpen() const { return m_machine.isContainer(); }
-    const QList<QcItemStack> &machineSlots() const { return m_machine.stacks(); }
-    double machineBurn() const { return m_machine.burn(); }
-    double machineProgress() const { return m_machine.progress(); }
+    // The machine or chest screen the server opened (position, category, slots, progress).
+    const QcClientMachineScreen &machine() const { return m_machine; }
     void closeMachine();
+    // The trading screen of a villager the server opened, and trading with it (decision E-414).
+    QcClientTrading &trading() { return m_trading; }
+    const QcClientTrading &trading() const { return m_trading; }
     const QList<QcItemStack> &craftingGrid() const { return m_craftingGrid; }
     int craftingSize() const { return m_craftingSize; }
     QcItemStack craftingResult() const { return m_craftingResult; }
@@ -285,6 +281,7 @@ private:
     QcItemId m_lastHeld = qcNoItem;
     std::optional<quint32> m_targetEntity;
     QcClientMachineScreen m_machine;
+    QcClientTrading m_trading;
     QcClientVitals m_vitals;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};

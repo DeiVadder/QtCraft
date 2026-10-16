@@ -57,6 +57,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_library(std::make_unique<QcWorldLibraryController>())
     , m_settings(std::make_unique<QcSettingsController>(m_parts, *m_library, m_audio.get()))
     , m_player(std::make_unique<QcPlayerController>(m_parts, *m_settings))
+    , m_trade(std::make_unique<QcTradeController>(m_parts, *m_settings))
     , m_hud(std::make_unique<QcHudState>(m_parts, *m_settings))
     , m_handbook(std::make_unique<QcHandbookController>(m_parts, *m_settings, *m_library, m_icons))
     , m_input(std::make_unique<QcGameInput>(*this, m_parts, *m_settings, m_audio.get()))
@@ -283,6 +284,9 @@ void QcGameController::setOverlay(const QString &overlay)
         if (m_overlay != u"furnace"_s && m_overlay != u"chest"_s) {
             m_parts.session->closeMachine();
         }
+        if (m_overlay != u"trade"_s) {
+            m_parts.session->trading().close();
+        }
     }
     emit overlayChanged();
     // Opening a screen frees the mouse; closing the last one captures it again without a click.
@@ -505,6 +509,10 @@ void QcGameController::connectSessionPlayer()
     connect(session, &QcClientSession::machineOpened, this, &QcGameController::onMachineOpened);
     connect(session, &QcClientSession::machineChanged, m_player.get(), &QcPlayerController::updateMachine);
     connect(session, &QcClientSession::machineClosed, this, &QcGameController::onMachineClosed);
+    connect(&session->trading(), &QcClientTrading::opened, this, &QcGameController::onTradeOpened);
+    connect(&session->trading(), &QcClientTrading::changed, m_trade.get(), &QcTradeController::update);
+    connect(&session->trading(), &QcClientTrading::closed, this, &QcGameController::onTradeClosed);
+    connect(session, &QcClientSession::inventoryChanged, m_trade.get(), &QcTradeController::update);
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, &QcGameController::onHealthChanged);
     connect(session, &QcClientSession::healthChanged, m_player.get(), &QcPlayerController::healthChanged);
@@ -525,7 +533,7 @@ void QcGameController::onSessionState(QcClientSession::State state)
 void QcGameController::onMachineOpened()
 {
     m_player->nameOpenMachine();
-    setOverlay(m_parts.session->containerOpen() ? u"chest"_s : u"furnace"_s);
+    setOverlay(m_parts.session->machine().isContainer() ? u"chest"_s : u"furnace"_s);
     m_player->updateMachine();
     m_startup->machineOpened();
 }
@@ -536,6 +544,21 @@ void QcGameController::onMachineClosed()
         setOverlay({});
     }
     m_player->updateMachine();
+}
+
+void QcGameController::onTradeOpened()
+{
+    m_trade->reset();
+    setOverlay(u"trade"_s);
+    m_startup->tradeOpened();
+}
+
+void QcGameController::onTradeClosed()
+{
+    if (m_overlay == u"trade"_s) {
+        setOverlay({});
+    }
+    m_trade->update();
 }
 
 void QcGameController::onHealthChanged()

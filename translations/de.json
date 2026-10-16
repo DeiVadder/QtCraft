@@ -619,5 +619,18 @@
     "Usage: /village [<x> <z>]": "Verwendung: /village [<x> <z>]",
     "Shows the state of the nearest village as JSON.": "Zeigt den Zustand des nächsten Dorfs als JSON.",
     "No village within %1 blocks": "Kein Dorf im Umkreis von %1 Blöcken",
-    "Village (%1, %2) at %3 %4 %5, %6 blocks away": "Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt"
+    "Village (%1, %2) at %3 %4 %5, %6 blocks away": "Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt",
+    "Novice": "Neuling",
+    "Apprentice": "Lehrling",
+    "Journeyman": "Geselle",
+    "Expert": "Experte",
+    "Master": "Meister",
+    "sold out": "ausverkauft",
+    "Offers": "Angebote",
+    "%1 – %2": "%1 – %2",
+    "Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.": "Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.",
+    "Usage: /profession <profession> [level]": "Verwendung: /profession <Beruf> [Stufe]",
+    "Gives the nearest villager a profession and trading level.": "Gibt dem nächsten Dorfbewohner einen Beruf und eine Handelsstufe.",
+    "No villager within %1 blocks": "Kein Dorfbewohner im Umkreis von %1 Blöcken",
+    "Villager %1 is now %2 of level %3": "Dorfbewohner %1 ist jetzt %2 der Stufe %3"
 }

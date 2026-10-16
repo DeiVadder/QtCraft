@@ -21,8 +21,6 @@ public:
     QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
 
     void tick();
-    // A player used the creature `id`: a villager turns to them (QcServerVillagers::talk).
-    bool talk(const QcServerClient &client, quint32 id) { return m_villagers.talk(client, id); }
 
 private:
     void playAmbientSounds(double dt);

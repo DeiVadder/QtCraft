@@ -59,10 +59,12 @@ qt_add_library(qc_common STATIC
     content/definitions/QcWeatherDefinition.h
     content/definitions/QcVillageDefinitions.h
     content/definitions/QcVillagerDefinitions.h
+    content/definitions/QcTradeDefinitions.h
     content/parser/QcWeatherParser.h content/parser/QcWeatherParser.cpp
     content/parser/QcVillageLayoutParser.h content/parser/QcVillageLayoutParser.cpp
     content/parser/QcVillageParser.h content/parser/QcVillageParser.cpp
     content/parser/QcVillagerParser.h content/parser/QcVillagerParser.cpp
+    content/parser/QcTradeParser.h content/parser/QcTradeParser.cpp
     content/registry/QcVillagerOutfits.h content/registry/QcVillagerOutfits.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
@@ -119,6 +121,7 @@ qt_add_library(qc_common STATIC
     protocol/QcMessages.h
     protocol/QcEntityMessages.h
     protocol/QcMachineMessages.h
+    protocol/QcTradeMessages.h
     protocol/QcPlayerMessages.h
     protocol/QcSessionMessages.h
     protocol/QcWorldMessages.h
@@ -138,6 +141,7 @@ qt_add_library(qc_common STATIC
     protocol/QcPlayerCodec.cpp
     protocol/QcEntityCodec.cpp
     protocol/QcMachineCodec.cpp
+    protocol/QcTradeCodec.cpp
     protocol/QcLoginMessages.h
     protocol/QcLoginCodec.cpp
     protocol/QcFrameReader.h protocol/QcFrameReader.cpp

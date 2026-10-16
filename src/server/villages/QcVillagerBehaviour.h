@@ -6,6 +6,7 @@
 #include "QcPhysics.h"
 #include "QcVillagerHomes.h"
 #include "QcVillagerRoads.h"
+#include "QcVillagerTrades.h"
 
 #include <QHash>
 #include <QList>
@@ -44,8 +45,6 @@ public:
     // Strolls go this far from home; the meeting gathers within this many cells of the bell.
     static constexpr double strollDistance = 8.0;
     static constexpr int meetCloseEnough = 3;
-    // Seconds a villager stands facing a player who used it (the trading hook, stage 37.2c).
-    static constexpr double talkSeconds = 4.0;
 
     // Something a villager does to the world, carried out by the server (QcServerVillagers).
     struct Action
@@ -83,6 +82,8 @@ public:
     // one it never rains.
     void setRainCheck(std::function<bool(QcBlockPos)> check) { m_rains = std::move(check); }
     QcVillagerRoads &roads() { return m_roads; }
+    // The offers of the villagers (decision E-414); they restock at their workstation during work.
+    const QcVillagerTrades &trades() const { return m_trades; }
 
     // A new tick: the budgets start again.
     void startTick();
@@ -102,6 +103,9 @@ public:
 private:
     // Claims, danger, the activity and the goal.
     void decide(QcCreature &mob, const Context &context);
+    // A villager whose trading screen is open (QcVillager::trader) stands facing the player and
+    // looks out for danger; false (the trade ends) once it must flee or it is time for bed.
+    bool trade(QcCreature &mob, const Context &context);
     // Flees from the nearest hostile creature within fleeDistance (hostiles()).
     void lookOut(QcCreature &mob, const Context &context);
     std::optional<QcVec3> nearestHostile(const QcVec3 &at, const Context &context);
@@ -152,6 +156,7 @@ private:
     QRandomGenerator &m_random;
     QcPathPlanner &m_planner;
     QcVillagerRoads m_roads;
+    QcVillagerTrades m_trades;
     Limits m_limits;
     std::function<bool(QcBlockPos)> m_rains;
     QList<Action> m_actions;

@@ -17,6 +17,7 @@
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:villages",
                 "chapter:qtcraft:villagers",
+                "chapter:qtcraft:trading",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -218,6 +219,8 @@
                 "block:qtcraft:signal_dust",
                 "block:qtcraft:signal_hopper",
                 "block:qtcraft:signal_dropper",
+                "block:qtcraft:emerald_block",
+                "block:qtcraft:emerald_ore",
                 "block:qtcraft:cobweb",
                 "block:qtcraft:stone",
                 "block:qtcraft:stone_pressure_plate",
@@ -365,6 +368,7 @@
                 "item:qtcraft:slimeball",
                 "item:qtcraft:bowl",
                 "item:qtcraft:black_dye",
+                "item:qtcraft:emerald",
                 "item:qtcraft:stick",
                 "item:qtcraft:clay_ball",
                 "item:qtcraft:hopper_minecart",
@@ -506,6 +510,7 @@
                 "feature:qtcraft:red_mushroom",
                 "feature:qtcraft:snow_layer",
                 "ore:qtcraft:signal",
+                "ore:qtcraft:emerald",
                 "ore:qtcraft:cobweb",
                 "ore:qtcraft:coal",
                 "ore:qtcraft:clay_pocket",
@@ -15293,6 +15298,309 @@
             ],
             "text": "Ein festgetretener Weg, etwas niedriger als der Boden daneben. Dörfer legen ihre Nebenwege damit an; eine Schaufel, auf die Oberseite von Gras oder Erde benutzt, macht einen (jeder Weg nutzt die Schaufel etwas ab, im Kreativmodus nicht). Er lässt Erde fallen, eine Hacke macht Ackerboden daraus, und ein fester Block darauf drückt ihn wieder zu Erde zusammen.",
             "title": "Trampelpfad"
+        },
+        "block:qtcraft:emerald_block": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Block of emerald",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald_block"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 3 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "0,94 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Smaragdblock"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:emerald_block",
+            "id": "block:qtcraft:emerald_block",
+            "name": "qtcraft:emerald_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Smaragd"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:emerald_block",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:emerald_block",
+                                "note": "",
+                                "target": "block:qtcraft:emerald_block",
+                                "text": "Smaragdblock"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Smaragd"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Neun Smaragde zu einem Block gepresst; zurückgecraftet gibt er alle neun.",
+            "title": "Smaragdblock"
+        },
+        "block:qtcraft:emerald_ore": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Emerald ore",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald_ore"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 3 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "value": "0,56 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Smaragd"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:emerald_ore",
+            "id": "block:qtcraft:emerald_ore",
+            "name": "qtcraft:emerald_ore",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "y 4–32",
+                            "target": "ore:qtcraft:emerald",
+                            "text": "Smaragderz-Vorkommen"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Kommt vor in"
+                }
+            ],
+            "text": "Grüne Sprenkel in tiefem Stein, selten und in Adern zu ein oder zwei. Braucht eine Spitzhacke der Stufe 3 oder besser und gibt einen Smaragd und etwas Erfahrung.",
+            "title": "Smaragderz"
         },
         "block:qtcraft:farmland": {
             "category": "blocks",
@@ -52974,6 +53282,136 @@
             "text": "",
             "title": "Texturpakete"
         },
+        "chapter:qtcraft:trading": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Trading",
+            "facts": [
+            ],
+            "icon": "qtcraft:emerald",
+            "id": "chapter:qtcraft:trading",
+            "name": "qtcraft:trading",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Benutze einen Dorfbewohner mit Beruf, um sein Handelsfenster zu öffnen. Links stehen seine Angebote: was du zahlst, was du bekommst und wie oft er es noch verkauft, bevor er seine Waren auffüllt. Wähle ein Angebot, dann zeigen große Felder Preis und Ergebnis; ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie dein Inventar bezahlt (höchstens 64-mal). Der Preis kommt aus deinem Inventar; was nicht hineinpasst, fällt dir vor die Füße. Solange das Fenster offen ist, steht der Dorfbewohner still und schaut dich an, und nur du kannst mit ihm handeln. Das Fenster schließt, wenn du weggehst, ein Monster näherkommt oder jemand den Dorfbewohner schlägt (er läuft nach Hause); nachts im Bett handeln Dorfbewohner nicht. Dorfbewohner ohne Beruf schauen dich nur an.",
+                    "title": "Das Handelsfenster"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Jeder Handel gibt dem Dorfbewohner Erfahrung; der grüne Balken unter seinem Namen zeigt den Weg zur nächsten Stufe. Ein Neuling wird mit 10 Erfahrung Lehrling, mit 70 Geselle, mit 150 Experte und mit 250 Meister. Mit jeder Stufe kommen 2 Angebote dieser Stufe hinzu, einmal gewählt und für immer behalten, so dass zwei Dorfbewohner eines Berufs Verschiedenes anbieten können. Auch du bekommst Erfahrung: Jeder Handel lässt ein paar Erfahrungskugeln fallen, mehr bei den Angeboten höherer Stufen.",
+                    "title": "Stufen und Erfahrung"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Ein Angebot lässt sich nur eine begrenzte Zahl von Malen handeln. In der Arbeitszeit füllt ein Dorfbewohner an seinem Arbeitsplatz alle Angebote auf, bis zu 2-mal am Tag. Ein Angebot, das vor dem Auffüllen ausverkauft war, ist gefragt: Das Erste, was es verlangt, kostet beim nächsten Mal etwas mehr, höchstens das Doppelte des üblichen Preises. Angebote, die nicht ausverkauft waren, werden bei jedem Auffüllen um eine Stufe wieder billiger.",
+                    "title": "Auffüllen und Preise"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Kauft Weizen, Kartoffeln und Karotten (Neuling), Kürbisse (Lehrling) und Melonen (Geselle) für einen Smaragd. Verkauft Brot, Äpfel, Kürbiskuchen, Ofenkartoffeln, Zucker, Heuballen und Melonenkerne, als Meister auch Pilzsuppe und eine Diamanthacke.",
+                    "title": "Der Bauer"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Kauft Kohle und Eisenbarren (Neuling), Goldbarren (Lehrling), Lapislazuli (Geselle) und Diamanten (Experte). Verkauft Eisennuggets, Eisenspitzhacken und -äxte, einen Eisenhelm und einen Eisenbrustpanzer, ein Diamantschwert, als Meister auch eine Diamantspitzhacke und einzelne Diamanten.",
+                    "title": "Der Schmied"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Kauft Faden und Kohle (Neuling), Zuckerrohr (Lehrling), Schleimbälle (Geselle) und Leder (Experte). Füllt deinen Eimer für einen Smaragd mit Wasser, verkauft Laternen, gebratenes Hammelfleisch und Glühwürmchen im Glas, als Meister auch Schleimblöcke und Diamantstiefel.",
+                    "title": "Der Fischer"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Smaragde sind das Geld der Dorfbewohner. Du verdienst sie, indem du Waren verkaufst, oder baust sie ab: Smaragderz liegt selten und in sehr kleinen Adern tief im Stein und braucht eine Eisenspitzhacke oder besser. Neun Smaragde ergeben einen Smaragdblock und zurück.",
+                    "title": "Smaragde"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab der es angeboten wird, ein oder zwei Preise und ein Ergebnis (Item und Anzahl), wie oft es bis zum nächsten Auffüllen gehandelt werden kann (`maxUses`), die Erfahrung für den Dorfbewohner und für den Spieler und den Preisanstieg bei Nachfrage. Eine Datei mit anderem Namen fügt dem Beruf Angebote hinzu, eine mit dem Namen der Datei eines früheren Pakets ersetzt sie. Die Erfahrung je Stufe, die Zahl der Angebote je Stufe und das Auffüllen pro Tag stehen unter `trading` in `villagers.json`.",
+                    "title": "Angebote in Mods"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:villager",
+                            "text": "Dorfbewohner"
+                        },
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Smaragd"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Smaragderz"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Smaragdblock"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Komposter"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Ofen"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Fass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Handel"
+        },
         "chapter:qtcraft:villagers": {
             "category": "playing",
             "categoryTitle": "Spielen",
@@ -52999,7 +53437,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Handel kommt mit einer späteren Version: Bis dahin dreht sich ein Bewohner, den du benutzt, zu dir und grüßt.",
+                    "text": "Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt dessen Beruf an: Der Komposter macht einen Bauern (Schürze und Strohhut), der Ofen einen Schmied (Lederschürze) und das Fass einen Fischer (Ölzeugweste und Südwester). Jeder Arbeitsplatz gehört einem Bewohner. Bauern ernten die reifen Früchte der Dorffelder um ihren Komposter und pflanzen sie gleich wieder; die Ernte bleibt im Dorf (es fallen keine Gegenstände). Wer seinen Arbeitsplatz verliert, bevor er je gehandelt hat, ist wieder ohne Beruf. Dorfbewohner mit Beruf handeln mit dir (siehe das Kapitel zum Handel).",
                     "title": "Berufe"
                 },
                 {
@@ -58852,6 +59290,18 @@
                             "text": "Signalerz"
                         },
                         {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Smaragdblock"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Smaragderz"
+                        },
+                        {
                             "icon": "qtcraft:stone",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:stone",
@@ -59184,6 +59634,97 @@
             ],
             "text": "Eine Waffe: richtet mehr Schaden an Wesen an.",
             "title": "Diamantschwert"
+        },
+        "item:qtcraft:emerald": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Emerald",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:emerald",
+            "id": "item:qtcraft:emerald",
+            "name": "qtcraft:emerald",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:emerald_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:emerald_block",
+                                    "text": "Smaragdblock"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:emerald_from_emerald_block",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:emerald",
+                                "note": "",
+                                "target": "item:qtcraft:emerald",
+                                "text": "Smaragd"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Smaragdblock"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Smaragderz"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden für das, was sie kaufen, und verlangen sie für das, was sie verkaufen.",
+            "title": "Smaragd"
         },
         "item:qtcraft:fired_lamp_shell": {
             "category": "items",
@@ -63437,6 +63978,18 @@
                             "note": "Stufe 2",
                             "target": "block:qtcraft:signal_ore",
                             "text": "Signalerz"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Smaragdblock"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "Stufe 3",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Smaragderz"
                         },
                         {
                             "icon": "qtcraft:stone",
@@ -71153,6 +71706,64 @@
             "text": "",
             "title": "Erde-Vorkommen"
         },
+        "ore:qtcraft:emerald": {
+            "category": "worldgen",
+            "categoryTitle": "Weltgenerierung",
+            "englishTitle": "Emerald ore veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Smaragderz"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Ersetzt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Höhen",
+                    "links": [
+                    ],
+                    "value": "y 4–32"
+                },
+                {
+                    "label": "Adern",
+                    "links": [
+                    ],
+                    "value": "1 pro Chunk, je bis 2 Blöcke"
+                }
+            ],
+            "icon": "qtcraft:emerald_ore",
+            "id": "ore:qtcraft:emerald",
+            "name": "qtcraft:emerald",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Smaragderz-Vorkommen"
+        },
         "ore:qtcraft:gold": {
             "category": "worldgen",
             "categoryTitle": "Weltgenerierung",
@@ -72916,7 +73527,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian",
+                    "text": "- Stufe 1 nötig für: Blaue Terrakotta, Blauer Beton, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe Terrakotta, Gelber Beton, Geschnittener Sandstein, Glatter Sandstein, Glattstein, Graue Terrakotta, Grauer Beton, Grüne Terrakotta, Grüner Beton, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne Terrakotta, Hellgrüner Beton, Kohleblock, Lehmziegel, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Ofen, Orangefarbene Terrakotta, Orangefarbener Beton, Rosafarbene Terrakotta, Rosafarbener Beton, Rote Terrakotta, Roter Beton, Sandstein, Schwarze Terrakotta, Schwarzer Beton, Stein, Steinkohle, Steinziegel, Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette Terrakotta, Violetter Beton, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Lapislazuliblock, Lapislazulierz, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Smaragdblock, Smaragderz",
                     "title": "Spitzhacke"
                 },
                 {
@@ -73796,6 +74407,12 @@
                             "note": "y 2–16",
                             "target": "ore:qtcraft:signal",
                             "text": "Signalerz-Vorkommen"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "y 4–32",
+                            "target": "ore:qtcraft:emerald",
+                            "text": "Smaragderz-Vorkommen"
                         },
                         {
                             "icon": "qtcraft:cobweb",

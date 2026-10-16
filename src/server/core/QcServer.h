@@ -37,6 +37,7 @@
 #include "QcServerPlants.h"
 #include "QcServerSounds.h"
 #include "QcServerStands.h"
+#include "QcServerTrading.h"
 #include "QcServerState.h"
 #include "QcTickControl.h"
 #include "QcTickPhaseTimer.h"
@@ -268,6 +269,7 @@ private:
     QcServerExperience m_experience;
     QcServerCombat m_combat;
     QcServerCreatures m_creatures;
+    QcServerTrading m_trading;
     QcEnvironmentDamage m_environment;
     QcBodyBurning m_burning;
     QcLightningStrike m_lightning;

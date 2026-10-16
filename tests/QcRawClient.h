@@ -91,6 +91,11 @@ public:
         } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
             openMachine.reset();
             machineClosed = true;
+        } else if (const auto *trading = std::get_if<QcMsg::TradeState>(&message)) {
+            trade = *trading;
+        } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
+            trade.reset();
+            tradeClosed = true;
         } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
             disconnectReason = disconnect->reason;
             disconnectKey = disconnect->key;
@@ -198,6 +203,9 @@ public:
     // The game mode the server reported last (decision E-282); empty before the first.
     std::optional<QcGameMode> gameMode;
     std::optional<QcBlockPos> openMachine;
+    // The open trading screen (decision E-414) and whether the server closed one.
+    std::optional<QcMsg::TradeState> trade;
+    bool tradeClosed = false;
     // The container minecart of the open screen, 0 for a block.
     quint32 openMachineEntity = 0;
     QString machineCategory;

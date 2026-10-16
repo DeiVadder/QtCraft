@@ -168,13 +168,13 @@ QJsonObject QcControlReports::inventoryJson() const
 
 QJsonObject QcControlReports::machineJson() const
 {
-    const std::optional<QcBlockPos> pos = m_session.machinePos();
+    const std::optional<QcBlockPos> pos = m_session.machine().pos();
     if (!pos) {
         return {{u"open"_s, false}};
     }
 
-    const QList<QcItemStack> &stacks = m_session.machineSlots();
-    if (m_session.containerOpen()) {
+    const QList<QcItemStack> &stacks = m_session.machine().stacks();
+    if (m_session.machine().isContainer()) {
         QJsonArray slotList;
         for (const QcItemStack &stack : stacks) {
             slotList.append(stackJson(stack));
@@ -184,12 +184,12 @@ QJsonObject QcControlReports::machineJson() const
 
     return {{u"open"_s, true},
             {u"position"_s, QJsonArray{pos->x, pos->y, pos->z}},
-            {u"category"_s, m_session.machineCategory()},
+            {u"category"_s, m_session.machine().category()},
             {u"input"_s, stackJson(stacks.value(0))},
             {u"fuel"_s, stackJson(stacks.value(1))},
             {u"output"_s, stackJson(stacks.value(2))},
-            {u"burn"_s, m_session.machineBurn()},
-            {u"progress"_s, m_session.machineProgress()}};
+            {u"burn"_s, m_session.machine().burn()},
+            {u"progress"_s, m_session.machine().progress()}};
 }
 
 QJsonObject QcControlReports::soundsJson() const

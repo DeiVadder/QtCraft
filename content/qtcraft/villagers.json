@@ -75,6 +75,18 @@
     ],
     "fleeDistance": 10,
     "shelterFromRain": true,
+    "trading": {
+        "levels": [
+            0,
+            10,
+            70,
+            150,
+            250
+        ],
+        "offersPerLevel": 2,
+        "restocksPerDay": 2,
+        "restockGap": 0.1
+    },
     "look": {
         "outfit": "villager_tunic",
         "hair": [

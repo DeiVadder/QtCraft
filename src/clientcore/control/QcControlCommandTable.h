@@ -5,6 +5,7 @@
 #include "QcControlMachineCommands.h"
 #include "QcControlMovementCommands.h"
 #include "QcControlSessionCommands.h"
+#include "QcControlTradeCommands.h"
 #include "QcControlWorldCommands.h"
 
 #include <QHash>
@@ -37,4 +38,5 @@ private:
     QcControlEntityCommands m_entities;
     QcControlInventoryCommands m_inventory;
     QcControlMachineCommands m_machines;
+    QcControlTradeCommands m_trades;
 };

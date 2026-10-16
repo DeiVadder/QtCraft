@@ -1,0 +1,8 @@
+{
+    "name": "emerald",
+    "pattern": "gem",
+    "primary": "#17b04a",
+    "secondary": "#6ef09a",
+    "variation": 0.08,
+    "seed": 7601
+}

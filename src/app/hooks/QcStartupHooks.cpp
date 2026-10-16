@@ -132,7 +132,7 @@ void QcStartupHooks::sendStartupChat()
 
 void QcStartupHooks::openStartupOverlay()
 {
-    if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s) {
+    if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s) {
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
         m_game.handbook()->open(m_startupHandbook);
@@ -270,6 +270,15 @@ void QcStartupHooks::openPopup(const QString &objectName) const
     QMetaObject::invokeMethod(popup ? popup : control, "open");
 }
 
+void QcStartupHooks::tradeOpened()
+{
+    if (!m_fillMachineOnOpen) {
+        return;
+    }
+    m_fillMachineOnOpen = false;
+    QTimer::singleShot(1000, this, [this] { releaseScreenshot(); });
+}
+
 void QcStartupHooks::machineOpened()
 {
     if (!m_fillMachineOnOpen) {
@@ -278,7 +287,7 @@ void QcStartupHooks::machineOpened()
 
     m_fillMachineOnOpen = false;
     QcClientSession &session = *m_parts.session;
-    if (session.containerOpen()) {
+    if (session.machine().isContainer()) {
         for (int slot = 0; slot < 9; ++slot) {
             session.moveInventoryItem(slot, QcMsg::MoveInventoryItem::machineInputSlot + slot);
         }

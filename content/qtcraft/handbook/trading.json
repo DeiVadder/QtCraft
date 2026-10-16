@@ -1,0 +1,24 @@
+{
+    "name": "trading",
+    "order": 85,
+    "icon": "emerald",
+    "sections": [
+        "screen",
+        "levels",
+        "restock",
+        "farmer",
+        "smith",
+        "fisher",
+        "emeralds",
+        "mods"
+    ],
+    "related": [
+        "villager",
+        "emerald",
+        "emerald_ore",
+        "emerald_block",
+        "composter",
+        "furnace",
+        "barrel"
+    ]
+}

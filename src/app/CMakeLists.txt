@@ -20,6 +20,7 @@ qt_add_executable(qtcraft
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
+    controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcDebugHud.h controllers/QcDebugHud.cpp
     controllers/QcDebugVisuals.h controllers/QcDebugVisuals.cpp
@@ -130,6 +131,7 @@ qt_add_qml_module(qtcraft
         qml/HandbookRecipe.qml
         qml/HandbookLink.qml
         qml/ChestScreen.qml
+        qml/TradeScreen.qml
         qml/CreativeScreen.qml
         qml/Hud.qml
         qml/InventoryScreen.qml

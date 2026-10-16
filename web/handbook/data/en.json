@@ -17,6 +17,7 @@
                 "chapter:qtcraft:weather",
                 "chapter:qtcraft:villages",
                 "chapter:qtcraft:villagers",
+                "chapter:qtcraft:trading",
                 "chapter:qtcraft:death",
                 "chapter:qtcraft:experience",
                 "chapter:qtcraft:creatures",
@@ -53,6 +54,7 @@
                 "block:qtcraft:black_wool",
                 "block:qtcraft:coal_block",
                 "block:qtcraft:diamond_block",
+                "block:qtcraft:emerald_block",
                 "block:qtcraft:gold_block",
                 "block:qtcraft:iron_block",
                 "block:qtcraft:lapis_block",
@@ -96,6 +98,7 @@
                 "block:qtcraft:diamond_ore",
                 "block:qtcraft:dirt",
                 "block:qtcraft:dirt_path",
+                "block:qtcraft:emerald_ore",
                 "block:qtcraft:farmland",
                 "block:qtcraft:fern",
                 "block:qtcraft:fire",
@@ -339,6 +342,7 @@
                 "item:qtcraft:coal_chunk",
                 "item:qtcraft:cyan_dye",
                 "item:qtcraft:diamond",
+                "item:qtcraft:emerald",
                 "item:qtcraft:fired_lamp_shell",
                 "item:qtcraft:firefly_bottle",
                 "item:qtcraft:flint",
@@ -492,6 +496,7 @@
                 "feature:qtcraft:dead_bush",
                 "ore:qtcraft:diamond",
                 "ore:qtcraft:dirt_pocket",
+                "ore:qtcraft:emerald",
                 "feature:qtcraft:fern",
                 "ore:qtcraft:gold",
                 "ore:qtcraft:gravel_pocket",
@@ -15293,6 +15298,309 @@
             ],
             "text": "A trodden path, a little lower than the ground beside it. Villages lay their side roads with it; a shovel used on the top of grass or dirt makes one (each path wears the shovel a little, not in creative mode). It drops dirt, a hoe turns it into farmland, and a solid block placed on it presses it back into dirt.",
             "title": "Dirt path"
+        },
+        "block:qtcraft:emerald_block": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Block of emerald",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald_block"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 3 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.94 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:emerald_block",
+            "id": "block:qtcraft:emerald_block",
+            "name": "qtcraft:emerald_block",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                },
+                                {
+                                    "icon": "qtcraft:emerald",
+                                    "note": "",
+                                    "target": "item:qtcraft:emerald",
+                                    "text": "Emerald"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:emerald_block",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:emerald_block",
+                                "note": "",
+                                "target": "block:qtcraft:emerald_block",
+                                "text": "Block of emerald"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Emerald"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Nine emeralds packed into a block; crafting it back gives all nine.",
+            "title": "Block of emerald"
+        },
+        "block:qtcraft:emerald_ore": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Emerald ore",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald_ore"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "15 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 3 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "value": "0.56 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Emerald"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:emerald_ore",
+            "id": "block:qtcraft:emerald_ore",
+            "name": "qtcraft:emerald_ore",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "y 4–32",
+                            "target": "ore:qtcraft:emerald",
+                            "text": "Emerald ore veins"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Found in"
+                }
+            ],
+            "text": "Green specks in deep stone, rare and in veins of one or two. Needs a pickaxe of level 3 or better and gives an emerald and some experience.",
+            "title": "Emerald ore"
         },
         "block:qtcraft:farmland": {
             "category": "blocks",
@@ -52974,6 +53282,136 @@
             "text": "",
             "title": "Texture packs"
         },
+        "chapter:qtcraft:trading": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Trading",
+            "facts": [
+            ],
+            "icon": "qtcraft:emerald",
+            "id": "chapter:qtcraft:trading",
+            "name": "qtcraft:trading",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Use a villager with a profession to open its trading screen. On the left it lists its offers: what you pay, what you get and how often it can still sell before it restocks. Pick an offer and its costs and result show in large slots; a click on the result trades once, a shift-click as often as your inventory pays (at most 64 times). The price comes out of your inventory; what does not fit into it falls at your feet. While the screen is open the villager stands and faces you, and only you can trade with it. The screen closes when you walk away, when a monster comes near or someone hits the villager (it runs home), and at night villagers in bed do not trade. Villagers without a profession only look at you.",
+                    "title": "The trading screen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Every trade gives the villager experience; the green bar under its name shows the way to its next level. A novice becomes an apprentice at 10 experience, a journeyman at 70, an expert at 150 and a master at 250. With each level it adds 2 offers of that level, chosen once and kept for good, so two villagers of one profession can offer different things. You get experience too: every trade drops a few experience orbs, more for the offers of higher levels.",
+                    "title": "Levels and experience"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "An offer can be traded a limited number of times. During work time a villager at its workstation restocks all its offers, up to 2 times a day. An offer that sold out before a restock is in demand: the first thing it asks for costs a little more the next time, at most twice the usual price. Offers that are not sold out get cheaper again by one step at every restock.",
+                    "title": "Restocking and prices"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Buys wheat, potatoes and carrots (novice), pumpkins (apprentice) and melons (journeyman) for an emerald. Sells bread, apples, pumpkin pie, baked potatoes, sugar, hay bales and melon seeds, and as a master mushroom stew and a diamond hoe.",
+                    "title": "The farmer"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Buys coal and iron ingots (novice), gold ingots (apprentice), lapis lazuli (journeyman) and diamonds (expert). Sells iron nuggets, iron pickaxes and axes, an iron helmet and chestplate, a diamond sword, and as a master a diamond pickaxe and single diamonds.",
+                    "title": "The smith"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Buys string and coal (novice), sugar cane (apprentice), slimeballs (journeyman) and leather (expert). Fills your bucket with water for an emerald, sells lanterns, cooked mutton and fireflies in a bottle, and as a master slime blocks and diamond boots.",
+                    "title": "The fisher"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Emeralds are the villagers' money. You earn them by selling goods, or mine them: emerald ore lies rarely and in very small veins deep in the stone and needs an iron pickaxe or better. Nine emeralds make a block of emerald and back.",
+                    "title": "Emeralds"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A file in `trades/` lists offers of one profession: for each the level from which it is offered, one or two costs and a result (item and count), how often it can be traded until the next restock (`maxUses`), the experience for the villager and for the player and the price rise for demand. A file of another name adds offers to the profession; one of the same name as an earlier pack's replaces it. The experience per level, the number of offers per level and the restocks per day are set under `trading` in `villagers.json`.",
+                    "title": "Offers in mods"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:villager",
+                            "text": "Villager"
+                        },
+                        {
+                            "icon": "qtcraft:emerald",
+                            "note": "",
+                            "target": "item:qtcraft:emerald",
+                            "text": "Emerald"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        },
+                        {
+                            "icon": "qtcraft:composter",
+                            "note": "",
+                            "target": "block:qtcraft:composter",
+                            "text": "Composter"
+                        },
+                        {
+                            "icon": "qtcraft:furnace",
+                            "note": "",
+                            "target": "block:qtcraft:furnace",
+                            "text": "Furnace"
+                        },
+                        {
+                            "icon": "qtcraft:barrel",
+                            "note": "",
+                            "target": "block:qtcraft:barrel",
+                            "text": "Barrel"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Trading"
+        },
         "chapter:qtcraft:villagers": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -52999,7 +53437,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Trading comes with a later version: for now a villager you use turns to you and greets you.",
+                    "text": "A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).",
                     "title": "Professions"
                 },
                 {
@@ -58498,6 +58936,12 @@
                             "text": "Block of diamond"
                         },
                         {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "level 3",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        },
+                        {
                             "icon": "qtcraft:gold_block",
                             "note": "level 3",
                             "target": "block:qtcraft:gold_block",
@@ -58622,6 +59066,12 @@
                             "note": "level 3",
                             "target": "block:qtcraft:diamond_ore",
                             "text": "Diamond ore"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "level 3",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -59184,6 +59634,97 @@
             ],
             "text": "A weapon: deals more damage to creatures.",
             "title": "Diamond sword"
+        },
+        "item:qtcraft:emerald": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Emerald",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:emerald",
+            "id": "item:qtcraft:emerald",
+            "name": "qtcraft:emerald",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:emerald_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:emerald_block",
+                                    "text": "Block of emerald"
+                                }
+                            ],
+                            "count": 9,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:emerald_from_emerald_block",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:emerald",
+                                "note": "",
+                                "target": "item:qtcraft:emerald",
+                                "text": "Emerald"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 1
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "A green gem and the money of the villagers: they pay in emeralds for what they buy and ask for them for what they sell.",
+            "title": "Emerald"
         },
         "item:qtcraft:fired_lamp_shell": {
             "category": "items",
@@ -63085,6 +63626,12 @@
                             "text": "Block of diamond"
                         },
                         {
+                            "icon": "qtcraft:emerald_block",
+                            "note": "level 3",
+                            "target": "block:qtcraft:emerald_block",
+                            "text": "Block of emerald"
+                        },
+                        {
                             "icon": "qtcraft:gold_block",
                             "note": "level 3",
                             "target": "block:qtcraft:gold_block",
@@ -63209,6 +63756,12 @@
                             "note": "level 3",
                             "target": "block:qtcraft:diamond_ore",
                             "text": "Diamond ore"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "level 3",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -71153,6 +71706,64 @@
             "text": "",
             "title": "Dirt veins"
         },
+        "ore:qtcraft:emerald": {
+            "category": "worldgen",
+            "categoryTitle": "World generation",
+            "englishTitle": "Emerald ore veins",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:emerald"
+                },
+                {
+                    "label": "Block",
+                    "links": [
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "",
+                            "target": "block:qtcraft:emerald_ore",
+                            "text": "Emerald ore"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Replaces",
+                    "links": [
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Heights",
+                    "links": [
+                    ],
+                    "value": "y 4–32"
+                },
+                {
+                    "label": "Veins",
+                    "links": [
+                    ],
+                    "value": "1 per chunk, up to 2 blocks each"
+                }
+            ],
+            "icon": "qtcraft:emerald_ore",
+            "id": "ore:qtcraft:emerald",
+            "name": "qtcraft:emerald",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "",
+            "title": "Emerald ore veins"
+        },
         "ore:qtcraft:gold": {
             "category": "worldgen",
             "categoryTitle": "World generation",
@@ -72916,7 +73527,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of gold, Diamond ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black terracotta, Block of coal, Blue concrete, Blue terracotta, Bricks, Brown concrete, Brown terracotta, Coal ore, Cobblestone, Cut sandstone, Cyan concrete, Cyan terracotta, Furnace, Gray concrete, Gray terracotta, Green concrete, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue terracotta, Light gray concrete, Light gray terracotta, Lime concrete, Lime terracotta, Magenta concrete, Magenta terracotta, Magma block, Mud bricks, Orange concrete, Orange terracotta, Pink concrete, Pink terracotta, Polished stone, Purple concrete, Purple terracotta, Red concrete, Red terracotta, Sandstone, Smooth sandstone, Stone, Stone bricks, Terracotta, White concrete, White terracotta, Yellow concrete, Yellow terracotta\n- Level 2 needed for: Block of iron, Block of lapis lazuli, Chunk Loader, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {
@@ -73778,6 +74389,12 @@
                             "note": "y 20–100",
                             "target": "ore:qtcraft:dirt_pocket",
                             "text": "Dirt veins"
+                        },
+                        {
+                            "icon": "qtcraft:emerald_ore",
+                            "note": "y 4–32",
+                            "target": "ore:qtcraft:emerald",
+                            "text": "Emerald ore veins"
                         },
                         {
                             "icon": "qtcraft:gold_ore",

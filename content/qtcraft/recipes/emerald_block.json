@@ -1,0 +1,15 @@
+{
+    "name": "emerald_block",
+    "type": "shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": "emerald"
+    },
+    "result": {
+        "item": "emerald_block"
+    }
+}

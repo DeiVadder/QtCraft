@@ -1,0 +1,9 @@
+{
+    "name": "emerald",
+    "replaces": "stone",
+    "block": "emerald_ore",
+    "minY": 4,
+    "maxY": 32,
+    "veinsPerChunk": 1,
+    "veinSize": 2
+}

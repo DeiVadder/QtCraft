@@ -99,6 +99,7 @@ qt_add_library(qc_server STATIC
     gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
     gameplay/QcMobManager.h gameplay/QcMobManager.cpp gameplay/QcMobManagerVillagers.cpp
     gameplay/QcServerVillagers.h gameplay/QcServerVillagers.cpp
+    gameplay/QcServerTrading.h gameplay/QcServerTrading.cpp
     gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
     gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
     gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
@@ -178,6 +179,7 @@ qt_add_library(qc_server STATIC
     villages/QcVillagerHomes.h villages/QcVillagerHomes.cpp
     villages/QcVillagerLooks.h villages/QcVillagerLooks.cpp
     villages/QcVillagerRoads.h villages/QcVillagerRoads.cpp
+    villages/QcVillagerTrades.h villages/QcVillagerTrades.cpp
     worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
     worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
     worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp

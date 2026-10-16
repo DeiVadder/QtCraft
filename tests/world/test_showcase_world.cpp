@@ -6,6 +6,7 @@
 #include "QcRawClient.h"
 #include "QcServer.h"
 #include "QcShowcaseGenerator.h"
+#include "QcVillagerTrades.h"
 #include "QcTestTerrainGenerator.h"
 #include "QcVillagePlan.h"
 #include "QcVillages.h"
@@ -280,10 +281,11 @@ private slots:
     void worldsOfOtherFormatsAreRefused()
     {
         // world.json of format 1 (before the showcase), 2 (before stage 31.1), 3 (before stage
-        // 31.2), 9 (before the villages of stage 37.2) and 10 (before the villagers of stage 37.2b):
+        // 31.2), 9 (before the villages of stage 37.2), 10 (before the villagers of stage 37.2b) and 11
+        // (before the trading of stage 37.2c):
         // a world of an older development version is refused, not converted (decision E-356), and
         // nothing is written.
-        for (const int version : {1, 2, 3, 9, 10}) {
+        for (const int version : {1, 2, 3, 9, 10, 11}) {
             QTemporaryDir directory;
             const QString path = QDir(directory.path()).filePath(u"world.json"_s);
             const QJsonObject old{{u"formatVersion"_s, version}, {u"name"_s, u"Old"_s}, {u"seed"_s, u"42"_s}, {u"worldTime"_s, 1234.5}};
@@ -447,6 +449,37 @@ private slots:
                 QVERIFY2(m_content->block(*server->world().blockAt(field)).crop.isCrop(), qPrintable(plan->style));
             }
         }
+    }
+
+    // The rows serve as the trading station (decision E-414): their villagers take the professions
+    // of the rows' workstations, and farmers, smiths and fishers there all have offers.
+    void villageRowsTrade()
+    {
+        QTemporaryDir directory;
+        std::unique_ptr<QcServer> server = makeServer(directory.path());
+        QVERIFY(server->openWorld());
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = QcShowcaseGenerator(m_content).plan().villages;
+        for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
+            const QcChunkPos low = QcBlockPos{plan->minX, 0, plan->minZ}.chunk();
+            const QcChunkPos high = QcBlockPos{plan->maxX, 0, plan->maxZ}.chunk();
+            for (int x = low.x; x <= high.x; ++x) {
+                for (int z = low.z; z <= high.z; ++z) {
+                    server->world().loadChunk({x, z});
+                }
+            }
+        }
+        for (int tick = 0; tick < 45; ++tick) {
+            server->tick();
+        }
+
+        const QcVillagerTrades &trades = server->mobs().villagers().trades();
+        QSet<QString> trading;
+        for (const QcCreature &mob : server->mobs().mobs()) {
+            if (mob.villager.village != 0 && !trades.offersOf(mob.villager).isEmpty()) {
+                trading.insert(mob.villager.profession);
+            }
+        }
+        QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s}));
     }
 
     void noCreatureSpawnsByItselfWithoutTheRule()

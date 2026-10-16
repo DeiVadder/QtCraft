@@ -100,14 +100,18 @@ struct QcServerClient : QcEntity
         std::optional<QcBlockPos> table;
     };
 
-    // The machine or container whose screen the player has open, and what the client was last told
-    // about it.
+    // The machine, container or villager whose screen the player has open, and what the client was
+    // last told about it.
     struct Screen
     {
         std::optional<QcBlockPos> open;
         // A container minecart (entity id) instead of a block; `open` is unset then.
         quint32 cart = 0;
         std::optional<QcMsg::MachineState> sent;
+        // The villager (entity id) whose trading screen is open (QcServerTrading), 0 for none, and
+        // the screen as last sent.
+        quint32 trading = 0;
+        std::optional<QcMsg::TradeState> sentTrade;
     };
 
     // The block being mined, since which tick and players' time (QcServerClock::playerTimeNs).

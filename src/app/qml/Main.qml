@@ -60,6 +60,12 @@ ApplicationWindow {
         game: game
     }
 
+    TradeScreen {
+        anchors.fill: parent
+        visible: game.phase === GameController.Phase.Playing && game.overlay === "trade"
+        game: game
+    }
+
     PauseMenu {
         anchors.fill: parent
         visible: game.phase === GameController.Phase.Playing

@@ -2,7 +2,6 @@
 
 #include "QcOpeners.h"
 #include "QcServerBlocks.h"
-#include "QcServerCombat.h"
 #include "QcServerSounds.h"
 #include "QcServerState.h"
 
@@ -91,26 +90,4 @@ void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
         farmer->villager.produce = std::min(farmer->villager.produce + 1, QcVillagerRecord::maxProduce);
         farmer->attackedThisTick = true;
     }
-}
-
-bool QcServerVillagers::talk(const QcServerClient &client, quint32 id)
-{
-    QcCreature *mob = m_state.entities().creatures().find(id);
-    if (!mob || !m_state.content().mobs()[mob->type].villager) {
-        return false;
-    }
-    const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-    if ((centre - eye).length() > QcServerCombat::attackReach + definition.width + 1.0) {
-        return false;
-    }
-
-    // Trading comes with stage 37.2c; until then the villager turns to the player and greets them.
-    mob->villager.talk = QcVillagerBehaviour::talkSeconds;
-    mob->villager.talkTowards = client.motion.position;
-    if (!definition.ambientSound.isEmpty()) {
-        m_sounds.play(definition.ambientSound, centre);
-    }
-    return true;
 }

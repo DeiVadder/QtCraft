@@ -1,0 +1,8 @@
+{
+    "name": "emerald_ore",
+    "pattern": "ore",
+    "primary": "#7f7f7f",
+    "secondary": "#22c25a",
+    "variation": 0.08,
+    "seed": 7602
+}

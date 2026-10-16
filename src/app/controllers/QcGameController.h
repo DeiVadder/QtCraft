@@ -8,6 +8,7 @@
 #include "QcModStatus.h"
 #include "QcMultiplayerController.h"
 #include "QcPlayerController.h"
+#include "QcTradeController.h"
 #include "QcPreviewSource.h"
 #include "QcRenderBridge.h"
 #include "QcServerPersistence.h"
@@ -56,6 +57,7 @@ class QcGameController : public QObject
     Q_PROPERTY(QcSettingsController *settings READ settings CONSTANT FINAL)
     Q_PROPERTY(QcWorldLibraryController *library READ library CONSTANT FINAL)
     Q_PROPERTY(QcPlayerController *player READ player CONSTANT FINAL)
+    Q_PROPERTY(QcTradeController *trade READ trade CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
@@ -80,8 +82,9 @@ public:
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world: "" (none), "inventory", "furnace" (an open machine),
-    // "chest", "pause", "settings", "controls" (settings at the key table), "debug" (settings at the
-    // debug options), "texturepacks" (settings at the texture packs), "character" or "chat".
+    // "chest", "trade" (a villager's trading screen), "pause", "settings", "controls" (settings at
+    // the key table), "debug" (settings at the debug options), "texturepacks" (settings at the
+    // texture packs), "character" or "chat".
     QString overlay() const { return m_overlay; }
     void setOverlay(const QString &overlay);
     QString chatStart() const { return m_chatStart; }
@@ -92,6 +95,7 @@ public:
     QcSettingsController *settings() const { return m_settings.get(); }
     QcWorldLibraryController *library() const { return m_library.get(); }
     QcPlayerController *player() const { return m_player.get(); }
+    QcTradeController *trade() const { return m_trade.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
@@ -166,6 +170,8 @@ private:
     void applyAtlas(const std::shared_ptr<const QcTextureAtlas> &atlas);
     void onMachineOpened();
     void onMachineClosed();
+    void onTradeOpened();
+    void onTradeClosed();
     void onHealthChanged();
     // Enabling or disabling a mod changes the outfits on offer and the icons.
     void onContentReset();
@@ -183,6 +189,7 @@ private:
     std::unique_ptr<QcWorldLibraryController> m_library;
     std::unique_ptr<QcSettingsController> m_settings;
     std::unique_ptr<QcPlayerController> m_player;
+    std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcHandbookController> m_handbook;
     std::unique_ptr<QcGameInput> m_input;

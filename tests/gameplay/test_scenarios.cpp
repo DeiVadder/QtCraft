@@ -368,6 +368,56 @@ private slots:
         QCOMPARE(levelled.value(u"experienceForNext"_s).toInt(), 112 + (level - 30) * 9);
     }
 
+    // Trading as a bot plays it (decision E-414): a summoned villager made a smith, its screen
+    // opened, an offer the inventory pays traded, the screen closed.
+    void tradingThroughTheInterface()
+    {
+        const auto chat = [&](const QString &text) { request({{u"cmd"_s, u"chat"_s}, {u"text"_s, text}}); };
+        chat(u"/fill ~-6 ~-1 ~-6 ~6 ~-1 ~6 stone"_s);
+        chat(u"/fill ~-6 ~ ~-6 ~6 ~4 ~6 air"_s);
+        // A glass ring keeps the villager close.
+        chat(u"/fill ~-4 ~ ~-4 ~4 ~1 ~4 glass"_s);
+        chat(u"/fill ~-3 ~ ~-3 ~3 ~1 ~3 air"_s);
+        for (const char *give : {"/give coal 64", "/give iron_ingot 16", "/give emerald 16"}) {
+            chat(QString::fromLatin1(give));
+        }
+        request({{u"cmd"_s, u"look"_s}, {u"yaw"_s, 0}, {u"pitch"_s, 0}});
+        chat(u"/summon villager"_s);
+        chat(u"/profession smith"_s);
+        request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
+
+        qint64 villager = -1;
+        const QJsonArray around = request({{u"cmd"_s, u"entities"_s}, {u"radius"_s, 8}}).value(u"entities"_s).toArray();
+        for (const auto &value : around) {
+            if (value.toObject().value(u"type"_s).toString() == u"qtcraft:villager"_s) {
+                villager = value.toObject().value(u"id"_s).toInteger();
+            }
+        }
+        QVERIFY(villager >= 0);
+
+        const QJsonObject opened = request({{u"cmd"_s, u"openTrade"_s}, {u"entity"_s, villager}});
+        QVERIFY2(opened.value(u"ok"_s).toBool() && opened.value(u"open"_s).toBool(), QJsonDocument(opened).toJson().constData());
+        QCOMPARE(opened.value(u"profession"_s).toString(), u"profession.qtcraft.smith"_s);
+        const QJsonArray offers = opened.value(u"offers"_s).toArray();
+        QCOMPARE(offers.size(), 2);
+
+        const auto affordable = std::ranges::find_if(offers, [](const QJsonValue &offer) { return offer.toObject().value(u"affordable"_s).toBool(); });
+        QVERIFY(affordable != offers.end());
+        const QJsonObject offer = affordable->toObject();
+        const QString result = offer.value(u"result"_s).toObject().value(u"item"_s).toString();
+        const int before = countOf(result);
+        const QJsonObject traded = request({{u"cmd"_s, u"trade"_s}, {u"offer"_s, offer.value(u"index"_s)}});
+        QVERIFY2(traded.value(u"ok"_s).toBool(), QJsonDocument(traded).toJson().constData());
+        const QJsonObject after = traded.value(u"offers"_s).toArray().at(offer.value(u"index"_s).toInt()).toObject();
+        QCOMPARE(after.value(u"uses"_s).toInt(), 1);
+        QCOMPARE(traded.value(u"experience"_s).toInt(), 3);
+        QCOMPARE(countOf(result), before + offer.value(u"result"_s).toObject().value(u"count"_s).toInt());
+
+        const QJsonObject closed = request({{u"cmd"_s, u"closeTrade"_s}});
+        QVERIFY(!closed.value(u"open"_s).toBool());
+        QVERIFY(!request({{u"cmd"_s, u"trades"_s}}).value(u"open"_s).toBool());
+    }
+
     // Farming as a bot plays it (decisions E-289 to E-293): till, plant, let a sped-up day ripen the
     // wheat, harvest, eat, and feed two pigs until a young one appears.
     void farmingThroughTheInterface()

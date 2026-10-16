@@ -68,6 +68,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `lang/` | language | `en.json`, `de.json`, …: translation key → text. The language is the file name; a suffix `.handbook` is left out, so `de.handbook.json` adds German texts as well (other dots stay part of the language). |
 | `handbook/` | handbook chapter | A chapter of the handbook's "Playing" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
+| `trades/` | set of offers of a profession | What villagers of a profession buy and sell (stage 37.2c); see "Trading". |
 | `commands/` | command macro | A chat and console command made of other commands; see below. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 | `structures/` | structure | Buildings from block layers with creatures, armour stands, contents, labels; a `showcase` entry makes it a demo of the showcase world; see below. |
@@ -495,7 +496,41 @@ Villagers (decision E-411) are creatures of a kind with `"villager": true` (a `s
 - `fleeDistance` (0–32): villagers run home from hostile creatures this close; `shelterFromRain`: they go home while it rains at the village's middle.
 - `look`: the default look (an `outfit`, hair styles to choose from, an empty name for none, and lists of `skin`, `hairColor`, `shirt` and `pants` colours as `"#rrggbb"`, at most 16 each). A village style dresses its villagers in its own look with `"villagers": { ... }` in the same form; empty lists take the default look's. Each villager draws one of every list from its own seed. For every look and every profession with `layers` the server registers the joined outfit `<outfit>@<profession>` (not playable), which the clients receive with the other appearances.
 
-The base game has farmers (composter, apron and straw hat), smiths (furnace, leather apron) and fishers (barrel, oilskin vest and hat) and the looks of the plains (tunic), desert (robe and headwrap), taiga (fur coat and hat) and swamp (smock, waders and reed hat). Trading (stage 37.2c) and breeding (stage 37.3) build on a villager's profession, level, experience and produce, which are saved with it.
+The base game has farmers (composter, apron and straw hat), smiths (furnace, leather apron) and fishers (barrel, oilskin vest and hat) and the looks of the plains (tunic), desert (robe and headwrap), taiga (fur coat and hat) and swamp (smock, waders and reed hat). Trading (stage 37.2c, below) and breeding (stage 37.3) build on a villager's profession, level, experience and produce, which are saved with it.
+
+### Trading (stage 37.2c)
+
+A villager with offers opens its trading screen when a player uses it (decision E-414). Its offers come from the files in `trades/`; how villagers level and restock from `trading` in `villagers.json`:
+
+```json
+"trading": { "levels": [0, 10, 70, 150, 250], "offersPerLevel": 2, "restocksPerDay": 2, "restockGap": 0.1 }
+```
+
+- `levels`: the experience a villager needs for each of the five levels (novice, apprentice, journeyman, expert, master), starting at 0 and rising.
+- `offersPerLevel` (1–8): for each level it reached, a villager draws this many offers of that level from its profession's offers (by a stable hash of its look, the level and the offer's id, so it keeps them for good); a level with fewer offers gives all of them. Offers a villager already has stay when a mod adds offers to the level; only an offer that no longer exists is replaced by a new draw.
+- `restocksPerDay` (0–8) and `restockGap` (share of a day): during work time at its workstation a villager whose offers were used restocks them, at most this often a day and this far apart.
+
+A trades file (`trades/<name>.json`) lists offers of one profession:
+
+```json
+{
+    "name": "farmer",
+    "profession": "farmer",
+    "offers": [
+        { "level": 1, "costs": [ { "item": "wheat", "count": 20 } ], "result": { "item": "emerald", "count": 1 },
+          "maxUses": 16, "villagerExperience": 2, "playerExperience": 1, "demand": 2 },
+        { "level": 4, "costs": [ { "item": "emerald", "count": 3 }, { "item": "wheat_seeds", "count": 8 } ],
+          "result": { "item": "melon_seeds", "count": 4 } }
+    ]
+}
+```
+
+- `level` (1–5, default 1): from which level a villager may offer it. `costs` (1 or 2 stacks) are what the player pays, `result` what they get; `count` 1–64 (at most the item's stack size). Items are checked when the server starts: an offer naming an unknown item is left out with a warning.
+- `maxUses` (1–999, default 12): trades until the next restock. `villagerExperience` (default 2) and `playerExperience` (default 1, dropped as orbs) per trade. `demand` (0–64, default 0): an offer sold out at a restock asks for this many more of its first cost for each such restock, at most twice the base count; each restock where it was not sold out takes one step back.
+- `id` (default `<first cost>><result>`, e.g. `qtcraft:wheat>qtcraft:emerald`): unique within the profession; the saved uses and demand of a villager's offers belong to it. A later file with an offer of the same id replaces that offer.
+- A file of the same `name` as an earlier pack's replaces it; a file of another name adds its offers to the profession. The base game's files are `farmer`, `smith` and `fisher`; the unemployed have none.
+
+The base game's currency is the emerald (ore deep in the stone in small veins, item, block). `/profession <profession> [level]` (operators) gives the nearest villager a profession and level, e.g. to try a mod's offers on a summoned villager.
 
 ### Commands (stage 24)
 

@@ -569,12 +569,12 @@
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="102"/>
+        <location filename="../src/app/qml/Main.qml" line="108"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="102"/>
+        <location filename="../src/app/qml/Main.qml" line="108"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1403,14 +1403,14 @@
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="198"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="223"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="199"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="224"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="218"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="227"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="219"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="228"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -1419,68 +1419,68 @@
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="246"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="247"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="246"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="447"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="247"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="451"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="305"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="309"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="335"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="362"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="366"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="379"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="383"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the creatures, items and armour stands saved in it.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sich die Welt ohne die darin gespeicherten Wesen, Gegenstände und Rüstungsständer öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="383"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="387"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open without the contents of the chests and machines saved in it.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sich die Welt ohne die darin gespeicherten Inhalte der Truhen und Maschinen öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="387"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="391"/>
         <source>The file %1 of this world is damaged. Moved out of the world folder, it lets the world open with the chunks saved in it generated anew; their changes are lost.</source>
         <translation>Die Datei %1 dieser Welt ist beschädigt. Aus dem Weltordner verschoben, lässt sie die Welt öffnen, mit den darin gespeicherten Chunks neu erzeugt; ihre Änderungen gehen verloren.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="391"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="395"/>
         <source>The last save of this world broke off and cannot be finished. Removing %1 and every file ending in .next from the world folder lets the world open as it was saved the time before.</source>
         <translation>Das letzte Speichern dieser Welt brach ab und lässt sich nicht beenden. Werden %1 und alle Dateien mit der Endung .next aus dem Weltordner entfernt, öffnet sich die Welt so, wie sie davor gespeichert wurde.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="419"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="423"/>
         <source>Cannot start the world: %1</source>
         <translation>Die Welt kann nicht gestartet werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="431"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="435"/>
         <source>Cannot load the world: it was made by the unknown world type &apos;%1&apos;</source>
         <translation>Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="439"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="443"/>
         <source>It is already open in another QtCraft window or process. Close it there first.</source>
         <translation>Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="441"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="445"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>
@@ -1489,12 +1489,12 @@
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="316"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="320"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="652"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="675"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -2566,22 +2566,22 @@
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="166"/>
+        <location filename="../src/server/core/QcServer.cpp" line="171"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="361"/>
+        <location filename="../src/server/core/QcServer.cpp" line="370"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="391"/>
+        <location filename="../src/server/core/QcServer.cpp" line="400"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="597"/>
+        <location filename="../src/server/core/QcServer.cpp" line="607"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -2606,7 +2606,7 @@
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="612"/>
+        <location filename="../src/server/core/QcServer.cpp" line="622"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -3076,7 +3076,7 @@
     </message>
     <message>
         <location filename="../src/server/login/QcServerLogin.cpp" line="81"/>
-        <location filename="../src/server/core/QcServer.cpp" line="201"/>
+        <location filename="../src/server/core/QcServer.cpp" line="206"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
     </message>
@@ -3268,35 +3268,56 @@
         <translation>%1 hat Erfahrungsstufe %2 und %3 von %4 Punkten bis zur nächsten (%5 Punkte insgesamt)</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="21"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="48"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="22"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="90"/>
         <source>Usage: /locate village</source>
         <translation>Verwendung: /locate village</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="22"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="23"/>
         <source>Finds the nearest village.</source>
         <translation>Findet das nächste Dorf.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="25"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="75"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="26"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="117"/>
         <source>Usage: /village [&lt;x&gt; &lt;z&gt;]</source>
         <translation>Verwendung: /village [&lt;x&gt; &lt;z&gt;]</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="26"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="27"/>
         <source>Shows the state of the nearest village as JSON.</source>
         <translation>Zeigt den Zustand des nächsten Dorfs als JSON.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="54"/>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="81"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="30"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="42"/>
+        <source>Usage: /profession &lt;profession&gt; [level]</source>
+        <translation>Verwendung: /profession &lt;Beruf&gt; [Stufe]</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="31"/>
+        <source>Gives the nearest villager a profession and trading level.</source>
+        <translation>Gibt dem nächsten Dorfbewohner einen Beruf und eine Handelsstufe.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="56"/>
+        <source>No villager within %1 blocks</source>
+        <translation>Kein Dorfbewohner im Umkreis von %1 Blöcken</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="68"/>
+        <source>Villager %1 is now %2 of level %3</source>
+        <translation>Dorfbewohner %1 ist jetzt %2 der Stufe %3</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="96"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="123"/>
         <source>No village within %1 blocks</source>
         <translation>Kein Dorf im Umkreis von %1 Blöcken</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.cpp" line="59"/>
+        <location filename="../src/server/commands/QcVillageCommands.cpp" line="101"/>
         <source>Village (%1, %2) at %3 %4 %5, %6 blocks away</source>
         <translation>Dorf (%1, %2) bei %3 %4 %5, %6 Blöcke entfernt</translation>
     </message>
@@ -3473,6 +3494,34 @@
         <location filename="../src/app/controllers/QcTexturePackController.cpp" line="244"/>
         <source>%1x textures: atlas %2 x %3 pixels with %4 mip levels, %5 MiB, ready in %6 ms</source>
         <translation>Texturen %1x: Atlas %2 × %3 Pixel mit %4 Mip-Stufen, %5 MiB, fertig in %6 ms</translation>
+    </message>
+</context>
+<context>
+    <name>QcTradeController</name>
+    <message>
+        <location filename="../src/app/controllers/QcTradeController.cpp" line="46"/>
+        <source>Novice</source>
+        <translation>Neuling</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcTradeController.cpp" line="48"/>
+        <source>Apprentice</source>
+        <translation>Lehrling</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcTradeController.cpp" line="50"/>
+        <source>Journeyman</source>
+        <translation>Geselle</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcTradeController.cpp" line="52"/>
+        <source>Expert</source>
+        <translation>Experte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcTradeController.cpp" line="54"/>
+        <source>Master</source>
+        <translation>Meister</translation>
     </message>
 </context>
 <context>
@@ -3738,6 +3787,29 @@
         <location filename="../src/app/qml/TexturePacksPage.qml" line="203"/>
         <source>Reload</source>
         <translation>Neu laden</translation>
+    </message>
+</context>
+<context>
+    <name>TradeScreen</name>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="75"/>
+        <source>sold out</source>
+        <translation>ausverkauft</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="101"/>
+        <source>Offers</source>
+        <translation>Angebote</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="125"/>
+        <source>%1 – %2</source>
+        <translation>%1 – %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/TradeScreen.qml" line="199"/>
+        <source>Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.</source>
+        <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
     </message>
 </context>
 </TS>

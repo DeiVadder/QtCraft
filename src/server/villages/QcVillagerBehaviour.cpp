@@ -49,6 +49,7 @@ QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry
     : m_content(std::move(content))
     , m_random(random)
     , m_planner(planner)
+    , m_trades(*m_content)
 {
     const QcContentRegistry &registry = *m_content;
     m_ripe.assign(std::size_t(registry.stateCount()), false);
@@ -104,14 +105,7 @@ bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
 QcPhysics::Steering QcVillagerBehaviour::think(QcCreature &mob, const QcMobDefinition &definition, const Context &context)
 {
     QcVillager &villager = mob.villager;
-    // Danger ends the talk.
-    villager.talk = mob.fleeTimer > 0.0 ? 0.0 : std::max(0.0, villager.talk - context.dt);
-    if (villager.talk > 0.0) {
-        // Stands facing the player who spoke to it.
-        const QcVec3 towards{villager.talkTowards.x - mob.motion.position.x, 0.0, villager.talkTowards.z - mob.motion.position.z};
-        if (towards.length() > 0.0) {
-            mob.yaw = QcMobSteering::yawTowards(towards);
-        }
+    if (villager.trader != 0 && trade(mob, context)) {
         return {{}, definition.walkSpeed};
     }
 
@@ -125,6 +119,32 @@ QcPhysics::Steering QcVillagerBehaviour::think(QcCreature &mob, const QcMobDefin
     const QcPhysics::Steering steering = walk(mob, definition, context);
     arrive(mob, context);
     return steering;
+}
+
+bool QcVillagerBehaviour::trade(QcCreature &mob, const Context &context)
+{
+    QcVillager &villager = mob.villager;
+    // It keeps an eye out for danger at its usual pace; danger, a hit or bedtime ends the trade (the
+    // server closes the screen when the trader is gone).
+    if (--villager.decideIn <= 0) {
+        villager.decideIn = decideTicks;
+        lookOut(mob, context);
+    }
+    const bool bedtime = m_content->villagerSettings().activityAt(QcDayCycle::phase(context.worldTime)) == QcVillagerActivity::Sleep;
+    if (mob.fleeTimer > 0.0 || bedtime) {
+        villager.trader = 0;
+        villager.decideIn = 0;
+        return false;
+    }
+
+    villager.target.reset();
+    villager.leg.reset();
+    mob.path.clear();
+    const QcVec3 towards{villager.traderAt.x - mob.motion.position.x, 0.0, villager.traderAt.z - mob.motion.position.z};
+    if (towards.length() > 0.0) {
+        mob.yaw = QcMobSteering::yawTowards(towards);
+    }
+    return true;
 }
 
 void QcVillagerBehaviour::leave(const QcCreature &mob)
@@ -533,10 +553,13 @@ void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)
             villager.decideIn = std::min(villager.decideIn, 2);
         }
     } else if (target == villager.work) {
-        // At work: facing the workstation.
+        // At work: facing the workstation, restocking its offers when due.
         const QcVec3 towards = centreOf(target) - mob.motion.position;
         if (QcVec3{towards.x, 0.0, towards.z}.length() > 0.1) {
             mob.yaw = QcMobSteering::yawTowards({towards.x, 0.0, towards.z});
+        }
+        if (villager.activity == QcVillagerActivity::Work) {
+            m_trades.restock(villager, context.worldTime);
         }
     }
 }

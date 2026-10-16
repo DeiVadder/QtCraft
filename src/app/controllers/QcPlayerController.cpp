@@ -86,17 +86,17 @@ double QcPlayerController::experienceProgress() const
 
 double QcPlayerController::machineBurn() const
 {
-    return m_parts.session ? m_parts.session->machineBurn() : 0.0;
+    return m_parts.session ? m_parts.session->machine().burn() : 0.0;
 }
 
 int QcPlayerController::containerSlots() const
 {
-    return m_parts.session && m_parts.session->containerOpen() ? int(m_parts.session->machineSlots().size()) : 0;
+    return m_parts.session && m_parts.session->machine().isContainer() ? int(m_parts.session->machine().stacks().size()) : 0;
 }
 
 double QcPlayerController::machineProgress() const
 {
-    return m_parts.session ? m_parts.session->machineProgress() : 0.0;
+    return m_parts.session ? m_parts.session->machine().progress() : 0.0;
 }
 
 int QcPlayerController::craftingSize() const
@@ -194,7 +194,7 @@ void QcPlayerController::updateInventory()
 {
     const QcClientSession &session = *m_parts.session;
     m_inventory->setInventory(session.inventory(), session.craftingGrid(), session.craftingResult(),
-                              session.machineOpen() ? session.machineSlots() : QList<QcItemStack>(), session.equipment());
+                              session.machine().isOpen() ? session.machine().stacks() : QList<QcItemStack>(), session.equipment());
     updateCraftableRecipes();
     emit craftingChanged();
 }
@@ -232,10 +232,10 @@ void QcPlayerController::nameOpenMachine()
 {
     const QcClientSession &session = *m_parts.session;
     const auto content = session.content();
-    const std::optional<QcBlockPos> pos = session.machinePos();
-    if (session.machineEntity() != 0) {
+    const std::optional<QcBlockPos> pos = session.machine().pos();
+    if (session.machine().entity() != 0) {
         // A container cart: named after its item, its rows as long as those of the block it carries.
-        const QcClientEntity cart = session.entities().value(session.machineEntity());
+        const QcClientEntity cart = session.entities().value(session.machine().entity());
         const std::optional<QcBlockId> carried = cart.cartBlock(*content);
         m_machineLabel = content->isValidItem(cart.item.item) ? content->translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
         m_containerColumns = carried ? content->block(*carried).containerColumns : 9;

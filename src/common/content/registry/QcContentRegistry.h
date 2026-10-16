@@ -174,6 +174,9 @@ public:
     // Villagers (decision E-411, server side only): professions, routine, default look.
     void setVillagerSettings(QcVillagerSettings settings) { m_villagerSettings = std::move(settings); }
     const QcVillagerSettings &villagerSettings() const { return m_villagerSettings; }
+    // Offers of the professions (decision E-414, server side only): sets replaced by name.
+    void registerTradeSet(QcTradeSet set);
+    const QList<QcTradeSet> &tradeSets() const { return m_tradeSets; }
 
     // Packs in load order (base game first).
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
@@ -239,6 +242,8 @@ private:
     QcWeatherDefinition m_weather;
     QList<QcVillageStyleDefinition> m_villageStyles;
     QHash<QString, qsizetype> m_villageStyleIndex;
+    QList<QcTradeSet> m_tradeSets;
+    QHash<QString, qsizetype> m_tradeSetIndex;
     QcVillageSettings m_villageSettings;
     QcVillagerSettings m_villagerSettings;
     QList<QcHandbookChapter> m_handbookChapters;

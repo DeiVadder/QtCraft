@@ -51,6 +51,8 @@ public:
     void worldPlaying();
     // --overlay furnace|chest: fills the machine that just opened from the hotbar.
     void machineOpened();
+    // A villager in view opened its trading screen (--overlay trade): the screenshot follows.
+    void tradeOpened();
     // Releases the screenshot once every chunk in view arrived and is meshed.
     void releaseScreenshotWhenLoaded(int viewDistance, bool playing);
 

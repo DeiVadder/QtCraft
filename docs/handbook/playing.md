@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Creative mode](#chapter-qtcraft-creative) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -338,7 +338,7 @@ When the part of a village with a bed is seen for the first time, a villager mov
 
 **Professions**
 
-A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Trading comes with a later version: for now a villager you use turns to you and greets you.
+A villager without work claims a free workstation and takes its profession: the composter makes a farmer (apron and straw hat), the furnace a smith (leather apron) and the barrel a fisher (oilskin vest and hat). Each workstation belongs to one villager. Farmers harvest the ripe crops of the village fields around their composter and plant them again at once; the harvest stays with the village (no items drop). A villager that loses its workstation before it ever traded is out of work again. Villagers with a profession trade with you (see the chapter on trading).
 
 **A villager's day**
 
@@ -355,6 +355,44 @@ Villagers open wooden doors on their way and close them behind them; iron doors 
 **See also**
 
 [Villager](creatures.md#mob-qtcraft-villager), [Bed](blocks.md#block-qtcraft-bed), [Bell](blocks.md#block-qtcraft-bell), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel), [Oak door](blocks.md#block-qtcraft-oak_door), [Iron door](blocks.md#block-qtcraft-iron_door), [Wheat crop](blocks.md#block-qtcraft-wheat_crop)
+
+### <a id="chapter-qtcraft-trading"></a>Trading
+
+**The trading screen**
+
+Use a villager with a profession to open its trading screen. On the left it lists its offers: what you pay, what you get and how often it can still sell before it restocks. Pick an offer and its costs and result show in large slots; a click on the result trades once, a shift-click as often as your inventory pays (at most 64 times). The price comes out of your inventory; what does not fit into it falls at your feet. While the screen is open the villager stands and faces you, and only you can trade with it. The screen closes when you walk away, when a monster comes near or someone hits the villager (it runs home), and at night villagers in bed do not trade. Villagers without a profession only look at you.
+
+**Levels and experience**
+
+Every trade gives the villager experience; the green bar under its name shows the way to its next level. A novice becomes an apprentice at 10 experience, a journeyman at 70, an expert at 150 and a master at 250. With each level it adds 2 offers of that level, chosen once and kept for good, so two villagers of one profession can offer different things. You get experience too: every trade drops a few experience orbs, more for the offers of higher levels.
+
+**Restocking and prices**
+
+An offer can be traded a limited number of times. During work time a villager at its workstation restocks all its offers, up to 2 times a day. An offer that sold out before a restock is in demand: the first thing it asks for costs a little more the next time, at most twice the usual price. Offers that are not sold out get cheaper again by one step at every restock.
+
+**The farmer**
+
+Buys wheat, potatoes and carrots (novice), pumpkins (apprentice) and melons (journeyman) for an emerald. Sells bread, apples, pumpkin pie, baked potatoes, sugar, hay bales and melon seeds, and as a master mushroom stew and a diamond hoe.
+
+**The smith**
+
+Buys coal and iron ingots (novice), gold ingots (apprentice), lapis lazuli (journeyman) and diamonds (expert). Sells iron nuggets, iron pickaxes and axes, an iron helmet and chestplate, a diamond sword, and as a master a diamond pickaxe and single diamonds.
+
+**The fisher**
+
+Buys string and coal (novice), sugar cane (apprentice), slimeballs (journeyman) and leather (expert). Fills your bucket with water for an emerald, sells lanterns, cooked mutton and fireflies in a bottle, and as a master slime blocks and diamond boots.
+
+**Emeralds**
+
+Emeralds are the villagers' money. You earn them by selling goods, or mine them: emerald ore lies rarely and in very small veins deep in the stone and needs an iron pickaxe or better. Nine emeralds make a block of emerald and back.
+
+**Offers in mods**
+
+A file in `trades/` lists offers of one profession: for each the level from which it is offered, one or two costs and a result (item and count), how often it can be traded until the next restock (`maxUses`), the experience for the villager and for the player and the price rise for demand. A file of another name adds offers to the profession; one of the same name as an earlier pack's replaces it. The experience per level, the number of offers per level and the restocks per day are set under `trading` in `villagers.json`.
+
+**See also**
+
+[Villager](creatures.md#mob-qtcraft-villager), [Emerald](items.md#item-qtcraft-emerald), [Emerald ore](blocks.md#block-qtcraft-emerald_ore), [Block of emerald](blocks.md#block-qtcraft-emerald_block), [Composter](blocks.md#block-qtcraft-composter), [Furnace](blocks.md#block-qtcraft-furnace), [Barrel](blocks.md#block-qtcraft-barrel)
 
 ### <a id="chapter-qtcraft-death"></a>Death and respawn
 

@@ -601,14 +601,14 @@ private slots:
         QCOMPARE(village()->population, 0);
     }
 
-    void usingAVillagerTurnsItTowardsThePlayer()
+    void usingAnUnemployedVillagerTurnsItTowardsThePlayer()
     {
+        // Without offers there is no trading screen (decision E-414): it only looks up.
         start(0.1);
         const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
         const quint32 entity = settle(head, centreOf(m_feet.offset(2, 0, 0))).id;
         send(QcMsg::UseEntity{entity});
-        QVERIFY(villager(entity)->villager.talk > 0.0);
-        ticks(1);
+        QCOMPARE(villager(entity)->villager.trader, 0u);
         const QcVec3 towards = m_client->motion.position - villager(entity)->motion.position;
         QCOMPARE(qRound(villager(entity)->yaw), qRound(QcMobSteering::yawTowards({towards.x, 0.0, towards.z})));
     }

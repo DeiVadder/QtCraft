@@ -2,7 +2,7 @@
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
-// QcMachineCodec.cpp, QcDebugCodec.cpp and QcLoginCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp and QcLoginCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "QcMessages.h"
 #include "QcResult.h"
@@ -118,6 +118,14 @@ void encode(QDataStream &stream, QcMsg::PickBlock m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::GameMode>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CreativeItem>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PickBlock>, QDataStream &stream);
+
+// Trading (QcTradeCodec.cpp)
+void encode(QDataStream &stream, const QcMsg::TradeState &m);
+void encode(QDataStream &stream, QcMsg::Trade m);
+void encode(QDataStream &stream, QcMsg::CloseTrade m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::TradeState>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Trade>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseTrade>, QDataStream &stream);
 
 // Entities (QcEntityCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::EntitySpawn &m);

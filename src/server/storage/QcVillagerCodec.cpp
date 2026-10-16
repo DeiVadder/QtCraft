@@ -4,6 +4,7 @@
 
 #include <QtEndian>
 
+#include <cmath>
 #include <cstdlib>
 
 namespace {
@@ -70,6 +71,46 @@ bool readText(QDataStream &stream, QString &text)
     return true;
 }
 
+void writeOffers(QDataStream &stream, const QcVillagerRecord &villager)
+{
+    stream << quint32(villager.offers.size());
+    for (const QcVillagerOffer &offer : villager.offers) {
+        stream << offer.id << qint32(offer.uses) << qint32(offer.demand);
+    }
+    stream << villager.lastRestock << qint32(villager.restocks);
+}
+
+// False for more offers than a villager has, uses or demand out of range or a broken time.
+bool readOffers(QDataStream &stream, QcVillagerRecord &villager)
+{
+    quint32 count = 0;
+    stream >> count;
+    if (stream.status() != QDataStream::Ok || count > quint32(QcVillagerRecord::maxOffers)) {
+        return false;
+    }
+    for (quint32 i = 0; i < count; ++i) {
+        QcVillagerOffer offer;
+        qint32 uses = 0;
+        qint32 demand = 0;
+        if (!readText(stream, offer.id)) {
+            return false;
+        }
+        stream >> uses >> demand;
+        if (uses < 0 || uses > QcTradeOffer::maxUsesLimit || demand < 0 || demand > QcVillagerOffer::maxDemand) {
+            return false;
+        }
+        offer.uses = uses;
+        offer.demand = demand;
+        villager.offers.append(offer);
+    }
+
+    qint32 restocks = 0;
+    stream >> villager.lastRestock >> restocks;
+    villager.restocks = restocks;
+    return std::isfinite(villager.lastRestock) && villager.lastRestock >= -1.0 && villager.lastRestock <= QcVillagerRecord::maxRestockTime
+           && restocks >= 0 && restocks <= 64;
+}
+
 } // namespace
 
 namespace QcVillagerCodec {
@@ -81,6 +122,7 @@ void write(QDataStream &stream, const QcVillagerRecord &villager)
     writeSpot(stream, villager.work);
     stream << villager.profession << qint32(villager.level) << qint32(villager.experience) << villager.look << villager.style
            << qint32(villager.produce);
+    writeOffers(stream, villager);
 }
 
 std::optional<QcVillagerRecord> read(QDataStream &stream)
@@ -103,6 +145,9 @@ std::optional<QcVillagerRecord> read(QDataStream &stream)
         return std::nullopt;
     }
     stream >> produce;
+    if (!readOffers(stream, villager)) {
+        return std::nullopt;
+    }
     if (stream.status() != QDataStream::Ok || !spots || level < 1 || level > QcVillagerRecord::maxLevel || experience < 0
         || experience > QcVillagerRecord::maxExperience || produce < 0 || produce > QcVillagerRecord::maxProduce) {
         return std::nullopt;

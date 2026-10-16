@@ -1866,3 +1866,7 @@ Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur e
 **Absolute Ziele (`docs/Performance.md`):** Kein Tick über 50 ms (headless höchstens 2,07 ms, ein Lauf im Erkundungsflug, sonst 1,67 ms in gravel-collapse). Keine übersprungenen Ticks (headless ohne Echtzeit).
 
 **Offen:** Die gerenderte Messung (`@core` im Fenster plus eine Szene mit Dorf und Bewohnern in Sicht: Vernetzung und Animation der Bewohner, Kleidung, E-413) folgt nach Etappe 37, zusammen mit der von 37.2a, sobald der Mensch Fensterläufe freigibt.
+
+## Etappe 37.2c (Handel) headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `1977abe` gegen den Kandidaten nach den Nachbesserungen (E-414). Tick im Mittel: crowd 0,164 → 0,165 ms (+1 %), explore 0,195 → 0,200 ms (+3 %), farm 0,0070 → 0,0073 ms (+5 %, absolut 0,0003 ms), farm-seeds, gravel-collapse und die drei Signal-Stationen ±2 %; p99 −5 bis +5 %; Spitzenspeicher ±0,6 MB. Keine Regression; der Handel kostet nur, wenn gehandelt wird. Gerenderte Messung (Handelsfenster) nach Etappe 37.

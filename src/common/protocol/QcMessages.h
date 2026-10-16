@@ -9,6 +9,7 @@
 #include "QcMachineMessages.h"
 #include "QcPlayerMessages.h"
 #include "QcSessionMessages.h"
+#include "QcTradeMessages.h"
 #include "QcWorldMessages.h"
 
 #include <variant>
@@ -26,4 +27,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::DebugSubscribe, QcMsg::ServerDebug, QcMsg::LoginChallenge,
                                QcMsg::LoginResponse, QcMsg::PlayerList, QcMsg::GameMode, QcMsg::CreativeItem,
                                QcMsg::PickBlock, QcMsg::Weather, QcMsg::Lightning,
-                               QcMsg::PlayerExperience>;
+                               QcMsg::PlayerExperience, QcMsg::TradeState, QcMsg::Trade, QcMsg::CloseTrade>;
