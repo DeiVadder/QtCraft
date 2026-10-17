@@ -11,6 +11,7 @@
 #include "server/machines/QcBlockScreens.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/mobs/QcServerAnimals.h"
+#include "server/villages/QcVillagerBehaviour.h"
 
 #include <algorithm>
 
@@ -72,13 +73,13 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
 
     // Asleep, on its way to bed, fleeing, trading with another player or a child: it only looks up.
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
-    const bool busy = villager->villager.trader != 0 && villager->villager.trader != client.id;
+    const bool busy = villager->villager->trader != 0 && villager->villager->trader != client.id;
     const QcVillagerSettings &species = m_state.content().villagerSettingsOf(villager->type);
-    const bool bedtime = species.activityAt(QcDayCycle::phase(m_state.info().worldTime), villager->villager.profession) == QcVillagerActivity::Sleep;
-    trades(*villager).sync(villager->villager);
-    if (villager->villager.sleeping || bedtime || villager->fleeTimer > 0.0 || busy || client.dead || villager->isYoung()
-        || villager->villager.offers.isEmpty()) {
-        if (!villager->villager.sleeping) {
+    const bool bedtime = species.activityAt(QcDayCycle::phase(m_state.info().worldTime), villager->villager->profession) == QcVillagerActivity::Sleep;
+    trades(*villager).sync(*villager->villager);
+    if (villager->pose == QcPose::Lying || bedtime || villager->fleeTimer > 0.0 || busy || client.dead || villager->isYoung()
+        || villager->villager->offers.isEmpty()) {
+        if (villager->pose != QcPose::Lying) {
             villager->yaw = QcMobSteering::yawTowards(client.motion.position - villager->motion.position);
         }
         if (!definition.ambientSound.isEmpty()) {
@@ -89,8 +90,8 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
 
     close(client, false);
     m_screens.close(client, true);
-    villager->villager.trader = client.id;
-    villager->villager.traderAt = client.motion.position;
+    villager->villager->trader = client.id;
+    villager->villager->traderAt = client.motion.position;
     client.screen.trading = id;
     m_trading.insert(id);
     send(client, *villager, true);
@@ -100,7 +101,7 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
 QcCreature *QcServerTrading::partnerOf(const QcServerClient &client)
 {
     QcCreature *villager = client.screen.trading != 0 ? m_state.entities().creatures().find(client.screen.trading) : nullptr;
-    if (!villager || villager->villager.trader != client.id || villager->villager.sleeping || villager->dormant || villager->health <= 0.0) {
+    if (!villager || villager->villager->trader != client.id || villager->pose == QcPose::Lying || villager->dormant || villager->health <= 0.0) {
         return nullptr;
     }
     return villager;
@@ -113,15 +114,15 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
         return;
     }
     // The saved state follows the offers first (a command may have changed the profession).
-    trades(*villager).sync(villager->villager);
-    const QList<const QcVillagerTrades::Offer *> offers = trades(*villager).offersOf(villager->villager);
+    trades(*villager).sync(*villager->villager);
+    const QList<const QcVillagerTrades::Offer *> offers = trades(*villager).offersOf(*villager->villager);
     if (message.offer >= offers.size()) {
         send(client, *villager, true);
         return;
     }
 
     const QcVillagerTrades::Offer offer = *offers[message.offer];
-    const int levelBefore = villager->villager.level;
+    const int levelBefore = villager->villager->level;
     int traded = 0;
     while (traded < (message.repeat ? maxRepeats : 1) && tradeOnce(client, *villager, offer, message.offer)) {
         ++traded;
@@ -133,8 +134,8 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
 
     hand(client, *villager, offer, traded);
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
-    if (villager->villager.level > levelBefore) {
-        trades(*villager).sync(villager->villager);
+    if (villager->villager->level > levelBefore) {
+        trades(*villager).sync(*villager->villager);
         m_sounds.play(QString::fromLatin1(QcSoundKeys::levelUp), centreOf(*villager, definition));
     } else if (!definition.ambientSound.isEmpty()) {
         m_sounds.play(definition.ambientSound, centreOf(*villager, definition));
@@ -145,7 +146,7 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
 
 bool QcServerTrading::tradeOnce(QcServerClient &client, QcCreature &villager, const QcVillagerTrades::Offer &offer, qsizetype index)
 {
-    QcVillager &record = villager.villager;
+    QcVillager &record = *villager.villager;
     if (index >= record.offers.size() || record.offers[index].id != offer.definition.id) {
         return false;
     }
@@ -183,9 +184,9 @@ void QcServerTrading::close(QcServerClient &client, bool notify)
         return;
     }
 
-    if (QcCreature *villager = m_state.entities().creatures().find(client.screen.trading); villager && villager->villager.trader == client.id) {
-        villager->villager.trader = 0;
-        villager->villager.decideIn = 0;
+    if (QcCreature *villager = m_state.entities().creatures().find(client.screen.trading); villager && villager->villager->trader == client.id) {
+        villager->villager->trader = 0;
+        villager->villager->decideIn = 0;
     }
     m_trading.remove(client.screen.trading);
     client.screen.trading = 0;
@@ -211,7 +212,7 @@ void QcServerTrading::update()
             close(*client, true);
             continue;
         }
-        villager->villager.traderAt = client->motion.position;
+        villager->villager->traderAt = client->motion.position;
         traded.insert(villager->id);
         send(*client, *villager, false);
     }
@@ -220,7 +221,7 @@ void QcServerTrading::update()
     for (const quint32 id : std::as_const(m_trading)) {
         QcCreature *villager = traded.contains(id) ? nullptr : m_state.entities().creatures().find(id);
         if (villager) {
-            villager->villager.trader = 0;
+            villager->villager->trader = 0;
         }
     }
     m_trading = std::move(traded);
@@ -228,7 +229,7 @@ void QcServerTrading::update()
 
 QcMsg::TradeState QcServerTrading::stateOf(const QcCreature &villager) const
 {
-    const QcVillager &record = villager.villager;
+    const QcVillager &record = *villager.villager;
     const QcVillagerProfession *profession = m_state.content().profession(record.profession);
     const auto [start, end] = trades(villager).levelRange(record.level);
     QcMsg::TradeState state{villager.id, profession ? profession->translationKey : QString(), record.level, record.experience, start, end, {}};

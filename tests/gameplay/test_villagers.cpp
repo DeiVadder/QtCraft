@@ -119,7 +119,7 @@ private:
         const quint32 entity = m_server->entities().newId();
         m_server->mobs().spawn(villagerType(), at, entity);
         QcCreature *mob = m_server->mobs().find(entity);
-        mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), look);
+        *mob->villager = QcVillagerHomes::settle(*village(), head, mob->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), look);
         return *mob;
     }
 
@@ -183,20 +183,20 @@ private slots:
         m_server->world().setBlock(composter, id("qtcraft:composter"));
         const quint32 first = settle(head, centreOf(m_feet.offset(5, 0, 0))).id;
         const quint32 second = settle(head, centreOf(m_feet.offset(5, 0, -1))).id;
-        QCOMPARE(villager(first)->villager.profession, u"qtcraft:unemployed"_s);
+        QCOMPARE(villager(first)->villager->profession, u"qtcraft:unemployed"_s);
         QCOMPARE(village()->population, 2);
         ticks(30);
 
         // One workstation, one farmer; the bed belongs to the first, the second finds none.
-        const quint64 farmer = villager(first)->villager.profession == u"qtcraft:farmer"_s ? villager(first)->uid : villager(second)->uid;
+        const quint64 farmer = villager(first)->villager->profession == u"qtcraft:farmer"_s ? villager(first)->uid : villager(second)->uid;
         QCOMPARE(village()->workstations.size(), 1);
         QCOMPARE(village()->workstations.front().claimedBy, farmer);
         QCOMPARE(int(std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) {
-                     return mob.villager.profession == u"qtcraft:farmer"_s;
+                     return mob.isVillager() && mob.villager->profession == u"qtcraft:farmer"_s;
                  })),
                  1);
         QCOMPARE(village()->beds.front().claimedBy, villager(first)->uid);
-        QVERIFY(!villager(second)->villager.home);
+        QVERIFY(!villager(second)->villager->home);
 
         // Clients get the farmer's look: the style's outfit with the apron, the straw hat.
         const quint32 farmerId = villager(first)->uid == farmer ? first : second;
@@ -208,8 +208,8 @@ private slots:
         // Without the workstation and without experience it is out of work again.
         m_server->world().setBlock(composter, qcAirBlockId);
         ticks(25);
-        QCOMPARE(villager(farmerId)->villager.profession, u"qtcraft:unemployed"_s);
-        QVERIFY(!villager(farmerId)->villager.work);
+        QCOMPARE(villager(farmerId)->villager->profession, u"qtcraft:unemployed"_s);
+        QVERIFY(!villager(farmerId)->villager->work);
     }
 
     void theRoutineFollowsTheTimeOfDay()
@@ -225,15 +225,15 @@ private slots:
         for (const auto &[phase, activity] : steps) {
             setPhase(phase);
             ticks(QcVillagerBehaviour::decideTicks + 1);
-            QCOMPARE(villager(entity)->villager.activity, activity);
+            QCOMPARE(villager(entity)->villager->activity, activity);
         }
-        QCOMPARE(villager(entity)->villager.profession, u"qtcraft:smith"_s);
+        QCOMPARE(villager(entity)->villager->profession, u"qtcraft:smith"_s);
 
         // Rain in the village sends it home in the middle of the working day.
         setPhase(0.1);
         chat(u"/weather rain"_s);
         ticks(QcWeatherCycle::fadeTicks + QcVillagerBehaviour::decideTicks + 1);
-        QCOMPARE(villager(entity)->villager.activity, QcVillagerActivity::Home);
+        QCOMPARE(villager(entity)->villager->activity, QcVillagerActivity::Home);
     }
 
     void villagersSleepInTheirOwnBedAtNight()
@@ -242,7 +242,7 @@ private slots:
         const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
         bed(m_feet.offset(-4, 0, 0));
         const quint32 entity = settle(head, centreOf(m_feet.offset(-2, 0, 2))).id;
-        QVERIFY(tickUntil([&] { return villager(entity)->villager.sleeping; }, 1200));
+        QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 1200));
 
         // In its own bed, on top of it, and the clients see it lying.
         const QcCreature &sleeper = *villager(entity);
@@ -259,20 +259,20 @@ private slots:
         QVERIFY(box->max.z - box->min.z > 1.8);
         QVERIFY(box->max.y - box->min.y <= 0.31);
         ticks(2);
-        QVERIFY((m_client->flags[entity] & QcMsg::Sleeping) != 0);
+        QVERIFY((m_client->flags[entity] & QcMsg::Lying) != 0);
 
         // It stays there, gets up when hurt and lies down again.
         ticks(40);
-        QVERIFY(villager(entity)->villager.sleeping);
+        QVERIFY(villager(entity)->pose == QcPose::Lying);
         QVERIFY(m_server->mobs().damage(entity, 1.0, villager(entity)->motion.position + QcVec3{2.0, 0.0, 0.0}) == std::nullopt);
         ticks(1);
-        QVERIFY(!villager(entity)->villager.sleeping);
-        QVERIFY(tickUntil([&] { return villager(entity)->villager.sleeping; }, 1200));
+        QVERIFY(villager(entity)->pose != QcPose::Lying);
+        QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 1200));
 
         // In the morning it gets up.
         setPhase(0.01);
         ticks(2);
-        QVERIFY(!villager(entity)->villager.sleeping);
+        QVERIFY(villager(entity)->pose != QcPose::Lying);
     }
 
     // Thirty villagers meeting at the bell are a crowd that thinks in turns (decision E-401); they
@@ -287,11 +287,11 @@ private slots:
             crowd.append(settle(m_feet.offset(30, 0, 30), centreOf(m_feet.offset(i % 3 - 1, 0, i / 3 % 3 - 1))).id);
         }
         ticks(100);
-        QVERIFY(std::ranges::all_of(crowd, [this](quint32 entity) { return villager(entity)->villager.activity == QcVillagerActivity::Meet; }));
+        QVERIFY(std::ranges::all_of(crowd, [this](quint32 entity) { return villager(entity)->villager->activity == QcVillagerActivity::Meet; }));
 
         setPhase(0.7);
         QVERIFY(tickUntil([&] {
-            return std::ranges::all_of(crowd, [this](quint32 entity) { return villager(entity)->villager.activity == QcVillagerActivity::Sleep; });
+            return std::ranges::all_of(crowd, [this](quint32 entity) { return villager(entity)->villager->activity == QcVillagerActivity::Sleep; });
         }, 400));
     }
 
@@ -389,7 +389,7 @@ private slots:
         }
         const QcBlockPos head = bed(m_feet.offset(8, 0, 0));
         const quint32 entity = settle(head, centreOf(m_feet.offset(0, -1, 0))).id;
-        QVERIFY(tickUntil([&] { return villager(entity)->villager.sleeping; }, 600));
+        QVERIFY(tickUntil([&] { return villager(entity)->pose == QcPose::Lying; }, 600));
     }
 
     void aVillagerWalksFromADirtPathThroughADoorWithoutJumping()
@@ -461,7 +461,7 @@ private slots:
         m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), villager(entity)->motion.position + QcVec3{3.0, 0.0, 0.0},
                                m_server->entities().newId(), true);
         ticks(60);
-        QVERIFY(villager(entity)->villager.threat.has_value());
+        QVERIFY(villager(entity)->villager->threat.has_value());
         QVERIFY(horizontalDistance(villager(entity)->motion.position, centreOf(head)) < before - 4.0);
     }
 
@@ -496,11 +496,11 @@ private slots:
             ripe = now;
         }
         QCOMPARE(ripe, 0);
-        QCOMPARE(villager(entity)->villager.profession, u"qtcraft:farmer"_s);
-        QCOMPARE(villager(entity)->villager.produce, 8);
+        QCOMPARE(villager(entity)->villager->profession, u"qtcraft:farmer"_s);
+        QCOMPARE(villager(entity)->villager->produce, 8);
         ticks(200);
         QCOMPARE(ripeCrops({playerCrop}), 1);
-        QCOMPARE(villager(entity)->villager.produce, 8);
+        QCOMPARE(villager(entity)->villager->produce, 8);
         for (const QcBlockPos &crop : std::as_const(crops)) {
             QVERIFY(m_content->block(*m_server->world().blockAt(crop)).crop.isCrop());
         }
@@ -516,7 +516,7 @@ private slots:
         m_server->world().setBlock(m_feet.offset(-5, 0, 4), id("qtcraft:barrel"));
         const quint32 entity = settle(head, centreOf(m_feet.offset(5, 0, 0)), 4242).id;
         ticks(30);
-        const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(villager(entity)->villager);
+        const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(*villager(entity)->villager);
         // Its persistent id stays across saving and loading (decision E-420), the entity id does not.
         const quint64 uid = villager(entity)->uid;
         QVERIFY(uid != 0);
@@ -531,7 +531,7 @@ private slots:
         ticks(2);
         const auto found = std::ranges::find_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; });
         QVERIFY(found != m_server->mobs().mobs().end());
-        QCOMPARE(static_cast<const QcVillagerRecord &>(found->villager), saved);
+        QCOMPARE(static_cast<const QcVillagerRecord &>(*found->villager), saved);
         QCOMPARE(village()->workstations.front().claimedBy, uid);
         QCOMPARE(m_server->world().villages().villages(), villages);
         QCOMPARE(village()->population, 1);
@@ -572,7 +572,7 @@ private slots:
         for (const QcCreature &mob : m_server->mobs().mobs()) {
             QVERIFY2(!ids.contains(mob.uid), qPrintable(QString::number(mob.uid)));
             ids.insert(mob.uid);
-            if (!mob.villager.profession.isEmpty()) {
+            if (mob.isVillager()) {
                 villagers.insert(mob.uid);
             }
         }
@@ -609,7 +609,7 @@ private slots:
 
         // Halfway, the player goes far away and the villager's chunk leaves.
         QVERIFY(tickUntil([&] { return find() && find()->motion.position.x > m_feet.x - 10; }, 600));
-        QVERIFY(find()->villager.activity == QcVillagerActivity::Sleep && !find()->villager.sleeping);
+        QVERIFY(find()->villager->activity == QcVillagerActivity::Sleep && find()->pose != QcPose::Lying);
         const QcChunkPos left = QcPhysics::blockContaining(find()->motion.position).chunk();
         chat(u"/tp %1 %2 %3"_s.arg(m_feet.x + 600).arg(m_feet.y + 40).arg(m_feet.z));
         QVERIFY(tickUntil([&] { return !m_server->world().chunk(left); }, 200));
@@ -620,8 +620,8 @@ private slots:
         chat(u"/tp %1 %2 %3"_s.arg(m_feet.x).arg(m_feet.y).arg(m_feet.z));
         loadAround(m_feet, 2);
         QVERIFY(tickUntil([&] { return find() != nullptr; }, 20));
-        QVERIFY(tickUntil([&] { return find()->villager.sleeping; }, 1200));
-        QCOMPARE(find()->villager.home, std::optional<QcBlockPos>(head));
+        QVERIFY(tickUntil([&] { return find()->pose == QcPose::Lying; }, 1200));
+        QCOMPARE(find()->villager->home, std::optional<QcBlockPos>(head));
         QVERIFY(horizontalDistance(find()->motion.position, centreOf(m_feet.offset(18, 0, 0))) < 0.5);
         QCOMPARE(village()->population, 1);
         QCOMPARE(std::ranges::count_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; }), 1);
@@ -663,7 +663,7 @@ private slots:
         const QcBlockPos head = bed(m_feet.offset(4, 0, 0));
         const quint32 entity = settle(head, centreOf(m_feet.offset(2, 0, 0))).id;
         send(QcMsg::UseEntity{entity});
-        QCOMPARE(villager(entity)->villager.trader, 0u);
+        QCOMPARE(villager(entity)->villager->trader, 0u);
         const QcVec3 towards = m_client->motion.position - villager(entity)->motion.position;
         QCOMPARE(qRound(villager(entity)->yaw), qRound(QcMobSteering::yawTowards({towards.x, 0.0, towards.z})));
     }

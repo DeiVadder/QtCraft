@@ -1,9 +1,12 @@
 #include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
+#include "QcTestUtil.h"
 #include "QcTestWorld.h"
 #include "server/pathing/QcPathFinder.h"
 
+#include <QJsonDocument>
 #include <QTest>
 
 #include <cstdlib>
@@ -331,6 +334,40 @@ private slots:
         QVERIFY(!find(*world, {-4, 1, 0}, {4, 5, 0}).reachesGoal);
         m_rules = QcPathRules::of(villager);
         QVERIFY(find(*world, {-4, 1, 0}, {4, 5, 0}).reachesGoal);
+    }
+
+    // The path rules follow the abilities in a creature's data, the AI its "ai" or its kind
+    // (decision E-423); villagers have the abilities of the villager AI unless their data says
+    // otherwise.
+    void abilitiesAndAiComeFromData()
+    {
+        const auto parse = [](const char *document) { return QcContentParser::parseMob(QJsonDocument::fromJson(document).object(), u"m"_s); };
+        const auto plain = parse(R"({"name":"x","skeleton":"b","outfit":"o"})");
+        QVERIFY2(plain.has_value(), qcErrorText(plain).constData());
+        QCOMPARE(plain->ai, QcMobDefinition::Ai::Passive);
+        QCOMPARE(plain->abilities, QcMobAbilities{});
+        QCOMPARE(parse(R"({"name":"x","skeleton":"b","outfit":"o","hostile":true})")->ai, QcMobDefinition::Ai::Hostile);
+
+        const auto villager = parse(R"({"name":"x","skeleton":"b","outfit":"o","villager":"v"})");
+        QVERIFY2(villager.has_value(), qcErrorText(villager).constData());
+        QCOMPARE(villager->ai, QcMobDefinition::Ai::Villager);
+        const QcPathRules rules = QcPathRules::of(*villager);
+        QVERIFY(rules.opensDoors && rules.climbsLadders && !rules.divesIntoWater && !rules.swims);
+        const auto diver = parse(R"({"name":"x","skeleton":"b","outfit":"o","villager":"v","abilities":{"divesIntoWater":true,"climbs":"none"}})");
+        QVERIFY(QcPathRules::of(*diver).divesIntoWater && !QcPathRules::of(*diver).climbsLadders && QcPathRules::of(*diver).opensDoors);
+        const auto swimmer = parse(R"({"name":"x","skeleton":"b","outfit":"o","abilities":{"swims":true,"climbs":"walls"}})");
+        QVERIFY(QcPathRules::of(*swimmer).swims && QcPathRules::of(*swimmer).climbsLadders);
+
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","ai":"robot"})").error().contains(u"'ai'"_s));
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","ai":"villager"})").error().contains(u"villager AI"_s));
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","villager":"v","ai":"passive"})").error().contains(u"villager AI"_s));
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","ai":"hostile"})").error().contains(u"'hostile'"_s));
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","abilities":{"opensDoors":true}})").error().contains(u"doors"_s));
+        QVERIFY(parse(R"({"name":"x","skeleton":"b","outfit":"o","abilities":{"climbs":"trees"}})").error().contains(u"'climbs'"_s));
+
+        // The base content's villager names them, its zombie has none.
+        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)].abilities, villager->abilities);
+        QCOMPARE(m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)].ai, QcMobDefinition::Ai::Hostile);
     }
 
     void villagersDoNotJumpIntoDeepWater()

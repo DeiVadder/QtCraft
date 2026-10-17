@@ -31,8 +31,8 @@
         ["CS.S.SC", "S.....S", ".......", "S.....S", ".......", "SA....S", "CSSUSSC"],
         ["OOOOOOO", "O.....O", "O.l...O", "O.....O", "O...l.O", "OA....O", "OOOOOOO"],
         ["CCCCCCC", "CMMMMMC", "CMMMMMC", "CMMMMMC", "CMMMMMC", "CAMMMMC", "CCCCCCC"],
-        ["CSSSCkk", "Sbf.S.k", "S...S.k", "Sbf.S.k", "CSDSC.k", "k.....k", "kkkkkkk"],
-        ["CS.SC..", "S...S..", ".......", "S...S..", "CSUSC..", ".......", "......."],
+        ["CSSSCkk", "Sbf.S.k", "S...S.k", "Sbf.S.k", "CSSDC.k", "k.....k", "kkkkkkk"],
+        ["CS.SC..", "S...S..", ".......", "S...S..", "CSSUC..", ".......", "......."],
         ["OOOOO..", "O...O..", "O.l.O..", "O...O..", "OOOOO..", ".......", "......."],
         ["CCCCC..", "CMMMC..", "CMMMC..", "CMMMC..", "CCCCC..", ".......", "......."],
         ["kkkkk  ", "k   k  ", "k   k  ", "k   k  ", "kkkkk  ", "       ", "       "]

@@ -77,6 +77,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
+    entities/QcComponent.h
     entities/QcCreature.h
     entities/QcEntities.h entities/QcEntities.cpp
     entities/QcEntity.h
@@ -129,13 +130,16 @@ target_sources(qc_server PRIVATE
     minecarts/QcServerMinecarts.h minecarts/QcServerMinecarts.cpp
 )
 target_sources(qc_server PRIVATE
+    mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
+    mobs/QcMobBrain.h
     mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
-    mobs/QcMobManager.h mobs/QcMobManager.cpp mobs/QcMobManagerVillagers.cpp
+    mobs/QcMobManager.h mobs/QcMobManager.cpp
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
+    mobs/QcNaturalSpawner.h mobs/QcNaturalSpawner.cpp
     mobs/QcServerAnimals.h mobs/QcServerAnimals.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
 )
@@ -145,6 +149,8 @@ target_sources(qc_server PRIVATE
     network/QcServerSettings.h network/QcServerSettings.cpp
 )
 target_sources(qc_server PRIVATE
+    pathing/QcDoorPassage.h pathing/QcDoorPassage.cpp
+    pathing/QcMobLegs.h pathing/QcMobLegs.cpp
     pathing/QcMobNavigator.h pathing/QcMobNavigator.cpp
     pathing/QcMobPath.h
     pathing/QcPathCells.h pathing/QcPathCells.cpp
@@ -209,6 +215,7 @@ target_sources(qc_server PRIVATE
     villages/QcServerVillagers.h villages/QcServerVillagers.cpp
     villages/QcVillage.h villages/QcVillage.cpp
     villages/QcVillageGolems.h villages/QcVillageGolems.cpp
+    villages/QcVillagePopulation.h villages/QcVillagePopulation.cpp
     villages/QcVillager.h
     villages/QcVillagerBehaviour.h villages/QcVillagerBehaviour.cpp
     villages/QcVillagerBreeding.h villages/QcVillagerBreeding.cpp

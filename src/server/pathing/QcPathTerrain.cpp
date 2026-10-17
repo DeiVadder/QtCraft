@@ -7,11 +7,13 @@ QcPathRules QcPathRules::of(const QcMobDefinition &definition)
 {
     QcPathRules rules;
     rules.height = definition.height;
-    // Villagers open wooden doors on their way, climb ladders and never jump off a boardwalk into
-    // the water (decision E-411).
-    rules.opensDoors = definition.villager;
-    rules.climbsLadders = definition.villager;
-    rules.divesIntoWater = !definition.villager;
+    // From the creature's abilities (decision E-423): villagers open wooden doors on their way,
+    // climb ladders and never jump off a boardwalk into the water (decision E-411).
+    const QcMobAbilities &abilities = definition.abilities;
+    rules.opensDoors = abilities.opensDoors;
+    rules.climbsLadders = abilities.climbs != QcMobAbilities::Climbing::None;
+    rules.swims = abilities.swims;
+    rules.divesIntoWater = abilities.divesIntoWater;
     return rules;
 }
 

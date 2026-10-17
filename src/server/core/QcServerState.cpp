@@ -1,5 +1,7 @@
 #include "server/core/QcServerState.h"
 
+#include "server/villages/QcVillagePopulation.h"
+
 #include <utility>
 
 QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const QcContentRegistry> registry,
@@ -18,7 +20,7 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
 {
     // Villagers claim beds and workstations in the village state (decision E-411).
-    m_entities.creatures().setVillages(&m_world.villages());
+    m_entities.creatures().population().setVillages(&m_world.villages());
     applyLimits();
 }
 

@@ -7,8 +7,11 @@
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/villages/QcVillageGolems.h"
+#include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillages.h"
-#include "world/QcVillageTestUtil.h"
+#include "world/QcVillageFixture.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QJsonObject>
 #include <QTest>
@@ -19,21 +22,25 @@
 
 using namespace Qt::StringLiterals;
 
-// Village life without a server (decision E-415): villagers get a child that moves into a free bed
-// when two willing adults meet by day in dry weather, none without a free bed, at night, in rain,
-// without food or beyond the limits; farmers share their produce; the child has no profession,
-// plays instead of working and takes a workstation once grown up. Villages spawn iron golems by
-// their population with a cooldown and the world's limit, and not at all while the content has no
-// golem creature; they count the golems of every village towards the world's limit, forget a last
-// golem after the world time went back and place one on the ground where its whole body fits. A
-// villager asleep under a low roof breathes. Children survive saving and resting. Neither children nor
-// golems come before the village's claims are reconciled, which happens when the last chunk around
-// the village arrives, also when that chunk lies in a neighbouring region.
+// Village life without a server (decision E-415), on a fixture village (decision E-424):
+// villagers get a child that moves into a free bed when two willing adults meet by day in dry
+// weather, none without a free bed, at night, in rain, without food or beyond the limits; farmers
+// share their produce; the child has no profession, plays instead of working and takes a
+// workstation once grown up. Villages spawn iron golems by their population with a cooldown and the
+// world's limit, and not at all while the content has no golem creature; they count the golems of
+// every village towards the world's limit, forget a last golem after the world time went back and
+// place one on the ground where its whole body fits. A villager asleep under a low roof breathes.
+// Children survive saving and resting. Neither children nor golems come before the village's claims
+// are reconciled, which happens when the last chunk around the village arrives, also when that
+// chunk lies in a neighbouring region (the one test on a generated world: regions come from the
+// world generator).
 class TestVillageLife : public QObject
 {
     Q_OBJECT
 
 private:
+    // The seed of the creatures' random numbers and of the generated world of the one test that
+    // needs regions (claimsAreReconciledWhenTheLastChunkLiesInANeighbouringRegion).
     static constexpr qint64 seed = 42;
     // A share of the day by work time (QcVillagerSettings::routine) and at night.
     static constexpr double workPhase = 0.1;
@@ -80,45 +87,38 @@ private:
     // chunks (which reconciles the claims once every chunk around the village is there).
     static void loadAround(Village &village, int ring)
     {
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*village.plan);
-        for (const QcChunkPos &chunk : chunks) {
-            for (int dz = -ring; dz <= ring; ++dz) {
-                for (int dx = -ring; dx <= ring; ++dx) {
-                    village.world->loadChunk({chunk.x + dx, chunk.z + dz});
-                }
-            }
+        const QList<QcChunkPos> around = QcVillageFixture::chunksOf(*village.plan, ring);
+        for (const QcChunkPos &chunk : around) {
+            village.world->loadChunk(chunk);
         }
+        const QList<QcChunkPos> chunks = QcVillageFixture::chunksOf(*village.plan);
         for (const QcChunkPos &chunk : chunks) {
             village.mobs->populateChunk(*village.world, chunk, village.ids());
         }
     }
 
-    // The first village of the seed with its chunks and the ring around them loaded and its
-    // villagers moved in.
+    // A fixture village of the plains style (decision E-424) with its chunks and the ring around them
+    // loaded and its villagers moved in.
     static Village village(const std::shared_ptr<QcContentRegistry> &content, QcVillagerHomes::Limits limits = {})
     {
-        auto generator = std::make_unique<QcTerrainGenerator>(content, seed);
         Village result;
         result.content = content;
-        for (int ring = 0; ring <= 6 && !result.plan; ++ring) {
-            for (int rz = -ring; rz <= ring && !result.plan; ++rz) {
-                for (int rx = -ring; rx <= ring && !result.plan; ++rx) {
-                    std::shared_ptr<const QcVillagePlan> plan = generator->villages().regionPlan(rx, rz);
-                    if (plan && plan->beds.size() >= 4 && plan->style != u"qtcraft:swamp"_s) {
-                        result.plan = std::move(plan);
-                    }
-                }
-            }
-        }
+        result.plan = QcVillageFixture::plan(*content, {});
         if (!result.plan) {
             return result;
         }
-        result.world = std::make_unique<QcServerWorld>(content, std::move(generator));
+        result.world = std::make_unique<QcServerWorld>(content, terrain(result));
         result.mobs = std::make_unique<QcMobManager>(content, seed);
-        result.mobs->setVillages(&result.world->villages());
-        result.mobs->setVillagerLimits(limits, {});
+        result.mobs->population().setVillages(&result.world->villages());
+        result.mobs->population().setVillagerLimits(limits, {});
         loadAround(result, 2);
         return result;
+    }
+
+    // The flat ground with the village's fixture.
+    static std::unique_ptr<QcWorldGenerator> terrain(const Village &village)
+    {
+        return std::make_unique<QcVillageFixture::Terrain>(village.content, QList{village.plan});
     }
 
     static QList<QcCreature *> villagersOf(Village &village)
@@ -169,12 +169,12 @@ private:
         setPhase(village, phase);
         const QList<quint32> parents{villagersOf(village).at(0)->id, villagersOf(village).at(1)->id};
         for (const quint32 id : parents) {
-            village.mobs->find(id)->villager.produce = food;
+            village.mobs->find(id)->villager->produce = food;
         }
-        for (int i = 0; i <= QcMobManager::villageLifeTicks; ++i) {
+        for (int i = 0; i <= QcVillagePopulation::villageLifeTicks; ++i) {
             for (const quint32 id : parents) {
                 QcCreature *parent = village.mobs->find(id);
-                if (parent->villager.produce == food) {
+                if (parent->villager->produce == food) {
                     parent->motion.position = other && id == parents[1] ? *other : spot;
                     parent->motion.velocity = {};
                 }
@@ -213,12 +213,12 @@ private:
         result.plan = old.plan;
         result.worldTime = old.worldTime;
         result.nextId = old.nextId;
-        result.world = std::make_unique<QcServerWorld>(old.content, std::make_unique<QcTerrainGenerator>(old.content, seed));
+        result.world = std::make_unique<QcServerWorld>(old.content, terrain(result));
         if (villagesKept) {
             result.world->villages().restore(old.world->villages().villages());
         }
         result.mobs = std::make_unique<QcMobManager>(old.content, seed);
-        result.mobs->setVillages(&result.world->villages());
+        result.mobs->population().setVillages(&result.world->villages());
         result.mobs->restore(old.mobs->persistentMobs(), old.mobs->populatedChunks(), result.ids());
         loadAround(result, ring);
         // The server wakes them once it sees their chunks (QcEntities).
@@ -284,13 +284,13 @@ private slots:
         QCOMPARE(built.state().population, int(before + 1));
         const QcCreature *child = youngest(built);
         QVERIFY(child);
-        QCOMPARE(child->villager.profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
-        QVERIFY(child->villager.home);
-        QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager.home)->claimedBy, child->uid);
-        QCOMPARE(child->villager.style, built.state().style);
+        QCOMPARE(child->villager->profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QVERIFY(child->villager->home);
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *child->villager->home)->claimedBy, child->uid);
+        QCOMPARE(child->villager->style, built.state().style);
         // The parents gave their food and rest.
         for (const quint32 id : parents) {
-            QCOMPARE(built.mobs->find(id)->villager.produce, 0);
+            QCOMPARE(built.mobs->find(id)->villager->produce, 0);
             QVERIFY(built.mobs->find(id)->breedCooldown > 0.0);
         }
     }
@@ -329,12 +329,12 @@ private slots:
         QVERIFY(perVillage.plan);
         const QcVec3 spot = freeABed(perVillage);
         const qsizetype before = villagersOf(perVillage).size();
-        perVillage.mobs->setVillagerLimits({before, 1024}, {});
+        perVillage.mobs->population().setVillagerLimits({before, 1024}, {});
         QCOMPARE(meet(perVillage, spot, workPhase), before);
 
         Village world = village(loadContent());
         const QcVec3 there = freeABed(world);
-        world.mobs->setVillagerLimits({32, villagersOf(world).size()}, {});
+        world.mobs->population().setVillagerLimits({32, villagersOf(world).size()}, {});
         QCOMPARE(meet(world, there, workPhase), villagersOf(world).size());
     }
 
@@ -345,24 +345,25 @@ private slots:
         QList<QcCreature> mobs(2);
         for (QcCreature &mob : mobs) {
             mob.type = *content->mobIndex(u"qtcraft:villager"_s);
-            mob.villager.village = 7;
+            mob.villager.emplace();
+            mob.villager->village = 7;
         }
-        mobs[0].villager.profession = u"qtcraft:farmer"_s;
-        mobs[0].villager.produce = 10;
-        mobs[1].villager.profession = (*content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
+        mobs[0].villager->profession = u"qtcraft:farmer"_s;
+        mobs[0].villager->produce = 10;
+        mobs[1].villager->profession = (*content->villagerSettings(u"qtcraft:villager"_s)).unemployed;
         mobs[1].motion.position = {1.0, 0.0, 0.0};
 
         // No village of id 7 is known: no child, but the farmer shares all the same.
-        QcServerWorld world(content, std::make_unique<QcTerrainGenerator>(content, seed));
+        QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
         QVERIFY(breeding.check(mobs, {world, world.villages(), 0.0, {}, {}}).isEmpty());
-        QCOMPARE(mobs[1].villager.produce, 3);
-        QCOMPARE(mobs[0].villager.produce, 7);
+        QCOMPARE(mobs[1].villager->produce, 3);
+        QCOMPARE(mobs[0].villager->produce, 7);
         QVERIFY(breeding.willing(mobs[1]));
         // It gives only what it holds above shareAbove (6).
-        mobs[1].villager.produce = 0;
+        mobs[1].villager->produce = 0;
         QVERIFY(breeding.check(mobs, {world, world.villages(), 0.0, {}, {}}).isEmpty());
-        QCOMPARE(mobs[1].villager.produce, 1);
-        QCOMPARE(mobs[0].villager.produce, 6);
+        QCOMPARE(mobs[1].villager->produce, 1);
+        QCOMPARE(mobs[0].villager->produce, 6);
     }
 
     void aChildPlaysAndTakesAWorkstationOnceGrownUp()
@@ -385,18 +386,18 @@ private slots:
         ticks(built, 3 * QcVillagerBehaviour::decideTicks);
         child = built.mobs->find(childId);
         QVERIFY(child->isYoung());
-        QVERIFY(!child->villager.work);
-        QCOMPARE(child->villager.profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
-        QCOMPARE(child->villager.activity, QcVillagerActivity::Wander);
+        QVERIFY(!child->villager->work);
+        QCOMPARE(child->villager->profession, (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QCOMPARE(child->villager->activity, QcVillagerActivity::Wander);
 
         // Grown up, it takes a workstation and its profession.
         built.mobs->find(childId)->growUp = 0.2;
         ticks(built, 3 * QcVillagerBehaviour::decideTicks);
         child = built.mobs->find(childId);
         QVERIFY(!child->isYoung());
-        QVERIFY(child->villager.work);
-        QVERIFY(child->villager.profession != (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
-        QCOMPARE(child->villager.activity, QcVillagerActivity::Work);
+        QVERIFY(child->villager->work);
+        QVERIFY(child->villager->profession != (*built.content->villagerSettings(u"qtcraft:villager"_s)).unemployed);
+        QCOMPARE(child->villager->activity, QcVillagerActivity::Work);
     }
 
     void aVillageSpawnsGolemsByItsPopulation()
@@ -413,14 +414,14 @@ private slots:
         const auto golems = [&] {
             return std::ranges::count_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
         };
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 0);
 
         // At it, one golem per `population` villagers: one, near the meeting point, counted.
         settings.golem.minVillagers = population;
         settings.golem.villagersPerGolem = population;
         built.content->setVillageSettings(settings);
-        ticks(built, 3 * QcMobManager::villageLifeTicks + 1);
+        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 1);
         QCOMPARE(built.state().golems, 1);
         QVERIFY(built.state().lastGolem >= 0.0);
@@ -431,11 +432,11 @@ private slots:
 
         // A golem gone leaves room for the next one, after the cooldown.
         built.mobs->remove(golem.id);
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 0);
         QCOMPARE(built.state().golems, 0);
         built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 1);
     }
 
@@ -449,23 +450,23 @@ private slots:
         const auto golems = [&] {
             return std::ranges::count_if(built.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
         };
-        ticks(built, 5 * QcMobManager::villageLifeTicks + 1);
+        ticks(built, 5 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 1);
 
         built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 2);
 
-        built.mobs->setGolemLimit(2);
+        built.mobs->population().setGolemLimit(2);
         built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 2);
 
         // Natural spawning off: no golems.
-        built.mobs->setGolemLimit(256);
+        built.mobs->population().setGolemLimit(256);
         built.mobs->setNaturalSpawning(false);
         built.worldTime += QcDayCycle::dayLength;
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golems(), 2);
     }
 
@@ -475,13 +476,13 @@ private slots:
         Village built = village(loadContent());
         QVERIFY(built.plan);
         QCOMPARE(built.content->golemOfStyle(built.state().style).mob, u"qtcraft:iron_golem"_s);
-        QVERIFY(!built.mobs->golems().kind(built.state().style));
+        QVERIFY(!built.mobs->population().golems().kind(built.state().style));
         QcVillageSettings settings = built.content->villageSettings();
         settings.golem.minVillagers = 1;
         settings.golem.villagersPerGolem = 1;
         built.content->setVillageSettings(settings);
         const qsizetype before = built.mobs->mobs().size();
-        ticks(built, 2 * QcMobManager::villageLifeTicks + 1);
+        ticks(built, 2 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(built.mobs->mobs().size(), before);
         QCOMPARE(built.state().golems, 0);
     }
@@ -495,7 +496,7 @@ private slots:
         QcCreature mob;
         mob.motion.position = {10.5, 65.5625, 20.25};
         QVERIFY(QcEnvironmentDamage::eyesOf(mob, definition).y > 66.5);
-        mob.villager.sleeping = true;
+        mob.pose = QcPose::Lying;
         const QcVec3 eyes = QcEnvironmentDamage::eyesOf(mob, definition);
         QVERIFY2(eyes.y < 66.0, qPrintable(QString::number(eyes.y)));
         QVERIFY(std::abs(eyes.x - 10.5) < 2.0 && std::abs(eyes.z - 20.25) < 2.0);
@@ -523,7 +524,7 @@ private slots:
         // broken, so no child comes; with one villager it does.
         std::shared_ptr<QcContentRegistry> content = loadContent();
         QcVillagerBreeding breeding(content);
-        QcServerWorld world(content, std::make_unique<QcTerrainGenerator>(content, seed));
+        QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
         QcVillage village;
         village.beds = {{{0, 64, 0}, {}, 1}, {{4, 64, 0}, {}, 0}};
         village.population = 2;
@@ -546,14 +547,14 @@ private slots:
         Village lost = reloaded(built, false, 0);
         QCOMPARE(villagersOf(lost).size(), before);
         QCOMPARE(meet(lost, spot, workPhase), before);
-        ticks(lost, 2 * QcMobManager::villageLifeTicks + 1);
+        ticks(lost, 2 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(villagersOf(lost).size(), before);
         QCOMPARE(golemCount(lost), 0);
 
         // The ring around it loads: the claims are reconciled, life goes on.
         loadAround(lost, 2);
         QCOMPARE(meet(lost, spot, workPhase), before + 1);
-        ticks(lost, 3 * QcMobManager::villageLifeTicks + 1);
+        ticks(lost, 3 * QcVillagePopulation::villageLifeTicks + 1);
         QVERIFY(golemCount(lost) >= 1);
     }
 
@@ -580,7 +581,7 @@ private slots:
 
         QcServerWorld world(content, std::move(generator));
         QcMobManager mobs(content, seed);
-        mobs.setVillages(&world.villages());
+        mobs.population().setVillages(&world.villages());
         quint32 nextId = 1;
         const auto ids = [&nextId] { return nextId++; };
         for (int z = low.z; z <= high.z; ++z) {
@@ -592,11 +593,11 @@ private slots:
             }
         }
         QVERIFY(world.villages().find(plan.id));
-        QVERIFY(!mobs.claimsReconciled(plan.id));
+        QVERIFY(!mobs.population().claimsReconciled(plan.id));
 
         world.loadChunk(*last);
         mobs.populateChunk(world, *last, ids);
-        QVERIFY(mobs.claimsReconciled(plan.id));
+        QVERIFY(mobs.population().claimsReconciled(plan.id));
     }
 
     void noChildThroughAWall()
@@ -625,17 +626,17 @@ private slots:
         const QcCreature *child = youngest(built);
         QVERIFY(child);
         const quint64 uid = child->uid;
-        const QcBlockPos home = *child->villager.home;
+        const QcBlockPos home = *child->villager->home;
         const double growUp = child->growUp;
         const int population = built.state().population;
 
         // Saved and loaded: still a child in its bed.
         Village back = reloaded(built);
-        ticks(back, 2 * QcMobManager::villageLifeTicks);
+        ticks(back, 2 * QcVillagePopulation::villageLifeTicks);
         child = youngest(back);
         QVERIFY(child);
         QCOMPARE(child->uid, uid);
-        QCOMPARE(*child->villager.home, home);
+        QCOMPARE(*child->villager->home, home);
         QVERIFY(child->growUp > growUp - 20.0 && child->growUp < growUp);
         QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
         QCOMPARE(back.state().population, population);
@@ -644,7 +645,7 @@ private slots:
         const quint32 id = child->id;
         back.mobs->find(id)->dormant = true;
         const double resting = back.mobs->find(id)->growUp;
-        ticks(back, 2 * QcMobManager::villageLifeTicks);
+        ticks(back, 2 * QcVillagePopulation::villageLifeTicks);
         QCOMPARE(back.mobs->find(id)->growUp, resting);
         QCOMPARE(QcVillage::spotAt(back.state().beds, home)->claimedBy, uid);
         back.mobs->find(id)->dormant = false;
@@ -658,7 +659,7 @@ private slots:
         // A village not loaded holds three golems; one stands outside every village: four in the
         // world. Five loaded in the village's area count instead of its three.
         std::shared_ptr<QcContentRegistry> content = contentWithGolem(1, 1, 300.0);
-        QcServerWorld world(content, std::make_unique<QcTerrainGenerator>(content, seed));
+        QcServerWorld world(content, std::make_unique<QcVillageFixture::Terrain>(content, QList<std::shared_ptr<const QcVillagePlan>>{}));
         QcVillage village;
         village.id = 3;
         village.maxX = 10;
@@ -691,7 +692,7 @@ private slots:
         settings.golem.minVillagers = population;
         settings.golem.villagersPerGolem = population;
         built.content->setVillageSettings(settings);
-        ticks(built, 3 * QcMobManager::villageLifeTicks + 1);
+        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golemCount(built), 1);
 
         // /time set a day back: the last golem lies in the future, yet the next one comes.
@@ -700,8 +701,8 @@ private slots:
         built.worldTime -= QcDayCycle::dayLength;
         QcVillage future = built.state();
         future.lastGolem = built.worldTime + QcDayCycle::dayLength;
-        QVERIFY(built.mobs->golems().due(future, 0, built.worldTime));
-        ticks(built, QcMobManager::villageLifeTicks + 1);
+        QVERIFY(built.mobs->population().golems().due(future, 0, built.worldTime));
+        ticks(built, QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(golemCount(built), 1);
         QVERIFY(built.state().lastGolem <= built.worldTime);
     }
@@ -732,12 +733,12 @@ private slots:
                 }
             }
         }
-        QVERIFY(!built.mobs->golems().placeFor(built.state(), type, context));
+        QVERIFY(!built.mobs->population().golems().placeFor(built.state(), type, context));
 
         // Without them, under a roof: on the ground, not on the roof.
         fill(built, centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
         fill(built, centre.offset(-10, 4, -10), centre.offset(10, 4, 10), stone);
-        const std::optional<QcVec3> at = built.mobs->golems().placeFor(built.state(), type, context);
+        const std::optional<QcVec3> at = built.mobs->population().golems().placeFor(built.state(), type, context);
         QVERIFY(at);
         QCOMPARE(at->y, double(centre.y));
         QVERIFY(!QcBodyFit::overlapsBlocks(*built.world, *at, {wide.width, wide.height}, QcBodyFit::Unloaded::Blocked));
@@ -745,7 +746,7 @@ private slots:
         // A floor of magma hurts: no place.
         fill(built, centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
         fill(built, centre.offset(-10, -1, -10), centre.offset(10, -1, 10), block(built, u"qtcraft:magma_block"_s));
-        QVERIFY(!built.mobs->golems().placeFor(built.state(), type, context));
+        QVERIFY(!built.mobs->population().golems().placeFor(built.state(), type, context));
     }
 };
 

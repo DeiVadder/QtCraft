@@ -6,9 +6,10 @@
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/storage/QcVillagerCodec.h"
+#include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerLooks.h"
 #include "server/villages/QcVillages.h"
-#include "world/QcVillageTestUtil.h"
+#include "world/QcVillageFixture.h"
 
 #include <QBuffer>
 #include <QJsonDocument>
@@ -20,15 +21,18 @@
 
 using namespace Qt::StringLiterals;
 
-// Villagers of generated villages without a server (decision E-411): one per bed when the village's
-// chunks are seen, the limits, claims freed by death, long walks in legs over a swamp village's
-// boardwalks, a walk going on after the villager's chunk was unloaded and loaded again, the record
-// in the chunk data, the looks and the settings in data.
+// Villagers of a village without a server (decision E-411), on fixture villages (decision E-424):
+// one per bed when the village's chunks are seen, the limits, claims freed by death, every bed and
+// workstation of every style reachable from the road and back, a villager getting out of the well,
+// two villagers taking turns at a door, long walks in legs over a swamp village's boardwalks, a walk
+// going on after the villager's chunk was unloaded and loaded again, the record in the chunk data,
+// the looks and the settings in data.
 class TestVillagerWalks : public QObject
 {
     Q_OBJECT
 
 private:
+    // The seed of the creatures' random numbers.
     static constexpr qint64 seed = 42;
 
     static std::shared_ptr<const QcContentRegistry> loadContent()
@@ -37,7 +41,7 @@ private:
         return *QcBaseContent::load(warnings);
     }
 
-    // A world of the seed with every chunk of a village loaded, and its creatures.
+    // A world with one fixture village (decision E-424), every chunk of it loaded, and its creatures.
     struct Village
     {
         std::unique_ptr<QcServerWorld> world;
@@ -54,53 +58,29 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
 
-    // The first village of the seed whose style `accepts`, searched ring by ring around the origin.
-    template<typename Accepts>
-    std::shared_ptr<const QcVillagePlan> findPlan(const QcTerrainGenerator &generator, Accepts accepts) const
+    // Loads the chunks of a fixture village of `style` (its buildings turned `turns`,
+    // QcVillageFixture::Options::turns) and the ring around them; with `populate` its villagers move in.
+    Village village(const QString &style, bool populate, QcVillagerHomes::Limits limits = {}, int turns = 0)
     {
-        for (int ring = 0; ring <= 14; ++ring) {
-            for (int rz = -ring; rz <= ring; ++rz) {
-                for (int rx = -ring; rx <= ring; ++rx) {
-                    if (std::max(std::abs(rx), std::abs(rz)) != ring) {
-                        continue;
-                    }
-                    const std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz);
-                    if (plan && accepts(*plan)) {
-                        return plan;
-                    }
-                }
-            }
-        }
-        return nullptr;
-    }
-
-    // Loads the village's chunks; with `populate` its villagers move in.
-    template<typename Accepts>
-    Village village(Accepts accepts, bool populate, QcVillagerHomes::Limits limits = {})
-    {
-        auto generator = std::make_unique<QcTerrainGenerator>(m_content, seed);
         Village result;
-        result.plan = findPlan(*generator, accepts);
+        QcVillageFixture::Options options;
+        options.style = style;
+        options.turns = turns;
+        result.plan = QcVillageFixture::plan(*m_content, options);
         if (!result.plan) {
             return result;
         }
-        result.world = std::make_unique<QcServerWorld>(m_content, std::move(generator));
+        result.world = std::make_unique<QcServerWorld>(m_content, std::make_unique<QcVillageFixture::Terrain>(m_content, QList{result.plan}));
         result.mobs = std::make_unique<QcMobManager>(m_content, seed);
-        result.mobs->setVillages(&result.world->villages());
-        result.mobs->setVillagerLimits(limits, {});
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*result.plan);
-        for (const QcChunkPos &chunk : chunks) {
+        result.mobs->population().setVillages(&result.world->villages());
+        result.mobs->population().setVillagerLimits(limits, {});
+        // The ring of chunks around it too, so walks along its edge stay in loaded chunks.
+        const QList<QcChunkPos> around = QcVillageFixture::chunksOf(*result.plan, 1);
+        for (const QcChunkPos &chunk : around) {
             result.world->loadChunk(chunk);
         }
-        // The ring of chunks around it too, so walks along its edge stay in loaded chunks.
-        for (const QcChunkPos &chunk : chunks) {
-            for (int dz = -1; dz <= 1; ++dz) {
-                for (int dx = -1; dx <= 1; ++dx) {
-                    result.world->loadChunk({chunk.x + dx, chunk.z + dz});
-                }
-            }
-        }
         if (populate) {
+            const QList<QcChunkPos> chunks = QcVillageFixture::chunksOf(*result.plan);
             for (const QcChunkPos &chunk : chunks) {
                 result.mobs->populateChunk(*result.world, chunk, result.ids());
             }
@@ -139,24 +119,143 @@ private:
 
     static double horizontalDistance(const QcVec3 &a, QcBlockPos cell) { return std::hypot(a.x - cell.x - 0.5, a.z - cell.z - 0.5); }
 
-    static bool any(const QcVillagePlan &) { return true; }
+    static inline const QString plains = QStringLiteral("qtcraft:plains");
+
+    // The four ways the fixture turns its buildings (QcVillageFixture::Options::turns): together
+    // every building faces every direction once.
+    static void turnsData()
+    {
+        QTest::addColumn<int>("turns");
+        for (int turns = 0; turns < 4; ++turns) {
+            QTest::addRow("%d", turns * 90) << turns;
+        }
+    }
 
     static QString where(const QcCreature &mob)
     {
         const auto cell = [](std::optional<QcBlockPos> pos) {
             return pos ? u"%1 %2 %3"_s.arg(pos->x).arg(pos->y).arg(pos->z) : u"none"_s;
         };
-        return u"%1 at %2 %3 %4, home %5, work %6, target %7"_s.arg(mob.villager.profession)
+        return u"%1 at %2 %3 %4, home %5, work %6, target %7"_s.arg(mob.villager->profession)
             .arg(mob.motion.position.x)
             .arg(mob.motion.position.y)
             .arg(mob.motion.position.z)
-            .arg(cell(mob.villager.home), cell(mob.villager.work), cell(mob.villager.target));
+            .arg(cell(mob.villager->home), cell(mob.villager->work), cell(mob.villager->target));
     }
 
 private slots:
+    // Every bed of every style's buildings can be left for the road and reached from it, and every
+    // workstation from a cell beside it (diagonals too: a smith's furnace may stand in a corner) (fixture villages, decision E-424): no door blocked by a bed's
+    // foot or a block in front of it, the ladders to beds upstairs climbable both ways; with the
+    // buildings turned all four ways.
+    void everyBedAndWorkstationIsReachable_data() { turnsData(); }
+    void everyBedAndWorkstationIsReachable()
+    {
+        QFETCH(int, turns);
+        const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)]);
+        QcPathFinder finder;
+        QStringList unreachable;
+        for (const QcVillageStyleDefinition &definition : m_content->villageStyles()) {
+            Village built = village(definition.name, false, {}, turns);
+            QVERIFY(built.plan);
+            // The well's side turned `turns`, the other half a turn more.
+            QCOMPARE(built.plan->pieces.front().turns(), turns);
+            QVERIFY(std::ranges::any_of(built.plan->pieces, [turns](const QcStructurePlacement &piece) { return piece.turns() == (turns + 2) % 4; }));
+            QVERIFY(std::ranges::all_of(built.plan->pieces, [turns](const QcStructurePlacement &piece) { return piece.turns() % 2 == turns % 2; }));
+            const int roadY = built.plan->roads.isEmpty() ? built.plan->decks.front().at.y + 1 : built.plan->roads.front().y + 1;
+            const auto both = [&](QcBlockPos from, const QcVillagePlan::Spot &spot) {
+                // The road's middle line (x or z 0) in front of the spot (within one search window).
+                const QcBlockPos road = turns % 2 == 0 ? QcBlockPos{spot.at.x, roadY, 0} : QcBlockPos{0, roadY, spot.at.z};
+                const QcPathRequest out{from, road, 0, 8192, 512};
+                const QcPathRequest in{road, from, 0, 8192, 512};
+                return finder.find(*built.world, built.mobs->paths().cells(), rules, out).reachesGoal
+                       && finder.find(*built.world, built.mobs->paths().cells(), rules, in).reachesGoal;
+            };
+            for (const QcVillagePlan::Spot &bed : built.plan->beds) {
+                const std::optional<QcVec3> beside = QcVillagerHomes::besideBed(*built.world, built.mobs->paths().cells(), bed.at, rules);
+                if (!beside || !both(QcPhysics::blockContaining(*beside), bed)) {
+                    unreachable.append(u"%1 bed %2 %3 %4"_s.arg(definition.name).arg(bed.at.x).arg(bed.at.y).arg(bed.at.z));
+                }
+            }
+            QcPathDirectCells cells(*built.world, built.mobs->paths().cells());
+            for (const QcVillagePlan::Spot &station : built.plan->workstations) {
+                const bool reached = std::ranges::any_of(std::array{QcBlockPos{1, 0, 0}, QcBlockPos{-1, 0, 0}, QcBlockPos{0, 0, 1}, QcBlockPos{0, 0, -1}, QcBlockPos{1, 0, 1}, QcBlockPos{1, 0, -1}, QcBlockPos{-1, 0, 1}, QcBlockPos{-1, 0, -1}}, [&](QcBlockPos side) {
+                    const QcBlockPos cell = station.at.offset(side.x, 0, side.z);
+                    return QcPathTerrain::standAt(cells, cell, rules).ok && both(cell, station);
+                });
+                if (!reached) {
+                    unreachable.append(u"%1 workstation %2 at %3 %4 %5"_s.arg(definition.name, station.kind).arg(station.at.x).arg(station.at.y).arg(station.at.z));
+                }
+            }
+        }
+        QVERIFY2(unreachable.isEmpty(), qPrintable(unreachable.join(u"; "_s)));
+    }
+
+    // A villager that fell into the well of a style gets out of the water (the rim is a step from its
+    // surface) and goes home; the well turned all four ways.
+    void aVillagerGetsOutOfTheWell_data() { turnsData(); }
+    void aVillagerGetsOutOfTheWell()
+    {
+        QFETCH(int, turns);
+        for (const QString &style : {u"qtcraft:plains"_s, u"qtcraft:desert"_s}) {
+            Village built = village(style, true, {}, turns);
+            QVERIFY(built.plan);
+            const QcStructurePlacement &well = built.plan->pieces.front();
+            const QcBlockPos water = well.toWorld(QcBlockPos{3, 0, 3});
+            const auto swimmer = std::ranges::find_if(built.mobs->editableMobs(), [](const QcCreature &mob) { return mob.isVillager(); });
+            QVERIFY(swimmer != built.mobs->editableMobs().end());
+            const quint32 id = swimmer->id;
+            swimmer->motion.position = {water.x + 0.5, double(water.y) + 0.5, water.z + 0.5};
+            bool out = false;
+            for (int tick = 0; tick < 1200 && !out; ++tick) {
+                this->tick(built, 0.7);
+                const QcCreature *mob = built.mobs->find(id);
+                out = !mob->motion.inWater && mob->motion.position.y >= water.y + 1.0;
+            }
+            QVERIFY2(out, qPrintable(style + u": "_s + where(*built.mobs->find(id))));
+        }
+    }
+
+    // Two villagers meet in the door of a swamp house in the evening, one in the doorway on its way
+    // out, one on the porch on its way in: they take turns and both get home (decision E-411); the
+    // house turned all four ways.
+    void twoVillagersTakeTurnsAtADoor_data() { turnsData(); }
+    void twoVillagersTakeTurnsAtADoor()
+    {
+        QFETCH(int, turns);
+        Village built = village(u"qtcraft:swamp"_s, false, {}, turns);
+        QVERIFY(built.plan);
+        const auto house = std::ranges::find_if(built.plan->pieces, [](const QcStructurePlacement &piece) { return piece.structure().name() == u"qtcraft:village_swamp_house_large"_s; });
+        QVERIFY(house != built.plan->pieces.end());
+        const QcBlockPos door = house->toWorld(QcBlockPos{4, 1, 5});
+        const QcBlockPos porch = house->toWorld(QcBlockPos{4, 1, 6});
+        const auto inHouse = [&house](QcBlockPos at) {
+            return at.x >= house->origin().x && at.x < house->origin().x + house->sizeX() && at.z >= house->origin().z && at.z < house->origin().z + house->sizeZ();
+        };
+        const auto homeInside = std::ranges::find_if(built.plan->beds, [&](const QcVillagePlan::Spot &bed) { return inHouse(bed.at); });
+        const auto homeElsewhere = std::ranges::find_if(built.plan->beds, [&](const QcVillagePlan::Spot &bed) { return !inHouse(bed.at); });
+        QVERIFY(homeInside != built.plan->beds.end() && homeElsewhere != built.plan->beds.end());
+        const int type = *m_content->mobIndex(u"qtcraft:villager"_s);
+        const QcVillagerSettings &settings = *m_content->villagerSettings(u"qtcraft:villager"_s);
+        const quint32 out = built.mobs->spawn(type, {door.x + 0.5, double(door.y), door.z + 0.5}, built.nextId++);
+        *built.mobs->find(out)->villager = QcVillagerHomes::settle(built.state(), homeElsewhere->at, built.mobs->find(out)->uid, settings, 1);
+        // On the porch, a little off its middle line and away from the door.
+        const QcVec3 outwards{double(porch.x - door.x), 0.0, double(porch.z - door.z)};
+        const QcVec3 aside{outwards.z, 0.0, outwards.x};
+        const QcVec3 onPorch = QcVec3{porch.x + 0.5, double(porch.y), porch.z + 0.5} + outwards * 0.2 - aside * 0.2;
+        const quint32 in = built.mobs->spawn(type, onPorch, built.nextId++);
+        *built.mobs->find(in)->villager = QcVillagerHomes::settle(built.state(), homeInside->at, built.mobs->find(in)->uid, settings, 2);
+        bool home = false;
+        for (int tick = 0; tick < 2400 && !home; ++tick) {
+            this->tick(built, 0.7);
+            home = built.mobs->find(out)->pose == QcPose::Lying && built.mobs->find(in)->pose == QcPose::Lying;
+        }
+        QVERIFY2(home, qPrintable(where(*built.mobs->find(out)) + u"; "_s + where(*built.mobs->find(in))));
+    }
+
     void aVillagerMovesIntoEveryBed()
     {
-        Village built = village(any, true);
+        Village built = village(plains, true);
         QVERIFY(built.plan);
         const QcVillage &state = built.state();
         QVERIFY(state.beds.size() >= 2);
@@ -168,10 +267,10 @@ private slots:
         const QList<const QcCreature *> settled = villagers(built);
         for (const QcCreature *villager : settled) {
             ids.insert(villager->uid);
-            QVERIFY(villager->villager.home);
-            QCOMPARE(QcVillage::spotAt(built.state().beds, *villager->villager.home)->claimedBy, villager->uid);
-            QVERIFY(horizontalDistance(villager->motion.position, *villager->villager.home) < 3.0);
-            QCOMPARE(villager->villager.style, state.style);
+            QVERIFY(villager->villager->home);
+            QCOMPARE(QcVillage::spotAt(built.state().beds, *villager->villager->home)->claimedBy, villager->uid);
+            QVERIFY(horizontalDistance(villager->motion.position, *villager->villager->home) < 3.0);
+            QCOMPARE(villager->villager->style, state.style);
             QVERIFY(villager->persistent);
         }
         QCOMPARE(ids.size(), state.beds.size());
@@ -179,7 +278,7 @@ private slots:
 
         // A chunk seen again brings nobody new.
         const qsizetype count = built.mobs->mobs().size();
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*built.plan);
+        const QList<QcChunkPos> chunks = QcVillageFixture::chunksOf(*built.plan);
         for (const QcChunkPos &chunk : chunks) {
             built.mobs->populateChunk(*built.world, chunk, built.ids());
         }
@@ -188,18 +287,18 @@ private slots:
 
     void villagersKeepToTheLimits()
     {
-        Village perVillage = village(any, true, {2, 1024});
+        Village perVillage = village(plains, true, {2, 1024});
         QCOMPARE(villagers(perVillage).size(), 2);
         QCOMPARE(perVillage.state().population, 2);
         QCOMPARE(perVillage.state().freeBeds(), perVillage.state().beds.size() - 2);
 
-        Village world = village(any, true, {32, 1});
+        Village world = village(plains, true, {32, 1});
         QCOMPARE(villagers(world).size(), 1);
     }
 
     void deathAndRemovalFreeTheClaims()
     {
-        Village built = village(any, true);
+        Village built = village(plains, true);
         QVERIFY(villagers(built).size() >= 2);
         const QList<const QcCreature *> all = villagers(built);
         const QcCreature first = *all.constFirst();
@@ -207,10 +306,10 @@ private slots:
         const int population = built.state().population;
 
         QVERIFY(built.mobs->wound(first.id, 1000.0).has_value());
-        QCOMPARE(QcVillage::spotAt(built.state().beds, *first.villager.home)->claimedBy, 0u);
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *first.villager->home)->claimedBy, 0u);
         QCOMPARE(built.state().population, population - 1);
         QVERIFY(built.mobs->remove(second.id));
-        QCOMPARE(QcVillage::spotAt(built.state().beds, *second.villager.home)->claimedBy, 0u);
+        QCOMPARE(QcVillage::spotAt(built.state().beds, *second.villager->home)->claimedBy, 0u);
         QCOMPARE(built.state().population, population - 2);
     }
 
@@ -219,7 +318,7 @@ private slots:
     // villagers get persistent ids no loaded one has (decision E-420).
     void lostClaimsLapseAndIdsStayUnique()
     {
-        Village built = village(any, false);
+        Village built = village(plains, false);
         QVERIFY(built.plan);
         QcVillage &state = built.state();
         QVERIFY(state.beds.size() >= 2);
@@ -240,9 +339,14 @@ private slots:
         built.mobs->restore({stored}, {}, built.ids());
         QCOMPARE(built.mobs->nextUid(), 6u);
 
-        // Not every chunk around the village is loaded yet: the claim stays.
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*built.plan);
-        built.mobs->populateChunk(*built.world, chunks.constFirst(), built.ids());
+        // Not every chunk around the village is loaded yet: the claim stays. The chunk seen early
+        // is not the one of villager 40's bed: each chunk is settled once, so a bed whose claim
+        // lapses after its chunk was settled waits for a child.
+        const QList<QcChunkPos> chunks = QcVillageFixture::chunksOf(*built.plan);
+        const QcChunkPos lostBed = state.beds[0].at.chunk();
+        const auto early = std::ranges::find_if(chunks, [lostBed](QcChunkPos chunk) { return chunk != lostBed; });
+        QVERIFY(early != chunks.end());
+        built.mobs->populateChunk(*built.world, *early, built.ids());
         QCOMPARE(state.beds[0].claimedBy, 40u);
 
         const int around = QcVillage::reach + QcVillagerHomes::strayReach;
@@ -286,7 +390,7 @@ private slots:
 
     void longWalksGoInLegsOverTheBoardwalks()
     {
-        Village built = village([](const QcVillagePlan &plan) { return plan.style == u"qtcraft:swamp"_s && plan.beds.size() >= 4; }, false);
+        Village built = village(u"qtcraft:swamp"_s, false);
         QVERIFY(built.plan);
 
         // The two beds farthest apart, well beyond one search window (64 cells).
@@ -311,7 +415,7 @@ private slots:
         QVERIFY(start);
         const quint32 id = built.mobs->spawn(*m_content->mobIndex(u"qtcraft:villager"_s), *start, built.nextId++);
         QcCreature *walker = built.mobs->find(id);
-        walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), 1);
+        *walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villagerSettings(u"qtcraft:villager"_s)), 1);
         bool arrived = false;
         for (int tick = 0; tick < 4800 && !arrived; ++tick) {
             this->tick(built, 0.5);
@@ -325,15 +429,15 @@ private slots:
 
     void aWalkGoesOnAfterTheChunkWasUnloaded()
     {
-        Village built = village([](const QcVillagePlan &plan) { return plan.style != u"qtcraft:swamp"_s && !plan.workstations.isEmpty(); }, true);
+        Village built = village(plains, true);
         QVERIFY(built.plan);
-        const auto worker = std::ranges::find_if(built.mobs->mobs(), [](const QcCreature &mob) { return !mob.villager.profession.isEmpty(); });
+        const auto worker = std::ranges::find_if(built.mobs->mobs(), [](const QcCreature &mob) { return mob.isVillager(); });
         QVERIFY(worker != built.mobs->mobs().end());
         const quint32 id = worker->id;
         for (int tick = 0; tick < 40; ++tick) {
             this->tick(built, 0.1);
         }
-        QVERIFY(built.mobs->find(id)->villager.work);
+        QVERIFY(built.mobs->find(id)->villager->work);
 
         // Unloaded (what its chunk keeps) and loaded again: the same villager, deciding anew.
         const QcMobManager::Stored stored = QcMobManager::storedOf(*built.mobs->find(id));
@@ -347,7 +451,7 @@ private slots:
         QCOMPARE(back.uid, stored.uid);
         QVERIFY(built.mobs->mobs().last().uid != stored.uid);
         back.dormant = false;
-        QCOMPARE(static_cast<const QcVillagerRecord &>(back.villager), record);
+        QCOMPARE(static_cast<const QcVillagerRecord &>(*back.villager), record);
         const quint32 again = back.id;
         bool there = false;
         for (int tick = 0; tick < 2400 && !there; ++tick) {
@@ -360,7 +464,7 @@ private slots:
         bool asleep = false;
         for (int tick = 0; tick < 2400 && !asleep; ++tick) {
             this->tick(built, 0.7);
-            asleep = built.mobs->find(again)->villager.sleeping;
+            asleep = built.mobs->find(again)->pose == QcPose::Lying;
         }
         QVERIFY2(asleep, qPrintable(where(*built.mobs->find(again))));
         QVERIFY(horizontalDistance(built.mobs->find(again)->motion.position, *record.home) < 1.5);

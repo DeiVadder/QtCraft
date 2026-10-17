@@ -17,14 +17,6 @@ namespace {
 
 // A villager hurt or near a hostile creature runs this long (seconds) after the last sign of it.
 constexpr double fleeSeconds = 3.0;
-// A door counts as passed once the villager is this far from its cell (horizontally).
-constexpr double doorPassed = 1.5;
-// Villagers this close to a door on their way take turns at it; one that waits steps back to this
-// distance.
-constexpr double doorQueue = 2.5;
-constexpr double doorStepBack = 1.8;
-// A leg counts as walked this close to its cell.
-constexpr double legArrived = 2.0;
 // Share of strolling decisions that stand still instead.
 constexpr double standChance = 0.4;
 
@@ -38,10 +30,37 @@ double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
     return std::hypot(a.x - b.x, a.z - b.z);
 }
 
-QcBlockPos feetOf(const QcCreature &mob)
+// Legs along the roads of a villager's village (QcMobLegs); none without one. The plan is looked up
+// only when a leg is asked for.
+class VillageRoutes : public QcMobLegs::Routes
 {
-    return QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0});
-}
+public:
+    VillageRoutes(QcVillagerRoads &roads, QcServerWorld &world, qint64 village)
+        : m_roads(roads)
+        , m_world(world)
+        , m_village(village)
+    {
+    }
+
+    int reach() const override { return QcVillagerRoads::legReach; }
+    std::optional<QcBlockPos> nextLeg(QcBlockPos from, QcBlockPos to) const override
+    {
+        const std::shared_ptr<const QcVillagePlan> plan = planOf();
+        return plan ? m_roads.nextLeg(*plan, from, to) : std::nullopt;
+    }
+    std::optional<QcBlockPos> wayOutOfWater(QcBlockPos from) const override
+    {
+        const std::shared_ptr<const QcVillagePlan> plan = planOf();
+        return plan ? m_roads.wayOutOfWater(*plan, from) : std::nullopt;
+    }
+
+private:
+    std::shared_ptr<const QcVillagePlan> planOf() const { return m_village != 0 ? m_world.villages().planOf(m_village) : nullptr; }
+
+    QcVillagerRoads &m_roads;
+    QcServerWorld &m_world;
+    qint64 m_village = 0;
+};
 
 } // namespace
 
@@ -55,6 +74,7 @@ QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry
     : m_content(std::move(content))
     , m_random(random)
     , m_planner(planner)
+    , m_doors(*m_content)
 {
     const QcContentRegistry &registry = *m_content;
     for (const QcVillagerSettings &species : registry.villagerSpecies()) {
@@ -74,7 +94,7 @@ void QcVillagerBehaviour::startTick()
     m_routes = 0;
     m_harvests = 0;
     m_hostilesGathered = false;
-    m_doorways = std::exchange(m_nextDoorways, {});
+    m_doors.startTick();
 }
 
 bool QcVillagerBehaviour::isRipe(QcBlockId block) const
@@ -89,17 +109,17 @@ std::shared_ptr<const QcVillagePlan> QcVillagerBehaviour::planOf(const QcVillage
 
 bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     const double phase = QcDayCycle::phase(context.worldTime);
     const bool night = m_content->villagerSettingsOf(mob.type).activityAt(phase, villager.profession) == QcVillagerActivity::Sleep;
     const bool inBed = villager.home && QcVillagerHomes::lyingIn(context.world, *villager.home);
-    if (night && inBed && mob.hurtTimer <= 0.0) {
+    if (night && inBed && mob.pose == QcPose::Lying && mob.hurtTimer <= 0.0) {
         mob.motion.velocity = {};
         return true;
     }
 
     // Up: beside the bed, deciding at once what to do.
-    villager.sleeping = false;
+    mob.pose = QcPose::Standing;
     villager.decideIn = 0;
     villager.target.reset();
     if (villager.home) {
@@ -110,10 +130,11 @@ bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)
     return false;
 }
 
-QcPhysics::Steering QcVillagerBehaviour::think(QcCreature &mob, const QcMobDefinition &definition, const Context &context)
+QcPhysics::Steering QcVillagerBehaviour::think(QcCreature &mob, const QcMobDefinition &definition, const Context &context, int /*thinkTicks*/)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     if (villager.trader != 0 && trade(mob, context)) {
+        mob.lastSpeed = definition.walkSpeed;
         return {{}, definition.walkSpeed};
     }
 
@@ -126,12 +147,13 @@ QcPhysics::Steering QcVillagerBehaviour::think(QcCreature &mob, const QcMobDefin
 
     const QcPhysics::Steering steering = walk(mob, definition, context);
     arrive(mob, context);
+    mob.lastSpeed = steering.speed;
     return steering;
 }
 
 bool QcVillagerBehaviour::trade(QcCreature &mob, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     // It keeps an eye out for danger at its usual pace; danger, a hit or bedtime ends the trade (the
     // server closes the screen when the trader is gone).
     if (--villager.decideIn <= 0) {
@@ -147,7 +169,7 @@ bool QcVillagerBehaviour::trade(QcCreature &mob, const Context &context)
     }
 
     villager.target.reset();
-    villager.leg.reset();
+    villager.legs.leg.reset();
     mob.path.clear();
     const QcVec3 towards{villager.traderAt.x - mob.motion.position.x, 0.0, villager.traderAt.z - mob.motion.position.z};
     if (towards.length() > 0.0) {
@@ -158,14 +180,14 @@ bool QcVillagerBehaviour::trade(QcCreature &mob, const Context &context)
 
 void QcVillagerBehaviour::leave(const QcCreature &mob)
 {
-    if (mob.villager.openedDoor) {
-        m_actions.append({Action::Kind::CloseDoor, *mob.villager.openedDoor, mob.id});
+    if (mob.villager->openedDoor) {
+        m_actions.append({Action::Kind::CloseDoor, *mob.villager->openedDoor, mob.id});
     }
 }
 
 void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     const QcVillagerSettings &settings = m_content->villagerSettingsOf(mob.type);
     QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
     if (village) {
@@ -206,8 +228,8 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     const std::optional<Goal> goal = goalOf(mob, context);
     const std::optional<QcBlockPos> target = goal ? std::optional<QcBlockPos>(goal->cell) : std::nullopt;
     if (target != villager.target) {
-        villager.leg.reset();
-        villager.legRetryIn = 0;
+        villager.legs.leg.reset();
+        villager.legs.retryIn = 0;
         villager.arrived = false;
     }
     villager.target = target;
@@ -228,10 +250,10 @@ void QcVillagerBehaviour::lookForCrops(QcVillager &villager, const QcVillagerPro
 void QcVillagerBehaviour::lookOut(QcCreature &mob, const Context &context)
 {
     if (const std::optional<QcVec3> threat = nearestHostile(mob.motion.position, m_content->villagerSettingsOf(mob.type).fleeDistance, context)) {
-        mob.villager.threat = threat;
+        mob.villager->threat = threat;
         mob.fleeTimer = std::max(mob.fleeTimer, fleeSeconds);
     } else if (mob.fleeTimer <= 0.0) {
-        mob.villager.threat.reset();
+        mob.villager->threat.reset();
     }
 }
 
@@ -275,7 +297,7 @@ const QHash<QcChunkPos, QList<QcVec3>> &QcVillagerBehaviour::hostiles(const Cont
 
 std::optional<QcVillagerBehaviour::Goal> QcVillagerBehaviour::goalOf(QcCreature &mob, const Context &context)
 {
-    const QcVillager &villager = mob.villager;
+    const QcVillager &villager = *mob.villager;
     const QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
     switch (villager.activity) {
     case QcVillagerActivity::Sleep:
@@ -308,7 +330,7 @@ std::optional<QcVillagerBehaviour::Goal> QcVillagerBehaviour::strollGoal(const Q
     if (m_random.generateDouble() < standChance) {
         return std::nullopt;
     }
-    const QcVillager &villager = mob.villager;
+    const QcVillager &villager = *mob.villager;
     const QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
     const QcVec3 around = villager.home ? centreOf(*villager.home) : village ? centreOf(village->centre) : mob.motion.position;
     const double angle = m_random.bounded(2.0 * std::numbers::pi);
@@ -353,7 +375,7 @@ std::optional<QcBlockPos> QcVillagerBehaviour::ripeCropNear(const QcVillager &vi
 
 QcPhysics::Steering QcVillagerBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     // Children run about (decision E-415).
     double speed = definition.walkSpeed * (mob.isYoung() ? m_content->villagerSettingsOf(mob.type).breeding.youngSpeed : 1.0);
     if (mob.fleeTimer > 0.0) {
@@ -380,159 +402,35 @@ QcPhysics::Steering QcVillagerBehaviour::walk(QcCreature &mob, const QcMobDefini
     }
 
     const QcMobNavigator::Navigation navigation = QcMobNavigator::steer(mob, speed, m_planner, context.world, context.rules);
-    if (const std::optional<QcPhysics::Steering> waiting = waitAtDoor(mob, navigation, context)) {
+    if (const std::optional<QcPhysics::Steering> waiting = m_doors.waitAtDoor(mob, navigation, {context.world, m_planner.cells(), context.rules})) {
         return *waiting;
     }
-    useDoors(mob, navigation);
+    const QcDoorPassage::Moves doors = QcDoorPassage::use(mob, villager.openedDoor, navigation);
+    if (doors.close) {
+        m_actions.append({Action::Kind::CloseDoor, *doors.close, mob.id});
+    }
+    if (doors.open) {
+        m_actions.append({Action::Kind::OpenDoor, *doors.open, mob.id});
+    }
     if (navigation.steering.wish.length() > 0.0) {
         mob.yaw = QcMobSteering::yawTowards(navigation.steering.wish);
     }
     return navigation.steering;
 }
 
-std::optional<QcBlockPos> QcVillagerBehaviour::doorAhead(const QcCreature &mob, const QcMobNavigator::Navigation &navigation,
-                                                         const Context &context, bool &inside) const
-{
-    const auto isDoor = [&](QcBlockPos cell) {
-        const std::optional<QcBlockId> block = context.world.blockAt(cell);
-        const QcBlockDefinition *definition = block ? &m_content->block(*block) : nullptr;
-        return definition && definition->toggles && definition->property(u"open"_s);
-    };
-    const QcBlockPos feet = feetOf(mob);
-    inside = isDoor(feet);
-    if (inside) {
-        return feet;
-    }
-    if (navigation.door) {
-        return navigation.door;
-    }
-    if (mob.path.next < mob.path.cells.size() && isDoor(mob.path.cells[mob.path.next])) {
-        return mob.path.cells[mob.path.next];
-    }
-    return std::nullopt;
-}
-
-std::optional<QcPhysics::Steering> QcVillagerBehaviour::waitAtDoor(QcCreature &mob, const QcMobNavigator::Navigation &navigation,
-                                                                   const Context &context)
-{
-    bool inside = false;
-    const std::optional<QcBlockPos> door = doorAhead(mob, navigation, context, inside);
-    const double distance = inside ? 0.0 : door ? horizontalDistance(mob.motion.position, centreOf(*door)) : doorQueue;
-    if (!door || distance >= doorQueue || mob.fleeTimer > 0.0) {
-        return std::nullopt;
-    }
-
-    // The turn of the next tick: one in the doorway first, then the one going through now while it
-    // is on its way, then the nearest.
-    const auto first = m_doorways.constFind(*door);
-    const std::optional<Passer> going = first != m_doorways.constEnd() ? std::optional(*first) : std::nullopt;
-    const auto rank = [&going](Passer passer) { return passer.distance <= 0.0 ? 0 : going && going->id == passer.id ? 1 : 2; };
-    const Passer self{mob.id, distance};
-    const auto next = m_nextDoorways.find(*door);
-    if (next == m_nextDoorways.end() || rank(self) < rank(*next) || (rank(self) == rank(*next) && self.before(*next))) {
-        m_nextDoorways.insert(*door, self);
-    }
-    // Its turn, or it stands in the doorway and the one going was not yet.
-    if (!going || going->id == mob.id || (inside && going->distance > 0.0)) {
-        return std::nullopt;
-    }
-    return stepAside(mob, centreOf(*door), navigation.steering.speed, context);
-}
-
-QcPhysics::Steering QcVillagerBehaviour::stepAside(QcCreature &mob, const QcVec3 &doorCentre, double speed, const Context &context) const
-{
-    // Out of the doorway and aside, out of the way of the one coming through, facing the door.
-    const QcVec3 away{mob.motion.position.x - doorCentre.x, 0.0, mob.motion.position.z - doorCentre.z};
-    if (away.length() <= 0.0) {
-        return {{}, speed};
-    }
-    mob.yaw = QcMobSteering::yawTowards(away * -1.0);
-    if (away.length() >= doorStepBack) {
-        return {{}, speed};
-    }
-
-    const QcVec3 back = away.normalized();
-    const QcVec3 side = QcVec3{-back.z, 0.0, back.x} * (mob.id % 2 == 0 ? 1.0 : -1.0);
-    for (const QcVec3 &step : {(back + side).normalized(), (back - side).normalized(), back}) {
-        if (QcMobNavigator::safeStep(mob, step, context.world, m_planner.cells(), context.rules)) {
-            return {step, speed};
-        }
-    }
-    return {{}, speed};
-}
-
 QcBlockPos QcVillagerBehaviour::legTowards(QcCreature &mob, QcBlockPos target, const Context &context)
 {
-    QcVillager &villager = mob.villager;
-    if (const std::optional<QcBlockPos> shore = wayOutOfWater(mob, context)) {
-        return *shore;
-    }
-    const QcBlockPos feet = feetOf(mob);
-    if (std::abs(target.x - feet.x) <= QcVillagerRoads::legReach && std::abs(target.z - feet.z) <= QcVillagerRoads::legReach) {
-        villager.leg.reset();
-        return target;
-    }
-    const bool walking = villager.leg && horizontalDistance(mob.motion.position, centreOf(*villager.leg)) > legArrived
-                         && !(mob.path.finished() && mob.path.plannedGoal == *villager.leg);
-    villager.legRetryIn = std::max(0, villager.legRetryIn - 1);
-    if (walking || villager.legRetryIn > 0 || m_routes >= m_limits.routesPerTick) {
-        return villager.leg.value_or(target);
-    }
-
-    ++m_routes;
-    const std::shared_ptr<const QcVillagePlan> plan = planOf(villager, context);
-    villager.leg = plan ? m_roads.nextLeg(*plan, feet, target) : std::nullopt;
-    villager.legRetryIn = villager.leg ? 0 : legRetryTicks;
-    return villager.leg.value_or(target);
-}
-
-std::optional<QcBlockPos> QcVillagerBehaviour::wayOutOfWater(QcCreature &mob, const Context &context)
-{
-    QcVillager &villager = mob.villager;
-    if (!mob.motion.inWater) {
-        // Ashore once it stands on dry ground (at the surface it bobs in and out of the water).
-        if (mob.motion.onGround) {
-            villager.shore.reset();
-        }
-        return villager.shore;
-    }
-    const bool noWay = mob.path.finished() && !mob.path.reachesGoal && !mob.path.queued;
-    if (villager.shore || !noWay || m_routes >= m_limits.routesPerTick) {
-        return villager.shore;
-    }
-
-    ++m_routes;
-    const std::shared_ptr<const QcVillagePlan> plan = planOf(villager, context);
-    villager.shore = plan ? m_roads.wayOutOfWater(*plan, feetOf(mob)) : std::nullopt;
-    villager.leg.reset();
-    return villager.shore;
-}
-
-void QcVillagerBehaviour::useDoors(QcCreature &mob, const QcMobNavigator::Navigation &navigation)
-{
-    QcVillager &villager = mob.villager;
-    const QcBlockPos feet = feetOf(mob);
-    if (villager.openedDoor) {
-        const QcBlockPos door = *villager.openedDoor;
-        const bool inside = feet.x == door.x && feet.z == door.z;
-        if (!inside && horizontalDistance(mob.motion.position, centreOf(door)) > doorPassed) {
-            m_actions.append({Action::Kind::CloseDoor, door, mob.id});
-            villager.openedDoor.reset();
-        }
-    }
-    // A closed door on the path is opened, also the one it opened itself and someone shut again.
-    if (navigation.door && horizontalDistance(mob.motion.position, centreOf(*navigation.door)) < reach) {
-        if (villager.openedDoor && villager.openedDoor != navigation.door) {
-            m_actions.append({Action::Kind::CloseDoor, *villager.openedDoor, mob.id});
-        }
-        m_actions.append({Action::Kind::OpenDoor, *navigation.door, mob.id});
-        villager.openedDoor = navigation.door;
-    }
+    QcVillager &villager = *mob.villager;
+    const VillageRoutes routes(m_roads, context.world, villager.village);
+    QcMobLegs::Budget budget{m_routes, m_limits.routesPerTick};
+    const QcBlockPos cell = QcMobLegs::towards(mob, villager.legs, target, routes, budget);
+    m_routes = budget.used;
+    return cell;
 }
 
 void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     if (!villager.target || mob.fleeTimer > 0.0) {
         villager.arrived = false;
         return;
@@ -581,7 +479,7 @@ void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)
 
 void QcVillagerBehaviour::lieDown(QcCreature &mob, const Context &context)
 {
-    QcVillager &villager = mob.villager;
+    QcVillager &villager = *mob.villager;
     const std::optional<QcVillagerHomes::Lying> lying =
         villager.home ? QcVillagerHomes::lyingIn(context.world, *villager.home) : std::nullopt;
     if (!lying) {
@@ -591,8 +489,8 @@ void QcVillagerBehaviour::lieDown(QcCreature &mob, const Context &context)
         m_actions.append({Action::Kind::CloseDoor, *villager.openedDoor, mob.id});
         villager.openedDoor.reset();
     }
-    villager.sleeping = true;
-    villager.leg.reset();
+    mob.pose = QcPose::Lying;
+    villager.legs.leg.reset();
     mob.path.clear();
     mob.motion.position = lying->position;
     mob.motion.velocity = {};

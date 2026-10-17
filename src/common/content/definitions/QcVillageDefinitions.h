@@ -160,7 +160,7 @@ struct QcVillagePiece
 
 // Other creatures living in the villages of a style (decision E-421), such as cats: `mob` with
 // `min` to `max` of them per village. Data only for now: no code spawns them yet (the hook is
-// QcMobManager::spawnVillagers, beside the villagers).
+// QcVillagePopulation::spawnVillagers, beside the villagers).
 struct QcVillageResident
 {
     QString mob;

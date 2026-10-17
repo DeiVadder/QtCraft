@@ -161,7 +161,7 @@ private slots:
             QCOMPARE(server->weather().state().kind, QcWeatherKind::Clear);
             QCOMPARE(server->weather().state().rain, 0.0f);
             // Besides them, residents of the village rows in the chunks loaded so far (decision E-411).
-            residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.villager.village != 0; });
+            residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.isVillager() && mob.villager->village != 0; });
             QCOMPARE(server->mobs().mobs().size() - residents, mobs);
             QVERIFY(std::ranges::all_of(server->mobs().mobs(), &QcCreature::persistent));
             QVERIFY(!server->mobs().naturalSpawning());
@@ -440,12 +440,12 @@ private slots:
             QVERIFY(std::ranges::all_of(village->workstations, inRow));
             QVERIFY(std::ranges::all_of(village->beds, [](const QcVillage::Spot &bed) { return bed.claimedBy != 0; }));
             const auto residents = std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
-                return mob.villager.village == plan->id && mob.villager.style == plan->style;
+                return mob.isVillager() && mob.villager->village == plan->id && mob.villager->style == plan->style;
             });
             QCOMPARE(residents, village->population);
             // The villager of its last bed is a child (decision E-415).
             const auto children = std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
-                return mob.villager.village == plan->id && mob.isYoung() && mob.villager.home == village->beds.constLast().at;
+                return mob.isVillager() && mob.villager->village == plan->id && mob.isYoung() && mob.villager->home == village->beds.constLast().at;
             });
             QCOMPARE(children, 1);
             // Its fields are the crop cells of its pieces (what its farmers harvest).
@@ -480,8 +480,8 @@ private slots:
         const QcVillagerTrades &trades = server->mobs().villagers().trades(*m_content->mobIndex(u"qtcraft:villager"_s));
         QSet<QString> trading;
         for (const QcCreature &mob : server->mobs().mobs()) {
-            if (mob.villager.village != 0 && !trades.offersOf(mob.villager).isEmpty()) {
-                trading.insert(mob.villager.profession);
+            if (mob.isVillager() && mob.villager->village != 0 && !trades.offersOf(*mob.villager).isEmpty()) {
+                trading.insert(mob.villager->profession);
             }
         }
         QCOMPARE(trading, (QSet<QString>{u"qtcraft:farmer"_s, u"qtcraft:smith"_s, u"qtcraft:fisher"_s}));

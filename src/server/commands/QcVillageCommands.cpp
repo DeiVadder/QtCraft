@@ -2,6 +2,7 @@
 
 #include "server/commands/QcCommandArguments.h"
 #include "server/core/QcServerState.h"
+#include "server/villages/QcVillagerBehaviour.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
 #include <QJsonDocument>
@@ -46,7 +47,7 @@ void QcVillageCommands::profession(const QcCommandContext &context)
     double best = professionReach;
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
         const double distance = (mob.motion.position - context.player().motion.position).length();
-        if (m_state.content().mobs()[mob.type].villager && distance <= best) {
+        if (mob.isVillager() && distance <= best) {
             nearest = &mob;
             best = distance;
         }
@@ -59,13 +60,13 @@ void QcVillageCommands::profession(const QcCommandContext &context)
     // Experience at the level's start (at least 1: a villager with experience keeps its profession
     // without a workstation), so it levels on from there.
     const QcTradingSettings &trading = m_state.content().villagerSettingsOf(nearest->type).trading;
-    nearest->villager.profession = name;
-    nearest->villager.level = level;
-    nearest->villager.experience = std::max(1, trading.levels.value(level - 1));
+    nearest->villager->profession = name;
+    nearest->villager->level = level;
+    nearest->villager->experience = std::max(1, trading.levels.value(level - 1));
     // Its offers follow at once; an open trading screen shows them with the next tick.
-    nearest->villager.offers.clear();
-    m_state.entities().creatures().villagers().trades(nearest->type).sync(nearest->villager);
-    nearest->villager.lookChanged = true;
+    nearest->villager->offers.clear();
+    m_state.entities().creatures().villagers().trades(nearest->type).sync(*nearest->villager);
+    nearest->villager->lookChanged = true;
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Villager %1 is now %2 of level %3"),
                   {QString::number(nearest->id), name, QString::number(level)});
 }

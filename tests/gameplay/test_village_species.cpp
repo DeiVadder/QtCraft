@@ -4,8 +4,9 @@
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/villages/QcVillageGolems.h"
+#include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillages.h"
-#include "world/QcVillageTestUtil.h"
+#include "world/QcVillageFixture.h"
 
 #include <QTest>
 
@@ -23,6 +24,7 @@ class TestVillageSpecies : public QObject
     Q_OBJECT
 
 private:
+    // The seed of the creatures' random numbers.
     static constexpr qint64 seed = 42;
     // Work time of the routine (QcVillagerSettings::routine).
     static constexpr double workPhase = 0.1;
@@ -53,9 +55,9 @@ private:
     }
 
     // The base content with the species test:gnome (the villager's settings under its own name) and
-    // the golem kinds test:golem_a (the settings') and test:golem_b; the first village of the seed
-    // with its style settled by gnomes guarded by test:golem_b, its chunks and a ring around them
-    // loaded.
+    // the golem kinds test:golem_a (the settings') and test:golem_b; a fixture village of the plains
+    // style (decision E-424) settled by gnomes guarded by test:golem_b, its chunks and a ring around
+    // them loaded.
     static Village gnomeVillage()
     {
         QStringList warnings;
@@ -72,15 +74,7 @@ private:
         settings.golem = {u"test:golem_a"_s, 1, 1, 300.0, 8};
         content.setVillageSettings(settings);
 
-        auto generator = std::make_unique<QcTerrainGenerator>(result.content, seed);
-        for (int rz = -3; rz <= 3 && !result.plan; ++rz) {
-            for (int rx = -3; rx <= 3 && !result.plan; ++rx) {
-                std::shared_ptr<const QcVillagePlan> plan = generator->villages().regionPlan(rx, rz);
-                if (plan && plan->beds.size() >= 4 && plan->style != u"qtcraft:swamp"_s) {
-                    result.plan = std::move(plan);
-                }
-            }
-        }
+        result.plan = QcVillageFixture::plan(content, {});
         if (!result.plan) {
             return result;
         }
@@ -89,24 +83,21 @@ private:
         style.golem = QcVillageGolemPatch{};
         style.golem->mob = u"test:golem_b"_s;
 
-        result.world = std::make_unique<QcServerWorld>(result.content, std::move(generator));
+        result.world = std::make_unique<QcServerWorld>(result.content, std::make_unique<QcVillageFixture::Terrain>(result.content, QList{result.plan}));
         result.mobs = std::make_unique<QcMobManager>(result.content, seed);
-        result.mobs->setVillages(&result.world->villages());
-        result.mobs->setGolemLimit(1);
+        result.mobs->population().setVillages(&result.world->villages());
+        result.mobs->population().setGolemLimit(1);
         loadAround(result);
         return result;
     }
 
     static void loadAround(Village &village)
     {
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*village.plan);
-        for (const QcChunkPos &chunk : chunks) {
-            for (int dz = -2; dz <= 2; ++dz) {
-                for (int dx = -2; dx <= 2; ++dx) {
-                    village.world->loadChunk({chunk.x + dx, chunk.z + dz});
-                }
-            }
+        const QList<QcChunkPos> around = QcVillageFixture::chunksOf(*village.plan, 2);
+        for (const QcChunkPos &chunk : around) {
+            village.world->loadChunk(chunk);
         }
+        const QList<QcChunkPos> chunks = QcVillageFixture::chunksOf(*village.plan);
         for (const QcChunkPos &chunk : chunks) {
             village.mobs->populateChunk(*village.world, chunk, [&village] { return village.nextId++; });
         }
@@ -147,12 +138,12 @@ private:
         village.worldTime = QcDayCycle::dayLength * (std::ceil(village.worldTime / QcDayCycle::dayLength) + workPhase);
         const QList<quint32> parents{villagersOf(village).at(0)->id, villagersOf(village).at(1)->id};
         for (const quint32 id : parents) {
-            village.mobs->find(id)->villager.produce = 3;
+            village.mobs->find(id)->villager->produce = 3;
         }
-        for (int i = 0; i <= QcMobManager::villageLifeTicks; ++i) {
+        for (int i = 0; i <= QcVillagePopulation::villageLifeTicks; ++i) {
             for (const quint32 id : parents) {
                 QcCreature *parent = village.mobs->find(id);
-                if (parent->villager.produce == 3) {
+                if (parent->villager->produce == 3) {
                     parent->motion.position = spot;
                     parent->motion.velocity = {};
                 }
@@ -167,7 +158,7 @@ private slots:
     {
         Village built = gnomeVillage();
         QVERIFY(built.plan);
-        built.mobs->setGolemLimit(0);
+        built.mobs->population().setGolemLimit(0);
 
         // Its villagers are gnomes.
         const QList<QcCreature *> villagers = villagersOf(built);
@@ -201,7 +192,7 @@ private slots:
         // as allowed, yet the village spawns its own kind, one, as the limit is per kind.
         const QcBlockPos centre = built.plan->centre;
         built.mobs->spawn(built.type(u"test:golem_a"_s), QcVec3{centre.x + 0.5, centre.y + 1.0, centre.z + 0.5}, built.nextId++);
-        ticks(built, 3 * QcMobManager::villageLifeTicks + 1);
+        ticks(built, 3 * QcVillagePopulation::villageLifeTicks + 1);
         QCOMPARE(countOf(built, u"test:golem_b"_s), 1);
         QCOMPARE(countOf(built, u"test:golem_a"_s), 1);
         QCOMPARE(built.state().golems, 1);

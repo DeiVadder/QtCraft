@@ -29,10 +29,10 @@ void QcServerVillagers::door(const QcVillagerBehaviour::Action &action)
     if (!villager) {
         return;
     }
-    if (open && villager->villager.openedDoor == action.pos) {
-        villager->villager.openedDoor.reset();
-    } else if (!open && !villager->villager.openedDoor) {
-        villager->villager.openedDoor = action.pos;
+    if (open && villager->villager->openedDoor == action.pos) {
+        villager->villager->openedDoor.reset();
+    } else if (!open && !villager->villager->openedDoor) {
+        villager->villager->openedDoor = action.pos;
     }
 }
 
@@ -53,8 +53,8 @@ void QcServerVillagers::apply()
     }
 
     for (QcCreature &mob : creatures.editableMobs()) {
-        if (mob.villager.lookChanged) {
-            mob.villager.lookChanged = false;
+        if (mob.isVillager() && mob.villager->lookChanged) {
+            mob.villager->lookChanged = false;
             m_state.entities().markStale(mob.id);
         }
     }
@@ -87,7 +87,7 @@ void QcServerVillagers::harvest(quint32 villager, QcBlockPos pos)
     m_blocks.setAndBroadcast(pos, content.withProperty(*block, crop->crop.property, stages->values.constFirst()));
     m_sounds.playBlock(*crop, QcBlockSoundAction::Break, pos);
     if (QcCreature *farmer = m_state.entities().creatures().find(villager)) {
-        farmer->villager.produce = std::min(farmer->villager.produce + 1, QcVillagerRecord::maxProduce);
+        farmer->villager->produce = std::min(farmer->villager->produce + 1, QcVillagerRecord::maxProduce);
         farmer->attackedThisTick = true;
     }
 }

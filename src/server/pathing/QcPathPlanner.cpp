@@ -43,6 +43,7 @@ int QcPathPlanner::nodesFor(const QcCreature &mob) const
 void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf)
 {
     m_nodesLastTick = 0;
+    m_villagerNodesLastTick = 0;
     m_searchesLastTick = 0;
     if (m_queue.empty()) {
         return;
@@ -88,6 +89,7 @@ void QcPathPlanner::serve(const QcBlockAccess &world, QList<QcCreature> &mobs, c
 
         budget -= result.nodes;
         m_nodesLastTick += result.nodes;
+        m_villagerNodesLastTick += mob.isVillager() ? result.nodes : 0;
         ++m_searchesLastTick;
         ++m_searches;
     }

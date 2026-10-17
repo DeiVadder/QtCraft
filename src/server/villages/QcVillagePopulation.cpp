@@ -1,18 +1,49 @@
-// The villagers of QcMobManager (decision E-411): spawning them with the beds of their village,
-// freeing their claims when they leave, their limits, their children and their villages' golems
-// (decision E-415).
-
-#include "server/mobs/QcMobManager.h"
+#include "server/villages/QcVillagePopulation.h"
 
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobBehaviour.h"
+#include "server/pathing/QcPathPlanner.h"
 #include "server/villages/QcVillages.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
 #include <cmath>
 
-void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId, bool onlyAlwaysLivedIn)
+QcVillagePopulation::QcVillagePopulation(QcMobManager &mobs, std::shared_ptr<const QcContentRegistry> content, quint64 seed)
+    : m_mobs(mobs)
+    , m_content(std::move(content))
+    , m_seed(seed)
+    , m_breeding(m_content)
+    , m_golems(m_content)
+{
+    m_mobs.onDeparture([this](const QcCreature &mob, QcMobManager::Departure why) { depart(mob, why); });
+}
+
+void QcVillagePopulation::setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour)
+{
+    m_villagerLimits = homes;
+    m_mobs.villagers().setLimits(behaviour);
+}
+
+void QcVillagePopulation::noteChunk(QcServerWorld &world, QcChunkPos pos)
+{
+    checkVillageClaims(world, pos);
+}
+
+void QcVillagePopulation::settle(QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId, bool onlyAlwaysLivedIn)
+{
+    spawnVillagers(world, pos, nextEntityId, onlyAlwaysLivedIn);
+    spawnWaitingVillagers(world, pos, nextEntityId, onlyAlwaysLivedIn);
+}
+
+void QcVillagePopulation::tick(QcServerWorld &world, double worldTime, const NextId &nextEntityId)
+{
+    if (--m_villageLifeIn <= 0) {
+        m_villageLifeIn = villageLifeTicks;
+        liveInVillages(world, worldTime, nextEntityId);
+    }
+}
+
+void QcVillagePopulation::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId, bool onlyAlwaysLivedIn)
 {
     const std::shared_ptr<const QcVillagePlan> plan = world.generator().villageFor(pos);
     QcVillage *village = plan && (plan->alwaysLivedIn || !onlyAlwaysLivedIn) ? world.villages().find(plan->id) : nullptr;
@@ -32,26 +63,27 @@ void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const st
             break;
         }
         // No place beside the bed (the cells around it in a chunk not loaded yet): later.
-        const std::optional<QcVec3> at = QcVillagerHomes::besideBed(world, paths().cells(), bed, rules);
+        const std::optional<QcVec3> at = QcVillagerHomes::besideBed(world, m_mobs.paths().cells(), bed, rules);
         if (!at) {
             m_bedsWaiting.insert(pos);
             continue;
         }
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4100), bed.x, bed.y, bed.z) * 4294967295.0);
-        spawn(*type, *at, nextEntityId());
-        m_mobs.last().villager = QcVillagerHomes::settle(*village, bed, m_mobs.last().uid, settings, look);
+        m_mobs.spawn(*type, *at, nextEntityId());
+        QcCreature &villager = m_mobs.editableMobs().last();
+        *villager.villager = QcVillagerHomes::settle(*village, bed, villager.uid, settings, look);
         // A village always lived in (a row of the showcase world) shows a child in its last bed
         // (decision E-415); it grows up like any other.
         if (plan->alwaysLivedIn && bed == village->beds.constLast().at) {
-            m_mobs.last().growUp = settings.breeding.growUpSeconds;
+            villager.growUp = settings.breeding.growUpSeconds;
         }
         ++population;
         world.villages().noteChanged();
     }
 }
 
-void QcMobManager::spawnWaitingVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId,
-                                         bool onlyAlwaysLivedIn)
+void QcVillagePopulation::spawnWaitingVillagers(QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId,
+                                                bool onlyAlwaysLivedIn)
 {
     for (int dx = -1; dx <= 1; ++dx) {
         for (int dz = -1; dz <= 1; ++dz) {
@@ -64,7 +96,7 @@ void QcMobManager::spawnWaitingVillagers(QcServerWorld &world, QcChunkPos pos, c
     }
 }
 
-void QcMobManager::checkVillageClaims(QcServerWorld &world, QcChunkPos pos)
+void QcVillagePopulation::checkVillageClaims(QcServerWorld &world, QcChunkPos pos)
 {
     if (!world.chunk(pos)) {
         return;
@@ -83,7 +115,7 @@ void QcMobManager::checkVillageClaims(QcServerWorld &world, QcChunkPos pos)
     }
 }
 
-bool QcMobManager::claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village)
+bool QcVillagePopulation::claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village)
 {
     // Villagers resting in a chunk not loaded yet still hold their claims: wait for all of them.
     const int around = QcVillage::reach + QcVillagerHomes::strayReach;
@@ -99,14 +131,14 @@ bool QcMobManager::claimHoldersLoaded(const QcServerWorld &world, const QcVillag
     return true;
 }
 
-void QcMobManager::reconcileClaims(QcServerWorld &world, QcVillage &village)
+void QcVillagePopulation::reconcileClaims(QcServerWorld &world, QcVillage &village)
 {
     m_claimsChecked.insert(village.id);
 
     // Persistent ids are unique (decision E-420): who is there holds its claims, the others lapse.
     QSet<quint64> present;
-    for (const QcCreature &mob : std::as_const(m_mobs)) {
-        if (mob.villager.village == village.id && !mob.villager.profession.isEmpty()) {
+    for (const QcCreature &mob : m_mobs.mobs()) {
+        if (mob.isVillager() && mob.villager->village == village.id) {
             present.insert(mob.uid);
         }
     }
@@ -118,62 +150,47 @@ void QcMobManager::reconcileClaims(QcServerWorld &world, QcVillage &village)
     }
 }
 
-void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId)
+void QcVillagePopulation::liveInVillages(QcServerWorld &world, double worldTime, const NextId &nextEntityId)
 {
-    const QcVillagerBehaviour &behaviour = villagers();
+    const QcVillagerBehaviour &behaviour = m_mobs.villagers();
     const QcVillagerBreeding::Context breeding{world, world.villages(), worldTime, [&behaviour](QcBlockPos pos) { return behaviour.rainsAt(pos); },
                                                m_villagerLimits, &m_claimsChecked};
-    const QList<QcVillagerBreeding::Birth> births = m_breeding.check(m_mobs, breeding);
+    const QList<QcVillagerBreeding::Birth> births = m_breeding.check(m_mobs.editableMobs(), breeding);
     for (const QcVillagerBreeding::Birth &birth : births) {
         QcVillage *village = world.villages().find(birth.village);
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x, int(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
         const QcVillagerSettings &settings = m_content->villagerSettingsOf(birth.type);
-        spawn(birth.type, birth.position, nextEntityId());
-        m_mobs.last().villager = QcVillagerHomes::settle(*village, birth.bed, m_mobs.last().uid, settings, look);
-        m_mobs.last().growUp = settings.breeding.growUpSeconds;
+        m_mobs.spawn(birth.type, birth.position, nextEntityId());
+        QcCreature &child = m_mobs.editableMobs().last();
+        *child.villager = QcVillagerHomes::settle(*village, birth.bed, child.uid, settings, look);
+        child.growUp = settings.breeding.growUpSeconds;
         world.villages().noteChanged();
     }
 
-    if (!m_naturalSpawning) {
+    if (!m_mobs.naturalSpawning()) {
         return;
     }
     QSet<qint64> lived;
-    for (const QcCreature &mob : std::as_const(m_mobs)) {
+    for (const QcCreature &mob : m_mobs.mobs()) {
         // Only villages whose claims were reconciled (decision E-416): before that, villagers in
         // chunks not loaded yet are not counted.
-        if (!mob.dormant && mob.villager.village != 0 && !mob.villager.profession.isEmpty() && m_claimsChecked.contains(mob.villager.village)) {
-            lived.insert(mob.villager.village);
+        if (!mob.dormant && mob.isVillager() && mob.villager->village != 0 && m_claimsChecked.contains(mob.villager->village)) {
+            lived.insert(mob.villager->village);
         }
     }
-    const QList<QcVillageGolems::Spawn> golems = m_golems.check(m_mobs, lived, {world, paths().cells(), worldTime, m_seed, m_golemLimit});
+    const QList<QcVillageGolems::Spawn> golems = m_golems.check(m_mobs.mobs(), lived, {world, m_mobs.paths().cells(), worldTime, m_seed, m_golemLimit});
     for (const QcVillageGolems::Spawn &golem : golems) {
-        spawn(golem.type, golem.position, nextEntityId(), false, true);
+        m_mobs.spawn(golem.type, golem.position, nextEntityId(), false, true);
     }
 }
 
-void QcMobManager::depart(const QcCreature &mob)
+void QcVillagePopulation::depart(const QcCreature &mob, QcMobManager::Departure why)
 {
-    if (mob.villager.profession.isEmpty()) {
+    // A villager in a chunk that unloads rests there with its claims and its door (decision E-411).
+    if (why == QcMobManager::Departure::Unloaded || !mob.isVillager()) {
         return;
     }
-    m_behaviour->villagers().leave(mob);
     if (m_villages) {
-        QcVillagerHomes::release(*m_villages, mob.villager, mob.uid);
+        QcVillagerHomes::release(*m_villages, *mob.villager, mob.uid);
     }
-}
-
-void QcMobManager::setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour)
-{
-    m_villagerLimits = homes;
-    m_behaviour->villagers().setLimits(behaviour);
-}
-
-QcVillagerBehaviour &QcMobManager::villagers()
-{
-    return m_behaviour->villagers();
-}
-
-const QcVillagerBehaviour &QcMobManager::villagers() const
-{
-    return m_behaviour->villagers();
 }

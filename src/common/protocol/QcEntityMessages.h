@@ -10,6 +10,7 @@
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcItemStack.h"
 #include "common/gameplay/QcStandPose.h"
+#include "common/physics/QcPose.h"
 #include "common/world/QcEntityKind.h"
 
 #include <QList>
@@ -34,9 +35,21 @@ enum EntityFlag : quint16 {
     Riding = 128,
     // On fire (decision E-393): flames around the body.
     Burning = 256,
-    // A villager lying in its bed (decision E-411): drawn on its back.
-    Sleeping = 512,
+    // The pose of a creature (QcPose, decision E-423): lying on its back (a villager in its bed,
+    // decision E-411) or sitting; neither for standing.
+    Lying = 512,
+    Sitting = 1024,
 };
+
+// The pose bits of a creature's flags, and the pose they carry.
+inline quint16 poseFlags(QcPose pose)
+{
+    return pose == QcPose::Lying ? quint16(Lying) : pose == QcPose::Sitting ? quint16(Sitting) : quint16(0);
+}
+inline QcPose poseOf(quint16 flags)
+{
+    return (flags & Lying) != 0 ? QcPose::Lying : (flags & Sitting) != 0 ? QcPose::Sitting : QcPose::Standing;
+}
 
 inline constexpr double youngScale = 0.5;
 

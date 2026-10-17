@@ -6,6 +6,8 @@
 #include <QHash>
 #include <QList>
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
 #include <optional>
 #include <thread>
@@ -25,6 +27,27 @@ inline QList<std::shared_ptr<const QcVillagePlan>> plansAround(const QcTerrainGe
         for (int rx = -rings; rx <= rings; ++rx) {
             if (std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz)) {
                 plans.append(std::move(plan));
+            }
+        }
+    }
+    return plans;
+}
+
+// A fixed sample for the statistical tests (decision E-424): the first `count` villages found ring
+// by ring of regions around the origin (at most `maxRings` rings); fewer only when the rings run out,
+// which the tests check.
+inline QList<std::shared_ptr<const QcVillagePlan>> samplePlans(const QcTerrainGenerator &generator, qsizetype count, int maxRings)
+{
+    QList<std::shared_ptr<const QcVillagePlan>> plans;
+    for (int ring = 0; ring <= maxRings && plans.size() < count; ++ring) {
+        for (int rz = -ring; rz <= ring && plans.size() < count; ++rz) {
+            for (int rx = -ring; rx <= ring && plans.size() < count; ++rx) {
+                if (std::max(std::abs(rx), std::abs(rz)) != ring) {
+                    continue;
+                }
+                if (std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz)) {
+                    plans.append(std::move(plan));
+                }
             }
         }
     }

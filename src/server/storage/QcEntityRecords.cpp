@@ -100,7 +100,7 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.items().editableItems().removeIf(gone);
     entities.items().takeQueued([&in](const QcItemEntityManager::Drop &drop) { return in(chunkAt(drop.position)); });
     entities.fallingBlocks().editableAll().removeIf(gone);
-    entities.creatures().editableMobs().removeIf(gone);
+    entities.creatures().unload(gone);
     entities.stands().editableStands().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
     entities.orbs().editableOrbs().removeIf(gone);

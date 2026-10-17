@@ -38,6 +38,8 @@ public:
 
     // Nodes expanded in the last tick, searches run in it and waiting after it (tests, debug).
     int nodesLastTick() const { return m_nodesLastTick; }
+    // Of them, the nodes of villagers' searches (measurements of the shared budget, decision E-424).
+    int villagerNodesLastTick() const { return m_villagerNodesLastTick; }
     int searchesLastTick() const { return m_searchesLastTick; }
     qsizetype waiting() const { return qsizetype(m_queue.size()); }
     // Searches run since the start (tests).
@@ -61,6 +63,7 @@ private:
     int m_nodesPerSearch = int(QcServerLimits{}.pathNodesPerSearch);
     int m_pathLength = int(QcServerLimits{}.pathLength);
     int m_nodesLastTick = 0;
+    int m_villagerNodesLastTick = 0;
     int m_searchesLastTick = 0;
     qint64 m_searches = 0;
 };

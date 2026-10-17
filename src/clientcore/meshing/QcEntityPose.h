@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/physics/QcPose.h"
+
 // What the animator needs to know about an entity in one frame. Movement states come from the
 // server; progress values are advanced by the client.
 struct QcEntityPose
@@ -15,8 +17,9 @@ struct QcEntityPose
     bool flying = false;
     // Sitting in a minecart (decision E-382): the legs point forward.
     bool riding = false;
-    // Lying on the back in a bed (a sleeping villager, decision E-411).
-    bool sleeping = false;
+    // How the body holds itself (decision E-423): lying on its back (a villager in its bed, decision
+    // E-411) or sitting with the legs forward.
+    QcPose body = QcPose::Standing;
     // 0..1 while the right arm swings (mining, attacking, using), negative otherwise.
     double swingProgress = -1.0;
     // 0..1 while the entity recoils from a hit, negative otherwise.

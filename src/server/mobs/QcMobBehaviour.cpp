@@ -14,9 +14,22 @@ QcMobBehaviour::QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content,
     , m_random(random)
     , m_paths(*m_content)
     , m_villagers(m_content, m_random, m_paths)
+    , m_passive(m_random, m_paths)
+    , m_hostile(m_random, m_paths)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.push_back(QcPathRules::of(definition));
+        switch (definition.ai) {
+        case QcMobDefinition::Ai::Passive:
+            m_brains.push_back(&m_passive);
+            break;
+        case QcMobDefinition::Ai::Hostile:
+            m_brains.push_back(&m_hostile);
+            break;
+        case QcMobDefinition::Ai::Villager:
+            m_brains.push_back(&m_villagers);
+            break;
+        }
     }
 }
 
@@ -34,97 +47,72 @@ void QcMobBehaviour::tick(QList<QcCreature> &mobs, QcServerWorld &world, const Q
     m_tiers = {};
     ++m_tick;
 
-    const Tick tick{world, players, clock.dt, hits, mobs, clock.worldTime};
     for (qsizetype i = 0; i < mobs.size(); ++i) {
         // Mobs rest where they are while their chunk is not loaded (QcEntities::settle): the rest of
         // the chunk and the density of the crowd decide together, the stronger one wins.
         if (!mobs[i].dormant) {
-            update(i, mobs[i], tick);
+            const QcMobBrain::Context context{world, mobs, clock.worldTime, clock.dt, m_rules[std::size_t(mobs[i].type)], &players, &hits, m_tick};
+            update(i, mobs[i], context);
         }
     }
 }
 
-void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const Tick &tick)
+void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::Context &context)
 {
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
-    mob.hurtTimer = std::max(0.0, mob.hurtTimer - tick.dt);
-    mob.attackCooldown = std::max(0.0, mob.attackCooldown - tick.dt);
-    mob.fleeTimer = std::max(0.0, mob.fleeTimer - tick.dt);
-    mob.targetMemory = std::max(0.0, mob.targetMemory - tick.dt);
-    // A villager in its bed lies still until it gets up (decision E-411).
-    if (definition.villager && mob.villager.sleeping && m_villagers.rest(mob, villagerContext(mob, tick))) {
+    QcMobBrain &brain = brainOf(mob.type);
+    mob.hurtTimer = std::max(0.0, mob.hurtTimer - context.dt);
+    mob.attackCooldown = std::max(0.0, mob.attackCooldown - context.dt);
+    mob.fleeTimer = std::max(0.0, mob.fleeTimer - context.dt);
+    mob.targetMemory = std::max(0.0, mob.targetMemory - context.dt);
+    // A creature lying or sitting asks its brain whether it stays so (a villager in its bed lies
+    // still until it gets up, decision E-411).
+    if (mob.pose != QcPose::Standing && brain.rest(mob, context)) {
         ++m_tiers.full;
         return;
     }
     if (definition.flying) {
         ++m_tiers.full;
-        fly(mob, definition, tick.world, tick.dt);
+        fly(mob, definition, context.world, context.dt);
         return;
     }
 
-    QcMobUpkeep::leaveBlocks(mob, definition, tick.world);
-    mob.motion.inWater = QcPhysics::isLiquidAt(tick.world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
+    QcMobUpkeep::leaveBlocks(mob, definition, context.world);
+    mob.motion.inWater = QcPhysics::isLiquidAt(context.world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
 
     // Throttled creatures think in turns, staggered by their ids.
     QcPhysics::Steering steering;
     switch (m_crowd.tierAt(index)) {
     case QcMobCrowd::Tier::Full:
         ++m_tiers.full;
-        steering = think(mob, definition, tick, 1);
+        steering = brain.think(mob, definition, context, 1);
         break;
     case QcMobCrowd::Tier::Throttled: {
         ++m_tiers.throttled;
         const int interval = m_crowd.thinkInterval(index);
-        steering = (m_tick + mob.id) % quint64(interval) == 0 ? think(mob, definition, tick, interval)
-                                                              : withoutThinking(mob, definition, tick, true);
+        steering = (m_tick + mob.id) % quint64(interval) == 0 ? brain.think(mob, definition, context, interval)
+                                                              : withoutThinking(mob, definition, context, true);
         break;
     }
     case QcMobCrowd::Tier::Idle:
         ++m_tiers.idle;
-        // Villagers still think in the slowest turn and keep to their path in between: a crowd that
-        // met at the bell goes home at night.
-        if (definition.villager) {
+        if (brain.thinksInIdleCrowd()) {
             const int interval = QcMobSteering::sightCheckTicks;
-            steering = (m_tick + mob.id) % quint64(interval) == 0 ? think(mob, definition, tick, interval)
-                                                                  : withoutThinking(mob, definition, tick, true);
+            steering = (m_tick + mob.id) % quint64(interval) == 0 ? brain.think(mob, definition, context, interval)
+                                                                  : withoutThinking(mob, definition, context, true);
             break;
         }
-        steering = withoutThinking(mob, definition, tick, false);
+        steering = withoutThinking(mob, definition, context, false);
         break;
     }
-    steerApart(index, mob, tick.world, steering);
-    walk(mob, definition, tick.world, steering);
+    steerApart(index, mob, context.world, steering);
+    walk(mob, definition, context.world, steering);
 }
 
-QcPhysics::Steering QcMobBehaviour::think(QcCreature &mob, const QcMobDefinition &definition, const Tick &tick, int thinkTicks)
+QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
+                                                    bool coasts)
 {
-    // Every creature looks once in sightCheckTicks, staggered by its id: one thinking every
-    // `thinkTicks` (at most sightCheckTicks) looks at its thought in the first `thinkTicks` of them.
-    const bool mayPlan = thinkTicks <= 1;
-    // Villagers follow their routine (in a crowd in turns, update(); QcVillagerBehaviour budgets
-    // their decisions).
-    if (definition.villager) {
-        const QcPhysics::Steering steering = m_villagers.think(mob, definition, villagerContext(mob, tick));
-        mob.lastSpeed = steering.speed;
-        return steering;
-    }
-    const bool looks = (m_tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
-    const QcMobManager::PlayerView *target =
-        definition.hostile ? QcMobSteering::chooseTarget(mob, definition, tick.players, tick.world, looks) : nullptr;
-    // A hostile creature that has not looked yet still strikes a player right next to it.
-    if (!target && QcMobSteering::strikeAdjacent(mob, definition, tick.players, tick.world, tick.hits)) {
-        mob.lastSpeed = definition.chaseSpeed;
-        return {{}, definition.chaseSpeed};
-    }
-
-    const QcPhysics::Steering steering = target ? chase(mob, definition, *target, tick, mayPlan) : wander(mob, definition, tick, mayPlan);
-    mob.lastSpeed = steering.speed;
-    return steering;
-}
-
-QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const Tick &tick, bool coasts)
-{
-    if (QcMobSteering::strikeAdjacent(mob, definition, tick.players, tick.world, tick.hits)) {
+    if (QcMobSteering::strikeAdjacent(mob, definition, *context.players, context.world, *context.hits)) {
         return {{}, definition.chaseSpeed};
     }
     if (!coasts) {
@@ -132,8 +120,8 @@ QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMob
     }
 
     // Along the path it has, without searching, and never off an edge.
-    QcPhysics::Steering steering = navigate(mob, mob.lastSpeed, tick.world, false).steering;
-    if (!QcMobNavigator::safeStep(mob, steering.wish, tick.world, m_paths.cells(), m_rules[std::size_t(mob.type)])) {
+    QcPhysics::Steering steering = QcMobNavigator::steerAlong(mob, mob.lastSpeed, m_paths, context.world, context.rules).steering;
+    if (!QcMobNavigator::safeStep(mob, steering.wish, context.world, m_paths.cells(), context.rules)) {
         return {{}, steering.speed};
     }
     if (steering.wish.length() > 0.0) {
@@ -157,12 +145,6 @@ void QcMobBehaviour::steerApart(qsizetype index, const QcCreature &mob, const Qc
     steering.speed = std::max(steering.speed, m_content->mobs()[mob.type].walkSpeed);
 }
 
-QcMobNavigator::Navigation QcMobBehaviour::navigate(QcCreature &mob, double speed, const QcServerWorld &world, bool mayPlan)
-{
-    const QcPathRules rules = m_rules[std::size_t(mob.type)];
-    return mayPlan ? QcMobNavigator::steer(mob, speed, m_paths, world, rules) : QcMobNavigator::steerAlong(mob, speed, m_paths, world, rules);
-}
-
 void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering)
 {
     // While knocked back the mob does not steer.
@@ -184,67 +166,6 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
     // Only a wall met while walking on the ground or swimming (the shore) is jumped at: one met in
     // the air or on landing (a head under a door's lintel) would keep it jumping.
     mob.blockedLastTick = (move.blockedX || move.blockedZ) && ((wasOnGround && mob.motion.onGround) || wading);
-}
-
-QcPhysics::Steering QcMobBehaviour::chase(QcCreature &mob, const QcMobDefinition &definition, const QcMobManager::PlayerView &target,
-                                          const Tick &tick, bool mayPlan)
-{
-    // In melee it stands and strikes; otherwise it walks its path, within one cell of the target.
-    if (QcMobSteering::inMelee(mob, definition, target, tick.world)) {
-        QcMobSteering::strike(mob, definition, target, tick.hits);
-        return {{}, definition.chaseSpeed};
-    }
-
-    QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Chase, target.position, 1);
-    const QcPhysics::Steering steering =
-        navigate(mob, definition.chaseSpeed, tick.world, mayPlan).steering;
-    const QcVec3 towards{target.position.x - mob.motion.position.x, 0.0, target.position.z - mob.motion.position.z};
-    const QcVec3 facing = steering.wish.length() > 0.0 ? steering.wish : towards;
-    if (facing.length() > 0.0) {
-        mob.yaw = QcMobSteering::yawTowards(facing);
-    }
-    return steering;
-}
-
-QcPhysics::Steering QcMobBehaviour::wander(QcCreature &mob, const QcMobDefinition &definition, const Tick &tick, bool mayPlan)
-{
-    QcMobPath &path = mob.path;
-    double speed = definition.walkSpeed;
-    mob.wanderTimer -= tick.dt;
-    if (mob.fleeTimer > 0.0) {
-        // Away from the attacker; the search ends at the reachable place closest to the far point.
-        if (path.purpose != QcMobPath::Purpose::Flee) {
-            path.clear();
-            QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Flee, mob.motion.position + mob.wanderDirection * fleeDistance, 0);
-        }
-        speed = definition.chaseSpeed;
-    } else if (path.purpose == QcMobPath::Purpose::Flee || path.purpose == QcMobPath::Purpose::Chase) {
-        path.clear();
-        mob.wanderTimer = 0.0;
-    }
-
-    if (mob.fleeTimer <= 0.0 && mob.wanderTimer <= 0.0) {
-        // Half of the time stand still, otherwise walk to a place nearby for a few seconds.
-        mob.wanderTimer = 2.0 + m_random.bounded(5.0);
-        path.clear();
-        if (m_random.bounded(2) == 0) {
-            mob.wanderDirection = {};
-        } else {
-            const double angle = m_random.bounded(2.0 * std::numbers::pi);
-            mob.wanderDirection = {std::sin(angle), 0.0, -std::cos(angle)};
-            QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Wander, mob.motion.position + mob.wanderDirection * wanderDistance, 0);
-        }
-    }
-
-    const QcPhysics::Steering steering = navigate(mob, speed, tick.world, mayPlan).steering;
-    // A wanderer at the end of its path stands until its time is up.
-    if (path.purpose == QcMobPath::Purpose::Wander && path.finished()) {
-        path.clear();
-    }
-    if (steering.wish.length() > 0.0) {
-        mob.yaw = QcMobSteering::yawTowards(steering.wish);
-    }
-    return steering;
 }
 
 void QcMobBehaviour::fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)

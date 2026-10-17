@@ -1,6 +1,8 @@
 #pragma once
 
 #include "common/core/QcVec3.h"
+#include "common/physics/QcPose.h"
+#include "server/entities/QcComponent.h"
 #include "server/entities/QcEntity.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
@@ -55,11 +57,18 @@ struct QcCreature : QcEntity
     double growUp = 0.0;
     // Born from breeding (counted against QcMobBreeding::maxBredPerKind).
     bool bred = false;
+    // How it holds itself (decision E-423): a villager lies in its bed, where the physics leaves it
+    // (decision E-411). Its box (QcEntities::boxOf), its eyes and its animation follow from it; not
+    // saved, a loaded creature stands.
+    QcPose pose = QcPose::Standing;
     // Came by /summon (counted against QcServerLimits::summonLimit); not saved.
     bool summoned = false;
-    // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411); unused for
-    // other kinds.
-    QcVillager villager;
+    // Home, work and routine of a villager (QcMobDefinition::villager, decision E-411): a component
+    // only creatures of a villager kind have (decision E-423).
+    QcComponent<QcVillager> villager;
 
     bool isYoung() const { return growUp > 0.0; }
+    // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give
+    // it to every creature of a villager kind).
+    bool isVillager() const { return villager.has(); }
 };

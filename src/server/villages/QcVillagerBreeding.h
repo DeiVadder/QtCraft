@@ -17,7 +17,7 @@ class QcContentRegistry;
 class QcVillages;
 struct QcVillage;
 
-// Villagers getting children (decision E-415), checked every few seconds by QcMobManager. Farmers
+// Villagers getting children (decision E-415), checked every few seconds by QcVillagePopulation. Farmers
 // holding more produce than `shareAbove` share it with villagers of their village nearby that lack
 // food (QcVillagerBreedingSettings). Two adults of a village that are willing (awake, standing, not
 // fleeing or trading, resting no longer after their last child, each holding `food` produce) and
@@ -25,7 +25,7 @@ struct QcVillage;
 // routine says neither home nor sleep), not in rain at its meeting point, with a free bed and more
 // beds than villagers (one whose bed was broken claims the next free one), below the villagers per
 // village and in the world (QcServerLimits). Each parent gives `food` produce and rests for
-// `cooldownSeconds`; the child (QcMobManager) moves into the free bed nearest to them.
+// `cooldownSeconds`; the child (QcVillagePopulation) moves into the free bed nearest to them.
 // At most one child per village and check: a village fills its free beds over minutes, and only
 // beds bound its size, as in the reference game.
 class QcVillagerBreeding
@@ -49,7 +49,7 @@ public:
         // Whether it rains on a block's column (QcVillagerBehaviour::rainsAt).
         std::function<bool(QcBlockPos)> rains;
         QcVillagerHomes::Limits limits;
-        // Villages whose claims were reconciled after loading (QcMobManager::checkVillageClaims,
+        // Villages whose claims were reconciled after loading (QcVillagePopulation::checkVillageClaims,
         // decision E-416); only they share food and breed. Null: every village.
         const QSet<qint64> *reconciled = nullptr;
     };

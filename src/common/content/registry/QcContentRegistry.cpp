@@ -329,14 +329,18 @@ QStringList QcContentRegistry::finish()
     createBlockItems();
     warnings.append(QcVillageContent::resolveSpecies(*this));
     // A creature naming villager settings no pack has is no villager (decision E-421); the others
-    // keep the index of theirs.
+    // keep the index of theirs. It keeps its abilities except opening doors, which only the villager
+    // AI carries out (decision E-423).
     for (QcMobDefinition &mob : m_mobs) {
         const auto it = m_villagerSettingsIndex.constFind(mob.villagerSettings);
         mob.villagerSettingsIndex = mob.villager && it != m_villagerSettingsIndex.constEnd() ? int(*it) : -1;
         if (mob.villager && mob.villagerSettingsIndex < 0) {
-            warnings.append(u"mob '%1': no villager settings '%2'; it is no villager"_s.arg(mob.name, mob.villagerSettings));
+            warnings.append(u"mob '%1': no villager settings '%2'; it is no villager%3"_s.arg(mob.name, mob.villagerSettings,
+                                                                                             mob.abilities.opensDoors ? u" and opens no doors"_s : QString()));
             mob.villager = false;
             mob.villagerSettings.clear();
+            mob.ai = QcMobDefinition::Ai::Passive;
+            mob.abilities.opensDoors = false;
         }
     }
     warnings.append(QcVillageContent::resolveStyles(*this));

@@ -159,13 +159,19 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const Context &co
     return steering;
 }
 
-// The closed door on the next waypoint, if there is one.
-std::optional<QcBlockPos> doorAhead(const QcMobPath &path, const QcBlockAccess &world, const QcPathCellTable &cells)
+// The closed door the creature stands in (another one shut it behind itself while this one was in
+// the doorway), else the closed door on the next waypoint, if there is one.
+std::optional<QcBlockPos> doorAhead(const QcCreature &mob, const QcBlockAccess &world, const QcPathCellTable &cells)
 {
+    const QcMobPath &path = mob.path;
+    const QcPathDirectCells direct(world, cells);
+    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0});
+    if (QcPathCell::kindOf(direct.cell(feet)) == QcPathCell::Kind::ClosedDoor) {
+        return feet;
+    }
     if (path.next >= path.cells.size()) {
         return std::nullopt;
     }
-    const QcPathDirectCells direct(world, cells);
     const QcBlockPos waypoint = path.cells[path.next];
     if (QcPathCell::kindOf(direct.cell(waypoint)) != QcPathCell::Kind::ClosedDoor) {
         return std::nullopt;
@@ -193,7 +199,7 @@ Navigation navigate(QcCreature &mob, double speed, const Context &context)
         context.planner.request(mob);
     }
 
-    return {along(mob, speed, context), context.rules.opensDoors ? doorAhead(path, context.world, context.planner.cells()) : std::nullopt};
+    return {along(mob, speed, context), context.rules.opensDoors ? doorAhead(mob, context.world, context.planner.cells()) : std::nullopt};
 }
 
 } // namespace

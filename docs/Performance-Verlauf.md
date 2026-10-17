@@ -1967,3 +1967,58 @@ Phase Loren headless 0,023 ms bei beiden Ständen (64 rollende Loren).
 - **Speicher:** +8 bis +13 MB im ganzen Spiel, +1,3 bis +3,9 MB headless.
 
 **Absolute Ziele** (`docs/Performance.md`, „Ziele“): siehe Zielprüfung „Dorf-Sektion (37)“ dort.
+
+## 52.0a (`QcMobManager` aufgeteilt) headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `0034999` (A) gegen den Kandidaten `02939ef` (B, E-422). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
+
+| Szenario | Tick Ø A → B | Tick p99 A → B | Wesen Ø A → B | Wesen |
+|---|---|---|---|---|
+| crowd | 0,163 → 0,162 (−0,2 %) | 0,246 → 0,242 | 0,146 → 0,146 | 121–123 |
+| gravel-collapse | 0,495 → 0,500 (+1,1 %) | 1,419 → 1,408 | – | 0 |
+| farm | 0,007 → 0,007 | 0,013 → 0,013 | – | 0 |
+| farm-seeds | 0,017 → 0,017 (+2,0 %) | 0,054 → 0,052 | – | 0 |
+| explore | 0,191 → 0,194 (+1,6 %) | 0,882 → 0,896 | 0,066 → 0,067 | 57–60 |
+| showcase-signal_components | 0,036 → 0,042 (+14,7 %) | 0,106 → 0,113 | 0,0144 → 0,0195 | 14 |
+| showcase-signal_machines | 0,037 → 0,042 (+13,5 %) | 0,121 → 0,114 | 0,0144 → 0,0194 | 14 |
+| showcase-signal_farm | 0,040 → 0,037 (−8,3 %) | 0,110 → 0,114 | 0,0178 → 0,0144 | 14 |
+
+**Bewertung:** Keine Regression. Die drei Signal-Stationen der Vorführwelt zeigen je Lauf eine von zwei festen Stufen der Phase Wesen (0,0144 oder 0,0195 ms, 5 µs je Tick): A die hohe bei `signal_farm` (zwei von drei Runden), B bei den beiden anderen (alle Runden); sonst gleich bis auf die Streuung, Spitzenspeicher ±0,6 MB. Dass das Lage und Ausrichtung des Codes sind und nicht anderes Verhalten, zeigt ein Abzug aller Wesen (Id, Art, `uid`, Ruhe, Position, Blickrichtung, Gesundheit) am Ende der Läufe, vorübergehend in `test_scenario_measure` eingebaut: bei allen drei Stationen sind A und B Zeile für Zeile gleich. crowd und explore sind schon zwischen zwei Läufen desselben Stands nicht gleich (Chunks entstehen in Hintergrund-Threads; A gegen A: 116 bis 247 Zeilen Unterschied), dort zählen nur die Mittel.
+
+## 52.0b (Fähigkeiten, KI und Haltung aus Daten) headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `0034999` (A) gegen den Kandidaten `ffd701d` (B, E-423). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
+
+| Szenario | Tick Ø A → B | Tick p99 A → B | Wesen Ø A → B | Wesen |
+|---|---|---|---|---|
+| crowd (Serie 1) | 0,165 → 0,188 (+14,0 %) | 0,259 → 0,282 | 0,149 → 0,172 | 121–122 |
+| crowd (Serie 2, 6 Runden) | 0,163 → 0,163 (−0,1 %) | – | 0,147 → 0,147 | 121–123 |
+| gravel-collapse | 0,503 → 0,505 (+0,5 %) | 1,457 → 1,427 | – | 0 |
+| farm | 0,007 → 0,007 | 0,014 → 0,013 | – | 0 |
+| farm-seeds | 0,018 → 0,018 | 0,053 → 0,054 | – | 0 |
+| explore | 0,193 → 0,193 (+0,2 %) | 0,902 → 0,883 | 0,067 → 0,068 | 56–63 |
+| showcase-signal_components | 0,037 → 0,037 (−0,9 %) | 0,110 → 0,109 | 0,0146 → 0,0145 | 14 |
+| showcase-signal_machines | 0,036 → 0,036 | 0,108 → 0,108 | 0,0142 → 0,0142 | 14 |
+| showcase-signal_farm | 0,037 → 0,037 (+0,9 %) | 0,108 → 0,107 | 0,0144 → 0,0145 | 14 |
+
+**Bewertung:** Keine Regression. In der ersten Serie lagen zwei der drei crowd-Läufe von B bei 0,201 ms (Phase Wesen 0,185 statt 0,146), der dritte gleich A; die Wiederholung nur von crowd mit 6 Runden zeigt A und B gleich (0,1633 gegen 0,1632 ms, jeder Lauf zwischen 0,160 und 0,167 ms). crowd ist schon zwischen zwei Läufen desselben Stands nicht gleich (Chunks in Hintergrund-Threads, 52.0a), die beiden Ausreißer kamen nicht wieder. Das Gehirn je Wesen (ein virtueller Aufruf) und der Kontext je Wesen kosten nichts Messbares; Spitzenspeicher ±0,6 MB.
+
+## 52.0c (Testdörfer, Langzeittest, Grenzen) headless (2026-10-17)
+
+Release, Apple M-Serie, Ticks von Hand (keine Echtzeit), Stand `52.0c` (E-424).
+
+**Grenzen** (`QTCRAFT_VILLAGE_LIMITS_MEASURE=1 build/release/tests/test_village_limits_measure`, 6 s Wanduhr): 32 Testdörfer (Ebene, Wüste, Schnee, Taiga, Sumpf) mit je 32 Bewohnern, 1024 Bewohner (Grenzen je Dorf und Welt), 4 Spieler auf vier Dörfer verteilt, Wesen spawnen, 1123 Chunks geladen. Budget der Wegsuche `pathNodesPerTick` 4096, `pathNodesPerSearch` 512. Wartezeit: Ticks von der Anfrage bis zur Suche.
+
+| Abschnitt (Tagesanteil) | Ticks | Tick Ø / p99 / max ms | Knoten je Tick Ø (Bewohner / andere) | Budget ausgeschöpft | Wartezeit Bewohner Ø (max) | Wartezeit andere Ø (max) |
+|---|---|---|---|---|---|---|
+| Abend, alle gehen heim (0,55–0,65) | 1200 | 0,53 / 2,28 / 2,51 | 124 (65 / 59), höchstens 4077 | 1,7 % der Ticks | 10,9 (20), 1281 Suchen | 1,02 (10), 2047 Suchen |
+| Nacht, Feinde um die Spieler (0,65–0,80) | 1800 | 0,49 / 0,63 / 0,87 | 61 (0 / 61), höchstens 521 | 0 % | – | 1,00 (2), 3212 Suchen |
+| Morgen, alle gehen zur Arbeit (0,80–1,10) | 3600 | 1,02 / 2,65 / 2,88 | 324 (265 / 59), höchstens 4096 | 1,7 % | 2,8 (39), 16 033 Suchen | 1,31 (39), 6124 Suchen |
+
+**Bewertung:** Die Bewohner verbrauchen im Mittel 2–7 % des gemeinsamen Budgets; ausgeschöpft ist es nur in den Spitzen beim Aufbruch (Abend und Morgen je etwa 60 Ticks). Dann warten auch Feinde: im Mittel 1,3 Ticks, höchstens 39 Ticks (knapp 2 s) am Morgen, sonst höchstens 10. Kein dauerhaftes Aushungern, aber eine kurze Verzögerung im Morgengedränge. Vorschlag (nicht umgesetzt): ein Anteil des Budgets je Tick für Wesen, die keine Dorfbewohner sind (etwa ein Viertel, 1024 Knoten), oder Suchen der Verfolgung (`QcMobPath::Purpose::Chase`) vor Besorgungen und Wandern in der Warteschlange; Messgröße bleibt die Wartezeit der anderen in diesem Test.
+
+**Langzeittest** (`QTCRAFT_VILLAGE_SOAK_DAYS=3 build/release/tests/test_village_soak`): vier Testdörfer (Ebene, Wüste, Sumpf auf Stelzen, Schnee), 39 Bewohner, 3 Spieltage (35 996 Ticks) in 1,3 s Wanduhr, Tick Ø 0,037 ms; jede Mitternacht 39 von 39 im Bett, 4 Kinder geboren, Ansprüche nach Speichern und Öffnen in der Mitte gleich. Debug: 18 s; der CI-Lauf ohne Variable (1 Tag) 7 s.
+
+## 52.0 nach den Nachbesserungen headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `0034999` gegen den Kandidaten nach den Nachbesserungen der Prüfung (E-422 bis E-424). Tick im Mittel −2,2 bis 0 %, p99 −8,4 bis +4,4 %, Spitzenspeicher ±0,5 MB. Keine Regression; der Umbau der Wesen-Architektur kostet nichts Messbares.

@@ -31,8 +31,9 @@ inline constexpr double arriveDistance = 0.35;
 // Every this many ticks the whole rest of the path is checked, otherwise only the next waypoints.
 inline constexpr int fullCheckTicks = 20;
 
-// What to do this tick: the steering, and a closed door on the path (only for creatures that open
-// doors, QcPathRules::opensDoors: villagers open it, QcVillagerBehaviour).
+// What to do this tick: the steering, and a closed door on the path or in the doorway the creature
+// stands in (only for creatures that open doors, QcPathRules::opensDoors: villagers open it,
+// QcVillagerBehaviour).
 struct Navigation
 {
     QcPhysics::Steering steering;

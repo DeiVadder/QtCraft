@@ -57,7 +57,9 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
-    QList<std::shared_ptr<const QcVillagePlan>> m_plans = plansAround(m_generator, rings);
+    // A fixed sample for the shares (decision E-424): the first 96 villages ring by ring.
+    static constexpr qsizetype sampleSize = 96;
+    QList<std::shared_ptr<const QcVillagePlan>> m_plans = samplePlans(m_generator, sampleSize, rings);
 
     // The first plan on land (over water test_village_swamp checks the pieces) with a piece whose
     // name contains `part`, null without one.
@@ -94,7 +96,7 @@ private:
 private slots:
     void blueprintsSpreadOverTheVariants()
     {
-        QVERIFY2(m_plans.size() >= 30, qPrintable(u"only %1 villages"_s.arg(m_plans.size())));
+        QCOMPARE(m_plans.size(), sampleSize);
         QHash<QString, int> counts;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
             for (const QcStructurePlacement &piece : plan->pieces) {
@@ -244,8 +246,12 @@ private slots:
                 QCOMPARE(mob.at.y, pen.origin().y + 1.0);
             }
         }
-        // Chances 0.5 (plains, taiga) and 0.4 (desert), less where no spot fits.
+        // Chances 0.5 (plains, taiga), 0.4 (desert) and 0.3 (snowy), less where no spot fits, none in
+        // swamp villages: 37 of the 96 villages of the sample at seed 42 (0.39). One standard
+        // deviation of the share among 96 villages is about 0.05; the bounds lie three to four of
+        // them around it.
         const double share = double(pens) / villages;
+        qInfo("%d pens in %d villages", pens, villages);
         QVERIFY2(share > 0.2 && share < 0.6, qPrintable(u"%1 pens in %2 villages"_s.arg(pens).arg(villages)));
     }
 
@@ -322,8 +328,8 @@ private slots:
             large += plan->roadLength >= 200 ? 1 : 0;
             QVERIFY2(found == 0 || plan->roadLength >= 200, qPrintable(u"tower with %1 blocks of road"_s.arg(plan->roadLength)));
         }
-        // Most large villages find room for theirs, and large villages are rare: at seed 42 about one
-        // in ten.
+        // Most large villages find room for theirs (at least half), and large villages are rare: at
+        // seed 42 about one in ten of the sample, at most one in five allowed.
         QVERIFY2(towers >= 1 && towers * 2 >= large, qPrintable(u"%1 towers in %2 large villages"_s.arg(towers).arg(large)));
         QVERIFY2(qsizetype(towers) * 5 <= m_plans.size(), qPrintable(u"%1 towers in %2 villages"_s.arg(towers).arg(m_plans.size())));
     }

@@ -36,9 +36,8 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
     const double scale = (entity.flags & QcMsg::Young) != 0 ? QcMsg::youngScale : 1.0;
     const double width = creature ? creature->width : QcPhysics::playerWidth;
     const double height = creature ? creature->height : QcPhysics::playerHeight;
-    // A sleeping villager is aimed at where it lies (decision E-411).
-    return (entity.flags & QcMsg::Sleeping) != 0 ? QcPhysics::lyingBoxAt(entity.position, entity.yaw, width * scale, height * scale)
-                                                 : QcPhysics::boxAt(entity.position, width * scale, height * scale);
+    // A villager in its bed is aimed at where it lies (decisions E-411, E-423).
+    return QcPoses::boxAt(QcMsg::poseOf(entity.flags), entity.position, entity.yaw, width * scale, height * scale);
 }
 
 // Whether using `item` on the entity is a use of the creature (UseEntity): food, armour, its
@@ -582,7 +581,7 @@ QcEntityPose QcClientSession::poseOf(const QcClientEntity &entity, double alpha)
     pose.sneaking = (entity.flags & QcMsg::Sneaking) != 0;
     pose.sprinting = (entity.flags & QcMsg::Sprinting) != 0;
     pose.riding = (entity.flags & QcMsg::Riding) != 0;
-    pose.sleeping = (entity.flags & QcMsg::Sleeping) != 0;
+    pose.body = QcMsg::poseOf(entity.flags);
     pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);

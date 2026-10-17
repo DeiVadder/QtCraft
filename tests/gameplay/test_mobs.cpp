@@ -6,6 +6,7 @@
 #include "server/entities/QcEntities.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/mobs/QcMobUpkeep.h"
+#include "server/mobs/QcNaturalSpawner.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -76,7 +77,7 @@ private:
     void coverSurface(QcServerWorld &world, const QcContentRegistry &content, const char *block, int dy) const
     {
         const QcBlockId id = *content.blockId(u"qtcraft:"_s + QString::fromLatin1(block));
-        const int reach = int(QcMobManager::spawnRadiusMax) + 2;
+        const int reach = int(QcNaturalSpawner::spawnRadiusMax) + 2;
         for (int x = -reach; x <= reach; ++x) {
             for (int z = -reach; z <= reach; ++z) {
                 const QcBlockPos column{x, 0, z};
@@ -227,7 +228,7 @@ private slots:
         // At most about chunkAnimalChance of the 625 chunks get a group (fewer where the chosen
         // column is sand or water).
         const double share = double(groups) / chunks;
-        QVERIFY2(share > 0.03 && share < QcMobManager::chunkAnimalChance + 0.04, qPrintable(QString::number(share)));
+        QVERIFY2(share > 0.03 && share < QcNaturalSpawner::chunkAnimalChance + 0.04, qPrintable(QString::number(share)));
 
         for (const QcCreature &mob : mobs.mobs()) {
             const QcMobDefinition &definition = m_content->mobs()[mob.type];
@@ -405,12 +406,12 @@ private slots:
 
         for (int x = -50; x < 50; ++x) {
             for (int z = -50; z < 50; ++z) {
-                const bool here = mobs.spawnsInChunk(slime, {x, z});
-                QCOMPARE(same.spawnsInChunk(slime, {x, z}), here);
+                const bool here = mobs.spawner().spawnsInChunk(slime, {x, z});
+                QCOMPARE(same.spawner().spawnsInChunk(slime, {x, z}), here);
                 slimeChunks += here;
-                differences += other.spawnsInChunk(slime, {x, z}) != here;
+                differences += other.spawner().spawnsInChunk(slime, {x, z}) != here;
                 // Kinds without the rule spawn everywhere.
-                QVERIFY(mobs.spawnsInChunk(type("zombie"), {x, z}));
+                QVERIFY(mobs.spawner().spawnsInChunk(type("zombie"), {x, z}));
             }
         }
 
@@ -588,7 +589,7 @@ private slots:
             const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
             const std::shared_ptr<const QcChunk> chunk = world->chunk(feet.chunk());
             QVERIFY(chunk);
-            QVERIFY2(mob.underground && chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y + QcMobManager::caveDepth,
+            QVERIFY2(mob.underground && chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y + QcNaturalSpawner::caveDepth,
                      qPrintable(definition.name));
         }
 
@@ -606,7 +607,7 @@ private slots:
         for (const QcCreature &mob : night.mobs()) {
             hostile += m_content->mobs()[mob.type].hostile;
         }
-        QVERIFY(hostile <= QcMobManager::hostileCapPerPlayer + 3);
+        QVERIFY(hostile <= QcNaturalSpawner::hostileCapPerPlayer + 3);
     }
 
     void torchLightKeepsHostileMobsAway()

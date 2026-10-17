@@ -87,6 +87,48 @@ void parseMobStats(QcMobDefinition &mob, QcJsonFieldReader &reader)
     mob.sightRange = reader.number(u"sightRange"_s, 16.0, 1.0, 64.0);
 }
 
+// The AI (decision E-423): named by "ai", else villager with villager settings, hostile for hostile
+// creatures and passive for the others. Villagers walk on their own terms: they open doors, climb
+// ladders and keep to their boardwalks instead of diving off them (decision E-411), unless their
+// `abilities` say otherwise.
+void parseAi(QcMobDefinition &mob, QcJsonFieldReader &reader)
+{
+    using Ai = QcMobDefinition::Ai;
+    static const QHash<QString, Ai> names = {{u"passive"_s, Ai::Passive}, {u"hostile"_s, Ai::Hostile}, {u"villager"_s, Ai::Villager}};
+    const Ai fallback = mob.villager ? Ai::Villager : mob.hostile ? Ai::Hostile : Ai::Passive;
+    const QString name = reader.string(u"ai"_s, names.key(fallback));
+    if (!names.contains(name)) {
+        reader.fail(u"'ai' must be passive, hostile or villager"_s);
+        return;
+    }
+
+    mob.ai = names.value(name);
+    if ((mob.ai == Ai::Villager) != mob.villager) {
+        reader.fail(u"the villager AI goes with 'villager' settings, and they with it"_s);
+    } else if (mob.ai == Ai::Hostile && !mob.hostile) {
+        reader.fail(u"the hostile AI needs 'hostile': true"_s);
+    }
+    if (mob.ai == Ai::Villager) {
+        mob.abilities = {true, QcMobAbilities::Climbing::Ladders, false, false};
+    }
+}
+
+void parseAbilities(QcMobDefinition &mob, QcJsonFieldReader &reader)
+{
+    QcMobAbilities &abilities = mob.abilities;
+    abilities.opensDoors = reader.boolean(u"opensDoors"_s, abilities.opensDoors);
+    abilities.swims = reader.boolean(u"swims"_s, abilities.swims);
+    abilities.divesIntoWater = reader.boolean(u"divesIntoWater"_s, abilities.divesIntoWater);
+
+    using Climbing = QcMobAbilities::Climbing;
+    static const QHash<QString, Climbing> climbing = {{u"none"_s, Climbing::None}, {u"ladders"_s, Climbing::Ladders}, {u"walls"_s, Climbing::Walls}};
+    const QString climbs = reader.string(u"climbs"_s, climbing.key(abilities.climbs));
+    if (!climbing.contains(climbs)) {
+        reader.fail(u"'climbs' must be none, ladders or walls"_s);
+    }
+    abilities.climbs = climbing.value(climbs, abilities.climbs);
+}
+
 // One spawn rule of a creature: the `spawn` object itself or an entry of its `also` list.
 QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldReader &reader, bool hostile, const QString &packNamespace)
 {
@@ -390,6 +432,11 @@ namespace QcMobParser {
     mob.villager = !mob.villagerSettings.isEmpty();
     if (reader.ok() && mob.villager && (mob.skeleton.isEmpty() || mob.hostile || mob.flying || mob.ambient)) {
         reader.fail(u"villagers need a 'skeleton' and are peaceful walkers"_s);
+    }
+    parseAi(mob, reader);
+    reader.nestedObject(u"abilities"_s, [&mob](const QJsonObject &, QcJsonFieldReader &nested) { parseAbilities(mob, nested); });
+    if (reader.ok() && mob.abilities.opensDoors && mob.ai != QcMobDefinition::Ai::Villager) {
+        reader.fail(u"only the villager AI opens doors"_s);
     }
     mob.drops = parseDrops(json.value(u"drops"_s), packNamespace, reader);
     mob.experience = QcContentFields::parseExperience(u"experience"_s, reader);

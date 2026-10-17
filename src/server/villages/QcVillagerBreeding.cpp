@@ -45,7 +45,7 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
             continue;
         }
         for (QcCreature *parent : {first, second}) {
-            parent->villager.produce -= settings.food;
+            parent->villager->produce -= settings.food;
             parent->breedCooldown = settings.cooldownSeconds;
         }
         births.append({village->id, *bed, first->motion.position, first->type});
@@ -67,8 +67,8 @@ bool QcVillagerBreeding::breedsNow(const QcVillage &village, const Context &cont
 
 bool QcVillagerBreeding::willing(const QcCreature &mob) const
 {
-    const QcVillager &villager = mob.villager;
-    return !mob.dormant && !mob.isYoung() && !villager.sleeping && villager.trader == 0 && mob.breedCooldown <= 0.0 && mob.fleeTimer <= 0.0
+    const QcVillager &villager = *mob.villager;
+    return !mob.dormant && !mob.isYoung() && mob.pose != QcPose::Lying && villager.trader == 0 && mob.breedCooldown <= 0.0 && mob.fleeTimer <= 0.0
            && villager.produce >= m_content->villagerSettingsOf(mob.type).breeding.food;
 }
 
@@ -76,8 +76,8 @@ QcVillagerBreeding::Villagers QcVillagerBreeding::villagersByVillage(QList<QcCre
 {
     Villagers byVillage;
     for (QcCreature &mob : mobs) {
-        if (!mob.dormant && mob.villager.village != 0 && !mob.villager.profession.isEmpty()) {
-            byVillage[mob.villager.village].append(&mob);
+        if (!mob.dormant && mob.isVillager() && mob.villager->village != 0) {
+            byVillage[mob.villager->village].append(&mob);
         }
     }
     return byVillage;
@@ -87,8 +87,8 @@ void QcVillagerBreeding::share(const QList<QcCreature *> &villagers) const
 {
     for (QcCreature *farmer : villagers) {
         const QcVillagerSettings &settings = m_content->villagerSettingsOf(farmer->type);
-        const QcVillagerProfession *profession = settings.profession(farmer->villager.profession);
-        if (!profession || !profession->tendsCrops || farmer->villager.produce <= settings.breeding.shareAbove) {
+        const QcVillagerProfession *profession = settings.profession(farmer->villager->profession);
+        if (!profession || !profession->tendsCrops || farmer->villager->produce <= settings.breeding.shareAbove) {
             continue;
         }
 
@@ -96,15 +96,15 @@ void QcVillagerBreeding::share(const QList<QcCreature *> &villagers) const
         double nearest = settings.breeding.shareDistance;
         for (QcCreature *other : villagers) {
             const double distance = (other->motion.position - farmer->motion.position).length();
-            if (other != farmer && other->type == farmer->type && !other->isYoung() && other->villager.produce < settings.breeding.food && distance <= nearest) {
+            if (other != farmer && other->type == farmer->type && !other->isYoung() && other->villager->produce < settings.breeding.food && distance <= nearest) {
                 hungry = other;
                 nearest = distance;
             }
         }
         if (hungry) {
-            const int given = std::min(settings.breeding.food - hungry->villager.produce, farmer->villager.produce - settings.breeding.shareAbove);
-            farmer->villager.produce -= given;
-            hungry->villager.produce += given;
+            const int given = std::min(settings.breeding.food - hungry->villager->produce, farmer->villager->produce - settings.breeding.shareAbove);
+            farmer->villager->produce -= given;
+            hungry->villager->produce += given;
         }
     }
 }

@@ -22,7 +22,9 @@ class TestVillageLayouts : public QObject
 
 private:
     static constexpr qint64 seed = 42;
-    // Regions around the origin the statistics run over (33 x 33).
+    // The statistics run over a fixed sample (decision E-424): the first 160 villages ring by ring
+    // around the origin (about 30 x 30 regions at seed 42; the rings stop at 33 x 33).
+    static constexpr qsizetype sampleSize = 160;
     static constexpr int rings = 16;
 
     using Plans = QList<std::shared_ptr<const QcVillagePlan>>;
@@ -78,7 +80,7 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = loadContent();
     QcTerrainGenerator m_generator{m_content, seed};
-    Plans m_plans = plansAround(m_generator, rings);
+    Plans m_plans = samplePlans(m_generator, sampleSize, rings);
 
     Plans plansOf(const QString &layout) const
     {
@@ -152,6 +154,7 @@ private slots:
     {
         // Per style: the share of each kind against its weight. A plaza whose ring is cut becomes a
         // cross, so crosses may come out a little above their weight and plazas below.
+        QCOMPARE(m_plans.size(), sampleSize);
         QHash<QString, QHash<QString, int>> counts;
         QHash<QString, int> totals;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
@@ -174,7 +177,11 @@ private slots:
                 const double expected = double(layout.weight) / double(weights);
                 shares.append(u"%1 %2/%3"_s.arg(kind).arg(share, 0, 'f', 2).arg(expected, 0, 'f', 2));
                 seen.insert(kind);
-                // Only styles with enough villages for a share.
+                // Only styles with at least 60 villages in the sample. The tolerance of 0.1 is about
+                // two standard deviations of a binomial share near 0.3 among 60 villages
+                // (sqrt(0.3 * 0.7 / 60) = 0.06): the seed is fixed, so the test is deterministic,
+                // and 0.1 is how far a change may move a share before it counts as a change of
+                // the weights' effect.
                 if (it.value() >= 60) {
                     QVERIFY2(std::abs(share - expected) <= 0.1, qPrintable(u"%1: %2"_s.arg(it.key(), shares.join(u", "_s))));
                 }

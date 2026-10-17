@@ -357,8 +357,14 @@ private slots:
         QTemporaryDir dir;
         const QString pack = writePack(dir.path(), u"lonely"_s, {{u"mobs/gnome.json"_s, gnomeMob}});
         const Loaded loaded = load({pack});
-        QVERIFY(anyContains(loaded.warnings, u"no villager settings 'lonely:gnome'"_s));
-        QVERIFY(!loaded.content->mobs()[*loaded.content->mobIndex(u"lonely:gnome"_s)].villager);
+        QVERIFY(anyContains(loaded.warnings, u"no villager settings 'lonely:gnome'; it is no villager and opens no doors"_s));
+        const QcMobDefinition &gnome = loaded.content->mobs()[*loaded.content->mobIndex(u"lonely:gnome"_s)];
+        QVERIFY(!gnome.villager);
+        QCOMPARE(gnome.ai, QcMobDefinition::Ai::Passive);
+        // It keeps the villager's other abilities (it still climbs ladders and keeps off deep jumps).
+        QVERIFY(!gnome.abilities.opensDoors);
+        QCOMPARE(gnome.abilities.climbs, QcMobAbilities::Climbing::Ladders);
+        QVERIFY(!gnome.abilities.divesIntoWater);
     }
 
     void newerFormatsAreRefused()

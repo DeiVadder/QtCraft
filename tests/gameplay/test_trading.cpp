@@ -89,7 +89,7 @@ private:
         const quint32 entity = m_server->entities().newId();
         const int type = *m_content->mobIndex(kind);
         m_server->mobs().spawn(type, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 1.5}, entity);
-        villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettingsOf(type), 7);
+        *villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettingsOf(type), 7);
         ticks(30);
         return entity;
     }
@@ -155,8 +155,8 @@ private:
     {
         const quint32 farmer = startWithFarmer(phase, config);
         for (quint32 look = 0; look < 64; ++look) {
-            villager(farmer)->villager.look = look;
-            const QList<const QcVillagerTrades::Offer *> offers = trades().offersOf(villager(farmer)->villager);
+            villager(farmer)->villager->look = look;
+            const QList<const QcVillagerTrades::Offer *> offers = trades().offersOf(*villager(farmer)->villager);
             if (std::ranges::any_of(offers, [](const auto *offer) { return offer->definition.id == u"qtcraft:wheat>qtcraft:emerald"_s; })) {
                 return farmer;
             }
@@ -174,19 +174,19 @@ private slots:
     void aFarmerOpensItsScreenWithItsOffers()
     {
         const quint32 farmer = startWithWheatFarmer(meetPhase);
-        QCOMPARE(villager(farmer)->villager.profession, u"qtcraft:farmer"_s);
+        QCOMPARE(villager(farmer)->villager->profession, u"qtcraft:farmer"_s);
         QVERIFY(openWithWheat(farmer, 0) >= 0);
         QCOMPARE(m_client->trade->villager, farmer);
         QCOMPARE(m_client->trade->profession, u"profession.qtcraft.farmer"_s);
         QCOMPARE(m_client->trade->level, 1);
         QCOMPARE(m_client->trade->levelEnd, 10);
         QCOMPARE(m_client->trade->offers.size(), trades().settings().offersPerLevel);
-        QCOMPARE(villager(farmer)->villager.trader, m_client->entityId);
+        QCOMPARE(villager(farmer)->villager->trader, m_client->entityId);
 
         // It stands facing the player while the screen is open.
         ticks(40);
         QVERIFY(m_client->trade.has_value());
-        QVERIFY(!villager(farmer)->villager.target);
+        QVERIFY(!villager(farmer)->villager->target);
     }
 
     void aTradePaysTheCostsAndGivesTheResult()
@@ -200,7 +200,7 @@ private slots:
         QCOMPARE(countOf("qtcraft:wheat"), 10);
         QCOMPARE(countOf("qtcraft:emerald"), 1);
         QCOMPARE(m_client->trade->offers[index].uses, 1);
-        QCOMPARE(villager(farmer)->villager.experience, 2);
+        QCOMPARE(villager(farmer)->villager->experience, 2);
 
         // Ten wheat are not enough: nothing changes.
         send(QcMsg::Trade{farmer, index, false});
@@ -261,11 +261,11 @@ private slots:
         bool restocked = false;
         for (int tick = 0; tick < 400 && !restocked; ++tick) {
             ticks(1);
-            restocked = villager(farmer)->villager.offers.value(index).uses == 0;
+            restocked = villager(farmer)->villager->offers.value(index).uses == 0;
         }
         QVERIFY(restocked);
-        QCOMPARE(villager(farmer)->villager.restocks, 1);
-        QCOMPARE(villager(farmer)->villager.offers[index].demand, 1);
+        QCOMPARE(villager(farmer)->villager->restocks, 1);
+        QCOMPARE(villager(farmer)->villager->offers[index].demand, 1);
         openWithWheat(farmer, 0);
         QCOMPARE(m_client->trade->offers[index].costs.constFirst().count, 22);
     }
@@ -273,7 +273,7 @@ private slots:
     void aLevelReachedUnlocksOffers()
     {
         const quint32 farmer = startWithWheatFarmer(meetPhase);
-        villager(farmer)->villager.experience = 9;
+        villager(farmer)->villager->experience = 9;
         const int index = openWithWheat(farmer, 20);
         const qsizetype before = m_client->trade->offers.size();
         send(QcMsg::Trade{farmer, index, false});
@@ -295,7 +295,7 @@ private slots:
             ticks(1);
         }
         QVERIFY(m_client->tradeClosed);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
         QVERIFY(villager(farmer)->fleeTimer > 0.0);
     }
 
@@ -306,7 +306,7 @@ private slots:
         chat(u"/tp %1 %2 %3"_s.arg(m_feet.x + 12).arg(m_feet.y).arg(m_feet.z));
         ticks(2);
         QVERIFY(m_client->tradeClosed);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
     }
 
     void oneTraderAtATime()
@@ -325,7 +325,7 @@ private slots:
         pump();
         ticks(1);
         QVERIFY(!other.trade);
-        QCOMPARE(villager(farmer)->villager.trader, m_client->entityId);
+        QCOMPARE(villager(farmer)->villager->trader, m_client->entityId);
 
         // Once the first closes, the second may trade.
         send(QcMsg::CloseTrade{});
@@ -335,13 +335,13 @@ private slots:
         pump();
         ticks(1);
         QVERIFY(other.trade);
-        QCOMPARE(villager(farmer)->villager.trader, other.entityId);
+        QCOMPARE(villager(farmer)->villager->trader, other.entityId);
 
         // The trader leaves the game: the villager trades no more.
         other.connection.close();
         pump();
         ticks(3);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
     }
 
     void aStateAfterTheProfessionCommandFollowsTheNewOffers()
@@ -353,7 +353,7 @@ private slots:
         QVERIFY(m_client->trade);
         QCOMPARE(m_client->trade->profession, u"profession.qtcraft.smith"_s);
         QCOMPARE(m_client->trade->offers.size(), 2 * trades().settings().offersPerLevel);
-        QCOMPARE(villager(farmer)->villager.offers.size(), m_client->trade->offers.size());
+        QCOMPARE(villager(farmer)->villager->offers.size(), m_client->trade->offers.size());
 
         // A trade of the shown offer counts on that offer's state.
         const QcMsg::TradeOffer shown = m_client->trade->offers[0];
@@ -363,9 +363,9 @@ private slots:
         send(QcMsg::Trade{farmer, 0, false});
         ticks(1);
         QCOMPARE(m_client->trade->offers[0].uses, 1);
-        const QString id = trades().offersOf(villager(farmer)->villager).constFirst()->definition.id;
-        QCOMPARE(villager(farmer)->villager.offers[0].id, id);
-        QCOMPARE(villager(farmer)->villager.offers[0].uses, 1);
+        const QString id = trades().offersOf(*villager(farmer)->villager).constFirst()->definition.id;
+        QCOMPARE(villager(farmer)->villager->offers[0].id, id);
+        QCOMPARE(villager(farmer)->villager->offers[0].uses, 1);
     }
 
     void bedtimeEndsTheTradeAndNoneStartsAtNight()
@@ -375,7 +375,7 @@ private slots:
         setPhase(0.6);
         ticks(2);
         QVERIFY(m_client->tradeClosed);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
 
         m_client->tradeClosed = false;
         QCOMPARE(openWithWheat(farmer, 0), -1);
@@ -393,7 +393,7 @@ private slots:
         holdNear(farmer, 3);
         send(QcMsg::UseEntity{farmer});
         QVERIFY(!m_client->trade);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
 
         // Without the wall it trades; sneaking with bread in hand it does not (the bread is used).
         for (int dy = 0; dy <= 2; ++dy) {
@@ -453,7 +453,7 @@ private slots:
         QVERIFY(m_client->openMachine);
         QVERIFY(m_client->tradeClosed);
         ticks(1);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
     }
 
     void theScreenClosesWhenTheVillagerDiesOrIsUnloaded()
@@ -480,7 +480,7 @@ private slots:
         ticks(2);
         QVERIFY(m_client->dead);
         QVERIFY(m_client->tradeClosed);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
     }
 
     void aVillagerIsSavedWithItsOffers()
@@ -492,7 +492,7 @@ private slots:
         const int index = openWithWheat(farmer, 40);
         send(QcMsg::Trade{farmer, index, true});
         send(QcMsg::CloseTrade{});
-        const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(villager(farmer)->villager);
+        const QcVillagerRecord saved = static_cast<const QcVillagerRecord &>(*villager(farmer)->villager);
         const quint64 uid = villager(farmer)->uid;
         QCOMPARE(saved.offers[index].uses, 2);
         QVERIFY(m_server->save().has_value());
@@ -503,9 +503,9 @@ private slots:
         ticks(2);
         const auto found = std::ranges::find_if(m_server->mobs().mobs(), [uid](const QcCreature &mob) { return mob.uid == uid; });
         QVERIFY(found != m_server->mobs().mobs().end());
-        QCOMPARE(found->villager.offers, saved.offers);
-        QCOMPARE(found->villager.look, saved.look);
-        QCOMPARE(trades().offersOf(found->villager), trades().offersOf(saved));
+        QCOMPARE(found->villager->offers, saved.offers);
+        QCOMPARE(found->villager->look, saved.look);
+        QCOMPARE(trades().offersOf(*found->villager), trades().offersOf(saved));
     }
 
     void aSecondSpeciesTradesByItsOwnSettings()
@@ -543,7 +543,7 @@ private slots:
         villager(farmer)->growUp = (*m_content->villagerSettings(u"qtcraft:villager"_s)).breeding.growUpSeconds;
         QCOMPARE(openWithWheat(farmer, 0), -1);
         QVERIFY(!m_client->trade);
-        QCOMPARE(villager(farmer)->villager.trader, 0u);
+        QCOMPARE(villager(farmer)->villager->trader, 0u);
 
         // Grown up it trades.
         villager(farmer)->growUp = 0.0;
@@ -567,7 +567,7 @@ private slots:
         villager(farmer)->motion.velocity = {};
         const double before = villager(farmer)->health;
         ticks(3 * QcEnvironmentDamage::suffocationIntervalTicks);
-        QVERIFY(!villager(farmer)->villager.sleeping);
+        QVERIFY(villager(farmer)->pose != QcPose::Lying);
         QVERIFY2(villager(farmer)->health < before, qPrintable(QString::number(villager(farmer)->health)));
     }
 };

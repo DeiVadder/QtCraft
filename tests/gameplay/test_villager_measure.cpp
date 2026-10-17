@@ -102,7 +102,7 @@ private:
             times.append(double(timer.nsecsElapsed()) / 1e6);
             pump();
             if (i == count * 3 / 4) {
-                asleep = std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) { return mob.villager.sleeping; });
+                asleep = std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) { return mob.pose == QcPose::Lying; });
             }
         }
         std::ranges::sort(times);
@@ -125,7 +125,7 @@ private:
         const QList<std::shared_ptr<const QcVillagePlan>> plans = villages(count);
         loadVillages(plans);
         chat(u"/gamerule mobSpawning false"_s);
-        removeCreatures([](const QcCreature &mob) { return !mob.villager.profession.isEmpty(); });
+        removeCreatures([](const QcCreature &mob) { return mob.isVillager(); });
         return plans;
     }
 
@@ -133,13 +133,15 @@ private:
     void prepareGrowth(const QList<std::shared_ptr<const QcVillagePlan>> &plans)
     {
         for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
-            const auto it = std::ranges::find_if(m_server->mobs().mobs(), [&plan](const QcCreature &mob) { return mob.villager.village == plan->id; });
+            const auto it = std::ranges::find_if(m_server->mobs().mobs(), [&plan](const QcCreature &mob) { return mob.isVillager() && mob.villager->village == plan->id; });
             if (it != m_server->mobs().mobs().end()) {
                 m_server->mobs().remove(it->id);
             }
         }
         for (QcCreature &mob : m_server->mobs().editableMobs()) {
-            mob.villager.produce = QcVillagerRecord::maxProduce;
+            if (mob.isVillager()) {
+                mob.villager->produce = QcVillagerRecord::maxProduce;
+            }
         }
     }
 
@@ -210,13 +212,13 @@ private slots:
         }
         QStringList awake;
         for (const QcCreature &mob : m_server->mobs().mobs()) {
-            if (!mob.villager.sleeping) {
+            if (mob.pose != QcPose::Lying) {
                 const auto cell = [](std::optional<QcBlockPos> pos) { return pos ? u"%1 %2 %3"_s.arg(pos->x).arg(pos->y).arg(pos->z) : u"none"_s; };
                 awake.append(u"%1 at %2 %3 %4 home %5 target %6 water %7"_s.arg(mob.uid)
                                  .arg(mob.motion.position.x, 0, 'f', 1)
                                  .arg(mob.motion.position.y, 0, 'f', 1)
                                  .arg(mob.motion.position.z, 0, 'f', 1)
-                                 .arg(cell(mob.villager.home), cell(mob.villager.target))
+                                 .arg(cell(mob.villager->home), cell(mob.villager->target))
                                  .arg(mob.motion.inWater));
             }
         }

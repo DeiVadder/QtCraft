@@ -24,6 +24,7 @@
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
+#include "server/mobs/QcNaturalSpawner.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcServerPlants.h"
 #include "server/villages/QcServerTrading.h"
@@ -148,13 +149,13 @@ QMap<QString, double> values()
         {u"experience.deathPerLevel"_s, double(QcExperience::deathPointsPerLevel)},
         {u"experience.deathMax"_s, double(QcExperience::maxDeathPoints)},
         {u"experience.orbLimit"_s, double(QcServerLimits{}.experienceOrbs)},
-        {u"mobs.hostileCap"_s, QcMobManager::hostileCapPerPlayer},
-        {u"mobs.passiveCap"_s, QcMobManager::passiveCapPerPlayer},
-        {u"mobs.ambientCap"_s, QcMobManager::ambientCapPerPlayer},
-        {u"mobs.spawnRadiusMin"_s, QcMobManager::spawnRadiusMin},
-        {u"mobs.spawnRadiusMax"_s, QcMobManager::spawnRadiusMax},
+        {u"mobs.hostileCap"_s, QcNaturalSpawner::hostileCapPerPlayer},
+        {u"mobs.passiveCap"_s, QcNaturalSpawner::passiveCapPerPlayer},
+        {u"mobs.ambientCap"_s, QcNaturalSpawner::ambientCapPerPlayer},
+        {u"mobs.spawnRadiusMin"_s, QcNaturalSpawner::spawnRadiusMin},
+        {u"mobs.spawnRadiusMax"_s, QcNaturalSpawner::spawnRadiusMax},
         {u"mobs.despawnDistance"_s, QcMobManager::despawnDistance},
-        {u"mobs.caveDepth"_s, QcMobManager::caveDepth},
+        {u"mobs.caveDepth"_s, QcNaturalSpawner::caveDepth},
         {u"commands.maxFill"_s, double(QcServer::maxFillBlocks)},
         {u"commands.summonLimit"_s, double(QcServerLimits{}.summonLimit)},
         {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},

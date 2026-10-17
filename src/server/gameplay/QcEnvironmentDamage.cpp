@@ -1,6 +1,7 @@
 #include "server/gameplay/QcEnvironmentDamage.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/physics/QcPose.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -96,11 +97,7 @@ bool eyesInsideBlock(const QcServerState &state, const QcVec3 &eyes)
 
 QcVec3 QcEnvironmentDamage::eyesOf(const QcCreature &mob, const QcMobDefinition &definition)
 {
-    if (mob.villager.sleeping) {
-        const QcAabb lying = QcPhysics::lyingBoxAt(mob.motion.position, mob.yaw, definition.width, definition.height);
-        return (lying.min + lying.max) * 0.5;
-    }
-    return mob.motion.position + QcVec3{0.0, definition.height * 0.85, 0.0};
+    return QcPoses::eyesAt(mob.pose, mob.motion.position, mob.yaw, definition.width, definition.height);
 }
 
 void QcEnvironmentDamage::applySuffocation()

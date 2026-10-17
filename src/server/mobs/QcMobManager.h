@@ -4,16 +4,11 @@
 #include "common/core/QcChunkPos.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/physics/QcPhysics.h"
-#include "server/core/QcServerLimits.h"
 #include "server/entities/QcCreature.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/mobs/QcMobCrowd.h"
-#include "server/villages/QcVillageGolems.h"
-#include "server/villages/QcVillagerBehaviour.h"
-#include "server/villages/QcVillagerBreeding.h"
-#include "server/villages/QcVillagerHomes.h"
+#include "server/villages/QcVillager.h"
 
-#include <QHash>
 #include <QList>
 #include <QRandomGenerator>
 #include <QSet>
@@ -24,36 +19,26 @@
 
 class QcChunk;
 class QcMobBehaviour;
+class QcNaturalSpawner;
 class QcPathPlanner;
 class QcServerWorld;
-class QcVillages;
+class QcVillagePopulation;
+class QcVillagerBehaviour;
 
-// Creatures on the server: spawning by time of day, place and data definitions, their behaviour
-// (QcMobBehaviour: wander, chase along paths, attack, flee when hurt for passive mobs), damage and
-// despawning. Peaceful
-// animals (not hostile, ambient or flying) are persistent (decision E-086): a share of newly generated chunks gets a group of them,
-// they never despawn, rest while their chunk is not loaded and are saved with the world. Other
-// creatures are not saved; they appear again around the players.
+// The creatures on the server (decision E-422): their store, the order of their tick (behaviour
+// in QcMobBehaviour: wander, chase along paths, attack, flee when hurt for passive mobs; despawning;
+// natural spawning in QcNaturalSpawner; village life in QcVillagePopulation), damage, and saving and
+// loading the persistent ones. Peaceful animals (not hostile, ambient or flying) are persistent
+// (decision E-086): they never despawn, rest while their chunk is not loaded and are saved with the
+// world. Other creatures are not saved; they appear again around the players. Every creature that
+// leaves the store raises one notification with the reason (Departure) for its listeners.
 class QcMobManager
 {
 public:
-    static constexpr double spawnRadiusMin = 20.0;
-    static constexpr double spawnRadiusMax = 48.0;
     static constexpr double despawnDistance = 96.0;
-    // Share of newly generated chunks that get a group of animals.
-    static constexpr double chunkAnimalChance = 0.1;
-    // Animals spawn naturally around a player only while none is awake within this distance.
-    static constexpr double animalSearchDistance = 128.0;
-    // Creatures spawning by themselves around one player at most by default (QcServerLimits
-    // hostileCreaturesPerPlayer, passiveCreaturesPerPlayer, ambientCreaturesPerPlayer: fireflies).
-    static constexpr int hostileCapPerPlayer = int(QcServerLimits{}.hostileCreaturesPerPlayer);
-    static constexpr int passiveCapPerPlayer = int(QcServerLimits{}.passiveCreaturesPerPlayer);
-    static constexpr int ambientCapPerPlayer = int(QcServerLimits{}.ambientCreaturesPerPlayer);
     // Flying creatures keep between these heights above the ground below them.
     static constexpr double flyMinHeight = 1.2;
     static constexpr double flyMaxHeight = 3.0;
-    // Blocks of rock above a cave floor for it to count as dark enough for cave spawns.
-    static constexpr int caveDepth = 8;
     static constexpr double hurtInvulnerability = 0.5;
     static constexpr double knockbackSpeed = 6.0;
 
@@ -94,10 +79,32 @@ public:
         QcVec3 knockback;
     };
 
+    // Why a creature left the store: it died, was removed without a death (caught, commands),
+    // despawned far from the players or in daylight, fell into the void, or its chunk unloaded (it
+    // rests in the chunk's entity record and comes back with it).
+    enum class Departure : quint8 { Died, Removed, Despawned, Void, Unloaded };
+    // Called with the creature just before it leaves the store. Every creature that leaves in the
+    // same step is still in the store while the listeners run, so they may read it (find, mobs());
+    // they must not add or remove creatures.
+    using DepartureListener = std::function<void(const QcCreature &mob, Departure why)>;
+    // Names a subscription to departures (onDeparture), for removeDepartureListener.
+    enum class DepartureToken : quint64 {};
+
     QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
     ~QcMobManager();
-    // Creatures spawning by themselves around one player at most, by kind.
-    void setCaps(int hostile, int passive, int ambient);
+    QcMobManager(const QcMobManager &) = delete;
+    QcMobManager &operator=(const QcMobManager &) = delete;
+    // Natural spawning around players and with new chunks: caps, spawn chunks (decision E-086).
+    QcNaturalSpawner &spawner() { return *m_spawner; }
+    const QcNaturalSpawner &spawner() const { return *m_spawner; }
+    // The villagers of the villages: limits, claims, children and golems (decisions E-411, E-415).
+    QcVillagePopulation &population() { return *m_population; }
+    const QcVillagePopulation &population() const { return *m_population; }
+    // Subscribes to every departure from the store until the token is removed or the manager goes.
+    DepartureToken onDeparture(DepartureListener listener);
+    // Ends a subscription; takes effect from the next departure on (also inside a listener).
+    void removeDepartureListener(DepartureToken token);
+
     // Budgets of the path searches (QcServerLimits pathNodesPerTick, pathNodesPerSearch, pathLength).
     void setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength);
     // The path searches of the creatures (budget use, tests and debug).
@@ -110,17 +117,7 @@ public:
     // tick (game rule maxEntityCramming; 0: none).
     QList<QcMobCrowd::Crammed> crammed(int limit) const;
 
-    // Villagers (decision E-411): the village state they claim beds and workstations in (a villager
-    // that dies or is removed frees its claims there), how many may live, their budgets per tick and
-    // what they did to the world.
-    void setVillages(QcVillages *villages) { m_villages = villages; }
-    void setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour);
-    // Village life (decision E-415): every villageLifeTicks ticks villagers get children
-    // (QcVillagerBreeding) and villages iron golems (QcVillageGolems, at most `golems` in the world,
-    // QcServerLimits villageGolems, only with natural spawning).
-    static constexpr int villageLifeTicks = 100;
-    void setGolemLimit(qint64 golems) { m_golemLimit = golems; }
-    const QcVillageGolems &golems() const { return m_golems; }
+    // The villagers' day, doors, roads and trades (decision E-411).
     QcVillagerBehaviour &villagers();
     const QcVillagerBehaviour &villagers() const;
 
@@ -138,23 +135,24 @@ public:
     std::optional<QList<QcItemDrop>> woundAt(qsizetype index, double amount);
     // Removes a mob without a death (caught); false when there is none.
     bool remove(quint32 mobId);
+    // Takes the mobs `leaves` picks out of the store because their chunk unloads (Departure::Unloaded).
+    void unload(const std::function<bool(const QcCreature &mob)> &leaves);
     // Spawns a mob directly (commands, tests); returns its id.
     quint32 spawn(int type, const QcVec3 &position, quint32 id, bool underground = false, bool persistent = false);
+    // Clears the store without departures (tests that want an empty world).
     void removeAll() { m_mobs.clear(); }
     // Game rule mobSpawning: without it no creature spawns by itself, neither around players nor
     // with new chunks (decision E-221); /summon and world setups still add them.
     void setNaturalSpawning(bool on) { m_naturalSpawning = on; }
     bool naturalSpawning() const { return m_naturalSpawning; }
 
-    // Gives a chunk seen for the first time its group of animals (chunkAnimalChance, decided by the
-    // seed), the creatures of the village pieces in it (an animal pen's pair, decision E-404) and a
-    // villager for each free bed in it (decision E-411), and remembers it; later calls for the same
-    // chunk do nothing. The chunk must be loaded.
+    // Gives a chunk seen for the first time the creatures of the village pieces in it (an animal
+    // pen's pair, decision E-404), a villager for each free bed in it (decision E-411) and its group
+    // of animals (QcNaturalSpawner::chunkAnimalChance, decided by the seed), and remembers it; later
+    // calls for the same chunk do nothing. The chunk must be loaded.
     void populateChunk(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
     bool isPopulated(QcChunkPos pos) const { return m_populated.contains(pos); }
     const QSet<QcChunkPos> &populatedChunks() const { return m_populated; }
-    // Whether the village's claims were reconciled in this run (checkVillageClaims).
-    bool claimsReconciled(qint64 village) const { return m_claimsChecked.contains(village); }
     // The chunk left the world; whether it got its animals goes with it (decision E-374).
     void forgetPopulated(QcChunkPos pos) { m_populated.remove(pos); }
     void notePopulated(QcChunkPos pos) { m_populated.insert(pos); }
@@ -169,103 +167,21 @@ public:
     // Mobs that are not dormant, all of them and those that came by /summon.
     qsizetype awakeCount() const;
     qsizetype awakeSummonedCount() const;
-    // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks);
-    // the second form takes the share and index of any spawn rule (0: main rule), each rule has its
-    // own set of chunks.
-    bool spawnsInChunk(int type, QcChunkPos pos) const;
-    bool spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const;
-
     const QList<QcCreature> &mobs() const { return m_mobs; }
-    // For the breeding timers (QcMobBreeding); never add or remove mobs through it.
+    // For the breeding timers (QcMobBreeding) and the parts that set up a mob they just spawned;
+    // never add or remove mobs through it.
     QList<QcCreature> &editableMobs() { return m_mobs; }
     const QcCreature *find(quint32 id) const;
     QcCreature *find(quint32 id);
 
 private:
-    int capOf(const QcMobDefinition &definition) const;
-    using SpawnRule = QcMobDefinition::SpawnRule;
-
-    // Awake mobs near a spawn centre per category and kind, and whether an animal is awake within
-    // animalSearchDistance.
-    struct NearbyCounts
-    {
-        int hostile = 0;
-        int passive = 0;
-        int ambient = 0;
-        QHash<int, int> perType;
-        bool animalsNear = false;
-
-        int &of(const QcMobDefinition &definition) { return definition.ambient ? ambient : (definition.hostile ? hostile : passive); }
-        int of(const QcMobDefinition &definition) const
-        {
-            return definition.ambient ? ambient : (definition.hostile ? hostile : passive);
-        }
-    };
-
-    // A block a mob may spawn on (`floorY`), on the surface or on a cave floor. Biome and light are
-    // looked up only when a rule asks, and then once.
-    struct SpawnPlace
-    {
-        int x = 0;
-        int z = 0;
-        int floorY = 0;
-        bool cave = false;
-        QcBlockId ground = qcAirBlockId;
-        std::optional<QString> biome;
-        std::optional<int> light;
-    };
-
-    // A kind that may spawn at a place, with the first of its rules that allows it.
-    struct SpawnCandidate
-    {
-        int type = 0;
-        const SpawnRule *rule = nullptr;
-    };
-
-    void trySpawnAround(QcServerWorld &world, const QcVec3 &centre, bool night, const QList<PlayerView> &players,
-                        const std::function<quint32()> &nextEntityId);
-    NearbyCounts countNear(const QcVec3 &centre) const;
-    // A random place around `centre`; consumes the random numbers of one spawn attempt.
-    std::optional<SpawnPlace> randomPlace(const QcServerWorld &world, const QcVec3 &centre);
-    // A cave floor with room for a mob, searched downwards from a random height below `surface`;
-    // -1 when there is none.
-    int randomCaveFloor(const QcChunk &chunk, QcBlockPos column, int surface);
-    QList<SpawnCandidate> candidatesAt(const QcServerWorld &world, SpawnPlace &place, bool night, const NearbyCounts &counts) const;
-    bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, SpawnCandidate candidate, bool night) const;
-    // Weighted random choice by the rules' weights.
-    SpawnCandidate pick(const QList<SpawnCandidate> &candidates);
-    void spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, NearbyCounts &counts,
-                    const std::function<quint32()> &nextEntityId);
-    // One member of a group; false when there is no room for it.
-    bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
-                    const std::function<quint32()> &nextEntityId);
-    bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen,
-                     const std::function<quint32()> &nextEntityId);
-    // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
-    QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
-    // The persistent creatures of the village plan whose spot lies in the chunk.
-    void spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
-    // A villager for every free bed of a village whose head lies in the chunk, within the limits
-    // (decision E-411); with `onlyAlwaysLivedIn` only in a village that is always lived in
-    // (QcVillagePlan::alwaysLivedIn).
-    void spawnVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId, bool onlyAlwaysLivedIn);
-    // The chunks next to `pos` with a free bed whose villager found no place beside it (in a
-    // chunk not loaded then, m_bedsWaiting) try again now that `pos` is loaded.
-    void spawnWaitingVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId, bool onlyAlwaysLivedIn);
-    // Once per village and run, when every chunk the villagers holding its claims may stand in is
-    // loaded (around the arrived chunk `pos`): a second villager under one name is renamed, claims
-    // whose holder is not in the world lapse and the population counts the villagers there
-    // (decision E-411).
-    void checkVillageClaims(QcServerWorld &world, QcChunkPos pos);
-    // Every chunk the villagers holding the village's claims may stand in is loaded.
-    static bool claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village);
-    void reconcileClaims(QcServerWorld &world, QcVillage &village);
-    // Children and golems of the villages, every villageLifeTicks ticks.
-    void liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId);
-    // A creature leaves the world for good (died, removed): a villager frees its claims.
-    void depart(const QcCreature &mob);
-    // Weighted choice by spawn weight for a `random` value in [0, 1).
-    int pickAnimal(const QList<int> &candidates, double random) const;
+    // Tells the listeners that `mob` leaves the store.
+    void depart(const QcCreature &mob, Departure why);
+    // Erases the mob at `it` after its departure.
+    void erase(QList<QcCreature>::iterator it, Departure why);
+    // Takes the mobs `leaves` gives a reason for out of the store: first all of them are found, then
+    // the listeners hear of each in store order, then they are erased.
+    void departWhere(const std::function<std::optional<Departure>(const QcCreature &mob)> &leaves);
 
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
@@ -273,23 +189,12 @@ private:
     // Uses m_random, so it comes after it.
     std::unique_ptr<QcMobBehaviour> m_behaviour;
     QList<QcCreature> m_mobs;
-    int m_hostileCap = hostileCapPerPlayer;
-    int m_passiveCap = passiveCapPerPlayer;
-    int m_ambientCap = ambientCapPerPlayer;
     QSet<QcChunkPos> m_populated;
     quint64 m_nextUid = 1;
-    // Spawn rules of every kind (main rule first), indexed by type.
-    QList<QList<QcMobDefinition::SpawnRule>> m_rules;
-    double m_spawnTimer = 0.0;
     bool m_naturalSpawning = true;
-    QcVillages *m_villages = nullptr;
-    QcVillagerHomes::Limits m_villagerLimits;
-    // Chunks with a free bed whose villager found no place to stand beside it (spawnVillagers).
-    QSet<QcChunkPos> m_bedsWaiting;
-    // Villages whose claims checkVillageClaims() checked in this run.
-    QSet<qint64> m_claimsChecked;
-    QcVillagerBreeding m_breeding;
-    QcVillageGolems m_golems;
-    qint64 m_golemLimit = QcServerLimits{}.villageGolems;
-    int m_villageLifeIn = villageLifeTicks;
+    QList<std::pair<DepartureToken, DepartureListener>> m_departureListeners;
+    quint64 m_nextDepartureToken = 1;
+    // Use m_random and subscribe to departures, so they come last.
+    std::unique_ptr<QcNaturalSpawner> m_spawner;
+    std::unique_ptr<QcVillagePopulation> m_population;
 };

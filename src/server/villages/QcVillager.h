@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcVillagerDefinitions.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
+#include "server/pathing/QcMobLegs.h"
 
 #include <QString>
 
@@ -60,8 +61,6 @@ struct QcVillagerRecord
 struct QcVillager : QcVillagerRecord
 {
     QcVillagerActivity activity = QcVillagerActivity::Wander;
-    // Lying in its bed (QcMsg::Sleeping): the physics leaves it there.
-    bool sleeping = false;
     // A door it opened on its way and closes once it is through.
     std::optional<QcBlockPos> openedDoor;
     // Where it is going (QcVillagerBehaviour::Goal) and how close counts as there; a stroll is
@@ -71,16 +70,12 @@ struct QcVillager : QcVillagerRecord
     bool strolling = false;
     // At its target (QcVillagerBehaviour::arrive): it stands instead of walking on.
     bool arrived = false;
-    // On a long walk: the road cell it walks to first (QcVillagerRoads).
-    std::optional<QcBlockPos> leg;
-    // Ticks until it asks the roads again after they had no leg for it (QcVillagerBehaviour::legRetryTicks).
-    int legRetryIn = 0;
+    // On a long walk: the road cell it walks to first, and in water without a path to its target
+    // the road cell on land it gets out to first (QcMobLegs along the roads of QcVillagerRoads).
+    QcMobLegs::State legs;
     // Decisions until a farmer looks for ripe crops again after it found none
     // (QcVillagerBehaviour::cropLookDecisions).
     int cropLookIn = 0;
-    // In water without a path to its target: the road cell on land it gets out to first
-    // (QcVillagerRoads::wayOutOfWater).
-    std::optional<QcBlockPos> shore;
     // A ripe crop a farmer walks to.
     std::optional<QcBlockPos> crop;
     // The place it runs from (a hostile creature) while the creature's fleeTimer runs.

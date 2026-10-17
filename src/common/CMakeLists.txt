@@ -150,6 +150,7 @@ target_sources(qc_common PRIVATE
     physics/QcEntityMotion.h
     physics/QcPhysics.h physics/QcPhysics.cpp
     physics/QcPlayerInput.h
+    physics/QcPose.h physics/QcPose.cpp
     physics/QcRaycast.h physics/QcRaycast.cpp
 )
 target_sources(qc_common PRIVATE

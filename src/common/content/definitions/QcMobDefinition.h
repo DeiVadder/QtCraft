@@ -17,6 +17,29 @@ struct QcMobPart
     QString texture;
 };
 
+// How a creature finds its way (decision E-423), from its data (`abilities`); the path rules
+// (QcPathRules::of) follow from it. Server side only.
+struct QcMobAbilities
+{
+    enum class Climbing : quint8 {
+        None,
+        // Holds on to ladders and goes up and down along them.
+        Ladders,
+        // Also up walls (spiders, stage 52); on paths like Ladders until then.
+        Walls,
+    };
+
+    // Opens closed wooden doors and gates on its way (only the villager AI does so far).
+    bool opensDoors = false;
+    Climbing climbs = Climbing::None;
+    // Moves through water on its paths as freely as on land; a walker uses water only without a dry way.
+    bool swims = false;
+    // Drops deeper than the usual limit into deep water (QcPathRules::waterDrop).
+    bool divesIntoWater = true;
+
+    bool operator==(const QcMobAbilities &) const = default;
+};
+
 // Data definition of a creature: stats, behaviour, spawning, model and drops.
 struct QcMobDefinition
 {
@@ -34,6 +57,12 @@ struct QcMobDefinition
     double walkSpeed = 1.5;
     double chaseSpeed = 3.5;
     bool hostile = false;
+    // What decides what it does (decision E-423): QcMobBehaviour keeps one brain of each kind.
+    // Hostile ones chase players (only with `hostile`), passive ones wander and flee, villagers live
+    // by their villager settings (only with `villager`). Server side only.
+    enum class Ai : quint8 { Passive, Hostile, Villager };
+    Ai ai = Ai::Passive;
+    QcMobAbilities abilities;
     double attackDamage = 2.0;
     double attackRange = 1.6;
     double attackCooldown = 1.0;

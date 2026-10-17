@@ -1,6 +1,9 @@
 #include "server/entities/QcEntities.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/physics/QcPose.h"
+#include "server/mobs/QcNaturalSpawner.h"
+#include "server/villages/QcVillagePopulation.h"
 
 #include <algorithm>
 
@@ -19,12 +22,12 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
 {
     m_falling.setMaxFalling(qsizetype(limits.fallingBlocks));
     m_items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
-    m_creatures.setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
+    m_creatures.spawner().setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
-    m_creatures.setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},
+    m_creatures.population().setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},
                                   {int(limits.villagerThoughtsPerTick), int(limits.villagerRoutesPerTick), int(limits.villagerHarvestsPerTick)});
-    m_creatures.setGolemLimit(limits.villageGolems);
+    m_creatures.population().setGolemLimit(limits.villageGolems);
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));
@@ -83,9 +86,8 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
             return std::nullopt;
         }
         const QcMobDefinition &definition = definitions[creature.type];
-        // A villager asleep lies in its bed (decision E-411).
-        return creature.villager.sleeping ? QcPhysics::lyingBoxAt(feet, creature.yaw, definition.width, definition.height)
-                                          : QcPhysics::boxAt(feet, definition.width, definition.height);
+        // A villager asleep lies in its bed (decisions E-411, E-423).
+        return QcPoses::boxAt(creature.pose, feet, creature.yaw, definition.width, definition.height);
     }
     case QcEntityKind::Item:
         return QcPhysics::boxAt(feet, QcItemEntityManager::itemSize, QcItemEntityManager::itemSize);

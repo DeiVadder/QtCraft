@@ -1,6 +1,13 @@
 {
     "name": "villager",
     "villager": "villager",
+    "ai": "villager",
+    "abilities": {
+        "opensDoors": true,
+        "climbs": "ladders",
+        "swims": false,
+        "divesIntoWater": false
+    },
     "sounds": {
         "ambient": "mob.villager.ambient",
         "hurt": "mob.villager.hurt",

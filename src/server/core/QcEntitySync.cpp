@@ -42,7 +42,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
         const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
-                                         | (creature.villager.sleeping ? QcMsg::Sleeping : 0));
+                                         | QcMsg::poseFlags(creature.pose));
         now.yaw = creature.yaw;
         now.health = creature.health;
         now.hurt = creature.hurtThisTick;
@@ -117,8 +117,8 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     case QcEntityKind::Creature: {
         const auto &creature = entity.as<QcCreature>();
         spawn.creatureType = creature.type;
-        if (m_state.content().mobs()[creature.type].villager) {
-            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.type, creature.villager);
+        if (creature.isVillager()) {
+            spawn.appearance = QcVillagerLooks::appearanceOf(m_state.content(), creature.type, *creature.villager);
         }
         break;
     }

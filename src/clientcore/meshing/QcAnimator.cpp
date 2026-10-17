@@ -93,7 +93,7 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         bone(result, QcBoneRole::LeftArm) = {stride * amplitude * 0.8, -3.0 - idle};
     }
 
-    if (pose.riding) {
+    if (pose.riding || pose.body == QcPose::Sitting) {
         // Sitting: the legs forward and a little apart, the arms resting.
         bone(result, QcBoneRole::RightLeg) = {80.0, 8.0};
         bone(result, QcBoneRole::LeftLeg) = {80.0, -8.0};
@@ -130,7 +130,7 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     // The head follows the view pitch: looking up tilts its top backwards, looking down forwards.
     bone(result, QcBoneRole::Head).pitch = std::clamp(double(pose.headPitch), -80.0, 80.0);
     bone(result, QcBoneRole::Head).yaw = std::clamp(double(pose.headYaw), -maxHeadYaw, maxHeadYaw);
-    if (pose.sleeping) {
+    if (pose.body == QcPose::Lying) {
         lieOnBack(result, idle);
     }
     if (pose.deathProgress >= 0.0) {
