@@ -86,6 +86,15 @@ qsizetype QcVillages::population() const
     return total;
 }
 
+qsizetype QcVillages::golems(const QHash<qint64, int> &loaded) const
+{
+    qsizetype total = 0;
+    for (const QcVillage &village : m_villages) {
+        total += std::max(village.golems, loaded.value(village.id));
+    }
+    return total;
+}
+
 QList<QcVillage> QcVillages::villages() const
 {
     std::map<qint64, QcVillage> ordered;

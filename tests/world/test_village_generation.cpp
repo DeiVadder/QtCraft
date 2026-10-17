@@ -114,6 +114,7 @@ private slots:
             const QString expected = biome == u"qtcraft:desert"_s ? u"qtcraft:desert"_s
                                      : biome == u"qtcraft:taiga"_s ? u"qtcraft:taiga"_s
                                      : biome == u"qtcraft:swamp"_s ? u"qtcraft:swamp"_s
+                                     : biome == u"qtcraft:tundra"_s ? u"qtcraft:snowy"_s
                                                                    : u"qtcraft:plains"_s;
             QCOMPARE(plan->style, expected);
             styles.insert(plan->style);
@@ -149,8 +150,9 @@ private slots:
         QCOMPARE(styleOf("qtcraft:swamp"), u"qtcraft:swamp"_s);
         QVERIFY(styles.named(u"qtcraft:swamp"_s)->overWater);
         QVERIFY(!styles.named(u"qtcraft:plains"_s)->overWater);
-        // A biome with villages that no style names takes the fallback style.
-        QCOMPARE(styleOf("qtcraft:tundra"), u"qtcraft:plains"_s);
+        // The snowy style (decision E-415) for the tundra; a biome with villages that no style names
+        // takes the fallback style (the mod biome below).
+        QCOMPARE(styleOf("qtcraft:tundra"), u"qtcraft:snowy"_s);
         QCOMPARE(styleOf("qtcraft:mountains"), QString());
         QCOMPARE(styleOf("qtcraft:forest"), QString());
 

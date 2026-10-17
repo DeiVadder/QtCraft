@@ -13,6 +13,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int maxPopulation = 1 << 16;
+constexpr double maxWorldTime = 1e15;
 
 QJsonArray position(QcBlockPos pos)
 {
@@ -73,7 +74,7 @@ qsizetype QcVillage::freeBeds() const
 
 QJsonObject QcVillage::toJson() const
 {
-    return {{u"id"_s, QString::number(id)},
+    QJsonObject json{{u"id"_s, QString::number(id)},
             {u"style"_s, style},
             {u"centre"_s, position(centre)},
             {u"min"_s, position({minX, minY, minZ})},
@@ -83,6 +84,10 @@ QJsonObject QcVillage::toJson() const
             {u"population"_s, population},
             {u"golems"_s, golems},
             {u"nextVillager"_s, nextVillager}};
+    if (lastGolem >= 0.0) {
+        json.insert(u"lastGolem"_s, lastGolem);
+    }
+    return json;
 }
 
 std::optional<QcVillage> QcVillage::fromJson(const QJsonObject &json, const ReadLimits &limits)
@@ -111,5 +116,8 @@ std::optional<QcVillage> QcVillage::fromJson(const QJsonObject &json, const Read
     village.population = std::clamp(json.value(u"population"_s).toInt(), 0, maxPopulation);
     village.golems = std::clamp(json.value(u"golems"_s).toInt(), 0, maxPopulation);
     village.nextVillager = std::clamp(json.value(u"nextVillager"_s).toInt(1), 1, std::numeric_limits<int>::max() - 1);
+    // A world time beyond about 30 million years of play counts as damaged: no golem yet.
+    const double lastGolem = json.value(u"lastGolem"_s).toDouble(-1.0);
+    village.lastGolem = std::isfinite(lastGolem) && lastGolem >= 0.0 && lastGolem <= maxWorldTime ? lastGolem : -1.0;
     return village;
 }

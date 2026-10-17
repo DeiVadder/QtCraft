@@ -443,6 +443,11 @@ private slots:
                 return mob.villager.village == plan->id && mob.villager.style == plan->style;
             });
             QCOMPARE(residents, village->population);
+            // The villager of its last bed is a child (decision E-415).
+            const auto children = std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
+                return mob.villager.village == plan->id && mob.isYoung() && mob.villager.home == village->beds.constLast().at;
+            });
+            QCOMPARE(children, 1);
             // Its fields are the crop cells of its pieces (what its farmers harvest).
             QVERIFY2(!plan->fields.isEmpty(), qPrintable(plan->style));
             for (const QcBlockPos &field : plan->fields) {

@@ -312,7 +312,7 @@ Villages stand on flat land in plains, deserts, taiga and tundra, and on stilts 
 
 **Styles**
 
-Each biome builds in its own style. Plains villages are made of oak and cobblestone with pitched roofs of stairs, a well with a bell in the middle, main roads of cobblestone or gravel, side roads of dirt path and lamp posts. Desert villages are made of sandstone and terracotta with flat roofs, main roads of terracotta or packed mud that stand out against the sand, side roads of cut sandstone and fields with sugar cane by the water. Taiga villages are the plains houses in spruce. Swamp villages stand in the water on stilts of dark spruce: huts with thatched roofs, a meeting hall with the bell on a large platform in the middle, a fisher's hut, a herb hut with mushrooms and raised fields, all joined by boardwalks at one height above the water, with stairs down where a boardwalk reaches dry land. Around them the swamp is shallow water over mud. A biome that has villages but no style of its own builds in the plains style.
+Each biome builds in its own style. Plains villages are made of oak and cobblestone with pitched roofs of stairs, a well with a bell in the middle, main roads of cobblestone or gravel, side roads of dirt path and lamp posts. Desert villages are made of sandstone and terracotta with flat roofs, main roads of terracotta or packed mud that stand out against the sand, side roads of cut sandstone and fields with sugar cane by the water. Taiga villages are the plains houses in spruce. Snowy villages in the tundra mix igloos of snow blocks with ice windows, spruce cabins under a layer of snow and the larger plains houses in spruce, with main roads of packed ice or gravel. Swamp villages stand in the water on stilts of dark spruce: huts with thatched roofs, a meeting hall with the bell on a large platform in the middle, a fisher's hut, a herb hut with mushrooms and raised fields, all joined by boardwalks at one height above the water, with stairs down where a boardwalk reaches dry land. Around them the swamp is shallow water over mud. A biome that has villages but no style of its own (one a mod adds) builds in the plains style.
 
 **Buildings**
 
@@ -334,7 +334,7 @@ A style is a file in `villages/`: the biomes it builds in, the well, the lamp po
 
 **Homes**
 
-When the part of a village with a bed is seen for the first time, a villager moves into every free bed, up to 32 in one village. Each one claims its bed and keeps it; break the bed and the villager looks for another free one. Villagers stay in the world for good: they wait while their part of the world is not loaded and are saved with it. Their clothes follow the style of their village: tunics on the plains, robes and headwraps in the desert, fur in the taiga, smocks and waders with reed hats in the swamp, each villager with its own colours.
+When the part of a village with a bed is seen for the first time, a villager moves into every free bed, up to 32 in one village. Each one claims its bed and keeps it; break the bed and the villager looks for another free one. Villagers stay in the world for good: they wait while their part of the world is not loaded and are saved with it. Their clothes follow the style of their village: tunics on the plains, robes and headwraps in the desert, fur in the taiga, pale furs and fur hats in the snow, smocks and waders with reed hats in the swamp, each villager with its own colours.
 
 **Professions**
 
@@ -344,13 +344,21 @@ A villager without work claims a free workstation and takes its profession: the 
 
 After sunrise villagers stroll about, then go to work. Around noon they meet at the bell and go back to work in the afternoon. Towards evening they stroll once more, at sunset they go home, and at night they lie in their beds until morning. A villager in bed gets up when it is hurt. When it rains in the village, everyone goes home. Monsters within 10 blocks send villagers running home; one that is hit runs away too. They can be hurt like animals and do not fight back.
 
+**Children**
+
+A village grows into its free beds. Two grown-up villagers that meet by day, in dry weather, and each have food (at least 3 crops) get a child when their village has a free bed: the child moves into the free bed nearest to them. Farmers bring in the food: what they harvest stays with them, and a farmer with more than 6 crops shares with the villagers near it that have too little. The parents then rest for 5 minutes. A child is half as tall, has no profession, plays about the village instead of working and does not trade; after 20 minutes it is grown up and takes a free workstation. No child is born at night, in rain, without a free bed or beyond 32 villagers in one village and 1024 in the world. So placing beds in a village makes it grow, and a bed left by a villager who died is filled again.
+
+**Iron golems**
+
+A village of at least 10 villagers gets an iron golem near its bell, one for every 10 villagers, at most one every 5 minutes and only with creature spawning on; a golem counts for the village whose area it stands in, at most 256 in the world. The iron golem itself is not in the game yet: until it arrives, villages wait for it.
+
 **Doors and long ways**
 
 Villagers open wooden doors on their way and close them behind them; iron doors stay shut for them. A long way through the village, say across the boardwalks of a swamp village, goes along the roads in stages, so villagers find their way home from every corner of their village.
 
 **Villagers in mods**
 
-`villagers.json` names the creature that lives in villages, the professions (the workstation kind from `worldgen/villages.json`, layers laid over the outfit, a hat, whether it tends crops), the daily routine as steps through the day (wander, work, meet, home, sleep) and the default look. A village style dresses its villagers with `villagers` in its file: an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours.
+`villagers.json` names the creature that lives in villages, the professions (the workstation kind from `worldgen/villages.json`, layers laid over the outfit, a hat, whether it tends crops), the daily routine as steps through the day (wander, work, meet, home, sleep) and the default look. A village style dresses its villagers with `villagers` in its file: an outfit, hair styles and hats to choose from and lists of skin, hair, shirt and trouser colours. `breeding` sets the food a parent needs, how farmers share, how long children take to grow up and parents rest; `golem` names the creature villages spawn as their golem and its thresholds.
 
 **See also**
 

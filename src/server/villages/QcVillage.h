@@ -10,9 +10,9 @@
 
 // A village as the server knows it (decision E-403): where it is, its beds and workstations and
 // who lives there. The generator's plan gives the first state; blocks placed and broken by players
-// keep it up to date (QcVillages). Villagers (stage 37.2b) claim a bed and a workstation and count
-// as population; breeding needs free beds and the iron golem enough population (stage 37.3), both
-// bounded by QcServerLimits.
+// keep it up to date (QcVillages). Villagers (decision E-411) claim a bed and a workstation and count
+// as population; children need free beds and golems enough population (QcVillagerBreeding,
+// QcVillageGolems), both bounded by QcServerLimits.
 struct QcVillage
 {
     // A bed (its head) or workstation; `claimedBy` names the villager that uses it (empty: free).
@@ -53,9 +53,11 @@ struct QcVillage
     int maxZ = 0;
     QList<Spot> beds;
     QList<Spot> workstations;
-    // Villagers that live here (decision E-411) and its iron golems (stage 37.3).
+    // Villagers that live here (decision E-411) and the iron golems in its area when it last
+    // counted them, with the world time its last golem came (negative: none yet; decision E-415).
     int population = 0;
     int golems = 0;
+    double lastGolem = -1.0;
     // The number in the name of the next villager (QcVillagerRecord::name), so names stay unique.
     int nextVillager = 1;
 

@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr std::array<QcServerLimits::Field, 60> table{{
+constexpr std::array<QcServerLimits::Field, 61> table{{
     {"signalBudget", "Signal Dust work per tick", 256, qint64(1) << 22, &QcServerLimits::signalBudget},
     {"signalScheduleReservePercent", "share of the signal budget kept for due scheduled ticks", 0, 90,
      &QcServerLimits::signalScheduleReservePercent},
@@ -76,6 +76,7 @@ constexpr std::array<QcServerLimits::Field, 60> table{{
     {"villagerThoughtsPerTick", "villagers deciding what to do per tick", 1, 65536, &QcServerLimits::villagerThoughtsPerTick},
     {"villagerRoutesPerTick", "legs of villagers' long walks planned per tick", 0, 4096, &QcServerLimits::villagerRoutesPerTick},
     {"villagerHarvestsPerTick", "crops villagers harvest per tick", 0, 4096, &QcServerLimits::villagerHarvestsPerTick},
+    {"villageGolems", "iron golems in the world beyond which villages spawn none", 0, 65536, &QcServerLimits::villageGolems},
 }};
 
 } // namespace

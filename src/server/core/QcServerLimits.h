@@ -127,6 +127,8 @@ struct QcServerLimits
     qint64 villagerThoughtsPerTick = 64;
     qint64 villagerRoutesPerTick = 8;
     qint64 villagerHarvestsPerTick = 4;
+    // Iron golems in the world beyond which villages spawn no more (decision E-415).
+    qint64 villageGolems = 256;
 
     static std::span<const Field> fields();
     // The defaults with the values of `json` (clamped); `warnings` gets what was clamped or unknown,

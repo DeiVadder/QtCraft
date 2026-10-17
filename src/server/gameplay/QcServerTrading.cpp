@@ -70,12 +70,13 @@ bool QcServerTrading::open(QcServerClient &client, quint32 id)
         return false;
     }
 
-    // Asleep, on its way to bed, fleeing or trading with another player: it only looks up.
+    // Asleep, on its way to bed, fleeing, trading with another player or a child: it only looks up.
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
     const bool busy = villager->villager.trader != 0 && villager->villager.trader != client.id;
     const bool bedtime = m_state.content().villagerSettings().activityAt(QcDayCycle::phase(m_state.info().worldTime)) == QcVillagerActivity::Sleep;
     trades().sync(villager->villager);
-    if (villager->villager.sleeping || bedtime || villager->fleeTimer > 0.0 || busy || client.dead || villager->villager.offers.isEmpty()) {
+    if (villager->villager.sleeping || bedtime || villager->fleeTimer > 0.0 || busy || client.dead || villager->isYoung()
+        || villager->villager.offers.isEmpty()) {
         if (!villager->villager.sleeping) {
             villager->yaw = QcMobSteering::yawTowards(client.motion.position - villager->motion.position);
         }

@@ -81,6 +81,7 @@ public:
     // Whether it rains on the top of the column of a block (QcServerWeather::isRainingAt there); without
     // one it never rains.
     void setRainCheck(std::function<bool(QcBlockPos)> check) { m_rains = std::move(check); }
+    bool rainsAt(QcBlockPos pos) const { return m_rains && m_rains(pos); }
     QcVillagerRoads &roads() { return m_roads; }
     // The offers of the villagers (decision E-414); they restock at their workstation during work.
     const QcVillagerTrades &trades() const { return m_trades; }

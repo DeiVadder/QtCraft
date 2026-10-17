@@ -283,6 +283,7 @@ qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture
 qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_trading SOURCES gameplay/test_trading.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_trade_offers SOURCES gameplay/test_trade_offers.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_village_life SOURCES gameplay/test_village_life.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 720)
 qc_add_test(test_villager_walks SOURCES gameplay/test_villager_walks.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp QcTestWorld.h LIBRARIES qc_server)
 # Signal Dust (decisions E-333 to E-341): wires, components, pistons and their quirks.
@@ -503,6 +504,7 @@ set_tests_properties(test_village_swamp test_village_fields test_village_layouts
 set_tests_properties(test_mobs test_weather_effects test_block_light_engine PROPERTIES COST 80)
 set_tests_properties(test_world_details PROPERTIES COST 70)
 set_tests_properties(test_block_entity_compare PROPERTIES COST 60)
+set_tests_properties(test_village_life PROPERTIES COST 180)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency
     test_creative_client test_multiplayer_bots PROPERTIES COST 30)

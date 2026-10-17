@@ -94,6 +94,15 @@ bool eyesInsideBlock(const QcServerState &state, const QcVec3 &eyes)
 
 } // namespace
 
+QcVec3 QcEnvironmentDamage::eyesOf(const QcCreature &mob, const QcMobDefinition &definition)
+{
+    if (mob.villager.sleeping) {
+        const QcAabb lying = QcPhysics::lyingBoxAt(mob.motion.position, mob.yaw, definition.width, definition.height);
+        return (lying.min + lying.max) * 0.5;
+    }
+    return mob.motion.position + QcVec3{0.0, definition.height * 0.85, 0.0};
+}
+
 void QcEnvironmentDamage::applySuffocation()
 {
     if (m_state.clock().tick() % suffocationIntervalTicks != 0) {
@@ -109,8 +118,8 @@ void QcEnvironmentDamage::applySuffocation()
 
     QList<quint32> suffocating;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
-        const double height = m_state.content().mobs().value(mob.type).height;
-        if (!mob.dormant && eyesInsideBlock(m_state, mob.motion.position + QcVec3{0.0, height * 0.85, 0.0})) {
+        const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
+        if (!mob.dormant && eyesInsideBlock(m_state, eyesOf(mob, definition))) {
             suffocating.append(mob.id);
         }
     }

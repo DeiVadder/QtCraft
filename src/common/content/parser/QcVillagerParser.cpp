@@ -152,6 +152,34 @@ QList<QcVillagerProfession> readProfessions(const QJsonObject &json, const QStri
     return professions;
 }
 
+QcVillagerBreedingSettings readBreeding(QcJsonFieldReader &reader)
+{
+    QcVillagerBreedingSettings breeding;
+    reader.nestedObject(u"breeding"_s, [&breeding](const QJsonObject &, QcJsonFieldReader &nested) {
+        breeding.food = nested.integer(u"food"_s, breeding.food, 0, 64);
+        breeding.growUpSeconds = nested.number(u"growUpSeconds"_s, breeding.growUpSeconds, 1.0, 86400.0);
+        breeding.cooldownSeconds = nested.number(u"cooldownSeconds"_s, breeding.cooldownSeconds, 0.0, 86400.0);
+        breeding.partnerDistance = nested.number(u"partnerDistance"_s, breeding.partnerDistance, 1.0, 16.0);
+        breeding.shareAbove = nested.integer(u"shareAbove"_s, breeding.shareAbove, 0, 1024);
+        breeding.shareDistance = nested.number(u"shareDistance"_s, breeding.shareDistance, 0.0, 16.0);
+        breeding.youngSpeed = nested.number(u"youngSpeed"_s, breeding.youngSpeed, 0.5, 3.0);
+    });
+    return breeding;
+}
+
+QcVillageGolemSettings readGolem(const QString &packNamespace, QcJsonFieldReader &reader)
+{
+    QcVillageGolemSettings golem;
+    reader.nestedObject(u"golem"_s, [&golem, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        golem.mob = nested.name(u"mob"_s, packNamespace);
+        golem.minVillagers = nested.integer(u"minVillagers"_s, golem.minVillagers, 1, 1024);
+        golem.villagersPerGolem = nested.integer(u"villagersPerGolem"_s, golem.villagersPerGolem, 1, 1024);
+        golem.cooldownSeconds = nested.number(u"cooldownSeconds"_s, golem.cooldownSeconds, 0.0, 86400.0);
+        golem.spawnRadius = nested.integer(u"spawnRadius"_s, golem.spawnRadius, 2, 32);
+    });
+    return golem;
+}
+
 } // namespace
 
 namespace QcVillagerParser {
@@ -185,6 +213,8 @@ QcResult<QcVillagerSettings> parseVillagerSettings(const QJsonObject &json, cons
     settings.fleeDistance = reader.number(u"fleeDistance"_s, settings.fleeDistance, 0.0, 32.0);
     settings.shelterFromRain = reader.boolean(u"shelterFromRain"_s, settings.shelterFromRain);
     settings.trading = QcTradeParser::readTradingSettings(reader);
+    settings.breeding = readBreeding(reader);
+    settings.golem = readGolem(packNamespace, reader);
     if (reader.ok() && (settings.mob.isEmpty() || !settings.look.isSet())) {
         reader.fail(u"needs a 'mob' and a 'look'"_s);
     }

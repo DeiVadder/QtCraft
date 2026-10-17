@@ -63,9 +63,39 @@ struct QcVillagerRoutineStep
     QcVillagerActivity activity = QcVillagerActivity::Wander;
 };
 
+// How villagers breed (villagers.json "breeding", decision E-415). Two adults of a village that are
+// willing (each holds `food` produce: the crops farmers harvest, shared by farmers holding more than
+// `shareAbove` with villagers within `shareDistance` that lack them) and see each other within
+// `partnerDistance` by day, in dry weather, get a child when their village has a free bed: it claims
+// the bed, has no profession and grows up after `growUpSeconds`. Parents rest for `cooldownSeconds`.
+struct QcVillagerBreedingSettings
+{
+    int food = 3;
+    double growUpSeconds = 1200.0;
+    double cooldownSeconds = 300.0;
+    double partnerDistance = 5.0;
+    int shareAbove = 6;
+    double shareDistance = 4.0;
+    // Children walk this much faster than adults (they run about).
+    double youngSpeed = 1.3;
+};
+
+// The iron golems villages spawn (villagers.json "golem", decision E-415): a village with at least
+// `minVillagers` villagers and fewer golems in its area than one per `villagersPerGolem` villagers
+// spawns one of the creature kind `mob` within `spawnRadius` of its meeting point, at most once per
+// `cooldownSeconds`. Without that creature kind in the content the rule rests.
+struct QcVillageGolemSettings
+{
+    QString mob;
+    int minVillagers = 10;
+    int villagersPerGolem = 10;
+    double cooldownSeconds = 300.0;
+    int spawnRadius = 8;
+};
+
 // The villagers of all villages (villagers.json, decision E-411; server side only): the creature
 // kind they are, their professions, the daily routine, the default look of styles without their
-// own, how they keep away from danger and how they trade.
+// own, how they keep away from danger, how they trade and breed and the golems of their villages.
 struct QcVillagerSettings
 {
     static constexpr int maxRoutineSteps = 24;
@@ -83,6 +113,8 @@ struct QcVillagerSettings
     // Villagers go home when it rains in the village (at its meeting point's column).
     bool shelterFromRain = true;
     QcTradingSettings trading;
+    QcVillagerBreedingSettings breeding;
+    QcVillageGolemSettings golem;
 
     const QcVillagerProfession *profession(const QString &name) const
     {

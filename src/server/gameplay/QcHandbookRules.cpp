@@ -38,7 +38,7 @@ namespace QcHandbookRules {
 
 namespace {
 
-// The rules of villages, villagers and trading (decisions E-403, E-411, E-414).
+// The rules of villages, villagers and trading (decisions E-403, E-411, E-414, E-415).
 QMap<QString, double> villageValues()
 {
     return {
@@ -46,6 +46,15 @@ QMap<QString, double> villageValues()
         {u"village.workstations"_s, double(QcServerLimits{}.villageWorkstations)},
         {u"villagers.perVillage"_s, double(QcServerLimits{}.villagersPerVillage)},
         {u"villagers.fleeDistance"_s, QcVillagerSettings{}.fleeDistance},
+        {u"villagers.breedingFood"_s, double(QcVillagerBreedingSettings{}.food)},
+        {u"villagers.shareAbove"_s, double(QcVillagerBreedingSettings{}.shareAbove)},
+        {u"villagers.growUpMinutes"_s, QcVillagerBreedingSettings{}.growUpSeconds / 60.0},
+        {u"villagers.breedingRestMinutes"_s, QcVillagerBreedingSettings{}.cooldownSeconds / 60.0},
+        {u"villagers.max"_s, double(QcServerLimits{}.villagers)},
+        {u"golems.minVillagers"_s, double(QcVillageGolemSettings{}.minVillagers)},
+        {u"golems.villagersPerGolem"_s, double(QcVillageGolemSettings{}.villagersPerGolem)},
+        {u"golems.cooldownMinutes"_s, QcVillageGolemSettings{}.cooldownSeconds / 60.0},
+        {u"golems.max"_s, double(QcServerLimits{}.villageGolems)},
         {u"trading.restocksPerDay"_s, double(QcTradingSettings{}.restocksPerDay)},
         {u"trading.offersPerLevel"_s, double(QcTradingSettings{}.offersPerLevel)},
         {u"trading.apprentice"_s, double(QcTradingSettings{}.levels.value(1))},

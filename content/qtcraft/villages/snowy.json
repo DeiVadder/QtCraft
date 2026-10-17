@@ -1,0 +1,174 @@
+{
+    "name": "snowy",
+    "biomes": [
+        "tundra"
+    ],
+    "centre": "village_plains_well",
+    "lamp": "village_plains_lamp",
+    "path": [
+        {
+            "block": "packed_ice",
+            "weight": 1
+        },
+        {
+            "block": "gravel",
+            "weight": 2,
+            "step": "cobblestone_slab"
+        }
+    ],
+    "branchPath": "dirt_path",
+    "crops": [
+        {
+            "block": "potato_crop",
+            "weight": 3
+        },
+        {
+            "block": "carrot_crop",
+            "weight": 2
+        },
+        {
+            "block": "wheat_crop",
+            "weight": 1
+        }
+    ],
+    "foundation": "cobblestone",
+    "palette": {
+        "oak_planks": "spruce_planks",
+        "oak_log": "spruce_log",
+        "oak_stairs": "spruce_stairs",
+        "oak_slab": "spruce_slab",
+        "oak_fence": "spruce_fence",
+        "oak_fence_gate": "spruce_fence_gate",
+        "oak_door": "spruce_door",
+        "white_wool_carpet": "brown_wool_carpet",
+        "poppy": "fern"
+    },
+    "villagers": {
+        "outfit": "villager_coat",
+        "hair": [
+            "villager_fur_hat",
+            "villager_fur_hat",
+            "long_hair"
+        ],
+        "skin": [
+            "#f4d8c0",
+            "#e8c0a0",
+            "#c89068"
+        ],
+        "hairColor": [
+            "#1a1410",
+            "#3a2a20",
+            "#e0d8c8"
+        ],
+        "shirt": [
+            "#e8e4dc",
+            "#c8c0b0",
+            "#8a7a6a",
+            "#5a6a7a"
+        ],
+        "pants": [
+            "#3a3a3a",
+            "#5a5048"
+        ]
+    },
+    "layouts": [
+        {
+            "kind": "street",
+            "weight": 3,
+            "winding": 0.4
+        },
+        {
+            "kind": "cross",
+            "weight": 2,
+            "winding": 0.3
+        },
+        {
+            "kind": "t",
+            "weight": 2,
+            "winding": 0.3
+        },
+        {
+            "kind": "l",
+            "weight": 1,
+            "winding": 0.4
+        },
+        {
+            "kind": "plaza",
+            "weight": 1
+        },
+        {
+            "kind": "tree",
+            "weight": 2,
+            "winding": 0.5
+        }
+    ],
+    "pieces": [
+        {
+            "structures": [
+                {
+                    "structure": "village_snowy_igloo",
+                    "weight": 3
+                },
+                {
+                    "structure": "village_snowy_cabin",
+                    "weight": 3
+                },
+                {
+                    "structure": "village_plains_house_small_b",
+                    "weight": 1
+                }
+            ],
+            "weight": 5
+        },
+        {
+            "structures": [
+                {
+                    "structure": "village_plains_house_large"
+                },
+                {
+                    "structure": "village_plains_house_large_b"
+                }
+            ],
+            "weight": 2,
+            "max": 3
+        },
+        {
+            "structures": [
+                {
+                    "structure": "village_plains_farm"
+                },
+                {
+                    "structure": "village_plains_farm_b"
+                }
+            ],
+            "weight": 2,
+            "max": 3
+        },
+        {
+            "structure": "village_plains_smithy",
+            "weight": 2,
+            "max": 1
+        },
+        {
+            "structure": "village_plains_pen",
+            "max": 1,
+            "chance": 0.3
+        },
+        {
+            "structure": "village_plains_fisher_hut",
+            "max": 1,
+            "water": 12,
+            "jetty": {
+                "deck": "oak_planks",
+                "post": "oak_log",
+                "width": 3,
+                "over": 5
+            }
+        },
+        {
+            "structure": "village_plains_tower",
+            "max": 1,
+            "minRoadLength": 200
+        }
+    ]
+}

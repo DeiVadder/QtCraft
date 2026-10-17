@@ -1,0 +1,24 @@
+{
+    "name": "village_snowy_igloo",
+    "palette": {
+        ".": "air",
+        "S": "snow_block",
+        "P": "spruce_planks",
+        "I": "ice",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]"
+    },
+    "layers": [
+        ["  SSS  ", " SPPPS ", "SPPPPPS", "SPPPPPS", "SPPPPPS", " SPPPS ", "  SPS  "],
+        ["  SSS  ", " Sbf.S ", "S....HS", "S.....S", "S.....S", " ST..S ", "  SDS  "],
+        ["  SSS  ", " S...S ", "S.....S", "I.....I", "S.....S", " S...S ", "  SUS  "],
+        ["       ", "  SSS  ", " S...S ", " S.l.S ", " S...S ", "  SSS  ", "  SSS  "],
+        ["       ", "       ", "  SSS  ", "  SSS  ", "  SSS  ", "       ", "       "],
+        ["       ", "       ", "       ", "       ", "       ", "       ", "       "]
+    ]
+}

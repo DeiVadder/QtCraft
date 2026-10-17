@@ -7,7 +7,9 @@
 #include "QcMobCrowd.h"
 #include "QcEntityMotion.h"
 #include "QcPhysics.h"
+#include "QcVillageGolems.h"
 #include "QcVillagerBehaviour.h"
+#include "QcVillagerBreeding.h"
 #include "QcVillagerHomes.h"
 
 #include <QHash>
@@ -108,6 +110,12 @@ public:
     // what they did to the world.
     void setVillages(QcVillages *villages) { m_villages = villages; }
     void setVillagerLimits(QcVillagerHomes::Limits homes, QcVillagerBehaviour::Limits behaviour);
+    // Village life (decision E-415): every villageLifeTicks ticks villagers get children
+    // (QcVillagerBreeding) and villages iron golems (QcVillageGolems, at most `golems` in the world,
+    // QcServerLimits villageGolems, only with natural spawning).
+    static constexpr int villageLifeTicks = 100;
+    void setGolemLimit(qint64 golems) { m_golemLimit = golems; }
+    const QcVillageGolems &golems() const { return m_golems; }
     QcVillagerBehaviour &villagers();
     const QcVillagerBehaviour &villagers() const;
 
@@ -238,6 +246,8 @@ private:
     // whose holder is not in the world lapse and the population counts the villagers there
     // (decision E-411).
     void checkVillageClaims(QcServerWorld &world, QcChunkPos pos);
+    // Children and golems of the villages, every villageLifeTicks ticks.
+    void liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId);
     // A creature leaves the world for good (died, removed): a villager frees its claims.
     void depart(const QcCreature &mob);
     // Weighted choice by spawn weight for a `random` value in [0, 1).
@@ -263,4 +273,8 @@ private:
     QSet<QcChunkPos> m_bedsWaiting;
     // Villages whose claims checkVillageClaims() checked in this run.
     QSet<qint64> m_claimsChecked;
+    QcVillagerBreeding m_breeding;
+    QcVillageGolems m_golems;
+    qint64 m_golemLimit = QcServerLimits{}.villageGolems;
+    int m_villageLifeIn = villageLifeTicks;
 };

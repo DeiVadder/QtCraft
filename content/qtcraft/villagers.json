@@ -87,6 +87,22 @@
         "restocksPerDay": 2,
         "restockGap": 0.1
     },
+    "breeding": {
+        "food": 3,
+        "growUpSeconds": 1200,
+        "cooldownSeconds": 300,
+        "partnerDistance": 5,
+        "shareAbove": 6,
+        "shareDistance": 4,
+        "youngSpeed": 1.3
+    },
+    "golem": {
+        "mob": "iron_golem",
+        "minVillagers": 10,
+        "villagersPerGolem": 10,
+        "cooldownSeconds": 300,
+        "spawnRadius": 8
+    },
     "look": {
         "outfit": "villager_tunic",
         "hair": [

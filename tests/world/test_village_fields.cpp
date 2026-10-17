@@ -71,6 +71,7 @@ private slots:
             {u"qtcraft:taiga"_s, {{u"qtcraft:cobblestone"_s, u"qtcraft:gravel"_s}, u"qtcraft:dirt_path"_s}},
             {u"qtcraft:desert"_s, {{u"qtcraft:terracotta"_s, u"qtcraft:packed_mud"_s}, u"qtcraft:white_terracotta"_s}},
             {u"qtcraft:swamp"_s, {{u"qtcraft:spruce_planks"_s}, u"qtcraft:spruce_slab"_s}},
+            {u"qtcraft:snowy"_s, {{u"qtcraft:packed_ice"_s, u"qtcraft:gravel"_s}, u"qtcraft:dirt_path"_s}},
         };
         QSet<QString> seen;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
@@ -203,7 +204,7 @@ private slots:
         QcBlockDefinition beet = m_content->block(*m_content->blockId(u"qtcraft:potato_crop"_s));
         beet.name = u"testmod:beet_crop"_s;
         QVERIFY(content->registerBlock(beet));
-        for (const char *name : {"qtcraft:plains", "qtcraft:taiga", "qtcraft:desert", "qtcraft:swamp"}) {
+        for (const char *name : {"qtcraft:plains", "qtcraft:taiga", "qtcraft:desert", "qtcraft:swamp", "qtcraft:snowy"}) {
             QcVillageStyleDefinition style = *std::ranges::find(content->villageStyles(), QString::fromLatin1(name), &QcVillageStyleDefinition::name);
             style.crops = {{u"testmod:beet_crop"_s, 1}, {u"qtcraft:stone"_s, 5}};
             content->registerVillageStyle(style);

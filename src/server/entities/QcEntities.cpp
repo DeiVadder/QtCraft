@@ -24,6 +24,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
     m_creatures.setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},
                                   {int(limits.villagerThoughtsPerTick), int(limits.villagerRoutesPerTick), int(limits.villagerHarvestsPerTick)});
+    m_creatures.setGolemLimit(limits.villageGolems);
     m_stands.setLimit(qsizetype(limits.maxArmourStands));
     m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
     m_carts.setLimit(qsizetype(limits.maxMinecarts));

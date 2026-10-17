@@ -1,0 +1,36 @@
+{
+    "name": "village_snowy_cabin",
+    "palette": {
+        ".": "air",
+        "C": "cobblestone",
+        "P": "spruce_planks",
+        "L": "spruce_log",
+        "G": "glass",
+        "s": "snow_layer",
+        "D": "spruce_door[facing=north,half=bottom]",
+        "U": "spruce_door[facing=north,half=top]",
+        "l": "lantern[attach=ceiling]",
+        "f": "bed[facing=west,part=foot]",
+        "b": "bed[facing=west,part=head]",
+        "T": "crafting_table",
+        "H": "chest[facing=south]"
+    },
+    "layers": [
+        ["CCCCCCC", "CPPPPPC", "CPPPPPC", "CPPPPPC", "CPPPPPC", "CCCCCCC"],
+        ["LPPPPPL", "Pbf..TP", "P....HP", "P.....P", "P.....P", "LPPDPPL"],
+        ["LPGPGPL", "P.....P", "G.....G", "P.....P", "P.....P", "LGPUPGL"],
+        ["LPPPPPL", "P.....P", "P..l..P", "P.....P", "P.....P", "LPPPPPL"],
+        ["LLLLLLL", "LPPPPPL", "LPPPPPL", "LPPPPPL", "LPPPPPL", "LLLLLLL"],
+        ["sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "sssssss"],
+        ["       ", "       ", "       ", "       ", "       ", "       "]
+    ],
+    "parts": [
+        {
+            "name": "chimney", "chance": 0.5, "at": [5, 5, 2],
+            "layers": [
+                ["C"],
+                ["C"]
+            ]
+        }
+    ]
+}

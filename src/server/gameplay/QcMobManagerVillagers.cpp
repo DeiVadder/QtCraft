@@ -1,5 +1,6 @@
 // The villagers of QcMobManager (decision E-411): spawning them with the beds of their village,
-// freeing their claims when they leave, their limits.
+// freeing their claims when they leave, their limits, their children and their villages' golems
+// (decision E-415).
 
 #include "QcMobManager.h"
 
@@ -8,6 +9,8 @@
 #include "QcServerWorld.h"
 #include "QcVillagePlan.h"
 #include "QcVillages.h"
+
+#include <cmath>
 
 void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId, bool onlyAlwaysLivedIn)
 {
@@ -37,6 +40,11 @@ void QcMobManager::spawnVillagers(QcServerWorld &world, QcChunkPos pos, const st
         const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4100), bed.x, bed.y, bed.z) * 4294967295.0);
         spawn(*type, *at, nextEntityId());
         m_mobs.last().villager = QcVillagerHomes::settle(*village, bed, settings, look);
+        // A village always lived in (a row of the showcase world) shows a child in its last bed
+        // (decision E-415); it grows up like any other.
+        if (plan->alwaysLivedIn && bed == village->beds.constLast().at) {
+            m_mobs.last().growUp = settings.breeding.growUpSeconds;
+        }
         ++population;
         world.villages().noteChanged();
     }
@@ -95,6 +103,42 @@ void QcMobManager::checkVillageClaims(QcServerWorld &world, QcChunkPos pos)
     village->population = int(present.size());
     if (QcVillagerHomes::dropLostClaims(*village, present) > 0 || changed) {
         world.villages().noteChanged();
+    }
+}
+
+void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId)
+{
+    const QcVillagerSettings &settings = m_content->villagerSettings();
+    const std::optional<int> type = m_content->mobIndex(settings.mob);
+    if (!type || !m_content->mobs()[*type].villager) {
+        return;
+    }
+
+    const QcVillagerBehaviour &behaviour = villagers();
+    const QcVillagerBreeding::Context breeding{world, world.villages(), worldTime, [&behaviour](QcBlockPos pos) { return behaviour.rainsAt(pos); },
+                                               m_villagerLimits};
+    const QList<QcVillagerBreeding::Birth> births = m_breeding.check(m_mobs, breeding);
+    for (const QcVillagerBreeding::Birth &birth : births) {
+        QcVillage *village = world.villages().find(birth.village);
+        const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x, int(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
+        spawn(*type, birth.position, nextEntityId());
+        m_mobs.last().villager = QcVillagerHomes::settle(*village, birth.bed, settings, look);
+        m_mobs.last().growUp = settings.breeding.growUpSeconds;
+        world.villages().noteChanged();
+    }
+
+    if (!m_naturalSpawning) {
+        return;
+    }
+    QSet<qint64> lived;
+    for (const QcCreature &mob : std::as_const(m_mobs)) {
+        if (!mob.dormant && mob.villager.village != 0 && !mob.villager.profession.isEmpty()) {
+            lived.insert(mob.villager.village);
+        }
+    }
+    const QList<QcVillageGolems::Spawn> golems = m_golems.check(m_mobs, lived, {world, paths().cells(), worldTime, m_seed, m_golemLimit});
+    for (const QcVillageGolems::Spawn &golem : golems) {
+        spawn(golem.type, golem.position, nextEntityId(), false, true);
     }
 }
 

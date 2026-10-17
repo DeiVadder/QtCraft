@@ -57,6 +57,9 @@ public:
     void noteChanged() { ++m_changes; }
     // Villagers living in all villages (QcVillage::population).
     qsizetype population() const;
+    // Iron golems of all villages (QcVillage::golems as last counted), or as many as `loaded` (golems
+    // in the world now, by the village whose area holds them) says where that is more.
+    qsizetype golems(const QHash<qint64, int> &loaded) const;
 
 private:
     void add(const QcVillage &village);

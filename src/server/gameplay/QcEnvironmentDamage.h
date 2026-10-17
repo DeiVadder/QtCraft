@@ -1,8 +1,12 @@
 #pragma once
 
+#include "QcVec3.h"
+
 class QcPlayerHealth;
 class QcServerSounds;
 class QcServerState;
+struct QcCreature;
+struct QcMobDefinition;
 
 // What the world does to bodies by itself (decision E-367): blocks with contact damage (lava, fire,
 // magma) hurt players and creatures and burn items, and players and creatures with their eyes in a
@@ -21,6 +25,10 @@ public:
     void applyContactDamage();
     // Players and creatures with their eyes inside a full solid block suffocate.
     void applySuffocation();
+    // Where a creature's eyes are: a standing share of its height above its feet; a villager lying
+    // in its bed (decision E-411) has them in the middle of its lying box, inside the bed's cells,
+    // so a bed under a low roof does not suffocate it (decision E-415).
+    static QcVec3 eyesOf(const QcCreature &mob, const QcMobDefinition &definition);
 
 private:
     QcServerState &m_state;

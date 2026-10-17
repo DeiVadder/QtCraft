@@ -1870,3 +1870,21 @@ Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur e
 ## Etappe 37.2c (Handel) headless (2026-10-17)
 
 `scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `1977abe` gegen den Kandidaten nach den Nachbesserungen (E-414). Tick im Mittel: crowd 0,164 → 0,165 ms (+1 %), explore 0,195 → 0,200 ms (+3 %), farm 0,0070 → 0,0073 ms (+5 %, absolut 0,0003 ms), farm-seeds, gravel-collapse und die drei Signal-Stationen ±2 %; p99 −5 bis +5 %; Spitzenspeicher ±0,6 MB. Keine Regression; der Handel kostet nur, wenn gehandelt wird. Gerenderte Messung (Handelsfenster) nach Etappe 37.
+
+## Etappe 37.3 (Vermehrung, Golem-Regel, Schneedorf) headless (2026-10-17)
+
+Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, Seed 42, zwei Aufrufe nacheinander, Rechner unter Last anderer Sitzungen). Die zehn Dörfer nächst dem Ursprung sind seit dem Schneestil andere Bewohnerzahlen (Tundra-Dörfer bauen jetzt Iglus und Hütten): 155 statt 159. Neu ist die Szene `tenVillagesGrow`: in jedem Dorf ein Bett frei (sein Bewohner entfernt) und alle Bewohner mit Nahrung, so dass sich jedes Dorf am Tag vermehren kann; dazu die Zeit einer Vermehrungsprüfung aller Dörfer (`QcVillagerBreeding::check`, 200 Wiederholungen auf einer Kopie der Wesen).
+
+| Szene | Bewohner | Tick Ø ms mit / ohne | Tick p99 ms mit | Tick max ms mit | Kinder | Prüfung µs | im Bett um Mitternacht |
+|---|---:|---|---:|---:|---:|---:|---:|
+| ein Dorf (Sumpf) | 20 | 0,021–0,022 / 0,002 | 0,164–0,165 | 0,63–0,65 | 0 | 0,55 | 20 |
+| zehn Dörfer | 155 | 0,162–0,164 / 0,007–0,009 | 0,534–0,539 | 1,46–1,48 | 0 | 3,1–3,2 | 153 |
+| zehn Dörfer, wachsend | 145 | 0,171–0,175 / 0,007–0,009 | 0,508–0,514 | 1,49–1,53 | 10 | 4,8 | 145–148 |
+
+**Bewertung:** Die Vermehrung kostet nichts Messbares: eine Prüfung aller zehn Dörfer 3–5 µs alle 100 Ticks, also unter 0,05 µs je Tick; der Tick Ø bleibt bei 0,16 ms wie in 37.2b (0,168–0,173). Die wachsenden Dörfer liegen 5 % höher, weil die zehn Kinder (laufen schneller, mehr Wege) und die Eltern neue Ziele suchen; ein Kind je Dorf und Tag, wie gewollt. Die Golem-Regel ruht im Grundspiel (kein Golem-Wesen) und kostet eine Namenssuche je Prüfung.
+
+**Gefunden beim Messen:** Im ersten Lauf starben in den Schneedörfern 10 von 34 Bewohnern im Schlaf: Das Iglu hat über dem Bett nur zwei Blöcke Luft, und das Ersticken (`QcEnvironmentDamage::applySuffocation`) prüfte die Augen eines liegenden Bewohners in stehender Höhe, im Dach. Jetzt liegen die Augen eines Schlafenden in der Mitte seiner liegenden Box (`QcEnvironmentDamage::eyesOf`, E-415); danach stirbt keiner mehr (153 von 155 um Mitternacht im Bett).
+
+## Etappe 37.3 (Vermehrung, Golem-Regel, Schnee-Stil) headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `1843c3f` gegen den Kandidaten nach den Nachbesserungen (E-415). Tick im Mittel: crowd +0,2 %, explore +2,1 %, farm-seeds +2 %, gravel-collapse +0,6 %, Signal-Stationen −3,4 bis +0,9 %; p99 −4,6 bis +2,6 %; Spitzenspeicher ±0,8 MB. Keine Regression. Die Kosten der Vermehrung selbst stehen oben (`tenVillagesGrow`, unter 0,05 µs je Tick).

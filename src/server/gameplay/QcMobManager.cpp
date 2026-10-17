@@ -98,6 +98,8 @@ QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, qui
     , m_seed(seed)
     , m_random(quint32(seed ^ (seed >> 32)))
     , m_behaviour(std::make_unique<QcMobBehaviour>(m_content, m_random))
+    , m_breeding(m_content)
+    , m_golems(m_content)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.append(definition.spawnRules());
@@ -265,6 +267,10 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
                 trySpawnAround(world, player.position, night, players, nextEntityId);
             }
         }
+    }
+    if (--m_villageLifeIn <= 0) {
+        m_villageLifeIn = villageLifeTicks;
+        liveInVillages(world, worldTime, nextEntityId);
     }
     return hits;
 }

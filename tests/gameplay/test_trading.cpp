@@ -1,4 +1,5 @@
 #include "QcDayCycle.h"
+#include "QcEnvironmentDamage.h"
 #include "QcServerTestFixture.h"
 #include "QcSoundKeys.h"
 #include "QcVillageGenerator.h"
@@ -45,7 +46,8 @@ private:
 
 // Trading with villagers on a server (decision E-414): opening the screen, paying and getting the
 // result, uses and restocking at the workstation, levels unlocking offers, experience for the
-// player, the screen closing on danger and distance, one trader per villager.
+// player, the screen closing on danger and distance, one trader per villager; children do not
+// trade (decision E-415). An awake villager with its head in a wall suffocates.
 class TestTrading : public QcServerTestFixture
 {
     Q_OBJECT
@@ -501,6 +503,41 @@ private slots:
         QCOMPARE(found->villager.offers, saved.offers);
         QCOMPARE(found->villager.look, saved.look);
         QCOMPARE(trades().offersOf(found->villager), trades().offersOf(saved));
+    }
+
+    void aChildDoesNotTrade()
+    {
+        // Young with the farmer's offers all the same (a child is unemployed): it only looks up.
+        const quint32 farmer = startWithWheatFarmer(meetPhase);
+        villager(farmer)->growUp = m_content->villagerSettings().breeding.growUpSeconds;
+        QCOMPARE(openWithWheat(farmer, 0), -1);
+        QVERIFY(!m_client->trade);
+        QCOMPARE(villager(farmer)->villager.trader, 0u);
+
+        // Grown up it trades.
+        villager(farmer)->growUp = 0.0;
+        QVERIFY(openWithWheat(farmer, 0) >= 0);
+    }
+
+    void anAwakeVillagerSuffocatesWithItsHeadInAWall()
+    {
+        // Shut in stone with only its feet's cell free, standing: the eyes are in the stone above
+        // (only a villager asleep in its bed has them low, E-415).
+        const quint32 farmer = startWithFarmer(meetPhase);
+        const QcBlockPos feet = m_feet.offset(-4, 0, -4);
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 2; ++dy) {
+                for (int dz = -1; dz <= 1; ++dz) {
+                    m_server->world().setBlock(feet.offset(dx, dy, dz), dx == 0 && dy == 0 && dz == 0 ? qcAirBlockId : id("qtcraft:stone"));
+                }
+            }
+        }
+        villager(farmer)->motion.position = QcVec3{feet.x + 0.5, double(feet.y), feet.z + 0.5};
+        villager(farmer)->motion.velocity = {};
+        const double before = villager(farmer)->health;
+        ticks(3 * QcEnvironmentDamage::suffocationIntervalTicks);
+        QVERIFY(!villager(farmer)->villager.sleeping);
+        QVERIFY2(villager(farmer)->health < before, qPrintable(QString::number(villager(farmer)->health)));
     }
 };
 

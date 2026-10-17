@@ -2,6 +2,7 @@
 #include "QcServerTestFixture.h"
 #include "QcTerrainGenerator.h"
 #include "QcVillageGenerator.h"
+#include "QcVillagerBreeding.h"
 #include "QcVillages.h"
 
 #include <QElapsedTimer>
@@ -16,6 +17,8 @@ using namespace Qt::StringLiterals;
 // the same day on the same chunks with the villagers removed. One village, then ten. A measurement,
 // not a check: set QTCRAFT_VILLAGER_MEASURE=1 and use a Release build. Without it the test runs one
 // village for a few ticks. A check beside it: the villagers of the swamp village sleep at midnight.
+// With `grow` every village has a free bed and every villager food all day (decision E-415): the
+// cost of the children born and of the breeding checks.
 class TestVillagerMeasure : public QcServerTestFixture
 {
     Q_OBJECT
@@ -126,20 +129,55 @@ private:
         return plans;
     }
 
-    void measure(int villageCount)
+    // Frees one bed per village (its villager leaves) and gives every villager food for a child.
+    void prepareGrowth(const QList<std::shared_ptr<const QcVillagePlan>> &plans)
     {
-        QCOMPARE(startWith(villageCount).size(), villageCount);
+        for (const std::shared_ptr<const QcVillagePlan> &plan : plans) {
+            const auto it = std::ranges::find_if(m_server->mobs().mobs(), [&plan](const QcCreature &mob) { return mob.villager.village == plan->id; });
+            if (it != m_server->mobs().mobs().end()) {
+                m_server->mobs().remove(it->id);
+            }
+        }
+        for (QcCreature &mob : m_server->mobs().editableMobs()) {
+            mob.villager.produce = QcVillagerRecord::maxProduce;
+        }
+    }
+
+    // Microseconds one breeding check of all villages takes, on a copy of the creatures.
+    double breedingCheckMicros()
+    {
+        QcVillagerBreeding breeding(m_content);
+        QList<QcCreature> copy = m_server->mobs().mobs();
+        QcServerWorld &world = m_server->world();
+        constexpr int rounds = 200;
+        QElapsedTimer timer;
+        timer.start();
+        for (int i = 0; i < rounds; ++i) {
+            breeding.check(copy, {world, world.villages(), QcDayCycle::dayLength * 10.1, {}, {}});
+        }
+        return double(timer.nsecsElapsed()) / 1e3 / rounds;
+    }
+
+    void measure(int villageCount, bool grow = false)
+    {
+        const QList<std::shared_ptr<const QcVillagePlan>> plans = startWith(villageCount);
+        QCOMPARE(plans.size(), villageCount);
+        if (grow) {
+            prepareGrowth(plans);
+        }
         const qsizetype villagers = m_server->mobs().mobs().size();
         QVERIFY(villagers > 0);
+        const double check = breedingCheckMicros();
         const int dayTicks = full() ? int(QcDayCycle::dayLength * 20.0) : 40;
         const Ticks with = day(dayTicks);
+        const qsizetype born = m_server->mobs().mobs().size() - villagers;
 
         QCOMPARE(removeCreatures([](const QcCreature &) { return false; }), 0);
         const Ticks without = day(dayTicks);
         qInfo("VILLAGERS villages=%d villagers=%lld chunks=%lld ticks=%d with: mean %.4f p99 %.4f max %.3f ms; without: mean %.4f "
-              "p99 %.4f max %.3f ms; asleep at midnight %lld",
+              "p99 %.4f max %.3f ms; asleep at midnight %lld; born %lld; breeding check %.2f us",
               villageCount, qint64(villagers), qint64(m_server->world().loadedChunkCount()), dayTicks, with.mean, with.p99, with.max,
-              without.mean, without.p99, without.max, qint64(with.asleep));
+              without.mean, without.p99, without.max, qint64(with.asleep), qint64(born), check);
     }
 
 private slots:
@@ -193,6 +231,14 @@ private slots:
             QSKIP("QTCRAFT_VILLAGER_MEASURE not set");
         }
         measure(10);
+    }
+
+    void tenVillagesGrow()
+    {
+        if (!full()) {
+            QSKIP("QTCRAFT_VILLAGER_MEASURE not set");
+        }
+        measure(10, true);
     }
 };
 

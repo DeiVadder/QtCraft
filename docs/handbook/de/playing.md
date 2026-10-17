@@ -312,7 +312,7 @@ Dörfer stehen auf flachem Land in Ebenen, Wüsten, Taiga und Tundra und auf Ste
 
 **Stile**
 
-Jedes Biom baut in seinem eigenen Stil. Dörfer der Ebene sind aus Eiche und Bruchstein mit Satteldächern aus Treppen, einem Brunnen mit Glocke in der Mitte, Hauptwegen aus Bruchstein oder Kies, Nebenwegen aus Trampelpfad und Laternenpfählen. Wüstendörfer sind aus Sandstein und Terrakotta mit flachen Dächern, Hauptwegen aus Terrakotta oder gestampftem Schlamm, die sich vom Sand abheben, Nebenwegen aus geschnittenem Sandstein und Feldern mit Zuckerrohr am Wasser. Taiga-Dörfer sind die Häuser der Ebene aus Fichte. Sumpfdörfer stehen auf Stelzen aus dunkler Fichte im Wasser: Hütten mit Strohdächern, eine Versammlungshalle mit der Glocke auf einer großen Plattform in der Mitte, eine Fischerhütte, eine Kräuterhütte mit Pilzen und Hochbeete, alle verbunden durch Stege auf einer Höhe über dem Wasser, mit Treppen hinunter, wo ein Steg trockenes Land erreicht. Um sie herum ist der Sumpf flaches Wasser über Schlamm. Ein Biom mit Dörfern, aber ohne eigenen Stil baut im Stil der Ebene.
+Jedes Biom baut in seinem eigenen Stil. Dörfer der Ebene sind aus Eiche und Bruchstein mit Satteldächern aus Treppen, einem Brunnen mit Glocke in der Mitte, Hauptwegen aus Bruchstein oder Kies, Nebenwegen aus Trampelpfad und Laternenpfählen. Wüstendörfer sind aus Sandstein und Terrakotta mit flachen Dächern, Hauptwegen aus Terrakotta oder gestampftem Schlamm, die sich vom Sand abheben, Nebenwegen aus geschnittenem Sandstein und Feldern mit Zuckerrohr am Wasser. Taiga-Dörfer sind die Häuser der Ebene aus Fichte. Schneedörfer in der Tundra mischen Iglus aus Schneeblöcken mit Eisfenstern, Fichtenhütten unter einer Schneeschicht und die größeren Häuser der Ebene aus Fichte, mit Hauptwegen aus Packeis oder Kies. Sumpfdörfer stehen auf Stelzen aus dunkler Fichte im Wasser: Hütten mit Strohdächern, eine Versammlungshalle mit der Glocke auf einer großen Plattform in der Mitte, eine Fischerhütte, eine Kräuterhütte mit Pilzen und Hochbeete, alle verbunden durch Stege auf einer Höhe über dem Wasser, mit Treppen hinunter, wo ein Steg trockenes Land erreicht. Um sie herum ist der Sumpf flaches Wasser über Schlamm. Ein Biom mit Dörfern, aber ohne eigenen Stil (eines aus einem Mod) baut im Stil der Ebene.
 
 **Gebäude**
 
@@ -334,7 +334,7 @@ Ein Stil ist eine Datei in `villages/`: die Biome, in denen er baut, der Brunnen
 
 **Zuhause**
 
-Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.
+Wird der Teil eines Dorfs mit einem Bett zum ersten Mal gesehen, zieht in jedes freie Bett ein Dorfbewohner ein, bis zu 32 in einem Dorf. Jeder beansprucht sein Bett und behält es; wird das Bett abgebaut, sucht er sich ein anderes freies. Dorfbewohner bleiben für immer in der Welt: Sie warten, solange ihr Teil der Welt nicht geladen ist, und werden mit ihm gespeichert. Ihre Kleidung folgt dem Stil ihres Dorfs: Kittel in der Ebene, Gewänder und Kopftücher in der Wüste, Pelz in der Taiga, helle Pelze und Pelzmützen im Schnee, Kittel und Watstiefel mit Schilfhüten im Sumpf, jeder Bewohner in eigenen Farben.
 
 **Berufe**
 
@@ -344,13 +344,21 @@ Ein Dorfbewohner ohne Arbeit beansprucht einen freien Arbeitsplatz und nimmt des
 
 Nach Sonnenaufgang schlendern die Bewohner umher, dann gehen sie zur Arbeit. Gegen Mittag treffen sie sich an der Glocke und arbeiten am Nachmittag weiter. Gegen Abend schlendern sie noch einmal, bei Sonnenuntergang gehen sie nach Hause, und nachts liegen sie bis zum Morgen in ihren Betten. Wer im Bett verletzt wird, steht auf. Regnet es im Dorf, gehen alle nach Hause. Monster im Umkreis von 10 Blöcken lassen die Bewohner nach Hause rennen; wer getroffen wird, rennt ebenfalls davon. Sie lassen sich verletzen wie Tiere und wehren sich nicht.
 
+**Kinder**
+
+Ein Dorf wächst in seine freien Betten hinein. Zwei erwachsene Dorfbewohner, die sich tagsüber bei trockenem Wetter begegnen und jeder genug zu essen haben (mindestens 3 Feldfrüchte), bekommen ein Kind, wenn ihr Dorf ein freies Bett hat: Das Kind zieht in das freie Bett, das ihnen am nächsten liegt. Das Essen bringen die Bauern ein: Was sie ernten, behalten sie, und ein Bauer mit mehr als 6 Früchten teilt mit den Bewohnern in seiner Nähe, die zu wenig haben. Danach ruhen die Eltern 5 Minuten. Ein Kind ist halb so groß, hat keinen Beruf, spielt im Dorf, statt zu arbeiten, und handelt nicht; nach 20 Minuten ist es erwachsen und nimmt sich einen freien Arbeitsplatz. Kein Kind kommt nachts, bei Regen, ohne freies Bett oder über 32 Bewohner in einem Dorf und 1024 in der Welt hinaus. Wer Betten in ein Dorf stellt, lässt es also wachsen, und das Bett eines gestorbenen Bewohners wird wieder bezogen.
+
+**Eisengolems**
+
+Ein Dorf mit mindestens 10 Bewohnern bekommt einen Eisengolem nahe seiner Glocke, einen je 10 Bewohner, höchstens einen alle 5 Minuten und nur, wenn Wesen von selbst erscheinen; ein Golem zählt für das Dorf, in dessen Bereich er steht, höchstens 256 in der Welt. Den Eisengolem selbst gibt es noch nicht im Spiel: Bis er kommt, warten die Dörfer auf ihn.
+
 **Türen und lange Wege**
 
 Dorfbewohner öffnen Holztüren auf ihrem Weg und schließen sie hinter sich; Eisentüren bleiben für sie zu. Ein langer Weg durchs Dorf, etwa über die Stege eines Sumpfdorfs, führt in Abschnitten entlang der Straßen, so finden die Bewohner aus jeder Ecke ihres Dorfs nach Hause.
 
 **Dorfbewohner in Mods**
 
-`villagers.json` nennt das Wesen, das in Dörfern lebt, die Berufe (die Arbeitsplatz-Art aus `worldgen/villages.json`, Schichten über der Kleidung, einen Hut, ob er Felder bestellt), den Tagesablauf als Schritte durch den Tag (wander, work, meet, home, sleep) und das Standard-Aussehen. Ein Dorf-Stil kleidet seine Bewohner mit `villagers` in seiner Datei: eine Kleidung, Frisuren und Hüte zur Wahl und Listen von Haut-, Haar-, Hemd- und Hosenfarben.
+`villagers.json` nennt das Wesen, das in Dörfern lebt, die Berufe (die Arbeitsplatz-Art aus `worldgen/villages.json`, Schichten über der Kleidung, einen Hut, ob er Felder bestellt), den Tagesablauf als Schritte durch den Tag (wander, work, meet, home, sleep) und das Standard-Aussehen. Ein Dorf-Stil kleidet seine Bewohner mit `villagers` in seiner Datei: eine Kleidung, Frisuren und Hüte zur Wahl und Listen von Haut-, Haar-, Hemd- und Hosenfarben. `breeding` legt fest, wie viel Essen ein Elternteil braucht, wie Bauern teilen, wie lange Kinder zum Erwachsenwerden und Eltern zum Ruhen brauchen; `golem` nennt das Wesen, das Dörfer als ihren Golem bekommen, und seine Schwellen.
 
 **Siehe auch**
 

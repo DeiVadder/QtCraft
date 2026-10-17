@@ -165,7 +165,8 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
         if (!villager.home) {
             QcVillagerHomes::claimBed(*village, villager, mob.motion.position);
         }
-        if (!villager.work) {
+        // Children have no profession until they grow up (decision E-415).
+        if (!villager.work && !mob.isYoung()) {
             QcVillagerHomes::claimWorkstation(*village, villager, settings, villager.home ? centreOf(*villager.home) : mob.motion.position);
         }
         if (before != std::pair(villager.home, villager.work)) {
@@ -175,6 +176,10 @@ void QcVillagerBehaviour::decide(QcCreature &mob, const Context &context)
     lookOut(mob, context);
 
     QcVillagerActivity activity = settings.activityAt(QcDayCycle::phase(context.worldTime));
+    // Children play instead of working.
+    if (mob.isYoung() && activity == QcVillagerActivity::Work) {
+        activity = QcVillagerActivity::Wander;
+    }
     const bool outdoors = activity == QcVillagerActivity::Wander || activity == QcVillagerActivity::Work || activity == QcVillagerActivity::Meet;
     if (village && outdoors && settings.shelterFromRain && m_rains && m_rains(village->centre)) {
         activity = QcVillagerActivity::Home;
@@ -340,7 +345,8 @@ std::optional<QcBlockPos> QcVillagerBehaviour::ripeCropNear(const QcVillager &vi
 QcPhysics::Steering QcVillagerBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, const Context &context)
 {
     QcVillager &villager = mob.villager;
-    double speed = definition.walkSpeed;
+    // Children run about (decision E-415).
+    double speed = definition.walkSpeed * (mob.isYoung() ? m_content->villagerSettings().breeding.youngSpeed : 1.0);
     if (mob.fleeTimer > 0.0) {
         // Home when it has one and is not there yet, otherwise away from the danger.
         speed = definition.chaseSpeed;

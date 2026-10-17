@@ -175,7 +175,9 @@ qt_add_library(qc_server STATIC
     villages/QcVillage.h villages/QcVillage.cpp
     villages/QcVillages.h villages/QcVillages.cpp
     villages/QcVillager.h
+    villages/QcVillageGolems.h villages/QcVillageGolems.cpp
     villages/QcVillagerBehaviour.h villages/QcVillagerBehaviour.cpp
+    villages/QcVillagerBreeding.h villages/QcVillagerBreeding.cpp
     villages/QcVillagerHomes.h villages/QcVillagerHomes.cpp
     villages/QcVillagerLooks.h villages/QcVillagerLooks.cpp
     villages/QcVillagerRoads.h villages/QcVillagerRoads.cpp
