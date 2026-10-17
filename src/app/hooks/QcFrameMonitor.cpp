@@ -1,7 +1,7 @@
-#include "QcFrameMonitor.h"
+#include "app/hooks/QcFrameMonitor.h"
 
-#include "QcThreadCpuClock.h"
-#include "QcWorldView.h"
+#include "app/hooks/QcThreadCpuClock.h"
+#include "app/rendering/QcWorldView.h"
 
 #include <algorithm>
 #include <array>

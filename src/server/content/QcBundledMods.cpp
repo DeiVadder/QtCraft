@@ -1,6 +1,6 @@
-#include "QcBundledMods.h"
+#include "server/content/QcBundledMods.h"
 
-#include "QcModLoader.h"
+#include "server/content/QcModLoader.h"
 
 #include <QDir>
 #include <QFile>

@@ -1,7 +1,7 @@
-#include "QcNetworkClient.h"
+#include "clientcore/network/QcNetworkClient.h"
 
-#include "QcClientSession.h"
-#include "QcTcpConnector.h"
+#include "clientcore/session/QcClientSession.h"
+#include "network/QcTcpConnector.h"
 
 QcNetworkClient::QcNetworkClient(QObject *parent)
     : QObject(parent)

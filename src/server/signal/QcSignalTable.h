@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockFace.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockFace.h"
 
 #include <QHash>
 

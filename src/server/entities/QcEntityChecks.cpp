@@ -1,7 +1,7 @@
-#include "QcEntityChecks.h"
+#include "server/entities/QcEntityChecks.h"
 
-#include "QcEntities.h"
-#include "QcEntityRecords.h"
+#include "server/entities/QcEntities.h"
+#include "server/storage/QcEntityRecords.h"
 
 #include <QHash>
 #include <QSet>

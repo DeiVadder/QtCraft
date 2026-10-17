@@ -1,9 +1,9 @@
-#include "QcPhysics.h"
-#include "QcServerCombat.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
-#include "QcWorldConstants.h"
-#include "QcWorldGenerators.h"
-#include "QcWorldStorage.h"
+#include "server/gameplay/QcServerCombat.h"
+#include "server/storage/QcWorldStorage.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QTemporaryDir>
 

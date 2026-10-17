@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcNetworkServer.h"
-#include "QcResult.h"
-#include "QcServerConfig.h"
+#include "common/core/QcResult.h"
+#include "server/core/QcServerConfig.h"
+#include "server/network/QcNetworkServer.h"
 
 #include <QJsonObject>
 #include <QString>

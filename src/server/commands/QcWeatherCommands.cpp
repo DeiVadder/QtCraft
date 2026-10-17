@@ -1,8 +1,8 @@
-#include "QcWeatherCommands.h"
+#include "server/commands/QcWeatherCommands.h"
 
-#include "QcPhysics.h"
-#include "QcServerState.h"
-#include "QcServerWeather.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerState.h"
+#include "server/weather/QcServerWeather.h"
 
 #include <QtMath>
 

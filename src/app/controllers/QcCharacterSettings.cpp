@@ -1,11 +1,11 @@
-#include "QcCharacterSettings.h"
+#include "app/controllers/QcCharacterSettings.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcNameText.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
-#include "QcWorldLibraryController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "app/controllers/QcWorldLibraryController.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcNameText.h"
 
 #include <QRandomGenerator>
 

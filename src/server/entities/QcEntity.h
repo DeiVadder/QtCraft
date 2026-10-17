@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcEntityKind.h"
-#include "QcChunkPos.h"
-#include "QcEntityMotion.h"
+#include "common/core/QcChunkPos.h"
+#include "common/physics/QcEntityMotion.h"
+#include "common/world/QcEntityKind.h"
 
 #include <QtGlobal>
 

@@ -1,7 +1,7 @@
-#include "QcBlockRules.h"
+#include "server/blocks/QcBlockRules.h"
 
-#include "QcContentRegistry.h"
-#include "QcRails.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "server/blocks/QcRails.h"
 
 #include <algorithm>
 #include <cmath>

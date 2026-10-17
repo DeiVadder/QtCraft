@@ -1,9 +1,9 @@
-#include "QcBlockEntityChecks.h"
 #include "QcBlockEntityDump.h"
 #include "QcDumpDiff.h"
 #include "QcMachineFixture.h"
 #include "QcStoredWorld.h"
-#include "QcTestTerrainGenerator.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QFile>
 #include <QTemporaryDir>

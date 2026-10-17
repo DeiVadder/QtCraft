@@ -1,6 +1,6 @@
-#include "QcInventory.h"
+#include "common/gameplay/QcInventory.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

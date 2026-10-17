@@ -1,8 +1,8 @@
-#include "QcCrafting.h"
-#include "QcPhysics.h"
+#include "common/gameplay/QcCrafting.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
-#include "QcTerrainGenerator.h"
 #include "QcTestWorld.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QTest>
 

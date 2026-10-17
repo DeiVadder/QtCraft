@@ -1,6 +1,6 @@
-#include "QcTextureDetail.h"
+#include "clientcore/textures/QcTextureDetail.h"
 
-#include "QcTexturePaint.h"
+#include "clientcore/textures/QcTexturePaint.h"
 
 #include <algorithm>
 #include <array>

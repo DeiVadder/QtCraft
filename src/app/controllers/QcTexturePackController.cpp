@@ -1,10 +1,10 @@
-#include "QcTexturePackController.h"
+#include "app/controllers/QcTexturePackController.h"
 
-#include "QcGameSettings.h"
-#include "QcGpuLimits.h"
-#include "QcTextureAtlas.h"
-#include "QcTexturePackLoader.h"
-#include "QcTexturePackPreviewProvider.h"
+#include "app/models/QcTexturePackPreviewProvider.h"
+#include "clientcore/settings/QcGameSettings.h"
+#include "clientcore/texturepacks/QcTexturePackLoader.h"
+#include "clientcore/textures/QcGpuLimits.h"
+#include "clientcore/textures/QcTextureAtlas.h"
 
 #include <QDesktopServices>
 #include <QDir>

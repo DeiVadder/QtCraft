@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcCreature.h"
-#include "QcVillagerHomes.h"
+#include "common/core/QcBlockPos.h"
+#include "server/entities/QcCreature.h"
+#include "server/villages/QcVillagerHomes.h"
 
 #include <QHash>
 #include <QList>

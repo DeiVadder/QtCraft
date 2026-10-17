@@ -1,4 +1,4 @@
-#include "QcControlCommandTable.h"
+#include "clientcore/control/QcControlCommandTable.h"
 
 QcControlCommandTable::QcControlCommandTable(QcControlContext &context)
     : m_session(context)

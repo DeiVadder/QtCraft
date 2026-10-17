@@ -1,4 +1,4 @@
-#include "QcSectionLight.h"
+#include "clientcore/light/QcSectionLight.h"
 
 namespace {
 

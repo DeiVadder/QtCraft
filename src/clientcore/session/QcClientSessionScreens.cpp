@@ -1,9 +1,9 @@
 // The screens of a client session: crafting, machine and chest screens and moving items between
 // their slots and the inventory (the trading screen is QcClientTrading's).
 
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientSession.h"
 
-#include "QcConnection.h"
+#include "common/protocol/QcConnection.h"
 
 bool QcClientSession::handleMachineMessage(const QcMessage &message)
 {

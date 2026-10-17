@@ -1,6 +1,6 @@
-#include "QcBodyFit.h"
+#include "common/physics/QcBodyFit.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <array>
 #include <cmath>

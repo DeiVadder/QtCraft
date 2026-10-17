@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcMaterialDefinition.h"
-#include "QcPartFamily.h"
-#include "QcResult.h"
+#include "common/content/definitions/QcMaterialDefinition.h"
+#include "common/content/definitions/QcPartFamily.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

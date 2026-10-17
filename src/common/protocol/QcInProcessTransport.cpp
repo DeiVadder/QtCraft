@@ -1,4 +1,4 @@
-#include "QcInProcessTransport.h"
+#include "common/protocol/QcInProcessTransport.h"
 
 #include <QMetaObject>
 

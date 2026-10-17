@@ -1,6 +1,6 @@
 #include "QcServerTestFixture.h"
-#include "QcShowcaseGenerator.h"
-#include "QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/showcase/QcShowcaseGenerator.h"
 
 #include <QTemporaryDir>
 

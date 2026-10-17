@@ -1,9 +1,9 @@
-#include "QcHandbookCreaturePages.h"
+#include "common/handbook/builder/QcHandbookCreaturePages.h"
 
-#include "QcHandbookContext.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookText.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 using namespace Qt::StringLiterals;
 using Fact = QcHandbookEntry::Fact;

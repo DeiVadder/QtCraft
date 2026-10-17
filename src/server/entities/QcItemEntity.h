@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcEntity.h"
-#include "QcItemStack.h"
+#include "common/gameplay/QcItemStack.h"
+#include "server/entities/QcEntity.h"
 
 // A dropped item stack lying in the world (decision E-364); QcItemEntityManager moves, merges and
 // ages them.

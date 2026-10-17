@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcPathCells.h"
-#include "QcPathFinder.h"
-#include "QcServerLimits.h"
+#include "server/core/QcServerLimits.h"
+#include "server/pathing/QcPathCells.h"
+#include "server/pathing/QcPathFinder.h"
 
 #include <QList>
 

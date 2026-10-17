@@ -82,17 +82,11 @@ else()
     target_sources(qc_app_core PRIVATE input/QcRelativeMouse_other.cpp)
 endif()
 qc_configure_target(qc_app_core)
-# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
-# stay "QcName.h" without a path. The folders form a target of their own: a test that uses only
-# headers of the app (test_frame_plan) links it instead of the whole library (decision E-417).
+# Includes name the header by its path below src/ ("app/rendering/QcFramePlan.h", decision E-418).
+# The include directory is a target of its own: a test that uses only headers of the app
+# (test_frame_plan) links it instead of the whole library (decision E-417).
 add_library(qc_app_core_headers INTERFACE)
-target_include_directories(qc_app_core_headers INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}/controllers
-    ${CMAKE_CURRENT_SOURCE_DIR}/models
-    ${CMAKE_CURRENT_SOURCE_DIR}/rendering
-    ${CMAKE_CURRENT_SOURCE_DIR}/hooks
-    ${CMAKE_CURRENT_SOURCE_DIR}/input
-    ${CMAKE_CURRENT_SOURCE_DIR}/multiplayer)
+target_include_directories(qc_app_core_headers INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_app_core PUBLIC
     qc_app_core_headers qc_common qc_server qc_clientcore qc_audio
     Qt::Concurrent Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
@@ -141,6 +135,12 @@ qt_add_qml_module(qc_app_core
         qml/TradeScreen.qml
         qml/WorldLabels.qml
 )
+# qmltyperegistrar includes the headers of the QML types by file name only (QTBUG-93443): only its
+# generated file sees the folders of those headers, the code includes by path below src/ (E-418).
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qc_app_core_qmltyperegistrations.cpp
+    TARGET_DIRECTORY qc_app_core
+    PROPERTIES INCLUDE_DIRECTORIES
+        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
 
 # The executable: start-up (command line, hooks of a scripted run), shaders, translations, icon.
 qt_add_executable(qtcraft

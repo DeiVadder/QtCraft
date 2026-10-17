@@ -1,7 +1,7 @@
-#include "QcArmour.h"
-#include "QcCrc32.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/core/QcCrc32.h"
+#include "common/gameplay/QcArmour.h"
 #include "QcServerTestFixture.h"
-#include "QcSoundKeys.h"
 #include "QcTestUtil.h"
 
 #include <QFile>

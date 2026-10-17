@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcBlockRenderTable.h"
-#include "QcChunk.h"
-#include "QcChunkLight.h"
-#include "QcLightEngine.h"
+#include "clientcore/light/QcChunkLight.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
+#include "common/core/QcBlockPos.h"
+#include "common/light/QcLightEngine.h"
+#include "common/world/QcChunk.h"
 
 #include <QList>
 #include <QSet>

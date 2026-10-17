@@ -1,4 +1,4 @@
-#include "QcScreenChoice.h"
+#include "clientcore/settings/QcScreenChoice.h"
 
 #include <algorithm>
 

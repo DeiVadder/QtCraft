@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcServerLimits.h"
-#include "QcBlockAccess.h"
-#include "QcContentRegistry.h"
-#include "QcEntityMotion.h"
-#include "QcFallingBlock.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcEntityMotion.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/core/QcServerLimits.h"
+#include "server/entities/QcFallingBlock.h"
 
 #include <QList>
 

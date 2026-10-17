@@ -1,6 +1,6 @@
-#include "QcBaseContent.h"
-#include "QcNoise.h"
-#include "QcVillageTestUtil.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "world/QcVillageTestUtil.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QTest>
 

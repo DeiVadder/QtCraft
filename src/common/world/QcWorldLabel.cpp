@@ -1,4 +1,4 @@
-#include "QcWorldLabel.h"
+#include "common/world/QcWorldLabel.h"
 
 #include <QTextBoundaryFinder>
 

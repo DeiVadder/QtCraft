@@ -1,6 +1,6 @@
-#include "QcSignalTable.h"
+#include "server/signal/QcSignalTable.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

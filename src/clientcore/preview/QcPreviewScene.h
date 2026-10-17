@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcCapeSwing.h"
-#include "QcEntityMesh.h"
-#include "QcEntityMesher.h"
-#include "QcEntityPose.h"
-#include "QcEquipment.h"
+#include "clientcore/meshing/QcCapeSwing.h"
+#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/meshing/QcEntityPose.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/gameplay/QcEquipment.h"
 
 class QcContentRegistry;
 

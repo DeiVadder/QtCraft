@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcModStatus.h"
+#include "server/content/QcModStatus.h"
 
 #include <QHash>
 #include <QObject>

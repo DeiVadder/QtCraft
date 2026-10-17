@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcEquipment.h"
-#include "QcItemDefinition.h"
-#include "QcPreviewHook.h"
+#include "clientcore/preview/QcPreviewHook.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/content/definitions/QcItemDefinition.h"
+#include "common/gameplay/QcEquipment.h"
 
 #include <QElapsedTimer>
 #include <QFutureWatcher>

@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcBoardwalkPlanner.h"
-#include "QcPathFinder.h"
-#include "QcVillageTestUtil.h"
-#include "QcWetlandShaper.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "server/pathing/QcPathFinder.h"
+#include "world/QcVillageTestUtil.h"
+#include "worldgen/villages/QcBoardwalkPlanner.h"
+#include "worldgen/villages/QcWetlandShaper.h"
 
 #include <QQueue>
 #include <QSet>

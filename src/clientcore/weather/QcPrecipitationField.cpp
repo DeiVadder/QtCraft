@@ -1,7 +1,7 @@
-#include "QcPrecipitationField.h"
+#include "clientcore/weather/QcPrecipitationField.h"
 
-#include "QcClientWeather.h"
-#include "QcClientWorld.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "clientcore/weather/QcClientWeather.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,8 +1,8 @@
-#include "QcServerFire.h"
+#include "server/blocks/QcServerFire.h"
 
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
 
 #include <algorithm>
 

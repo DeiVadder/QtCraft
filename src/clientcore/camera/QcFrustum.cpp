@@ -1,4 +1,4 @@
-#include "QcFrustum.h"
+#include "clientcore/camera/QcFrustum.h"
 
 namespace QcFrustum {
 

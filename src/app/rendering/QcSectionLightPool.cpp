@@ -1,4 +1,4 @@
-#include "QcSectionLightPool.h"
+#include "app/rendering/QcSectionLightPool.h"
 
 #include <QLoggingCategory>
 

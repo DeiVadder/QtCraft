@@ -1,0 +1,109 @@
+#pragma once
+
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/core/QcServerLimits.h"
+#include "worldgen/terrain/QcTreeShape.h"
+
+#include <QHash>
+#include <QList>
+#include <QRandomGenerator>
+#include <QSet>
+
+#include <functional>
+#include <memory>
+
+// Living plants on the server: leaves of trees decay when no trunk is near any more, and planted
+// saplings grow into the tree feature they name. Trunks and leaves are the blocks that the tree
+// features of the content use.
+//
+// Leaves are only checked after a trunk block nearby was removed, a few at a time and with a
+// short random delay, so felling a tree makes its crown fall apart gradually. Saplings grow only
+// while their chunk is loaded; their timers are block entities (QcBlockEntities::Sapling).
+class QcPlantManager
+{
+public:
+    // Leaves stay as long as a trunk block lies within this many blocks along every axis.
+    static constexpr int leafReach = 4;
+    static constexpr double minDecayDelay = 0.5;
+    static constexpr double maxDecayDelay = 4.0;
+    // Leaves decaying and checked per tick and checks waiting at most, by default (QcServerLimits
+    // leafDecaysPerTick, leafChecksPerTick, leafPendingChecks).
+    static constexpr int maxDecaysPerTick = int(QcServerLimits{}.leafDecaysPerTick);
+    static constexpr int maxChecksPerTick = int(QcServerLimits{}.leafChecksPerTick);
+    // Leaves next to unloaded chunks are checked again after this many seconds.
+    static constexpr double recheckSeconds = 5.0;
+    static constexpr int maxPendingChecks = int(QcServerLimits{}.leafPendingChecks);
+    // A sapling without room to grow tries again after this many seconds.
+    static constexpr double retrySeconds = 30.0;
+
+    // Sets a block and tells the clients; returns false when it could not be set.
+    using SetBlock = std::function<bool(QcBlockPos pos, QcBlockId block)>;
+    // Removes a block as if it broke by itself, dropping its items.
+    using BreakBlock = std::function<void(QcBlockPos pos)>;
+    using LoadedFunction = std::function<bool(QcBlockPos pos)>;
+    // What a tick may ask of the world around the plants.
+    struct Actions
+    {
+        LoadedFunction isLoaded;
+        SetBlock setBlock;
+        BreakBlock breakBlock;
+    };
+
+    QcPlantManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
+
+    bool isLeaves(QcBlockId block) const { return m_leaves.contains(block); }
+    bool isTrunk(QcBlockId block) const { return m_trunks.contains(block); }
+    // Whether `sapling` may stand on `ground`; false for blocks that are not saplings.
+    bool canPlant(QcBlockId sapling, std::optional<QcBlockId> ground) const;
+
+    // Tell the manager that the block `previous` at `pos` was removed.
+    void blockRemoved(QcBlockPos pos, QcBlockId previous, const QcBlockAccess &world);
+    // Starts the growth timer of a sapling block just placed at `pos` (a random time of its
+    // definition) in `entities`.
+    void saplingPlaced(QcBlockEntities &entities, QcBlockPos pos, QcBlockId sapling);
+
+    // Decays leaves and grows the saplings of `entities` in the order they were planted.
+    void tick(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const Actions &actions);
+
+    qsizetype pendingCheckCount() const { return m_pending.size(); }
+    void setLeafLimits(qint64 decays, qint64 checks, qint64 pending);
+
+private:
+    struct PendingCheck
+    {
+        QcBlockPos pos;
+        double due = 0.0;
+    };
+
+    enum class Support { Trunk, None, Unknown };
+
+    // Unknown when part of the surroundings is not loaded and no trunk was found.
+    Support supportOf(QcBlockPos pos, const QcBlockAccess &world) const;
+    // Whether the row of leafReach blocks either side of `centre` along z holds a trunk; sets
+    // `unknown` for cells that are not loaded.
+    bool rowHasTrunk(QcBlockPos centre, const QcBlockAccess &world, bool &unknown) const;
+    // Plans a decay check for leaves at `pos` (nothing for other blocks or when already planned).
+    void planDecayCheck(QcBlockPos pos, const QcBlockAccess &world);
+    void decayLeaves(const QcBlockAccess &world, const BreakBlock &breakBlock);
+    void growSaplings(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const LoadedFunction &isLoaded,
+                      const SetBlock &setBlock);
+    // Returns false when the tree has no room yet.
+    bool grow(QcBlockPos sapling, QcBlockId block, const QcBlockAccess &world, const SetBlock &setBlock);
+
+    std::shared_ptr<const QcContentRegistry> m_content;
+    quint64 m_seed = 0;
+    QRandomGenerator m_random;
+    QSet<QcBlockId> m_leaves;
+    QSet<QcBlockId> m_trunks;
+    // Tree shape per sapling block; blocks whose feature is unknown never grow.
+    QHash<QcBlockId, QcTreeShape::Params> m_trees;
+    QHash<QcBlockId, QSet<QcBlockId>> m_plantOn;
+    QList<PendingCheck> m_pending;
+    QSet<QcBlockPos> m_pendingPositions;
+    qint64 m_decaysPerTick = maxDecaysPerTick;
+    qint64 m_checksPerTick = maxChecksPerTick;
+    qint64 m_pendingLimit = maxPendingChecks;
+    double m_time = 0.0;
+};

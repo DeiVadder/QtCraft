@@ -1,8 +1,8 @@
-#include "QcWorldLibraryController.h"
+#include "app/controllers/QcWorldLibraryController.h"
 
-#include "QcContentRegistry.h"
-#include "QcModLoader.h"
-#include "QcWorldLibrary.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "server/content/QcModLoader.h"
+#include "server/storage/QcWorldLibrary.h"
 
 #include <QDesktopServices>
 #include <QDir>

@@ -6,8 +6,8 @@
 // The game's shaders are not part of this test, so no pipeline exists and nothing is drawn, but the
 // uploads of every frame still go to the GPU.
 
-#include "QcChunkMesh.h"
-#include "QcWorldView.h"
+#include "app/rendering/QcWorldView.h"
+#include "clientcore/meshing/QcChunkMesh.h"
 
 #include <QGuiApplication>
 #include <QLoggingCategory>

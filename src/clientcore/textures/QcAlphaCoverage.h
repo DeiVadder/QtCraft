@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcAtlasLayout.h"
+#include "clientcore/textures/QcAtlasLayout.h"
 
 #include <QImage>
 #include <QList>

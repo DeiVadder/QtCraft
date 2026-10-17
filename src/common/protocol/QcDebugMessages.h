@@ -3,8 +3,8 @@
 // Protocol messages of the debug display and the runtime statistics (decision E-225). Part of the
 // QcMessage variant (QcMessages.h).
 
-#include "QcTickPhase.h"
-#include "QcVec3.h"
+#include "common/core/QcTickPhase.h"
+#include "common/core/QcVec3.h"
 
 #include <QList>
 #include <QString>

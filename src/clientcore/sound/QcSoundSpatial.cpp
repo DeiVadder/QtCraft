@@ -1,4 +1,4 @@
-#include "QcSoundSpatial.h"
+#include "clientcore/sound/QcSoundSpatial.h"
 
 #include <QtMath>
 

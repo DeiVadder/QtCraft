@@ -1,5 +1,5 @@
 #include "QcMachineFixture.h"
-#include "QcServerSettings.h"
+#include "server/network/QcServerSettings.h"
 
 #include <QJsonDocument>
 #include <QSet>

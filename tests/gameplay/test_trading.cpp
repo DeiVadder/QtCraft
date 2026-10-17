@@ -1,12 +1,12 @@
-#include "QcDayCycle.h"
-#include "QcEnvironmentDamage.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcExperience.h"
+#include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
-#include "QcSoundKeys.h"
-#include "QcVillageGenerator.h"
-#include "QcVillagerHomes.h"
-#include "QcVillagerTrades.h"
-#include "QcExperience.h"
-#include "QcExperienceOrbManager.h"
+#include "server/gameplay/QcEnvironmentDamage.h"
+#include "server/items/QcExperienceOrbManager.h"
+#include "server/villages/QcVillagerHomes.h"
+#include "server/villages/QcVillagerTrades.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QTemporaryDir>
 

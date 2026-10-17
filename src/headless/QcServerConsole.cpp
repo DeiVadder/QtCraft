@@ -1,6 +1,6 @@
-#include "QcServerConsole.h"
+#include "headless/QcServerConsole.h"
 
-#include "QcStdinReader.h"
+#include "headless/QcStdinReader.h"
 
 #include <cstdio>
 #include <print>

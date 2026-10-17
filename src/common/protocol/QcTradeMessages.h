@@ -3,7 +3,7 @@
 // Protocol messages of trading with villagers (decision E-414).
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "QcItemStack.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QList>
 #include <QString>

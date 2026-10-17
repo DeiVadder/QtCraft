@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcItemStack.h"
-#include "QcResult.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QByteArray>
 #include <QByteArrayView>

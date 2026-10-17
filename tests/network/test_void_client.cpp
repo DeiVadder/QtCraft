@@ -1,10 +1,10 @@
-#include "QcBaseContent.h"
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"
-#include "QcLocalServerHost.h"
-#include "QcPhysics.h"
-#include "QcWorldConstants.h"
-#include "QcWorldGenerators.h"
+#include "server/core/QcLocalServerHost.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QTest>
 

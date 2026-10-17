@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockEntities.h"
-#include "QcMachineRules.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/machines/QcMachineRules.h"
 
 // The rules of machines and the block entities they work on, as the server keeps them (decision
 // E-357), for tests of machines without a server.

@@ -1,10 +1,10 @@
-#include "QcVillagerBreeding.h"
+#include "server/villages/QcVillagerBreeding.h"
 
-#include "QcContentRegistry.h"
-#include "QcDayCycle.h"
-#include "QcLineOfSight.h"
-#include "QcPhysics.h"
-#include "QcVillages.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
+#include "server/gameplay/QcLineOfSight.h"
+#include "server/villages/QcVillages.h"
 
 #include <algorithm>
 #include <limits>

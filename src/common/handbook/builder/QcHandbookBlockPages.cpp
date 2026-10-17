@@ -1,13 +1,13 @@
-#include "QcHandbookBlockPages.h"
+#include "common/handbook/builder/QcHandbookBlockPages.h"
 
-#include "QcHandbook.h"
-#include "QcHandbookContext.h"
-#include "QcHandbookIndex.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookRecipes.h"
-#include "QcHandbookText.h"
-#include "QcMining.h"
-#include "QcPhysics.h"
+#include "common/gameplay/QcMining.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookIndex.h"
+#include "common/handbook/builder/QcHandbookRecipes.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbook.h"
+#include "common/handbook/QcHandbookLinks.h"
+#include "common/physics/QcPhysics.h"
 
 #include <algorithm>
 

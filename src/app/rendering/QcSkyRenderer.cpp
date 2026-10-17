@@ -1,6 +1,6 @@
-#include "QcSkyRenderer.h"
+#include "app/rendering/QcSkyRenderer.h"
 
-#include "QcRenderPipelines.h"
+#include "app/rendering/QcRenderPipelines.h"
 
 #include <QLoggingCategory>
 

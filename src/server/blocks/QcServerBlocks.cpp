@@ -1,11 +1,11 @@
-#include "QcServerBlocks.h"
+#include "server/blocks/QcServerBlocks.h"
 
-#include "QcBlockRules.h"
-#include "QcBlockUpdateQueue.h"
-#include "QcRails.h"
-#include "QcServerExperience.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcRails.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/items/QcServerExperience.h"
 
 #include <algorithm>
 

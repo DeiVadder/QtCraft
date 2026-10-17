@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcTextureSpec.h"
+#include "clientcore/textures/QcTextureSpec.h"
 
 #include <QImage>
 #include <QJsonObject>

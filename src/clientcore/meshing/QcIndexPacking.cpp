@@ -1,4 +1,4 @@
-#include "QcIndexPacking.h"
+#include "clientcore/meshing/QcIndexPacking.h"
 
 #include <QtGlobal>
 

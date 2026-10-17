@@ -1,4 +1,4 @@
-#include "QcPackComparison.h"
+#include "common/protocol/QcPackComparison.h"
 
 #include <QHash>
 

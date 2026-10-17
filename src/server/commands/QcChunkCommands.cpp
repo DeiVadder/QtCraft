@@ -1,7 +1,7 @@
-#include "QcChunkCommands.h"
+#include "server/commands/QcChunkCommands.h"
 
-#include "QcCommandArguments.h"
-#include "QcServerState.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/core/QcServerState.h"
 
 #include <algorithm>
 

@@ -1,7 +1,7 @@
-#include "QcServerCommands.h"
+#include "server/commands/QcServerCommands.h"
 
-#include "QcChatText.h"
-#include "QcServerState.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerState.h"
 
 #include <QLoggingCategory>
 

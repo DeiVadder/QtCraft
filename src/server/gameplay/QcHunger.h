@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcItemDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 
 // Food points of one player (decision E-039). Activity adds exhaustion; every
 // `exhaustionPerFood` of it costs one food point. With at least `regenerationFood` points the player

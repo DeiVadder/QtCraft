@@ -1,4 +1,4 @@
-#include "QcContentSerializer.h"
+#include "common/content/registry/QcContentSerializer.h"
 #include "QcMachineFixture.h"
 #include "QcTestUtil.h"
 

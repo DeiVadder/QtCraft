@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcControlActiveCommand.h"
-#include "QcControlReports.h"
+#include "clientcore/control/QcControlActiveCommand.h"
+#include "clientcore/control/QcControlReports.h"
 
 #include <QJsonObject>
 #include <QPointer>

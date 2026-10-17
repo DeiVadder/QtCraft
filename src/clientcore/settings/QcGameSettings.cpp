@@ -1,4 +1,4 @@
-#include "QcGameSettings.h"
+#include "clientcore/settings/QcGameSettings.h"
 
 #include <QDir>
 #include <QFileInfo>

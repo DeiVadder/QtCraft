@@ -1,4 +1,4 @@
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
 
 #include <QFile>

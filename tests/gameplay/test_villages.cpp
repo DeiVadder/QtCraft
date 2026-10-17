@@ -1,11 +1,11 @@
-#include "QcMining.h"
-#include "QcMobManager.h"
-#include "QcPhysics.h"
+#include "common/gameplay/QcMining.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
-#include "QcTerrainGenerator.h"
-#include "QcVillageCommands.h"
-#include "QcVillageGenerator.h"
-#include "QcWorldStorage.h"
+#include "server/commands/QcVillageCommands.h"
+#include "server/mobs/QcMobManager.h"
+#include "server/storage/QcWorldStorage.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QDir>
 #include <QFile>

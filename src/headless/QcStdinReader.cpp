@@ -1,4 +1,4 @@
-#include "QcStdinReader.h"
+#include "headless/QcStdinReader.h"
 
 #include <QThread>
 

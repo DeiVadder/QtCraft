@@ -1,8 +1,8 @@
 // Payloads of the entity messages (QcEntityMessages.h).
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <cmath>
 #include <utility>

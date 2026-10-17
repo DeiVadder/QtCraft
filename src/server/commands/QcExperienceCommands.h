@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcCommandRegistry.h"
+#include "server/commands/QcCommandRegistry.h"
 
 struct QcServerClient;
 class QcServerState;

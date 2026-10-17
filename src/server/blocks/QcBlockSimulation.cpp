@@ -1,13 +1,13 @@
-#include "QcBlockSimulation.h"
+#include "server/blocks/QcBlockSimulation.h"
 
-#include "QcBlockRules.h"
-#include "QcBlockUpdateQueue.h"
-#include "QcFireIgnition.h"
-#include "QcServerBlocks.h"
-#include "QcServerFallingBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcFireIgnition.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/blocks/QcServerFallingBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
 
 QcBlockSimulation::QcBlockSimulation(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates,
                                      QcServerBlocks &blocks, QcServerFallingBlocks &falling)

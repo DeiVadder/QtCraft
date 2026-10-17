@@ -1,4 +1,4 @@
-#include "QcRecipeDefinition.h"
+#include "common/content/definitions/QcRecipeDefinition.h"
 
 QString QcRecipeDefinition::itemAt(int column, int row) const
 {

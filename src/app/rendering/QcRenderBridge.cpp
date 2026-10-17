@@ -1,14 +1,14 @@
-#include "QcRenderBridge.h"
+#include "app/rendering/QcRenderBridge.h"
 
-#include "QcClientSession.h"
-#include "QcFigureLook.h"
-#include "QcLightVolume.h"
-#include "QcMeshScheduler.h"
-#include "QcPhysics.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
-#include "QcSky.h"
-#include "QcTextureAtlas.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "clientcore/light/QcSky.h"
+#include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientSession.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcLightVolume.h"
 
 #include <algorithm>
 #include <cmath>

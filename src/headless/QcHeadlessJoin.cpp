@@ -1,10 +1,10 @@
-#include "QcHeadlessJoin.h"
+#include "headless/QcHeadlessJoin.h"
 
-#include "QcClientSession.h"
-#include "QcContentFingerprint.h"
-#include "QcNetworkClient.h"
-#include "QcPlayerKey.h"
-#include "QcServerAddress.h"
+#include "clientcore/network/QcNetworkClient.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/auth/QcPlayerKey.h"
+#include "network/QcServerAddress.h"
+#include "server/content/QcContentFingerprint.h"
 
 #include <QDir>
 

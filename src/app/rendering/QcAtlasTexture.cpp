@@ -1,7 +1,7 @@
-#include "QcAtlasTexture.h"
+#include "app/rendering/QcAtlasTexture.h"
 
-#include "QcAtlasLayout.h"
-#include "QcGpuLimits.h"
+#include "clientcore/textures/QcAtlasLayout.h"
+#include "clientcore/textures/QcGpuLimits.h"
 
 #include <QtGlobal>
 

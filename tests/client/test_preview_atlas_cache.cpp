@@ -1,5 +1,5 @@
-#include "QcAtlasTexture.h"
-#include "QcPreviewAtlasCache.h"
+#include "app/rendering/QcAtlasTexture.h"
+#include "app/rendering/QcPreviewAtlasCache.h"
 
 #include <QTest>
 

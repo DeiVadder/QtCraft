@@ -1,4 +1,4 @@
-#include "QcHeadlessGame.h"
+#include "headless/QcHeadlessGame.h"
 
 #include <QCoreApplication>
 

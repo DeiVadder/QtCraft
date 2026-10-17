@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcArmourDefinition.h"
+#include "common/content/definitions/QcArmourDefinition.h"
 
 #include <QDataStream>
 

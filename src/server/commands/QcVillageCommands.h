@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcCommandRegistry.h"
-#include "QcVillage.h"
+#include "server/commands/QcCommandRegistry.h"
+#include "server/villages/QcVillage.h"
 
 #include <memory>
 

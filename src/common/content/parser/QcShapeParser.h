@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcResult.h"
-#include "QcShapeDefinition.h"
+#include "common/content/definitions/QcShapeDefinition.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

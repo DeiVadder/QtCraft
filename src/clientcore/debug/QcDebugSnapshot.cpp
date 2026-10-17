@@ -1,10 +1,10 @@
-#include "QcDebugSnapshot.h"
+#include "clientcore/debug/QcDebugSnapshot.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcPhysics.h"
-#include "QcProcessMemory.h"
-#include "QcProtocol.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcProcessMemory.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcProtocol.h"
 
 #include <cmath>
 

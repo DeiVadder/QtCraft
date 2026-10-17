@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcLiquidFlow.h"
-#include "QcMailbox.h"
-#include "QcTerrainGenerator.h"
-#include "QcWorkerPool.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/core/QcMailbox.h"
+#include "common/core/QcWorkerPool.h"
+#include "server/blocks/QcLiquidFlow.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QJsonObject>
 #include <QSet>

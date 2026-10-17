@@ -1,9 +1,9 @@
-#include "QcSettingsController.h"
+#include "app/controllers/QcSettingsController.h"
 
-#include "QcClientSession.h"
-#include "QcSessionParts.h"
-#include "QcWorldLibrary.h"
-#include "QcWorldLibraryController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcWorldLibraryController.h"
+#include "clientcore/session/QcClientSession.h"
+#include "server/storage/QcWorldLibrary.h"
 
 #include <QDir>
 #include <QLoggingCategory>

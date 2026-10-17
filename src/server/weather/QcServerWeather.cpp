@@ -1,8 +1,8 @@
-#include "QcServerWeather.h"
+#include "server/weather/QcServerWeather.h"
 
-#include "QcServerClient.h"
-#include "QcPhysics.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerClient.h"
+#include "server/core/QcServerState.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,9 +1,9 @@
 // Chunk encoding of the protocol (QcProtocol::writeChunk/readChunk), shared with persistence:
 // per section a palette plus run-length encoded indices (decision E-016).
 
-#include "QcProtocol.h"
+#include "common/protocol/QcProtocol.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <QDataStream>
 #include <QVarLengthArray>

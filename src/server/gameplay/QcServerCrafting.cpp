@@ -1,11 +1,11 @@
-#include "QcServerCrafting.h"
+#include "server/gameplay/QcServerCrafting.h"
 
-#include "QcChatText.h"
-#include "QcCrafting.h"
-#include "QcPhysics.h"
-#include "QcRepair.h"
-#include "QcServerInventory.h"
-#include "QcServerState.h"
+#include "common/gameplay/QcCrafting.h"
+#include "common/gameplay/QcRepair.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcServerInventory.h"
 
 #include <algorithm>
 #include <cmath>

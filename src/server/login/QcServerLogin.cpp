@@ -1,12 +1,12 @@
-#include "QcServerLogin.h"
+#include "server/login/QcServerLogin.h"
 
-#include "QcChatText.h"
-#include "QcLoginCrypto.h"
-#include "QcNameText.h"
-#include "QcPackComparison.h"
-#include "QcProfileValidation.h"
-#include "QcProtocol.h"
-#include "QcServerState.h"
+#include "common/auth/QcLoginCrypto.h"
+#include "common/core/QcNameText.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcPackComparison.h"
+#include "common/protocol/QcProtocol.h"
+#include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerState.h"
 
 #include <QLoggingCategory>
 

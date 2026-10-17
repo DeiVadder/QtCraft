@@ -1,8 +1,8 @@
-#include "QcCommandSource.h"
+#include "server/commands/QcCommandSource.h"
 
-#include "QcChatText.h"
-#include "QcPhysics.h"
-#include "QcServerClient.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerClient.h"
 
 QcCommandSource::QcCommandSource(QcServerClient &client, QcPermission permission)
     : m_client(&client)

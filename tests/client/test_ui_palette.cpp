@@ -1,5 +1,5 @@
-#include "QcCharacterProfile.h"
-#include "QcUiPalette.h"
+#include "clientcore/settings/QcCharacterProfile.h"
+#include "clientcore/settings/QcUiPalette.h"
 
 #include <QDir>
 #include <QFile>

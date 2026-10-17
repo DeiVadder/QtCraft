@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcMessages.h"
+#include "common/protocol/QcMessages.h"
 
 #include <QObject>
 

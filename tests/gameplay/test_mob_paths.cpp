@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcPathFinder.h"
-#include "QcPhysics.h"
-#include "QcPlayerInput.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
+#include "common/physics/QcPlayerInput.h"
 #include "QcTestWorld.h"
+#include "server/pathing/QcPathFinder.h"
 
 #include <QTest>
 

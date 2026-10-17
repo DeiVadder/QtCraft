@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcEntity.h"
-#include "QcMobPath.h"
-#include "QcVec3.h"
-#include "QcVillager.h"
+#include "common/core/QcVec3.h"
+#include "server/entities/QcEntity.h"
+#include "server/pathing/QcMobPath.h"
+#include "server/villages/QcVillager.h"
 
 // A creature (decision E-364): a mob of the content's definitions (`type` indexes them) with its
 // health, behaviour timers and breeding state. QcMobManager moves and spawns them.

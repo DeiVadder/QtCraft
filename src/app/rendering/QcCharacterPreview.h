@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcCamera.h"
-#include "QcPreviewActivity.h"
-#include "QcEntityMesh.h"
-#include "QcPreviewCamera.h"
-#include "QcPreviewPacer.h"
-#include "QcPreviewPose.h"
-#include "QcPreviewSource.h"
+#include "app/controllers/QcPreviewSource.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/preview/QcPreviewActivity.h"
+#include "clientcore/preview/QcPreviewCamera.h"
+#include "clientcore/preview/QcPreviewPacer.h"
+#include "clientcore/preview/QcPreviewPose.h"
 
 #include <QElapsedTimer>
 #include <QImage>

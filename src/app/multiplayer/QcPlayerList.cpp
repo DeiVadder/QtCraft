@@ -1,6 +1,6 @@
-#include "QcPlayerList.h"
+#include "app/multiplayer/QcPlayerList.h"
 
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientSession.h"
 
 #include <algorithm>
 

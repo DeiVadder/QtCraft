@@ -1,6 +1,6 @@
-#include "QcCharacterPresets.h"
-#include "QcGameSettings.h"
-#include "QcNameText.h"
+#include "clientcore/settings/QcCharacterPresets.h"
+#include "clientcore/settings/QcGameSettings.h"
+#include "common/core/QcNameText.h"
 #include "QcTestUtil.h"
 
 #include <QCoreApplication>

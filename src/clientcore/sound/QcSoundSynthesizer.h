@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcSampleBuffer.h"
-#include "QcSoundDefinition.h"
+#include "clientcore/sound/QcSampleBuffer.h"
+#include "common/content/definitions/QcSoundDefinition.h"
 
 #include <QList>
 #include <QString>

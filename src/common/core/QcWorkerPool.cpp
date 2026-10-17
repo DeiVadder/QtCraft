@@ -1,4 +1,4 @@
-#include "QcWorkerPool.h"
+#include "common/core/QcWorkerPool.h"
 
 #include <QThread>
 

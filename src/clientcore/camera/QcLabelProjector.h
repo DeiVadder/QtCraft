@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcCamera.h"
-#include "QcChunkPos.h"
-#include "QcWorldLabel.h"
+#include "clientcore/camera/QcCamera.h"
+#include "common/core/QcChunkPos.h"
+#include "common/world/QcBlockAccess.h"
+#include "common/world/QcWorldLabel.h"
 
 #include <QHash>
 #include <QList>

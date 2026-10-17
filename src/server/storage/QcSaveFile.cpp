@@ -1,6 +1,6 @@
-#include "QcSaveFile.h"
+#include "server/storage/QcSaveFile.h"
 
-#include "QcCrc32.h"
+#include "common/core/QcCrc32.h"
 
 #include <QFile>
 #include <QSaveFile>

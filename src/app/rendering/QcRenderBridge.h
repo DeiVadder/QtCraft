@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcCapeTracker.h"
-#include "QcEntityMesher.h"
-#include "QcFovEffect.h"
-#include "QcPhysics.h"
-#include "QcPrecipitationField.h"
-#include "QcViewCamera.h"
+#include "clientcore/camera/QcFovEffect.h"
+#include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/meshing/QcCapeTracker.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/weather/QcPrecipitationField.h"
+#include "common/core/QcBlockPos.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QElapsedTimer>
 #include <QString>

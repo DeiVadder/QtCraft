@@ -1,13 +1,13 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcBlockDefinition.h"
-#include "QcContentRegistry.h"
-#include "QcEntityKind.h"
-#include "QcEquipment.h"
-#include "QcItemStack.h"
-#include "QcStandPose.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/gameplay/QcStandPose.h"
+#include "common/world/QcEntityKind.h"
 
 #include <QString>
 

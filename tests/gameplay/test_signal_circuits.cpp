@@ -1,6 +1,6 @@
-#include "QcCircuitComponents.h"
+#include "common/world/QcLightVolume.h"
 #include "QcCircuitFixture.h"
-#include "QcLightVolume.h"
+#include "server/signal/QcCircuitComponents.h"
 
 #include <QTemporaryDir>
 

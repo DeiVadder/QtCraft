@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunk.h"
-#include "QcContentRegistry.h"
-#include "QcResult.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "common/world/QcChunk.h"
 
 #include <QByteArray>
 #include <QSet>

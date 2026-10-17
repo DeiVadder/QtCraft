@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
+#include "common/content/definitions/QcBlockDefinition.h"
 
 #include <QtGlobal>
 

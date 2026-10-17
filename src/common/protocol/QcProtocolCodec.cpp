@@ -1,6 +1,6 @@
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <array>
 #include <cmath>

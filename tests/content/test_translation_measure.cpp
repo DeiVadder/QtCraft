@@ -1,7 +1,7 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcModLoader.h"
-#include "QcProcessMemory.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/core/QcProcessMemory.h"
+#include "server/content/QcModLoader.h"
 
 #include <QDir>
 #include <QElapsedTimer>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcTerrainGenerator.h"
-#include "QcVillageGenerator.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QHash>
 #include <QList>

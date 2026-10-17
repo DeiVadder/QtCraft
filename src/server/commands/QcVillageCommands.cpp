@@ -1,8 +1,8 @@
-#include "QcVillageCommands.h"
+#include "server/commands/QcVillageCommands.h"
 
-#include "QcCommandArguments.h"
-#include "QcServerState.h"
-#include "QcVillagePlan.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/core/QcServerState.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
 #include <QJsonDocument>
 

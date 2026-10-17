@@ -1,8 +1,8 @@
-#include "QcLightProbe.h"
+#include "clientcore/light/QcLightProbe.h"
 
-#include "QcClientWorld.h"
-#include "QcLightPassage.h"
-#include "QcWorldConstants.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/world/QcLightPassage.h"
 
 #include <algorithm>
 #include <cstdlib>

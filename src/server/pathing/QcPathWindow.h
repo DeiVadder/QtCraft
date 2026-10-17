@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcPathTerrain.h"
+#include "server/pathing/QcPathTerrain.h"
 
 #include <vector>
 

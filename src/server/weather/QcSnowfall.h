@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
 
 
 #include <optional>

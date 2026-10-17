@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcLightEngine.h"
-#include "QcLightVolume.h"
-#include "QcServerWorld.h"
-#include "QcTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/light/QcLightEngine.h"
+#include "common/world/QcLightVolume.h"
+#include "server/core/QcServerWorld.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
 #include <QRandomGenerator>

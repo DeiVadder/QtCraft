@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcCharacterProfile.h"
+#include "clientcore/settings/QcCharacterProfile.h"
 
 #include <QObject>
 #include <QVariantList>

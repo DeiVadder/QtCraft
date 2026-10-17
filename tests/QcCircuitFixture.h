@@ -1,7 +1,7 @@
 #pragma once
 
 #include "QcServerTestFixture.h"
-#include "QcStateRotation.h"
+#include "worldgen/structures/QcStateRotation.h"
 
 #include <QTest>
 

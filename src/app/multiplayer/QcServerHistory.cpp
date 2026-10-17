@@ -1,6 +1,6 @@
-#include "QcServerHistory.h"
+#include "app/multiplayer/QcServerHistory.h"
 
-#include "QcServerAddress.h"
+#include "network/QcServerAddress.h"
 
 #include <QSettings>
 

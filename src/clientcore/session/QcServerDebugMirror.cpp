@@ -1,4 +1,4 @@
-#include "QcServerDebugMirror.h"
+#include "clientcore/session/QcServerDebugMirror.h"
 
 #include <algorithm>
 

@@ -1,6 +1,6 @@
-#include "QcDebugJson.h"
+#include "clientcore/debug/QcDebugJson.h"
 
-#include "QcIntMath.h"
+#include "common/core/QcIntMath.h"
 
 #include <QJsonArray>
 

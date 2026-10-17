@@ -1,9 +1,9 @@
-#include "QcChunkMesher.h"
-#include "QcClientWorld.h"
-#include "QcMeshScheduler.h"
-#include "QcSectionKey.h"
-#include "QcTextureAtlas.h"
-#include "QcWorkerPool.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/core/QcSectionKey.h"
+#include "common/core/QcWorkerPool.h"
 
 #include <QRandomGenerator>
 #include <QSignalSpy>

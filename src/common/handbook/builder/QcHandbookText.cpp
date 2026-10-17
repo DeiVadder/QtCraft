@@ -1,4 +1,4 @@
-#include "QcHandbookText.h"
+#include "common/handbook/builder/QcHandbookText.h"
 
 #include <QRegularExpression>
 

@@ -1,4 +1,4 @@
-#include "QcPendingCommands.h"
+#include "server/commands/QcPendingCommands.h"
 
 void QcPendingCommands::ask(const QcCommandContext &context, Action action, qint64 nowNs)
 {

@@ -1,4 +1,4 @@
-#include "QcTextureSignalPatterns.h"
+#include "clientcore/textures/QcTextureSignalPatterns.h"
 
 #include <array>
 #include <cstdlib>

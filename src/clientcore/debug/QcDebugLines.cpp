@@ -1,11 +1,11 @@
-#include "QcDebugLines.h"
+#include "clientcore/debug/QcDebugLines.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcMinecartBody.h"
-#include "QcPhysics.h"
-#include "QcSectionKey.h"
-#include "QcWorldConstants.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcSectionKey.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcMinecartBody.h"
 
 #include <array>
 #include <cmath>

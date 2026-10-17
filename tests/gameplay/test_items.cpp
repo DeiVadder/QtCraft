@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcItemEntityManager.h"
-#include "QcPhysics.h"
-#include "QcPlantManager.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
-#include "QcTreeShape.h"
+#include "server/items/QcItemEntityManager.h"
+#include "server/plants/QcPlantManager.h"
+#include "worldgen/terrain/QcTreeShape.h"
 
 #include <QTest>
 

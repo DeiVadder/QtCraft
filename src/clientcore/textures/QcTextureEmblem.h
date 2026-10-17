@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcTexturePaint.h"
+#include "clientcore/textures/QcTexturePaint.h"
 
 #include <QJsonObject>
 

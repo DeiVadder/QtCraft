@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcLiquidReaction.h"
+#include "common/content/definitions/QcLiquidReaction.h"
 
 #include <QList>
 #include <QString>

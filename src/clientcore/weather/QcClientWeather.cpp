@@ -1,7 +1,7 @@
-#include "QcClientWeather.h"
+#include "clientcore/weather/QcClientWeather.h"
 
-#include "QcPhysics.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/physics/QcPhysics.h"
 
 #include <algorithm>
 #include <cmath>

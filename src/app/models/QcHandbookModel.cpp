@@ -1,6 +1,6 @@
-#include "QcHandbookModel.h"
+#include "app/models/QcHandbookModel.h"
 
-#include "QcHandbookJson.h"
+#include "common/handbook/QcHandbookJson.h"
 
 using namespace Qt::StringLiterals;
 

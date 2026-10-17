@@ -1,5 +1,5 @@
-#include "QcBaseContent.h"
-#include "QcVillageTestUtil.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "world/QcVillageTestUtil.h"
 
 #include <QTest>
 

@@ -1,10 +1,10 @@
 // Payloads of the world messages (QcWorldMessages.h): chunks, block changes, mining, using items on
 // blocks, sounds and the weather.
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcProtocol.h"
-#include "QcStreamLimits.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <cmath>
 

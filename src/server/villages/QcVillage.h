@@ -1,6 +1,7 @@
 #pragma once
 
-#include "QcBlockPos.h"
+#include "common/core/QcBlockPos.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
 #include <QJsonObject>
 #include <QList>
@@ -27,7 +28,7 @@ struct QcVillage
     };
 
     // Beds and workstations this far outside the generated area still belong to the village.
-    static constexpr int reach = 16;
+    static constexpr int reach = QcVillagePlan::reach;
 
     // What fromJson() accepts: the box at most `extent` blocks wide (a plan never leaves its
     // region, so the region's edge), each spot list cut to its own limit.

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcLightNibbles.h"
+#include "common/light/QcLightNibbles.h"
 
 #include <QByteArray>
 #include <QtGlobal>

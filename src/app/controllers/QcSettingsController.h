@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcAudioSettings.h"
-#include "QcCamera.h"
-#include "QcCharacterSettings.h"
-#include "QcDebugSettings.h"
-#include "QcGameSettings.h"
-#include "QcKeyControlsForeign.h"
-#include "QcTexturePackController.h"
+#include "app/controllers/QcAudioSettings.h"
+#include "app/controllers/QcCharacterSettings.h"
+#include "app/controllers/QcDebugSettings.h"
+#include "app/controllers/QcTexturePackController.h"
+#include "app/input/QcKeyControlsForeign.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/settings/QcGameSettings.h"
 
 #include <QObject>
 #include <QString>

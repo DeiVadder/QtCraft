@@ -1,6 +1,6 @@
-#include "QcBaseContent.h"
-#include "QcVillageLayoutParser.h"
-#include "QcVillageTestUtil.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcVillageLayoutParser.h"
+#include "world/QcVillageTestUtil.h"
 
 #include <QHash>
 #include <QQueue>

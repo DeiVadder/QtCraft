@@ -1,6 +1,6 @@
-#include "QcBaseContent.h"
-#include "QcStateRotation.h"
-#include "QcVillageTestUtil.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "world/QcVillageTestUtil.h"
+#include "worldgen/structures/QcStateRotation.h"
 
 #include <QTest>
 

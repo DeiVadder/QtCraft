@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcChunkPos.h"
-#include "QcPathTerrain.h"
-#include "QcVillage.h"
-#include "QcVillager.h"
+#include "common/core/QcChunkPos.h"
+#include "server/pathing/QcPathTerrain.h"
+#include "server/villages/QcVillage.h"
+#include "server/villages/QcVillager.h"
 
 #include <optional>
 

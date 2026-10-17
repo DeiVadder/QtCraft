@@ -1,9 +1,9 @@
-#include "QcOpeners.h"
+#include "server/blocks/QcOpeners.h"
 
-#include "QcBlockRules.h"
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
 
 #include <utility>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcChunkPos.h"
-#include "QcDebugHud.h"
-#include "QcVec3.h"
-#include "QcWorldLabel.h"
-#include "QcWorldLabelModel.h"
+#include "app/controllers/QcDebugHud.h"
+#include "app/models/QcWorldLabelModel.h"
+#include "common/core/QcChunkPos.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcWorldLabel.h"
 
 #include <QHash>
 #include <QList>

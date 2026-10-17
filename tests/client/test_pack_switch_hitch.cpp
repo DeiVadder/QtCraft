@@ -1,4 +1,4 @@
-#include "QcPackSwitchHitch.h"
+#include "app/hooks/QcPackSwitchHitch.h"
 
 #include <QTest>
 

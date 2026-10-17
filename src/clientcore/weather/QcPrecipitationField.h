@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcPrecipitationTable.h"
-#include "QcVec3.h"
-#include "QcWeather.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcPrecipitationTable.h"
+#include "common/world/QcWeather.h"
 
 #include <QHash>
 #include <QList>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcItemDefinition.h"
-#include "QcMessages.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
+#include "common/protocol/QcMessages.h"
 
 class QcBlockScreens;
 class QcFireIgnition;

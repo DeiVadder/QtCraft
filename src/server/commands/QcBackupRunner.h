@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcMailbox.h"
-#include "QcWorldBackup.h"
+#include "common/core/QcMailbox.h"
+#include "server/commands/QcWorldBackup.h"
 
 #include <functional>
 #include <thread>

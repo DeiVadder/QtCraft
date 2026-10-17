@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcCreature.h"
-#include "QcPathTerrain.h"
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
+#include "server/entities/QcCreature.h"
+#include "server/pathing/QcPathTerrain.h"
 
 #include <optional>
 

@@ -1,6 +1,6 @@
-#include "QcSignalParser.h"
+#include "common/content/parser/QcSignalParser.h"
 
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 #include <array>
 #include <utility>

@@ -1,11 +1,11 @@
-#include "QcBaseContent.h"
-#include "QcClientSession.h"
-#include "QcLocalServerHost.h"
-#include "QcPhysics.h"
-#include "QcTestTerrainGenerator.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcTransport.h"
 #include "QcTestUtil.h"
-#include "QcTransport.h"
 #include "QcTestWorldFiles.h"
+#include "server/core/QcLocalServerHost.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QDir>
 #include <QFile>

@@ -1,4 +1,4 @@
-#include "QcLoginCrypto.h"
+#include "common/auth/QcLoginCrypto.h"
 
 #include <QCryptographicHash>
 #include <QMessageAuthenticationCode>

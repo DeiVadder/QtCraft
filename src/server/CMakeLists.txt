@@ -21,6 +21,16 @@ target_sources(qc_server PRIVATE
     blocks/QcServerFire.h blocks/QcServerFire.cpp
 )
 target_sources(qc_server PRIVATE
+    chunks/QcBlockIndex.h chunks/QcBlockIndex.cpp
+    chunks/QcChunkGroups.h chunks/QcChunkGroups.cpp
+    chunks/QcChunkLinks.h chunks/QcChunkLinks.cpp
+    chunks/QcChunkLoaders.h chunks/QcChunkLoaders.cpp
+    chunks/QcChunkLoading.h chunks/QcChunkLoading.cpp
+    chunks/QcChunkStreaming.h chunks/QcChunkStreaming.cpp
+    chunks/QcChunkTickets.h chunks/QcChunkTickets.cpp
+    chunks/QcSectionMarks.h chunks/QcSectionMarks.cpp
+)
+target_sources(qc_server PRIVATE
     commands/QcAccessList.h commands/QcAccessList.cpp
     commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
@@ -43,30 +53,19 @@ target_sources(qc_server PRIVATE
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
 )
 target_sources(qc_server PRIVATE
-    content/QcBaseContent.h content/QcBaseContent.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
     content/QcContentFingerprint.h content/QcContentFingerprint.cpp
-    content/QcContentPackLoader.h content/QcContentPackLoader.cpp
     content/QcModLoader.h content/QcModLoader.cpp
     content/QcModStatus.h
 )
 target_sources(qc_server PRIVATE
-    core/QcBlockIndex.h core/QcBlockIndex.cpp
-    core/QcChunkGroups.h core/QcChunkGroups.cpp
-    core/QcChunkLinks.h core/QcChunkLinks.cpp
-    core/QcChunkLoaders.h core/QcChunkLoaders.cpp
-    core/QcChunkLoading.h core/QcChunkLoading.cpp
-    core/QcChunkStreaming.h core/QcChunkStreaming.cpp
-    core/QcChunkTickets.h core/QcChunkTickets.cpp
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     core/QcLocalServerHost.h core/QcLocalServerHost.cpp
     core/QcProfileValidation.h core/QcProfileValidation.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
-    core/QcSectionMarks.h core/QcSectionMarks.cpp
     core/QcServer.h core/QcServer.cpp
     core/QcServerClient.h
-    core/QcServerClock.h
     core/QcServerConfig.h
     core/QcServerDebug.h core/QcServerDebug.cpp
     core/QcServerLimits.h core/QcServerLimits.cpp
@@ -75,10 +74,6 @@ target_sources(qc_server PRIVATE
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
-    core/QcTickControl.h
-    core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
-    core/QcTickScheduler.h core/QcTickScheduler.cpp
-    core/QcTickStats.h core/QcTickStats.cpp
 )
 target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
@@ -95,42 +90,24 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
     gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
-    gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
-    gameplay/QcExperienceOrbManager.h gameplay/QcExperienceOrbManager.cpp
     gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
-    gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
-    gameplay/QcMinecartCollisions.h gameplay/QcMinecartCollisions.cpp
-    gameplay/QcMinecartHoppers.h gameplay/QcMinecartHoppers.cpp
-    gameplay/QcMinecartManager.h gameplay/QcMinecartManager.cpp
-    gameplay/QcMinecartMotion.h gameplay/QcMinecartMotion.cpp
-    gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
-    gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
-    gameplay/QcMobCramming.h gameplay/QcMobCramming.cpp
-    gameplay/QcMobCrowd.h gameplay/QcMobCrowd.cpp
-    gameplay/QcMobManager.h gameplay/QcMobManager.cpp gameplay/QcMobManagerVillagers.cpp
-    gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
-    gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
-    gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
-    gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
     gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
-    gameplay/QcServerAnimals.h gameplay/QcServerAnimals.cpp
     gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
     gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
-    gameplay/QcServerCreatures.h gameplay/QcServerCreatures.cpp
-    gameplay/QcServerExperience.h gameplay/QcServerExperience.cpp
     gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
     gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
     gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
-    gameplay/QcServerItems.h gameplay/QcServerItems.cpp
-    gameplay/QcServerMinecarts.h gameplay/QcServerMinecarts.cpp
-    gameplay/QcServerPlants.h gameplay/QcServerPlants.cpp
     gameplay/QcServerStands.h gameplay/QcServerStands.cpp
-    gameplay/QcServerTrading.h gameplay/QcServerTrading.cpp
-    gameplay/QcServerVillagers.h gameplay/QcServerVillagers.cpp
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
+)
+target_sources(qc_server PRIVATE
+    items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
+    items/QcItemEntityManager.h items/QcItemEntityManager.cpp
+    items/QcServerExperience.h items/QcServerExperience.cpp
+    items/QcServerItems.h items/QcServerItems.cpp
 )
 target_sources(qc_server PRIVATE
     login/QcIdentityStore.h login/QcIdentityStore.cpp
@@ -142,6 +119,24 @@ target_sources(qc_server PRIVATE
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
+)
+target_sources(qc_server PRIVATE
+    minecarts/QcMinecartCollisions.h minecarts/QcMinecartCollisions.cpp
+    minecarts/QcMinecartHoppers.h minecarts/QcMinecartHoppers.cpp
+    minecarts/QcMinecartManager.h minecarts/QcMinecartManager.cpp
+    minecarts/QcMinecartMotion.h minecarts/QcMinecartMotion.cpp
+    minecarts/QcServerMinecarts.h minecarts/QcServerMinecarts.cpp
+)
+target_sources(qc_server PRIVATE
+    mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
+    mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
+    mobs/QcMobCramming.h mobs/QcMobCramming.cpp
+    mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
+    mobs/QcMobManager.h mobs/QcMobManager.cpp mobs/QcMobManagerVillagers.cpp
+    mobs/QcMobSteering.h mobs/QcMobSteering.cpp
+    mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
+    mobs/QcServerAnimals.h mobs/QcServerAnimals.cpp
+    mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
 )
 target_sources(qc_server PRIVATE
     network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp
@@ -156,6 +151,12 @@ target_sources(qc_server PRIVATE
     pathing/QcPathPlanner.h pathing/QcPathPlanner.cpp
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
+)
+target_sources(qc_server PRIVATE
+    plants/QcCropGrowth.h plants/QcCropGrowth.cpp
+    plants/QcPlantGrowth.h plants/QcPlantGrowth.cpp
+    plants/QcPlantManager.h plants/QcPlantManager.cpp
+    plants/QcServerPlants.h plants/QcServerPlants.cpp
 )
 target_sources(qc_server PRIVATE
     signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
@@ -195,6 +196,15 @@ target_sources(qc_server PRIVATE
     storage/QcWorldStorage.h storage/QcWorldStorage.cpp
 )
 target_sources(qc_server PRIVATE
+    tick/QcServerClock.h
+    tick/QcTickControl.h
+    tick/QcTickPhaseTimer.h tick/QcTickPhaseTimer.cpp
+    tick/QcTickScheduler.h tick/QcTickScheduler.cpp
+    tick/QcTickStats.h tick/QcTickStats.cpp
+)
+target_sources(qc_server PRIVATE
+    villages/QcServerTrading.h villages/QcServerTrading.cpp
+    villages/QcServerVillagers.h villages/QcServerVillagers.cpp
     villages/QcVillage.h villages/QcVillage.cpp
     villages/QcVillageGolems.h villages/QcVillageGolems.cpp
     villages/QcVillager.h
@@ -212,85 +222,8 @@ target_sources(qc_server PRIVATE
     weather/QcSnowfall.h weather/QcSnowfall.cpp
     weather/QcWeatherCycle.h weather/QcWeatherCycle.cpp
 )
-target_sources(qc_server PRIVATE
-    worldgen/QcCaveCarver.h worldgen/QcCaveCarver.cpp
-    worldgen/QcFlatGenerator.h worldgen/QcFlatGenerator.cpp
-    worldgen/QcNoise.h worldgen/QcNoise.cpp
-    worldgen/QcPoolPlacer.h worldgen/QcPoolPlacer.cpp
-    worldgen/QcStateRotation.h worldgen/QcStateRotation.cpp
-    worldgen/QcStructure.h worldgen/QcStructure.cpp
-    worldgen/QcStructurePlacement.h worldgen/QcStructurePlacement.cpp
-    worldgen/QcTerrainColumn.h
-    worldgen/QcTerrainColumnGrid.h worldgen/QcTerrainColumnGrid.cpp
-    worldgen/QcTerrainDefinitions.h worldgen/QcTerrainDefinitions.cpp
-    worldgen/QcTerrainGenerator.h worldgen/QcTerrainGenerator.cpp
-    worldgen/QcTerrainMath.h
-    worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
-    worldgen/QcTreeShape.h worldgen/QcTreeShape.cpp
-    worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
-    worldgen/QcWorldGenerator.h
-    worldgen/QcWorldGenerators.h worldgen/QcWorldGenerators.cpp
-    worldgen/QcWorldSetup.h
-)
-target_sources(qc_server PRIVATE
-    worldgen/showcase/QcShowcaseArea.h
-    worldgen/showcase/QcShowcaseArmourArea.h worldgen/showcase/QcShowcaseArmourArea.cpp
-    worldgen/showcase/QcShowcaseBlockArea.h worldgen/showcase/QcShowcaseBlockArea.cpp
-    worldgen/showcase/QcShowcaseCategories.h worldgen/showcase/QcShowcaseCategories.cpp
-    worldgen/showcase/QcShowcaseCreatureArea.h worldgen/showcase/QcShowcaseCreatureArea.cpp
-    worldgen/showcase/QcShowcaseGenerator.h worldgen/showcase/QcShowcaseGenerator.cpp
-    worldgen/showcase/QcShowcaseItemArea.h worldgen/showcase/QcShowcaseItemArea.cpp
-    worldgen/showcase/QcShowcasePlan.h
-    worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
-    worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
-    worldgen/showcase/QcShowcaseVillageArea.h worldgen/showcase/QcShowcaseVillageArea.cpp
-)
-target_sources(qc_server PRIVATE
-    worldgen/villages/QcBoardwalkPlanner.h worldgen/villages/QcBoardwalkPlanner.cpp
-    worldgen/villages/QcJettyPlanner.h worldgen/villages/QcJettyPlanner.cpp
-    worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
-    worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
-    worldgen/villages/QcVillageFields.h worldgen/villages/QcVillageFields.cpp
-    worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp
-    worldgen/villages/QcVillagePlan.h
-    worldgen/villages/QcVillagePlanCache.h worldgen/villages/QcVillagePlanCache.cpp
-    worldgen/villages/QcVillagePlanner.h worldgen/villages/QcVillagePlanner.cpp worldgen/villages/QcVillagePlannerLayouts.cpp worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
-    worldgen/villages/QcVillageRoads.h worldgen/villages/QcVillageRoads.cpp
-    worldgen/villages/QcVillageStyles.h worldgen/villages/QcVillageStyles.cpp
-    worldgen/villages/QcWetlandShaper.h worldgen/villages/QcWetlandShaper.cpp
-)
 qc_configure_target(qc_server)
-# Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
-set(qc_worldgen_sources
-    worldgen/QcCaveCarver.cpp worldgen/QcNoise.cpp worldgen/QcPoolPlacer.cpp worldgen/QcTerrainColumnGrid.cpp
-    worldgen/QcTerrainDefinitions.cpp worldgen/QcTerrainGenerator.cpp worldgen/QcTreeShape.cpp
-    worldgen/villages/QcBoardwalkPlanner.cpp worldgen/villages/QcJettyPlanner.cpp worldgen/villages/QcVillagePlanner.cpp
-    worldgen/villages/QcVillagePlannerLayouts.cpp worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
-    worldgen/villages/QcWetlandShaper.cpp)
-if(MSVC)
-    set_source_files_properties(${qc_worldgen_sources} PROPERTIES COMPILE_OPTIONS /fp:precise)
-else()
-    set_source_files_properties(${qc_worldgen_sources} PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
-endif()
-# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
-# stay "QcName.h" without a path.
-target_include_directories(qc_server PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/commands
-    ${CMAKE_CURRENT_SOURCE_DIR}/login
-    ${CMAKE_CURRENT_SOURCE_DIR}/network
-    ${CMAKE_CURRENT_SOURCE_DIR}/blocks
-    ${CMAKE_CURRENT_SOURCE_DIR}/weather
-    ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
-    ${CMAKE_CURRENT_SOURCE_DIR}/pathing
-    ${CMAKE_CURRENT_SOURCE_DIR}/machines
-    ${CMAKE_CURRENT_SOURCE_DIR}/blockentities
-    ${CMAKE_CURRENT_SOURCE_DIR}/entities
-    ${CMAKE_CURRENT_SOURCE_DIR}/signal
-    ${CMAKE_CURRENT_SOURCE_DIR}/storage
-    ${CMAKE_CURRENT_SOURCE_DIR}/content
-    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen
-    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/showcase
-    ${CMAKE_CURRENT_SOURCE_DIR}/worldgen/villages
-    ${CMAKE_CURRENT_SOURCE_DIR}/villages)
-target_link_libraries(qc_server PUBLIC qc_common qc_network qc_base_content Qt::Core Qt::Concurrent)
+# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# src/ is the only include directory a library passes on.
+target_include_directories(qc_server PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(qc_server PUBLIC qc_common qc_worldgen qc_network Qt::Core Qt::Concurrent)

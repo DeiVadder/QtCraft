@@ -1,4 +1,4 @@
-#include "QcTextureSpec.h"
+#include "clientcore/textures/QcTextureSpec.h"
 
 #include <QHash>
 

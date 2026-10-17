@@ -1,6 +1,6 @@
-#include "QcScreenshotHook.h"
+#include "app/hooks/QcScreenshotHook.h"
 
-#include "QcLayoutCheck.h"
+#include "app/hooks/QcLayoutCheck.h"
 
 #include <QCoreApplication>
 #include <QImage>

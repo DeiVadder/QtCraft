@@ -1,8 +1,8 @@
-#include "QcVillagerLooks.h"
+#include "server/villages/QcVillagerLooks.h"
 
-#include "QcContentRegistry.h"
-#include "QcVillager.h"
-#include "QcVillagerOutfits.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcVillagerOutfits.h"
+#include "server/villages/QcVillager.h"
 
 namespace {
 

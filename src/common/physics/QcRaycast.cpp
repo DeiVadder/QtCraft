@@ -1,6 +1,6 @@
-#include "QcRaycast.h"
+#include "common/physics/QcRaycast.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <array>
 #include <cmath>

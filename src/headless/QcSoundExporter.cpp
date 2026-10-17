@@ -1,8 +1,8 @@
-#include "QcSoundExporter.h"
+#include "headless/QcSoundExporter.h"
 
-#include "QcContentRegistry.h"
-#include "QcMusicComposer.h"
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcMusicComposer.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QDataStream>
 #include <QDir>

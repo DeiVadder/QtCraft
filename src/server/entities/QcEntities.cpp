@@ -1,6 +1,6 @@
-#include "QcEntities.h"
+#include "server/entities/QcEntities.h"
 
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
 
 #include <algorithm>
 

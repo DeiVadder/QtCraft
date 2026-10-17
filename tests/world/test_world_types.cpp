@@ -1,11 +1,11 @@
-#include "QcBaseContent.h"
-#include "QcFlatGenerator.h"
-#include "QcInProcessTransport.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
-#include "QcServer.h"
-#include "QcVoidGenerator.h"
-#include "QcWorldGenerators.h"
-#include "QcWorldLibrary.h"
+#include "server/core/QcServer.h"
+#include "server/storage/QcWorldLibrary.h"
+#include "worldgen/generators/QcFlatGenerator.h"
+#include "worldgen/generators/QcVoidGenerator.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QCoreApplication>
 #include <QTemporaryDir>

@@ -1,7 +1,7 @@
-#include "QcHandbookLinks.h"
+#include "common/handbook/QcHandbookLinks.h"
 
-#include "QcHandbook.h"
-#include "QcHandbookText.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbook.h"
 
 #include <algorithm>
 

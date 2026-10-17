@@ -1,4 +1,4 @@
-#include "QcTradeParser.h"
+#include "common/content/parser/QcTradeParser.h"
 
 #include <QJsonArray>
 

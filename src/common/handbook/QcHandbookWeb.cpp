@@ -1,6 +1,6 @@
-#include "QcHandbookWeb.h"
+#include "common/handbook/QcHandbookWeb.h"
 
-#include "QcHandbookJson.h"
+#include "common/handbook/QcHandbookJson.h"
 
 #include <QDir>
 #include <QJsonArray>

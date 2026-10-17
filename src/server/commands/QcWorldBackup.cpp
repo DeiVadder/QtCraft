@@ -1,6 +1,6 @@
-#include "QcWorldBackup.h"
+#include "server/commands/QcWorldBackup.h"
 
-#include "QcServerPersistence.h"
+#include "server/storage/QcServerPersistence.h"
 
 #include <QDir>
 #include <QDirIterator>

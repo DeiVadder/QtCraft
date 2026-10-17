@@ -1,13 +1,13 @@
-#include "QcBaseContent.h"
-#include "QcContentPackLoader.h"
-#include "QcContentParser.h"
-#include "QcHandbookBuilder.h"
-#include "QcHandbookJson.h"
-#include "QcHandbookMarkdown.h"
-#include "QcHandbookRules.h"
-#include "QcKeyBindings.h"
-#include "QcModLoader.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/loader/QcContentPackLoader.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/gameplay/QcKeyBindings.h"
+#include "common/handbook/builder/QcHandbookBuilder.h"
+#include "common/handbook/QcHandbookJson.h"
+#include "common/handbook/QcHandbookMarkdown.h"
 #include "QcTestUtil.h"
+#include "server/content/QcModLoader.h"
+#include "server/gameplay/QcHandbookRules.h"
 
 #include <QDir>
 #include <QElapsedTimer>

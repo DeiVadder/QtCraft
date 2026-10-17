@@ -1,10 +1,10 @@
-#include "QcMaterialParser.h"
+#include "common/content/parser/QcMaterialParser.h"
 
-#include "QcBlockParser.h"
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcRecipeParser.h"
+#include "common/content/parser/QcBlockParser.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcRecipeParser.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 

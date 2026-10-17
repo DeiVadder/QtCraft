@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcDebugMessages.h"
+#include "common/protocol/QcDebugMessages.h"
 
 #include <QtGlobal>
 

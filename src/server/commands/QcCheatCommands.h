@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcCommandRegistry.h"
-#include "QcGameMode.h"
-#include "QcVec3.h"
-#include "QcStandCommands.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcGameMode.h"
+#include "server/commands/QcCommandRegistry.h"
+#include "server/commands/QcStandCommands.h"
 
 #include <QString>
 

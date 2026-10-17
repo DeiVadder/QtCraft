@@ -1,6 +1,6 @@
-#include "QcProtocol.h"
+#include "common/protocol/QcProtocol.h"
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
 #include <QDataStream>
 #include <QIODevice>

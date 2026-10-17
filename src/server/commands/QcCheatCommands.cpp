@@ -1,15 +1,15 @@
-#include "QcCheatCommands.h"
+#include "server/commands/QcCheatCommands.h"
 
-#include "QcBodyFit.h"
-#include "QcChatText.h"
-#include "QcCommandArguments.h"
-#include "QcDayCycle.h"
-#include "QcPhysics.h"
-#include "QcPlayerHealth.h"
-#include "QcServerGameModes.h"
-#include "QcServerInventory.h"
-#include "QcServerMinecarts.h"
-#include "QcServerState.h"
+#include "common/physics/QcBodyFit.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "common/world/QcDayCycle.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcPlayerHealth.h"
+#include "server/gameplay/QcServerGameModes.h"
+#include "server/gameplay/QcServerInventory.h"
+#include "server/minecarts/QcServerMinecarts.h"
 
 #include <QtMath>
 

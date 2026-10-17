@@ -1,6 +1,6 @@
-#include "QcMinecartBody.h"
-#include "QcMinecartCollisions.h"
+#include "common/world/QcMinecartBody.h"
 #include "QcRailFixture.h"
+#include "server/minecarts/QcMinecartCollisions.h"
 
 #include <algorithm>
 #include <cmath>

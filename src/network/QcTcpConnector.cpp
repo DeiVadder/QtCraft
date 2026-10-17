@@ -1,6 +1,6 @@
-#include "QcTcpConnector.h"
+#include "network/QcTcpConnector.h"
 
-#include "QcSocketErrors.h"
+#include "network/QcSocketErrors.h"
 
 #include <QCoreApplication>
 #include <QTcpSocket>

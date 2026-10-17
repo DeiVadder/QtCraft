@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcBlockRules.h"
-#include "QcDustNetwork.h"
-#include "QcStateRotation.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "QcTestWorld.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/signal/QcDustNetwork.h"
+#include "worldgen/structures/QcStateRotation.h"
 
 #include <QElapsedTimer>
 #include <QTest>

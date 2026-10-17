@@ -1,10 +1,10 @@
-#include "QcSnowfall.h"
+#include "server/weather/QcSnowfall.h"
 
-#include "QcBlockRules.h"
-#include "QcServerBlocks.h"
-#include "QcServerState.h"
-#include "QcServerWeather.h"
-#include "QcWeatherCycle.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerState.h"
+#include "server/weather/QcServerWeather.h"
+#include "server/weather/QcWeatherCycle.h"
 
 #include <cmath>
 

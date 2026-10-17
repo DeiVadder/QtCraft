@@ -1,6 +1,6 @@
-#include "QcClientLogin.h"
+#include "clientcore/session/QcClientLogin.h"
 
-#include "QcLoginCrypto.h"
+#include "common/auth/QcLoginCrypto.h"
 
 #include <algorithm>
 

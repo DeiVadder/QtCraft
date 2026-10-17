@@ -1,7 +1,7 @@
-#include "QcAudioEngine.h"
-#include "QcAudioOutput.h"
-#include "QcBaseContent.h"
-#include "QcSoundKeys.h"
+#include "audio/QcAudioEngine.h"
+#include "audio/QcAudioOutput.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/loader/QcBaseContent.h"
 
 #include <QSignalSpy>
 #include <QTest>

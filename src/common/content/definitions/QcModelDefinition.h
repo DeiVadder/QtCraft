@@ -4,7 +4,7 @@
 // make sense together. Coordinates are metres relative to the entity's feet centre, facing north
 // (-Z); the entity's right side is +X.
 
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
 
 #include <QList>
 #include <QString>

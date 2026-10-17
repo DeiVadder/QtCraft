@@ -1,7 +1,7 @@
-#include "QcLocalSounds.h"
+#include "clientcore/sound/QcLocalSounds.h"
 
-#include "QcContentRegistry.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <cmath>

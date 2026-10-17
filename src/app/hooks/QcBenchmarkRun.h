@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcFrameProfile.h"
-#include "QcPackSwitchHitch.h"
-#include "QcVec3.h"
+#include "app/hooks/QcFrameProfile.h"
+#include "app/hooks/QcPackSwitchHitch.h"
+#include "common/core/QcVec3.h"
 
 #include <QElapsedTimer>
 #include <QList>

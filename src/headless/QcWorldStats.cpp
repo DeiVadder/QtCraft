@@ -1,7 +1,7 @@
-#include "QcWorldStats.h"
+#include "headless/QcWorldStats.h"
 
-#include "QcContentRegistry.h"
-#include "QcTerrainGenerator.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QHash>
 #include <QMap>

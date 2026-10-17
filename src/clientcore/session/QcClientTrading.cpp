@@ -1,4 +1,4 @@
-#include "QcClientTrading.h"
+#include "clientcore/session/QcClientTrading.h"
 
 #include <algorithm>
 

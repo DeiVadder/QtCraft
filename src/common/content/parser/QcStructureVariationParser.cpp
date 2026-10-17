@@ -1,6 +1,6 @@
-#include "QcStructureVariationParser.h"
+#include "common/content/parser/QcStructureVariationParser.h"
 
-#include "QcContentNames.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 

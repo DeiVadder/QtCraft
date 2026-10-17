@@ -1,6 +1,6 @@
-#include "QcEntityMesher.h"
+#include "clientcore/meshing/QcEntityMesher.h"
 
-#include "QcBlockFace.h"
+#include "common/core/QcBlockFace.h"
 
 #include <QtMath>
 

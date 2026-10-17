@@ -1,10 +1,10 @@
-#include "QcFigureLook.h"
+#include "clientcore/meshing/QcFigureLook.h"
 
-#include "QcArmour.h"
-#include "QcArmourLook.h"
-#include "QcCapeSwing.h"
-#include "QcContentRegistry.h"
-#include "QcLightVolume.h"
+#include "clientcore/meshing/QcArmourLook.h"
+#include "clientcore/meshing/QcCapeSwing.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/world/QcLightVolume.h"
 
 #include <algorithm>
 

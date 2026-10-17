@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcHandbook.h"
-#include "QcResult.h"
+#include "common/core/QcResult.h"
+#include "common/handbook/QcHandbook.h"
 
 #include <QByteArray>
 #include <QList>

@@ -1,10 +1,10 @@
-#include "QcIdentityStore.h"
+#include "server/login/QcIdentityStore.h"
 
-#include "QcAccessList.h"
-#include "QcLoginCrypto.h"
-#include "QcLoginMessages.h"
-#include "QcProfileValidation.h"
-#include "QcSaveFile.h"
+#include "common/auth/QcLoginCrypto.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "server/commands/QcAccessList.h"
+#include "server/core/QcProfileValidation.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QDir>
 #include <QFile>

@@ -1,6 +1,6 @@
-#include "QcServerSettings.h"
+#include "server/network/QcServerSettings.h"
 
-#include "QcProfileValidation.h"
+#include "server/core/QcProfileValidation.h"
 
 #include <QFile>
 #include <QJsonArray>

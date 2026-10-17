@@ -1,7 +1,7 @@
-#include "QcPreviewPose.h"
+#include "clientcore/preview/QcPreviewPose.h"
 
-#include "QcPhysics.h"
-#include "QcPreviewCamera.h"
+#include "clientcore/preview/QcPreviewCamera.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QtMath>
 

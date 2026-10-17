@@ -1,8 +1,8 @@
-#include "QcAnimator.h"
-#include "QcEntityMesher.h"
-#include "QcPhysics.h"
+#include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/meshing/QcAnimator.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
-#include "QcViewCamera.h"
 
 #include <QTest>
 

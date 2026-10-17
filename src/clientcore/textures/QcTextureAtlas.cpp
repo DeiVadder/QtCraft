@@ -1,9 +1,9 @@
-#include "QcTextureAtlas.h"
+#include "clientcore/textures/QcTextureAtlas.h"
 
-#include "QcAlphaCoverage.h"
-#include "QcTexturePackLoader.h"
-#include "QcTextureSources.h"
-#include "QcTextureSynthesizer.h"
+#include "clientcore/texturepacks/QcTexturePackLoader.h"
+#include "clientcore/texturepacks/QcTextureSources.h"
+#include "clientcore/textures/QcAlphaCoverage.h"
+#include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <QThread>
 #include <QtGlobal>

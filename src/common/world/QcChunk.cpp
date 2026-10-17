@@ -1,4 +1,4 @@
-#include "QcChunk.h"
+#include "common/world/QcChunk.h"
 
 QcBlockId QcChunk::block(int x, int y, int z) const
 {

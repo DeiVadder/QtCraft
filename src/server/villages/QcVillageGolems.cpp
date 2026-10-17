@@ -1,12 +1,12 @@
-#include "QcVillageGolems.h"
+#include "server/villages/QcVillageGolems.h"
 
-#include "QcBodyFit.h"
-#include "QcContentRegistry.h"
-#include "QcNoise.h"
-#include "QcPathTerrain.h"
-#include "QcServerWorld.h"
-#include "QcVillage.h"
-#include "QcVillages.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcBodyFit.h"
+#include "server/core/QcServerWorld.h"
+#include "server/pathing/QcPathTerrain.h"
+#include "server/villages/QcVillage.h"
+#include "server/villages/QcVillages.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QLoggingCategory>
 

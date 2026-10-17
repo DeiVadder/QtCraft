@@ -1,6 +1,6 @@
-#include "QcPhysics.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
-#include "QcWorldConstants.h"
 
 #include <QTest>
 

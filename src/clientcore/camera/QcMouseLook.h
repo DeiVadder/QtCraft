@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcPlayerInput.h"
+#include "common/physics/QcPlayerInput.h"
 
 #include <QPointF>
 

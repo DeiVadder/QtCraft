@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunkSection.h"
-#include "QcLightNibbles.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/light/QcLightNibbles.h"
+#include "common/world/QcChunkSection.h"
 
 #include <QtGlobal>
 

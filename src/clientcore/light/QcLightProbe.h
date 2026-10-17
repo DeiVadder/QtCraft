@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcLightVolume.h"
+#include "common/core/QcBlockPos.h"
+#include "common/world/QcLightVolume.h"
 
 #include <QHash>
 

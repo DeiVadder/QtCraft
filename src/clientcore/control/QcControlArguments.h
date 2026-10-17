@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockFace.h"
-#include "QcBlockPos.h"
+#include "common/core/QcBlockFace.h"
+#include "common/core/QcBlockPos.h"
 
 #include <QJsonObject>
 #include <QString>

@@ -1,11 +1,11 @@
-#include "QcServerCombat.h"
+#include "server/gameplay/QcServerCombat.h"
 
-#include "QcLineOfSight.h"
-#include "QcPhysics.h"
-#include "QcServerExperience.h"
-#include "QcServerInventory.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
+#include "server/gameplay/QcServerInventory.h"
+#include "server/items/QcServerExperience.h"
 
 QcServerCombat::QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)

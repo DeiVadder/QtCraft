@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QtGlobal>
 

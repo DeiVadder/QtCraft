@@ -1,4 +1,4 @@
-#include "QcFrameProfile.h"
+#include "app/hooks/QcFrameProfile.h"
 
 #include <algorithm>
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcCharacterProfile.h"
-#include "QcDebugOptions.h"
-#include "QcKeyBindings.h"
-#include "QcResult.h"
-#include "QcViewCamera.h"
+#include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/settings/QcCharacterProfile.h"
+#include "clientcore/settings/QcDebugOptions.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/core/QcResult.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QString>
 #include <QStringList>

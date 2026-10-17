@@ -1,15 +1,15 @@
-#include "QcDispenserActions.h"
+#include "server/signal/QcDispenserActions.h"
 
-#include "QcArmour.h"
-#include "QcBlockRules.h"
-#include "QcLiquidFlow.h"
-#include "QcNoise.h"
-#include "QcPhysics.h"
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSignalTable.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcLiquidFlow.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/signal/QcSignalTable.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QRandomGenerator>
 

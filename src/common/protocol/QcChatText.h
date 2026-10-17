@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcSessionMessages.h"
+#include "common/protocol/QcSessionMessages.h"
 
 #include <QString>
 #include <QStringList>

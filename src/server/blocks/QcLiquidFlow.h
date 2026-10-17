@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcServerLimits.h"
-#include "QcBlockAccess.h"
-#include "QcContentRegistry.h"
-#include "QcVec3.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/core/QcServerLimits.h"
 
 #include <QHash>
 #include <QList>

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcBlockDefinition.h"
-#include "QcBlockFace.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockFace.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcBlockAccess.h"
 
 #include <QList>
 

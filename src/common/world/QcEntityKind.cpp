@@ -1,4 +1,4 @@
-#include "QcEntityKind.h"
+#include "common/world/QcEntityKind.h"
 
 namespace QcEntityKinds {
 

@@ -1,4 +1,4 @@
-#include "QcCamera.h"
+#include "clientcore/camera/QcCamera.h"
 
 #include <QtMath>
 

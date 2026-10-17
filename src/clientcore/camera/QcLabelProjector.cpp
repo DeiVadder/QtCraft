@@ -1,7 +1,7 @@
-#include "QcLabelProjector.h"
+#include "clientcore/camera/QcLabelProjector.h"
 
-#include "QcBlockPos.h"
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcBlockPos.h"
 
 #include <QMatrix4x4>
 #include <QVector4D>

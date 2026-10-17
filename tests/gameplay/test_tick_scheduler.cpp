@@ -1,7 +1,7 @@
-#include "QcBaseContent.h"
-#include "QcServer.h"
-#include "QcTestTerrainGenerator.h"
-#include "QcTickScheduler.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "server/core/QcServer.h"
+#include "server/tick/QcTickScheduler.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QEventLoop>
 #include <QRandomGenerator>

@@ -1,10 +1,10 @@
-#include "QcVillagerBehaviour.h"
+#include "server/villages/QcVillagerBehaviour.h"
 
-#include "QcDayCycle.h"
-#include "QcMobSteering.h"
-#include "QcPathPlanner.h"
-#include "QcServerWorld.h"
-#include "QcVillagePlan.h"
+#include "common/world/QcDayCycle.h"
+#include "server/core/QcServerWorld.h"
+#include "server/mobs/QcMobSteering.h"
+#include "server/pathing/QcPathPlanner.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
 #include <algorithm>
 #include <cmath>

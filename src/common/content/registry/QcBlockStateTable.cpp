@@ -1,6 +1,6 @@
-#include "QcBlockStateTable.h"
+#include "common/content/registry/QcBlockStateTable.h"
 
-#include "QcLightPassage.h"
+#include "common/world/QcLightPassage.h"
 
 #include <QHash>
 #include <QSet>

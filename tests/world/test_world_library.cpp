@@ -1,5 +1,5 @@
 #include "QcTestUtil.h"
-#include "QcWorldLibrary.h"
+#include "server/storage/QcWorldLibrary.h"
 
 #include <QDir>
 #include <QFile>

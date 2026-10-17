@@ -1,7 +1,7 @@
-#include "QcComparatorReadings.h"
+#include "server/signal/QcComparatorReadings.h"
 
-#include "QcBlockEntities.h"
-#include "QcMinecartManager.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/minecarts/QcMinecartManager.h"
 
 #include <cmath>
 

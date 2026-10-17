@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcEntityPose.h"
-#include "QcVec3.h"
+#include "clientcore/meshing/QcEntityPose.h"
+#include "common/core/QcVec3.h"
 
 // How a figure moves, as far as its cape cares: speeds in m/s in the figure's own frame.
 struct QcCapeDrive

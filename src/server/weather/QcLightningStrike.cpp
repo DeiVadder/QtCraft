@@ -1,11 +1,11 @@
-#include "QcLightningStrike.h"
+#include "server/weather/QcLightningStrike.h"
 
-#include "QcFireIgnition.h"
-#include "QcPhysics.h"
-#include "QcPlayerHealth.h"
-#include "QcServerCombat.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcFireIgnition.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcPlayerHealth.h"
+#include "server/gameplay/QcServerCombat.h"
 
 #include <algorithm>
 #include <cmath>

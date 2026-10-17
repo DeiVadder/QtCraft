@@ -1,7 +1,7 @@
 #pragma once
 
 #include "QcCircuitFixture.h"
-#include "QcServerHoppers.h"
+#include "server/signal/QcServerHoppers.h"
 
 // Signal machines on a running server (stage 29.2): containers filled as a player or the world's
 // setup would (comparators and hoppers around are told), items dropped at local positions and

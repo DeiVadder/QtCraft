@@ -1,4 +1,4 @@
-#include "QcHandbookMarkdown.h"
+#include "common/handbook/QcHandbookMarkdown.h"
 
 #include <QDir>
 #include <QSaveFile>

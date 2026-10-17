@@ -1,5 +1,5 @@
-#include "QcControlPalette.h"
-#include "QcUiPalette.h"
+#include "app/models/QcControlPalette.h"
+#include "clientcore/settings/QcUiPalette.h"
 
 #include <QQmlComponent>
 #include <QQmlEngine>

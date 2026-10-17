@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcChunkRegeneration.h"
-#include "QcCommandRegistry.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "server/commands/QcChunkRegeneration.h"
+#include "server/commands/QcCommandRegistry.h"
 
 #include <QString>
 

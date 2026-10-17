@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcChunk.h"
-#include "QcServerLimits.h"
+#include "common/world/QcChunk.h"
+#include "server/core/QcServerLimits.h"
 
 #include <QHash>
 #include <QList>

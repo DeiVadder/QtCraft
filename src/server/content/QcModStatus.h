@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcContentPackLoader.h"
+#include "common/content/loader/QcContentPackLoader.h"
 
 #include <QString>
 #include <QStringList>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcPistonPlanner.h"
-#include "QcSignalSchedule.h"
+#include "server/signal/QcPistonPlanner.h"
+#include "server/signal/QcSignalSchedule.h"
 
 #include <QHash>
 #include <QList>

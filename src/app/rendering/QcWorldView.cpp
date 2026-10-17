@@ -1,6 +1,6 @@
-#include "QcWorldView.h"
+#include "app/rendering/QcWorldView.h"
 
-#include "QcWorldRenderer.h"
+#include "app/rendering/QcWorldRenderer.h"
 
 QcWorldView::QcWorldView(QQuickItem *parent)
     : QQuickRhiItem(parent)

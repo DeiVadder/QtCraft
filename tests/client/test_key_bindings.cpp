@@ -1,6 +1,6 @@
-#include "QcGameSettings.h"
-#include "QcKeyBindings.h"
-#include "QcKeyControls.h"
+#include "clientcore/settings/QcGameSettings.h"
+#include "clientcore/settings/QcKeyControls.h"
+#include "common/gameplay/QcKeyBindings.h"
 #include "QcTestUtil.h"
 
 #include <QFile>

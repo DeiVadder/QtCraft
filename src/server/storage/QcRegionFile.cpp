@@ -1,8 +1,8 @@
-#include "QcRegionFile.h"
+#include "server/storage/QcRegionFile.h"
 
-#include "QcCrc32.h"
-#include "QcIntMath.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcCrc32.h"
+#include "common/core/QcIntMath.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QDataStream>
 #include <QDir>

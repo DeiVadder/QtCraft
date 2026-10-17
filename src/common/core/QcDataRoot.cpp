@@ -1,4 +1,4 @@
-#include "QcDataRoot.h"
+#include "common/core/QcDataRoot.h"
 
 #include <QStandardPaths>
 

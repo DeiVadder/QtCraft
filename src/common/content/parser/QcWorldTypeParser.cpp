@@ -1,8 +1,8 @@
-#include "QcWorldTypeParser.h"
+#include "common/content/parser/QcWorldTypeParser.h"
 
-#include "QcDayCycle.h"
-#include "QcJsonFieldReader.h"
-#include "QcWorldConstants.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/world/QcDayCycle.h"
 
 using namespace Qt::StringLiterals;
 

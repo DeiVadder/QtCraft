@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunkPos.h"
-#include "QcRegionFile.h"
-#include "QcResult.h"
+#include "common/core/QcChunkPos.h"
+#include "common/core/QcResult.h"
+#include "server/storage/QcRegionFile.h"
 
 #include <QByteArray>
 #include <QHash>

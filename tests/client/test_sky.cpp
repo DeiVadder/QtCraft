@@ -1,6 +1,6 @@
-#include "QcDayCycle.h"
-#include "QcSky.h"
-#include "QcWorldConstants.h"
+#include "clientcore/light/QcSky.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/world/QcDayCycle.h"
 
 #include <QTest>
 

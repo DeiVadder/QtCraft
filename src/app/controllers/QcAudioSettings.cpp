@@ -1,6 +1,6 @@
-#include "QcAudioSettings.h"
+#include "app/controllers/QcAudioSettings.h"
 
-#include "QcAudioEngine.h"
+#include "audio/QcAudioEngine.h"
 
 QcAudioSettings::QcAudioSettings(QcAudioEngine *audio, QObject *parent)
     : QObject(parent)

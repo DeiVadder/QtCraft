@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcServerAddress.h"
-#include "QcTcpTransport.h"
+#include "network/QcServerAddress.h"
+#include "network/QcTcpTransport.h"
 
 #include <QObject>
 

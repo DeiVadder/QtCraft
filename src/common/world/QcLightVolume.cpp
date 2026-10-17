@@ -1,8 +1,8 @@
-#include "QcLightVolume.h"
+#include "common/world/QcLightVolume.h"
 
-#include "QcBlockFace.h"
-#include "QcContentRegistry.h"
-#include "QcLightPassage.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcBlockFace.h"
+#include "common/world/QcLightPassage.h"
 
 #include <algorithm>
 #include <utility>

@@ -1,10 +1,10 @@
-#include "QcPlayerController.h"
+#include "app/controllers/QcPlayerController.h"
 
-#include "QcArmour.h"
-#include "QcClientSession.h"
-#include "QcCrafting.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcCrafting.h"
 
 #include <QVariantMap>
 

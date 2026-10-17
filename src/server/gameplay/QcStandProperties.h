@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcArmourStandManager.h"
+#include "server/gameplay/QcArmourStandManager.h"
 
 #include <QList>
 #include <QString>

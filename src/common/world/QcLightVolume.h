@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockAccess.h"
+#include "common/world/QcBlockAccess.h"
 
-#include "QcChunk.h"
+#include "common/world/QcChunk.h"
 
 #include <QList>
 

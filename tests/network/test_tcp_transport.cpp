@@ -1,6 +1,6 @@
-#include "QcFrameReader.h"
-#include "QcTcpConnector.h"
-#include "QcTcpTransport.h"
+#include "common/protocol/QcFrameReader.h"
+#include "network/QcTcpConnector.h"
+#include "network/QcTcpTransport.h"
 
 #include <QElapsedTimer>
 #include <QPointer>

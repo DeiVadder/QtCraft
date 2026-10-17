@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcChunkPos.h"
-#include "QcResult.h"
+#include "common/core/QcChunkPos.h"
+#include "common/core/QcResult.h"
 
 #include <QByteArray>
 #include <QByteArrayView>

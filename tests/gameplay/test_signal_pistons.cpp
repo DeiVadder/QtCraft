@@ -1,5 +1,5 @@
 #include "QcCircuitFixture.h"
-#include "QcMovingBlocks.h"
+#include "server/signal/QcMovingBlocks.h"
 
 #include <QTemporaryDir>
 

@@ -1,6 +1,6 @@
-#include "QcInventoryAccess.h"
+#include "server/machines/QcInventoryAccess.h"
 
-#include "QcServerState.h"
+#include "server/core/QcServerState.h"
 
 #include <algorithm>
 #include <numeric>

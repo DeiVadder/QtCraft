@@ -1,11 +1,11 @@
-#include "QcFireIgnition.h"
+#include "server/blocks/QcFireIgnition.h"
 
-#include "QcLineOfSight.h"
-#include "QcServerFire.h"
-#include "QcServerInventory.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "server/blocks/QcServerFire.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
+#include "server/gameplay/QcServerInventory.h"
 
 #include <array>
 

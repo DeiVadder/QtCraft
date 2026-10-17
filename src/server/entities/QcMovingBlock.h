@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcEntity.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "server/entities/QcEntity.h"
 
 // A block sliding where a piston moved it, as the clients see it (decisions E-337, E-364): the
 // world holds the block at `to` already; the entity only shows the slide (QcMovingBlocks).

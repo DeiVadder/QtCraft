@@ -1,8 +1,8 @@
 // Payloads of the login messages (QcLoginMessages.h): challenge, response and the player list.
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 using namespace Qt::StringLiterals;
 

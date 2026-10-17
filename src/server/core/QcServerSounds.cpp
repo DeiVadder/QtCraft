@@ -1,8 +1,8 @@
-#include "QcServerSounds.h"
+#include "server/core/QcServerSounds.h"
 
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
-#include "QcTickScheduler.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "server/core/QcServerState.h"
+#include "server/tick/QcTickScheduler.h"
 
 #include <algorithm>
 

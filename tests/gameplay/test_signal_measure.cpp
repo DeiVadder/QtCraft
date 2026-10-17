@@ -1,5 +1,5 @@
-#include "QcServerHoppers.h"
 #include "QcServerTestFixture.h"
+#include "server/signal/QcServerHoppers.h"
 
 #include <QElapsedTimer>
 

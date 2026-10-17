@@ -1,7 +1,7 @@
-#include "QcServerWorld.h"
+#include "server/core/QcServerWorld.h"
 
-#include "QcLightVolume.h"
-#include "QcLightTable.h"
+#include "common/light/QcLightTable.h"
+#include "common/world/QcLightVolume.h"
 
 #include <QLoggingCategory>
 #include <QThread>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcLoginMessages.h"
+#include "common/protocol/QcLoginMessages.h"
 
 #include <QByteArray>
 #include <QList>

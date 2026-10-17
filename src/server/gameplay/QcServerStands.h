@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcArmourStandManager.h"
-#include "QcMessages.h"
+#include "common/protocol/QcMessages.h"
+#include "server/gameplay/QcArmourStandManager.h"
 
 #include <optional>
 

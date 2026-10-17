@@ -1,8 +1,8 @@
-#include "QcHandbookWorldPages.h"
+#include "common/handbook/builder/QcHandbookWorldPages.h"
 
-#include "QcHandbookContext.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookText.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 #include <algorithm>
 #include <array>

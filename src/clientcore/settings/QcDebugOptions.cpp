@@ -1,4 +1,4 @@
-#include "QcDebugOptions.h"
+#include "clientcore/settings/QcDebugOptions.h"
 
 #include <QSettings>
 

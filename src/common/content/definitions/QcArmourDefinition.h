@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcModelDefinition.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcModelDefinition.h"
+#include "common/core/QcVec3.h"
 
 #include <QList>
 #include <QString>

@@ -1,4 +1,4 @@
-#include "QcTextureCraftPatterns.h"
+#include "clientcore/textures/QcTextureCraftPatterns.h"
 
 #include <array>
 #include <cmath>

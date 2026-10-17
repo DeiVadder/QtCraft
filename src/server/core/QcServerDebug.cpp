@@ -1,11 +1,11 @@
-#include "QcServerDebug.h"
+#include "server/core/QcServerDebug.h"
 
-#include "QcBlockUpdateQueue.h"
-#include "QcChunkLoading.h"
-#include "QcServerClient.h"
-#include "QcServerState.h"
-#include "QcTickPhaseTimer.h"
-#include "QcTickScheduler.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/chunks/QcChunkLoading.h"
+#include "server/core/QcServerClient.h"
+#include "server/core/QcServerState.h"
+#include "server/tick/QcTickPhaseTimer.h"
+#include "server/tick/QcTickScheduler.h"
 
 #include <algorithm>
 #include <cmath>

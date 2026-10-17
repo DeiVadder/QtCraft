@@ -1,6 +1,6 @@
-#include "QcConnection.h"
+#include "common/protocol/QcConnection.h"
 
-#include "QcTransport.h"
+#include "common/protocol/QcTransport.h"
 
 #include <QLoggingCategory>
 

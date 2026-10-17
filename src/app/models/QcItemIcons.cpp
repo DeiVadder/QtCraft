@@ -1,7 +1,7 @@
-#include "QcItemIcons.h"
+#include "app/models/QcItemIcons.h"
 
-#include "QcItemIconProvider.h"
-#include "QcItemIconSet.h"
+#include "app/models/QcItemIconProvider.h"
+#include "clientcore/icons/QcItemIconSet.h"
 
 void QcItemIcons::draw(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable)
 {

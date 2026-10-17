@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcBlockEntities.h"
-#include "QcBlockScreens.h"
-#include "QcItemStack.h"
-#include "QcMachineRules.h"
-#include "QcMessages.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/protocol/QcMessages.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/machines/QcBlockScreens.h"
+#include "server/machines/QcMachineRules.h"
 
 #include <QList>
 #include <QString>

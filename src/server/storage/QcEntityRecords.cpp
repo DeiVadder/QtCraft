@@ -1,6 +1,6 @@
-#include "QcEntityRecords.h"
+#include "server/storage/QcEntityRecords.h"
 
-#include "QcEntities.h"
+#include "server/entities/QcEntities.h"
 
 #include <algorithm>
 

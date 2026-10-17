@@ -1,4 +1,4 @@
-#include "QcClientGameMode.h"
+#include "clientcore/session/QcClientGameMode.h"
 
 void QcClientGameMode::setMode(QcGameMode mode)
 {

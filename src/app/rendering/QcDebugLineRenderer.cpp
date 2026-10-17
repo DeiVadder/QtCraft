@@ -1,6 +1,6 @@
-#include "QcDebugLineRenderer.h"
+#include "app/rendering/QcDebugLineRenderer.h"
 
-#include "QcRenderPipelines.h"
+#include "app/rendering/QcRenderPipelines.h"
 
 #include <QLoggingCategory>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcWeather.h"
+#include "common/world/QcWeather.h"
 
 #include <QJsonObject>
 #include <QtGlobal>

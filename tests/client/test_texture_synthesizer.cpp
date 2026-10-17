@@ -1,4 +1,4 @@
-#include "QcTextureSynthesizer.h"
+#include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <QTest>
 

@@ -1,7 +1,7 @@
-#include "QcSpawnPoint.h"
+#include "server/core/QcSpawnPoint.h"
 
-#include "QcServerClient.h"
-#include "QcServerWorld.h"
+#include "server/core/QcServerClient.h"
+#include "server/core/QcServerWorld.h"
 
 #include <algorithm>
 #include <utility>

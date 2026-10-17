@@ -9,5 +9,7 @@ target_sources(qc_audio PRIVATE
     QcMixerDevice.h QcMixerDevice.cpp
 )
 qc_configure_target(qc_audio)
-target_include_directories(qc_audio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# src/ is the only include directory a library passes on.
+target_include_directories(qc_audio PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_audio PUBLIC qc_clientcore Qt::Core Qt::Concurrent Qt::Multimedia)

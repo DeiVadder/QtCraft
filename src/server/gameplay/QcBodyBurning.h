@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcVec3.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
 
 #include <functional>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcTexturePaint.h"
+#include "clientcore/textures/QcTexturePaint.h"
 
 // Painter of an armour pattern (decision E-235): the item icons of helmet, chestplate, leggings
 // and boots, and the textures armour layers and parts are drawn with on a body (plates, leather,

@@ -1,6 +1,6 @@
-#include "QcIdentityStore.h"
-#include "QcLoginCrypto.h"
+#include "common/auth/QcLoginCrypto.h"
 #include "QcServerTestFixture.h"
+#include "server/login/QcIdentityStore.h"
 
 #include <QFile>
 #include <QJsonArray>

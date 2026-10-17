@@ -1,15 +1,15 @@
 #pragma once
 
-#include "QcCamera.h"
-#include "QcAabb.h"
-#include "QcBlockPos.h"
-#include "QcChunkMesh.h"
-#include "QcDebugLines.h"
-#include "QcEntityMesh.h"
-#include "QcPrecipitationField.h"
-#include "QcRenderSample.h"
-#include "QcSky.h"
-#include "QcDayCycle.h"
+#include "app/rendering/QcRenderSample.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/debug/QcDebugLines.h"
+#include "clientcore/light/QcSky.h"
+#include "clientcore/meshing/QcChunkMesh.h"
+#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/weather/QcPrecipitationField.h"
+#include "common/core/QcAabb.h"
+#include "common/core/QcBlockPos.h"
+#include "common/world/QcDayCycle.h"
 
 #include <QColor>
 #include <QImage>

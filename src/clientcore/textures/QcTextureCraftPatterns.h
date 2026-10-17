@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcTexturePaint.h"
+#include "clientcore/textures/QcTexturePaint.h"
 
 // Painter of a pattern added with the storage blocks, crafted items and small plants (nuggets,
 // bars, books, food, webs …); nullptr for the patterns QcTextureSynthesizer paints itself.

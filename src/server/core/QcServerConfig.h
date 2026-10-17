@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcGameMode.h"
-#include "QcLoginMessages.h"
-#include "QcServerLimits.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "server/core/QcServerLimits.h"
 
 #include <QString>
 #include <QStringList>

@@ -1,9 +1,9 @@
-#include "QcWorldgenParser.h"
+#include "common/content/parser/QcWorldgenParser.h"
 
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcWorldConstants.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QJsonArray>
 

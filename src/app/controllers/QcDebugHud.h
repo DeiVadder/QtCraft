@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcDebugSnapshot.h"
-#include "QcDebugVisuals.h"
-#include "QcFrameMonitor.h"
-#include "QcVec3.h"
-#include "QcWorldLabel.h"
-#include "QcWorldLabelModel.h"
+#include "app/controllers/QcDebugVisuals.h"
+#include "app/hooks/QcFrameMonitor.h"
+#include "app/models/QcWorldLabelModel.h"
+#include "clientcore/debug/QcDebugSnapshot.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcWorldLabel.h"
 
 #include <QElapsedTimer>
 #include <QFont>

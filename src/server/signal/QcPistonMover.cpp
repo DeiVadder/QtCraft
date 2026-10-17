@@ -1,13 +1,13 @@
-#include "QcPistonMover.h"
+#include "server/signal/QcPistonMover.h"
 
-#include "QcBlockRules.h"
-#include "QcBodyFit.h"
-#include "QcPhysics.h"
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSignalTable.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/physics/QcBodyFit.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/signal/QcSignalTable.h"
 
 #include <algorithm>
 #include <array>

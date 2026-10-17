@@ -1,6 +1,6 @@
 #include "QcServerTestFixture.h"
 
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QSet>
 

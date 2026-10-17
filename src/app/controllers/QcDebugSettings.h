@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcDebugOptions.h"
+#include "clientcore/settings/QcDebugOptions.h"
 
 #include <QObject>
 #include <QtQmlIntegration/qqmlintegration.h>

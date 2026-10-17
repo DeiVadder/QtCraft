@@ -1,8 +1,8 @@
-#include "QcWorldStorage.h"
+#include "server/storage/QcWorldStorage.h"
 
-#include "QcSaveFile.h"
-#include "QcStreamLimits.h"
-#include "QcWorldGenerators.h"
+#include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcSaveFile.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
 #include <QFile>

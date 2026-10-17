@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcBlockFace.h"
+#include "common/core/QcBlockFace.h"
 
 #include <QtGlobal>
 

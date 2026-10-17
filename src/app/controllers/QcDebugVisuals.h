@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcDebugOptions.h"
-#include "QcVec3.h"
+#include "clientcore/settings/QcDebugOptions.h"
+#include "common/core/QcVec3.h"
 
 #include <QElapsedTimer>
 #include <QHash>

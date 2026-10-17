@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunkPos.h"
-#include "QcIntMath.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcChunkPos.h"
+#include "common/core/QcIntMath.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QTypeInfo>
 

@@ -1,10 +1,10 @@
-#include "QcDayCycle.h"
-#include "QcMobSteering.h"
+#include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
-#include "QcTerrainGenerator.h"
-#include "QcVillageGenerator.h"
-#include "QcVillagerHomes.h"
-#include "QcWeatherCycle.h"
+#include "server/mobs/QcMobSteering.h"
+#include "server/villages/QcVillagerHomes.h"
+#include "server/weather/QcWeatherCycle.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QScopeGuard>
 #include <QTemporaryDir>

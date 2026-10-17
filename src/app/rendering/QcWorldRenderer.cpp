@@ -1,12 +1,12 @@
-#include "QcWorldRenderer.h"
+#include "app/rendering/QcWorldRenderer.h"
 
-#include "QcAtlasTexture.h"
+#include "app/rendering/QcAtlasTexture.h"
 
-#include "QcFrustum.h"
-#include "QcIndexPacking.h"
-#include "QcRenderPipelines.h"
-#include "QcWorldView.h"
-#include "QcThreadCpuClock.h"
+#include "app/hooks/QcThreadCpuClock.h"
+#include "app/rendering/QcRenderPipelines.h"
+#include "app/rendering/QcWorldView.h"
+#include "clientcore/camera/QcFrustum.h"
+#include "clientcore/meshing/QcIndexPacking.h"
 
 #include <QElapsedTimer>
 #include <QLoggingCategory>

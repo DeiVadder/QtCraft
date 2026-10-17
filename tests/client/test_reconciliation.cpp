@@ -1,7 +1,7 @@
-#include "QcClientSession.h"
-#include "QcConnection.h"
-#include "QcInProcessTransport.h"
-#include "QcPhysics.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcInProcessTransport.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

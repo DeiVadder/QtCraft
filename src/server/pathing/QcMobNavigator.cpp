@@ -1,6 +1,6 @@
-#include "QcMobNavigator.h"
+#include "server/pathing/QcMobNavigator.h"
 
-#include "QcPathPlanner.h"
+#include "server/pathing/QcPathPlanner.h"
 
 #include <algorithm>
 #include <cmath>

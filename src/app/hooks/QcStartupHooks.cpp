@@ -1,12 +1,12 @@
-#include "QcStartupHooks.h"
+#include "app/hooks/QcStartupHooks.h"
 
-#include "QcBenchmarkRun.h"
-#include "QcClientSession.h"
-#include "QcGameController.h"
-#include "QcMeshScheduler.h"
-#include "QcScreenshotHook.h"
-#include "QcSessionParts.h"
-#include "QcWorldView.h"
+#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/hooks/QcBenchmarkRun.h"
+#include "app/hooks/QcScreenshotHook.h"
+#include "app/rendering/QcWorldView.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientSession.h"
 
 #include <QCoreApplication>
 #include <QLoggingCategory>

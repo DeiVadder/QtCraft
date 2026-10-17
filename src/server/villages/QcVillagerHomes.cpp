@@ -1,9 +1,9 @@
-#include "QcVillagerHomes.h"
+#include "server/villages/QcVillagerHomes.h"
 
-#include "QcBlockRules.h"
-#include "QcContentRegistry.h"
-#include "QcMobSteering.h"
-#include "QcVillages.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/mobs/QcMobSteering.h"
+#include "server/villages/QcVillages.h"
 
 #include <QHash>
 #include <QSet>

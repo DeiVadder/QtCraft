@@ -1,5 +1,5 @@
-#include "QcGameMode.h"
-#include "QcPhysics.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

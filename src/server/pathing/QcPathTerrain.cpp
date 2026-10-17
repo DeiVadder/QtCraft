@@ -1,7 +1,7 @@
-#include "QcPathTerrain.h"
+#include "server/pathing/QcPathTerrain.h"
 
-#include "QcMobDefinition.h"
-#include "QcWorldConstants.h"
+#include "common/content/definitions/QcMobDefinition.h"
+#include "common/core/QcWorldConstants.h"
 
 QcPathRules QcPathRules::of(const QcMobDefinition &definition)
 {

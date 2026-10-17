@@ -1,9 +1,9 @@
 #include "QcServerTestFixture.h"
 
-#include "QcLineOfSight.h"
-#include "QcMining.h"
-#include "QcRateLimiter.h"
+#include "common/gameplay/QcMining.h"
 #include "QcTestWorld.h"
+#include "server/core/QcRateLimiter.h"
+#include "server/gameplay/QcLineOfSight.h"
 
 #include <QRegularExpression>
 

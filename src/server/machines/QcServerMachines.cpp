@@ -1,8 +1,8 @@
-#include "QcServerMachines.h"
+#include "server/machines/QcServerMachines.h"
 
-#include "QcPhysics.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
 
 QcServerMachines::QcServerMachines(QcServerState &state, QcServerSounds &sounds)
     : m_state(state)

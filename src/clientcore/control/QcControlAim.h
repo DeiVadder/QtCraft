@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockFace.h"
-#include "QcBlockPos.h"
-#include "QcVec3.h"
+#include "common/core/QcBlockFace.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
 
 #include <optional>
 

@@ -1,7 +1,7 @@
-#include "QcCommandMacroParser.h"
-#include "QcCommandRegistry.h"
-#include "QcPendingCommands.h"
+#include "common/content/parser/QcCommandMacroParser.h"
 #include "QcServerTestFixture.h"
+#include "server/commands/QcCommandRegistry.h"
+#include "server/commands/QcPendingCommands.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>

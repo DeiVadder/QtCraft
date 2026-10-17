@@ -1,6 +1,6 @@
-#include "QcAmbience.h"
+#include "clientcore/sound/QcAmbience.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <cmath>

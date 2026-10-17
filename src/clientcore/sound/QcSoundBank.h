@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcSampleBuffer.h"
-#include "QcSoundDefinition.h"
+#include "clientcore/sound/QcSampleBuffer.h"
+#include "common/content/definitions/QcSoundDefinition.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QHash>
 #include <QList>

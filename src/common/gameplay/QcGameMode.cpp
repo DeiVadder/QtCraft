@@ -1,4 +1,4 @@
-#include "QcGameMode.h"
+#include "common/gameplay/QcGameMode.h"
 
 #include <QString>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcResult.h"
+#include "common/core/QcResult.h"
 
 #include <QString>
 #include <QStringList>

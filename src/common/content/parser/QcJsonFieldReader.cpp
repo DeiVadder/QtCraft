@@ -1,6 +1,6 @@
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
-#include "QcContentNames.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonValue>
 

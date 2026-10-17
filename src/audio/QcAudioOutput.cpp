@@ -1,6 +1,6 @@
-#include "QcAudioOutput.h"
+#include "audio/QcAudioOutput.h"
 
-#include "QcMixerDevice.h"
+#include "audio/QcMixerDevice.h"
 
 #include <QAudioDevice>
 #include <QAudioFormat>

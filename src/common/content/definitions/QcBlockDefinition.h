@@ -1,14 +1,14 @@
 #pragma once
 
-#include "QcBlockFace.h"
-#include "QcBlockProperty.h"
-#include "QcFarmingDefinitions.h"
-#include "QcFireDefinition.h"
-#include "QcLiquidDefinition.h"
-#include "QcMachineDefinition.h"
-#include "QcShapeCondition.h"
-#include "QcShapeDefinition.h"
-#include "QcSignalDefinition.h"
+#include "common/content/definitions/QcBlockProperty.h"
+#include "common/content/definitions/QcFarmingDefinitions.h"
+#include "common/content/definitions/QcFireDefinition.h"
+#include "common/content/definitions/QcLiquidDefinition.h"
+#include "common/content/definitions/QcMachineDefinition.h"
+#include "common/content/definitions/QcShapeCondition.h"
+#include "common/content/definitions/QcShapeDefinition.h"
+#include "common/content/definitions/QcSignalDefinition.h"
+#include "common/core/QcBlockFace.h"
 
 #include <QList>
 #include <QString>

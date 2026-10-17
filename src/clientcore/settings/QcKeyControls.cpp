@@ -1,6 +1,6 @@
-#include "QcKeyControls.h"
+#include "clientcore/settings/QcKeyControls.h"
 
-#include "QcKeyLabels.h"
+#include "clientcore/settings/QcKeyLabels.h"
 
 #include <QStringList>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcItemStack.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QJsonObject>
 

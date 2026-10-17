@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockFace.h"
-#include "QcEquipment.h"
-#include "QcInventoryAccess.h"
-#include "QcItemStack.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockFace.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcItemStack.h"
+#include "server/machines/QcInventoryAccess.h"
 
 #include <QList>
 

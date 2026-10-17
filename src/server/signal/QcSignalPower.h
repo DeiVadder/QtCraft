@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcSignalTable.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/signal/QcSignalTable.h"
 
 #include <QVarLengthArray>
 

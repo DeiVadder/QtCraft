@@ -1,4 +1,4 @@
-#include "QcPathWindow.h"
+#include "server/pathing/QcPathWindow.h"
 
 #include <algorithm>
 

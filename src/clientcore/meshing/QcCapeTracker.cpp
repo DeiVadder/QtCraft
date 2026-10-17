@@ -1,4 +1,4 @@
-#include "QcCapeTracker.h"
+#include "clientcore/meshing/QcCapeTracker.h"
 
 void QcCapeTracker::beginFrame(double seconds, double time)
 {

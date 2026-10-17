@@ -1,8 +1,8 @@
-#include "QcChunkStore.h"
+#include "server/storage/QcChunkStore.h"
 
-#include "QcCrc32.h"
-#include "QcSaveFile.h"
-#include "QcStreamLimits.h"
+#include "common/core/QcCrc32.h"
+#include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QDataStream>
 #include <QIODevice>

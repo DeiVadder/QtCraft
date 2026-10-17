@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcGameMode.h"
-#include "QcMessages.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/protocol/QcMessages.h"
 
 #include <functional>
 #include <optional>

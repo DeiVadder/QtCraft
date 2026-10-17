@@ -1,4 +1,4 @@
-#include "QcUiPalette.h"
+#include "clientcore/settings/QcUiPalette.h"
 
 #include <algorithm>
 #include <array>

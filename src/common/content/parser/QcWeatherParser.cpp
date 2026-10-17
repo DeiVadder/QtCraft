@@ -1,6 +1,6 @@
-#include "QcWeatherParser.h"
+#include "common/content/parser/QcWeatherParser.h"
 
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 using namespace Qt::StringLiterals;
 

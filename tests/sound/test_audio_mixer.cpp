@@ -1,5 +1,5 @@
-#include "QcAudioMixer.h"
-#include "QcSoundSpatial.h"
+#include "clientcore/sound/QcAudioMixer.h"
+#include "clientcore/sound/QcSoundSpatial.h"
 
 #include <QTest>
 

@@ -1,17 +1,17 @@
-#include "QcBaseContent.h"
-#include "QcDayCycle.h"
-#include "QcFlatGenerator.h"
-#include "QcMobManager.h"
-#include "QcPathPlanner.h"
-#include "QcServerWorld.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/world/QcDayCycle.h"
+#include "server/core/QcServerWorld.h"
+#include "server/mobs/QcMobManager.h"
+#include "server/pathing/QcPathPlanner.h"
+#include "worldgen/generators/QcFlatGenerator.h"
 
 #if __has_include("QcMobCrowd.h")
-#include "QcMobBehaviour.h"
-#include "QcServerCreatures.h"
+#include "server/mobs/QcMobBehaviour.h"
+#include "server/mobs/QcServerCreatures.h"
 #define QC_HAS_CROWDS 1
 #endif
 #if __has_include("QcMobCramming.h")
-#include "QcMobCramming.h"
+#include "server/mobs/QcMobCramming.h"
 #define QC_HAS_CRAMMING 1
 #endif
 

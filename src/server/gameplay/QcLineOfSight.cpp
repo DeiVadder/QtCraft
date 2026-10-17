@@ -1,8 +1,8 @@
-#include "QcLineOfSight.h"
+#include "server/gameplay/QcLineOfSight.h"
 
-#include "QcPhysics.h"
-#include "QcRaycast.h"
-#include "QcServerClient.h"
+#include "common/physics/QcPhysics.h"
+#include "common/physics/QcRaycast.h"
+#include "server/core/QcServerClient.h"
 
 #include <array>
 #include <cmath>

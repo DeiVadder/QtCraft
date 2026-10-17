@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
 
 #include <QString>
 

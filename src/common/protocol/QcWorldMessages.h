@@ -3,12 +3,12 @@
 // Protocol messages about the world: chunks, block changes, mining, using items on blocks and sounds.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcChunk.h"
-#include "QcVec3.h"
-#include "QcWeather.h"
-#include "QcWorldLabel.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcChunk.h"
+#include "common/world/QcWeather.h"
+#include "common/world/QcWorldLabel.h"
 
 #include <QString>
 

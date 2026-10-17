@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcItemStack.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QList>
 

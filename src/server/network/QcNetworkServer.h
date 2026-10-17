@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcConnectionLimiter.h"
-#include "QcResult.h"
-#include "QcTcpTransport.h"
+#include "common/core/QcResult.h"
+#include "network/QcTcpTransport.h"
+#include "server/network/QcConnectionLimiter.h"
 
 #include <QHostAddress>
 #include <QObject>

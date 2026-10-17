@@ -1,11 +1,11 @@
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
-#include "QcVillagerOutfits.h"
+#include "common/content/registry/QcVillagerOutfits.h"
 
-#include "QcContentNames.h"
-#include "QcContentSerializer.h"
-#include "QcPartGenerator.h"
-#include "QcSignalLinks.h"
+#include "common/content/registry/QcContentNames.h"
+#include "common/content/registry/QcContentSerializer.h"
+#include "common/content/registry/QcPartGenerator.h"
+#include "common/content/registry/QcSignalLinks.h"
 
 #include <algorithm>
 

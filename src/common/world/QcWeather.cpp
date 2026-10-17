@@ -1,6 +1,6 @@
-#include "QcWeather.h"
+#include "common/world/QcWeather.h"
 
-#include "QcWorldgenDefinitions.h"
+#include "common/content/definitions/QcWorldgenDefinitions.h"
 
 #include <algorithm>
 

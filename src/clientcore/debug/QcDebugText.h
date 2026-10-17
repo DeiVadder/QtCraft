@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcDebugSnapshot.h"
-#include "QcTickPhase.h"
+#include "clientcore/debug/QcDebugSnapshot.h"
+#include "common/core/QcTickPhase.h"
 
 #include <QCoreApplication>
 #include <QString>

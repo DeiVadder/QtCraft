@@ -1,5 +1,5 @@
-#include "QcProtocol.h"
-#include "QcStreamLimits.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <QTest>
 

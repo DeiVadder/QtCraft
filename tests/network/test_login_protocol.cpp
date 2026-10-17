@@ -1,10 +1,10 @@
-#include "QcChatText.h"
-#include "QcFrameReader.h"
-#include "QcLoginCrypto.h"
-#include "QcPackComparison.h"
-#include "QcPlayerKey.h"
-#include "QcProtocol.h"
-#include "QcServerAddress.h"
+#include "common/auth/QcLoginCrypto.h"
+#include "common/auth/QcPlayerKey.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcFrameReader.h"
+#include "common/protocol/QcPackComparison.h"
+#include "common/protocol/QcProtocol.h"
+#include "network/QcServerAddress.h"
 
 #include <QDataStream>
 #include <QFile>

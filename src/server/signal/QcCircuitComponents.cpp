@@ -1,8 +1,8 @@
-#include "QcCircuitComponents.h"
+#include "server/signal/QcCircuitComponents.h"
 
-#include "QcBlockRules.h"
-#include "QcContentRegistry.h"
-#include "QcMovingBlocks.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/signal/QcMovingBlocks.h"
 
 #include <algorithm>
 #include <utility>

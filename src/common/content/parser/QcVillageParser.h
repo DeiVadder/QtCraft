@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcResult.h"
-#include "QcVillageDefinitions.h"
+#include "common/content/definitions/QcVillageDefinitions.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

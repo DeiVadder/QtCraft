@@ -1,6 +1,6 @@
-#include "QcControlPalette.h"
+#include "app/models/QcControlPalette.h"
 
-#include "QcUiPalette.h"
+#include "clientcore/settings/QcUiPalette.h"
 
 #include <QMetaEnum>
 #include <QQuickWindow>

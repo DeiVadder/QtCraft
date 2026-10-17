@@ -1,6 +1,6 @@
-#include "QcMusicComposer.h"
+#include "clientcore/sound/QcMusicComposer.h"
 
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
 
 #include <QRandomGenerator>
 

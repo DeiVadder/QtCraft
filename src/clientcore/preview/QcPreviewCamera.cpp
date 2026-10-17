@@ -1,4 +1,4 @@
-#include "QcPreviewCamera.h"
+#include "clientcore/preview/QcPreviewCamera.h"
 
 #include <algorithm>
 #include <cmath>

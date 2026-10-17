@@ -1,9 +1,9 @@
-#include "QcShowcaseParser.h"
+#include "common/content/parser/QcShowcaseParser.h"
 
-#include "QcContentNames.h"
-#include "QcDayCycle.h"
-#include "QcJsonFieldReader.h"
-#include "QcWorldConstants.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/world/QcDayCycle.h"
 
 #include <QJsonArray>
 

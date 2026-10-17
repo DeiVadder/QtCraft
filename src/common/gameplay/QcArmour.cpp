@@ -1,6 +1,6 @@
-#include "QcArmour.h"
+#include "common/gameplay/QcArmour.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <cmath>

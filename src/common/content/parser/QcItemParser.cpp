@@ -1,8 +1,8 @@
-#include "QcItemParser.h"
+#include "common/content/parser/QcItemParser.h"
 
-#include "QcArmourParser.h"
-#include "QcContentFields.h"
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcArmourParser.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 #include <algorithm>
 #include <cmath>

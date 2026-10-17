@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcPistonPlanner.h"
-#include "QcVec3.h"
+#include "common/core/QcAabb.h"
+#include "common/core/QcVec3.h"
+#include "server/signal/QcPistonPlanner.h"
 
 #include <QHash>
 

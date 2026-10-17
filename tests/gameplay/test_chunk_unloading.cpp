@@ -1,9 +1,9 @@
-#include "QcBlockEntityChecks.h"
+#include "common/core/QcIntMath.h"
 #include "QcBlockEntityDump.h"
-#include "QcEntityChecks.h"
-#include "QcIntMath.h"
 #include "QcMachineFixture.h"
-#include "QcSaveFile.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/entities/QcEntityChecks.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QTemporaryDir>
 

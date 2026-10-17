@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcBlockEntities.h"
-#include "QcCircuitPlan.h"
-#include "QcCircuitState.h"
-#include "QcComparatorReadings.h"
-#include "QcRails.h"
-#include "QcSignalPower.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/blocks/QcRails.h"
+#include "server/signal/QcCircuitPlan.h"
+#include "server/signal/QcCircuitState.h"
+#include "server/signal/QcComparatorReadings.h"
+#include "server/signal/QcSignalPower.h"
 
 #include <QSet>
 

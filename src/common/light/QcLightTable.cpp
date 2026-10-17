@@ -1,6 +1,6 @@
-#include "QcLightTable.h"
+#include "common/light/QcLightTable.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

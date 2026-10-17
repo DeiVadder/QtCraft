@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcHandbookEntry.h"
+#include "common/handbook/QcHandbookEntry.h"
 
 #include <QList>
 

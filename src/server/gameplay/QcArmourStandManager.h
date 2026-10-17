@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcServerLimits.h"
-#include "QcAabb.h"
-#include "QcArmourStand.h"
-#include "QcEquipment.h"
-#include "QcStandPose.h"
+#include "common/core/QcAabb.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcStandPose.h"
+#include "server/core/QcServerLimits.h"
+#include "server/entities/QcArmourStand.h"
 
 #include <QList>
 #include <QString>

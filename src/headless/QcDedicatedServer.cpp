@@ -1,10 +1,10 @@
-#include "QcDedicatedServer.h"
+#include "headless/QcDedicatedServer.h"
 
-#include "QcLocalServerHost.h"
-#include "QcServerConsole.h"
-#include "QcSignalWatcher.h"
-#include "QcWorldGenerators.h"
-#include "QcWorldLibrary.h"
+#include "headless/QcServerConsole.h"
+#include "headless/QcSignalWatcher.h"
+#include "server/core/QcLocalServerHost.h"
+#include "server/storage/QcWorldLibrary.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QCoreApplication>
 #include <QDir>

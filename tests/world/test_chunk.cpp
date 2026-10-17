@@ -1,4 +1,4 @@
-#include "QcChunk.h"
+#include "common/world/QcChunk.h"
 
 #include <QTest>
 

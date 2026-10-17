@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcLoginCrypto.h"
-#include "QcLoginMessages.h"
-#include "QcProtocol.h"
+#include "common/auth/QcLoginCrypto.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "common/protocol/QcProtocol.h"
 
 #include <QCryptographicHash>
 

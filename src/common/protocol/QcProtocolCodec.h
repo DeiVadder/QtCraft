@@ -4,8 +4,8 @@
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
 // QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp and QcLoginCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
-#include "QcMessages.h"
-#include "QcResult.h"
+#include "common/core/QcResult.h"
+#include "common/protocol/QcMessages.h"
 
 #include <QDataStream>
 

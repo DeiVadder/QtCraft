@@ -1,4 +1,4 @@
-#include "QcGpuLimits.h"
+#include "clientcore/textures/QcGpuLimits.h"
 
 #include <atomic>
 

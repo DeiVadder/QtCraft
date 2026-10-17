@@ -1,4 +1,4 @@
-#include "QcCommandRegistry.h"
+#include "server/commands/QcCommandRegistry.h"
 
 #include <algorithm>
 

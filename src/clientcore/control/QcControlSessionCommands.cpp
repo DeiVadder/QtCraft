@@ -1,11 +1,11 @@
-#include "QcControlSessionCommands.h"
+#include "clientcore/control/QcControlSessionCommands.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcControlCommandTable.h"
-#include "QcControlContext.h"
-#include "QcControlReports.h"
-#include "QcDebugJson.h"
+#include "clientcore/control/QcControlCommandTable.h"
+#include "clientcore/control/QcControlContext.h"
+#include "clientcore/control/QcControlReports.h"
+#include "clientcore/debug/QcDebugJson.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QJsonArray>
 

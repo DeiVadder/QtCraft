@@ -1,4 +1,4 @@
-#include "QcItemIconProvider.h"
+#include "app/models/QcItemIconProvider.h"
 
 #include <QMutexLocker>
 

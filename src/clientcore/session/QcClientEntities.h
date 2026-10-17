@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcClientEntity.h"
-#include "QcClientWorld.h"
-#include "QcLocalSounds.h"
-#include "QcMessages.h"
-#include "QcSnapshotBuffer.h"
-#include "QcSnapshotClock.h"
-#include "QcSoundCue.h"
+#include "clientcore/session/QcClientEntity.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "clientcore/session/QcSnapshotBuffer.h"
+#include "clientcore/session/QcSnapshotClock.h"
+#include "clientcore/sound/QcLocalSounds.h"
+#include "clientcore/sound/QcSoundCue.h"
+#include "common/protocol/QcMessages.h"
 
 #include <QElapsedTimer>
 #include <QHash>

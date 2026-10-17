@@ -1,11 +1,11 @@
-#include "QcLocalServerHost.h"
+#include "server/core/QcLocalServerHost.h"
 
-#include "QcBlockEntityChecks.h"
-#include "QcEntityChecks.h"
-#include "QcChatText.h"
-#include "QcInProcessTransport.h"
-#include "QcServer.h"
-#include "QcWorldGenerator.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcInProcessTransport.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/core/QcServer.h"
+#include "server/entities/QcEntityChecks.h"
+#include "worldgen/generators/QcWorldGenerator.h"
 
 #include <QThread>
 

@@ -1,6 +1,6 @@
-#include "QcCamera.h"
-#include "QcFrustum.h"
-#include "QcIndexPacking.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/camera/QcFrustum.h"
+#include "clientcore/meshing/QcIndexPacking.h"
 
 #include <QTest>
 

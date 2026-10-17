@@ -1,6 +1,6 @@
-#include "QcEquipment.h"
+#include "common/gameplay/QcEquipment.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 QcEquipment QcEquipment::knownTo(const QcContentRegistry &content) const
 {

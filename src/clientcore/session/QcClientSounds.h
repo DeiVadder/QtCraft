@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcAmbience.h"
-#include "QcLocalSounds.h"
-#include "QcSoundCue.h"
+#include "clientcore/sound/QcAmbience.h"
+#include "clientcore/sound/QcLocalSounds.h"
+#include "clientcore/sound/QcSoundCue.h"
 
 #include <QList>
 

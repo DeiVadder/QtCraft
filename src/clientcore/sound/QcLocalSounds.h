@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcEntityMotion.h"
-#include "QcSoundCue.h"
+#include "clientcore/sound/QcSoundCue.h"
+#include "common/physics/QcEntityMotion.h"
+#include "common/world/QcBlockAccess.h"
 
 #include <QList>
 

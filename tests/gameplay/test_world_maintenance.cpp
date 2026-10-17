@@ -1,6 +1,6 @@
 #include "QcServerTestFixture.h"
-#include "QcWorldBackup.h"
-#include "QcWorldGenerators.h"
+#include "server/commands/QcWorldBackup.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
 #include <QFile>

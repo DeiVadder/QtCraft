@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcPreviewCamera.h"
-#include "QcPreviewPose.h"
-#include "QcResult.h"
+#include "clientcore/preview/QcPreviewCamera.h"
+#include "clientcore/preview/QcPreviewPose.h"
+#include "common/core/QcResult.h"
 
 #include <optional>
 

@@ -1,8 +1,8 @@
-#include "QcLightEngine.h"
+#include "common/light/QcLightEngine.h"
 
-#include "QcBlockFace.h"
-#include "QcLightPassage.h"
-#include "QcSectionKey.h"
+#include "common/core/QcBlockFace.h"
+#include "common/core/QcSectionKey.h"
+#include "common/world/QcLightPassage.h"
 
 #include <algorithm>
 

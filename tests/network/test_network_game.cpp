@@ -1,10 +1,10 @@
-#include "QcConnectionLimiter.h"
-#include "QcLocalServerHost.h"
-#include "QcNetworkServer.h"
+#include "network/QcTcpConnector.h"
 #include "QcServerTestFixture.h"
-#include "QcTcpConnector.h"
 #include "QcTestUtil.h"
-#include "QcWorldStorage.h"
+#include "server/core/QcLocalServerHost.h"
+#include "server/network/QcConnectionLimiter.h"
+#include "server/network/QcNetworkServer.h"
+#include "server/storage/QcWorldStorage.h"
 
 #include <QDeadlineTimer>
 #include <QSignalSpy>

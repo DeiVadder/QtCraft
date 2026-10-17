@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcSectionLight.h"
+#include "clientcore/light/QcSectionLight.h"
 
 #include <QtGlobal>
 #include <rhi/qrhi.h>

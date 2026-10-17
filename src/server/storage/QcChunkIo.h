@@ -1,13 +1,13 @@
 #pragma once
 
-#include "QcBlockEntityRecord.h"
-#include "QcChunk.h"
-#include "QcChunkStore.h"
-#include "QcContentRegistry.h"
-#include "QcEntityRecord.h"
-#include "QcLightEngine.h"
-#include "QcMailbox.h"
-#include "QcWorkerPool.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcMailbox.h"
+#include "common/core/QcWorkerPool.h"
+#include "common/light/QcLightEngine.h"
+#include "common/world/QcChunk.h"
+#include "server/storage/QcBlockEntityRecord.h"
+#include "server/storage/QcChunkStore.h"
+#include "server/storage/QcEntityRecord.h"
 
 #include <QSet>
 #include <QStringList>

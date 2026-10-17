@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcAccessList.h"
-#include "QcCommandRegistry.h"
+#include "server/commands/QcAccessList.h"
+#include "server/commands/QcCommandRegistry.h"
 
 #include <QString>
 

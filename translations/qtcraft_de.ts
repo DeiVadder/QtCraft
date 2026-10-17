@@ -3181,7 +3181,7 @@
     </message>
     <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="231"/>
-        <location filename="../src/server/gameplay/QcServerMinecarts.cpp" line="127"/>
+        <location filename="../src/server/minecarts/QcServerMinecarts.cpp" line="127"/>
         <source>Too many minecarts in the world (at most %1)</source>
         <translation>Zu viele Loren in der Welt (höchstens %1)</translation>
     </message>
@@ -3329,141 +3329,141 @@
         <translation type="vanished">Texturen werden mit %1x statt %2x gezeigt: Der Atlas wäre größer als die Texturgrenze der GPU oder das Speicherbudget</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="43"/>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="52"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="43"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="52"/>
         <source>The file is larger than %1 KiB and was skipped</source>
         <translation>Die Datei ist größer als %1 KiB und wurde übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="47"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="47"/>
         <source>The file cannot be read</source>
         <translation>Die Datei kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="89"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="89"/>
         <source>Not a texture file (expected &lt;name&gt;.png or &lt;name&gt;.json with a-z, 0-9, _, - and .)</source>
         <translation>Keine Texturdatei (erwartet &lt;name&gt;.png oder &lt;name&gt;.json mit a-z, 0-9, _, - und .)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="96"/>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="125"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="96"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="125"/>
         <source>More than %1 entries; the rest was not read</source>
         <translation>Mehr als %1 Einträge; der Rest wurde nicht gelesen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="109"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="109"/>
         <source>Expected a folder &apos;textures&apos; (links are not followed)</source>
         <translation>Erwartet wird ein Ordner „textures“ (Verknüpfungen werden nicht verfolgt)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="118"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="118"/>
         <source>Expected a namespace folder such as textures/qtcraft</source>
         <translation>Erwartet wird ein Namensraum-Ordner wie textures/qtcraft</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="140"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="140"/>
         <source>… and %1 more problems</source>
         <translation>… und %1 weitere Probleme</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="153"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="153"/>
         <source>Not a valid JSON object</source>
         <translation>Kein gültiges JSON-Objekt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="162"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="162"/>
         <source>Invalid procedural texture: %1</source>
         <translation>Ungültige prozedurale Textur: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="190"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="190"/>
         <source>Skipped: the pack&apos;s images exceed the memory budget of %1 MiB</source>
         <translation>Übersprungen: Die Bilder des Pakets überschreiten das Speicherbudget von %1 MiB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="196"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="196"/>
         <source>Has %1 animation frames; textures are not animated yet, the first frame is used</source>
         <translation>Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="214"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="214"/>
         <source>The preview image is missing</source>
         <translation>Das Vorschaubild fehlt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="219"/>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="229"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="219"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="229"/>
         <source>The preview must be a PNG of at most 512 x 512 pixels</source>
         <translation>Die Vorschau muss ein PNG mit höchstens 512 × 512 Pixeln sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="240"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="240"/>
         <source>The pack has no manifest</source>
         <translation>Das Paket hat kein Manifest</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="266"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="266"/>
         <source>More than %1 texture files; the rest was skipped</source>
         <translation>Mehr als %1 Texturdateien; der Rest wurde übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="287"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="287"/>
         <source>Not a PNG image</source>
         <translation>Kein PNG-Bild</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="295"/>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="308"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="295"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="308"/>
         <source>The image is damaged and cannot be decoded</source>
         <translation>Das Bild ist beschädigt und kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackLoader.cpp" line="301"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="301"/>
         <source>The image is %1 x %2 pixels; this pack needs %3 x %3 (or a vertical strip of such frames)</source>
         <translation>Das Bild hat %1 × %2 Pixel; dieses Paket braucht %3 × %3 (oder einen senkrechten Streifen solcher Bilder)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="24"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="24"/>
         <source>&apos;%1&apos; in the manifest must be a text of at most %2 characters</source>
         <translation>„%1“ im Manifest muss ein Text mit höchstens %2 Zeichen sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="40"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="40"/>
         <source>&apos;credits&apos; in the manifest must be a list of at most %1 entries</source>
         <translation>„credits“ im Manifest muss eine Liste mit höchstens %1 Einträgen sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="48"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="48"/>
         <source>Every entry of &apos;credits&apos; must be an object</source>
         <translation>Jeder Eintrag in „credits“ muss ein Objekt sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="69"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="69"/>
         <source>&apos;resolution&apos; must be a power of two from %1 to %2</source>
         <translation>„resolution“ muss eine Zweierpotenz von %1 bis %2 sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="82"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="82"/>
         <source>Unsupported manifest format (expected &apos;format&apos;: %1)</source>
         <translation>Nicht unterstütztes Manifest-Format (erwartet „format“: %1)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="97"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="97"/>
         <source>&apos;preview&apos; must name a PNG file in the pack folder</source>
         <translation>„preview“ muss eine PNG-Datei im Paketordner nennen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="109"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="109"/>
         <source>The manifest is larger than %1 KiB</source>
         <translation>Das Manifest ist größer als %1 KiB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="117"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="117"/>
         <source>The manifest is not a valid JSON object</source>
         <translation>Das Manifest ist kein gültiges JSON-Objekt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTexturePackManifest.cpp" line="129"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackManifest.cpp" line="129"/>
         <source>The manifest needs a &apos;name&apos;</source>
         <translation>Das Manifest braucht einen „name“</translation>
     </message>

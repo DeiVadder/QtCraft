@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcItemStack.h"
-#include "QcMessages.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/protocol/QcMessages.h"
 
 #include <QList>
 

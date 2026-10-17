@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcInventoryAccess.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "server/machines/QcInventoryAccess.h"
 
 #include <QHash>
 #include <QList>

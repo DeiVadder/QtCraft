@@ -1,7 +1,7 @@
-#include "QcVillages.h"
+#include "server/villages/QcVillages.h"
 
-#include "QcVillagePlan.h"
-#include "QcWorldGenerator.h"
+#include "worldgen/generators/QcWorldGenerator.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
 #include <algorithm>
 #include <cmath>

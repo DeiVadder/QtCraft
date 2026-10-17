@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcResult.h"
-#include "QcSessionMessages.h"
+#include "common/core/QcResult.h"
+#include "common/protocol/QcSessionMessages.h"
 
 #include <QDateTime>
 #include <QJsonValue>

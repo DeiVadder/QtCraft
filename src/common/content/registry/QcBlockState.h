@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcBlockFace.h"
+#include "common/core/QcAabb.h"
+#include "common/core/QcBlockFace.h"
 
 #include <QList>
 #include <QString>

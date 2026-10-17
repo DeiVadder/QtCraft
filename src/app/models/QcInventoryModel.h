@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcEquipment.h"
-#include "QcInventory.h"
-#include "QcMessages.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/protocol/QcMessages.h"
 
 #include <QAbstractListModel>
 #include <QtQmlIntegration/qqmlintegration.h>

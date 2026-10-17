@@ -1,4 +1,4 @@
-#include "QcWeatherCycle.h"
+#include "server/weather/QcWeatherCycle.h"
 
 #include <algorithm>
 #include <cmath>

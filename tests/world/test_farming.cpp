@@ -1,10 +1,10 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcCropGrowth.h"
-#include "QcMobBreeding.h"
-#include "QcPlantGrowth.h"
-#include "QcServerWorld.h"
-#include "QcTestTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
+#include "server/core/QcServerWorld.h"
+#include "server/mobs/QcMobBreeding.h"
+#include "server/plants/QcCropGrowth.h"
+#include "server/plants/QcPlantGrowth.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QJsonDocument>
 #include <QTest>

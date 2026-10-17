@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcCommandSource.h"
-#include "QcResult.h"
+#include "common/core/QcResult.h"
+#include "server/commands/QcCommandSource.h"
 
 #include <QHash>
 #include <QList>

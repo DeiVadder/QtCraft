@@ -1,10 +1,10 @@
-#include "QcHandbookItemPages.h"
+#include "common/handbook/builder/QcHandbookItemPages.h"
 
-#include "QcHandbookContext.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookRecipes.h"
-#include "QcHandbookText.h"
-#include "QcMining.h"
+#include "common/gameplay/QcMining.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookRecipes.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 using namespace Qt::StringLiterals;
 using Fact = QcHandbookEntry::Fact;

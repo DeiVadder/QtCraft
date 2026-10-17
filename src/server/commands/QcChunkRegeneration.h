@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcChunkPos.h"
+#include "common/core/QcChunkPos.h"
 
 #include <QList>
 

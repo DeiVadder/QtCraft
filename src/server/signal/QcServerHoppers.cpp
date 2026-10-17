@@ -1,9 +1,9 @@
-#include "QcServerHoppers.h"
+#include "server/signal/QcServerHoppers.h"
 
-#include "QcBlockRules.h"
-#include "QcPhysics.h"
-#include "QcServerState.h"
-#include "QcSignalTable.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/core/QcServerState.h"
+#include "server/signal/QcSignalTable.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,6 +1,6 @@
-#include "QcExperience.h"
+#include "clientcore/session/QcSnapshotBuffer.h"
+#include "common/gameplay/QcExperience.h"
 #include "QcServerTestFixture.h"
-#include "QcSnapshotBuffer.h"
 #include "QcTestWorld.h"
 
 #include <QTemporaryDir>

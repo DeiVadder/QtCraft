@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcItemDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 
 // A number of identical items, e.g. one inventory slot. `damage` counts tool uses.
 struct QcItemStack

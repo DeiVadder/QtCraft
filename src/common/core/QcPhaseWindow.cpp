@@ -1,4 +1,4 @@
-#include "QcPhaseWindow.h"
+#include "common/core/QcPhaseWindow.h"
 
 #include <algorithm>
 

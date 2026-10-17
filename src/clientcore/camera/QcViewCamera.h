@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcBlockAccess.h"
 
 #include <QString>
 

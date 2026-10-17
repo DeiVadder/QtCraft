@@ -1,8 +1,8 @@
-#include "QcAccessList.h"
+#include "server/commands/QcAccessList.h"
 
-#include "QcChatText.h"
-#include "QcProfileValidation.h"
-#include "QcSaveFile.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcProfileValidation.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QDir>
 #include <QFile>

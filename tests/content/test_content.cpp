@@ -1,5 +1,5 @@
-#include "QcContentParser.h"
-#include "QcContentRegistry.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentRegistry.h"
 #include "QcTestUtil.h"
 
 #include <QJsonArray>

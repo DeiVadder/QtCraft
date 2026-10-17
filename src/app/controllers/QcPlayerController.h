@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcCreativeItemModel.h"
-#include "QcInventoryModel.h"
+#include "app/models/QcCreativeItemModel.h"
+#include "app/models/QcInventoryModel.h"
 
 #include <QObject>
 #include <QString>

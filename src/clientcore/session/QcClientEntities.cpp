@@ -1,7 +1,7 @@
-#include "QcClientEntities.h"
+#include "clientcore/session/QcClientEntities.h"
 
-#include "QcContentRegistry.h"
-#include "QcPhysics.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcPhysics.h"
 
 #include <algorithm>
 

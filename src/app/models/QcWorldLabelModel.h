@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcLabelProjector.h"
+#include "clientcore/camera/QcLabelProjector.h"
 
 #include <QAbstractListModel>
 #include <QtQmlIntegration/qqmlintegration.h>

@@ -1,6 +1,6 @@
-#include "QcVillagerRoads.h"
+#include "server/villages/QcVillagerRoads.h"
 
-#include "QcVillagePlan.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
 #include <algorithm>
 #include <cstdlib>

@@ -1,10 +1,10 @@
-#include "QcServerGameModes.h"
+#include "server/gameplay/QcServerGameModes.h"
 
-#include "QcArmour.h"
-#include "QcLineOfSight.h"
-#include "QcServerCrafting.h"
-#include "QcServerInventory.h"
-#include "QcServerState.h"
+#include "common/gameplay/QcArmour.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
+#include "server/gameplay/QcServerCrafting.h"
+#include "server/gameplay/QcServerInventory.h"
 
 #include <QLoggingCategory>
 

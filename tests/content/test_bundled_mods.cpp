@@ -1,5 +1,5 @@
-#include "QcBundledMods.h"
-#include "QcModLoader.h"
+#include "server/content/QcBundledMods.h"
+#include "server/content/QcModLoader.h"
 
 #include <QCryptographicHash>
 #include <QDirIterator>

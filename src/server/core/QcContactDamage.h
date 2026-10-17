@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcAabb.h"
 
 #include <vector>
 

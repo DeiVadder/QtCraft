@@ -1,10 +1,10 @@
-#include "QcBaseContent.h"
-#include "QcClientTrading.h"
-#include "QcDayCycle.h"
-#include "QcProtocol.h"
-#include "QcTradeParser.h"
-#include "QcVillagerCodec.h"
-#include "QcVillagerTrades.h"
+#include "clientcore/session/QcClientTrading.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcTradeParser.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/world/QcDayCycle.h"
+#include "server/storage/QcVillagerCodec.h"
+#include "server/villages/QcVillagerTrades.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>

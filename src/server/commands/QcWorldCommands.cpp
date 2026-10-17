@@ -1,15 +1,15 @@
-#include "QcWorldCommands.h"
+#include "server/commands/QcWorldCommands.h"
 
-#include "QcBlockEntityChecks.h"
-#include "QcEntityChecks.h"
-#include "QcChatText.h"
-#include "QcCommandArguments.h"
-#include "QcPendingCommands.h"
-#include "QcProcessMemory.h"
-#include "QcServerState.h"
-#include "QcTickPhaseTimer.h"
-#include "QcTickScheduler.h"
-#include "QcWorldBackup.h"
+#include "common/core/QcProcessMemory.h"
+#include "common/protocol/QcChatText.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/commands/QcPendingCommands.h"
+#include "server/commands/QcWorldBackup.h"
+#include "server/core/QcServerState.h"
+#include "server/entities/QcEntityChecks.h"
+#include "server/tick/QcTickPhaseTimer.h"
+#include "server/tick/QcTickScheduler.h"
 
 #include <QElapsedTimer>
 #include <QLoggingCategory>

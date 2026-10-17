@@ -21,14 +21,17 @@ Voxel-Sandbox-Spiel mit Qt 6.8 (C++23, CMake/Ninja, QRhi/Metal, Qt Quick). Clien
 | Ordner | Rolle | Einstieg |
 |--------|-------|----------|
 | `src/common` | gemeinsam: Koordinaten, Chunks, Inhalts-Registry, Physik, Protokoll, Handbuch | `QcContentRegistry`, `QcPhysics`, `QcProtocol` |
-| `src/server` | autoritativer Server: Tick, Welt, Wesen, Befehle, Speichern, Weltgenerierung | `QcServer::tick`/`simulate` (Tick-Phasen), `QcServerState`, `QcServerWorld`, `QcCommandRegistry` |
+| `src/worldgen` | Weltgenerierung als eigene Bibliothek `qc_worldgen` (nur `qc_common`): Generatoren, Gelände, Strukturen, Dörfer, Showcase | `QcWorldGenerators`, `QcTerrainGenerator`, `QcVillageGenerator`, `QcShowcaseGenerator` |
+| `src/server` | autoritativer Server: Tick, Welt, Chunks, Wesen, Loren, Pflanzen, Befehle, Speichern | `QcServer::tick`/`simulate` (Tick-Phasen), `QcServerState`, `QcServerWorld`, `QcCommandRegistry` |
 | `src/clientcore` | Client ohne GUI: Sitzung, Vorhersage, Meshing, Licht, Kamera, Texturen | `QcClientSession`, `QcMeshScheduler`, `QcChunkMesher` |
 | `src/app` | Qt-Quick-Client: Controller für QML, Rendering, Eingabe, Test-Hooks | `QcGameController`, `QcRenderBridge`, `QcWorldRenderer`, `QcStartupHooks` |
 | `src/audio`, `src/network`, `src/headless` | Ton, TCP, `qtcraft-headless` (Server, Bots, Steuerschnittstelle) | |
 | `content/` | Spielinhalt als JSON (Blöcke, Items, Rezepte, Wesen, Strukturen, Handbuch, Sprachen) | `docs/Modding.md` |
 | `tests/` | QtTest/CTest nach Themen | Liste in der Code-Karte, Abschnitt „Tests“ |
 
-Client-Code bindet nie Server-Header ein, außer in den beiden Kompositionswurzeln `QcGameController` und `QcHeadlessGame`.
+Client-Code bindet nie Server-Header ein, außer in den beiden Kompositionswurzeln `QcGameController` und `QcHeadlessGame`; `src/worldgen` bindet nur `common/` ein.
+
+**Includes und neue Dateien (E-418):** Includes nennen den Pfad ab `src/` (`#include "server/blocks/QcRails.h"`), die gemeinsamen Test-Fixtures den Pfad ab `tests/` (`#include "QcServerTestFixture.h"`, `#include "world/QcVillageTestUtil.h"`); nur diese beiden Ordner sind Include-Wurzeln. Eine neue Datei kommt in den Themenordner ihrer Bibliothek (Ordner mit etwa 5–25 Dateien; ein neuer Ordner nur für eine benennbare Gruppe) und als Zeile in den `target_sources`-Block dieses Ordners. Nach `git mv` schreibt `python3 scripts/fix-includes.py` Includes, CMake-Pfade und die Quellorte der Übersetzungen um (danach die Zeile in den richtigen Block, `scripts/check-cmake-lists.py` zeigt, was fehlt); `--deps <ordner>` zeigt, welche Ordner ein Ordner einbindet.
 
 ## Bauen, testen, prüfen
 

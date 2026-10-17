@@ -1,4 +1,4 @@
-#include "QcTexturePackPreviewProvider.h"
+#include "app/models/QcTexturePackPreviewProvider.h"
 
 #include <QMutexLocker>
 #include <QUrl>

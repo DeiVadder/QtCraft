@@ -1,10 +1,10 @@
-#include "QcServerFallingBlocks.h"
+#include "server/blocks/QcServerFallingBlocks.h"
 
-#include "QcBlockUpdateQueue.h"
-#include "QcPhysics.h"
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
 
 QcServerFallingBlocks::QcServerFallingBlocks(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates, QcServerBlocks &blocks)
     : m_state(state)

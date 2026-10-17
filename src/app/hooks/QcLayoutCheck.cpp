@@ -1,4 +1,4 @@
-#include "QcLayoutCheck.h"
+#include "app/hooks/QcLayoutCheck.h"
 
 #include <QQuickItem>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcShapeCondition.h"
+#include "common/content/definitions/QcShapeCondition.h"
+#include "common/core/QcAabb.h"
 
 #include <QList>
 #include <QString>

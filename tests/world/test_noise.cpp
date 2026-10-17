@@ -1,4 +1,4 @@
-#include "QcNoise.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QTest>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcUiPalette.h"
+#include "clientcore/settings/QcUiPalette.h"
 
 #include <QColor>
 #include <QObject>

@@ -1,6 +1,6 @@
-#include "QcViewCamera.h"
+#include "clientcore/camera/QcViewCamera.h"
 
-#include "QcRaycast.h"
+#include "common/physics/QcRaycast.h"
 
 #include <QString>
 #include <QtMath>

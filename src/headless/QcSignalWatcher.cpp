@@ -1,4 +1,4 @@
-#include "QcSignalWatcher.h"
+#include "headless/QcSignalWatcher.h"
 
 #include <QSocketNotifier>
 

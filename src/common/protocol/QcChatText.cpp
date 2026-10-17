@@ -1,4 +1,4 @@
-#include "QcChatText.h"
+#include "common/protocol/QcChatText.h"
 
 #include <QCoreApplication>
 

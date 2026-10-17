@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcKeyControls.h"
+#include "clientcore/settings/QcKeyControls.h"
 
 #include <QtQmlIntegration/qqmlintegration.h>
 

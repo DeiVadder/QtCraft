@@ -1,7 +1,7 @@
 #include "QcServerTestFixture.h"
 
-#include "QcContentParser.h"
-#include "QcWeatherCycle.h"
+#include "common/content/parser/QcContentParser.h"
+#include "server/weather/QcWeatherCycle.h"
 
 #include <QJsonDocument>
 #include <QMap>

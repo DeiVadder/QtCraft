@@ -1,15 +1,15 @@
 #pragma once
 
-#include "QcConnection.h"
-#include "QcEntity.h"
-#include "QcAppearance.h"
-#include "QcEquipment.h"
-#include "QcGameMode.h"
-#include "QcExperience.h"
-#include "QcHunger.h"
-#include "QcInventory.h"
-#include "QcMessages.h"
-#include "QcRateLimiter.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcExperience.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcMessages.h"
+#include "server/core/QcRateLimiter.h"
+#include "server/entities/QcEntity.h"
+#include "server/gameplay/QcHunger.h"
 
 #include <QElapsedTimer>
 #include <QHash>

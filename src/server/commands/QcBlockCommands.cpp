@@ -1,11 +1,11 @@
-#include "QcBlockCommands.h"
+#include "server/commands/QcBlockCommands.h"
 
-#include "QcBlockRules.h"
-#include "QcBlockUpdateQueue.h"
-#include "QcCommandArguments.h"
-#include "QcPendingCommands.h"
-#include "QcServerBlocks.h"
-#include "QcServerState.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/commands/QcPendingCommands.h"
+#include "server/core/QcServerState.h"
 
 #include <QScopeGuard>
 

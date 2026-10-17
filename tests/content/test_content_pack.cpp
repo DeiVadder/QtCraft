@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcContentPackLoader.h"
-#include "QcCrafting.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/loader/QcContentPackLoader.h"
+#include "common/gameplay/QcCrafting.h"
 #include "QcTestUtil.h"
-#include "QcTextureAtlas.h"
 
 #include <QBuffer>
 #include <QFile>

@@ -1,7 +1,7 @@
-#include "QcEnvironmentDamage.h"
+#include "common/physics/QcPhysics.h"
 #include "QcCircuitFixture.h"
-#include "QcPhysics.h"
-#include "QcServerCombat.h"
+#include "server/gameplay/QcEnvironmentDamage.h"
+#include "server/gameplay/QcServerCombat.h"
 
 using namespace Qt::StringLiterals;
 

@@ -1,7 +1,7 @@
-#include "QcCrafting.h"
-#include "QcMining.h"
+#include "common/gameplay/QcCrafting.h"
+#include "common/gameplay/QcMining.h"
 #include "QcServerTestFixture.h"
-#include "QcTerrainGenerator.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QMap>
 

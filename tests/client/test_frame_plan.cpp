@@ -1,4 +1,4 @@
-#include "QcFramePlan.h"
+#include "app/rendering/QcFramePlan.h"
 
 #include <QTest>
 

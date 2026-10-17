@@ -1,4 +1,4 @@
-#include "QcSlotRange.h"
+#include "app/models/QcSlotRange.h"
 
 #include <algorithm>
 

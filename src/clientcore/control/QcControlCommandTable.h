@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcControlEntityCommands.h"
-#include "QcControlInventoryCommands.h"
-#include "QcControlMachineCommands.h"
-#include "QcControlMovementCommands.h"
-#include "QcControlSessionCommands.h"
-#include "QcControlTradeCommands.h"
-#include "QcControlWorldCommands.h"
+#include "clientcore/control/QcControlEntityCommands.h"
+#include "clientcore/control/QcControlInventoryCommands.h"
+#include "clientcore/control/QcControlMachineCommands.h"
+#include "clientcore/control/QcControlMovementCommands.h"
+#include "clientcore/control/QcControlSessionCommands.h"
+#include "clientcore/control/QcControlTradeCommands.h"
+#include "clientcore/control/QcControlWorldCommands.h"
 
 #include <QHash>
 #include <QJsonObject>

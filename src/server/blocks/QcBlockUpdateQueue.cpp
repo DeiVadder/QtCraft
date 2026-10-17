@@ -1,8 +1,8 @@
-#include "QcBlockUpdateQueue.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
 
-#include "QcBlockRules.h"
-#include "QcRails.h"
-#include "QcServerState.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcRails.h"
+#include "server/core/QcServerState.h"
 
 #include <QLoggingCategory>
 

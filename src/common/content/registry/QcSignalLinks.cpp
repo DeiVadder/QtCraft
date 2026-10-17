@@ -1,6 +1,6 @@
-#include "QcSignalLinks.h"
+#include "common/content/registry/QcSignalLinks.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 using namespace Qt::StringLiterals;
 

@@ -1,8 +1,8 @@
-#include "QcContactDamage.h"
+#include "server/core/QcContactDamage.h"
 
-#include "QcIntMath.h"
-#include "QcPhysics.h"
-#include "QcServerWorld.h"
+#include "common/core/QcIntMath.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerWorld.h"
 
 #include <algorithm>
 #include <cmath>

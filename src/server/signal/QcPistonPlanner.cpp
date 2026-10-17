@@ -1,6 +1,6 @@
-#include "QcPistonPlanner.h"
+#include "server/signal/QcPistonPlanner.h"
 
-#include "QcBlockRules.h"
+#include "server/blocks/QcBlockRules.h"
 
 #include <QHash>
 #include <QSet>

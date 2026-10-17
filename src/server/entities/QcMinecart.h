@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcEntity.h"
-#include "QcItemStack.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcItemStack.h"
+#include "server/entities/QcEntity.h"
 
 #include <QList>
 #include <QString>

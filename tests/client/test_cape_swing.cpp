@@ -1,6 +1,6 @@
-#include "QcCapeSwing.h"
-#include "QcCapeTracker.h"
-#include "QcPhysics.h"
+#include "clientcore/meshing/QcCapeSwing.h"
+#include "clientcore/meshing/QcCapeTracker.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QTest>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcFlightLatch.h"
-#include "QcKeyBindings.h"
-#include "QcMouseCapture.h"
-#include "QcRelativeMouse.h"
-#include "QcSprintLatch.h"
+#include "app/input/QcRelativeMouse.h"
+#include "clientcore/camera/QcMouseCapture.h"
+#include "clientcore/session/QcFlightLatch.h"
+#include "clientcore/session/QcSprintLatch.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QObject>
 #include <QPointF>

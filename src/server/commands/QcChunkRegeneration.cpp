@@ -1,10 +1,10 @@
-#include "QcChunkRegeneration.h"
+#include "server/commands/QcChunkRegeneration.h"
 
-#include "QcBlockUpdateQueue.h"
-#include "QcChunkStreaming.h"
-#include "QcFallingBlockManager.h"
-#include "QcPhysics.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcFallingBlockManager.h"
+#include "server/chunks/QcChunkStreaming.h"
+#include "server/core/QcServerState.h"
 
 #include <QSet>
 

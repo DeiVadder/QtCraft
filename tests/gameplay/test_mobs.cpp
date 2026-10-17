@@ -1,12 +1,12 @@
-#include "QcBaseContent.h"
-#include "QcDayCycle.h"
-#include "QcEntities.h"
-#include "QcLightVolume.h"
-#include "QcMobManager.h"
-#include "QcMobUpkeep.h"
-#include "QcPhysics.h"
-#include "QcServerWorld.h"
-#include "QcTestTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
+#include "common/world/QcLightVolume.h"
+#include "server/core/QcServerWorld.h"
+#include "server/entities/QcEntities.h"
+#include "server/mobs/QcMobManager.h"
+#include "server/mobs/QcMobUpkeep.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QElapsedTimer>
 #include <QTest>

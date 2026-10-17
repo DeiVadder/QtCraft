@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcAudioMixer.h"
+#include "clientcore/sound/QcAudioMixer.h"
 
 #include <QObject>
 #include <QString>

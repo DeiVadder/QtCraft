@@ -1,6 +1,6 @@
-#include "QcWorldLabelModel.h"
+#include "app/models/QcWorldLabelModel.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

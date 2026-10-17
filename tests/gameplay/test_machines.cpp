@@ -1,5 +1,5 @@
+#include "common/physics/QcPhysics.h"
 #include "QcTestMachines.h"
-#include "QcPhysics.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

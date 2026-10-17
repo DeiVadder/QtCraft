@@ -1,12 +1,12 @@
-#include "QcTickCommands.h"
+#include "server/commands/QcTickCommands.h"
 
-#include "QcChatText.h"
-#include "QcDayCycle.h"
-#include "QcPhysics.h"
-#include "QcServerState.h"
-#include "QcTickControl.h"
-#include "QcTickPhaseTimer.h"
-#include "QcTickScheduler.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "common/world/QcDayCycle.h"
+#include "server/core/QcServerState.h"
+#include "server/tick/QcTickControl.h"
+#include "server/tick/QcTickPhaseTimer.h"
+#include "server/tick/QcTickScheduler.h"
 
 #include <QLoggingCategory>
 

@@ -1,9 +1,9 @@
-#include "QcStructureParser.h"
+#include "common/content/parser/QcStructureParser.h"
 
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcStructureVariationParser.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcStructureVariationParser.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 #include <QHash>

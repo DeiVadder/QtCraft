@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
 
 // Kinematic state of an entity. Position is the centre of the bottom face (feet).
 struct QcEntityMotion

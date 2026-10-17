@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcModLoader.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
 #include "QcTestUtil.h"
+#include "server/content/QcModLoader.h"
 
 #include <QDir>
 #include <QFile>

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcBlockFace.h"
-#include "QcBlockPos.h"
-#include "QcDebugMessages.h"
-#include "QcLightProbe.h"
-#include "QcVec3.h"
+#include "clientcore/light/QcLightProbe.h"
+#include "common/core/QcBlockFace.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "common/protocol/QcDebugMessages.h"
 
 #include <QList>
 #include <QString>

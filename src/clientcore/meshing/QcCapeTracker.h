@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcCapeSwing.h"
+#include "clientcore/meshing/QcCapeSwing.h"
 
 #include <QHash>
 

@@ -1,6 +1,6 @@
-#include "QcPrecipitationRenderer.h"
+#include "app/rendering/QcPrecipitationRenderer.h"
 
-#include "QcRenderPipelines.h"
+#include "app/rendering/QcRenderPipelines.h"
 
 #include <QLoggingCategory>
 

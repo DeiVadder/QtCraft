@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcModStatus.h"
-#include "QcResult.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "server/content/QcModStatus.h"
 
 #include <QList>
 #include <QString>

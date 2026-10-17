@@ -1,4 +1,4 @@
-#include "QcOffscreenRender.h"
+#include "app/hooks/QcOffscreenRender.h"
 
 #include <QGuiApplication>
 #include <QLoggingCategory>

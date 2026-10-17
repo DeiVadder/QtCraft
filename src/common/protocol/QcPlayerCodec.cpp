@@ -1,9 +1,9 @@
 // Payloads of the player messages (QcPlayerMessages.h): input and state, inventory, crafting,
 // health, food and appearance.
 
-#include "QcExperience.h"
-#include "QcInventory.h"
-#include "QcProtocolCodec.h"
+#include "common/gameplay/QcExperience.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/protocol/QcProtocolCodec.h"
 
 #include <cmath>
 

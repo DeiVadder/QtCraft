@@ -1,5 +1,5 @@
-#include "QcPathCells.h"
 #include "QcServerTestFixture.h"
+#include "server/pathing/QcPathCells.h"
 
 using namespace Qt::StringLiterals;
 

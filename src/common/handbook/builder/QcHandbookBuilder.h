@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcHandbook.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/handbook/QcHandbook.h"
 
 #include <QMap>
 #include <QString>

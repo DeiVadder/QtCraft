@@ -1,6 +1,6 @@
-#include "QcContentRegistry.h"
-#include "QcInventory.h"
-#include "QcQuickMove.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcQuickMove.h"
 #include "QcServerTestFixture.h"
 
 #include <QTest>

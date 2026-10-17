@@ -1,4 +1,4 @@
-#include "QcThreadCpuClock.h"
+#include "app/hooks/QcThreadCpuClock.h"
 
 #if defined(Q_OS_UNIX)
 #include <ctime>

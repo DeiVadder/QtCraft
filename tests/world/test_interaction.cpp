@@ -1,6 +1,6 @@
-#include "QcInventory.h"
-#include "QcMining.h"
-#include "QcRaycast.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcMining.h"
+#include "common/physics/QcRaycast.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

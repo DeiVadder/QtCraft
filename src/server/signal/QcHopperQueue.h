@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcBlockPos.h"
+#include "common/core/QcBlockPos.h"
 
 #include <QHash>
 #include <QList>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcMessages.h"
-#include "QcServerDebugMirror.h"
+#include "clientcore/session/QcServerDebugMirror.h"
+#include "common/protocol/QcMessages.h"
 
 #include <functional>
 

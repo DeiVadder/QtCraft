@@ -1,4 +1,4 @@
-#include "QcScriptedRun.h"
+#include "app/hooks/QcScriptedRun.h"
 
 QList<QRect> QcScriptedRun::builtInDisplays()
 {

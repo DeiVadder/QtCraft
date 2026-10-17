@@ -1,6 +1,6 @@
-#include "QcSignalPower.h"
+#include "server/signal/QcSignalPower.h"
 
-#include "QcBlockRules.h"
+#include "server/blocks/QcBlockRules.h"
 
 #include <algorithm>
 

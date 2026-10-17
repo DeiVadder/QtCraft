@@ -1,5 +1,5 @@
-#include "QcMining.h"
-#include "QcPhysics.h"
+#include "common/gameplay/QcMining.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
 
 #include <QFile>

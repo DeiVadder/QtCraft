@@ -1,6 +1,6 @@
-#include "QcMusicComposer.h"
-#include "QcSoundBank.h"
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcMusicComposer.h"
+#include "clientcore/sound/QcSoundBank.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
 
 #include <QSet>
 #include <QTest>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcNetworkClient.h"
+#include "clientcore/network/QcNetworkClient.h"
 
 #include <QtQmlIntegration/qqmlintegration.h>
 

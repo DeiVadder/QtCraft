@@ -1,6 +1,6 @@
-#include "QcChunkMesher.h"
-#include "QcContentRegistry.h"
-#include "QcTextureAtlas.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QMap>
 #include <QTest>

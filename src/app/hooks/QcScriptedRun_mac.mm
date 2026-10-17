@@ -1,4 +1,4 @@
-#include "QcScriptedRun.h"
+#include "app/hooks/QcScriptedRun.h"
 
 #import <AppKit/AppKit.h>
 #include <ApplicationServices/ApplicationServices.h>

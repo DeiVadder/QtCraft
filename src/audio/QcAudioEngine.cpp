@@ -1,9 +1,9 @@
-#include "QcAudioEngine.h"
+#include "audio/QcAudioEngine.h"
 
-#include "QcMusicComposer.h"
-#include "QcSoundKeys.h"
-#include "QcSoundSpatial.h"
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcMusicComposer.h"
+#include "clientcore/sound/QcSoundSpatial.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
+#include "common/content/definitions/QcSoundKeys.h"
 
 #include <QLoggingCategory>
 #include <QtConcurrent/QtConcurrentRun>

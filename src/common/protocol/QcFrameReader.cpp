@@ -1,4 +1,4 @@
-#include "QcFrameReader.h"
+#include "common/protocol/QcFrameReader.h"
 
 #include <QtEndian>
 

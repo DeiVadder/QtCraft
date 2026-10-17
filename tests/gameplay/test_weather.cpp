@@ -1,7 +1,7 @@
 #include "QcServerTestFixture.h"
 
-#include "QcTerrainGenerator.h"
-#include "QcWeatherCycle.h"
+#include "server/weather/QcWeatherCycle.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QTemporaryDir>
 

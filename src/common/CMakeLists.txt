@@ -43,6 +43,10 @@ target_sources(qc_common PRIVATE
     content/definitions/QcWorldTypeDefinitions.h
 )
 target_sources(qc_common PRIVATE
+    content/loader/QcBaseContent.h content/loader/QcBaseContent.cpp
+    content/loader/QcContentPackLoader.h content/loader/QcContentPackLoader.cpp
+)
+target_sources(qc_common PRIVATE
     content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
@@ -191,19 +195,8 @@ target_sources(qc_common PRIVATE
     world/QcWorldLabel.h world/QcWorldLabel.cpp
 )
 qc_configure_target(qc_common)
-# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
-# stay "QcName.h" without a path.
-target_include_directories(qc_common PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/auth
-    ${CMAKE_CURRENT_SOURCE_DIR}/world
-    ${CMAKE_CURRENT_SOURCE_DIR}/light
-    ${CMAKE_CURRENT_SOURCE_DIR}/physics
-    ${CMAKE_CURRENT_SOURCE_DIR}/gameplay
-    ${CMAKE_CURRENT_SOURCE_DIR}/protocol
-    ${CMAKE_CURRENT_SOURCE_DIR}/content/definitions
-    ${CMAKE_CURRENT_SOURCE_DIR}/content/registry
-    ${CMAKE_CURRENT_SOURCE_DIR}/content/parser
-    ${CMAKE_CURRENT_SOURCE_DIR}/handbook
-    ${CMAKE_CURRENT_SOURCE_DIR}/handbook/builder)
-target_link_libraries(qc_common PUBLIC Qt::Core)
+# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# src/ is the only include directory a library passes on.
+target_include_directories(qc_common PUBLIC ${PROJECT_SOURCE_DIR}/src)
+# The base game content (:/content/qtcraft) that QcBaseContent loads.
+target_link_libraries(qc_common PUBLIC qc_base_content Qt::Core)

@@ -1,6 +1,6 @@
-#include "QcVillage.h"
+#include "server/villages/QcVillage.h"
 
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QJsonArray>
 

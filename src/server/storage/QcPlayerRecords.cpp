@@ -1,7 +1,7 @@
-#include "QcPlayerRecords.h"
+#include "server/storage/QcPlayerRecords.h"
 
-#include "QcServerClient.h"
-#include "QcServerGameModes.h"
+#include "server/core/QcServerClient.h"
+#include "server/gameplay/QcServerGameModes.h"
 
 #include <algorithm>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcTexturePackLibrary.h"
-#include "QcTextureStackBuild.h"
+#include "clientcore/texturepacks/QcTexturePackLibrary.h"
+#include "clientcore/texturepacks/QcTextureStackBuild.h"
 
 #include <QFutureWatcher>
 #include <QObject>

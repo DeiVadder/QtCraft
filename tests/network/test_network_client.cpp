@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcClientSession.h"
-#include "QcLocalServerHost.h"
-#include "QcNetworkClient.h"
-#include "QcTestTerrainGenerator.h"
+#include "clientcore/network/QcNetworkClient.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "QcTestUtil.h"
+#include "server/core/QcLocalServerHost.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QSignalSpy>
 #include <QTcpServer>

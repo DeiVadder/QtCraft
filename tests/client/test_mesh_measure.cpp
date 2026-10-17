@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcBlockLightEngine.h"
-#include "QcChunkMesher.h"
-#include "QcIndexPacking.h"
-#include "QcTerrainGenerator.h"
-#include "QcTextureAtlas.h"
+#include "clientcore/light/QcBlockLightEngine.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "clientcore/meshing/QcIndexPacking.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
 #include <QTest>

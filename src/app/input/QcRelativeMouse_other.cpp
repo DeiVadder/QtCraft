@@ -1,4 +1,4 @@
-#include "QcRelativeMouse.h"
+#include "app/input/QcRelativeMouse.h"
 
 struct QcRelativeMouse::Platform
 {

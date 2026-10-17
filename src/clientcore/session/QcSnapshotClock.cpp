@@ -1,4 +1,4 @@
-#include "QcSnapshotClock.h"
+#include "clientcore/session/QcSnapshotClock.h"
 
 #include <algorithm>
 #include <cmath>

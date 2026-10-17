@@ -1,8 +1,8 @@
-#include "QcCrc32.h"
-#include "QcPhysics.h"
-#include "QcProtocol.h"
+#include "common/core/QcCrc32.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcProtocol.h"
 #include "QcTestUtil.h"
-#include "QcWorldConstants.h"
 #include "QcTestWorldFiles.h"
 
 #include <QDir>

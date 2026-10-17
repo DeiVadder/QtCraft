@@ -1,7 +1,7 @@
-#include "QcClientRiding.h"
+#include "clientcore/session/QcClientRiding.h"
 
-#include "QcMinecartBody.h"
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcMinecartBody.h"
 
 bool QcClientRiding::noteVehicle(quint32 vehicle)
 {

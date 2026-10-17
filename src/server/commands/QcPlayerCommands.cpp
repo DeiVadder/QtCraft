@@ -1,11 +1,11 @@
-#include "QcPlayerCommands.h"
+#include "server/commands/QcPlayerCommands.h"
 
-#include "QcChatText.h"
-#include "QcChunkStreaming.h"
-#include "QcCommandArguments.h"
-#include "QcPendingCommands.h"
-#include "QcProfileValidation.h"
-#include "QcServerState.h"
+#include "common/protocol/QcChatText.h"
+#include "server/chunks/QcChunkStreaming.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/commands/QcPendingCommands.h"
+#include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerState.h"
 
 #include <QLoggingCategory>
 

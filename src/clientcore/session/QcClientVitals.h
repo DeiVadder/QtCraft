@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcItemDefinition.h"
-#include "QcMessages.h"
+#include "common/content/definitions/QcItemDefinition.h"
+#include "common/protocol/QcMessages.h"
 
 // What the server last told the player about himself (QcClientSession::vitals): health and whether
 // he burns or is dead, food, and experience (decision E-398).

@@ -1,4 +1,4 @@
-#include "QcLabelProjector.h"
+#include "clientcore/camera/QcLabelProjector.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

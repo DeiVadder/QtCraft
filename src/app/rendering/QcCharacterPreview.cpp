@@ -1,9 +1,9 @@
-#include "QcCharacterPreview.h"
+#include "app/rendering/QcCharacterPreview.h"
 
-#include "QcCharacterPreviewRenderer.h"
-#include "QcContentRegistry.h"
-#include "QcPreviewScene.h"
-#include "QcTextureAtlas.h"
+#include "app/rendering/QcCharacterPreviewRenderer.h"
+#include "clientcore/preview/QcPreviewScene.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QCursor>
 #include <QLoggingCategory>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcHeadlessOptions.h"
+#include "headless/QcHeadlessOptions.h"
 
 #include <QCommandLineParser>
 

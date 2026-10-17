@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcChunkPos.h"
+#include "common/core/QcChunkPos.h"
 
 // Packs a chunk section address into a single integer key for render-side maps: 24 bits each for
 // the chunk's x and z (two's complement), 8 bits for the section index.

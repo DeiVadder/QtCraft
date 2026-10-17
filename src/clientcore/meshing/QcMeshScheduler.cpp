@@ -1,9 +1,9 @@
-#include "QcMeshScheduler.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
 
-#include "QcChunkMesher.h"
-#include "QcClientWorld.h"
-#include "QcLightPassage.h"
-#include "QcSectionKey.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "common/core/QcSectionKey.h"
+#include "common/world/QcLightPassage.h"
 
 #include <QThread>
 

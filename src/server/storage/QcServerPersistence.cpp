@@ -1,15 +1,15 @@
-#include "QcServerPersistence.h"
+#include "server/storage/QcServerPersistence.h"
 
-#include "QcBlockUpdateQueue.h"
-#include "QcChunkIo.h"
-#include "QcChunkLoading.h"
-#include "QcContentPackLoader.h"
-#include "QcDayCycle.h"
-#include "QcServerBlocks.h"
-#include "QcServerMinecarts.h"
-#include "QcPlayerRecords.h"
-#include "QcSaveFile.h"
-#include "QcServerState.h"
+#include "common/content/loader/QcContentPackLoader.h"
+#include "common/world/QcDayCycle.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/chunks/QcChunkLoading.h"
+#include "server/core/QcServerState.h"
+#include "server/minecarts/QcServerMinecarts.h"
+#include "server/storage/QcChunkIo.h"
+#include "server/storage/QcPlayerRecords.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QDir>
 #include <QFile>

@@ -1,6 +1,6 @@
-#include "QcMinecartBody.h"
+#include "common/world/QcMinecartBody.h"
 #include "QcRailFixture.h"
-#include "QcServerMinecarts.h"
+#include "server/minecarts/QcServerMinecarts.h"
 
 #include <QTemporaryDir>
 

@@ -1,7 +1,7 @@
-#include "QcMultiplayerSettings.h"
+#include "app/multiplayer/QcMultiplayerSettings.h"
 
-#include "QcNameText.h"
-#include "QcServerAddress.h"
+#include "common/core/QcNameText.h"
+#include "network/QcServerAddress.h"
 
 #include <QDir>
 #include <QFileInfo>

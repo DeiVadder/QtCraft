@@ -1,8 +1,8 @@
-#include "QcBlockEntityCodec.h"
+#include "server/storage/QcBlockEntityCodec.h"
 
-#include "QcSaveFile.h"
-#include "QcStackReader.h"
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcSaveFile.h"
+#include "server/storage/QcStackReader.h"
 
 #include <QIODevice>
 #include <QSet>

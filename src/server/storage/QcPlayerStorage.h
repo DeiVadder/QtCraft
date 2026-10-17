@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcEntityMotion.h"
-#include "QcEquipment.h"
-#include "QcExperience.h"
-#include "QcGameMode.h"
-#include "QcInventory.h"
-#include "QcResult.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcExperience.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/physics/QcEntityMotion.h"
 
 #include <QDataStream>
 #include <QString>

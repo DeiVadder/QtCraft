@@ -1,15 +1,15 @@
 #pragma once
 
-#include "QcAabb.h"
+#include "common/core/QcAabb.h"
 
-#include "QcAnimator.h"
-#include "QcAppearance.h"
-#include "QcAppearanceDefinition.h"
-#include "QcClientEntity.h"
-#include "QcEntityLight.h"
-#include "QcEntityMesh.h"
-#include "QcMobDefinition.h"
-#include "QcModelDefinition.h"
+#include "clientcore/light/QcEntityLight.h"
+#include "clientcore/meshing/QcAnimator.h"
+#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/session/QcClientEntity.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/content/definitions/QcAppearanceDefinition.h"
+#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/definitions/QcModelDefinition.h"
 
 #include <QRectF>
 

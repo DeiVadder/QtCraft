@@ -1,7 +1,7 @@
 #pragma once
 
 #include "QcStoredWorld.h"
-#include "QcWorldStorage.h"
+#include "server/storage/QcWorldStorage.h"
 
 #include <QDir>
 

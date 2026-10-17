@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcCamera.h"
-#include "QcEntityMesh.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/meshing/QcEntityMesh.h"
 
 #include <QImage>
 #include <QQuickRhiItemRenderer>

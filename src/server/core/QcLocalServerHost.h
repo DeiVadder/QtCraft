@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcMailbox.h"
-#include "QcNetworkServer.h"
-#include "QcResult.h"
-#include "QcServerConfig.h"
-#include "QcServerPersistence.h"
-#include "QcTickStats.h"
-#include "QcTransport.h"
+#include "common/core/QcMailbox.h"
+#include "common/core/QcResult.h"
+#include "common/protocol/QcTransport.h"
+#include "server/core/QcServerConfig.h"
+#include "server/network/QcNetworkServer.h"
+#include "server/storage/QcServerPersistence.h"
+#include "server/tick/QcTickStats.h"
 
 #include <QObject>
 

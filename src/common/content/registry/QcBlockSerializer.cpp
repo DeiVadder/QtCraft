@@ -1,7 +1,7 @@
-#include "QcBlockSerializer.h"
+#include "common/content/registry/QcBlockSerializer.h"
 
-#include "QcBlockStateTable.h"
-#include "QcStreamLimits.h"
+#include "common/content/registry/QcBlockStateTable.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <cmath>
 

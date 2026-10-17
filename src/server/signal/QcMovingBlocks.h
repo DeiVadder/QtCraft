@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcServerLimits.h"
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcMovingBlock.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "server/core/QcServerLimits.h"
+#include "server/entities/QcMovingBlock.h"
 
 #include <QList>
 

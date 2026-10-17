@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcClientEntities.h"
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientEntities.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "QcLatencyTransport.h"
-#include "QcLocalServerHost.h"
-#include "QcWorldGenerators.h"
+#include "server/core/QcLocalServerHost.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QElapsedTimer>
 #include <QRandomGenerator>

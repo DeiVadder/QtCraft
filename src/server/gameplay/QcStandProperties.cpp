@@ -1,8 +1,8 @@
-#include "QcStandProperties.h"
+#include "server/gameplay/QcStandProperties.h"
 
-#include "QcArmour.h"
-#include "QcContentRegistry.h"
-#include "QcNameText.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcNameText.h"
+#include "common/gameplay/QcArmour.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,4 +1,4 @@
-#include "QcCrafting.h"
+#include "common/gameplay/QcCrafting.h"
 
 #include <algorithm>
 

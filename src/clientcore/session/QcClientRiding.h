@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcClientEntities.h"
-#include "QcEntityMotion.h"
+#include "clientcore/session/QcClientEntities.h"
+#include "common/physics/QcEntityMotion.h"
 
 #include <QtGlobal>
 

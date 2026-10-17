@@ -3,14 +3,14 @@
 // Protocol messages. Plain data structs in thematic headers; together they form the QcMessage
 // variant whose alternative index is the wire type tag. New messages are appended at the end.
 
-#include "QcDebugMessages.h"
-#include "QcEntityMessages.h"
-#include "QcLoginMessages.h"
-#include "QcMachineMessages.h"
-#include "QcPlayerMessages.h"
-#include "QcSessionMessages.h"
-#include "QcTradeMessages.h"
-#include "QcWorldMessages.h"
+#include "common/protocol/QcDebugMessages.h"
+#include "common/protocol/QcEntityMessages.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "common/protocol/QcMachineMessages.h"
+#include "common/protocol/QcPlayerMessages.h"
+#include "common/protocol/QcSessionMessages.h"
+#include "common/protocol/QcTradeMessages.h"
+#include "common/protocol/QcWorldMessages.h"
 
 #include <variant>
 

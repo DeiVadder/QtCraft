@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcBodyFit.h"
-#include "QcServerWorld.h"
-#include "QcTestTerrainGenerator.h"
-#include "QcWorldConstants.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcBodyFit.h"
+#include "server/core/QcServerWorld.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QTest>
 #include <QtMath>

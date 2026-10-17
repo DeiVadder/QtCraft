@@ -1,7 +1,7 @@
-#include "QcPlayerKey.h"
+#include "common/auth/QcPlayerKey.h"
 
-#include "QcDataRoot.h"
-#include "QcLoginCrypto.h"
+#include "common/auth/QcLoginCrypto.h"
+#include "common/core/QcDataRoot.h"
 
 #include <QDir>
 #include <QFile>

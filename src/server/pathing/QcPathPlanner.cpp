@@ -1,7 +1,7 @@
-#include "QcPathPlanner.h"
+#include "server/pathing/QcPathPlanner.h"
 
-#include "QcCreature.h"
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
+#include "server/entities/QcCreature.h"
 
 #include <algorithm>
 #include <limits>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcEntityRecord.h"
+#include "server/storage/QcEntityRecord.h"
 
 #include <QHash>
 #include <QSet>

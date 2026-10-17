@@ -1,11 +1,11 @@
-#include "QcTextureSynthesizer.h"
+#include "clientcore/textures/QcTextureSynthesizer.h"
 
-#include "QcTextureArmourPatterns.h"
-#include "QcTextureCraftPatterns.h"
-#include "QcTextureEmblem.h"
-#include "QcTextureFarmPatterns.h"
-#include "QcTextureSignalPatterns.h"
-#include "QcTexturePaint.h"
+#include "clientcore/textures/QcTextureArmourPatterns.h"
+#include "clientcore/textures/QcTextureCraftPatterns.h"
+#include "clientcore/textures/QcTextureEmblem.h"
+#include "clientcore/textures/QcTextureFarmPatterns.h"
+#include "clientcore/textures/QcTexturePaint.h"
+#include "clientcore/textures/QcTextureSignalPatterns.h"
 
 #include <algorithm>
 #include <array>

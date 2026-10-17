@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
 
 // Loudness and stereo position of a sound at a world position, heard from a listener's ears.
 // Yaw follows the game's convention: 0 looks north (-Z), 90 east (+X).

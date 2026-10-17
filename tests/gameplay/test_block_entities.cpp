@@ -1,8 +1,8 @@
-#include "QcBlockEntityChecks.h"
+#include "common/physics/QcPhysics.h"
 #include "QcMachineFixture.h"
-#include "QcPhysics.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
 
-#include "QcTestTerrainGenerator.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QTemporaryDir>
 

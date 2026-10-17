@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcShapePart.h"
+#include "common/content/definitions/QcShapePart.h"
 
 #include <QList>
 #include <QString>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunkStore.h"
-#include "QcResult.h"
-#include "QcWorldStorage.h"
+#include "common/core/QcResult.h"
+#include "server/storage/QcChunkStore.h"
+#include "server/storage/QcWorldStorage.h"
 
 #include <QStringList>
 

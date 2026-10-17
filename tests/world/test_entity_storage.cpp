@@ -1,11 +1,11 @@
-#include "QcBaseContent.h"
-#include "QcEntityCodec.h"
+#include "common/content/loader/QcBaseContent.h"
 #include "QcStoredWorld.h"
-#include "QcServer.h"
-#include "QcTestTerrainGenerator.h"
 #include "QcTestUtil.h"
-#include "QcWorldLibrary.h"
-#include "QcWorldStorage.h"
+#include "server/core/QcServer.h"
+#include "server/storage/QcEntityCodec.h"
+#include "server/storage/QcWorldLibrary.h"
+#include "server/storage/QcWorldStorage.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QDirIterator>
 #include <QFile>

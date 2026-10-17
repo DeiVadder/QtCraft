@@ -1,7 +1,7 @@
-#include "QcContentParser.h"
-#include "QcContentRegistry.h"
-#include "QcLightEngine.h"
-#include "QcLightVolume.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/light/QcLightEngine.h"
+#include "common/world/QcLightVolume.h"
 
 #include <QJsonDocument>
 #include <QRandomGenerator>

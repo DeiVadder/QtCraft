@@ -1,9 +1,9 @@
-#include "QcBlockScreens.h"
+#include "server/machines/QcBlockScreens.h"
 
-#include "QcChatText.h"
-#include "QcLineOfSight.h"
-#include "QcPhysics.h"
-#include "QcServerState.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcLineOfSight.h"
 
 using namespace Qt::StringLiterals;
 

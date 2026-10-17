@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcResult.h"
-#include "QcTextureSpec.h"
+#include "clientcore/textures/QcTextureSpec.h"
+#include "common/core/QcResult.h"
 
 #include <QImage>
 #include <QJsonObject>

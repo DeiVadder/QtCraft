@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcAppearance.h"
+#include "common/content/definitions/QcAppearance.h"
 
 #include <QString>
 

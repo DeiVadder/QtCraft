@@ -1,11 +1,11 @@
-#include "QcAlphaCoverage.h"
-#include "QcBaseContent.h"
-#include "QcBlockIcon.h"
-#include "QcBlockRenderTable.h"
-#include "QcContentRegistry.h"
-#include "QcFigureLook.h"
-#include "QcTextureAtlas.h"
-#include "QcTexturePack.h"
+#include "clientcore/icons/QcBlockIcon.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/texturepacks/QcTexturePack.h"
+#include "clientcore/textures/QcAlphaCoverage.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QBuffer>
 #include <QJsonObject>

@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcShowcaseBlockArea.h"
-#include "QcShowcaseCategories.h"
-#include "QcShowcaseGenerator.h"
-#include "QcWorldGenerators.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/showcase/QcShowcaseBlockArea.h"
+#include "worldgen/showcase/QcShowcaseCategories.h"
+#include "worldgen/showcase/QcShowcaseGenerator.h"
 
 #include <QSet>
 #include <QTest>

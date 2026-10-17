@@ -1,7 +1,7 @@
-#include "QcFallingBlockManager.h"
+#include "server/blocks/QcFallingBlockManager.h"
 
-#include "QcPhysics.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/physics/QcPhysics.h"
 
 QcFallingBlockManager::QcFallingBlockManager(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))

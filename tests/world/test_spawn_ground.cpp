@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcInProcessTransport.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
-#include "QcServer.h"
-#include "QcTerrainGenerator.h"
+#include "server/core/QcServer.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QCoreApplication>
 #include <QTest>

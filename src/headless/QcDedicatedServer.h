@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcLoginMessages.h"
-#include "QcResult.h"
-#include "QcServerSettings.h"
+#include "common/core/QcResult.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "server/network/QcServerSettings.h"
 
 #include <QObject>
 

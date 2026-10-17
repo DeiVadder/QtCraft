@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcEntityVertex.h"
+#include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QList>
 

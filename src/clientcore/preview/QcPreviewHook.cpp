@@ -1,4 +1,4 @@
-#include "QcPreviewHook.h"
+#include "clientcore/preview/QcPreviewHook.h"
 
 #include <cmath>
 

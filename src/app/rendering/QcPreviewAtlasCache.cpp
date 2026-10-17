@@ -1,6 +1,6 @@
-#include "QcPreviewAtlasCache.h"
+#include "app/rendering/QcPreviewAtlasCache.h"
 
-#include "QcAtlasTexture.h"
+#include "app/rendering/QcAtlasTexture.h"
 
 #include <QMutex>
 

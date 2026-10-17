@@ -1,9 +1,9 @@
-#include "QcVillageParser.h"
+#include "common/content/parser/QcVillageParser.h"
 
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcVillageLayoutParser.h"
-#include "QcVillagerParser.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcVillageLayoutParser.h"
+#include "common/content/parser/QcVillagerParser.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 

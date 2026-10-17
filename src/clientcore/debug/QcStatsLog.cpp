@@ -1,4 +1,4 @@
-#include "QcStatsLog.h"
+#include "clientcore/debug/QcStatsLog.h"
 
 #include <QJsonDocument>
 #include <QLoggingCategory>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcBlockEntities.h"
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/blockentities/QcBlockEntities.h"
 
 #include <QHash>
 #include <QList>

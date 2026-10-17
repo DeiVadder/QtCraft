@@ -1,9 +1,9 @@
-#include "QcBlockLightEngine.h"
-#include "QcChunkMesher.h"
-#include "QcContentRegistry.h"
-#include "QcLightEngine.h"
-#include "QcSectionLightPool.h"
-#include "QcTextureAtlas.h"
+#include "app/rendering/QcSectionLightPool.h"
+#include "clientcore/light/QcBlockLightEngine.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/light/QcLightEngine.h"
 
 #include <QRandomGenerator>
 #include <QTest>

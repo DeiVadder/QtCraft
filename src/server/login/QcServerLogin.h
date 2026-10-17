@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcLoginMessages.h"
-#include "QcSessionMessages.h"
+#include "common/protocol/QcLoginMessages.h"
+#include "common/protocol/QcSessionMessages.h"
 
 #include <QByteArray>
 

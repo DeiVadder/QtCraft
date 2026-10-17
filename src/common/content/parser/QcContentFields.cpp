@@ -1,7 +1,7 @@
-#include "QcContentFields.h"
+#include "common/content/parser/QcContentFields.h"
 
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QHash>
 #include <QJsonArray>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcBlockFace.h"
+#include "common/core/QcBlockFace.h"
 
 // How light passes block states whose shape is not a full cube (decision E-104): such a state of a
 // light-dimming block lets light into its cell (opacity 0) but not across the faces its shape covers

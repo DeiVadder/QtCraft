@@ -1,5 +1,5 @@
 #include "QcServerTestFixture.h"
-#include "QcWorldBackup.h"
+#include "server/commands/QcWorldBackup.h"
 
 #include <QDir>
 #include <QFile>

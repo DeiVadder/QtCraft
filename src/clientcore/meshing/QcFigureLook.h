@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcEntityMesher.h"
-#include "QcEquipment.h"
-#include "QcStandPose.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcStandPose.h"
 
 #include <optional>
 

@@ -1,4 +1,4 @@
-#include "QcAlphaCoverage.h"
+#include "clientcore/textures/QcAlphaCoverage.h"
 
 #include <algorithm>
 #include <array>

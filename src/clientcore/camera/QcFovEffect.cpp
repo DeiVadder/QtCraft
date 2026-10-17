@@ -1,4 +1,4 @@
-#include "QcFovEffect.h"
+#include "clientcore/camera/QcFovEffect.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,4 +1,4 @@
-#include "QcMouseLook.h"
+#include "clientcore/camera/QcMouseLook.h"
 
 #include <algorithm>
 #include <cmath>

@@ -1,6 +1,6 @@
-#include "QcClientMachineScreen.h"
+#include "clientcore/session/QcClientMachineScreen.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcPrecipitationField.h"
+#include "clientcore/weather/QcPrecipitationField.h"
 
 #include <QList>
 #include <rhi/qrhi.h>

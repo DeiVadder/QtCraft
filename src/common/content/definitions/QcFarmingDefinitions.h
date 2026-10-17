@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcExperienceDrop.h"
+#include "common/content/definitions/QcExperienceDrop.h"
 
 #include <QString>
 #include <QStringList>

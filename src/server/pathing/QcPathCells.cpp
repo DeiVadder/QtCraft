@@ -1,6 +1,6 @@
-#include "QcPathCells.h"
+#include "server/pathing/QcPathCells.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <cmath>

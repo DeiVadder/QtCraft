@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcItemStack.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QJsonArray>
 #include <QJsonObject>

@@ -1,8 +1,8 @@
 // Payloads of the machine messages (QcMachineMessages.h): furnace and chest screens.
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <algorithm>
 #include <cmath>

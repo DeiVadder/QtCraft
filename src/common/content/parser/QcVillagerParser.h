@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcJsonFieldReader.h"
-#include "QcResult.h"
-#include "QcVillagerDefinitions.h"
+#include "common/content/definitions/QcVillagerDefinitions.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

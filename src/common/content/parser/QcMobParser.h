@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAppearanceDefinition.h"
-#include "QcMobDefinition.h"
-#include "QcModelDefinition.h"
-#include "QcResult.h"
+#include "common/content/definitions/QcAppearanceDefinition.h"
+#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/definitions/QcModelDefinition.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

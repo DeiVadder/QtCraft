@@ -1,10 +1,10 @@
-#include "QcClientWeather.h"
-#include "QcClientWorld.h"
-#include "QcDayCycle.h"
-#include "QcPrecipitationField.h"
-#include "QcProtocol.h"
-#include "QcSky.h"
-#include "QcSoundKeys.h"
+#include "clientcore/light/QcSky.h"
+#include "clientcore/session/QcClientWorld.h"
+#include "clientcore/weather/QcClientWeather.h"
+#include "clientcore/weather/QcPrecipitationField.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/world/QcDayCycle.h"
 #include "QcTestWorld.h"
 
 #include <QElapsedTimer>

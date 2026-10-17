@@ -1,6 +1,6 @@
-#include "QcTcpTransport.h"
+#include "network/QcTcpTransport.h"
 
-#include "QcSocketErrors.h"
+#include "network/QcSocketErrors.h"
 
 #include <QCoreApplication>
 #include <QHostAddress>

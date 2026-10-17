@@ -1,6 +1,6 @@
-#include "QcShowcaseTour.h"
+#include "headless/QcShowcaseTour.h"
 
-#include "QcShowcasePlan.h"
+#include "worldgen/showcase/QcShowcasePlan.h"
 
 using namespace Qt::StringLiterals;
 

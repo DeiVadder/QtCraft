@@ -1,7 +1,7 @@
-#include "QcClientSounds.h"
+#include "clientcore/session/QcClientSounds.h"
 
-#include "QcPhysics.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/physics/QcPhysics.h"
 
 bool QcClientSounds::record(QcSoundCue &cue, quint64 tick)
 {

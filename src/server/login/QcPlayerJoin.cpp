@@ -1,15 +1,15 @@
-#include "QcPlayerJoin.h"
+#include "server/login/QcPlayerJoin.h"
 
-#include "QcChatText.h"
-#include "QcChunkStreaming.h"
-#include "QcPlayerRecords.h"
-#include "QcProtocol.h"
-#include "QcPlayerHealth.h"
-#include "QcServerGameModes.h"
-#include "QcServerInventory.h"
-#include "QcServerLogin.h"
-#include "QcServerPersistence.h"
-#include "QcServerState.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcProtocol.h"
+#include "server/chunks/QcChunkStreaming.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcPlayerHealth.h"
+#include "server/gameplay/QcServerGameModes.h"
+#include "server/gameplay/QcServerInventory.h"
+#include "server/login/QcServerLogin.h"
+#include "server/storage/QcPlayerRecords.h"
+#include "server/storage/QcServerPersistence.h"
 
 #include <QLoggingCategory>
 

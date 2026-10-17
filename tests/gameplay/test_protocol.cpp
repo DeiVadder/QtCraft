@@ -1,6 +1,6 @@
-#include "QcChatText.h"
-#include "QcProtocol.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcProtocol.h"
 
 #include <QCoreApplication>
 #include <QDataStream>

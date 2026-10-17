@@ -1,14 +1,14 @@
-#include "QcBlockParser.h"
+#include "common/content/parser/QcBlockParser.h"
 
-#include "QcBlockStateTable.h"
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcFarmingParser.h"
-#include "QcJsonFieldReader.h"
-#include "QcShapeParser.h"
-#include "QcSignalParser.h"
-#include "QcSmeltingRecipe.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSmeltingRecipe.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcFarmingParser.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/parser/QcShapeParser.h"
+#include "common/content/parser/QcSignalParser.h"
+#include "common/content/registry/QcBlockStateTable.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 

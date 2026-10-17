@@ -1,6 +1,6 @@
-#include "QcSoundBank.h"
+#include "clientcore/sound/QcSoundBank.h"
 
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
 
 #include <cmath>
 

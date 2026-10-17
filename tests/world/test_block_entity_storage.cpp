@@ -1,11 +1,11 @@
-#include "QcTestWorldFiles.h"
-#include "QcBlockEntityChecks.h"
-#include "QcBlockEntityRecords.h"
-#include "QcCircuitState.h"
-#include "QcHopperQueue.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "QcWorldGenerators.h"
+#include "QcTestWorldFiles.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/signal/QcCircuitState.h"
+#include "server/signal/QcHopperQueue.h"
+#include "server/storage/QcBlockEntityRecords.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDirIterator>
 #include <QTemporaryDir>

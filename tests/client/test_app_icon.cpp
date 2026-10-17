@@ -1,6 +1,6 @@
-#include "QcAppIcon.h"
-#include "QcBaseContent.h"
-#include "QcTextureAtlas.h"
+#include "clientcore/icons/QcAppIcon.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/loader/QcBaseContent.h"
 
 #include <QTemporaryDir>
 #include <QTest>

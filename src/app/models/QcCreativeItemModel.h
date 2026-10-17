@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcCreativeCatalog.h"
+#include "common/gameplay/QcCreativeCatalog.h"
 
 #include <QAbstractListModel>
 #include <QStringList>

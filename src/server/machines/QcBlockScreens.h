@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockEntities.h"
-#include "QcBlockPos.h"
+#include "common/core/QcBlockPos.h"
+#include "server/blockentities/QcBlockEntities.h"
 
 struct QcMinecart;
 struct QcServerClient;

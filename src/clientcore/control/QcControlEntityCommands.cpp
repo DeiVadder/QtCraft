@@ -1,14 +1,14 @@
-#include "QcControlEntityCommands.h"
+#include "clientcore/control/QcControlEntityCommands.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcControlAim.h"
-#include "QcControlArguments.h"
-#include "QcControlCommandTable.h"
-#include "QcControlContext.h"
-#include "QcControlReports.h"
-#include "QcMinecartBody.h"
-#include "QcPhysics.h"
+#include "clientcore/control/QcControlAim.h"
+#include "clientcore/control/QcControlArguments.h"
+#include "clientcore/control/QcControlCommandTable.h"
+#include "clientcore/control/QcControlContext.h"
+#include "clientcore/control/QcControlReports.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcMinecartBody.h"
 
 #include <QJsonArray>
 #include <QtMath>

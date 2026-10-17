@@ -1,4 +1,4 @@
-#include "QcTextureArmourPatterns.h"
+#include "clientcore/textures/QcTextureArmourPatterns.h"
 
 #include <array>
 #include <utility>

@@ -1,6 +1,6 @@
-#include "QcRenderPipelines.h"
+#include "app/rendering/QcRenderPipelines.h"
 
-#include "QcEntityVertex.h"
+#include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QFile>
 #include <QLoggingCategory>

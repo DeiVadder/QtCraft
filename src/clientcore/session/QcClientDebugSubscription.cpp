@@ -1,4 +1,4 @@
-#include "QcClientDebugSubscription.h"
+#include "clientcore/session/QcClientDebugSubscription.h"
 
 void QcClientDebugSubscription::setFlags(quint8 flags)
 {

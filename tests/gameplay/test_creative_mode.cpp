@@ -1,9 +1,9 @@
-#include "QcHunger.h"
-#include "QcSaveFile.h"
-#include "QcServerGameModes.h"
-#include "QcServerSettings.h"
 #include "QcServerTestFixture.h"
-#include "QcWorldLibrary.h"
+#include "server/gameplay/QcHunger.h"
+#include "server/gameplay/QcServerGameModes.h"
+#include "server/network/QcServerSettings.h"
+#include "server/storage/QcSaveFile.h"
+#include "server/storage/QcWorldLibrary.h"
 
 #include <QDir>
 #include <QFile>

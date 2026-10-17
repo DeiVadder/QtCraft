@@ -1,7 +1,7 @@
-#include "QcCircuitState.h"
+#include "server/signal/QcCircuitState.h"
 
-#include "QcBlockRules.h"
-#include "QcServerWorld.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/core/QcServerWorld.h"
 
 #include <QLoggingCategory>
 

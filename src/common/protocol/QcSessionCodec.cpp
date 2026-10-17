@@ -1,9 +1,9 @@
 // Payloads of the session messages (QcSessionMessages.h): handshake, content, chat and world time.
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcProtocol.h"
-#include "QcStreamLimits.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <QIODevice>
 

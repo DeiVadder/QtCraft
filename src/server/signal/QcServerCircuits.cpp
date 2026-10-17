@@ -1,14 +1,14 @@
-#include "QcServerCircuits.h"
+#include "server/signal/QcServerCircuits.h"
 
-#include "QcBlockRules.h"
-#include "QcCircuitComponents.h"
-#include "QcDustNetwork.h"
-#include "QcOpeners.h"
-#include "QcPhysics.h"
-#include "QcServerBlocks.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcOpeners.h"
+#include "server/blocks/QcServerBlocks.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/signal/QcCircuitComponents.h"
+#include "server/signal/QcDustNetwork.h"
 
 #include <algorithm>
 

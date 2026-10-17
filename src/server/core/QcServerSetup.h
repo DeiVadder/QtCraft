@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcWorldSetup.h"
+#include "worldgen/generators/QcWorldSetup.h"
 
 class QcBlockUpdateQueue;
 class QcServerState;

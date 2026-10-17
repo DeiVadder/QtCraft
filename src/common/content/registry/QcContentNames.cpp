@@ -1,4 +1,4 @@
-#include "QcContentNames.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <algorithm>
 

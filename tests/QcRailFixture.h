@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcBlockRules.h"
 #include "QcCircuitFixture.h"
-#include "QcEntityChecks.h"
-#include "QcMinecartMotion.h"
-#include "QcRails.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/blocks/QcRails.h"
+#include "server/entities/QcEntityChecks.h"
+#include "server/minecarts/QcMinecartMotion.h"
 
 #include <algorithm>
 #include <array>

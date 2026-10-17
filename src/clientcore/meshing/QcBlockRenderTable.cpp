@@ -1,7 +1,7 @@
-#include "QcBlockRenderTable.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
 
-#include "QcContentRegistry.h"
-#include "QcTextureAtlas.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcEntity.h"
+#include "server/entities/QcEntity.h"
 
 // A ball of experience lying or flying in the world (decision E-398); QcExperienceOrbManager moves,
 // attracts, merges and ages them, and players collect them.

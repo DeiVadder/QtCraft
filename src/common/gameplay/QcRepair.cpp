@@ -1,6 +1,6 @@
-#include "QcRepair.h"
+#include "common/gameplay/QcRepair.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <cmath>

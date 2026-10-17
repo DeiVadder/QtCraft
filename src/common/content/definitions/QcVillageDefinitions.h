@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcVillagerDefinitions.h"
+#include "common/content/definitions/QcVillagerDefinitions.h"
 
 #include <QHash>
 #include <QList>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockEntityRecord.h"
-#include "QcContentRegistry.h"
-#include "QcResult.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "server/storage/QcBlockEntityRecord.h"
 
 #include <QByteArray>
 #include <QSet>

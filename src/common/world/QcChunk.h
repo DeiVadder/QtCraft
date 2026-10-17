@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcChunkSection.h"
+#include "common/core/QcBlockPos.h"
+#include "common/world/QcChunkSection.h"
 
 #include <array>
 

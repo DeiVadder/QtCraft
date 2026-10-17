@@ -1,14 +1,14 @@
-#include "QcPlayerHealth.h"
+#include "server/gameplay/QcPlayerHealth.h"
 
-#include "QcArmour.h"
-#include "QcChatText.h"
-#include "QcPhysics.h"
-#include "QcServerExperience.h"
-#include "QcServerInventory.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
-#include "QcWorldConstants.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcServerInventory.h"
+#include "server/items/QcServerExperience.h"
 
 #include <algorithm>
 #include <cmath>

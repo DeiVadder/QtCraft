@@ -1,15 +1,15 @@
-#include "QcHandbookController.h"
+#include "app/controllers/QcHandbookController.h"
 
-#include "QcBlockIcon.h"
-#include "QcBlockRenderTable.h"
-#include "QcGpuLimits.h"
-#include "QcHandbookBuilder.h"
-#include "QcHandbookRules.h"
-#include "QcItemIcons.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
-#include "QcTextureAtlas.h"
-#include "QcWorldLibraryController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "app/controllers/QcWorldLibraryController.h"
+#include "app/models/QcItemIcons.h"
+#include "clientcore/icons/QcBlockIcon.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/textures/QcGpuLimits.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/handbook/builder/QcHandbookBuilder.h"
+#include "server/gameplay/QcHandbookRules.h"
 
 #include <QElapsedTimer>
 #include <QLoggingCategory>

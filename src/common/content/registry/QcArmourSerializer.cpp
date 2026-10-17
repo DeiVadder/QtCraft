@@ -1,6 +1,6 @@
-#include "QcArmourSerializer.h"
+#include "common/content/registry/QcArmourSerializer.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <cmath>
 

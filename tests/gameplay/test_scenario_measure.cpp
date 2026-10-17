@@ -1,11 +1,11 @@
 #include "QcServerTestFixture.h"
 
-#include "QcBlockEntityChecks.h"
-#include "QcEntityChecks.h"
-#include "QcProcessMemory.h"
-#include "QcTickPhase.h"
-#include "QcTickStats.h"
-#include "QcWorldGenerators.h"
+#include "common/core/QcProcessMemory.h"
+#include "common/core/QcTickPhase.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/entities/QcEntityChecks.h"
+#include "server/tick/QcTickStats.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QElapsedTimer>
 #include <QFile>

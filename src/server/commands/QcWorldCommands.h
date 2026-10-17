@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBackupRunner.h"
-#include "QcCommandRegistry.h"
-#include "QcItemStack.h"
-#include "QcVec3.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcItemStack.h"
+#include "server/commands/QcBackupRunner.h"
+#include "server/commands/QcCommandRegistry.h"
 
 #include <QElapsedTimer>
 #include <QString>

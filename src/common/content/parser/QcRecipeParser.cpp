@@ -1,7 +1,7 @@
-#include "QcRecipeParser.h"
+#include "common/content/parser/QcRecipeParser.h"
 
-#include "QcContentFields.h"
-#include "QcJsonFieldReader.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 #include <QJsonArray>
 

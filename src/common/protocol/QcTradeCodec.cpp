@@ -1,8 +1,8 @@
 // Payloads of the trading messages (QcTradeMessages.h, decision E-414).
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
+#include "common/protocol/QcStreamLimits.h"
 
 using namespace Qt::StringLiterals;
 

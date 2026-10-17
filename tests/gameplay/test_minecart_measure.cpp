@@ -1,7 +1,7 @@
-#include "QcBlockRules.h"
-#include "QcEntityChecks.h"
-#include "QcMinecartMotion.h"
 #include "QcServerTestFixture.h"
+#include "server/blocks/QcBlockRules.h"
+#include "server/entities/QcEntityChecks.h"
+#include "server/minecarts/QcMinecartMotion.h"
 
 #include <QElapsedTimer>
 

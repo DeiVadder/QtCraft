@@ -1,4 +1,4 @@
-#include "QcProcessMemory.h"
+#include "common/core/QcProcessMemory.h"
 
 #include <QtGlobal>
 

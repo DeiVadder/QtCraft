@@ -1,6 +1,6 @@
-#include "QcBlockEntityChecks.h"
-#include "QcBlockEntityCodec.h"
 #include "QcMachineFixture.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
+#include "server/storage/QcBlockEntityCodec.h"
 
 #include <QCryptographicHash>
 #include <QElapsedTimer>

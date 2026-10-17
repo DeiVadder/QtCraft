@@ -1,5 +1,5 @@
-#include "QcCamera.h"
-#include "QcMouseLook.h"
+#include "clientcore/camera/QcCamera.h"
+#include "clientcore/camera/QcMouseLook.h"
 
 #include <QTest>
 

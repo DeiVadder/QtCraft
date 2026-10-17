@@ -1,4 +1,4 @@
-#include "QcNameText.h"
+#include "common/core/QcNameText.h"
 
 #include <QTextBoundaryFinder>
 

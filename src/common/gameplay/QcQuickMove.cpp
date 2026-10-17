@@ -1,7 +1,7 @@
-#include "QcQuickMove.h"
+#include "common/gameplay/QcQuickMove.h"
 
-#include "QcInventory.h"
-#include "QcMessages.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/protocol/QcMessages.h"
 
 namespace QcQuickMove {
 

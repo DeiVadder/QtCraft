@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcContentRegistry.h"
-#include "QcModLoader.h"
-#include "QcStreamLimits.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/protocol/QcStreamLimits.h"
+#include "server/content/QcModLoader.h"
 
 #include <QDataStream>
 #include <QDir>

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcBaseContent.h"
-#include "QcInProcessTransport.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
-#include "QcServer.h"
-#include "QcTestTerrainGenerator.h"
+#include "server/core/QcServer.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QCoreApplication>
 #include <QDir>

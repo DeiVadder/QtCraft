@@ -1,16 +1,16 @@
 #pragma once
 
-#include "QcPackReference.h"
+#include "common/content/definitions/QcPackReference.h"
 
-#include "QcChunk.h"
-#include "QcChunkLoaders.h"
-#include "QcContentRegistry.h"
-#include "QcGameMode.h"
-#include "QcPlayerStorage.h"
-#include "QcVillage.h"
-#include "QcRegionFile.h"
-#include "QcResult.h"
-#include "QcWeatherCycle.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcResult.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/world/QcChunk.h"
+#include "server/chunks/QcChunkLoaders.h"
+#include "server/storage/QcPlayerStorage.h"
+#include "server/storage/QcRegionFile.h"
+#include "server/villages/QcVillage.h"
+#include "server/weather/QcWeatherCycle.h"
 
 #include <QDateTime>
 #include <QHash>

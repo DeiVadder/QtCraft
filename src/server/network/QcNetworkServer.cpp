@@ -1,6 +1,6 @@
-#include "QcNetworkServer.h"
+#include "server/network/QcNetworkServer.h"
 
-#include "QcServer.h"
+#include "server/core/QcServer.h"
 
 #include <QLoggingCategory>
 #include <QTcpServer>

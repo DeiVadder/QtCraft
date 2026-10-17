@@ -1,7 +1,7 @@
-#include "QcLanAddresses.h"
-#include "QcMultiplayerSettings.h"
-#include "QcPlayerList.h"
-#include "QcServerHistory.h"
+#include "app/multiplayer/QcLanAddresses.h"
+#include "app/multiplayer/QcMultiplayerSettings.h"
+#include "app/multiplayer/QcPlayerList.h"
+#include "app/multiplayer/QcServerHistory.h"
 
 #include <QFile>
 #include <QSettings>

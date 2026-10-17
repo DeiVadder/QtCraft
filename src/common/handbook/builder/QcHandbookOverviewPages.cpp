@@ -1,11 +1,11 @@
-#include "QcHandbookOverviewPages.h"
+#include "common/handbook/builder/QcHandbookOverviewPages.h"
 
-#include "QcArmour.h"
-#include "QcHandbook.h"
-#include "QcHandbookContext.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookRecipes.h"
-#include "QcHandbookText.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookRecipes.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbook.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 #include <algorithm>
 #include <utility>

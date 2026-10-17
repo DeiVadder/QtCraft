@@ -1,10 +1,10 @@
-#include "QcBaseContent.h"
-#include "QcContentFingerprint.h"
-#include "QcModLoader.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "network/QcTcpConnector.h"
 #include "QcRawClient.h"
-#include "QcServerSettings.h"
-#include "QcTcpConnector.h"
-#include "QcWorldStorage.h"
+#include "server/content/QcContentFingerprint.h"
+#include "server/content/QcModLoader.h"
+#include "server/network/QcServerSettings.h"
+#include "server/storage/QcWorldStorage.h"
 
 #include <QDir>
 #include <QDirIterator>

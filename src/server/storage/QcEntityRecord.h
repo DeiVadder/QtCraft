@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcArmourStand.h"
-#include "QcChunkPos.h"
-#include "QcExperienceOrb.h"
-#include "QcFallingBlock.h"
-#include "QcItemEntityManager.h"
-#include "QcMinecart.h"
-#include "QcMobManager.h"
+#include "common/core/QcChunkPos.h"
+#include "server/entities/QcArmourStand.h"
+#include "server/entities/QcExperienceOrb.h"
+#include "server/entities/QcFallingBlock.h"
+#include "server/entities/QcMinecart.h"
+#include "server/items/QcItemEntityManager.h"
+#include "server/mobs/QcMobManager.h"
 
 #include <QList>
 #include <QSet>

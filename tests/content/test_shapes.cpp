@@ -1,6 +1,6 @@
-#include "QcContentParser.h"
-#include "QcPhysics.h"
-#include "QcRaycast.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/physics/QcPhysics.h"
+#include "common/physics/QcRaycast.h"
 #include "QcTestWorld.h"
 
 #include <QJsonArray>

@@ -1,7 +1,7 @@
-#include "QcHeadlessOptions.h"
+#include "headless/QcHeadlessOptions.h"
 
-#include "QcDataRoot.h"
-#include "QcWorldGenerators.h"
+#include "common/core/QcDataRoot.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
 #include <QFile>

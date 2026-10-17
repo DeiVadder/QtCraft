@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcFireRules.h"
-#include "QcMessages.h"
+#include "common/core/QcBlockPos.h"
+#include "common/protocol/QcMessages.h"
+#include "server/blocks/QcFireRules.h"
 
 class QcServerFire;
 class QcServerInventory;

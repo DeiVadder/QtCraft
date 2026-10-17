@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcModelDefinition.h"
+#include "common/content/definitions/QcModelDefinition.h"
 
 #include <QList>
 #include <QString>

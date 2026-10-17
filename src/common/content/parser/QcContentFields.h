@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcExperienceDrop.h"
-#include "QcModelDefinition.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcExperienceDrop.h"
+#include "common/content/definitions/QcModelDefinition.h"
+#include "common/core/QcVec3.h"
 
 #include <QJsonValue>
 #include <QString>

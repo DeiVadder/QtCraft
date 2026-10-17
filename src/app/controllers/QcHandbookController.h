@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcHandbookModel.h"
-#include "QcKeyBindings.h"
+#include "app/models/QcHandbookModel.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QObject>
 #include <QString>

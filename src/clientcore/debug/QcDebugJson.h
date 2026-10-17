@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcDebugSnapshot.h"
+#include "clientcore/debug/QcDebugSnapshot.h"
 
 #include <QJsonObject>
 

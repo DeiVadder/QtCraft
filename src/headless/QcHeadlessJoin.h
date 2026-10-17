@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcModLoader.h"
-#include "QcResult.h"
+#include "common/core/QcResult.h"
+#include "server/content/QcModLoader.h"
 
 #include <QObject>
 #include <QString>

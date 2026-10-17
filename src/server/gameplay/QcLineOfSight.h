@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcBlockAccess.h"
-#include "QcVec3.h"
+#include "common/core/QcAabb.h"
+#include "common/core/QcVec3.h"
+#include "common/world/QcBlockAccess.h"
 
 #include <optional>
 

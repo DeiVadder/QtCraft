@@ -1,7 +1,7 @@
-#include "QcArmourLook.h"
+#include "clientcore/meshing/QcArmourLook.h"
 
-#include "QcArmour.h"
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcArmour.h"
 
 #include <algorithm>
 

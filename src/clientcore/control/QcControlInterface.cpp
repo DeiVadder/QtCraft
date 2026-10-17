@@ -1,7 +1,7 @@
-#include "QcControlInterface.h"
+#include "clientcore/control/QcControlInterface.h"
 
-#include "QcClientSession.h"
-#include "QcControlArguments.h"
+#include "clientcore/control/QcControlArguments.h"
+#include "clientcore/session/QcClientSession.h"
 
 #include <QIODevice>
 #include <QJsonDocument>

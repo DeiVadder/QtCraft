@@ -1,5 +1,5 @@
-#include "QcBaseContent.h"
-#include "QcTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QTest>
 

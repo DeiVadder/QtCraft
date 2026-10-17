@@ -1,13 +1,13 @@
-#include "QcStandCommands.h"
+#include "server/commands/QcStandCommands.h"
 
-#include "QcArmour.h"
-#include "QcChatText.h"
-#include "QcPhysics.h"
-#include "QcRaycast.h"
-#include "QcServerInventory.h"
-#include "QcServerStands.h"
-#include "QcStandProperties.h"
-#include "QcServerState.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/physics/QcPhysics.h"
+#include "common/physics/QcRaycast.h"
+#include "common/protocol/QcChatText.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcServerInventory.h"
+#include "server/gameplay/QcServerStands.h"
+#include "server/gameplay/QcStandProperties.h"
 
 #include <QtMath>
 

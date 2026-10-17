@@ -1,11 +1,11 @@
-#include "QcControlReports.h"
+#include "clientcore/control/QcControlReports.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcControlArguments.h"
-#include "QcDayCycle.h"
-#include "QcPhysics.h"
-#include "QcSoundSpatial.h"
+#include "clientcore/control/QcControlArguments.h"
+#include "clientcore/session/QcClientSession.h"
+#include "clientcore/sound/QcSoundSpatial.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
 
 #include <QMetaEnum>
 

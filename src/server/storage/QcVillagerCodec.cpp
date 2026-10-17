@@ -1,6 +1,6 @@
-#include "QcVillagerCodec.h"
+#include "server/storage/QcVillagerCodec.h"
 
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QtEndian>
 

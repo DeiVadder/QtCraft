@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAtlasLayout.h"
-#include "QcContentRegistry.h"
-#include "QcTexturePack.h"
-#include "QcTexturePackProblem.h"
+#include "clientcore/texturepacks/QcTexturePack.h"
+#include "clientcore/texturepacks/QcTexturePackProblem.h"
+#include "clientcore/textures/QcAtlasLayout.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QHash>
 #include <QImage>

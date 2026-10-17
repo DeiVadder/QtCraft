@@ -1,7 +1,7 @@
-#include "QcEntitySync.h"
+#include "server/core/QcEntitySync.h"
 
-#include "QcServerState.h"
-#include "QcVillagerLooks.h"
+#include "server/core/QcServerState.h"
+#include "server/villages/QcVillagerLooks.h"
 
 #include <algorithm>
 

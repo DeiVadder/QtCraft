@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcPathCells.h"
+#include "common/world/QcBlockAccess.h"
+#include "server/pathing/QcPathCells.h"
 
 #include <cmath>
 

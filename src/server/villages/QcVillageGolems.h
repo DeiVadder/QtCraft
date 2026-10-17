@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcCreature.h"
+#include "server/entities/QcCreature.h"
 
 #include <QList>
 #include <QSet>

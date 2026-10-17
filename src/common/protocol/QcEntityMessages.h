@@ -4,13 +4,13 @@
 // blocks, armour stands and minecarts.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "QcAppearance.h"
-#include "QcEquipment.h"
-#include "QcBlockDefinition.h"
-#include "QcEntityKind.h"
-#include "QcItemStack.h"
-#include "QcStandPose.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcVec3.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/gameplay/QcStandPose.h"
+#include "common/world/QcEntityKind.h"
 
 #include <QList>
 #include <QString>

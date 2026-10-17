@@ -34,6 +34,12 @@ target_sources(qc_clientcore PRIVATE
     debug/QcStatsLog.h debug/QcStatsLog.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    icons/QcAppIcon.h icons/QcAppIcon.cpp
+    icons/QcBlockIcon.h icons/QcBlockIcon.cpp
+    icons/QcItemIconSet.h icons/QcItemIconSet.cpp
+    icons/QcWebHandbookAssets.h icons/QcWebHandbookAssets.cpp
+)
+target_sources(qc_clientcore PRIVATE
     light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp
     light/QcChunkLight.h
     light/QcEntityLight.h
@@ -111,12 +117,18 @@ target_sources(qc_clientcore PRIVATE
     sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    texturepacks/QcTexturePack.h
+    texturepacks/QcTexturePackLibrary.h texturepacks/QcTexturePackLibrary.cpp
+    texturepacks/QcTexturePackLoader.h texturepacks/QcTexturePackLoader.cpp
+    texturepacks/QcTexturePackManifest.h texturepacks/QcTexturePackManifest.cpp
+    texturepacks/QcTexturePackProblem.h texturepacks/QcTexturePackProblem.cpp
+    texturepacks/QcTextureSources.h texturepacks/QcTextureSources.cpp
+    texturepacks/QcTextureStackBuild.h texturepacks/QcTextureStackBuild.cpp
+)
+target_sources(qc_clientcore PRIVATE
     textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
-    textures/QcAppIcon.h textures/QcAppIcon.cpp
     textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
-    textures/QcBlockIcon.h textures/QcBlockIcon.cpp
     textures/QcGpuLimits.h textures/QcGpuLimits.cpp
-    textures/QcItemIconSet.h textures/QcItemIconSet.cpp
     textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
@@ -124,39 +136,19 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureDetail.h textures/QcTextureDetail.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
-    textures/QcTexturePack.h
-    textures/QcTexturePackLibrary.h textures/QcTexturePackLibrary.cpp
-    textures/QcTexturePackLoader.h textures/QcTexturePackLoader.cpp
-    textures/QcTexturePackManifest.h textures/QcTexturePackManifest.cpp
-    textures/QcTexturePackProblem.h textures/QcTexturePackProblem.cpp
     textures/QcTexturePaint.h
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
-    textures/QcTextureSources.h textures/QcTextureSources.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
-    textures/QcTextureStackBuild.h textures/QcTextureStackBuild.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
-    textures/QcWebHandbookAssets.h textures/QcWebHandbookAssets.cpp
 )
 target_sources(qc_clientcore PRIVATE
     weather/QcClientWeather.h weather/QcClientWeather.cpp
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
 )
 qc_configure_target(qc_clientcore)
-# Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
-# stay "QcName.h" without a path.
-target_include_directories(qc_clientcore PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/control
-    ${CMAKE_CURRENT_SOURCE_DIR}/debug
-    ${CMAKE_CURRENT_SOURCE_DIR}/meshing
-    ${CMAKE_CURRENT_SOURCE_DIR}/light
-    ${CMAKE_CURRENT_SOURCE_DIR}/textures
-    ${CMAKE_CURRENT_SOURCE_DIR}/camera
-    ${CMAKE_CURRENT_SOURCE_DIR}/preview
-    ${CMAKE_CURRENT_SOURCE_DIR}/sound
-    ${CMAKE_CURRENT_SOURCE_DIR}/session
-    ${CMAKE_CURRENT_SOURCE_DIR}/weather
-    ${CMAKE_CURRENT_SOURCE_DIR}/network
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings)
+# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# src/ is the only include directory a library passes on.
+target_include_directories(qc_clientcore PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)
 
 # Procedural textures must be bit-identical on every architecture (decision E-300): no fused

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcChunkPos.h"
-#include "QcDebugMessages.h"
-#include "QcVec3.h"
+#include "common/core/QcAabb.h"
+#include "common/core/QcChunkPos.h"
+#include "common/core/QcVec3.h"
+#include "common/protocol/QcDebugMessages.h"
 
 #include <QHash>
 #include <QList>

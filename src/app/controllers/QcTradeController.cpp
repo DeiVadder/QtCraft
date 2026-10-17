@@ -1,9 +1,9 @@
-#include "QcTradeController.h"
+#include "app/controllers/QcTradeController.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

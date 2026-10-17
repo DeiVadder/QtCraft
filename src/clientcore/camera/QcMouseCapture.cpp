@@ -1,4 +1,4 @@
-#include "QcMouseCapture.h"
+#include "clientcore/camera/QcMouseCapture.h"
 
 QcMouseCapture::Change QcMouseCapture::update(Situation now)
 {

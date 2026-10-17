@@ -3,13 +3,13 @@
 // Protocol messages about the player: movement, health, food, appearance, inventory and crafting.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "QcAppearance.h"
-#include "QcBlockPos.h"
-#include "QcEntityMotion.h"
-#include "QcEquipment.h"
-#include "QcGameMode.h"
-#include "QcItemStack.h"
-#include "QcPlayerInput.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcGameMode.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/physics/QcEntityMotion.h"
+#include "common/physics/QcPlayerInput.h"
 
 #include <QList>
 #include <QString>

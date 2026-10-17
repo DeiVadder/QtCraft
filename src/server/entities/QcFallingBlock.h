@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcEntity.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "server/entities/QcEntity.h"
 
 // A block falling while nothing holds it (decision E-055, E-364); QcFallingBlockManager lets it fall
 // and land.

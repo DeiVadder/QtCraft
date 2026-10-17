@@ -1,11 +1,11 @@
-#include "QcControlMachineCommands.h"
+#include "clientcore/control/QcControlMachineCommands.h"
 
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcControlAim.h"
-#include "QcControlArguments.h"
-#include "QcControlCommandTable.h"
-#include "QcControlContext.h"
+#include "clientcore/control/QcControlAim.h"
+#include "clientcore/control/QcControlArguments.h"
+#include "clientcore/control/QcControlCommandTable.h"
+#include "clientcore/control/QcControlContext.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

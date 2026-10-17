@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcJsonFieldReader.h"
-#include "QcStructureDefinition.h"
+#include "common/content/definitions/QcStructureDefinition.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 #include <QHash>
 #include <QJsonObject>

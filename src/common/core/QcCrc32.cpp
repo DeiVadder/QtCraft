@@ -1,4 +1,4 @@
-#include "QcCrc32.h"
+#include "common/core/QcCrc32.h"
 
 #include <array>
 

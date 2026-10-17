@@ -1,4 +1,4 @@
-#include "QcPathFinder.h"
+#include "server/pathing/QcPathFinder.h"
 
 #include <algorithm>
 #include <cmath>

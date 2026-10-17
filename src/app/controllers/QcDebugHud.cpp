@@ -1,13 +1,13 @@
-#include "QcDebugHud.h"
+#include "app/controllers/QcDebugHud.h"
 
-#include "QcClientSession.h"
-#include "QcDebugText.h"
-#include "QcLabelProjector.h"
-#include "QcLightProbe.h"
-#include "QcMeshScheduler.h"
-#include "QcPhysics.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "clientcore/camera/QcLabelProjector.h"
+#include "clientcore/debug/QcDebugText.h"
+#include "clientcore/light/QcLightProbe.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QFontDatabase>
 

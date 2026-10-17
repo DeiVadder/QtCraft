@@ -1,10 +1,10 @@
-#include "QcAnimator.h"
-#include "QcArmourLook.h"
-#include "QcBaseContent.h"
-#include "QcClientEntities.h"
-#include "QcEntityMesher.h"
-#include "QcFigureLook.h"
-#include "QcPreviewScene.h"
+#include "clientcore/meshing/QcAnimator.h"
+#include "clientcore/meshing/QcArmourLook.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/preview/QcPreviewScene.h"
+#include "clientcore/session/QcClientEntities.h"
+#include "common/content/loader/QcBaseContent.h"
 
 #include <QTest>
 

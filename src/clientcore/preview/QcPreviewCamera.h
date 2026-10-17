@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcCamera.h"
-#include "QcVec3.h"
+#include "clientcore/camera/QcCamera.h"
+#include "common/core/QcVec3.h"
 
 // View of the character preview: the figure stands at the origin and turns on the spot (dragging
 // turns it), the camera looks at it from +Z along -Z and zooms from the whole body to the head.

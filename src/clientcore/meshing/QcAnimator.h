@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcEntityPose.h"
-#include "QcModelDefinition.h"
-#include "QcVec3.h"
+#include "clientcore/meshing/QcEntityPose.h"
+#include "common/content/definitions/QcModelDefinition.h"
+#include "common/core/QcVec3.h"
 
 #include <array>
 

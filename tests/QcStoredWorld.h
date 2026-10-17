@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockEntityCodec.h"
-#include "QcChunkCodec.h"
-#include "QcChunkStore.h"
-#include "QcEntityCodec.h"
+#include "server/storage/QcBlockEntityCodec.h"
+#include "server/storage/QcChunkCodec.h"
+#include "server/storage/QcChunkStore.h"
+#include "server/storage/QcEntityCodec.h"
 
 #include <QHash>
 #include <QSet>

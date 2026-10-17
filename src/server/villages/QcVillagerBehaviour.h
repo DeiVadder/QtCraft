@@ -1,12 +1,12 @@
 #pragma once
 
-#include "QcCreature.h"
-#include "QcMobNavigator.h"
-#include "QcPathTerrain.h"
-#include "QcPhysics.h"
-#include "QcVillagerHomes.h"
-#include "QcVillagerRoads.h"
-#include "QcVillagerTrades.h"
+#include "common/physics/QcPhysics.h"
+#include "server/entities/QcCreature.h"
+#include "server/pathing/QcMobNavigator.h"
+#include "server/pathing/QcPathTerrain.h"
+#include "server/villages/QcVillagerHomes.h"
+#include "server/villages/QcVillagerRoads.h"
+#include "server/villages/QcVillagerTrades.h"
 
 #include <QHash>
 #include <QList>

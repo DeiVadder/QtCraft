@@ -1,6 +1,6 @@
-#include "QcBaseContent.h"
-#include "QcContentRegistry.h"
-#include "QcCreativeCatalog.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcCreativeCatalog.h"
 
 #include <QSet>
 #include <QTest>

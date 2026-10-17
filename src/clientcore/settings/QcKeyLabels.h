@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcKeyBindings.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QCoreApplication>
 #include <QString>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcLightPassage.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/world/QcLightPassage.h"
 
 #include <QtGlobal>
 

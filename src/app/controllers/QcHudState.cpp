@@ -1,11 +1,11 @@
-#include "QcHudState.h"
+#include "app/controllers/QcHudState.h"
 
-#include "QcClientSession.h"
-#include "QcDayCycle.h"
-#include "QcLabelProjector.h"
-#include "QcPhysics.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "clientcore/camera/QcLabelProjector.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/physics/QcPhysics.h"
+#include "common/world/QcDayCycle.h"
 
 using namespace Qt::StringLiterals;
 

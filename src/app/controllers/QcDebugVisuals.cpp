@@ -1,8 +1,8 @@
-#include "QcDebugVisuals.h"
+#include "app/controllers/QcDebugVisuals.h"
 
-#include "QcClientSession.h"
-#include "QcDebugLines.h"
-#include "QcSessionParts.h"
+#include "app/controllers/QcSessionParts.h"
+#include "clientcore/debug/QcDebugLines.h"
+#include "clientcore/session/QcClientSession.h"
 
 QcDebugVisuals::QcDebugVisuals(const QcSessionParts &parts)
     : m_parts(parts)

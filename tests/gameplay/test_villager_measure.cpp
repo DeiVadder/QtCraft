@@ -1,9 +1,9 @@
-#include "QcDayCycle.h"
+#include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
-#include "QcTerrainGenerator.h"
-#include "QcVillageGenerator.h"
-#include "QcVillagerBreeding.h"
-#include "QcVillages.h"
+#include "server/villages/QcVillagerBreeding.h"
+#include "server/villages/QcVillages.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QElapsedTimer>
 

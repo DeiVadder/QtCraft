@@ -1,13 +1,13 @@
 #pragma once
 
-#include "QcCircuitComponents.h"
-#include "QcCircuitPlan.h"
-#include "QcCircuitState.h"
-#include "QcDispenserActions.h"
-#include "QcServerHoppers.h"
-#include "QcPistonMover.h"
-#include "QcRails.h"
-#include "QcSignalTable.h"
+#include "server/blocks/QcRails.h"
+#include "server/signal/QcCircuitComponents.h"
+#include "server/signal/QcCircuitPlan.h"
+#include "server/signal/QcCircuitState.h"
+#include "server/signal/QcDispenserActions.h"
+#include "server/signal/QcPistonMover.h"
+#include "server/signal/QcServerHoppers.h"
+#include "server/signal/QcSignalTable.h"
 
 #include <QHash>
 #include <QSet>

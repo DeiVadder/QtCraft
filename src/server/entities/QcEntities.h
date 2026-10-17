@@ -1,15 +1,15 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcArmourStandManager.h"
-#include "QcExperienceOrbManager.h"
-#include "QcFallingBlockManager.h"
-#include "QcItemEntityManager.h"
-#include "QcMinecartManager.h"
-#include "QcMobManager.h"
-#include "QcMovingBlocks.h"
-#include "QcPhysics.h"
-#include "QcServerClient.h"
+#include "common/core/QcAabb.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcFallingBlockManager.h"
+#include "server/core/QcServerClient.h"
+#include "server/gameplay/QcArmourStandManager.h"
+#include "server/items/QcExperienceOrbManager.h"
+#include "server/items/QcItemEntityManager.h"
+#include "server/minecarts/QcMinecartManager.h"
+#include "server/mobs/QcMobManager.h"
+#include "server/signal/QcMovingBlocks.h"
 
 #include <QList>
 #include <QSet>

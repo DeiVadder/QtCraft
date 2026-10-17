@@ -1,8 +1,8 @@
-#include "QcPrecipitationTable.h"
+#include "common/world/QcPrecipitationTable.h"
 
-#include "QcChunk.h"
-#include "QcContentRegistry.h"
-#include "QcLightPassage.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcChunk.h"
+#include "common/world/QcLightPassage.h"
 
 #include <algorithm>
 

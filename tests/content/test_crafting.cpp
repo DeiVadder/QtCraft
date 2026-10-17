@@ -1,6 +1,6 @@
-#include "QcContentParser.h"
-#include "QcCrafting.h"
-#include "QcInventory.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/gameplay/QcCrafting.h"
+#include "common/gameplay/QcInventory.h"
 #include "QcTestUtil.h"
 
 #include <QJsonDocument>

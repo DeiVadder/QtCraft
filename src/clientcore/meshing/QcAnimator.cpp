@@ -1,6 +1,6 @@
-#include "QcAnimator.h"
+#include "clientcore/meshing/QcAnimator.h"
 
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QtMath>
 

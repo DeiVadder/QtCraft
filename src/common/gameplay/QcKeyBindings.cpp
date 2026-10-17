@@ -1,4 +1,4 @@
-#include "QcKeyBindings.h"
+#include "common/gameplay/QcKeyBindings.h"
 
 #include <QHash>
 #include <QSet>

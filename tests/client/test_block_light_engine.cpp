@@ -1,8 +1,8 @@
-#include "QcBlockLightEngine.h"
-#include "QcContentParser.h"
-#include "QcLightVolume.h"
-#include "QcSectionKey.h"
-#include "QcTextureAtlas.h"
+#include "clientcore/light/QcBlockLightEngine.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/parser/QcContentParser.h"
+#include "common/core/QcSectionKey.h"
+#include "common/world/QcLightVolume.h"
 
 #include <QJsonDocument>
 #include <QRandomGenerator>

@@ -1,10 +1,10 @@
-#include "QcTextureTools.h"
+#include "headless/QcTextureTools.h"
 
-#include "QcContentRegistry.h"
-#include "QcHeadlessOptions.h"
-#include "QcTextureAtlas.h"
-#include "QcTexturePackLibrary.h"
-#include "QcTextureSources.h"
+#include "clientcore/texturepacks/QcTexturePackLibrary.h"
+#include "clientcore/texturepacks/QcTextureSources.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "headless/QcHeadlessOptions.h"
 
 #include <QDir>
 #include <QElapsedTimer>

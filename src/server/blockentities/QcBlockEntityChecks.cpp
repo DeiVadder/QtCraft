@@ -1,6 +1,6 @@
-#include "QcBlockEntityChecks.h"
+#include "server/blockentities/QcBlockEntityChecks.h"
 
-#include "QcServerWorld.h"
+#include "server/core/QcServerWorld.h"
 
 #include <QSet>
 

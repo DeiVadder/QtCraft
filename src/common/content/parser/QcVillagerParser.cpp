@@ -1,9 +1,9 @@
-#include "QcVillagerParser.h"
+#include "common/content/parser/QcVillagerParser.h"
 
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcMobParser.h"
-#include "QcTradeParser.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcMobParser.h"
+#include "common/content/parser/QcTradeParser.h"
+#include "common/content/registry/QcContentNames.h"
 
 #include <QJsonArray>
 

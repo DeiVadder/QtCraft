@@ -1,16 +1,16 @@
 #pragma once
 
-#include "QcBlockCommands.h"
-#include "QcCheatCommands.h"
-#include "QcChunkCommands.h"
-#include "QcCommandRegistry.h"
-#include "QcExperienceCommands.h"
-#include "QcPendingCommands.h"
-#include "QcPlayerCommands.h"
-#include "QcTickCommands.h"
-#include "QcVillageCommands.h"
-#include "QcWeatherCommands.h"
-#include "QcWorldCommands.h"
+#include "server/commands/QcBlockCommands.h"
+#include "server/commands/QcCheatCommands.h"
+#include "server/commands/QcChunkCommands.h"
+#include "server/commands/QcCommandRegistry.h"
+#include "server/commands/QcExperienceCommands.h"
+#include "server/commands/QcPendingCommands.h"
+#include "server/commands/QcPlayerCommands.h"
+#include "server/commands/QcTickCommands.h"
+#include "server/commands/QcVillageCommands.h"
+#include "server/commands/QcWeatherCommands.h"
+#include "server/commands/QcWorldCommands.h"
 
 #include <QString>
 

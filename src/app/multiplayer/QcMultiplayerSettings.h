@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcServerHistory.h"
+#include "app/multiplayer/QcServerHistory.h"
 
 #include <QObject>
 #include <QString>

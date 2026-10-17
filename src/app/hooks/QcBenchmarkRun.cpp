@@ -1,14 +1,14 @@
-#include "QcBenchmarkRun.h"
+#include "app/hooks/QcBenchmarkRun.h"
 
-#include "QcClientSession.h"
-#include "QcGameController.h"
-#include "QcGameInput.h"
-#include "QcLocalServerHost.h"
-#include "QcMeshScheduler.h"
-#include "QcProcessMemory.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
-#include "QcTexturePackController.h"
+#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "app/controllers/QcTexturePackController.h"
+#include "app/input/QcGameInput.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/core/QcProcessMemory.h"
+#include "server/core/QcLocalServerHost.h"
 
 #include <QCoreApplication>
 #include <QLoggingCategory>

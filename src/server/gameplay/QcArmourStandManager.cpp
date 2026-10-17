@@ -1,6 +1,6 @@
-#include "QcArmourStandManager.h"
+#include "server/gameplay/QcArmourStandManager.h"
 
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <algorithm>
 

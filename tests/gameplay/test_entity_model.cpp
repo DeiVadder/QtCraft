@@ -1,6 +1,6 @@
-#include "QcEntities.h"
-#include "QcEntityChecks.h"
 #include "QcMachineFixture.h"
+#include "server/entities/QcEntities.h"
+#include "server/entities/QcEntityChecks.h"
 
 #include <QTemporaryDir>
 

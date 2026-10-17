@@ -1,11 +1,11 @@
-#include "QcBaseContent.h"
-#include "QcClientSession.h"
-#include "QcControlInterface.h"
-#include "QcLocalServerHost.h"
-#include "QcPhysics.h"
-#include "QcRaycast.h"
-#include "QcTestTerrainGenerator.h"
-#include "QcTransport.h"
+#include "clientcore/control/QcControlInterface.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
+#include "common/physics/QcRaycast.h"
+#include "common/protocol/QcTransport.h"
+#include "server/core/QcLocalServerHost.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QBuffer>
 #include <QJsonArray>

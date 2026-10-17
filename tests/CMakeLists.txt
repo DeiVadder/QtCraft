@@ -1,4 +1,6 @@
-# Tests are grouped by topic in subfolders (E-089); the shared fixtures stay in this folder. Each
+# Tests are grouped by topic in subfolders (E-089); the shared fixtures stay in this folder and are
+# included by their path below it ("QcServerTestFixture.h", "world/QcVillageTestUtil.h"; decision
+# E-418), the code by its path below src/ through the libraries. Each
 # topic folder lists its tests in tests.cmake (decision E-417), included here so that every test
 # keeps this folder as its source and build directory and the properties below reach all of them.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,4 +1,4 @@
-#include "QcKeyLabels.h"
+#include "clientcore/settings/QcKeyLabels.h"
 
 using namespace Qt::StringLiterals;
 

@@ -1,5 +1,5 @@
-#include "QcFovEffect.h"
-#include "QcSprintLatch.h"
+#include "clientcore/camera/QcFovEffect.h"
+#include "clientcore/session/QcSprintLatch.h"
 
 #include <QTest>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcMessages.h"
-#include "QcServerClient.h"
+#include "common/protocol/QcMessages.h"
+#include "server/core/QcServerClient.h"
 
 #include <QList>
 

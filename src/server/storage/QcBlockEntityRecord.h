@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockEntities.h"
-#include "QcFireQueue.h"
-#include "QcSignalSchedule.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/blocks/QcFireQueue.h"
+#include "server/signal/QcSignalSchedule.h"
 
 #include <QList>
 

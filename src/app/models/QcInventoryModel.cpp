@@ -1,7 +1,7 @@
-#include "QcInventoryModel.h"
+#include "app/models/QcInventoryModel.h"
 
-#include "QcContentRegistry.h"
-#include "QcMessages.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/protocol/QcMessages.h"
 
 using namespace Qt::StringLiterals;
 

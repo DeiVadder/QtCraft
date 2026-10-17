@@ -1,6 +1,6 @@
-#include "QcClientWorld.h"
+#include "clientcore/session/QcClientWorld.h"
 
-#include "QcLightVolume.h"
+#include "common/world/QcLightVolume.h"
 
 QcClientWorld::QcClientWorld(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))

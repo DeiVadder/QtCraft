@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcControlCommandTable.h"
-#include "QcControlContext.h"
+#include "clientcore/control/QcControlCommandTable.h"
+#include "clientcore/control/QcControlContext.h"
 
 #include <QJsonObject>
 #include <QObject>

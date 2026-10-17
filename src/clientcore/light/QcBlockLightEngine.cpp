@@ -1,6 +1,6 @@
-#include "QcBlockLightEngine.h"
+#include "clientcore/light/QcBlockLightEngine.h"
 
-#include "QcSectionKey.h"
+#include "common/core/QcSectionKey.h"
 
 namespace {
 

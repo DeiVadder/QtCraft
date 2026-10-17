@@ -1,6 +1,6 @@
-#include "QcFireRules.h"
+#include "server/blocks/QcFireRules.h"
 
-#include "QcBlockFace.h"
+#include "common/core/QcBlockFace.h"
 
 #include <algorithm>
 #include <cstdlib>

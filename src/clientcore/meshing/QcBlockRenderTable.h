@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcBlockVertex.h"
-#include "QcLightTable.h"
+#include "clientcore/meshing/QcBlockVertex.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/light/QcLightTable.h"
 
 #include <QList>
 #include <QRectF>

@@ -1,6 +1,6 @@
-#include "QcControlContext.h"
+#include "clientcore/control/QcControlContext.h"
 
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientSession.h"
 
 #include <QIODevice>
 #include <QJsonDocument>

@@ -1,4 +1,4 @@
-#include "QcTextureEmblem.h"
+#include "clientcore/textures/QcTextureEmblem.h"
 
 #include <QJsonArray>
 

@@ -1,8 +1,8 @@
-#include "QcContentRegistry.h"
-#include "QcTextureAtlas.h"
-#include "QcTexturePackLibrary.h"
-#include "QcTexturePackLoader.h"
-#include "QcTextureSources.h"
+#include "clientcore/texturepacks/QcTexturePackLibrary.h"
+#include "clientcore/texturepacks/QcTexturePackLoader.h"
+#include "clientcore/texturepacks/QcTextureSources.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QBuffer>
 #include <QDir>

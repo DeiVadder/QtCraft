@@ -1,8 +1,8 @@
-#include "QcChunkMesher.h"
+#include "clientcore/meshing/QcChunkMesher.h"
 
-#include "QcLightPassage.h"
-#include "QcLightVolume.h"
-#include "QcSectionLight.h"
+#include "clientcore/light/QcSectionLight.h"
+#include "common/world/QcLightPassage.h"
+#include "common/world/QcLightVolume.h"
 
 namespace {
 

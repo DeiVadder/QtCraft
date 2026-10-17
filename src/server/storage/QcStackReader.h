@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcItemStack.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QDataStream>
 #include <QSet>

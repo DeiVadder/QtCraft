@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcMessages.h"
-#include "QcSoundCue.h"
-#include "QcVec3.h"
-#include "QcWeather.h"
+#include "clientcore/sound/QcSoundCue.h"
+#include "common/core/QcVec3.h"
+#include "common/protocol/QcMessages.h"
+#include "common/world/QcWeather.h"
 
 #include <QList>
 

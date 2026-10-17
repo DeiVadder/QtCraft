@@ -1,4 +1,4 @@
-#include "QcMining.h"
+#include "common/gameplay/QcMining.h"
 
 #include <algorithm>
 

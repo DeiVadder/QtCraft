@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcHandbook.h"
+#include "common/handbook/QcHandbook.h"
 
 #include <QJsonArray>
 #include <QJsonObject>

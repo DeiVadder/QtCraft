@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcMessages.h"
-#include "QcPrecipitationTable.h"
-#include "QcVec3.h"
-#include "QcWeather.h"
-#include "QcWeatherCycle.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "common/protocol/QcMessages.h"
+#include "common/world/QcPrecipitationTable.h"
+#include "common/world/QcWeather.h"
+#include "server/weather/QcWeatherCycle.h"
 
 #include <QHash>
 

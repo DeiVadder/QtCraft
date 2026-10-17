@@ -1,12 +1,12 @@
-#include "QcGameInput.h"
+#include "app/input/QcGameInput.h"
 
-#include "QcAudioEngine.h"
-#include "QcClientSession.h"
-#include "QcGameController.h"
-#include "QcMouseLook.h"
-#include "QcSessionParts.h"
-#include "QcSettingsController.h"
-#include "QcSoundKeys.h"
+#include "app/controllers/QcGameController.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcSettingsController.h"
+#include "audio/QcAudioEngine.h"
+#include "clientcore/camera/QcMouseLook.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/content/definitions/QcSoundKeys.h"
 
 #include <QCoreApplication>
 #include <QCursor>

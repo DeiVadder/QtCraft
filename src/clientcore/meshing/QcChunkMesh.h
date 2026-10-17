@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockVertex.h"
-#include "QcSectionLight.h"
+#include "clientcore/light/QcSectionLight.h"
+#include "clientcore/meshing/QcBlockVertex.h"
 
 #include <QList>
 

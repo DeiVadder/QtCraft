@@ -1,7 +1,7 @@
-#include "QcProfileValidation.h"
+#include "server/core/QcProfileValidation.h"
 
-#include "QcContentRegistry.h"
-#include "QcNameText.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcNameText.h"
 
 #include <algorithm>
 

@@ -1,6 +1,6 @@
 #include "QcServerTestFixture.h"
 
-#include "QcProcessMemory.h"
+#include "common/core/QcProcessMemory.h"
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>

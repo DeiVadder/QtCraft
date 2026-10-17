@@ -1,8 +1,8 @@
-#include "QcBaseContent.h"
-#include "QcContentParser.h"
-#include "QcStateRotation.h"
-#include "QcStructure.h"
-#include "QcStructurePlacement.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/parser/QcContentParser.h"
+#include "worldgen/structures/QcStateRotation.h"
+#include "worldgen/structures/QcStructure.h"
+#include "worldgen/structures/QcStructurePlacement.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>

@@ -1,5 +1,5 @@
-#include "QcAmbience.h"
-#include "QcLocalSounds.h"
+#include "clientcore/sound/QcAmbience.h"
+#include "clientcore/sound/QcLocalSounds.h"
 #include "QcTestWorld.h"
 
 #include <QTest>

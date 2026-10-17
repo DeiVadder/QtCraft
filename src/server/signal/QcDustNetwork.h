@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcSignalPower.h"
+#include "server/signal/QcSignalPower.h"
 
 #include <QHash>
 #include <QList>

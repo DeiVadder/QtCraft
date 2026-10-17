@@ -1,7 +1,7 @@
-#include "QcContentFingerprint.h"
+#include "server/content/QcContentFingerprint.h"
 
-#include "QcBaseContent.h"
-#include "QcContentPackLoader.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/content/loader/QcContentPackLoader.h"
 
 #include <QCryptographicHash>
 #include <QDir>

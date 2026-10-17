@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcItemDefinition.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/definitions/QcItemDefinition.h"
 
 // Mining rules shared by server (validation) and client (progress display).
 namespace QcMining {

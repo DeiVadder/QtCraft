@@ -1,11 +1,11 @@
-#include "QcBaseContent.h"
-#include "QcDayCycle.h"
-#include "QcFlatGenerator.h"
-#include "QcMobBehaviour.h"
-#include "QcMobManager.h"
-#include "QcMobNavigator.h"
-#include "QcPathPlanner.h"
-#include "QcServerWorld.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/world/QcDayCycle.h"
+#include "server/core/QcServerWorld.h"
+#include "server/mobs/QcMobBehaviour.h"
+#include "server/mobs/QcMobManager.h"
+#include "server/pathing/QcMobNavigator.h"
+#include "server/pathing/QcPathPlanner.h"
+#include "worldgen/generators/QcFlatGenerator.h"
 
 #include <QSet>
 #include <QTest>

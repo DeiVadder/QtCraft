@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcDebugSnapshot.h"
-#include "QcMeshScheduler.h"
-#include "QcPhaseWindow.h"
-#include "QcRenderSample.h"
+#include "app/rendering/QcRenderSample.h"
+#include "clientcore/debug/QcDebugSnapshot.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "common/core/QcPhaseWindow.h"
 
 #include <QElapsedTimer>
 #include <QList>

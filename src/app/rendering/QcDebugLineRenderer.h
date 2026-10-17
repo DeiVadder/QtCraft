@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcDebugLines.h"
+#include "clientcore/debug/QcDebugLines.h"
 
 #include <QList>
 #include <rhi/qrhi.h>

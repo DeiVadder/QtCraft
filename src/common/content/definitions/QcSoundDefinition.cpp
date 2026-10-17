@@ -1,4 +1,4 @@
-#include "QcSoundDefinition.h"
+#include "common/content/definitions/QcSoundDefinition.h"
 
 #include <algorithm>
 #include <cmath>

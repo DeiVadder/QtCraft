@@ -1,7 +1,7 @@
-#include "QcContentParser.h"
-#include "QcLiquidFlow.h"
+#include "common/content/parser/QcContentParser.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
+#include "server/blocks/QcLiquidFlow.h"
 
 #include <QJsonDocument>
 #include <QTest>

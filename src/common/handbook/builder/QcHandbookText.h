@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QLocale>
 #include <QMap>

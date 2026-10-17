@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcPermission.h"
-#include "QcSessionMessages.h"
+#include "common/core/QcBlockPos.h"
+#include "common/protocol/QcSessionMessages.h"
+#include "server/commands/QcPermission.h"
 
 #include <QString>
 #include <QStringList>

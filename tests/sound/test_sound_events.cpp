@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcConnection.h"
-#include "QcInProcessTransport.h"
-#include "QcPhysics.h"
-#include "QcServer.h"
-#include "QcTestTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcInProcessTransport.h"
+#include "server/core/QcServer.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include "QcTestLogin.h"
 

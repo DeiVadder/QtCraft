@@ -1,4 +1,4 @@
-#include "QcSprintLatch.h"
+#include "clientcore/session/QcSprintLatch.h"
 
 void QcSprintLatch::forwardPressed(qint64 timestampMs)
 {

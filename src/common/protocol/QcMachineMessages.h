@@ -3,8 +3,8 @@
 // Protocol messages of machines (furnaces) and storage blocks (chests).
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "QcBlockPos.h"
-#include "QcItemStack.h"
+#include "common/core/QcBlockPos.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QList>
 #include <QString>

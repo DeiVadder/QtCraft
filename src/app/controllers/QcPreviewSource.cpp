@@ -1,13 +1,13 @@
-#include "QcPreviewSource.h"
+#include "app/controllers/QcPreviewSource.h"
 
-#include "QcCharacterSettings.h"
-#include "QcClientSession.h"
-#include "QcContentRegistry.h"
-#include "QcSessionParts.h"
-#include "QcGpuLimits.h"
-#include "QcTextureAtlas.h"
-#include "QcTexturePackController.h"
-#include "QcWorldLibraryController.h"
+#include "app/controllers/QcCharacterSettings.h"
+#include "app/controllers/QcSessionParts.h"
+#include "app/controllers/QcTexturePackController.h"
+#include "app/controllers/QcWorldLibraryController.h"
+#include "clientcore/session/QcClientSession.h"
+#include "clientcore/textures/QcGpuLimits.h"
+#include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QLoggingCategory>
 #include <QtConcurrent/QtConcurrentRun>

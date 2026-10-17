@@ -1,9 +1,9 @@
-#include "QcContentParser.h"
+#include "common/content/parser/QcContentParser.h"
 
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcStreamLimits.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <QJsonArray>
 #include <QRegularExpression>

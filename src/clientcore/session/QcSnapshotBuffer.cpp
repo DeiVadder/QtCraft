@@ -1,4 +1,4 @@
-#include "QcSnapshotBuffer.h"
+#include "clientcore/session/QcSnapshotBuffer.h"
 
 #include <algorithm>
 #include <cmath>

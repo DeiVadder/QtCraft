@@ -1,4 +1,4 @@
-#include "QcLanAddresses.h"
+#include "app/multiplayer/QcLanAddresses.h"
 
 #include <QNetworkInterface>
 

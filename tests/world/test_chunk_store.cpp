@@ -1,13 +1,13 @@
-#include "QcBaseContent.h"
-#include "QcBlockEntityCodec.h"
-#include "QcChunkCodec.h"
-#include "QcChunkIo.h"
-#include "QcChunkStore.h"
-#include "QcCrc32.h"
-#include "QcRegionFile.h"
-#include "QcSaveFile.h"
-#include "QcTestTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/core/QcCrc32.h"
 #include "QcTestUtil.h"
+#include "server/storage/QcBlockEntityCodec.h"
+#include "server/storage/QcChunkCodec.h"
+#include "server/storage/QcChunkIo.h"
+#include "server/storage/QcChunkStore.h"
+#include "server/storage/QcRegionFile.h"
+#include "server/storage/QcSaveFile.h"
+#include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QDataStream>
 #include <QDir>

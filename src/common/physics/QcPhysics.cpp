@@ -1,7 +1,7 @@
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
 
-#include "QcContentRegistry.h"
-#include "QcWorldConstants.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QVarLengthArray>
 #include <QtMath>

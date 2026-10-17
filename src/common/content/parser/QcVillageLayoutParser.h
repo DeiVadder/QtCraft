@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcJsonFieldReader.h"
-#include "QcVillageDefinitions.h"
+#include "common/content/definitions/QcVillageDefinitions.h"
+#include "common/content/parser/QcJsonFieldReader.h"
 
 #include <QList>
 #include <QString>

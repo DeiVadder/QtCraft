@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockRenderTable.h"
-#include "QcChunk.h"
-#include "QcChunkLight.h"
-#include "QcChunkMesh.h"
+#include "clientcore/light/QcChunkLight.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/meshing/QcChunkMesh.h"
+#include "common/world/QcChunk.h"
 
 #include <array>
 #include <memory>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcSampleBuffer.h"
+#include "clientcore/sound/QcSampleBuffer.h"
 
 #include <QList>
 

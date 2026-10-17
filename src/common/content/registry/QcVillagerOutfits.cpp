@@ -1,6 +1,6 @@
-#include "QcVillagerOutfits.h"
+#include "common/content/registry/QcVillagerOutfits.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 using namespace Qt::StringLiterals;
 

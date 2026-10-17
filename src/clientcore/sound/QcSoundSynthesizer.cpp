@@ -1,4 +1,4 @@
-#include "QcSoundSynthesizer.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
 
 #include <algorithm>
 #include <cmath>

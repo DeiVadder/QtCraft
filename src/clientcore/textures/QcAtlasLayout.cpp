@@ -1,4 +1,4 @@
-#include "QcAtlasLayout.h"
+#include "clientcore/textures/QcAtlasLayout.h"
 
 #include <algorithm>
 #include <array>

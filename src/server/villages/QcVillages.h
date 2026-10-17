@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcChunk.h"
-#include "QcVillage.h"
-#include "QcVillageBlocks.h"
+#include "common/world/QcChunk.h"
+#include "server/villages/QcVillage.h"
+#include "worldgen/villages/QcVillageBlocks.h"
 
 #include <QHash>
 #include <QList>

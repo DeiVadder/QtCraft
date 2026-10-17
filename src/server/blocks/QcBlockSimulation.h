@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcServerLimits.h"
-#include "QcBlockDefinition.h"
-#include "QcBlockPos.h"
-#include "QcFireRules.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcBlockPos.h"
+#include "server/blocks/QcFireRules.h"
+#include "server/core/QcServerLimits.h"
 
 
 class QcBlockUpdateQueue;

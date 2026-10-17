@@ -1,9 +1,9 @@
-#include "QcContentSerializer.h"
+#include "common/content/registry/QcContentSerializer.h"
 
-#include "QcArmourSerializer.h"
-#include "QcBlockSerializer.h"
-#include "QcContentRegistry.h"
-#include "QcStreamLimits.h"
+#include "common/content/registry/QcArmourSerializer.h"
+#include "common/content/registry/QcBlockSerializer.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <QJsonDocument>
 

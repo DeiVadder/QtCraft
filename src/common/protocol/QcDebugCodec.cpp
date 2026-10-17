@@ -1,9 +1,9 @@
 // Payloads of the debug messages (QcDebugMessages.h): the subscription and the server's statistics.
 
-#include "QcProtocolCodec.h"
+#include "common/protocol/QcProtocolCodec.h"
 
-#include "QcStreamLimits.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/protocol/QcStreamLimits.h"
 
 #include <algorithm>
 #include <cmath>

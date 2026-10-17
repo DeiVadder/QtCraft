@@ -1,9 +1,9 @@
-#include "QcBaseContent.h"
-#include "QcChunkIo.h"
-#include "QcLightEngine.h"
-#include "QcLightVolume.h"
-#include "QcServerWorld.h"
-#include "QcTerrainGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/light/QcLightEngine.h"
+#include "common/world/QcLightVolume.h"
+#include "server/core/QcServerWorld.h"
+#include "server/storage/QcChunkIo.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QRandomGenerator>
 #include <QTemporaryDir>

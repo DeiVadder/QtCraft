@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcEntity.h"
-#include "QcEquipment.h"
-#include "QcStandPose.h"
+#include "common/gameplay/QcEquipment.h"
+#include "common/gameplay/QcStandPose.h"
+#include "server/entities/QcEntity.h"
 
 #include <QString>
 

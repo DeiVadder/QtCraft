@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcClientLogin.h"
-#include "QcServerAddress.h"
-#include "QcSessionMessages.h"
+#include "clientcore/session/QcClientLogin.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/protocol/QcSessionMessages.h"
+#include "network/QcServerAddress.h"
 
 #include <QObject>
 

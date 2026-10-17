@@ -1,14 +1,14 @@
-#include "QcServer.h"
+#include "server/core/QcServer.h"
 
-#include "QcChatText.h"
-#include "QcConnection.h"
-#include "QcDayCycle.h"
-#include "QcLineOfSight.h"
-#include "QcPhysics.h"
-#include "QcProfileValidation.h"
-#include "QcProtocol.h"
-#include "QcServerSetup.h"
-#include "QcTransport.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcTransport.h"
+#include "common/world/QcDayCycle.h"
+#include "server/core/QcProfileValidation.h"
+#include "server/core/QcServerSetup.h"
+#include "server/gameplay/QcLineOfSight.h"
 
 #include <QLoggingCategory>
 #include <QTimer>

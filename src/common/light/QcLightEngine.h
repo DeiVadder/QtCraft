@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcChunk.h"
-#include "QcLightNibbles.h"
-#include "QcLightTable.h"
+#include "common/core/QcBlockPos.h"
+#include "common/light/QcLightNibbles.h"
+#include "common/light/QcLightTable.h"
+#include "common/world/QcChunk.h"
 
 #include <QList>
 #include <QSet>

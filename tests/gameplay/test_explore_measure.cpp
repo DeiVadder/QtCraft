@@ -1,7 +1,7 @@
 #include "QcServerTestFixture.h"
 
-#include "QcTerrainGenerator.h"
-#include "QcTickPhase.h"
+#include "common/core/QcTickPhase.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>
 #include <QThread>

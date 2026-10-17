@@ -1,6 +1,6 @@
-#include "QcCreativeItemModel.h"
+#include "app/models/QcCreativeItemModel.h"
 
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 

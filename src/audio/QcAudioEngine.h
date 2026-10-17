@@ -1,11 +1,11 @@
 #pragma once
 
-#include "QcAmbience.h"
-#include "QcAudioMixer.h"
-#include "QcAudioOutput.h"
-#include "QcContentRegistry.h"
-#include "QcSoundBank.h"
-#include "QcSoundCue.h"
+#include "audio/QcAudioOutput.h"
+#include "clientcore/sound/QcAmbience.h"
+#include "clientcore/sound/QcAudioMixer.h"
+#include "clientcore/sound/QcSoundBank.h"
+#include "clientcore/sound/QcSoundCue.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <QFutureWatcher>
 #include <QObject>

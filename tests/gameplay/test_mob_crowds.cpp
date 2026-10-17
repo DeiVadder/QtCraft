@@ -1,10 +1,10 @@
-#include "QcDayCycle.h"
-#include "QcFlatGenerator.h"
-#include "QcMobBehaviour.h"
-#include "QcPathPlanner.h"
-#include "QcServerCreatures.h"
+#include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
-#include "QcShowcaseGenerator.h"
+#include "server/mobs/QcMobBehaviour.h"
+#include "server/mobs/QcServerCreatures.h"
+#include "server/pathing/QcPathPlanner.h"
+#include "worldgen/generators/QcFlatGenerator.h"
+#include "worldgen/showcase/QcShowcaseGenerator.h"
 
 #include <QFile>
 #include <QJsonDocument>

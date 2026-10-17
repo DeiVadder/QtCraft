@@ -1,7 +1,7 @@
-#include "QcControlAim.h"
+#include "clientcore/control/QcControlAim.h"
 
-#include "QcClientSession.h"
-#include "QcPhysics.h"
+#include "clientcore/session/QcClientSession.h"
+#include "common/physics/QcPhysics.h"
 
 #include <QtMath>
 

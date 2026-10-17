@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcEquipment.h"
+#include "common/gameplay/QcEquipment.h"
 
 #include <QList>
 

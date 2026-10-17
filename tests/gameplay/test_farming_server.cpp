@@ -1,6 +1,6 @@
-#include "QcPhysics.h"
-#include "QcServerPlants.h"
+#include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
+#include "server/plants/QcServerPlants.h"
 
 #include <cmath>
 

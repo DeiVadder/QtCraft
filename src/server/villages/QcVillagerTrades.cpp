@@ -1,8 +1,8 @@
-#include "QcVillagerTrades.h"
+#include "server/villages/QcVillagerTrades.h"
 
-#include "QcContentRegistry.h"
-#include "QcDayCycle.h"
-#include "QcNoise.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcDayCycle.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <QLoggingCategory>
 

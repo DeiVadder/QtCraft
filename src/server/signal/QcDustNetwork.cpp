@@ -1,6 +1,6 @@
-#include "QcDustNetwork.h"
+#include "server/signal/QcDustNetwork.h"
 
-#include "QcBlockRules.h"
+#include "server/blocks/QcBlockRules.h"
 
 #include <algorithm>
 

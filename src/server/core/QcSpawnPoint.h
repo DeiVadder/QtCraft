@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcServerConfig.h"
-#include "QcVec3.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
+#include "server/core/QcServerConfig.h"
 
 #include <memory>
 #include <optional>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcBlockPos.h"
-#include "QcVec3.h"
-#include "QcVillagerDefinitions.h"
+#include "common/content/definitions/QcVillagerDefinitions.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
 
 #include <QString>
 

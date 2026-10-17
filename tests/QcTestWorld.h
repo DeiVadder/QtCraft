@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockAccess.h"
-#include "QcContentRegistry.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcBlockAccess.h"
 
 #include <QHash>
 

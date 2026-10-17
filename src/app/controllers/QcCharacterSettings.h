@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAppearance.h"
-#include "QcAppearanceDefinition.h"
-#include "QcCharacterPresets.h"
-#include "QcCharacterProfile.h"
+#include "clientcore/settings/QcCharacterPresets.h"
+#include "clientcore/settings/QcCharacterProfile.h"
+#include "common/content/definitions/QcAppearance.h"
+#include "common/content/definitions/QcAppearanceDefinition.h"
 
 #include <QObject>
 #include <QStringList>

@@ -1,8 +1,8 @@
-#include "QcPlayerStorage.h"
+#include "server/storage/QcPlayerStorage.h"
 
-#include "QcSaveFile.h"
-#include "QcStreamLimits.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/protocol/QcStreamLimits.h"
+#include "server/storage/QcSaveFile.h"
 
 #include <QCryptographicHash>
 #include <QDir>

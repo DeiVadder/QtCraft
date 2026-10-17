@@ -1,6 +1,6 @@
-#include "QcDebugText.h"
+#include "clientcore/debug/QcDebugText.h"
 
-#include "QcIntMath.h"
+#include "common/core/QcIntMath.h"
 
 #include <algorithm>
 

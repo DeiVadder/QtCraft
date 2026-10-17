@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcAabb.h"
-#include "QcBlockAccess.h"
-#include "QcEntityMotion.h"
-#include "QcPlayerInput.h"
+#include "common/core/QcAabb.h"
+#include "common/physics/QcEntityMotion.h"
+#include "common/physics/QcPlayerInput.h"
+#include "common/world/QcBlockAccess.h"
 
 // Deterministic movement and collision shared by server (authoritative) and client (prediction).
 // Units: metres, seconds, metres per second.

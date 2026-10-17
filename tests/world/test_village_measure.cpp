@@ -1,6 +1,6 @@
-#include "QcBaseContent.h"
-#include "QcTerrainGenerator.h"
-#include "QcVillageGenerator.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillageGenerator.h"
 
 #include <QElapsedTimer>
 #include <QSet>

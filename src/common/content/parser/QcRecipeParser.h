@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcRecipeDefinition.h"
-#include "QcResult.h"
-#include "QcSmeltingRecipe.h"
+#include "common/content/definitions/QcRecipeDefinition.h"
+#include "common/content/definitions/QcSmeltingRecipe.h"
+#include "common/core/QcResult.h"
 
 #include <QJsonObject>
 

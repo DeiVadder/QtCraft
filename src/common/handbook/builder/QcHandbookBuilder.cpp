@@ -1,16 +1,16 @@
-#include "QcHandbookBuilder.h"
+#include "common/handbook/builder/QcHandbookBuilder.h"
 
-#include "QcHandbookBlockPages.h"
-#include "QcHandbookChapterPages.h"
-#include "QcHandbookContext.h"
-#include "QcHandbookCreaturePages.h"
-#include "QcHandbookIndex.h"
-#include "QcHandbookItemPages.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookOverviewPages.h"
-#include "QcHandbookRecipes.h"
-#include "QcHandbookText.h"
-#include "QcHandbookWorldPages.h"
+#include "common/handbook/builder/QcHandbookBlockPages.h"
+#include "common/handbook/builder/QcHandbookChapterPages.h"
+#include "common/handbook/builder/QcHandbookContext.h"
+#include "common/handbook/builder/QcHandbookCreaturePages.h"
+#include "common/handbook/builder/QcHandbookIndex.h"
+#include "common/handbook/builder/QcHandbookItemPages.h"
+#include "common/handbook/builder/QcHandbookOverviewPages.h"
+#include "common/handbook/builder/QcHandbookRecipes.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/builder/QcHandbookWorldPages.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 #include <QHash>
 #include <QSet>

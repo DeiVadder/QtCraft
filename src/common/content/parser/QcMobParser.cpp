@@ -1,10 +1,10 @@
-#include "QcMobParser.h"
+#include "common/content/parser/QcMobParser.h"
 
-#include "QcContentFields.h"
-#include "QcContentNames.h"
-#include "QcJsonFieldReader.h"
-#include "QcSoundKeys.h"
-#include "QcWorldConstants.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/parser/QcContentFields.h"
+#include "common/content/parser/QcJsonFieldReader.h"
+#include "common/content/registry/QcContentNames.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QJsonArray>
 

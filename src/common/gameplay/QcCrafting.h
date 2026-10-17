@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcContentRegistry.h"
-#include "QcInventory.h"
-#include "QcItemStack.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcInventory.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include <QList>
 

@@ -1,5 +1,5 @@
-#include "QcHunger.h"
-#include "QcPhysics.h"
+#include "common/physics/QcPhysics.h"
+#include "server/gameplay/QcHunger.h"
 
 #include <QTest>
 

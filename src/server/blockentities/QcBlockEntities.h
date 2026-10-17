@@ -1,9 +1,9 @@
 #pragma once
 
-#include "QcChunk.h"
-#include "QcContentRegistry.h"
-#include "QcItemStack.h"
-#include "QcSignalSchedule.h"
+#include "common/content/registry/QcContentRegistry.h"
+#include "common/gameplay/QcItemStack.h"
+#include "common/world/QcChunk.h"
+#include "server/signal/QcSignalSchedule.h"
 
 #include <QHash>
 #include <QList>

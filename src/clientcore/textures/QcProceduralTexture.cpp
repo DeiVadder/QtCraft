@@ -1,8 +1,8 @@
-#include "QcProceduralTexture.h"
+#include "clientcore/textures/QcProceduralTexture.h"
 
-#include "QcTextureDetail.h"
-#include "QcTextureEmblem.h"
-#include "QcTextureSynthesizer.h"
+#include "clientcore/textures/QcTextureDetail.h"
+#include "clientcore/textures/QcTextureEmblem.h"
+#include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <algorithm>
 

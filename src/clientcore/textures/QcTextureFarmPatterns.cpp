@@ -1,4 +1,4 @@
-#include "QcTextureFarmPatterns.h"
+#include "clientcore/textures/QcTextureFarmPatterns.h"
 
 #include <array>
 #include <cmath>

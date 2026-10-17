@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QcLoginMessages.h"
-#include "QcMultiplayerSettings.h"
-#include "QcNetworkClient.h"
-#include "QcPlayerList.h"
-#include "QcResult.h"
+#include "app/multiplayer/QcMultiplayerSettings.h"
+#include "app/multiplayer/QcPlayerList.h"
+#include "clientcore/network/QcNetworkClient.h"
+#include "common/core/QcResult.h"
+#include "common/protocol/QcLoginMessages.h"
 
 #include <QHostAddress>
 #include <QObject>

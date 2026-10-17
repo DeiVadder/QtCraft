@@ -1,4 +1,4 @@
-#include "QcPreviewActivity.h"
+#include "clientcore/preview/QcPreviewActivity.h"
 
 namespace QcPreviewActivity {
 

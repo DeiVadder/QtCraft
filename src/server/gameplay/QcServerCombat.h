@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcBlockDefinition.h"
-#include "QcVec3.h"
+#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcVec3.h"
 
 #include <QList>
 

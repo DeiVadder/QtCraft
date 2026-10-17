@@ -1,8 +1,8 @@
-#include "QcHandbookRecipes.h"
+#include "common/handbook/builder/QcHandbookRecipes.h"
 
-#include "QcHandbookIndex.h"
-#include "QcHandbookLinks.h"
-#include "QcHandbookText.h"
+#include "common/handbook/builder/QcHandbookIndex.h"
+#include "common/handbook/builder/QcHandbookText.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 #include <algorithm>
 

@@ -1,8 +1,8 @@
-#include "QcBlockEntityRecords.h"
+#include "server/storage/QcBlockEntityRecords.h"
 
-#include "QcBlockEntities.h"
-#include "QcCircuitState.h"
-#include "QcHopperQueue.h"
+#include "server/blockentities/QcBlockEntities.h"
+#include "server/signal/QcCircuitState.h"
+#include "server/signal/QcHopperQueue.h"
 
 #include <QSet>
 

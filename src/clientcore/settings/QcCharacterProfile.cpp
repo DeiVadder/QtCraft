@@ -1,6 +1,6 @@
-#include "QcCharacterProfile.h"
+#include "clientcore/settings/QcCharacterProfile.h"
 
-#include "QcNameText.h"
+#include "common/core/QcNameText.h"
 
 #include <QRandomGenerator>
 #include <QSettings>

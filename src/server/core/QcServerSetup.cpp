@@ -1,11 +1,11 @@
-#include "QcServerSetup.h"
+#include "server/core/QcServerSetup.h"
 
-#include "QcBlockUpdateQueue.h"
-#include "QcMinecartMotion.h"
-#include "QcPhysics.h"
-#include "QcRails.h"
-#include "QcServerState.h"
-#include "QcStandProperties.h"
+#include "common/physics/QcPhysics.h"
+#include "server/blocks/QcBlockUpdateQueue.h"
+#include "server/blocks/QcRails.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcStandProperties.h"
+#include "server/minecarts/QcMinecartMotion.h"
 
 #include <QLoggingCategory>
 

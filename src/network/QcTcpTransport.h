@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcFrameReader.h"
-#include "QcProtocol.h"
-#include "QcTransport.h"
+#include "common/protocol/QcFrameReader.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcTransport.h"
 
 #include <QElapsedTimer>
 

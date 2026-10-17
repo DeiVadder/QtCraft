@@ -1,13 +1,13 @@
-#include "QcClientSession.h"
+#include "clientcore/session/QcClientSession.h"
 
-#include "QcChatText.h"
-#include "QcConnection.h"
-#include "QcMinecartBody.h"
-#include "QcMining.h"
-#include "QcPhysics.h"
-#include "QcProtocol.h"
-#include "QcSoundKeys.h"
-#include "QcTransport.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcMining.h"
+#include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcProtocol.h"
+#include "common/protocol/QcTransport.h"
+#include "common/world/QcMinecartBody.h"
 
 #include <QLoggingCategory>
 #include <QTimer>

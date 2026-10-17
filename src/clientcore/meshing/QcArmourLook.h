@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcEntityMesher.h"
-#include "QcEquipment.h"
+#include "clientcore/meshing/QcEntityMesher.h"
+#include "common/gameplay/QcEquipment.h"
 
 #include <QList>
 

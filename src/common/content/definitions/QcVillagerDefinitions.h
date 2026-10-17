@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcAppearanceDefinition.h"
-#include "QcTradeDefinitions.h"
+#include "common/content/definitions/QcAppearanceDefinition.h"
+#include "common/content/definitions/QcTradeDefinitions.h"
 
 #include <QList>
 #include <QString>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcFireQueue.h"
-#include "QcFireRules.h"
+#include "server/blocks/QcFireQueue.h"
+#include "server/blocks/QcFireRules.h"
 
 #include <functional>
 

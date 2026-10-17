@@ -1,8 +1,8 @@
-#include "QcExperienceCommands.h"
+#include "server/commands/QcExperienceCommands.h"
 
-#include "QcCommandArguments.h"
-#include "QcServerClient.h"
-#include "QcServerState.h"
+#include "server/commands/QcCommandArguments.h"
+#include "server/core/QcServerClient.h"
+#include "server/core/QcServerState.h"
 
 #include <cmath>
 #include <limits>

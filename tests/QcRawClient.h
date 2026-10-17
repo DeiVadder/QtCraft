@@ -1,8 +1,8 @@
 #pragma once
 
-#include "QcConnection.h"
+#include "common/protocol/QcConnection.h"
+#include "common/protocol/QcTransport.h"
 #include "QcTestLogin.h"
-#include "QcTransport.h"
 
 #include <QHash>
 #include <QSet>

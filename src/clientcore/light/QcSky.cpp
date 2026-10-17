@@ -1,7 +1,7 @@
-#include "QcSky.h"
+#include "clientcore/light/QcSky.h"
 
-#include "QcDayCycle.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "common/world/QcDayCycle.h"
 
 #include <algorithm>
 #include <cmath>

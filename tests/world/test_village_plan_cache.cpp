@@ -1,7 +1,7 @@
-#include "QcBaseContent.h"
-#include "QcVillagePlanCache.h"
-#include "QcVillageTestUtil.h"
-#include "QcVillages.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "server/villages/QcVillages.h"
+#include "world/QcVillageTestUtil.h"
+#include "worldgen/villages/QcVillagePlanCache.h"
 
 #include <QTest>
 

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "QcBlockLightEngine.h"
-#include "QcBlockPos.h"
-#include "QcBlockRenderTable.h"
-#include "QcChunkLight.h"
-#include "QcChunkMesh.h"
-#include "QcChunkMesher.h"
-#include "QcMailbox.h"
-#include "QcVec3.h"
-#include "QcWorkerPool.h"
+#include "clientcore/light/QcBlockLightEngine.h"
+#include "clientcore/light/QcChunkLight.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/meshing/QcChunkMesh.h"
+#include "clientcore/meshing/QcChunkMesher.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcMailbox.h"
+#include "common/core/QcVec3.h"
+#include "common/core/QcWorkerPool.h"
 
 #include <QElapsedTimer>
 #include <QHash>

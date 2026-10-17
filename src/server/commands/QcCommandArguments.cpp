@@ -1,8 +1,8 @@
-#include "QcCommandArguments.h"
+#include "server/commands/QcCommandArguments.h"
 
-#include "QcAccessList.h"
-#include "QcServerState.h"
-#include "QcWorldConstants.h"
+#include "common/core/QcWorldConstants.h"
+#include "server/commands/QcAccessList.h"
+#include "server/core/QcServerState.h"
 
 #include <cmath>
 

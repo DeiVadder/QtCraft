@@ -1,14 +1,14 @@
-#include "QcServerInventory.h"
+#include "server/gameplay/QcServerInventory.h"
 
-#include "QcArmour.h"
-#include "QcPhysics.h"
-#include "QcQuickMove.h"
-#include "QcServerCrafting.h"
-#include "QcServerExperience.h"
-#include "QcBlockScreens.h"
-#include "QcServerSounds.h"
-#include "QcServerState.h"
-#include "QcSoundKeys.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcQuickMove.h"
+#include "common/physics/QcPhysics.h"
+#include "server/core/QcServerSounds.h"
+#include "server/core/QcServerState.h"
+#include "server/gameplay/QcServerCrafting.h"
+#include "server/items/QcServerExperience.h"
+#include "server/machines/QcBlockScreens.h"
 
 #include <QtMath>
 

@@ -1,13 +1,13 @@
-#include "QcBaseContent.h"
-#include "QcClientGameMode.h"
-#include "QcClientSession.h"
-#include "QcFlightLatch.h"
+#include "clientcore/session/QcClientGameMode.h"
+#include "clientcore/session/QcClientSession.h"
+#include "clientcore/session/QcFlightLatch.h"
+#include "common/content/loader/QcBaseContent.h"
+#include "common/gameplay/QcMining.h"
+#include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"
-#include "QcLocalServerHost.h"
-#include "QcMining.h"
-#include "QcPhysics.h"
-#include "QcWorldGenerators.h"
-#include "QcWorldStorage.h"
+#include "server/core/QcLocalServerHost.h"
+#include "server/storage/QcWorldStorage.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
 #include <QFile>

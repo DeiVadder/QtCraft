@@ -1,4 +1,4 @@
-#include "QcControlArguments.h"
+#include "clientcore/control/QcControlArguments.h"
 
 #include <QJsonValue>
 

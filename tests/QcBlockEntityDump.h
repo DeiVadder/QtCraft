@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcServer.h"
+#include "server/core/QcServer.h"
 
 #include <QStringList>
 

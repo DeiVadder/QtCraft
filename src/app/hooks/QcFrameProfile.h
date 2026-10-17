@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QcRenderSample.h"
+#include "app/rendering/QcRenderSample.h"
 
 #include <QList>
 #include <QString>

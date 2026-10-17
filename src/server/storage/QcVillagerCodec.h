@@ -1,7 +1,7 @@
 #pragma once
 
-#include "QcTradeDefinitions.h"
-#include "QcVillager.h"
+#include "common/content/definitions/QcTradeDefinitions.h"
+#include "server/villages/QcVillager.h"
 
 #include <QDataStream>
 
