@@ -124,6 +124,20 @@
 #              run he steps down into the middle of the field and the orbs within 8 m fly to him
 #              (one collected every 2 ticks). Builds before stage 36 smelt and spill the same
 #              without orbs, so an A/B shows their cost. Always flat
+#   village  - standing by day on a stone pillar 12 blocks high 45 m south of the plains village of
+#              seed 42 nearest the spawn (centre 964, -634; stage 37), looking north over it while
+#              the villagers work: houses, roads, fields, villagers and their animals in view.
+#              Builds before stage 37 stand at the same place over terrain without a village
+#              (the cost reference)
+#   village-night - the same at night (time 0.6 of the day: villagers asleep in their beds)
+#   village-swamp - the same 45 m south of the swamp village on boardwalks (centre 555, -214)
+#   minecarts - 64 minecarts rolling on two square loops of powered rails (32 x 25 m, levers
+#              beside every rail) in a flat world, seen from a stone pillar 10 m high west of the
+#              loops (stage 32): carts are summoned in rows of 16 on the north and south sides;
+#              a stone in the north-west and the south-east corner kicks the cart beside it off
+#              (powered rails start a standing cart away from a block at the end of its track),
+#              it pushes its row along, and 1.5 s in the stones become rails and close the loops.
+#              Minecart motion, cart collisions and entity meshing of moving carts. Always flat
 #
 # TEXTURE_PACKS=<ids> runs with these texture packs (QTCRAFT_TEXTURE_PACKS, stage 28, decision E-304),
 # highest priority first, e.g. builtin:qtcraft_hd_32, builtin:qtcraft_hd_64, builtin:qtcraft_hd_128,
@@ -447,6 +461,43 @@ orbs_chat() {
     }'
 }
 
+# The chat lines of the minecarts scenario: two loops (x 8..39 and 48..79 east of the start, z -12..12),
+# powered rails on the sides with a powered lever beside every one, plain rails in the north-east and
+# south-west corner and stones in the other two (opened 1.5 s in), 16 carts summoned looking east on
+# each north and south side; the player ends on a pillar at the start. The awk script keeps track of
+# where he stands (the lines are relative to him).
+minecarts_chat() {
+    echo "/time set day"
+    awk '
+    function at(x, y, z) { return sprintf("~%d ~%d ~%d", x - px, y - py, z - pz) }
+    function tp(x, y, z) { printf "/tp %s\n", at(x, y, z); px = x; py = y; pz = z }
+    function line(x1, z1, x2, z2, block) { printf "/fill %s %s %s\n", at(x1, 0, z1), at(x2, 0, z2), block }
+    BEGIN {
+        lever = "lever[attach=floor,powered=true]"
+        for (l = 0; l < 2; l++) {
+            w = 8 + 40 * l; e = w + 31
+            line(w + 1, -12, e - 1, -12, "powered_rail"); line(w + 1, 12, e - 1, 12, "powered_rail")
+            line(w, -11, w, 11, "powered_rail"); line(e, -11, e, 11, "powered_rail")
+            printf "/setblock %s rail\n/setblock %s rail\n", at(e, 0, -12), at(w, 0, 12)
+            printf "/setblock %s stone\n/setblock %s stone\n", at(w, 0, -12), at(e, 0, 12)
+            line(w + 1, -13, e - 1, -13, lever); line(w + 1, 13, e - 1, 13, lever)
+            line(w - 1, -11, w - 1, 11, lever); line(e + 1, -11, e + 1, 11, lever)
+        }
+        for (l = 0; l < 2; l++) {
+            w = 8 + 40 * l; e = w + 31
+            tp(w - 2, 0, -12); print "/summon minecart 16"
+            tp(e - 18, 0, 12); print "/summon minecart 16"
+        }
+        tp(0, 0, 0)
+        printf "/fill %s %s stone\n", at(0, 0, 0), at(0, 9, 0)
+        tp(0, 10, 0)
+        for (l = 0; l < 2; l++) {
+            w = 8 + 40 * l; e = w + 31
+            printf "@1500 /setblock %s rail\n@1500 /setblock %s rail\n", at(w, 0, -12), at(e, 0, 12)
+        }
+    }'
+}
+
 # One repeater clock of signal-stress at x $1, z $2 driving two blocks $3 (pistons get stone on top).
 stress_clock() {
     x=$1
@@ -519,6 +570,12 @@ scene_chat() {
             printf '%s\n' "/tp ~$dx ~8 ~$dz" "/summon qtcraft:zombie 16" "/tp ~$((-dx)) ~-8 ~$((-dz))"
         done
         ;;
+    village | village-swamp)
+        # A pillar under the player, then up onto it (as in horde).
+        printf '%s\n' "/time set day" "/fill ~ ~ ~ ~ ~11 ~ stone" "/tp ~ ~12 ~"
+        ;;
+    village-night) printf '%s\n' "/time set night" "/fill ~ ~ ~ ~ ~11 ~ stone" "/tp ~ ~12 ~" ;;
+    minecarts) minecarts_chat ;;
     inventory) printf '%s\n' "/give iron_pickaxe 1" "/give oak_planks 64" "/give torch 32" ;;
     furnace) printf '%s\n' "/give iron_ore 5" "/give coal 2" "/setblock ~ ~-1 ~ furnace" ;;
     signal-stress) signal_stress_chat ;;
@@ -592,7 +649,7 @@ scene_of() {
         SCENE_ARMOUR=walk
         scenario=walk
         ;;
-    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm | orbs)
+    gravel-collapse | farm | farm-seeds | liquid-fill | signal-stress | forest-fire | forest-fire-storm | orbs | minecarts)
         SCENE_WORLD=flat
         ;;
     esac
@@ -600,6 +657,14 @@ scene_of() {
     frozen | snow)
         SCENE_SPAWN=-325,-300
         SCENE_LOOK=270,-15
+        ;;
+    village | village-night)
+        SCENE_SPAWN=964,-589
+        SCENE_LOOK=0,-15
+        ;;
+    village-swamp)
+        SCENE_SPAWN=555,-169
+        SCENE_LOOK=0,-15
         ;;
     showcase | showcase-flight)
         SCENE_WORLD=showcase
@@ -639,6 +704,7 @@ scene_of() {
     signal-stress) SCENE_LOOK=0,-25 ;;
     forest-fire | forest-fire-storm) SCENE_LOOK=0,-35 ;;
     orbs) SCENE_LOOK=0,-40 ;;
+    minecarts) SCENE_LOOK=90,-25 ;;
     gravel-collapse) SCENE_LAYERS="3*gravel,grass_block" ;;
     inventory) SCENE_WINDOW="--overlay inventory" ;;
     handbook) SCENE_WINDOW="--handbook block:qtcraft:stone" ;;

@@ -1903,3 +1903,67 @@ Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, See
 | Komponenten an Ort und Stelle im Strom, Leser als `FieldReader`, Längen eingesetzt statt gesucht | 15,06 → 15,48 (+2,8 %) | 3,62 → 3,86 (+6,6 %) | 2,33 → 2,37 (+1,9 %) | 34,63 → 36,14 (+4,4 %) |
 
 **Bewertung:** Die Kosten vor den Nachbesserungen waren sichtbar (zweites Speichern +0,7 ms, rund 0,35 µs je Entity): ein `QDataStream` mit eigenem `QBuffer` und Puffer je Komponente beim Schreiben und Lesen, dazu `std::function` je bekanntem Leser. Jetzt schreibt `QcComponentFrames::Writer` direkt in den Strom des Chunks (Anzahl und Längen als Platzhalter, danach in den Puffer eingesetzt, ohne Suchen), und `QcComponentFrames::read` liest bekannte Komponenten an Ort und Stelle; nur unbekannte und Schwänze bekommen einen eigenen Puffer. Es bleiben rund 0,24 ms beim zweiten Speichern und 1,5 ms beim Laden aller Chunks (etwa 0,1 bzw. 0,7 µs je Entity): der größere Kopf (Typname, Geschwindigkeit, Reihenfolge und Id bei jeder Art) und die Rahmen je Komponente. Bei einigen tausend Entities je Welt und Speichern alle paar Minuten ist das vernachlässigbar.
+
+## Dorf-Sektion (37) gerendert (2026-10-17)
+
+Gerenderter Benchmark der ganzen Dorf-Sektion (37.1 bis 37.R3, dazu 53) samt dem offenen Loren-Szenario aus Etappe 32; Fensterläufe vom Menschen am 2026-10-17 freigegeben, Fenster auf dem eingebauten Display im Hintergrund (`--screen builtin`, Standard von `run_game`). Release-Builds (`RelWithDebInfo`) in temporären Worktrees: `8d714f0` (Etappe 36, vor 37; alte Presets in `CMakePresets.json`) gegen `dev` `f406734` (37.R3; `CMakeUserPresets.json` über `scripts/ensure-user-presets.sh`). Skripte und neue Szenarien aus `feature/bench-villages`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Runden `auto`, 10 s je Lauf; Mittel [Spanne]. Reihen (15:27–16:12, Wanduhr samt Builds 15:18–16:12, rund 55 min): Fenster `@core village village-night village-swamp minecarts horde` (alle 6 Runden, 27 min), `explore` 75 s mit `STATS=5000` (3 Runden), `VIEW=16` mit `sprint village` (3 Runden), Wiederholung `horde` (6 Runden); headless `@server` plus `stand horde village village-night village-swamp minecarts` (60 Spielsekunden, adaptiv). 8 von 108 Fensterläufen der Hauptreihe belastet markiert (Safari zeitweise 80 % CPU), auf beide Stände verteilt.
+
+**Neue Szenarien** (`scripts/bench-common.sh`):
+
+- `village`: Seed 42, Tag (Arbeitszeit der Bewohner), Spieler auf einer Steinsäule von 12 Blöcken 45 m südlich des Ebenen-Dorfs nächst dem Spawn (Mitte 964, −634; `/village 964 -634` auf `f406734`: `qtcraft:plains`), Blick nach Norden über das Dorf (`--spawn 964,-589 --look 0,-15`). `village-night`: dasselbe mit `/time set night` (Bewohner im Bett). `village-swamp`: 45 m südlich des Sumpf-Dorfs auf Stegen (Mitte 555, −214; `--spawn 555,-169`). `8d714f0` steht am selben Ort über Gelände ohne Dorf (Kostenreferenz).
+- `minecarts` (aus 32 offen): flache Welt, zwei quadratische Schleifen (32 × 25 m) aus Antriebsschienen mit einem eingeschalteten Hebel neben jeder Schiene, 64 Loren (`/summon minecart 16`, je eine Reihe auf Nord- und Südseite). Ein Stein in der Nordwest- und Südost-Ecke stößt die Lore daneben an (eine eingeschaltete Antriebsschiene startet eine stehende Lore von einem Block am Gleisende weg), sie schiebt ihre Reihe an, nach 1,5 s werden die Steine zu Schienen und schließen die Schleifen. Blick von einer Säule (10 m) westlich der Schleifen. Läuft auf beiden Ständen gleich (64 Entities beim Client, Phase Loren 0,23–0,26 ms im Fenster). **Mitfahren mit der Kamera** geht nicht: keine Szene setzt den Spieler in eine Lore (kein Befehl dafür, Benutzung von Entities gibt es in den Szenen nicht).
+- **Handelsfenster:** nicht gemessen. `--overlay` kennt `trade` nicht, und die Szenen haben keine Entity-Benutzung; das Handelsfenster öffnet nur die Steuerschnittstelle (`openTrade`), die das Fenster-Benchmark nicht nutzt.
+
+### Fenster: `f406734` gegen `8d714f0` (8 Chunks, 6 Runden)
+
+| Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Entity-Vernetzung Ø ms | Draw-Calls | Tick Ø ms | Wesen (Client / Server) | Spitzenspeicher MB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| stand | 117 / 118 | 15,2 → 15,4 | 1,70 → 1,69 | 1,72 → 1,63 | 0,411 → 0,401 | 0,136 → 0,137 | 347 → 347 | 0,657 → 0,776 (+18 %) | 19 → 20 / 90 | 450 → 461 |
+| sprint | 118 / 117 | 15,1 → 15,1 | 1,98 → 2,00 | 1,71 → 1,77 | 0,410 → 0,420 | 0,133 → 0,132 | 388 → 388 | 0,674 → 0,690 | 19 / 98 | 561 → 570 |
+| showcase ¹ | 119 / 119 | 12,0 → 13,3 | 0,587 → 0,613 (+4 %) | 1,21 → 1,16 | 0,636 → 0,554 (−13 %) | 0,328 → 0,227 | 153 → 158 | 0,406 → 0,417 | 25 → 14 / 10 → 14 | 334 → 347 |
+| crowd | 117 / 118 | 16,3 → 16,1 | 2,25 → 2,21 | 1,47 → 1,44 | 0,817 → 0,772 | 0,495 → 0,462 | 346 → 345 | 0,909 → 1,071 (+18 %) | 92 → 91 / 135 | 456 → 466 |
+| village | 118 / 118 | 15,2 → 15,2 | 1,39 → 1,28 (−8 %) | 1,68 → 1,71 | **0,366 → 0,447 (+22 %)** | **0,105 → 0,188 (+79 %)** | 358 → 375 | 0,548 → 0,652 (+19 %) | 16 → 20 / 45 → 55 | 416 → 425 |
+| village-night | 118 / 118 | 14,2 → 15,0 | 1,36 → 1,28 | 1,65 → 1,70 | **0,463 → 0,545 (+18 %)** | **0,193 → 0,260 (+35 %)** | 358 → 375 | 0,452 → 0,642 (+42 %) | 23 → 27 / 51 → 59 | 415 → 425 |
+| village-swamp | 118 / 119 | 15,2 → 13,8 | 1,76 → 1,75 | 1,71 → 1,72 | **0,327 → 0,502 (+54 %)** | **0,062 → 0,234 (+277 %)** | 383 → 416 | 0,719 → 0,869 (+21 %) | 4 → 18 / 73 → 92 | 441 → 450 |
+| minecarts | 118 / 118 | 16,3 → 16,2 | 0,599 → 0,605 | 1,35 → 1,40 | 0,731 → 0,769 (+5 %) | 0,456 → 0,488 (+7 %) | 119 → 121 | 0,396 → 0,458 (+16 %) | 64 / 0 | 325 → 334 |
+| horde | 118 / 118 | 16,1 → 14,3 | 1,77 → 1,82 | 1,52 → 1,76 (+15 %) ² | 1,02 → 0,97 | 0,722 → 0,664 | 343 → 344 | 0,824 → 1,359 (+65 %) ³ | 77 → 75 / 143 | 459 → 468 |
+
+¹ Die Showcase-Welt ist in 37 stark umgebaut (Wegfindungs-Station aus 37.1, Dorf-Referenz und Dorf-Stationen aus 37.2/37.3): im Blick des Szenarios 14 statt 25 Entities beim Client, 14 statt 10 Wesen beim Server, 158 statt 153 Draw-Calls, 92 000 statt 76 000 Dreiecke. Die Werte sind nur eingeschränkt vergleichbar. ² Wiederholung mit 6 Runden: 1,53 → 1,62 ms (+6 %, Spannen 1,22–1,71 und 1,29–1,94), Welt-Renderer −6 %, GPU gleich: keine wiederholte Regression. ³ Wiederholung: 0,81 → 0,97 ms (+20 %); Server-Kosten headless (unten).
+
+Frame-Kosten-p99 (GPU) höchstens 2,92 ms; Spitzenspeicher +8 bis +13 MB in jedem Szenario (Inhalt der Dorf-Sektion: Stile, Baupläne, Handelssätze, Bewohner-Modelle). Keine übersprungenen Ticks, Tick max höchstens 5,9 ms (Erkundungsflug).
+
+### Fenster: Erkundungsflug und 16 Chunks
+
+| Szenario (Runden) | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Draw-Calls | Tick Ø / max ms | Spitzenspeicher MB |
+|---|---|---|---|---|---|---|---|
+| explore, 75 s, `STATS=5000` (3) | 14,6 → 14,5 | 0,517 → 0,517 | 0,672 → 0,720 (+7 %) | 0,317 → 0,353 (+11 %, Spannen bis 21 %) | – | 0,763 → 0,833 / 5,07 → 5,42 | 563 → 568 |
+| sprint, 16 Chunks (3) | 9,35 → 9,29 | 3,33 → 3,41 | 2,42 → 2,33 | 0,284 → 0,292 | 1426 → 1426 | 0,732 → 0,855 / 3,4 → 3,3 | 1 232 → 1 244 |
+| village, 16 Chunks (3) | 9,27 → 11,4 ⁴ | 2,50 → 2,36 | 2,46 → 2,43 | 0,277 → 0,322 (+16 %) | 1423 → 1440 | 0,624 → 0,738 / 1,8 → 1,8 | 827 → 837 |
+
+⁴ ein Lauf mit 15,6 ms (verpasste VSyncs), die anderen 9,3 ms. Speicherkurve des Erkundungsflugs (`memoryMb` alle 5 s, 15 Punkte): beide Stände steigen bis rund 550–580 MB bei 50 s und fallen danach wieder auf 510–540 MB (Entladen wirkt); `f406734` liegt je Punkt 0–16 MB höher. Explore-Server-Werte: Phase Chunk-Laden max 2,82 → 3,18 ms (+13 %, Dörfer am Flugweg, wie in 37.2a headless), Phase Wesen 0,356 → 0,420 ms.
+
+### Headless: `f406734` gegen `8d714f0` (60 Spielsekunden)
+
+| Szenario (Runden) | Tick Ø ms | Tick p99 ms | Tick max ms | Phase Wesen Ø ms | Wesen | Spitzen-RSS MB |
+|---|---|---|---|---|---|---|
+| crowd (6) | 0,138 → 0,168 (+22 %) | 0,188 → 0,257 | 0,26 → 0,37 | 0,121 → 0,151 | 123 → 122 | 50,7 → 53,4 |
+| stand (3) | 0,086 → 0,103 (+20 %) | 0,125 → 0,177 | 0,25 → 0,26 | 0,078 → 0,094 | 77 → 78 | 50,9 → 53,3 |
+| horde (6) | 0,144 → 0,178 (+24 %) | 0,201 → 0,402 | 0,28 → 0,73 | 0,129 → 0,163 | 125 → 121 | 50,7 → 53,5 |
+| explore (6) | 0,180 → 0,196 (+9 %) | 0,893 → 0,903 | 1,22 → 1,27 | 0,052 → 0,068 | 56 | 56,5 → 59,7 |
+| gravel-collapse / farm / farm-seeds | 0,506 → 0,510 / 0,007 gleich / 0,017 → 0,018 | gleich | gleich | – | 0 | +1,4 bis +2,9 |
+| Signal-Stationen (je 6) | 0,028–0,032 → 0,037–0,039 (+22 bis +32 %) | 0,096–0,103 → 0,108–0,117 | – | 0,006–0,009 → 0,014–0,015 | 7–10 → 14 | 45 → 48,6–48,9 |
+| village (6) | 0,057 → 0,084 (+47 %) | 0,089 → 0,149 | 0,14 → 0,23 | 0,047 → 0,072 | 52 → 61 | 47,9 → 50,7 |
+| village-night (6) | 0,054 → 0,068 (+26 %) | 0,081 → 0,168 | 0,15 → 0,21 | 0,044 → 0,056 | 48 → 58 | 48,0 → 51,3 |
+| village-swamp (6) | 0,079 → 0,126 (+59 %) | 0,120 → 0,270 | 0,19 → 0,35 | 0,068 → 0,114 | 71 → 88 | 47,8 → 51,1 |
+| minecarts (3) | 0,033 → 0,033 | 0,049 gleich | 0,12 → 0,09 | – | 0 | 43,5 → 44,8 |
+
+Phase Loren headless 0,023 ms bei beiden Ständen (64 rollende Loren).
+
+**Bewertung:**
+
+- **Keine wiederholte Regression über 10 % auf der Client-Seite bei gleichem Bildinhalt.** stand, sprint, crowd, minecarts, explore: GPU, Render-CPU, GUI-CPU, Entity-Vernetzung und Draw-Calls innerhalb von −7 bis +7 % (explore GUI-CPU +11 % bei nur 3 Runden und einer Spanne von 21 % beim alten Stand). horde Render-CPU +15 % in der Hauptreihe, in der Wiederholung +6 % mit überlappenden Spannen, Welt-Renderer und GPU gleich: Streuung. showcase GUI-CPU −13 % und Entity-Vernetzung −31 % folgen aus 14 statt 25 Entities im Blick (umgebaute Showcase), GPU +4 % aus 21 % mehr Dreiecken.
+- **Dörfer im Blick kosten GUI-CPU und Entity-Vernetzung, nicht GPU:** village +22 % / +79 %, village-night +18 % / +35 %, village-swamp +54 % / +277 % (absolut höchstens +0,18 ms GUI-CPU und +0,17 ms Vernetzung je Bild). Ursache sind die Wesen des Dorfs (Bewohner, Golem, Tiere der Gehege): 4 → 18, 16 → 20, 23 → 27 Entities beim Client; je Entity bleibt die Vernetzung bei 9–15 µs wie vorher (crowd 5 µs je einfacheres Tier). Häuser, Wege und Felder kosten nichts Messbares: GPU −1 bis −8 % (Häuser verdecken mehr als Bäume und Hügel, 3–5 % weniger Dreiecke), Draw-Calls +5 bis +9 %, Render-CPU +1 bis +3 %. Inhalt der Etappe, keine Regression.
+- **Server: Phase Wesen +20 bis +25 % in Mob-Szenen (crowd, stand, horde) ist die Wegfindung aus 37.1**, dort gemessen und angenommen (crowd +0,027 ms headless; hier +0,030 ms, horde p99 und max wie in 37.1). 37.2–37.R3 legen bei gleichem Wesen-Bestand nichts Messbares darauf. Die Signal-Stationen +22 bis +32 % kommen aus 14 statt 7–10 Wesen in der umgebauten Showcase (Phase Wesen, Signal unverändert). Die Dorf-Szenen +26 bis +59 % sind das Dorfleben (9–17 Wesen mehr, Bewohner mit Tagesablauf, Wege, Arbeitsplätzen), absolut höchstens 0,13 ms Ø und 0,35 ms max je Tick. Im Fenster ist Tick Ø entsprechend +16 bis +42 % (Tick-Werte im Fenster streuen mit der Lage des Server-Threads, horde-Wiederholung +20 % statt +65 %). Loren unverändert.
+- **Speicher:** +8 bis +13 MB im ganzen Spiel, +1,3 bis +3,9 MB headless.
+
+**Absolute Ziele** (`docs/Performance.md`, „Ziele“): siehe Zielprüfung „Dorf-Sektion (37)“ dort.
