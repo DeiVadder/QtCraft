@@ -257,6 +257,27 @@ private slots:
         }
         qInfo("nearest village within 2048 blocks: %.1f ms first, %.3f ms planned already", best, cached);
     }
+
+    void planningOneVillage()
+    {
+        // What a plan the cache let go of costs the server thread when it is planned again
+        // (decision E-416: the plans of villages with loaded chunks are held, never planned again).
+        const QcTerrainGenerator probe(m_content, seed);
+        const std::shared_ptr<const QcVillagePlan> found = probe.nearestVillage({0, 64, 0}, 2048);
+        QVERIFY(found);
+        const int spacing = probe.villages().spacing();
+        const int regionX = qcFloorDiv(found->centre.x, spacing);
+        const int regionZ = qcFloorDiv(found->centre.z, spacing);
+        double best = 1e9;
+        for (int run = 0; run < (full() ? 5 : 1); ++run) {
+            const QcTerrainGenerator generator(m_content, seed);
+            QElapsedTimer timer;
+            timer.start();
+            QVERIFY(generator.villages().regionPlan(regionX, regionZ));
+            best = std::min(best, double(timer.nsecsElapsed()) / 1e6);
+        }
+        qInfo("one village planned anew: %.2f ms", best);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestVillageMeasure)

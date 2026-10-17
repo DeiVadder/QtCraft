@@ -1,7 +1,5 @@
 #include "QcVillageGenerator.h"
 
-#include <QMutexLocker>
-
 #include <algorithm>
 #include <cmath>
 
@@ -14,11 +12,6 @@ constexpr int maxFoundation = 16;
 constexpr int maxPost = 24;
 // Above a doorstep the terrain is cleared this high.
 constexpr int thresholdClearance = 3;
-
-qint64 regionKey(int regionX, int regionZ)
-{
-    return (qint64(regionX) << 32) | quint32(regionZ);
-}
 
 int regionOf(int block, int spacing)
 {
@@ -38,22 +31,7 @@ QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::s
 
 std::shared_ptr<const QcVillagePlan> QcVillageGenerator::regionPlan(int regionX, int regionZ) const
 {
-    const qint64 key = regionKey(regionX, regionZ);
-    {
-        const QMutexLocker locker(&m_mutex);
-        if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
-            return *it;
-        }
-    }
-
-    // Planned outside the lock; two threads planning the same region get the same plan.
-    std::shared_ptr<const QcVillagePlan> plan = m_planner.plan(regionX, regionZ);
-    const QMutexLocker locker(&m_mutex);
-    if (m_plans.size() >= cachedPlans) {
-        m_plans.clear();
-    }
-    m_plans.insert(key, plan);
-    return plan;
+    return m_cache.plan(regionX, regionZ, [this](int x, int z) { return m_planner.plan(x, z); });
 }
 
 std::shared_ptr<const QcVillagePlan> QcVillageGenerator::planFor(QcChunkPos chunk) const

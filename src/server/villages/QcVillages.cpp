@@ -112,6 +112,7 @@ void QcVillages::restore(const QList<QcVillage> &villages)
 {
     m_villages.clear();
     m_byChunk.clear();
+    m_held.clear();
     for (const QcVillage &village : villages) {
         if (m_villages.size() < m_limits.villages && !m_villages.contains(village.id)) {
             add(village);
@@ -119,7 +120,7 @@ void QcVillages::restore(const QList<QcVillage> &villages)
     }
 }
 
-void QcVillages::add(const QcVillage &village)
+void QcVillages::add(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan)
 {
     const QcChunkPos low = QcBlockPos{village.minX - QcVillage::reach, 0, village.minZ - QcVillage::reach}.chunk();
     const QcChunkPos high = QcBlockPos{village.maxX + QcVillage::reach, 0, village.maxZ + QcVillage::reach}.chunk();
@@ -130,6 +131,38 @@ void QcVillages::add(const QcVillage &village)
     }
     m_villages.insert(village.id, village);
     ++m_changes;
+    holdLoaded(village, plan);
+}
+
+void QcVillages::holdLoaded(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan)
+{
+    if (!m_loaded) {
+        return;
+    }
+
+    const QcChunkPos low = QcBlockPos{village.minX - QcVillage::reach, 0, village.minZ - QcVillage::reach}.chunk();
+    const QcChunkPos high = QcBlockPos{village.maxX + QcVillage::reach, 0, village.maxZ + QcVillage::reach}.chunk();
+    for (int cz = low.z; cz <= high.z; ++cz) {
+        for (int cx = low.x; cx <= high.x; ++cx) {
+            if (m_loaded({cx, cz})) {
+                hold(village, {cx, cz}, plan);
+            }
+        }
+    }
+}
+
+QList<qint64> QcVillages::near(QcChunkPos pos, int chunks) const
+{
+    QList<qint64> ids;
+    for (int dz = -chunks; dz <= chunks; ++dz) {
+        for (int dx = -chunks; dx <= chunks; ++dx) {
+            ids.append(m_byChunk.value({pos.x + dx, pos.z + dz}));
+        }
+    }
+    std::ranges::sort(ids);
+    const auto repeated = std::ranges::unique(ids);
+    ids.erase(repeated.begin(), repeated.end());
+    return ids;
 }
 
 QcVillage QcVillages::fromPlan(const QcVillagePlan &plan) const
@@ -159,17 +192,47 @@ QcVillage QcVillages::fromPlan(const QcVillagePlan &plan) const
 
 void QcVillages::noteChunk(const QcChunk &chunk)
 {
-    if (const std::shared_ptr<const QcVillagePlan> plan = m_generator.villageFor(chunk.pos());
-        plan && plan->overlaps(chunk.pos(), 0) && !m_villages.contains(plan->id) && m_villages.size() < m_limits.villages) {
-        add(fromPlan(*plan));
+    const std::shared_ptr<const QcVillagePlan> plan = m_generator.villageFor(chunk.pos());
+    if (plan && plan->overlaps(chunk.pos(), 0) && !m_villages.contains(plan->id) && m_villages.size() < m_limits.villages) {
+        add(fromPlan(*plan), plan);
     }
 
     const QList<qint64> ids = m_byChunk.value(chunk.pos());
     for (const qint64 id : ids) {
         if (QcVillage *village = find(id)) {
+            hold(*village, chunk.pos(), plan);
             rescan(*village, chunk);
         }
     }
+}
+
+void QcVillages::hold(const QcVillage &village, QcChunkPos pos, const std::shared_ptr<const QcVillagePlan> &regionPlan)
+{
+    Held &held = m_held[village.id];
+    if (!held.plan) {
+        held.plan = regionPlan && regionPlan->id == village.id ? regionPlan : m_generator.villageFor(village.centre.chunk());
+    }
+    held.chunks.insert(pos);
+}
+
+void QcVillages::forgetChunk(QcChunkPos pos)
+{
+    const QList<qint64> ids = m_byChunk.value(pos);
+    for (const qint64 id : ids) {
+        const auto it = m_held.find(id);
+        if (it != m_held.end() && it->chunks.remove(pos) && it->chunks.isEmpty()) {
+            m_held.erase(it);
+        }
+    }
+}
+
+std::shared_ptr<const QcVillagePlan> QcVillages::planOf(qint64 id) const
+{
+    if (const auto it = m_held.constFind(id); it != m_held.cend() && it->plan) {
+        return it->plan;
+    }
+    const QcVillage *village = find(id);
+    return village ? m_generator.villageFor(village->centre.chunk()) : nullptr;
 }
 
 void QcVillages::rescan(QcVillage &village, const QcChunk &chunk)

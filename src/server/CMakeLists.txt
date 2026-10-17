@@ -185,6 +185,7 @@ qt_add_library(qc_server STATIC
     worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
     worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
     worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp
+    worldgen/villages/QcVillagePlanCache.h worldgen/villages/QcVillagePlanCache.cpp
     worldgen/villages/QcJettyPlanner.h worldgen/villages/QcJettyPlanner.cpp
     worldgen/villages/QcBoardwalkPlanner.h worldgen/villages/QcBoardwalkPlanner.cpp
     worldgen/villages/QcWetlandShaper.h worldgen/villages/QcWetlandShaper.cpp

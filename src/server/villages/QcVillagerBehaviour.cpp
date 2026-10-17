@@ -76,8 +76,7 @@ bool QcVillagerBehaviour::isRipe(QcBlockId block) const
 
 std::shared_ptr<const QcVillagePlan> QcVillagerBehaviour::planOf(const QcVillager &villager, const Context &context) const
 {
-    const QcVillage *village = villager.village != 0 ? context.world.villages().find(villager.village) : nullptr;
-    return village ? context.world.generator().villageFor(village->centre.chunk()) : nullptr;
+    return villager.village != 0 ? context.world.villages().planOf(villager.village) : nullptr;
 }
 
 bool QcVillagerBehaviour::rest(QcCreature &mob, const Context &context)

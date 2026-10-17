@@ -24,6 +24,9 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
     std::ranges::sort(ids);
     QList<Birth> births;
     for (const qint64 id : std::as_const(ids)) {
+        if (context.reconciled && !context.reconciled->contains(id)) {
+            continue;
+        }
         const QList<QcCreature *> &villagers = byVillage[id];
         share(villagers);
         const QcVillage *village = context.villages.find(id);

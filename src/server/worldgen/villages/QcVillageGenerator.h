@@ -1,28 +1,27 @@
 #pragma once
 
 #include "QcVillagePlan.h"
+#include "QcVillagePlanCache.h"
 #include "QcVillagePlanner.h"
 #include "QcVillageStyles.h"
 #include "QcWetlandShaper.h"
-
-#include <QHash>
-#include <QMutex>
 
 #include <memory>
 
 class QcTerrainGenerator;
 
 // The villages of a terrain world (decision E-403): plans each region's village once (cached,
-// shared by the generation threads) and writes the part of it that lies in a chunk. A chunk lies in
-// exactly one region and a village never leaves its region, so a chunk needs only its own region's
-// plan. Thread-safe.
+// shared by the generation threads and the server thread, decision E-416) and writes the part of
+// it that lies in a chunk. A chunk lies in exactly one region and a village never leaves its
+// region, so a chunk needs only its own region's plan. Thread-safe.
 class QcVillageGenerator
 {
 public:
-    // Regions kept before the cache starts over. A village's plan holds about 33 KB (the largest
-    // about 55 KB: the structures of its varied buildings, its road cells) and about one region in
-    // six has one, so a full cache holds about 3 MB, at most about 28 MB (test_village_measure). It
-    // keeps the 13 x 13 regions /locate village searches and those around the players generating.
+    // Regions the cache keeps (least recently used go first). A village's plan holds about 33 KB
+    // (the largest about 55 KB: the structures of its varied buildings, its road cells) and about
+    // one region in six has one, so a full cache holds about 3 MB, at most about 28 MB
+    // (test_village_measure). It keeps the 13 x 13 regions /locate village searches and those
+    // around the players generating.
     static constexpr qsizetype cachedPlans = 512;
 
     QcVillageGenerator(const QcTerrainGenerator &terrain, std::shared_ptr<const QcContentRegistry> content, quint64 seed,
@@ -39,6 +38,7 @@ public:
     void build(QcChunk &chunk, const QcVillagePlan &plan) const;
     const QcVillageStyles &styles() const { return m_styles; }
     const QcWetlandShaper &wetland() const { return m_wetland; }
+    const QcVillagePlanCache &cache() const { return m_cache; }
     int spacing() const { return m_planner.spacing(); }
 
 private:
@@ -67,6 +67,5 @@ private:
     QcVillageStyles m_styles;
     QcVillagePlanner m_planner;
     QcWetlandShaper m_wetland;
-    mutable QMutex m_mutex;
-    mutable QHash<qint64, std::shared_ptr<const QcVillagePlan>> m_plans;
+    QcVillagePlanCache m_cache{cachedPlans};
 };

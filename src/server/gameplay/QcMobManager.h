@@ -148,6 +148,8 @@ public:
     void populateChunk(QcServerWorld &world, QcChunkPos pos, const std::function<quint32()> &nextEntityId);
     bool isPopulated(QcChunkPos pos) const { return m_populated.contains(pos); }
     const QSet<QcChunkPos> &populatedChunks() const { return m_populated; }
+    // Whether the village's claims were reconciled in this run (checkVillageClaims).
+    bool claimsReconciled(qint64 village) const { return m_claimsChecked.contains(village); }
     // The chunk left the world; whether it got its animals goes with it (decision E-374).
     void forgetPopulated(QcChunkPos pos) { m_populated.remove(pos); }
     void notePopulated(QcChunkPos pos) { m_populated.insert(pos); }
@@ -246,6 +248,9 @@ private:
     // whose holder is not in the world lapse and the population counts the villagers there
     // (decision E-411).
     void checkVillageClaims(QcServerWorld &world, QcChunkPos pos);
+    // Every chunk the villagers holding the village's claims may stand in is loaded.
+    static bool claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village);
+    void reconcileClaims(QcServerWorld &world, QcVillage &village);
     // Children and golems of the villages, every villageLifeTicks ticks.
     void liveInVillages(QcServerWorld &world, double worldTime, const std::function<quint32()> &nextEntityId);
     // A creature leaves the world for good (died, removed): a villager frees its claims.

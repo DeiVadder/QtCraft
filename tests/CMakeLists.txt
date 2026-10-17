@@ -209,6 +209,7 @@ qc_add_test(test_world_library SOURCES world/test_world_library.cpp LIBRARIES qc
 target_compile_definitions(test_world_library PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
 qc_add_test(test_structures SOURCES world/test_structures.cpp LIBRARIES qc_server)
 qc_add_test(test_village_generation SOURCES world/test_village_generation.cpp world/QcVillageTestUtil.h LIBRARIES qc_server)
+qc_add_test(test_village_plan_cache SOURCES world/test_village_plan_cache.cpp world/QcVillageTestUtil.h LIBRARIES qc_server)
 qc_add_test(test_village_variety SOURCES world/test_village_variety.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_village_fields SOURCES world/test_village_fields.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_village_layouts SOURCES world/test_village_layouts.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 300)
@@ -298,8 +299,8 @@ qc_add_test(test_minecarts SOURCES gameplay/test_minecarts.cpp QcRailFixture.h Q
 qc_add_test(test_minecart_riders SOURCES gameplay/test_minecart_riders.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_rail_layouts SOURCES gameplay/test_rail_layouts.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_hoppers SOURCES gameplay/test_signal_hoppers.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_block_entity_compare SOURCES gameplay/test_block_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
-target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/block-entity-compare-31-3.txt")
+qc_add_test(test_block_entity_compare SOURCES gameplay/test_block_entity_compare.cpp QcDumpDiff.h QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server)
+target_compile_definitions(test_block_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/block-entity-compare.txt")
 qc_add_test(test_entity_compare SOURCES gameplay/test_entity_compare.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 600)
 target_compile_definitions(test_entity_compare PRIVATE QTCRAFT_COMPARE_GOLDEN="${CMAKE_CURRENT_SOURCE_DIR}/data/entity-compare-before-31-2.txt")
 qc_add_test(test_chunk_tools SOURCES gameplay/test_chunk_tools.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
@@ -466,7 +467,7 @@ add_dependencies(test_machine_bots qtcraft-headless)
 set(qc_concurrency_tests
     test_texture_atlas test_texture_pack_controller test_mesh_scheduler test_reconciliation
     test_interpolation test_client_server test_scenarios test_survival_scenario test_persistence
-    test_terrain_generator test_village_generation test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
+    test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_latency
     test_creative_client test_void_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
@@ -503,7 +504,6 @@ set_tests_properties(test_scenarios test_mods test_signal_network test_server_li
 set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
 set_tests_properties(test_mobs test_weather_effects test_block_light_engine PROPERTIES COST 80)
 set_tests_properties(test_world_details PROPERTIES COST 70)
-set_tests_properties(test_block_entity_compare PROPERTIES COST 60)
 set_tests_properties(test_village_life PROPERTIES COST 180)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency

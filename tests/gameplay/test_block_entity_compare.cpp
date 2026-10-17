@@ -1,76 +1,41 @@
 #include "QcBlockEntityChecks.h"
 #include "QcBlockEntityDump.h"
+#include "QcDumpDiff.h"
 #include "QcMachineFixture.h"
-#include "QcShowcaseGenerator.h"
 #include "QcStoredWorld.h"
-#include "QcWorldGenerators.h"
+#include "QcTestTerrainGenerator.h"
 
-#include <QCryptographicHash>
 #include <QFile>
 #include <QTemporaryDir>
 
 #include <algorithm>
+#include <map>
+#include <tuple>
 
 using namespace Qt::StringLiterals;
 
-// Comparison runs of the block-entity register (stage 31.1, decision E-357): the showcase world and a
-// piston chain across a chunk border in four rotations, saved in the middle of a move and opened
-// again. The runs give a canonical dump of the block entities, the items, the blocks of every
-// stored chunk and what the client was told. Until stage 31.3 it had to equal the dump the code
-// before the register wrote (tests/data/block-entity-compare-before-31-1.txt, from this test at
-// eef0382); since chunks leave the world (stage 31.3) it is compared with
-// tests/data/block-entity-compare-31-3.txt, whose only differences to that one are the deliberate
-// ones of decision E-374 (the waits of a chunk stand still while it is away, a returning chunk is
-// looked at along its borders); the dump lists what chunks that are not loaded keep, too. New
-// content changes it: stage 32.1 (decision E-382) added two items, which the showcase's chests list,
-// and the rails station, which moves the stations after it (their positions, and the timers and
-// counts of circuits the run reaches at another moment); it was written again then, and again in
-// stage 32.2 (decisions E-384 to E-387: five new items and the station of signal rails and container
-// carts, whose chests and carts fill as the run passes, with the same kind of shifts). Checked in
-// the review of stage 32: with both new stations built after all other areas and left out of the
-// tour, the dump equals the one before stage 32 but for the new items in the item chests, so the
-// changed furnace, burnout, sapling and stick values come from the tour reaching the later
-// stations 80 ticks later (the stations stay where their order puts them). The one other difference
-// in that run, the dropper at 140 65 -26 splitting its sticks differently between its two slots,
-// came from the new items' ids sorting before the stick while dispensers hashed item ids; they hash
-// item names since (decision E-345), and the dump was written again for that dropper alone. Stage
-// 34.2 (decision E-393) wrote it again: three new items (flint, flint and steel, the hay bale) in the
-// item chests and the fire pit station, which moves the areas after it (the furnace, burnout,
-// sapling and hopper values of the tour's stations change with when the tour reaches them); the
-// piston chains of the four rotations are unchanged. Stage 36 (decision E-398) wrote it again for
-// the three lapis lazuli items, which shift the item chests and nothing else. Stage 37.1 (decision
-// E-401) wrote it again for the path finding station, which moves the areas after it: the
-// positions, the stored chunks and the furnace, burnout, sapling, cooldown and hopper values of the
-// tour's stations change with where they stand and when the tour reaches them. Stage 37.2a
-// (decision E-403) wrote it again for the bed, bell and composter (new podiums, the bed with its
-// head, three new items in the item chests), which move the areas after the block categories, with
-// the same kind of changes in the tour's station values; the village area comes last. Stage 37.2a2
-// (decision E-404) wrote it again for the wider village rows (every blueprint with its parts): five
-// more stored chunks of the village area, nothing else changes. Stage 37.2a4 (decision E-407) wrote
-// it again for the swamp row of the village area (a deeper area: three more stored chunks, one fewer
-// at its old edge), nothing else changes. The review fixes of 37.2a (decision E-409) wrote it again
-// for the smithy's inner door, turned to face through its partition: one chunk of the village area.
-// Stage 37.2b (decision E-411) wrote it again for the villager's pen in the creature area: the area is
-// 6 blocks wider, so the tour stops 3 blocks further east there and 6 blocks further east at the two
-// areas after it (armour, first block category), which changes when the chunks around the observer
-// clock at 68 64 -49 come and go; the clock pulses fewer times while the client watches (client
-// block updates 658 -> 619). Blocks and block entities are unchanged. Checked: without the pen the
-// dump equals the one before; with the pen but no villager in it, it equals this one. It was written
-// again when each row of the village area became a village of its own with residents (rows 33
-// blocks apart, 17 blocks of ground in front of the first): other stored chunks of the village
-// area, the residents the client sees there (creature kind 6) and the doors they open and close in
-// the client's block updates (619 -> 627); after reopening, the furnace at 96 64 -7 burns two ticks
-// instead of one before its chunk leaves (the player then stands in the deeper village area).
-// With QTCRAFT_COMPARE_DUMP=<file> the dump is also written there. The deliberate changes of the register
-// are checked apart (deliberateChangesOfTheRegister).
+// Comparison runs of the block-entity register (decisions E-357, E-374, E-416): a small station of
+// block entities on the test terrain (chests, a hopper filling the chest beside it, a burning
+// furnace emptied by a hopper across a chunk border, an observer clock across the border firing a
+// dropper, a sapling, a repeater, a torch clock that burns out, a powered trapdoor, a hopper busy
+// with 64 items across the border) that the player leaves and comes back to (its chunks unload and
+// load again), then saved and opened again; and a piston chain across a chunk border in four
+// rotations, saved in the middle of a move and opened again. The runs give a canonical dump of the block
+// entities, the items, the changed blocks of every stored chunk and what the client was told; it
+// must equal tests/data/block-entity-compare.txt. The station does not depend on the showcase world,
+// so only changes of the block-entity rules, the station or the content it uses change the dump.
+// A difference is printed line by line per section. To write the dump again after a deliberate
+// change (and to check the difference before committing it):
+//   QTCRAFT_COMPARE_DUMP=tests/data/block-entity-compare.txt build/debug/tests/test_block_entity_compare
+// The deliberate changes of the register are checked apart (deliberateChangesOfTheRegister).
 class TestBlockEntityCompare : public QcMachineFixture
 {
     Q_OBJECT
 
 public:
-    // The showcase run unloads what the player leaves behind, as the game does (stage 31.3).
-    // Changed chunks stay and the others leave, as in the code that wrote the dump (stage 31.3).
-    // Chunks load at once, so the run does not depend on how fast the threads are.
+    // The chain runs keep changed chunks (they load what was stored, as a world was opened before
+    // stage 31.3); the station run lets them leave like the game (stationRunAndReload). Chunks load
+    // at once, so the runs do not depend on how fast the threads are.
     TestBlockEntityCompare()
     {
         m_keepChangedChunks = true;
@@ -98,34 +63,54 @@ private:
         return lines;
     }
 
-    // The blocks of every stored chunk by state name: the bytes of a region file depend on the order
-    // of its chunks, which says nothing about the world.
+    // The blocks of every stored chunk that differ from the generated terrain, by state: how many,
+    // and where when they are few. The bytes of a region file depend on the order of its chunks,
+    // which says nothing about the world.
     QStringList regionLines(const QString &world) const
     {
-        QStringList lines;
         const QcResult<QcStoredWorld> stored = QcStoredWorld::read(world, *m_content);
         if (!stored) {
             return {u"regions unreadable: "_s + stored.error()};
         }
-        const auto *chunks = &stored->chunks;
-        QHash<QcBlockId, QByteArray> names;
-        for (auto it = chunks->constBegin(); it != chunks->constEnd(); ++it) {
-            QCryptographicHash hash(QCryptographicHash::Sha1);
-            for (int y = 0; y < QcWorld::worldHeight; ++y) {
-                for (int z = 0; z < QcWorld::chunkSize; ++z) {
-                    for (int x = 0; x < QcWorld::chunkSize; ++x) {
-                        const QcBlockId block = it.value()->block(x, y, z);
-                        auto name = names.find(block);
-                        if (name == names.end()) {
-                            name = names.insert(block, m_content->stateName(block).toUtf8() + ';');
-                        }
-                        hash.addData(*name);
+        const QcTestTerrainGenerator terrain(m_content);
+        QStringList lines;
+        for (auto it = stored->chunks.constBegin(); it != stored->chunks.constEnd(); ++it) {
+            const std::shared_ptr<QcChunk> generated = terrain.generate(it.key());
+            const QString chunk = u"chunk %1 %2:"_s.arg(it.key().x).arg(it.key().z);
+            const std::map<QString, QList<QcBlockPos>> changed = changedBlocks(*it.value(), *generated);
+            if (changed.empty()) {
+                lines.append(chunk + u" as generated"_s);
+            }
+            for (const auto &[state, cells] : changed) {
+                QString line = u"%1 %2 x %3"_s.arg(chunk).arg(cells.size()).arg(state);
+                if (cells.size() <= 4) {
+                    for (const QcBlockPos &cell : cells) {
+                        line += u" | "_s + posText(cell);
+                    }
+                }
+                lines.append(line);
+            }
+        }
+        return lines;
+    }
+
+    // The cells of `chunk` that differ from `generated`, by the state they hold.
+    std::map<QString, QList<QcBlockPos>> changedBlocks(const QcChunk &chunk, const QcChunk &generated) const
+    {
+        std::map<QString, QList<QcBlockPos>> changed;
+        const int x0 = chunk.pos().x * QcWorld::chunkSize;
+        const int z0 = chunk.pos().z * QcWorld::chunkSize;
+        for (int y = 0; y < QcWorld::worldHeight; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    const QcBlockId block = chunk.block(x, y, z);
+                    if (block != generated.block(x, y, z)) {
+                        changed[m_content->stateName(block)].append({x0 + x, y, z0 + z});
                     }
                 }
             }
-            lines.append(u"chunk %1 %2 %3"_s.arg(it.key().x).arg(it.key().z).arg(QString::fromLatin1(hash.result().toHex())));
         }
-        return lines;
+        return changed;
     }
 
     static qint32 legacyCode(QcEntityKind kind, qint32 creatureType)
@@ -154,12 +139,16 @@ private:
     QStringList clientLines() const
     {
         QStringList lines;
-        QCryptographicHash updates(QCryptographicHash::Sha1);
+        // Per cell: how many updates the client got and the last state.
+        std::map<QString, std::pair<int, QString>> updates;
         for (const QcMsg::BlockUpdate &update : std::as_const(m_client->blockUpdates)) {
-            updates.addData(posText(update.pos).toUtf8());
-            updates.addData(m_content->stateName(update.block).toUtf8());
+            auto &[count, last] = updates[posText(update.pos)];
+            ++count;
+            last = m_content->stateName(update.block);
         }
-        lines.append(u"client block updates %1 %2"_s.arg(m_client->blockUpdates.size()).arg(QString::fromLatin1(updates.result().toHex())));
+        for (const auto &[pos, update] : updates) {
+            lines.append(u"client updates at %1: %2, last %3"_s.arg(pos).arg(update.first).arg(update.second));
+        }
         // Counted by the codes this dump has always used: a creature's type, -1 player, -2 item,
         // -3 falling block, -4 armour stand, -5 sliding block.
         QHash<qint32, int> kinds;
@@ -202,22 +191,6 @@ private:
         QCOMPARE(everywhere("qtcraft:cobblestone"), 9);
     }
 
-    void visitAll(const QcShowcasePlan &plan)
-    {
-        for (const QcShowcaseAreaInfo &info : plan.areas) {
-            const QcBlockPos middle = info.origin.offset(info.sizeX / 2, 1, info.sizeZ / 2);
-            chat(u"/tp %1 %2 %3"_s.arg(middle.x).arg(middle.y + 6).arg(middle.z));
-            // Loaded here, beyond the streaming range, so no chunk comes from the background generator
-            // at a time that depends on the machine.
-            for (int dx = -3; dx <= 3; ++dx) {
-                for (int dz = -3; dz <= 3; ++dz) {
-                    m_server->world().loadChunk({middle.chunk().x + dx, middle.chunk().z + dz});
-                }
-            }
-            idle(40);
-        }
-    }
-
     void reopen(const QcServerConfig &config, std::unique_ptr<QcWorldGenerator> generator)
     {
         QVERIFY(m_server->save().has_value());
@@ -245,6 +218,67 @@ private:
         fill(8, 0, 6, {stack("qtcraft:cobblestone", 9)});
     }
 
+    // The station (local cells; the chunk border runs between 6 and 7 along both axes): a chest with
+    // contents; a hopper below a chest filling the chest east of it; a burning furnace whose
+    // hopper carries the ingots into a chest in the east chunk; two observers watching each other
+    // across the border, the eastern one firing a dropper with sticks; a sapling; a lever with a
+    // slow repeater and a lamp; a torch clock that burns its torch out again and again; a lever
+    // holding a trapdoor open (its powered memory); a hopper carrying 64 dirt from a chest across
+    // the border into a chest in the east chunk, busy (on its cooldown) the whole run.
+    void buildStation()
+    {
+        put(1, 0, 1, u"chest[facing=south]"_s);
+        fill(1, 0, 1, {stack("qtcraft:diamond", 5), stack("qtcraft:gold_ingot", 12)});
+        put(9, 1, 1, u"chest[facing=south]"_s);
+        fill(9, 1, 1, {stack("qtcraft:cobblestone", 20)});
+        put(9, 0, 1, u"signal_hopper[facing=east]"_s);
+        put(10, 0, 1, u"chest[facing=south]"_s);
+
+        put(6, 1, 1, u"furnace[facing=south]"_s);
+        fill(6, 1, 1, {stack("qtcraft:iron_ore", 6), stack("qtcraft:coal", 2)});
+        put(6, 0, 1, u"signal_hopper[facing=east]"_s);
+        put(7, 0, 1, u"chest[facing=south]"_s);
+
+        put(5, 0, 5, u"signal_lamp"_s);
+        put(6, 0, 5, u"signal_observer[facing=east]"_s);
+        put(7, 0, 5, u"signal_observer[facing=west]"_s);
+        put(8, 0, 5, u"signal_dropper[facing=south]"_s);
+        fill(8, 0, 5, {stack("qtcraft:stick", 6)});
+
+        put(10, 0, 10, u"birch_sapling"_s);
+        m_server->plants().saplingPlaced(m_server->blockEntities(), at(10, 0, 10), id("qtcraft:birch_sapling"));
+        put(11, 0, 3, u"lever[attach=floor]"_s);
+        put(12, 0, 3, u"signal_repeater[facing=east,delay=4]"_s);
+        put(13, 0, 3, u"signal_lamp"_s);
+        flip(11, 0, 3);
+
+        // The torch's wire runs back into its block: it switches every two ticks and burns out.
+        put(1, 0, 8, u"stone"_s);
+        put(2, 0, 8, u"stone"_s);
+        for (const auto &[x, y, z] : {std::tuple{2, 1, 8}, {3, 0, 8}, {3, 0, 9}, {3, 0, 10}, {2, 0, 10}, {1, 0, 10}, {1, 0, 9}}) {
+            put(x, y, z, u"signal_dust"_s);
+        }
+        put(1, 1, 8, u"signal_torch[attach=floor]"_s);
+
+        put(13, 0, 7, u"oak_trapdoor[facing=north]"_s);
+        put(12, 0, 7, u"lever[attach=floor]"_s);
+        flip(12, 0, 7);
+
+        put(6, 1, 12, u"chest[facing=south]"_s);
+        fill(6, 1, 12, {stack("qtcraft:dirt", 64)});
+        put(6, 0, 12, u"signal_hopper[facing=east]"_s);
+        put(7, 0, 12, u"chest[facing=south]"_s);
+    }
+
+    // The block entities hold a line starting with each of `kinds` (the dump covers them).
+    void holdsLinesOf(const QStringList &kinds)
+    {
+        const QStringList lines = blockEntityLines();
+        for (const QString &kind : kinds) {
+            QVERIFY2(std::ranges::any_of(lines, [&kind](const QString &line) { return line.startsWith(kind); }), qPrintable(kind));
+        }
+    }
+
 private slots:
     void cleanupTestCase()
     {
@@ -258,42 +292,62 @@ private slots:
         }
         QFile golden(QStringLiteral(QTCRAFT_COMPARE_GOLDEN));
         QVERIFY(golden.open(QIODevice::ReadOnly));
-        const QStringList before = QString::fromUtf8(golden.readAll()).split(u'\n', Qt::SkipEmptyParts);
-        QCOMPARE(m_dump.size(), before.size());
-        for (qsizetype i = 0; i < m_dump.size(); ++i) {
-            QCOMPARE(m_dump[i], before[i]);
+        const QStringList expected = QString::fromUtf8(golden.readAll()).split(u'\n', Qt::SkipEmptyParts);
+        const QStringList differences = QcDumpDiff::differences(expected, m_dump);
+        for (const QString &line : differences) {
+            qWarning().noquote() << line;
         }
+        QVERIFY2(differences.isEmpty(), qPrintable(u"the dump differs from %1 in %2 lines (above); see the header of this test to write it again"_s
+                                                       .arg(QStringLiteral(QTCRAFT_COMPARE_GOLDEN))
+                                                       .arg(differences.size())));
     }
 
-    void showcaseRunAndReload()
+    // The station's chunks leave while the player is away and come back; then the world is saved
+    // and opened again. Between the records the station keeps running.
+    void stationRunAndReload()
     {
         QTemporaryDir directory;
         QVERIFY(directory.isValid());
         QcServerConfig config;
-        config.generator = u"showcase"_s;
         config.worldDirectory = directory.path();
         config.autosaveSeconds = 0;
         m_viewDistance = 1;
-        join(config, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
-        const QcShowcasePlan plan = QcShowcaseGenerator(m_content).plan();
-        visitAll(plan);
-        idle(200);
-        recordState(u"showcase after the tour"_s);
-        record(u"showcase client"_s, clientLines());
+        m_keepChangedChunks = false;
+        m_unloadChunks = true;
+        buildArea(config);
+        buildStation();
+        // A furnace needs 200 ticks for an ingot.
+        idle(240);
+        QVERIFY(countIn(7, 0, 1, "qtcraft:iron_ingot") > 0);
+        QVERIFY(countIn(10, 0, 1, "qtcraft:cobblestone") > 0);
+        QVERIFY(droppedCount(item("qtcraft:stick")) > 0);
+        QVERIFY(flag(13, 0, 7, u"open"_s));
+        holdsLinesOf({u"cooldown"_s, u"burnt"_s, u"powered"_s});
+        recordState(u"station running"_s);
+        record(u"station client"_s, clientLines());
 
-        reopen(config, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
-        record(u"showcase regions"_s, regionLines(directory.path()));
-        recordState(u"showcase reopened"_s);
-        idle(100);
-        recordState(u"showcase reopened and run"_s);
-        // Deliberate: generated chests have their (empty) container since their chunk arrived; the
-        // dump lists only containers with contents, as the code before the register kept none.
-        const QList<QcBlockEntities::Container> containers = allContainers();
-        QVERIFY(std::ranges::any_of(containers, [](const QcBlockEntities::Container &container) {
-            return std::ranges::all_of(container.stacks, [](QcItemStack stack) { return stack.isEmpty(); });
-        }));
+        const QList<QcChunkPos> area{at(0, 0, 0).chunk(), at(areaSize - 1, 0, areaSize - 1).chunk(), at(0, 0, areaSize - 1).chunk(),
+                                     at(areaSize - 1, 0, 0).chunk()};
+        chat(u"/tp %1 %2 %3"_s.arg(m_feet.x + 30 * QcWorld::chunkSize).arg(m_feet.y).arg(m_feet.z));
+        idle(1);
+        QVERIFY(std::ranges::none_of(area, [this](QcChunkPos chunk) { return m_server->world().chunk(chunk) != nullptr; }));
+        idle(50);
+        chat(u"/tp %1 %2 %3"_s.arg(m_feet.x).arg(m_feet.y).arg(m_feet.z));
+        loadAround(at(areaSize / 2, 0, areaSize / 2), 2);
+        idle(40);
+        holdsLinesOf({u"cooldown"_s, u"powered"_s});
+        recordState(u"station back"_s);
+
+        reopen(config, nullptr);
+        record(u"station regions"_s, regionLines(directory.path()));
+        recordState(u"station reopened"_s);
+        idle(60);
+        recordState(u"station reopened and run"_s);
+        record(u"station client after reopening"_s, clientLines());
         m_client.reset();
         m_server.reset();
+        m_keepChangedChunks = true;
+        m_unloadChunks = false;
         ++m_dumpRuns;
     }
 
@@ -355,6 +409,17 @@ private slots:
         m_client.reset();
         m_server.reset();
         ++m_dumpRuns;
+    }
+
+    // A section whose title comes again is compared on its own, in order, not hidden by the first.
+    void repeatedTitlesAreComparedInOrder()
+    {
+        const QStringList expected{u"== a"_s, u"one"_s, u"== a"_s, u"two"_s};
+        QVERIFY(QcDumpDiff::differences(expected, expected).isEmpty());
+        const QStringList changed{u"== a"_s, u"one"_s, u"== a"_s, u"three"_s};
+        QCOMPARE(QcDumpDiff::differences(expected, changed), (QStringList{u"== a #2"_s, u"- two"_s, u"+ three"_s}));
+        const QStringList longer{u"== a"_s, u"one"_s, u"== a"_s, u"two"_s, u"== a"_s, u"two"_s};
+        QCOMPARE(QcDumpDiff::differences(expected, longer), (QStringList{u"== a #3"_s, u"+ two"_s}));
     }
 
     void deliberateChangesOfTheRegister()

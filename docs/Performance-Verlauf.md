@@ -1888,3 +1888,7 @@ Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, See
 ## Etappe 37.3 (Vermehrung, Golem-Regel, Schnee-Stil) headless (2026-10-17)
 
 `scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `1843c3f` gegen den Kandidaten nach den Nachbesserungen (E-415). Tick im Mittel: crowd +0,2 %, explore +2,1 %, farm-seeds +2 %, gravel-collapse +0,6 %, Signal-Stationen −3,4 bis +0,9 %; p99 −4,6 bis +2,6 %; Spitzenspeicher ±0,8 MB. Keine Regression. Die Kosten der Vermehrung selbst stehen oben (`tenVillagesGrow`, unter 0,05 µs je Tick).
+
+## 37.R1 (Plan-Zwischenspeicher, Leben nach Abgleich) headless (2026-10-17)
+
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `ec53772` gegen den Kandidaten (E-416). Tick im Mittel −1,2 bis +2,8 %, p99 −4,8 bis +5,1 %, Spitzenspeicher ±0,6 MB. Keine Regression. Ein Dorf neu zu planen kostet rund 3,3 ms (Debug); gehaltene Dörfer zahlen das nicht mehr (`test_village_plan_cache`).

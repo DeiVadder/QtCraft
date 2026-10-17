@@ -1,0 +1,309 @@
+== station running block entities
+burnt -6 81 1: +141
+container -1 80 5: qtcraft:dirtx1/0 - - - -
+container -1 81 5: qtcraft:dirtx34/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container -6 80 -6: qtcraft:diamondx5/0 qtcraft:gold_ingotx12/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -6: qtcraft:iron_ingotx1/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 5: qtcraft:dirtx29/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 3 80 -6: qtcraft:cobblestonex20/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+cooldown -1 80 5: +1
+machine -1 81 -6: qtcraft:iron_orex5/0 qtcraft:coalx1/0 - burn 68.000000/80.000000 progress 2.000000
+powered 6 80 0
+sapling 3 80 3: 169.371649
+scheduled -1 80 -2: +1 1
+scheduled -2 80 -2: +1 0
+scheduled -6 81 1: +141 0
+scheduled 0 80 -2: +1 1
+scheduled 1 80 -2: +3 1
+== station running items
+item qtcraft:stickx6/0 at 1.500 80.000 0.042
+== station client
+client entities of kind -2: 1
+client entities of kind 4: 4
+client updates at -1 80 -2: 119, last qtcraft:signal_observer[facing=east,powered=true]
+client updates at -2 80 -2: 1, last qtcraft:signal_lamp_lit
+client updates at -4 80 1: 32, last qtcraft:signal_dust[east=none,north=none,power=0,south=side,west=up]
+client updates at -4 80 2: 32, last qtcraft:signal_dust[east=none,north=side,power=0,south=side,west=none]
+client updates at -4 80 3: 32, last qtcraft:signal_dust[east=none,north=side,power=0,south=none,west=side]
+client updates at -5 80 3: 32, last qtcraft:signal_dust[east=side,north=none,power=0,south=none,west=side]
+client updates at -5 81 1: 32, last qtcraft:signal_dust[east=side,north=none,power=0,south=none,west=side]
+client updates at -6 80 2: 32, last qtcraft:signal_dust[east=none,north=side,power=0,south=side,west=none]
+client updates at -6 80 3: 32, last qtcraft:signal_dust[east=side,north=side,power=0,south=none,west=none]
+client updates at -6 81 1: 31, last qtcraft:signal_torch_off[attach=floor]
+client updates at 0 80 -2: 119, last qtcraft:signal_observer[facing=west,powered=true]
+client updates at 1 80 -2: 119, last qtcraft:signal_dropper[facing=south,triggered=true]
+client updates at 4 80 -4: 1, last qtcraft:lever[attach=floor,powered=true]
+client updates at 5 80 -4: 1, last qtcraft:signal_repeater[delay=4,facing=east,locked=false,powered=true]
+client updates at 5 80 0: 1, last qtcraft:lever[attach=floor,powered=true]
+client updates at 6 80 -4: 1, last qtcraft:signal_lamp_lit
+client updates at 6 80 0: 1, last qtcraft:oak_trapdoor[facing=north,half=bottom,open=true]
+== station back block entities
+burnt -6 81 1: +100
+container -1 80 5: qtcraft:dirtx1/0 - - - -
+container -1 81 5: qtcraft:dirtx28/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container -6 80 -6: qtcraft:diamondx5/0 qtcraft:gold_ingotx12/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -6: qtcraft:iron_ingotx1/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 5: qtcraft:dirtx35/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 3 80 -6: qtcraft:cobblestonex20/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+cooldown -1 80 5: +8
+machine -1 81 -6: qtcraft:iron_orex5/0 qtcraft:coalx1/0 - burn 65.950000/80.000000 progress 4.050000
+powered 6 80 0
+sapling 3 80 3: 167.321649
+scheduled -1 80 -2: +2 1
+scheduled -2 80 -2: +4 0
+scheduled -6 81 1: +100 0
+scheduled 0 80 -2: +2 1
+scheduled 1 80 -2: +2 1
+== station back items
+item qtcraft:stickx6/0 at 1.500 80.000 0.042
+== station regions
+chunk -1 -1: 1 x qtcraft:chest[facing=south] | -6 80 -6
+chunk -1 -1: 1 x qtcraft:furnace[facing=south] | -1 81 -6
+chunk -1 -1: 1 x qtcraft:signal_hopper[enabled=true,facing=east] | -1 80 -6
+chunk -1 -1: 1 x qtcraft:signal_lamp_lit | -2 80 -2
+chunk -1 -1: 1 x qtcraft:signal_observer[facing=east,powered=false] | -1 80 -2
+chunk -1 -1: 73 x qtcraft:stone
+chunk -1 -1: 9 x qtcraft:grass_block
+chunk -1 0: 1 x qtcraft:chest[facing=south] | -1 81 5
+chunk -1 0: 1 x qtcraft:signal_dust[east=none,north=none,power=0,south=side,west=up] | -4 80 1
+chunk -1 0: 1 x qtcraft:signal_dust[east=none,north=side,power=0,south=none,west=side] | -4 80 3
+chunk -1 0: 1 x qtcraft:signal_dust[east=side,north=side,power=0,south=none,west=none] | -6 80 3
+chunk -1 0: 1 x qtcraft:signal_hopper[enabled=true,facing=east] | -1 80 5
+chunk -1 0: 1 x qtcraft:signal_torch_off[attach=floor] | -6 81 1
+chunk -1 0: 12 x qtcraft:grass_block
+chunk -1 0: 2 x qtcraft:signal_dust[east=none,north=side,power=0,south=side,west=none] | -6 80 2 | -4 80 2
+chunk -1 0: 2 x qtcraft:signal_dust[east=side,north=none,power=0,south=none,west=side] | -5 80 3 | -5 81 1
+chunk -1 0: 75 x qtcraft:stone
+chunk 0 -1: 1 x qtcraft:lever[attach=floor,powered=true] | 4 80 -4
+chunk 0 -1: 1 x qtcraft:signal_dropper[facing=south,triggered=false] | 1 80 -2
+chunk 0 -1: 1 x qtcraft:signal_hopper[enabled=true,facing=east] | 2 80 -6
+chunk 0 -1: 1 x qtcraft:signal_lamp_lit | 6 80 -4
+chunk 0 -1: 1 x qtcraft:signal_observer[facing=west,powered=false] | 0 80 -2
+chunk 0 -1: 1 x qtcraft:signal_repeater[delay=4,facing=east,locked=false,powered=true] | 5 80 -4
+chunk 0 -1: 3 x qtcraft:air | 3 68 -3 | 3 68 -2 | 3 68 -1
+chunk 0 -1: 3 x qtcraft:chest[facing=south] | 0 80 -6 | 3 80 -6 | 2 81 -6
+chunk 0 -1: 6 x qtcraft:grass_block
+chunk 0 -1: 73 x qtcraft:stone
+chunk 0 0: 1 x qtcraft:birch_sapling | 3 80 3
+chunk 0 0: 1 x qtcraft:chest[facing=south] | 0 80 5
+chunk 0 0: 1 x qtcraft:lever[attach=floor,powered=true] | 5 80 0
+chunk 0 0: 1 x qtcraft:oak_trapdoor[facing=north,half=bottom,open=true] | 6 80 0
+chunk 0 0: 73 x qtcraft:stone
+chunk 0 0: 8 x qtcraft:air
+chunk 0 0: 8 x qtcraft:grass_block
+== station reopened block entities
+burnt -6 81 1: +98
+container -1 80 5: qtcraft:dirtx1/0 - - - -
+container -1 81 5: qtcraft:dirtx28/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container -6 80 -6: qtcraft:diamondx5/0 qtcraft:gold_ingotx12/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -6: qtcraft:iron_ingotx1/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 5: qtcraft:dirtx35/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 3 80 -6: qtcraft:cobblestonex20/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+cooldown -1 80 5: +6
+machine -1 81 -6: qtcraft:iron_orex5/0 qtcraft:coalx1/0 - burn 65.850000/80.000000 progress 4.150000
+powered 6 80 0
+sapling 3 80 3: 167.221649
+scheduled -1 80 -2: +2 1
+scheduled -2 80 -2: +2 0
+scheduled -6 81 1: +98 0
+scheduled 0 80 -2: +2 1
+scheduled 1 80 -2: +4 1
+== station reopened items
+item qtcraft:stickx6/0 at 1.500 80.000 0.042
+== station reopened and run block entities
+burnt -6 81 1: +38
+container -1 80 5: qtcraft:dirtx1/0 - - - -
+container -1 81 5: qtcraft:dirtx21/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container -6 80 -6: qtcraft:diamondx5/0 qtcraft:gold_ingotx12/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -6: qtcraft:iron_ingotx1/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 5: qtcraft:dirtx42/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+container 3 80 -6: qtcraft:cobblestonex20/0 - - - - - - - - - - - - - - - - - - - - - - - - - -
+cooldown -1 80 5: +2
+machine -1 81 -6: qtcraft:iron_orex5/0 qtcraft:coalx1/0 - burn 62.850000/80.000000 progress 7.150000
+powered 6 80 0
+sapling 3 80 3: 164.221649
+scheduled -1 80 -2: +2 1
+scheduled -2 80 -2: +2 0
+scheduled -6 81 1: +38 0
+scheduled 0 80 -2: +2 1
+scheduled 1 80 -2: +4 1
+== station reopened and run items
+item qtcraft:stickx6/0 at 1.500 80.000 0.042
+== station client after reopening
+client entities of kind -2: 1
+client entities of kind 4: 4
+client updates at -1 80 -2: 31, last qtcraft:signal_observer[facing=east,powered=true]
+client updates at 0 80 -2: 31, last qtcraft:signal_observer[facing=west,powered=true]
+client updates at 1 80 -2: 31, last qtcraft:signal_dropper[facing=south,triggered=true]
+== chain turns 0 cells mid-move
+lever[attach=floor,powered=true]
+sticky_signal_piston[extended=true,facing=east]
+signal_piston_head[facing=east,sticky=true]
+chest[facing=south]
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 0 mid-move block entities
+container -2 80 -1: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -1: qtcraft:dirtx3/0 - - - -
+container 1 80 -1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 2 80 -1: qtcraft:cobblestonex9/0 - - - - - - - -
+extending -4 80 -1: -1
+machine -1 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.650000/80.000000 progress 0.350000
+== chain turns 0 mid-move items
+== chain turns 0 reopened block entities
+container -2 80 -1: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -1: qtcraft:dirtx3/0 - - - -
+container 1 80 -1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 2 80 -1: qtcraft:cobblestonex9/0 - - - - - - - -
+extending -4 80 -1: -2
+machine -1 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.550000/80.000000 progress 0.450000
+== chain turns 0 reopened items
+== chain turns 0 cells after pulling back
+lever[attach=floor,powered=false]
+sticky_signal_piston[extended=false,facing=east]
+chest[facing=south]
+air
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 0 pulled back block entities
+container -3 80 -1: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 -1: qtcraft:dirtx3/0 - - - -
+container 1 80 -1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 2 80 -1: qtcraft:cobblestonex9/0 - - - - - - - -
+machine -1 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 75.550000/80.000000 progress 4.450000
+== chain turns 0 pulled back items
+== chain turns 1 cells mid-move
+lever[attach=floor,powered=true]
+sticky_signal_piston[extended=true,facing=east]
+signal_piston_head[facing=east,sticky=true]
+chest[facing=south]
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 1 mid-move block entities
+container 0 80 -2: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 0: qtcraft:dirtx3/0 - - - -
+container 0 80 1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 0 80 2: qtcraft:cobblestonex9/0 - - - - - - - -
+extending 0 80 -4: -1
+machine 0 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.650000/80.000000 progress 0.350000
+== chain turns 1 mid-move items
+== chain turns 1 reopened block entities
+container 0 80 -2: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 0: qtcraft:dirtx3/0 - - - -
+container 0 80 1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 0 80 2: qtcraft:cobblestonex9/0 - - - - - - - -
+extending 0 80 -4: -2
+machine 0 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.550000/80.000000 progress 0.450000
+== chain turns 1 reopened items
+== chain turns 1 cells after pulling back
+lever[attach=floor,powered=false]
+sticky_signal_piston[extended=false,facing=east]
+chest[facing=south]
+air
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 1 pulled back block entities
+container 0 80 -3: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+container 0 80 0: qtcraft:dirtx3/0 - - - -
+container 0 80 1: qtcraft:water_bucketx1/0 - - - - - - - -
+container 0 80 2: qtcraft:cobblestonex9/0 - - - - - - - -
+machine 0 80 -1: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 75.550000/80.000000 progress 4.450000
+== chain turns 1 pulled back items
+== chain turns 2 cells mid-move
+lever[attach=floor,powered=true]
+sticky_signal_piston[extended=true,facing=east]
+signal_piston_head[facing=east,sticky=true]
+chest[facing=south]
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 2 mid-move block entities
+container -1 80 0: qtcraft:dirtx3/0 - - - -
+container -2 80 0: qtcraft:water_bucketx1/0 - - - - - - - -
+container -3 80 0: qtcraft:cobblestonex9/0 - - - - - - - -
+container 1 80 0: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+extending 3 80 0: -1
+machine 0 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.650000/80.000000 progress 0.350000
+== chain turns 2 mid-move items
+== chain turns 2 reopened block entities
+container -1 80 0: qtcraft:dirtx3/0 - - - -
+container -2 80 0: qtcraft:water_bucketx1/0 - - - - - - - -
+container -3 80 0: qtcraft:cobblestonex9/0 - - - - - - - -
+container 1 80 0: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+extending 3 80 0: -2
+machine 0 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.550000/80.000000 progress 0.450000
+== chain turns 2 reopened items
+== chain turns 2 cells after pulling back
+lever[attach=floor,powered=false]
+sticky_signal_piston[extended=false,facing=east]
+chest[facing=south]
+air
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 2 pulled back block entities
+container -1 80 0: qtcraft:dirtx3/0 - - - -
+container -2 80 0: qtcraft:water_bucketx1/0 - - - - - - - -
+container -3 80 0: qtcraft:cobblestonex9/0 - - - - - - - -
+container 2 80 0: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+machine 0 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 75.550000/80.000000 progress 4.450000
+== chain turns 2 pulled back items
+== chain turns 3 cells mid-move
+lever[attach=floor,powered=true]
+sticky_signal_piston[extended=true,facing=east]
+signal_piston_head[facing=east,sticky=true]
+chest[facing=south]
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 3 mid-move block entities
+container -1 80 -1: qtcraft:dirtx3/0 - - - -
+container -1 80 -2: qtcraft:water_bucketx1/0 - - - - - - - -
+container -1 80 -3: qtcraft:cobblestonex9/0 - - - - - - - -
+container -1 80 1: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+extending -1 80 3: -1
+machine -1 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.650000/80.000000 progress 0.350000
+== chain turns 3 mid-move items
+== chain turns 3 reopened block entities
+container -1 80 -1: qtcraft:dirtx3/0 - - - -
+container -1 80 -2: qtcraft:water_bucketx1/0 - - - - - - - -
+container -1 80 -3: qtcraft:cobblestonex9/0 - - - - - - - -
+container -1 80 1: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+extending -1 80 3: -2
+machine -1 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 79.550000/80.000000 progress 0.450000
+== chain turns 3 reopened items
+== chain turns 3 cells after pulling back
+lever[attach=floor,powered=false]
+sticky_signal_piston[extended=false,facing=east]
+chest[facing=south]
+air
+furnace[facing=south]
+signal_hopper[enabled=true,facing=down]
+signal_dispenser[facing=up,triggered=false]
+signal_dropper[facing=up,triggered=false]
+air
+== chain turns 3 pulled back block entities
+container -1 80 -1: qtcraft:dirtx3/0 - - - -
+container -1 80 -2: qtcraft:water_bucketx1/0 - - - - - - - -
+container -1 80 -3: qtcraft:cobblestonex9/0 - - - - - - - -
+container -1 80 2: qtcraft:diamondx5/0 qtcraft:stickx7/0 - - - - - - - - - - - - - - - - - - - - - - - - -
+machine -1 80 0: qtcraft:iron_orex4/0 qtcraft:coalx1/0 - burn 75.550000/80.000000 progress 4.450000
+== chain turns 3 pulled back items

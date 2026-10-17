@@ -12,6 +12,7 @@
 
 #include <QJsonObject>
 #include <QTest>
+#include <QtMath>
 
 #include <algorithm>
 #include <cmath>
@@ -25,7 +26,9 @@ using namespace Qt::StringLiterals;
 // their population with a cooldown and the world's limit, and not at all while the content has no
 // golem creature; they count the golems of every village towards the world's limit, forget a last
 // golem after the world time went back and place one on the ground where its whole body fits. A
-// villager asleep under a low roof breathes. Children survive saving and resting.
+// villager asleep under a low roof breathes. Children survive saving and resting. Neither children nor
+// golems come before the village's claims are reconciled, which happens when the last chunk around
+// the village arrives, also when that chunk lies in a neighbouring region.
 class TestVillageLife : public QObject
 {
     Q_OBJECT
@@ -73,6 +76,23 @@ private:
         return content;
     }
 
+    // Loads the chunks of the village's plan and `ring` chunks around them, then populates the plan's
+    // chunks (which reconciles the claims once every chunk around the village is there).
+    static void loadAround(Village &village, int ring)
+    {
+        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*village.plan);
+        for (const QcChunkPos &chunk : chunks) {
+            for (int dz = -ring; dz <= ring; ++dz) {
+                for (int dx = -ring; dx <= ring; ++dx) {
+                    village.world->loadChunk({chunk.x + dx, chunk.z + dz});
+                }
+            }
+        }
+        for (const QcChunkPos &chunk : chunks) {
+            village.mobs->populateChunk(*village.world, chunk, village.ids());
+        }
+    }
+
     // The first village of the seed with its chunks and the ring around them loaded and its
     // villagers moved in.
     static Village village(const std::shared_ptr<QcContentRegistry> &content, QcVillagerHomes::Limits limits = {})
@@ -97,17 +117,7 @@ private:
         result.mobs = std::make_unique<QcMobManager>(content, seed);
         result.mobs->setVillages(&result.world->villages());
         result.mobs->setVillagerLimits(limits, {});
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*result.plan);
-        for (const QcChunkPos &chunk : chunks) {
-            for (int dz = -2; dz <= 2; ++dz) {
-                for (int dx = -2; dx <= 2; ++dx) {
-                    result.world->loadChunk({chunk.x + dx, chunk.z + dz});
-                }
-            }
-        }
-        for (const QcChunkPos &chunk : chunks) {
-            result.mobs->populateChunk(*result.world, chunk, result.ids());
-        }
+        loadAround(result, 2);
         return result;
     }
 
@@ -194,8 +204,9 @@ private:
         return std::ranges::count_if(village.mobs->mobs(), [golemType](const QcCreature &mob) { return mob.type == golemType; });
     }
 
-    // The village saved and loaded into a new world: its villages.json and its persistent mobs.
-    static Village reloaded(Village &old)
+    // The village saved and loaded into a new world: its villages.json (unless it was lost) and its
+    // persistent mobs, with the chunks `ring` around the village loaded.
+    static Village reloaded(Village &old, bool villagesKept = true, int ring = 2)
     {
         Village result;
         result.content = old.content;
@@ -203,26 +214,52 @@ private:
         result.worldTime = old.worldTime;
         result.nextId = old.nextId;
         result.world = std::make_unique<QcServerWorld>(old.content, std::make_unique<QcTerrainGenerator>(old.content, seed));
-        result.world->villages().restore(old.world->villages().villages());
+        if (villagesKept) {
+            result.world->villages().restore(old.world->villages().villages());
+        }
         result.mobs = std::make_unique<QcMobManager>(old.content, seed);
         result.mobs->setVillages(&result.world->villages());
         result.mobs->restore(old.mobs->persistentMobs(), old.mobs->populatedChunks(), result.ids());
-        const QList<QcChunkPos> chunks = QcVillageTestUtil::chunksOf(*result.plan);
-        for (const QcChunkPos &chunk : chunks) {
-            for (int dz = -2; dz <= 2; ++dz) {
-                for (int dx = -2; dx <= 2; ++dx) {
-                    result.world->loadChunk({chunk.x + dx, chunk.z + dz});
-                }
-            }
-        }
-        for (const QcChunkPos &chunk : chunks) {
-            result.mobs->populateChunk(*result.world, chunk, result.ids());
-        }
+        loadAround(result, ring);
         // The server wakes them once it sees their chunks (QcEntities).
         for (QcCreature &mob : result.mobs->editableMobs()) {
             mob.dormant = false;
         }
         return result;
+    }
+
+    // The village of the region nearest to the origin, within `rings` regions.
+    static std::shared_ptr<const QcVillagePlan> nearestPlan(const QcTerrainGenerator &generator, int rings)
+    {
+        for (int ring = 0; ring <= rings; ++ring) {
+            for (int rz = -ring; rz <= ring; ++rz) {
+                for (int rx = -ring; rx <= ring; ++rx) {
+                    if (std::max(std::abs(rx), std::abs(rz)) != ring) {
+                        continue;
+                    }
+                    if (std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz)) {
+                        return plan;
+                    }
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    // A chunk from `low` to `high` that lies in another region than `home`.
+    static std::optional<QcChunkPos> chunkInAnotherRegion(QcChunkPos low, QcChunkPos high, QcChunkPos home, int spacing)
+    {
+        const auto regionOf = [spacing](QcChunkPos pos) {
+            return std::pair{qFloor(double(pos.x * QcWorld::chunkSize) / spacing), qFloor(double(pos.z * QcWorld::chunkSize) / spacing)};
+        };
+        for (int z = low.z; z <= high.z; ++z) {
+            for (int x = low.x; x <= high.x; ++x) {
+                if (regionOf({x, z}) != regionOf(home)) {
+                    return QcChunkPos{x, z};
+                }
+            }
+        }
+        return std::nullopt;
     }
 
     static const QcCreature *youngest(Village &village)
@@ -495,6 +532,71 @@ private slots:
         QVERIFY(!breeding.breedsNow(village, context, 2));
         village.population = 1;
         QVERIFY(breeding.breedsNow(village, context, 1));
+    }
+
+    void noLifeBeforeTheClaimsAreReconciled()
+    {
+        // villages.json was lost: the village comes back from its plan without claims, and only the
+        // chunks of its box are loaded, so villagers beyond them could still hold beds. No child and
+        // no golem until every chunk around the village is there (decision E-416).
+        Village built = village(contentWithGolem(1, 1, 300.0));
+        QVERIFY(built.plan);
+        const QcVec3 spot = freeABed(built);
+        const qsizetype before = villagersOf(built).size();
+        Village lost = reloaded(built, false, 0);
+        QCOMPARE(villagersOf(lost).size(), before);
+        QCOMPARE(meet(lost, spot, workPhase), before);
+        ticks(lost, 2 * QcMobManager::villageLifeTicks + 1);
+        QCOMPARE(villagersOf(lost).size(), before);
+        QCOMPARE(golemCount(lost), 0);
+
+        // The ring around it loads: the claims are reconciled, life goes on.
+        loadAround(lost, 2);
+        QCOMPARE(meet(lost, spot, workPhase), before + 1);
+        ticks(lost, 3 * QcMobManager::villageLifeTicks + 1);
+        QVERIFY(golemCount(lost) >= 1);
+    }
+
+    void claimsAreReconciledWhenTheLastChunkLiesInANeighbouringRegion()
+    {
+        // Regions of 128 blocks: the chunks around a village reach into the neighbouring regions.
+        // Loading the last of them (one in another region) reconciles the village's claims.
+        std::shared_ptr<QcContentRegistry> content = loadContent();
+        QcVillageSettings settings = content->villageSettings();
+        settings.spacing = 128;
+        settings.radius = 48;
+        content->setVillageSettings(settings);
+        auto generator = std::make_unique<QcTerrainGenerator>(content, seed);
+        const int spacing = generator->villages().spacing();
+        QCOMPARE(spacing, 128);
+        const std::shared_ptr<const QcVillagePlan> found = nearestPlan(*generator, 14);
+        QVERIFY(found);
+        const QcVillagePlan &plan = *found;
+        const int around = QcVillage::reach + QcVillagerHomes::strayReach;
+        const QcChunkPos low = QcBlockPos{plan.minX - around, 0, plan.minZ - around}.chunk();
+        const QcChunkPos high = QcBlockPos{plan.maxX + around, 0, plan.maxZ + around}.chunk();
+        const std::optional<QcChunkPos> last = chunkInAnotherRegion(low, high, plan.centre.chunk(), spacing);
+        QVERIFY(last);
+
+        QcServerWorld world(content, std::move(generator));
+        QcMobManager mobs(content, seed);
+        mobs.setVillages(&world.villages());
+        quint32 nextId = 1;
+        const auto ids = [&nextId] { return nextId++; };
+        for (int z = low.z; z <= high.z; ++z) {
+            for (int x = low.x; x <= high.x; ++x) {
+                if (QcChunkPos{x, z} != *last) {
+                    world.loadChunk({x, z});
+                    mobs.populateChunk(world, {x, z}, ids);
+                }
+            }
+        }
+        QVERIFY(world.villages().find(plan.id));
+        QVERIFY(!mobs.claimsReconciled(plan.id));
+
+        world.loadChunk(*last);
+        mobs.populateChunk(world, *last, ids);
+        QVERIFY(mobs.claimsReconciled(plan.id));
     }
 
     void noChildThroughAWall()

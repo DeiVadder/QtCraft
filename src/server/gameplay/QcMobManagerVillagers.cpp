@@ -66,42 +66,61 @@ void QcMobManager::spawnWaitingVillagers(QcServerWorld &world, QcChunkPos pos, c
 
 void QcMobManager::checkVillageClaims(QcServerWorld &world, QcChunkPos pos)
 {
-    const std::shared_ptr<const QcVillagePlan> plan = world.chunk(pos) ? world.generator().villageFor(pos) : nullptr;
-    QcVillage *village = plan && !m_claimsChecked.contains(plan->id) ? world.villages().find(plan->id) : nullptr;
-    if (!village) {
+    if (!world.chunk(pos)) {
         return;
     }
+
+    // The villages whose stray villagers may stand in `pos`: their area plus `reach` reaches into
+    // it or, by up to strayReach blocks (at most one chunk), next to it. Their plans may lie in a
+    // neighbouring region.
+    const int strayChunks = (QcVillagerHomes::strayReach + QcWorld::chunkSize - 1) / QcWorld::chunkSize;
+    const QList<qint64> ids = world.villages().near(pos, strayChunks);
+    for (const qint64 id : ids) {
+        QcVillage *village = m_claimsChecked.contains(id) ? nullptr : world.villages().find(id);
+        if (village && claimHoldersLoaded(world, *village)) {
+            reconcileClaims(world, *village);
+        }
+    }
+}
+
+bool QcMobManager::claimHoldersLoaded(const QcServerWorld &world, const QcVillage &village)
+{
     // Villagers resting in a chunk not loaded yet still hold their claims: wait for all of them.
     const int around = QcVillage::reach + QcVillagerHomes::strayReach;
-    const QcChunkPos low = QcBlockPos{village->minX - around, 0, village->minZ - around}.chunk();
-    const QcChunkPos high = QcBlockPos{village->maxX + around, 0, village->maxZ + around}.chunk();
+    const QcChunkPos low = QcBlockPos{village.minX - around, 0, village.minZ - around}.chunk();
+    const QcChunkPos high = QcBlockPos{village.maxX + around, 0, village.maxZ + around}.chunk();
     for (int x = low.x; x <= high.x; ++x) {
         for (int z = low.z; z <= high.z; ++z) {
             if (!world.chunk({x, z})) {
-                return;
+                return false;
             }
         }
     }
-    m_claimsChecked.insert(plan->id);
+    return true;
+}
+
+void QcMobManager::reconcileClaims(QcServerWorld &world, QcVillage &village)
+{
+    m_claimsChecked.insert(village.id);
 
     // A name twice (a villager settled under a name villages.json had not kept yet): the later one
     // gets a new name, and its claims lapse at its next decision.
     QSet<QString> present;
     bool changed = false;
     for (QcCreature &mob : m_mobs) {
-        if (mob.villager.village != village->id || mob.villager.profession.isEmpty()) {
+        if (mob.villager.village != village.id || mob.villager.profession.isEmpty()) {
             continue;
         }
         if (present.contains(mob.villager.name)) {
-            mob.villager.name = QcVillagerHomes::freshName(*village);
+            mob.villager.name = QcVillagerHomes::freshName(village);
             changed = true;
         }
         present.insert(mob.villager.name);
     }
     // Its population is who is there.
-    changed = changed || village->population != int(present.size());
-    village->population = int(present.size());
-    if (QcVillagerHomes::dropLostClaims(*village, present) > 0 || changed) {
+    changed = changed || village.population != int(present.size());
+    village.population = int(present.size());
+    if (QcVillagerHomes::dropLostClaims(village, present) > 0 || changed) {
         world.villages().noteChanged();
     }
 }
@@ -116,7 +135,7 @@ void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const 
 
     const QcVillagerBehaviour &behaviour = villagers();
     const QcVillagerBreeding::Context breeding{world, world.villages(), worldTime, [&behaviour](QcBlockPos pos) { return behaviour.rainsAt(pos); },
-                                               m_villagerLimits};
+                                               m_villagerLimits, &m_claimsChecked};
     const QList<QcVillagerBreeding::Birth> births = m_breeding.check(m_mobs, breeding);
     for (const QcVillagerBreeding::Birth &birth : births) {
         QcVillage *village = world.villages().find(birth.village);
@@ -132,7 +151,9 @@ void QcMobManager::liveInVillages(QcServerWorld &world, double worldTime, const 
     }
     QSet<qint64> lived;
     for (const QcCreature &mob : std::as_const(m_mobs)) {
-        if (!mob.dormant && mob.villager.village != 0 && !mob.villager.profession.isEmpty()) {
+        // Only villages whose claims were reconciled (decision E-416): before that, villagers in
+        // chunks not loaded yet are not counted.
+        if (!mob.dormant && mob.villager.village != 0 && !mob.villager.profession.isEmpty() && m_claimsChecked.contains(mob.villager.village)) {
             lived.insert(mob.villager.village);
         }
     }

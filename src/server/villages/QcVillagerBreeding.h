@@ -6,6 +6,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QSet>
 
 #include <functional>
 #include <memory>
@@ -46,6 +47,9 @@ public:
         // Whether it rains on a block's column (QcVillagerBehaviour::rainsAt).
         std::function<bool(QcBlockPos)> rains;
         QcVillagerHomes::Limits limits;
+        // Villages whose claims were reconciled after loading (QcMobManager::checkVillageClaims,
+        // decision E-416); only they share food and breed. Null: every village.
+        const QSet<qint64> *reconciled = nullptr;
     };
 
     explicit QcVillagerBreeding(std::shared_ptr<const QcContentRegistry> content);

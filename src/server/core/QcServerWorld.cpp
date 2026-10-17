@@ -42,6 +42,7 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     m_marks = QcSectionMarks(std::move(traits));
     m_hoppers = QcBlockIndex(std::move(hoppers));
     m_fires = QcFireQueue(std::move(fires), std::move(eternalGround));
+    m_villages->setLoadedQuery([this](QcChunkPos pos) { return m_chunks.contains(pos); });
 }
 
 void QcServerWorld::setStorage(QcChunkIo *io, QHash<QcChunkPos, Stored> catalog)
@@ -195,6 +196,7 @@ void QcServerWorld::forgetSections(QcChunkPos pos)
     m_hoppers.forgetChunk(pos);
     m_links.forgetChunk(pos);
     m_fires.forgetChunk(pos);
+    m_villages->forgetChunk(pos);
 }
 
 std::shared_ptr<const QcChunk> QcServerWorld::chunk(QcChunkPos pos) const
