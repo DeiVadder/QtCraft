@@ -18,15 +18,22 @@ After moving files with `git mv`, running this script
 A moved file still needs its line in the right `target_sources` block of its library;
 scripts/check-cmake-lists.py reports what is out of place.
 
-Usage: scripts/fix-includes.py [--check] [--deps [<prefix>]]
-  --check   change nothing; exit 1 and list the files that would change (verify.sh runs this)
-  --deps    print which folders of src/ include headers of which other folders (with counts);
-            with a prefix (e.g. server/worldgen) only the folders below it
+The check also keeps the layers of src/ (decision E-419): a top folder includes headers of itself
+and of the folders LAYERS allows it, nothing else (common nothing, worldgen and network only
+common, ...; app and headless, the composition roots, anything). A new top folder needs its line.
+
+Usage: scripts/fix-includes.py [--check] [--deps [<prefix>]] [--self-test]
+  --check      change nothing; exit 1 and list the files that would change and the includes that
+               cross a layer (verify.sh runs this)
+  --deps       print which folders of src/ include headers of which other folders (with counts);
+               with a prefix (e.g. worldgen) only the folders below it
+  --self-test  checks bad includes in a temporary folder and fails if the layer check misses one
 """
 
 import os
 import re
 import sys
+import tempfile
 from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,10 +41,28 @@ INCLUDE_ROOTS = ("src", "tests")
 CODE_SUFFIXES = (".h", ".cpp", ".mm")
 SOURCE_SUFFIXES = (".h", ".cpp", ".mm", ".qml")
 INCLUDE = re.compile(r'^(\s*#\s*include\s+)"([^"]+)"', re.MULTILINE)
-# A file name in a CMake file: a relative path ending in a source suffix, without variables.
-CMAKE_FILE = re.compile(r"(?<![\w${}/.-])((?:\$\{PROJECT_SOURCE_DIR\}/)?[\w./-]+\.(?:h|cpp|mm|qml))(?![\w])")
+# A file name in a CMake file: a relative path ending in a source suffix, without variables other
+# than a leading ${PROJECT_SOURCE_DIR}/ or ${CMAKE_CURRENT_SOURCE_DIR}/.
+CMAKE_PREFIXES = ("${PROJECT_SOURCE_DIR}/", "${CMAKE_CURRENT_SOURCE_DIR}/")
+CMAKE_FILE = re.compile(r"(?<![\w${}/.-])((?:\$\{(?:PROJECT|CMAKE_CURRENT)_SOURCE_DIR\}/)?[\w./-]+\.(?:h|cpp|mm|qml))(?![\w])")
+# A comment in a CMake file: a bracket comment (#[[ ... ]], #[=[ ... ]=], over several lines) or
+# the rest of a line.
+CMAKE_COMMENT = re.compile(r"#\[(=*)\[.*?\]\1\]|#[^\n]*", re.DOTALL)
 TS_LOCATION = re.compile(r'(<location filename=")([^"]+)(")')
 TRANSLATIONS = "translations"
+# The top folders of src/ whose headers each top folder may include besides its own (decision
+# E-419); None: any. Direct includes only: audio reaches network through clientcore, but does not
+# include it.
+LAYERS = {
+    "common": set(),
+    "worldgen": {"common"},
+    "network": {"common"},
+    "clientcore": {"common", "network"},
+    "audio": {"common", "clientcore"},
+    "server": {"common", "network", "worldgen"},
+    "app": None,
+    "headless": None,
+}
 
 
 def walk(root, suffixes):
@@ -118,30 +143,32 @@ def sort_include_runs(path, text):
 def rewrite_cmake(path, text, by_name):
     """The text of a CMake file with paths of moved files pointing to where they are now.
 
-    Relative paths count from the folder of the CMakeLists.txt that holds them or includes them
-    (a `*.cmake` file counts from the nearest folder above it with a CMakeLists.txt); comments
-    stay as they are."""
+    Relative paths and ${CMAKE_CURRENT_SOURCE_DIR}/ count from the folder of the CMakeLists.txt
+    that holds them or includes them (a `*.cmake` file counts from the nearest folder above it with
+    a CMakeLists.txt); a rewritten path keeps its prefix. Comments (also bracket comments) stay as
+    they are."""
     folder = os.path.dirname(os.path.join(ROOT, path))
     while not path.endswith("CMakeLists.txt") and not os.path.exists(os.path.join(folder, "CMakeLists.txt")):
         folder = os.path.dirname(folder)
 
     def replace(match):
         token = match.group(1)
-        prefixed = token.startswith("${PROJECT_SOURCE_DIR}/")
-        absolute = os.path.join(ROOT, token[len("${PROJECT_SOURCE_DIR}/"):]) if prefixed \
-            else os.path.join(folder, token)
+        prefix = next((p for p in CMAKE_PREFIXES if token.startswith(p)), "")
+        base = ROOT if prefix == CMAKE_PREFIXES[0] else folder
         target = by_name.get(os.path.basename(token))
-        if os.path.exists(absolute) or target is None:
+        if os.path.exists(os.path.join(base, token[len(prefix):])) or target is None:
             return token
-        if prefixed:
-            return "${PROJECT_SOURCE_DIR}/" + target
-        return os.path.relpath(os.path.join(ROOT, target), folder)
+        if prefix == CMAKE_PREFIXES[0]:
+            return prefix + target
+        return prefix + os.path.relpath(os.path.join(ROOT, target), folder)
 
-    lines = []
-    for line in text.split("\n"):
-        code, hash_sign, comment = line.partition("#")
-        lines.append(CMAKE_FILE.sub(replace, code) + hash_sign + comment)
-    return "\n".join(lines)
+    parts = []
+    position = 0
+    for comment in CMAKE_COMMENT.finditer(text):
+        parts.append(CMAKE_FILE.sub(replace, text[position:comment.start()]) + comment.group(0))
+        position = comment.end()
+    parts.append(CMAKE_FILE.sub(replace, text[position:]))
+    return "".join(parts)
 
 
 def rewrite_translation(text, by_name):
@@ -180,6 +207,93 @@ def planned_changes(by_name):
     return changes, problems
 
 
+def layer_violations(root, files):
+    """The includes of the given src/ files (project-relative paths below `root`) that cross a layer.
+
+    An include counts by its first path part (`server/...` is the server's), the layers of files
+    in a top folder missing from LAYERS are reported as such."""
+    problems = []
+    for path in files:
+        layer = include_path(path)[1].partition("/")[0]
+        if layer not in LAYERS:
+            problems.append(f"{path}: top folder src/{layer} has no line in LAYERS (decision E-419)")
+            continue
+        allowed = LAYERS[layer]
+        if allowed is None:
+            continue
+        with open(os.path.join(root, path), encoding="utf-8") as file:
+            text = file.read()
+        for match in INCLUDE.finditer(text):
+            target = match.group(2).partition("/")[0]
+            if "/" in match.group(2) and target in LAYERS and target != layer and target not in allowed:
+                problems.append(f"{path}: includes {match.group(2)}, but src/{layer} may include only "
+                                f"{', '.join(sorted(allowed)) or 'itself'} (decision E-419)")
+    return problems
+
+
+# Bad samples of the self-test: (file below src/, its text, expected part of the finding).
+SELF_TEST_CASES = [
+    ("common/core/QcA.h", '#include "server/core/QcServer.h"\n', "src/common may include only itself"),
+    ("worldgen/a/QcA.cpp", '#include "common/QcB.h"\n#include "network/QcC.h"\n', "includes network/QcC.h"),
+    ("clientcore/a/QcA.cpp", '#include "server/QcS.h"\n', "src/clientcore may include only common, network"),
+    ("audio/QcA.cpp", '  #  include "network/QcN.h"\n', "includes network/QcN.h"),
+    ("server/QcA.cpp", '#include "app/QcGameController.h"\n', "src/server may include only common, network, worldgen"),
+    ("plugins/QcA.cpp", '#include "common/QcB.h"\n', "top folder src/plugins has no line in LAYERS"),
+]
+SELF_TEST_GOOD = [
+    ("common/a/QcA.cpp", '#include "common/b/QcB.h"\n#include "QcLocal.h"\n#include <QList>\n#include "moc_QcA.cpp"\n'),
+    ("server/QcA.cpp", '#include "worldgen/QcW.h"\n#include "network/QcN.h"\n#include "common/QcC.h"\n'),
+    ("app/QcA.cpp", '#include "server/QcS.h"\n#include "audio/QcAudio.h"\n'),
+    ("audio/QcA.cpp", '#include "clientcore/sound/QcSoundBank.h"\n'),
+]
+
+
+# A CMake text in tests/CMakeLists.txt naming a moved file (the real tests/world/QcVillageTestUtil.h)
+# in code and in comments, and the text the rewrite should give.
+SELF_TEST_CMAKE = (
+    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/old/QcVillageTestUtil.h old/QcVillageTestUtil.h)\n"
+    "#[[ old/QcVillageTestUtil.h\n  old/QcVillageTestUtil.h ]] set(b old/QcVillageTestUtil.h) # old/QcVillageTestUtil.h\n"
+    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcVillageTestUtil.h ]=]\n",
+    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/world/QcVillageTestUtil.h world/QcVillageTestUtil.h)\n"
+    "#[[ old/QcVillageTestUtil.h\n  old/QcVillageTestUtil.h ]] set(b world/QcVillageTestUtil.h) # old/QcVillageTestUtil.h\n"
+    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcVillageTestUtil.h ]=]\n",
+)
+
+
+def self_test():
+    """Runs the layer check on the bad samples and the good ones and the CMake rewrite on its
+    sample; 0 when they find and give exactly what they should."""
+    failures = []
+    rewritten = rewrite_cmake("tests/CMakeLists.txt", SELF_TEST_CMAKE[0], index_files())
+    if rewritten != SELF_TEST_CMAKE[1]:
+        failures.append(f"CMake rewrite gave:\n{rewritten}")
+    for relative, text, expected in SELF_TEST_CASES:
+        with tempfile.TemporaryDirectory() as root:
+            path = write_sample(root, relative, text)
+            found = layer_violations(root, [path])
+            if not any(expected in problem for problem in found):
+                failures.append(f"missed in {relative}: expected '{expected}', found {found}")
+    with tempfile.TemporaryDirectory() as root:
+        paths = [write_sample(root, relative, text) for relative, text in SELF_TEST_GOOD]
+        found = layer_violations(root, paths)
+        if found:
+            failures.append(f"findings in the good samples: {found}")
+    for failure in failures:
+        print(f"fix-includes self-test: {failure}")
+    if not failures:
+        print(f"fix-includes self-test: {len(SELF_TEST_CASES)} bad samples found, good samples clean")
+    return 1 if failures else 0
+
+
+def write_sample(root, relative, text):
+    """Writes a sample file below root/src; its path relative to root."""
+    path = os.path.join("src", relative)
+    os.makedirs(os.path.dirname(os.path.join(root, path)), exist_ok=True)
+    with open(os.path.join(root, path), "w", encoding="utf-8") as file:
+        file.write(text)
+    return path
+
+
 def folder_of(path):
     """The folder of a project file below src/ (e.g. server/worldgen/villages)."""
     return os.path.dirname(include_path(path)[1]) or "."
@@ -204,6 +318,8 @@ def print_dependencies(by_name, prefix):
 
 
 def main(arguments):
+    if "--self-test" in arguments:
+        return self_test()
     by_name = index_files()
     if "--deps" in arguments:
         position = arguments.index("--deps")
@@ -212,6 +328,7 @@ def main(arguments):
         return 0
 
     changes, problems = planned_changes(by_name)
+    problems += layer_violations(ROOT, walk("src", CODE_SUFFIXES))
     for problem in problems:
         print(f"fix-includes: {problem}")
     if "--check" in arguments:

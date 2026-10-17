@@ -44,13 +44,18 @@ target_sources(qc_worldgen PRIVATE
 target_sources(qc_worldgen PRIVATE
     villages/QcBoardwalkPlanner.h villages/QcBoardwalkPlanner.cpp
     villages/QcJettyPlanner.h villages/QcJettyPlanner.cpp
+    villages/QcPiecePlacer.h villages/QcPiecePlacer.cpp
     villages/QcPieceVariation.h villages/QcPieceVariation.cpp
+    villages/QcRoadLayer.h villages/QcRoadLayer.cpp
+    villages/QcRoadNetworkPlanner.h villages/QcRoadNetworkPlanner.cpp
     villages/QcVillageBlocks.h villages/QcVillageBlocks.cpp
+    villages/QcVillageDraft.h villages/QcVillageDraft.cpp
     villages/QcVillageFields.h villages/QcVillageFields.cpp
+    villages/QcVillageForecourt.h villages/QcVillageForecourt.cpp
     villages/QcVillageGenerator.h villages/QcVillageGenerator.cpp
     villages/QcVillagePlan.h
     villages/QcVillagePlanCache.h villages/QcVillagePlanCache.cpp
-    villages/QcVillagePlanner.h villages/QcVillagePlanner.cpp villages/QcVillagePlannerLayouts.cpp villages/QcVillagePlannerRoads.cpp villages/QcVillagePlannerWater.cpp
+    villages/QcVillagePlanner.h villages/QcVillagePlanner.cpp
     villages/QcVillageRoads.h villages/QcVillageRoads.cpp
     villages/QcVillageStyles.h villages/QcVillageStyles.cpp
     villages/QcWetlandShaper.h villages/QcWetlandShaper.cpp
@@ -60,8 +65,8 @@ qc_configure_target(qc_worldgen)
 set(qc_worldgen_fp_sources
     terrain/QcCaveCarver.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp terrain/QcTerrainColumnGrid.cpp
     terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTreeShape.cpp
-    villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcVillagePlanner.cpp
-    villages/QcVillagePlannerLayouts.cpp villages/QcVillagePlannerRoads.cpp villages/QcVillagePlannerWater.cpp
+    villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
+    villages/QcRoadNetworkPlanner.cpp villages/QcVillageDraft.cpp villages/QcVillageForecourt.cpp villages/QcVillagePlanner.cpp
     villages/QcWetlandShaper.cpp)
 if(MSVC)
     set_source_files_properties(${qc_worldgen_fp_sources} PROPERTIES COMPILE_OPTIONS /fp:precise)

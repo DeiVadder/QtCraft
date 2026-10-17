@@ -4,8 +4,8 @@
 
 qc_add_test(test_texture_synthesizer SOURCES client/test_texture_synthesizer.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_server qc_clientcore Qt::Concurrent)
-qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
+qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_base_content qc_clientcore)
 # The settings' texture pack controller at model level (decision E-301), from the app's library.
 qc_add_test(test_texture_pack_controller SOURCES client/test_texture_pack_controller.cpp LIBRARIES qc_app_core)
 # The hitch window of a texture pack switch in a benchmark run (decision E-332), from the app's library.
@@ -21,7 +21,7 @@ qc_add_test(test_screen_choice SOURCES client/test_screen_choice.cpp LIBRARIES q
 qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
-qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_server qc_clientcore Qt::Qml)
 target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
@@ -30,14 +30,14 @@ qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTr
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
-qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_server qc_clientcore)
-qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_server qc_clientcore)
-qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_server qc_clientcore)
+qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
-qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
 qc_add_test(test_key_bindings SOURCES client/test_key_bindings.cpp LIBRARIES qc_clientcore)
 # Field of view while sprinting and the sprint latch (decision E-280).
 qc_add_test(test_sprint_feel SOURCES client/test_sprint_feel.cpp LIBRARIES qc_clientcore)

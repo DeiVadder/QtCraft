@@ -226,4 +226,4 @@ qc_configure_target(qc_server)
 # Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_server PUBLIC ${PROJECT_SOURCE_DIR}/src)
-target_link_libraries(qc_server PUBLIC qc_common qc_worldgen qc_network Qt::Core Qt::Concurrent)
+target_link_libraries(qc_server PUBLIC qc_base_content qc_common qc_worldgen qc_network Qt::Core Qt::Concurrent)

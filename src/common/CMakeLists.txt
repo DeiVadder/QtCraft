@@ -43,7 +43,6 @@ target_sources(qc_common PRIVATE
     content/definitions/QcWorldTypeDefinitions.h
 )
 target_sources(qc_common PRIVATE
-    content/loader/QcBaseContent.h content/loader/QcBaseContent.cpp
     content/loader/QcContentPackLoader.h content/loader/QcContentPackLoader.cpp
 )
 target_sources(qc_common PRIVATE
@@ -198,5 +197,12 @@ qc_configure_target(qc_common)
 # Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_common PUBLIC ${PROJECT_SOURCE_DIR}/src)
-# The base game content (:/content/qtcraft) that QcBaseContent loads.
-target_link_libraries(qc_common PUBLIC qc_base_content Qt::Core)
+target_link_libraries(qc_common PUBLIC Qt::Core)
+
+# The loader of the base game content (:/content/qtcraft, content/CMakeLists.txt) is part of
+# qc_base_content, so only the targets that load the base content embed it (decision E-419): the
+# server, the headless program and the tests that load it.
+target_sources(qc_base_content PRIVATE
+    content/loader/QcBaseContent.h content/loader/QcBaseContent.cpp
+)
+target_link_libraries(qc_base_content PUBLIC qc_common)

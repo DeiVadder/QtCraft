@@ -1,11 +1,13 @@
 #pragma once
 
+#include "worldgen/villages/QcVillageDraft.h"
 #include "worldgen/villages/QcVillagePlan.h"
 #include "worldgen/villages/QcVillageStyles.h"
 
 #include <QList>
 
 #include <optional>
+#include <utility>
 
 class QcTerrainGenerator;
 
@@ -43,5 +45,18 @@ QcVillagePlan::Deck deck(const QcTerrainGenerator &terrain, const QcVillageStyle
 // most a block below the floor (a step up from there reaches the boardwalk).
 QList<QcVillagePlan::Deck> stairs(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcVillageStyle::Stilts &stilts,
                                   const End &end);
+
+// Over water: the number of samples (every `step` blocks within `reach` of the centre) of the
+// ground under water, when most of them carry stilts and enough of them are water (the style's
+// share); std::nullopt otherwise.
+[[nodiscard]] std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageStyle &style, std::pair<int, int> centre,
+                                           int reach, int step);
+// Stairs from the end of a laid boardwalk down to dry land, where they fit in the region and keep
+// off pieces and roads, with the land access kept dry by the wetland (decision E-419: a step of
+// the village planner on its draft).
+void layStairs(const QcTerrainGenerator &terrain, const QcContentRegistry &content, QcVillageDraft &draft, const QcVillageDraft::Road &road);
+// The areas the wetland spreads from (pieces and boardwalks, not the stairs), and the village's
+// columns grown by its reach within its region.
+void planWetland(QcVillageDraft &draft);
 
 } // namespace QcBoardwalkPlanner
