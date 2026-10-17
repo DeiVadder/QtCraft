@@ -48,8 +48,9 @@ breakdown | time | alloc | leaks | metal | sample | qml | sg | visualize) ;;
 esac
 
 if [ -z "${PROFILE_APP:-}" ]; then
-    limited 300 cmake --preset profile >/dev/null 2>&1 || exit 1
-    limited 1200 cmake --build --preset profile >/dev/null 2>&1 || exit 1
+    "$PROJECT_DIR/scripts/ensure-user-presets.sh" || exit 2
+    limited 300 cmake --preset profile >/dev/null 2>&1 || { echo "profile.sh: configure failed (cmake --preset profile)" >&2; exit 1; }
+    limited 1200 cmake --build --preset profile >/dev/null 2>&1 || { echo "profile.sh: build failed (cmake --build --preset profile)" >&2; exit 1; }
 fi
 
 # Writes a wrapper script that run_game puts in front of the game and prints its path.

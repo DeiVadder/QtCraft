@@ -6,10 +6,10 @@ qt_add_executable(qtcraft-headless
     QcHeadlessJoin.h QcHeadlessJoin.cpp
     QcHeadlessOptions.h QcHeadlessOptions.cpp
     QcMapRenderer.h QcMapRenderer.cpp
+    QcServerConsole.h QcServerConsole.cpp
     QcShowcaseTour.h QcShowcaseTour.cpp
     QcSignalWatcher.h QcSignalWatcher.cpp
     QcSoundExporter.h QcSoundExporter.cpp
-    QcServerConsole.h QcServerConsole.cpp
     QcStdinReader.h QcStdinReader.cpp
     QcTextureTools.h QcTextureTools.cpp
     QcWorldStats.h QcWorldStats.cpp

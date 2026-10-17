@@ -1,68 +1,16 @@
-qt_add_library(qc_clientcore STATIC
-    sound/QcAmbience.h sound/QcAmbience.cpp
-    weather/QcClientWeather.h weather/QcClientWeather.cpp
-    weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
-    meshing/QcAnimator.h meshing/QcAnimator.cpp
-    meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
-    meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
-    textures/QcAppIcon.h textures/QcAppIcon.cpp
-    sound/QcAudioMixer.h sound/QcAudioMixer.cpp
-    textures/QcBlockIcon.h textures/QcBlockIcon.cpp
-    textures/QcItemIconSet.h textures/QcItemIconSet.cpp
-    textures/QcWebHandbookAssets.h textures/QcWebHandbookAssets.cpp
-    light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp
-    meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
-    meshing/QcBlockVertex.h
+qt_add_library(qc_clientcore STATIC)
+# Sources per folder, sorted, each header next to its sources (decision E-417;
+# scripts/check-cmake-lists.py checks the lists).
+target_sources(qc_clientcore PRIVATE
     camera/QcCamera.h camera/QcCamera.cpp
-    settings/QcKeyControls.h settings/QcKeyControls.cpp
-    settings/QcKeyLabels.h settings/QcKeyLabels.cpp
-    light/QcChunkLight.h
-    light/QcSectionLight.h light/QcSectionLight.cpp
-    meshing/QcChunkMesh.h
-    meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
-    session/QcClientEntities.h session/QcClientEntities.cpp
-    session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
-    session/QcClientRiding.h session/QcClientRiding.cpp
-    session/QcClientGameMode.h session/QcClientGameMode.cpp
-    session/QcFlightLatch.h session/QcFlightLatch.cpp
-    session/QcSprintLatch.h session/QcSprintLatch.cpp
-    session/QcClientEntity.h
-    session/QcHandTimers.h
-    session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
-    session/QcSnapshotClock.h session/QcSnapshotClock.cpp
-    session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
-    session/QcClientTrading.h session/QcClientTrading.cpp
-    session/QcClientLogin.h session/QcClientLogin.cpp
-    network/QcNetworkClient.h network/QcNetworkClient.cpp
-    session/QcClientSession.h session/QcClientSession.cpp session/QcClientSessionScreens.cpp
-    session/QcClientVitals.h session/QcClientVitals.cpp
-    session/QcClientSounds.h session/QcClientSounds.cpp
-    session/QcClientWorld.h session/QcClientWorld.cpp
-    session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
-    debug/QcDebugSnapshot.h debug/QcDebugSnapshot.cpp
-    debug/QcDebugText.h debug/QcDebugText.cpp
-    debug/QcDebugJson.h debug/QcDebugJson.cpp
-    debug/QcDebugLines.h debug/QcDebugLines.cpp
-    debug/QcStatsLog.h debug/QcStatsLog.cpp
-    light/QcLightProbe.h light/QcLightProbe.cpp
-    meshing/QcEntityMesh.h
-    meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
-    meshing/QcEntityPose.h
-    meshing/QcArmourLook.h meshing/QcArmourLook.cpp
-    meshing/QcFigureLook.h meshing/QcFigureLook.cpp
-    light/QcEntityLight.h
-    light/QcSky.h light/QcSky.cpp
-    meshing/QcEntityVertex.h
-    camera/QcFrustum.h camera/QcFrustum.cpp
     camera/QcFovEffect.h camera/QcFovEffect.cpp
+    camera/QcFrustum.h camera/QcFrustum.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
-    settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
-    settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
-    settings/QcDebugOptions.h settings/QcDebugOptions.cpp
-    settings/QcGameSettings.h settings/QcGameSettings.cpp
-    meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
-    sound/QcLocalSounds.h sound/QcLocalSounds.cpp
-    sound/QcMusicComposer.h sound/QcMusicComposer.cpp
+    camera/QcMouseCapture.h camera/QcMouseCapture.cpp
+    camera/QcMouseLook.h camera/QcMouseLook.cpp
+    camera/QcViewCamera.h camera/QcViewCamera.cpp
+)
+target_sources(qc_clientcore PRIVATE
     control/QcControlActiveCommand.h
     control/QcControlAim.h control/QcControlAim.cpp
     control/QcControlArguments.h control/QcControlArguments.cpp
@@ -72,49 +20,126 @@ qt_add_library(qc_clientcore STATIC
     control/QcControlInterface.h control/QcControlInterface.cpp
     control/QcControlInventoryCommands.h control/QcControlInventoryCommands.cpp
     control/QcControlMachineCommands.h control/QcControlMachineCommands.cpp
-    control/QcControlTradeCommands.h control/QcControlTradeCommands.cpp
     control/QcControlMovementCommands.h control/QcControlMovementCommands.cpp
     control/QcControlReports.h control/QcControlReports.cpp
     control/QcControlSessionCommands.h control/QcControlSessionCommands.cpp
+    control/QcControlTradeCommands.h control/QcControlTradeCommands.cpp
     control/QcControlWorldCommands.h control/QcControlWorldCommands.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    debug/QcDebugJson.h debug/QcDebugJson.cpp
+    debug/QcDebugLines.h debug/QcDebugLines.cpp
+    debug/QcDebugSnapshot.h debug/QcDebugSnapshot.cpp
+    debug/QcDebugText.h debug/QcDebugText.cpp
+    debug/QcStatsLog.h debug/QcStatsLog.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    light/QcBlockLightEngine.h light/QcBlockLightEngine.cpp
+    light/QcChunkLight.h
+    light/QcEntityLight.h
+    light/QcLightProbe.h light/QcLightProbe.cpp
+    light/QcSectionLight.h light/QcSectionLight.cpp
+    light/QcSky.h light/QcSky.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    meshing/QcAnimator.h meshing/QcAnimator.cpp
+    meshing/QcArmourLook.h meshing/QcArmourLook.cpp
+    meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
+    meshing/QcBlockVertex.h
+    meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
+    meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
+    meshing/QcChunkMesh.h
+    meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
+    meshing/QcEntityMesh.h
+    meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
+    meshing/QcEntityPose.h
+    meshing/QcEntityVertex.h
+    meshing/QcFigureLook.h meshing/QcFigureLook.cpp
+    meshing/QcIndexPacking.h meshing/QcIndexPacking.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
-    camera/QcMouseLook.h camera/QcMouseLook.cpp
-    camera/QcMouseCapture.h camera/QcMouseCapture.cpp
-    sound/QcSampleBuffer.h
-    settings/QcScreenChoice.h settings/QcScreenChoice.cpp
-    settings/QcUiPalette.h settings/QcUiPalette.cpp
-    sound/QcSoundBank.h sound/QcSoundBank.cpp
-    sound/QcSoundCue.h
-    sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
-    sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
-    textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
-    textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
-    textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
-    textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
-    textures/QcGpuLimits.h textures/QcGpuLimits.cpp
-    textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
-    textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
-    textures/QcTextureDetail.h textures/QcTextureDetail.cpp
-    textures/QcTexturePack.h
-    textures/QcTexturePackLibrary.h textures/QcTexturePackLibrary.cpp
-    textures/QcTexturePackLoader.h textures/QcTexturePackLoader.cpp
-    textures/QcTexturePackManifest.h textures/QcTexturePackManifest.cpp
-    textures/QcTexturePackProblem.h textures/QcTexturePackProblem.cpp
-    textures/QcTextureSources.h textures/QcTextureSources.cpp
-    textures/QcTextureStackBuild.h textures/QcTextureStackBuild.cpp
-    textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
-    textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
-    textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
-    textures/QcTexturePaint.h
-    textures/QcTextureSpec.h textures/QcTextureSpec.cpp
-    textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
-    camera/QcViewCamera.h camera/QcViewCamera.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    network/QcNetworkClient.h network/QcNetworkClient.cpp
+)
+target_sources(qc_clientcore PRIVATE
     preview/QcPreviewActivity.h preview/QcPreviewActivity.cpp
     preview/QcPreviewCamera.h preview/QcPreviewCamera.cpp
     preview/QcPreviewHook.h preview/QcPreviewHook.cpp
     preview/QcPreviewPacer.h preview/QcPreviewPacer.cpp
     preview/QcPreviewPose.h preview/QcPreviewPose.cpp
     preview/QcPreviewScene.h preview/QcPreviewScene.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
+    session/QcClientEntities.h session/QcClientEntities.cpp
+    session/QcClientEntity.h
+    session/QcClientGameMode.h session/QcClientGameMode.cpp
+    session/QcClientLogin.h session/QcClientLogin.cpp
+    session/QcClientMachineScreen.h session/QcClientMachineScreen.cpp
+    session/QcClientRiding.h session/QcClientRiding.cpp
+    session/QcClientSession.h session/QcClientSession.cpp session/QcClientSessionScreens.cpp
+    session/QcClientSounds.h session/QcClientSounds.cpp
+    session/QcClientTrading.h session/QcClientTrading.cpp
+    session/QcClientVitals.h session/QcClientVitals.cpp
+    session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcFlightLatch.h session/QcFlightLatch.cpp
+    session/QcHandTimers.h
+    session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
+    session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
+    session/QcSnapshotClock.h session/QcSnapshotClock.cpp
+    session/QcSprintLatch.h session/QcSprintLatch.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
+    settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
+    settings/QcDebugOptions.h settings/QcDebugOptions.cpp
+    settings/QcGameSettings.h settings/QcGameSettings.cpp
+    settings/QcKeyControls.h settings/QcKeyControls.cpp
+    settings/QcKeyLabels.h settings/QcKeyLabels.cpp
+    settings/QcScreenChoice.h settings/QcScreenChoice.cpp
+    settings/QcUiPalette.h settings/QcUiPalette.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    sound/QcAmbience.h sound/QcAmbience.cpp
+    sound/QcAudioMixer.h sound/QcAudioMixer.cpp
+    sound/QcLocalSounds.h sound/QcLocalSounds.cpp
+    sound/QcMusicComposer.h sound/QcMusicComposer.cpp
+    sound/QcSampleBuffer.h
+    sound/QcSoundBank.h sound/QcSoundBank.cpp
+    sound/QcSoundCue.h
+    sound/QcSoundSpatial.h sound/QcSoundSpatial.cpp
+    sound/QcSoundSynthesizer.h sound/QcSoundSynthesizer.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
+    textures/QcAppIcon.h textures/QcAppIcon.cpp
+    textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
+    textures/QcBlockIcon.h textures/QcBlockIcon.cpp
+    textures/QcGpuLimits.h textures/QcGpuLimits.cpp
+    textures/QcItemIconSet.h textures/QcItemIconSet.cpp
+    textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
+    textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
+    textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
+    textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
+    textures/QcTextureDetail.h textures/QcTextureDetail.cpp
+    textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
+    textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
+    textures/QcTexturePack.h
+    textures/QcTexturePackLibrary.h textures/QcTexturePackLibrary.cpp
+    textures/QcTexturePackLoader.h textures/QcTexturePackLoader.cpp
+    textures/QcTexturePackManifest.h textures/QcTexturePackManifest.cpp
+    textures/QcTexturePackProblem.h textures/QcTexturePackProblem.cpp
+    textures/QcTexturePaint.h
+    textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
+    textures/QcTextureSources.h textures/QcTextureSources.cpp
+    textures/QcTextureSpec.h textures/QcTextureSpec.cpp
+    textures/QcTextureStackBuild.h textures/QcTextureStackBuild.cpp
+    textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
+    textures/QcWebHandbookAssets.h textures/QcWebHandbookAssets.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    weather/QcClientWeather.h weather/QcClientWeather.cpp
+    weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
 )
 qc_configure_target(qc_clientcore)
 # Classes live in thematic subfolders (E-089); every folder is an include directory, so includes

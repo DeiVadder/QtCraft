@@ -1,0 +1,34 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "local",
+            "hidden": true,
+            "description": "Machine-specific paths: copy this file to CMakeUserPresets.json (not in git) and adjust them",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{HOME}/Qt/6.8.3/macos",
+                "CMAKE_MAKE_PROGRAM": "$env{HOME}/Qt/Tools/Ninja/ninja"
+            }
+        },
+        { "name": "debug", "inherits": ["qc-debug", "local"] },
+        { "name": "release", "inherits": ["qc-release", "local"] },
+        { "name": "deploy", "inherits": ["qc-deploy", "local"] },
+        { "name": "profile", "inherits": ["qc-profile", "local"] },
+        { "name": "asan", "inherits": ["qc-asan", "local"] },
+        { "name": "tsan", "inherits": ["qc-tsan", "local"] }
+    ],
+    "buildPresets": [
+        { "name": "debug", "inherits": "qc-build", "configurePreset": "debug" },
+        { "name": "release", "inherits": "qc-build", "configurePreset": "release" },
+        { "name": "deploy", "inherits": "qc-build", "configurePreset": "deploy" },
+        { "name": "profile", "inherits": "qc-build", "configurePreset": "profile" },
+        { "name": "asan", "inherits": "qc-build", "configurePreset": "asan" },
+        { "name": "tsan", "inherits": "qc-build", "configurePreset": "tsan" }
+    ],
+    "testPresets": [
+        { "name": "debug", "inherits": "qc-test", "configurePreset": "debug" },
+        { "name": "release", "inherits": "qc-test", "configurePreset": "release" },
+        { "name": "asan", "inherits": "qc-test", "configurePreset": "asan" },
+        { "name": "tsan", "inherits": "qc-tsan-test", "configurePreset": "tsan" }
+    ]
+}

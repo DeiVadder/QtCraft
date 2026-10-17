@@ -156,7 +156,7 @@ if [ "$SELECTED" -eq 0 ]; then
     fi
 elif [ -n "$QML_FILES" ]; then
     # The options of the build's qmllint target (import paths, resources) without its file list.
-    RSP="$BUILD_DIR/src/app/.rcc/qmllint/qtcraft.rsp"
+    RSP="$BUILD_DIR/src/app/.rcc/qmllint/qc_app_core.rsp"
     if [ ! -f "$RSP" ]; then
         echo "qmllint options missing: $RSP" >&2
         status=1

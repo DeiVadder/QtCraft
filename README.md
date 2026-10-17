@@ -6,9 +6,10 @@ A Minecraft-like voxel sandbox built with C++23 and Qt 6.8: procedurally generat
 
 ## Build
 
-Requirements: CMake 3.25+, a C++23 compiler (Apple Clang 21 tested), Qt 6.8 with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. The presets look for Qt in `~/Qt/6.8.3/macos`; pass `-DCMAKE_PREFIX_PATH=<qt dir>` for another location.
+Requirements: CMake 3.25+, a C++23 compiler (Apple Clang 21 tested), Qt 6.8 with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. The local presets (`debug`, `release`, `deploy`, `profile`, `asan`, `tsan`) live in `CMakeUserPresets.json`, which is not in git: copy `CMakeUserPresets.example.json` to it and set the Qt and Ninja paths of your machine in its hidden preset `local` (the example uses `~/Qt/6.8.3/macos`). `scripts/verify.sh` creates the file from the example when it is missing.
 
 ```sh
+cp CMakeUserPresets.example.json CMakeUserPresets.json   # once; adjust the paths
 cmake --preset release
 cmake --build --preset release
 ```

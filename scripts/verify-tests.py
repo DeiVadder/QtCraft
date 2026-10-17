@@ -54,9 +54,10 @@ PENDING = ".verify-test-pending.json"
 RUNTIME_DATA = [
     "content", "translations", "mods", "tests/data", "tests/scenarios", "tests/scripts",
     "tests/ui", "tests/expect_exit_code.cmake", "tests/tsan.supp", "docs/handbook",
-    "web/handbook", "cmake", "CMakePresets.json", "CMakeLists.txt",
+    "web/handbook", "cmake", "CMakePresets.json", "CMakeUserPresets.json", "CMakeLists.txt",
 ]
-# Directories searched for further CMakeLists.txt files and shader folders.
+# Directories searched for further CMake files (CMakeLists.txt, the test lists tests/*/tests.cmake)
+# and shader folders.
 NESTED_DATA_ROOTS = ["src", "tests"]
 # How many changed runtime data paths the report names.
 MAX_NAMED_PATHS = 5
@@ -84,12 +85,13 @@ def walk_files(path):
 
 
 def runtime_data_paths():
-    """The runtime data paths that exist, including nested CMakeLists.txt files and shader folders."""
+    """The runtime data paths that exist, including nested CMake files and shader folders."""
     paths = [os.path.join(ROOT, path) for path in RUNTIME_DATA]
     for root in NESTED_DATA_ROOTS:
         for directory, subdirectories, names in os.walk(os.path.join(ROOT, root)):
-            if "CMakeLists.txt" in names:
-                paths.append(os.path.join(directory, "CMakeLists.txt"))
+            for name in sorted(names):
+                if name == "CMakeLists.txt" or name.endswith(".cmake"):
+                    paths.append(os.path.join(directory, name))
             if os.path.basename(directory) == "shaders":
                 paths.append(directory)
                 subdirectories.clear()

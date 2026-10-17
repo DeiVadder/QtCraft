@@ -22,8 +22,9 @@ WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-bench.XXXXXX") || exit 2
 SCENARIO_LIST=$(expand_scenarios "${SCENARIOS:-stand sprint crowd light liquids showcase flat-crowd flat-liquids}") || exit 2
 . "$PROJECT_DIR/scripts/bench-common.sh"
 
-limited 300 cmake --preset release >/dev/null 2>&1 || exit 1
-limited 1200 cmake --build --preset release >/dev/null 2>&1 || exit 1
+"$PROJECT_DIR/scripts/ensure-user-presets.sh" || exit 2
+limited 300 cmake --preset release >/dev/null 2>&1 || { echo "bench.sh: configure failed (cmake --preset release)" >&2; exit 1; }
+limited 1200 cmake --build --preset release >/dev/null 2>&1 || { echo "bench.sh: build failed (cmake --build --preset release)" >&2; exit 1; }
 
 run_scenario() {
     run_game "$APP" "$1" "$SECONDS_PER_RUN" "${VIEW:-8}" "$WORK/$1-$2" "$WORK/$1-$2.log"

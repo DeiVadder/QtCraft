@@ -19,6 +19,7 @@
 #                    files; a change there runs all). scripts/verify-tests.py selects and keeps the
 #                    stamps in build/<preset>/.verify-test-stamps.json (decision E-405). Every run
 #                    records the tests that passed, so a run without --changed also renews the stamps.
+# Every mode first checks the source lists of the CMake files (scripts/check-cmake-lists.py, E-417).
 # After the debug test step every mode compares each test's time with its TIMEOUT and COST and
 # warns about limits that would be too tight under TSan (scripts/verify-limits.py, E-412); the
 # warnings are repeated at the end and do not fail the run.
@@ -38,6 +39,10 @@ fi
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
+
+# The local presets take the Qt and Ninja paths of this machine from CMakeUserPresets.json (not in
+# git, decision E-417); a new worktree gets a copy of the main checkout's file or of the example.
+scripts/ensure-user-presets.sh || exit 2
 
 MODE=full
 MODE_GIVEN=""
@@ -247,6 +252,8 @@ static_analysis_changed() {
     scripts/static-analysis.sh "$PROJECT_DIR/build/debug" $files
 }
 
+# Source lists of the CMake files sorted and complete (decision E-417); every mode, before the build.
+step "check-cmake-lists" sh -c "python3 scripts/check-cmake-lists.py --self-test && python3 scripts/check-cmake-lists.py"
 build_and_test debug
 for preset in $SANITIZERS; do
     build_and_test "$preset"

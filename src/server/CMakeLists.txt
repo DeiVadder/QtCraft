@@ -1,12 +1,28 @@
-qt_add_library(qc_server STATIC
-    network/QcServerSettings.h network/QcServerSettings.cpp
-    content/QcContentFingerprint.h content/QcContentFingerprint.cpp
-    network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp
-    network/QcNetworkServer.h network/QcNetworkServer.cpp
-    login/QcIdentityStore.h login/QcIdentityStore.cpp
-    login/QcServerLogin.h login/QcServerLogin.cpp
-    login/QcPlayerJoin.h login/QcPlayerJoin.cpp
+qt_add_library(qc_server STATIC)
+# Sources per folder, sorted, each header next to its sources (decision E-417;
+# scripts/check-cmake-lists.py checks the lists).
+target_sources(qc_server PRIVATE
+    blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
+    blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
+)
+target_sources(qc_server PRIVATE
+    blocks/QcBlockRules.h blocks/QcBlockRules.cpp
+    blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
+    blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
+    blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
+    blocks/QcFireIgnition.h blocks/QcFireIgnition.cpp
+    blocks/QcFireQueue.h blocks/QcFireQueue.cpp
+    blocks/QcFireRules.h blocks/QcFireRules.cpp
+    blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
+    blocks/QcOpeners.h blocks/QcOpeners.cpp
+    blocks/QcRails.h blocks/QcRails.cpp
+    blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
+    blocks/QcServerFallingBlocks.h blocks/QcServerFallingBlocks.cpp
+    blocks/QcServerFire.h blocks/QcServerFire.cpp
+)
+target_sources(qc_server PRIVATE
     commands/QcAccessList.h commands/QcAccessList.cpp
+    commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
     commands/QcChunkCommands.h commands/QcChunkCommands.cpp
@@ -14,97 +30,125 @@ qt_add_library(qc_server STATIC
     commands/QcCommandArguments.h commands/QcCommandArguments.cpp
     commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
     commands/QcCommandSource.h commands/QcCommandSource.cpp
+    commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
     commands/QcPendingCommands.h commands/QcPendingCommands.cpp
     commands/QcPermission.h
     commands/QcPlayerCommands.h commands/QcPlayerCommands.cpp
     commands/QcServerCommands.h commands/QcServerCommands.cpp
     commands/QcStandCommands.h commands/QcStandCommands.cpp
     commands/QcTickCommands.h commands/QcTickCommands.cpp
+    commands/QcVillageCommands.h commands/QcVillageCommands.cpp
+    commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
     commands/QcWorldBackup.h commands/QcWorldBackup.cpp
-    commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
+)
+target_sources(qc_server PRIVATE
     content/QcBaseContent.h content/QcBaseContent.cpp
-    storage/QcBlockEntityRecord.h
-    storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
-    storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
-    storage/QcChunkCodec.h storage/QcChunkCodec.cpp
-    storage/QcChunkIo.h storage/QcChunkIo.cpp
-    storage/QcChunkStore.h storage/QcChunkStore.cpp
-    storage/QcRegionFile.h storage/QcRegionFile.cpp
-    storage/QcStackReader.h storage/QcStackReader.cpp
-    blocks/QcBlockRules.h blocks/QcBlockRules.cpp
-    blocks/QcRails.h blocks/QcRails.cpp
-    blocks/QcBlockSimulation.h blocks/QcBlockSimulation.cpp
-    blocks/QcServerFallingBlocks.h blocks/QcServerFallingBlocks.cpp
-    blocks/QcBlockUpdateQueue.h blocks/QcBlockUpdateQueue.cpp
-    blocks/QcOpeners.h blocks/QcOpeners.cpp
     content/QcBundledMods.h content/QcBundledMods.cpp
+    content/QcContentFingerprint.h content/QcContentFingerprint.cpp
+    content/QcContentPackLoader.h content/QcContentPackLoader.cpp
+    content/QcModLoader.h content/QcModLoader.cpp
+    content/QcModStatus.h
+)
+target_sources(qc_server PRIVATE
+    core/QcBlockIndex.h core/QcBlockIndex.cpp
     core/QcChunkGroups.h core/QcChunkGroups.cpp
     core/QcChunkLinks.h core/QcChunkLinks.cpp
     core/QcChunkLoaders.h core/QcChunkLoaders.cpp
     core/QcChunkLoading.h core/QcChunkLoading.cpp
     core/QcChunkStreaming.h core/QcChunkStreaming.cpp
     core/QcChunkTickets.h core/QcChunkTickets.cpp
-    blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
-    entities/QcEntity.h
-    entities/QcEntities.h entities/QcEntities.cpp
-    entities/QcEntityChecks.h entities/QcEntityChecks.cpp
-    entities/QcCreature.h
-    entities/QcItemEntity.h
-    entities/QcFallingBlock.h
-    entities/QcExperienceOrb.h
+    core/QcContactDamage.h core/QcContactDamage.cpp
+    core/QcEntitySync.h core/QcEntitySync.cpp
+    core/QcLocalServerHost.h core/QcLocalServerHost.cpp
+    core/QcProfileValidation.h core/QcProfileValidation.cpp
+    core/QcRateLimiter.h core/QcRateLimiter.cpp
+    core/QcSectionMarks.h core/QcSectionMarks.cpp
+    core/QcServer.h core/QcServer.cpp
+    core/QcServerClient.h
+    core/QcServerClock.h
+    core/QcServerConfig.h
+    core/QcServerDebug.h core/QcServerDebug.cpp
+    core/QcServerLimits.h core/QcServerLimits.cpp
+    core/QcServerSetup.h core/QcServerSetup.cpp
+    core/QcServerSounds.h core/QcServerSounds.cpp
+    core/QcServerState.h core/QcServerState.cpp
+    core/QcServerWorld.h core/QcServerWorld.cpp
+    core/QcSpawnPoint.h core/QcSpawnPoint.cpp
+    core/QcTickControl.h
+    core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
+    core/QcTickScheduler.h core/QcTickScheduler.cpp
+    core/QcTickStats.h core/QcTickStats.cpp
+)
+target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
+    entities/QcCreature.h
+    entities/QcEntities.h entities/QcEntities.cpp
+    entities/QcEntity.h
+    entities/QcEntityChecks.h entities/QcEntityChecks.cpp
+    entities/QcExperienceOrb.h
+    entities/QcFallingBlock.h
+    entities/QcItemEntity.h
     entities/QcMinecart.h
     entities/QcMovingBlock.h
-    blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
-    content/QcContentPackLoader.h content/QcContentPackLoader.cpp
-    storage/QcEntityRecord.h
-    storage/QcEntityRecords.h storage/QcEntityRecords.cpp
-    storage/QcEntityCodec.h storage/QcEntityCodec.cpp
-    storage/QcVillagerCodec.h storage/QcVillagerCodec.cpp
-    core/QcEntitySync.h core/QcEntitySync.cpp
-    gameplay/QcHunger.h gameplay/QcHunger.cpp
-    gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
-    gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
-    gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
+)
+target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
-    gameplay/QcMinecartHoppers.h gameplay/QcMinecartHoppers.cpp
+    gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
+    gameplay/QcCropGrowth.h gameplay/QcCropGrowth.cpp
+    gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
+    gameplay/QcExperienceOrbManager.h gameplay/QcExperienceOrbManager.cpp
+    gameplay/QcHandbookRules.h gameplay/QcHandbookRules.cpp
+    gameplay/QcHunger.h gameplay/QcHunger.cpp
+    gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
+    gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
     gameplay/QcMinecartCollisions.h gameplay/QcMinecartCollisions.cpp
+    gameplay/QcMinecartHoppers.h gameplay/QcMinecartHoppers.cpp
     gameplay/QcMinecartManager.h gameplay/QcMinecartManager.cpp
     gameplay/QcMinecartMotion.h gameplay/QcMinecartMotion.cpp
-    gameplay/QcItemEntityManager.h gameplay/QcItemEntityManager.cpp
-    gameplay/QcExperienceOrbManager.h gameplay/QcExperienceOrbManager.cpp
-    gameplay/QcServerExperience.h gameplay/QcServerExperience.cpp
-    gameplay/QcServerStands.h gameplay/QcServerStands.cpp
-    gameplay/QcServerMinecarts.h gameplay/QcServerMinecarts.cpp
-    gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
-    gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp
-    blocks/QcFallingBlockManager.h blocks/QcFallingBlockManager.cpp
-    blocks/QcLiquidFlow.h blocks/QcLiquidFlow.cpp
-    blocks/QcFireQueue.h blocks/QcFireQueue.cpp
-    blocks/QcFireRules.h blocks/QcFireRules.cpp
-    blocks/QcServerFire.h blocks/QcServerFire.cpp
-    blocks/QcFireIgnition.h blocks/QcFireIgnition.cpp
-    weather/QcWeatherCycle.h weather/QcWeatherCycle.cpp
-    weather/QcServerWeather.h weather/QcServerWeather.cpp
-    weather/QcLightningStrike.h weather/QcLightningStrike.cpp
-    weather/QcSnowfall.h weather/QcSnowfall.cpp
-    commands/QcVillageCommands.h commands/QcVillageCommands.cpp
-    commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
-    commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
-    core/QcLocalServerHost.h core/QcLocalServerHost.cpp
-    machines/QcMachineRules.h machines/QcMachineRules.cpp
-    content/QcModLoader.h content/QcModLoader.cpp
-    content/QcModStatus.h
+    gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
     gameplay/QcMobBreeding.h gameplay/QcMobBreeding.cpp
+    gameplay/QcMobCramming.h gameplay/QcMobCramming.cpp
+    gameplay/QcMobCrowd.h gameplay/QcMobCrowd.cpp
     gameplay/QcMobManager.h gameplay/QcMobManager.cpp gameplay/QcMobManagerVillagers.cpp
-    gameplay/QcServerVillagers.h gameplay/QcServerVillagers.cpp
-    gameplay/QcServerTrading.h gameplay/QcServerTrading.cpp
     gameplay/QcMobSteering.h gameplay/QcMobSteering.cpp
     gameplay/QcMobUpkeep.h gameplay/QcMobUpkeep.cpp
-    gameplay/QcMobBehaviour.h gameplay/QcMobBehaviour.cpp
-    gameplay/QcMobCrowd.h gameplay/QcMobCrowd.cpp
-    gameplay/QcMobCramming.h gameplay/QcMobCramming.cpp
+    gameplay/QcPlantGrowth.h gameplay/QcPlantGrowth.cpp
+    gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
+    gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
+    gameplay/QcServerAnimals.h gameplay/QcServerAnimals.cpp
+    gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
+    gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
+    gameplay/QcServerCreatures.h gameplay/QcServerCreatures.cpp
+    gameplay/QcServerExperience.h gameplay/QcServerExperience.cpp
+    gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
+    gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
+    gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
+    gameplay/QcServerItems.h gameplay/QcServerItems.cpp
+    gameplay/QcServerMinecarts.h gameplay/QcServerMinecarts.cpp
+    gameplay/QcServerPlants.h gameplay/QcServerPlants.cpp
+    gameplay/QcServerStands.h gameplay/QcServerStands.cpp
+    gameplay/QcServerTrading.h gameplay/QcServerTrading.cpp
+    gameplay/QcServerVillagers.h gameplay/QcServerVillagers.cpp
+    gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
+)
+target_sources(qc_server PRIVATE
+    login/QcIdentityStore.h login/QcIdentityStore.cpp
+    login/QcPlayerJoin.h login/QcPlayerJoin.cpp
+    login/QcServerLogin.h login/QcServerLogin.cpp
+)
+target_sources(qc_server PRIVATE
+    machines/QcBlockScreens.h machines/QcBlockScreens.cpp
+    machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
+    machines/QcMachineRules.h machines/QcMachineRules.cpp
+    machines/QcServerMachines.h machines/QcServerMachines.cpp
+)
+target_sources(qc_server PRIVATE
+    network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp
+    network/QcNetworkServer.h network/QcNetworkServer.cpp
+    network/QcServerSettings.h network/QcServerSettings.cpp
+)
+target_sources(qc_server PRIVATE
     pathing/QcMobNavigator.h pathing/QcMobNavigator.cpp
     pathing/QcMobPath.h
     pathing/QcPathCells.h pathing/QcPathCells.cpp
@@ -112,89 +156,83 @@ qt_add_library(qc_server STATIC
     pathing/QcPathPlanner.h pathing/QcPathPlanner.cpp
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
-    gameplay/QcPlantManager.h gameplay/QcPlantManager.cpp
-    storage/QcSaveFile.h storage/QcSaveFile.cpp
-    storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
+)
+target_sources(qc_server PRIVATE
+    signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
+    signal/QcCircuitPlan.h
+    signal/QcCircuitState.h signal/QcCircuitState.cpp
+    signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
+    signal/QcDispenserActions.h signal/QcDispenserActions.cpp
+    signal/QcDustNetwork.h signal/QcDustNetwork.cpp
+    signal/QcHopperQueue.h signal/QcHopperQueue.cpp
+    signal/QcMovingBlocks.h signal/QcMovingBlocks.cpp
+    signal/QcPistonMover.h signal/QcPistonMover.cpp
+    signal/QcPistonPlanner.h signal/QcPistonPlanner.cpp
+    signal/QcServerCircuits.h signal/QcServerCircuits.cpp
+    signal/QcServerHoppers.h signal/QcServerHoppers.cpp
+    signal/QcSignalPower.h signal/QcSignalPower.cpp
+    signal/QcSignalSchedule.h signal/QcSignalSchedule.cpp
+    signal/QcSignalTable.h signal/QcSignalTable.cpp
+)
+target_sources(qc_server PRIVATE
+    storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
+    storage/QcBlockEntityRecord.h
+    storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
+    storage/QcChunkCodec.h storage/QcChunkCodec.cpp
+    storage/QcChunkIo.h storage/QcChunkIo.cpp
+    storage/QcChunkStore.h storage/QcChunkStore.cpp
+    storage/QcEntityCodec.h storage/QcEntityCodec.cpp
+    storage/QcEntityRecord.h
+    storage/QcEntityRecords.h storage/QcEntityRecords.cpp
     storage/QcPlayerRecords.h storage/QcPlayerRecords.cpp
-    core/QcProfileValidation.h core/QcProfileValidation.cpp
-    core/QcRateLimiter.h core/QcRateLimiter.cpp
-    core/QcServer.h core/QcServer.cpp
-    blocks/QcServerBlocks.h blocks/QcServerBlocks.cpp
-    core/QcServerClient.h
-    gameplay/QcServerCombat.h gameplay/QcServerCombat.cpp
-    gameplay/QcPlayerHealth.h gameplay/QcPlayerHealth.cpp
-    gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
-    gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
-    gameplay/QcServerCreatures.h gameplay/QcServerCreatures.cpp
-    gameplay/QcServerAnimals.h gameplay/QcServerAnimals.cpp
-    gameplay/QcServerGameModes.h gameplay/QcServerGameModes.cpp
-    core/QcServerConfig.h
-    gameplay/QcServerInteraction.h gameplay/QcServerInteraction.cpp
-    gameplay/QcServerInventory.h gameplay/QcServerInventory.cpp
-    gameplay/QcServerCrafting.h gameplay/QcServerCrafting.cpp
-    gameplay/QcServerItems.h gameplay/QcServerItems.cpp
-    gameplay/QcServerPlants.h gameplay/QcServerPlants.cpp
-    machines/QcBlockScreens.h machines/QcBlockScreens.cpp
-    machines/QcServerMachines.h machines/QcServerMachines.cpp
-    machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
+    storage/QcPlayerStorage.h storage/QcPlayerStorage.cpp
+    storage/QcRegionFile.h storage/QcRegionFile.cpp
+    storage/QcSaveFile.h storage/QcSaveFile.cpp
     storage/QcServerPersistence.h storage/QcServerPersistence.cpp
-    core/QcSectionMarks.h core/QcSectionMarks.cpp
-    core/QcBlockIndex.h core/QcBlockIndex.cpp
-    core/QcServerLimits.h core/QcServerLimits.cpp
-    core/QcServerSetup.h core/QcServerSetup.cpp
-    core/QcServerSounds.h core/QcServerSounds.cpp
-    core/QcContactDamage.h core/QcContactDamage.cpp
-    core/QcServerState.h core/QcServerState.cpp
-    core/QcSpawnPoint.h core/QcSpawnPoint.cpp
-    core/QcServerWorld.h core/QcServerWorld.cpp
-    core/QcServerDebug.h core/QcServerDebug.cpp
-    core/QcTickPhaseTimer.h core/QcTickPhaseTimer.cpp
-    core/QcTickControl.h
-    core/QcTickScheduler.h core/QcTickScheduler.cpp
-    core/QcTickStats.h core/QcTickStats.cpp
-    worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
-    worldgen/QcWorldGenerator.h
+    storage/QcStackReader.h storage/QcStackReader.cpp
+    storage/QcVillagerCodec.h storage/QcVillagerCodec.cpp
     storage/QcWorldLibrary.h storage/QcWorldLibrary.cpp
     storage/QcWorldStorage.h storage/QcWorldStorage.cpp
-    worldgen/QcCaveCarver.h worldgen/QcCaveCarver.cpp
-    worldgen/QcNoise.h worldgen/QcNoise.cpp
-    worldgen/QcPoolPlacer.h worldgen/QcPoolPlacer.cpp
-    worldgen/QcTerrainColumn.h
-    worldgen/QcTerrainColumnGrid.h worldgen/QcTerrainColumnGrid.cpp
-    worldgen/QcTerrainDefinitions.h worldgen/QcTerrainDefinitions.cpp
-    worldgen/QcTerrainGenerator.h worldgen/QcTerrainGenerator.cpp
-    worldgen/QcTerrainMath.h
-    worldgen/QcTreeShape.h worldgen/QcTreeShape.cpp
-    worldgen/QcStateRotation.h worldgen/QcStateRotation.cpp
-    worldgen/QcStructure.h worldgen/QcStructure.cpp
-    worldgen/QcStructurePlacement.h worldgen/QcStructurePlacement.cpp
-    worldgen/QcWorldGenerators.h worldgen/QcWorldGenerators.cpp
-    worldgen/QcFlatGenerator.h worldgen/QcFlatGenerator.cpp
-    worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
-    worldgen/QcWorldSetup.h
+)
+target_sources(qc_server PRIVATE
     villages/QcVillage.h villages/QcVillage.cpp
-    villages/QcVillages.h villages/QcVillages.cpp
-    villages/QcVillager.h
     villages/QcVillageGolems.h villages/QcVillageGolems.cpp
+    villages/QcVillager.h
     villages/QcVillagerBehaviour.h villages/QcVillagerBehaviour.cpp
     villages/QcVillagerBreeding.h villages/QcVillagerBreeding.cpp
     villages/QcVillagerHomes.h villages/QcVillagerHomes.cpp
     villages/QcVillagerLooks.h villages/QcVillagerLooks.cpp
     villages/QcVillagerRoads.h villages/QcVillagerRoads.cpp
     villages/QcVillagerTrades.h villages/QcVillagerTrades.cpp
-    worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
-    worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
-    worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp
-    worldgen/villages/QcVillagePlanCache.h worldgen/villages/QcVillagePlanCache.cpp
-    worldgen/villages/QcJettyPlanner.h worldgen/villages/QcJettyPlanner.cpp
-    worldgen/villages/QcBoardwalkPlanner.h worldgen/villages/QcBoardwalkPlanner.cpp
-    worldgen/villages/QcWetlandShaper.h worldgen/villages/QcWetlandShaper.cpp
-    worldgen/villages/QcVillagePlan.h
-    worldgen/villages/QcVillagePlanner.h worldgen/villages/QcVillagePlanner.cpp worldgen/villages/QcVillagePlannerLayouts.cpp
-    worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
-    worldgen/villages/QcVillageFields.h worldgen/villages/QcVillageFields.cpp
-    worldgen/villages/QcVillageRoads.h worldgen/villages/QcVillageRoads.cpp
-    worldgen/villages/QcVillageStyles.h worldgen/villages/QcVillageStyles.cpp
+    villages/QcVillages.h villages/QcVillages.cpp
+)
+target_sources(qc_server PRIVATE
+    weather/QcLightningStrike.h weather/QcLightningStrike.cpp
+    weather/QcServerWeather.h weather/QcServerWeather.cpp
+    weather/QcSnowfall.h weather/QcSnowfall.cpp
+    weather/QcWeatherCycle.h weather/QcWeatherCycle.cpp
+)
+target_sources(qc_server PRIVATE
+    worldgen/QcCaveCarver.h worldgen/QcCaveCarver.cpp
+    worldgen/QcFlatGenerator.h worldgen/QcFlatGenerator.cpp
+    worldgen/QcNoise.h worldgen/QcNoise.cpp
+    worldgen/QcPoolPlacer.h worldgen/QcPoolPlacer.cpp
+    worldgen/QcStateRotation.h worldgen/QcStateRotation.cpp
+    worldgen/QcStructure.h worldgen/QcStructure.cpp
+    worldgen/QcStructurePlacement.h worldgen/QcStructurePlacement.cpp
+    worldgen/QcTerrainColumn.h
+    worldgen/QcTerrainColumnGrid.h worldgen/QcTerrainColumnGrid.cpp
+    worldgen/QcTerrainDefinitions.h worldgen/QcTerrainDefinitions.cpp
+    worldgen/QcTerrainGenerator.h worldgen/QcTerrainGenerator.cpp
+    worldgen/QcTerrainMath.h
+    worldgen/QcTestTerrainGenerator.h worldgen/QcTestTerrainGenerator.cpp
+    worldgen/QcTreeShape.h worldgen/QcTreeShape.cpp
+    worldgen/QcVoidGenerator.h worldgen/QcVoidGenerator.cpp
+    worldgen/QcWorldGenerator.h
+    worldgen/QcWorldGenerators.h worldgen/QcWorldGenerators.cpp
+    worldgen/QcWorldSetup.h
+)
+target_sources(qc_server PRIVATE
     worldgen/showcase/QcShowcaseArea.h
     worldgen/showcase/QcShowcaseArmourArea.h worldgen/showcase/QcShowcaseArmourArea.cpp
     worldgen/showcase/QcShowcaseBlockArea.h worldgen/showcase/QcShowcaseBlockArea.cpp
@@ -206,21 +244,20 @@ qt_add_library(qc_server STATIC
     worldgen/showcase/QcShowcasePlanner.h worldgen/showcase/QcShowcasePlanner.cpp
     worldgen/showcase/QcShowcaseTreeArea.h worldgen/showcase/QcShowcaseTreeArea.cpp
     worldgen/showcase/QcShowcaseVillageArea.h worldgen/showcase/QcShowcaseVillageArea.cpp
-    signal/QcCircuitComponents.h signal/QcCircuitComponents.cpp
-    signal/QcComparatorReadings.h signal/QcComparatorReadings.cpp
-    signal/QcDispenserActions.h signal/QcDispenserActions.cpp
-    signal/QcHopperQueue.h signal/QcHopperQueue.cpp
-    signal/QcServerHoppers.h signal/QcServerHoppers.cpp
-    signal/QcCircuitPlan.h
-    signal/QcCircuitState.h signal/QcCircuitState.cpp
-    signal/QcDustNetwork.h signal/QcDustNetwork.cpp
-    signal/QcMovingBlocks.h signal/QcMovingBlocks.cpp
-    signal/QcPistonMover.h signal/QcPistonMover.cpp
-    signal/QcPistonPlanner.h signal/QcPistonPlanner.cpp
-    signal/QcServerCircuits.h signal/QcServerCircuits.cpp
-    signal/QcSignalPower.h signal/QcSignalPower.cpp
-    signal/QcSignalSchedule.h signal/QcSignalSchedule.cpp
-    signal/QcSignalTable.h signal/QcSignalTable.cpp
+)
+target_sources(qc_server PRIVATE
+    worldgen/villages/QcBoardwalkPlanner.h worldgen/villages/QcBoardwalkPlanner.cpp
+    worldgen/villages/QcJettyPlanner.h worldgen/villages/QcJettyPlanner.cpp
+    worldgen/villages/QcPieceVariation.h worldgen/villages/QcPieceVariation.cpp
+    worldgen/villages/QcVillageBlocks.h worldgen/villages/QcVillageBlocks.cpp
+    worldgen/villages/QcVillageFields.h worldgen/villages/QcVillageFields.cpp
+    worldgen/villages/QcVillageGenerator.h worldgen/villages/QcVillageGenerator.cpp
+    worldgen/villages/QcVillagePlan.h
+    worldgen/villages/QcVillagePlanCache.h worldgen/villages/QcVillagePlanCache.cpp
+    worldgen/villages/QcVillagePlanner.h worldgen/villages/QcVillagePlanner.cpp worldgen/villages/QcVillagePlannerLayouts.cpp worldgen/villages/QcVillagePlannerRoads.cpp worldgen/villages/QcVillagePlannerWater.cpp
+    worldgen/villages/QcVillageRoads.h worldgen/villages/QcVillageRoads.cpp
+    worldgen/villages/QcVillageStyles.h worldgen/villages/QcVillageStyles.cpp
+    worldgen/villages/QcWetlandShaper.h worldgen/villages/QcWetlandShaper.cpp
 )
 qc_configure_target(qc_server)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.

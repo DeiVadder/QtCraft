@@ -90,6 +90,7 @@ echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 [ -x "$QT_DIR/bin/macdeployqt" ] || abort "macdeployqt not found in $QT_DIR/bin"
 
 echo "== build (preset $PRESET, $BUILD_DIR)"
+"$PROJECT_DIR/scripts/ensure-user-presets.sh" || abort "CMakeUserPresets.json missing and not created"
 limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
 limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
     abort "build failed, see $WORK/build.log"

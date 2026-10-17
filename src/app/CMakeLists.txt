@@ -1,81 +1,159 @@
-qt_add_executable(qtcraft
-    main.cpp
-    hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
-    hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
-    hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
+# The game's C++ side as a static library (decision E-417): controllers, models, rendering, input,
+# hooks and the multiplayer screens, used by the game and by the tests. It is the backing target of
+# the QML module QtCraft as well, because qmltyperegistrar registers only the QML types of the
+# module's own target; the game links the module's static plugin, which registers them at start.
+qt_add_library(qc_app_core STATIC)
+# Sources per folder, sorted, each header next to its sources (scripts/check-cmake-lists.py).
+target_sources(qc_app_core PRIVATE
+    controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
+    controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcDebugHud.h controllers/QcDebugHud.cpp
+    controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
+    controllers/QcDebugVisuals.h controllers/QcDebugVisuals.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
+    controllers/QcHandbookController.h controllers/QcHandbookController.cpp
+    controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
-    multiplayer/QcMultiplayerSettings.h multiplayer/QcMultiplayerSettings.cpp
-    multiplayer/QcServerHistory.h multiplayer/QcServerHistory.cpp
-    multiplayer/QcPlayerList.h multiplayer/QcPlayerList.cpp
-    multiplayer/QcLanAddresses.h multiplayer/QcLanAddresses.cpp
-    multiplayer/QcNetworkClientForeign.h
+    controllers/QcPlayerController.h controllers/QcPlayerController.cpp
+    controllers/QcPreviewSource.h controllers/QcPreviewSource.cpp
     controllers/QcSessionParts.h
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
-    controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
-    controllers/QcDebugSettings.h controllers/QcDebugSettings.cpp
-    controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
-    controllers/QcPreviewSource.h controllers/QcPreviewSource.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
-    models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
-    controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
-    controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
-    controllers/QcHudState.h controllers/QcHudState.cpp
-    controllers/QcDebugHud.h controllers/QcDebugHud.cpp
-    controllers/QcDebugVisuals.h controllers/QcDebugVisuals.cpp
-    controllers/QcHandbookController.h controllers/QcHandbookController.cpp
-    models/QcItemIcons.h models/QcItemIcons.cpp
-    models/QcUiTheme.h
-    models/QcControlPalette.h models/QcControlPalette.cpp
-    input/QcGameInput.h input/QcGameInput.cpp
-    rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
-    hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
+    controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
+)
+target_sources(qc_app_core PRIVATE
     hooks/QcBenchmarkRun.h hooks/QcBenchmarkRun.cpp
-    models/QcInventoryModel.h models/QcInventoryModel.cpp
-    models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
+    hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
+    hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
+    hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
+    hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
+    hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
+    hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
+    hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
+    hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
+)
+target_sources(qc_app_core PRIVATE
+    input/QcGameInput.h input/QcGameInput.cpp
     input/QcKeyControlsForeign.h
+    input/QcRelativeMouse.h
+)
+target_sources(qc_app_core PRIVATE
+    models/QcControlPalette.h models/QcControlPalette.cpp
+    models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     models/QcHandbookModel.h models/QcHandbookModel.cpp
-    models/QcSlotRange.h models/QcSlotRange.cpp
-    models/QcWorldLabelModel.h models/QcWorldLabelModel.cpp
+    models/QcInventoryModel.h models/QcInventoryModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
-    rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
-    rendering/QcWorldView.h rendering/QcWorldView.cpp
-    rendering/QcRenderPipelines.h rendering/QcRenderPipelines.cpp
+    models/QcItemIcons.h models/QcItemIcons.cpp
+    models/QcSlotRange.h models/QcSlotRange.cpp
+    models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
+    models/QcUiTheme.h
+    models/QcWorldLabelModel.h models/QcWorldLabelModel.cpp
+)
+target_sources(qc_app_core PRIVATE
+    multiplayer/QcLanAddresses.h multiplayer/QcLanAddresses.cpp
+    multiplayer/QcMultiplayerSettings.h multiplayer/QcMultiplayerSettings.cpp
+    multiplayer/QcNetworkClientForeign.h
+    multiplayer/QcPlayerList.h multiplayer/QcPlayerList.cpp
+    multiplayer/QcServerHistory.h multiplayer/QcServerHistory.cpp
+)
+target_sources(qc_app_core PRIVATE
+    rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
     rendering/QcCharacterPreview.h rendering/QcCharacterPreview.cpp
     rendering/QcCharacterPreviewRenderer.h rendering/QcCharacterPreviewRenderer.cpp
-    rendering/QcPreviewAtlasCache.h rendering/QcPreviewAtlasCache.cpp
-    rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
-    rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
-    rendering/QcGraphItem.h rendering/QcGraphItem.cpp
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
-    rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
-    rendering/QcRenderSample.h
     rendering/QcFramePlan.h
+    rendering/QcGraphItem.h rendering/QcGraphItem.cpp
+    rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
+    rendering/QcPreviewAtlasCache.h rendering/QcPreviewAtlasCache.cpp
+    rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
+    rendering/QcRenderPipelines.h rendering/QcRenderPipelines.cpp
+    rendering/QcRenderSample.h
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
-    hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
-    hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
-    hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
-    hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
-    input/QcRelativeMouse.h
-    hooks/QcScriptedRun.h
+    rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
+    rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
+    rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
+# The mouse capture talks to the platform (AppKit on macOS).
 if(APPLE)
-    target_sources(qtcraft PRIVATE input/QcRelativeMouse_mac.mm hooks/QcScriptedRun_mac.mm)
-    target_link_libraries(qtcraft PRIVATE "-framework AppKit" "-framework ApplicationServices")
+    target_sources(qc_app_core PRIVATE input/QcRelativeMouse_mac.mm)
+    target_link_libraries(qc_app_core PRIVATE "-framework AppKit" "-framework ApplicationServices")
 else()
-    target_sources(qtcraft PRIVATE input/QcRelativeMouse_other.cpp hooks/QcScriptedRun_other.cpp)
+    target_sources(qc_app_core PRIVATE input/QcRelativeMouse_other.cpp)
 endif()
-qc_configure_target(qtcraft)
+qc_configure_target(qc_app_core)
 # Classes live in thematic subfolders (E-089); every folder is an include directory, so includes
-# stay "QcName.h" without a path.
-target_include_directories(qtcraft PRIVATE
+# stay "QcName.h" without a path. The folders form a target of their own: a test that uses only
+# headers of the app (test_frame_plan) links it instead of the whole library (decision E-417).
+add_library(qc_app_core_headers INTERFACE)
+target_include_directories(qc_app_core_headers INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers
     ${CMAKE_CURRENT_SOURCE_DIR}/models
     ${CMAKE_CURRENT_SOURCE_DIR}/rendering
     ${CMAKE_CURRENT_SOURCE_DIR}/hooks
     ${CMAKE_CURRENT_SOURCE_DIR}/input
     ${CMAKE_CURRENT_SOURCE_DIR}/multiplayer)
+target_link_libraries(qc_app_core PUBLIC
+    qc_app_core_headers qc_common qc_server qc_clientcore qc_audio
+    Qt::Concurrent Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
+
+qt_add_qml_module(qc_app_core
+    URI QtCraft
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
+    QML_FILES
+        qml/CharacterPresets.qml
+        qml/CharacterPreviewHost.qml
+        qml/CharacterPreviewPanel.qml
+        qml/CharacterScreen.qml
+        qml/ChatOverlay.qml
+        qml/ChestScreen.qml
+        qml/ControlsPage.qml
+        qml/CreativeScreen.qml
+        qml/DeathScreen.qml
+        qml/DebugOptionsPage.qml
+        qml/DebugOverlay.qml
+        qml/DisconnectScreen.qml
+        qml/FurnaceScreen.qml
+        qml/HandbookLink.qml
+        qml/HandbookRecipe.qml
+        qml/HandbookScreen.qml
+        qml/Hud.qml
+        qml/HudLabel.qml
+        qml/InventoryScreen.qml
+        qml/InventorySlot.qml
+        qml/ItemSlot.qml
+        qml/LanScreen.qml
+        qml/Main.qml
+        qml/MainMenu.qml
+        qml/MessageScreen.qml
+        qml/ModsScreen.qml
+        qml/MultiplayerScreen.qml
+        qml/PauseMenu.qml
+        qml/PlayerListOverlay.qml
+        qml/PlayerSlots.qml
+        qml/ProfileCard.qml
+        qml/RecentServerRow.qml
+        qml/SettingsScreen.qml
+        qml/SlotScreen.qml
+        qml/TexturePacksPage.qml
+        qml/ThemedScrollBar.qml
+        qml/ThemedToolTip.qml
+        qml/TradeScreen.qml
+        qml/WorldLabels.qml
+)
+
+# The executable: start-up (command line, hooks of a scripted run), shaders, translations, icon.
+qt_add_executable(qtcraft
+    hooks/QcScriptedRun.h
+    main.cpp
+)
+if(APPLE)
+    target_sources(qtcraft PRIVATE hooks/QcScriptedRun_mac.mm)
+    target_link_libraries(qtcraft PRIVATE "-framework AppKit" "-framework ApplicationServices")
+else()
+    target_sources(qtcraft PRIVATE hooks/QcScriptedRun_other.cpp)
+endif()
+qc_configure_target(qtcraft)
 target_compile_definitions(qtcraft PRIVATE QTCRAFT_VERSION="${PROJECT_VERSION}")
 if(QC_QML_DEBUG)
     target_compile_definitions(qtcraft PRIVATE QT_QML_DEBUG)
@@ -110,53 +188,7 @@ if(APPLE)
     set_source_files_properties(${QC_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif()
 
-target_link_libraries(qtcraft PRIVATE
-    qc_common qc_server qc_clientcore qc_audio
-    Qt::Concurrent Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
-
-qt_add_qml_module(qtcraft
-    URI QtCraft
-    QML_FILES
-        qml/Main.qml
-        qml/CharacterScreen.qml
-        qml/CharacterPresets.qml
-        qml/CharacterPreviewPanel.qml
-        qml/CharacterPreviewHost.qml
-        qml/ProfileCard.qml
-        qml/ChatOverlay.qml
-        qml/ControlsPage.qml
-        qml/DeathScreen.qml
-        qml/FurnaceScreen.qml
-        qml/HandbookScreen.qml
-        qml/HandbookRecipe.qml
-        qml/HandbookLink.qml
-        qml/ChestScreen.qml
-        qml/TradeScreen.qml
-        qml/CreativeScreen.qml
-        qml/Hud.qml
-        qml/InventoryScreen.qml
-        qml/ItemSlot.qml
-        qml/InventorySlot.qml
-        qml/PlayerSlots.qml
-        qml/SlotScreen.qml
-        qml/HudLabel.qml
-        qml/ThemedScrollBar.qml
-        qml/ThemedToolTip.qml
-        qml/PauseMenu.qml
-        qml/MainMenu.qml
-        qml/MessageScreen.qml
-        qml/ModsScreen.qml
-        qml/SettingsScreen.qml
-        qml/WorldLabels.qml
-        qml/DebugOverlay.qml
-        qml/DebugOptionsPage.qml
-        qml/TexturePacksPage.qml
-        qml/MultiplayerScreen.qml
-        qml/RecentServerRow.qml
-        qml/LanScreen.qml
-        qml/PlayerListOverlay.qml
-        qml/DisconnectScreen.qml
-)
+target_link_libraries(qtcraft PRIVATE qc_app_core qc_app_coreplugin)
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
     BASE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -188,7 +220,7 @@ qt_add_shaders(qtcraft "qtcraft_opaque_shaders"
 )
 
 qt_add_translations(qtcraft
-    SOURCE_TARGETS qtcraft qc_clientcore qc_server qc_network
+    SOURCE_TARGETS qtcraft qc_app_core qc_clientcore qc_server qc_network
     TS_FILE_DIR ${PROJECT_SOURCE_DIR}/translations
     TS_FILE_BASE qtcraft
     RESOURCE_PREFIX /i18n)

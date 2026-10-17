@@ -1,6 +1,9 @@
 # Network transport (decision E-251): TCP framing, connecting and server addresses. Common layer:
 # used by the server's listener and by clients.
-qt_add_library(qc_network STATIC
+qt_add_library(qc_network STATIC)
+# Sources sorted, each header next to its sources (decision E-417;
+# scripts/check-cmake-lists.py checks the lists).
+target_sources(qc_network PRIVATE
     QcServerAddress.h QcServerAddress.cpp
     QcSocketErrors.h QcSocketErrors.cpp
     QcTcpConnector.h QcTcpConnector.cpp

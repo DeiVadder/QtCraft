@@ -9,8 +9,8 @@
 # Usage: scripts/bench-headless.sh [--check] <result file> [<rounds>] [<game seconds>] <label>=<build dir>[:<VAR>=<value>...] ...
 #   <build dir> is a release build directory (build/release of each checkout) with the targets
 #   test_scenario_measure and qtcraft-headless (the showcase stops). A build from before this
-#   script gets tests/gameplay/test_scenario_measure.cpp and its line in tests/CMakeLists.txt copied
-#   into its checkout (as the measure tests of stage 31.3 were).
+#   script gets tests/gameplay/test_scenario_measure.cpp and its line in tests/gameplay/tests.cmake
+#   copied into its checkout (as the measure tests of stage 31.3 were).
 #   <rounds>: auto (default, adaptive 3 to 6), <min>-<max> or a number; <game seconds>: default 60.
 #   SCENARIOS: default @server (crowd gravel-collapse farm farm-seeds explore and the signal stations
 #   of the showcase; scripts/bench-groups.sh). Light runs with the game's torch ring as timed chat

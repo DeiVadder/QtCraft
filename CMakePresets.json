@@ -4,23 +4,26 @@
         {
             "name": "base",
             "hidden": true,
+            "description": "Shared settings of the local presets; the Qt and Ninja paths of the machine come from the hidden preset 'local' in CMakeUserPresets.json (see CMakeUserPresets.example.json)",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "$env{HOME}/Qt/6.8.3/macos",
-                "CMAKE_MAKE_PROGRAM": "$env{HOME}/Qt/Tools/Ninja/ninja"
-            }
+            "binaryDir": "${sourceDir}/build/${presetName}"
         },
-        { "name": "debug", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
-        { "name": "release", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
-        { "name": "deploy", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64" } },
-        { "name": "profile", "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo", "QC_QML_DEBUG": "ON" } },
+        { "name": "qc-debug", "hidden": true, "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        { "name": "qc-release", "hidden": true, "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
         {
-            "name": "asan", "inherits": "base",
+            "name": "qc-deploy", "hidden": true, "inherits": "base",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64" }
+        },
+        {
+            "name": "qc-profile", "hidden": true, "inherits": "base",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo", "QC_QML_DEBUG": "ON" }
+        },
+        {
+            "name": "qc-asan", "hidden": true, "inherits": "base",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "address;undefined" }
         },
         {
-            "name": "tsan", "inherits": "base",
+            "name": "qc-tsan", "hidden": true, "inherits": "base",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "thread" }
         },
         {
@@ -37,21 +40,16 @@
         }
     ],
     "buildPresets": [
-        { "name": "debug", "configurePreset": "debug", "jobs": 16 },
-        { "name": "release", "configurePreset": "release", "jobs": 16 },
-        { "name": "deploy", "configurePreset": "deploy", "jobs": 16 },
-        { "name": "profile", "configurePreset": "profile", "jobs": 16 },
-        { "name": "asan", "configurePreset": "asan", "jobs": 16 },
-        { "name": "tsan", "configurePreset": "tsan", "jobs": 16 },
+        { "name": "qc-build", "hidden": true, "jobs": 16 },
         { "name": "ci-debug", "configurePreset": "ci-debug" },
         { "name": "ci-deploy", "configurePreset": "ci-deploy" }
     ],
     "testPresets": [
-        { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } },
-        { "name": "release", "configurePreset": "release", "output": { "outputOnFailure": true } },
-        { "name": "asan", "configurePreset": "asan", "output": { "outputOnFailure": true } },
-        { "name": "tsan", "configurePreset": "tsan", "output": { "outputOnFailure": true },
-          "environment": { "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1" } },
+        { "name": "qc-test", "hidden": true, "output": { "outputOnFailure": true } },
+        {
+            "name": "qc-tsan-test", "hidden": true, "inherits": "qc-test",
+            "environment": { "TSAN_OPTIONS": "suppressions=${sourceDir}/tests/tsan.supp halt_on_error=1" }
+        },
         { "name": "ci-debug", "configurePreset": "ci-debug", "output": { "outputOnFailure": true } }
     ]
 }

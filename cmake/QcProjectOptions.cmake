@@ -5,6 +5,8 @@ set(QC_SANITIZERS "" CACHE STRING "Sanitizers for all QtCraft targets: empty, 'a
 option(QC_QML_DEBUG "Let the game accept a QML profiler/debugger (-qmljsdebugger); profiling builds only" OFF)
 
 add_library(qc_project_options INTERFACE)
+# C++23 for every own target (a compile feature, so CMake picks the flag for the compiler).
+target_compile_features(qc_project_options INTERFACE cxx_std_23)
 
 if(MSVC)
     target_compile_options(qc_project_options INTERFACE /W4 /WX /EHs-c- /permissive-)

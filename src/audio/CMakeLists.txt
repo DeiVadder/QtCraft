@@ -1,6 +1,9 @@
 # Audio output of the graphical client (Qt Multimedia). Mixing and synthesis live in qc_clientcore,
 # which stays free of audio devices so that tests can use them anywhere.
-qt_add_library(qc_audio STATIC
+qt_add_library(qc_audio STATIC)
+# Sources sorted, each header next to its sources (decision E-417;
+# scripts/check-cmake-lists.py checks the lists).
+target_sources(qc_audio PRIVATE
     QcAudioEngine.h QcAudioEngine.cpp
     QcAudioOutput.h QcAudioOutput.cpp
     QcMixerDevice.h QcMixerDevice.cpp
